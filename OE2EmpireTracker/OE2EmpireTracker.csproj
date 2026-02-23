@@ -115,7 +115,11 @@
   <ItemGroup>
     <Compile Include="Baseline\BlueprintField.cs" />
     <Compile Include="Baseline\BlueprintType.cs" />
+    <Compile Include="Baseline\TechLevel.cs" />
     <Compile Include="Baseline\EmpireContext.cs" />
+    <Compile Include="Baseline\Resource.cs" />
+    <Compile Include="Baseline\ResourceGroup.cs" />
+    <Compile Include="Baseline\ResourcePurity.cs" />
     <Compile Include="Baseline\ShipClass.cs" />
     <Compile Include="Baseline\SurveyParser.cs" />
     <Compile Include="Data\BaseResource.cs" />

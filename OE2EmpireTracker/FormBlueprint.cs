@@ -30,6 +30,11 @@ namespace OE2EmpireTracker
             cmbShipClass.ValueMember = "Id";
             cmbShipClass.DataSource = empireContext.bindingSourceShipClass;
             cmbShipClass.SelectedIndex = -1;
+
+            cmbTechLevel.DisplayMember = "Name";
+            cmbTechLevel.ValueMember = "Name";
+            cmbTechLevel.DataSource = empireContext.bindingSourceTechLevel;
+            cmbTechLevel.SelectedIndex = -1;
         }
 
         private void rtbCopyTarget_TextChanged(object sender, EventArgs e)
@@ -153,5 +158,22 @@ namespace OE2EmpireTracker
             }
         }
 
+        private void cmbBlueprintType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Debug.Print("Sender = " + sender);
+            Debug.Print("Event Args " + e);
+            BlueprintType bt = cmbBlueprintType.SelectedItem as BlueprintType;
+            if (bt != null && bt.Universal == true)
+            {
+                flpClass.Visible = false;
+                cmbShipClass.SelectedIndex = -1;
+                flpTechLevel.Visible = false;
+                cmbTechLevel.SelectedIndex = -1;
+            } else
+            {
+                flpClass.Visible = true;
+                flpTechLevel.Visible = true;
+            }
+        }
     }
 }

@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OE2EmpireTracker.Baseline
+{
+    public class Resource
+    {
+        public string Group { get; set; }
+        public string Name { get; set; }
+        public Boolean Synthetic { get; set; }
+    }
+}

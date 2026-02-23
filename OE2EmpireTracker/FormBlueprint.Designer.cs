@@ -34,20 +34,31 @@ namespace OE2EmpireTracker
             this.lblBlueprintType = new System.Windows.Forms.Label();
             this.cmbBlueprintType = new System.Windows.Forms.ComboBox();
             this.flpBlueprintType = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpTechLevel = new System.Windows.Forms.FlowLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
-            this.cmbQuality = new System.Windows.Forms.ComboBox();
+            this.cmbTechLevel = new System.Windows.Forms.ComboBox();
             this.flpBaseDetails = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpClass = new System.Windows.Forms.FlowLayoutPanel();
+            this.label7 = new System.Windows.Forms.Label();
+            this.cmbShipClass = new System.Windows.Forms.ComboBox();
+            this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.cmbEvolution = new System.Windows.Forms.ComboBox();
+            this.flowLayoutPanel7 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.cmbBaseBlueprint = new System.Windows.Forms.ComboBox();
             this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
             this.label4 = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
-            this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label3 = new System.Windows.Forms.Label();
             this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
             this.label5 = new System.Windows.Forms.Label();
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.tabDetailedData = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.flowLayoutPanel10 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel11 = new System.Windows.Forms.FlowLayoutPanel();
@@ -57,33 +68,22 @@ namespace OE2EmpireTracker
             this.label9 = new System.Windows.Forms.Label();
             this.textBox8 = new System.Windows.Forms.TextBox();
             this.textBox9 = new System.Windows.Forms.TextBox();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.flowLayoutPanel7 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label6 = new System.Windows.Forms.Label();
-            this.cmbBaseBlueprint = new System.Windows.Forms.ComboBox();
-            this.cmbEvolution = new System.Windows.Forms.ComboBox();
-            this.flowLayoutPanel8 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label7 = new System.Windows.Forms.Label();
-            this.cmbShipClass = new System.Windows.Forms.ComboBox();
             this.flpBase = new System.Windows.Forms.FlowLayoutPanel();
             this.flpBlueprintType.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
+            this.flpTechLevel.SuspendLayout();
             this.flpBaseDetails.SuspendLayout();
-            this.flowLayoutPanel5.SuspendLayout();
+            this.flpClass.SuspendLayout();
             this.flowLayoutPanel4.SuspendLayout();
+            this.flowLayoutPanel7.SuspendLayout();
+            this.flowLayoutPanel5.SuspendLayout();
             this.flowLayoutPanel6.SuspendLayout();
             this.tabDetailedData.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.flowLayoutPanel10.SuspendLayout();
             this.flowLayoutPanel11.SuspendLayout();
             this.flowLayoutPanel12.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.flowLayoutPanel7.SuspendLayout();
-            this.flowLayoutPanel8.SuspendLayout();
             this.flpBase.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -109,6 +109,7 @@ namespace OE2EmpireTracker
             this.cmbBlueprintType.Name = "cmbBlueprintType";
             this.cmbBlueprintType.Size = new System.Drawing.Size(201, 21);
             this.cmbBlueprintType.TabIndex = 1;
+            this.cmbBlueprintType.SelectedIndexChanged += new System.EventHandler(this.cmbBlueprintType_SelectedIndexChanged);
             // 
             // flpBlueprintType
             // 
@@ -121,16 +122,16 @@ namespace OE2EmpireTracker
             this.flpBlueprintType.Size = new System.Drawing.Size(309, 25);
             this.flpBlueprintType.TabIndex = 0;
             // 
-            // flowLayoutPanel2
+            // flpTechLevel
             // 
-            this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.Controls.Add(this.label2);
-            this.flowLayoutPanel2.Controls.Add(this.cmbQuality);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(2, 60);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(309, 25);
-            this.flowLayoutPanel2.TabIndex = 2;
+            this.flpTechLevel.AutoSize = true;
+            this.flpTechLevel.Controls.Add(this.label2);
+            this.flpTechLevel.Controls.Add(this.cmbTechLevel);
+            this.flpTechLevel.Location = new System.Drawing.Point(2, 60);
+            this.flpTechLevel.Margin = new System.Windows.Forms.Padding(2);
+            this.flpTechLevel.Name = "flpTechLevel";
+            this.flpTechLevel.Size = new System.Drawing.Size(309, 25);
+            this.flpTechLevel.TabIndex = 2;
             // 
             // label2
             // 
@@ -140,24 +141,27 @@ namespace OE2EmpireTracker
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(100, 17);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Quality";
+            this.label2.Text = "Tech Level";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // cmbQuality
+            // cmbTechLevel
             // 
-            this.cmbQuality.FormattingEnabled = true;
-            this.cmbQuality.Location = new System.Drawing.Point(106, 2);
-            this.cmbQuality.Margin = new System.Windows.Forms.Padding(2);
-            this.cmbQuality.Name = "cmbQuality";
-            this.cmbQuality.Size = new System.Drawing.Size(201, 21);
-            this.cmbQuality.TabIndex = 3;
+            this.cmbTechLevel.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cmbTechLevel.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cmbTechLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbTechLevel.FormattingEnabled = true;
+            this.cmbTechLevel.Location = new System.Drawing.Point(106, 2);
+            this.cmbTechLevel.Margin = new System.Windows.Forms.Padding(2);
+            this.cmbTechLevel.Name = "cmbTechLevel";
+            this.cmbTechLevel.Size = new System.Drawing.Size(201, 21);
+            this.cmbTechLevel.TabIndex = 3;
             // 
             // flpBaseDetails
             // 
             this.flpBaseDetails.AutoSize = true;
             this.flpBaseDetails.Controls.Add(this.flpBlueprintType);
-            this.flpBaseDetails.Controls.Add(this.flowLayoutPanel8);
-            this.flpBaseDetails.Controls.Add(this.flowLayoutPanel2);
+            this.flpBaseDetails.Controls.Add(this.flpClass);
+            this.flpBaseDetails.Controls.Add(this.flpTechLevel);
             this.flpBaseDetails.Controls.Add(this.flowLayoutPanel4);
             this.flpBaseDetails.Controls.Add(this.flowLayoutPanel7);
             this.flpBaseDetails.Controls.Add(this.flowLayoutPanel5);
@@ -168,6 +172,102 @@ namespace OE2EmpireTracker
             this.flpBaseDetails.Name = "flpBaseDetails";
             this.flpBaseDetails.Size = new System.Drawing.Size(313, 201);
             this.flpBaseDetails.TabIndex = 6;
+            // 
+            // flpClass
+            // 
+            this.flpClass.AutoSize = true;
+            this.flpClass.Controls.Add(this.label7);
+            this.flpClass.Controls.Add(this.cmbShipClass);
+            this.flpClass.Location = new System.Drawing.Point(2, 31);
+            this.flpClass.Margin = new System.Windows.Forms.Padding(2);
+            this.flpClass.Name = "flpClass";
+            this.flpClass.Size = new System.Drawing.Size(309, 25);
+            this.flpClass.TabIndex = 1;
+            // 
+            // label7
+            // 
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label7.Location = new System.Drawing.Point(2, 4);
+            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(100, 17);
+            this.label7.TabIndex = 2;
+            this.label7.Text = "Class";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmbShipClass
+            // 
+            this.cmbShipClass.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cmbShipClass.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cmbShipClass.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbShipClass.FormattingEnabled = true;
+            this.cmbShipClass.Location = new System.Drawing.Point(106, 2);
+            this.cmbShipClass.Margin = new System.Windows.Forms.Padding(2);
+            this.cmbShipClass.Name = "cmbShipClass";
+            this.cmbShipClass.Size = new System.Drawing.Size(201, 21);
+            this.cmbShipClass.TabIndex = 1;
+            // 
+            // flowLayoutPanel4
+            // 
+            this.flowLayoutPanel4.AutoSize = true;
+            this.flowLayoutPanel4.Controls.Add(this.label3);
+            this.flowLayoutPanel4.Controls.Add(this.cmbEvolution);
+            this.flowLayoutPanel4.Location = new System.Drawing.Point(2, 89);
+            this.flowLayoutPanel4.Margin = new System.Windows.Forms.Padding(2);
+            this.flowLayoutPanel4.Name = "flowLayoutPanel4";
+            this.flowLayoutPanel4.Size = new System.Drawing.Size(309, 25);
+            this.flowLayoutPanel4.TabIndex = 3;
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.Location = new System.Drawing.Point(2, 4);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(100, 17);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Evolution";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmbEvolution
+            // 
+            this.cmbEvolution.FormattingEnabled = true;
+            this.cmbEvolution.Location = new System.Drawing.Point(106, 2);
+            this.cmbEvolution.Margin = new System.Windows.Forms.Padding(2);
+            this.cmbEvolution.Name = "cmbEvolution";
+            this.cmbEvolution.Size = new System.Drawing.Size(201, 21);
+            this.cmbEvolution.TabIndex = 4;
+            // 
+            // flowLayoutPanel7
+            // 
+            this.flowLayoutPanel7.AutoSize = true;
+            this.flowLayoutPanel7.Controls.Add(this.label6);
+            this.flowLayoutPanel7.Controls.Add(this.cmbBaseBlueprint);
+            this.flowLayoutPanel7.Location = new System.Drawing.Point(2, 118);
+            this.flowLayoutPanel7.Margin = new System.Windows.Forms.Padding(2);
+            this.flowLayoutPanel7.Name = "flowLayoutPanel7";
+            this.flowLayoutPanel7.Size = new System.Drawing.Size(309, 25);
+            this.flowLayoutPanel7.TabIndex = 4;
+            // 
+            // label6
+            // 
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label6.Location = new System.Drawing.Point(2, 4);
+            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(100, 17);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "Base Blueprint";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmbBaseBlueprint
+            // 
+            this.cmbBaseBlueprint.FormattingEnabled = true;
+            this.cmbBaseBlueprint.Location = new System.Drawing.Point(106, 2);
+            this.cmbBaseBlueprint.Margin = new System.Windows.Forms.Padding(2);
+            this.cmbBaseBlueprint.Name = "cmbBaseBlueprint";
+            this.cmbBaseBlueprint.Size = new System.Drawing.Size(201, 21);
+            this.cmbBaseBlueprint.TabIndex = 5;
             // 
             // flowLayoutPanel5
             // 
@@ -198,28 +298,6 @@ namespace OE2EmpireTracker
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(201, 20);
             this.txtName.TabIndex = 0;
-            // 
-            // flowLayoutPanel4
-            // 
-            this.flowLayoutPanel4.AutoSize = true;
-            this.flowLayoutPanel4.Controls.Add(this.label3);
-            this.flowLayoutPanel4.Controls.Add(this.cmbEvolution);
-            this.flowLayoutPanel4.Location = new System.Drawing.Point(2, 89);
-            this.flowLayoutPanel4.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel4.Name = "flowLayoutPanel4";
-            this.flowLayoutPanel4.Size = new System.Drawing.Size(309, 25);
-            this.flowLayoutPanel4.TabIndex = 3;
-            // 
-            // label3
-            // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.Location = new System.Drawing.Point(2, 4);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(100, 17);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Evolution";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // flowLayoutPanel6
             // 
@@ -275,6 +353,33 @@ namespace OE2EmpireTracker
             this.tabPage1.Text = "Statistics";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column1,
+            this.Column2,
+            this.Column3});
+            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(826, 300);
+            this.dataGridView1.TabIndex = 0;
+            // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "Property";
+            this.Column1.Name = "Column1";
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "Base Value";
+            this.Column2.Name = "Column2";
+            // 
+            // Column3
+            // 
+            this.Column3.HeaderText = "Current Value";
+            this.Column3.Name = "Column3";
+            // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.flowLayoutPanel10);
@@ -282,7 +387,7 @@ namespace OE2EmpireTracker
             this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage2.Size = new System.Drawing.Size(695, 176);
+            this.tabPage2.Size = new System.Drawing.Size(826, 303);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Required Resources";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -369,107 +474,6 @@ namespace OE2EmpireTracker
             this.textBox9.Size = new System.Drawing.Size(201, 20);
             this.textBox9.TabIndex = 8;
             // 
-            // dataGridView1
-            // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column1,
-            this.Column2,
-            this.Column3});
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(826, 300);
-            this.dataGridView1.TabIndex = 0;
-            // 
-            // Column1
-            // 
-            this.Column1.HeaderText = "Property";
-            this.Column1.Name = "Column1";
-            // 
-            // Column2
-            // 
-            this.Column2.HeaderText = "Base Value";
-            this.Column2.Name = "Column2";
-            // 
-            // Column3
-            // 
-            this.Column3.HeaderText = "Current Value";
-            this.Column3.Name = "Column3";
-            // 
-            // flowLayoutPanel7
-            // 
-            this.flowLayoutPanel7.AutoSize = true;
-            this.flowLayoutPanel7.Controls.Add(this.label6);
-            this.flowLayoutPanel7.Controls.Add(this.cmbBaseBlueprint);
-            this.flowLayoutPanel7.Location = new System.Drawing.Point(2, 118);
-            this.flowLayoutPanel7.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel7.Name = "flowLayoutPanel7";
-            this.flowLayoutPanel7.Size = new System.Drawing.Size(309, 25);
-            this.flowLayoutPanel7.TabIndex = 4;
-            // 
-            // label6
-            // 
-            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label6.Location = new System.Drawing.Point(2, 4);
-            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(100, 17);
-            this.label6.TabIndex = 2;
-            this.label6.Text = "Base Blueprint";
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cmbBaseBlueprint
-            // 
-            this.cmbBaseBlueprint.FormattingEnabled = true;
-            this.cmbBaseBlueprint.Location = new System.Drawing.Point(106, 2);
-            this.cmbBaseBlueprint.Margin = new System.Windows.Forms.Padding(2);
-            this.cmbBaseBlueprint.Name = "cmbBaseBlueprint";
-            this.cmbBaseBlueprint.Size = new System.Drawing.Size(201, 21);
-            this.cmbBaseBlueprint.TabIndex = 5;
-            // 
-            // cmbEvolution
-            // 
-            this.cmbEvolution.FormattingEnabled = true;
-            this.cmbEvolution.Location = new System.Drawing.Point(106, 2);
-            this.cmbEvolution.Margin = new System.Windows.Forms.Padding(2);
-            this.cmbEvolution.Name = "cmbEvolution";
-            this.cmbEvolution.Size = new System.Drawing.Size(201, 21);
-            this.cmbEvolution.TabIndex = 4;
-            // 
-            // flowLayoutPanel8
-            // 
-            this.flowLayoutPanel8.AutoSize = true;
-            this.flowLayoutPanel8.Controls.Add(this.label7);
-            this.flowLayoutPanel8.Controls.Add(this.cmbShipClass);
-            this.flowLayoutPanel8.Location = new System.Drawing.Point(2, 31);
-            this.flowLayoutPanel8.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel8.Name = "flowLayoutPanel8";
-            this.flowLayoutPanel8.Size = new System.Drawing.Size(309, 25);
-            this.flowLayoutPanel8.TabIndex = 1;
-            // 
-            // label7
-            // 
-            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label7.Location = new System.Drawing.Point(2, 4);
-            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(100, 17);
-            this.label7.TabIndex = 2;
-            this.label7.Text = "Class";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cmbShipClass
-            // 
-            this.cmbShipClass.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cmbShipClass.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cmbShipClass.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbShipClass.FormattingEnabled = true;
-            this.cmbShipClass.Location = new System.Drawing.Point(106, 2);
-            this.cmbShipClass.Margin = new System.Windows.Forms.Padding(2);
-            this.cmbShipClass.Name = "cmbShipClass";
-            this.cmbShipClass.Size = new System.Drawing.Size(201, 21);
-            this.cmbShipClass.TabIndex = 1;
-            // 
             // flpBase
             // 
             this.flpBase.AutoSize = true;
@@ -491,16 +495,19 @@ namespace OE2EmpireTracker
             this.Name = "FormBlueprint";
             this.Text = "Blueprint";
             this.flpBlueprintType.ResumeLayout(false);
-            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flpTechLevel.ResumeLayout(false);
             this.flpBaseDetails.ResumeLayout(false);
             this.flpBaseDetails.PerformLayout();
+            this.flpClass.ResumeLayout(false);
+            this.flowLayoutPanel4.ResumeLayout(false);
+            this.flowLayoutPanel7.ResumeLayout(false);
             this.flowLayoutPanel5.ResumeLayout(false);
             this.flowLayoutPanel5.PerformLayout();
-            this.flowLayoutPanel4.ResumeLayout(false);
             this.flowLayoutPanel6.ResumeLayout(false);
             this.flowLayoutPanel6.PerformLayout();
             this.tabDetailedData.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.flowLayoutPanel10.ResumeLayout(false);
             this.flowLayoutPanel10.PerformLayout();
@@ -508,9 +515,6 @@ namespace OE2EmpireTracker
             this.flowLayoutPanel11.PerformLayout();
             this.flowLayoutPanel12.ResumeLayout(false);
             this.flowLayoutPanel12.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.flowLayoutPanel7.ResumeLayout(false);
-            this.flowLayoutPanel8.ResumeLayout(false);
             this.flpBase.ResumeLayout(false);
             this.flpBase.PerformLayout();
             this.ResumeLayout(false);
@@ -522,9 +526,9 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.Label lblBlueprintType;
         private System.Windows.Forms.ComboBox cmbBlueprintType;
         private System.Windows.Forms.FlowLayoutPanel flpBlueprintType;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.FlowLayoutPanel flpTechLevel;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox cmbQuality;
+        private System.Windows.Forms.ComboBox cmbTechLevel;
         private System.Windows.Forms.FlowLayoutPanel flpBaseDetails;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel5;
         private System.Windows.Forms.Label label4;
@@ -553,7 +557,7 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox cmbBaseBlueprint;
         private System.Windows.Forms.ComboBox cmbEvolution;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel8;
+        private System.Windows.Forms.FlowLayoutPanel flpClass;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox cmbShipClass;
         private System.Windows.Forms.FlowLayoutPanel flpBase;

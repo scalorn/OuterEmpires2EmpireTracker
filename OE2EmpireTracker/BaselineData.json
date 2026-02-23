@@ -160,63 +160,301 @@
     },
     {
       "Id": "Munitions/CoilgunMunitions",
-      "Name": "Coilgun Munitions"
+      "Name": "Coilgun Munitions",
+      "Universal": true
     },
     {
       "Id": "Munitions/RailgunMunitions",
-      "Name": "Railgun Munitions"
+      "Name": "Railgun Munitions",
+      "Universal": true
     },
     {
       "Id": "Munitions/MissileMunitions",
-      "Name": "Missile Munitions"
+      "Name": "Missile Munitions",
+      "Universal": true
     },
     {
       "Id": "Munitions/TorpedoMunitions",
-      "Name": "Torpedo Munitions"
+      "Name": "Torpedo Munitions",
+      "Universal": true
     },
     {
       "Id": "Flatpacks/ColonyCommandCentre",
-      "Name": "Colony Command Centre Flatpack"
+      "Name": "Colony Command Centre Flatpack",
+      "Universal": true
     },
     {
       "Id": "Flatpacks/EntertainmentCentreFlatpack",
-      "Name": "Entertainment Centre Flatpack"
+      "Name": "Entertainment Centre Flatpack",
+      "Universal": true
     },
     {
-      "Id": "Flatpacks/ColonyCommandCentre",
-      "Name": "Colony Command Centre Flatpack"
+      "Id": "Flatpacks/HabitationBlock",
+      "Name": "Habitation Block Flatpack",
+      "Universal": true
     },
     {
-      "Id": "Flatpacks/ColonyCommandCentre",
-      "Name": "Colony Command Centre Flatpack"
+      "Id": "Flatpacks/HydroponicsBay",
+      "Name": "Hydroponics Bay Flatpack",
+      "Universal": true
     },
     {
-      "Id": "Flatpacks/ColonyCommandCentre",
-      "Name": "Colony Command Centre Flatpack"
+      "Id": "Flatpacks/Manufactory",
+      "Name": "Manufactory Flatpack",
+      "Universal": true
     },
     {
-      "Id": "Flatpacks/ColonyCommandCentre",
-      "Name": "Colony Command Centre Flatpack"
+      "Id": "Flatpacks/MiningRig",
+      "Name": "Mining Rig Flatpack",
+      "Universal": true
     },
     {
-      "Id": "Flatpacks/ColonyCommandCentre",
-      "Name": "Colony Command Centre Flatpack"
+      "Id": "Flatpacks/ReactorCore",
+      "Name": "Reactor Core Flatpack",
+      "Universal": true
     },
     {
-      "Id": "Flatpacks/ColonyCommandCentre",
-      "Name": "Colony Command Centre Flatpack"
+      "Id": "Flatpacks/Refinery",
+      "Name": "Refinery Flatpack",
+      "Universal": true
     },
     {
-      "Id": "Flatpacks/ColonyCommandCentre",
-      "Name": "Colony Command Centre Flatpack"
+      "Id": "Flatpacks/RemoteOperationsArray",
+      "Name": "Remote Operations Array Flatpack",
+      "Universal": true
     },
     {
-      "Id": "Flatpacks/ColonyCommandCentre",
-      "Name": "Colony Command Centre Flatpack"
+      "Id": "Flatpacks/ResearchLaboratory",
+      "Name": "Research Laboratory Flatpack",
+      "Universal": true
     },
     {
-      "Id": "Flatpacks/ColonyCommandCentre",
-      "Name": "Colony Command Centre Flatpack"
+      "Id": "Flatpacks/Warehouse",
+      "Name": "Warehouse Flatpack",
+      "Universal": true
+    }
+  ],
+  "ResourceType": [
+    {
+      "Name": "Crystalline"
+    },
+    {
+      "Name": "Exotic"
+    },
+    {
+      "Name": "Inert"
+    },
+    {
+      "Name": "Metallic"
+    },
+    {
+      "Name": "Non-Carbon"
+    },
+    {
+      "Name": "Organic"
+    },
+    {
+      "Name": "Reactive"
+    },
+    {
+      "Name": "Volatile"
+    }
+  ],
+  "ResourcePurity": [
+    {
+      "Name": "High"
+    },
+    {
+      "Name": "Med"
+    },
+    {
+      "Name": "Low"
+    }
+  ],
+  "Resource": [
+    {
+      "Name": "Acidic Inorganics",
+      "Group": "Non-Carbon",
+      "Synthetic": false
+    },
+    {
+      "Name": "Acidic Organics",
+      "Group": "Organic",
+      "Synthetic": false
+    },
+    {
+      "Name": "Alkali Inorganics",
+      "Group": "Non-Carbon",
+      "Synthetic": false
+    },
+    {
+      "Name": "Alkali Metals",
+      "Group": "Metallic",
+      "Synthetic": false
+    },
+    {
+      "Name": "Alkali Organics",
+      "Group": "Organic",
+      "Synthetic": false
+    },
+    {
+      "Name": "Alkaline Earth Metals",
+      "Group": "Metallic",
+      "Synthetic": false
+    },
+    {
+      "Name": "Complex Metallics",
+      "Group": "Crystalline",
+      "Synthetic": false
+    },
+    {
+      "Name": "Complex Non-Metallics",
+      "Group": "Crystalline",
+      "Synthetic": false
+    },
+    {
+      "Name": "Halogens",
+      "Group": "Reactive",
+      "Synthetic": false
+    },
+    {
+      "Name": "Heavy Alkali Metals",
+      "Group": "Metallic",
+      "Synthetic": false
+    },
+    {
+      "Name": "Heavy Alkaline Earth Metals",
+      "Group": "Metallic",
+      "Synthetic": false
+    },
+    {
+      "Name": "Heavy Noble Gases",
+      "Group": "Inert",
+      "Synthetic": false
+    },
+    {
+      "Name": "Heavy Post-Trans Metals",
+      "Group": "Metallic",
+      "Synthetic": false
+    },
+    {
+      "Name": "Heavy Trans-Metals",
+      "Group": "Metallic",
+      "Synthetic": false
+    },
+    {
+      "Name": "Lanthanide Volatiles",
+      "Group": "Volatile",
+      "Synthetic": false
+    },
+    {
+      "Name": "Lanthanides",
+      "Group": "Volatile",
+      "Synthetic": false
+    },
+    {
+      "Name": "Light Halogens",
+      "Group": "Reactive",
+      "Synthetic": false
+    },
+    {
+      "Name": "Metallics",
+      "Group": "Crystalline",
+      "Synthetic": false
+    },
+    {
+      "Name": "Metaloids",
+      "Group": "Metallic",
+      "Synthetic": false
+    },
+    {
+      "Name": "Noble Gases",
+      "Group": "Inert",
+      "Synthetic": false
+    },
+    {
+      "Name": "Non-Metallics",
+      "Group": "Crystalline",
+      "Synthetic": false
+    },
+    {
+      "Name": "Post-Trans Metals",
+      "Group": "Metallic",
+      "Synthetic": false
+    },
+    {
+      "Name": "S1. Translanthanic Exotics",
+      "Synthetic": true
+    },
+    {
+      "Name": "S1. Translivermoric Exotics",
+      "Synthetic": true
+    },
+    {
+      "Name": "S1. Transuranic Exotics",
+      "Synthetic": true
+    },
+    {
+      "Name": "S2. Element 126",
+      "Synthetic": true
+    },
+    {
+      "Name": "S2. Element 127",
+      "Synthetic": true
+    },
+    {
+      "Name": "S2. Superactinides",
+      "Synthetic": true
+    },
+    {
+      "Name": "Strong Acidic Inorganics",
+      "Group": "Non-Carbon",
+      "Synthetic": false
+    },
+    {
+      "Name": "Strong Alkali Inorganics",
+      "Group": "Non-Carbon",
+      "Synthetic": false
+    },
+    {
+      "Name": "Strong Alkali Organics",
+      "Group": "Organic",
+      "Synthetic": false
+    },
+    {
+      "Name": "Superheavy Exotics",
+      "Group": "Exotic",
+      "Synthetic": false
+    },
+    {
+      "Name": "Trans-Metals",
+      "Group": "Metallic",
+      "Synthetic": false
+    },
+    {
+      "Name": "Transuranic Volatiles",
+      "Group": "Volatile",
+      "Synthetic": false
+    }
+  ],
+  "TechLevel": [
+    {
+      "Name": "Hi-Tech"
+    },
+    {
+      "Name": "Junker"
+    },
+    {
+      "Name": "MilSpec"
+    },
+    {
+      "Name": "Rugged"
+    },
+    {
+      "Name": "Service"
+    },
+    {
+      "Name": "Standard"
     }
   ]
 }
