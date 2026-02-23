@@ -1,0 +1,222 @@
+{
+  "Shipclass": [
+    {
+      "Id": 0,
+      "Name": "None"
+    },
+    {
+      "Id": 1,
+      "Name": "1"
+    },
+    {
+      "Id": 2,
+      "Name": "2"
+    },
+    {
+      "Id": 3,
+      "Name": "3"
+    },
+    {
+      "Id": 4,
+      "Name": "4"
+    },
+    {
+      "Id": 5,
+      "Name": "5"
+    },
+    {
+      "Id": 6,
+      "Name": "6"
+    },
+    {
+      "Id": 7,
+      "Name": "7"
+    },
+    {
+      "Id": 8,
+      "Name": "8"
+    }
+  ],
+  "BlueprintType": [
+    {
+      "Id": "CargoPod",
+      "Name": "Cargo Pod"
+    },
+    {
+      "Id": "FuelTank",
+      "Name": "Fuel Tank"
+    },
+    {
+      "Id": "GERTYDroneRack",
+      "Name": "GERTY Drone Rack"
+    },
+    {
+      "Id": "Hull",
+      "Name": "Hull"
+    },
+    {
+      "Id": "HullReinforcement",
+      "Name": "HullReinforcement"
+    },
+    {
+      "Id": "HullReinforcement",
+      "Name": "HullReinforcement"
+    },
+    {
+      "Id": "HullSealantInjectionUnit",
+      "Name": "Hull Sealant Injection Unit"
+    },
+    {
+      "Id": "JumpDrive",
+      "Name": "Jump Drive"
+    },
+    {
+      "Id": "MainDrive",
+      "Name": "Main Drive"
+    },
+    {
+      "Id": "NavComp",
+      "Name": "Nav Comp"
+    },
+    {
+      "Id": "Reactor",
+      "Name": "Reactor"
+    },
+    {
+      "Id": "Shield",
+      "Name": "Shield"
+    },
+    {
+      "Id": "SystemObjectScanner",
+      "Name": "System Object Scanner"
+    },
+    {
+      "Id": "Thruster",
+      "Name": "Thruster"
+    },
+    {
+      "Id": "UniversalCoupler",
+      "Name": "Universal Coupler"
+    },
+    {
+      "Id": "Beamer/Small",
+      "Name": "Beamer Small"
+    },
+    {
+      "Id": "Beamer/Medium",
+      "Name": "Beamer Medium"
+    },
+    {
+      "Id": "Beamer/Large",
+      "Name": "Beamer Large"
+    },
+    {
+      "Id": "CoilGun/Small",
+      "Name": "Coil Gun Small"
+    },
+    {
+      "Id": "CoilGun/Medium",
+      "Name": "Coil Gun Medium"
+    },
+    {
+      "Id": "CoilGun/Large",
+      "Name": "Coil Gun Large"
+    },
+    {
+      "Id": "MissileLauncher/Small",
+      "Name": "Missile Launcher Small"
+    },
+    {
+      "Id": "MissileLauncher/Medium",
+      "Name": "Missile Launcher Medium"
+    },
+    {
+      "Id": "MissileLauncherLarge",
+      "Name": "Missile Launcher Large"
+    },
+    {
+      "Id": "Railgun/Small",
+      "Name": "Railgun Small"
+    },
+    {
+      "Id": "Railgun/Medium",
+      "Name": "Railgun Medium"
+    },
+    {
+      "Id": "Railgun/Large",
+      "Name": "Railgun Large"
+    },
+    {
+      "Id": "TorpedoLauncher/Small",
+      "Name": "Torpedo Launcher Small"
+    },
+    {
+      "Id": "TorpedoLauncher/Medium",
+      "Name": "Torpedo Launcher Medium"
+    },
+    {
+      "Id": "TorpedoLauncher/Large",
+      "Name": "Torpedo Launcher Large"
+    },
+    {
+      "Id": "Munitions/CoilgunMunitions",
+      "Name": "Coilgun Munitions"
+    },
+    {
+      "Id": "Munitions/RailgunMunitions",
+      "Name": "Railgun Munitions"
+    },
+    {
+      "Id": "Munitions/MissileMunitions",
+      "Name": "Missile Munitions"
+    },
+    {
+      "Id": "Munitions/TorpedoMunitions",
+      "Name": "Torpedo Munitions"
+    },
+    {
+      "Id": "Flatpacks/ColonyCommandCentre",
+      "Name": "Colony Command Centre Flatpack"
+    },
+    {
+      "Id": "Flatpacks/EntertainmentCentreFlatpack",
+      "Name": "Entertainment Centre Flatpack"
+    },
+    {
+      "Id": "Flatpacks/ColonyCommandCentre",
+      "Name": "Colony Command Centre Flatpack"
+    },
+    {
+      "Id": "Flatpacks/ColonyCommandCentre",
+      "Name": "Colony Command Centre Flatpack"
+    },
+    {
+      "Id": "Flatpacks/ColonyCommandCentre",
+      "Name": "Colony Command Centre Flatpack"
+    },
+    {
+      "Id": "Flatpacks/ColonyCommandCentre",
+      "Name": "Colony Command Centre Flatpack"
+    },
+    {
+      "Id": "Flatpacks/ColonyCommandCentre",
+      "Name": "Colony Command Centre Flatpack"
+    },
+    {
+      "Id": "Flatpacks/ColonyCommandCentre",
+      "Name": "Colony Command Centre Flatpack"
+    },
+    {
+      "Id": "Flatpacks/ColonyCommandCentre",
+      "Name": "Colony Command Centre Flatpack"
+    },
+    {
+      "Id": "Flatpacks/ColonyCommandCentre",
+      "Name": "Colony Command Centre Flatpack"
+    },
+    {
+      "Id": "Flatpacks/ColonyCommandCentre",
+      "Name": "Colony Command Centre Flatpack"
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\projects\\OuterEmpires2\\OE2EmpireTracker\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2154AFDC-2D45-4ACA-B292-79A97A1EC6FE}|OE2EmpireTracker\\OE2EmpireTracker.csproj|d:\\projects\\outerempires2\\oe2empiretracker\\oe2empiretracker\\baselinedata.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{2154AFDC-2D45-4ACA-B292-79A97A1EC6FE}|OE2EmpireTracker\\OE2EmpireTracker.csproj|solutionrelative:oe2empiretracker\\baselinedata.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2154AFDC-2D45-4ACA-B292-79A97A1EC6FE}|OE2EmpireTracker\\OE2EmpireTracker.csproj|d:\\projects\\outerempires2\\oe2empiretracker\\oe2empiretracker\\baseline\\empirecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2154AFDC-2D45-4ACA-B292-79A97A1EC6FE}|OE2EmpireTracker\\OE2EmpireTracker.csproj|solutionrelative:oe2empiretracker\\baseline\\empirecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2154AFDC-2D45-4ACA-B292-79A97A1EC6FE}|OE2EmpireTracker\\OE2EmpireTracker.csproj|d:\\projects\\outerempires2\\oe2empiretracker\\oe2empiretracker\\baseline\\shipclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2154AFDC-2D45-4ACA-B292-79A97A1EC6FE}|OE2EmpireTracker\\OE2EmpireTracker.csproj|solutionrelative:oe2empiretracker\\baseline\\shipclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2154AFDC-2D45-4ACA-B292-79A97A1EC6FE}|OE2EmpireTracker\\OE2EmpireTracker.csproj|d:\\projects\\outerempires2\\oe2empiretracker\\oe2empiretracker\\baseline\\blueprinttype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2154AFDC-2D45-4ACA-B292-79A97A1EC6FE}|OE2EmpireTracker\\OE2EmpireTracker.csproj|solutionrelative:oe2empiretracker\\baseline\\blueprinttype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2154AFDC-2D45-4ACA-B292-79A97A1EC6FE}|OE2EmpireTracker\\OE2EmpireTracker.csproj|d:\\projects\\outerempires2\\oe2empiretracker\\oe2empiretracker\\rawbpdata.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{2154AFDC-2D45-4ACA-B292-79A97A1EC6FE}|OE2EmpireTracker\\OE2EmpireTracker.csproj|solutionrelative:oe2empiretracker\\rawbpdata.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2154AFDC-2D45-4ACA-B292-79A97A1EC6FE}|OE2EmpireTracker\\OE2EmpireTracker.csproj|D:\\projects\\OuterEmpires2\\OE2EmpireTracker\\oe2empiretracker\\formblueprint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{2154AFDC-2D45-4ACA-B292-79A97A1EC6FE}|OE2EmpireTracker\\OE2EmpireTracker.csproj|solutionrelative:oe2empiretracker\\formblueprint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 313,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "BlueprintType.cs",
+              "DocumentMoniker": "D:\\projects\\OuterEmpires2\\OE2EmpireTracker\\OE2EmpireTracker\\Baseline\\BlueprintType.cs",
+              "RelativeDocumentMoniker": "OE2EmpireTracker\\Baseline\\BlueprintType.cs",
+              "ToolTip": "D:\\projects\\OuterEmpires2\\OE2EmpireTracker\\OE2EmpireTracker\\Baseline\\BlueprintType.cs",
+              "RelativeToolTip": "OE2EmpireTracker\\Baseline\\BlueprintType.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAYwC0AAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T15:50:22.658Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "EmpireContext.cs",
+              "DocumentMoniker": "D:\\projects\\OuterEmpires2\\OE2EmpireTracker\\OE2EmpireTracker\\Baseline\\EmpireContext.cs",
+              "RelativeDocumentMoniker": "OE2EmpireTracker\\Baseline\\EmpireContext.cs",
+              "ToolTip": "D:\\projects\\OuterEmpires2\\OE2EmpireTracker\\OE2EmpireTracker\\Baseline\\EmpireContext.cs",
+              "RelativeToolTip": "OE2EmpireTracker\\Baseline\\EmpireContext.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAowDIAAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T15:06:41.423Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ShipClass.cs",
+              "DocumentMoniker": "D:\\projects\\OuterEmpires2\\OE2EmpireTracker\\OE2EmpireTracker\\Baseline\\ShipClass.cs",
+              "RelativeDocumentMoniker": "OE2EmpireTracker\\Baseline\\ShipClass.cs",
+              "ToolTip": "D:\\projects\\OuterEmpires2\\OE2EmpireTracker\\OE2EmpireTracker\\Baseline\\ShipClass.cs",
+              "RelativeToolTip": "OE2EmpireTracker\\Baseline\\ShipClass.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T15:06:16.679Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "BaselineData.json",
+              "DocumentMoniker": "D:\\projects\\OuterEmpires2\\OE2EmpireTracker\\OE2EmpireTracker\\BaselineData.json",
+              "RelativeDocumentMoniker": "OE2EmpireTracker\\BaselineData.json",
+              "ToolTip": "D:\\projects\\OuterEmpires2\\OE2EmpireTracker\\OE2EmpireTracker\\BaselineData.json",
+              "RelativeToolTip": "OE2EmpireTracker\\BaselineData.json",
+              "ViewState": "AgIAAKwAAAAAAAAAAADwv78AAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-02-22T14:56:39.216Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "RawBPData.txt",
+              "DocumentMoniker": "D:\\projects\\OuterEmpires2\\OE2EmpireTracker\\OE2EmpireTracker\\RawBPData.txt",
+              "RelativeDocumentMoniker": "OE2EmpireTracker\\RawBPData.txt",
+              "ToolTip": "D:\\projects\\OuterEmpires2\\OE2EmpireTracker\\OE2EmpireTracker\\RawBPData.txt",
+              "RelativeToolTip": "OE2EmpireTracker\\RawBPData.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2026-02-22T14:56:14.304Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "FormBlueprint.cs [Design]",
+              "DocumentMoniker": "D:\\projects\\OuterEmpires2\\OE2EmpireTracker\\OE2EmpireTracker\\FormBlueprint.cs",
+              "RelativeDocumentMoniker": "OE2EmpireTracker\\FormBlueprint.cs",
+              "ToolTip": "D:\\projects\\OuterEmpires2\\OE2EmpireTracker\\OE2EmpireTracker\\FormBlueprint.cs [Design]",
+              "RelativeToolTip": "OE2EmpireTracker\\FormBlueprint.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T11:01:53.029Z",
+              "EditorCaption": " [Design]"
+            }
+          ]
+        },
+        {
+          "DockedHeight": 87,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
