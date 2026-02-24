@@ -122,6 +122,9 @@
     <Compile Include="Baseline\ResourcePurity.cs" />
     <Compile Include="Baseline\ShipClass.cs" />
     <Compile Include="Baseline\SurveyParser.cs" />
+    <Compile Include="Controls\DataEntryGridView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Data\BaseResource.cs" />
     <Compile Include="Data\Blueprint.cs" />
     <Compile Include="Data\ItemProperty.cs" />
@@ -187,6 +190,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -174,6 +174,32 @@ namespace OE2EmpireTracker
                 flpClass.Visible = true;
                 flpTechLevel.Visible = true;
             }
+
+            if (bt != null && bt.Properties != null)
+            {
+                int row = 0;
+                foreach (string property in bt.Properties) {
+                    int rowIndex = row;
+                    if (dgvStatistics.Rows.Count <= row)
+                    {
+                        rowIndex = dgvStatistics.Rows.Add();
+                    }
+                    DataGridViewRow newRow = dgvStatistics.Rows[rowIndex];
+                    newRow.Cells["Property"].Value = property;
+                    row++;
+                }
+
+                if (bt.Properties.Length == 0)
+                {
+                    dgvStatistics.Rows.Clear();
+                }
+                else
+                while (dgvStatistics.Rows.Count > bt.Properties.Length)
+                {
+                    dgvStatistics.Rows.RemoveAt(dgvStatistics.Rows.Count - 1);
+                }
+            }
         }
+
     }
 }

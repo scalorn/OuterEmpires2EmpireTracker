@@ -13,5 +13,12 @@ namespace OE2EmpireTracker.Baseline
         public string Name { get; set; }
         public List<BlueprintFieldEnum> Fields { get; set; }
         public Boolean Universal { get; set; }
+        public string[] Properties { get; set; }
+        public string[] ResearchableProperties { get; set; }
+
+        public BlueprintType() {
+            Properties = new string[0];
+            ResearchableProperties = new string[0];
+        }
     }
 }

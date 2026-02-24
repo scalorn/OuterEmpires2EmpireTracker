@@ -44,3 +44,16 @@ File swapping design
 
 Faction leader needs a JSON file that can contain multiple members.
 
+
+Credential Borrower
+Local HTTP listener in the application.
+Tampermonkey script to send the credential information over to the tool.
+Then it can use all the APIs to gather data, move things around, etc.
+Might be a step beyond what Paul will find acceptable though.
+
+
+Read-only features
+  Pull all colony data via ROPS.  Flatpacks, what is configured for mining/refining, storage, etc.
+  Pull all station data.
+  Get blueprint data
+  Get survey data

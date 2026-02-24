@@ -68,7 +68,9 @@
     },
     {
       "Id": "JumpDrive",
-      "Name": "Jump Drive"
+      "Name": "Jump Drive",
+      "Properties": [ "ManufactureTime", "Class", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "FuelUsed", "MaxJumpDistance" ],
+      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "FuelUsed", "MaxJumpDistance" ]
     },
     {
       "Id": "MainDrive",
