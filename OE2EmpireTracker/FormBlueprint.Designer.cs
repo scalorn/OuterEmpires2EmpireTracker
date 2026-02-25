@@ -451,6 +451,7 @@ namespace OE2EmpireTracker
             this.dgvStatistics.Name = "dgvStatistics";
             this.dgvStatistics.Size = new System.Drawing.Size(828, 298);
             this.dgvStatistics.TabIndex = 1;
+            this.dgvStatistics.SelectionChanged += new System.EventHandler(this.dgvStatistics_SelectionChanged);
             // 
             // Property
             // 

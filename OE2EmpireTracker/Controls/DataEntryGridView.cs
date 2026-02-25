@@ -1,89 +1,172 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 public class DataEntryGridView : System.Windows.Forms.DataGridView
 {
+    public Control previousControl { get; set; }
+    private bool changingSelection = false;
     public DataEntryGridView()
     {
     }
 
     protected override bool ProcessDialogKey(Keys keyData)
     {
-        Keys key = (keyData & Keys.KeyCode);
+        Debug.Print("ProcessDialogKey Key = " + keyData);
+        Keys key = (keyData & (Keys.KeyCode | Keys.Shift));
 
         if (key == Keys.Tab)
         {
-            int col = this.CurrentCell.ColumnIndex + 1;
-            for (; col < this.Columns.Count; col++)
+            bool handled = handleForward();
+            if (handled)
             {
-                if (!this.Columns[col].ReadOnly)
-                { break; }
+                return true;
             }
-            if (col < this.Columns.Count)
-            {
-                this.CurrentCell =
-                this.Rows[this.CurrentCell.RowIndex].Cells[col];
-            }
-            else
-            {
-                if (this.CurrentCell.RowIndex != this.Rows.Count - 1)
-                {
-                    for (col = 0; col <= this.CurrentCell.ColumnIndex;
-                    col++)
-                    {
-                        if (!this.Columns[col].ReadOnly)
-                        {
-                            break;
-                        }
-                    }
-                    if (col <= this.CurrentCell.ColumnIndex)
-                    {
-                        this.CurrentCell =
-                        this.Rows[this.CurrentCell.RowIndex + 1].Cells[col];
-                    }
-                }
-            }
-            return true;
-
         }
+        if (key == (Keys.Tab | Keys.Shift))
+        {
+            bool handled = handleBackwards();
+            if (handled)
+            {
+                return true;
+            }
+        }
+
         return base.ProcessDialogKey(keyData);
     }
     protected override bool ProcessDataGridViewKey(KeyEventArgs e)
     {
+        Debug.Print("ProcessDataGridViewKey Key = " + e);
         if (e.KeyData == Keys.Tab)
         {
-            int col = this.CurrentCell.ColumnIndex + 1;
-            for (; col < this.Columns.Count; col++)
+            bool handled = handleForward();
+            if (handled)
             {
-                if (!this.Columns[col].ReadOnly)
-                { break; }
+                return true;
             }
-            if (col < this.Columns.Count)
+        }
+        if (e.KeyData == (Keys.Tab | Keys.Shift))
+        {
+            bool handled = handleBackwards();
+            if (handled)
             {
-                this.CurrentCell =
-                this.Rows[this.CurrentCell.RowIndex].Cells[col];
+                return true;
+            }
+        }
+        return base.ProcessDataGridViewKey(e);
+    }
+    protected override void OnSelectionChanged(EventArgs e)
+    {
+        Debug.Print("OnSelectionChanged Event Args " + e + " " + e.ToString());
+
+        if (!changingSelection && this.CurrentCell != null)
+        {
+            int col = this.CurrentCell.ColumnIndex;
+            // We are on a read only cell. move forward.
+            if (col >=0 && col < this.Columns.Count && this.Columns[col].ReadOnly)
+            {
+                bool handled = handleForward();
+            }
+        }
+    }
+
+    private bool handleBackwards()
+    {
+        int col = this.CurrentCell.ColumnIndex - 1;
+        col = findPreviousCell(col);
+        if (col >= 0)
+        {
+            handleEditCell(this.CurrentCell.RowIndex, col);
+            return true;
+        }
+        else
+        {
+            if (this.CurrentCell.RowIndex != 0)
+            {
+                col = findPreviousCell(this.Columns.Count - 1);
+                Debug.Print("Backwards col = " + col);
+                if (col >= 0)
+                {
+                    handleEditCell(this.CurrentCell.RowIndex - 1, col);
+                    return true;
+                }
             }
             else
             {
-                if (this.CurrentCell.RowIndex != this.Rows.Count - 1)
+                Debug.Print("Need to reverse jump control! " + previousControl);
+                if (previousControl != null)
                 {
-                    for (col = 0; col <= this.CurrentCell.ColumnIndex;
-                    col++)
-                    {
-                        if (!this.Columns[col].ReadOnly)
-                        {
-                            break;
-                        }
-                    }
-                    if (col <= this.CurrentCell.ColumnIndex)
-                    {
-                        this.CurrentCell =
-                        this.Rows[this.CurrentCell.RowIndex + 1].Cells[col];
-                    }
+                    this.previousControl.Focus();
+                    // This does not work.
+                    //this.SelectNextControl(this, false, true, true, true);
+                    return true;
                 }
             }
+        }
+        return false;
+    }
+
+    private bool handleForward()
+    {
+        int col = this.CurrentCell.ColumnIndex + 1;
+        col = findNextCell(col);
+        if (col < this.Columns.Count)
+        {
+            handleEditCell(this.CurrentCell.RowIndex, col);
             return true;
         }
-        return base.ProcessDataGridViewKey(e);
+        else
+        {
+            if (this.CurrentCell.RowIndex != this.Rows.Count - 1)
+            {
+                col = findNextCell(0);
+                if (col <= this.CurrentCell.ColumnIndex)
+                {
+                    handleEditCell(this.CurrentCell.RowIndex + 1, col);
+                    return true;
+                }
+            } else
+            {
+                // This doesn't work.
+                //this.SelectNextControl(this, true, true, true, true);
+                //return true;
+            }
+        }
+        return false;
+    }
+
+    private int findPreviousCell(int col)
+    {
+        for (; col >= 0;
+        col--)
+        {
+            if (!this.Columns[col].ReadOnly)
+            {
+                break;
+            }
+        }
+        return col;
+    }
+
+    private int findNextCell(int col)
+    {
+        for (; col < this.Columns.Count;
+        col++)
+        {
+            if (!this.Columns[col].ReadOnly)
+            {
+                break;
+            }
+        }
+        return col;
+    }
+
+    private void handleEditCell(int rowIndex, int col)
+    {
+        changingSelection = true;
+        this.CurrentCell =
+        this.Rows[rowIndex].Cells[col];
+        this.BeginEdit(true);
+        changingSelection = false;
     }
 }

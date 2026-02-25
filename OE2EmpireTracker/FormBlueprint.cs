@@ -35,6 +35,8 @@ namespace OE2EmpireTracker
             cmbTechLevel.ValueMember = "Name";
             cmbTechLevel.DataSource = empireContext.bindingSourceTechLevel;
             cmbTechLevel.SelectedIndex = -1;
+
+            dgvStatistics.previousControl = tabDetailedData;
         }
 
         private void rtbCopyTarget_TextChanged(object sender, EventArgs e)
@@ -160,8 +162,7 @@ namespace OE2EmpireTracker
 
         private void cmbBlueprintType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Debug.Print("Sender = " + sender);
-            Debug.Print("Event Args " + e);
+            Debug.Print("cmbBlueprintType_SelectedIndexChanged Sender = " + sender + " Event Args " + e);
             BlueprintType bt = cmbBlueprintType.SelectedItem as BlueprintType;
             if (bt != null && bt.Universal == true)
             {
@@ -201,5 +202,9 @@ namespace OE2EmpireTracker
             }
         }
 
+        private void dgvStatistics_SelectionChanged(object sender, EventArgs e)
+        {
+            Debug.Print("dgvStatistics_SelectionChanged Sender = " + sender + " Event Args " + e);
+        }
     }
 }
