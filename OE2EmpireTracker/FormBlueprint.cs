@@ -16,10 +16,11 @@ namespace OE2EmpireTracker
 {
     public partial class FormBlueprint : Form
     {
+        private EmpireContext empireContext;
         public FormBlueprint()
         {
             InitializeComponent();
-            EmpireContext empireContext = new EmpireContext();
+            empireContext = new EmpireContext();
 
             cmbBlueprintType.DisplayMember = "Name";
             cmbBlueprintType.ValueMember = "Id";
@@ -37,6 +38,11 @@ namespace OE2EmpireTracker
             cmbTechLevel.SelectedIndex = -1;
 
             dgvStatistics.previousControl = tabDetailedData;
+
+            cmbEvolution.DisplayMember = "Name";
+            cmbEvolution.ValueMember = "Name";
+            cmbEvolution.DataSource = empireContext.bindingSourceEvolution;
+            cmbEvolution.SelectedIndex = 0;
         }
 
         private void rtbCopyTarget_TextChanged(object sender, EventArgs e)
@@ -205,6 +211,31 @@ namespace OE2EmpireTracker
         private void dgvStatistics_SelectionChanged(object sender, EventArgs e)
         {
             Debug.Print("dgvStatistics_SelectionChanged Sender = " + sender + " Event Args " + e);
+        }
+
+        private void txtFilterBlueprintType_TextChanged(object sender, EventArgs e)
+        {
+            string searchText = txtFilterBlueprintType.Text;
+            BindingSource filteredItemsBindingList = empireContext.bindingSourceBlueprintType;
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                BindingList<BlueprintType> blueprintTypes = empireContext.blueprintTypeList;
+                var filteredList = blueprintTypes
+                    .Where(item => item.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+                filteredItemsBindingList = new BindingSource();
+                // Set the in-memory list as the DataSource for the BindingSource
+                filteredItemsBindingList.DataSource = filteredList;
+            }
+
+            cmbBlueprintType.DataSource = filteredItemsBindingList;
+            cmbBlueprintType.DroppedDown = true;
+        }
+
+        private void txtFilterBlueprintType_Enter(object sender, EventArgs e)
+        {
+            cmbBlueprintType.DroppedDown = true;
         }
     }
 }

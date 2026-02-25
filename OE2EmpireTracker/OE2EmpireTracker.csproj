@@ -125,6 +125,9 @@
     <Compile Include="Controls\DataEntryGridView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\FilteredComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Data\BaseResource.cs" />
     <Compile Include="Data\Blueprint.cs" />
     <Compile Include="Data\ItemProperty.cs" />

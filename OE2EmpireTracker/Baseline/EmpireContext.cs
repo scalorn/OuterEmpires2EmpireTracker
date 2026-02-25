@@ -31,6 +31,8 @@ namespace OE2EmpireTracker.Baseline
         public BindingSource bindingSourceShipClass;
         public BindingList<TechLevel> techLevelList;
         public BindingSource bindingSourceTechLevel;
+        public BindingList<string> evolutionList;
+        public BindingSource bindingSourceEvolution;
 
         public EmpireContext() : base()
         {
@@ -46,6 +48,7 @@ namespace OE2EmpireTracker.Baseline
             initBlueprintTypes(baselineRoot);
             initShipClasses(baselineRoot);
             initTechLevels(baselineRoot);
+            initEvolutions(baselineRoot);
         }
         public void initBlueprintTypes(BaselineRoot baselineRoot)
         {
@@ -76,6 +79,21 @@ namespace OE2EmpireTracker.Baseline
             // Set the in-memory list as the DataSource for the BindingSource
             bindingSourceTechLevel.DataSource = techLevelList;
         }
+
+        public void initEvolutions(BaselineRoot baselineRoot)
+        {
+            List<string> list = new List<string>();
+            for(int evo = 0; evo <= 15; evo++)
+            {
+                list.Add(evo.ToString());
+            }
+            evolutionList = new BindingList<string>(list);
+            // Initialize the BindingSource component
+            bindingSourceEvolution = new BindingSource();
+            // Set the in-memory list as the DataSource for the BindingSource
+            bindingSourceEvolution.DataSource = evolutionList;
+        }
+
     }
     public class BaselineRoot
     {

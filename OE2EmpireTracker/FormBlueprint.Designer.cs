@@ -32,7 +32,6 @@ namespace OE2EmpireTracker
         private void InitializeComponent()
         {
             this.lblBlueprintType = new System.Windows.Forms.Label();
-            this.cmbBlueprintType = new System.Windows.Forms.ComboBox();
             this.flpBlueprintType = new System.Windows.Forms.FlowLayoutPanel();
             this.flpTechLevel = new System.Windows.Forms.FlowLayoutPanel();
             this.lblTechLevel = new System.Windows.Forms.Label();
@@ -46,7 +45,6 @@ namespace OE2EmpireTracker
             this.cmbEvolution = new System.Windows.Forms.ComboBox();
             this.flpBaseBlueprint = new System.Windows.Forms.FlowLayoutPanel();
             this.lblBaseBlueprint = new System.Windows.Forms.Label();
-            this.cmbBaseBlueprint = new System.Windows.Forms.ComboBox();
             this.flpName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblName = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
@@ -68,6 +66,13 @@ namespace OE2EmpireTracker
             this.Property = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BaseValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CurrentValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.txtFilterBlueprintType = new System.Windows.Forms.TextBox();
+            this.cmbBlueprintType = new System.Windows.Forms.ComboBox();
+            this.txtFilterBaseBlueprint = new System.Windows.Forms.TextBox();
+            this.cmbBaseBlueprint = new System.Windows.Forms.ComboBox();
+            this.flpNickName = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblNickName = new System.Windows.Forms.Label();
+            this.txtNickName = new System.Windows.Forms.TextBox();
             this.flpBlueprintType.SuspendLayout();
             this.flpTechLevel.SuspendLayout();
             this.flpBaseDetails.SuspendLayout();
@@ -83,6 +88,7 @@ namespace OE2EmpireTracker
             ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).BeginInit();
             this.flpBase.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).BeginInit();
+            this.flpNickName.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblBlueprintType
@@ -96,28 +102,16 @@ namespace OE2EmpireTracker
             this.lblBlueprintType.Text = "Blueprint Type";
             this.lblBlueprintType.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // cmbBlueprintType
-            // 
-            this.cmbBlueprintType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cmbBlueprintType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cmbBlueprintType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbBlueprintType.FormattingEnabled = true;
-            this.cmbBlueprintType.Location = new System.Drawing.Point(106, 2);
-            this.cmbBlueprintType.Margin = new System.Windows.Forms.Padding(2);
-            this.cmbBlueprintType.Name = "cmbBlueprintType";
-            this.cmbBlueprintType.Size = new System.Drawing.Size(201, 21);
-            this.cmbBlueprintType.TabIndex = 1;
-            this.cmbBlueprintType.SelectedIndexChanged += new System.EventHandler(this.cmbBlueprintType_SelectedIndexChanged);
-            // 
             // flpBlueprintType
             // 
             this.flpBlueprintType.AutoSize = true;
             this.flpBlueprintType.Controls.Add(this.lblBlueprintType);
+            this.flpBlueprintType.Controls.Add(this.txtFilterBlueprintType);
             this.flpBlueprintType.Controls.Add(this.cmbBlueprintType);
             this.flpBlueprintType.Location = new System.Drawing.Point(2, 2);
             this.flpBlueprintType.Margin = new System.Windows.Forms.Padding(2);
             this.flpBlueprintType.Name = "flpBlueprintType";
-            this.flpBlueprintType.Size = new System.Drawing.Size(309, 25);
+            this.flpBlueprintType.Size = new System.Drawing.Size(415, 26);
             this.flpBlueprintType.TabIndex = 0;
             // 
             // flpTechLevel
@@ -125,7 +119,7 @@ namespace OE2EmpireTracker
             this.flpTechLevel.AutoSize = true;
             this.flpTechLevel.Controls.Add(this.lblTechLevel);
             this.flpTechLevel.Controls.Add(this.cmbTechLevel);
-            this.flpTechLevel.Location = new System.Drawing.Point(2, 60);
+            this.flpTechLevel.Location = new System.Drawing.Point(2, 61);
             this.flpTechLevel.Margin = new System.Windows.Forms.Padding(2);
             this.flpTechLevel.Name = "flpTechLevel";
             this.flpTechLevel.Size = new System.Drawing.Size(309, 25);
@@ -163,12 +157,13 @@ namespace OE2EmpireTracker
             this.flpBaseDetails.Controls.Add(this.flpEvolution);
             this.flpBaseDetails.Controls.Add(this.flpBaseBlueprint);
             this.flpBaseDetails.Controls.Add(this.flpName);
+            this.flpBaseDetails.Controls.Add(this.flpNickName);
             this.flpBaseDetails.Controls.Add(this.flpDescription);
             this.flpBaseDetails.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpBaseDetails.Location = new System.Drawing.Point(2, 2);
             this.flpBaseDetails.Margin = new System.Windows.Forms.Padding(2);
             this.flpBaseDetails.Name = "flpBaseDetails";
-            this.flpBaseDetails.Size = new System.Drawing.Size(313, 201);
+            this.flpBaseDetails.Size = new System.Drawing.Size(419, 231);
             this.flpBaseDetails.TabIndex = 6;
             // 
             // flpClass
@@ -176,7 +171,7 @@ namespace OE2EmpireTracker
             this.flpClass.AutoSize = true;
             this.flpClass.Controls.Add(this.lblShipClass);
             this.flpClass.Controls.Add(this.cmbShipClass);
-            this.flpClass.Location = new System.Drawing.Point(2, 31);
+            this.flpClass.Location = new System.Drawing.Point(2, 32);
             this.flpClass.Margin = new System.Windows.Forms.Padding(2);
             this.flpClass.Name = "flpClass";
             this.flpClass.Size = new System.Drawing.Size(309, 25);
@@ -210,7 +205,7 @@ namespace OE2EmpireTracker
             this.flpEvolution.AutoSize = true;
             this.flpEvolution.Controls.Add(this.lblEvolution);
             this.flpEvolution.Controls.Add(this.cmbEvolution);
-            this.flpEvolution.Location = new System.Drawing.Point(2, 89);
+            this.flpEvolution.Location = new System.Drawing.Point(2, 90);
             this.flpEvolution.Margin = new System.Windows.Forms.Padding(2);
             this.flpEvolution.Name = "flpEvolution";
             this.flpEvolution.Size = new System.Drawing.Size(309, 25);
@@ -240,11 +235,12 @@ namespace OE2EmpireTracker
             // 
             this.flpBaseBlueprint.AutoSize = true;
             this.flpBaseBlueprint.Controls.Add(this.lblBaseBlueprint);
+            this.flpBaseBlueprint.Controls.Add(this.txtFilterBaseBlueprint);
             this.flpBaseBlueprint.Controls.Add(this.cmbBaseBlueprint);
-            this.flpBaseBlueprint.Location = new System.Drawing.Point(2, 118);
+            this.flpBaseBlueprint.Location = new System.Drawing.Point(2, 119);
             this.flpBaseBlueprint.Margin = new System.Windows.Forms.Padding(2);
             this.flpBaseBlueprint.Name = "flpBaseBlueprint";
-            this.flpBaseBlueprint.Size = new System.Drawing.Size(309, 25);
+            this.flpBaseBlueprint.Size = new System.Drawing.Size(415, 26);
             this.flpBaseBlueprint.TabIndex = 4;
             // 
             // lblBaseBlueprint
@@ -258,21 +254,12 @@ namespace OE2EmpireTracker
             this.lblBaseBlueprint.Text = "Base Blueprint";
             this.lblBaseBlueprint.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // cmbBaseBlueprint
-            // 
-            this.cmbBaseBlueprint.FormattingEnabled = true;
-            this.cmbBaseBlueprint.Location = new System.Drawing.Point(106, 2);
-            this.cmbBaseBlueprint.Margin = new System.Windows.Forms.Padding(2);
-            this.cmbBaseBlueprint.Name = "cmbBaseBlueprint";
-            this.cmbBaseBlueprint.Size = new System.Drawing.Size(201, 21);
-            this.cmbBaseBlueprint.TabIndex = 5;
-            // 
             // flpName
             // 
             this.flpName.AutoSize = true;
             this.flpName.Controls.Add(this.lblName);
             this.flpName.Controls.Add(this.txtName);
-            this.flpName.Location = new System.Drawing.Point(2, 147);
+            this.flpName.Location = new System.Drawing.Point(2, 149);
             this.flpName.Margin = new System.Windows.Forms.Padding(2);
             this.flpName.Name = "flpName";
             this.flpName.Size = new System.Drawing.Size(309, 24);
@@ -303,11 +290,11 @@ namespace OE2EmpireTracker
             this.flpDescription.AutoSize = true;
             this.flpDescription.Controls.Add(this.lblDescription);
             this.flpDescription.Controls.Add(this.txtDescription);
-            this.flpDescription.Location = new System.Drawing.Point(2, 175);
+            this.flpDescription.Location = new System.Drawing.Point(2, 205);
             this.flpDescription.Margin = new System.Windows.Forms.Padding(2);
             this.flpDescription.Name = "flpDescription";
-            this.flpDescription.Size = new System.Drawing.Size(309, 24);
-            this.flpDescription.TabIndex = 6;
+            this.flpDescription.Size = new System.Drawing.Size(415, 24);
+            this.flpDescription.TabIndex = 7;
             // 
             // lblDescription
             // 
@@ -335,11 +322,11 @@ namespace OE2EmpireTracker
             this.flpCommands.Controls.Add(this.chkGlobalBlueprint);
             this.flpCommands.Controls.Add(this.btnSave);
             this.flpCommands.Controls.Add(this.btnCancel);
-            this.flpCommands.Location = new System.Drawing.Point(2, 540);
+            this.flpCommands.Location = new System.Drawing.Point(2, 570);
             this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
             this.flpCommands.Name = "flpCommands";
             this.flpCommands.Size = new System.Drawing.Size(834, 29);
-            this.flpCommands.TabIndex = 8;
+            this.flpCommands.TabIndex = 9;
             // 
             // chkGlobalBlueprint
             // 
@@ -374,12 +361,12 @@ namespace OE2EmpireTracker
             // 
             this.tabDetailedData.Controls.Add(this.tabPStatistics);
             this.tabDetailedData.Controls.Add(this.tabPResources);
-            this.tabDetailedData.Location = new System.Drawing.Point(2, 207);
+            this.tabDetailedData.Location = new System.Drawing.Point(2, 237);
             this.tabDetailedData.Margin = new System.Windows.Forms.Padding(2);
             this.tabDetailedData.Name = "tabDetailedData";
             this.tabDetailedData.SelectedIndex = 0;
             this.tabDetailedData.Size = new System.Drawing.Size(834, 329);
-            this.tabDetailedData.TabIndex = 7;
+            this.tabDetailedData.TabIndex = 8;
             // 
             // tabPStatistics
             // 
@@ -435,7 +422,7 @@ namespace OE2EmpireTracker
             this.flpBase.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpBase.Location = new System.Drawing.Point(0, 0);
             this.flpBase.Name = "flpBase";
-            this.flpBase.Size = new System.Drawing.Size(844, 579);
+            this.flpBase.Size = new System.Drawing.Size(844, 601);
             this.flpBase.TabIndex = 9;
             // 
             // dgvStatistics
@@ -449,6 +436,7 @@ namespace OE2EmpireTracker
             this.CurrentValue});
             this.dgvStatistics.Location = new System.Drawing.Point(-2, 0);
             this.dgvStatistics.Name = "dgvStatistics";
+            this.dgvStatistics.previousControl = null;
             this.dgvStatistics.Size = new System.Drawing.Size(828, 298);
             this.dgvStatistics.TabIndex = 1;
             this.dgvStatistics.SelectionChanged += new System.EventHandler(this.dgvStatistics_SelectionChanged);
@@ -473,6 +461,78 @@ namespace OE2EmpireTracker
             this.CurrentValue.Name = "CurrentValue";
             this.CurrentValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
+            // txtFilterBlueprintType
+            // 
+            this.txtFilterBlueprintType.Location = new System.Drawing.Point(107, 3);
+            this.txtFilterBlueprintType.Name = "txtFilterBlueprintType";
+            this.txtFilterBlueprintType.Size = new System.Drawing.Size(100, 20);
+            this.txtFilterBlueprintType.TabIndex = 0;
+            this.txtFilterBlueprintType.TextChanged += new System.EventHandler(this.txtFilterBlueprintType_TextChanged);
+            this.txtFilterBlueprintType.Enter += new System.EventHandler(this.txtFilterBlueprintType_Enter);
+            // 
+            // cmbBlueprintType
+            // 
+            this.cmbBlueprintType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cmbBlueprintType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cmbBlueprintType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbBlueprintType.FormattingEnabled = true;
+            this.cmbBlueprintType.Location = new System.Drawing.Point(212, 2);
+            this.cmbBlueprintType.Margin = new System.Windows.Forms.Padding(2);
+            this.cmbBlueprintType.Name = "cmbBlueprintType";
+            this.cmbBlueprintType.Size = new System.Drawing.Size(201, 21);
+            this.cmbBlueprintType.TabIndex = 3;
+            this.cmbBlueprintType.SelectedIndexChanged += new System.EventHandler(this.cmbBlueprintType_SelectedIndexChanged);
+            // 
+            // txtFilterBaseBlueprint
+            // 
+            this.txtFilterBaseBlueprint.Location = new System.Drawing.Point(107, 3);
+            this.txtFilterBaseBlueprint.Name = "txtFilterBaseBlueprint";
+            this.txtFilterBaseBlueprint.Size = new System.Drawing.Size(100, 20);
+            this.txtFilterBaseBlueprint.TabIndex = 0;
+            // 
+            // cmbBaseBlueprint
+            // 
+            this.cmbBaseBlueprint.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cmbBaseBlueprint.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cmbBaseBlueprint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbBaseBlueprint.FormattingEnabled = true;
+            this.cmbBaseBlueprint.Location = new System.Drawing.Point(212, 2);
+            this.cmbBaseBlueprint.Margin = new System.Windows.Forms.Padding(2);
+            this.cmbBaseBlueprint.Name = "cmbBaseBlueprint";
+            this.cmbBaseBlueprint.Size = new System.Drawing.Size(201, 21);
+            this.cmbBaseBlueprint.TabIndex = 1;
+            // 
+            // flpNickName
+            // 
+            this.flpNickName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpNickName.AutoSize = true;
+            this.flpNickName.Controls.Add(this.lblNickName);
+            this.flpNickName.Controls.Add(this.txtNickName);
+            this.flpNickName.Location = new System.Drawing.Point(2, 177);
+            this.flpNickName.Margin = new System.Windows.Forms.Padding(2);
+            this.flpNickName.Name = "flpNickName";
+            this.flpNickName.Size = new System.Drawing.Size(415, 24);
+            this.flpNickName.TabIndex = 6;
+            // 
+            // lblNickName
+            // 
+            this.lblNickName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblNickName.Location = new System.Drawing.Point(2, 3);
+            this.lblNickName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblNickName.Name = "lblNickName";
+            this.lblNickName.Size = new System.Drawing.Size(100, 17);
+            this.lblNickName.TabIndex = 2;
+            this.lblNickName.Text = "Nick Name";
+            this.lblNickName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtNickName
+            // 
+            this.txtNickName.Location = new System.Drawing.Point(106, 2);
+            this.txtNickName.Margin = new System.Windows.Forms.Padding(2);
+            this.txtNickName.Name = "txtNickName";
+            this.txtNickName.Size = new System.Drawing.Size(201, 20);
+            this.txtNickName.TabIndex = 7;
+            // 
             // FormBlueprint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -483,12 +543,14 @@ namespace OE2EmpireTracker
             this.Name = "FormBlueprint";
             this.Text = "Blueprint";
             this.flpBlueprintType.ResumeLayout(false);
+            this.flpBlueprintType.PerformLayout();
             this.flpTechLevel.ResumeLayout(false);
             this.flpBaseDetails.ResumeLayout(false);
             this.flpBaseDetails.PerformLayout();
             this.flpClass.ResumeLayout(false);
             this.flpEvolution.ResumeLayout(false);
             this.flpBaseBlueprint.ResumeLayout(false);
+            this.flpBaseBlueprint.PerformLayout();
             this.flpName.ResumeLayout(false);
             this.flpName.PerformLayout();
             this.flpDescription.ResumeLayout(false);
@@ -502,6 +564,8 @@ namespace OE2EmpireTracker
             this.flpBase.ResumeLayout(false);
             this.flpBase.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).EndInit();
+            this.flpNickName.ResumeLayout(false);
+            this.flpNickName.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -509,7 +573,6 @@ namespace OE2EmpireTracker
 
         #endregion
         private System.Windows.Forms.Label lblBlueprintType;
-        private System.Windows.Forms.ComboBox cmbBlueprintType;
         private System.Windows.Forms.FlowLayoutPanel flpBlueprintType;
         private System.Windows.Forms.FlowLayoutPanel flpTechLevel;
         private System.Windows.Forms.Label lblTechLevel;
@@ -528,7 +591,6 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.TabPage tabPResources;
         private System.Windows.Forms.FlowLayoutPanel flpBaseBlueprint;
         private System.Windows.Forms.Label lblBaseBlueprint;
-        private System.Windows.Forms.ComboBox cmbBaseBlueprint;
         private System.Windows.Forms.ComboBox cmbEvolution;
         private System.Windows.Forms.FlowLayoutPanel flpClass;
         private System.Windows.Forms.Label lblShipClass;
@@ -545,5 +607,12 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.DataGridViewTextBoxColumn Property;
         private System.Windows.Forms.DataGridViewTextBoxColumn BaseValue;
         private System.Windows.Forms.DataGridViewTextBoxColumn CurrentValue;
+        private System.Windows.Forms.TextBox txtFilterBlueprintType;
+        private System.Windows.Forms.ComboBox cmbBlueprintType;
+        private System.Windows.Forms.TextBox txtFilterBaseBlueprint;
+        private System.Windows.Forms.ComboBox cmbBaseBlueprint;
+        private System.Windows.Forms.FlowLayoutPanel flpNickName;
+        private System.Windows.Forms.Label lblNickName;
+        private System.Windows.Forms.TextBox txtNickName;
     }
 }
