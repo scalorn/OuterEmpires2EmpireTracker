@@ -79,6 +79,7 @@ namespace OE2EmpireTracker
             this.Property = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BaseValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CurrentValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cmdDelete = new System.Windows.Forms.Button();
             this.flpBlueprintType.SuspendLayout();
             this.flpTechLevel.SuspendLayout();
             this.flpBaseDetails.SuspendLayout();
@@ -403,6 +404,7 @@ namespace OE2EmpireTracker
             this.flpCommands.AutoSize = true;
             this.flpCommands.Controls.Add(this.chkGlobalBlueprint);
             this.flpCommands.Controls.Add(this.btnSave);
+            this.flpCommands.Controls.Add(this.cmdDelete);
             this.flpCommands.Controls.Add(this.btnCancel);
             this.flpCommands.Location = new System.Drawing.Point(2, 570);
             this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
@@ -433,7 +435,7 @@ namespace OE2EmpireTracker
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(190, 3);
+            this.btnCancel.Location = new System.Drawing.Point(271, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 10;
@@ -606,6 +608,16 @@ namespace OE2EmpireTracker
             this.CurrentValue.Name = "CurrentValue";
             this.CurrentValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
+            // cmdDelete
+            // 
+            this.cmdDelete.Location = new System.Drawing.Point(190, 3);
+            this.cmdDelete.Name = "cmdDelete";
+            this.cmdDelete.Size = new System.Drawing.Size(75, 23);
+            this.cmdDelete.TabIndex = 11;
+            this.cmdDelete.Text = "Delete";
+            this.cmdDelete.UseVisualStyleBackColor = true;
+            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
+            // 
             // FormBlueprint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -698,5 +710,6 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.Label lblBlueprintListFilter;
         private System.Windows.Forms.TextBox txtBlueprintListFilter;
         private System.Windows.Forms.ListView lvwBlueprints;
+        private System.Windows.Forms.Button cmdDelete;
     }
 }

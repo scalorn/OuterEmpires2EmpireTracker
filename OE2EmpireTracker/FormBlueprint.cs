@@ -346,9 +346,24 @@ namespace OE2EmpireTracker
                 return;
             }
             lvwBlueprints.Items.Clear();
+
+            Dictionary<string, ListViewItem> viewableBlueprints = new Dictionary<string, ListViewItem>();
+
+            // First index what is viewable.
+            foreach (ListViewItem item in lvwBlueprints.Items)
+            {
+                viewableBlueprints[(item.Tag as Blueprint).UUID] = item;
+            }
+
+            // Now add or update what is viewable.
             foreach (Blueprint blueprint in blueprints)
             {
-                ListViewItem item = new ListViewItem(blueprint.UUID); // Main item text (first column)
+                ListViewItem item;
+                bool found = viewableBlueprints.TryGetValue(blueprint.UUID, out item);
+                if (!found)
+                {
+                    item = new ListViewItem(blueprint.UUID); // Main item text (first column)
+                }
                 item.Tag = blueprint;
                 item.SubItems[0].Tag = blueprint;
                 item.SubItems.Add(blueprint.BluePrintType); // Subitem for the second column
@@ -356,7 +371,20 @@ namespace OE2EmpireTracker
                 item.SubItems.Add(blueprint.TechLevel); // Subitem for the third column
                 item.SubItems.Add("" + blueprint.Evolution); // Subitem for the third column
                 item.SubItems.Add(blueprint.NickName); // Subitem for the third column
-                lvwBlueprints.Items.Add(item); // Add the item to the ListView
+
+                if (!found)
+                {
+                    lvwBlueprints.Items.Add(item); // Add the item to the ListView
+                } else
+                {
+                    viewableBlueprints.Remove(blueprint.UUID);
+                }
+            }
+
+            // Remove what is left over (deleted or filtered out)
+            foreach (KeyValuePair<string, ListViewItem> viewableBlueprint in viewableBlueprints)
+            {
+                lvwBlueprints.Items.Remove(viewableBlueprint.Value);
             }
         }
 
@@ -492,9 +520,45 @@ namespace OE2EmpireTracker
 
         }
 
+        private void clearForm()
+        {
+            selectedBlueprint = null;
+            txtFilterBlueprintType.Text = "";
+            updateBlueprintTypeList();
+            cmbBlueprintType.SelectedItem = null;
+            cmbShipClass.SelectedItem = null;
+            cmbTechLevel.SelectedItem = null;
+            cmbEvolution.SelectedItem = null;
+
+            txtFilterBaseBlueprint.Text = "";
+            updateBaseBlueprintList();
+            cmbBaseBlueprint.SelectedItem = null;
+
+            txtName.Text = "";
+            txtNickName.Text = "";
+            txtDescription.Text = "";
+
+            dgvStatistics.Rows.Clear();
+            dgvResources.Rows.Clear();
+        }
+
         private void flpSearchList_SizeChanged(object sender, EventArgs e)
         {
             //lvwBlueprints.Height = flpSearchList.Height - flpBlueprintSearch.Height;
+        }
+
+        private void cmdDelete_Click(object sender, EventArgs e)
+        {
+            if (selectedBlueprint != null)
+            {
+                playerContext.blueprintList.Remove(selectedBlueprint);
+                selectedBlueprint = null;
+                playerContext.writeContext();
+                populateListView(new List<Blueprint>(playerContext.blueprintList));
+                lvwBlueprints.SelectedItems.Clear();
+
+                clearForm();
+            }
         }
     }
 }

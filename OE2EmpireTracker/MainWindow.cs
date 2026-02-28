@@ -1,4 +1,5 @@
 ﻿using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Forms.Colony;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,6 +31,13 @@ namespace OE2EmpireTracker
             Form blueprint = new FormBlueprint();
             blueprint.MdiParent = this;
             blueprint.Show();
+        }
+
+        private void addColonyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form colony = new FormColony();
+            colony.MdiParent = this;
+            colony.Show();
         }
     }
 }

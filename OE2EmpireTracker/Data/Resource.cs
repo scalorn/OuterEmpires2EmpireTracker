@@ -45,7 +45,7 @@ namespace OE2EmpireTracker.Data
         }
 
 
-        public Resource(BaseResource baseResource, BaseResource.PurityEnum purity, int quantity) : base(ItemTypeEnum.Resource, "", quantity)
+        public Resource(BaseResource baseResource, BaseResource.PurityEnum purity /*, int quantity*/) : base(ItemTypeEnum.Resource, "" /*, quantity */)
         {
             this.Purity = purity;
             this.BaseResource = BaseResource;

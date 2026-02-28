@@ -41,50 +41,50 @@
     {
       "Id": "CargoPod",
       "Name": "Cargo Pod",
-      "Properties": [ "ManufactureTime", "Class", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "Health", "EngCapacityRequired", "CargoCapacity", "WearAndTearRate", "MaximumDamageRepairRate"],
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "Health", "EngCapacityRequired", "CargoCapacity", "WearAndTearRate", "MaximumDamageRepairRate"],
       "ResearchableProperties": [ "Mass", "CargoVolumeSize", "Health", "EngCapacityRequired", "CargoCapacity", "WearAndTearRate", "MaximumDamageRepairRate" ]
     },
     {
       "Id": "FuelTank",
       "Name": "Fuel Tank",
-      "Properties": [ "ManufactureTime", "Class", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerRequired", "EngCapacityRequired", "Consumable", "MaximumDamageRepairRate", "HPPercentRestored" ],
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerRequired", "EngCapacityRequired", "Consumable", "MaximumDamageRepairRate", "HPPercentRestored" ],
       "ResearchableProperties": [ "Mass", "CargoVolumeSize", "PowerRequired", "EngCapacityRequired", "MaximumDamageRepairRate", "HPPercentRestored" ]
     },
     {
       "Id": "GERTYDroneRack",
       "Name": "GERTY Drone Rack",
-      "Properties": [ "ManufactureTime", "Class", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "Health", "EngCapacityRequired", "FuelCapacity", "WearAndTearRate", "MaximumDamageRepairRate" ],
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "Health", "EngCapacityRequired", "FuelCapacity", "WearAndTearRate", "MaximumDamageRepairRate" ],
       "ResearchableProperties": [ "Mass", "CargoVolumeSize", "Health", "EngCapacityRequired", "FuelCapacity", "WearAndTearRate", "MaximumDamageRepairRate" ]
     },
     {
       "Id": "Hull",
       "Name": "Hull",
-      "Properties": [ "ManufactureTime", "Class", "Mass", "CargoVolumeSize", "Health", "EngCapacityRequired", "CargoCapacity", "FuelCapacity", "LargeWeaponMounts", "MediumWeaponMounts", "SmallWeaponMounts", "WearAndTearRate", "MaximumDamageRepairRate", "EnergyDefence", "KineticDamageDefence", "MissileDamageDefence", "CrewSupported" ],
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "Health", "EngCapacityRequired", "CargoCapacity", "FuelCapacity", "LargeWeaponMounts", "MediumWeaponMounts", "SmallWeaponMounts", "WearAndTearRate", "MaximumDamageRepairRate", "EnergyDefence", "KineticDamageDefence", "MissileDamageDefence", "CrewSupported" ],
       "ResearchableProperties": [ "Mass", "CargoVolumeSize", "Health", "EngCapacityRequired", "CargoCapacity", "FuelCapacity", "WearAndTearRate", "MaximumDamageRepairRate", "EnergyDefence", "KineticDamageDefence", "MissileDamageDefence" ]
     },
     {
       "Id": "HullReinforcement",
       "Name": "HullReinforcement",
-      "Properties": [ "ManufactureTime", "Class", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "IncreasedHullHPPercent" ],
-      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "IncreasedHullHPPercent" ]
-    },
-    {
-      "Id": "HullReinforcement",
-      "Name": "HullReinforcement"
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate" ],
+      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "Health", "EngCapacityRequired", "CargoCapacity", "WearAndTearRate", "MaximumDamageRepairRate" ]
     },
     {
       "Id": "HullSealantInjectionUnit",
-      "Name": "Hull Sealant Injection Unit"
+      "Name": "Hull Sealant Injection Unit",
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerRequired", "EngCapacityRequired", "Consumable", "MaximumDamageRepairRate", "HullHPPercentRestored", "CooldownTime" ],
+      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "PowerRequired", "EngCapacityRequired", "MaximumDamageRepairRate", "HullHPPercentRestored", "CooldownTime" ]
     },
     {
       "Id": "JumpDrive",
       "Name": "Jump Drive",
-      "Properties": [ "ManufactureTime", "Class", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "FuelUsed", "MaxJumpDistance" ],
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "FuelUsed", "MaxJumpDistance" ],
       "ResearchableProperties": [ "Mass", "CargoVolumeSize", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "FuelUsed", "MaxJumpDistance" ]
     },
     {
       "Id": "MainDrive",
-      "Name": "Main Drive"
+      "Name": "Main Drive",
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "FuelUsed", "MaxJumpDistance" ],
+      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "FuelUsed", "MaxJumpDistance" ]
     },
     {
       "Id": "NavComp",
@@ -100,7 +100,9 @@
     },
     {
       "Id": "SystemObjectScanner",
-      "Name": "System Object Scanner"
+      "Name": "System Object Scanner",
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "SensorAbundanceFactor", "PurityModifier", "ScanLevel" ],
+      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "SensorAbundanceFactor", "PurityModifier", "ScanLevel" ]
     },
     {
       "Id": "Thruster",

@@ -153,6 +153,12 @@
     <Compile Include="FormBlueprint.Designer.cs">
       <DependentUpon>FormBlueprint.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Colony\FormColony.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Colony\FormColony.Designer.cs">
+      <DependentUpon>FormColony.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -169,6 +175,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormBlueprint.resx">
       <DependentUpon>FormBlueprint.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Colony\FormColony.resx">
+      <DependentUpon>FormColony.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>

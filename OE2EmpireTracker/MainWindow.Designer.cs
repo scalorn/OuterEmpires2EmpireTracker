@@ -40,6 +40,7 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addColonyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -89,7 +90,8 @@
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addSurveyToolStripMenuItem,
-            this.addBlueprintToolStripMenuItem});
+            this.addBlueprintToolStripMenuItem,
+            this.addColonyToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 22);
             this.editToolStripMenuItem.Text = "Edit";
@@ -97,13 +99,13 @@
             // addSurveyToolStripMenuItem
             // 
             this.addSurveyToolStripMenuItem.Name = "addSurveyToolStripMenuItem";
-            this.addSurveyToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.addSurveyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.addSurveyToolStripMenuItem.Text = "Add Survey";
             // 
             // addBlueprintToolStripMenuItem
             // 
             this.addBlueprintToolStripMenuItem.Name = "addBlueprintToolStripMenuItem";
-            this.addBlueprintToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.addBlueprintToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.addBlueprintToolStripMenuItem.Text = "Add Blueprint";
             this.addBlueprintToolStripMenuItem.Click += new System.EventHandler(this.addBlueprintToolStripMenuItem_Click);
             // 
@@ -127,6 +129,13 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
+            // addColonyToolStripMenuItem
+            // 
+            this.addColonyToolStripMenuItem.Name = "addColonyToolStripMenuItem";
+            this.addColonyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addColonyToolStripMenuItem.Text = "Add Colony";
+            this.addColonyToolStripMenuItem.Click += new System.EventHandler(this.addColonyToolStripMenuItem_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -135,7 +144,7 @@
             this.Controls.Add(this.menuStrip1);
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MainWindow";
             this.Text = "OE2 Empire Tracker";
             this.menuStrip1.ResumeLayout(false);
@@ -158,6 +167,7 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem addColonyToolStripMenuItem;
     }
 }
 

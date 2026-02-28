@@ -45,24 +45,24 @@ namespace OE2EmpireTracker.Data
         public virtual string NickName { get; set; }
         [Required]
         public virtual string Description { get; set; }
-        [Required]
-        public int Quantity { get; set; }
+        //[Required]
+        //public int Quantity { get; set; }
         
-        public List<SubResource> SubResources { get; set; }
+        //public List<SubResource> SubResources { get; set; }
         //public List<ItemProperty> ItemProperties { get; set; }
 
-        public Item(ItemTypeEnum itemType, string name, int quantity)
+        public Item(ItemTypeEnum itemType, string name /*, int quantity*/)
         {
             this.ItemType = itemType;
             this.Name = name;
-            this.Quantity = quantity;
-            this.SubResources = new List<SubResource>();
+            //this.Quantity = quantity;
+            //this.SubResources = new List<SubResource>();
             //this.ItemProperties = new List<ItemProperty>();
         }
 
         public Item()
         {
-            this.SubResources = new List<SubResource>();
+            //this.SubResources = new List<SubResource>();
             //this.ItemProperties = new List<ItemProperty>();
         }
     }
