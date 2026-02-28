@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace OE2EmpireTracker
 {
@@ -56,6 +57,15 @@ namespace OE2EmpireTracker
             cmbBaseBlueprint.ValueMember = "UUID";
             cmbBaseBlueprint.DataSource = playerContext.bindingSourceBlueprint;
             cmbBaseBlueprint.SelectedIndex = -1;
+
+            lvwBlueprints.View = View.Details;
+            lvwBlueprints.Columns.Add("UUID", 0);
+            lvwBlueprints.Columns.Add("Type", 50);
+            lvwBlueprints.Columns.Add("Name", 100);
+            lvwBlueprints.Columns.Add("Tech Level", 60);
+            lvwBlueprints.Columns.Add("Evolution", 30);
+            lvwBlueprints.Columns.Add("Nick Name", 100);
+            populateListView(playerContext.blueprintList);
         }
 
         private void rtbCopyTarget_TextChanged(object sender, EventArgs e)
@@ -323,6 +333,54 @@ namespace OE2EmpireTracker
 
             cmbBaseBlueprint.DataSource = filteredItemsBindingList;
             cmbBaseBlueprint.DroppedDown = true;
+        }
+
+        private void txtBlueprintListFilter_TextChanged(object sender, EventArgs e)
+        {
+            string searchText = txtBlueprintListFilter.Text;
+            BindingSource filteredItemsBindingList = playerContext.bindingSourceBlueprint;
+            BindingList<Blueprint> blueprints = null;
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                blueprints = playerContext.blueprintList;
+                var filteredList = blueprints
+                    .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+                filteredItemsBindingList = new BindingSource();
+                // Set the in-memory list as the DataSource for the BindingSource
+                filteredItemsBindingList.DataSource = filteredList;
+            }
+
+            //lvwBlueprints.DataSource = filteredItemsBindingList;
+            populateListView(blueprints);
+        }
+
+        void populateListView(BindingList<Blueprint> blueprints)
+        {
+            if (blueprints == null)
+            {
+                return;
+            }
+            foreach (Blueprint blueprint in blueprints)
+            {
+                ListViewItem item = new ListViewItem(blueprint.UUID); // Main item text (first column)
+                item.SubItems.Add(blueprint.BluePrintType); // Subitem for the second column
+                item.SubItems.Add(blueprint.Name); // Subitem for the second column
+                item.SubItems.Add(blueprint.TechLevel); // Subitem for the third column
+                item.SubItems.Add("" + blueprint.Evolution); // Subitem for the third column
+                item.SubItems.Add(blueprint.NickName); // Subitem for the third column
+                lvwBlueprints.Items.Add(item); // Add the item to the ListView
+            }
+        }
+
+        private void lvwBlueprints_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            Debug.Print("lvwBlueprints.SelectedItems.Count = " + lvwBlueprints.SelectedItems.Count);
+            if (lvwBlueprints.SelectedItems.Count == 1)
+            {
+                Debug.Print("Slected item = " + lvwBlueprints.SelectedItems[0].SubItems[0].Text);
+            }
         }
     }
 }
