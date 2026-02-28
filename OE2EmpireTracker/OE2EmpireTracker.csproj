@@ -115,6 +115,7 @@
   <ItemGroup>
     <Compile Include="Baseline\BlueprintField.cs" />
     <Compile Include="Baseline\BlueprintType.cs" />
+    <Compile Include="Baseline\PlayerContext.cs" />
     <Compile Include="Baseline\TechLevel.cs" />
     <Compile Include="Baseline\EmpireContext.cs" />
     <Compile Include="Baseline\Resource.cs" />
@@ -127,6 +128,12 @@
     </Compile>
     <Compile Include="Controls\FilteredComboBox.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\FilteredTextComboSet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FilteredTextComboSet.Designer.cs">
+      <DependentUpon>FilteredTextComboSet.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\BaseResource.cs" />
     <Compile Include="Data\Blueprint.cs" />
@@ -148,6 +155,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Controls\FilteredTextComboSet.resx">
+      <DependentUpon>FilteredTextComboSet.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormBlueprint.resx">
       <DependentUpon>FormBlueprint.cs</DependentUpon>
     </EmbeddedResource>

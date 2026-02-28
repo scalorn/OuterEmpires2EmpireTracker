@@ -17,7 +17,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
 
         if (key == Keys.Tab)
         {
-            bool handled = handleForward();
+            bool handled = handleForward(this.Focused);
             if (handled)
             {
                 return true;
@@ -25,7 +25,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
         }
         if (key == (Keys.Tab | Keys.Shift))
         {
-            bool handled = handleBackwards();
+            bool handled = handleBackwards(this.Focused);
             if (handled)
             {
                 return true;
@@ -39,7 +39,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
         Debug.Print("ProcessDataGridViewKey Key = " + e);
         if (e.KeyData == Keys.Tab)
         {
-            bool handled = handleForward();
+            bool handled = handleForward(this.Focused);
             if (handled)
             {
                 return true;
@@ -47,7 +47,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
         }
         if (e.KeyData == (Keys.Tab | Keys.Shift))
         {
-            bool handled = handleBackwards();
+            bool handled = handleBackwards(this.Focused);
             if (handled)
             {
                 return true;
@@ -65,18 +65,18 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
             // We are on a read only cell. move forward.
             if (col >=0 && col < this.Columns.Count && this.Columns[col].ReadOnly)
             {
-                bool handled = handleForward();
+                bool handled = handleForward(this.Focused);
             }
         }
     }
 
-    private bool handleBackwards()
+    private bool handleBackwards(bool enableEdit)
     {
         int col = this.CurrentCell.ColumnIndex - 1;
         col = findPreviousCell(col);
         if (col >= 0)
         {
-            handleEditCell(this.CurrentCell.RowIndex, col);
+            handleEditCell(this.CurrentCell.RowIndex, col, enableEdit);
             return true;
         }
         else
@@ -87,7 +87,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
                 Debug.Print("Backwards col = " + col);
                 if (col >= 0)
                 {
-                    handleEditCell(this.CurrentCell.RowIndex - 1, col);
+                    handleEditCell(this.CurrentCell.RowIndex - 1, col, enableEdit);
                     return true;
                 }
             }
@@ -106,13 +106,13 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
         return false;
     }
 
-    private bool handleForward()
+    private bool handleForward(bool enableEdit)
     {
         int col = this.CurrentCell.ColumnIndex + 1;
         col = findNextCell(col);
         if (col < this.Columns.Count)
         {
-            handleEditCell(this.CurrentCell.RowIndex, col);
+            handleEditCell(this.CurrentCell.RowIndex, col, enableEdit);
             return true;
         }
         else
@@ -122,7 +122,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
                 col = findNextCell(0);
                 if (col <= this.CurrentCell.ColumnIndex)
                 {
-                    handleEditCell(this.CurrentCell.RowIndex + 1, col);
+                    handleEditCell(this.CurrentCell.RowIndex + 1, col, enableEdit);
                     return true;
                 }
             } else
@@ -161,12 +161,15 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
         return col;
     }
 
-    private void handleEditCell(int rowIndex, int col)
+    private void handleEditCell(int rowIndex, int col, bool enableEdit)
     {
         changingSelection = true;
         this.CurrentCell =
         this.Rows[rowIndex].Cells[col];
-        this.BeginEdit(true);
+        if ( enableEdit)
+        {
+            this.BeginEdit(true);
+        }
         changingSelection = false;
     }
 }

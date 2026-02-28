@@ -1,0 +1,73 @@
+﻿using Newtonsoft.Json;
+using OE2EmpireTracker.Data;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace OE2EmpireTracker.Baseline
+{
+    public class PlayerContext
+    {
+        public static PlayerContext Instance;
+        private static string filePath = @"..\..\PlayerData.json";
+
+        public BindingList<Blueprint> blueprintList;
+        public BindingSource bindingSourceBlueprint;
+
+        public PlayerContext() : base()
+        {
+            Instance = this;
+
+            PlayerRoot playerRoot = null;
+            if (File.Exists(filePath))
+            {
+                // Read the file content into a string
+                string jsonContent = File.ReadAllText(filePath);
+                playerRoot = JsonConvert.DeserializeObject<PlayerRoot>(jsonContent);
+            }
+            else
+            {
+                playerRoot = new PlayerRoot();
+            }
+            initBlueprints(playerRoot);
+
+            //blueprintList.Add(new Blueprint());
+            //Debug.Print("Blueprint Count " + playerRoot.Blueprint.Length);
+        }
+
+        public void writeContext()
+        {
+            PlayerRoot playerRoot = new PlayerRoot();
+            playerRoot.Blueprint = blueprintList.ToArray();
+            string jsonContent = JsonConvert.SerializeObject(playerRoot,Formatting.Indented);
+            File.WriteAllText(filePath, jsonContent);
+        }
+        public void initBlueprints(PlayerRoot playerRoot)
+        {
+            List<Blueprint> list = new List<Blueprint>(playerRoot.Blueprint);
+            list.Sort((x, y) => x.Name.CompareTo(y.Name));
+            blueprintList = new BindingList<Blueprint>(list);
+            // Initialize the BindingSource component
+            bindingSourceBlueprint = new BindingSource();
+            // Set the in-memory list as the DataSource for the BindingSource
+            bindingSourceBlueprint.DataSource = blueprintList;
+        }
+    }
+
+
+    public class PlayerRoot
+    {
+        public Blueprint[] Blueprint;
+        public PlayerRoot()
+        {
+            Blueprint = new Blueprint[0];
+        }
+    }
+
+}

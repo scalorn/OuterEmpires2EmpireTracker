@@ -25,6 +25,9 @@ namespace OE2EmpireTracker.Baseline
     public class EmpireContext
     {
         public static EmpireContext Instance;
+        public static string filePath = @"..\..\BaselineData.json";
+
+        public static PlayerContext PlayerContext;
         public BindingList<BlueprintType> blueprintTypeList;
         public BindingSource bindingSourceBlueprintType;
         public BindingList<ShipClass> shipClassList;
@@ -33,22 +36,41 @@ namespace OE2EmpireTracker.Baseline
         public BindingSource bindingSourceTechLevel;
         public BindingList<string> evolutionList;
         public BindingSource bindingSourceEvolution;
+        public BindingList<Resource> resourceList;
+        public BindingSource bindingSourceResource;
+        public BindingList<ResourceGroup> resourceGroupList;
+        public BindingSource bindingSourceResourceGroup;
+        public BindingList<ResourcePurity> resourcePurityList;
+        public BindingSource bindingSourceResourcePurity;
 
         public EmpireContext() : base()
         {
             Instance = this;
-
-            string filePath = @"..\..\BaselineData.json";
+            PlayerContext = new PlayerContext();
 
             // Read the file content into a string
             string jsonContent = File.ReadAllText(filePath);
             BaselineRoot baselineRoot = JsonConvert.DeserializeObject<BaselineRoot>(jsonContent);
 
-
             initBlueprintTypes(baselineRoot);
             initShipClasses(baselineRoot);
             initTechLevels(baselineRoot);
             initEvolutions(baselineRoot);
+            initResources(baselineRoot);
+            initResourceGroups(baselineRoot);
+            initResourcePurities(baselineRoot);
+        }
+        public void writeContext()
+        {
+            BaselineRoot baselineRoot = new BaselineRoot();
+            baselineRoot.ShipClass = shipClassList.ToArray();
+            baselineRoot.BlueprintType = blueprintTypeList.ToArray();
+            baselineRoot.ResourceGroup = resourceGroupList.ToArray();
+            baselineRoot.ResourcePurity = resourcePurityList.ToArray();
+            baselineRoot.Resource = resourceList.ToArray();
+            baselineRoot.TechLevel = techLevelList.ToArray();
+        string jsonContent = JsonConvert.SerializeObject(baselineRoot, Formatting.Indented);
+            File.WriteAllText(filePath + ".new", jsonContent);
         }
         public void initBlueprintTypes(BaselineRoot baselineRoot)
         {
@@ -92,6 +114,36 @@ namespace OE2EmpireTracker.Baseline
             bindingSourceEvolution = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
             bindingSourceEvolution.DataSource = evolutionList;
+        }
+        public void initResources(BaselineRoot baselineRoot)
+        {
+            List<Resource> list = new List<Resource>(baselineRoot.Resource);
+            list.Sort((x, y) => x.Name.CompareTo(y.Name));
+            resourceList = new BindingList<Resource>(list);
+            // Initialize the BindingSource component
+            bindingSourceResource = new BindingSource();
+            // Set the in-memory list as the DataSource for the BindingSource
+            bindingSourceResource.DataSource = resourceList;
+        }
+        public void initResourceGroups(BaselineRoot baselineRoot)
+        {
+            List<ResourceGroup> list = new List<ResourceGroup>(baselineRoot.ResourceGroup);
+            list.Sort((x, y) => x.Name.CompareTo(y.Name));
+            resourceGroupList = new BindingList<ResourceGroup>(list);
+            // Initialize the BindingSource component
+            bindingSourceResourceGroup = new BindingSource();
+            // Set the in-memory list as the DataSource for the BindingSource
+            bindingSourceResourceGroup.DataSource = resourceGroupList;
+        }
+        public void initResourcePurities(BaselineRoot baselineRoot)
+        {
+            List<ResourcePurity> list = new List<ResourcePurity>(baselineRoot.ResourcePurity);
+            list.Sort((x, y) => x.Name.CompareTo(y.Name));
+            resourcePurityList = new BindingList<ResourcePurity>(list);
+            // Initialize the BindingSource component
+            bindingSourceResourcePurity = new BindingSource();
+            // Set the in-memory list as the DataSource for the BindingSource
+            bindingSourceResourcePurity.DataSource = resourcePurityList;
         }
 
     }

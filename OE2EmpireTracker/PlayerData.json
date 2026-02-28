@@ -1,0 +1,160 @@
+{
+  "Blueprint": [
+    {
+      "ID": 0,
+      "Parentid": 0,
+      "BluePrintType": 0,
+      "Evolution": 0,
+      "Quality": 0,
+      "ManufactureRunTime": 0,
+      "ClassID": 0,
+      "MaxAllowedOnShip": 0,
+      "Mass": {
+        "Key": 0,
+        "Value": 0
+      },
+      "CargoVolumeSize": {
+        "Key": 0,
+        "Value": 0
+      },
+      "PowerRequired": {
+        "Key": 0,
+        "Value": 0
+      },
+      "Health": {
+        "Key": 0,
+        "Value": 0
+      },
+      "EngCapacityRequired": {
+        "Key": 0,
+        "Value": 0
+      },
+      "WearAndTearRate": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "MaximumDamageRepairPercentage": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "CargoCapacity": {
+        "Key": 0,
+        "Value": 0
+      },
+      "FuelCapacity": {
+        "Key": 0,
+        "Value": 0
+      },
+      "LargeWeaponMounts": {
+        "Key": 0,
+        "Value": 0
+      },
+      "MediumWeaponMounts": {
+        "Key": 0,
+        "Value": 0
+      },
+      "SmallWeaponMounts": {
+        "Key": 0,
+        "Value": 0
+      },
+      "EnergyDefense": {
+        "Key": 0,
+        "Value": 0
+      },
+      "KineticDamageDefense": {
+        "Key": 0,
+        "Value": 0
+      },
+      "MissileDamageDefense": {
+        "Key": 0,
+        "Value": 0
+      },
+      "NumberOfCrewSupported": {
+        "Key": 0,
+        "Value": 0
+      },
+      "AdditionalCargoCapacity": {
+        "Key": 0,
+        "Value": 0
+      },
+      "AdditionalFuelCapacity": {
+        "Key": 0,
+        "Value": 0
+      },
+      "RotationalThrust": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "AccelerationRate": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "PowerGenerated": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "PowerRegenerationRate": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "FuelUsed": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "MaxJumpDistance": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "JumpChargeTime": {
+        "Key": 0,
+        "Value": 0
+      },
+      "PowerDrawPerSecond": {
+        "Key": 0,
+        "Value": 0
+      },
+      "EnergyDefence": {
+        "Key": 0,
+        "Value": 0
+      },
+      "ShieldHitPoints": {
+        "Key": 0,
+        "Value": 0
+      },
+      "ShieldRegenPerSecond": {
+        "Key": 0,
+        "Value": 0
+      },
+      "SensorAbundanceFactor": {
+        "Key": 0,
+        "Value": 0
+      },
+      "PurityModifier": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "ScanLevel": {
+        "Key": 0,
+        "Value": 0
+      },
+      "MaterialFocus": {
+        "Key": 0,
+        "Value": 0
+      },
+      "MaterialFocusBonus": {
+        "Key": 0,
+        "Value": 0
+      },
+      "FuelTransferRate": {
+        "Key": 0,
+        "Value": 0
+      },
+      "UUID": null,
+      "ItemType": 0,
+      "Name": null,
+      "Quantity": 0,
+      "SubResources": [],
+      "ItemProperties": []
+    }
+  ]
+}
