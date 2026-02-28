@@ -14,13 +14,21 @@ namespace OE2EmpireTracker.Baseline
 {
     public class PlayerContext
     {
-        public static PlayerContext Instance;
+        private static PlayerContext Instance;
         private static string filePath = @"..\..\PlayerData.json";
 
         public BindingList<Blueprint> blueprintList;
         public BindingSource bindingSourceBlueprint;
 
-        public PlayerContext() : base()
+        public static PlayerContext getInstance()
+        {
+            if (Instance == null)
+            {
+                Instance = new PlayerContext();
+            }
+            return Instance;
+        }
+        private PlayerContext() : base()
         {
             Instance = this;
 
@@ -47,6 +55,7 @@ namespace OE2EmpireTracker.Baseline
             playerRoot.Blueprint = blueprintList.ToArray();
             string jsonContent = JsonConvert.SerializeObject(playerRoot,Formatting.Indented);
             File.WriteAllText(filePath, jsonContent);
+            Debug.Print("Player.WriteContext done");
         }
         public void initBlueprints(PlayerRoot playerRoot)
         {
@@ -57,6 +66,17 @@ namespace OE2EmpireTracker.Baseline
             bindingSourceBlueprint = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
             bindingSourceBlueprint.DataSource = blueprintList;
+        }
+        public Blueprint findBlueprint(string id)
+        {
+            var filteredList = blueprintList
+                .Where(item => item.UUID == id)
+                .ToList();
+            if (filteredList.Count == 1)
+            {
+                return filteredList[0];
+            }
+            return null;
         }
     }
 

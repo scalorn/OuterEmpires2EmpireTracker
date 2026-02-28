@@ -66,15 +66,15 @@ namespace OE2EmpireTracker
             this.tabPStatistics = new System.Windows.Forms.TabPage();
             this.tabPResources = new System.Windows.Forms.TabPage();
             this.dgvResources = new System.Windows.Forms.DataGridView();
-            this.flpBase = new System.Windows.Forms.FlowLayoutPanel();
             this.Resource = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.Amount = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpBase = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpSearchList = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpBlueprintSearch = new System.Windows.Forms.FlowLayoutPanel();
             this.lblBlueprintListFilter = new System.Windows.Forms.Label();
             this.txtBlueprintListFilter = new System.Windows.Forms.TextBox();
             this.lvwBlueprints = new System.Windows.Forms.ListView();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.dgvStatistics = new DataEntryGridView();
             this.Property = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BaseValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -94,9 +94,9 @@ namespace OE2EmpireTracker
             this.tabPResources.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).BeginInit();
             this.flpBase.SuspendLayout();
+            this.flpSearchList.SuspendLayout();
+            this.flpBlueprintSearch.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
-            this.flowLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).BeginInit();
             this.SuspendLayout();
             // 
@@ -487,16 +487,6 @@ namespace OE2EmpireTracker
             this.dgvResources.Size = new System.Drawing.Size(825, 303);
             this.dgvResources.TabIndex = 0;
             // 
-            // flpBase
-            // 
-            this.flpBase.AutoSize = true;
-            this.flpBase.Controls.Add(this.flowLayoutPanel2);
-            this.flpBase.Controls.Add(this.flowLayoutPanel1);
-            this.flpBase.Location = new System.Drawing.Point(0, 0);
-            this.flpBase.Name = "flpBase";
-            this.flpBase.Size = new System.Drawing.Size(1100, 647);
-            this.flpBase.TabIndex = 9;
-            // 
             // Resource
             // 
             this.Resource.HeaderText = "Resource";
@@ -507,36 +497,36 @@ namespace OE2EmpireTracker
             this.Amount.HeaderText = "Amount";
             this.Amount.Name = "Amount";
             // 
-            // flowLayoutPanel1
+            // flpBase
             // 
-            this.flowLayoutPanel1.Controls.Add(this.flpBaseDetails);
-            this.flowLayoutPanel1.Controls.Add(this.tabDetailedData);
-            this.flowLayoutPanel1.Controls.Add(this.flpCommands);
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(436, 3);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(661, 641);
-            this.flowLayoutPanel1.TabIndex = 10;
+            this.flpBase.AutoSize = true;
+            this.flpBase.Controls.Add(this.flpSearchList);
+            this.flpBase.Controls.Add(this.flowLayoutPanel1);
+            this.flpBase.Location = new System.Drawing.Point(0, 0);
+            this.flpBase.Name = "flpBase";
+            this.flpBase.Size = new System.Drawing.Size(1100, 647);
+            this.flpBase.TabIndex = 9;
             // 
-            // flowLayoutPanel2
+            // flpSearchList
             // 
-            this.flowLayoutPanel2.Controls.Add(this.flowLayoutPanel3);
-            this.flowLayoutPanel2.Controls.Add(this.lvwBlueprints);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 3);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(427, 175);
-            this.flowLayoutPanel2.TabIndex = 10;
+            this.flpSearchList.Controls.Add(this.flpBlueprintSearch);
+            this.flpSearchList.Controls.Add(this.lvwBlueprints);
+            this.flpSearchList.Location = new System.Drawing.Point(3, 3);
+            this.flpSearchList.Name = "flpSearchList";
+            this.flpSearchList.Size = new System.Drawing.Size(427, 641);
+            this.flpSearchList.TabIndex = 10;
+            this.flpSearchList.SizeChanged += new System.EventHandler(this.flpSearchList_SizeChanged);
             // 
-            // flowLayoutPanel3
+            // flpBlueprintSearch
             // 
-            this.flowLayoutPanel3.AutoSize = true;
-            this.flowLayoutPanel3.Controls.Add(this.lblBlueprintListFilter);
-            this.flowLayoutPanel3.Controls.Add(this.txtBlueprintListFilter);
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(2, 2);
-            this.flowLayoutPanel3.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(210, 26);
-            this.flowLayoutPanel3.TabIndex = 5;
+            this.flpBlueprintSearch.AutoSize = true;
+            this.flpBlueprintSearch.Controls.Add(this.lblBlueprintListFilter);
+            this.flpBlueprintSearch.Controls.Add(this.txtBlueprintListFilter);
+            this.flpBlueprintSearch.Location = new System.Drawing.Point(2, 2);
+            this.flpBlueprintSearch.Margin = new System.Windows.Forms.Padding(2);
+            this.flpBlueprintSearch.Name = "flpBlueprintSearch";
+            this.flpBlueprintSearch.Size = new System.Drawing.Size(210, 26);
+            this.flpBlueprintSearch.TabIndex = 5;
             // 
             // lblBlueprintListFilter
             // 
@@ -568,6 +558,17 @@ namespace OE2EmpireTracker
             this.lvwBlueprints.TabIndex = 6;
             this.lvwBlueprints.UseCompatibleStateImageBehavior = false;
             this.lvwBlueprints.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.lvwBlueprints_ItemSelectionChanged);
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.flpBaseDetails);
+            this.flowLayoutPanel1.Controls.Add(this.tabDetailedData);
+            this.flowLayoutPanel1.Controls.Add(this.flpCommands);
+            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(436, 3);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(661, 641);
+            this.flowLayoutPanel1.TabIndex = 10;
             // 
             // dgvStatistics
             // 
@@ -636,12 +637,12 @@ namespace OE2EmpireTracker
             this.tabPResources.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).EndInit();
             this.flpBase.ResumeLayout(false);
+            this.flpSearchList.ResumeLayout(false);
+            this.flpSearchList.PerformLayout();
+            this.flpBlueprintSearch.ResumeLayout(false);
+            this.flpBlueprintSearch.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
-            this.flowLayoutPanel3.ResumeLayout(false);
-            this.flowLayoutPanel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -691,9 +692,9 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.TextBox txtNickName;
         private System.Windows.Forms.DataGridViewComboBoxColumn Resource;
         private System.Windows.Forms.DataGridViewTextBoxColumn Amount;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.FlowLayoutPanel flpSearchList;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
+        private System.Windows.Forms.FlowLayoutPanel flpBlueprintSearch;
         private System.Windows.Forms.Label lblBlueprintListFilter;
         private System.Windows.Forms.TextBox txtBlueprintListFilter;
         private System.Windows.Forms.ListView lvwBlueprints;

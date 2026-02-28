@@ -5,14 +5,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace OE2EmpireTracker
 {
@@ -20,10 +17,11 @@ namespace OE2EmpireTracker
     {
         private EmpireContext empireContext;
         private PlayerContext playerContext;
+        private Blueprint selectedBlueprint;
         public FormBlueprint()
         {
             InitializeComponent();
-            empireContext = new EmpireContext();
+            empireContext = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
 
             cmbBlueprintType.DisplayMember = "Name";
@@ -65,7 +63,11 @@ namespace OE2EmpireTracker
             lvwBlueprints.Columns.Add("Tech Level", 60);
             lvwBlueprints.Columns.Add("Evolution", 30);
             lvwBlueprints.Columns.Add("Nick Name", 100);
-            populateListView(playerContext.blueprintList);
+            populateListView(new List<Blueprint>(playerContext.blueprintList));
+
+            //lvwBlueprints.Height = flpSearchList.Height - flpBlueprintSearch.Height;
+            //lvwBlueprints.Width = flpSearchList.Width;
+
         }
 
         private void rtbCopyTarget_TextChanged(object sender, EventArgs e)
@@ -191,7 +193,11 @@ namespace OE2EmpireTracker
 
         private void cmbBlueprintType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Debug.Print("cmbBlueprintType_SelectedIndexChanged Sender = " + sender + " Event Args " + e);
+            updateBlueprintTypeList();
+        }
+
+        public void updateBlueprintTypeList()
+        {
             BlueprintType bt = cmbBlueprintType.SelectedItem as BlueprintType;
             if (bt != null && bt.Universal == true)
             {
@@ -199,7 +205,8 @@ namespace OE2EmpireTracker
                 cmbShipClass.SelectedIndex = -1;
                 flpTechLevel.Visible = false;
                 cmbTechLevel.SelectedIndex = -1;
-            } else
+            }
+            else
             {
                 flpClass.Visible = true;
                 flpTechLevel.Visible = true;
@@ -208,7 +215,8 @@ namespace OE2EmpireTracker
             if (bt != null && bt.Properties != null)
             {
                 int row = 0;
-                foreach (string property in bt.Properties) {
+                foreach (string property in bt.Properties)
+                {
                     int rowIndex = row;
                     if (dgvStatistics.Rows.Count <= row)
                     {
@@ -224,10 +232,10 @@ namespace OE2EmpireTracker
                     dgvStatistics.Rows.Clear();
                 }
                 else
-                while (dgvStatistics.Rows.Count > bt.Properties.Length)
-                {
-                    dgvStatistics.Rows.RemoveAt(dgvStatistics.Rows.Count - 1);
-                }
+                    while (dgvStatistics.Rows.Count > bt.Properties.Length)
+                    {
+                        dgvStatistics.Rows.RemoveAt(dgvStatistics.Rows.Count - 1);
+                    }
             }
         }
 
@@ -247,6 +255,7 @@ namespace OE2EmpireTracker
                 var filteredList = blueprintTypes
                     .Where(item => item.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
+                filteredList.Insert(0, new BlueprintType());
                 filteredItemsBindingList = new BindingSource();
                 // Set the in-memory list as the DataSource for the BindingSource
                 filteredItemsBindingList.DataSource = filteredList;
@@ -261,15 +270,123 @@ namespace OE2EmpireTracker
             cmbBlueprintType.DroppedDown = true;
         }
 
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtFilterBaseBlueprint_TextChanged(object sender, EventArgs e)
+        {
+            updateBaseBlueprintList();
+            cmbBaseBlueprint.DroppedDown = true;
+        }
+
+        private void updateBaseBlueprintList()
+        {
+            string searchText = txtFilterBaseBlueprint.Text;
+            List<Blueprint> filteredList = new List<Blueprint>(playerContext.blueprintList);
+            if (cmbBlueprintType.SelectedItem != null)
+            {
+                filteredList = filteredList
+                    .Where(item => item.BluePrintType == (cmbBlueprintType.SelectedItem as BlueprintType).Id)
+                    .ToList();
+            }
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+            }
+
+            if (selectedBlueprint != null)
+            {
+                filteredList = filteredList
+                    .Where(item => item.UUID != selectedBlueprint.UUID)
+                    .ToList();
+            }
+
+            // Add an empty to allow to select no base blueprint.
+
+            filteredList.Insert(0, new Blueprint());
+            BindingSource filteredItemsBindingList = new BindingSource();
+            // Set the in-memory list as the DataSource for the BindingSource
+            filteredItemsBindingList.DataSource = filteredList;
+
+
+            cmbBaseBlueprint.DataSource = filteredItemsBindingList;
+        }
+
+        private void txtBlueprintListFilter_TextChanged(object sender, EventArgs e)
+        {
+            string searchText = txtBlueprintListFilter.Text;
+            //BindingSource filteredItemsBindingList = playerContext.bindingSourceBlueprint;
+            List<Blueprint> blueprints = new List<Blueprint>(playerContext.blueprintList);
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                blueprints = blueprints
+                    .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+
+                //filteredItemsBindingList = new BindingSource();
+                // Set the in-memory list as the DataSource for the BindingSource
+                //filteredItemsBindingList.DataSource = filteredList;
+            }
+
+            //lvwBlueprints.DataSource = filteredItemsBindingList;
+            populateListView(blueprints);
+        }
+
+        void populateListView(List<Blueprint> blueprints)
+        {
+            if (blueprints == null)
+            {
+                return;
+            }
+            lvwBlueprints.Items.Clear();
+            foreach (Blueprint blueprint in blueprints)
+            {
+                ListViewItem item = new ListViewItem(blueprint.UUID); // Main item text (first column)
+                item.Tag = blueprint;
+                item.SubItems[0].Tag = blueprint;
+                item.SubItems.Add(blueprint.BluePrintType); // Subitem for the second column
+                item.SubItems.Add(blueprint.Name); // Subitem for the second column
+                item.SubItems.Add(blueprint.TechLevel); // Subitem for the third column
+                item.SubItems.Add("" + blueprint.Evolution); // Subitem for the third column
+                item.SubItems.Add(blueprint.NickName); // Subitem for the third column
+                lvwBlueprints.Items.Add(item); // Add the item to the ListView
+            }
+        }
+
+        private void lvwBlueprints_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            Debug.Print("lvwBlueprints.SelectedItems.Count = " + lvwBlueprints.SelectedItems.Count);
+            if (lvwBlueprints.SelectedItems.Count == 1)
+            {
+                Debug.Print("Selected item = " + lvwBlueprints.SelectedItems[0].SubItems[0].Text);
+                Debug.Print("Selected item = " + lvwBlueprints.SelectedItems[0].SubItems[0].Tag);
+                selectedBlueprint = lvwBlueprints.SelectedItems[0].SubItems[0].Tag as Blueprint;
+                populateForm();
+            }
+        }
         private void btnSave_Click(object sender, EventArgs e)
         {
-            empireContext = new EmpireContext();
+            empireContext = EmpireContext.getInstance();
 
             PlayerContext playerContext = EmpireContext.PlayerContext;
 
-            Blueprint blueprint = new Blueprint();
-            Guid myUuid = Guid.NewGuid();
-            blueprint.UUID = myUuid.ToString();
+            Blueprint blueprint;
+            if (selectedBlueprint != null)
+            {
+                blueprint = selectedBlueprint;
+            }
+            else
+            {
+                blueprint = new Blueprint();
+                Guid myUuid = Guid.NewGuid();
+                blueprint.UUID = myUuid.ToString();
+            }
 
             BlueprintType blueprintType = cmbBlueprintType.SelectedItem as BlueprintType;
             blueprint.BluePrintType = blueprintType.Id;
@@ -284,7 +401,8 @@ namespace OE2EmpireTracker
             if (cmbEvolution.SelectedItem != null)
             {
                 evolution = cmbEvolution.SelectedItem as string;
-            } else if (cmbEvolution.Text != null)
+            }
+            else if (cmbEvolution.Text != null)
             {
                 evolution = cmbEvolution.Text;
             }
@@ -306,81 +424,40 @@ namespace OE2EmpireTracker
 
             // Now to map grid fields.
 
-            playerContext.blueprintList.Add(blueprint);
+            if (selectedBlueprint == null)
+            {
+                playerContext.blueprintList.Add(blueprint);
+            }
             playerContext.writeContext();
+            populateListView(new List<Blueprint>(playerContext.blueprintList));
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void populateForm()
         {
-
-        }
-
-        private void txtFilterBaseBlueprint_TextChanged(object sender, EventArgs e)
-        {
-            string searchText = txtFilterBaseBlueprint.Text;
-            BindingSource filteredItemsBindingList = playerContext.bindingSourceBlueprint;
-
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                BindingList<Blueprint> blueprints = playerContext.blueprintList;
-                var filteredList = blueprints
-                    .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
-                filteredItemsBindingList = new BindingSource();
-                // Set the in-memory list as the DataSource for the BindingSource
-                filteredItemsBindingList.DataSource = filteredList;
-            }
-
-            cmbBaseBlueprint.DataSource = filteredItemsBindingList;
-            cmbBaseBlueprint.DroppedDown = true;
-        }
-
-        private void txtBlueprintListFilter_TextChanged(object sender, EventArgs e)
-        {
-            string searchText = txtBlueprintListFilter.Text;
-            BindingSource filteredItemsBindingList = playerContext.bindingSourceBlueprint;
-            BindingList<Blueprint> blueprints = null;
-
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                blueprints = playerContext.blueprintList;
-                var filteredList = blueprints
-                    .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
-                filteredItemsBindingList = new BindingSource();
-                // Set the in-memory list as the DataSource for the BindingSource
-                filteredItemsBindingList.DataSource = filteredList;
-            }
-
-            //lvwBlueprints.DataSource = filteredItemsBindingList;
-            populateListView(blueprints);
-        }
-
-        void populateListView(BindingList<Blueprint> blueprints)
-        {
-            if (blueprints == null)
+            if (selectedBlueprint == null)
             {
                 return;
             }
-            foreach (Blueprint blueprint in blueprints)
-            {
-                ListViewItem item = new ListViewItem(blueprint.UUID); // Main item text (first column)
-                item.SubItems.Add(blueprint.BluePrintType); // Subitem for the second column
-                item.SubItems.Add(blueprint.Name); // Subitem for the second column
-                item.SubItems.Add(blueprint.TechLevel); // Subitem for the third column
-                item.SubItems.Add("" + blueprint.Evolution); // Subitem for the third column
-                item.SubItems.Add(blueprint.NickName); // Subitem for the third column
-                lvwBlueprints.Items.Add(item); // Add the item to the ListView
-            }
+            txtFilterBlueprintType.Text = "";
+            updateBlueprintTypeList();
+            cmbBlueprintType.SelectedItem = empireContext.findBlueprintType(selectedBlueprint.BluePrintType);
+            cmbShipClass.SelectedItem = empireContext.findShipClass(selectedBlueprint.Class);
+            cmbTechLevel.SelectedItem = empireContext.findTechLevel(selectedBlueprint.TechLevel);
+            cmbEvolution.SelectedItem = empireContext.findEvolution(selectedBlueprint.Evolution);
+
+            txtFilterBaseBlueprint.Text = "";
+            updateBaseBlueprintList();
+            cmbBaseBlueprint.SelectedItem = playerContext.findBlueprint(selectedBlueprint.baseBlueprintUUID);
+
+            txtName.Text = selectedBlueprint.Name;
+            txtNickName.Text = selectedBlueprint.NickName;
+            txtDescription.Text = selectedBlueprint.Description;
+
         }
 
-        private void lvwBlueprints_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void flpSearchList_SizeChanged(object sender, EventArgs e)
         {
-            Debug.Print("lvwBlueprints.SelectedItems.Count = " + lvwBlueprints.SelectedItems.Count);
-            if (lvwBlueprints.SelectedItems.Count == 1)
-            {
-                Debug.Print("Slected item = " + lvwBlueprints.SelectedItems[0].SubItems[0].Text);
-            }
+            //lvwBlueprints.Height = flpSearchList.Height - flpBlueprintSearch.Height;
         }
     }
 }

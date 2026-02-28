@@ -24,7 +24,7 @@ namespace OE2EmpireTracker.Baseline
 {
     public class EmpireContext
     {
-        public static EmpireContext Instance;
+        private static EmpireContext Instance;
         public static string filePath = @"..\..\BaselineData.json";
 
         public static PlayerContext PlayerContext;
@@ -43,10 +43,19 @@ namespace OE2EmpireTracker.Baseline
         public BindingList<ResourcePurity> resourcePurityList;
         public BindingSource bindingSourceResourcePurity;
 
-        public EmpireContext() : base()
+        public static EmpireContext getInstance()
+        {
+            if (Instance == null)
+            {
+                Instance = new EmpireContext();
+            }
+            return Instance;
+        }
+
+        private EmpireContext() : base()
         {
             Instance = this;
-            PlayerContext = new PlayerContext();
+            PlayerContext = PlayerContext.getInstance();
 
             // Read the file content into a string
             string jsonContent = File.ReadAllText(filePath);
@@ -82,6 +91,19 @@ namespace OE2EmpireTracker.Baseline
             // Set the in-memory list as the DataSource for the BindingSource
             bindingSourceBlueprintType.DataSource = blueprintTypeList;
         }
+
+        public BlueprintType findBlueprintType(string id)
+        {
+            var filteredList = blueprintTypeList
+                .Where(item => item.Id == id)
+                .ToList();
+            if (filteredList.Count == 1)
+            {
+                return filteredList[0];
+            }
+            return null;
+        }
+
         public void initShipClasses(BaselineRoot baselineRoot)
         {
             shipClassList = new BindingList<ShipClass>(baselineRoot.ShipClass);
@@ -91,6 +113,19 @@ namespace OE2EmpireTracker.Baseline
             // Set the in-memory list as the DataSource for the BindingSource
             bindingSourceShipClass.DataSource = shipClassList;
         }
+
+        public ShipClass findShipClass(int id)
+        {
+            var filteredList = shipClassList
+                .Where(item => item.Id == id)
+                .ToList();
+            if (filteredList.Count == 1)
+            {
+                return filteredList[0];
+            }
+            return null;
+        }
+
         public void initTechLevels(BaselineRoot baselineRoot)
         {
             List<TechLevel> list = new List<TechLevel>(baselineRoot.TechLevel);
@@ -100,6 +135,17 @@ namespace OE2EmpireTracker.Baseline
             bindingSourceTechLevel = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
             bindingSourceTechLevel.DataSource = techLevelList;
+        }
+        public TechLevel findTechLevel(string id)
+        {
+            var filteredList = techLevelList
+                .Where(item => item.Name == id)
+                .ToList();
+            if (filteredList.Count == 1)
+            {
+                return filteredList[0];
+            }
+            return null;
         }
 
         public void initEvolutions(BaselineRoot baselineRoot)
@@ -114,6 +160,18 @@ namespace OE2EmpireTracker.Baseline
             bindingSourceEvolution = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
             bindingSourceEvolution.DataSource = evolutionList;
+        }
+        public string findEvolution(int id)
+        {
+            string key = "" + id;
+            var filteredList = evolutionList
+                .Where(item => item == key)
+                .ToList();
+            if (filteredList.Count == 1)
+            {
+                return filteredList[0];
+            }
+            return null;
         }
         public void initResources(BaselineRoot baselineRoot)
         {

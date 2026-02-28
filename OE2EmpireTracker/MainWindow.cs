@@ -18,7 +18,7 @@ namespace OE2EmpireTracker
 
         public MainWindow()
         {
-            context = new EmpireContext();
+            context = EmpireContext.getInstance();
             InitializeComponent();
 
             SurveyParser parser = new SurveyParser();

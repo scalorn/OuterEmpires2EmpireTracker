@@ -88,7 +88,16 @@ namespace OE2EmpireTracker.Data
         // Universal Coupler
         public KeyValuePair<int, int> FuelTransferRate { get; set; }
 
-        public string ExtendedName { get { return Name + " Ev(" + Evolution + ") (" + TechLevel +") [" + NickName + "]"; } }
+        [NotMapped]
+        public string ExtendedName { 
+        get { 
+                if (UUID == null)
+                {
+                    return string.Empty;
+                }
+                return Name + " Ev(" + Evolution + ") (" + TechLevel +") [" + NickName + "]";
+            }
+        }
 
 
         public Blueprint(string name, int quantity) : base(ItemTypeEnum.Blueprint, name, quantity)
