@@ -147,10 +147,10 @@
     <Compile Include="Data\SubResource.cs" />
     <Compile Include="Data\Item.cs" />
     <Compile Include="Data\Resource.cs" />
-    <Compile Include="FormBlueprint.cs">
+    <Compile Include="Forms\Blueprint\FormBlueprint.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormBlueprint.Designer.cs">
+    <Compile Include="Forms\Blueprint\FormBlueprint.Designer.cs">
       <DependentUpon>FormBlueprint.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Colony\FormColony.cs">
@@ -159,10 +159,10 @@
     <Compile Include="Forms\Colony\FormColony.Designer.cs">
       <DependentUpon>FormColony.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.cs">
+    <Compile Include="Forms\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainWindow.Designer.cs">
+    <Compile Include="Forms\MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
@@ -173,13 +173,13 @@
     <EmbeddedResource Include="Controls\FilteredTextComboSet.resx">
       <DependentUpon>FilteredTextComboSet.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormBlueprint.resx">
+    <EmbeddedResource Include="Forms\Blueprint\FormBlueprint.resx">
       <DependentUpon>FormBlueprint.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Colony\FormColony.resx">
       <DependentUpon>FormColony.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainWindow.resx">
+    <EmbeddedResource Include="Forms\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -222,7 +222,9 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Forms\Survey\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
