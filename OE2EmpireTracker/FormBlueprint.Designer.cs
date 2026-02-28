@@ -64,15 +64,15 @@ namespace OE2EmpireTracker
             this.btnCancel = new System.Windows.Forms.Button();
             this.tabDetailedData = new System.Windows.Forms.TabControl();
             this.tabPStatistics = new System.Windows.Forms.TabPage();
+            this.tabPResources = new System.Windows.Forms.TabPage();
+            this.dgvResources = new System.Windows.Forms.DataGridView();
+            this.flpBase = new System.Windows.Forms.FlowLayoutPanel();
+            this.Resource = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.Amount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvStatistics = new DataEntryGridView();
             this.Property = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BaseValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CurrentValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tabPResources = new System.Windows.Forms.TabPage();
-            this.dgvResources = new System.Windows.Forms.DataGridView();
-            this.Column1 = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.flpBase = new System.Windows.Forms.FlowLayoutPanel();
             this.flpBlueprintType.SuspendLayout();
             this.flpTechLevel.SuspendLayout();
             this.flpBaseDetails.SuspendLayout();
@@ -85,10 +85,10 @@ namespace OE2EmpireTracker
             this.flpCommands.SuspendLayout();
             this.tabDetailedData.SuspendLayout();
             this.tabPStatistics.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).BeginInit();
             this.tabPResources.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).BeginInit();
             this.flpBase.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).BeginInit();
             this.SuspendLayout();
             // 
             // lblBlueprintType
@@ -282,6 +282,7 @@ namespace OE2EmpireTracker
             this.txtFilterBaseBlueprint.Name = "txtFilterBaseBlueprint";
             this.txtFilterBaseBlueprint.Size = new System.Drawing.Size(100, 20);
             this.txtFilterBaseBlueprint.TabIndex = 0;
+            this.txtFilterBaseBlueprint.TextChanged += new System.EventHandler(this.txtFilterBaseBlueprint_TextChanged);
             // 
             // cmbBaseBlueprint
             // 
@@ -419,6 +420,7 @@ namespace OE2EmpireTracker
             this.btnSave.TabIndex = 9;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // btnCancel
             // 
@@ -428,6 +430,7 @@ namespace OE2EmpireTracker
             this.btnCancel.TabIndex = 10;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // tabDetailedData
             // 
@@ -451,6 +454,51 @@ namespace OE2EmpireTracker
             this.tabPStatistics.TabIndex = 0;
             this.tabPStatistics.Text = "Statistics";
             this.tabPStatistics.UseVisualStyleBackColor = true;
+            // 
+            // tabPResources
+            // 
+            this.tabPResources.Controls.Add(this.dgvResources);
+            this.tabPResources.Location = new System.Drawing.Point(4, 22);
+            this.tabPResources.Margin = new System.Windows.Forms.Padding(2);
+            this.tabPResources.Name = "tabPResources";
+            this.tabPResources.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPResources.Size = new System.Drawing.Size(826, 303);
+            this.tabPResources.TabIndex = 1;
+            this.tabPResources.Text = "Required Resources";
+            this.tabPResources.UseVisualStyleBackColor = true;
+            // 
+            // dgvResources
+            // 
+            this.dgvResources.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvResources.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Resource,
+            this.Amount});
+            this.dgvResources.Location = new System.Drawing.Point(1, 0);
+            this.dgvResources.Name = "dgvResources";
+            this.dgvResources.Size = new System.Drawing.Size(825, 303);
+            this.dgvResources.TabIndex = 0;
+            // 
+            // flpBase
+            // 
+            this.flpBase.AutoSize = true;
+            this.flpBase.Controls.Add(this.flpBaseDetails);
+            this.flpBase.Controls.Add(this.tabDetailedData);
+            this.flpBase.Controls.Add(this.flpCommands);
+            this.flpBase.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpBase.Location = new System.Drawing.Point(0, 0);
+            this.flpBase.Name = "flpBase";
+            this.flpBase.Size = new System.Drawing.Size(844, 601);
+            this.flpBase.TabIndex = 9;
+            // 
+            // Resource
+            // 
+            this.Resource.HeaderText = "Resource";
+            this.Resource.Name = "Resource";
+            // 
+            // Amount
+            // 
+            this.Amount.HeaderText = "Amount";
+            this.Amount.Name = "Amount";
             // 
             // dgvStatistics
             // 
@@ -488,51 +536,6 @@ namespace OE2EmpireTracker
             this.CurrentValue.Name = "CurrentValue";
             this.CurrentValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
-            // tabPResources
-            // 
-            this.tabPResources.Controls.Add(this.dgvResources);
-            this.tabPResources.Location = new System.Drawing.Point(4, 22);
-            this.tabPResources.Margin = new System.Windows.Forms.Padding(2);
-            this.tabPResources.Name = "tabPResources";
-            this.tabPResources.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPResources.Size = new System.Drawing.Size(826, 303);
-            this.tabPResources.TabIndex = 1;
-            this.tabPResources.Text = "Required Resources";
-            this.tabPResources.UseVisualStyleBackColor = true;
-            // 
-            // dgvResources
-            // 
-            this.dgvResources.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvResources.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column1,
-            this.Column2});
-            this.dgvResources.Location = new System.Drawing.Point(1, 0);
-            this.dgvResources.Name = "dgvResources";
-            this.dgvResources.Size = new System.Drawing.Size(825, 303);
-            this.dgvResources.TabIndex = 0;
-            // 
-            // Column1
-            // 
-            this.Column1.HeaderText = "Resource";
-            this.Column1.Name = "Column1";
-            // 
-            // Column2
-            // 
-            this.Column2.HeaderText = "Amount";
-            this.Column2.Name = "Column2";
-            // 
-            // flpBase
-            // 
-            this.flpBase.AutoSize = true;
-            this.flpBase.Controls.Add(this.flpBaseDetails);
-            this.flpBase.Controls.Add(this.tabDetailedData);
-            this.flpBase.Controls.Add(this.flpCommands);
-            this.flpBase.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpBase.Location = new System.Drawing.Point(0, 0);
-            this.flpBase.Name = "flpBase";
-            this.flpBase.Size = new System.Drawing.Size(844, 601);
-            this.flpBase.TabIndex = 9;
-            // 
             // FormBlueprint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -561,11 +564,11 @@ namespace OE2EmpireTracker
             this.flpCommands.PerformLayout();
             this.tabDetailedData.ResumeLayout(false);
             this.tabPStatistics.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).EndInit();
             this.tabPResources.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).EndInit();
             this.flpBase.ResumeLayout(false);
             this.flpBase.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -601,8 +604,6 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.DataGridView dgvResources;
-        private System.Windows.Forms.DataGridViewComboBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private DataEntryGridView dgvStatistics;
         private System.Windows.Forms.DataGridViewTextBoxColumn Property;
         private System.Windows.Forms.DataGridViewTextBoxColumn BaseValue;
@@ -614,5 +615,7 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.FlowLayoutPanel flpNickName;
         private System.Windows.Forms.Label lblNickName;
         private System.Windows.Forms.TextBox txtNickName;
+        private System.Windows.Forms.DataGridViewComboBoxColumn Resource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Amount;
     }
 }

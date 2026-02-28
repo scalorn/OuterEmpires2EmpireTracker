@@ -1,4 +1,5 @@
 ﻿using OE2EmpireTracker.Baseline;//
+using OE2EmpireTracker.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,10 +18,12 @@ namespace OE2EmpireTracker
     public partial class FormBlueprint : Form
     {
         private EmpireContext empireContext;
+        private PlayerContext playerContext;
         public FormBlueprint()
         {
             InitializeComponent();
             empireContext = new EmpireContext();
+            playerContext = EmpireContext.PlayerContext;
 
             cmbBlueprintType.DisplayMember = "Name";
             cmbBlueprintType.ValueMember = "Id";
@@ -43,6 +46,16 @@ namespace OE2EmpireTracker
             cmbEvolution.ValueMember = "Name";
             cmbEvolution.DataSource = empireContext.bindingSourceEvolution;
             cmbEvolution.SelectedIndex = 0;
+
+            DataGridViewComboBoxColumn cmbResource = (DataGridViewComboBoxColumn) dgvResources.Columns["Resource"];
+            cmbResource.DisplayMember = "Name";
+            cmbResource.ValueMember = "Name";
+            cmbResource.DataSource = empireContext.bindingSourceResource;
+
+            cmbBaseBlueprint.DisplayMember = "ExtendedName";
+            cmbBaseBlueprint.ValueMember = "UUID";
+            cmbBaseBlueprint.DataSource = playerContext.bindingSourceBlueprint;
+            cmbBaseBlueprint.SelectedIndex = -1;
         }
 
         private void rtbCopyTarget_TextChanged(object sender, EventArgs e)
@@ -236,6 +249,80 @@ namespace OE2EmpireTracker
         private void txtFilterBlueprintType_Enter(object sender, EventArgs e)
         {
             cmbBlueprintType.DroppedDown = true;
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            empireContext = new EmpireContext();
+
+            PlayerContext playerContext = EmpireContext.PlayerContext;
+
+            Blueprint blueprint = new Blueprint();
+            Guid myUuid = Guid.NewGuid();
+            blueprint.UUID = myUuid.ToString();
+
+            BlueprintType blueprintType = cmbBlueprintType.SelectedItem as BlueprintType;
+            blueprint.BluePrintType = blueprintType.Id;
+
+            ShipClass shipClass = cmbShipClass.SelectedItem as ShipClass;
+            blueprint.Class = shipClass.Id;
+
+            TechLevel techLevel = cmbTechLevel.SelectedItem as TechLevel;
+            blueprint.TechLevel = techLevel.Name;
+
+            string evolution = "0";
+            if (cmbEvolution.SelectedItem != null)
+            {
+                evolution = cmbEvolution.SelectedItem as string;
+            } else if (cmbEvolution.Text != null)
+            {
+                evolution = cmbEvolution.Text;
+            }
+            blueprint.Evolution = int.Parse(evolution);
+
+            if (cmbBaseBlueprint.SelectedItem != null)
+            {
+                Blueprint baseBlueprint = cmbBaseBlueprint.SelectedItem as Blueprint;
+                blueprint.baseBlueprintUUID = baseBlueprint.UUID;
+            }
+            else
+            {
+                blueprint.baseBlueprintUUID = "";
+            }
+
+            blueprint.Name = txtName.Text;
+            blueprint.NickName = txtNickName.Text;
+            blueprint.Description = txtDescription.Text;
+
+            // Now to map grid fields.
+
+            playerContext.blueprintList.Add(blueprint);
+            playerContext.writeContext();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtFilterBaseBlueprint_TextChanged(object sender, EventArgs e)
+        {
+            string searchText = txtFilterBaseBlueprint.Text;
+            BindingSource filteredItemsBindingList = playerContext.bindingSourceBlueprint;
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                BindingList<Blueprint> blueprints = playerContext.blueprintList;
+                var filteredList = blueprints
+                    .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+                filteredItemsBindingList = new BindingSource();
+                // Set the in-memory list as the DataSource for the BindingSource
+                filteredItemsBindingList.DataSource = filteredList;
+            }
+
+            cmbBaseBlueprint.DataSource = filteredItemsBindingList;
+            cmbBaseBlueprint.DroppedDown = true;
         }
     }
 }

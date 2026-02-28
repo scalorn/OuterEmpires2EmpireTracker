@@ -10,73 +10,24 @@ namespace OE2EmpireTracker.Data
 {
     public class Blueprint : Item
     {
-        public enum BluePrintTypeEnum
-        {
-            None,
-            CargoPod,
-            FuelTank,
-            GERTYDroneRack,
-            Hull,
-            HullReinforcement,
-            HullSealantInjectionUnit,
-            JumpDrive,
-            MainDrive,
-            NavComp,
-            Reactor,
-            Shield,
-            SystemObjectScanner,
-            Thruster,
-            UniversalCoupler,
-            BeamerSmall,
-            BeamerMedium,
-            BeamerLarge,
-            CoilGunSmall,
-            CoilGunMedium,
-            CoilGunLarge,
-            MissileLauncherSmall,
-            MissileLauncherMedium,
-            MissileLauncherLarge,
-            RailgunSmall,
-            RailgunMedium,
-            RailgunLarge,
-            TorpedoLauncherSmall,
-            TorpedoLauncherMedium,
-            TorpedoLauncherLarge
-        }
+        //[NotMapped]
+        public string baseBlueprintUUID { get; set; }
 
-        [Key]
-        [Required]
-        public override int ID
-        {
-            get
-            {
-                return base.ID;
-            }
-            set
-            {
-                base.ID = value;
-            }
-        }
+        public string BluePrintType { get; set; }
 
-        [NotMapped]
-        public int Parentid { get; set; }
-
-        [NotMapped]
-        public BluePrintTypeEnum BluePrintType { get; set; }
-
-        [NotMapped]
+        //[NotMapped]
         public int Evolution { get; set; }
 
-        [NotMapped]
-        public int Quality { get; set; }
+        //[NotMapped]
+        public string TechLevel { get; set; }
 
-        [NotMapped]
+        //[NotMapped]
         public int ManufactureRunTime { get; set; }
 
-        [NotMapped]
-        public int ClassID { get; set; }
+        //[NotMapped]
+        public int Class { get; set; }
 
-        [NotMapped]
+        //[NotMapped]
         public int MaxAllowedOnShip { get; set; }
 
         public KeyValuePair<int, int> Mass { get; set; }
@@ -137,12 +88,16 @@ namespace OE2EmpireTracker.Data
         // Universal Coupler
         public KeyValuePair<int, int> FuelTransferRate { get; set; }
 
+        public string ExtendedName { get { return Name + " Ev(" + Evolution + ") (" + TechLevel +") [" + NickName + "]"; } }
+
+
         public Blueprint(string name, int quantity) : base(ItemTypeEnum.Blueprint, name, quantity)
         {
         }
 
         public Blueprint() : base()
         {
+            ItemType = ItemTypeEnum.Blueprint;
         }
 
     }

@@ -29,9 +29,9 @@ namespace OE2EmpireTracker.Data
             Share
         }
 
-        [Key]
-        [Required]
-        public virtual int ID { get; set; }
+        //[Key]
+        //[Required]
+        //public virtual int ID { get; set; }
 
         public string UUID { get; set; }
 
@@ -41,6 +41,10 @@ namespace OE2EmpireTracker.Data
         [Required]
         public virtual string Name { get; set; }
 
+        [Required]
+        public virtual string NickName { get; set; }
+        [Required]
+        public virtual string Description { get; set; }
         [Required]
         public int Quantity { get; set; }
         

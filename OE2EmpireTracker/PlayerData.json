@@ -1,13 +1,12 @@
 {
   "Blueprint": [
     {
-      "ID": 0,
-      "Parentid": 0,
-      "BluePrintType": 0,
-      "Evolution": 0,
-      "Quality": 0,
+      "baseBlueprintUUID": "",
+      "BluePrintType": "JumpDrive",
+      "Evolution": 3,
+      "TechLevel": "MilSpec",
       "ManufactureRunTime": 0,
-      "ClassID": 0,
+      "Class": 5,
       "MaxAllowedOnShip": 0,
       "Mass": {
         "Key": 0,
@@ -149,9 +148,328 @@
         "Key": 0,
         "Value": 0
       },
-      "UUID": null,
+      "ExtendedName": "12378 Ev(3) (MilSpec) [12345]",
+      "UUID": "a3c892c8-bd51-463c-8b00-4b9b74d29d68",
+      "ItemType": 9,
+      "Name": "12378",
+      "NickName": "12345",
+      "Description": "12312",
+      "Quantity": 0,
+      "SubResources": [],
+      "ItemProperties": []
+    },
+    {
+      "baseBlueprintUUID": "",
+      "BluePrintType": "JumpDrive",
+      "Evolution": 1,
+      "TechLevel": "MilSpec",
+      "ManufactureRunTime": 0,
+      "Class": 6,
+      "MaxAllowedOnShip": 0,
+      "Mass": {
+        "Key": 0,
+        "Value": 0
+      },
+      "CargoVolumeSize": {
+        "Key": 0,
+        "Value": 0
+      },
+      "PowerRequired": {
+        "Key": 0,
+        "Value": 0
+      },
+      "Health": {
+        "Key": 0,
+        "Value": 0
+      },
+      "EngCapacityRequired": {
+        "Key": 0,
+        "Value": 0
+      },
+      "WearAndTearRate": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "MaximumDamageRepairPercentage": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "CargoCapacity": {
+        "Key": 0,
+        "Value": 0
+      },
+      "FuelCapacity": {
+        "Key": 0,
+        "Value": 0
+      },
+      "LargeWeaponMounts": {
+        "Key": 0,
+        "Value": 0
+      },
+      "MediumWeaponMounts": {
+        "Key": 0,
+        "Value": 0
+      },
+      "SmallWeaponMounts": {
+        "Key": 0,
+        "Value": 0
+      },
+      "EnergyDefense": {
+        "Key": 0,
+        "Value": 0
+      },
+      "KineticDamageDefense": {
+        "Key": 0,
+        "Value": 0
+      },
+      "MissileDamageDefense": {
+        "Key": 0,
+        "Value": 0
+      },
+      "NumberOfCrewSupported": {
+        "Key": 0,
+        "Value": 0
+      },
+      "AdditionalCargoCapacity": {
+        "Key": 0,
+        "Value": 0
+      },
+      "AdditionalFuelCapacity": {
+        "Key": 0,
+        "Value": 0
+      },
+      "RotationalThrust": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "AccelerationRate": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "PowerGenerated": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "PowerRegenerationRate": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "FuelUsed": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "MaxJumpDistance": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "JumpChargeTime": {
+        "Key": 0,
+        "Value": 0
+      },
+      "PowerDrawPerSecond": {
+        "Key": 0,
+        "Value": 0
+      },
+      "EnergyDefence": {
+        "Key": 0,
+        "Value": 0
+      },
+      "ShieldHitPoints": {
+        "Key": 0,
+        "Value": 0
+      },
+      "ShieldRegenPerSecond": {
+        "Key": 0,
+        "Value": 0
+      },
+      "SensorAbundanceFactor": {
+        "Key": 0,
+        "Value": 0
+      },
+      "PurityModifier": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "ScanLevel": {
+        "Key": 0,
+        "Value": 0
+      },
+      "MaterialFocus": {
+        "Key": 0,
+        "Value": 0
+      },
+      "MaterialFocusBonus": {
+        "Key": 0,
+        "Value": 0
+      },
+      "FuelTransferRate": {
+        "Key": 0,
+        "Value": 0
+      },
+      "ExtendedName": "WSMS-L  Ev(1) (MilSpec) [JAS37]",
+      "UUID": "f5ca46b3-9264-4f73-aa2c-df4dcff93238",
       "ItemType": 0,
-      "Name": null,
+      "Name": "WSMS-L ",
+      "NickName": "JAS37",
+      "Description": "JAS37 desc",
+      "Quantity": 0,
+      "SubResources": [],
+      "ItemProperties": []
+    },
+    {
+      "baseBlueprintUUID": "f5ca46b3-9264-4f73-aa2c-df4dcff93238",
+      "BluePrintType": "JumpDrive",
+      "Evolution": 0,
+      "TechLevel": "MilSpec",
+      "ManufactureRunTime": 0,
+      "Class": 1,
+      "MaxAllowedOnShip": 0,
+      "Mass": {
+        "Key": 0,
+        "Value": 0
+      },
+      "CargoVolumeSize": {
+        "Key": 0,
+        "Value": 0
+      },
+      "PowerRequired": {
+        "Key": 0,
+        "Value": 0
+      },
+      "Health": {
+        "Key": 0,
+        "Value": 0
+      },
+      "EngCapacityRequired": {
+        "Key": 0,
+        "Value": 0
+      },
+      "WearAndTearRate": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "MaximumDamageRepairPercentage": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "CargoCapacity": {
+        "Key": 0,
+        "Value": 0
+      },
+      "FuelCapacity": {
+        "Key": 0,
+        "Value": 0
+      },
+      "LargeWeaponMounts": {
+        "Key": 0,
+        "Value": 0
+      },
+      "MediumWeaponMounts": {
+        "Key": 0,
+        "Value": 0
+      },
+      "SmallWeaponMounts": {
+        "Key": 0,
+        "Value": 0
+      },
+      "EnergyDefense": {
+        "Key": 0,
+        "Value": 0
+      },
+      "KineticDamageDefense": {
+        "Key": 0,
+        "Value": 0
+      },
+      "MissileDamageDefense": {
+        "Key": 0,
+        "Value": 0
+      },
+      "NumberOfCrewSupported": {
+        "Key": 0,
+        "Value": 0
+      },
+      "AdditionalCargoCapacity": {
+        "Key": 0,
+        "Value": 0
+      },
+      "AdditionalFuelCapacity": {
+        "Key": 0,
+        "Value": 0
+      },
+      "RotationalThrust": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "AccelerationRate": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "PowerGenerated": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "PowerRegenerationRate": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "FuelUsed": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "MaxJumpDistance": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "JumpChargeTime": {
+        "Key": 0,
+        "Value": 0
+      },
+      "PowerDrawPerSecond": {
+        "Key": 0,
+        "Value": 0
+      },
+      "EnergyDefence": {
+        "Key": 0,
+        "Value": 0
+      },
+      "ShieldHitPoints": {
+        "Key": 0,
+        "Value": 0
+      },
+      "ShieldRegenPerSecond": {
+        "Key": 0,
+        "Value": 0
+      },
+      "SensorAbundanceFactor": {
+        "Key": 0,
+        "Value": 0
+      },
+      "PurityModifier": {
+        "Key": 0.0,
+        "Value": 0.0
+      },
+      "ScanLevel": {
+        "Key": 0,
+        "Value": 0
+      },
+      "MaterialFocus": {
+        "Key": 0,
+        "Value": 0
+      },
+      "MaterialFocusBonus": {
+        "Key": 0,
+        "Value": 0
+      },
+      "FuelTransferRate": {
+        "Key": 0,
+        "Value": 0
+      },
+      "ExtendedName": "test baseblueprint Ev(0) (MilSpec) [test baseblueprint]",
+      "UUID": "6cb8fc7c-9ee8-4a9b-bb53-45f5feb229cb",
+      "ItemType": 9,
+      "Name": "test baseblueprint",
+      "NickName": "test baseblueprint",
+      "Description": "test baseblueprint",
       "Quantity": 0,
       "SubResources": [],
       "ItemProperties": []
