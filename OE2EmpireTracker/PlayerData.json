@@ -8,6 +8,7 @@
       "ManufactureRunTime": 0,
       "Class": 5,
       "MaxAllowedOnShip": 0,
+      "Properties": {},
       "Mass": {
         "Key": 0,
         "Value": 0
@@ -166,6 +167,7 @@
       "ManufactureRunTime": 0,
       "Class": 1,
       "MaxAllowedOnShip": 0,
+      "Properties": {},
       "Mass": {
         "Key": 0,
         "Value": 0
@@ -324,6 +326,7 @@
       "ManufactureRunTime": 0,
       "Class": 8,
       "MaxAllowedOnShip": 0,
+      "Properties": {},
       "Mass": {
         "Key": 0,
         "Value": 0
@@ -482,6 +485,20 @@
       "ManufactureRunTime": 0,
       "Class": 6,
       "MaxAllowedOnShip": 0,
+      "Properties": {
+        "ManufactureTime": "1",
+        "Class": "2",
+        "Mass": "3",
+        "CargoVolumeSize": "4",
+        "MaxAllowedOnShip": "5",
+        "PowerRequired": "6",
+        "Health": "7",
+        "EngCapacityRequired": "8",
+        "WearAndTearRate": "9",
+        "MaximumDamageRepairRate": "10",
+        "FuelUsed": "11",
+        "MaxJumpDistance": "12"
+      },
       "Mass": {
         "Key": 0,
         "Value": 0
@@ -622,10 +639,10 @@
         "Key": 0,
         "Value": 0
       },
-      "ExtendedName": "WSMS-L test55 Ev(1) (MilSpec) [JAS37]",
+      "ExtendedName": "WSMS-L test66 Ev(1) (MilSpec) [JAS37]",
       "UUID": "f5ca46b3-9264-4f73-aa2c-df4dcff93238",
       "ItemType": 0,
-      "Name": "WSMS-L test55",
+      "Name": "WSMS-L test66",
       "NickName": "JAS37",
       "Description": "JAS37 desc",
       "Quantity": 0,

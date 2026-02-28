@@ -49,7 +49,7 @@ namespace OE2EmpireTracker.Data
         public int Quantity { get; set; }
         
         public List<SubResource> SubResources { get; set; }
-        public List<ItemProperty> ItemProperties { get; set; }
+        //public List<ItemProperty> ItemProperties { get; set; }
 
         public Item(ItemTypeEnum itemType, string name, int quantity)
         {
@@ -57,13 +57,13 @@ namespace OE2EmpireTracker.Data
             this.Name = name;
             this.Quantity = quantity;
             this.SubResources = new List<SubResource>();
-            this.ItemProperties = new List<ItemProperty>();
+            //this.ItemProperties = new List<ItemProperty>();
         }
 
         public Item()
         {
             this.SubResources = new List<SubResource>();
-            this.ItemProperties = new List<ItemProperty>();
+            //this.ItemProperties = new List<ItemProperty>();
         }
     }
 }

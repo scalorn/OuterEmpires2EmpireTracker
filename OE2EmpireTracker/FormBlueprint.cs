@@ -224,6 +224,7 @@ namespace OE2EmpireTracker
                     }
                     DataGridViewRow newRow = dgvStatistics.Rows[rowIndex];
                     newRow.Cells["Property"].Value = property;
+                    newRow.Cells["Property"].Tag = property;
                     row++;
                 }
 
@@ -424,6 +425,11 @@ namespace OE2EmpireTracker
 
             // Now to map grid fields.
 
+            foreach (DataGridViewRow row in dgvStatistics.Rows)
+            {
+                blueprint.Properties[row.Cells[0].Tag as string] = row.Cells[2].Value as string;
+            }
+
             if (selectedBlueprint == null)
             {
                 playerContext.blueprintList.Add(blueprint);
@@ -452,6 +458,18 @@ namespace OE2EmpireTracker
             txtName.Text = selectedBlueprint.Name;
             txtNickName.Text = selectedBlueprint.NickName;
             txtDescription.Text = selectedBlueprint.Description;
+
+            foreach (DataGridViewRow row in dgvStatistics.Rows)
+            {
+                string property = row.Cells["Property"].Tag as string;
+                string value = "";
+                bool found = selectedBlueprint.Properties.TryGetValue(property, out value);
+                if (!found || value == null)
+                {
+                    value = "";
+                }
+                row.Cells["CurrentValue"].Value = value;
+            }
 
         }
 
