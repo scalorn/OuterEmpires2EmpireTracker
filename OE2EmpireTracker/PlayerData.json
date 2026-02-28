@@ -87,6 +87,38 @@
       "Name": "WSMS-L test77",
       "NickName": "JAS37",
       "Description": "JAS37 desc"
+    },
+    {
+      "baseBlueprintUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "Evolution": 0,
+      "TechLevel": "MilSpec",
+      "Class": 7,
+      "Properties": {
+        "ManufactureTime": "4h 0m",
+        "Mass": "130",
+        "CargoVolumeSize": "165",
+        "MaxAllowedOnShip": "1",
+        "PowerRequired": "319",
+        "Health": "910",
+        "EngCapacityRequired": "490",
+        "WearAndTearRate": "3",
+        "MaximumDamageRepairRate": "80",
+        "SensorAbundanceFactor": "3.375",
+        "PurityModifier": "30",
+        "ScanLevel": "90"
+      },
+      "Resources": {
+        "Alkaline Earth Metals": "2151",
+        "Non-Metallics": "424",
+        "Heavy Post-Trans Metals": "711",
+        "Strong Alkali Organics": "352"
+      },
+      "UUID": "b0633002-68ea-4c02-83cf-10292a9a420c",
+      "ItemType": 9,
+      "Name": "RAK-L MatScan",
+      "NickName": "",
+      "Description": ""
     }
   ]
 }

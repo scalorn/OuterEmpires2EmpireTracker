@@ -300,6 +300,14 @@ namespace OE2EmpireTracker
                     .ToList();
             }
 
+            if (cmbShipClass.SelectedItem != null)
+            {
+                int shipClass = (cmbShipClass.SelectedItem as ShipClass).Id;
+                filteredList = filteredList
+                    .Where(item => item.Class == shipClass)
+                    .ToList();
+            }
+
             if (selectedBlueprint != null)
             {
                 filteredList = filteredList
