@@ -9,6 +9,7 @@
       "Class": 5,
       "MaxAllowedOnShip": 0,
       "Properties": {},
+      "Resources": {},
       "Mass": {
         "Key": 0,
         "Value": 0
@@ -156,8 +157,7 @@
       "NickName": "12345",
       "Description": "12312",
       "Quantity": 0,
-      "SubResources": [],
-      "ItemProperties": []
+      "SubResources": []
     },
     {
       "baseBlueprintUUID": "f5ca46b3-9264-4f73-aa2c-df4dcff93238",
@@ -168,6 +168,7 @@
       "Class": 1,
       "MaxAllowedOnShip": 0,
       "Properties": {},
+      "Resources": {},
       "Mass": {
         "Key": 0,
         "Value": 0
@@ -315,8 +316,7 @@
       "NickName": "test baseblueprint",
       "Description": "test baseblueprint",
       "Quantity": 0,
-      "SubResources": [],
-      "ItemProperties": []
+      "SubResources": []
     },
     {
       "baseBlueprintUUID": null,
@@ -327,6 +327,7 @@
       "Class": 8,
       "MaxAllowedOnShip": 0,
       "Properties": {},
+      "Resources": {},
       "Mass": {
         "Key": 0,
         "Value": 0
@@ -474,8 +475,7 @@
       "NickName": "test",
       "Description": "test",
       "Quantity": 0,
-      "SubResources": [],
-      "ItemProperties": []
+      "SubResources": []
     },
     {
       "baseBlueprintUUID": "",
@@ -498,6 +498,9 @@
         "MaximumDamageRepairRate": "10",
         "FuelUsed": "11",
         "MaxJumpDistance": "12"
+      },
+      "Resources": {
+        "Acidic Inorganics": "112"
       },
       "Mass": {
         "Key": 0,
@@ -646,8 +649,7 @@
       "NickName": "JAS37",
       "Description": "JAS37 desc",
       "Quantity": 0,
-      "SubResources": [],
-      "ItemProperties": []
+      "SubResources": []
     }
   ]
 }

@@ -430,6 +430,16 @@ namespace OE2EmpireTracker
                 blueprint.Properties[row.Cells[0].Tag as string] = row.Cells[2].Value as string;
             }
 
+            foreach (DataGridViewRow row in dgvResources.Rows)
+            {
+                string resourceName = row.Cells[0].Value as string;
+                string resourceAmount = row.Cells[1].Value as string;
+                if (resourceName != null)
+                {
+                    blueprint.Resources[resourceName] = resourceAmount;
+                }
+            }
+
             if (selectedBlueprint == null)
             {
                 playerContext.blueprintList.Add(blueprint);
@@ -469,6 +479,15 @@ namespace OE2EmpireTracker
                     value = "";
                 }
                 row.Cells["CurrentValue"].Value = value;
+            }
+
+            dgvResources.Rows.Clear();
+            foreach (KeyValuePair<string, string> resource in selectedBlueprint.Resources)
+            {
+                dgvResources.Rows.Add();
+                DataGridViewRow row = dgvResources.Rows[dgvResources.RowCount - 2];
+                row.Cells[0].Value = resource.Key;
+                row.Cells[1].Value = resource.Value;
             }
 
         }

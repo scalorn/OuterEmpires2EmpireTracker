@@ -31,6 +31,7 @@ namespace OE2EmpireTracker.Data
         public int MaxAllowedOnShip { get; set; }
 
         public Dictionary<string, string> Properties { get; set; }
+        public Dictionary<string, string> Resources { get; set; }
 
         public KeyValuePair<int, int> Mass { get; set; }
         public KeyValuePair<int, int> CargoVolumeSize { get; set; }
@@ -105,12 +106,14 @@ namespace OE2EmpireTracker.Data
         public Blueprint(string name, int quantity) : base(ItemTypeEnum.Blueprint, name, quantity)
         {
             Properties = new Dictionary<string, string>();
+            Resources = new Dictionary<string, string>();
         }
 
         public Blueprint() : base()
         {
             ItemType = ItemTypeEnum.Blueprint;
             Properties = new Dictionary<string, string>();
+            Resources = new Dictionary<string, string>();
         }
 
     }
