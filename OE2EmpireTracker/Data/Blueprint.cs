@@ -28,6 +28,8 @@ namespace OE2EmpireTracker.Data
         //[NotMapped]
         public int Class { get; set; }
 
+        public int CopyCost { get; set; }
+
         //[NotMapped]
         //public int MaxAllowedOnShip { get; set; }
 

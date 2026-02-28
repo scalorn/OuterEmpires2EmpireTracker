@@ -75,11 +75,14 @@ namespace OE2EmpireTracker
             this.txtBlueprintListFilter = new System.Windows.Forms.TextBox();
             this.lvwBlueprints = new System.Windows.Forms.ListView();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdDelete = new System.Windows.Forms.Button();
             this.dgvStatistics = new DataEntryGridView();
             this.Property = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BaseValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CurrentValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cmdDelete = new System.Windows.Forms.Button();
+            this.flpCopyCost = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblCopyCost = new System.Windows.Forms.Label();
+            this.txtCopyCost = new System.Windows.Forms.TextBox();
             this.flpBlueprintType.SuspendLayout();
             this.flpTechLevel.SuspendLayout();
             this.flpBaseDetails.SuspendLayout();
@@ -99,6 +102,7 @@ namespace OE2EmpireTracker
             this.flpBlueprintSearch.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).BeginInit();
+            this.flpCopyCost.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblBlueprintType
@@ -191,11 +195,12 @@ namespace OE2EmpireTracker
             this.flpBaseDetails.Controls.Add(this.flpName);
             this.flpBaseDetails.Controls.Add(this.flpNickName);
             this.flpBaseDetails.Controls.Add(this.flpDescription);
+            this.flpBaseDetails.Controls.Add(this.flpCopyCost);
             this.flpBaseDetails.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpBaseDetails.Location = new System.Drawing.Point(2, 2);
             this.flpBaseDetails.Margin = new System.Windows.Forms.Padding(2);
             this.flpBaseDetails.Name = "flpBaseDetails";
-            this.flpBaseDetails.Size = new System.Drawing.Size(419, 231);
+            this.flpBaseDetails.Size = new System.Drawing.Size(419, 259);
             this.flpBaseDetails.TabIndex = 6;
             // 
             // flpClass
@@ -406,7 +411,7 @@ namespace OE2EmpireTracker
             this.flpCommands.Controls.Add(this.btnSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
             this.flpCommands.Controls.Add(this.btnCancel);
-            this.flpCommands.Location = new System.Drawing.Point(2, 570);
+            this.flpCommands.Location = new System.Drawing.Point(2, 598);
             this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
             this.flpCommands.Name = "flpCommands";
             this.flpCommands.Size = new System.Drawing.Size(834, 29);
@@ -447,7 +452,7 @@ namespace OE2EmpireTracker
             // 
             this.tabDetailedData.Controls.Add(this.tabPStatistics);
             this.tabDetailedData.Controls.Add(this.tabPResources);
-            this.tabDetailedData.Location = new System.Drawing.Point(2, 237);
+            this.tabDetailedData.Location = new System.Drawing.Point(2, 265);
             this.tabDetailedData.Margin = new System.Windows.Forms.Padding(2);
             this.tabDetailedData.Name = "tabDetailedData";
             this.tabDetailedData.SelectedIndex = 0;
@@ -572,6 +577,16 @@ namespace OE2EmpireTracker
             this.flowLayoutPanel1.Size = new System.Drawing.Size(661, 641);
             this.flowLayoutPanel1.TabIndex = 10;
             // 
+            // cmdDelete
+            // 
+            this.cmdDelete.Location = new System.Drawing.Point(190, 3);
+            this.cmdDelete.Name = "cmdDelete";
+            this.cmdDelete.Size = new System.Drawing.Size(75, 23);
+            this.cmdDelete.TabIndex = 11;
+            this.cmdDelete.Text = "Delete";
+            this.cmdDelete.UseVisualStyleBackColor = true;
+            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
+            // 
             // dgvStatistics
             // 
             this.dgvStatistics.AllowUserToAddRows = false;
@@ -608,15 +623,36 @@ namespace OE2EmpireTracker
             this.CurrentValue.Name = "CurrentValue";
             this.CurrentValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
-            // cmdDelete
+            // flpCopyCost
             // 
-            this.cmdDelete.Location = new System.Drawing.Point(190, 3);
-            this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(75, 23);
-            this.cmdDelete.TabIndex = 11;
-            this.cmdDelete.Text = "Delete";
-            this.cmdDelete.UseVisualStyleBackColor = true;
-            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
+            this.flpCopyCost.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpCopyCost.AutoSize = true;
+            this.flpCopyCost.Controls.Add(this.lblCopyCost);
+            this.flpCopyCost.Controls.Add(this.txtCopyCost);
+            this.flpCopyCost.Location = new System.Drawing.Point(2, 233);
+            this.flpCopyCost.Margin = new System.Windows.Forms.Padding(2);
+            this.flpCopyCost.Name = "flpCopyCost";
+            this.flpCopyCost.Size = new System.Drawing.Size(415, 24);
+            this.flpCopyCost.TabIndex = 8;
+            // 
+            // lblCopyCost
+            // 
+            this.lblCopyCost.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCopyCost.Location = new System.Drawing.Point(2, 3);
+            this.lblCopyCost.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblCopyCost.Name = "lblCopyCost";
+            this.lblCopyCost.Size = new System.Drawing.Size(100, 17);
+            this.lblCopyCost.TabIndex = 2;
+            this.lblCopyCost.Text = "Copy Cost";
+            this.lblCopyCost.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtCopyCost
+            // 
+            this.txtCopyCost.Location = new System.Drawing.Point(106, 2);
+            this.txtCopyCost.Margin = new System.Windows.Forms.Padding(2);
+            this.txtCopyCost.Name = "txtCopyCost";
+            this.txtCopyCost.Size = new System.Drawing.Size(201, 20);
+            this.txtCopyCost.TabIndex = 7;
             // 
             // FormBlueprint
             // 
@@ -656,6 +692,8 @@ namespace OE2EmpireTracker
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).EndInit();
+            this.flpCopyCost.ResumeLayout(false);
+            this.flpCopyCost.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -711,5 +749,8 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.TextBox txtBlueprintListFilter;
         private System.Windows.Forms.ListView lvwBlueprints;
         private System.Windows.Forms.Button cmdDelete;
+        private System.Windows.Forms.FlowLayoutPanel flpCopyCost;
+        private System.Windows.Forms.Label lblCopyCost;
+        private System.Windows.Forms.TextBox txtCopyCost;
     }
 }

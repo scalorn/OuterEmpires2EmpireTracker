@@ -193,10 +193,28 @@ namespace OE2EmpireTracker
 
         private void cmbBlueprintType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            updateBlueprintTypeList();
+            updatePropertyGrid();
         }
 
-        public void updateBlueprintTypeList()
+        public void updateBlueprintTypeListBase()
+        {
+            string searchText = txtFilterBlueprintType.Text;
+            List<BlueprintType> filteredList = new List<BlueprintType>(empireContext.blueprintTypeList);
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(item => item.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+            }
+            filteredList.Insert(0, new BlueprintType());
+            var filteredItemsBindingList = new BindingSource();
+            // Set the in-memory list as the DataSource for the BindingSource
+            filteredItemsBindingList.DataSource = filteredList;
+
+            cmbBlueprintType.DataSource = filteredItemsBindingList;
+        }
+        public void updatePropertyGrid()
         {
             BlueprintType bt = cmbBlueprintType.SelectedItem as BlueprintType;
             if (bt != null && bt.Universal == true)
@@ -247,22 +265,7 @@ namespace OE2EmpireTracker
 
         private void txtFilterBlueprintType_TextChanged(object sender, EventArgs e)
         {
-            string searchText = txtFilterBlueprintType.Text;
-            BindingSource filteredItemsBindingList = empireContext.bindingSourceBlueprintType;
-
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                BindingList<BlueprintType> blueprintTypes = empireContext.blueprintTypeList;
-                var filteredList = blueprintTypes
-                    .Where(item => item.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
-                filteredList.Insert(0, new BlueprintType());
-                filteredItemsBindingList = new BindingSource();
-                // Set the in-memory list as the DataSource for the BindingSource
-                filteredItemsBindingList.DataSource = filteredList;
-            }
-
-            cmbBlueprintType.DataSource = filteredItemsBindingList;
+            updateBlueprintTypeListBase();
             cmbBlueprintType.DroppedDown = true;
         }
 
@@ -458,6 +461,9 @@ namespace OE2EmpireTracker
             blueprint.Name = txtName.Text;
             blueprint.NickName = txtNickName.Text;
             blueprint.Description = txtDescription.Text;
+            int copyCost = 0;
+            int.TryParse(txtCopyCost.Text, out copyCost);
+            blueprint.CopyCost = copyCost;
 
             // Now to map grid fields.
 
@@ -482,6 +488,10 @@ namespace OE2EmpireTracker
             }
             playerContext.writeContext();
             populateListView(new List<Blueprint>(playerContext.blueprintList));
+
+            selectedBlueprint = null;
+            clearForm();
+            txtBlueprintListFilter.Focus();
         }
 
         private void populateForm()
@@ -491,8 +501,9 @@ namespace OE2EmpireTracker
                 return;
             }
             txtFilterBlueprintType.Text = "";
-            updateBlueprintTypeList();
+            updateBlueprintTypeListBase();
             cmbBlueprintType.SelectedItem = empireContext.findBlueprintType(selectedBlueprint.BluePrintType);
+            updatePropertyGrid();
             cmbShipClass.SelectedItem = empireContext.findShipClass(selectedBlueprint.Class);
             cmbTechLevel.SelectedItem = empireContext.findTechLevel(selectedBlueprint.TechLevel);
             cmbEvolution.SelectedItem = empireContext.findEvolution(selectedBlueprint.Evolution);
@@ -504,6 +515,7 @@ namespace OE2EmpireTracker
             txtName.Text = selectedBlueprint.Name;
             txtNickName.Text = selectedBlueprint.NickName;
             txtDescription.Text = selectedBlueprint.Description;
+            txtCopyCost.Text = "" + selectedBlueprint.CopyCost;
 
             foreach (DataGridViewRow row in dgvStatistics.Rows)
             {
@@ -532,11 +544,15 @@ namespace OE2EmpireTracker
         {
             selectedBlueprint = null;
             txtFilterBlueprintType.Text = "";
-            updateBlueprintTypeList();
+            updateBlueprintTypeListBase();
             cmbBlueprintType.SelectedItem = null;
+            cmbBlueprintType.Text = "";
             cmbShipClass.SelectedItem = null;
+            cmbShipClass.Text = "";
             cmbTechLevel.SelectedItem = null;
+            cmbTechLevel.Text = "";
             cmbEvolution.SelectedItem = null;
+            cmbEvolution.Text = "";
 
             txtFilterBaseBlueprint.Text = "";
             updateBaseBlueprintList();
