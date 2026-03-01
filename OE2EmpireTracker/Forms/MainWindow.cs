@@ -1,5 +1,6 @@
 ﻿using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Forms.Colony;
+using OE2EmpireTracker.Forms.Survey;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -38,6 +39,13 @@ namespace OE2EmpireTracker
             Form colony = new FormColony();
             colony.MdiParent = this;
             colony.Show();
+        }
+
+        private void addSurveyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form survey = new FormSurvey();
+            survey.MdiParent = this;
+            survey.Show();
         }
     }
 }

@@ -37,10 +37,10 @@
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addSurveyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addBlueprintToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addColonyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.addColonyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -101,6 +101,7 @@
             this.addSurveyToolStripMenuItem.Name = "addSurveyToolStripMenuItem";
             this.addSurveyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.addSurveyToolStripMenuItem.Text = "Add Survey";
+            this.addSurveyToolStripMenuItem.Click += new System.EventHandler(this.addSurveyToolStripMenuItem_Click);
             // 
             // addBlueprintToolStripMenuItem
             // 
@@ -108,6 +109,13 @@
             this.addBlueprintToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.addBlueprintToolStripMenuItem.Text = "Add Blueprint";
             this.addBlueprintToolStripMenuItem.Click += new System.EventHandler(this.addBlueprintToolStripMenuItem_Click);
+            // 
+            // addColonyToolStripMenuItem
+            // 
+            this.addColonyToolStripMenuItem.Name = "addColonyToolStripMenuItem";
+            this.addColonyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addColonyToolStripMenuItem.Text = "Add Colony";
+            this.addColonyToolStripMenuItem.Click += new System.EventHandler(this.addColonyToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -128,13 +136,6 @@
             this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
-            // 
-            // addColonyToolStripMenuItem
-            // 
-            this.addColonyToolStripMenuItem.Name = "addColonyToolStripMenuItem";
-            this.addColonyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.addColonyToolStripMenuItem.Text = "Add Colony";
-            this.addColonyToolStripMenuItem.Click += new System.EventHandler(this.addColonyToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
