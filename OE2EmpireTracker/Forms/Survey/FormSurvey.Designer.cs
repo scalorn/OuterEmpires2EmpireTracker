@@ -37,56 +37,69 @@
             this.lblResource = new System.Windows.Forms.Label();
             this.cmbResource = new System.Windows.Forms.ComboBox();
             this.lvwSurveys = new System.Windows.Forms.ListView();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flpBaseDetails = new System.Windows.Forms.FlowLayoutPanel();
-            this.flpBlueprintType = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblBlueprintType = new System.Windows.Forms.Label();
-            this.txtFilterBlueprintType = new System.Windows.Forms.TextBox();
-            this.flpBaseBlueprint = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblBaseBlueprint = new System.Windows.Forms.Label();
-            this.txtFilterBaseBlueprint = new System.Windows.Forms.TextBox();
-            this.cmbBaseBlueprint = new System.Windows.Forms.ComboBox();
-            this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.flpNickName = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblNickName = new System.Windows.Forms.Label();
-            this.txtNickName = new System.Windows.Forms.TextBox();
+            this.flpSurveyData = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpSurveyDetails = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpPlanetName = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblPlanetName = new System.Windows.Forms.Label();
+            this.txtPlanetName = new System.Windows.Forms.TextBox();
+            this.flpScannerBlueprint = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblScannerBlueprint = new System.Windows.Forms.Label();
+            this.txtFilterScannerBlueprint = new System.Windows.Forms.TextBox();
+            this.cmbScannerBlueprint = new System.Windows.Forms.ComboBox();
+            this.flpScannedBy = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblScannedBy = new System.Windows.Forms.Label();
+            this.txtScannedBy = new System.Windows.Forms.TextBox();
+            this.flpSensorAbundance = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblSensorAbundance = new System.Windows.Forms.Label();
+            this.txtSensorAbundance = new System.Windows.Forms.TextBox();
+            this.flpPurityModifier = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblPurityModifier = new System.Windows.Forms.Label();
+            this.txtPurityModifier = new System.Windows.Forms.TextBox();
+            this.flpScanLevel = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblScanLevel = new System.Windows.Forms.Label();
+            this.txtScanLevel = new System.Windows.Forms.TextBox();
             this.dgvResources = new System.Windows.Forms.DataGridView();
-            this.Resource = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.Amount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.btnSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.flpSurveyID = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblSurveyID = new System.Windows.Forms.Label();
+            this.txtSurveyID = new System.Windows.Forms.TextBox();
+            this.flpScanDateTime = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblScanDateTime = new System.Windows.Forms.Label();
+            this.txtScanDateTime = new System.Windows.Forms.TextBox();
+            this.flpNickName = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblNickName = new System.Windows.Forms.Label();
+            this.txtNickName = new System.Windows.Forms.TextBox();
+            this.Resource = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.Purity = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.Amount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
             this.flpBlueprintSearch.SuspendLayout();
             this.flpResource.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
-            this.flpBaseDetails.SuspendLayout();
-            this.flpBlueprintType.SuspendLayout();
-            this.flpBaseBlueprint.SuspendLayout();
-            this.flowLayoutPanel4.SuspendLayout();
-            this.flowLayoutPanel3.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
-            this.flpNickName.SuspendLayout();
+            this.flpSurveyData.SuspendLayout();
+            this.flpSurveyDetails.SuspendLayout();
+            this.flpPlanetName.SuspendLayout();
+            this.flpScannerBlueprint.SuspendLayout();
+            this.flpScannedBy.SuspendLayout();
+            this.flpSensorAbundance.SuspendLayout();
+            this.flpPurityModifier.SuspendLayout();
+            this.flpScanLevel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).BeginInit();
             this.flpCommands.SuspendLayout();
+            this.flpSurveyID.SuspendLayout();
+            this.flpScanDateTime.SuspendLayout();
+            this.flpNickName.SuspendLayout();
             this.SuspendLayout();
             // 
             // flpBase
             // 
             this.flpBase.AutoSize = true;
             this.flpBase.Controls.Add(this.flpSearchList);
-            this.flpBase.Controls.Add(this.flowLayoutPanel1);
-            this.flpBase.Location = new System.Drawing.Point(-150, -98);
+            this.flpBase.Controls.Add(this.flpSurveyData);
+            this.flpBase.Location = new System.Drawing.Point(0, 0);
             this.flpBase.Name = "flpBase";
             this.flpBase.Size = new System.Drawing.Size(1100, 647);
             this.flpBase.TabIndex = 10;
@@ -109,7 +122,7 @@
             this.flpBlueprintSearch.Location = new System.Drawing.Point(2, 2);
             this.flpBlueprintSearch.Margin = new System.Windows.Forms.Padding(2);
             this.flpBlueprintSearch.Name = "flpBlueprintSearch";
-            this.flpBlueprintSearch.Size = new System.Drawing.Size(210, 26);
+            this.flpBlueprintSearch.Size = new System.Drawing.Size(312, 26);
             this.flpBlueprintSearch.TabIndex = 5;
             // 
             // lblPlanetFilter
@@ -127,7 +140,7 @@
             // 
             this.txtPlanetFilter.Location = new System.Drawing.Point(107, 3);
             this.txtPlanetFilter.Name = "txtPlanetFilter";
-            this.txtPlanetFilter.Size = new System.Drawing.Size(100, 20);
+            this.txtPlanetFilter.Size = new System.Drawing.Size(202, 20);
             this.txtPlanetFilter.TabIndex = 0;
             // 
             // flpResource
@@ -174,249 +187,245 @@
             this.lvwSurveys.Size = new System.Drawing.Size(412, 566);
             this.lvwSurveys.TabIndex = 6;
             this.lvwSurveys.UseCompatibleStateImageBehavior = false;
+            this.lvwSurveys.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.lvwSurveys_ItemSelectionChanged);
             // 
-            // flowLayoutPanel1
+            // flpSurveyData
             // 
-            this.flowLayoutPanel1.Controls.Add(this.flpBaseDetails);
-            this.flowLayoutPanel1.Controls.Add(this.flpCommands);
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(436, 3);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(661, 641);
-            this.flowLayoutPanel1.TabIndex = 10;
+            this.flpSurveyData.Controls.Add(this.flpSurveyDetails);
+            this.flpSurveyData.Controls.Add(this.flpCommands);
+            this.flpSurveyData.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpSurveyData.Location = new System.Drawing.Point(436, 3);
+            this.flpSurveyData.Name = "flpSurveyData";
+            this.flpSurveyData.Size = new System.Drawing.Size(661, 641);
+            this.flpSurveyData.TabIndex = 10;
             // 
-            // flpBaseDetails
+            // flpSurveyDetails
             // 
-            this.flpBaseDetails.AutoSize = true;
-            this.flpBaseDetails.Controls.Add(this.flpBlueprintType);
-            this.flpBaseDetails.Controls.Add(this.flpBaseBlueprint);
-            this.flpBaseDetails.Controls.Add(this.flowLayoutPanel4);
-            this.flpBaseDetails.Controls.Add(this.flowLayoutPanel3);
-            this.flpBaseDetails.Controls.Add(this.flowLayoutPanel2);
-            this.flpBaseDetails.Controls.Add(this.flpNickName);
-            this.flpBaseDetails.Controls.Add(this.dgvResources);
-            this.flpBaseDetails.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpBaseDetails.Location = new System.Drawing.Point(2, 2);
-            this.flpBaseDetails.Margin = new System.Windows.Forms.Padding(2);
-            this.flpBaseDetails.Name = "flpBaseDetails";
-            this.flpBaseDetails.Size = new System.Drawing.Size(831, 481);
-            this.flpBaseDetails.TabIndex = 6;
+            this.flpSurveyDetails.AutoSize = true;
+            this.flpSurveyDetails.Controls.Add(this.flpPlanetName);
+            this.flpSurveyDetails.Controls.Add(this.flpSurveyID);
+            this.flpSurveyDetails.Controls.Add(this.flpNickName);
+            this.flpSurveyDetails.Controls.Add(this.flpScannerBlueprint);
+            this.flpSurveyDetails.Controls.Add(this.flpScannedBy);
+            this.flpSurveyDetails.Controls.Add(this.flpScanDateTime);
+            this.flpSurveyDetails.Controls.Add(this.flpSensorAbundance);
+            this.flpSurveyDetails.Controls.Add(this.flpPurityModifier);
+            this.flpSurveyDetails.Controls.Add(this.flpScanLevel);
+            this.flpSurveyDetails.Controls.Add(this.dgvResources);
+            this.flpSurveyDetails.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpSurveyDetails.Location = new System.Drawing.Point(2, 2);
+            this.flpSurveyDetails.Margin = new System.Windows.Forms.Padding(2);
+            this.flpSurveyDetails.Name = "flpSurveyDetails";
+            this.flpSurveyDetails.Size = new System.Drawing.Size(831, 569);
+            this.flpSurveyDetails.TabIndex = 6;
             // 
-            // flpBlueprintType
+            // flpPlanetName
             // 
-            this.flpBlueprintType.AutoSize = true;
-            this.flpBlueprintType.Controls.Add(this.lblBlueprintType);
-            this.flpBlueprintType.Controls.Add(this.txtFilterBlueprintType);
-            this.flpBlueprintType.Location = new System.Drawing.Point(2, 2);
-            this.flpBlueprintType.Margin = new System.Windows.Forms.Padding(2);
-            this.flpBlueprintType.Name = "flpBlueprintType";
-            this.flpBlueprintType.Size = new System.Drawing.Size(210, 26);
-            this.flpBlueprintType.TabIndex = 0;
+            this.flpPlanetName.AutoSize = true;
+            this.flpPlanetName.Controls.Add(this.lblPlanetName);
+            this.flpPlanetName.Controls.Add(this.txtPlanetName);
+            this.flpPlanetName.Location = new System.Drawing.Point(2, 2);
+            this.flpPlanetName.Margin = new System.Windows.Forms.Padding(2);
+            this.flpPlanetName.Name = "flpPlanetName";
+            this.flpPlanetName.Size = new System.Drawing.Size(310, 26);
+            this.flpPlanetName.TabIndex = 0;
             // 
-            // lblBlueprintType
+            // lblPlanetName
             // 
-            this.lblBlueprintType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblBlueprintType.Location = new System.Drawing.Point(2, 4);
-            this.lblBlueprintType.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblBlueprintType.Name = "lblBlueprintType";
-            this.lblBlueprintType.Size = new System.Drawing.Size(100, 17);
-            this.lblBlueprintType.TabIndex = 2;
-            this.lblBlueprintType.Text = "Planet Name";
-            this.lblBlueprintType.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblPlanetName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblPlanetName.Location = new System.Drawing.Point(2, 4);
+            this.lblPlanetName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblPlanetName.Name = "lblPlanetName";
+            this.lblPlanetName.Size = new System.Drawing.Size(100, 17);
+            this.lblPlanetName.TabIndex = 2;
+            this.lblPlanetName.Text = "Planet Name";
+            this.lblPlanetName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // txtFilterBlueprintType
+            // txtPlanetName
             // 
-            this.txtFilterBlueprintType.Location = new System.Drawing.Point(107, 3);
-            this.txtFilterBlueprintType.Name = "txtFilterBlueprintType";
-            this.txtFilterBlueprintType.Size = new System.Drawing.Size(100, 20);
-            this.txtFilterBlueprintType.TabIndex = 0;
+            this.txtPlanetName.Location = new System.Drawing.Point(107, 3);
+            this.txtPlanetName.Name = "txtPlanetName";
+            this.txtPlanetName.Size = new System.Drawing.Size(200, 20);
+            this.txtPlanetName.TabIndex = 0;
             // 
-            // flpBaseBlueprint
+            // flpScannerBlueprint
             // 
-            this.flpBaseBlueprint.AutoSize = true;
-            this.flpBaseBlueprint.Controls.Add(this.lblBaseBlueprint);
-            this.flpBaseBlueprint.Controls.Add(this.txtFilterBaseBlueprint);
-            this.flpBaseBlueprint.Controls.Add(this.cmbBaseBlueprint);
-            this.flpBaseBlueprint.Location = new System.Drawing.Point(2, 32);
-            this.flpBaseBlueprint.Margin = new System.Windows.Forms.Padding(2);
-            this.flpBaseBlueprint.Name = "flpBaseBlueprint";
-            this.flpBaseBlueprint.Size = new System.Drawing.Size(415, 26);
-            this.flpBaseBlueprint.TabIndex = 4;
+            this.flpScannerBlueprint.AutoSize = true;
+            this.flpScannerBlueprint.Controls.Add(this.lblScannerBlueprint);
+            this.flpScannerBlueprint.Controls.Add(this.txtFilterScannerBlueprint);
+            this.flpScannerBlueprint.Controls.Add(this.cmbScannerBlueprint);
+            this.flpScannerBlueprint.Location = new System.Drawing.Point(2, 92);
+            this.flpScannerBlueprint.Margin = new System.Windows.Forms.Padding(2);
+            this.flpScannerBlueprint.Name = "flpScannerBlueprint";
+            this.flpScannerBlueprint.Size = new System.Drawing.Size(415, 26);
+            this.flpScannerBlueprint.TabIndex = 4;
             // 
-            // lblBaseBlueprint
+            // lblScannerBlueprint
             // 
-            this.lblBaseBlueprint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblBaseBlueprint.Location = new System.Drawing.Point(2, 4);
-            this.lblBaseBlueprint.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblBaseBlueprint.Name = "lblBaseBlueprint";
-            this.lblBaseBlueprint.Size = new System.Drawing.Size(100, 17);
-            this.lblBaseBlueprint.TabIndex = 2;
-            this.lblBaseBlueprint.Text = "Scanner Blueprint";
-            this.lblBaseBlueprint.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblScannerBlueprint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblScannerBlueprint.Location = new System.Drawing.Point(2, 4);
+            this.lblScannerBlueprint.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblScannerBlueprint.Name = "lblScannerBlueprint";
+            this.lblScannerBlueprint.Size = new System.Drawing.Size(100, 17);
+            this.lblScannerBlueprint.TabIndex = 2;
+            this.lblScannerBlueprint.Text = "Scanner Blueprint";
+            this.lblScannerBlueprint.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // txtFilterBaseBlueprint
+            // txtFilterScannerBlueprint
             // 
-            this.txtFilterBaseBlueprint.Location = new System.Drawing.Point(107, 3);
-            this.txtFilterBaseBlueprint.Name = "txtFilterBaseBlueprint";
-            this.txtFilterBaseBlueprint.Size = new System.Drawing.Size(100, 20);
-            this.txtFilterBaseBlueprint.TabIndex = 0;
+            this.txtFilterScannerBlueprint.Location = new System.Drawing.Point(107, 3);
+            this.txtFilterScannerBlueprint.Name = "txtFilterScannerBlueprint";
+            this.txtFilterScannerBlueprint.Size = new System.Drawing.Size(100, 20);
+            this.txtFilterScannerBlueprint.TabIndex = 0;
+            this.txtFilterScannerBlueprint.TextChanged += new System.EventHandler(this.txtFilterScannerBlueprint_TextChanged);
             // 
-            // cmbBaseBlueprint
+            // cmbScannerBlueprint
             // 
-            this.cmbBaseBlueprint.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cmbBaseBlueprint.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cmbBaseBlueprint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbBaseBlueprint.FormattingEnabled = true;
-            this.cmbBaseBlueprint.Location = new System.Drawing.Point(212, 2);
-            this.cmbBaseBlueprint.Margin = new System.Windows.Forms.Padding(2);
-            this.cmbBaseBlueprint.Name = "cmbBaseBlueprint";
-            this.cmbBaseBlueprint.Size = new System.Drawing.Size(201, 21);
-            this.cmbBaseBlueprint.TabIndex = 1;
+            this.cmbScannerBlueprint.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cmbScannerBlueprint.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cmbScannerBlueprint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbScannerBlueprint.FormattingEnabled = true;
+            this.cmbScannerBlueprint.Location = new System.Drawing.Point(212, 2);
+            this.cmbScannerBlueprint.Margin = new System.Windows.Forms.Padding(2);
+            this.cmbScannerBlueprint.Name = "cmbScannerBlueprint";
+            this.cmbScannerBlueprint.Size = new System.Drawing.Size(201, 21);
+            this.cmbScannerBlueprint.TabIndex = 1;
             // 
-            // flowLayoutPanel4
+            // flpScannedBy
             // 
-            this.flowLayoutPanel4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel4.AutoSize = true;
-            this.flowLayoutPanel4.Controls.Add(this.label3);
-            this.flowLayoutPanel4.Controls.Add(this.textBox3);
-            this.flowLayoutPanel4.Location = new System.Drawing.Point(2, 62);
-            this.flowLayoutPanel4.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel4.Name = "flowLayoutPanel4";
-            this.flowLayoutPanel4.Size = new System.Drawing.Size(827, 24);
-            this.flowLayoutPanel4.TabIndex = 8;
+            this.flpScannedBy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpScannedBy.AutoSize = true;
+            this.flpScannedBy.Controls.Add(this.lblScannedBy);
+            this.flpScannedBy.Controls.Add(this.txtScannedBy);
+            this.flpScannedBy.Location = new System.Drawing.Point(2, 122);
+            this.flpScannedBy.Margin = new System.Windows.Forms.Padding(2);
+            this.flpScannedBy.Name = "flpScannedBy";
+            this.flpScannedBy.Size = new System.Drawing.Size(827, 24);
+            this.flpScannedBy.TabIndex = 8;
             // 
-            // label3
+            // lblScannedBy
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.Location = new System.Drawing.Point(2, 3);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(100, 17);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Scan DateTime";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblScannedBy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblScannedBy.Location = new System.Drawing.Point(2, 3);
+            this.lblScannedBy.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblScannedBy.Name = "lblScannedBy";
+            this.lblScannedBy.Size = new System.Drawing.Size(100, 17);
+            this.lblScannedBy.TabIndex = 2;
+            this.lblScannedBy.Text = "Scanned By";
+            this.lblScannedBy.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // textBox3
+            // txtScannedBy
             // 
-            this.textBox3.Location = new System.Drawing.Point(106, 2);
-            this.textBox3.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(201, 20);
-            this.textBox3.TabIndex = 7;
+            this.txtScannedBy.Location = new System.Drawing.Point(106, 2);
+            this.txtScannedBy.Margin = new System.Windows.Forms.Padding(2);
+            this.txtScannedBy.Name = "txtScannedBy";
+            this.txtScannedBy.Size = new System.Drawing.Size(201, 20);
+            this.txtScannedBy.TabIndex = 7;
             // 
-            // flowLayoutPanel3
+            // flpSensorAbundance
             // 
-            this.flowLayoutPanel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel3.AutoSize = true;
-            this.flowLayoutPanel3.Controls.Add(this.label2);
-            this.flowLayoutPanel3.Controls.Add(this.textBox2);
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(2, 90);
-            this.flowLayoutPanel3.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(827, 24);
-            this.flowLayoutPanel3.TabIndex = 8;
+            this.flpSensorAbundance.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpSensorAbundance.AutoSize = true;
+            this.flpSensorAbundance.Controls.Add(this.lblSensorAbundance);
+            this.flpSensorAbundance.Controls.Add(this.txtSensorAbundance);
+            this.flpSensorAbundance.Location = new System.Drawing.Point(2, 178);
+            this.flpSensorAbundance.Margin = new System.Windows.Forms.Padding(2);
+            this.flpSensorAbundance.Name = "flpSensorAbundance";
+            this.flpSensorAbundance.Size = new System.Drawing.Size(827, 24);
+            this.flpSensorAbundance.TabIndex = 8;
             // 
-            // label2
+            // lblSensorAbundance
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.Location = new System.Drawing.Point(2, 3);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(100, 17);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Sensor Abundance Factor";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblSensorAbundance.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSensorAbundance.Location = new System.Drawing.Point(2, 3);
+            this.lblSensorAbundance.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblSensorAbundance.Name = "lblSensorAbundance";
+            this.lblSensorAbundance.Size = new System.Drawing.Size(100, 17);
+            this.lblSensorAbundance.TabIndex = 2;
+            this.lblSensorAbundance.Text = "Sensor Abundance Factor";
+            this.lblSensorAbundance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // textBox2
+            // txtSensorAbundance
             // 
-            this.textBox2.Location = new System.Drawing.Point(106, 2);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(201, 20);
-            this.textBox2.TabIndex = 7;
+            this.txtSensorAbundance.Location = new System.Drawing.Point(106, 2);
+            this.txtSensorAbundance.Margin = new System.Windows.Forms.Padding(2);
+            this.txtSensorAbundance.Name = "txtSensorAbundance";
+            this.txtSensorAbundance.Size = new System.Drawing.Size(201, 20);
+            this.txtSensorAbundance.TabIndex = 7;
             // 
-            // flowLayoutPanel2
+            // flpPurityModifier
             // 
-            this.flowLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.Controls.Add(this.label1);
-            this.flowLayoutPanel2.Controls.Add(this.textBox1);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(2, 118);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(827, 24);
-            this.flowLayoutPanel2.TabIndex = 8;
+            this.flpPurityModifier.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpPurityModifier.AutoSize = true;
+            this.flpPurityModifier.Controls.Add(this.lblPurityModifier);
+            this.flpPurityModifier.Controls.Add(this.txtPurityModifier);
+            this.flpPurityModifier.Location = new System.Drawing.Point(2, 206);
+            this.flpPurityModifier.Margin = new System.Windows.Forms.Padding(2);
+            this.flpPurityModifier.Name = "flpPurityModifier";
+            this.flpPurityModifier.Size = new System.Drawing.Size(827, 24);
+            this.flpPurityModifier.TabIndex = 8;
             // 
-            // label1
+            // lblPurityModifier
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.Location = new System.Drawing.Point(2, 3);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 17);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Purity Modifier";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblPurityModifier.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblPurityModifier.Location = new System.Drawing.Point(2, 3);
+            this.lblPurityModifier.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblPurityModifier.Name = "lblPurityModifier";
+            this.lblPurityModifier.Size = new System.Drawing.Size(100, 17);
+            this.lblPurityModifier.TabIndex = 2;
+            this.lblPurityModifier.Text = "Purity Modifier";
+            this.lblPurityModifier.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // textBox1
+            // txtPurityModifier
             // 
-            this.textBox1.Location = new System.Drawing.Point(106, 2);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(201, 20);
-            this.textBox1.TabIndex = 7;
+            this.txtPurityModifier.Location = new System.Drawing.Point(106, 2);
+            this.txtPurityModifier.Margin = new System.Windows.Forms.Padding(2);
+            this.txtPurityModifier.Name = "txtPurityModifier";
+            this.txtPurityModifier.Size = new System.Drawing.Size(201, 20);
+            this.txtPurityModifier.TabIndex = 7;
             // 
-            // flpNickName
+            // flpScanLevel
             // 
-            this.flpNickName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.flpNickName.AutoSize = true;
-            this.flpNickName.Controls.Add(this.lblNickName);
-            this.flpNickName.Controls.Add(this.txtNickName);
-            this.flpNickName.Location = new System.Drawing.Point(2, 146);
-            this.flpNickName.Margin = new System.Windows.Forms.Padding(2);
-            this.flpNickName.Name = "flpNickName";
-            this.flpNickName.Size = new System.Drawing.Size(827, 24);
-            this.flpNickName.TabIndex = 6;
+            this.flpScanLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpScanLevel.AutoSize = true;
+            this.flpScanLevel.Controls.Add(this.lblScanLevel);
+            this.flpScanLevel.Controls.Add(this.txtScanLevel);
+            this.flpScanLevel.Location = new System.Drawing.Point(2, 234);
+            this.flpScanLevel.Margin = new System.Windows.Forms.Padding(2);
+            this.flpScanLevel.Name = "flpScanLevel";
+            this.flpScanLevel.Size = new System.Drawing.Size(827, 24);
+            this.flpScanLevel.TabIndex = 6;
             // 
-            // lblNickName
+            // lblScanLevel
             // 
-            this.lblNickName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblNickName.Location = new System.Drawing.Point(2, 3);
-            this.lblNickName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblNickName.Name = "lblNickName";
-            this.lblNickName.Size = new System.Drawing.Size(100, 17);
-            this.lblNickName.TabIndex = 2;
-            this.lblNickName.Text = "Scan Level";
-            this.lblNickName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblScanLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblScanLevel.Location = new System.Drawing.Point(2, 3);
+            this.lblScanLevel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblScanLevel.Name = "lblScanLevel";
+            this.lblScanLevel.Size = new System.Drawing.Size(100, 17);
+            this.lblScanLevel.TabIndex = 2;
+            this.lblScanLevel.Text = "Scan Level";
+            this.lblScanLevel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // txtNickName
+            // txtScanLevel
             // 
-            this.txtNickName.Location = new System.Drawing.Point(106, 2);
-            this.txtNickName.Margin = new System.Windows.Forms.Padding(2);
-            this.txtNickName.Name = "txtNickName";
-            this.txtNickName.Size = new System.Drawing.Size(201, 20);
-            this.txtNickName.TabIndex = 7;
+            this.txtScanLevel.Location = new System.Drawing.Point(106, 2);
+            this.txtScanLevel.Margin = new System.Windows.Forms.Padding(2);
+            this.txtScanLevel.Name = "txtScanLevel";
+            this.txtScanLevel.Size = new System.Drawing.Size(201, 20);
+            this.txtScanLevel.TabIndex = 7;
             // 
             // dgvResources
             // 
             this.dgvResources.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvResources.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Resource,
+            this.Purity,
             this.Amount});
-            this.dgvResources.Location = new System.Drawing.Point(3, 175);
+            this.dgvResources.Location = new System.Drawing.Point(3, 263);
             this.dgvResources.Name = "dgvResources";
             this.dgvResources.Size = new System.Drawing.Size(825, 303);
             this.dgvResources.TabIndex = 0;
-            // 
-            // Resource
-            // 
-            this.Resource.HeaderText = "Resource";
-            this.Resource.Name = "Resource";
-            // 
-            // Amount
-            // 
-            this.Amount.HeaderText = "Amount";
-            this.Amount.Name = "Amount";
             // 
             // flpCommands
             // 
@@ -425,7 +434,7 @@
             this.flpCommands.Controls.Add(this.btnSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
             this.flpCommands.Controls.Add(this.btnCancel);
-            this.flpCommands.Location = new System.Drawing.Point(2, 487);
+            this.flpCommands.Location = new System.Drawing.Point(2, 575);
             this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
             this.flpCommands.Name = "flpCommands";
             this.flpCommands.Size = new System.Drawing.Size(831, 29);
@@ -439,6 +448,7 @@
             this.btnSave.TabIndex = 9;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // cmdDelete
             // 
@@ -448,6 +458,7 @@
             this.cmdDelete.TabIndex = 11;
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
+            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
             // btnCancel
             // 
@@ -457,6 +468,113 @@
             this.btnCancel.TabIndex = 10;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // flpSurveyID
+            // 
+            this.flpSurveyID.AutoSize = true;
+            this.flpSurveyID.Controls.Add(this.lblSurveyID);
+            this.flpSurveyID.Controls.Add(this.txtSurveyID);
+            this.flpSurveyID.Location = new System.Drawing.Point(2, 32);
+            this.flpSurveyID.Margin = new System.Windows.Forms.Padding(2);
+            this.flpSurveyID.Name = "flpSurveyID";
+            this.flpSurveyID.Size = new System.Drawing.Size(310, 26);
+            this.flpSurveyID.TabIndex = 9;
+            // 
+            // lblSurveyID
+            // 
+            this.lblSurveyID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSurveyID.Location = new System.Drawing.Point(2, 4);
+            this.lblSurveyID.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblSurveyID.Name = "lblSurveyID";
+            this.lblSurveyID.Size = new System.Drawing.Size(100, 17);
+            this.lblSurveyID.TabIndex = 2;
+            this.lblSurveyID.Text = "Survey ID";
+            this.lblSurveyID.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtSurveyID
+            // 
+            this.txtSurveyID.Location = new System.Drawing.Point(107, 3);
+            this.txtSurveyID.Name = "txtSurveyID";
+            this.txtSurveyID.Size = new System.Drawing.Size(200, 20);
+            this.txtSurveyID.TabIndex = 0;
+            // 
+            // flpScanDateTime
+            // 
+            this.flpScanDateTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpScanDateTime.AutoSize = true;
+            this.flpScanDateTime.Controls.Add(this.lblScanDateTime);
+            this.flpScanDateTime.Controls.Add(this.txtScanDateTime);
+            this.flpScanDateTime.Location = new System.Drawing.Point(2, 150);
+            this.flpScanDateTime.Margin = new System.Windows.Forms.Padding(2);
+            this.flpScanDateTime.Name = "flpScanDateTime";
+            this.flpScanDateTime.Size = new System.Drawing.Size(827, 24);
+            this.flpScanDateTime.TabIndex = 10;
+            // 
+            // lblScanDateTime
+            // 
+            this.lblScanDateTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblScanDateTime.Location = new System.Drawing.Point(2, 3);
+            this.lblScanDateTime.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblScanDateTime.Name = "lblScanDateTime";
+            this.lblScanDateTime.Size = new System.Drawing.Size(100, 17);
+            this.lblScanDateTime.TabIndex = 2;
+            this.lblScanDateTime.Text = "Scan DateTime";
+            this.lblScanDateTime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtScanDateTime
+            // 
+            this.txtScanDateTime.Location = new System.Drawing.Point(106, 2);
+            this.txtScanDateTime.Margin = new System.Windows.Forms.Padding(2);
+            this.txtScanDateTime.Name = "txtScanDateTime";
+            this.txtScanDateTime.Size = new System.Drawing.Size(201, 20);
+            this.txtScanDateTime.TabIndex = 7;
+            // 
+            // flpNickName
+            // 
+            this.flpNickName.AutoSize = true;
+            this.flpNickName.Controls.Add(this.lblNickName);
+            this.flpNickName.Controls.Add(this.txtNickName);
+            this.flpNickName.Location = new System.Drawing.Point(2, 62);
+            this.flpNickName.Margin = new System.Windows.Forms.Padding(2);
+            this.flpNickName.Name = "flpNickName";
+            this.flpNickName.Size = new System.Drawing.Size(310, 26);
+            this.flpNickName.TabIndex = 11;
+            // 
+            // lblNickName
+            // 
+            this.lblNickName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblNickName.Location = new System.Drawing.Point(2, 4);
+            this.lblNickName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblNickName.Name = "lblNickName";
+            this.lblNickName.Size = new System.Drawing.Size(100, 17);
+            this.lblNickName.TabIndex = 2;
+            this.lblNickName.Text = "Nick Name";
+            this.lblNickName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtNickName
+            // 
+            this.txtNickName.Location = new System.Drawing.Point(107, 3);
+            this.txtNickName.Name = "txtNickName";
+            this.txtNickName.Size = new System.Drawing.Size(200, 20);
+            this.txtNickName.TabIndex = 0;
+            // 
+            // Resource
+            // 
+            this.Resource.FillWeight = 250F;
+            this.Resource.HeaderText = "Resource";
+            this.Resource.Name = "Resource";
+            this.Resource.Width = 250;
+            // 
+            // Purity
+            // 
+            this.Purity.HeaderText = "Purity";
+            this.Purity.Name = "Purity";
+            // 
+            // Amount
+            // 
+            this.Amount.HeaderText = "Amount";
+            this.Amount.Name = "Amount";
             // 
             // FormSurvey
             // 
@@ -472,24 +590,30 @@
             this.flpBlueprintSearch.ResumeLayout(false);
             this.flpBlueprintSearch.PerformLayout();
             this.flpResource.ResumeLayout(false);
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
-            this.flpBaseDetails.ResumeLayout(false);
-            this.flpBaseDetails.PerformLayout();
-            this.flpBlueprintType.ResumeLayout(false);
-            this.flpBlueprintType.PerformLayout();
-            this.flpBaseBlueprint.ResumeLayout(false);
-            this.flpBaseBlueprint.PerformLayout();
-            this.flowLayoutPanel4.ResumeLayout(false);
-            this.flowLayoutPanel4.PerformLayout();
-            this.flowLayoutPanel3.ResumeLayout(false);
-            this.flowLayoutPanel3.PerformLayout();
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
-            this.flpNickName.ResumeLayout(false);
-            this.flpNickName.PerformLayout();
+            this.flpSurveyData.ResumeLayout(false);
+            this.flpSurveyData.PerformLayout();
+            this.flpSurveyDetails.ResumeLayout(false);
+            this.flpSurveyDetails.PerformLayout();
+            this.flpPlanetName.ResumeLayout(false);
+            this.flpPlanetName.PerformLayout();
+            this.flpScannerBlueprint.ResumeLayout(false);
+            this.flpScannerBlueprint.PerformLayout();
+            this.flpScannedBy.ResumeLayout(false);
+            this.flpScannedBy.PerformLayout();
+            this.flpSensorAbundance.ResumeLayout(false);
+            this.flpSensorAbundance.PerformLayout();
+            this.flpPurityModifier.ResumeLayout(false);
+            this.flpPurityModifier.PerformLayout();
+            this.flpScanLevel.ResumeLayout(false);
+            this.flpScanLevel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).EndInit();
             this.flpCommands.ResumeLayout(false);
+            this.flpSurveyID.ResumeLayout(false);
+            this.flpSurveyID.PerformLayout();
+            this.flpScanDateTime.ResumeLayout(false);
+            this.flpScanDateTime.PerformLayout();
+            this.flpNickName.ResumeLayout(false);
+            this.flpNickName.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -506,33 +630,43 @@
         private System.Windows.Forms.Label lblResource;
         private System.Windows.Forms.ComboBox cmbResource;
         private System.Windows.Forms.ListView lvwSurveys;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flpBaseDetails;
-        private System.Windows.Forms.FlowLayoutPanel flpBlueprintType;
-        private System.Windows.Forms.Label lblBlueprintType;
-        private System.Windows.Forms.TextBox txtFilterBlueprintType;
-        private System.Windows.Forms.FlowLayoutPanel flpBaseBlueprint;
-        private System.Windows.Forms.Label lblBaseBlueprint;
-        private System.Windows.Forms.TextBox txtFilterBaseBlueprint;
-        private System.Windows.Forms.ComboBox cmbBaseBlueprint;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.FlowLayoutPanel flpNickName;
-        private System.Windows.Forms.Label lblNickName;
-        private System.Windows.Forms.TextBox txtNickName;
+        private System.Windows.Forms.FlowLayoutPanel flpSurveyData;
+        private System.Windows.Forms.FlowLayoutPanel flpSurveyDetails;
+        private System.Windows.Forms.FlowLayoutPanel flpPlanetName;
+        private System.Windows.Forms.Label lblPlanetName;
+        private System.Windows.Forms.TextBox txtPlanetName;
+        private System.Windows.Forms.FlowLayoutPanel flpScannerBlueprint;
+        private System.Windows.Forms.Label lblScannerBlueprint;
+        private System.Windows.Forms.TextBox txtFilterScannerBlueprint;
+        private System.Windows.Forms.ComboBox cmbScannerBlueprint;
+        private System.Windows.Forms.FlowLayoutPanel flpScannedBy;
+        private System.Windows.Forms.Label lblScannedBy;
+        private System.Windows.Forms.TextBox txtScannedBy;
+        private System.Windows.Forms.FlowLayoutPanel flpSensorAbundance;
+        private System.Windows.Forms.Label lblSensorAbundance;
+        private System.Windows.Forms.TextBox txtSensorAbundance;
+        private System.Windows.Forms.FlowLayoutPanel flpPurityModifier;
+        private System.Windows.Forms.Label lblPurityModifier;
+        private System.Windows.Forms.TextBox txtPurityModifier;
+        private System.Windows.Forms.FlowLayoutPanel flpScanLevel;
+        private System.Windows.Forms.Label lblScanLevel;
+        private System.Windows.Forms.TextBox txtScanLevel;
         private System.Windows.Forms.DataGridView dgvResources;
-        private System.Windows.Forms.DataGridViewComboBoxColumn Resource;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Amount;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.FlowLayoutPanel flpSurveyID;
+        private System.Windows.Forms.Label lblSurveyID;
+        private System.Windows.Forms.TextBox txtSurveyID;
+        private System.Windows.Forms.FlowLayoutPanel flpScanDateTime;
+        private System.Windows.Forms.Label lblScanDateTime;
+        private System.Windows.Forms.TextBox txtScanDateTime;
+        private System.Windows.Forms.FlowLayoutPanel flpNickName;
+        private System.Windows.Forms.Label lblNickName;
+        private System.Windows.Forms.TextBox txtNickName;
+        private System.Windows.Forms.DataGridViewComboBoxColumn Resource;
+        private System.Windows.Forms.DataGridViewComboBoxColumn Purity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Amount;
     }
 }

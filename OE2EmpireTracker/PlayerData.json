@@ -306,5 +306,93 @@
       "NickName": "JAS37",
       "Description": "JAS37 desc"
     }
+  ],
+  "Survey": [
+    {
+      "ScannedBy": "Scalorn Scorpus",
+      "DateTime": "2026-02-19 22:31:00",
+      "PlanetName": "Alef Wynthoril I",
+      "SurveyID": "06BA4C5",
+      "ScannerBlueprintUUID": "82609bb4-32e5-42f4-aee8-244181501ace",
+      "Properties": {
+        "SensorAbundance": "test",
+        "PurityModifier": "test",
+        "ScanLevel": "test"
+      },
+      "Resources": {
+        "Alkali Inorganics": {
+          "Purity": "High",
+          "Amount": "79.2"
+        },
+        "Alkaline Earth Metals": {
+          "Purity": "High",
+          "Amount": "33"
+        },
+        "Non-Metallics": {
+          "Purity": "High",
+          "Amount": "62.7"
+        },
+        "Heavy Alkali Metals": {
+          "Purity": "High",
+          "Amount": "3.3"
+        },
+        "Lanthanides": {
+          "Purity": "Low",
+          "Amount": "3.3"
+        },
+        "Transuranic Volatiles": {
+          "Purity": "High",
+          "Amount": "3.3"
+        },
+        "Superheavy Exotics": {
+          "Purity": "Low",
+          "Amount": "3.3"
+        }
+      },
+      "UUID": "88df53eb-5d71-451b-abf9-8273e5805b93",
+      "ItemType": 11,
+      "Name": null,
+      "NickName": "Nick",
+      "Description": null
+    },
+    {
+      "ScannedBy": "Scalorn Scorpus",
+      "DateTime": "2026-02-19 22:34:00",
+      "PlanetName": "Alef Wynthoril II",
+      "SurveyID": "81BF9AA",
+      "ScannerBlueprintUUID": "82609bb4-32e5-42f4-aee8-244181501ace",
+      "Properties": {
+        "SensorAbundance": "",
+        "PurityModifier": "",
+        "ScanLevel": ""
+      },
+      "Resources": {
+        "Heavy Post-Trans Metals": {
+          "Purity": "Low",
+          "Amount": "123"
+        },
+        "Noble Gases": {
+          "Purity": "High",
+          "Amount": "6.6"
+        },
+        "Acidic Organics": {
+          "Purity": "Low",
+          "Amount": "3.3"
+        },
+        "Lanthanides": {
+          "Purity": "High",
+          "Amount": "13.2"
+        },
+        "Superheavy Exotics": {
+          "Purity": "Low",
+          "Amount": "3.3"
+        }
+      },
+      "UUID": "e0dc95ca-ff80-452b-90e8-3ab9a24a64e8",
+      "ItemType": 11,
+      "Name": null,
+      "NickName": null,
+      "Description": null
+    }
   ]
 }

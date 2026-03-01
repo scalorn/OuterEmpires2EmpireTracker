@@ -19,6 +19,8 @@ namespace OE2EmpireTracker.Baseline
 
         public BindingList<Blueprint> blueprintList;
         public BindingSource bindingSourceBlueprint;
+        public BindingList<Survey> surveyList;
+        public BindingSource bindingSourceSurvey;
 
         public static PlayerContext getInstance()
         {
@@ -44,6 +46,7 @@ namespace OE2EmpireTracker.Baseline
                 playerRoot = new PlayerRoot();
             }
             initBlueprints(playerRoot);
+            initSurveys(playerRoot);
 
             //blueprintList.Add(new Blueprint());
             //Debug.Print("Blueprint Count " + playerRoot.Blueprint.Length);
@@ -53,6 +56,8 @@ namespace OE2EmpireTracker.Baseline
         {
             PlayerRoot playerRoot = new PlayerRoot();
             playerRoot.Blueprint = blueprintList.ToArray();
+            playerRoot.Survey = surveyList.ToArray();
+
             string jsonContent = JsonConvert.SerializeObject(playerRoot,Formatting.Indented);
             File.WriteAllText(filePath, jsonContent);
             Debug.Print("Player.WriteContext done");
@@ -78,15 +83,40 @@ namespace OE2EmpireTracker.Baseline
             }
             return null;
         }
+
+        public void initSurveys(PlayerRoot playerRoot)
+        {
+            List<Survey> list = new List<Survey>(playerRoot.Survey);
+            list = list.OrderBy(p => p.PlanetName).ThenBy(p => p.DateTime).ToList();
+
+            surveyList = new BindingList<Survey>(list);
+            // Initialize the BindingSource component
+            bindingSourceSurvey = new BindingSource();
+            // Set the in-memory list as the DataSource for the BindingSource
+            bindingSourceSurvey.DataSource = surveyList;
+        }
+        public Survey findSurvey(string id)
+        {
+            var filteredList = surveyList
+                .Where(item => item.UUID == id)
+                .ToList();
+            if (filteredList.Count == 1)
+            {
+                return filteredList[0];
+            }
+            return null;
+        }
     }
 
 
     public class PlayerRoot
     {
         public Blueprint[] Blueprint;
+        public Survey[] Survey;
         public PlayerRoot()
         {
             Blueprint = new Blueprint[0];
+            Survey = new Survey[0];
         }
     }
 

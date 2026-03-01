@@ -123,6 +123,7 @@
     <Compile Include="Baseline\ResourcePurity.cs" />
     <Compile Include="Baseline\ShipClass.cs" />
     <Compile Include="Baseline\SurveyParser.cs" />
+    <Compile Include="Baseline\Survey.cs" />
     <Compile Include="Controls\DataEntryGridView.cs">
       <SubType>Component</SubType>
     </Compile>

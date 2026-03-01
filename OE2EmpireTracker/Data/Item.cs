@@ -24,7 +24,7 @@ namespace OE2EmpireTracker.Data
             Resource,
             Blueprint,
             Flatpack,
-            Scan,
+            Survey,
             SpaceBuildPackage,
             Share
         }
