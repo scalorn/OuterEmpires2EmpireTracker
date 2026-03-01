@@ -123,7 +123,7 @@
             this.flpBlueprintSearch.Margin = new System.Windows.Forms.Padding(2);
             this.flpBlueprintSearch.Name = "flpBlueprintSearch";
             this.flpBlueprintSearch.Size = new System.Drawing.Size(312, 26);
-            this.flpBlueprintSearch.TabIndex = 5;
+            this.flpBlueprintSearch.TabIndex = 0;
             // 
             // lblPlanetFilter
             // 
@@ -152,7 +152,7 @@
             this.flpResource.Margin = new System.Windows.Forms.Padding(2);
             this.flpResource.Name = "flpResource";
             this.flpResource.Size = new System.Drawing.Size(309, 25);
-            this.flpResource.TabIndex = 7;
+            this.flpResource.TabIndex = 1;
             // 
             // lblResource
             // 
@@ -197,7 +197,7 @@
             this.flpSurveyData.Location = new System.Drawing.Point(436, 3);
             this.flpSurveyData.Name = "flpSurveyData";
             this.flpSurveyData.Size = new System.Drawing.Size(661, 641);
-            this.flpSurveyData.TabIndex = 10;
+            this.flpSurveyData.TabIndex = 3;
             // 
             // flpSurveyDetails
             // 
@@ -217,7 +217,7 @@
             this.flpSurveyDetails.Margin = new System.Windows.Forms.Padding(2);
             this.flpSurveyDetails.Name = "flpSurveyDetails";
             this.flpSurveyDetails.Size = new System.Drawing.Size(831, 569);
-            this.flpSurveyDetails.TabIndex = 6;
+            this.flpSurveyDetails.TabIndex = 0;
             // 
             // flpPlanetName
             // 
@@ -258,7 +258,7 @@
             this.flpScannerBlueprint.Margin = new System.Windows.Forms.Padding(2);
             this.flpScannerBlueprint.Name = "flpScannerBlueprint";
             this.flpScannerBlueprint.Size = new System.Drawing.Size(415, 26);
-            this.flpScannerBlueprint.TabIndex = 4;
+            this.flpScannerBlueprint.TabIndex = 3;
             // 
             // lblScannerBlueprint
             // 
@@ -301,7 +301,7 @@
             this.flpScannedBy.Margin = new System.Windows.Forms.Padding(2);
             this.flpScannedBy.Name = "flpScannedBy";
             this.flpScannedBy.Size = new System.Drawing.Size(827, 24);
-            this.flpScannedBy.TabIndex = 8;
+            this.flpScannedBy.TabIndex = 4;
             // 
             // lblScannedBy
             // 
@@ -332,7 +332,7 @@
             this.flpSensorAbundance.Margin = new System.Windows.Forms.Padding(2);
             this.flpSensorAbundance.Name = "flpSensorAbundance";
             this.flpSensorAbundance.Size = new System.Drawing.Size(827, 24);
-            this.flpSensorAbundance.TabIndex = 8;
+            this.flpSensorAbundance.TabIndex = 6;
             // 
             // lblSensorAbundance
             // 
@@ -363,7 +363,7 @@
             this.flpPurityModifier.Margin = new System.Windows.Forms.Padding(2);
             this.flpPurityModifier.Name = "flpPurityModifier";
             this.flpPurityModifier.Size = new System.Drawing.Size(827, 24);
-            this.flpPurityModifier.TabIndex = 8;
+            this.flpPurityModifier.TabIndex = 7;
             // 
             // lblPurityModifier
             // 
@@ -394,7 +394,7 @@
             this.flpScanLevel.Margin = new System.Windows.Forms.Padding(2);
             this.flpScanLevel.Name = "flpScanLevel";
             this.flpScanLevel.Size = new System.Drawing.Size(827, 24);
-            this.flpScanLevel.TabIndex = 6;
+            this.flpScanLevel.TabIndex = 8;
             // 
             // lblScanLevel
             // 
@@ -425,7 +425,7 @@
             this.dgvResources.Location = new System.Drawing.Point(3, 263);
             this.dgvResources.Name = "dgvResources";
             this.dgvResources.Size = new System.Drawing.Size(825, 303);
-            this.dgvResources.TabIndex = 0;
+            this.dgvResources.TabIndex = 9;
             // 
             // flpCommands
             // 
@@ -438,14 +438,14 @@
             this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
             this.flpCommands.Name = "flpCommands";
             this.flpCommands.Size = new System.Drawing.Size(831, 29);
-            this.flpCommands.TabIndex = 9;
+            this.flpCommands.TabIndex = 1;
             // 
             // btnSave
             // 
             this.btnSave.Location = new System.Drawing.Point(3, 3);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 9;
+            this.btnSave.TabIndex = 0;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -455,7 +455,7 @@
             this.cmdDelete.Location = new System.Drawing.Point(84, 3);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(75, 23);
-            this.cmdDelete.TabIndex = 11;
+            this.cmdDelete.TabIndex = 1;
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
             this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
@@ -465,7 +465,7 @@
             this.btnCancel.Location = new System.Drawing.Point(165, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 10;
+            this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -479,7 +479,7 @@
             this.flpSurveyID.Margin = new System.Windows.Forms.Padding(2);
             this.flpSurveyID.Name = "flpSurveyID";
             this.flpSurveyID.Size = new System.Drawing.Size(310, 26);
-            this.flpSurveyID.TabIndex = 9;
+            this.flpSurveyID.TabIndex = 1;
             // 
             // lblSurveyID
             // 
@@ -509,7 +509,7 @@
             this.flpScanDateTime.Margin = new System.Windows.Forms.Padding(2);
             this.flpScanDateTime.Name = "flpScanDateTime";
             this.flpScanDateTime.Size = new System.Drawing.Size(827, 24);
-            this.flpScanDateTime.TabIndex = 10;
+            this.flpScanDateTime.TabIndex = 5;
             // 
             // lblScanDateTime
             // 
@@ -539,7 +539,7 @@
             this.flpNickName.Margin = new System.Windows.Forms.Padding(2);
             this.flpNickName.Name = "flpNickName";
             this.flpNickName.Size = new System.Drawing.Size(310, 26);
-            this.flpNickName.TabIndex = 11;
+            this.flpNickName.TabIndex = 2;
             // 
             // lblNickName
             // 
