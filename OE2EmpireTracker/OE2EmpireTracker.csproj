@@ -115,6 +115,7 @@
   <ItemGroup>
     <Compile Include="Baseline\BlueprintField.cs" />
     <Compile Include="Baseline\BlueprintType.cs" />
+    <Compile Include="Baseline\Colony.cs" />
     <Compile Include="Baseline\PlayerContext.cs" />
     <Compile Include="Baseline\TechLevel.cs" />
     <Compile Include="Baseline\EmpireContext.cs" />
@@ -154,6 +155,12 @@
     <Compile Include="Forms\Blueprint\FormBlueprint.Designer.cs">
       <DependentUpon>FormBlueprint.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Colony\ColonyStructure.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Colony\ColonyStructure.Designer.cs">
+      <DependentUpon>ColonyStructure.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Colony\FormColony.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -182,6 +189,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Blueprint\FormBlueprint.resx">
       <DependentUpon>FormBlueprint.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Colony\ColonyStructure.resx">
+      <DependentUpon>ColonyStructure.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Colony\FormColony.resx">
       <DependentUpon>FormColony.cs</DependentUpon>

@@ -394,5 +394,15 @@
       "NickName": null,
       "Description": null
     }
+  ],
+  "Colony": [
+    {
+      "UUID": "5702d422-86fb-4461-a8d4-d83e53a69096",
+      "PlanetName": "asdf",
+      "ColonyName": "adsf",
+      "Items": {},
+      "Structures": [],
+      "Commodities": []
+    }
   ]
 }

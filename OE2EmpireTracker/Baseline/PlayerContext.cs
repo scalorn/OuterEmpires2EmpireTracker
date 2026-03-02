@@ -21,6 +21,8 @@ namespace OE2EmpireTracker.Baseline
         public BindingSource bindingSourceBlueprint;
         public BindingList<Survey> surveyList;
         public BindingSource bindingSourceSurvey;
+        public BindingList<Colony> colonyList;
+        public BindingSource bindingSourceColony;
 
         public static PlayerContext getInstance()
         {
@@ -47,9 +49,7 @@ namespace OE2EmpireTracker.Baseline
             }
             initBlueprints(playerRoot);
             initSurveys(playerRoot);
-
-            //blueprintList.Add(new Blueprint());
-            //Debug.Print("Blueprint Count " + playerRoot.Blueprint.Length);
+            initColonies(playerRoot);
         }
 
         public void writeContext()
@@ -57,6 +57,7 @@ namespace OE2EmpireTracker.Baseline
             PlayerRoot playerRoot = new PlayerRoot();
             playerRoot.Blueprint = blueprintList.ToArray();
             playerRoot.Survey = surveyList.ToArray();
+            playerRoot.Colony = colonyList.ToArray();
 
             string jsonContent = JsonConvert.SerializeObject(playerRoot,Formatting.Indented);
             File.WriteAllText(filePath, jsonContent);
@@ -106,6 +107,29 @@ namespace OE2EmpireTracker.Baseline
             }
             return null;
         }
+
+        public void initColonies(PlayerRoot playerRoot)
+        {
+            List<Colony> list = new List<Colony>(playerRoot.Colony);
+            list = list.OrderBy(p => p.PlanetName).ToList();
+
+            colonyList = new BindingList<Colony>(list);
+            // Initialize the BindingSource component
+            bindingSourceSurvey = new BindingSource();
+            // Set the in-memory list as the DataSource for the BindingSource
+            bindingSourceSurvey.DataSource = colonyList;
+        }
+        public Colony findColony(string id)
+        {
+            var filteredList = colonyList
+                .Where(item => item.UUID == id)
+                .ToList();
+            if (filteredList.Count == 1)
+            {
+                return filteredList[0];
+            }
+            return null;
+        }
     }
 
 
@@ -113,10 +137,12 @@ namespace OE2EmpireTracker.Baseline
     {
         public Blueprint[] Blueprint;
         public Survey[] Survey;
+        public Colony[] Colony;
         public PlayerRoot()
         {
             Blueprint = new Blueprint[0];
             Survey = new Survey[0];
+            Colony = new Colony[0];
         }
     }
 
