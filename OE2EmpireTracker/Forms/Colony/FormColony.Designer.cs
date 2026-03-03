@@ -48,12 +48,6 @@
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.listView1 = new System.Windows.Forms.ListView();
             this.flpColonyStructure = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
             this.tabPWorkers = new System.Windows.Forms.TabPage();
             this.tabPWarehousing = new System.Windows.Forms.TabPage();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
@@ -64,6 +58,7 @@
             this.Property = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BaseValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CurrentValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colonyStructure1 = new OE2EmpireTracker.Forms.Colony.ColonyStructure();
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
             this.flpBlueprintSearch.SuspendLayout();
@@ -75,8 +70,6 @@
             this.tabPStructures.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
             this.flpColonyStructure.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
-            this.flowLayoutPanel5.SuspendLayout();
             this.flpCommands.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -87,17 +80,19 @@
             this.flpBase.Controls.Add(this.flowLayoutPanel1);
             this.flpBase.Location = new System.Drawing.Point(0, 0);
             this.flpBase.Name = "flpBase";
-            this.flpBase.Size = new System.Drawing.Size(1155, 708);
+            this.flpBase.Size = new System.Drawing.Size(1339, 708);
             this.flpBase.TabIndex = 10;
             // 
             // flpSearchList
             // 
             this.flpSearchList.Controls.Add(this.flpBlueprintSearch);
             this.flpSearchList.Controls.Add(this.lvwBlueprints);
+            this.flpSearchList.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpSearchList.Location = new System.Drawing.Point(3, 3);
             this.flpSearchList.Name = "flpSearchList";
-            this.flpSearchList.Size = new System.Drawing.Size(427, 641);
+            this.flpSearchList.Size = new System.Drawing.Size(266, 641);
             this.flpSearchList.TabIndex = 10;
+            this.flpSearchList.WrapContents = false;
             // 
             // flpBlueprintSearch
             // 
@@ -107,7 +102,7 @@
             this.flpBlueprintSearch.Location = new System.Drawing.Point(2, 2);
             this.flpBlueprintSearch.Margin = new System.Windows.Forms.Padding(2);
             this.flpBlueprintSearch.Name = "flpBlueprintSearch";
-            this.flpBlueprintSearch.Size = new System.Drawing.Size(210, 26);
+            this.flpBlueprintSearch.Size = new System.Drawing.Size(164, 26);
             this.flpBlueprintSearch.TabIndex = 5;
             // 
             // lblBlueprintListFilter
@@ -116,14 +111,14 @@
             this.lblBlueprintListFilter.Location = new System.Drawing.Point(2, 4);
             this.lblBlueprintListFilter.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblBlueprintListFilter.Name = "lblBlueprintListFilter";
-            this.lblBlueprintListFilter.Size = new System.Drawing.Size(100, 17);
+            this.lblBlueprintListFilter.Size = new System.Drawing.Size(54, 17);
             this.lblBlueprintListFilter.TabIndex = 2;
             this.lblBlueprintListFilter.Text = "Name";
             this.lblBlueprintListFilter.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // txtBlueprintListFilter
             // 
-            this.txtBlueprintListFilter.Location = new System.Drawing.Point(107, 3);
+            this.txtBlueprintListFilter.Location = new System.Drawing.Point(61, 3);
             this.txtBlueprintListFilter.Name = "txtBlueprintListFilter";
             this.txtBlueprintListFilter.Size = new System.Drawing.Size(100, 20);
             this.txtBlueprintListFilter.TabIndex = 0;
@@ -135,7 +130,7 @@
             this.lvwBlueprints.Location = new System.Drawing.Point(3, 33);
             this.lvwBlueprints.MultiSelect = false;
             this.lvwBlueprints.Name = "lvwBlueprints";
-            this.lvwBlueprints.Size = new System.Drawing.Size(412, 566);
+            this.lvwBlueprints.Size = new System.Drawing.Size(255, 566);
             this.lvwBlueprints.TabIndex = 6;
             this.lvwBlueprints.UseCompatibleStateImageBehavior = false;
             // 
@@ -145,9 +140,9 @@
             this.flowLayoutPanel1.Controls.Add(this.tabDetailedData);
             this.flowLayoutPanel1.Controls.Add(this.flpCommands);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(436, 3);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(275, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(661, 641);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(900, 641);
             this.flowLayoutPanel1.TabIndex = 10;
             // 
             // flpBaseDetails
@@ -231,7 +226,7 @@
             this.tabDetailedData.Multiline = true;
             this.tabDetailedData.Name = "tabDetailedData";
             this.tabDetailedData.SelectedIndex = 0;
-            this.tabDetailedData.Size = new System.Drawing.Size(834, 329);
+            this.tabDetailedData.Size = new System.Drawing.Size(900, 500);
             this.tabDetailedData.TabIndex = 8;
             // 
             // tabPAdministration
@@ -240,7 +235,7 @@
             this.tabPAdministration.Margin = new System.Windows.Forms.Padding(2);
             this.tabPAdministration.Name = "tabPAdministration";
             this.tabPAdministration.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPAdministration.Size = new System.Drawing.Size(826, 303);
+            this.tabPAdministration.Size = new System.Drawing.Size(892, 474);
             this.tabPAdministration.TabIndex = 0;
             this.tabPAdministration.Text = "Administration";
             this.tabPAdministration.UseVisualStyleBackColor = true;
@@ -252,7 +247,7 @@
             this.tabPStructures.Margin = new System.Windows.Forms.Padding(2);
             this.tabPStructures.Name = "tabPStructures";
             this.tabPStructures.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPStructures.Size = new System.Drawing.Size(826, 303);
+            this.tabPStructures.Size = new System.Drawing.Size(892, 474);
             this.tabPStructures.TabIndex = 1;
             this.tabPStructures.Text = "Structures";
             this.tabPStructures.UseVisualStyleBackColor = true;
@@ -263,7 +258,7 @@
             this.flowLayoutPanel3.Controls.Add(this.flpColonyStructure);
             this.flowLayoutPanel3.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(614, 300);
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(887, 470);
             this.flowLayoutPanel3.TabIndex = 3;
             // 
             // listView1
@@ -273,83 +268,28 @@
             this.listView1.Location = new System.Drawing.Point(3, 3);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(130, 295);
+            this.listView1.Size = new System.Drawing.Size(130, 450);
             this.listView1.TabIndex = 7;
             this.listView1.UseCompatibleStateImageBehavior = false;
             // 
             // flpColonyStructure
             // 
-            this.flpColonyStructure.Controls.Add(this.flowLayoutPanel2);
-            this.flpColonyStructure.Controls.Add(this.flowLayoutPanel5);
+            this.flpColonyStructure.AutoScroll = true;
+            this.flpColonyStructure.AutoScrollMinSize = new System.Drawing.Size(554, 295);
+            this.flpColonyStructure.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpColonyStructure.Controls.Add(this.colonyStructure1);
             this.flpColonyStructure.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpColonyStructure.Location = new System.Drawing.Point(139, 3);
             this.flpColonyStructure.Name = "flpColonyStructure";
-            this.flpColonyStructure.Size = new System.Drawing.Size(462, 295);
+            this.flpColonyStructure.Size = new System.Drawing.Size(736, 450);
             this.flpColonyStructure.TabIndex = 8;
-            // 
-            // flowLayoutPanel2
-            // 
-            this.flowLayoutPanel2.AutoSize = true;
-            this.flowLayoutPanel2.Controls.Add(this.label1);
-            this.flowLayoutPanel2.Controls.Add(this.textBox1);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(2, 2);
-            this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(210, 26);
-            this.flowLayoutPanel2.TabIndex = 6;
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.Location = new System.Drawing.Point(2, 4);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 17);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Command Center";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(107, 3);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 0;
-            // 
-            // flowLayoutPanel5
-            // 
-            this.flowLayoutPanel5.AutoSize = true;
-            this.flowLayoutPanel5.Controls.Add(this.label2);
-            this.flowLayoutPanel5.Controls.Add(this.textBox2);
-            this.flowLayoutPanel5.Location = new System.Drawing.Point(2, 32);
-            this.flowLayoutPanel5.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel5.Name = "flowLayoutPanel5";
-            this.flowLayoutPanel5.Size = new System.Drawing.Size(210, 26);
-            this.flowLayoutPanel5.TabIndex = 7;
-            // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.Location = new System.Drawing.Point(2, 4);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(100, 17);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Hydroponics";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(107, 3);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 0;
+            this.flpColonyStructure.WrapContents = false;
             // 
             // tabPWorkers
             // 
             this.tabPWorkers.Location = new System.Drawing.Point(4, 22);
             this.tabPWorkers.Name = "tabPWorkers";
-            this.tabPWorkers.Size = new System.Drawing.Size(826, 303);
+            this.tabPWorkers.Size = new System.Drawing.Size(892, 474);
             this.tabPWorkers.TabIndex = 2;
             this.tabPWorkers.Text = "Workers";
             this.tabPWorkers.UseVisualStyleBackColor = true;
@@ -358,7 +298,7 @@
             // 
             this.tabPWarehousing.Location = new System.Drawing.Point(4, 22);
             this.tabPWarehousing.Name = "tabPWarehousing";
-            this.tabPWarehousing.Size = new System.Drawing.Size(826, 303);
+            this.tabPWarehousing.Size = new System.Drawing.Size(892, 474);
             this.tabPWarehousing.TabIndex = 3;
             this.tabPWarehousing.Text = "Warehousing";
             this.tabPWarehousing.UseVisualStyleBackColor = true;
@@ -371,10 +311,10 @@
             this.flpCommands.Controls.Add(this.btnSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
             this.flpCommands.Controls.Add(this.btnCancel);
-            this.flpCommands.Location = new System.Drawing.Point(2, 399);
+            this.flpCommands.Location = new System.Drawing.Point(2, 570);
             this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
             this.flpCommands.Name = "flpCommands";
-            this.flpCommands.Size = new System.Drawing.Size(834, 29);
+            this.flpCommands.Size = new System.Drawing.Size(900, 29);
             this.flpCommands.TabIndex = 9;
             // 
             // chkGlobalBlueprint
@@ -436,11 +376,18 @@
             this.CurrentValue.Name = "CurrentValue";
             this.CurrentValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
+            // colonyStructure1
+            // 
+            this.colonyStructure1.Location = new System.Drawing.Point(3, 3);
+            this.colonyStructure1.Name = "colonyStructure1";
+            this.colonyStructure1.Size = new System.Drawing.Size(580, 168);
+            this.colonyStructure1.TabIndex = 8;
+            // 
             // FormColony
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1055, 660);
+            this.ClientSize = new System.Drawing.Size(1225, 708);
             this.Controls.Add(this.flpBase);
             this.Name = "FormColony";
             this.Text = "ColonyForm";
@@ -461,11 +408,6 @@
             this.tabPStructures.ResumeLayout(false);
             this.flowLayoutPanel3.ResumeLayout(false);
             this.flpColonyStructure.ResumeLayout(false);
-            this.flpColonyStructure.PerformLayout();
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
-            this.flowLayoutPanel5.ResumeLayout(false);
-            this.flowLayoutPanel5.PerformLayout();
             this.flpCommands.ResumeLayout(false);
             this.flpCommands.PerformLayout();
             this.ResumeLayout(false);
@@ -502,15 +444,10 @@
         private System.Windows.Forms.TabPage tabPWarehousing;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
         private System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.FlowLayoutPanel flpColonyStructure;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel5;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel6;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtPlanetName;
+        private ColonyStructure colonyStructure1;
     }
 }

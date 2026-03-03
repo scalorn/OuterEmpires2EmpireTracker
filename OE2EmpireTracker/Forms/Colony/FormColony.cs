@@ -25,6 +25,10 @@ namespace OE2EmpireTracker.Forms.Colony
 
             ColonyStructure colonyStructure = new ColonyStructure();
             flpColonyStructure.Controls.Add(colonyStructure);
+            ColonyStructure colonyStructure2 = new ColonyStructure();
+            flpColonyStructure.Controls.Add(colonyStructure2);
+            ColonyStructure colonyStructure3 = new ColonyStructure();
+            flpColonyStructure.Controls.Add(colonyStructure3);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
