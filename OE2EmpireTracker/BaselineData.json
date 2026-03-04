@@ -195,57 +195,68 @@
     {
       "Id": "Flatpacks/ColonyCommandCentre",
       "Name": "Colony Command Centre Flatpack",
-      "Universal": true
+      "Universal": true,
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "HullManufactureTimeModification", "CanResearch", "UnassignedSpecialistDetail", "MaxPerColony", "WhiteCollarDetail", "ManufactureTimeReduction", "WarehouseCapacity", "MiningYieldModification", "HabitationProvision", "RefiningTimeModification", "ResearchTimeModification", "FoodProvision" ]
     },
     {
       "Id": "Flatpacks/EntertainmentCentreFlatpack",
       "Name": "Entertainment Centre Flatpack",
-      "Universal": true
+      "Universal": true,
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "EntertainmentProvided", "StructuralIntegrity", "PowerRequired", "CanResearch", "UnassignedSpecialistDetail", "MaxPerColony", "BlueCollarDetail" ]
     },
     {
       "Id": "Flatpacks/HabitationBlock",
       "Name": "Habitation Block Flatpack",
-      "Universal": true
+      "Universal": true,
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "UnassignedSpecialistDetail", "MaxPerColony", "HabitationProvision" ]
     },
     {
       "Id": "Flatpacks/HydroponicsBay",
       "Name": "Hydroponics Bay Flatpack",
-      "Universal": true
+      "Universal": true,
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "UnassignedSpecialistDetail", "MaxPerColony", "BlueCollarDetail", "FoodProvision" ]
     },
     {
       "Id": "Flatpacks/Manufactory",
       "Name": "Manufactory Flatpack",
-      "Universal": true
+      "Universal": true,
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "UnassignedSpecialistDetail", "MaxPerColony", "BlueCollarDetail", "UnassignedWhiteCollarDetail", "ManufactureSlot"]
     },
     {
       "Id": "Flatpacks/MiningRig",
       "Name": "Mining Rig Flatpack",
-      "Universal": true
+      "Universal": true,
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "ExtractionEfficiency", "UnassignedSpecialistDetail", "MaxPerColony", "BlueCollarDetail", "UnassignedWhiteCollarDetail", "MiningSlot" ]
     },
     {
       "Id": "Flatpacks/ReactorCore",
       "Name": "Reactor Core Flatpack",
-      "Universal": true
+      "Universal": true,
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerProvided", "CanResearch", "UnassignedSpecialistDetail", "MaxPerColony"]
     },
     {
       "Id": "Flatpacks/Refinery",
       "Name": "Refinery Flatpack",
-      "Universal": true
+      "Universal": true,
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "UnassignedSpecialistDetail", "MaxPerColony", "RefiningRate", "BlueCollarDetail", "UnassignedWhiteCollarDetail", "RefiningSlot" ]
     },
     {
       "Id": "Flatpacks/RemoteOperationsArray",
       "Name": "Remote Operations Array Flatpack",
-      "Universal": true
+      "Universal": true,
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "RemoteOperations", "CanResearch", "MaxPerColony", "SpecialistDetail", "UnassignedWhiteCollarDetail"]
     },
     {
       "Id": "Flatpacks/ResearchLaboratory",
       "Name": "Research Laboratory Flatpack",
-      "Universal": true
+      "Universal": true,
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "MaxPerColony", "ResearchTimeModification", "SpecialistDetail", "ResearchSlot" ]
     },
     {
       "Id": "Flatpacks/Warehouse",
       "Name": "Warehouse Flatpack",
-      "Universal": true
+      "Universal": true,
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "MaxPerColony", "WarehouseCapacity", "BlueCollarDetail", "UnassignedWhiteCollarDetail" ]
     }
   ],
   "ResourceGroup": [

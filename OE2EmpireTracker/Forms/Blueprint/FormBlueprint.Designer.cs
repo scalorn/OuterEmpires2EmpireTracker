@@ -58,12 +58,20 @@ namespace OE2EmpireTracker
             this.flpDescription = new System.Windows.Forms.FlowLayoutPanel();
             this.lblDescription = new System.Windows.Forms.Label();
             this.txtDescription = new System.Windows.Forms.TextBox();
+            this.flpCopyCost = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblCopyCost = new System.Windows.Forms.Label();
+            this.txtCopyCost = new System.Windows.Forms.TextBox();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.chkGlobalBlueprint = new System.Windows.Forms.CheckBox();
             this.btnSave = new System.Windows.Forms.Button();
+            this.cmdDelete = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.tabDetailedData = new System.Windows.Forms.TabControl();
             this.tabPStatistics = new System.Windows.Forms.TabPage();
+            this.dgvStatistics = new DataEntryGridView();
+            this.Property = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.BaseValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CurrentValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPResources = new System.Windows.Forms.TabPage();
             this.dgvResources = new System.Windows.Forms.DataGridView();
             this.Resource = new System.Windows.Forms.DataGridViewComboBoxColumn();
@@ -75,14 +83,7 @@ namespace OE2EmpireTracker
             this.txtBlueprintListFilter = new System.Windows.Forms.TextBox();
             this.lvwBlueprints = new System.Windows.Forms.ListView();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdDelete = new System.Windows.Forms.Button();
-            this.dgvStatistics = new DataEntryGridView();
-            this.Property = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.BaseValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CurrentValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.flpCopyCost = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblCopyCost = new System.Windows.Forms.Label();
-            this.txtCopyCost = new System.Windows.Forms.TextBox();
+            this.cmdNew = new System.Windows.Forms.Button();
             this.flpBlueprintType.SuspendLayout();
             this.flpTechLevel.SuspendLayout();
             this.flpBaseDetails.SuspendLayout();
@@ -92,17 +93,17 @@ namespace OE2EmpireTracker
             this.flpName.SuspendLayout();
             this.flpNickName.SuspendLayout();
             this.flpDescription.SuspendLayout();
+            this.flpCopyCost.SuspendLayout();
             this.flpCommands.SuspendLayout();
             this.tabDetailedData.SuspendLayout();
             this.tabPStatistics.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).BeginInit();
             this.tabPResources.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).BeginInit();
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
             this.flpBlueprintSearch.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).BeginInit();
-            this.flpCopyCost.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblBlueprintType
@@ -403,11 +404,43 @@ namespace OE2EmpireTracker
             this.txtDescription.Size = new System.Drawing.Size(201, 20);
             this.txtDescription.TabIndex = 7;
             // 
+            // flpCopyCost
+            // 
+            this.flpCopyCost.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpCopyCost.AutoSize = true;
+            this.flpCopyCost.Controls.Add(this.lblCopyCost);
+            this.flpCopyCost.Controls.Add(this.txtCopyCost);
+            this.flpCopyCost.Location = new System.Drawing.Point(2, 233);
+            this.flpCopyCost.Margin = new System.Windows.Forms.Padding(2);
+            this.flpCopyCost.Name = "flpCopyCost";
+            this.flpCopyCost.Size = new System.Drawing.Size(415, 24);
+            this.flpCopyCost.TabIndex = 8;
+            // 
+            // lblCopyCost
+            // 
+            this.lblCopyCost.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCopyCost.Location = new System.Drawing.Point(2, 3);
+            this.lblCopyCost.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblCopyCost.Name = "lblCopyCost";
+            this.lblCopyCost.Size = new System.Drawing.Size(100, 17);
+            this.lblCopyCost.TabIndex = 2;
+            this.lblCopyCost.Text = "Copy Cost";
+            this.lblCopyCost.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtCopyCost
+            // 
+            this.txtCopyCost.Location = new System.Drawing.Point(106, 2);
+            this.txtCopyCost.Margin = new System.Windows.Forms.Padding(2);
+            this.txtCopyCost.Name = "txtCopyCost";
+            this.txtCopyCost.Size = new System.Drawing.Size(201, 20);
+            this.txtCopyCost.TabIndex = 7;
+            // 
             // flpCommands
             // 
             this.flpCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.flpCommands.AutoSize = true;
             this.flpCommands.Controls.Add(this.chkGlobalBlueprint);
+            this.flpCommands.Controls.Add(this.cmdNew);
             this.flpCommands.Controls.Add(this.btnSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
             this.flpCommands.Controls.Add(this.btnCancel);
@@ -430,7 +463,7 @@ namespace OE2EmpireTracker
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(109, 3);
+            this.btnSave.Location = new System.Drawing.Point(190, 3);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 9;
@@ -438,9 +471,19 @@ namespace OE2EmpireTracker
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
+            // cmdDelete
+            // 
+            this.cmdDelete.Location = new System.Drawing.Point(271, 3);
+            this.cmdDelete.Name = "cmdDelete";
+            this.cmdDelete.Size = new System.Drawing.Size(75, 23);
+            this.cmdDelete.TabIndex = 11;
+            this.cmdDelete.Text = "Delete";
+            this.cmdDelete.UseVisualStyleBackColor = true;
+            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
+            // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(271, 3);
+            this.btnCancel.Location = new System.Drawing.Point(352, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 10;
@@ -471,6 +514,42 @@ namespace OE2EmpireTracker
             this.tabPStatistics.Text = "Statistics";
             this.tabPStatistics.UseVisualStyleBackColor = true;
             // 
+            // dgvStatistics
+            // 
+            this.dgvStatistics.AllowUserToAddRows = false;
+            this.dgvStatistics.AllowUserToDeleteRows = false;
+            this.dgvStatistics.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvStatistics.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Property,
+            this.BaseValue,
+            this.CurrentValue});
+            this.dgvStatistics.Location = new System.Drawing.Point(-2, 0);
+            this.dgvStatistics.Name = "dgvStatistics";
+            this.dgvStatistics.previousControl = null;
+            this.dgvStatistics.Size = new System.Drawing.Size(828, 298);
+            this.dgvStatistics.TabIndex = 1;
+            this.dgvStatistics.SelectionChanged += new System.EventHandler(this.dgvStatistics_SelectionChanged);
+            // 
+            // Property
+            // 
+            this.Property.HeaderText = "Property";
+            this.Property.Name = "Property";
+            this.Property.ReadOnly = true;
+            this.Property.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // BaseValue
+            // 
+            this.BaseValue.HeaderText = "BaseValue";
+            this.BaseValue.Name = "BaseValue";
+            this.BaseValue.ReadOnly = true;
+            this.BaseValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // CurrentValue
+            // 
+            this.CurrentValue.HeaderText = "CurrentValue";
+            this.CurrentValue.Name = "CurrentValue";
+            this.CurrentValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
             // tabPResources
             // 
             this.tabPResources.Controls.Add(this.dgvResources);
@@ -498,6 +577,7 @@ namespace OE2EmpireTracker
             // 
             this.Resource.HeaderText = "Resource";
             this.Resource.Name = "Resource";
+            this.Resource.Width = 150;
             // 
             // Amount
             // 
@@ -577,82 +657,15 @@ namespace OE2EmpireTracker
             this.flowLayoutPanel1.Size = new System.Drawing.Size(661, 641);
             this.flowLayoutPanel1.TabIndex = 10;
             // 
-            // cmdDelete
+            // cmdNew
             // 
-            this.cmdDelete.Location = new System.Drawing.Point(190, 3);
-            this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(75, 23);
-            this.cmdDelete.TabIndex = 11;
-            this.cmdDelete.Text = "Delete";
-            this.cmdDelete.UseVisualStyleBackColor = true;
-            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
-            // 
-            // dgvStatistics
-            // 
-            this.dgvStatistics.AllowUserToAddRows = false;
-            this.dgvStatistics.AllowUserToDeleteRows = false;
-            this.dgvStatistics.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvStatistics.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Property,
-            this.BaseValue,
-            this.CurrentValue});
-            this.dgvStatistics.Location = new System.Drawing.Point(-2, 0);
-            this.dgvStatistics.Name = "dgvStatistics";
-            this.dgvStatistics.previousControl = null;
-            this.dgvStatistics.Size = new System.Drawing.Size(828, 298);
-            this.dgvStatistics.TabIndex = 1;
-            this.dgvStatistics.SelectionChanged += new System.EventHandler(this.dgvStatistics_SelectionChanged);
-            // 
-            // Property
-            // 
-            this.Property.HeaderText = "Property";
-            this.Property.Name = "Property";
-            this.Property.ReadOnly = true;
-            this.Property.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // BaseValue
-            // 
-            this.BaseValue.HeaderText = "BaseValue";
-            this.BaseValue.Name = "BaseValue";
-            this.BaseValue.ReadOnly = true;
-            this.BaseValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // CurrentValue
-            // 
-            this.CurrentValue.HeaderText = "CurrentValue";
-            this.CurrentValue.Name = "CurrentValue";
-            this.CurrentValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // flpCopyCost
-            // 
-            this.flpCopyCost.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.flpCopyCost.AutoSize = true;
-            this.flpCopyCost.Controls.Add(this.lblCopyCost);
-            this.flpCopyCost.Controls.Add(this.txtCopyCost);
-            this.flpCopyCost.Location = new System.Drawing.Point(2, 233);
-            this.flpCopyCost.Margin = new System.Windows.Forms.Padding(2);
-            this.flpCopyCost.Name = "flpCopyCost";
-            this.flpCopyCost.Size = new System.Drawing.Size(415, 24);
-            this.flpCopyCost.TabIndex = 8;
-            // 
-            // lblCopyCost
-            // 
-            this.lblCopyCost.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCopyCost.Location = new System.Drawing.Point(2, 3);
-            this.lblCopyCost.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblCopyCost.Name = "lblCopyCost";
-            this.lblCopyCost.Size = new System.Drawing.Size(100, 17);
-            this.lblCopyCost.TabIndex = 2;
-            this.lblCopyCost.Text = "Copy Cost";
-            this.lblCopyCost.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // txtCopyCost
-            // 
-            this.txtCopyCost.Location = new System.Drawing.Point(106, 2);
-            this.txtCopyCost.Margin = new System.Windows.Forms.Padding(2);
-            this.txtCopyCost.Name = "txtCopyCost";
-            this.txtCopyCost.Size = new System.Drawing.Size(201, 20);
-            this.txtCopyCost.TabIndex = 7;
+            this.cmdNew.Location = new System.Drawing.Point(109, 3);
+            this.cmdNew.Name = "cmdNew";
+            this.cmdNew.Size = new System.Drawing.Size(75, 23);
+            this.cmdNew.TabIndex = 12;
+            this.cmdNew.Text = "New";
+            this.cmdNew.UseVisualStyleBackColor = true;
+            this.cmdNew.Click += new System.EventHandler(this.cmdNew_Click);
             // 
             // FormBlueprint
             // 
@@ -678,10 +691,13 @@ namespace OE2EmpireTracker
             this.flpNickName.PerformLayout();
             this.flpDescription.ResumeLayout(false);
             this.flpDescription.PerformLayout();
+            this.flpCopyCost.ResumeLayout(false);
+            this.flpCopyCost.PerformLayout();
             this.flpCommands.ResumeLayout(false);
             this.flpCommands.PerformLayout();
             this.tabDetailedData.ResumeLayout(false);
             this.tabPStatistics.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).EndInit();
             this.tabPResources.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).EndInit();
             this.flpBase.ResumeLayout(false);
@@ -691,9 +707,6 @@ namespace OE2EmpireTracker
             this.flpBlueprintSearch.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).EndInit();
-            this.flpCopyCost.ResumeLayout(false);
-            this.flpCopyCost.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -752,5 +765,6 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.FlowLayoutPanel flpCopyCost;
         private System.Windows.Forms.Label lblCopyCost;
         private System.Windows.Forms.TextBox txtCopyCost;
+        private System.Windows.Forms.Button cmdNew;
     }
 }

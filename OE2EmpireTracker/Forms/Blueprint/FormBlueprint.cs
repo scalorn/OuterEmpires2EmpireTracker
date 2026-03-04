@@ -432,10 +432,22 @@ namespace OE2EmpireTracker
             blueprint.BluePrintType = blueprintType.Id;
 
             ShipClass shipClass = cmbShipClass.SelectedItem as ShipClass;
-            blueprint.Class = shipClass.Id;
+            if (shipClass != null)
+            {
+                blueprint.Class = shipClass.Id;
+            } else
+            {
+                blueprint.Class = 0;
+            }
 
             TechLevel techLevel = cmbTechLevel.SelectedItem as TechLevel;
-            blueprint.TechLevel = techLevel.Name;
+            if (techLevel != null)
+            {
+                blueprint.TechLevel = techLevel.Name;
+            } else
+            {
+                blueprint.TechLevel = null;
+            }
 
             string evolution = "0";
             if (cmbEvolution.SelectedItem != null)
@@ -467,11 +479,13 @@ namespace OE2EmpireTracker
 
             // Now to map grid fields.
 
+            blueprint.Properties.Clear();
             foreach (DataGridViewRow row in dgvStatistics.Rows)
             {
                 blueprint.Properties[row.Cells[0].Tag as string] = row.Cells[2].Value as string;
             }
 
+            blueprint.Resources.Clear();
             foreach (DataGridViewRow row in dgvResources.Rows)
             {
                 string resourceName = row.Cells[0].Value as string;
@@ -561,6 +575,7 @@ namespace OE2EmpireTracker
             txtName.Text = "";
             txtNickName.Text = "";
             txtDescription.Text = "";
+            txtCopyCost.Text = "";
 
             dgvStatistics.Rows.Clear();
             dgvResources.Rows.Clear();
@@ -583,6 +598,11 @@ namespace OE2EmpireTracker
 
                 clearForm();
             }
+        }
+
+        private void cmdNew_Click(object sender, EventArgs e)
+        {
+            clearForm();
         }
     }
 }
