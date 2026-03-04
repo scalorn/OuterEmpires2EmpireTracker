@@ -95,13 +95,20 @@ namespace OE2EmpireTracker.Data
         //public KeyValuePair<int, int> FuelTransferRate { get; set; }
 
         [JsonIgnore]
-        public string ExtendedName { 
-        get { 
+        public string ExtendedName {
+            get {
                 if (UUID == null)
                 {
                     return string.Empty;
                 }
-                string extendedName = Name + " Ev(" + Evolution + ") (" + TechLevel + ")";
+                string extendedName = Name;
+                if (Evolution > 0) {
+                    extendedName += " Ev(" + Evolution + ")";
+                }
+                if (TechLevel != null)
+                {
+                    extendedName += " (" + TechLevel + ")";
+                }
                 if (!String.IsNullOrEmpty(NickName))
                 {
                     extendedName += " [" + NickName + "]";

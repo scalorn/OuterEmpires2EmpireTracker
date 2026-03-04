@@ -47,7 +47,13 @@
             this.tabPStructures = new System.Windows.Forms.TabPage();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.listView1 = new System.Windows.Forms.ListView();
+            this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.txtFilterFlatpack = new System.Windows.Forms.TextBox();
+            this.cmbFlatpacks = new System.Windows.Forms.ComboBox();
+            this.cmdAddFlatpack = new System.Windows.Forms.Button();
             this.flpColonyStructure = new System.Windows.Forms.FlowLayoutPanel();
+            this.colonyStructure1 = new OE2EmpireTracker.Forms.Colony.ColonyStructure();
             this.tabPWorkers = new System.Windows.Forms.TabPage();
             this.tabPWarehousing = new System.Windows.Forms.TabPage();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
@@ -58,7 +64,8 @@
             this.Property = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BaseValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CurrentValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colonyStructure1 = new OE2EmpireTracker.Forms.Colony.ColonyStructure();
+            this.rtbStatus = new System.Windows.Forms.RichTextBox();
+            this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
             this.flpBlueprintSearch.SuspendLayout();
@@ -69,8 +76,11 @@
             this.tabDetailedData.SuspendLayout();
             this.tabPStructures.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
+            this.flowLayoutPanel4.SuspendLayout();
+            this.flowLayoutPanel2.SuspendLayout();
             this.flpColonyStructure.SuspendLayout();
             this.flpCommands.SuspendLayout();
+            this.flowLayoutPanel5.SuspendLayout();
             this.SuspendLayout();
             // 
             // flpBase
@@ -255,11 +265,12 @@
             // flowLayoutPanel3
             // 
             this.flowLayoutPanel3.Controls.Add(this.listView1);
-            this.flowLayoutPanel3.Controls.Add(this.flpColonyStructure);
+            this.flowLayoutPanel3.Controls.Add(this.flowLayoutPanel4);
             this.flowLayoutPanel3.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
             this.flowLayoutPanel3.Size = new System.Drawing.Size(887, 470);
             this.flowLayoutPanel3.TabIndex = 3;
+            this.flowLayoutPanel3.WrapContents = false;
             // 
             // listView1
             // 
@@ -272,6 +283,61 @@
             this.listView1.TabIndex = 7;
             this.listView1.UseCompatibleStateImageBehavior = false;
             // 
+            // flowLayoutPanel4
+            // 
+            this.flowLayoutPanel4.AutoSize = true;
+            this.flowLayoutPanel4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel4.Controls.Add(this.flowLayoutPanel5);
+            this.flowLayoutPanel4.Controls.Add(this.flowLayoutPanel2);
+            this.flowLayoutPanel4.Controls.Add(this.flpColonyStructure);
+            this.flowLayoutPanel4.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel4.Location = new System.Drawing.Point(139, 3);
+            this.flowLayoutPanel4.Name = "flowLayoutPanel4";
+            this.flowLayoutPanel4.Size = new System.Drawing.Size(742, 521);
+            this.flowLayoutPanel4.TabIndex = 10;
+            this.flowLayoutPanel4.WrapContents = false;
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.AutoSize = true;
+            this.flowLayoutPanel2.Controls.Add(this.txtFilterFlatpack);
+            this.flowLayoutPanel2.Controls.Add(this.cmbFlatpacks);
+            this.flowLayoutPanel2.Controls.Add(this.cmdAddFlatpack);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 33);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(410, 29);
+            this.flowLayoutPanel2.TabIndex = 9;
+            // 
+            // txtFilterFlatpack
+            // 
+            this.txtFilterFlatpack.Location = new System.Drawing.Point(3, 3);
+            this.txtFilterFlatpack.Name = "txtFilterFlatpack";
+            this.txtFilterFlatpack.Size = new System.Drawing.Size(100, 20);
+            this.txtFilterFlatpack.TabIndex = 0;
+            this.txtFilterFlatpack.TextChanged += new System.EventHandler(this.txtFilterFlatpack_TextChanged);
+            // 
+            // cmbFlatpacks
+            // 
+            this.cmbFlatpacks.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cmbFlatpacks.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cmbFlatpacks.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFlatpacks.FormattingEnabled = true;
+            this.cmbFlatpacks.Location = new System.Drawing.Point(109, 3);
+            this.cmbFlatpacks.Name = "cmbFlatpacks";
+            this.cmbFlatpacks.Size = new System.Drawing.Size(217, 21);
+            this.cmbFlatpacks.TabIndex = 1;
+            this.cmbFlatpacks.SelectedIndexChanged += new System.EventHandler(this.cmbFlatpacks_SelectedIndexChanged);
+            // 
+            // cmdAddFlatpack
+            // 
+            this.cmdAddFlatpack.Location = new System.Drawing.Point(332, 3);
+            this.cmdAddFlatpack.Name = "cmdAddFlatpack";
+            this.cmdAddFlatpack.Size = new System.Drawing.Size(75, 23);
+            this.cmdAddFlatpack.TabIndex = 2;
+            this.cmdAddFlatpack.Text = "Add";
+            this.cmdAddFlatpack.UseVisualStyleBackColor = true;
+            this.cmdAddFlatpack.Click += new System.EventHandler(this.cmdAddFlatpack_Click);
+            // 
             // flpColonyStructure
             // 
             this.flpColonyStructure.AutoScroll = true;
@@ -279,11 +345,19 @@
             this.flpColonyStructure.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpColonyStructure.Controls.Add(this.colonyStructure1);
             this.flpColonyStructure.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpColonyStructure.Location = new System.Drawing.Point(139, 3);
+            this.flpColonyStructure.Location = new System.Drawing.Point(3, 68);
             this.flpColonyStructure.Name = "flpColonyStructure";
             this.flpColonyStructure.Size = new System.Drawing.Size(736, 450);
             this.flpColonyStructure.TabIndex = 8;
             this.flpColonyStructure.WrapContents = false;
+            // 
+            // colonyStructure1
+            // 
+            this.colonyStructure1.ColonyStructureData = null;
+            this.colonyStructure1.Location = new System.Drawing.Point(3, 3);
+            this.colonyStructure1.Name = "colonyStructure1";
+            this.colonyStructure1.Size = new System.Drawing.Size(580, 168);
+            this.colonyStructure1.TabIndex = 8;
             // 
             // tabPWorkers
             // 
@@ -376,12 +450,26 @@
             this.CurrentValue.Name = "CurrentValue";
             this.CurrentValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
-            // colonyStructure1
+            // rtbStatus
             // 
-            this.colonyStructure1.Location = new System.Drawing.Point(3, 3);
-            this.colonyStructure1.Name = "colonyStructure1";
-            this.colonyStructure1.Size = new System.Drawing.Size(580, 168);
-            this.colonyStructure1.TabIndex = 8;
+            this.rtbStatus.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbStatus.Location = new System.Drawing.Point(3, 3);
+            this.rtbStatus.Name = "rtbStatus";
+            this.rtbStatus.ReadOnly = true;
+            this.rtbStatus.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.rtbStatus.Size = new System.Drawing.Size(330, 18);
+            this.rtbStatus.TabIndex = 3;
+            this.rtbStatus.Text = "[red]6[/red]/4";
+            this.rtbStatus.WordWrap = false;
+            // 
+            // flowLayoutPanel5
+            // 
+            this.flowLayoutPanel5.AutoSize = true;
+            this.flowLayoutPanel5.Controls.Add(this.rtbStatus);
+            this.flowLayoutPanel5.Location = new System.Drawing.Point(3, 3);
+            this.flowLayoutPanel5.Name = "flowLayoutPanel5";
+            this.flowLayoutPanel5.Size = new System.Drawing.Size(336, 24);
+            this.flowLayoutPanel5.TabIndex = 10;
             // 
             // FormColony
             // 
@@ -407,9 +495,15 @@
             this.tabDetailedData.ResumeLayout(false);
             this.tabPStructures.ResumeLayout(false);
             this.flowLayoutPanel3.ResumeLayout(false);
+            this.flowLayoutPanel3.PerformLayout();
+            this.flowLayoutPanel4.ResumeLayout(false);
+            this.flowLayoutPanel4.PerformLayout();
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
             this.flpColonyStructure.ResumeLayout(false);
             this.flpCommands.ResumeLayout(false);
             this.flpCommands.PerformLayout();
+            this.flowLayoutPanel5.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -449,5 +543,12 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtPlanetName;
         private ColonyStructure colonyStructure1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.TextBox txtFilterFlatpack;
+        private System.Windows.Forms.ComboBox cmbFlatpacks;
+        private System.Windows.Forms.Button cmdAddFlatpack;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel5;
+        private System.Windows.Forms.RichTextBox rtbStatus;
     }
 }

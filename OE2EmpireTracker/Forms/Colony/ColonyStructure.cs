@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,56 +14,88 @@ namespace OE2EmpireTracker.Forms.Colony
 {
     public partial class ColonyStructure : UserControl
     {
+        private EmpireContext empireContext;
+        private PlayerContext playerContext;
+        public Baseline.ColonyStructure ColonyStructureData { get; set; }
+        private Blueprint FlatpackBlueprint { get; set; }
+        private double PowerProvided { get; set; }
+        private double PowerRequired { get; set; }
         public ColonyStructure()
         {
             InitializeComponent();
+            empireContext = EmpireContext.getInstance();
+            playerContext = EmpireContext.PlayerContext;
+
             populateStats();
         }
 
-        void populateStats()
+        public void UpdateData()
         {
-            rtbStatus.Text = "";
-            // Power
-            AppendColoredText(rtbStatus, "Power: ", Color.Black);
-            AppendColoredText(rtbStatus, "12.1", Color.Red);
-            AppendColoredText(rtbStatus, "/", Color.Black);
-            AppendColoredText(rtbStatus, "10 ", Color.Black);
+            FlatpackBlueprint = playerContext.findBlueprint(ColonyStructureData.FlatpackBlueprintUUID);
 
-            AppendColoredText(rtbStatus, "Habitation: ", Color.Black);
-            AppendColoredText(rtbStatus, "4", Color.Green);
-            AppendColoredText(rtbStatus, "/", Color.Black);
-            AppendColoredText(rtbStatus, "10 ", Color.Black);
+            if (FlatpackBlueprint != null)
+            {
+                double powerProvided = 0;
+                string powerProvidedStr = "";
+                FlatpackBlueprint.Properties.TryGetValue("PowerProvided", out powerProvidedStr);
+                Double.TryParse(powerProvidedStr, out powerProvided);
+                double powerRequired = 0;
+                string powerRequiredStr = "";
+                FlatpackBlueprint.Properties.TryGetValue("PowerRequired", out powerRequiredStr);
+                Double.TryParse(powerRequiredStr, out powerRequired);
 
-            AppendColoredText(rtbStatus, "Food: ", Color.Black);
-            AppendColoredText(rtbStatus, "4", Color.Green);
-            AppendColoredText(rtbStatus, "/", Color.Black);
-            AppendColoredText(rtbStatus, "10 ", Color.Black);
+                PowerProvided = powerProvided;
+                PowerRequired = powerRequired;
+            }
 
-            AppendColoredText(rtbStatus, "Entertainment: ", Color.Black);
-            AppendColoredText(rtbStatus, "4", Color.Green);
-            AppendColoredText(rtbStatus, "/", Color.Black);
-            AppendColoredText(rtbStatus, "10 ", Color.Black);
-
-            AppendColoredText(rtbStatus, "Warehouse: ", Color.Black);
-            AppendColoredText(rtbStatus, "4", Color.Green);
-            AppendColoredText(rtbStatus, "/", Color.Black);
-            AppendColoredText(rtbStatus, "10 ", Color.Black);
+            populateStats();
         }
 
-        public static void AppendColoredText(RichTextBox box, string text, Color color)
+        private void populateStats()
         {
-            // Set the selection point to the end of the existing text
-            box.SelectionStart = box.TextLength;
-            box.SelectionLength = 0;
+            rtbStatus.Text = "";
 
-            // Set the color for the text to be appended
-            box.SelectionColor = color;
+            if (ColonyStructureData != null)
+            {
+                ColonyStatusCalculator.AppendColoredText(rtbStatus, "#" + ColonyStructureData.gameSequence + " ", Color.Black);
+            }
+            if (FlatpackBlueprint != null) {
+                ColonyStatusCalculator.AppendColoredText(rtbStatus, FlatpackBlueprint.ExtendedName, Color.Black);
+            }
 
-            // Append the new text
-            box.AppendText(text);
+            // Power
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, "\nPower: ", Color.Black);
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, "" + PowerRequired, Color.Red);
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, "/", Color.Black);
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, "" + PowerProvided, Color.Black);
 
-            // Reset the selection color to the default (e.g., black) for future user input
-            box.SelectionColor = box.ForeColor;
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, " Habitation: ", Color.Black);
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, "4", Color.Green);
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, "/", Color.Black);
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, "10 ", Color.Black);
+
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, " Food: ", Color.Black);
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, "4", Color.Green);
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, "/", Color.Black);
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, "10 ", Color.Black);
+
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, " Entertainment: ", Color.Black);
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, "4", Color.Green);
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, "/", Color.Black);
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, "10 ", Color.Black);
+
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, " Warehouse: ", Color.Black);
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, "4", Color.Green);
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, "/", Color.Black);
+            ColonyStatusCalculator.AppendColoredText(rtbStatus, "10 ", Color.Black);
+        }
+
+        private void rtbStatus_ContentsResized(object sender, ContentsResizedEventArgs e)
+        {
+            // Adjust the height of the RichTextBox to fit the new content rectangle
+            // An offset (+10 in this example) may be needed to account for borders/margins
+            rtbStatus.Height = e.NewRectangle.Height + 10;
+            rtbStatus.Width = e.NewRectangle.Width + 10;
         }
     }
 }
