@@ -47,12 +47,12 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button5 = new System.Windows.Forms.Button();
             this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkBuilt = new System.Windows.Forms.CheckBox();
+            this.chkStaged = new System.Windows.Forms.CheckBox();
+            this.chkOnline = new System.Windows.Forms.CheckBox();
             this.chkWorkDetail1 = new System.Windows.Forms.CheckBox();
             this.chkWorkDetail2 = new System.Windows.Forms.CheckBox();
             this.chkWorkDetail3 = new System.Windows.Forms.CheckBox();
-            this.chkOnline = new System.Windows.Forms.CheckBox();
-            this.chkBuilt = new System.Windows.Forms.CheckBox();
-            this.chkStaged = new System.Windows.Forms.CheckBox();
             this.flpColonyStructure.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
@@ -70,7 +70,7 @@
             this.rtbStatus.Name = "rtbStatus";
             this.rtbStatus.ReadOnly = true;
             this.rtbStatus.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.rtbStatus.Size = new System.Drawing.Size(330, 18);
+            this.rtbStatus.Size = new System.Drawing.Size(402, 18);
             this.rtbStatus.TabIndex = 0;
             this.rtbStatus.Text = "[red]6[/red]/4";
             this.rtbStatus.WordWrap = false;
@@ -100,7 +100,7 @@
             this.flowLayoutPanel2.Controls.Add(this.flowLayoutPanel5);
             this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(487, 144);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(559, 144);
             this.flowLayoutPanel2.TabIndex = 1;
             this.flowLayoutPanel2.WrapContents = false;
             // 
@@ -153,7 +153,7 @@
             this.flowLayoutPanel4.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel4.Location = new System.Drawing.Point(65, 3);
             this.flowLayoutPanel4.Name = "flowLayoutPanel4";
-            this.flowLayoutPanel4.Size = new System.Drawing.Size(336, 100);
+            this.flowLayoutPanel4.Size = new System.Drawing.Size(408, 100);
             this.flowLayoutPanel4.TabIndex = 1;
             this.flowLayoutPanel4.WrapContents = false;
             // 
@@ -260,11 +260,41 @@
             this.flowLayoutPanel5.Controls.Add(this.chkWorkDetail2);
             this.flowLayoutPanel5.Controls.Add(this.chkWorkDetail3);
             this.flowLayoutPanel5.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel5.Location = new System.Drawing.Point(407, 3);
+            this.flowLayoutPanel5.Location = new System.Drawing.Point(479, 3);
             this.flowLayoutPanel5.Name = "flowLayoutPanel5";
             this.flowLayoutPanel5.Size = new System.Drawing.Size(77, 138);
             this.flowLayoutPanel5.TabIndex = 2;
             this.flowLayoutPanel5.WrapContents = false;
+            // 
+            // chkBuilt
+            // 
+            this.chkBuilt.AutoSize = true;
+            this.chkBuilt.Location = new System.Drawing.Point(3, 3);
+            this.chkBuilt.Name = "chkBuilt";
+            this.chkBuilt.Size = new System.Drawing.Size(46, 17);
+            this.chkBuilt.TabIndex = 2;
+            this.chkBuilt.Text = "Built";
+            this.chkBuilt.UseVisualStyleBackColor = true;
+            // 
+            // chkStaged
+            // 
+            this.chkStaged.AutoSize = true;
+            this.chkStaged.Location = new System.Drawing.Point(3, 26);
+            this.chkStaged.Name = "chkStaged";
+            this.chkStaged.Size = new System.Drawing.Size(60, 17);
+            this.chkStaged.TabIndex = 3;
+            this.chkStaged.Text = "Staged";
+            this.chkStaged.UseVisualStyleBackColor = true;
+            // 
+            // chkOnline
+            // 
+            this.chkOnline.AutoSize = true;
+            this.chkOnline.Location = new System.Drawing.Point(3, 49);
+            this.chkOnline.Name = "chkOnline";
+            this.chkOnline.Size = new System.Drawing.Size(56, 17);
+            this.chkOnline.TabIndex = 1;
+            this.chkOnline.Text = "Online";
+            this.chkOnline.UseVisualStyleBackColor = true;
             // 
             // chkWorkDetail1
             // 
@@ -295,36 +325,6 @@
             this.chkWorkDetail3.TabIndex = 3;
             this.chkWorkDetail3.Text = "Specialist";
             this.chkWorkDetail3.UseVisualStyleBackColor = true;
-            // 
-            // chkOnline
-            // 
-            this.chkOnline.AutoSize = true;
-            this.chkOnline.Location = new System.Drawing.Point(3, 49);
-            this.chkOnline.Name = "chkOnline";
-            this.chkOnline.Size = new System.Drawing.Size(56, 17);
-            this.chkOnline.TabIndex = 1;
-            this.chkOnline.Text = "Online";
-            this.chkOnline.UseVisualStyleBackColor = true;
-            // 
-            // chkBuilt
-            // 
-            this.chkBuilt.AutoSize = true;
-            this.chkBuilt.Location = new System.Drawing.Point(3, 3);
-            this.chkBuilt.Name = "chkBuilt";
-            this.chkBuilt.Size = new System.Drawing.Size(46, 17);
-            this.chkBuilt.TabIndex = 2;
-            this.chkBuilt.Text = "Built";
-            this.chkBuilt.UseVisualStyleBackColor = true;
-            // 
-            // chkStaged
-            // 
-            this.chkStaged.AutoSize = true;
-            this.chkStaged.Location = new System.Drawing.Point(3, 26);
-            this.chkStaged.Name = "chkStaged";
-            this.chkStaged.Size = new System.Drawing.Size(60, 17);
-            this.chkStaged.TabIndex = 3;
-            this.chkStaged.Text = "Staged";
-            this.chkStaged.UseVisualStyleBackColor = true;
             // 
             // ColonyStructure
             // 
