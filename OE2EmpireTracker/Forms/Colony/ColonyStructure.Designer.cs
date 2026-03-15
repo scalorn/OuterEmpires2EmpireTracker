@@ -316,6 +316,7 @@
             this.chkWorkDetail2.TabIndex = 2;
             this.chkWorkDetail2.Text = "White";
             this.chkWorkDetail2.UseVisualStyleBackColor = true;
+            this.chkWorkDetail2.CheckStateChanged += new System.EventHandler(this.chkWorkDetail2_CheckStateChanged);
             // 
             // chkWorkDetail3
             // 
@@ -326,6 +327,7 @@
             this.chkWorkDetail3.TabIndex = 3;
             this.chkWorkDetail3.Text = "Specialist";
             this.chkWorkDetail3.UseVisualStyleBackColor = true;
+            this.chkWorkDetail3.CheckStateChanged += new System.EventHandler(this.chkWorkDetail3_CheckStateChanged);
             // 
             // ColonyStructure
             // 

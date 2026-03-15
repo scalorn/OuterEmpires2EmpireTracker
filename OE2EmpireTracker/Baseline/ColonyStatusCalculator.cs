@@ -100,7 +100,7 @@ namespace OE2EmpireTracker.Baseline
                         {
                             //BlueCollar
                             long blueCollarDetail = 0;
-                            flatpackBlueprint.Properties.getLong("BlueCollar", 0, out blueCollarDetail);
+                            flatpackBlueprint.Properties.getLong("BlueCollarDetail", 0, out blueCollarDetail);
                             for (int i = 1; i <= blueCollarDetail; i++)
                             {
                                 bool blueCollarAssigned = false;
@@ -116,7 +116,7 @@ namespace OE2EmpireTracker.Baseline
                         {
                             //WhiteCollar
                             long whiteCollarDetail = 0;
-                            flatpackBlueprint.Properties.getLong("WhiteCollar", 0, out whiteCollarDetail);
+                            flatpackBlueprint.Properties.getLong("WhiteCollarDetail", 0, out whiteCollarDetail);
                             for (int i = 1; i <= whiteCollarDetail; i++)
                             {
                                 bool whiteCollarAssigned = false;

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace OE2EmpireTracker.Forms.Colony
 {
@@ -55,17 +56,100 @@ namespace OE2EmpireTracker.Forms.Colony
             chkWorkDetail1.Visible = false;
             chkWorkDetail2.Visible = false;
             chkWorkDetail3.Visible = false;
+            CheckBox[] checkControls = new CheckBox[3];
+            checkControls[0] = chkWorkDetail1;
+            checkControls[1] = chkWorkDetail2;
+            checkControls[2] = chkWorkDetail3;
+            int controlIndex = 0;
 
             if (ColonyStructureData != null)
             {
-                if (ColonyStructureData.AssignedWorkers.ContainsKey("Specialist1"))
+                int index = 1;
+                string key = "BlueCollar1";
+
+                while (ColonyStructureData.AssignedWorkers.ContainsKey(key))
+                {
+                    bool blueCollarAssigned = false;
+                    ColonyStructureData.AssignedWorkers.getBoolean(key, false, out blueCollarAssigned);
+                    checkControls[controlIndex].Visible = true;
+                    checkControls[controlIndex].Enabled = true;
+                    checkControls[controlIndex].Text = "Blue Collar";
+                    checkControls[controlIndex].Tag = key;
+                    checkControls[controlIndex].Checked = blueCollarAssigned;
+                    controlIndex++;
+                    index++;
+                    key = "BlueCollar" + index;
+                }
+
+                index = 1;
+                key = "WhiteCollar1";
+                while (ColonyStructureData.AssignedWorkers.ContainsKey(key))
+                {
+                    bool whiteCollarAssigned = false;
+                    ColonyStructureData.AssignedWorkers.getBoolean(key, false, out whiteCollarAssigned);
+                    checkControls[controlIndex].Visible = true;
+                    checkControls[controlIndex].Enabled = true;
+                    checkControls[controlIndex].Text = "White Collar";
+                    checkControls[controlIndex].Tag = key;
+                    checkControls[controlIndex].Checked = whiteCollarAssigned;
+                    controlIndex++;
+                    index++;
+                    key = "WhiteCollar" + index;
+                }
+
+                index = 1;
+                key = "Specialist1";
+                while (ColonyStructureData.AssignedWorkers.ContainsKey(key))
                 {
                     bool specialistAssigned = false;
-                    ColonyStructureData.AssignedWorkers.getBoolean("Specialist1", false, out specialistAssigned);
-                    chkWorkDetail1.Visible = true;
-                    chkWorkDetail1.Text = "Specialist";
-                    chkWorkDetail1.Tag = "Specialist1";
-                    chkWorkDetail1.Checked = specialistAssigned;
+                    ColonyStructureData.AssignedWorkers.getBoolean(key, false, out specialistAssigned);
+                    checkControls[controlIndex].Visible = true;
+                    checkControls[controlIndex].Enabled = true;
+                    checkControls[controlIndex].Text = "Specialist";
+                    checkControls[controlIndex].Tag = key;
+                    checkControls[controlIndex].Checked = specialistAssigned;
+                    controlIndex++;
+                    index++;
+                    key = "Specialist" + index;
+                }
+
+                key = "UnassignedBlueCollarDetail";
+                if (FlatpackBlueprint.Properties.ContainsKey(key))
+                {
+                    bool unassignedBlueCollarPresent = true;
+                    //ColonyStructureData.AssignedWorkers.getBoolean(key, false, out blueCollarAssigned);
+                    checkControls[controlIndex].Visible = true;
+                    checkControls[controlIndex].Enabled = false;
+                    checkControls[controlIndex].Text = "Support - Blue Collar";
+                    checkControls[controlIndex].Tag = key;
+                    checkControls[controlIndex].Checked = unassignedBlueCollarPresent;
+                    controlIndex++;
+                }
+
+                key = "UnassignedWhiteCollarDetail";
+                if (FlatpackBlueprint.Properties.ContainsKey(key))
+                {
+                    bool unassignedWhiteCollarPresent = true;
+                    //ColonyStructureData.AssignedWorkers.getBoolean(key, false, out blueCollarAssigned);
+                    checkControls[controlIndex].Visible = true;
+                    checkControls[controlIndex].Enabled = false;
+                    checkControls[controlIndex].Text = "Support - White Collar";
+                    checkControls[controlIndex].Tag = key;
+                    checkControls[controlIndex].Checked = unassignedWhiteCollarPresent;
+                    controlIndex++;
+                }
+
+                key = "UnassignedSpecialistDetail";
+                if (FlatpackBlueprint.Properties.ContainsKey(key))
+                {
+                    bool unassignedSpecialistPresent = true;
+                    //ColonyStructureData.AssignedWorkers.getBoolean(key, false, out blueCollarAssigned);
+                    checkControls[controlIndex].Visible = true;
+                    checkControls[controlIndex].Enabled = false;
+                    checkControls[controlIndex].Text = "Support - Specialist";
+                    checkControls[controlIndex].Tag = key;
+                    checkControls[controlIndex].Checked = unassignedSpecialistPresent;
+                    controlIndex++;
                 }
             }
 
@@ -125,6 +209,24 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             bool state = chkWorkDetail1.Checked;
             string prop = chkWorkDetail1.Tag as string;
+            ColonyStructureData.AssignedWorkers.setProperty(prop, state);
+
+            ColonyStructureDataChanged?.Invoke(this, e);
+        }
+
+        private void chkWorkDetail2_CheckStateChanged(object sender, EventArgs e)
+        {
+            bool state = chkWorkDetail2.Checked;
+            string prop = chkWorkDetail2.Tag as string;
+            ColonyStructureData.AssignedWorkers.setProperty(prop, state);
+
+            ColonyStructureDataChanged?.Invoke(this, e);
+        }
+
+        private void chkWorkDetail3_CheckStateChanged(object sender, EventArgs e)
+        {
+            bool state = chkWorkDetail3.Checked;
+            string prop = chkWorkDetail3.Tag as string;
             ColonyStructureData.AssignedWorkers.setProperty(prop, state);
 
             ColonyStructureDataChanged?.Invoke(this, e);
