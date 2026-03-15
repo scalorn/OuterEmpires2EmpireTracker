@@ -305,6 +305,7 @@
             this.chkWorkDetail1.TabIndex = 1;
             this.chkWorkDetail1.Text = "Blue";
             this.chkWorkDetail1.UseVisualStyleBackColor = true;
+            this.chkWorkDetail1.CheckStateChanged += new System.EventHandler(this.chkWorkDetail1_CheckStateChanged);
             // 
             // chkWorkDetail2
             // 

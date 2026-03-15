@@ -73,16 +73,28 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void cmdAddFlatpack_Click(object sender, EventArgs e)
         {
+            this.SuspendLayout();
 
             Baseline.ColonyStructure colonyStructureData = new Baseline.ColonyStructure();
             colonyStructureData.FlatpackBlueprintUUID = cmbFlatpacks.SelectedValue.ToString();
             colonyStructureData.Built = true; // FIXME: A cheat.
             selectedColony.Structures.Add(colonyStructureData);
             ColonyStructure colonyStructureControl = new ColonyStructure();
+            colonyStructureControl.Visible = false;
+            colonyStructureControl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
             colonyStructureControl.ColonyStructureData = colonyStructureData;
             colonyStructureControl.UpdateData();
             flpColonyStructure.Controls.Add(colonyStructureControl);
 
+            statusCalculator.CalculateBuilt();
+            colonyStructureControl.UpdateData();
+            statusCalculator.populateStatus(rtbStatus);
+
+            colonyStructureControl.Visible = true;
+            this.ResumeLayout();
+        }
+        private void structures_ColonyStructureDataChanged(object sender, EventArgs e)
+        {
             statusCalculator.CalculateBuilt();
             statusCalculator.populateStatus(rtbStatus);
         }

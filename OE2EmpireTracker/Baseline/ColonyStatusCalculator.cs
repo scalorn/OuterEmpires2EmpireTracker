@@ -1,4 +1,5 @@
 ﻿using Amazon.Runtime.Internal.Transform;
+using OE2EmpireTracker.Baseline;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -26,10 +27,13 @@ namespace OE2EmpireTracker.Baseline
         public double WarehouseCapacity { get; set; }
         public double WarehouseRequired { get; set; }
 
+        public List<ColonyWorker> ColonyWorkers { get; set; }
+
         public ColonyStatusCalculator(Baseline.Colony colony) {
             this.colony = colony;
             empireContext = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
+            ColonyWorkers = new List<ColonyWorker>();
         }
 
         public void CalculateBuilt()
@@ -44,6 +48,7 @@ namespace OE2EmpireTracker.Baseline
             double builtEntertainmentRequired = 0;
             double builtWarehouseCapacity = 0;
             double builtWarehouseRequired = 0;
+            ColonyWorkers.Clear();
 
             foreach (ColonyStructure structure in colony.Structures)
             {
@@ -91,23 +96,52 @@ namespace OE2EmpireTracker.Baseline
                             builtWarehouseCapacity += warehouseCapacity;
                         }
 
+                        if (flatpackBlueprint.Properties.ContainsKey("BlueCollarDetail"))
+                        {
+                            //BlueCollar
+                            long blueCollarDetail = 0;
+                            flatpackBlueprint.Properties.getLong("BlueCollar", 0, out blueCollarDetail);
+                            for (int i = 1; i <= blueCollarDetail; i++)
+                            {
+                                bool blueCollarAssigned = false;
+                                structure.AssignedWorkers.getBoolean("BlueCollar" + i, false, out blueCollarAssigned);
+                                structure.AssignedWorkers.setProperty("BlueCollar" + i, blueCollarAssigned);
+                                if (blueCollarAssigned)
+                                {
+                                    ColonyWorkers.Add(new ColonyWorker(structure, "BlueCollar" + i, blueCollarAssigned));
+                                }
+                            }
+                        }
+                        if (flatpackBlueprint.Properties.ContainsKey("WhiteCollarDetail"))
+                        {
+                            //WhiteCollar
+                            long whiteCollarDetail = 0;
+                            flatpackBlueprint.Properties.getLong("WhiteCollar", 0, out whiteCollarDetail);
+                            for (int i = 1; i <= whiteCollarDetail; i++)
+                            {
+                                bool whiteCollarAssigned = false;
+                                structure.AssignedWorkers.getBoolean("WhiteCollar" + i, false, out whiteCollarAssigned);
+                                structure.AssignedWorkers.setProperty("WhiteCollar" + i, whiteCollarAssigned);
+                                if (whiteCollarAssigned)
+                                {
+                                    ColonyWorkers.Add(new ColonyWorker(structure, "WhiteCollar" + i, whiteCollarAssigned));
+                                }
+                            }
+                        }
                         if (flatpackBlueprint.Properties.ContainsKey("SpecialistDetail"))
                         {
                             //SpecialistDetail
-                            double specialistDetail = 0;
-                            flatpackBlueprint.Properties.getDouble("SpecialistDetail", 0, out specialistDetail);
-                            bool specialistAssigned = false;
-                            structure.AssignedWorkers.getBoolean("Specialist1", false, out specialistAssigned);
-                            structure.AssignedWorkers.setProperty("Specialist1", specialistAssigned);
-                            if (specialistAssigned)
+                            long specialistDetail = 0;
+                            flatpackBlueprint.Properties.getLong("SpecialistDetail", 0, out specialistDetail);
+                            for (int i = 1; i <= specialistDetail; i++)
                             {
-                                //workers += 1;
-                            }
-                        } else
-                        {
-                            if (structure.AssignedWorkers.ContainsKey("Specialist1"))
-                            {
-                                structure.AssignedWorkers.Remove("Specialist1");
+                                bool specialistAssigned = false;
+                                structure.AssignedWorkers.getBoolean("Specialist" + i, false, out specialistAssigned);
+                                structure.AssignedWorkers.setProperty("Specialist" + i, specialistAssigned);
+                                if (specialistAssigned)
+                                {
+                                    ColonyWorkers.Add(new ColonyWorker(structure, "Specialist" + i, specialistAssigned));
+                                }
                             }
                         }
                     }
@@ -117,11 +151,11 @@ namespace OE2EmpireTracker.Baseline
             PowerProvided = builtPowerProvided;
             PowerRequired = builtPowerRequired;
             HabitationProvision = builtHabitationProvision;
-            HabitationRequired = builtHabitationRequired;
+            HabitationRequired = builtHabitationRequired + ColonyWorkers.Count;
             FoodProvision = builtFoodProvision;
-            FoodRequired = builtFoodRequired;
+            FoodRequired = builtFoodRequired + ColonyWorkers.Count;
             EntertainmentProvided = builtEntertainmentProvided;
-            EntertainmentRequired = builtEntertainmentRequired;
+            EntertainmentRequired = builtEntertainmentRequired + ColonyWorkers.Count;
             WarehouseCapacity = builtWarehouseCapacity;
             WarehouseRequired = builtWarehouseRequired;
         }
@@ -199,5 +233,19 @@ namespace OE2EmpireTracker.Baseline
         }
 
 
+    }
+}
+
+public class ColonyWorker
+{
+    public ColonyStructure Structure { get; set; }
+    public string WorkerType { get; set; }
+    public bool Assigned { get; set; }
+
+    public ColonyWorker(ColonyStructure structure, string workerType, bool assigned)
+    {
+        Structure = structure;
+        WorkerType = workerType;
+        Assigned = assigned;
     }
 }

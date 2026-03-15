@@ -20,17 +20,25 @@ namespace OE2EmpireTracker.Forms.Colony
         private Blueprint FlatpackBlueprint { get; set; }
         private double PowerProvided { get; set; }
         private double PowerRequired { get; set; }
+
+        [Browsable(true)]
+        [Category("Action")]
+        [Description("Invoked when colony structure state changes")]
+        public event EventHandler ColonyStructureDataChanged;
         public ColonyStructure()
         {
             InitializeComponent();
             empireContext = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
 
+            this.SuspendLayout();
             populateStats();
+            this.ResumeLayout();
         }
 
         public void UpdateData()
         {
+            this.SuspendLayout();
             FlatpackBlueprint = playerContext.findBlueprint(ColonyStructureData.FlatpackBlueprintUUID);
 
             if (FlatpackBlueprint != null)
@@ -56,11 +64,13 @@ namespace OE2EmpireTracker.Forms.Colony
                     ColonyStructureData.AssignedWorkers.getBoolean("Specialist1", false, out specialistAssigned);
                     chkWorkDetail1.Visible = true;
                     chkWorkDetail1.Text = "Specialist";
+                    chkWorkDetail1.Tag = "Specialist1";
                     chkWorkDetail1.Checked = specialistAssigned;
                 }
             }
 
             populateStats();
+            this.ResumeLayout();
         }
 
         private void populateStats()
@@ -71,7 +81,8 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 ColonyStatusCalculator.AppendColoredText(rtbStatus, "#" + ColonyStructureData.gameSequence + " ", Color.Black);
             }
-            if (FlatpackBlueprint != null) {
+            if (FlatpackBlueprint != null)
+            {
                 ColonyStatusCalculator.AppendColoredText(rtbStatus, FlatpackBlueprint.ExtendedName, Color.Black);
             }
 
@@ -108,6 +119,15 @@ namespace OE2EmpireTracker.Forms.Colony
             // An offset (+10 in this example) may be needed to account for borders/margins
             rtbStatus.Height = e.NewRectangle.Height + 10;
             rtbStatus.Width = e.NewRectangle.Width + 10;
+        }
+
+        private void chkWorkDetail1_CheckStateChanged(object sender, EventArgs e)
+        {
+            bool state = chkWorkDetail1.Checked;
+            string prop = chkWorkDetail1.Tag as string;
+            ColonyStructureData.AssignedWorkers.setProperty(prop, state);
+
+            ColonyStructureDataChanged?.Invoke(this, e);
         }
     }
 }
