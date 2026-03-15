@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Amazon.Runtime.Internal.Transform;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -46,21 +47,17 @@ namespace OE2EmpireTracker.Baseline
 
             foreach (ColonyStructure structure in colony.Structures)
             {
-                Data.Blueprint FlatpackBlueprint = playerContext.findBlueprint(structure.FlatpackBlueprintUUID);
+                Data.Blueprint flatpackBlueprint = playerContext.findBlueprint(structure.FlatpackBlueprintUUID);
 
                 if (structure.Built == true)
                 {
-                    if (FlatpackBlueprint != null)
+                    if (flatpackBlueprint != null)
                     {
                         {
                             double powerProvided = 0;
-                            string powerProvidedStr = "";
-                            FlatpackBlueprint.Properties.TryGetValue("PowerProvided", out powerProvidedStr);
-                            Double.TryParse(powerProvidedStr, out powerProvided);
+                            flatpackBlueprint.Properties.getDouble("PowerProvided", 0, out powerProvided);
                             double powerRequired = 0;
-                            string powerRequiredStr = "";
-                            FlatpackBlueprint.Properties.TryGetValue("PowerRequired", out powerRequiredStr);
-                            Double.TryParse(powerRequiredStr, out powerRequired);
+                            flatpackBlueprint.Properties.getDouble("PowerRequired", 0, out powerRequired);
 
                             builtPowerProvided += powerProvided;
                             builtPowerRequired += powerRequired;
@@ -68,38 +65,50 @@ namespace OE2EmpireTracker.Baseline
 
                         {
                             double habitationProvision = 0;
-                            string habitationProvisionStr = "";
-                            FlatpackBlueprint.Properties.TryGetValue("HabitationProvision", out habitationProvisionStr);
-                            Double.TryParse(habitationProvisionStr, out habitationProvision);
+                            flatpackBlueprint.Properties.getDouble("HabitationProvision", 0, out habitationProvision);
 
                             builtHabitationProvision += habitationProvision;
                         }
 
                         {
                             double foodProvision = 0;
-                            string foodProvisionStr = "";
-                            FlatpackBlueprint.Properties.TryGetValue("FoodProvision", out foodProvisionStr);
-                            Double.TryParse(foodProvisionStr, out foodProvision);
+                            flatpackBlueprint.Properties.getDouble("FoodProvision", 0, out foodProvision);
 
                             builtFoodProvision += foodProvision;
                         }
 
                         {
                             double entertainmentProvided = 0;
-                            string entertainmentProvidedStr = "";
-                            FlatpackBlueprint.Properties.TryGetValue("EntertainmentProvided", out entertainmentProvidedStr);
-                            Double.TryParse(entertainmentProvidedStr, out entertainmentProvided);
+                            flatpackBlueprint.Properties.getDouble("EntertainmentProvided", 0, out entertainmentProvided);
 
                             builtEntertainmentProvided += entertainmentProvided;
                         }
 
                         {
                             double warehouseCapacity = 0;
-                            string warehouseCapacityStr = "";
-                            FlatpackBlueprint.Properties.TryGetValue("WarehouseCapacity", out warehouseCapacityStr);
-                            Double.TryParse(warehouseCapacityStr, out warehouseCapacity);
+                            flatpackBlueprint.Properties.getDouble("WarehouseCapacity", 0, out warehouseCapacity);
 
                             builtWarehouseCapacity += warehouseCapacity;
+                        }
+
+                        if (flatpackBlueprint.Properties.ContainsKey("SpecialistDetail"))
+                        {
+                            //SpecialistDetail
+                            double specialistDetail = 0;
+                            flatpackBlueprint.Properties.getDouble("SpecialistDetail", 0, out specialistDetail);
+                            bool specialistAssigned = false;
+                            structure.AssignedWorkers.getBoolean("Specialist1", false, out specialistAssigned);
+                            structure.AssignedWorkers.setProperty("Specialist1", specialistAssigned);
+                            if (specialistAssigned)
+                            {
+                                //workers += 1;
+                            }
+                        } else
+                        {
+                            if (structure.AssignedWorkers.ContainsKey("Specialist1"))
+                            {
+                                structure.AssignedWorkers.Remove("Specialist1");
+                            }
                         }
                     }
                 }

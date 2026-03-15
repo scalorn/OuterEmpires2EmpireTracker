@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using System.Xml.Linq;
 
 namespace OE2EmpireTracker.Data
 {
@@ -33,7 +34,7 @@ namespace OE2EmpireTracker.Data
         //[NotMapped]
         //public int MaxAllowedOnShip { get; set; }
 
-        public Dictionary<string, string> Properties { get; set; }
+        public PropertyBag Properties { get; set; }
         public Dictionary<string, string> Resources { get; set; }
 
         //public KeyValuePair<int, int> Mass { get; set; }
@@ -120,14 +121,13 @@ namespace OE2EmpireTracker.Data
 
         public Blueprint(string name /*, int quantity*/) : base(ItemTypeEnum.Blueprint, name /* , quantity */)
         {
-            Properties = new Dictionary<string, string>();
+            Properties = new PropertyBag();
             Resources = new Dictionary<string, string>();
         }
 
-        public Blueprint() : base()
+        public Blueprint() : base(ItemTypeEnum.Blueprint, "")
         {
-            ItemType = ItemTypeEnum.Blueprint;
-            Properties = new Dictionary<string, string>();
+            Properties = new PropertyBag();
             Resources = new Dictionary<string, string>();
         }
 

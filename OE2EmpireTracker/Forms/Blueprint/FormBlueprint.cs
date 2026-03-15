@@ -482,7 +482,7 @@ namespace OE2EmpireTracker
             blueprint.Properties.Clear();
             foreach (DataGridViewRow row in dgvStatistics.Rows)
             {
-                blueprint.Properties[row.Cells[0].Tag as string] = row.Cells[2].Value as string;
+                blueprint.Properties.setProperty(row.Cells[0].Tag as string, row.Cells[2].Value as string);
             }
 
             blueprint.Resources.Clear();
@@ -535,7 +535,7 @@ namespace OE2EmpireTracker
             {
                 string property = row.Cells["Property"].Tag as string;
                 string value = "";
-                bool found = selectedBlueprint.Properties.TryGetValue(property, out value);
+                bool found = selectedBlueprint.Properties.getString(property, "", out value);
                 if (!found || value == null)
                 {
                     value = "";

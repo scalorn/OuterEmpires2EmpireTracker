@@ -36,16 +36,28 @@ namespace OE2EmpireTracker.Forms.Colony
             if (FlatpackBlueprint != null)
             {
                 double powerProvided = 0;
-                string powerProvidedStr = "";
-                FlatpackBlueprint.Properties.TryGetValue("PowerProvided", out powerProvidedStr);
-                Double.TryParse(powerProvidedStr, out powerProvided);
+                FlatpackBlueprint.Properties.getDouble("PowerProvided", 0, out powerProvided);
                 double powerRequired = 0;
-                string powerRequiredStr = "";
-                FlatpackBlueprint.Properties.TryGetValue("PowerRequired", out powerRequiredStr);
-                Double.TryParse(powerRequiredStr, out powerRequired);
+                FlatpackBlueprint.Properties.getDouble("PowerRequired", 0, out powerRequired);
 
                 PowerProvided = powerProvided;
                 PowerRequired = powerRequired;
+            }
+
+            chkWorkDetail1.Visible = false;
+            chkWorkDetail2.Visible = false;
+            chkWorkDetail3.Visible = false;
+
+            if (ColonyStructureData != null)
+            {
+                if (ColonyStructureData.AssignedWorkers.ContainsKey("Specialist1"))
+                {
+                    bool specialistAssigned = false;
+                    ColonyStructureData.AssignedWorkers.getBoolean("Specialist1", false, out specialistAssigned);
+                    chkWorkDetail1.Visible = true;
+                    chkWorkDetail1.Text = "Specialist";
+                    chkWorkDetail1.Checked = specialistAssigned;
+                }
             }
 
             populateStats();

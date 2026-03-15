@@ -147,6 +147,7 @@
     <Compile Include="Data\BaseResource.cs" />
     <Compile Include="Data\Blueprint.cs" />
     <Compile Include="Data\ItemProperty.cs" />
+    <Compile Include="Data\PropertyBag.cs" />
     <Compile Include="Data\SubResource.cs" />
     <Compile Include="Data\Item.cs" />
     <Compile Include="Data\Resource.cs" />
@@ -202,6 +203,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Survey\FormSurvey.resx">
       <DependentUpon>FormSurvey.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

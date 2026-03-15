@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OE2EmpireTracker.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,15 +31,15 @@ namespace OE2EmpireTracker.Baseline
         public string FlatpackBlueprintUUID { get; set; }
         public int gameSequence { get; set; }
         public int buildQueueSequence { get; set; }
-        public Dictionary<string, string> Properties { get; set; }
-        public Dictionary<string, string> AssignedWorkers { get; set; }
+        public PropertyBag Properties { get; set; }
+        public PropertyBag AssignedWorkers { get; set; }
 
         public double Power { get; set; }
         public double Habitation { get; set; }
         public double Food { get; set; }
         public double Entertainment { get; set; }
         public double WarehouseCapacity { get; set; }
-        public int WorkersAssigned {  get; set; }
+        public int WorkersAssigned { get; set; }
 
         public bool Online { get; set; }
         public bool Building { get; set; }
@@ -55,9 +56,9 @@ namespace OE2EmpireTracker.Baseline
 
         public ColonyStructure() : base()
         {
-            Properties = new Dictionary<string, string>();
+            Properties = new PropertyBag();
+            AssignedWorkers = new PropertyBag();
         }
-
     }
 
     public class CommodityRequested

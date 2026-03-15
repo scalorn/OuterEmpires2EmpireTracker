@@ -264,7 +264,7 @@
       "UUID": "82609bb4-32e5-42f4-aee8-244181501ace",
       "ItemType": 9,
       "Name": "RAK-LL MatScan",
-      "NickName": "",
+      "NickName": "98 Scan",
       "Description": ""
     },
     {
@@ -300,7 +300,7 @@
       "UUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
       "ItemType": 9,
       "Name": "RAK-LL MatScan",
-      "NickName": "",
+      "NickName": "90 Scan",
       "Description": ""
     },
     {
@@ -337,7 +337,7 @@
       "UUID": "4a908839-be77-4e45-b6de-8067b9e0b188",
       "ItemType": 9,
       "Name": "RAK-LL MatScan",
-      "NickName": "",
+      "NickName": "105 Scan",
       "Description": ""
     },
     {
@@ -370,7 +370,7 @@
       "UUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
       "ItemType": 9,
       "Name": "RAK-LL MatScan",
-      "NickName": "",
+      "NickName": "86 Scan",
       "Description": ""
     },
     {
@@ -598,7 +598,6 @@
       "CopyCost": 0,
       "Properties": {
         "ManufactureTime": "1",
-        "Class": "2",
         "Mass": "3",
         "CargoVolumeSize": "4",
         "MaxAllowedOnShip": "5",
@@ -615,7 +614,7 @@
       },
       "UUID": "f5ca46b3-9264-4f73-aa2c-df4dcff93238",
       "ItemType": 9,
-      "Name": "WSMS-L test77",
+      "Name": "WSMS-L test77123",
       "NickName": "JAS37",
       "Description": "JAS37 desc"
     }
