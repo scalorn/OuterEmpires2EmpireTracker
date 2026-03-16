@@ -5,11 +5,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace OE2EmpireTracker.Forms.Colony
 {
@@ -43,9 +45,15 @@ namespace OE2EmpireTracker.Forms.Colony
             //flpColonyStructure.Controls.Add(colonyStructure2);
             //ColonyStructure colonyStructure3 = new ColonyStructure();
             //flpColonyStructure.Controls.Add(colonyStructure3);
+
+            lvwColonies.View = View.Details;
+            lvwColonies.Columns.Add("Planet", 50);
+            lvwColonies.Columns.Add("Name", 100);
+            populateListView(new List<Baseline.Colony>(playerContext.colonyList));
+
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void cmdSave_Click(object sender, EventArgs e)
         {
             Baseline.Colony colony;
 
@@ -56,6 +64,10 @@ namespace OE2EmpireTracker.Forms.Colony
             else
             {
                 colony = new Baseline.Colony();
+            }
+
+            if (colony.UUID == null)
+            {
                 Guid myUuid = Guid.NewGuid();
                 colony.UUID = myUuid.ToString();
             }
@@ -64,7 +76,7 @@ namespace OE2EmpireTracker.Forms.Colony
             colony.ColonyName = txtColonyName.Text;
 
 
-            if (selectedColony == null)
+            if (playerContext.colonyList.Contains(colony) == false)
             {
                 playerContext.colonyList.Add(colony);
             }
@@ -134,6 +146,112 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void cmbFlatpacks_SelectedIndexChanged(object sender, EventArgs e)
         {
+
+        }
+
+        private void lvwColonies_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lvwColonies_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            Debug.Print("lvwBlueprints.SelectedItems.Count = " + lvwColonies.SelectedItems.Count);
+            if (lvwColonies.SelectedItems.Count == 1)
+            {
+                Debug.Print("Selected item = " + lvwColonies.SelectedItems[0].SubItems[0].Text);
+                Debug.Print("Selected item = " + lvwColonies.SelectedItems[0].SubItems[0].Tag);
+                selectedColony = lvwColonies.SelectedItems[0].SubItems[0].Tag as Baseline.Colony;
+                populateForm();
+            }
+        }
+        void populateListView(List<Baseline.Colony> colonies)
+        {
+            if (colonies == null)
+            {
+                return;
+            }
+            lvwColonies.Items.Clear();
+
+            Dictionary<string, ListViewItem> viewableColonies = new Dictionary<string, ListViewItem>();
+
+            // First index what is viewable.
+            foreach (ListViewItem item in lvwColonies.Items)
+            {
+                viewableColonies[(item.Tag as Blueprint).UUID] = item;
+            }
+
+            // Now add or update what is viewable.
+            foreach (Baseline.Colony colony in colonies)
+            {
+                ListViewItem item;
+                bool found = viewableColonies.TryGetValue(colony.UUID, out item);
+                if (!found)
+                {
+                    item = new ListViewItem(colony.PlanetName); // Main item text (first column)
+                }
+                item.Tag = colony;
+                item.SubItems[0].Tag = colony;
+                item.SubItems.Add(colony.ColonyName);
+
+                if (!found)
+                {
+                    lvwColonies.Items.Add(item); // Add the item to the ListView
+                }
+                else
+                {
+                    viewableColonies.Remove(colony.UUID);
+                }
+            }
+
+            // Remove what is left over (deleted or filtered out)
+            foreach (KeyValuePair<string, ListViewItem> viewableColony in viewableColonies)
+            {
+                lvwColonies.Items.Remove(viewableColony.Value);
+            }
+        }
+        private void populateForm()
+        {
+            if (selectedColony == null)
+            {
+                return;
+            }
+            //txtFilterBlueprintType.Text = "";
+            //updateBlueprintTypeListBase();
+            //cmbBlueprintType.SelectedItem = empireContext.findBlueprintType(selectedBlueprint.BluePrintType);
+            //updatePropertyGrid();
+            //cmbShipClass.SelectedItem = empireContext.findShipClass(selectedBlueprint.Class);
+            //cmbTechLevel.SelectedItem = empireContext.findTechLevel(selectedBlueprint.TechLevel);
+            //cmbEvolution.SelectedItem = empireContext.findEvolution(selectedBlueprint.Evolution);
+
+            txtPlanetName.Text = selectedColony.PlanetName;
+            txtColonyName.Text = selectedColony.ColonyName;
+
+
+            this.SuspendLayout();
+            flpColonyStructure.Controls.Clear();
+
+            statusCalculator = new ColonyStatusCalculator(selectedColony);
+            //statusCalculator.CalculateBuilt();
+
+            flpColonyStructure.Visible = false;
+            foreach (Baseline.ColonyStructure structure in selectedColony.Structures)
+            {
+                ColonyStructure colonyStructureControl = new ColonyStructure();
+                colonyStructureControl.Visible = false;
+                colonyStructureControl.SuspendLayout();
+                colonyStructureControl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
+                colonyStructureControl.ColonyStructureData = structure;
+                colonyStructureControl.UpdateData();
+                flpColonyStructure.Controls.Add(colonyStructureControl);
+                colonyStructureControl.ResumeLayout();
+                colonyStructureControl.Visible = true;
+            }
+            flpColonyStructure.Visible = true;
+            statusCalculator.CalculateBuilt();
+            statusCalculator.populateStatus(rtbStatus);
+
+            this.ResumeLayout();
 
         }
     }

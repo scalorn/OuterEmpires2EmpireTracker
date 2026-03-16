@@ -231,46 +231,42 @@
       "Description": ""
     },
     {
-      "baseBlueprintUUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
+      "baseBlueprintUUID": "",
       "BluePrintType": "SystemObjectScanner",
-      "Evolution": 4,
+      "Evolution": 0,
       "TechLevel": "MilSpec",
       "Class": 6,
       "CopyCost": 0,
       "Properties": {
         "ManufactureTime": "4h 0m",
-        "Mass": "116",
+        "Mass": "110",
         "CargoVolumeSize": "145",
         "MaxAllowedOnShip": "1",
         "PowerRequired": "182",
-        "Health": "635",
+        "Health": "660",
         "EngCapacityRequired": "430",
-        "WearAndTearRate": "3.214",
+        "WearAndTearRate": "3",
         "MaximumDamageRepairRate": "80",
         "SensorAbundanceFactor": "3",
         "PurityModifier": "22.5",
-        "ScanLevel": "98"
+        "ScanLevel": "75"
       },
       "Resources": {
-        "Alkaline Earth Metals": "1540",
-        "Metallics": "246",
-        "Heavy Trans-Metals": "476",
-        "Strong Alkali Inorganics": "52",
-        "Lanthanides": "43",
-        "Strong Alkali Organics": "291",
-        "S1. Translanthanic Exotics": "53",
-        "S2. Superactinides": "30"
+        "Post-Trans Metals": "1622",
+        "Non-Metallics": "285",
+        "Heavy Post-Trans Metals": "558",
+        "Strong Alkali Organics": "284"
       },
-      "UUID": "82609bb4-32e5-42f4-aee8-244181501ace",
+      "UUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
       "ItemType": 9,
       "Name": "RAK-LL MatScan",
-      "NickName": "98 Scan",
+      "NickName": "",
       "Description": ""
     },
     {
-      "baseBlueprintUUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
+      "baseBlueprintUUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
       "BluePrintType": "SystemObjectScanner",
-      "Evolution": 3,
+      "Evolution": 2,
       "TechLevel": "MilSpec",
       "Class": 6,
       "CopyCost": 0,
@@ -282,25 +278,22 @@
         "PowerRequired": "182",
         "Health": "635",
         "EngCapacityRequired": "430",
-        "WearAndTearRate": "3.115",
+        "WearAndTearRate": "3",
         "MaximumDamageRepairRate": "80",
         "SensorAbundanceFactor": "3",
         "PurityModifier": "22.5",
-        "ScanLevel": "90"
+        "ScanLevel": "86"
       },
       "Resources": {
-        "Alkali Metals": "1537",
-        "Non-Metallics": "280",
-        "Heavy Trans-Metals": "387",
-        "Strong Alkali Inorganics": "27",
-        "Strong Acidic Inorganics": "318",
-        "Heavy Alkali Metals": "24",
-        "S1. Translivermoric Exotics": "22"
+        "Post-Trans Metals": "1433",
+        "Metallics": "218",
+        "Metaloids": "508",
+        "Complex Metallics": "235"
       },
-      "UUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
+      "UUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
       "ItemType": 9,
       "Name": "RAK-LL MatScan",
-      "NickName": "90 Scan",
+      "NickName": "86 Scan",
       "Description": ""
     },
     {
@@ -341,9 +334,9 @@
       "Description": ""
     },
     {
-      "baseBlueprintUUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
+      "baseBlueprintUUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
       "BluePrintType": "SystemObjectScanner",
-      "Evolution": 2,
+      "Evolution": 3,
       "TechLevel": "MilSpec",
       "Class": 6,
       "CopyCost": 0,
@@ -355,55 +348,62 @@
         "PowerRequired": "182",
         "Health": "635",
         "EngCapacityRequired": "430",
-        "WearAndTearRate": "3",
+        "WearAndTearRate": "3.115",
         "MaximumDamageRepairRate": "80",
         "SensorAbundanceFactor": "3",
         "PurityModifier": "22.5",
-        "ScanLevel": "86"
+        "ScanLevel": "90"
       },
       "Resources": {
-        "Post-Trans Metals": "1433",
-        "Metallics": "218",
-        "Metaloids": "508",
-        "Complex Metallics": "235"
+        "Alkali Metals": "1537",
+        "Non-Metallics": "280",
+        "Heavy Trans-Metals": "387",
+        "Strong Alkali Inorganics": "27",
+        "Strong Acidic Inorganics": "318",
+        "Heavy Alkali Metals": "24",
+        "S1. Translivermoric Exotics": "22"
       },
-      "UUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
+      "UUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
       "ItemType": 9,
       "Name": "RAK-LL MatScan",
-      "NickName": "86 Scan",
+      "NickName": "90 Scan",
       "Description": ""
     },
     {
-      "baseBlueprintUUID": "",
+      "baseBlueprintUUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
       "BluePrintType": "SystemObjectScanner",
-      "Evolution": 0,
+      "Evolution": 4,
       "TechLevel": "MilSpec",
       "Class": 6,
       "CopyCost": 0,
       "Properties": {
         "ManufactureTime": "4h 0m",
-        "Mass": "110",
+        "Mass": "116",
         "CargoVolumeSize": "145",
         "MaxAllowedOnShip": "1",
         "PowerRequired": "182",
-        "Health": "660",
+        "Health": "635",
         "EngCapacityRequired": "430",
-        "WearAndTearRate": "3",
+        "WearAndTearRate": "3.214",
         "MaximumDamageRepairRate": "80",
         "SensorAbundanceFactor": "3",
         "PurityModifier": "22.5",
-        "ScanLevel": "75"
+        "ScanLevel": "98"
       },
       "Resources": {
-        "Post-Trans Metals": "1622",
-        "Non-Metallics": "285",
-        "Heavy Post-Trans Metals": "558",
-        "Strong Alkali Organics": "284"
+        "Alkaline Earth Metals": "1540",
+        "Metallics": "246",
+        "Heavy Trans-Metals": "476",
+        "Strong Alkali Inorganics": "52",
+        "Lanthanides": "43",
+        "Strong Alkali Organics": "291",
+        "S1. Translanthanic Exotics": "53",
+        "S2. Superactinides": "30"
       },
-      "UUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
+      "UUID": "82609bb4-32e5-42f4-aee8-244181501ace",
       "ItemType": 9,
       "Name": "RAK-LL MatScan",
-      "NickName": "",
+      "NickName": "98 Scan",
       "Description": ""
     },
     {
@@ -709,11 +709,195 @@
   ],
   "Colony": [
     {
-      "UUID": "5702d422-86fb-4461-a8d4-d83e53a69096",
-      "PlanetName": "asdf",
-      "ColonyName": "adsf",
+      "UUID": "cc4d922c-080d-46bf-90f7-f4b2d839e682",
+      "PlanetName": "test1",
+      "ColonyName": "test2",
       "Items": {},
-      "Structures": [],
+      "Structures": [
+        {
+          "FlatpackBlueprintUUID": "49f3198c-292f-4dd0-ab72-9c873b97f8a2",
+          "gameSequence": 0,
+          "buildQueueSequence": 0,
+          "Properties": {},
+          "AssignedWorkers": {
+            "UnassignedSpecialistDetail": "True",
+            "WhiteCollar1": "False"
+          },
+          "Power": 0.0,
+          "Habitation": 0.0,
+          "Food": 0.0,
+          "Entertainment": 0.0,
+          "WarehouseCapacity": 0.0,
+          "WorkersAssigned": 0,
+          "Online": false,
+          "Building": false,
+          "Built": true,
+          "CurrentAttitude": null,
+          "ContentmentIndex": 0,
+          "WageLevel": 0
+        },
+        {
+          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+          "gameSequence": 0,
+          "buildQueueSequence": 0,
+          "Properties": {},
+          "AssignedWorkers": {
+            "UnassignedSpecialistDetail": "True"
+          },
+          "Power": 0.0,
+          "Habitation": 0.0,
+          "Food": 0.0,
+          "Entertainment": 0.0,
+          "WarehouseCapacity": 0.0,
+          "WorkersAssigned": 0,
+          "Online": false,
+          "Building": false,
+          "Built": true,
+          "CurrentAttitude": null,
+          "ContentmentIndex": 0,
+          "WageLevel": 0
+        },
+        {
+          "FlatpackBlueprintUUID": "ebaa1a5d-1b2a-49f4-ac46-639ffbde7511",
+          "gameSequence": 0,
+          "buildQueueSequence": 0,
+          "Properties": {},
+          "AssignedWorkers": {
+            "UnassignedWhiteCollarDetail": "True",
+            "Specialist1": "False"
+          },
+          "Power": 0.0,
+          "Habitation": 0.0,
+          "Food": 0.0,
+          "Entertainment": 0.0,
+          "WarehouseCapacity": 0.0,
+          "WorkersAssigned": 0,
+          "Online": false,
+          "Building": false,
+          "Built": true,
+          "CurrentAttitude": null,
+          "ContentmentIndex": 0,
+          "WageLevel": 0
+        },
+        {
+          "FlatpackBlueprintUUID": "513b5bc8-db3d-4808-8cc4-a93bc9f65354",
+          "gameSequence": 0,
+          "buildQueueSequence": 0,
+          "Properties": {},
+          "AssignedWorkers": {
+            "UnassignedWhiteCollarDetail": "True",
+            "BlueCollar1": "False"
+          },
+          "Power": 0.0,
+          "Habitation": 0.0,
+          "Food": 0.0,
+          "Entertainment": 0.0,
+          "WarehouseCapacity": 0.0,
+          "WorkersAssigned": 0,
+          "Online": false,
+          "Building": false,
+          "Built": true,
+          "CurrentAttitude": null,
+          "ContentmentIndex": 0,
+          "WageLevel": 0
+        }
+      ],
+      "Commodities": []
+    },
+    {
+      "UUID": "a94b0eef-267d-4a30-9e92-7ac1f07f667c",
+      "PlanetName": "test545",
+      "ColonyName": "yrsy7",
+      "Items": {},
+      "Structures": [
+        {
+          "FlatpackBlueprintUUID": "49f3198c-292f-4dd0-ab72-9c873b97f8a2",
+          "gameSequence": 0,
+          "buildQueueSequence": 0,
+          "Properties": {},
+          "AssignedWorkers": {
+            "UnassignedSpecialistDetail": "True",
+            "WhiteCollar1": "True"
+          },
+          "Power": 0.0,
+          "Habitation": 0.0,
+          "Food": 0.0,
+          "Entertainment": 0.0,
+          "WarehouseCapacity": 0.0,
+          "WorkersAssigned": 0,
+          "Online": false,
+          "Building": false,
+          "Built": true,
+          "CurrentAttitude": null,
+          "ContentmentIndex": 0,
+          "WageLevel": 0
+        },
+        {
+          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+          "gameSequence": 0,
+          "buildQueueSequence": 0,
+          "Properties": {},
+          "AssignedWorkers": {
+            "UnassignedSpecialistDetail": "True"
+          },
+          "Power": 0.0,
+          "Habitation": 0.0,
+          "Food": 0.0,
+          "Entertainment": 0.0,
+          "WarehouseCapacity": 0.0,
+          "WorkersAssigned": 0,
+          "Online": false,
+          "Building": false,
+          "Built": true,
+          "CurrentAttitude": null,
+          "ContentmentIndex": 0,
+          "WageLevel": 0
+        },
+        {
+          "FlatpackBlueprintUUID": "ebaa1a5d-1b2a-49f4-ac46-639ffbde7511",
+          "gameSequence": 0,
+          "buildQueueSequence": 0,
+          "Properties": {},
+          "AssignedWorkers": {
+            "UnassignedWhiteCollarDetail": "True",
+            "Specialist1": "True"
+          },
+          "Power": 0.0,
+          "Habitation": 0.0,
+          "Food": 0.0,
+          "Entertainment": 0.0,
+          "WarehouseCapacity": 0.0,
+          "WorkersAssigned": 0,
+          "Online": false,
+          "Building": false,
+          "Built": true,
+          "CurrentAttitude": null,
+          "ContentmentIndex": 0,
+          "WageLevel": 0
+        },
+        {
+          "FlatpackBlueprintUUID": "513b5bc8-db3d-4808-8cc4-a93bc9f65354",
+          "gameSequence": 0,
+          "buildQueueSequence": 0,
+          "Properties": {},
+          "AssignedWorkers": {
+            "UnassignedWhiteCollarDetail": "True",
+            "BlueCollar1": "True"
+          },
+          "Power": 0.0,
+          "Habitation": 0.0,
+          "Food": 0.0,
+          "Entertainment": 0.0,
+          "WarehouseCapacity": 0.0,
+          "WorkersAssigned": 0,
+          "Online": false,
+          "Building": false,
+          "Built": true,
+          "CurrentAttitude": null,
+          "ContentmentIndex": 0,
+          "WageLevel": 0
+        }
+      ],
       "Commodities": []
     }
   ]

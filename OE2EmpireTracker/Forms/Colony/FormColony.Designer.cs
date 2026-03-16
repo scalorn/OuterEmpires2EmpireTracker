@@ -33,7 +33,7 @@
             this.flpBlueprintSearch = new System.Windows.Forms.FlowLayoutPanel();
             this.lblBlueprintListFilter = new System.Windows.Forms.Label();
             this.txtBlueprintListFilter = new System.Windows.Forms.TextBox();
-            this.lvwBlueprints = new System.Windows.Forms.ListView();
+            this.lvwColonies = new System.Windows.Forms.ListView();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.flpBaseDetails = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
@@ -60,9 +60,9 @@
             this.tabPWarehousing = new System.Windows.Forms.TabPage();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.chkGlobalBlueprint = new System.Windows.Forms.CheckBox();
-            this.btnSave = new System.Windows.Forms.Button();
+            this.cmdSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
+            this.cmdCancel = new System.Windows.Forms.Button();
             this.Property = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BaseValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CurrentValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -96,7 +96,7 @@
             // flpSearchList
             // 
             this.flpSearchList.Controls.Add(this.flpBlueprintSearch);
-            this.flpSearchList.Controls.Add(this.lvwBlueprints);
+            this.flpSearchList.Controls.Add(this.lvwColonies);
             this.flpSearchList.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpSearchList.Location = new System.Drawing.Point(3, 3);
             this.flpSearchList.Name = "flpSearchList";
@@ -133,16 +133,18 @@
             this.txtBlueprintListFilter.Size = new System.Drawing.Size(100, 20);
             this.txtBlueprintListFilter.TabIndex = 0;
             // 
-            // lvwBlueprints
+            // lvwColonies
             // 
-            this.lvwBlueprints.FullRowSelect = true;
-            this.lvwBlueprints.HideSelection = false;
-            this.lvwBlueprints.Location = new System.Drawing.Point(3, 33);
-            this.lvwBlueprints.MultiSelect = false;
-            this.lvwBlueprints.Name = "lvwBlueprints";
-            this.lvwBlueprints.Size = new System.Drawing.Size(255, 566);
-            this.lvwBlueprints.TabIndex = 6;
-            this.lvwBlueprints.UseCompatibleStateImageBehavior = false;
+            this.lvwColonies.FullRowSelect = true;
+            this.lvwColonies.HideSelection = false;
+            this.lvwColonies.Location = new System.Drawing.Point(3, 33);
+            this.lvwColonies.MultiSelect = false;
+            this.lvwColonies.Name = "lvwColonies";
+            this.lvwColonies.Size = new System.Drawing.Size(255, 566);
+            this.lvwColonies.TabIndex = 6;
+            this.lvwColonies.UseCompatibleStateImageBehavior = false;
+            this.lvwColonies.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.lvwColonies_ItemSelectionChanged);
+            this.lvwColonies.SelectedIndexChanged += new System.EventHandler(this.lvwColonies_SelectedIndexChanged);
             // 
             // flowLayoutPanel1
             // 
@@ -403,9 +405,9 @@
             this.flpCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.flpCommands.AutoSize = true;
             this.flpCommands.Controls.Add(this.chkGlobalBlueprint);
-            this.flpCommands.Controls.Add(this.btnSave);
+            this.flpCommands.Controls.Add(this.cmdSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
-            this.flpCommands.Controls.Add(this.btnCancel);
+            this.flpCommands.Controls.Add(this.cmdCancel);
             this.flpCommands.Location = new System.Drawing.Point(2, 570);
             this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
             this.flpCommands.Name = "flpCommands";
@@ -423,15 +425,15 @@
             this.chkGlobalBlueprint.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkGlobalBlueprint.UseVisualStyleBackColor = true;
             // 
-            // btnSave
+            // cmdSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(109, 3);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 9;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            this.cmdSave.Location = new System.Drawing.Point(109, 3);
+            this.cmdSave.Name = "cmdSave";
+            this.cmdSave.Size = new System.Drawing.Size(75, 23);
+            this.cmdSave.TabIndex = 9;
+            this.cmdSave.Text = "Save";
+            this.cmdSave.UseVisualStyleBackColor = true;
+            this.cmdSave.Click += new System.EventHandler(this.cmdSave_Click);
             // 
             // cmdDelete
             // 
@@ -442,14 +444,14 @@
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
             // 
-            // btnCancel
+            // cmdCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(271, 3);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 10;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
+            this.cmdCancel.Location = new System.Drawing.Point(271, 3);
+            this.cmdCancel.Name = "cmdCancel";
+            this.cmdCancel.Size = new System.Drawing.Size(75, 23);
+            this.cmdCancel.TabIndex = 10;
+            this.cmdCancel.Text = "Cancel";
+            this.cmdCancel.UseVisualStyleBackColor = true;
             // 
             // Property
             // 
@@ -516,7 +518,7 @@
         private System.Windows.Forms.FlowLayoutPanel flpBlueprintSearch;
         private System.Windows.Forms.Label lblBlueprintListFilter;
         private System.Windows.Forms.TextBox txtBlueprintListFilter;
-        private System.Windows.Forms.ListView lvwBlueprints;
+        private System.Windows.Forms.ListView lvwColonies;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flpBaseDetails;
         private System.Windows.Forms.FlowLayoutPanel flpBlueprintType;
@@ -531,9 +533,9 @@
         private System.Windows.Forms.TabPage tabPStructures;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
         private System.Windows.Forms.CheckBox chkGlobalBlueprint;
-        private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Button cmdDelete;
-        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.TabPage tabPWorkers;
         private System.Windows.Forms.TabPage tabPWarehousing;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
