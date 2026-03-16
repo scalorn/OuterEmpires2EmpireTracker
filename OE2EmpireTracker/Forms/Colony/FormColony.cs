@@ -229,24 +229,51 @@ namespace OE2EmpireTracker.Forms.Colony
 
 
             this.SuspendLayout();
-            flpColonyStructure.Controls.Clear();
+
+            //flpColonyStructure.Controls.Clear();
+            int controlIndex = 0;
+            foreach (Control control in flpColonyStructure.Controls)
+            {
+                if (controlIndex < selectedColony.Structures.Count)
+                {
+                    control.Visible = true;
+                } else
+                {
+                    control.Visible = false;
+                }
+                controlIndex++;
+            }
 
             statusCalculator = new ColonyStatusCalculator(selectedColony);
             //statusCalculator.CalculateBuilt();
 
             flpColonyStructure.Visible = false;
+            this.DoubleBuffered = true;
+            List<ColonyStructure> structureControls = new List<ColonyStructure>();
+            controlIndex = 0;
             foreach (Baseline.ColonyStructure structure in selectedColony.Structures)
             {
-                ColonyStructure colonyStructureControl = new ColonyStructure();
+                ColonyStructure colonyStructureControl = null;
+                if (controlIndex < flpColonyStructure.Controls.Count)
+                {
+                    colonyStructureControl = flpColonyStructure.Controls[controlIndex] as ColonyStructure;
+                }
+                else
+                {
+                    colonyStructureControl = new ColonyStructure();
+                }
                 colonyStructureControl.Visible = false;
                 colonyStructureControl.SuspendLayout();
                 colonyStructureControl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
                 colonyStructureControl.ColonyStructureData = structure;
                 colonyStructureControl.UpdateData();
-                flpColonyStructure.Controls.Add(colonyStructureControl);
+                //flpColonyStructure.Controls.Add(colonyStructureControl);
+                structureControls.Add(colonyStructureControl);
                 colonyStructureControl.ResumeLayout();
                 colonyStructureControl.Visible = true;
+                controlIndex++;
             }
+            flpColonyStructure.Controls.AddRange(structureControls.ToArray());
             flpColonyStructure.Visible = true;
             statusCalculator.CalculateBuilt();
             statusCalculator.populateStatus(rtbStatus);
