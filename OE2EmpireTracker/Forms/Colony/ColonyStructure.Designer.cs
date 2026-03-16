@@ -70,7 +70,7 @@
             this.rtbStatus.Name = "rtbStatus";
             this.rtbStatus.ReadOnly = true;
             this.rtbStatus.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.rtbStatus.Size = new System.Drawing.Size(402, 18);
+            this.rtbStatus.Size = new System.Drawing.Size(421, 18);
             this.rtbStatus.TabIndex = 0;
             this.rtbStatus.Text = "[red]6[/red]/4";
             this.rtbStatus.WordWrap = false;
@@ -79,35 +79,30 @@
             // flpColonyStructure
             // 
             this.flpColonyStructure.AutoScroll = true;
-            this.flpColonyStructure.AutoSize = true;
-            this.flpColonyStructure.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpColonyStructure.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.flpColonyStructure.Controls.Add(this.flowLayoutPanel2);
             this.flpColonyStructure.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpColonyStructure.Location = new System.Drawing.Point(0, 0);
             this.flpColonyStructure.MinimumSize = new System.Drawing.Size(572, 160);
             this.flpColonyStructure.Name = "flpColonyStructure";
-            this.flpColonyStructure.Size = new System.Drawing.Size(572, 160);
+            this.flpColonyStructure.Size = new System.Drawing.Size(672, 160);
             this.flpColonyStructure.TabIndex = 1;
             this.flpColonyStructure.WrapContents = false;
             // 
             // flowLayoutPanel2
             // 
-            this.flowLayoutPanel2.AutoScroll = true;
-            this.flowLayoutPanel2.AutoSize = true;
             this.flowLayoutPanel2.Controls.Add(this.flowLayoutPanel3);
             this.flowLayoutPanel2.Controls.Add(this.flowLayoutPanel4);
             this.flowLayoutPanel2.Controls.Add(this.flowLayoutPanel5);
             this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(559, 144);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(660, 144);
             this.flowLayoutPanel2.TabIndex = 1;
             this.flowLayoutPanel2.WrapContents = false;
             // 
             // flowLayoutPanel3
             // 
             this.flowLayoutPanel3.AutoScroll = true;
-            this.flowLayoutPanel3.AutoSize = true;
             this.flowLayoutPanel3.Controls.Add(this.button1);
             this.flowLayoutPanel3.Controls.Add(this.button4);
             this.flowLayoutPanel3.Controls.Add(this.button2);
@@ -146,20 +141,17 @@
             // 
             // flowLayoutPanel4
             // 
-            this.flowLayoutPanel4.AutoScroll = true;
-            this.flowLayoutPanel4.AutoSize = true;
             this.flowLayoutPanel4.Controls.Add(this.rtbStatus);
             this.flowLayoutPanel4.Controls.Add(this.flowLayoutPanel7);
             this.flowLayoutPanel4.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel4.Location = new System.Drawing.Point(65, 3);
             this.flowLayoutPanel4.Name = "flowLayoutPanel4";
-            this.flowLayoutPanel4.Size = new System.Drawing.Size(408, 100);
+            this.flowLayoutPanel4.Size = new System.Drawing.Size(435, 135);
             this.flowLayoutPanel4.TabIndex = 1;
             this.flowLayoutPanel4.WrapContents = false;
             // 
             // flowLayoutPanel7
             // 
-            this.flowLayoutPanel7.AutoSize = true;
             this.flowLayoutPanel7.Controls.Add(this.flowLayoutPanel9);
             this.flowLayoutPanel7.Controls.Add(this.flowLayoutPanel8);
             this.flowLayoutPanel7.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
@@ -171,7 +163,6 @@
             // 
             // flowLayoutPanel9
             // 
-            this.flowLayoutPanel9.AutoSize = true;
             this.flowLayoutPanel9.Controls.Add(this.label2);
             this.flowLayoutPanel9.Controls.Add(this.textBox2);
             this.flowLayoutPanel9.Controls.Add(this.comboBox1);
@@ -183,7 +174,6 @@
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(3, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(40, 13);
@@ -216,7 +206,6 @@
             // 
             // flowLayoutPanel8
             // 
-            this.flowLayoutPanel8.AutoSize = true;
             this.flowLayoutPanel8.Controls.Add(this.label1);
             this.flowLayoutPanel8.Controls.Add(this.textBox1);
             this.flowLayoutPanel8.Controls.Add(this.button5);
@@ -227,7 +216,6 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(88, 13);
@@ -252,7 +240,6 @@
             // 
             // flowLayoutPanel5
             // 
-            this.flowLayoutPanel5.AutoSize = true;
             this.flowLayoutPanel5.Controls.Add(this.chkBuilt);
             this.flowLayoutPanel5.Controls.Add(this.chkStaged);
             this.flowLayoutPanel5.Controls.Add(this.chkOnline);
@@ -260,15 +247,14 @@
             this.flowLayoutPanel5.Controls.Add(this.chkWorkDetail2);
             this.flowLayoutPanel5.Controls.Add(this.chkWorkDetail3);
             this.flowLayoutPanel5.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel5.Location = new System.Drawing.Point(479, 3);
+            this.flowLayoutPanel5.Location = new System.Drawing.Point(506, 3);
             this.flowLayoutPanel5.Name = "flowLayoutPanel5";
-            this.flowLayoutPanel5.Size = new System.Drawing.Size(77, 138);
+            this.flowLayoutPanel5.Size = new System.Drawing.Size(132, 138);
             this.flowLayoutPanel5.TabIndex = 2;
             this.flowLayoutPanel5.WrapContents = false;
             // 
             // chkBuilt
             // 
-            this.chkBuilt.AutoSize = true;
             this.chkBuilt.Location = new System.Drawing.Point(3, 3);
             this.chkBuilt.Name = "chkBuilt";
             this.chkBuilt.Size = new System.Drawing.Size(46, 17);
@@ -278,7 +264,6 @@
             // 
             // chkStaged
             // 
-            this.chkStaged.AutoSize = true;
             this.chkStaged.Location = new System.Drawing.Point(3, 26);
             this.chkStaged.Name = "chkStaged";
             this.chkStaged.Size = new System.Drawing.Size(60, 17);
@@ -288,7 +273,6 @@
             // 
             // chkOnline
             // 
-            this.chkOnline.AutoSize = true;
             this.chkOnline.Location = new System.Drawing.Point(3, 49);
             this.chkOnline.Name = "chkOnline";
             this.chkOnline.Size = new System.Drawing.Size(56, 17);
@@ -298,34 +282,31 @@
             // 
             // chkWorkDetail1
             // 
-            this.chkWorkDetail1.AutoSize = true;
             this.chkWorkDetail1.Location = new System.Drawing.Point(3, 72);
             this.chkWorkDetail1.Name = "chkWorkDetail1";
-            this.chkWorkDetail1.Size = new System.Drawing.Size(47, 17);
+            this.chkWorkDetail1.Size = new System.Drawing.Size(126, 17);
             this.chkWorkDetail1.TabIndex = 1;
-            this.chkWorkDetail1.Text = "Blue";
+            this.chkWorkDetail1.Text = "Support - Blue Collar";
             this.chkWorkDetail1.UseVisualStyleBackColor = true;
             this.chkWorkDetail1.CheckStateChanged += new System.EventHandler(this.chkWorkDetail1_CheckStateChanged);
             // 
             // chkWorkDetail2
             // 
-            this.chkWorkDetail2.AutoSize = true;
             this.chkWorkDetail2.Location = new System.Drawing.Point(3, 95);
             this.chkWorkDetail2.Name = "chkWorkDetail2";
-            this.chkWorkDetail2.Size = new System.Drawing.Size(54, 17);
+            this.chkWorkDetail2.Size = new System.Drawing.Size(126, 17);
             this.chkWorkDetail2.TabIndex = 2;
-            this.chkWorkDetail2.Text = "White";
+            this.chkWorkDetail2.Text = "Support - White Collar";
             this.chkWorkDetail2.UseVisualStyleBackColor = true;
             this.chkWorkDetail2.CheckStateChanged += new System.EventHandler(this.chkWorkDetail2_CheckStateChanged);
             // 
             // chkWorkDetail3
             // 
-            this.chkWorkDetail3.AutoSize = true;
             this.chkWorkDetail3.Location = new System.Drawing.Point(3, 118);
             this.chkWorkDetail3.Name = "chkWorkDetail3";
-            this.chkWorkDetail3.Size = new System.Drawing.Size(71, 17);
+            this.chkWorkDetail3.Size = new System.Drawing.Size(126, 17);
             this.chkWorkDetail3.TabIndex = 3;
-            this.chkWorkDetail3.Text = "Specialist";
+            this.chkWorkDetail3.Text = "Support - Specialist";
             this.chkWorkDetail3.UseVisualStyleBackColor = true;
             this.chkWorkDetail3.CheckStateChanged += new System.EventHandler(this.chkWorkDetail3_CheckStateChanged);
             // 
@@ -337,22 +318,16 @@
             this.Name = "ColonyStructure";
             this.Size = new System.Drawing.Size(787, 165);
             this.flpColonyStructure.ResumeLayout(false);
-            this.flpColonyStructure.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
             this.flowLayoutPanel3.ResumeLayout(false);
             this.flowLayoutPanel4.ResumeLayout(false);
-            this.flowLayoutPanel4.PerformLayout();
             this.flowLayoutPanel7.ResumeLayout(false);
-            this.flowLayoutPanel7.PerformLayout();
             this.flowLayoutPanel9.ResumeLayout(false);
             this.flowLayoutPanel9.PerformLayout();
             this.flowLayoutPanel8.ResumeLayout(false);
             this.flowLayoutPanel8.PerformLayout();
             this.flowLayoutPanel5.ResumeLayout(false);
-            this.flowLayoutPanel5.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
