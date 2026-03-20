@@ -18,6 +18,7 @@ namespace OE2EmpireTracker.Forms.Colony
     {
         private EmpireContext empireContext;
         private PlayerContext playerContext;
+        private int _isProgrammaticUpdate = 0;
         public Baseline.ColonyStructure ColonyStructureData { get; set; }
         private Blueprint FlatpackBlueprint { get; set; }
         private double PowerProvided { get; set; }
@@ -40,6 +41,8 @@ namespace OE2EmpireTracker.Forms.Colony
 
         public void UpdateData()
         {
+            ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
+
             this.SuspendLayout();
             FlatpackBlueprint = playerContext.findBlueprint(ColonyStructureData.FlatpackBlueprintUUID);
 
@@ -166,14 +169,51 @@ namespace OE2EmpireTracker.Forms.Colony
                     checkControls[controlIndex].Checked = unassignedSpecialistPresent;
                     controlIndex++;
                 }
+
+                bool hasAllWorkers = true;
+                for (index = 0; index < controlIndex; index++) {
+                    if (checkControls[index].Checked == false)
+                    {
+                        hasAllWorkers = false;
+                    }
+                }
+                if (staged)
+                {
+                    flpColonyStructure.BackColor = Color.Yellow;
+                }
+                else if (built)
+                {
+                    if (online == false)
+                    {
+                        flpColonyStructure.BackColor = Color.PaleVioletRed;
+                    }
+                    else
+                    {
+                        if (hasAllWorkers)
+                        {
+                            flpColonyStructure.BackColor = Color.Green;
+                        }
+                        else
+                        {
+                            flpColonyStructure.BackColor = Color.LightGreen;
+                        }
+                    }
+                }
+                else
+                {
+                    flpColonyStructure.BackColor = Color.White;
+                }
             }
 
             populateStats();
             this.ResumeLayout();
+            guard.release();
         }
 
         private void populateStats()
         {
+            ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
+
             rtbStatus.Text = "";
 
             if (ColonyStructureData != null)
@@ -210,10 +250,14 @@ namespace OE2EmpireTracker.Forms.Colony
             ColonyStatusCalculator.AppendColoredText(rtbStatus, "4", Color.Green);
             ColonyStatusCalculator.AppendColoredText(rtbStatus, "/", Color.Black);
             ColonyStatusCalculator.AppendColoredText(rtbStatus, "10 ", Color.Black);
+
+            guard.release();
         }
 
         private void rtbStatus_ContentsResized(object sender, ContentsResizedEventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
+
             // Adjust the height of the RichTextBox to fit the new content rectangle
             // An offset (+10 in this example) may be needed to account for borders/margins
             rtbStatus.Height = e.NewRectangle.Height + 10;
@@ -222,35 +266,47 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void chkWorkDetail1_CheckStateChanged(object sender, EventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
+
             bool state = chkWorkDetail1.Checked;
             string prop = chkWorkDetail1.Tag as string;
             ColonyStructureData.AssignedWorkers.setProperty(prop, state);
 
+            UpdateData();
             ColonyStructureDataChanged?.Invoke(this, e);
         }
 
         private void chkWorkDetail2_CheckStateChanged(object sender, EventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
+
             bool state = chkWorkDetail2.Checked;
             string prop = chkWorkDetail2.Tag as string;
             ColonyStructureData.AssignedWorkers.setProperty(prop, state);
 
+            UpdateData();
             ColonyStructureDataChanged?.Invoke(this, e);
         }
 
         private void chkWorkDetail3_CheckStateChanged(object sender, EventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
+
             bool state = chkWorkDetail3.Checked;
             string prop = chkWorkDetail3.Tag as string;
             ColonyStructureData.AssignedWorkers.setProperty(prop, state);
 
+            UpdateData();
             ColonyStructureDataChanged?.Invoke(this, e);
         }
 
         private void chkBuilt_CheckStateChanged(object sender, EventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
+
             bool state = chkBuilt.Checked;
             ColonyStructureData.Properties.setProperty("Built", state);
+
             if (state == true)
             {
                 chkStaged.Checked = false;
@@ -260,11 +316,14 @@ namespace OE2EmpireTracker.Forms.Colony
                 chkOnline.Checked = false;
             }
 
+            UpdateData();
             ColonyStructureDataChanged?.Invoke(this, e);
         }
 
         private void chkStaged_CheckStateChanged(object sender, EventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
+
             bool state = chkStaged.Checked;
             ColonyStructureData.Properties.setProperty("Staged", state);
             if (state == true)
@@ -273,11 +332,14 @@ namespace OE2EmpireTracker.Forms.Colony
                 chkOnline.Checked = false;
             }
 
+            UpdateData();
             ColonyStructureDataChanged?.Invoke(this, e);
         }
 
         private void chkOnline_CheckStateChanged(object sender, EventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
+
             bool state = chkOnline.Checked;
             ColonyStructureData.Properties.setProperty("Online", state);
             if (state == true)
@@ -286,7 +348,33 @@ namespace OE2EmpireTracker.Forms.Colony
                 chkStaged.Checked = false;
             }
 
+            UpdateData();
             ColonyStructureDataChanged?.Invoke(this, e);
+        }
+
+        public class ProgramaticUpdateGuard
+        {
+            private ColonyStructure _parent;
+            private bool _hasLocked;
+
+            public ProgramaticUpdateGuard(ColonyStructure parent)
+            {
+                _parent = parent;
+                _parent._isProgrammaticUpdate++;
+                _hasLocked = true;
+            }
+            public void release()
+            {
+                if (_hasLocked)
+                {
+                    _parent._isProgrammaticUpdate--;
+                    _hasLocked = false;
+                }
+            }
+            ~ProgramaticUpdateGuard()
+            {
+                release();
+            }
         }
     }
 }
