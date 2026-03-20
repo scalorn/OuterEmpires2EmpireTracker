@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.AxHost;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace OE2EmpireTracker.Forms.Colony
@@ -53,6 +54,10 @@ namespace OE2EmpireTracker.Forms.Colony
                 PowerRequired = powerRequired;
             }
 
+            chkBuilt.Checked = false;
+            chkStaged.Checked = false;
+            chkOnline.Checked = false;
+
             chkWorkDetail1.Visible = false;
             chkWorkDetail2.Visible = false;
             chkWorkDetail3.Visible = false;
@@ -64,6 +69,16 @@ namespace OE2EmpireTracker.Forms.Colony
 
             if (ColonyStructureData != null)
             {
+                bool built = false;
+                ColonyStructureData.Properties.getBoolean("Built", false, out built);
+                chkBuilt.Checked = built;
+                bool staged = false;
+                ColonyStructureData.Properties.getBoolean("Staged", false, out staged);
+                chkStaged.Checked = staged;
+                bool online = false;
+                ColonyStructureData.Properties.getBoolean("Online", false, out online);
+                chkOnline.Checked = online;
+
                 int index = 1;
                 string key = "BlueCollar1";
 
@@ -228,6 +243,48 @@ namespace OE2EmpireTracker.Forms.Colony
             bool state = chkWorkDetail3.Checked;
             string prop = chkWorkDetail3.Tag as string;
             ColonyStructureData.AssignedWorkers.setProperty(prop, state);
+
+            ColonyStructureDataChanged?.Invoke(this, e);
+        }
+
+        private void chkBuilt_CheckStateChanged(object sender, EventArgs e)
+        {
+            bool state = chkBuilt.Checked;
+            ColonyStructureData.Properties.setProperty("Built", state);
+            if (state == true)
+            {
+                chkStaged.Checked = false;
+            }
+            if (state == false)
+            {
+                chkOnline.Checked = false;
+            }
+
+            ColonyStructureDataChanged?.Invoke(this, e);
+        }
+
+        private void chkStaged_CheckStateChanged(object sender, EventArgs e)
+        {
+            bool state = chkStaged.Checked;
+            ColonyStructureData.Properties.setProperty("Staged", state);
+            if (state == true)
+            {
+                chkBuilt.Checked = false;
+                chkOnline.Checked = false;
+            }
+
+            ColonyStructureDataChanged?.Invoke(this, e);
+        }
+
+        private void chkOnline_CheckStateChanged(object sender, EventArgs e)
+        {
+            bool state = chkOnline.Checked;
+            ColonyStructureData.Properties.setProperty("Online", state);
+            if (state == true)
+            {
+                chkBuilt.Checked = true;
+                chkStaged.Checked = false;
+            }
 
             ColonyStructureDataChanged?.Invoke(this, e);
         }

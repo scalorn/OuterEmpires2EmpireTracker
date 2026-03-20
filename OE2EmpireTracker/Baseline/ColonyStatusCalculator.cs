@@ -54,94 +54,102 @@ namespace OE2EmpireTracker.Baseline
             {
                 Data.Blueprint flatpackBlueprint = playerContext.findBlueprint(structure.FlatpackBlueprintUUID);
 
-                if (structure.Built == true)
+                bool built = false;
+                structure.Properties.getBoolean("Built", false, out built);
+                bool staged = false;
+                structure.Properties.getBoolean("Staged", false, out staged);
+                bool online = false;
+                structure.Properties.getBoolean("Online", false, out online);
+
+                if (flatpackBlueprint != null)
                 {
-                    if (flatpackBlueprint != null)
+                    if (online)
                     {
+                        double powerProvided = 0;
+                        flatpackBlueprint.Properties.getDouble("PowerProvided", 0, out powerProvided);
+                        double powerRequired = 0;
+                        flatpackBlueprint.Properties.getDouble("PowerRequired", 0, out powerRequired);
+
+                        builtPowerProvided += powerProvided;
+                        builtPowerRequired += powerRequired;
+                    }
+
+                    if (online)
+                    {
+                        double habitationProvision = 0;
+                        flatpackBlueprint.Properties.getDouble("HabitationProvision", 0, out habitationProvision);
+
+                        builtHabitationProvision += habitationProvision;
+                    }
+
+                    {
+                        double foodProvision = 0;
+                        flatpackBlueprint.Properties.getDouble("FoodProvision", 0, out foodProvision);
+
+                        builtFoodProvision += foodProvision;
+                    }
+
+                    if (online)
+                    {
+                        double entertainmentProvided = 0;
+                        flatpackBlueprint.Properties.getDouble("EntertainmentProvided", 0, out entertainmentProvided);
+
+                        builtEntertainmentProvided += entertainmentProvided;
+                    }
+
+                    if (online)
+                    {
+                        double warehouseCapacity = 0;
+                        flatpackBlueprint.Properties.getDouble("WarehouseCapacity", 0, out warehouseCapacity);
+
+                        builtWarehouseCapacity += warehouseCapacity;
+                    }
+
+                    if (flatpackBlueprint.Properties.ContainsKey("BlueCollarDetail"))
+                    {
+                        //BlueCollar
+                        long blueCollarDetail = 0;
+                        flatpackBlueprint.Properties.getLong("BlueCollarDetail", 0, out blueCollarDetail);
+                        for (int i = 1; i <= blueCollarDetail; i++)
                         {
-                            double powerProvided = 0;
-                            flatpackBlueprint.Properties.getDouble("PowerProvided", 0, out powerProvided);
-                            double powerRequired = 0;
-                            flatpackBlueprint.Properties.getDouble("PowerRequired", 0, out powerRequired);
-
-                            builtPowerProvided += powerProvided;
-                            builtPowerRequired += powerRequired;
-                        }
-
-                        {
-                            double habitationProvision = 0;
-                            flatpackBlueprint.Properties.getDouble("HabitationProvision", 0, out habitationProvision);
-
-                            builtHabitationProvision += habitationProvision;
-                        }
-
-                        {
-                            double foodProvision = 0;
-                            flatpackBlueprint.Properties.getDouble("FoodProvision", 0, out foodProvision);
-
-                            builtFoodProvision += foodProvision;
-                        }
-
-                        {
-                            double entertainmentProvided = 0;
-                            flatpackBlueprint.Properties.getDouble("EntertainmentProvided", 0, out entertainmentProvided);
-
-                            builtEntertainmentProvided += entertainmentProvided;
-                        }
-
-                        {
-                            double warehouseCapacity = 0;
-                            flatpackBlueprint.Properties.getDouble("WarehouseCapacity", 0, out warehouseCapacity);
-
-                            builtWarehouseCapacity += warehouseCapacity;
-                        }
-
-                        if (flatpackBlueprint.Properties.ContainsKey("BlueCollarDetail"))
-                        {
-                            //BlueCollar
-                            long blueCollarDetail = 0;
-                            flatpackBlueprint.Properties.getLong("BlueCollarDetail", 0, out blueCollarDetail);
-                            for (int i = 1; i <= blueCollarDetail; i++)
+                            bool blueCollarAssigned = false;
+                            structure.AssignedWorkers.getBoolean("BlueCollar" + i, false, out blueCollarAssigned);
+                            structure.AssignedWorkers.setProperty("BlueCollar" + i, blueCollarAssigned);
+                            if (blueCollarAssigned)
                             {
-                                bool blueCollarAssigned = false;
-                                structure.AssignedWorkers.getBoolean("BlueCollar" + i, false, out blueCollarAssigned);
-                                structure.AssignedWorkers.setProperty("BlueCollar" + i, blueCollarAssigned);
-                                if (blueCollarAssigned)
-                                {
-                                    ColonyWorkers.Add(new ColonyWorker(structure, "BlueCollar" + i, blueCollarAssigned));
-                                }
+                                ColonyWorkers.Add(new ColonyWorker(structure, "BlueCollar" + i, blueCollarAssigned));
                             }
                         }
-                        if (flatpackBlueprint.Properties.ContainsKey("WhiteCollarDetail"))
+                    }
+                    if (flatpackBlueprint.Properties.ContainsKey("WhiteCollarDetail"))
+                    {
+                        //WhiteCollar
+                        long whiteCollarDetail = 0;
+                        flatpackBlueprint.Properties.getLong("WhiteCollarDetail", 0, out whiteCollarDetail);
+                        for (int i = 1; i <= whiteCollarDetail; i++)
                         {
-                            //WhiteCollar
-                            long whiteCollarDetail = 0;
-                            flatpackBlueprint.Properties.getLong("WhiteCollarDetail", 0, out whiteCollarDetail);
-                            for (int i = 1; i <= whiteCollarDetail; i++)
+                            bool whiteCollarAssigned = false;
+                            structure.AssignedWorkers.getBoolean("WhiteCollar" + i, false, out whiteCollarAssigned);
+                            structure.AssignedWorkers.setProperty("WhiteCollar" + i, whiteCollarAssigned);
+                            if (whiteCollarAssigned)
                             {
-                                bool whiteCollarAssigned = false;
-                                structure.AssignedWorkers.getBoolean("WhiteCollar" + i, false, out whiteCollarAssigned);
-                                structure.AssignedWorkers.setProperty("WhiteCollar" + i, whiteCollarAssigned);
-                                if (whiteCollarAssigned)
-                                {
-                                    ColonyWorkers.Add(new ColonyWorker(structure, "WhiteCollar" + i, whiteCollarAssigned));
-                                }
+                                ColonyWorkers.Add(new ColonyWorker(structure, "WhiteCollar" + i, whiteCollarAssigned));
                             }
                         }
-                        if (flatpackBlueprint.Properties.ContainsKey("SpecialistDetail"))
+                    }
+                    if (flatpackBlueprint.Properties.ContainsKey("SpecialistDetail"))
+                    {
+                        //SpecialistDetail
+                        long specialistDetail = 0;
+                        flatpackBlueprint.Properties.getLong("SpecialistDetail", 0, out specialistDetail);
+                        for (int i = 1; i <= specialistDetail; i++)
                         {
-                            //SpecialistDetail
-                            long specialistDetail = 0;
-                            flatpackBlueprint.Properties.getLong("SpecialistDetail", 0, out specialistDetail);
-                            for (int i = 1; i <= specialistDetail; i++)
+                            bool specialistAssigned = false;
+                            structure.AssignedWorkers.getBoolean("Specialist" + i, false, out specialistAssigned);
+                            structure.AssignedWorkers.setProperty("Specialist" + i, specialistAssigned);
+                            if (specialistAssigned)
                             {
-                                bool specialistAssigned = false;
-                                structure.AssignedWorkers.getBoolean("Specialist" + i, false, out specialistAssigned);
-                                structure.AssignedWorkers.setProperty("Specialist" + i, specialistAssigned);
-                                if (specialistAssigned)
-                                {
-                                    ColonyWorkers.Add(new ColonyWorker(structure, "Specialist" + i, specialistAssigned));
-                                }
+                                ColonyWorkers.Add(new ColonyWorker(structure, "Specialist" + i, specialistAssigned));
                             }
                         }
                     }
@@ -201,7 +209,7 @@ namespace OE2EmpireTracker.Baseline
             {
                 statusColor = Color.Red;
             }
-            AppendColoredText(rtbStatus, "" + EntertainmentRequired, Color.Green);
+            AppendColoredText(rtbStatus, "" + EntertainmentRequired, statusColor);
             AppendColoredText(rtbStatus, "/", Color.Black);
             AppendColoredText(rtbStatus, "" + EntertainmentProvided, Color.Black);
 

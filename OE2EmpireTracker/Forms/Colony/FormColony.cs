@@ -89,7 +89,6 @@ namespace OE2EmpireTracker.Forms.Colony
 
             Baseline.ColonyStructure colonyStructureData = new Baseline.ColonyStructure();
             colonyStructureData.FlatpackBlueprintUUID = cmbFlatpacks.SelectedValue.ToString();
-            colonyStructureData.Built = true; // FIXME: A cheat.
             selectedColony.Structures.Add(colonyStructureData);
             ColonyStructure colonyStructureControl = new ColonyStructure();
             colonyStructureControl.Visible = false;

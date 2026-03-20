@@ -718,10 +718,14 @@
           "FlatpackBlueprintUUID": "49f3198c-292f-4dd0-ab72-9c873b97f8a2",
           "gameSequence": 0,
           "buildQueueSequence": 0,
-          "Properties": {},
+          "Properties": {
+            "Built": "True",
+            "Staged": "False",
+            "Online": "True"
+          },
           "AssignedWorkers": {
             "UnassignedSpecialistDetail": "True",
-            "WhiteCollar1": "False"
+            "WhiteCollar1": "True"
           },
           "Power": 0.0,
           "Habitation": 0.0,
@@ -729,9 +733,6 @@
           "Entertainment": 0.0,
           "WarehouseCapacity": 0.0,
           "WorkersAssigned": 0,
-          "Online": false,
-          "Building": false,
-          "Built": true,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -740,7 +741,11 @@
           "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
           "gameSequence": 0,
           "buildQueueSequence": 0,
-          "Properties": {},
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Staged": "False"
+          },
           "AssignedWorkers": {
             "UnassignedSpecialistDetail": "True"
           },
@@ -750,9 +755,6 @@
           "Entertainment": 0.0,
           "WarehouseCapacity": 0.0,
           "WorkersAssigned": 0,
-          "Online": false,
-          "Building": false,
-          "Built": true,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -761,10 +763,13 @@
           "FlatpackBlueprintUUID": "ebaa1a5d-1b2a-49f4-ac46-639ffbde7511",
           "gameSequence": 0,
           "buildQueueSequence": 0,
-          "Properties": {},
+          "Properties": {
+            "Built": "True",
+            "Online": "True"
+          },
           "AssignedWorkers": {
             "UnassignedWhiteCollarDetail": "True",
-            "Specialist1": "False"
+            "Specialist1": "True"
           },
           "Power": 0.0,
           "Habitation": 0.0,
@@ -772,9 +777,6 @@
           "Entertainment": 0.0,
           "WarehouseCapacity": 0.0,
           "WorkersAssigned": 0,
-          "Online": false,
-          "Building": false,
-          "Built": true,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -783,10 +785,13 @@
           "FlatpackBlueprintUUID": "513b5bc8-db3d-4808-8cc4-a93bc9f65354",
           "gameSequence": 0,
           "buildQueueSequence": 0,
-          "Properties": {},
+          "Properties": {
+            "Built": "True",
+            "Online": "True"
+          },
           "AssignedWorkers": {
             "UnassignedWhiteCollarDetail": "True",
-            "BlueCollar1": "False"
+            "BlueCollar1": "True"
           },
           "Power": 0.0,
           "Habitation": 0.0,
@@ -794,9 +799,6 @@
           "Entertainment": 0.0,
           "WarehouseCapacity": 0.0,
           "WorkersAssigned": 0,
-          "Online": false,
-          "Building": false,
-          "Built": true,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -805,10 +807,14 @@
           "FlatpackBlueprintUUID": "ebbf669a-3987-4e4f-87db-a3236e6dd4ea",
           "gameSequence": 0,
           "buildQueueSequence": 0,
-          "Properties": {},
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Staged": "False"
+          },
           "AssignedWorkers": {
             "UnassignedWhiteCollarDetail": "True",
-            "BlueCollar1": "False",
+            "BlueCollar1": "True",
             "UnassignedSpecialistDetail": "True"
           },
           "Power": 0.0,
@@ -817,9 +823,6 @@
           "Entertainment": 0.0,
           "WarehouseCapacity": 0.0,
           "WorkersAssigned": 0,
-          "Online": false,
-          "Building": false,
-          "Built": true,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -828,10 +831,14 @@
           "FlatpackBlueprintUUID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
           "gameSequence": 0,
           "buildQueueSequence": 0,
-          "Properties": {},
+          "Properties": {
+            "Staged": "False",
+            "Built": "True",
+            "Online": "True"
+          },
           "AssignedWorkers": {
             "UnassignedWhiteCollarDetail": "True",
-            "BlueCollar1": "False",
+            "BlueCollar1": "True",
             "UnassignedSpecialistDetail": "True"
           },
           "Power": 0.0,
@@ -840,9 +847,6 @@
           "Entertainment": 0.0,
           "WarehouseCapacity": 0.0,
           "WorkersAssigned": 0,
-          "Online": false,
-          "Building": false,
-          "Built": true,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -851,9 +855,13 @@
           "FlatpackBlueprintUUID": "a86cc2fa-478a-498c-8c17-166f9fa5c9d7",
           "gameSequence": 0,
           "buildQueueSequence": 0,
-          "Properties": {},
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Staged": "False"
+          },
           "AssignedWorkers": {
-            "Specialist1": "False"
+            "Specialist1": "True"
           },
           "Power": 0.0,
           "Habitation": 0.0,
@@ -861,9 +869,71 @@
           "Entertainment": 0.0,
           "WarehouseCapacity": 0.0,
           "WorkersAssigned": 0,
-          "Online": false,
-          "Building": false,
-          "Built": true,
+          "CurrentAttitude": null,
+          "ContentmentIndex": 0,
+          "WageLevel": 0
+        },
+        {
+          "FlatpackBlueprintUUID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
+          "gameSequence": 0,
+          "buildQueueSequence": 0,
+          "Properties": {
+            "Online": "True",
+            "Built": "True"
+          },
+          "AssignedWorkers": {
+            "UnassignedSpecialistDetail": "True",
+            "BlueCollar1": "False"
+          },
+          "Power": 0.0,
+          "Habitation": 0.0,
+          "Food": 0.0,
+          "Entertainment": 0.0,
+          "WarehouseCapacity": 0.0,
+          "WorkersAssigned": 0,
+          "CurrentAttitude": null,
+          "ContentmentIndex": 0,
+          "WageLevel": 0
+        },
+        {
+          "FlatpackBlueprintUUID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+          "gameSequence": 0,
+          "buildQueueSequence": 0,
+          "Properties": {
+            "Online": "True",
+            "Built": "True"
+          },
+          "AssignedWorkers": {
+            "UnassignedSpecialistDetail": "True"
+          },
+          "Power": 0.0,
+          "Habitation": 0.0,
+          "Food": 0.0,
+          "Entertainment": 0.0,
+          "WarehouseCapacity": 0.0,
+          "WorkersAssigned": 0,
+          "CurrentAttitude": null,
+          "ContentmentIndex": 0,
+          "WageLevel": 0
+        },
+        {
+          "FlatpackBlueprintUUID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+          "gameSequence": 0,
+          "buildQueueSequence": 0,
+          "Properties": {
+            "Online": "True",
+            "Built": "True"
+          },
+          "AssignedWorkers": {
+            "UnassignedSpecialistDetail": "True",
+            "BlueCollar1": "False"
+          },
+          "Power": 0.0,
+          "Habitation": 0.0,
+          "Food": 0.0,
+          "Entertainment": 0.0,
+          "WarehouseCapacity": 0.0,
+          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -881,7 +951,10 @@
           "FlatpackBlueprintUUID": "49f3198c-292f-4dd0-ab72-9c873b97f8a2",
           "gameSequence": 0,
           "buildQueueSequence": 0,
-          "Properties": {},
+          "Properties": {
+            "Built": "True",
+            "Online": "True"
+          },
           "AssignedWorkers": {
             "UnassignedSpecialistDetail": "True",
             "WhiteCollar1": "True"
@@ -892,9 +965,6 @@
           "Entertainment": 0.0,
           "WarehouseCapacity": 0.0,
           "WorkersAssigned": 0,
-          "Online": false,
-          "Building": false,
-          "Built": true,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -903,7 +973,10 @@
           "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
           "gameSequence": 0,
           "buildQueueSequence": 0,
-          "Properties": {},
+          "Properties": {
+            "Built": "True",
+            "Online": "True"
+          },
           "AssignedWorkers": {
             "UnassignedSpecialistDetail": "True"
           },
@@ -913,9 +986,6 @@
           "Entertainment": 0.0,
           "WarehouseCapacity": 0.0,
           "WorkersAssigned": 0,
-          "Online": false,
-          "Building": false,
-          "Built": true,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -924,7 +994,10 @@
           "FlatpackBlueprintUUID": "ebaa1a5d-1b2a-49f4-ac46-639ffbde7511",
           "gameSequence": 0,
           "buildQueueSequence": 0,
-          "Properties": {},
+          "Properties": {
+            "Built": "False",
+            "Online": "False"
+          },
           "AssignedWorkers": {
             "UnassignedWhiteCollarDetail": "True",
             "Specialist1": "True"
@@ -935,9 +1008,6 @@
           "Entertainment": 0.0,
           "WarehouseCapacity": 0.0,
           "WorkersAssigned": 0,
-          "Online": false,
-          "Building": false,
-          "Built": true,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -946,7 +1016,10 @@
           "FlatpackBlueprintUUID": "513b5bc8-db3d-4808-8cc4-a93bc9f65354",
           "gameSequence": 0,
           "buildQueueSequence": 0,
-          "Properties": {},
+          "Properties": {
+            "Built": "False",
+            "Online": "False"
+          },
           "AssignedWorkers": {
             "UnassignedWhiteCollarDetail": "True",
             "BlueCollar1": "True"
@@ -957,9 +1030,6 @@
           "Entertainment": 0.0,
           "WarehouseCapacity": 0.0,
           "WorkersAssigned": 0,
-          "Online": false,
-          "Building": false,
-          "Built": true,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0

@@ -41,10 +41,6 @@ namespace OE2EmpireTracker.Baseline
         public double WarehouseCapacity { get; set; }
         public int WorkersAssigned { get; set; }
 
-        public bool Online { get; set; }
-        public bool Building { get; set; }
-        public bool Built { get; set; }
-
         DateTime completion { get; set; }
         public string CurrentAttitude { get; set; }
         public int ContentmentIndex { get; set; }

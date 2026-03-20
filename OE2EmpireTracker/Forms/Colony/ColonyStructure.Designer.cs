@@ -261,6 +261,7 @@
             this.chkBuilt.TabIndex = 2;
             this.chkBuilt.Text = "Built";
             this.chkBuilt.UseVisualStyleBackColor = true;
+            this.chkBuilt.CheckStateChanged += new System.EventHandler(this.chkBuilt_CheckStateChanged);
             // 
             // chkStaged
             // 
@@ -270,6 +271,7 @@
             this.chkStaged.TabIndex = 3;
             this.chkStaged.Text = "Staged";
             this.chkStaged.UseVisualStyleBackColor = true;
+            this.chkStaged.CheckStateChanged += new System.EventHandler(this.chkStaged_CheckStateChanged);
             // 
             // chkOnline
             // 
@@ -279,6 +281,7 @@
             this.chkOnline.TabIndex = 1;
             this.chkOnline.Text = "Online";
             this.chkOnline.UseVisualStyleBackColor = true;
+            this.chkOnline.CheckStateChanged += new System.EventHandler(this.chkOnline_CheckStateChanged);
             // 
             // chkWorkDetail1
             // 
