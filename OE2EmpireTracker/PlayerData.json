@@ -33,9 +33,12 @@
       },
       "UUID": "49f3198c-292f-4dd0-ab72-9c873b97f8a2",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "Colony Command Centre Flatpack",
       "NickName": "",
-      "Description": "The heart of the colony and the absolute minimum structure needed to secure the claim on a colony site."
+      "Description": "The heart of the colony and the absolute minimum structure needed to secure the claim on a colony site.",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "",
@@ -65,9 +68,12 @@
       },
       "UUID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "Entertainment Centre Flatpack",
       "NickName": "",
-      "Description": "Where colonist go to relax and blow off some steam."
+      "Description": "Where colonist go to relax and blow off some steam.",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "",
@@ -94,9 +100,12 @@
       },
       "UUID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "Habitation Block Flatpack",
       "NickName": "",
-      "Description": "Life support and habitation functions enough for 4 Details."
+      "Description": "Life support and habitation functions enough for 4 Details.",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "",
@@ -126,9 +135,12 @@
       },
       "UUID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "Hydroponics Bay Flatpack",
       "NickName": "",
-      "Description": "Provide food enough for 4 Details."
+      "Description": "Provide food enough for 4 Details.",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "",
@@ -159,9 +171,12 @@
       },
       "UUID": "ebbf669a-3987-4e4f-87db-a3236e6dd4ea",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "Manufactory Flatpack",
       "NickName": "",
-      "Description": "Manufacturing plant."
+      "Description": "Manufacturing plant.",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "",
@@ -193,9 +208,12 @@
       },
       "UUID": "584616b3-b8c0-4ca5-98d2-66e39587ae57",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "Mining Rig Flatpack",
       "NickName": "",
-      "Description": "Can mine one surveyed resource vein."
+      "Description": "Can mine one surveyed resource vein.",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "",
@@ -226,9 +244,12 @@
       },
       "UUID": "b0633002-68ea-4c02-83cf-10292a9a420c",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "RAK-L MatScan",
       "NickName": "",
-      "Description": ""
+      "Description": "",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "",
@@ -259,9 +280,12 @@
       },
       "UUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
       "NickName": "",
-      "Description": ""
+      "Description": "",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
@@ -292,9 +316,12 @@
       },
       "UUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
       "NickName": "86 Scan",
-      "Description": ""
+      "Description": "",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "82609bb4-32e5-42f4-aee8-244181501ace",
@@ -329,9 +356,12 @@
       },
       "UUID": "4a908839-be77-4e45-b6de-8067b9e0b188",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
       "NickName": "105 Scan",
-      "Description": ""
+      "Description": "",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
@@ -365,9 +395,12 @@
       },
       "UUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
       "NickName": "90 Scan",
-      "Description": ""
+      "Description": "",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
@@ -402,9 +435,12 @@
       },
       "UUID": "82609bb4-32e5-42f4-aee8-244181501ace",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
       "NickName": "98 Scan",
-      "Description": ""
+      "Description": "",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "",
@@ -432,9 +468,12 @@
       },
       "UUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "Reactor Core Flatpack",
       "NickName": "",
-      "Description": "Provides 6Mw of power per core."
+      "Description": "Provides 6Mw of power per core.",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "",
@@ -466,9 +505,12 @@
       },
       "UUID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "Refinery Flatpack",
       "NickName": "",
-      "Description": "Process raw materials into refined materials."
+      "Description": "Process raw materials into refined materials.",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "",
@@ -496,9 +538,12 @@
       },
       "UUID": "ebaa1a5d-1b2a-49f4-ac46-639ffbde7511",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "Remote Operations Array Flatpack",
       "NickName": "",
-      "Description": "Colony owner can control all colony operations remotely within a set range."
+      "Description": "Colony owner can control all colony operations remotely within a set range.",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "",
@@ -527,9 +572,12 @@
       },
       "UUID": "a86cc2fa-478a-498c-8c17-166f9fa5c9d7",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "Research Laboratory Flatpack",
       "NickName": "",
-      "Description": "Research & Development facility."
+      "Description": "Research & Development facility.",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": null,
@@ -555,9 +603,12 @@
       "Resources": {},
       "UUID": "6cb8fc7c-9ee8-4a9b-bb53-45f5feb229cb",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "test baseblueprint",
       "NickName": "test baseblueprint",
-      "Description": "test baseblueprint"
+      "Description": "test baseblueprint",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "",
@@ -585,9 +636,12 @@
       },
       "UUID": "513b5bc8-db3d-4808-8cc4-a93bc9f65354",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "Warehouse Flatpack",
       "NickName": "",
-      "Description": "Colony mass storage facility."
+      "Description": "Colony mass storage facility.",
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "baseBlueprintUUID": "",
@@ -614,9 +668,12 @@
       },
       "UUID": "f5ca46b3-9264-4f73-aa2c-df4dcff93238",
       "ItemType": 9,
+      "BaseItemTypeID": "",
       "Name": "WSMS-L test77123",
       "NickName": "JAS37",
-      "Description": "JAS37 desc"
+      "Description": "JAS37 desc",
+      "Quantity": 0,
+      "ResourcePurity": ""
     }
   ],
   "Survey": [
@@ -663,9 +720,12 @@
       },
       "UUID": "88df53eb-5d71-451b-abf9-8273e5805b93",
       "ItemType": 11,
+      "BaseItemTypeID": "",
       "Name": null,
       "NickName": "Nick",
-      "Description": null
+      "Description": null,
+      "Quantity": 0,
+      "ResourcePurity": ""
     },
     {
       "ScannedBy": "Scalorn Scorpus",
@@ -702,9 +762,12 @@
       },
       "UUID": "e0dc95ca-ff80-452b-90e8-3ab9a24a64e8",
       "ItemType": 11,
+      "BaseItemTypeID": "",
       "Name": null,
       "NickName": null,
-      "Description": null
+      "Description": null,
+      "Quantity": 0,
+      "ResourcePurity": ""
     }
   ],
   "Colony": [
@@ -713,7 +776,46 @@
       "PlanetName": "test1",
       "ColonyName": "test2",
       "Items": {
-        "793f07fe-e8de-499e-a7dc-08310430c7d2": {"UUID":"793f07fe-e8de-499e-a7dc-08310430c7d2","ItemType":0,"Name":null,"NickName":null,"Description":null}
+        "793f07fe-e8de-499e-a7dc-08310430c7d2": {
+  "UUID": "793f07fe-e8de-499e-a7dc-08310430c7d2",
+  "ItemType": 0,
+  "BaseItemTypeID": "",
+  "Name": null,
+  "NickName": null,
+  "Description": null,
+  "Quantity": 0,
+  "ResourcePurity": ""
+},
+        "84d7596e-03fc-43b9-9438-87c69b5af332": {
+  "UUID": "84d7596e-03fc-43b9-9438-87c69b5af332",
+  "ItemType": 6,
+  "BaseItemTypeID": "",
+  "Name": "",
+  "NickName": "",
+  "Description": "",
+  "Quantity": 0,
+  "ResourcePurity": "High"
+},
+        "c6dbaa9d-bd0c-41f5-bf95-fd5a7287132b": {
+  "UUID": "c6dbaa9d-bd0c-41f5-bf95-fd5a7287132b",
+  "ItemType": 6,
+  "BaseItemTypeID": "Acidic Inorganics",
+  "Name": "",
+  "NickName": "",
+  "Description": "",
+  "Quantity": 0,
+  "ResourcePurity": "High"
+},
+        "9c7400d4-d0c6-4e1a-aa31-b789510d5973": {
+  "UUID": "9c7400d4-d0c6-4e1a-aa31-b789510d5973",
+  "ItemType": 6,
+  "BaseItemTypeID": "Lanthanides",
+  "Name": "Lanthanides",
+  "NickName": "",
+  "Description": "",
+  "Quantity": 52354,
+  "ResourcePurity": "High"
+}
       },
       "Structures": [
         {
@@ -957,7 +1059,18 @@
       "UUID": "a94b0eef-267d-4a30-9e92-7ac1f07f667c",
       "PlanetName": "test545",
       "ColonyName": "yrsy7",
-      "Items": {},
+      "Items": {
+        "d384a543-130c-4b96-8d65-c60f9011bf74": {
+  "UUID": "d384a543-130c-4b96-8d65-c60f9011bf74",
+  "ItemType": 0,
+  "BaseItemTypeID": "",
+  "Name": "",
+  "NickName": "",
+  "Description": "",
+  "Quantity": 0,
+  "ResourcePurity": ""
+}
+      },
       "Structures": [
         {
           "UUID": "1fc3b7af-d342-4f1a-90e1-666241091072",

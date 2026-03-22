@@ -59,7 +59,7 @@ namespace OE2EmpireTracker.Data
             foreach (KeyValuePair<string, Item> entry in value.Items)
             {
                 writer.WritePropertyName(entry.Key);
-                String text = JsonConvert.SerializeObject(entry.Value);
+                String text = JsonConvert.SerializeObject(entry.Value,Formatting.Indented);
                 writer.WriteRawValue(text);
             }
             writer.WriteEndObject();
@@ -68,7 +68,6 @@ namespace OE2EmpireTracker.Data
         // ReadJson implementation required if deserialization is needed
         public override ItemBag ReadJson(JsonReader reader, Type objectType, ItemBag existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
-            JsonSerializerSettings settings = new JsonSerializerSettings();
             ItemBag bag = existingValue;
             if (bag == null)
             {
@@ -76,8 +75,6 @@ namespace OE2EmpireTracker.Data
             }
 
             string name = "";
-            //string value = "";
-            //reader.Read();
             JsonToken token = JsonToken.None;
             do
             {

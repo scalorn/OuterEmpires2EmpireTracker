@@ -19,12 +19,13 @@ namespace OE2EmpireTracker.Data
 
         public PurityEnum ID { get; set; }
         public string Name { get; set; }
+        public bool Refined { get; set; } = false;
 
-        private static List<ResourcePurity> _puritiess = getPurities();
+        private static List<ResourcePurity> _purities = getPurities();
         private static Dictionary<PurityEnum, ResourcePurity> _purityMapByEnum;
         private static Dictionary<string, ResourcePurity> _purityMapByString;
 
-        public static IReadOnlyList<ResourcePurity> Purities => _puritiess.AsReadOnly();
+        public static IReadOnlyList<ResourcePurity> Purities => _purities.AsReadOnly();
         public static IReadOnlyDictionary<PurityEnum, ResourcePurity> ItemTypeMapByEnum => _purityMapByEnum;
         public static IReadOnlyDictionary<string, ResourcePurity> ItemTypeMapByString => _purityMapByString;
 
@@ -32,10 +33,10 @@ namespace OE2EmpireTracker.Data
         private static List<ResourcePurity> getPurities()
         {
             List<ResourcePurity> instance = new List<ResourcePurity>();
-            instance.Add(new ResourcePurity() { ID = PurityEnum.Refined, Name = "Refined" });
-            instance.Add(new ResourcePurity() { ID = PurityEnum.UnrefinedHigh, Name = "Unrefined High" });
-            instance.Add(new ResourcePurity() { ID = PurityEnum.UnrefinedMedium, Name = "Unrefined Medium" });
-            instance.Add(new ResourcePurity() { ID = PurityEnum.UnrefinedLow, Name = "Unrefined Low" });
+            instance.Add(new ResourcePurity() { ID = PurityEnum.Refined, Name = "Refined", Refined = true });
+            instance.Add(new ResourcePurity() { ID = PurityEnum.UnrefinedHigh, Name = "High" });
+            instance.Add(new ResourcePurity() { ID = PurityEnum.UnrefinedMedium, Name = "Medium" });
+            instance.Add(new ResourcePurity() { ID = PurityEnum.UnrefinedLow, Name = "Low" });
 
             instance.Sort((x, y) => x.Name.CompareTo(y.Name));
 

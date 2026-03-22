@@ -11,41 +11,31 @@ namespace OE2EmpireTracker.Data
 {
     public class Item
     {
-        //[Key]
-        //[Required]
-        //public virtual int ID { get; set; }
-
         public string UUID { get; set; }
 
         [Required]
-        public ItemType.ItemTypeEnum ItemType { get; set; }
+        public ItemType.ItemTypeEnum ItemType { get; set; } = Data.ItemType.ItemTypeEnum.None;
+        public string BaseItemTypeID { get; set; } = string.Empty;
 
         [Required]
-        public virtual string Name { get; set; }
+        public virtual string Name { get; set; }= string.Empty;
 
         [Required]
-        public virtual string NickName { get; set; }
+        public virtual string NickName { get; set; }= string.Empty;
         [Required]
-        public virtual string Description { get; set; }
+        public virtual string Description { get; set; } = string.Empty;
         //[Required]
-        //public int Quantity { get; set; }
+        public int Quantity { get; set; } = 0;
+        public string ResourcePurity { get; set; } = string.Empty;
         
-        //public List<SubResource> SubResources { get; set; }
-        //public List<ItemProperty> ItemProperties { get; set; }
-
-        public Item(ItemType.ItemTypeEnum itemType, string name /*, int quantity*/)
+        public Item(ItemType.ItemTypeEnum itemType, string name)
         {
             this.ItemType = itemType;
             this.Name = name;
-            //this.Quantity = quantity;
-            //this.SubResources = new List<SubResource>();
-            //this.ItemProperties = new List<ItemProperty>();
         }
 
         public Item()
         {
-            //this.SubResources = new List<SubResource>();
-            //this.ItemProperties = new List<ItemProperty>();
         }
     }
 }

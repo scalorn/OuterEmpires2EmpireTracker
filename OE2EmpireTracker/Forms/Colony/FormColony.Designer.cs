@@ -58,18 +58,20 @@
             this.cmbFlatpacks = new System.Windows.Forms.ComboBox();
             this.cmdAddFlatpack = new System.Windows.Forms.Button();
             this.flpColonyStructure = new System.Windows.Forms.FlowLayoutPanel();
-            this.colonyStructure1 = new OE2EmpireTracker.Forms.Colony.ColonyStructure();
             this.tabPWorkers = new System.Windows.Forms.TabPage();
             this.tabPWarehousing = new System.Windows.Forms.TabPage();
             this.flowLayoutPanel7 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel9 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpAddItemBox = new System.Windows.Forms.FlowLayoutPanel();
             this.lblItemType = new System.Windows.Forms.Label();
             this.cmbItemType = new System.Windows.Forms.ComboBox();
             this.lblFilter = new System.Windows.Forms.Label();
             this.txtItemFilter = new System.Windows.Forms.TextBox();
             this.cmbItem = new System.Windows.Forms.ComboBox();
+            this.cmbPurity = new System.Windows.Forms.ComboBox();
+            this.lblQuantity = new System.Windows.Forms.Label();
+            this.txtQuantity = new System.Windows.Forms.TextBox();
             this.cmdAdd = new System.Windows.Forms.Button();
-            this.dgvResources = new System.Windows.Forms.DataGridView();
+            this.dgvItems = new System.Windows.Forms.DataGridView();
             this.ItemType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Item = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LockedAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -79,7 +81,6 @@
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.cmbPurity = new System.Windows.Forms.ComboBox();
             this.flpSearchList.SuspendLayout();
             this.flpBlueprintSearch.SuspendLayout();
             this.tlpBase.SuspendLayout();
@@ -93,11 +94,10 @@
             this.flpStructureData.SuspendLayout();
             this.flpStatus.SuspendLayout();
             this.flpAddBox.SuspendLayout();
-            this.flpColonyStructure.SuspendLayout();
             this.tabPWarehousing.SuspendLayout();
             this.flowLayoutPanel7.SuspendLayout();
-            this.flowLayoutPanel9.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).BeginInit();
+            this.flpAddItemBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvItems)).BeginInit();
             this.flpCommands.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -425,21 +425,12 @@
             this.flpColonyStructure.AutoScroll = true;
             this.flpColonyStructure.AutoScrollMinSize = new System.Drawing.Size(554, 0);
             this.flpColonyStructure.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpColonyStructure.Controls.Add(this.colonyStructure1);
             this.flpColonyStructure.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpColonyStructure.Location = new System.Drawing.Point(3, 90);
             this.flpColonyStructure.Name = "flpColonyStructure";
             this.flpColonyStructure.Size = new System.Drawing.Size(736, 100);
             this.flpColonyStructure.TabIndex = 8;
             this.flpColonyStructure.WrapContents = false;
-            // 
-            // colonyStructure1
-            // 
-            this.colonyStructure1.ColonyStructureData = null;
-            this.colonyStructure1.Location = new System.Drawing.Point(3, 3);
-            this.colonyStructure1.Name = "colonyStructure1";
-            this.colonyStructure1.Size = new System.Drawing.Size(580, 168);
-            this.colonyStructure1.TabIndex = 8;
             // 
             // tabPWorkers
             // 
@@ -462,8 +453,8 @@
             // 
             // flowLayoutPanel7
             // 
-            this.flowLayoutPanel7.Controls.Add(this.flowLayoutPanel9);
-            this.flowLayoutPanel7.Controls.Add(this.dgvResources);
+            this.flowLayoutPanel7.Controls.Add(this.flpAddItemBox);
+            this.flowLayoutPanel7.Controls.Add(this.dgvItems);
             this.flowLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Left;
             this.flowLayoutPanel7.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel7.Location = new System.Drawing.Point(0, 0);
@@ -472,21 +463,23 @@
             this.flowLayoutPanel7.TabIndex = 8;
             this.flowLayoutPanel7.WrapContents = false;
             // 
-            // flowLayoutPanel9
+            // flpAddItemBox
             // 
-            this.flowLayoutPanel9.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.flowLayoutPanel9.Controls.Add(this.lblItemType);
-            this.flowLayoutPanel9.Controls.Add(this.cmbItemType);
-            this.flowLayoutPanel9.Controls.Add(this.lblFilter);
-            this.flowLayoutPanel9.Controls.Add(this.txtItemFilter);
-            this.flowLayoutPanel9.Controls.Add(this.cmbItem);
-            this.flowLayoutPanel9.Controls.Add(this.cmbPurity);
-            this.flowLayoutPanel9.Controls.Add(this.cmdAdd);
-            this.flowLayoutPanel9.Location = new System.Drawing.Point(3, 3);
-            this.flowLayoutPanel9.Name = "flowLayoutPanel9";
-            this.flowLayoutPanel9.Size = new System.Drawing.Size(889, 30);
-            this.flowLayoutPanel9.TabIndex = 6;
-            this.flowLayoutPanel9.WrapContents = false;
+            this.flpAddItemBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flpAddItemBox.Controls.Add(this.lblItemType);
+            this.flpAddItemBox.Controls.Add(this.cmbItemType);
+            this.flpAddItemBox.Controls.Add(this.lblFilter);
+            this.flpAddItemBox.Controls.Add(this.txtItemFilter);
+            this.flpAddItemBox.Controls.Add(this.cmbItem);
+            this.flpAddItemBox.Controls.Add(this.cmbPurity);
+            this.flpAddItemBox.Controls.Add(this.lblQuantity);
+            this.flpAddItemBox.Controls.Add(this.txtQuantity);
+            this.flpAddItemBox.Controls.Add(this.cmdAdd);
+            this.flpAddItemBox.Location = new System.Drawing.Point(3, 3);
+            this.flpAddItemBox.Name = "flpAddItemBox";
+            this.flpAddItemBox.Size = new System.Drawing.Size(889, 30);
+            this.flpAddItemBox.TabIndex = 6;
+            this.flpAddItemBox.WrapContents = false;
             // 
             // lblItemType
             // 
@@ -522,41 +515,72 @@
             this.txtItemFilter.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.txtItemFilter.Location = new System.Drawing.Point(242, 4);
             this.txtItemFilter.Name = "txtItemFilter";
-            this.txtItemFilter.Size = new System.Drawing.Size(187, 20);
+            this.txtItemFilter.Size = new System.Drawing.Size(97, 20);
             this.txtItemFilter.TabIndex = 4;
+            this.txtItemFilter.TextChanged += new System.EventHandler(this.txtItemFilter_TextChanged);
             // 
             // cmbItem
             // 
             this.cmbItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmbItem.FormattingEnabled = true;
-            this.cmbItem.Location = new System.Drawing.Point(435, 4);
+            this.cmbItem.Location = new System.Drawing.Point(345, 4);
             this.cmbItem.Name = "cmbItem";
             this.cmbItem.Size = new System.Drawing.Size(121, 21);
             this.cmbItem.TabIndex = 5;
+            this.cmbItem.SelectedIndexChanged += new System.EventHandler(this.cmbItem_SelectedIndexChanged);
+            // 
+            // cmbPurity
+            // 
+            this.cmbPurity.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmbPurity.DisplayMember = "Name";
+            this.cmbPurity.FormattingEnabled = true;
+            this.cmbPurity.Location = new System.Drawing.Point(472, 4);
+            this.cmbPurity.Name = "cmbPurity";
+            this.cmbPurity.Size = new System.Drawing.Size(105, 21);
+            this.cmbPurity.TabIndex = 7;
+            this.cmbPurity.SelectedIndexChanged += new System.EventHandler(this.cmbPurity_SelectedIndexChanged);
+            // 
+            // lblQuantity
+            // 
+            this.lblQuantity.Location = new System.Drawing.Point(583, 0);
+            this.lblQuantity.Name = "lblQuantity";
+            this.lblQuantity.Size = new System.Drawing.Size(51, 24);
+            this.lblQuantity.TabIndex = 9;
+            this.lblQuantity.Text = "Quantity:";
+            this.lblQuantity.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // txtQuantity
+            // 
+            this.txtQuantity.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtQuantity.Location = new System.Drawing.Point(640, 4);
+            this.txtQuantity.Name = "txtQuantity";
+            this.txtQuantity.Size = new System.Drawing.Size(97, 20);
+            this.txtQuantity.TabIndex = 8;
             // 
             // cmdAdd
             // 
-            this.cmdAdd.Location = new System.Drawing.Point(689, 3);
+            this.cmdAdd.Location = new System.Drawing.Point(743, 3);
             this.cmdAdd.Name = "cmdAdd";
             this.cmdAdd.Size = new System.Drawing.Size(39, 23);
             this.cmdAdd.TabIndex = 1;
             this.cmdAdd.Text = "Add";
             this.cmdAdd.UseVisualStyleBackColor = true;
+            this.cmdAdd.Click += new System.EventHandler(this.cmdAdd_Click);
             // 
-            // dgvResources
+            // dgvItems
             // 
-            this.dgvResources.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.dgvItems.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvResources.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvResources.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dgvItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvItems.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ItemType,
             this.Item,
             this.LockedAmount,
             this.Amount});
-            this.dgvResources.Location = new System.Drawing.Point(3, 39);
-            this.dgvResources.Name = "dgvResources";
-            this.dgvResources.Size = new System.Drawing.Size(889, 430);
-            this.dgvResources.TabIndex = 7;
+            this.dgvItems.Location = new System.Drawing.Point(3, 39);
+            this.dgvItems.Name = "dgvItems";
+            this.dgvItems.Size = new System.Drawing.Size(889, 430);
+            this.dgvItems.TabIndex = 7;
             // 
             // ItemType
             // 
@@ -633,15 +657,6 @@
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
             // 
-            // cmbPurity
-            // 
-            this.cmbPurity.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cmbPurity.FormattingEnabled = true;
-            this.cmbPurity.Location = new System.Drawing.Point(562, 4);
-            this.cmbPurity.Name = "cmbPurity";
-            this.cmbPurity.Size = new System.Drawing.Size(121, 21);
-            this.cmbPurity.TabIndex = 7;
-            // 
             // FormColony
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -669,12 +684,11 @@
             this.flpStatus.ResumeLayout(false);
             this.flpAddBox.ResumeLayout(false);
             this.flpAddBox.PerformLayout();
-            this.flpColonyStructure.ResumeLayout(false);
             this.tabPWarehousing.ResumeLayout(false);
             this.flowLayoutPanel7.ResumeLayout(false);
-            this.flowLayoutPanel9.ResumeLayout(false);
-            this.flowLayoutPanel9.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).EndInit();
+            this.flpAddItemBox.ResumeLayout(false);
+            this.flpAddItemBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvItems)).EndInit();
             this.flpCommands.ResumeLayout(false);
             this.flpCommands.PerformLayout();
             this.ResumeLayout(false);
@@ -688,7 +702,6 @@
         private System.Windows.Forms.Label lblBlueprintListFilter;
         private System.Windows.Forms.TextBox txtBlueprintListFilter;
         private System.Windows.Forms.ListView lvwColonies;
-        private DataEntryGridView dgvStatistics;
         private System.Windows.Forms.DataGridViewTextBoxColumn Property;
         private System.Windows.Forms.DataGridViewTextBoxColumn BaseValue;
         private System.Windows.Forms.DataGridViewTextBoxColumn CurrentValue;
@@ -714,18 +727,17 @@
         private System.Windows.Forms.ComboBox cmbFlatpacks;
         private System.Windows.Forms.Button cmdAddFlatpack;
         private System.Windows.Forms.FlowLayoutPanel flpColonyStructure;
-        private ColonyStructure colonyStructure1;
         private System.Windows.Forms.TabPage tabPWorkers;
         private System.Windows.Forms.TabPage tabPWarehousing;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel7;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel9;
+        private System.Windows.Forms.FlowLayoutPanel flpAddItemBox;
         private System.Windows.Forms.Label lblItemType;
         private System.Windows.Forms.ComboBox cmbItemType;
         private System.Windows.Forms.Label lblFilter;
         private System.Windows.Forms.TextBox txtItemFilter;
         private System.Windows.Forms.ComboBox cmbItem;
         private System.Windows.Forms.Button cmdAdd;
-        private System.Windows.Forms.DataGridView dgvResources;
+        private System.Windows.Forms.DataGridView dgvItems;
         private System.Windows.Forms.DataGridViewTextBoxColumn ItemType;
         private System.Windows.Forms.DataGridViewTextBoxColumn Item;
         private System.Windows.Forms.DataGridViewTextBoxColumn LockedAmount;
@@ -736,5 +748,7 @@
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.ComboBox cmbPurity;
+        private System.Windows.Forms.Label lblQuantity;
+        private System.Windows.Forms.TextBox txtQuantity;
     }
 }

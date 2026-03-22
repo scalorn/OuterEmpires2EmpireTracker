@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using System.Xml.Linq;
 
 namespace OE2EmpireTracker.Forms.Colony
@@ -31,6 +32,7 @@ namespace OE2EmpireTracker.Forms.Colony
             playerContext = EmpireContext.PlayerContext;
 
             updateItemTypeList();
+            updatePurityList();
 
             cmbFlatpacks.DisplayMember = "Name";
             cmbFlatpacks.ValueMember = "UUID";
@@ -152,6 +154,17 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbFlatpacks.DataSource = filteredItemsBindingList;
         }
 
+        public void updatePurityList()
+        {
+            IReadOnlyList<ResourcePurity> purities = Data.ResourcePurity.Purities;
+
+            var filteredPurityBindingList = new BindingSource();
+            // Set the in-memory list as the DataSource for the BindingSource
+            filteredPurityBindingList.DataSource = purities;
+
+            cmbPurity.DataSource = filteredPurityBindingList;
+        }
+
         public void updateItemTypeList()
         {
             IReadOnlyList<ItemType> itemTypes = Data.ItemType.ItemTypes;
@@ -267,7 +280,8 @@ namespace OE2EmpireTracker.Forms.Colony
                 if (controlIndex < selectedColony.Structures.Count)
                 {
                     control.Visible = true;
-                } else
+                }
+                else
                 {
                     control.Visible = false;
                 }
@@ -411,6 +425,101 @@ namespace OE2EmpireTracker.Forms.Colony
         }
 
         private void cmbItemType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Data.ItemType itemType = cmbItemType.SelectedItem as Data.ItemType;
+            cmbPurity.Visible = false;
+            if (itemType != null)
+            {
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.Resource)
+                {
+                    populateItemWithResources();
+                    cmbPurity.Visible = true;
+                }
+            }
+        }
+        public void populateItemWithResources()
+        {
+            IReadOnlyList<Resource> resources = Data.Resource.Resources;
+
+            var filteredItemBindingList = new BindingSource();
+            // Set the in-memory list as the DataSource for the BindingSource
+            filteredItemBindingList.DataSource = resources;
+
+            cmbItem.DataSource = filteredItemBindingList;
+            cmbItem.ValueMember = "Name";
+            cmbItem.DisplayMember = "Name";
+        }
+
+        private void cmbPurity_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmdAdd_Click(object sender, EventArgs e)
+        {
+            Data.Item item = new Data.Item() { UUID = Guid.NewGuid().ToString() };
+            Data.ItemType itemType = cmbItemType.SelectedItem as Data.ItemType;
+            if (itemType != null)
+            {
+                item.ItemType = itemType.ID;
+
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.Resource)
+                {
+                    Data.Resource resource = cmbItem.SelectedItem as Data.Resource;
+                    if (resource != null)
+                    {
+                        item.BaseItemTypeID = resource.Name;
+                        item.Name = resource.Name;
+                    }
+                    Data.ResourcePurity purity = cmbPurity.SelectedItem as Data.ResourcePurity;
+                    if (purity != null)
+                    {
+                        item.ResourcePurity = purity.Name;
+                    }
+                    else
+                    {
+                        item.ResourcePurity = Data.ResourcePurity.ItemTypeMapByEnum[Data.ResourcePurity.PurityEnum.Refined].Name;
+                    }
+                }
+            }
+
+            string quantityStr = txtQuantity.Text;
+            if (quantityStr != null && quantityStr.Length > 0)
+            {
+                int quantity = 0;
+                int.TryParse(quantityStr, out quantity);
+                item.Quantity = quantity;
+            }
+
+            selectedColony.Items.AddItem(item);
+        }
+
+        private void cmbItem_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Data.ItemType itemType = cmbItemType.SelectedItem as Data.ItemType;
+            cmbPurity.Visible = false;
+            if (itemType != null)
+            {
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.Resource)
+                {
+                    Resource resource = cmbItem.SelectedItem as Resource;
+                    if (resource != null)
+                    {
+                        // Hide purity for synthetic resources, as they don't have purity.
+                        if (ResourceGroup.ResourceGroupMapByEnum[resource.ResourceGroup].Synthetic)
+                        {
+                            cmbPurity.Visible = false;
+                        }
+                        else
+                        {
+                            cmbPurity.Visible = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void txtItemFilter_TextChanged(object sender, EventArgs e)
         {
 
         }

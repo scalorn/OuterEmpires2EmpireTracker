@@ -74,9 +74,9 @@ namespace OE2EmpireTracker.Baseline
             BaselineRoot baselineRoot = new BaselineRoot();
             baselineRoot.ShipClass = shipClassList.ToArray();
             baselineRoot.BlueprintType = blueprintTypeList.ToArray();
-            baselineRoot.ResourceGroup = resourceGroupList.ToArray();
-            baselineRoot.ResourcePurity = resourcePurityList.ToArray();
-            baselineRoot.Resource = resourceList.ToArray();
+            //baselineRoot.ResourceGroup = resourceGroupList.ToArray();
+            //baselineRoot.ResourcePurity = resourcePurityList.ToArray();
+            //baselineRoot.Resource = resourceList.ToArray();
             baselineRoot.TechLevel = techLevelList.ToArray();
         string jsonContent = JsonConvert.SerializeObject(baselineRoot, Formatting.Indented);
             File.WriteAllText(filePath + ".new", jsonContent);
@@ -175,7 +175,7 @@ namespace OE2EmpireTracker.Baseline
         }
         public void initResources(BaselineRoot baselineRoot)
         {
-            List<Resource> list = new List<Resource>(baselineRoot.Resource);
+            List<Resource> list = new List<Resource>(Resource.Resources);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
             resourceList = new BindingList<Resource>(list);
             // Initialize the BindingSource component
@@ -185,7 +185,7 @@ namespace OE2EmpireTracker.Baseline
         }
         public void initResourceGroups(BaselineRoot baselineRoot)
         {
-            List<ResourceGroup> list = new List<ResourceGroup>(baselineRoot.ResourceGroup);
+            List<ResourceGroup> list = new List<ResourceGroup>(ResourceGroup.Groups);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
             resourceGroupList = new BindingList<ResourceGroup>(list);
             // Initialize the BindingSource component
@@ -195,7 +195,7 @@ namespace OE2EmpireTracker.Baseline
         }
         public void initResourcePurities(BaselineRoot baselineRoot)
         {
-            List<ResourcePurity> list = new List<ResourcePurity>(baselineRoot.ResourcePurity);
+            List<ResourcePurity> list = new List<ResourcePurity>(ResourcePurity.Purities);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
             resourcePurityList = new BindingList<ResourcePurity>(list);
             // Initialize the BindingSource component
@@ -209,9 +209,9 @@ namespace OE2EmpireTracker.Baseline
     {
         public ShipClass[] ShipClass;
         public BlueprintType[] BlueprintType;
-        public ResourceGroup[] ResourceGroup;
-        public ResourcePurity[] ResourcePurity;
-        public Resource[] Resource;
+        //public ResourceGroup[] ResourceGroup;
+        //public ResourcePurity[] ResourcePurity;
+        //public Resource[] Resource;
         public TechLevel[] TechLevel;
     }
 }

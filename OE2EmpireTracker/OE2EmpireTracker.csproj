@@ -120,9 +120,9 @@
     <Compile Include="Baseline\PlayerContext.cs" />
     <Compile Include="Baseline\TechLevel.cs" />
     <Compile Include="Baseline\EmpireContext.cs" />
-    <Compile Include="Baseline\Resource.cs" />
-    <Compile Include="Baseline\ResourceGroup.cs" />
     <Compile Include="Data\ItemBag.cs" />
+    <Compile Include="Data\ResourceClass.cs" />
+    <Compile Include="Data\ResourceGroup.cs" />
     <Compile Include="Data\ResourcePurity.cs" />
     <Compile Include="Baseline\ShipClass.cs" />
     <Compile Include="Baseline\SurveyParser.cs" />
@@ -148,7 +148,6 @@
     <Compile Include="Controls\ValidatedTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Data\BaseResource.cs" />
     <Compile Include="Data\Blueprint.cs" />
     <Compile Include="Data\ItemProperty.cs" />
     <Compile Include="Data\ItemType.cs" />
