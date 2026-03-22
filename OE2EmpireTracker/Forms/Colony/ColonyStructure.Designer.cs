@@ -70,7 +70,7 @@
             this.rtbStatus.Name = "rtbStatus";
             this.rtbStatus.ReadOnly = true;
             this.rtbStatus.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.rtbStatus.Size = new System.Drawing.Size(421, 18);
+            this.rtbStatus.Size = new System.Drawing.Size(421, 40);
             this.rtbStatus.TabIndex = 0;
             this.rtbStatus.Text = "[red]6[/red]/4";
             this.rtbStatus.WordWrap = false;
@@ -155,7 +155,7 @@
             this.flowLayoutPanel7.Controls.Add(this.flowLayoutPanel9);
             this.flowLayoutPanel7.Controls.Add(this.flowLayoutPanel8);
             this.flowLayoutPanel7.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel7.Location = new System.Drawing.Point(3, 27);
+            this.flowLayoutPanel7.Location = new System.Drawing.Point(3, 49);
             this.flowLayoutPanel7.Name = "flowLayoutPanel7";
             this.flowLayoutPanel7.Size = new System.Drawing.Size(330, 70);
             this.flowLayoutPanel7.TabIndex = 2;

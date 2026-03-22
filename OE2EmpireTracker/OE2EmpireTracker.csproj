@@ -144,6 +144,9 @@
     <Compile Include="Controls\FilteredTextComboSet.Designer.cs">
       <DependentUpon>FilteredTextComboSet.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ValidatedTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Data\BaseResource.cs" />
     <Compile Include="Data\Blueprint.cs" />
     <Compile Include="Data\ItemProperty.cs" />

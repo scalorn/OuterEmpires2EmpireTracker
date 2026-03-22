@@ -19,6 +19,8 @@ namespace OE2EmpireTracker.Forms.Colony
     {
         private EmpireContext empireContext;
         private PlayerContext playerContext;
+        private int _isProgrammaticUpdate = 0;
+
         private Baseline.Colony selectedColony;
         //private List<Baseline.ColonyStructure> colonyStructures = new List<Baseline.ColonyStructure>();
         private ColonyStatusCalculator statusCalculator;
@@ -50,6 +52,9 @@ namespace OE2EmpireTracker.Forms.Colony
             lvwColonies.Columns.Add("Planet", 50);
             lvwColonies.Columns.Add("Name", 100);
             populateListView(new List<Baseline.Colony>(playerContext.colonyList));
+
+            //flpColonyData.BackColor = Color.LightCoral;
+            //tlpBase.BackColor = Color.LightBlue;
 
         }
 
@@ -106,6 +111,8 @@ namespace OE2EmpireTracker.Forms.Colony
         }
         private void structures_ColonyStructureDataChanged(object sender, EventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
+
             statusCalculator.CalculateBuilt();
             statusCalculator.populateStatus(rtbStatus);
         }
@@ -170,7 +177,7 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 return;
             }
-            lvwColonies.Items.Clear();
+            //lvwColonies.Items.Clear();
 
             Dictionary<string, ListViewItem> viewableColonies = new Dictionary<string, ListViewItem>();
 
@@ -211,6 +218,11 @@ namespace OE2EmpireTracker.Forms.Colony
         }
         private void populateForm()
         {
+            Debug.Print("populateForm called! selectedColony = " + (selectedColony != null ? selectedColony.PlanetName : "null"));
+            ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
+            //this.SuspendLayout();
+            tabDetailedData.Visible = false;
+
             if (selectedColony == null)
             {
                 return;
@@ -227,9 +239,9 @@ namespace OE2EmpireTracker.Forms.Colony
             txtColonyName.Text = selectedColony.ColonyName;
 
 
-            this.SuspendLayout();
 
             //flpColonyStructure.Controls.Clear();
+            Debug.Print("populatForm: Hiding excess controls started");
             int controlIndex = 0;
             foreach (Control control in flpColonyStructure.Controls)
             {
@@ -242,17 +254,20 @@ namespace OE2EmpireTracker.Forms.Colony
                 }
                 controlIndex++;
             }
+            Debug.Print("populatForm: Hiding excess controls finished");
 
             statusCalculator = new ColonyStatusCalculator(selectedColony);
             //statusCalculator.CalculateBuilt();
 
-            flpColonyStructure.Visible = false;
+            //flpColonyStructure.Visible = false;
             this.DoubleBuffered = true;
             List<ColonyStructure> structureControls = new List<ColonyStructure>();
             controlIndex = 0;
             foreach (Baseline.ColonyStructure structure in selectedColony.Structures)
             {
+                Debug.Print("populatForm: processing structure started");
                 ColonyStructure colonyStructureControl = null;
+                bool addControl = false;
                 if (controlIndex < flpColonyStructure.Controls.Count)
                 {
                     colonyStructureControl = flpColonyStructure.Controls[controlIndex] as ColonyStructure;
@@ -260,24 +275,119 @@ namespace OE2EmpireTracker.Forms.Colony
                 else
                 {
                     colonyStructureControl = new ColonyStructure();
+                    addControl = true;
                 }
-                colonyStructureControl.Visible = false;
-                colonyStructureControl.SuspendLayout();
+                //colonyStructureControl.Visible = false;
+                //colonyStructureControl.SuspendLayout();
                 colonyStructureControl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
                 colonyStructureControl.ColonyStructureData = structure;
                 colonyStructureControl.UpdateData();
                 //flpColonyStructure.Controls.Add(colonyStructureControl);
-                structureControls.Add(colonyStructureControl);
-                colonyStructureControl.ResumeLayout();
-                colonyStructureControl.Visible = true;
+                if (addControl)
+                {
+                    structureControls.Add(colonyStructureControl);
+                }
+                //colonyStructureControl.ResumeLayout();
+                //colonyStructureControl.Visible = true;
                 controlIndex++;
+                Debug.Print("populatForm: processing structure finished");
             }
+            Debug.Print("populatForm: Adding new controls started");
             flpColonyStructure.Controls.AddRange(structureControls.ToArray());
-            flpColonyStructure.Visible = true;
-            statusCalculator.CalculateBuilt();
-            statusCalculator.populateStatus(rtbStatus);
+            Debug.Print("populatForm: Adding new controls finished");
+            Debug.Print("populatForm: Making new controls visible started");
+            foreach (ColonyStructure structureControl in structureControls)
+            {
+                structureControl.Visible = true;
+            }
+            Debug.Print("populatForm: Making new controls visible finished");
+            //flpColonyStructure.Visible = true;
 
-            this.ResumeLayout();
+            Debug.Print("populateForm: Calling CalculateBuilt started");
+            statusCalculator.CalculateBuilt();
+            Debug.Print("populateForm: Calling CalculateBuilt finished");
+            Debug.Print("populateForm: Calling populateStatus started");
+            statusCalculator.populateStatus(rtbStatus);
+            Debug.Print("populateForm: Calling populateStatus finished");
+
+            tabDetailedData.Visible = true;
+            //this.ResumeLayout();
+            guard.release();
+            Debug.Print("populateForm completed!");
+        }
+
+        private void tlpBase_Layout(object sender, LayoutEventArgs e)
+        {
+            //Debug.Print("tlpBase_Layout called! tlpBase = " + tlpBase.Size.Width + " " + tlpBase.Size.Height);
+            //Debug.Print("tlpBase_Layout called!flpSearchList =  " + flpSearchList.Size.Width + " " + flpSearchList.Size.Height);
+        }
+
+        private void tlpBase_Resize(object sender, EventArgs e)
+        {
+            //Debug.Print("tlpBase_Resize called! tlpBase = " + tlpBase.Size.Width + " " + tlpBase.Size.Height);
+            //Debug.Print("tlpBase_Resize called!flpSearchList =  " + flpSearchList.Size.Width + " " + flpSearchList.Size.Height);
+            flpColonyData.Size = new System.Drawing.Size(tlpBase.Size.Width - flpSearchList.Size.Width - flpSearchList.Margin.Right - flpSearchList.Margin.Left, flpColonyData.Size.Height);
+        }
+
+        private void flpSearchList_Layout(object sender, LayoutEventArgs e)
+        {
+            //Debug.Print("flpSearchList_Layout called! tlpBase = " + tlpBase.Size.Width + " " + tlpBase.Size.Height);
+            //Debug.Print("flpSearchList_Layout called!flpSearchList =  " + flpSearchList.Size.Width + " " + flpSearchList.Size.Height);
+            lvwColonies.Size = new System.Drawing.Size(lvwColonies.Size.Width, flpSearchList.Size.Height - flpBlueprintSearch.Size.Height - flpBlueprintSearch.Margin.Top - flpBlueprintSearch.Margin.Bottom - lvwColonies.Margin.Top - lvwColonies.Margin.Bottom);
+            //lvwColonies.Size.Height = flpSearchList.Size.Height - flpBlueprintSearch.Size.Height;
+        }
+
+        private void flpSearchList_Resize(object sender, EventArgs e)
+        {
+            //Debug.Print("flpSearchList_Resize called! tlpBase = " + tlpBase.Size.Width + " " + tlpBase.Size.Height);
+            //Debug.Print("flpSearchList_Resize called!flpSearchList =  " + flpSearchList.Size.Width + " " + flpSearchList.Size.Height);
+        }
+
+        private void flpColonyData_Layout(object sender, LayoutEventArgs e)
+        {
+            //Debug.Print("flpColonyData_Layout called!");
+            tabDetailedData.Size = new System.Drawing.Size(flpColonyData.Size.Width - tabDetailedData.Margin.Right - tabDetailedData.Margin.Left, flpColonyData.Size.Height - flpBaseDetails.Size.Height - flpBaseDetails.Margin.Top - flpBaseDetails.Margin.Bottom - flpCommands.Size.Height - flpCommands.Margin.Top - flpCommands.Margin.Bottom - tabDetailedData.Margin.Top - tabDetailedData.Margin.Bottom);
+        }
+
+        private void flpStructures_Layout(object sender, LayoutEventArgs e)
+        {
+            //Debug.Print("flpStructures_Layout called!");
+            flpStructureData.Size = new System.Drawing.Size(flpStructures.Size.Width - lvwStructureTypes.Size.Width - lvwStructureTypes.Margin.Right - lvwStructureTypes.Margin.Left, flpStructures.Size.Height - flpStructureData.Margin.Top - flpStructureData.Margin.Bottom);
+            lvwStructureTypes.Size = new System.Drawing.Size(lvwStructureTypes.Size.Width, flpStructures.Size.Height - lvwStructureTypes.Margin.Top - lvwStructureTypes.Margin.Bottom);
+        }
+
+        private void flpStructureData_Layout(object sender, LayoutEventArgs e)
+        {
+            //Debug.Print("flpStructureData_Layout called!");
+            flpColonyStructure.Size = new System.Drawing.Size(flpStructureData.Size.Width - flpColonyStructure.Margin.Left - flpColonyStructure.Margin.Right, flpStructureData.Size.Height - flpStatus.Size.Height - flpStatus.Margin.Top - flpStatus.Margin.Bottom - flpAddBox.Size.Height - flpAddBox.Margin.Top - flpAddBox.Margin.Bottom - flpColonyStructure.Margin.Top - flpColonyStructure.Margin.Bottom);
+        }
+        public class ProgramaticUpdateGuard
+        {
+            private FormColony _parent;
+            private bool _hasLocked;
+
+            public ProgramaticUpdateGuard(FormColony parent)
+            {
+                _parent = parent;
+                _parent._isProgrammaticUpdate++;
+                _hasLocked = true;
+            }
+            public void release()
+            {
+                if (_hasLocked)
+                {
+                    _parent._isProgrammaticUpdate--;
+                    _hasLocked = false;
+                }
+            }
+            ~ProgramaticUpdateGuard()
+            {
+                release();
+            }
+        }
+
+        private void tabPStructures_Layout(object sender, LayoutEventArgs e)
+        {
 
         }
     }
