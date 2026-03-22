@@ -119,13 +119,13 @@ namespace OE2EmpireTracker.Data
         }
 
 
-        public Blueprint(string name /*, int quantity*/) : base(ItemTypeEnum.Blueprint, name /* , quantity */)
+        public Blueprint(string name /*, int quantity*/) : base(Data.ItemType.ItemTypeEnum.Blueprint, name /* , quantity */)
         {
             Properties = new PropertyBag();
             Resources = new Dictionary<string, string>();
         }
 
-        public Blueprint() : base(ItemTypeEnum.Blueprint, "")
+        public Blueprint() : base(Data.ItemType.ItemTypeEnum.Blueprint, "")
         {
             Properties = new PropertyBag();
             Resources = new Dictionary<string, string>();

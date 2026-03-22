@@ -13,14 +13,14 @@ namespace OE2EmpireTracker.Baseline
         public string UUID { get; set; }
         public string PlanetName { get; set; }
         public string ColonyName { get; set; }
-        public Dictionary<string, OE2EmpireTracker.Data.Item> Items { get; set; }
+        public ItemBag Items { get; set; }
 
         public List<ColonyStructure> Structures { get; set; }
         public List<CommodityRequested> Commodities { get; set; }
 
         public Colony() : base()
         {
-            Items = new Dictionary<string, OE2EmpireTracker.Data.Item>();
+            Items = new ItemBag();
             Structures = new List<ColonyStructure>();
             Commodities = new List<CommodityRequested>();
         }
@@ -28,6 +28,7 @@ namespace OE2EmpireTracker.Baseline
 
     public class ColonyStructure
     {
+        public string UUID { get; set; }
         public string FlatpackBlueprintUUID { get; set; }
         public int gameSequence { get; set; }
         public int buildQueueSequence { get; set; }

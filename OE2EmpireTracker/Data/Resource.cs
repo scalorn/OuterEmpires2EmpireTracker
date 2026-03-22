@@ -13,7 +13,7 @@ namespace OE2EmpireTracker.Data
     public class Resource : Item
     {
         [Required]
-        public BaseResource.PurityEnum Purity { get; set; }
+        public ResourcePurity.PurityEnum Purity { get; set; }
 
         [ForeignKey("BaseResource")]
         [Required]
@@ -26,7 +26,7 @@ namespace OE2EmpireTracker.Data
             {
                 if (BaseResource != null)
                 {
-                    if (Purity != BaseResource.PurityEnum.None && Purity != BaseResource.PurityEnum.Refined)
+                    if (Purity != ResourcePurity.PurityEnum.None && Purity != ResourcePurity.PurityEnum.Refined)
                     {
                         base.Name = BaseResource.Name + " (Unrefined, " + Purity.ToString() + ")";
                     }
@@ -45,7 +45,7 @@ namespace OE2EmpireTracker.Data
         }
 
 
-        public Resource(BaseResource baseResource, BaseResource.PurityEnum purity /*, int quantity*/) : base(ItemTypeEnum.Resource, "" /*, quantity */)
+        public Resource(BaseResource baseResource, ResourcePurity.PurityEnum purity /*, int quantity*/) : base(Data.ItemType.ItemTypeEnum.Resource, "" /*, quantity */)
         {
             this.Purity = purity;
             this.BaseResource = BaseResource;

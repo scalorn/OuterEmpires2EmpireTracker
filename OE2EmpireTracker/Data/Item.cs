@@ -11,24 +11,6 @@ namespace OE2EmpireTracker.Data
 {
     public class Item
     {
-        public enum ItemTypeEnum
-        {
-            None,
-            SubResource,
-            Commodity,
-            ShipHull,
-            ShipPart,
-            ShipArmament,
-            Munition,
-            WorkDetail,
-            Resource,
-            Blueprint,
-            Flatpack,
-            Survey,
-            SpaceBuildPackage,
-            Share
-        }
-
         //[Key]
         //[Required]
         //public virtual int ID { get; set; }
@@ -36,7 +18,7 @@ namespace OE2EmpireTracker.Data
         public string UUID { get; set; }
 
         [Required]
-        public ItemTypeEnum ItemType { get; set; }
+        public ItemType.ItemTypeEnum ItemType { get; set; }
 
         [Required]
         public virtual string Name { get; set; }
@@ -51,7 +33,7 @@ namespace OE2EmpireTracker.Data
         //public List<SubResource> SubResources { get; set; }
         //public List<ItemProperty> ItemProperties { get; set; }
 
-        public Item(ItemTypeEnum itemType, string name /*, int quantity*/)
+        public Item(ItemType.ItemTypeEnum itemType, string name /*, int quantity*/)
         {
             this.ItemType = itemType;
             this.Name = name;

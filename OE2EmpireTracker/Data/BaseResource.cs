@@ -19,15 +19,6 @@ namespace OE2EmpireTracker.Data
             VeryRareElements,
             SyntheticElements,
         }
-        public enum PurityEnum
-        {
-            None,
-            Refined,
-            UnrefinedLow,
-            UnrefinedMedium,
-            UnrefinedHigh,
-        }
-
         [Key]
         [Required]
         public int ID { get; set; }

@@ -63,12 +63,12 @@
             this.tabPWarehousing = new System.Windows.Forms.TabPage();
             this.flowLayoutPanel7 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel9 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblItemType = new System.Windows.Forms.Label();
             this.cmbItemType = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblFilter = new System.Windows.Forms.Label();
             this.txtItemFilter = new System.Windows.Forms.TextBox();
-            this.cmdItem = new System.Windows.Forms.ComboBox();
-            this.cmbResourcePurity = new System.Windows.Forms.Button();
+            this.cmbItem = new System.Windows.Forms.ComboBox();
+            this.cmdAdd = new System.Windows.Forms.Button();
             this.dgvResources = new System.Windows.Forms.DataGridView();
             this.ItemType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Item = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -79,6 +79,7 @@
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
+            this.cmbPurity = new System.Windows.Forms.ComboBox();
             this.flpSearchList.SuspendLayout();
             this.flpBlueprintSearch.SuspendLayout();
             this.tlpBase.SuspendLayout();
@@ -474,44 +475,47 @@
             // flowLayoutPanel9
             // 
             this.flowLayoutPanel9.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.flowLayoutPanel9.Controls.Add(this.label1);
+            this.flowLayoutPanel9.Controls.Add(this.lblItemType);
             this.flowLayoutPanel9.Controls.Add(this.cmbItemType);
-            this.flowLayoutPanel9.Controls.Add(this.label2);
+            this.flowLayoutPanel9.Controls.Add(this.lblFilter);
             this.flowLayoutPanel9.Controls.Add(this.txtItemFilter);
-            this.flowLayoutPanel9.Controls.Add(this.cmdItem);
-            this.flowLayoutPanel9.Controls.Add(this.cmbResourcePurity);
+            this.flowLayoutPanel9.Controls.Add(this.cmbItem);
+            this.flowLayoutPanel9.Controls.Add(this.cmbPurity);
+            this.flowLayoutPanel9.Controls.Add(this.cmdAdd);
             this.flowLayoutPanel9.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel9.Name = "flowLayoutPanel9";
             this.flowLayoutPanel9.Size = new System.Drawing.Size(889, 30);
             this.flowLayoutPanel9.TabIndex = 6;
             this.flowLayoutPanel9.WrapContents = false;
             // 
-            // label1
+            // lblItemType
             // 
-            this.label1.Location = new System.Drawing.Point(3, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 26);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Item Type:";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblItemType.Location = new System.Drawing.Point(3, 0);
+            this.lblItemType.Name = "lblItemType";
+            this.lblItemType.Size = new System.Drawing.Size(60, 26);
+            this.lblItemType.TabIndex = 6;
+            this.lblItemType.Text = "Item Type:";
+            this.lblItemType.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // cmbItemType
             // 
             this.cmbItemType.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmbItemType.DisplayMember = "Name";
             this.cmbItemType.FormattingEnabled = true;
             this.cmbItemType.Location = new System.Drawing.Point(69, 4);
             this.cmbItemType.Name = "cmbItemType";
             this.cmbItemType.Size = new System.Drawing.Size(121, 21);
             this.cmbItemType.TabIndex = 0;
+            this.cmbItemType.SelectedIndexChanged += new System.EventHandler(this.cmbItemType_SelectedIndexChanged);
             // 
-            // label2
+            // lblFilter
             // 
-            this.label2.Location = new System.Drawing.Point(196, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(40, 24);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Filter:";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblFilter.Location = new System.Drawing.Point(196, 0);
+            this.lblFilter.Name = "lblFilter";
+            this.lblFilter.Size = new System.Drawing.Size(40, 24);
+            this.lblFilter.TabIndex = 3;
+            this.lblFilter.Text = "Filter:";
+            this.lblFilter.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // txtItemFilter
             // 
@@ -521,23 +525,23 @@
             this.txtItemFilter.Size = new System.Drawing.Size(187, 20);
             this.txtItemFilter.TabIndex = 4;
             // 
-            // cmdItem
+            // cmbItem
             // 
-            this.cmdItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cmdItem.FormattingEnabled = true;
-            this.cmdItem.Location = new System.Drawing.Point(435, 4);
-            this.cmdItem.Name = "cmdItem";
-            this.cmdItem.Size = new System.Drawing.Size(121, 21);
-            this.cmdItem.TabIndex = 5;
+            this.cmbItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmbItem.FormattingEnabled = true;
+            this.cmbItem.Location = new System.Drawing.Point(435, 4);
+            this.cmbItem.Name = "cmbItem";
+            this.cmbItem.Size = new System.Drawing.Size(121, 21);
+            this.cmbItem.TabIndex = 5;
             // 
-            // cmbResourcePurity
+            // cmdAdd
             // 
-            this.cmbResourcePurity.Location = new System.Drawing.Point(562, 3);
-            this.cmbResourcePurity.Name = "cmbResourcePurity";
-            this.cmbResourcePurity.Size = new System.Drawing.Size(39, 23);
-            this.cmbResourcePurity.TabIndex = 1;
-            this.cmbResourcePurity.Text = "Add";
-            this.cmbResourcePurity.UseVisualStyleBackColor = true;
+            this.cmdAdd.Location = new System.Drawing.Point(689, 3);
+            this.cmdAdd.Name = "cmdAdd";
+            this.cmdAdd.Size = new System.Drawing.Size(39, 23);
+            this.cmdAdd.TabIndex = 1;
+            this.cmdAdd.Text = "Add";
+            this.cmdAdd.UseVisualStyleBackColor = true;
             // 
             // dgvResources
             // 
@@ -629,6 +633,15 @@
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
             // 
+            // cmbPurity
+            // 
+            this.cmbPurity.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmbPurity.FormattingEnabled = true;
+            this.cmbPurity.Location = new System.Drawing.Point(562, 4);
+            this.cmbPurity.Name = "cmbPurity";
+            this.cmbPurity.Size = new System.Drawing.Size(121, 21);
+            this.cmbPurity.TabIndex = 7;
+            // 
             // FormColony
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -706,12 +719,12 @@
         private System.Windows.Forms.TabPage tabPWarehousing;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel7;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel9;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblItemType;
         private System.Windows.Forms.ComboBox cmbItemType;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblFilter;
         private System.Windows.Forms.TextBox txtItemFilter;
-        private System.Windows.Forms.ComboBox cmdItem;
-        private System.Windows.Forms.Button cmbResourcePurity;
+        private System.Windows.Forms.ComboBox cmbItem;
+        private System.Windows.Forms.Button cmdAdd;
         private System.Windows.Forms.DataGridView dgvResources;
         private System.Windows.Forms.DataGridViewTextBoxColumn ItemType;
         private System.Windows.Forms.DataGridViewTextBoxColumn Item;
@@ -722,5 +735,6 @@
         private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Button cmdCancel;
+        private System.Windows.Forms.ComboBox cmbPurity;
     }
 }

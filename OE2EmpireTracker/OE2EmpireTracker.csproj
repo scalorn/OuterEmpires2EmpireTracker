@@ -122,7 +122,8 @@
     <Compile Include="Baseline\EmpireContext.cs" />
     <Compile Include="Baseline\Resource.cs" />
     <Compile Include="Baseline\ResourceGroup.cs" />
-    <Compile Include="Baseline\ResourcePurity.cs" />
+    <Compile Include="Data\ItemBag.cs" />
+    <Compile Include="Data\ResourcePurity.cs" />
     <Compile Include="Baseline\ShipClass.cs" />
     <Compile Include="Baseline\SurveyParser.cs" />
     <Compile Include="Baseline\Survey.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="Data\BaseResource.cs" />
     <Compile Include="Data\Blueprint.cs" />
     <Compile Include="Data\ItemProperty.cs" />
+    <Compile Include="Data\ItemType.cs" />
     <Compile Include="Data\PropertyBag.cs" />
     <Compile Include="Data\SubResource.cs" />
     <Compile Include="Data\Item.cs" />

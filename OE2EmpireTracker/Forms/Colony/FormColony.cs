@@ -30,6 +30,8 @@ namespace OE2EmpireTracker.Forms.Colony
             empireContext = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
 
+            updateItemTypeList();
+
             cmbFlatpacks.DisplayMember = "Name";
             cmbFlatpacks.ValueMember = "UUID";
             updateFlatpackListBase();
@@ -93,6 +95,7 @@ namespace OE2EmpireTracker.Forms.Colony
             this.SuspendLayout();
 
             Baseline.ColonyStructure colonyStructureData = new Baseline.ColonyStructure();
+            colonyStructureData.UUID = Guid.NewGuid().ToString();
             colonyStructureData.FlatpackBlueprintUUID = cmbFlatpacks.SelectedValue.ToString();
             selectedColony.Structures.Add(colonyStructureData);
             ColonyStructure colonyStructureControl = new ColonyStructure();
@@ -149,6 +152,16 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbFlatpacks.DataSource = filteredItemsBindingList;
         }
 
+        public void updateItemTypeList()
+        {
+            IReadOnlyList<ItemType> itemTypes = Data.ItemType.ItemTypes;
+
+            var filteredItemsBindingList = new BindingSource();
+            // Set the in-memory list as the DataSource for the BindingSource
+            filteredItemsBindingList.DataSource = itemTypes;
+
+            cmbItemType.DataSource = filteredItemsBindingList;
+        }
 
         private void cmbFlatpacks_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -220,12 +233,18 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             Debug.Print("populateForm called! selectedColony = " + (selectedColony != null ? selectedColony.PlanetName : "null"));
             ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
-            //this.SuspendLayout();
+            this.SuspendLayout();
             tabDetailedData.Visible = false;
 
             if (selectedColony == null)
             {
                 return;
+            }
+
+            // Force creation of an item.
+            if (selectedColony.Items.Count() == 0)
+            {
+                selectedColony.Items.AddItem(new Data.Item() { UUID = Guid.NewGuid().ToString() });
             }
             //txtFilterBlueprintType.Text = "";
             //updateBlueprintTypeListBase();
@@ -311,7 +330,7 @@ namespace OE2EmpireTracker.Forms.Colony
             Debug.Print("populateForm: Calling populateStatus finished");
 
             tabDetailedData.Visible = true;
-            //this.ResumeLayout();
+            this.ResumeLayout();
             guard.release();
             Debug.Print("populateForm completed!");
         }
@@ -387,6 +406,11 @@ namespace OE2EmpireTracker.Forms.Colony
         }
 
         private void tabPStructures_Layout(object sender, LayoutEventArgs e)
+        {
+
+        }
+
+        private void cmbItemType_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

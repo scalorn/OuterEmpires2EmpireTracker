@@ -52,6 +52,10 @@ namespace OE2EmpireTracker.Baseline
 
             foreach (ColonyStructure structure in colony.Structures)
             {
+                if (structure.UUID == null || structure.UUID.Length == 0)
+                {
+                    structure.UUID = Guid.NewGuid().ToString();
+                }
                 Data.Blueprint flatpackBlueprint = playerContext.findBlueprint(structure.FlatpackBlueprintUUID);
 
                 bool built = false;
