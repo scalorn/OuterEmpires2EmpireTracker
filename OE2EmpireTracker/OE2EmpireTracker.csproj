@@ -120,6 +120,8 @@
     <Compile Include="Baseline\PlayerContext.cs" />
     <Compile Include="Baseline\TechLevel.cs" />
     <Compile Include="Baseline\EmpireContext.cs" />
+    <Compile Include="Data\Commodity.cs" />
+    <Compile Include="Data\CommodityGroup.cs" />
     <Compile Include="Data\ItemBag.cs" />
     <Compile Include="Data\ResourceClass.cs" />
     <Compile Include="Data\ResourceGroup.cs" />

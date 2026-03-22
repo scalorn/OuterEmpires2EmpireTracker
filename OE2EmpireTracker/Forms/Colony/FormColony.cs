@@ -435,6 +435,10 @@ namespace OE2EmpireTracker.Forms.Colony
                     populateItemWithResources();
                     cmbPurity.Visible = true;
                 }
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.Commodity)
+                {
+                    populateItemWithCommodities();
+                }
             }
         }
         public void populateItemWithResources()
@@ -444,6 +448,18 @@ namespace OE2EmpireTracker.Forms.Colony
             var filteredItemBindingList = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
             filteredItemBindingList.DataSource = resources;
+
+            cmbItem.DataSource = filteredItemBindingList;
+            cmbItem.ValueMember = "Name";
+            cmbItem.DisplayMember = "Name";
+        }
+        public void populateItemWithCommodities()
+        {
+            IReadOnlyList<Commodity> commodities = Data.Commodity.Commodities;
+
+            var filteredItemBindingList = new BindingSource();
+            // Set the in-memory list as the DataSource for the BindingSource
+            filteredItemBindingList.DataSource = commodities;
 
             cmbItem.DataSource = filteredItemBindingList;
             cmbItem.ValueMember = "Name";
@@ -481,17 +497,26 @@ namespace OE2EmpireTracker.Forms.Colony
                         item.ResourcePurity = Data.ResourcePurity.ItemTypeMapByEnum[Data.ResourcePurity.PurityEnum.Refined].Name;
                     }
                 }
-            }
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.Commodity)
+                {
+                    Data.Commodity commodity = cmbItem.SelectedItem as Data.Commodity;
+                    if (commodity != null)
+                    {
+                        item.BaseItemTypeID = commodity.Name;
+                        item.Name = commodity.Name;
+                    }
+                }
 
-            string quantityStr = txtQuantity.Text;
-            if (quantityStr != null && quantityStr.Length > 0)
-            {
-                int quantity = 0;
-                int.TryParse(quantityStr, out quantity);
-                item.Quantity = quantity;
-            }
+                string quantityStr = txtQuantity.Text;
+                if (quantityStr != null && quantityStr.Length > 0)
+                {
+                    int quantity = 0;
+                    int.TryParse(quantityStr, out quantity);
+                    item.Quantity = quantity;
+                }
 
-            selectedColony.Items.AddItem(item);
+                selectedColony.Items.AddItem(item);
+            }
         }
 
         private void cmbItem_SelectedIndexChanged(object sender, EventArgs e)
