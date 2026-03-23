@@ -86,71 +86,711 @@ namespace OE2EmpireTracker.Data
                     { "b", "" }
                 }
             });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agridome,
+                ID = "Agridome Ops Units",
+                Name = "Agridome Ops Units",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HealthcareInstitute,
+                ID = "AI Finance Cubes",
+                Name = "AI Finance Cubes",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.LogisticsCentre,
+                ID = "AI Inventory Systems",
+                Name = "AI Inventory Systems",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.InstituteOfDefence,
+                ID = "AmmoMate Munitions Printer",
+                Name = "AmmoMate Munitions Printer",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agridome,
+                ID = "Aquacore Pumps",
+                Name = "Aquacore Pumps",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.ManufacturingIndustryCentre,
+                ID = "Assemblatrons",
+                Name = "Assemblatrons",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.ManufacturingIndustryCentre,
+                ID = "AssembleMate Crucibles",
+                Name = "AssembleMate Crucibles",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.RefiningIndustryCentre,
+                ID = "Atomsmasher Crucibles",
+                Name = "Atomsmasher Crucibles",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.CentreOfEconomics,
+                ID = "Autonomous Trader Bots",
+                Name = "Autonomous Trader Bots",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.InstituteOfDefence,
+                ID = "BattleCom Interconnects",
+                Name = "BattleCom Interconnects",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.MiningIndustryCentre,
+                ID = "Biochem Delivery Systems",
+                Name = "Biochem Delivery Systems",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HealthcareInstitute,
+                ID = "Biochip Arrays",
+                Name = "Biochip Arrays",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agridome,
+                ID = "Biomass Harvester Controllers",
+                Name = "Biomass Harvester Controllers",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HealthcareInstitute,
+                ID = "Biosuspension Fluids",
+                Name = "Biomass Harvester Controllers",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.ScienceCentre,
+                ID = "Biotech Vision Systems",
+                Name = "Biotech Vision Systems",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.ScienceCentre,
+                ID = "Brainwave Scintillators",
+                Name = "Brainwave Scintillators",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.OffWorldLivingInstitute,
+                ID = "Branding Systems",
+                Name = "Branding Systems",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.RefiningIndustryCentre,
+                ID = "Calalyst Reaction Simulators",
+                Name = "Calalyst Reaction Simulators",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.LogisticsCentre,
+                ID = "Cargo Drones",
+                Name = "Cargo Drones",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.RefiningIndustryCentre,
+                ID = "Caustic Fluids",
+                Name = "Caustic Fluids",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agridome,
+                ID = "ChemLab Units",
+                Name = "ChemLab Units",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.OffWorldLivingInstitute,
+                ID = "Clean Air Units",
+                Name = "Clean Air Units",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.OffWorldLivingInstitute,
+                ID = "Climate Hubs",
+                Name = "Climate Hubs",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.LeisureIndustryCentre,
+                ID = "Clothing Printers",
+                Name = "Clothing Printers",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.OffWorldLivingInstitute,
+                ID = "Comfortcore Arrays",
+                Name = "Comfortcore Arrays",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.RefiningIndustryCentre,
+                ID = "Concentrax Containment Units",
+                Name = "Concentrax Containment Units",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.ScienceCentre,
+                ID = "Conceptcore Drivers",
+                Name = "Conceptcore Drivers",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.LeisureIndustryCentre,
+                ID = "Confectionery",
+                Name = "Confectionery",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.EngineeringBlock,
+                ID = "Constructex Waldos",
+                Name = "Constructex Waldos",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.InstituteOfDefence,
+                ID = "Containment Units",
+                Name = "Containment Units",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.EngineeringBlock,
+                ID = "Core Dyagnostic Component",
+                Name = "Core Dyagnostic Component",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.MiningIndustryCentre,
+                ID = "Coreseeker Guidance Bits",
+                Name = "Coreseeker Guidance Bits",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.AdministrationBlock,
+                ID = "CRM Units",
+                Name = "CRM Units",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.InstituteOfDefence,
+                ID = "Cryogenic Coolant Tanks",
+                Name = "Cryogenic Coolant Tanks",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.ScienceCentre,
+                ID = "Cryptochips",
+                Name = "Cryptochips",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.TechnologyInstitute,
+                ID = "Data Accumulation Systems",
+                Name = "Data Accumulation Systems",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.ScienceCentre,
+                ID = "DataScope Assemblies",
+                Name = "DataScope Assemblies",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.CentreOfEconomics,
+                ID = "Datasphere Frames",
+                Name = "Datasphere Frames",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.ManufacturingIndustryCentre,
+                ID = "DegasTech Reforgers",
+                Name = "DegasTech Reforgers",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.LogisticsCentre,
+                ID = "Delivery Systems",
+                Name = "Delivery Systems",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.ManufacturingIndustryCentre,
+                ID = "Demand Drivers",
+                Name = "Demand Drivers",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.OffWorldLivingInstitute,
+                ID = "Design AGI Chassis",
+                Name = "Design AGI Chassis",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.OffWorldLivingInstitute,
+                ID = "Diagnocores",
+                Name = "Diagnocores",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.LogisticsCentre,
+                ID = "Dockmaster Drones",
+                Name = "Dockmaster Drones",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.AdministrationBlock,
+                ID = "Document Calibrators",
+                Name = "Document Calibrators",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.MiningIndustryCentre,
+                ID = "Drillcore Chassis",
+                Name = "Drillcore Chassis",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.MiningIndustryCentre,
+                ID = "Earthmover Fabricators",
+                Name = "Earthmover Fabricators",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.CentreOfEconomics,
+                ID = "EconoSim Units",
+                Name = "EconoSim Units",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.ManufacturingIndustryCentre,
+                ID = "Efficiency Systems",
+                Name = "Efficiency Systems",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.OffWorldLivingInstitute,
+                ID = "Energy Storage Systems",
+                Name = "Energy Storage Systems",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.ScienceCentre,
+                ID = "Enriched Agar Gels",
+                Name = "Enriched Agar Gels",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.LeisureIndustryCentre,
+                ID = "Entertainmate Interconnects",
+                Name = "Entertainmate Interconnects",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.CentreOfEconomics,
+                ID = "Equity Analyzers",
+                Name = "Equity Analyzers",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.LeisureIndustryCentre,
+                ID = "Events AGI Chassis",
+                Name = "Events AGI Chassis",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.ManufacturingIndustryCentre,
+                ID = "Exoskeleton Waldos",
+                Name = "Exoskeleton Waldos",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.LeisureIndustryCentre,
+                ID = "Fermented Beverages",
+                Name = "Fermented Beverages",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.RefiningIndustryCentre,
+                ID = "Filterator Chassis",
+                Name = "Filterator Chassis",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.ManufacturingIndustryCentre,
+                ID = "Finance AutoMods",
+                Name = "Finance AutoMods",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.TechnologyInstitute,
+                ID = "Fold Containers",
+                Name = "Fold Containers",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HealthcareInstitute,
+                ID = "Funding Systems",
+                Name = "Funding Systems",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.LeisureIndustryCentre,
+                ID = "G-Suites",
+                Name = "G-Suites",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.LeisureIndustryCentre,
+                ID = "Gameonix Simulators",
+                Name = "Gameonix Simulators",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agridome,
+                ID = "Gene-Seed Packets",
+                Name = "Gene-Seed Packets",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
+            instance.Add(new Commodity()
+            {
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HealthcareInstitute,
+                ID = "Genecore Processors",
+                Name = "Genecore Processors",
+                ConstructionResources = new Dictionary<string, string>()
+                {
+                    { "a", "" },
+                    { "b", "" }
+                }
+            });
             /*
-            Agridome Ops Units  Agridome
-            AI Finance Cubes    Healthcare Institute
-            AI Inventory Systems Logistics Centre
-            AmmoMate Munitions Printer  Institute of Defence
-            Aquacore Pumps Agridome
-            Assemblatrons Manufacturing Industry Centre
-            AssembleMate Crucibles  Manufacturing Industry Centre
-            Atomsmasher Crucibles Refining Industry Centre
-            Autonomous Trader Bots Centre of Economics
-            BattleCom Interconnects Institute of Defence
-            Biochem Delivery Systems    Mining Industry Centre
-            Biochip Arrays Healthcare Institute
-            Biomass Harvester Controllers   Agridome
-            Biosuspension Fluids Healthcare Institute
-            Biotech Vision Systems  Science Centre
-            Brainwave Scintillators Science Centre
-            Branding Systems    Off - World Living Institute
-            Calalyst Reaction Simulators Refining Industry Centre
-            Cargo Drones    Logistics Centre
-            Caustic Fluids  Refining Industry Centre
-            ChemLab Units Agridome
-            Clean Air Units Off-World Living Institute
-            Climate Hubs    Off - World Living Institute
-            Clothing Printers   Leisure Industry Centre
-            Comfortcore Arrays Off-World Living Institute
-            Concentrax Containment Units Refining Industry Centre
-            Conceptcore Drivers Science Centre
-            Confectionery Leisure Industry Centre
-            Constructex Waldos  Engineering Block
-            Containment Units   Institute of Defence
-            Core Dyagnostic Component   Engineering Block
-            Coreseeker Guidance Bits Mining Industry Centre
-            CRM Units   Administration Block
-            Cryogenic Coolant Tanks Institute of Defence
-            Cryptochips Science Centre
-            Data Accumulation Systems   Technology Institute
-            DataScope Assemblies    Science Centre
-            Datasphere Frames   Centre of Economics
-            DegasTech Reforgers Manufacturing Industry Centre
-            Delivery Systems    Logistics Centre
-            Demand Drivers  Manufacturing Industry Centre
-            Design AGI Chassis  Off - World Living Institute
-            Diagnocores Off-World Living Institute
-            Dockmaster Drones   Logistics Centre
-            Document Calibrators    Administration Block
-            Drillcore Chassis   Mining Industry Centre
-            Earthmover Fabricators Mining Industry Centre
-            EconoSim Units  Centre of Economics
-            Efficiency Systems Manufacturing Industry Centre
-            Energy Storage systems Off-World Living Institute
-            Enriched Agar Gels Science Centre
-            Entertainmate Interconnects Leisure Industry Centre
-            Equity Analyzers    Centre of Economics
-            Events AGI Chassis  Leisure Industry Centre
-            Exoskeleton Waldos Manufacturing Industry Centre
-            Fermented Beverages Leisure Industry Centre
-            Filterator Chassis Refining Industry Centre
-            Finance AutoMods    Manufacturing Industry Centre
-            Fold Containers Technology Institute
-            Funding Systems Healthcare Institute
-            G - Suites    Leisure Industry Centre
-            Gameonix Simulators Leisure Industry Centre
-            Gene - Seed Packets Agridome
-            Genecore Processors Healthcare Institute
             General Control Systems Engineering Block
             Geoengineering Slurry Mining Industry Centre
             Gigagro Fertilizers Agridome
