@@ -546,7 +546,31 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void txtItemFilter_TextChanged(object sender, EventArgs e)
         {
+            updateItemFilterListBase();
+            cmbItem.DroppedDown = true;
+        }
 
+        public void updateItemFilterListBase()
+        {
+            string searchText = txtItemFilter.Text;
+
+            var filteredCommoditiesBindingList = new BindingSource();
+            
+            // Filter the complete commodity collection to only include items 
+            // whose extended names contain that text (case-insensitive matching)
+            IReadOnlyList<Commodity> allCommodities = Data.Commodity.Commodities;
+            List<Commodity> filteredList = allCommodities
+                .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                .OrderBy(p => p.ExtendedName)
+                .ToList();
+
+            // Insert an empty blank entry at the beginning to allow the user to deselect their current selection
+            filteredList.Insert(0, new Commodity());
+
+            // Set the in-memory list as the DataSource for the BindingSource
+            filteredCommoditiesBindingList.DataSource = filteredList;
+
+            cmbItem.DataSource = filteredCommoditiesBindingList;
         }
     }
 }
