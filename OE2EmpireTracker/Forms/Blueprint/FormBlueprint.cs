@@ -1,4 +1,4 @@
-﻿using OE2EmpireTracker.Baseline;//
+﻿using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Data;
 using System;
 using System.Collections.Generic;
@@ -13,49 +13,99 @@ using System.Xml;
 
 namespace OE2EmpireTracker
 {
+    /// <summary>
+    /// FormBlueprint - Main form for managing blueprint data in the OE2 Empire Tracker.
+    /// </summary>
+    /// <remarks>
+    /// This form allows users to:
+    /// - View all recorded blueprints in a list view
+    /// - Create new blueprint entries with various properties
+    /// - Edit existing blueprint entries
+    /// - Delete blueprint records
+    /// 
+    /// Blueprints represent discovered technology including system object scanners,
+    /// ship classes, and resource-related items. Each blueprint contains type information,
+    /// evolution level, properties, resources, and copy costs.
+    /// </remarks>
     public partial class FormBlueprint : Form
     {
+        /// <summary>
+        /// Gets or sets the empire context instance for accessing empire-wide data.
+        /// </summary>
         private EmpireContext empireContext;
+
+        /// <summary>
+        /// Gets or sets the player context instance for accessing player-specific data.
+        /// </summary>
         private PlayerContext playerContext;
+
+        /// <summary>
+        /// Gets or sets the currently selected blueprint in the list view.
+        /// Used when editing an existing blueprint.
+        /// </summary>
         private Blueprint selectedBlueprint;
+
+        /// <summary>
+        /// Initializes a new instance of the FormBlueprint class.
+        /// </summary>
+        /// <remarks>
+        /// Performs the following initialization tasks:
+        /// - Obtains empire and player context instances
+        /// - Configures blueprint type combo box with available types
+        /// - Configures ship class combo box for non-universal blueprints
+        /// - Configures tech level combo box for applicable blueprints
+        /// - Sets up evolution dropdown with Evolution 0 selected by default
+        /// - Configures resource data grid with resource types
+        /// - Configures base blueprint combo box showing all available blueprints
+        /// - Sets up the blueprint list view with appropriate columns (UUID, Type, Name, Tech Level, Evolution, Nick Name)
+        /// - Populates the list view with existing blueprints from player context
+        /// </remarks>
         public FormBlueprint()
         {
             InitializeComponent();
             empireContext = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
 
+            // Configure blueprint type combo box
             cmbBlueprintType.DisplayMember = "Name";
             cmbBlueprintType.ValueMember = "Id";
             cmbBlueprintType.DataSource = empireContext.bindingSourceBlueprintType;
             cmbBlueprintType.SelectedIndex = -1;
 
+            // Configure ship class combo box (used for non-universal blueprints)
             cmbShipClass.DisplayMember = "Name";
             cmbShipClass.ValueMember = "Id";
             cmbShipClass.DataSource = empireContext.bindingSourceShipClass;
             cmbShipClass.SelectedIndex = -1;
 
+            // Configure tech level combo box
             cmbTechLevel.DisplayMember = "Name";
             cmbTechLevel.ValueMember = "Name";
             cmbTechLevel.DataSource = empireContext.bindingSourceTechLevel;
             cmbTechLevel.SelectedIndex = -1;
 
+            // Set focus for statistics grid to previous control (tab navigation)
             dgvStatistics.previousControl = tabDetailedData;
 
+            // Configure evolution dropdown with default value
             cmbEvolution.DisplayMember = "Name";
             cmbEvolution.ValueMember = "Name";
             cmbEvolution.DataSource = empireContext.bindingSourceEvolution;
             cmbEvolution.SelectedIndex = 0;
 
-            DataGridViewComboBoxColumn cmbResource = (DataGridViewComboBoxColumn) dgvResources.Columns["Resource"];
+            // Configure resource data grid
+            DataGridViewComboBoxColumn cmbResource = (DataGridViewComboBoxColumn)dgvResources.Columns["Resource"];
             cmbResource.DisplayMember = "Name";
             cmbResource.ValueMember = "Name";
             cmbResource.DataSource = empireContext.bindingSourceResource;
 
+            // Configure base blueprint combo box
             cmbBaseBlueprint.DisplayMember = "ExtendedName";
             cmbBaseBlueprint.ValueMember = "UUID";
             cmbBaseBlueprint.DataSource = playerContext.bindingSourceBlueprint;
             cmbBaseBlueprint.SelectedIndex = -1;
 
+            // Set up blueprint list view with columns
             lvwBlueprints.View = View.Details;
             lvwBlueprints.Columns.Add("UUID", 0);
             lvwBlueprints.Columns.Add("Type", 50);
@@ -64,17 +114,28 @@ namespace OE2EmpireTracker
             lvwBlueprints.Columns.Add("Evolution", 30);
             lvwBlueprints.Columns.Add("Nick Name", 100);
             populateListView(new List<Blueprint>(playerContext.blueprintList));
-
-            //lvwBlueprints.Height = flpSearchList.Height - flpBlueprintSearch.Height;
-            //lvwBlueprints.Width = flpSearchList.Width;
-
         }
 
+        /// <summary>
+        /// Handles text changes in the copy target rich text box.
+        /// </summary>
+        /// <param name="sender">The RichTextBox object that triggered the event.</param>
+        /// <param name="e">Event data containing event information.</param>
         private void rtbCopyTarget_TextChanged(object sender, EventArgs e)
         {
-            //Debug.Print(e.ToString());
+            // Debug.Print(e.ToString());
         }
 
+        /// <summary>
+        /// Handles the click event for the Import button.
+        /// </summary>
+        /// <param name="sender">The object that triggered the event.</param>
+        /// <param name="e">Event data containing event information.</param>
+        /// <remarks>
+        /// Checks if clipboard contains HTML text and retrieves it for import operations.
+        /// The HTML fragment is extracted from clipboard data which typically includes
+        // start/end fragment markers. Currently commented out - can be re-enabled when needed.
+        /// </remarks>
         private void btnImport_Click(object sender, EventArgs e)
         {
             String returnHtmlText = null;
@@ -87,73 +148,78 @@ namespace OE2EmpireTracker
             }
         }
 
-        /// https://stackoverflow.com/questions/14604146/standard-class-that-parses-clipboard-functionality-getdatadataformats-html-out
         /// <summary>
-        /// Extracts selected Html fragment string from clipboard data by parsing header information 
-        /// in htmlDataString
+        /// Extracts selected HTML fragment string from clipboard data by parsing header information.
         /// </summary>
-        /// <param name="htmlDataString">
-        /// String representing Html clipboard data. This includes Html header
-        /// </param>
-        /// <returns>
-        /// String containing only the Html selection part of htmlDataString, without header
-        /// </returns>
+        /// <param name="htmlDataString">String representing HTML clipboard data. This includes HTML header.</param>
+        /// <returns>String containing only the HTML selection part of htmlDataString, without header. Returns error message if parsing fails.</returns>
+        /// <remarks>
+        /// Uses Microsoft's standard clipboard HTML format which wraps fragments with:
+        /// - <!--StartFragment--> marker followed by byte count to fragment start
+        /// - <!--EndFragment--> marker followed by byte count to fragment end
+        /// 
+        /// The method extracts the content between these markers to isolate just the selected fragment.
+        /// 
+        /// Reference: https://msdn.microsoft.com/en-us/library/aa767917(v=vs.85).aspx
+        /// 
+        /// TODO: Current implementation assumes 10-digit indices which may be brittle for non-standard cases.
+        /// More flexible parsing should be implemented to handle edge cases.
+        /// </remarks>
         internal static string ExtractHtmlFragmentFromClipboardData(string htmlDataString)
         {
-            // HTML Clipboard Format
+            // HTML Clipboard Format:
             // (https://msdn.microsoft.com/en-us/library/aa767917(v=vs.85).aspx)
+            // - Fragment contains valid HTML representing the selected area
+            // - Includes opening tags and attributes for elements with end tags within selection
+            // - End tags that match included opening tags
+            // - Wrapped with <!--StartFragment--> and <!--EndFragment--> markers
 
-            // The fragment contains valid HTML representing the area the user has selected. This 
-            // includes the information required for basic pasting of an HTML fragment, as follows:
-            //  - Selected text. 
-            //  - Opening tags and attributes of any element that has an end tag within the selected text. 
-            //  - End tags that match the included opening tags. 
-
-            // The fragment should be preceded and followed by the HTML comments <!--StartFragment--> and 
-            // <!--EndFragment--> (no space allowed between the !-- and the text) to indicate where the 
-            // fragment starts and ends. So the start and end of the fragment are indicated by these 
-            // comments as well as by the StartFragment and EndFragment byte counts. Though redundant, 
-            // this makes it easier to find the start of the fragment (from the byte count) and mark the 
-            // position of the fragment directly in the HTML tree.
-
-            // Byte count from the beginning of the clipboard to the start of the fragment.
+            // Byte count from beginning of clipboard to start of fragment
             int startFragmentIndex = htmlDataString.IndexOf("StartFragment:");
             if (startFragmentIndex < 0)
             {
                 return "ERROR: Unrecognized html header";
             }
-            // TODO: We assume that indices represented by strictly 10 zeros ("0123456789".Length),
-            // which could be wrong assumption. We need to implement more flrxible parsing here
+            
+            // Parse the byte offset for fragment start
             startFragmentIndex = Int32.Parse(htmlDataString.Substring(startFragmentIndex + "StartFragment:".Length, 10));
             if (startFragmentIndex < 0 || startFragmentIndex > htmlDataString.Length)
             {
                 return "ERROR: Unrecognized html header";
             }
 
-            // Byte count from the beginning of the clipboard to the end of the fragment.
+            // Byte count from beginning of clipboard to end of fragment
             int endFragmentIndex = htmlDataString.IndexOf("EndFragment:");
             if (endFragmentIndex < 0)
             {
                 return "ERROR: Unrecognized html header";
             }
-            // TODO: We assume that indices represented by strictly 10 zeros ("0123456789".Length),
-            // which could be wrong assumption. We need to implement more flrxible parsing here
+
+            // Parse the byte offset for fragment end
             endFragmentIndex = Int32.Parse(htmlDataString.Substring(endFragmentIndex + "EndFragment:".Length, 10));
             if (endFragmentIndex > htmlDataString.Length)
             {
                 endFragmentIndex = htmlDataString.Length;
             }
 
-            // CF_HTML is entirely text format and uses the transformation format UTF-8
+            // Convert bytes to string using UTF-8 encoding
             byte[] bytes = Encoding.UTF8.GetBytes(htmlDataString);
             return Encoding.UTF8.GetString(bytes, startFragmentIndex, endFragmentIndex - startFragmentIndex);
         }
 
+        /// <summary>
+        /// Processes HTML content by parsing with SgmlReader and debugging child nodes.
+        /// </summary>
+        /// <param name="inputText">The HTML string to parse.</param>
+        /// <remarks>
+        /// Currently used for debugging - prints inner text of each node to Debug window.
+        /// Uses SgmlReader for HTML parsing with whitespace handling preserved.
+        /// </remarks>
         private void processHTML(string inputText)
         {
             StringReader reader = new StringReader(inputText);
 
-            // setup SgmlReader
+            // Setup SgmlReader with HTML document type and settings
             Sgml.SgmlReader sgmlReader = new Sgml.SgmlReader()
             {
                 DocType = "HTML",
@@ -162,13 +228,15 @@ namespace OE2EmpireTracker
                 InputStream = reader
             };
 
-            // create document
+            // Create document with whitespace preservation
             XmlDocument doc = new XmlDocument()
             {
                 PreserveWhitespace = true,
                 XmlResolver = null
             };
             doc.Load(sgmlReader);
+
+            // Debug: Print inner text of each node
             foreach (XmlNode item in doc)
             {
                 Debug.Print("T = " + item.InnerText);
@@ -179,6 +247,15 @@ namespace OE2EmpireTracker
             }
         }
 
+        /// <summary>
+        /// Recursively processes child nodes and prints their inner text to debug output.
+        /// </summary>
+        /// <param name="depth">Current recursion depth for indentation.</param>
+        /// <param name="nodes">List of child nodes to process.</param>
+        /// <remarks>
+        /// Used by processHTML() to traverse and debug HTML node structure.
+        /// Increments depth parameter for recursive calls to show nesting level.
+        /// </remarks>
         private void children(int depth, XmlNodeList nodes)
         {
             foreach (XmlNode item in nodes)
@@ -191,32 +268,78 @@ namespace OE2EmpireTracker
             }
         }
 
+        /// <summary>
+        /// Handles changes in the blueprint type combo box selection.
+        /// </summary>
+        /// <param name="sender">The ComboBox object that triggered the event.</param>
+        /// <param name="e">Event data containing event information.</param>
+        /// <remarks>
+        /// Triggers property grid update to reflect properties of selected blueprint type.
+        /// Universal blueprint types hide ship class and tech level options.
+        /// </remarks>
         private void cmbBlueprintType_SelectedIndexChanged(object sender, EventArgs e)
         {
             updatePropertyGrid();
         }
 
+        /// <summary>
+        /// Updates the base blueprint list with filtered available blueprints based on current filters.
+        /// </summary>
+        /// <remarks>
+        /// Applies multiple filter conditions:
+        /// - Filters by blueprint type if a type is selected
+        /// - Applies text filter from txtFilterBaseBlueprint for name-based search
+        /// - Filters by ship class if a class is selected (for non-universal types)
+        /// - Excludes the currently selected blueprint to allow selecting different base blueprints
+        /// 
+        /// An empty Blueprint entry is inserted at the beginning to allow deselecting a base blueprint.
+        /// </remarks>
         public void updateBlueprintTypeListBase()
         {
             string searchText = txtFilterBlueprintType.Text;
             List<BlueprintType> filteredList = new List<BlueprintType>(empireContext.blueprintTypeList);
 
+            // Apply text filter if specified
             if (!string.IsNullOrEmpty(searchText))
             {
                 filteredList = filteredList
                     .Where(item => item.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
             }
+            
             filteredList.Insert(0, new BlueprintType());
+            
             var filteredItemsBindingList = new BindingSource();
-            // Set the in-memory list as the DataSource for the BindingSource
             filteredItemsBindingList.DataSource = filteredList;
 
             cmbBlueprintType.DataSource = filteredItemsBindingList;
         }
+
+        /// <summary>
+        /// Updates the property grid based on the selected blueprint type.
+        /// </summary>
+        /// <remarks>
+        /// For universal blueprints (Universal == true):
+        /// - Hides the ship class dropdown panel
+        /// - Resets ship class selection
+        /// - Hides the tech level dropdown panel
+        /// - Resets tech level selection
+        /// 
+        /// For non-universal blueprints:
+        /// - Shows both ship class and tech level panels
+        /// 
+        /// Then populates the statistics grid (dgvStatistics) with blueprint type properties:
+        /// - Clears existing rows if no properties defined
+        /// - Adds rows for each property defined by the blueprint type
+        /// - Sets property name in "Property" column
+        /// - Stores property tag for later value retrieval
+        /// - Removes excess rows if fewer than defined properties
+        /// </remarks>
         public void updatePropertyGrid()
         {
             BlueprintType bt = cmbBlueprintType.SelectedItem as BlueprintType;
+            
+            // Handle universal vs non-universal blueprints
             if (bt != null && bt.Universal == true)
             {
                 flpClass.Visible = false;
@@ -230,65 +353,98 @@ namespace OE2EmpireTracker
                 flpTechLevel.Visible = true;
             }
 
+            // Populate property grid rows
             if (bt != null && bt.Properties != null)
             {
                 int row = 0;
                 foreach (string property in bt.Properties)
                 {
                     int rowIndex = row;
+                    // Add row if needed
                     if (dgvStatistics.Rows.Count <= row)
                     {
                         rowIndex = dgvStatistics.Rows.Add();
                     }
+                    
                     DataGridViewRow newRow = dgvStatistics.Rows[rowIndex];
                     newRow.Cells["Property"].Value = property;
                     newRow.Cells["Property"].Tag = property;
                     row++;
                 }
 
+                // Remove excess rows if there are more than defined properties
                 if (bt.Properties.Length == 0)
                 {
                     dgvStatistics.Rows.Clear();
                 }
-                else
-                    while (dgvStatistics.Rows.Count > bt.Properties.Length)
-                    {
-                        dgvStatistics.Rows.RemoveAt(dgvStatistics.Rows.Count - 1);
-                    }
+                else while (dgvStatistics.Rows.Count > bt.Properties.Length)
+                {
+                    dgvStatistics.Rows.RemoveAt(dgvStatistics.Rows.Count - 1);
+                }
             }
         }
 
+        /// <summary>
+        /// Handles selection changes in the statistics data grid.
+        /// </summary>
+        /// <param name="sender">The DataGridView object that triggered the event.</param>
+        /// <param name="e">Event data containing event information.</param>
         private void dgvStatistics_SelectionChanged(object sender, EventArgs e)
         {
             Debug.Print("dgvStatistics_SelectionChanged Sender = " + sender + " Event Args " + e);
         }
 
-        private void txtFilterBlueprintType_TextChanged(object sender, EventArgs e)
-        {
-            updateBlueprintTypeListBase();
-            cmbBlueprintType.DroppedDown = true;
-        }
-
-        private void txtFilterBlueprintType_Enter(object sender, EventArgs e)
-        {
-            cmbBlueprintType.DroppedDown = true;
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-
-        }
-
+        /// <summary>
+        /// Updates the base blueprint list with filtered results.
+        /// </summary>
+        /// <param name="sender">The TextBox object that triggered the event.</param>
+        /// <param name="e">Event data containing event information.</param>
         private void txtFilterBaseBlueprint_TextChanged(object sender, EventArgs e)
         {
             updateBaseBlueprintList();
             cmbBaseBlueprint.DroppedDown = true;
         }
 
+        /// <summary>
+        /// Updates the blueprint list view with filtered blueprints based on current search filters.
+        /// </summary>
+        /// <param name="sender">The TextBox object that triggered the event.</param>
+        /// <param name="e">Event data containing event information.</param>
+        private void txtBlueprintListFilter_TextChanged(object sender, EventArgs e)
+        {
+            string searchText = txtBlueprintListFilter.Text;
+            
+            List<Blueprint> blueprints = new List<Blueprint>(playerContext.blueprintList);
+
+            // Apply blueprint type filter if a type is selected
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                blueprints = blueprints
+                    .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+            }
+
+            populateListView(blueprints);
+        }
+
+        /// <summary>
+        /// Updates the base blueprint list with filtered results based on current selection state.
+        /// </summary>
+        /// <remarks>
+        /// Applies multiple filter conditions:
+        /// - Filters by blueprint type if a type is selected in cmbBlueprintType
+        /// - Applies text filter from txtFilterBaseBlueprint for extended name search
+        /// - Filters by ship class if a class is selected (for non-universal types)
+        /// - Excludes the currently selected blueprint UUID to allow selecting different base blueprints
+        /// 
+        /// An empty Blueprint entry is inserted at the beginning to allow deselecting a base blueprint.
+        /// </remarks>
         private void updateBaseBlueprintList()
         {
             string searchText = txtFilterBaseBlueprint.Text;
             List<Blueprint> filteredList = new List<Blueprint>(playerContext.blueprintList);
+
+            // Filter by blueprint type if selected
             if (cmbBlueprintType.SelectedItem != null)
             {
                 filteredList = filteredList
@@ -296,6 +452,7 @@ namespace OE2EmpireTracker
                     .ToList();
             }
 
+            // Apply text filter for extended name search
             if (!string.IsNullOrEmpty(searchText))
             {
                 filteredList = filteredList
@@ -303,6 +460,7 @@ namespace OE2EmpireTracker
                     .ToList();
             }
 
+            // Filter by ship class if selected (for non-universal blueprints)
             if (cmbShipClass.SelectedItem != null)
             {
                 int shipClass = (cmbShipClass.SelectedItem as ShipClass).Id;
@@ -311,6 +469,7 @@ namespace OE2EmpireTracker
                     .ToList();
             }
 
+            // Exclude currently selected blueprint to allow selecting a different base blueprint
             if (selectedBlueprint != null)
             {
                 filteredList = filteredList
@@ -318,274 +477,167 @@ namespace OE2EmpireTracker
                     .ToList();
             }
 
-            // Add an empty to allow to select no base blueprint.
-
+            // Add an empty entry to allow selecting no base blueprint.
             filteredList.Insert(0, new Blueprint());
+            
             BindingSource filteredItemsBindingList = new BindingSource();
-            // Set the in-memory list as the DataSource for the BindingSource
             filteredItemsBindingList.DataSource = filteredList;
-
 
             cmbBaseBlueprint.DataSource = filteredItemsBindingList;
         }
 
-        private void txtBlueprintListFilter_TextChanged(object sender, EventArgs e)
-        {
-            string searchText = txtBlueprintListFilter.Text;
-            //BindingSource filteredItemsBindingList = playerContext.bindingSourceBlueprint;
-            List<Blueprint> blueprints = new List<Blueprint>(playerContext.blueprintList);
-
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                blueprints = blueprints
-                    .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
-
-                //filteredItemsBindingList = new BindingSource();
-                // Set the in-memory list as the DataSource for the BindingSource
-                //filteredItemsBindingList.DataSource = filteredList;
-            }
-
-            //lvwBlueprints.DataSource = filteredItemsBindingList;
-            populateListView(blueprints);
-        }
-
+        /// <summary>
+        /// Populates the blueprint list view with the provided list of blueprints.
+        /// </summary>
+        /// <param name="blueprints">The list of blueprints to populate the view with.</param>
+        /// <remarks>
+        /// Clears the existing ListView and creates a dictionary keyed by UUID for efficient 
+        /// lookup of existing items to avoid duplicates. For each blueprint in the input list:
+        /// - Creates a new ListView item if not already present
+        /// - Updates existing item's subitems with current blueprint data
+        /// - Maintains reference to Blueprint object in Tag property for editing and deletion operations
+        /// 
+        /// Displays the following columns:
+        /// - UUID (first column, uses full width remaining)
+        /// - Type (blueprint type ID/name)
+        /// - Name
+        /// - Tech Level
+        /// - Evolution level (as string)
+        /// - Nick Name
+        /// 
+        /// After processing all items, removes any remaining ListView items whose 
+        /// corresponding blueprints were deleted or filtered out.
+        /// </remarks>
         void populateListView(List<Blueprint> blueprints)
         {
             if (blueprints == null)
             {
                 return;
             }
+
+            // Clear and rebuild the list view
             lvwBlueprints.Items.Clear();
 
+            // Dictionary for efficient duplicate detection by UUID
             Dictionary<string, ListViewItem> viewableBlueprints = new Dictionary<string, ListViewItem>();
 
-            // First index what is viewable.
+            // Index currently viewable items to detect duplicates
             foreach (ListViewItem item in lvwBlueprints.Items)
             {
                 viewableBlueprints[(item.Tag as Blueprint).UUID] = item;
             }
 
-            // Now add or update what is viewable.
+            // Process each blueprint - add or update ListView items
             foreach (Blueprint blueprint in blueprints)
             {
                 ListViewItem item;
                 bool found = viewableBlueprints.TryGetValue(blueprint.UUID, out item);
                 if (!found)
                 {
-                    item = new ListViewItem(blueprint.UUID); // Main item text (first column)
+                    item = new ListViewItem(blueprint.UUID); // Main item text (first column - UUID)
                 }
                 item.Tag = blueprint;
                 item.SubItems[0].Tag = blueprint;
-                item.SubItems.Add(blueprint.BluePrintType); // Subitem for the second column
-                item.SubItems.Add(blueprint.Name); // Subitem for the second column
-                item.SubItems.Add(blueprint.TechLevel); // Subitem for the third column
-                item.SubItems.Add("" + blueprint.Evolution); // Subitem for the third column
-                item.SubItems.Add(blueprint.NickName); // Subitem for the third column
+                item.SubItems.Add(blueprint.BluePrintType); // Type
+                item.SubItems.Add(blueprint.Name); // Name
+                item.SubItems.Add(blueprint.TechLevel); // Tech Level
+                item.SubItems.Add("" + blueprint.Evolution); // Evolution
+                item.SubItems.Add(blueprint.NickName); // Nick Name
 
                 if (!found)
                 {
                     lvwBlueprints.Items.Add(item); // Add the item to the ListView
-                } else
+                }
+                else
                 {
                     viewableBlueprints.Remove(blueprint.UUID);
                 }
             }
 
-            // Remove what is left over (deleted or filtered out)
+            // Remove items that no longer have corresponding blueprints (deleted/filtered out)
             foreach (KeyValuePair<string, ListViewItem> viewableBlueprint in viewableBlueprints)
             {
                 lvwBlueprints.Items.Remove(viewableBlueprint.Value);
             }
         }
 
+        /// <summary>
+        /// Handles changes in the blueprint list view item selection.
+        /// </summary>
+        /// <param name="sender">The ListView object that triggered the event.</param>
+        /// <param name="e">Event data containing selection change information.</param>
+        /// <remarks>
+        /// When a user selects an item in the blueprint list, this method:
+        /// - Validates that exactly one item is selected
+        /// - Retrieves the Blueprint object from the ListView item's Tag property
+        /// - Populates all form fields with the selected blueprint's data
+        /// 
+        /// Uses Debug.Print for logging; should be replaced with proper logging in production.
+        /// </remarks>
         private void lvwBlueprints_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             Debug.Print("lvwBlueprints.SelectedItems.Count = " + lvwBlueprints.SelectedItems.Count);
+
             if (lvwBlueprints.SelectedItems.Count == 1)
             {
                 Debug.Print("Selected item = " + lvwBlueprints.SelectedItems[0].SubItems[0].Text);
                 Debug.Print("Selected item = " + lvwBlueprints.SelectedItems[0].SubItems[0].Tag);
+
+                // Get the Blueprint object from the ListView item tag
                 selectedBlueprint = lvwBlueprints.SelectedItems[0].SubItems[0].Tag as Blueprint;
+
+                // Populate form fields with selected blueprint data
                 populateForm();
             }
         }
-        private void btnSave_Click(object sender, EventArgs e)
+
+        /// <summary>
+        /// Handles the click event for the Cancel button.
+        /// </summary>
+        /// <param name="sender">The object that triggered the event.</param>
+        /// <param name="e">Event data containing event information.</param>
+        private void btnCancel_Click(object sender, EventArgs e)
         {
-            empireContext = EmpireContext.getInstance();
 
-            PlayerContext playerContext = EmpireContext.PlayerContext;
-
-            Blueprint blueprint;
-            if (selectedBlueprint != null)
-            {
-                blueprint = selectedBlueprint;
-            }
-            else
-            {
-                blueprint = new Blueprint();
-                Guid myUuid = Guid.NewGuid();
-                blueprint.UUID = myUuid.ToString();
-            }
-
-            BlueprintType blueprintType = cmbBlueprintType.SelectedItem as BlueprintType;
-            blueprint.BluePrintType = blueprintType.Id;
-
-            ShipClass shipClass = cmbShipClass.SelectedItem as ShipClass;
-            if (shipClass != null)
-            {
-                blueprint.Class = shipClass.Id;
-            } else
-            {
-                blueprint.Class = 0;
-            }
-
-            TechLevel techLevel = cmbTechLevel.SelectedItem as TechLevel;
-            if (techLevel != null)
-            {
-                blueprint.TechLevel = techLevel.Name;
-            } else
-            {
-                blueprint.TechLevel = null;
-            }
-
-            string evolution = "0";
-            if (cmbEvolution.SelectedItem != null)
-            {
-                evolution = cmbEvolution.SelectedItem as string;
-            }
-            else if (cmbEvolution.Text != null)
-            {
-                evolution = cmbEvolution.Text;
-            }
-            blueprint.Evolution = int.Parse(evolution);
-
-            if (cmbBaseBlueprint.SelectedItem != null)
-            {
-                Blueprint baseBlueprint = cmbBaseBlueprint.SelectedItem as Blueprint;
-                blueprint.baseBlueprintUUID = baseBlueprint.UUID;
-            }
-            else
-            {
-                blueprint.baseBlueprintUUID = "";
-            }
-
-            blueprint.Name = txtName.Text;
-            blueprint.NickName = txtNickName.Text;
-            blueprint.Description = txtDescription.Text;
-            int copyCost = 0;
-            int.TryParse(txtCopyCost.Text, out copyCost);
-            blueprint.CopyCost = copyCost;
-
-            // Now to map grid fields.
-
-            blueprint.Properties.Clear();
-            foreach (DataGridViewRow row in dgvStatistics.Rows)
-            {
-                blueprint.Properties.setProperty(row.Cells[0].Tag as string, row.Cells[2].Value as string);
-            }
-
-            blueprint.Resources.Clear();
-            foreach (DataGridViewRow row in dgvResources.Rows)
-            {
-                string resourceName = row.Cells[0].Value as string;
-                string resourceAmount = row.Cells[1].Value as string;
-                if (resourceName != null)
-                {
-                    blueprint.Resources[resourceName] = resourceAmount;
-                }
-            }
-
-            if (selectedBlueprint == null)
-            {
-                playerContext.blueprintList.Add(blueprint);
-            }
-            playerContext.writeContext();
-            populateListView(new List<Blueprint>(playerContext.blueprintList));
-
-            selectedBlueprint = null;
-            clearForm();
-            txtBlueprintListFilter.Focus();
         }
 
-        private void populateForm()
+        /// <summary>
+        /// Handles text changes in the blueprint list filter text box.
+        /// </summary>
+        /// <param name="sender">The TextBox object that triggered the event.</param>
+        /// <param name="e">Event data containing event information.</param>
+        private void txtFilterBlueprintType_TextChanged(object sender, EventArgs e)
         {
-            if (selectedBlueprint == null)
-            {
-                return;
-            }
-            txtFilterBlueprintType.Text = "";
             updateBlueprintTypeListBase();
-            cmbBlueprintType.SelectedItem = empireContext.findBlueprintType(selectedBlueprint.BluePrintType);
-            updatePropertyGrid();
-            cmbShipClass.SelectedItem = empireContext.findShipClass(selectedBlueprint.Class);
-            cmbTechLevel.SelectedItem = empireContext.findTechLevel(selectedBlueprint.TechLevel);
-            cmbEvolution.SelectedItem = empireContext.findEvolution(selectedBlueprint.Evolution);
-
-            txtFilterBaseBlueprint.Text = "";
-            updateBaseBlueprintList();
-            cmbBaseBlueprint.SelectedItem = playerContext.findBlueprint(selectedBlueprint.baseBlueprintUUID);
-
-            txtName.Text = selectedBlueprint.Name;
-            txtNickName.Text = selectedBlueprint.NickName;
-            txtDescription.Text = selectedBlueprint.Description;
-            txtCopyCost.Text = "" + selectedBlueprint.CopyCost;
-
-            foreach (DataGridViewRow row in dgvStatistics.Rows)
-            {
-                string property = row.Cells["Property"].Tag as string;
-                string value = "";
-                bool found = selectedBlueprint.Properties.getString(property, "", out value);
-                if (!found || value == null)
-                {
-                    value = "";
-                }
-                row.Cells["CurrentValue"].Value = value;
-            }
-
-            dgvResources.Rows.Clear();
-            foreach (KeyValuePair<string, string> resource in selectedBlueprint.Resources)
-            {
-                dgvResources.Rows.Add();
-                DataGridViewRow row = dgvResources.Rows[dgvResources.RowCount - 2];
-                row.Cells[0].Value = resource.Key;
-                row.Cells[1].Value = resource.Value;
-            }
-
+            cmbBlueprintType.DroppedDown = true;
         }
 
-        private void clearForm()
+        /// <summary>
+        /// Handles entering text in the blueprint type filter text box.
+        /// </summary>
+        /// <param name="sender">The TextBox object that triggered the event.</param>
+        /// <param name="e">Event data containing event information.</param>
+        /// <remarks>
+        /// Automatically drops down the combo box when user clicks in filter text box.
+        /// </remarks>
+        private void txtFilterBlueprintType_Enter(object sender, EventArgs e)
         {
-            selectedBlueprint = null;
-            txtFilterBlueprintType.Text = "";
-            updateBlueprintTypeListBase();
-            cmbBlueprintType.SelectedItem = null;
-            cmbBlueprintType.Text = "";
-            cmbShipClass.SelectedItem = null;
-            cmbShipClass.Text = "";
-            cmbTechLevel.SelectedItem = null;
-            cmbTechLevel.Text = "";
-            cmbEvolution.SelectedItem = null;
-            cmbEvolution.Text = "";
-
-            txtFilterBaseBlueprint.Text = "";
-            updateBaseBlueprintList();
-            cmbBaseBlueprint.SelectedItem = null;
-
-            txtName.Text = "";
-            txtNickName.Text = "";
-            txtDescription.Text = "";
-            txtCopyCost.Text = "";
-
-            dgvStatistics.Rows.Clear();
-            dgvResources.Rows.Clear();
+            cmbBlueprintType.DroppedDown = true;
         }
 
-        private void flpSearchList_SizeChanged(object sender, EventArgs e)
-        {
-            //lvwBlueprints.Height = flpSearchList.Height - flpBlueprintSearch.Height;
-        }
-
+        /// <summary>
+        /// Handles the click event for the Delete button.
+        /// </summary>
+        /// <param name="sender">The object that triggered the event.</param>
+        /// <param name="e">Event data containing event information.</param>
+        /// <remarks>
+        /// Deletes the currently selected blueprint:
+        /// - Validates that a blueprint is selected
+        /// - Removes from playerContext.blueprintList collection
+        /// - Clears selection in ListView
+        /// - Updates the list view with remaining blueprints
+        /// - Clears all form controls
+        /// </remarks>
         private void cmdDelete_Click(object sender, EventArgs e)
         {
             if (selectedBlueprint != null)
@@ -600,9 +652,306 @@ namespace OE2EmpireTracker
             }
         }
 
+        /// <summary>
+        /// Handles the click event for the New button.
+        /// </summary>
+        /// <param name="sender">The object that triggered the event.</param>
+        /// <param name="e">Event data containing event information.</param>
+        /// <remarks>
+        /// Clears all form controls to prepare for entering a new blueprint.
+        /// Called from both New button and Save button after successful save.
+        /// </remarks>
         private void cmdNew_Click(object sender, EventArgs e)
         {
             clearForm();
+        }
+
+        /// <summary>
+        /// Handles the click event for the Save button.
+        /// </summary>
+        /// <param name="sender">The object that triggered the event.</param>
+        /// <param name="e">Event data containing event information.</param>
+        /// <remarks>
+        /// Saves a new blueprint or updates an existing one based on whether selectedBlueprint is null.
+        /// 
+        /// For new blueprints:
+        /// - Generates a unique UUID using Guid.NewGuid()
+        /// - Initializes with default empty values
+        /// 
+        /// For existing blueprints:
+        /// - Uses the currently selected Blueprint object
+        /// 
+        /// Populates the blueprint with:
+        /// - Blueprint type ID from combo box selection
+        /// - Ship class ID (for non-universal types)
+        /// - Tech level name (if applicable)
+        /// - Evolution level as integer
+        /// - Base blueprint UUID from combo box selection
+        /// - Name, nickname, and description from text inputs
+        /// - Copy cost parsed from text input
+        /// - Properties from statistics grid rows
+        /// - Resources from resources grid
+        /// 
+        /// After saving:
+        /// - Adds to player context or updates existing blueprint
+        /// - Persists changes via writeContext()
+        /// - Refreshes list view with updated data
+        /// - Clears form controls
+        /// - Restores focus to blueprint list filter
+        /// </remarks>
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            empireContext = EmpireContext.getInstance();
+            playerContext = EmpireContext.PlayerContext;
+
+            Blueprint blueprint;
+            
+            // Determine whether creating new or updating existing blueprint
+            if (selectedBlueprint != null)
+            {
+                blueprint = selectedBlueprint;
+            }
+            else
+            {
+                blueprint = new Blueprint();
+                Guid myUuid = Guid.NewGuid();
+                blueprint.UUID = myUuid.ToString();
+            }
+
+            // Set blueprint type ID
+            BlueprintType blueprintType = cmbBlueprintType.SelectedItem as BlueprintType;
+            blueprint.BluePrintType = blueprintType.Id;
+
+            // Set ship class ID for non-universal blueprints
+            ShipClass shipClass = cmbShipClass.SelectedItem as ShipClass;
+            if (shipClass != null)
+            {
+                blueprint.Class = shipClass.Id;
+            }
+            else
+            {
+                blueprint.Class = 0;
+            }
+
+            // Set tech level (may be null for universal blueprints)
+            TechLevel techLevel = cmbTechLevel.SelectedItem as TechLevel;
+            if (techLevel != null)
+            {
+                blueprint.TechLevel = techLevel.Name;
+            }
+            else
+            {
+                blueprint.TechLevel = null;
+            }
+
+            // Set evolution level
+            string evolution = "0";
+            if (cmbEvolution.SelectedItem != null)
+            {
+                evolution = cmbEvolution.SelectedItem as string;
+            }
+            else if (cmbEvolution.Text != null)
+            {
+                evolution = cmbEvolution.Text;
+            }
+            blueprint.Evolution = int.Parse(evolution);
+
+            // Set base blueprint UUID
+            if (cmbBaseBlueprint.SelectedItem != null)
+            {
+                Blueprint baseBlueprint = cmbBaseBlueprint.SelectedItem as Blueprint;
+                blueprint.baseBlueprintUUID = baseBlueprint.UUID;
+            }
+            else
+            {
+                blueprint.baseBlueprintUUID = "";
+            }
+
+            // Set name fields
+            blueprint.Name = txtName.Text;
+            blueprint.NickName = txtNickName.Text;
+            blueprint.Description = txtDescription.Text;
+
+            // Parse copy cost from text input
+            int copyCost = 0;
+            int.TryParse(txtCopyCost.Text, out copyCost);
+            blueprint.CopyCost = copyCost;
+
+            // Map properties from grid to blueprint.Properties collection
+            blueprint.Properties.Clear();
+            foreach (DataGridViewRow row in dgvStatistics.Rows)
+            {
+                blueprint.Properties.setProperty(row.Cells[0].Tag as string, row.Cells[2].Value as string);
+            }
+
+            // Map resources from grid to blueprint.Resources collection
+            blueprint.Resources.Clear();
+            foreach (DataGridViewRow row in dgvResources.Rows)
+            {
+                string resourceName = row.Cells[0].Value as string;
+                string resourceAmount = row.Cells[1].Value as string;
+                if (resourceName != null)
+                {
+                    blueprint.Resources[resourceName] = resourceAmount;
+                }
+            }
+
+            // Add or update in player context
+            if (selectedBlueprint == null)
+            {
+                playerContext.blueprintList.Add(blueprint);
+            }
+            
+            // Persist changes to player context
+            playerContext.writeContext();
+            
+            // Refresh list view
+            populateListView(new List<Blueprint>(playerContext.blueprintList));
+
+            // Clear form for next entry
+            selectedBlueprint = null;
+            clearForm();
+            
+            // Restore focus
+            txtBlueprintListFilter.Focus();
+        }
+
+        /// <summary>
+        /// Populates the form fields with data from the currently selected blueprint.
+        /// </summary>
+        /// <remarks>
+        /// If no blueprint is selected (selectedBlueprint is null), this method returns immediately.
+        /// Otherwise, it:
+        /// - Clears and regenerates blueprint type list
+        /// - Loads the blueprint type into the combo box
+        /// - Updates property grid based on blueprint type
+        /// - Loads ship class, tech level, and evolution dropdown selections
+        /// - Clears and regenerates base blueprint list
+        /// - Loads the base blueprint (if any) into the combo box
+        /// - Populates all text input fields from the blueprint's properties and sub-properties
+        /// - Populates the statistics grid with property values
+        /// - Populates the resources grid with the blueprint's resource data
+        /// </remarks>
+        private void populateForm()
+        {
+            if (selectedBlueprint == null)
+            {
+                return;
+            }
+
+            // Clear and regenerate blueprint type list
+            txtFilterBlueprintType.Text = "";
+            updateBlueprintTypeListBase();
+            
+            // Load blueprint type selection
+            cmbBlueprintType.SelectedItem = empireContext.findBlueprintType(selectedBlueprint.BluePrintType);
+            
+            // Update property grid based on selected type
+            updatePropertyGrid();
+            
+            // Load dependent dropdowns
+            cmbShipClass.SelectedItem = empireContext.findShipClass(selectedBlueprint.Class);
+            cmbTechLevel.SelectedItem = empireContext.findTechLevel(selectedBlueprint.TechLevel);
+            cmbEvolution.SelectedItem = empireContext.findEvolution(selectedBlueprint.Evolution);
+
+            // Clear and regenerate base blueprint list
+            txtFilterBaseBlueprint.Text = "";
+            updateBaseBlueprintList();
+            
+            // Load base blueprint selection (if this is not the base blueprint)
+            cmbBaseBlueprint.SelectedItem = playerContext.findBlueprint(selectedBlueprint.baseBlueprintUUID);
+
+            // Populate text input fields
+            txtName.Text = selectedBlueprint.Name;
+            txtNickName.Text = selectedBlueprint.NickName;
+            txtDescription.Text = selectedBlueprint.Description;
+            txtCopyCost.Text = "" + selectedBlueprint.CopyCost;
+
+            // Populate statistics grid with property values
+            foreach (DataGridViewRow row in dgvStatistics.Rows)
+            {
+                string property = row.Cells["Property"].Tag as string;
+                string value = "";
+                bool found = selectedBlueprint.Properties.getString(property, "", out value);
+                if (!found || value == null)
+                {
+                    value = "";
+                }
+                row.Cells["CurrentValue"].Value = value;
+            }
+
+            // Populate resources grid with blueprint's resource data
+            dgvResources.Rows.Clear();
+            foreach (KeyValuePair<string, string> resource in selectedBlueprint.Resources)
+            {
+                dgvResources.Rows.Add();
+                DataGridViewRow row = dgvResources.Rows[dgvResources.RowCount - 2];
+                row.Cells[0].Value = resource.Key;
+                row.Cells[1].Value = resource.Value;
+            }
+        }
+
+        /// <summary>
+        /// Clears all form controls to prepare for a new blueprint entry.
+        /// </summary>
+        /// <remarks>
+        /// Resets all controls to their default/empty states:
+        /// - Clears the selected blueprint reference
+        /// - Resets all text inputs (name, nickname, description, copy cost)
+        /// - Resets all combo boxes and dropdowns
+        /// - Regenerates filtered lists for type and base blueprint selectors
+        /// - Clears both statistics and resources grids
+        /// </remarks>
+        private void clearForm()
+        {
+            selectedBlueprint = null;
+
+            // Clear filters
+            txtFilterBlueprintType.Text = "";
+            txtFilterBaseBlueprint.Text = "";
+
+            // Regenerate type list with empty selection
+            updateBlueprintTypeListBase();
+            cmbBlueprintType.SelectedItem = null;
+            cmbBlueprintType.Text = "";
+            
+            // Reset ship class and tech level dropdowns
+            cmbShipClass.SelectedItem = null;
+            cmbShipClass.Text = "";
+            cmbTechLevel.SelectedItem = null;
+            cmbTechLevel.Text = "";
+            
+            // Reset evolution dropdown
+            cmbEvolution.SelectedItem = null;
+            cmbEvolution.Text = "";
+
+            // Regenerate base blueprint list with empty selection
+            updateBaseBlueprintList();
+            cmbBaseBlueprint.SelectedItem = null;
+
+            // Clear text inputs
+            txtName.Text = "";
+            txtNickName.Text = "";
+            txtDescription.Text = "";
+            txtCopyCost.Text = "";
+
+            // Clear grids
+            dgvStatistics.Rows.Clear();
+            dgvResources.Rows.Clear();
+        }
+
+        /// <summary>
+        /// Handles size changes to the search list flow panel.
+        /// </summary>
+        /// <param name="sender">The FlowLayoutPanel object that triggered the event.</param>
+        /// <param name="e">Event data containing event information.</param>
+        /// <remarks>
+        /// Previously used to adjust ListView height based on parent panel size.
+        /// Commented out - may be re-enabled when needed.
+        /// </remarks>
+        private void flpSearchList_SizeChanged(object sender, EventArgs e)
+        {
+            //lvwBlueprints.Height = flpSearchList.Height - flpBlueprintSearch.Height;
         }
     }
 }

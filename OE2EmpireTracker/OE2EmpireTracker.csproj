@@ -232,6 +232,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="specs\PlayerProfileForm.md" />
+    <None Include="specs\SurveyForm.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
