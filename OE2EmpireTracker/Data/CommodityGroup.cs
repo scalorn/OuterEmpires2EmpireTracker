@@ -47,6 +47,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.CentreOfEconomics, Name = "Centre of Economics" });
             instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.EngineeringBlock, Name = "Engineering Block" });
             instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.HealthcareInstitute, Name = "Healthcare Institute" });
+            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.InstituteOfDefence, Name = "Institute of Defence" });
             instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.LeisureIndustryCentre, Name = "Leisure Industry Centre" });
             instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.LogisticsCentre, Name = "Logistics Centre" });
             instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.ManufacturingIndustryCentre, Name = "Manufacturing Industry Centre" });

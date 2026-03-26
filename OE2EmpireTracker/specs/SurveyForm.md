@@ -23,10 +23,10 @@ Located at position (3, 3) within the main layout flow panel. Contains three fil
 
 #### Section 1: Planet Filter (`flpBlueprintSearch`) - Height: 26px
 
-| Control | Type | Position | Size | Properties |
-|---------|------|----------|------|------------|
-| `lblPlanetFilter` | Label | (2, 4) | 100×17 px | Text: "Planet", RightAlign, Anchor=Left\|Right |
-| `txtPlanetFilter` | TextBox | (107, 3) | 202×20 px | TabIndex=0, Location relative to flow panel |
+| Control           | Type    | Position | Size      | Properties                                     |
+|---------          |------   |--------  |------     |------------                                    |
+| `lblPlanetFilter` | Label   | (2, 4)   | 100×17 px | Text: "Planet", RightAlign, Anchor=Left\|Right |
+| `txtPlanetFilter` | TextBox | (107, 3) | 202×20 px | TabIndex=0, Location relative to flow panel    |
 
 **Purpose:** Filter surveys by planet name.
 
@@ -89,6 +89,7 @@ Vertical flow direction with top-to-bottom field layout. Each field consists of 
 | `dgvResources` | DataGridView | (3, 263) | 825×303 px | TabIndex=9 |
 
 **Columns (Left-to-Right):**
+
 1. **Resource** - DataGridViewComboBoxColumn, Width: 250px
    - DisplayMember: Resource.Name
    - ValueMember: Resource.Name
@@ -118,6 +119,7 @@ Vertical flow direction with top-to-bottom field layout. Each field consists of 
 Unique field with additional filter textbox for search capability.
 
 **Layout:**
+
 | Control | Type | Position | Size | Purpose |
 |---------|------|----------|------|---------|
 | `lblScannerBlueprint` | Label | (2, 4) | 100×17 px | Text: "Scanner Blueprint" |
@@ -125,6 +127,7 @@ Unique field with additional filter textbox for search capability.
 | `cmbScannerBlueprint` | ComboBox | (212, 2) | 201×21 px | Dropdown list of scanner blueprints, TabIndex=1 |
 
 **Behavior:**
+
 - Filter textbox (`txtFilterScannerBlueprint`) has TextChanged event that triggers filtering
 - Displays filtered SystemObjectScanner blueprints from player context
 - Allows deselecting by selecting the empty entry (first item in dropdown)
@@ -133,203 +136,71 @@ Unique field with additional filter textbox for search capability.
 
 ## Form Behavior
 
-### Initialization (`FormSurvey` Constructor)
+### Initialization
 
-```csharp
-public FormSurvey()
-{
-    InitializeComponent();
-    empireContext = EmpireContext.getInstance();
-    playerContext = EmpireContext.PlayerContext;
-    
-    // Initialize scanner blueprint combo box
-    cmbScannerBlueprint.DisplayMember = "ExtendedName";
-    cmbScannerBlueprint.ValueMember = "UUID";
-    updateScannerBlueprintList();
-    cmbScannerBlueprint.SelectedIndex = -1;
-    
-    // Set up survey list view with columns
-    lvwSurveys.View = View.Details;
-    lvwSurveys.Columns.Add("UUID", 0);
-    lvwSurveys.Columns.Add("PlanetName", 100);
-    lvwSurveys.Columns.Add("NickName", 100);
-    lvwSurveys.Columns.Add("DateTime", 100);
-    populateListView(new List<OE2EmpireTracker.Baseline.Survey>(playerContext.surveyList));
-    
-    // Configure resource data grid with combo box columns
-    ...
-}
-```
+When the SurveyForm is first instantiated and loaded, the following initialization steps occur automatically:
 
-### Survey List Population (`populateListView`)
+1. **Component Setup:** All form controls are created and configured through the design-time component initializer
+2. **Context Acquisition:** The application acquires two context objects from the EmpireContext singleton - an instance for current empire operations and a static PlayerContext reference for player-specific data
+3. **Scanner Blueprint Configuration:** The scanner blueprint dropdown is prepared with its extended name as the display text and UUID as the underlying value identifier, then populated with available blueprints filtered by type
+4. **Initial Deselection:** No scanner blueprint is selected initially by setting the index to negative one
+5. **Survey List Setup:** The survey list view is configured in details mode with four columns: UUID, Planet Name, Nickname, and Scan Date/Time, then populated with all surveys currently known to the player
+6. **Resource Grid Configuration:** The resources data grid is prepared with three columns for resource type, purity level, and quantity
 
-- Creates dictionary keyed by UUID for duplicate detection
-- Updates ListView items when surveys are loaded from player context
-- Removes ListView items when corresponding surveys are deleted/filtered out
-- Tag property maintains reference to Survey object for editing operations
+### Survey List Population
 
-### Save Behavior (`btnSave_Click`)
+When survey records are loaded or updated from the player context, the following process occurs:
 
-```csharp
-private void btnSave_Click(object sender, EventArgs e)
-{
-    // Create new survey or update existing one
-    if (selectedSurvey != null)
-    {
-        // Update existing survey using current data
-        ...
-    }
-    else
-    {
-        // Create new survey with generated UUID
-        Guid myUuid = Guid.NewGuid();
-        survey.UUID = myUuid.ToString();
-        ...
-    }
-    
-    // Populate survey with form field values
-    survey.PlanetName = txtPlanetName.Text;
-    survey.SurveyID = txtSurveyID.Text;
-    survey.ScannedBy = txtScannedBy.Text;
-    survey.DateTime = txtScanDateTime.Text;
-    survey.Properties["SensorAbundance"] = txtSensorAbundance.Text;
-    survey.Properties["PurityModifier"] = txtPurityModifier.Text;
-    survey.Properties["ScanLevel"] = txtScanLevel.Text;
-    
-    // Get scanner blueprint UUID if selected
-    ...
-    
-    // Map resources from grid to survey.Resources collection
-    foreach (DataGridViewRow row in dgvResources.Rows)
-    {
-        string resourceName = row.Cells[0].Value as string;
-        string resourcePurity = row.Cells[1].Value as string;
-        string resourceAmount = row.Cells[2].Value as string;
-        SurveyResource surveyResource = new SurveyResource();
-        surveyResource.Purity = resourcePurity;
-        surveyResource.Amount = resourceAmount;
-        if (resourceName != null)
-        {
-            survey.Resources[resourceName] = surveyResource;
-        }
-    }
-    
-    // Save to player context and persist
-    playerContext.surveyList.Add(survey); // or update existing
-    playerContext.writeContext();
-    
-    // Clear form after saving
-    clearForm();
-}
-```
+A dictionary structure is created with UUIDs as keys to track individual surveys and detect duplicates. As new surveys arrive from the player context's survey list, the ListView items are refreshed - if a matching survey already exists in the view, its content is updated; if it's new, a ListViewItem is created using data from the first row of the survey object. Items that no longer exist in the source collection are removed from the ListView to keep the display synchronized with actual data. The Tag property of each ListView item maintains a direct reference to the underlying Survey object, which enables efficient editing operations when items are selected.
 
-### Form Loading Behavior (`lvwSurveys_ItemSelectionChanged`)
+### Save Operation
 
-```csharp
-private void lvwSurveys_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
-{
-    if (lvwSurveys.SelectedItems.Count == 1)
-    {
-        selectedSurvey = lvwSurveys.SelectedItems[0].SubItems[0].Tag as OE2EmpireTracker.Baseline.Survey;
-        populateForm();
-    }
-}
+When the user clicks the Save button, the save operation proceeds through the following steps:
 
-private void populateForm()
-{
-    // Populate all form fields from selected survey data
-    txtPlanetName.Text = selectedSurvey.PlanetName;
-    txtSurveyID.Text = selectedSurvey.SurveyID;
-    txtNickName.Text = selectedSurvey.NickName;
-    txtScannedBy.Text = selectedSurvey.ScannedBy;
-    txtScanDateTime.Text = selectedSurvey.DateTime;
-    txtSensorAbundance.Text = selectedSurvey.Properties["SensorAbundance"];
-    txtPurityModifier.Text = selectedSurvey.Properties["PurityModifier"];
-    txtScanLevel.Text = selectedSurvey.Properties["ScanLevel"];
-    
-    // Load scanner blueprint into combo box
-    cmbScannerBlueprint.SelectedItem = playerContext.findBlueprint(selectedSurvey.ScannerBlueprintUUID);
-    
-    // Populate resources grid with survey's resource data
-    dgvResources.Rows.Clear();
-    foreach (KeyValuePair<string, SurveyResource> resource in selectedSurvey.Resources)
-    {
-        dgvResources.Rows.Add();
-        DataGridViewRow row = dgvResources.Rows[dgvResources.RowCount - 2];
-        row.Cells[0].Value = resource.Key;
-        row.Cells[1].Value = resource.Value.Purity;
-        row.Cells[2].Value = resource.Value.Amount;
-    }
-}
-```
+First, the system determines whether this is an update operation or a new record creation by checking if a survey has been previously selected. If updating an existing survey, the current survey object is retrieved and its data will be refreshed from form inputs. If creating a new survey, a brand new globally unique identifier is generated and assigned to ensure uniqueness across all surveys.
 
-### Scanner Blueprint Filtering (`updateScannerBlueprintList`)
+Next, all scalar form field values are transferred to their corresponding survey properties: the planet name from its text box, the official survey ID, nickname, operator name (who performed the scan), timestamp of the scan, sensor abundance factor, purity modifier, and scan level designation. The scanner blueprint UUID is retrieved from the selected item in the scanner blueprint dropdown if one has been chosen.
 
-```csharp
-private void updateScannerBlueprintList()
-{
-    string searchText = txtFilterScannerBlueprint.Text;
-    List<Blueprint> filteredList = new List<Blueprint>(playerContext.blueprintList);
-    
-    // Filter to SystemObjectScanner blueprint type only
-    BlueprintType scanners = empireContext.findBlueprintType("SystemObjectScanner");
-    filteredList = filteredList
-        .Where(item => item.BluePrintType == scanners.Id)
-        .ToList();
-    
-    // Apply text filter if specified (case-insensitive on ExtendedName)
-    if (!string.IsNullOrEmpty(searchText))
-    {
-        filteredList = filteredList
-            .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-            .ToList();
-    }
-    
-    // Add empty entry to allow deselecting
-    filteredList.Insert(0, new Blueprint());
-    
-    cmbScannerBlueprint.DataSource = new BindingSource(filteredList, null);
-}
-```
+Then, resource data is processed by iterating through each row in the resources grid. For every row, three values are extracted: the resource name (which serves as the dictionary key), the purity level, and the quantity amount. A new SurveyResource object is instantiated for each entry, its properties set from the extracted values, and it's stored in a dictionary keyed by resource name - this allows quick lookup of resources by their names during data retrieval.
 
-### Clear Form Behavior (`clearForm`)
+Finally, the survey object is persisted to the player context's survey list using appropriate methods to either add a new entry or update an existing one depending on operation type. The context changes are written back to the database to ensure persistence. Once saved, the form is automatically cleared for new input.
 
-```csharp
-private void clearForm()
-{
-    selectedSurvey = null;
-    
-    // Reset all text fields
-    txtPlanetName.Text = "";
-    txtSurveyID.Text = "";
-    txtNickName.Text = "";
-    txtScannedBy.Text = "";
-    txtScanDateTime.Text = "";
-    txtSensorAbundance.Text = "";
-    txtPurityModifier.Text = "";
-    txtScanLevel.Text = "";
-    
-    // Reset combo box and grid
-    cmbScannerBlueprint.SelectedItem = null;
-    dgvResources.Rows.Clear();
-}
-```
+### Form Loading When Survey is Selected
 
-### Delete Behavior (`cmdDelete_Click`)
+When the user selects a different item in the survey list view, the following process occurs:
 
-Currently implemented as placeholder (empty method). Should implement:
-- Validate that an item is selected in lvwSurveys
-- Get selected survey's UUID from ListViewItem.Tag
-- Remove from playerContext.surveyList collection
-- Call playerContext.writeContext() to persist changes
-- Clear the form after deletion
+The currently selected survey object is retrieved from the Tag property of the ListView item that was clicked. This survey object serves as the data source for populating all form fields with matching information:
 
-### Cancel Behavior (`btnCancel_Click`)
+- The planet name field receives the survey's planet designation
+- The survey ID text box is populated with the official identifier
+- The nickname field shows any custom nickname assigned
+- The operator name field displays who conducted this scan
+- The timestamp field shows when the scan was performed
+- The sensor abundance factor, purity modifier, and scan level fields are all populated from their respective stored property values
 
-Currently implemented as placeholder (empty method). Should implement:
-- Reset form state appropriately
-- Close or reset focus
-- Potentially close the form or return to previous view
+The scanner blueprint dropdown is configured by finding the blueprint object that matches the selected survey's blueprint UUID in the available blueprints collection, then setting this as the current selection.
+
+The resources grid is cleared of any previous data, then repopulated by iterating through each resource entry in the survey's resources collection. For every resource, a new row is added to the grid with its name displayed in the first column, purity level in the second, and quantity amount in the third column.
+
+### Scanner Blueprint Filter Refresh
+
+When the scanner blueprint filter textbox content changes (such as when the user types), the following process occurs:
+
+The current search text from the filter textbox is retrieved. A new list of blueprints is created by filtering the complete blueprint collection to only include items of the SystemObjectScanner blueprint type. If a search term exists, additional filtering is applied to match blueprints whose extended names contain that text (using case-insensitive matching). An empty blank entry is inserted at the beginning of the filtered list to allow the user to deselect their current selection. This updated filtered list is assigned as the data source for the scanner blueprint dropdown using a binding source, which causes the dropdown to update its display with the newly filtered options and drops open.
+
+### Clear Form Operation
+
+When clearing the form (either after successful save or other operations), the following steps occur:
+
+The reference to any currently selected survey is cleared by setting it to null. All text input fields are reset to empty strings, removing any previously entered planet name, survey ID, nickname, operator name, scan timestamp, sensor abundance factor, purity modifier, and scan level values. The scanner blueprint dropdown's selection is cleared back to its blank first entry, and all rows in the resources grid are removed to clear the grid display.
+
+### Delete Operation (Pending Implementation)
+
+When implementing delete functionality for surveys, the system should validate that a survey item is selected in the survey list view. Once validated, the system retrieves the unique identifier of the selected survey from the ListView item's Tag property. The corresponding entry is then removed from the player context's survey list collection, and the changes are persisted by writing back to the database context. After deletion completes, the form is cleared to prepare for new input.
+
+### Cancel Operation (Pending Implementation)
+
+When implementing cancel functionality, the system should reset the form state appropriately depending on whether data has been modified, potentially close or refocus the form, and handle the cancellation event by returning control to the previous view or closing the form entirely.
 
 ---
 
@@ -381,6 +252,7 @@ The tab order follows the natural reading flow through the form fields:
 ### Resource Data Structure
 
 Each resource entry in the DataGridView represents:
+
 - **Resource Name:** String (keyed by name in survey.Resources dictionary)
 - **Purity:** SurveyResource.Purity property (from purity enum/set)
 - **Amount:** SurveyResource.Amount property (string value)
@@ -397,8 +269,8 @@ Each resource entry in the DataGridView represents:
 | `populateForm()` | Load selected survey data | Populates all form fields from currently selected Survey |
 | `btnSave_Click(object sender, EventArgs e)` | Save survey | Creates new or updates existing survey, persists to context, clears form |
 | `clearForm()` | Reset form state | Clears all inputs and selections |
-| `cmdDelete_Click(object sender, EventArgs e)` | Delete survey | Placeholder - not yet implemented |
-| `btnCancel_Click(object sender, EventArgs e)` | Cancel operation | Placeholder - not yet implemented |
+| `cmdDelete_Click(object sender, EventArgs e)` | Delete survey | Pending implementation for removing selected survey from context |
+| `btnCancel_Click(object sender, EventArgs e)` | Cancel operation | Pending implementation for handling user cancellation |
 | `lvwSurveys_ItemSelectionChanged(...)` | Handle list selection change | Loads selected survey data into form fields |
 | `txtFilterScannerBlueprint_TextChanged(...)` | Update scanner filter on text change | Re-regenerates filtered scanner blueprint list, drops down combo box |
 
@@ -411,23 +283,26 @@ Each resource entry in the DataGridView represents:
 | `lvwSurveys` | ItemSelectionChanged | Triggers form field population when item selected |
 | `txtFilterScannerBlueprint` | TextChanged | Triggers scanner blueprint filtering on text change |
 | `btnSave` | Click | Saves new or updated survey |
-| `cmdDelete` | Click | Placeholder for delete functionality |
-| `btnCancel` | Click | Placeholder for cancel functionality |
+| `cmdDelete` | Click | Pending implementation for delete functionality |
+| `btnCancel` | Click | Pending implementation for cancel functionality |
 
 ---
 
 ## UI Behavior Specifications
 
 ### Left Panel Filters
+
 - **Planet Filter:** TextBox allows filtering the survey list by planet name (case-insensitive substring match)
 - **Resource Filter:** ComboBox allows selecting a resource to filter surveys by that resource type
 
 ### ListView Behavior
+
 - Single selection mode (MultiSelect=False)
 - Full row selection for easier clicking
 - Stores Survey object reference in Tag property of first column and item
 
 ### Scanner Blueprint Combo Box
+
 - Dropdown style with suggested autocomplete
 - Filter textbox enables real-time filtering as user types
 - Empty entry at beginning allows deselecting a scanner
@@ -438,6 +313,7 @@ Each resource entry in the DataGridView represents:
 ## Context Requirements
 
 The form requires:
+
 1. **EmpireContext:** Provides `bindingSourceResource` and `bindingSourceResourcePurity` for resource type data
 2. **PlayerContext:** Provides `surveyList`, `blueprintList`, and methods like `findBlueprint()` and `writeContext()`
 
@@ -448,6 +324,7 @@ All survey operations (save, delete) persist to player context and write back to
 ## Placeholder Implementations
 
 The following methods are implemented as empty placeholders and require implementation:
+
 1. `cmdDelete_Click` - Delete selected survey from context
 2. `btnCancel_Click` - Reset form state and handle cancellation
 

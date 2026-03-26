@@ -525,7 +525,7 @@
             this.cmbItem.FormattingEnabled = true;
             this.cmbItem.Location = new System.Drawing.Point(345, 4);
             this.cmbItem.Name = "cmbItem";
-            this.cmbItem.Size = new System.Drawing.Size(121, 21);
+            this.cmbItem.Size = new System.Drawing.Size(191, 21);
             this.cmbItem.TabIndex = 5;
             this.cmbItem.SelectedIndexChanged += new System.EventHandler(this.cmbItem_SelectedIndexChanged);
             // 
@@ -534,15 +534,15 @@
             this.cmbPurity.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmbPurity.DisplayMember = "Name";
             this.cmbPurity.FormattingEnabled = true;
-            this.cmbPurity.Location = new System.Drawing.Point(472, 4);
+            this.cmbPurity.Location = new System.Drawing.Point(542, 4);
             this.cmbPurity.Name = "cmbPurity";
-            this.cmbPurity.Size = new System.Drawing.Size(105, 21);
+            this.cmbPurity.Size = new System.Drawing.Size(54, 21);
             this.cmbPurity.TabIndex = 7;
             this.cmbPurity.SelectedIndexChanged += new System.EventHandler(this.cmbPurity_SelectedIndexChanged);
             // 
             // lblQuantity
             // 
-            this.lblQuantity.Location = new System.Drawing.Point(583, 0);
+            this.lblQuantity.Location = new System.Drawing.Point(602, 0);
             this.lblQuantity.Name = "lblQuantity";
             this.lblQuantity.Size = new System.Drawing.Size(51, 24);
             this.lblQuantity.TabIndex = 9;
@@ -552,14 +552,14 @@
             // txtQuantity
             // 
             this.txtQuantity.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtQuantity.Location = new System.Drawing.Point(640, 4);
+            this.txtQuantity.Location = new System.Drawing.Point(659, 4);
             this.txtQuantity.Name = "txtQuantity";
             this.txtQuantity.Size = new System.Drawing.Size(97, 20);
             this.txtQuantity.TabIndex = 8;
             // 
             // cmdAdd
             // 
-            this.cmdAdd.Location = new System.Drawing.Point(743, 3);
+            this.cmdAdd.Location = new System.Drawing.Point(762, 3);
             this.cmdAdd.Name = "cmdAdd";
             this.cmdAdd.Size = new System.Drawing.Size(39, 23);
             this.cmdAdd.TabIndex = 1;

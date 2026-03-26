@@ -4,6 +4,7 @@ using Sgml;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -24,10 +25,26 @@ namespace OE2EmpireTracker.Data
         [Required]
         public Data.CommodityGroup.CommodityGroupEnum CommodityGroup { get; set; }
 
-        public string ID { get; set; }
-        public string Name { get; set; }
+        public string ID { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string ExtendedName { 
+            get {
+                if (string.IsNullOrEmpty(Name))
+                {
+                    return "";
+                }
 
-        public Dictionary<string, string> ConstructionResources { get; set; }
+                CommodityGroup groupResult = null;
+                Data.CommodityGroup.CommodityGroupMapByEnum.TryGetValue(CommodityGroup, out groupResult);
+                if (groupResult != null)
+                {
+                    return $"{Name} ({groupResult.Name})";
+                }
+                return $"{Name}";
+            }
+        }
+
+        public Dictionary<string, string> ConstructionResources { get; set; } = new Dictionary<string, string>();
 
 
         private static List<Commodity> _commodities = getCommodities();
@@ -38,6 +55,10 @@ namespace OE2EmpireTracker.Data
         public static IReadOnlyDictionary<string, Commodity> ResourceMapByEnum => _commodityMapByEnum;
         public static IReadOnlyDictionary<string, Commodity> ResourceMapByString => _commodityMapByString;
 
+
+        public Commodity()
+        {
+        }
 
         private static List<Commodity> getCommodities()
         {
@@ -82,8 +103,8 @@ namespace OE2EmpireTracker.Data
                 Name = "AGI Manu-Augments",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Metaloids", "2" },
+                    { "Complex Non-Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -126,8 +147,8 @@ namespace OE2EmpireTracker.Data
                 Name = "AmmoMate Munitions Printer",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Light Halogens", "2" },
+                    { "Alkaline Earth Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -148,8 +169,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Assemblatrons",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Non-Metallics", "2" },
+                    { "Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -159,8 +180,8 @@ namespace OE2EmpireTracker.Data
                 Name = "AssembleMate Crucibles",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Strong Acidic Inorganics", "2" },
+                    { "Heavy Alkaline Earth Metals", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -170,8 +191,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Atomsmasher Crucibles",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Non-Metallics", "2" },
+                    { "Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -192,8 +213,8 @@ namespace OE2EmpireTracker.Data
                 Name = "BattleCom Interconnects",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Non-Metallics", "2" },
+                    { "Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -203,8 +224,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Biochem Delivery Systems",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Heavy Trans-Metals", "2" },
+                    { "Complex Metallics", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -233,7 +254,7 @@ namespace OE2EmpireTracker.Data
             {
                 CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HealthcareInstitute,
                 ID = "Biosuspension Fluids",
-                Name = "Biomass Harvester Controllers",
+                Name = "Biosuspension Fluids",
                 ConstructionResources = new Dictionary<string, string>()
                 {
                     { "a", "" },
@@ -269,8 +290,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Branding Systems",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Strong Alkali Inorganics", "2" },
+                    { "Heavy Post-Trans Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -280,8 +301,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Calalyst Reaction Simulators",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Non-Metallics", "2" },
+                    { "Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -302,8 +323,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Caustic Fluids",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Organics", "2" },
+                    { "Acidic Organics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -324,8 +345,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Clean Air Units",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Organics", "2" },
+                    { "Acidic Organics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -335,8 +356,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Climate Hubs",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Organics", "2" },
+                    { "Acidic Organics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -346,8 +367,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Clothing Printers",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Inorganics", "2" },
+                    { "Acidic Inorganics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -357,8 +378,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Comfortcore Arrays",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Strong Alkali Inorganics", "2" },
+                    { "Heavy Post-Trans Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -368,8 +389,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Concentrax Containment Units",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Heavy Alkali Metals", "2" },
+                    { "Lanthanides", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -390,8 +411,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Confectionery",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Organics", "2" },
+                    { "Acidic Organics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -412,8 +433,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Containment Units",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Non-Metallics", "2" },
+                    { "Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -434,8 +455,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Coreseeker Guidance Bits",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Non-Metallics", "2" },
+                    { "Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -456,8 +477,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Cryogenic Coolant Tanks",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Non-Metallics", "2" },
+                    { "Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -511,8 +532,8 @@ namespace OE2EmpireTracker.Data
                 Name = "DegasTech Reforgers",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Strong Acidic Inorganics", "2" },
+                    { "Heavy Alkaline Earth Metals", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -533,8 +554,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Demand Drivers",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Strong Alkali Inorganics", "2" },
+                    { "Heavy Post-Trans Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -544,8 +565,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Design AGI Chassis",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Heavy Trans-Metals", "2" },
+                    { "Complex Metallics", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -555,8 +576,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Diagnocores",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Heavy Alkali Metals", "" },
+                    { "Lanthanides", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -588,8 +609,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Drillcore Chassis",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Light Halogens", "2" },
+                    { "Alkaline Earth Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -599,8 +620,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Earthmover Fabricators",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Non-Metallics", "2" },
+                    { "Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -621,19 +642,19 @@ namespace OE2EmpireTracker.Data
                 Name = "Efficiency Systems",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Trans-Metals", "2" },
+                    { "Post-Trans Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
             {
                 CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.OffWorldLivingInstitute,
-                ID = "Energy Storage Systems",
-                Name = "Energy Storage Systems",
+                ID = "Energy Storage systems",
+                Name = "Energy Storage systems",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Non-Metallics", "2" },
+                    { "Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -654,8 +675,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Entertainmate Interconnects",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Metals", "2" },
+                    { "Heavy Noble Gases", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -676,8 +697,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Events AGI Chassis",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Strong Alkali Organics", "2" },
+                    { "Heavy Post-Trans Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -687,8 +708,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Exoskeleton Waldos",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Metaloids", "2" },
+                    { "Complex Non-Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -698,8 +719,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Fermented Beverages",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Organics", "2" },
+                    { "Acidic Organics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -709,8 +730,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Filterator Chassis",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Non-Metallics", "2" },
+                    { "Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -720,8 +741,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Finance AutoMods",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Strong Alkali Inorganics", "2" },
+                    { "Heavy Post-Trans Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -753,8 +774,8 @@ namespace OE2EmpireTracker.Data
                 Name = "G-Suites",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Inorganics", "2" },
+                    { "Acidic Inorganics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -764,8 +785,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Gameonix Simulators",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Noble Gases", "2" },
+                    { "Halogens", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -808,8 +829,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Geoengineering Slurry",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Organics", "2" },
+                    { "Acidic Organics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -841,8 +862,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Handheld Infrartek Units",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Strong Alkali Inorganics", "2" },
+                    { "Heavy Post-Trans Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -863,8 +884,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Hazard Bunkers",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Inorganics", "2" },
+                    { "Acidic Inorganics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -874,8 +895,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Hazard Disposal Systems",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Heavy Alkali Metals", "2" },
+                    { "Lanthanides", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -885,8 +906,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Hazard Gear",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Strong Alkali Organics", "2" },
+                    { "Lanthanide Volatiles", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -907,8 +928,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Heavy Alloy Printers",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Non-Metallics", "2" },
+                    { "Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -929,8 +950,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Heavy Laser Drill Parts",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Transuranic Volatiles", "2" },
+                    { "Superheavy Exotics", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -940,8 +961,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Heavy Mover Kits",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Transuranic Volatiles", "2" },
+                    { "Superheavy Exotics", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -962,8 +983,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Heavy Unit Manipulators",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Transuranic Volatiles", "2" },
+                    { "Superheavy Exotics", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -973,8 +994,8 @@ namespace OE2EmpireTracker.Data
                 Name = "HEV Duty Exosuits",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Light Halogens", "2" },
+                    { "Alkaline Earth Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -984,8 +1005,8 @@ namespace OE2EmpireTracker.Data
                 Name = "HEV-Battledress",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Light Halogens", "2" },
+                    { "Alkaline Earth Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -995,8 +1016,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Hibernation Pods",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Heavy Alkali Metals", "2" },
+                    { "Lanthanides", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -1028,8 +1049,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Hometech Supplies",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Light Halogens", "2" },
+                    { "Alkaline Earth Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1050,8 +1071,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Hydrobots",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Organics", "2" },
+                    { "Acidic Organics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1072,8 +1093,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Hyper-Alloy Pliers",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Non-Metallics", "2" },
+                    { "Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1127,8 +1148,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Joybot Parts",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Metals", "2" },
+                    { "Heavy Noble Gases", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1215,8 +1236,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Mass Manipulators",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Light Halogens", "2" },
+                    { "Alkaline Earth Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1281,8 +1302,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Mess Hall Kits",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Heavy Trans-Metals", "2" },
+                    { "Complex Metallics", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -1325,8 +1346,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Modular Building Units",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Light Halogens", "2" },
+                    { "Alkaline Earth Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1347,8 +1368,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Modular Control Centres",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Inorganics", "2" },
+                    { "Acidic Inorganics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1391,8 +1412,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Monobonding Shields",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Strong Alkali Organics", "2" },
+                    { "Lanthanide Volatiles", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -1402,8 +1423,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Nano-Welding Tools",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Non-Metallics", "2" },
+                    { "Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1424,8 +1445,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Nanocure Supplies",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Heavy Alkali Metals", "2" },
+                    { "Lanthanides", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -1457,8 +1478,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Narcotics",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Heavy Alkali Metals", "2" },
+                    { "Lanthanides", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -1501,8 +1522,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Neural Scanners",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Heavy Alkali Metals", "2" },
+                    { "Lanthanides", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -1545,8 +1566,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Next-Gen Sound Systems",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Metals", "2" },
+                    { "Heavy Noble Gases", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1589,8 +1610,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Ore Analyzers",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Metals", "2" },
+                    { "Heavy Noble Gases", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1600,8 +1621,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Oretech Systems",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Strong Alkali Organics", "2" },
+                    { "Lanthanide Volatiles", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -1666,8 +1687,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Playport Displays",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Metals", "2" },
+                    { "Heavy Noble Gases", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1688,8 +1709,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Power Cell Casemates",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Light Halogens", "2" },
+                    { "Alkaline Earth Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1699,8 +1720,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Processing Control Systems",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Metaloids", "2" },
+                    { "Complex Non-Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1710,8 +1731,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Projectors",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Inorganics", "2" },
+                    { "Acidic Inorganics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1743,8 +1764,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Reactant Calibrators",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Strong Alkali Organics", "2" },
+                    { "Lanthanide Volatiles", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -1776,8 +1797,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Rig Living Space Kits",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Inorganics", "2" },
+                    { "Acidic Inorganics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1798,8 +1819,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Rockminer Drones",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Non-Metallics", "2" },
+                    { "Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1809,8 +1830,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Safety Equipment",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Strong Alkali Organics", "2" },
+                    { "Lanthanide Volatiles", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -1820,8 +1841,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Scanner Chassis",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Transuranic Volatiles", "2" },
+                    { "Superheavy Exotics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1842,8 +1863,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Security Systems",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Metals", "2" },
+                    { "Heavy Noble Gases", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1853,8 +1874,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Self-healing Materials",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Noble Gases", "2" },
+                    { "Halogens", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1886,8 +1907,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Silo Control Systems",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Metaloids", "2" },
+                    { "Complex Non-Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1908,8 +1929,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Small Arms",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Light Halogens", "2" },
+                    { "Alkaline Earth Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -1919,8 +1940,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Smart Conveyors",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Strong Alkali Organics", "2" },
+                    { "Lanthanide Volatiles", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -1941,8 +1962,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Smart Toolsets",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Non-Metallics", "2" },
+                    { "Metallics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -2007,8 +2028,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Survival Pods",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Inorganics", "2" },
+                    { "Acidic Inorganics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -2018,8 +2039,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Suspension Fluids",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Organics", "2" },
+                    { "Acidic Organics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -2029,8 +2050,8 @@ namespace OE2EmpireTracker.Data
                 Name = "TacticalNet C3 Systems",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Metals", "2" },
+                    { "Heavy Noble Gases", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -2040,8 +2061,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Target Lock Relays",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Metals", "2" },
+                    { "Heavy Noble Gases", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -2084,8 +2105,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Telepresence Equipment",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Metals", "2" },
+                    { "Heavy Noble Gases", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -2095,8 +2116,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Testing Simulators",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Noble Gases", "2" },
+                    { "Halogens", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -2117,8 +2138,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Thrilltech Suites",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Heavy Alkali Metals", "2" },
+                    { "Lanthanides", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -2150,8 +2171,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Trauma Systems",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Heavy Alkali Metals", "2" },
+                    { "Lanthanides", "1" }
                 }
             });
             instance.Add(new Commodity()
@@ -2183,8 +2204,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Valuation Vaults",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Strong Alkali Inorganics", "2" },
+                    { "Heavy Post-Trans Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -2227,8 +2248,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Vrtrek Units",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Strong Alkali Inorganics", "2" },
+                    { "Heavy Post-Trans Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -2271,8 +2292,8 @@ namespace OE2EmpireTracker.Data
                 Name = "WarTech Housings",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Light Halogens", "2" },
+                    { "Alkaline Earth Metals", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -2282,8 +2303,8 @@ namespace OE2EmpireTracker.Data
                 Name = "Waste Management Fluids",
                 ConstructionResources = new Dictionary<string, string>()
                 {
-                    { "a", "" },
-                    { "b", "" }
+                    { "Alkali Organics", "2" },
+                    { "Acidic Organics", "2" }
                 }
             });
             instance.Add(new Commodity()
@@ -2352,6 +2373,28 @@ namespace OE2EmpireTracker.Data
 
             foreach (Commodity commodity in instance)
             {
+                foreach (KeyValuePair<string, string> constructionResource in commodity.ConstructionResources)
+                {
+                    string resourceName = constructionResource.Key;
+                    string resourceAmount = constructionResource.Value;
+                    if (string.IsNullOrEmpty(constructionResource.Value))
+                    {
+                        Debug.Print($"Commodity with name {commodity.Name} and resource {resourceName} not fully configured!");
+                        continue;
+                    }
+
+                    Resource resource = null;
+                    if (!Resource.ResourceMapByString.TryGetValue(resourceName, out resource))
+                    {
+                        throw new Exception($"Failed to find resource with name {resourceName} for commodity {commodity.Name}");
+                    }
+
+                    int amount = 0;
+                    if (!int.TryParse(resourceAmount, out amount))
+                    {
+                        throw new Exception($"Failed to parse amount with value {resourceAmount} for commodity {commodity.Name}");
+                    }
+                }
                 _commodityMapByEnum[commodity.ID] = commodity;
                 _commodityMapByString[commodity.Name] = commodity;
             }

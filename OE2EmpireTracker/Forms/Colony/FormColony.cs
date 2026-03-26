@@ -463,7 +463,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             cmbItem.DataSource = filteredItemBindingList;
             cmbItem.ValueMember = "Name";
-            cmbItem.DisplayMember = "Name";
+            cmbItem.DisplayMember = "ExtendedName";
         }
 
         private void cmbPurity_SelectedIndexChanged(object sender, EventArgs e)
