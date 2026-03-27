@@ -96,7 +96,7 @@ namespace OE2EmpireTracker.Data
         //public KeyValuePair<int, int> FuelTransferRate { get; set; }
 
         [JsonIgnore]
-        public string ExtendedName {
+        public override string ExtendedName {
             get {
                 if (UUID == null)
                 {

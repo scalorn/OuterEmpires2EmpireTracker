@@ -344,6 +344,9 @@ namespace OE2EmpireTracker.Forms.Colony
             Debug.Print("populateForm: Calling populateStatus finished");
 
             tabDetailedData.Visible = true;
+
+            populateItemGrid();
+
             this.ResumeLayout();
             guard.release();
             Debug.Print("populateForm completed!");
@@ -492,6 +495,24 @@ namespace OE2EmpireTracker.Forms.Colony
                 }
 
                 selectedColony.Items.AddItem(item);
+                populateItemGrid();
+            }
+        }
+
+        private void populateItemGrid()
+        {
+            // Populate item grid colonies items.
+            dgvItems.Rows.Clear();
+            foreach (KeyValuePair<string, Item> itemEntry in selectedColony.Items.Items)
+            {
+                dgvItems.Rows.Add();
+                DataGridViewRow row = dgvItems.Rows[dgvItems.RowCount - 2];
+                row.Tag = itemEntry.Value;
+                row.Cells[0].Tag = itemEntry.Value;
+                row.Cells[0].Value = itemEntry.Value.ItemType.ToString();
+                row.Cells[1].Value = itemEntry.Value.ExtendedName;
+                row.Cells[2].Value = "0"; // TODO: Implement locks.
+                row.Cells[3].Value = itemEntry.Value.Quantity;
             }
         }
 
@@ -585,6 +606,26 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbItem.DataSource = filteredResourcesBindingList;
             cmbItem.ValueMember = "Name";
             cmbItem.DisplayMember = "Name";
+        }
+
+        private void dgvItems_SelectionChanged(object sender, EventArgs e)
+        {
+            // Prevent the SelectionChanged event from triggering an error if the current cell is null
+            if (dgvItems.CurrentCell == null)
+                return;
+
+            // Check if the current cell is not in the "Amount" column.
+            if (dgvItems.Columns[dgvItems.CurrentCell.ColumnIndex].Name != "Amount")
+            {
+                // Programmatically deselect the cell
+                dgvItems.CurrentCell.Selected = false;
+
+                // Focus the "Amount" cell in the same row, if it exists.
+                if (dgvItems.Rows[dgvItems.CurrentCell.RowIndex].Cells.Count > 1)
+                {
+                    dgvItems.CurrentCell = dgvItems.Rows[dgvItems.CurrentCell.RowIndex].Cells[3];
+                }
+            }
         }
     }
 }

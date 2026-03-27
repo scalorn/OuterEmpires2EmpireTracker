@@ -20,6 +20,29 @@ namespace OE2EmpireTracker.Data
         [Required]
         public virtual string Name { get; set; }= string.Empty;
 
+        public virtual string ExtendedName { 
+            get 
+            {
+                string extendedName = Name;
+                if (ItemType == Data.ItemType.ItemTypeEnum.Resource)
+                {
+                    if (!string.IsNullOrEmpty(ResourcePurity))
+                    {
+                        extendedName += $" ({ResourcePurity})";
+                    }
+                }
+                if (ItemType == Data.ItemType.ItemTypeEnum.Commodity)
+                {
+                    Commodity.ResourceMapByEnum.TryGetValue(BaseItemTypeID, out Commodity commodity);
+                    if (commodity != null)
+                    {
+                        extendedName = commodity.ExtendedName;
+                    }
+                }
+                return extendedName;
+            }
+        }
+
         [Required]
         public virtual string NickName { get; set; }= string.Empty;
         [Required]

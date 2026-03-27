@@ -581,16 +581,19 @@
             this.dgvItems.Name = "dgvItems";
             this.dgvItems.Size = new System.Drawing.Size(889, 430);
             this.dgvItems.TabIndex = 7;
+            this.dgvItems.SelectionChanged += new System.EventHandler(this.dgvItems_SelectionChanged);
             // 
             // ItemType
             // 
             this.ItemType.HeaderText = "ItemType";
             this.ItemType.Name = "ItemType";
+            this.ItemType.ReadOnly = true;
             // 
             // Item
             // 
             this.Item.HeaderText = "Item";
             this.Item.Name = "Item";
+            this.Item.ReadOnly = true;
             this.Item.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.Item.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Item.Width = 150;
@@ -599,6 +602,7 @@
             // 
             this.LockedAmount.HeaderText = "Locked Amount";
             this.LockedAmount.Name = "LockedAmount";
+            this.LockedAmount.ReadOnly = true;
             // 
             // Amount
             // 
