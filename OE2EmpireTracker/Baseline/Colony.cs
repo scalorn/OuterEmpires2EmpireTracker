@@ -35,6 +35,8 @@ namespace OE2EmpireTracker.Baseline
         public PropertyBag Properties { get; set; }
         public PropertyBag AssignedWorkers { get; set; }
 
+        public Dictionary<string, ColonyStructureStatus> Statuses { get; set; } = new Dictionary<string, ColonyStructureStatus>();
+
         public double Power { get; set; }
         public double Habitation { get; set; }
         public double Food { get; set; }

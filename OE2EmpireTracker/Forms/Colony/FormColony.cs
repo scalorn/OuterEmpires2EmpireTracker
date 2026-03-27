@@ -103,13 +103,15 @@ namespace OE2EmpireTracker.Forms.Colony
             ColonyStructure colonyStructureControl = new ColonyStructure();
             colonyStructureControl.Visible = false;
             colonyStructureControl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
+            colonyStructureControl.Colony = selectedColony;
             colonyStructureControl.ColonyStructureData = colonyStructureData;
             colonyStructureControl.UpdateData();
             flpColonyStructure.Controls.Add(colonyStructureControl);
 
             statusCalculator.CalculateBuilt();
             colonyStructureControl.UpdateData();
-            statusCalculator.populateStatus(rtbStatus, statusCalculator.finalActualStatus);
+            rtbStatus.Text = "";
+            ColonyStatusCalculator.populateStatus(rtbStatus, statusCalculator.finalActualStatus);
 
             colonyStructureControl.Visible = true;
             this.ResumeLayout();
@@ -119,7 +121,8 @@ namespace OE2EmpireTracker.Forms.Colony
             if (_isProgrammaticUpdate > 0) return;
 
             statusCalculator.CalculateBuilt();
-            statusCalculator.populateStatus(rtbStatus, statusCalculator.finalActualStatus);
+            rtbStatus.Text = "";
+            ColonyStatusCalculator.populateStatus(rtbStatus, statusCalculator.finalActualStatus);
         }
 
         private void txtFilterFlatpack_TextChanged(object sender, EventArgs e)
@@ -340,7 +343,8 @@ namespace OE2EmpireTracker.Forms.Colony
             statusCalculator.CalculateBuilt();
             Debug.Print("populateForm: Calling CalculateBuilt finished");
             Debug.Print("populateForm: Calling populateStatus started");
-            statusCalculator.populateStatus(rtbStatus, statusCalculator.finalActualStatus);
+            rtbStatus.Text = "";
+            ColonyStatusCalculator.populateStatus(rtbStatus, statusCalculator.finalActualStatus);
             Debug.Print("populateForm: Calling populateStatus finished");
 
             tabDetailedData.Visible = true;

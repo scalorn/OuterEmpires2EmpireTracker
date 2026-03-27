@@ -11,20 +11,20 @@ namespace OE2EmpireTracker.Data
         public enum CommodityGroupEnum
         {
             None = 0,
-            AdministrationBlock,
-            Agridome,
-            CentreOfEconomics,
-            EngineeringBlock,
-            HealthcareInstitute,
-            InstituteOfDefence,
-            LeisureIndustryCentre,
-            LogisticsCentre,
-            ManufacturingIndustryCentre,
-            MiningIndustryCentre,
-            OffWorldLivingInstitute,
-            RefiningIndustryCentre,
-            ScienceCentre,
-            TechnologyInstitute
+            Administration,
+            Agriculture,
+            Economy,
+            Engineering,
+            Medical,
+            Defence,
+            Leisure,
+            Logistics,
+            Manufacturing,
+            Mining,
+            Habitation,
+            Refining,
+            Research,
+            HiTech
         }
 
         public CommodityGroupEnum ID { get; set; } = CommodityGroupEnum.None;
@@ -42,20 +42,20 @@ namespace OE2EmpireTracker.Data
         private static List<CommodityGroup> getCommodityGroups()
         {
             List<CommodityGroup> instance = new List<CommodityGroup>();
-            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.AdministrationBlock, Name = "Administration Block" });
-            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.Agridome, Name = "Agridome" });
-            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.CentreOfEconomics, Name = "Centre of Economics" });
-            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.EngineeringBlock, Name = "Engineering Block" });
-            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.HealthcareInstitute, Name = "Healthcare Institute" });
-            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.InstituteOfDefence, Name = "Institute of Defence" });
-            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.LeisureIndustryCentre, Name = "Leisure Industry Centre" });
-            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.LogisticsCentre, Name = "Logistics Centre" });
-            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.ManufacturingIndustryCentre, Name = "Manufacturing Industry Centre" });
-            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.MiningIndustryCentre, Name = "Mining Industry Centre" });
-            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.OffWorldLivingInstitute, Name = "OffWorld Living Institute" });
-            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.RefiningIndustryCentre, Name = "Refining Industry Centre" });
-            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.ScienceCentre, Name = "Science Centre" });
-            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.TechnologyInstitute, Name = "Technology Institute" });
+            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.Administration, Name = "Administration" });
+            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.Agriculture, Name = "Agriculture" });
+            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.Economy, Name = "Economy" });
+            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.Engineering, Name = "Engineering" });
+            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.Medical, Name = "Medical" });
+            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.Defence, Name = "Defence" });
+            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.Leisure, Name = "Leisure" });
+            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.Logistics, Name = "Logistics" });
+            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.Manufacturing, Name = "Manufacturing" });
+            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.Mining, Name = "Mining" });
+            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.Habitation, Name = "Habitation" });
+            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.Refining, Name = "Refining" });
+            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.Research, Name = "Research" });
+            instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.HiTech, Name = "Hi-Tech" });
 
             instance.Sort((x, y) => x.Name.CompareTo(y.Name));
 

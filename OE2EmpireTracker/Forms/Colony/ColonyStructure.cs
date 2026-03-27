@@ -19,6 +19,7 @@ namespace OE2EmpireTracker.Forms.Colony
         private EmpireContext empireContext;
         private PlayerContext playerContext;
         private int _isProgrammaticUpdate = 0;
+        public Baseline.Colony Colony { get; set; }
         public Baseline.ColonyStructure ColonyStructureData { get; set; }
         private Blueprint FlatpackBlueprint { get; set; }
         private double PowerProvided { get; set; }
@@ -223,8 +224,20 @@ namespace OE2EmpireTracker.Forms.Colony
             if (FlatpackBlueprint != null)
             {
                 ColonyStatusCalculator.AppendColoredText(rtbStatus, FlatpackBlueprint.ExtendedName, Color.Black);
+
+                rtbStatus.AppendText("\n");
             }
 
+            if (ColonyStructureData != null && ColonyStructureData.Statuses != null)
+            {
+                ColonyStructureData.Statuses.TryGetValue("Actual", out ColonyStructureStatus status);
+                if (status != null)
+                {
+                    ColonyStatusCalculator.populateStatus(rtbStatus, status);
+                }
+            }
+
+            /*
             // Power
             ColonyStatusCalculator.AppendColoredText(rtbStatus, "\nPower: ", Color.Black);
             ColonyStatusCalculator.AppendColoredText(rtbStatus, "" + PowerRequired, Color.Red);
@@ -250,6 +263,7 @@ namespace OE2EmpireTracker.Forms.Colony
             ColonyStatusCalculator.AppendColoredText(rtbStatus, "4", Color.Green);
             ColonyStatusCalculator.AppendColoredText(rtbStatus, "/", Color.Black);
             ColonyStatusCalculator.AppendColoredText(rtbStatus, "10 ", Color.Black);
+            */
 
             guard.release();
         }

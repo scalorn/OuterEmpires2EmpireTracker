@@ -722,6 +722,7 @@
       "ItemType": 11,
       "BaseItemTypeID": "",
       "Name": null,
+      "ExtendedName": null,
       "NickName": "Nick",
       "Description": null,
       "Quantity": 0,
@@ -764,6 +765,7 @@
       "ItemType": 11,
       "BaseItemTypeID": "",
       "Name": null,
+      "ExtendedName": null,
       "NickName": null,
       "Description": null,
       "Quantity": 0,
@@ -781,6 +783,7 @@
   "ItemType": 0,
   "BaseItemTypeID": "",
   "Name": null,
+  "ExtendedName": null,
   "NickName": null,
   "Description": null,
   "Quantity": 0,
@@ -791,6 +794,7 @@
   "ItemType": 6,
   "BaseItemTypeID": "",
   "Name": "",
+  "ExtendedName": " (High)",
   "NickName": "",
   "Description": "",
   "Quantity": 0,
@@ -801,6 +805,7 @@
   "ItemType": 6,
   "BaseItemTypeID": "Acidic Inorganics",
   "Name": "",
+  "ExtendedName": " (High)",
   "NickName": "",
   "Description": "",
   "Quantity": 0,
@@ -811,6 +816,7 @@
   "ItemType": 6,
   "BaseItemTypeID": "Lanthanides",
   "Name": "Lanthanides",
+  "ExtendedName": "Lanthanides (High)",
   "NickName": "",
   "Description": "",
   "Quantity": 52354,
@@ -821,6 +827,7 @@
   "ItemType": 1,
   "BaseItemTypeID": "Advanced Biolubricants",
   "Name": "Advanced Biolubricants",
+  "ExtendedName": "Advanced Biolubricants (Engineering Block)",
   "NickName": "",
   "Description": "",
   "Quantity": 1,
@@ -841,6 +848,20 @@
           "AssignedWorkers": {
             "UnassignedSpecialistDetail": "True",
             "WhiteCollar1": "True"
+          },
+          "Statuses": {
+            "Actual": {
+              "PowerProvided": 0.0,
+              "PowerRequired": 0.0,
+              "HabitationProvision": 2.0,
+              "HabitationRequired": 1.0,
+              "FoodProvision": 2.0,
+              "FoodRequired": 1.0,
+              "EntertainmentProvided": 0.0,
+              "EntertainmentRequired": 1.0,
+              "WarehouseCapacity": 10000.0,
+              "WarehouseRequired": 0.0
+            }
           },
           "Power": 0.0,
           "Habitation": 0.0,
@@ -865,6 +886,20 @@
           "AssignedWorkers": {
             "UnassignedSpecialistDetail": "True"
           },
+          "Statuses": {
+            "Actual": {
+              "PowerProvided": 6.0,
+              "PowerRequired": 0.0,
+              "HabitationProvision": 2.0,
+              "HabitationRequired": 2.0,
+              "FoodProvision": 2.0,
+              "FoodRequired": 2.0,
+              "EntertainmentProvided": 0.0,
+              "EntertainmentRequired": 1.0,
+              "WarehouseCapacity": 10000.0,
+              "WarehouseRequired": 10000.0
+            }
+          },
           "Power": 0.0,
           "Habitation": 0.0,
           "Food": 0.0,
@@ -888,6 +923,20 @@
             "UnassignedWhiteCollarDetail": "True",
             "Specialist1": "True"
           },
+          "Statuses": {
+            "Actual": {
+              "PowerProvided": 6.0,
+              "PowerRequired": 2.0,
+              "HabitationProvision": 2.0,
+              "HabitationRequired": 4.0,
+              "FoodProvision": 2.0,
+              "FoodRequired": 4.0,
+              "EntertainmentProvided": 0.0,
+              "EntertainmentRequired": 2.0,
+              "WarehouseCapacity": 10000.0,
+              "WarehouseRequired": 10000.0
+            }
+          },
           "Power": 0.0,
           "Habitation": 0.0,
           "Food": 0.0,
@@ -910,6 +959,20 @@
           "AssignedWorkers": {
             "UnassignedWhiteCollarDetail": "True",
             "BlueCollar1": "True"
+          },
+          "Statuses": {
+            "Actual": {
+              "PowerProvided": 6.0,
+              "PowerRequired": 4.0,
+              "HabitationProvision": 2.0,
+              "HabitationRequired": 7.0,
+              "FoodProvision": 2.0,
+              "FoodRequired": 7.0,
+              "EntertainmentProvided": 0.0,
+              "EntertainmentRequired": 3.0,
+              "WarehouseCapacity": 260000.0,
+              "WarehouseRequired": 10000.0
+            }
           },
           "Power": 0.0,
           "Habitation": 0.0,
@@ -936,6 +999,20 @@
             "BlueCollar1": "False",
             "UnassignedSpecialistDetail": "True"
           },
+          "Statuses": {
+            "Actual": {
+              "PowerProvided": 6.0,
+              "PowerRequired": 4.0,
+              "HabitationProvision": 2.0,
+              "HabitationRequired": 10.0,
+              "FoodProvision": 2.0,
+              "FoodRequired": 10.0,
+              "EntertainmentProvided": 0.0,
+              "EntertainmentRequired": 3.0,
+              "WarehouseCapacity": 260000.0,
+              "WarehouseRequired": 260000.0
+            }
+          },
           "Power": 0.0,
           "Habitation": 0.0,
           "Food": 0.0,
@@ -961,6 +1038,20 @@
             "BlueCollar1": "False",
             "UnassignedSpecialistDetail": "True"
           },
+          "Statuses": {
+            "Actual": {
+              "PowerProvided": 6.0,
+              "PowerRequired": 4.0,
+              "HabitationProvision": 2.0,
+              "HabitationRequired": 13.0,
+              "FoodProvision": 2.0,
+              "FoodRequired": 13.0,
+              "EntertainmentProvided": 0.0,
+              "EntertainmentRequired": 3.0,
+              "WarehouseCapacity": 260000.0,
+              "WarehouseRequired": 260000.0
+            }
+          },
           "Power": 0.0,
           "Habitation": 0.0,
           "Food": 0.0,
@@ -983,6 +1074,20 @@
           },
           "AssignedWorkers": {
             "Specialist1": "False"
+          },
+          "Statuses": {
+            "Actual": {
+              "PowerProvided": 6.0,
+              "PowerRequired": 4.0,
+              "HabitationProvision": 2.0,
+              "HabitationRequired": 16.0,
+              "FoodProvision": 2.0,
+              "FoodRequired": 16.0,
+              "EntertainmentProvided": 0.0,
+              "EntertainmentRequired": 3.0,
+              "WarehouseCapacity": 260000.0,
+              "WarehouseRequired": 260000.0
+            }
           },
           "Power": 0.0,
           "Habitation": 0.0,
@@ -1007,6 +1112,20 @@
             "UnassignedSpecialistDetail": "True",
             "BlueCollar1": "True"
           },
+          "Statuses": {
+            "Actual": {
+              "PowerProvided": 6.0,
+              "PowerRequired": 6.0,
+              "HabitationProvision": 2.0,
+              "HabitationRequired": 20.0,
+              "FoodProvision": 2.0,
+              "FoodRequired": 20.0,
+              "EntertainmentProvided": 10.0,
+              "EntertainmentRequired": 4.0,
+              "WarehouseCapacity": 260000.0,
+              "WarehouseRequired": 260000.0
+            }
+          },
           "Power": 0.0,
           "Habitation": 0.0,
           "Food": 0.0,
@@ -1028,6 +1147,20 @@
           },
           "AssignedWorkers": {
             "UnassignedSpecialistDetail": "True"
+          },
+          "Statuses": {
+            "Actual": {
+              "PowerProvided": 6.0,
+              "PowerRequired": 7.0,
+              "HabitationProvision": 6.0,
+              "HabitationRequired": 24.0,
+              "FoodProvision": 2.0,
+              "FoodRequired": 24.0,
+              "EntertainmentProvided": 10.0,
+              "EntertainmentRequired": 14.0,
+              "WarehouseCapacity": 260000.0,
+              "WarehouseRequired": 260000.0
+            }
           },
           "Power": 0.0,
           "Habitation": 0.0,
@@ -1052,6 +1185,20 @@
             "UnassignedSpecialistDetail": "True",
             "BlueCollar1": "True"
           },
+          "Statuses": {
+            "Actual": {
+              "PowerProvided": 6.0,
+              "PowerRequired": 8.0,
+              "HabitationProvision": 6.0,
+              "HabitationRequired": 29.0,
+              "FoodProvision": 6.0,
+              "FoodRequired": 29.0,
+              "EntertainmentProvided": 10.0,
+              "EntertainmentRequired": 15.0,
+              "WarehouseCapacity": 260000.0,
+              "WarehouseRequired": 260000.0
+            }
+          },
           "Power": 0.0,
           "Habitation": 0.0,
           "Food": 0.0,
@@ -1072,6 +1219,20 @@
             "Online": "True"
           },
           "AssignedWorkers": {},
+          "Statuses": {
+            "Actual": {
+              "PowerProvided": 12.0,
+              "PowerRequired": 8.0,
+              "HabitationProvision": 6.0,
+              "HabitationRequired": 34.0,
+              "FoodProvision": 6.0,
+              "FoodRequired": 34.0,
+              "EntertainmentProvided": 10.0,
+              "EntertainmentRequired": 15.0,
+              "WarehouseCapacity": 260000.0,
+              "WarehouseRequired": 260000.0
+            }
+          },
           "Power": 0.0,
           "Habitation": 0.0,
           "Food": 0.0,
@@ -1095,6 +1256,7 @@
   "ItemType": 0,
   "BaseItemTypeID": "",
   "Name": "",
+  "ExtendedName": "",
   "NickName": "",
   "Description": "",
   "Quantity": 0,
@@ -1115,6 +1277,7 @@
             "UnassignedSpecialistDetail": "True",
             "WhiteCollar1": "True"
           },
+          "Statuses": {},
           "Power": 0.0,
           "Habitation": 0.0,
           "Food": 0.0,
@@ -1137,6 +1300,7 @@
           "AssignedWorkers": {
             "UnassignedSpecialistDetail": "True"
           },
+          "Statuses": {},
           "Power": 0.0,
           "Habitation": 0.0,
           "Food": 0.0,
@@ -1160,6 +1324,7 @@
             "UnassignedWhiteCollarDetail": "True",
             "Specialist1": "True"
           },
+          "Statuses": {},
           "Power": 0.0,
           "Habitation": 0.0,
           "Food": 0.0,
@@ -1183,6 +1348,7 @@
             "UnassignedWhiteCollarDetail": "True",
             "BlueCollar1": "True"
           },
+          "Statuses": {},
           "Power": 0.0,
           "Habitation": 0.0,
           "Food": 0.0,
