@@ -441,30 +441,6 @@ namespace OE2EmpireTracker.Forms.Colony
                 }
             }
         }
-        public void populateItemWithResources()
-        {
-            IReadOnlyList<Resource> resources = Data.Resource.Resources;
-
-            var filteredItemBindingList = new BindingSource();
-            // Set the in-memory list as the DataSource for the BindingSource
-            filteredItemBindingList.DataSource = resources;
-
-            cmbItem.DataSource = filteredItemBindingList;
-            cmbItem.ValueMember = "Name";
-            cmbItem.DisplayMember = "Name";
-        }
-        public void populateItemWithCommodities()
-        {
-            IReadOnlyList<Commodity> commodities = Data.Commodity.Commodities;
-
-            var filteredItemBindingList = new BindingSource();
-            // Set the in-memory list as the DataSource for the BindingSource
-            filteredItemBindingList.DataSource = commodities;
-
-            cmbItem.DataSource = filteredItemBindingList;
-            cmbItem.ValueMember = "Name";
-            cmbItem.DisplayMember = "ExtendedName";
-        }
 
         private void cmbPurity_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -546,11 +522,22 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void txtItemFilter_TextChanged(object sender, EventArgs e)
         {
-            updateItemFilterListBase();
+            Data.ItemType itemType = cmbItemType.SelectedItem as Data.ItemType;
+            if (itemType != null)
+            {
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.Resource)
+                {
+                    populateItemWithResources();
+                }
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.Commodity)
+                {
+                    populateItemWithCommodities();
+                }
+            }
             cmbItem.DroppedDown = true;
         }
 
-        public void updateItemFilterListBase()
+        public void populateItemWithCommodities()
         {
             string searchText = txtItemFilter.Text;
 
@@ -571,6 +558,33 @@ namespace OE2EmpireTracker.Forms.Colony
             filteredCommoditiesBindingList.DataSource = filteredList;
 
             cmbItem.DataSource = filteredCommoditiesBindingList;
+            cmbItem.ValueMember = "Name";
+            cmbItem.DisplayMember = "ExtendedName";
+
+        }
+        public void populateItemWithResources()
+        {
+            string searchText = txtItemFilter.Text;
+
+            var filteredResourcesBindingList = new BindingSource();
+
+            // Filter the complete commodity collection to only include items 
+            // whose extended names contain that text (case-insensitive matching)
+            IReadOnlyList<Resource> allResources = Data.Resource.Resources;
+            List<Resource> filteredList = allResources
+                .Where(item => item.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                .OrderBy(p => p.Name)
+                .ToList();
+
+            // Insert an empty blank entry at the beginning to allow the user to deselect their current selection
+            filteredList.Insert(0, new Resource());
+
+            // Set the in-memory list as the DataSource for the BindingSource
+            filteredResourcesBindingList.DataSource = filteredList;
+
+            cmbItem.DataSource = filteredResourcesBindingList;
+            cmbItem.ValueMember = "Name";
+            cmbItem.DisplayMember = "Name";
         }
     }
 }
