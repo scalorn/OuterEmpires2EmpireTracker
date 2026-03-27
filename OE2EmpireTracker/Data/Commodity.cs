@@ -75,6 +75,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.EngineeringBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agriculture,
                 ID = "Advanced Biolubricants",
                 Name = "Advanced Biolubricants",
                 ConstructionResources = new Dictionary<string, string>()
@@ -86,6 +87,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.EngineeringBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Refining,
                 ID = "Advanced Materials Simulators",
                 Name = "Advanced Materials Simulators",
                 ConstructionResources = new Dictionary<string, string>()
@@ -108,6 +110,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ManufacturingIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Logistics,
                 ID = "AGI Manu-Augments",
                 Name = "AGI Manu-Augments",
                 ConstructionResources = new Dictionary<string, string>()
@@ -155,6 +158,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.InstituteOfDefence,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Manufacturing,
                 ID = "AmmoMate Munitions Printer",
                 Name = "AmmoMate Munitions Printer",
                 ConstructionResources = new Dictionary<string, string>()
@@ -178,6 +182,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ManufacturingIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Engineering,
                 ID = "Assemblatrons",
                 Name = "Assemblatrons",
                 ConstructionResources = new Dictionary<string, string>()
@@ -189,6 +194,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ManufacturingIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Refining,
                 ID = "AssembleMate Crucibles",
                 Name = "AssembleMate Crucibles",
                 ConstructionResources = new Dictionary<string, string>()
@@ -200,6 +206,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.RefiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Engineering,
                 ID = "Atomsmasher Crucibles",
                 Name = "Atomsmasher Crucibles",
                 ConstructionResources = new Dictionary<string, string>()
@@ -223,6 +230,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.InstituteOfDefence,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Engineering,
                 ID = "BattleCom Interconnects",
                 Name = "BattleCom Interconnects",
                 ConstructionResources = new Dictionary<string, string>()
@@ -234,6 +242,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.MiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Leisure,
                 ID = "Biochem Delivery Systems",
                 Name = "Biochem Delivery Systems",
                 ConstructionResources = new Dictionary<string, string>()
@@ -281,6 +290,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ScienceCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agriculture,
                 ID = "Biotech Vision Systems",
                 Name = "Biotech Vision Systems",
                 ConstructionResources = new Dictionary<string, string>()
@@ -292,6 +302,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ScienceCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Leisure,
                 ID = "Brainwave Scintillators",
                 Name = "Brainwave Scintillators",
                 ConstructionResources = new Dictionary<string, string>()
@@ -303,6 +314,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.OffWorldLivingInstitute,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Habitation,
                 ID = "Branding Systems",
                 Name = "Branding Systems",
                 ConstructionResources = new Dictionary<string, string>()
@@ -314,6 +326,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.RefiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Engineering,
                 ID = "Calalyst Reaction Simulators",
                 Name = "Calalyst Reaction Simulators",
                 ConstructionResources = new Dictionary<string, string>()
@@ -337,6 +350,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.RefiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agriculture,
                 ID = "Caustic Fluids",
                 Name = "Caustic Fluids",
                 ConstructionResources = new Dictionary<string, string>()
@@ -360,6 +374,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.OffWorldLivingInstitute,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agriculture,
                 ID = "Clean Air Units",
                 Name = "Clean Air Units",
                 ConstructionResources = new Dictionary<string, string>()
@@ -371,6 +386,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.OffWorldLivingInstitute,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agriculture,
                 ID = "Climate Hubs",
                 Name = "Climate Hubs",
                 ConstructionResources = new Dictionary<string, string>()
@@ -382,6 +398,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.LeisureIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Habitation,
                 ID = "Clothing Printers",
                 Name = "Clothing Printers",
                 ConstructionResources = new Dictionary<string, string>()
@@ -393,6 +410,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.OffWorldLivingInstitute,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Economy,
                 ID = "Comfortcore Arrays",
                 Name = "Comfortcore Arrays",
                 ConstructionResources = new Dictionary<string, string>()
@@ -404,6 +422,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.RefiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Medical,
                 ID = "Concentrax Containment Units",
                 Name = "Concentrax Containment Units",
                 ConstructionResources = new Dictionary<string, string>()
@@ -415,6 +434,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ScienceCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Administration,
                 ID = "Conceptcore Drivers",
                 Name = "Conceptcore Drivers",
                 ConstructionResources = new Dictionary<string, string>()
@@ -426,6 +446,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.LeisureIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agriculture,
                 ID = "Confectionery",
                 Name = "Confectionery",
                 ConstructionResources = new Dictionary<string, string>()
@@ -437,6 +458,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.EngineeringBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Mining,
                 ID = "Constructex Waldos",
                 Name = "Constructex Waldos",
                 ConstructionResources = new Dictionary<string, string>()
@@ -448,6 +470,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.InstituteOfDefence,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Engineering,
                 ID = "Containment Units",
                 Name = "Containment Units",
                 ConstructionResources = new Dictionary<string, string>()
@@ -459,6 +482,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.EngineeringBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Medical,
                 ID = "Core Dyagnostic Component",
                 Name = "Core Dyagnostic Component",
                 ConstructionResources = new Dictionary<string, string>()
@@ -470,6 +494,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.MiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Engineering,
                 ID = "Coreseeker Guidance Bits",
                 Name = "Coreseeker Guidance Bits",
                 ConstructionResources = new Dictionary<string, string>()
@@ -481,6 +506,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.AdministrationBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HiTech,
                 ID = "CRM Units",
                 Name = "CRM Units",
                 ConstructionResources = new Dictionary<string, string>()
@@ -492,6 +518,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.InstituteOfDefence,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Engineering,
                 ID = "Cryogenic Coolant Tanks",
                 Name = "Cryogenic Coolant Tanks",
                 ConstructionResources = new Dictionary<string, string>()
@@ -503,6 +530,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ScienceCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Economy,
                 ID = "Cryptochips",
                 Name = "Cryptochips",
                 ConstructionResources = new Dictionary<string, string>()
@@ -525,6 +553,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ScienceCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Administration,
                 ID = "DataScope Assemblies",
                 Name = "DataScope Assemblies",
                 ConstructionResources = new Dictionary<string, string>()
@@ -548,6 +577,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ManufacturingIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Refining,
                 ID = "DegasTech Reforgers",
                 Name = "DegasTech Reforgers",
                 ConstructionResources = new Dictionary<string, string>()
@@ -571,6 +601,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ManufacturingIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Economy,
                 ID = "Demand Drivers",
                 Name = "Demand Drivers",
                 ConstructionResources = new Dictionary<string, string>()
@@ -582,6 +613,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.OffWorldLivingInstitute,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Leisure,
                 ID = "Design AGI Chassis",
                 Name = "Design AGI Chassis",
                 ConstructionResources = new Dictionary<string, string>()
@@ -593,6 +625,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.OffWorldLivingInstitute,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Medical,
                 ID = "Diagnocores",
                 Name = "Diagnocores",
                 ConstructionResources = new Dictionary<string, string>()
@@ -616,6 +649,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.AdministrationBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Logistics,
                 ID = "Document Calibrators",
                 Name = "Document Calibrators",
                 ConstructionResources = new Dictionary<string, string>()
@@ -627,6 +661,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.MiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Manufacturing,
                 ID = "Drillcore Chassis",
                 Name = "Drillcore Chassis",
                 ConstructionResources = new Dictionary<string, string>()
@@ -638,6 +673,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.MiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Engineering,
                 ID = "Earthmover Fabricators",
                 Name = "Earthmover Fabricators",
                 ConstructionResources = new Dictionary<string, string>()
@@ -661,6 +697,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ManufacturingIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Administration,
                 ID = "Efficiency Systems",
                 Name = "Efficiency Systems",
                 ConstructionResources = new Dictionary<string, string>()
@@ -672,6 +709,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.OffWorldLivingInstitute,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Engineering,
                 ID = "Energy Storage systems",
                 Name = "Energy Storage systems",
                 ConstructionResources = new Dictionary<string, string>()
@@ -683,6 +721,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ScienceCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agriculture,
                 ID = "Enriched Agar Gels",
                 Name = "Enriched Agar Gels",
                 ConstructionResources = new Dictionary<string, string>()
@@ -694,6 +733,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.LeisureIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HiTech,
                 ID = "Entertainmate Interconnects",
                 Name = "Entertainmate Interconnects",
                 ConstructionResources = new Dictionary<string, string>()
@@ -717,6 +757,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.LeisureIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Economy,
                 ID = "Events AGI Chassis",
                 Name = "Events AGI Chassis",
                 ConstructionResources = new Dictionary<string, string>()
@@ -728,6 +769,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ManufacturingIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Logistics,
                 ID = "Exoskeleton Waldos",
                 Name = "Exoskeleton Waldos",
                 ConstructionResources = new Dictionary<string, string>()
@@ -739,6 +781,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.LeisureIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agriculture,
                 ID = "Fermented Beverages",
                 Name = "Fermented Beverages",
                 ConstructionResources = new Dictionary<string, string>()
@@ -750,6 +793,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.RefiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Engineering,
                 ID = "Filterator Chassis",
                 Name = "Filterator Chassis",
                 ConstructionResources = new Dictionary<string, string>()
@@ -761,6 +805,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ManufacturingIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Economy,
                 ID = "Finance AutoMods",
                 Name = "Finance AutoMods",
                 ConstructionResources = new Dictionary<string, string>()
@@ -795,6 +840,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.LeisureIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Habitation,
                 ID = "G-Suites",
                 Name = "G-Suites",
                 ConstructionResources = new Dictionary<string, string>()
@@ -806,6 +852,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.LeisureIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Research,
                 ID = "Gameonix Simulators",
                 Name = "Gameonix Simulators",
                 ConstructionResources = new Dictionary<string, string>()
@@ -841,6 +888,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.EngineeringBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Defence,
                 ID = "General Control Systems",
                 Name = "General Control Systems",
                 ConstructionResources = new Dictionary<string, string>()
@@ -852,6 +900,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.MiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agriculture,
                 ID = "Geoengineering Slurry",
                 Name = "Geoengineering Slurry",
                 ConstructionResources = new Dictionary<string, string>()
@@ -875,6 +924,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ScienceCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Engineering,
                 ID = "Gravimeters",
                 Name = "Gravimeters",
                 ConstructionResources = new Dictionary<string, string>()
@@ -886,6 +936,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.RefiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Economy,
                 ID = "Handheld Infrartek Units",
                 Name = "Handheld Infrartek Units",
                 ConstructionResources = new Dictionary<string, string>()
@@ -909,6 +960,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.RefiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Habitation,
                 ID = "Hazard Bunkers",
                 Name = "Hazard Bunkers",
                 ConstructionResources = new Dictionary<string, string>()
@@ -920,6 +972,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.RefiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Medical,
                 ID = "Hazard Disposal Systems",
                 Name = "Hazard Disposal Systems",
                 ConstructionResources = new Dictionary<string, string>()
@@ -931,6 +984,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.RefiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Mining,
                 ID = "Hazard Gear",
                 Name = "Hazard Gear",
                 ConstructionResources = new Dictionary<string, string>()
@@ -954,6 +1008,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ManufacturingIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Engineering,
                 ID = "Heavy Alloy Printers",
                 Name = "Heavy Alloy Printers",
                 ConstructionResources = new Dictionary<string, string>()
@@ -977,6 +1032,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.MiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Defence,
                 ID = "Heavy Laser Drill Parts",
                 Name = "Heavy Laser Drill Parts",
                 ConstructionResources = new Dictionary<string, string>()
@@ -988,6 +1044,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.MiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Defence,
                 ID = "Heavy Mover Kits",
                 Name = "Heavy Mover Kits",
                 ConstructionResources = new Dictionary<string, string>()
@@ -999,6 +1056,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.EngineeringBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Mining,
                 ID = "Heavy Robot Bays",
                 Name = "Heavy Robot Bays",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1010,6 +1068,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ManufacturingIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Defence,
                 ID = "Heavy Unit Manipulators",
                 Name = "Heavy Unit Manipulators",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1021,6 +1080,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.MiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Manufacturing,
                 ID = "HEV Duty Exosuits",
                 Name = "HEV Duty Exosuits",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1032,6 +1092,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.InstituteOfDefence,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Manufacturing,
                 ID = "HEV-Battledress",
                 Name = "HEV-Battledress",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1043,6 +1104,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.OffWorldLivingInstitute,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Medical,
                 ID = "Hibernation Pods",
                 Name = "Hibernation Pods",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1054,6 +1116,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.AdministrationBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HiTech,
                 ID = "HoloDesks",
                 Name = "HoloDesks",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1077,6 +1140,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.OffWorldLivingInstitute,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Manufacturing,
                 ID = "Hometech Supplies",
                 Name = "Hometech Supplies",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1088,6 +1152,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ScienceCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Habitation,
                 ID = "Human Facilities",
                 Name = "Human Facilities",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1099,6 +1164,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.OffWorldLivingInstitute,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agriculture,
                 ID = "Hydrobots",
                 Name = "Hydrobots",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1122,6 +1188,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.RefiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Engineering,
                 ID = "Hyper-Alloy Pliers",
                 Name = "Hyper-Alloy Pliers",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1133,6 +1200,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ScienceCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Administration,
                 ID = "Ideaforge Interconnects",
                 Name = "Ideaforge Interconnects",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1168,6 +1236,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.EngineeringBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HiTech,
                 ID = "Instrument Calibrators",
                 Name = "Instrument Calibrators",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1179,6 +1248,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.LeisureIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HiTech,
                 ID = "Joybot Parts",
                 Name = "Joybot Parts",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1190,6 +1260,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ScienceCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Economy,
                 ID = "Labtrackers",
                 Name = "Labtrackers",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1272,6 +1343,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.MiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Manufacturing,
                 ID = "Mass Manipulators",
                 Name = "Mass Manipulators",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1329,6 +1401,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.AdministrationBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HiTech,
                 ID = "Memochips",
                 Name = "Memochips",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1340,6 +1413,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.InstituteOfDefence,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Leisure,
                 ID = "Mess Hall Kits",
                 Name = "Mess Hall Kits",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1363,6 +1437,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ScienceCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Manufacturing,
                 ID = "Microarray Printers",
                 Name = "Microarray Printers",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1385,6 +1460,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.OffWorldLivingInstitute,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Manufacturing,
                 ID = "Modular Building Units",
                 Name = "Modular Building Units",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1408,6 +1484,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ManufacturingIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Habitation,
                 ID = "Modular Control Centres",
                 Name = "Modular Control Centres",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1442,6 +1519,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.EngineeringBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Research,
                 ID = "Molecule Assemblers",
                 Name = "Molecule Assemblers",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1453,6 +1531,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.RefiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Mining,
                 ID = "Monobonding Shields",
                 Name = "Monobonding Shields",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1464,6 +1543,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.InstituteOfDefence,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Engineering,
                 ID = "Nano-Welding Tools",
                 Name = "Nano-Welding Tools",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1475,6 +1555,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.EngineeringBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Research,
                 ID = "Nanobot Reservoirs",
                 Name = "Nanobot Reservoirs",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1486,6 +1567,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.OffWorldLivingInstitute,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Medical,
                 ID = "Nanocure Supplies",
                 Name = "Nanocure Supplies",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1497,6 +1579,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ScienceCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Manufacturing,
                 ID = "NanoLab Units",
                 Name = "NanoLab Units",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1519,6 +1602,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.LeisureIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Medical,
                 ID = "Narcotics",
                 Name = "Narcotics",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1563,6 +1647,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ManufacturingIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Medical,
                 ID = "Neural Scanners",
                 Name = "Neural Scanners",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1574,6 +1659,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.EngineeringBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Leisure,
                 ID = "NeuroInterfaze Units",
                 Name = "NeuroInterfaze Units",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1609,6 +1695,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.LeisureIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HiTech,
                 ID = "Next-Gen Sound Systems",
                 Name = "Next-Gen Sound Systems",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1620,6 +1707,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.AdministrationBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Leisure,
                 ID = "Noise Jammers",
                 Name = "Noise Jammers",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1631,6 +1719,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.AdministrationBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HiTech,
                 ID = "Note Beamers",
                 Name = "Note Beamers",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1642,6 +1731,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.AdministrationBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Leisure,
                 ID = "Oasis Control Bots",
                 Name = "Oasis Control Bots",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1653,6 +1743,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.MiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HiTech,
                 ID = "Ore Analyzers",
                 Name = "Ore Analyzers",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1664,6 +1755,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.RefiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Mining,
                 ID = "Oretech Systems",
                 Name = "Oretech Systems",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1675,6 +1767,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.AdministrationBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Habitation,
                 ID = "Organibots",
                 Name = "Organibots",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1686,6 +1779,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ScienceCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HiTech,
                 ID = "Particle Scanners",
                 Name = "Particle Scanners",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1721,6 +1815,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.EngineeringBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Mining,
                 ID = "Plasma Cutters",
                 Name = "Plasma Cutters",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1732,6 +1827,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.LeisureIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HiTech,
                 ID = "Playport Displays",
                 Name = "Playport Displays",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1755,6 +1851,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.InstituteOfDefence,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Manufacturing,
                 ID = "Power Cell Casemates",
                 Name = "Power Cell Casemates",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1766,6 +1863,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.RefiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Logistics,
                 ID = "Processing Control Systems",
                 Name = "Processing Control Systems",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1777,6 +1875,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.LeisureIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Habitation,
                 ID = "Projectors",
                 Name = "Projectors",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1799,6 +1898,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.EngineeringBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Manufacturing,
                 ID = "Prototyper Systems",
                 Name = "Prototyper Systems",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1810,6 +1910,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.InstituteOfDefence,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Mining,
                 ID = "Reactant Calibrators",
                 Name = "Reactant Calibrators",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1833,6 +1934,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.AdministrationBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Habitation,
                 ID = "Resource Allocators",
                 Name = "Resource Allocators",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1844,6 +1946,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.MiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Habitation,
                 ID = "Rig Living Space Kits",
                 Name = "Rig Living Space Kits",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1867,6 +1970,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.MiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Engineering,
                 ID = "Rockminer Drones",
                 Name = "Rockminer Drones",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1878,6 +1982,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.RefiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Mining,
                 ID = "Safety Equipment",
                 Name = "Safety Equipment",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1889,6 +1994,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.MiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Defence,
                 ID = "Scanner Chassis",
                 Name = "Scanner Chassis",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1900,6 +2006,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ScienceCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Manufacturing,
                 ID = "Sciencelink Housings",
                 Name = "Sciencelink Housings",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1911,6 +2018,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.LeisureIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HiTech,
                 ID = "Security Systems",
                 Name = "Security Systems",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1922,6 +2030,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.OffWorldLivingInstitute,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Research,
                 ID = "Self-healing Materials",
                 Name = "Self-healing Materials",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1933,6 +2042,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.EngineeringBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HiTech,
                 ID = "Self-Replicating Jigs",
                 Name = "Self-Replicating Jigs",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1956,6 +2066,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.InstituteOfDefence,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Logistics,
                 ID = "Silo Control Systems",
                 Name = "Silo Control Systems",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1979,6 +2090,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.InstituteOfDefence,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Manufacturing,
                 ID = "Small Arms",
                 Name = "Small Arms",
                 ConstructionResources = new Dictionary<string, string>()
@@ -1990,6 +2102,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.RefiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Mining,
                 ID = "Smart Conveyors",
                 Name = "Smart Conveyors",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2001,6 +2114,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.AdministrationBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Logistics,
                 ID = "Smart Systems",
                 Name = "Smart Systems",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2012,6 +2126,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ManufacturingIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Engineering,
                 ID = "Smart Toolsets",
                 Name = "Smart Toolsets",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2070,6 +2185,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.AdministrationBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Leisure,
                 ID = "Supply Keylocks",
                 Name = "Supply Keylocks",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2081,6 +2197,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.MiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Habitation,
                 ID = "Survival Pods",
                 Name = "Survival Pods",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2092,6 +2209,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ManufacturingIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agriculture,
                 ID = "Suspension Fluids",
                 Name = "Suspension Fluids",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2103,6 +2221,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.InstituteOfDefence,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HiTech,
                 ID = "TacticalNet C3 Systems",
                 Name = "TacticalNet C3 Systems",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2114,6 +2233,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.InstituteOfDefence,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HiTech,
                 ID = "Target Lock Relays",
                 Name = "Target Lock Relays",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2125,6 +2245,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.AdministrationBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Logistics,
                 ID = "Tasklinks",
                 Name = "Tasklinks",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2160,6 +2281,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.MiningIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.HiTech,
                 ID = "Telepresence Equipment",
                 Name = "Telepresence Equipment",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2171,6 +2293,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ManufacturingIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Research,
                 ID = "Testing Simulators",
                 Name = "Testing Simulators",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2194,6 +2317,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.LeisureIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Medical,
                 ID = "Thrilltech Suites",
                 Name = "Thrilltech Suites",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2217,6 +2341,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.EngineeringBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Manufacturing,
                 ID = "Tooltech Printers",
                 Name = "Tooltech Printers",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2228,6 +2353,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.InstituteOfDefence,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Medical,
                 ID = "Trauma Systems",
                 Name = "Trauma Systems",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2263,6 +2389,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.OffWorldLivingInstitute,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Economy,
                 ID = "Valuation Vaults",
                 Name = "Valuation Vaults",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2274,6 +2401,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.ScienceCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Administration,
                 ID = "VAST Arrays",
                 Name = "VAST Arrays",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2285,6 +2413,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.EngineeringBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Logistics,
                 ID = "Vehicle Bolts",
                 Name = "Vehicle Bolts",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2296,6 +2425,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.AdministrationBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Habitation,
                 ID = "Virtual Assistants",
                 Name = "Virtual Assistants",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2307,6 +2437,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.LeisureIndustryCentre,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Economy,
                 ID = "Vrtrek Units",
                 Name = "Vrtrek Units",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2353,6 +2484,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.InstituteOfDefence,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Manufacturing,
                 ID = "WarTech Housings",
                 Name = "WarTech Housings",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2364,6 +2496,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.OffWorldLivingInstitute,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Agriculture,
                 ID = "Waste Management Fluids",
                 Name = "Waste Management Fluids",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2411,6 +2544,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.AdministrationBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Leisure,
                 ID = "Welfare Risk Assessors",
                 Name = "Welfare Risk Assessors",
                 ConstructionResources = new Dictionary<string, string>()
@@ -2422,6 +2556,7 @@ namespace OE2EmpireTracker.Data
             instance.Add(new Commodity()
             {
                 CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.AdministrationBlock,
+                CommodityGroup = Data.CommodityGroup.CommodityGroupEnum.Habitation,
                 ID = "Workflow Automaters",
                 Name = "Workflow Automaters",
                 ConstructionResources = new Dictionary<string, string>()
