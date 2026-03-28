@@ -31,12 +31,12 @@
             this.flpBase = new System.Windows.Forms.FlowLayoutPanel();
             this.flpSearchList = new System.Windows.Forms.FlowLayoutPanel();
             this.flpBlueprintSearch = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblPlanetFilter = new System.Windows.Forms.Label();
-            this.txtPlanetFilter = new System.Windows.Forms.TextBox();
+            this.lblNameFilter = new System.Windows.Forms.Label();
+            this.txtNameFilter = new System.Windows.Forms.TextBox();
             this.flpResource = new System.Windows.Forms.FlowLayoutPanel();
             this.lblResource = new System.Windows.Forms.Label();
             this.cmbResource = new System.Windows.Forms.ComboBox();
-            this.lvwSurveys = new System.Windows.Forms.ListView();
+            this.lvwPlayerProfiles = new System.Windows.Forms.ListView();
             this.flpPlayerData = new System.Windows.Forms.FlowLayoutPanel();
             this.flpPlayerDetails = new System.Windows.Forms.FlowLayoutPanel();
             this.flpPlayerName = new System.Windows.Forms.FlowLayoutPanel();
@@ -86,68 +86,70 @@
             this.flpColonyDirector = new System.Windows.Forms.FlowLayoutPanel();
             this.lblColonyDirector = new System.Windows.Forms.Label();
             this.chkColonyDirector = new System.Windows.Forms.CheckBox();
+            this.pskHumanResources = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskForeman = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
             this.flpColonyFounderSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
             this.flpColonyFounder = new System.Windows.Forms.FlowLayoutPanel();
             this.lblColonyFounder = new System.Windows.Forms.Label();
             this.chkColonyFounder = new System.Windows.Forms.CheckBox();
+            this.pskFounder = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskEnergyEfficiency = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskBuilder = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
             this.flpColonyOperationsSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
             this.flpColonyOperations = new System.Windows.Forms.FlowLayoutPanel();
             this.lblColonyOperations = new System.Windows.Forms.Label();
             this.chkColonyOperations = new System.Windows.Forms.CheckBox();
+            this.pskRefiningFocus = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskProductionFocus = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskExtractionFocus = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
             this.flpCommanderSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
             this.flpCommander = new System.Windows.Forms.FlowLayoutPanel();
             this.lblCommander = new System.Windows.Forms.Label();
             this.chkCommander = new System.Windows.Forms.CheckBox();
+            this.pskDamageControl = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
             this.flpEngineerSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
             this.flpEngineer = new System.Windows.Forms.FlowLayoutPanel();
             this.lblEngineer = new System.Windows.Forms.Label();
             this.chkEngineer = new System.Windows.Forms.CheckBox();
+            this.pskEngineeringCapacity = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
             this.flpEntrepeneurSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
             this.flpEntrepeneur = new System.Windows.Forms.FlowLayoutPanel();
             this.lblEntrepeneur = new System.Windows.Forms.Label();
             this.chkEntrepeneur = new System.Windows.Forms.CheckBox();
+            this.pskSoundAsAPound = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskSelfMadeMillionaire = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskAAAHealthcare = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
             this.flpJobManagementSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
             this.flpJobManagement = new System.Windows.Forms.FlowLayoutPanel();
             this.lblJobManagement = new System.Windows.Forms.Label();
             this.chkJobManagement = new System.Windows.Forms.CheckBox();
+            this.pskJobOpportunities = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskContractManagement = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
             this.flpResearcherSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
             this.flpResearcher = new System.Windows.Forms.FlowLayoutPanel();
             this.lblResearcher = new System.Windows.Forms.Label();
             this.chkResearcher = new System.Windows.Forms.CheckBox();
+            this.pskResearchReview = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskResearchMethods = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskResearchFocus = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
             this.flpSurveyorSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
             this.flpSurveyor = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSurveyor = new System.Windows.Forms.Label();
             this.chkSurveyor = new System.Windows.Forms.CheckBox();
+            this.pskSurveyingMethods = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskScanningMethods = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskQuartermaster = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
             this.flpTraderSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
             this.flpTrader = new System.Windows.Forms.FlowLayoutPanel();
             this.lblTrader = new System.Windows.Forms.Label();
             this.chkTrader = new System.Windows.Forms.CheckBox();
+            this.pskBroker = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.pskHumanResources = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskForeman = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskFounder = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskEnergyEfficiency = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskBuilder = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskRefiningFocus = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskProductionFocus = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskExtractionFocus = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskDamageControl = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskEngineeringCapacity = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskSoundAsAPound = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskSelfMadeMillionaire = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskAAAHealthcare = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskJobOpportunities = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskContractManagement = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskResearchReview = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskResearchMethods = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskResearchFocus = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskSurveyingMethods = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskScanningMethods = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskQuartermaster = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.pskBroker = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.Name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.Faction = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
             this.flpBlueprintSearch.SuspendLayout();
@@ -209,7 +211,7 @@
             // 
             this.flpSearchList.Controls.Add(this.flpBlueprintSearch);
             this.flpSearchList.Controls.Add(this.flpResource);
-            this.flpSearchList.Controls.Add(this.lvwSurveys);
+            this.flpSearchList.Controls.Add(this.lvwPlayerProfiles);
             this.flpSearchList.Location = new System.Drawing.Point(3, 3);
             this.flpSearchList.Name = "flpSearchList";
             this.flpSearchList.Size = new System.Drawing.Size(427, 641);
@@ -218,31 +220,31 @@
             // flpBlueprintSearch
             // 
             this.flpBlueprintSearch.AutoSize = true;
-            this.flpBlueprintSearch.Controls.Add(this.lblPlanetFilter);
-            this.flpBlueprintSearch.Controls.Add(this.txtPlanetFilter);
+            this.flpBlueprintSearch.Controls.Add(this.lblNameFilter);
+            this.flpBlueprintSearch.Controls.Add(this.txtNameFilter);
             this.flpBlueprintSearch.Location = new System.Drawing.Point(2, 2);
             this.flpBlueprintSearch.Margin = new System.Windows.Forms.Padding(2);
             this.flpBlueprintSearch.Name = "flpBlueprintSearch";
             this.flpBlueprintSearch.Size = new System.Drawing.Size(312, 26);
             this.flpBlueprintSearch.TabIndex = 0;
             // 
-            // lblPlanetFilter
+            // lblNameFilter
             // 
-            this.lblPlanetFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblPlanetFilter.Location = new System.Drawing.Point(2, 4);
-            this.lblPlanetFilter.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblPlanetFilter.Name = "lblPlanetFilter";
-            this.lblPlanetFilter.Size = new System.Drawing.Size(100, 17);
-            this.lblPlanetFilter.TabIndex = 2;
-            this.lblPlanetFilter.Text = "Planet";
-            this.lblPlanetFilter.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblNameFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblNameFilter.Location = new System.Drawing.Point(2, 4);
+            this.lblNameFilter.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblNameFilter.Name = "lblNameFilter";
+            this.lblNameFilter.Size = new System.Drawing.Size(100, 17);
+            this.lblNameFilter.TabIndex = 2;
+            this.lblNameFilter.Text = "Name";
+            this.lblNameFilter.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // txtPlanetFilter
+            // txtNameFilter
             // 
-            this.txtPlanetFilter.Location = new System.Drawing.Point(107, 3);
-            this.txtPlanetFilter.Name = "txtPlanetFilter";
-            this.txtPlanetFilter.Size = new System.Drawing.Size(202, 20);
-            this.txtPlanetFilter.TabIndex = 0;
+            this.txtNameFilter.Location = new System.Drawing.Point(107, 3);
+            this.txtNameFilter.Name = "txtNameFilter";
+            this.txtNameFilter.Size = new System.Drawing.Size(202, 20);
+            this.txtNameFilter.TabIndex = 0;
             // 
             // flpResource
             // 
@@ -278,16 +280,19 @@
             this.cmbResource.Size = new System.Drawing.Size(201, 21);
             this.cmbResource.TabIndex = 1;
             // 
-            // lvwSurveys
+            // lvwPlayerProfiles
             // 
-            this.lvwSurveys.FullRowSelect = true;
-            this.lvwSurveys.HideSelection = false;
-            this.lvwSurveys.Location = new System.Drawing.Point(3, 62);
-            this.lvwSurveys.MultiSelect = false;
-            this.lvwSurveys.Name = "lvwSurveys";
-            this.lvwSurveys.Size = new System.Drawing.Size(412, 566);
-            this.lvwSurveys.TabIndex = 6;
-            this.lvwSurveys.UseCompatibleStateImageBehavior = false;
+            this.lvwPlayerProfiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Name,
+            this.Faction});
+            this.lvwPlayerProfiles.FullRowSelect = true;
+            this.lvwPlayerProfiles.HideSelection = false;
+            this.lvwPlayerProfiles.Location = new System.Drawing.Point(3, 62);
+            this.lvwPlayerProfiles.MultiSelect = false;
+            this.lvwPlayerProfiles.Name = "lvwPlayerProfiles";
+            this.lvwPlayerProfiles.Size = new System.Drawing.Size(412, 566);
+            this.lvwPlayerProfiles.TabIndex = 6;
+            this.lvwPlayerProfiles.UseCompatibleStateImageBehavior = false;
             // 
             // flpPlayerData
             // 
@@ -824,6 +829,34 @@
             this.chkColonyDirector.UseVisualStyleBackColor = true;
             this.chkColonyDirector.Click += new System.EventHandler(this.chkColonyDirector_Click);
             // 
+            // pskHumanResources
+            // 
+            this.pskHumanResources.AutoSize = true;
+            this.pskHumanResources.CanStartTraining = false;
+            this.pskHumanResources.Location = new System.Drawing.Point(3, 30);
+            this.pskHumanResources.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskHumanResources.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskHumanResources.Name = "pskHumanResources";
+            this.pskHumanResources.PlayerSkill = null;
+            this.pskHumanResources.Size = new System.Drawing.Size(424, 24);
+            this.pskHumanResources.SkillGroupCheckbox = null;
+            this.pskHumanResources.SkillName = "Human Resources";
+            this.pskHumanResources.TabIndex = 9;
+            // 
+            // pskForeman
+            // 
+            this.pskForeman.AutoSize = true;
+            this.pskForeman.CanStartTraining = false;
+            this.pskForeman.Location = new System.Drawing.Point(3, 60);
+            this.pskForeman.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskForeman.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskForeman.Name = "pskForeman";
+            this.pskForeman.PlayerSkill = null;
+            this.pskForeman.Size = new System.Drawing.Size(424, 24);
+            this.pskForeman.SkillGroupCheckbox = null;
+            this.pskForeman.SkillName = "Foreman";
+            this.pskForeman.TabIndex = 10;
+            // 
             // flpColonyFounderSkillGroup
             // 
             this.flpColonyFounderSkillGroup.AutoSize = true;
@@ -872,6 +905,48 @@
             this.chkColonyFounder.UseVisualStyleBackColor = true;
             this.chkColonyFounder.Click += new System.EventHandler(this.chkColonyFounder_Click);
             // 
+            // pskFounder
+            // 
+            this.pskFounder.AutoSize = true;
+            this.pskFounder.CanStartTraining = false;
+            this.pskFounder.Location = new System.Drawing.Point(3, 30);
+            this.pskFounder.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskFounder.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskFounder.Name = "pskFounder";
+            this.pskFounder.PlayerSkill = null;
+            this.pskFounder.Size = new System.Drawing.Size(424, 24);
+            this.pskFounder.SkillGroupCheckbox = null;
+            this.pskFounder.SkillName = "Founder";
+            this.pskFounder.TabIndex = 13;
+            // 
+            // pskEnergyEfficiency
+            // 
+            this.pskEnergyEfficiency.AutoSize = true;
+            this.pskEnergyEfficiency.CanStartTraining = false;
+            this.pskEnergyEfficiency.Location = new System.Drawing.Point(3, 60);
+            this.pskEnergyEfficiency.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskEnergyEfficiency.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskEnergyEfficiency.Name = "pskEnergyEfficiency";
+            this.pskEnergyEfficiency.PlayerSkill = null;
+            this.pskEnergyEfficiency.Size = new System.Drawing.Size(424, 24);
+            this.pskEnergyEfficiency.SkillGroupCheckbox = null;
+            this.pskEnergyEfficiency.SkillName = "Energy Efficiency";
+            this.pskEnergyEfficiency.TabIndex = 12;
+            // 
+            // pskBuilder
+            // 
+            this.pskBuilder.AutoSize = true;
+            this.pskBuilder.CanStartTraining = false;
+            this.pskBuilder.Location = new System.Drawing.Point(3, 90);
+            this.pskBuilder.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskBuilder.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskBuilder.Name = "pskBuilder";
+            this.pskBuilder.PlayerSkill = null;
+            this.pskBuilder.Size = new System.Drawing.Size(424, 24);
+            this.pskBuilder.SkillGroupCheckbox = null;
+            this.pskBuilder.SkillName = "Builder";
+            this.pskBuilder.TabIndex = 14;
+            // 
             // flpColonyOperationsSkillGroup
             // 
             this.flpColonyOperationsSkillGroup.AutoSize = true;
@@ -919,6 +994,48 @@
             this.chkColonyOperations.Text = "Unlocked";
             this.chkColonyOperations.UseVisualStyleBackColor = true;
             // 
+            // pskRefiningFocus
+            // 
+            this.pskRefiningFocus.AutoSize = true;
+            this.pskRefiningFocus.CanStartTraining = false;
+            this.pskRefiningFocus.Location = new System.Drawing.Point(3, 30);
+            this.pskRefiningFocus.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskRefiningFocus.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskRefiningFocus.Name = "pskRefiningFocus";
+            this.pskRefiningFocus.PlayerSkill = null;
+            this.pskRefiningFocus.Size = new System.Drawing.Size(424, 24);
+            this.pskRefiningFocus.SkillGroupCheckbox = null;
+            this.pskRefiningFocus.SkillName = "Refining Focus";
+            this.pskRefiningFocus.TabIndex = 13;
+            // 
+            // pskProductionFocus
+            // 
+            this.pskProductionFocus.AutoSize = true;
+            this.pskProductionFocus.CanStartTraining = false;
+            this.pskProductionFocus.Location = new System.Drawing.Point(3, 60);
+            this.pskProductionFocus.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskProductionFocus.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskProductionFocus.Name = "pskProductionFocus";
+            this.pskProductionFocus.PlayerSkill = null;
+            this.pskProductionFocus.Size = new System.Drawing.Size(424, 24);
+            this.pskProductionFocus.SkillGroupCheckbox = null;
+            this.pskProductionFocus.SkillName = "Production Focus";
+            this.pskProductionFocus.TabIndex = 12;
+            // 
+            // pskExtractionFocus
+            // 
+            this.pskExtractionFocus.AutoSize = true;
+            this.pskExtractionFocus.CanStartTraining = false;
+            this.pskExtractionFocus.Location = new System.Drawing.Point(3, 90);
+            this.pskExtractionFocus.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskExtractionFocus.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskExtractionFocus.Name = "pskExtractionFocus";
+            this.pskExtractionFocus.PlayerSkill = null;
+            this.pskExtractionFocus.Size = new System.Drawing.Size(424, 24);
+            this.pskExtractionFocus.SkillGroupCheckbox = null;
+            this.pskExtractionFocus.SkillName = "Extraction Focus";
+            this.pskExtractionFocus.TabIndex = 14;
+            // 
             // flpCommanderSkillGroup
             // 
             this.flpCommanderSkillGroup.AutoSize = true;
@@ -965,6 +1082,20 @@
             this.chkCommander.UseVisualStyleBackColor = true;
             this.chkCommander.Click += new System.EventHandler(this.chkCommander_Click);
             // 
+            // pskDamageControl
+            // 
+            this.pskDamageControl.AutoSize = true;
+            this.pskDamageControl.CanStartTraining = false;
+            this.pskDamageControl.Location = new System.Drawing.Point(3, 30);
+            this.pskDamageControl.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskDamageControl.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskDamageControl.Name = "pskDamageControl";
+            this.pskDamageControl.PlayerSkill = null;
+            this.pskDamageControl.Size = new System.Drawing.Size(424, 24);
+            this.pskDamageControl.SkillGroupCheckbox = null;
+            this.pskDamageControl.SkillName = "Damage Control";
+            this.pskDamageControl.TabIndex = 13;
+            // 
             // flpEngineerSkillGroup
             // 
             this.flpEngineerSkillGroup.AutoSize = true;
@@ -1010,6 +1141,20 @@
             this.chkEngineer.Text = "Unlocked";
             this.chkEngineer.UseVisualStyleBackColor = true;
             this.chkEngineer.Click += new System.EventHandler(this.chkEngineer_Click);
+            // 
+            // pskEngineeringCapacity
+            // 
+            this.pskEngineeringCapacity.AutoSize = true;
+            this.pskEngineeringCapacity.CanStartTraining = false;
+            this.pskEngineeringCapacity.Location = new System.Drawing.Point(3, 30);
+            this.pskEngineeringCapacity.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskEngineeringCapacity.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskEngineeringCapacity.Name = "pskEngineeringCapacity";
+            this.pskEngineeringCapacity.PlayerSkill = null;
+            this.pskEngineeringCapacity.Size = new System.Drawing.Size(424, 24);
+            this.pskEngineeringCapacity.SkillGroupCheckbox = null;
+            this.pskEngineeringCapacity.SkillName = "Engineering Capacity";
+            this.pskEngineeringCapacity.TabIndex = 13;
             // 
             // flpEntrepeneurSkillGroup
             // 
@@ -1059,6 +1204,48 @@
             this.chkEntrepeneur.UseVisualStyleBackColor = true;
             this.chkEntrepeneur.Click += new System.EventHandler(this.chkEntrepeneur_Click);
             // 
+            // pskSoundAsAPound
+            // 
+            this.pskSoundAsAPound.AutoSize = true;
+            this.pskSoundAsAPound.CanStartTraining = false;
+            this.pskSoundAsAPound.Location = new System.Drawing.Point(3, 30);
+            this.pskSoundAsAPound.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskSoundAsAPound.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskSoundAsAPound.Name = "pskSoundAsAPound";
+            this.pskSoundAsAPound.PlayerSkill = null;
+            this.pskSoundAsAPound.Size = new System.Drawing.Size(424, 24);
+            this.pskSoundAsAPound.SkillGroupCheckbox = null;
+            this.pskSoundAsAPound.SkillName = "Sounds As A Pound";
+            this.pskSoundAsAPound.TabIndex = 13;
+            // 
+            // pskSelfMadeMillionaire
+            // 
+            this.pskSelfMadeMillionaire.AutoSize = true;
+            this.pskSelfMadeMillionaire.CanStartTraining = false;
+            this.pskSelfMadeMillionaire.Location = new System.Drawing.Point(3, 60);
+            this.pskSelfMadeMillionaire.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskSelfMadeMillionaire.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskSelfMadeMillionaire.Name = "pskSelfMadeMillionaire";
+            this.pskSelfMadeMillionaire.PlayerSkill = null;
+            this.pskSelfMadeMillionaire.Size = new System.Drawing.Size(424, 24);
+            this.pskSelfMadeMillionaire.SkillGroupCheckbox = null;
+            this.pskSelfMadeMillionaire.SkillName = "Self-made Millionaire";
+            this.pskSelfMadeMillionaire.TabIndex = 12;
+            // 
+            // pskAAAHealthcare
+            // 
+            this.pskAAAHealthcare.AutoSize = true;
+            this.pskAAAHealthcare.CanStartTraining = false;
+            this.pskAAAHealthcare.Location = new System.Drawing.Point(3, 90);
+            this.pskAAAHealthcare.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskAAAHealthcare.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskAAAHealthcare.Name = "pskAAAHealthcare";
+            this.pskAAAHealthcare.PlayerSkill = null;
+            this.pskAAAHealthcare.Size = new System.Drawing.Size(424, 24);
+            this.pskAAAHealthcare.SkillGroupCheckbox = null;
+            this.pskAAAHealthcare.SkillName = "AAA Healthcare";
+            this.pskAAAHealthcare.TabIndex = 14;
+            // 
             // flpJobManagementSkillGroup
             // 
             this.flpJobManagementSkillGroup.AutoSize = true;
@@ -1105,6 +1292,34 @@
             this.chkJobManagement.Text = "Unlocked";
             this.chkJobManagement.UseVisualStyleBackColor = true;
             this.chkJobManagement.Click += new System.EventHandler(this.chkJobManagement_Click);
+            // 
+            // pskJobOpportunities
+            // 
+            this.pskJobOpportunities.AutoSize = true;
+            this.pskJobOpportunities.CanStartTraining = false;
+            this.pskJobOpportunities.Location = new System.Drawing.Point(3, 30);
+            this.pskJobOpportunities.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskJobOpportunities.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskJobOpportunities.Name = "pskJobOpportunities";
+            this.pskJobOpportunities.PlayerSkill = null;
+            this.pskJobOpportunities.Size = new System.Drawing.Size(424, 24);
+            this.pskJobOpportunities.SkillGroupCheckbox = null;
+            this.pskJobOpportunities.SkillName = "Job Opportunities";
+            this.pskJobOpportunities.TabIndex = 13;
+            // 
+            // pskContractManagement
+            // 
+            this.pskContractManagement.AutoSize = true;
+            this.pskContractManagement.CanStartTraining = false;
+            this.pskContractManagement.Location = new System.Drawing.Point(3, 60);
+            this.pskContractManagement.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskContractManagement.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskContractManagement.Name = "pskContractManagement";
+            this.pskContractManagement.PlayerSkill = null;
+            this.pskContractManagement.Size = new System.Drawing.Size(424, 24);
+            this.pskContractManagement.SkillGroupCheckbox = null;
+            this.pskContractManagement.SkillName = "Contract Management";
+            this.pskContractManagement.TabIndex = 12;
             // 
             // flpResearcherSkillGroup
             // 
@@ -1154,6 +1369,48 @@
             this.chkResearcher.UseVisualStyleBackColor = true;
             this.chkResearcher.Click += new System.EventHandler(this.chkResearcher_Click);
             // 
+            // pskResearchReview
+            // 
+            this.pskResearchReview.AutoSize = true;
+            this.pskResearchReview.CanStartTraining = false;
+            this.pskResearchReview.Location = new System.Drawing.Point(3, 30);
+            this.pskResearchReview.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskResearchReview.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskResearchReview.Name = "pskResearchReview";
+            this.pskResearchReview.PlayerSkill = null;
+            this.pskResearchReview.Size = new System.Drawing.Size(424, 24);
+            this.pskResearchReview.SkillGroupCheckbox = null;
+            this.pskResearchReview.SkillName = "Research Review";
+            this.pskResearchReview.TabIndex = 13;
+            // 
+            // pskResearchMethods
+            // 
+            this.pskResearchMethods.AutoSize = true;
+            this.pskResearchMethods.CanStartTraining = false;
+            this.pskResearchMethods.Location = new System.Drawing.Point(3, 60);
+            this.pskResearchMethods.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskResearchMethods.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskResearchMethods.Name = "pskResearchMethods";
+            this.pskResearchMethods.PlayerSkill = null;
+            this.pskResearchMethods.Size = new System.Drawing.Size(424, 24);
+            this.pskResearchMethods.SkillGroupCheckbox = null;
+            this.pskResearchMethods.SkillName = "Research Methods";
+            this.pskResearchMethods.TabIndex = 12;
+            // 
+            // pskResearchFocus
+            // 
+            this.pskResearchFocus.AutoSize = true;
+            this.pskResearchFocus.CanStartTraining = false;
+            this.pskResearchFocus.Location = new System.Drawing.Point(3, 90);
+            this.pskResearchFocus.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskResearchFocus.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskResearchFocus.Name = "pskResearchFocus";
+            this.pskResearchFocus.PlayerSkill = null;
+            this.pskResearchFocus.Size = new System.Drawing.Size(424, 24);
+            this.pskResearchFocus.SkillGroupCheckbox = null;
+            this.pskResearchFocus.SkillName = "Research Focus";
+            this.pskResearchFocus.TabIndex = 14;
+            // 
             // flpSurveyorSkillGroup
             // 
             this.flpSurveyorSkillGroup.AutoSize = true;
@@ -1202,6 +1459,48 @@
             this.chkSurveyor.UseVisualStyleBackColor = true;
             this.chkSurveyor.Click += new System.EventHandler(this.chkSurveyor_Click);
             // 
+            // pskSurveyingMethods
+            // 
+            this.pskSurveyingMethods.AutoSize = true;
+            this.pskSurveyingMethods.CanStartTraining = false;
+            this.pskSurveyingMethods.Location = new System.Drawing.Point(3, 30);
+            this.pskSurveyingMethods.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskSurveyingMethods.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskSurveyingMethods.Name = "pskSurveyingMethods";
+            this.pskSurveyingMethods.PlayerSkill = null;
+            this.pskSurveyingMethods.Size = new System.Drawing.Size(424, 24);
+            this.pskSurveyingMethods.SkillGroupCheckbox = null;
+            this.pskSurveyingMethods.SkillName = "Surveying Methods";
+            this.pskSurveyingMethods.TabIndex = 13;
+            // 
+            // pskScanningMethods
+            // 
+            this.pskScanningMethods.AutoSize = true;
+            this.pskScanningMethods.CanStartTraining = false;
+            this.pskScanningMethods.Location = new System.Drawing.Point(3, 60);
+            this.pskScanningMethods.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskScanningMethods.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskScanningMethods.Name = "pskScanningMethods";
+            this.pskScanningMethods.PlayerSkill = null;
+            this.pskScanningMethods.Size = new System.Drawing.Size(424, 24);
+            this.pskScanningMethods.SkillGroupCheckbox = null;
+            this.pskScanningMethods.SkillName = "Scanning Methods";
+            this.pskScanningMethods.TabIndex = 12;
+            // 
+            // pskQuartermaster
+            // 
+            this.pskQuartermaster.AutoSize = true;
+            this.pskQuartermaster.CanStartTraining = false;
+            this.pskQuartermaster.Location = new System.Drawing.Point(3, 90);
+            this.pskQuartermaster.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskQuartermaster.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskQuartermaster.Name = "pskQuartermaster";
+            this.pskQuartermaster.PlayerSkill = null;
+            this.pskQuartermaster.Size = new System.Drawing.Size(424, 24);
+            this.pskQuartermaster.SkillGroupCheckbox = null;
+            this.pskQuartermaster.SkillName = "Quartermaster";
+            this.pskQuartermaster.TabIndex = 14;
+            // 
             // flpTraderSkillGroup
             // 
             this.flpTraderSkillGroup.AutoSize = true;
@@ -1248,6 +1547,20 @@
             this.chkTrader.UseVisualStyleBackColor = true;
             this.chkTrader.Click += new System.EventHandler(this.chkTrader_Click);
             // 
+            // pskBroker
+            // 
+            this.pskBroker.AutoSize = true;
+            this.pskBroker.CanStartTraining = false;
+            this.pskBroker.Location = new System.Drawing.Point(3, 30);
+            this.pskBroker.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskBroker.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskBroker.Name = "pskBroker";
+            this.pskBroker.PlayerSkill = null;
+            this.pskBroker.Size = new System.Drawing.Size(424, 24);
+            this.pskBroker.SkillGroupCheckbox = null;
+            this.pskBroker.SkillName = "Broker";
+            this.pskBroker.TabIndex = 13;
+            // 
             // flpCommands
             // 
             this.flpCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -1291,314 +1604,6 @@
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
-            // 
-            // pskHumanResources
-            // 
-            this.pskHumanResources.AutoSize = true;
-            this.pskHumanResources.CanStartTraining = false;
-            this.pskHumanResources.Location = new System.Drawing.Point(3, 30);
-            this.pskHumanResources.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskHumanResources.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskHumanResources.Name = "pskHumanResources";
-            this.pskHumanResources.PlayerSkill = null;
-            this.pskHumanResources.Size = new System.Drawing.Size(424, 24);
-            this.pskHumanResources.SkillGroupCheckbox = null;
-            this.pskHumanResources.SkillName = "Human Resources";
-            this.pskHumanResources.TabIndex = 9;
-            // 
-            // pskForeman
-            // 
-            this.pskForeman.AutoSize = true;
-            this.pskForeman.CanStartTraining = false;
-            this.pskForeman.Location = new System.Drawing.Point(3, 60);
-            this.pskForeman.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskForeman.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskForeman.Name = "pskForeman";
-            this.pskForeman.PlayerSkill = null;
-            this.pskForeman.Size = new System.Drawing.Size(424, 24);
-            this.pskForeman.SkillGroupCheckbox = null;
-            this.pskForeman.SkillName = "Foreman";
-            this.pskForeman.TabIndex = 10;
-            // 
-            // pskFounder
-            // 
-            this.pskFounder.AutoSize = true;
-            this.pskFounder.CanStartTraining = false;
-            this.pskFounder.Location = new System.Drawing.Point(3, 30);
-            this.pskFounder.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskFounder.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskFounder.Name = "pskFounder";
-            this.pskFounder.PlayerSkill = null;
-            this.pskFounder.Size = new System.Drawing.Size(424, 24);
-            this.pskFounder.SkillGroupCheckbox = null;
-            this.pskFounder.SkillName = "Founder";
-            this.pskFounder.TabIndex = 13;
-            // 
-            // pskEnergyEfficiency
-            // 
-            this.pskEnergyEfficiency.AutoSize = true;
-            this.pskEnergyEfficiency.CanStartTraining = false;
-            this.pskEnergyEfficiency.Location = new System.Drawing.Point(3, 60);
-            this.pskEnergyEfficiency.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskEnergyEfficiency.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskEnergyEfficiency.Name = "pskEnergyEfficiency";
-            this.pskEnergyEfficiency.PlayerSkill = null;
-            this.pskEnergyEfficiency.Size = new System.Drawing.Size(424, 24);
-            this.pskEnergyEfficiency.SkillGroupCheckbox = null;
-            this.pskEnergyEfficiency.SkillName = "Energy Efficiency";
-            this.pskEnergyEfficiency.TabIndex = 12;
-            // 
-            // pskBuilder
-            // 
-            this.pskBuilder.AutoSize = true;
-            this.pskBuilder.CanStartTraining = false;
-            this.pskBuilder.Location = new System.Drawing.Point(3, 90);
-            this.pskBuilder.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskBuilder.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskBuilder.Name = "pskBuilder";
-            this.pskBuilder.PlayerSkill = null;
-            this.pskBuilder.Size = new System.Drawing.Size(424, 24);
-            this.pskBuilder.SkillGroupCheckbox = null;
-            this.pskBuilder.SkillName = "Builder";
-            this.pskBuilder.TabIndex = 14;
-            // 
-            // pskRefiningFocus
-            // 
-            this.pskRefiningFocus.AutoSize = true;
-            this.pskRefiningFocus.CanStartTraining = false;
-            this.pskRefiningFocus.Location = new System.Drawing.Point(3, 30);
-            this.pskRefiningFocus.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskRefiningFocus.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskRefiningFocus.Name = "pskRefiningFocus";
-            this.pskRefiningFocus.PlayerSkill = null;
-            this.pskRefiningFocus.Size = new System.Drawing.Size(424, 24);
-            this.pskRefiningFocus.SkillGroupCheckbox = null;
-            this.pskRefiningFocus.SkillName = "Refining Focus";
-            this.pskRefiningFocus.TabIndex = 13;
-            // 
-            // pskProductionFocus
-            // 
-            this.pskProductionFocus.AutoSize = true;
-            this.pskProductionFocus.CanStartTraining = false;
-            this.pskProductionFocus.Location = new System.Drawing.Point(3, 60);
-            this.pskProductionFocus.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskProductionFocus.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskProductionFocus.Name = "pskProductionFocus";
-            this.pskProductionFocus.PlayerSkill = null;
-            this.pskProductionFocus.Size = new System.Drawing.Size(424, 24);
-            this.pskProductionFocus.SkillGroupCheckbox = null;
-            this.pskProductionFocus.SkillName = "Production Focus";
-            this.pskProductionFocus.TabIndex = 12;
-            // 
-            // pskExtractionFocus
-            // 
-            this.pskExtractionFocus.AutoSize = true;
-            this.pskExtractionFocus.CanStartTraining = false;
-            this.pskExtractionFocus.Location = new System.Drawing.Point(3, 90);
-            this.pskExtractionFocus.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskExtractionFocus.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskExtractionFocus.Name = "pskExtractionFocus";
-            this.pskExtractionFocus.PlayerSkill = null;
-            this.pskExtractionFocus.Size = new System.Drawing.Size(424, 24);
-            this.pskExtractionFocus.SkillGroupCheckbox = null;
-            this.pskExtractionFocus.SkillName = "Extraction Focus";
-            this.pskExtractionFocus.TabIndex = 14;
-            // 
-            // pskDamageControl
-            // 
-            this.pskDamageControl.AutoSize = true;
-            this.pskDamageControl.CanStartTraining = false;
-            this.pskDamageControl.Location = new System.Drawing.Point(3, 30);
-            this.pskDamageControl.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskDamageControl.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskDamageControl.Name = "pskDamageControl";
-            this.pskDamageControl.PlayerSkill = null;
-            this.pskDamageControl.Size = new System.Drawing.Size(424, 24);
-            this.pskDamageControl.SkillGroupCheckbox = null;
-            this.pskDamageControl.SkillName = "Damage Control";
-            this.pskDamageControl.TabIndex = 13;
-            // 
-            // pskEngineeringCapacity
-            // 
-            this.pskEngineeringCapacity.AutoSize = true;
-            this.pskEngineeringCapacity.CanStartTraining = false;
-            this.pskEngineeringCapacity.Location = new System.Drawing.Point(3, 30);
-            this.pskEngineeringCapacity.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskEngineeringCapacity.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskEngineeringCapacity.Name = "pskEngineeringCapacity";
-            this.pskEngineeringCapacity.PlayerSkill = null;
-            this.pskEngineeringCapacity.Size = new System.Drawing.Size(424, 24);
-            this.pskEngineeringCapacity.SkillGroupCheckbox = null;
-            this.pskEngineeringCapacity.SkillName = "Engineering Capacity";
-            this.pskEngineeringCapacity.TabIndex = 13;
-            // 
-            // pskSoundAsAPound
-            // 
-            this.pskSoundAsAPound.AutoSize = true;
-            this.pskSoundAsAPound.CanStartTraining = false;
-            this.pskSoundAsAPound.Location = new System.Drawing.Point(3, 30);
-            this.pskSoundAsAPound.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskSoundAsAPound.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskSoundAsAPound.Name = "pskSoundAsAPound";
-            this.pskSoundAsAPound.PlayerSkill = null;
-            this.pskSoundAsAPound.Size = new System.Drawing.Size(424, 24);
-            this.pskSoundAsAPound.SkillGroupCheckbox = null;
-            this.pskSoundAsAPound.SkillName = "Sounds As A Pound";
-            this.pskSoundAsAPound.TabIndex = 13;
-            // 
-            // pskSelfMadeMillionaire
-            // 
-            this.pskSelfMadeMillionaire.AutoSize = true;
-            this.pskSelfMadeMillionaire.CanStartTraining = false;
-            this.pskSelfMadeMillionaire.Location = new System.Drawing.Point(3, 60);
-            this.pskSelfMadeMillionaire.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskSelfMadeMillionaire.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskSelfMadeMillionaire.Name = "pskSelfMadeMillionaire";
-            this.pskSelfMadeMillionaire.PlayerSkill = null;
-            this.pskSelfMadeMillionaire.Size = new System.Drawing.Size(424, 24);
-            this.pskSelfMadeMillionaire.SkillGroupCheckbox = null;
-            this.pskSelfMadeMillionaire.SkillName = "Self-made Millionaire";
-            this.pskSelfMadeMillionaire.TabIndex = 12;
-            // 
-            // pskAAAHealthcare
-            // 
-            this.pskAAAHealthcare.AutoSize = true;
-            this.pskAAAHealthcare.CanStartTraining = false;
-            this.pskAAAHealthcare.Location = new System.Drawing.Point(3, 90);
-            this.pskAAAHealthcare.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskAAAHealthcare.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskAAAHealthcare.Name = "pskAAAHealthcare";
-            this.pskAAAHealthcare.PlayerSkill = null;
-            this.pskAAAHealthcare.Size = new System.Drawing.Size(424, 24);
-            this.pskAAAHealthcare.SkillGroupCheckbox = null;
-            this.pskAAAHealthcare.SkillName = "AAA Healthcare";
-            this.pskAAAHealthcare.TabIndex = 14;
-            // 
-            // pskJobOpportunities
-            // 
-            this.pskJobOpportunities.AutoSize = true;
-            this.pskJobOpportunities.CanStartTraining = false;
-            this.pskJobOpportunities.Location = new System.Drawing.Point(3, 30);
-            this.pskJobOpportunities.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskJobOpportunities.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskJobOpportunities.Name = "pskJobOpportunities";
-            this.pskJobOpportunities.PlayerSkill = null;
-            this.pskJobOpportunities.Size = new System.Drawing.Size(424, 24);
-            this.pskJobOpportunities.SkillGroupCheckbox = null;
-            this.pskJobOpportunities.SkillName = "Job Opportunities";
-            this.pskJobOpportunities.TabIndex = 13;
-            // 
-            // pskContractManagement
-            // 
-            this.pskContractManagement.AutoSize = true;
-            this.pskContractManagement.CanStartTraining = false;
-            this.pskContractManagement.Location = new System.Drawing.Point(3, 60);
-            this.pskContractManagement.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskContractManagement.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskContractManagement.Name = "pskContractManagement";
-            this.pskContractManagement.PlayerSkill = null;
-            this.pskContractManagement.Size = new System.Drawing.Size(424, 24);
-            this.pskContractManagement.SkillGroupCheckbox = null;
-            this.pskContractManagement.SkillName = "Contract Management";
-            this.pskContractManagement.TabIndex = 12;
-            // 
-            // pskResearchReview
-            // 
-            this.pskResearchReview.AutoSize = true;
-            this.pskResearchReview.CanStartTraining = false;
-            this.pskResearchReview.Location = new System.Drawing.Point(3, 30);
-            this.pskResearchReview.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskResearchReview.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskResearchReview.Name = "pskResearchReview";
-            this.pskResearchReview.PlayerSkill = null;
-            this.pskResearchReview.Size = new System.Drawing.Size(424, 24);
-            this.pskResearchReview.SkillGroupCheckbox = null;
-            this.pskResearchReview.SkillName = "Research Review";
-            this.pskResearchReview.TabIndex = 13;
-            // 
-            // pskResearchMethods
-            // 
-            this.pskResearchMethods.AutoSize = true;
-            this.pskResearchMethods.CanStartTraining = false;
-            this.pskResearchMethods.Location = new System.Drawing.Point(3, 60);
-            this.pskResearchMethods.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskResearchMethods.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskResearchMethods.Name = "pskResearchMethods";
-            this.pskResearchMethods.PlayerSkill = null;
-            this.pskResearchMethods.Size = new System.Drawing.Size(424, 24);
-            this.pskResearchMethods.SkillGroupCheckbox = null;
-            this.pskResearchMethods.SkillName = "Research Methods";
-            this.pskResearchMethods.TabIndex = 12;
-            // 
-            // pskResearchFocus
-            // 
-            this.pskResearchFocus.AutoSize = true;
-            this.pskResearchFocus.CanStartTraining = false;
-            this.pskResearchFocus.Location = new System.Drawing.Point(3, 90);
-            this.pskResearchFocus.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskResearchFocus.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskResearchFocus.Name = "pskResearchFocus";
-            this.pskResearchFocus.PlayerSkill = null;
-            this.pskResearchFocus.Size = new System.Drawing.Size(424, 24);
-            this.pskResearchFocus.SkillGroupCheckbox = null;
-            this.pskResearchFocus.SkillName = "Research Focus";
-            this.pskResearchFocus.TabIndex = 14;
-            // 
-            // pskSurveyingMethods
-            // 
-            this.pskSurveyingMethods.AutoSize = true;
-            this.pskSurveyingMethods.CanStartTraining = false;
-            this.pskSurveyingMethods.Location = new System.Drawing.Point(3, 30);
-            this.pskSurveyingMethods.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskSurveyingMethods.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskSurveyingMethods.Name = "pskSurveyingMethods";
-            this.pskSurveyingMethods.PlayerSkill = null;
-            this.pskSurveyingMethods.Size = new System.Drawing.Size(424, 24);
-            this.pskSurveyingMethods.SkillGroupCheckbox = null;
-            this.pskSurveyingMethods.SkillName = "Surveying Methods";
-            this.pskSurveyingMethods.TabIndex = 13;
-            // 
-            // pskScanningMethods
-            // 
-            this.pskScanningMethods.AutoSize = true;
-            this.pskScanningMethods.CanStartTraining = false;
-            this.pskScanningMethods.Location = new System.Drawing.Point(3, 60);
-            this.pskScanningMethods.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskScanningMethods.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskScanningMethods.Name = "pskScanningMethods";
-            this.pskScanningMethods.PlayerSkill = null;
-            this.pskScanningMethods.Size = new System.Drawing.Size(424, 24);
-            this.pskScanningMethods.SkillGroupCheckbox = null;
-            this.pskScanningMethods.SkillName = "Scanning Methods";
-            this.pskScanningMethods.TabIndex = 12;
-            // 
-            // pskQuartermaster
-            // 
-            this.pskQuartermaster.AutoSize = true;
-            this.pskQuartermaster.CanStartTraining = false;
-            this.pskQuartermaster.Location = new System.Drawing.Point(3, 90);
-            this.pskQuartermaster.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskQuartermaster.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskQuartermaster.Name = "pskQuartermaster";
-            this.pskQuartermaster.PlayerSkill = null;
-            this.pskQuartermaster.Size = new System.Drawing.Size(424, 24);
-            this.pskQuartermaster.SkillGroupCheckbox = null;
-            this.pskQuartermaster.SkillName = "Quartermaster";
-            this.pskQuartermaster.TabIndex = 14;
-            // 
-            // pskBroker
-            // 
-            this.pskBroker.AutoSize = true;
-            this.pskBroker.CanStartTraining = false;
-            this.pskBroker.Location = new System.Drawing.Point(3, 30);
-            this.pskBroker.MaximumSize = new System.Drawing.Size(424, 24);
-            this.pskBroker.MinimumSize = new System.Drawing.Size(424, 24);
-            this.pskBroker.Name = "pskBroker";
-            this.pskBroker.PlayerSkill = null;
-            this.pskBroker.Size = new System.Drawing.Size(424, 24);
-            this.pskBroker.SkillGroupCheckbox = null;
-            this.pskBroker.SkillName = "Broker";
-            this.pskBroker.TabIndex = 13;
             // 
             // FormPlayerProfile
             // 
@@ -1701,12 +1706,12 @@
         private System.Windows.Forms.FlowLayoutPanel flpBase;
         private System.Windows.Forms.FlowLayoutPanel flpSearchList;
         private System.Windows.Forms.FlowLayoutPanel flpBlueprintSearch;
-        private System.Windows.Forms.Label lblPlanetFilter;
-        private System.Windows.Forms.TextBox txtPlanetFilter;
+        private System.Windows.Forms.Label lblNameFilter;
+        private System.Windows.Forms.TextBox txtNameFilter;
         private System.Windows.Forms.FlowLayoutPanel flpResource;
         private System.Windows.Forms.Label lblResource;
         private System.Windows.Forms.ComboBox cmbResource;
-        private System.Windows.Forms.ListView lvwSurveys;
+        private System.Windows.Forms.ListView lvwPlayerProfiles;
         private System.Windows.Forms.FlowLayoutPanel flpPlayerData;
         private System.Windows.Forms.FlowLayoutPanel flpPlayerDetails;
         private System.Windows.Forms.FlowLayoutPanel flpPlayerName;
@@ -1818,5 +1823,7 @@
         private System.Windows.Forms.FlowLayoutPanel flpSkillPoints;
         private System.Windows.Forms.Label lblSkillPoints;
         private System.Windows.Forms.TextBox txtSkillPoints;
+        private System.Windows.Forms.ColumnHeader Name;
+        private System.Windows.Forms.ColumnHeader Faction;
     }
 }

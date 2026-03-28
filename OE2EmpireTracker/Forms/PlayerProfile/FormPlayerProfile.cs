@@ -26,6 +26,8 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private Data.PlayerProfile selectedProfile;
 
+        private Dictionary<string, CheckBox> SkillGroups = new Dictionary<string, CheckBox>();
+
         private Dictionary<string, PlayerSkillBlock> skillBlocks = new Dictionary<string, PlayerSkillBlock>();
 
 
@@ -37,34 +39,71 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             playerContext = EmpireContext.PlayerContext;
 
             selectedProfile = new Data.PlayerProfile();
+
+
+            SkillGroups["Colony Director"] = chkColonyDirector;
+            SkillGroups["Colony Founder"] = chkColonyFounder;
+            SkillGroups["Colony Operations"] = chkColonyOperations;
+            SkillGroups["Commander"] = chkCommander;
+            SkillGroups["Engineer"] = chkEngineer;
+            SkillGroups["Entrepeneur"] = chkEntrepeneur;
+            SkillGroups["Job Management"] = chkJobManagement;
+            SkillGroups["Researcher"] = chkResearcher;
+            SkillGroups["Surveyor"] = chkSurveyor;
+            SkillGroups["Trader"] = chkTrader;
+
+            configureSkillBlockOnce(chkColonyDirector, pskHumanResources, "Human Resources");
+            configureSkillBlockOnce(chkColonyDirector, pskForeman, "Foreman");
+            configureSkillBlockOnce(chkColonyFounder, pskFounder, "Founder");
+            configureSkillBlockOnce(chkColonyFounder, pskEnergyEfficiency, "Energy Efficiency");
+            configureSkillBlockOnce(chkColonyFounder, pskBuilder, "Builder");
+            configureSkillBlockOnce(chkColonyOperations, pskRefiningFocus, "Refining Focus");
+            configureSkillBlockOnce(chkColonyOperations, pskProductionFocus, "Production Focus");
+            configureSkillBlockOnce(chkColonyOperations, pskExtractionFocus, "Extraction Focus");
+            configureSkillBlockOnce(chkCommander, pskDamageControl, "Damage Control");
+            configureSkillBlockOnce(chkEngineer, pskEngineeringCapacity, "Engineering Capacity");
+            configureSkillBlockOnce(chkEntrepeneur, pskSoundAsAPound, "Sounds As A Pound");
+            configureSkillBlockOnce(chkEntrepeneur, pskSelfMadeMillionaire, "Self Made Millionaire");
+            configureSkillBlockOnce(chkEntrepeneur, pskAAAHealthcare, "AAA Healthcare");
+            configureSkillBlockOnce(chkJobManagement, pskJobOpportunities, "Job Opportunities");
+            configureSkillBlockOnce(chkJobManagement, pskContractManagement, "Contract Management");
+            configureSkillBlockOnce(chkResearcher, pskResearchReview, "Research Review");
+            configureSkillBlockOnce(chkResearcher, pskResearchMethods, "Research Methods");
+            configureSkillBlockOnce(chkResearcher, pskResearchFocus, "Research Focus");
+            configureSkillBlockOnce(chkSurveyor, pskSurveyingMethods, "Surveying Methods");
+            configureSkillBlockOnce(chkSurveyor, pskScanningMethods, "Scanning Methods");
+            configureSkillBlockOnce(chkSurveyor, pskQuartermaster, "Quartermaster");
+            configureSkillBlockOnce(chkTrader, pskBroker, "Broker");
+
             PopulateForm();
         }
 
         public void PopulateForm()
         {
             txtPlayerName.Text = selectedProfile.Name;
-            configureSkillBlock(chkColonyDirector, pskHumanResources, "Human Resources");
-            configureSkillBlock(chkColonyDirector, pskForeman, "Foreman");
-            configureSkillBlock(chkColonyFounder, pskFounder, "Founder");
-            configureSkillBlock(chkColonyFounder, pskEnergyEfficiency, "Energy Efficiency");
-            configureSkillBlock(chkColonyFounder, pskBuilder, "Builder");
-            configureSkillBlock(chkColonyOperations, pskRefiningFocus, "Refining Focus");
-            configureSkillBlock(chkColonyOperations, pskProductionFocus, "Production Focus");
-            configureSkillBlock(chkColonyOperations, pskExtractionFocus, "Extraction Focus");
-            configureSkillBlock(chkCommander, pskDamageControl, "Damage Control");
-            configureSkillBlock(chkEngineer, pskEngineeringCapacity, "Engineering Capacity");
-            configureSkillBlock(chkEntrepeneur, pskSoundAsAPound, "Sounds As A Pound");
-            configureSkillBlock(chkEntrepeneur, pskSelfMadeMillionaire, "Self Made Millionaire");
-            configureSkillBlock(chkEntrepeneur, pskAAAHealthcare, "AAA Healthcare");
-            configureSkillBlock(chkJobManagement, pskJobOpportunities, "Job Opportunities");
-            configureSkillBlock(chkJobManagement, pskContractManagement, "Contract Management");
-            configureSkillBlock(chkResearcher, pskResearchReview, "Research Review");
-            configureSkillBlock(chkResearcher, pskResearchMethods, "Research Methods");
-            configureSkillBlock(chkResearcher, pskResearchFocus, "Research Focus");
-            configureSkillBlock(chkSurveyor, pskSurveyingMethods, "Surveying Methods");
-            configureSkillBlock(chkSurveyor, pskScanningMethods, "Scanning Methods");
-            configureSkillBlock(chkSurveyor, pskQuartermaster, "Quartermaster");
-            configureSkillBlock(chkTrader, pskBroker, "Broker");
+
+            updateSkillBlock(pskHumanResources, "Human Resources");
+            updateSkillBlock(pskForeman, "Foreman");
+            updateSkillBlock(pskFounder, "Founder");
+            updateSkillBlock(pskEnergyEfficiency, "Energy Efficiency");
+            updateSkillBlock(pskBuilder, "Builder");
+            updateSkillBlock(pskRefiningFocus, "Refining Focus");
+            updateSkillBlock(pskProductionFocus, "Production Focus");
+            updateSkillBlock(pskExtractionFocus, "Extraction Focus");
+            updateSkillBlock(pskDamageControl, "Damage Control");
+            updateSkillBlock(pskEngineeringCapacity, "Engineering Capacity");
+            updateSkillBlock(pskSoundAsAPound, "Sounds As A Pound");
+            updateSkillBlock(pskSelfMadeMillionaire, "Self Made Millionaire");
+            updateSkillBlock(pskAAAHealthcare, "AAA Healthcare");
+            updateSkillBlock(pskJobOpportunities, "Job Opportunities");
+            updateSkillBlock(pskContractManagement, "Contract Management");
+            updateSkillBlock(pskResearchReview, "Research Review");
+            updateSkillBlock(pskResearchMethods, "Research Methods");
+            updateSkillBlock(pskResearchFocus, "Research Focus");
+            updateSkillBlock(pskSurveyingMethods, "Surveying Methods");
+            updateSkillBlock(pskScanningMethods, "Scanning Methods");
+            updateSkillBlock(pskQuartermaster, "Quartermaster");
+            updateSkillBlock(pskBroker, "Broker");
 
             bool isTraining = false;
             foreach (KeyValuePair<string, PlayerSkill> skillEntry in selectedProfile.Skills)
@@ -81,13 +120,17 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             }
         }
 
-        private void configureSkillBlock(CheckBox skillGroup, PlayerSkillBlock skillBlock, string skillName)
+        private void configureSkillBlockOnce(CheckBox skillGroup, PlayerSkillBlock skillBlock, string skillName)
         {
             skillBlock.SkillGroupCheckbox = skillGroup;
             skillBlock.SkillName = skillName;
-            skillBlock.PlayerSkill = selectedProfile.GetSkill(skillName);
             skillBlocks[skillName] = skillBlock;
             skillBlock.TrainingStatusChanged += TrainingStatusChanged;
+        }
+
+        private void updateSkillBlock(PlayerSkillBlock skillBlock, string skillName)
+        {
+            skillBlock.PlayerSkill = selectedProfile.GetSkill(skillName);
             skillBlock.PopulateForm();
         }
 

@@ -10,9 +10,9 @@ namespace OE2EmpireTracker.Data
 {
     public class PlayerProfile
     {
-        public string Name { get; set; }
-        public string Faction { get; set; }
-        public Decimal TotalCredits { get; set; }
+        public string Name { get; set; } =  string.Empty;
+        public string Faction { get; set; } = string.Empty;
+        public Decimal TotalCredits { get; set; } = new Decimal(0);
 
         public PlayerRank Public { get; set; } = new PlayerRank();
         public PlayerRank Private { get; set; } = new PlayerRank();

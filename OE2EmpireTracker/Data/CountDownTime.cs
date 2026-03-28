@@ -11,6 +11,7 @@ namespace OE2EmpireTracker.Data
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 
+        [Newtonsoft.Json.JsonIgnore]
         public long TimeRemaining
         {
             get
