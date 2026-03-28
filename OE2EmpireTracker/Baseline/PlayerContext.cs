@@ -17,6 +17,8 @@ namespace OE2EmpireTracker.Baseline
         private static PlayerContext Instance;
         private static string filePath = @"..\..\PlayerData.json";
 
+        public BindingList<PlayerProfile> playerProfileList;
+        public BindingSource bindingSourcePlayerProfile;
         public BindingList<Blueprint> blueprintList;
         public BindingSource bindingSourceBlueprint;
         public BindingList<Survey> surveyList;
@@ -47,6 +49,7 @@ namespace OE2EmpireTracker.Baseline
             {
                 playerRoot = new PlayerRoot();
             }
+            initPlayerProfiles(playerRoot);
             initBlueprints(playerRoot);
             initSurveys(playerRoot);
             initColonies(playerRoot);
@@ -55,6 +58,7 @@ namespace OE2EmpireTracker.Baseline
         public void writeContext()
         {
             PlayerRoot playerRoot = new PlayerRoot();
+            playerRoot.PlayerProfile = playerProfileList.ToArray();
             playerRoot.Blueprint = blueprintList.ToArray();
             playerRoot.Survey = surveyList.ToArray();
             playerRoot.Colony = colonyList.ToArray();
@@ -62,6 +66,16 @@ namespace OE2EmpireTracker.Baseline
             string jsonContent = JsonConvert.SerializeObject(playerRoot,Formatting.Indented);
             File.WriteAllText(filePath, jsonContent);
             Debug.Print("Player.WriteContext done");
+        }
+        public void initPlayerProfiles(PlayerRoot playerRoot)
+        {
+            List<PlayerProfile> list = new List<PlayerProfile>(playerRoot.PlayerProfile);
+            list.Sort((x, y) => x.Name.CompareTo(y.Name));
+            playerProfileList = new BindingList<PlayerProfile>(list);
+            // Initialize the BindingSource component
+            bindingSourcePlayerProfile = new BindingSource();
+            // Set the in-memory list as the DataSource for the BindingSource
+            bindingSourcePlayerProfile.DataSource = playerProfileList;
         }
         public void initBlueprints(PlayerRoot playerRoot)
         {
@@ -115,9 +129,9 @@ namespace OE2EmpireTracker.Baseline
 
             colonyList = new BindingList<Colony>(list);
             // Initialize the BindingSource component
-            bindingSourceSurvey = new BindingSource();
+            bindingSourceColony = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            bindingSourceSurvey.DataSource = colonyList;
+            bindingSourceColony.DataSource = colonyList;
         }
         public Colony findColony(string id)
         {
@@ -135,11 +149,13 @@ namespace OE2EmpireTracker.Baseline
 
     public class PlayerRoot
     {
+        public PlayerProfile[] PlayerProfile;
         public Blueprint[] Blueprint;
         public Survey[] Survey;
         public Colony[] Colony;
         public PlayerRoot()
         {
+            PlayerProfile = new PlayerProfile[0];
             Blueprint = new Blueprint[0];
             Survey = new Survey[0];
             Colony = new Colony[0];
