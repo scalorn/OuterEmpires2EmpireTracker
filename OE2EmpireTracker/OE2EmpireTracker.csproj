@@ -159,6 +159,7 @@
     <Compile Include="Data\SubResource.cs" />
     <Compile Include="Data\Item.cs" />
     <Compile Include="Data\Resource.cs" />
+    <Compile Include="Forms\Blueprint\BlueprintScanner.cs" />
     <Compile Include="Forms\Blueprint\FormBlueprint.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -182,6 +183,12 @@
     </Compile>
     <Compile Include="Forms\MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\PlayerProfile\FormPlayerProfile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PlayerProfile\FormPlayerProfile.Designer.cs">
+      <DependentUpon>FormPlayerProfile.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Survey\FormSurvey.cs">
       <SubType>Form</SubType>
@@ -208,6 +215,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\PlayerProfile\FormPlayerProfile.resx">
+      <DependentUpon>FormPlayerProfile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Survey\FormSurvey.resx">
       <DependentUpon>FormSurvey.cs</DependentUpon>

@@ -21,7 +21,7 @@ namespace OE2EmpireTracker.Forms.Colony
         private int _isProgrammaticUpdate = 0;
         public Baseline.Colony Colony { get; set; }
         public Baseline.ColonyStructure ColonyStructureData { get; set; }
-        private Blueprint FlatpackBlueprint { get; set; }
+        private Data.Blueprint FlatpackBlueprint { get; set; }
         private double PowerProvided { get; set; }
         private double PowerRequired { get; set; }
 

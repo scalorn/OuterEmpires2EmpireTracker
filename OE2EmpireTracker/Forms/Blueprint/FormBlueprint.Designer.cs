@@ -63,6 +63,7 @@ namespace OE2EmpireTracker
             this.txtCopyCost = new System.Windows.Forms.TextBox();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.chkGlobalBlueprint = new System.Windows.Forms.CheckBox();
+            this.cmdNew = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -83,7 +84,7 @@ namespace OE2EmpireTracker
             this.txtBlueprintListFilter = new System.Windows.Forms.TextBox();
             this.lvwBlueprints = new System.Windows.Forms.ListView();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdNew = new System.Windows.Forms.Button();
+            this.cmdImport = new System.Windows.Forms.Button();
             this.flpBlueprintType.SuspendLayout();
             this.flpTechLevel.SuspendLayout();
             this.flpBaseDetails.SuspendLayout();
@@ -444,6 +445,7 @@ namespace OE2EmpireTracker
             this.flpCommands.Controls.Add(this.btnSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
             this.flpCommands.Controls.Add(this.btnCancel);
+            this.flpCommands.Controls.Add(this.cmdImport);
             this.flpCommands.Location = new System.Drawing.Point(2, 598);
             this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
             this.flpCommands.Name = "flpCommands";
@@ -460,6 +462,16 @@ namespace OE2EmpireTracker
             this.chkGlobalBlueprint.Text = "Global Blueprint";
             this.chkGlobalBlueprint.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkGlobalBlueprint.UseVisualStyleBackColor = true;
+            // 
+            // cmdNew
+            // 
+            this.cmdNew.Location = new System.Drawing.Point(109, 3);
+            this.cmdNew.Name = "cmdNew";
+            this.cmdNew.Size = new System.Drawing.Size(75, 23);
+            this.cmdNew.TabIndex = 12;
+            this.cmdNew.Text = "New";
+            this.cmdNew.UseVisualStyleBackColor = true;
+            this.cmdNew.Click += new System.EventHandler(this.cmdNew_Click);
             // 
             // btnSave
             // 
@@ -657,15 +669,15 @@ namespace OE2EmpireTracker
             this.flowLayoutPanel1.Size = new System.Drawing.Size(661, 641);
             this.flowLayoutPanel1.TabIndex = 10;
             // 
-            // cmdNew
+            // cmdImport
             // 
-            this.cmdNew.Location = new System.Drawing.Point(109, 3);
-            this.cmdNew.Name = "cmdNew";
-            this.cmdNew.Size = new System.Drawing.Size(75, 23);
-            this.cmdNew.TabIndex = 12;
-            this.cmdNew.Text = "New";
-            this.cmdNew.UseVisualStyleBackColor = true;
-            this.cmdNew.Click += new System.EventHandler(this.cmdNew_Click);
+            this.cmdImport.Location = new System.Drawing.Point(433, 3);
+            this.cmdImport.Name = "cmdImport";
+            this.cmdImport.Size = new System.Drawing.Size(75, 23);
+            this.cmdImport.TabIndex = 13;
+            this.cmdImport.Text = "Import";
+            this.cmdImport.UseVisualStyleBackColor = true;
+            this.cmdImport.Click += new System.EventHandler(this.cmdImport_Click);
             // 
             // FormBlueprint
             // 
@@ -766,5 +778,6 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.Label lblCopyCost;
         private System.Windows.Forms.TextBox txtCopyCost;
         private System.Windows.Forms.Button cmdNew;
+        private System.Windows.Forms.Button cmdImport;
     }
 }

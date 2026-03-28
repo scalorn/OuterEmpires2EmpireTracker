@@ -134,7 +134,7 @@ namespace OE2EmpireTracker.Forms.Colony
         public void updateFlatpackListBase()
         {
             string searchText = txtFilterFlatpack.Text;
-            List<Blueprint> filteredList = new List<Blueprint>(playerContext.blueprintList);
+            List<Data.Blueprint> filteredList = new List<Data.Blueprint>(playerContext.blueprintList);
 
             filteredList = filteredList
                 .Where(item => item.BluePrintType.IndexOf("Flatpacks/", StringComparison.OrdinalIgnoreCase) == 0)
@@ -149,7 +149,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             filteredList = filteredList.OrderBy(p => p.Name).ToList();
 
-            filteredList.Insert(0, new Blueprint());
+            filteredList.Insert(0, new Data.Blueprint());
             var filteredItemsBindingList = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
             filteredItemsBindingList.DataSource = filteredList;
@@ -213,7 +213,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // First index what is viewable.
             foreach (ListViewItem item in lvwColonies.Items)
             {
-                viewableColonies[(item.Tag as Blueprint).UUID] = item;
+                viewableColonies[(item.Tag as Data.Blueprint).UUID] = item;
             }
 
             // Now add or update what is viewable.
@@ -567,17 +567,25 @@ namespace OE2EmpireTracker.Forms.Colony
             string searchText = txtItemFilter.Text;
 
             var filteredCommoditiesBindingList = new BindingSource();
-            
+
             // Filter the complete commodity collection to only include items 
             // whose extended names contain that text (case-insensitive matching)
-            IReadOnlyList<Commodity> allCommodities = Data.Commodity.Commodities;
-            List<Commodity> filteredList = allCommodities
+            bool addEmpty = false;
+            List<Commodity> filteredList = new List<Commodity>(Data.Commodity.Commodities);
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
                 .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                 .OrderBy(p => p.ExtendedName)
                 .ToList();
+                addEmpty = true;
+            }
 
             // Insert an empty blank entry at the beginning to allow the user to deselect their current selection
-            filteredList.Insert(0, new Commodity());
+            if (addEmpty)
+            {
+                filteredList.Insert(0, new Commodity());
+            }
 
             // Set the in-memory list as the DataSource for the BindingSource
             filteredCommoditiesBindingList.DataSource = filteredList;
@@ -595,14 +603,22 @@ namespace OE2EmpireTracker.Forms.Colony
 
             // Filter the complete commodity collection to only include items 
             // whose extended names contain that text (case-insensitive matching)
-            IReadOnlyList<Resource> allResources = Data.Resource.Resources;
-            List<Resource> filteredList = allResources
+            bool addEmpty = false;
+            List<Resource> filteredList = new List<Resource>(Data.Resource.Resources);
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
                 .Where(item => item.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                 .OrderBy(p => p.Name)
                 .ToList();
+                addEmpty = true;
+            }
 
             // Insert an empty blank entry at the beginning to allow the user to deselect their current selection
-            filteredList.Insert(0, new Resource());
+            if (addEmpty)
+            {
+                filteredList.Insert(0, new Resource());
+            }
 
             // Set the in-memory list as the DataSource for the BindingSource
             filteredResourcesBindingList.DataSource = filteredList;

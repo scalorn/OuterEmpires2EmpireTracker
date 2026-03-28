@@ -1,5 +1,6 @@
 ﻿using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Forms.Blueprint;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -952,6 +953,12 @@ namespace OE2EmpireTracker
         private void flpSearchList_SizeChanged(object sender, EventArgs e)
         {
             //lvwBlueprints.Height = flpSearchList.Height - flpBlueprintSearch.Height;
+        }
+
+        private void cmdImport_Click(object sender, EventArgs e)
+        {
+            BlueprintScanner scanner = new BlueprintScanner();
+            scanner.processClipboard();
         }
     }
 }

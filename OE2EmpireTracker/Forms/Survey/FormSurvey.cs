@@ -103,7 +103,7 @@ namespace OE2EmpireTracker.Forms.Survey
         private void updateScannerBlueprintList()
         {
             string searchText = txtFilterScannerBlueprint.Text;
-            List<Blueprint> filteredList = new List<Blueprint>(playerContext.blueprintList);
+            List<Data.Blueprint> filteredList = new List<Data.Blueprint>(playerContext.blueprintList);
 
             // Get the ScannerObject blueprint type ID
             BlueprintType scanners = empireContext.findBlueprintType("SystemObjectScanner");
@@ -120,7 +120,7 @@ namespace OE2EmpireTracker.Forms.Survey
             }
 
             // Add an empty entry to allow selecting no base blueprint.
-            filteredList.Insert(0, new Blueprint());
+            filteredList.Insert(0, new Data.Blueprint());
 
             // Create a BindingSource with the filtered list as data source
             BindingSource filteredItemsBindingList = new BindingSource();
@@ -245,7 +245,7 @@ namespace OE2EmpireTracker.Forms.Survey
             // Get scanner blueprint UUID if one is selected
             if (cmbScannerBlueprint.SelectedItem != null)
             {
-                Blueprint baseBlueprint = cmbScannerBlueprint.SelectedItem as Blueprint;
+                Data.Blueprint baseBlueprint = cmbScannerBlueprint.SelectedItem as Data.Blueprint;
                 survey.ScannerBlueprintUUID = baseBlueprint.UUID;
             }
             else
