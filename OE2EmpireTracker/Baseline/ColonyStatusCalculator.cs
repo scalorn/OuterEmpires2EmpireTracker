@@ -87,9 +87,22 @@ namespace OE2EmpireTracker.Baseline
             var workers = new ActualColonyStructureWorkers();
             ColonyStructureStatus previousStatus = new ColonyStructureStatus();
             //ColonyWorkers.Clear();
+            Dictionary<string, int> StructureCounts = new Dictionary<string, int>();
+
+
 
             foreach (ColonyStructure structure in colony.Structures)
             {
+                Data.Blueprint FlatpackBlueprint = playerContext.findBlueprint(structure.FlatpackBlueprintUUID);
+                if (FlatpackBlueprint != null)
+                {
+                    int count = 0;
+                    StructureCounts.TryGetValue(FlatpackBlueprint.BluePrintType, out count);
+                    count++;
+                    StructureCounts[FlatpackBlueprint.BluePrintType] = count;
+                    structure.gameSequence = count;
+                } 
+
                 ColonyStructureStatus currentStatus = new ColonyStructureStatus();
                 CalculateBuilt(structure, previousStatus, currentStatus, workers);
                 structure.Statuses["Actual"] = currentStatus;
@@ -124,10 +137,17 @@ namespace OE2EmpireTracker.Baseline
             double builtFoodProvision = prevStatus.FoodProvision;
             double builtFoodRequired = prevStatus.FoodRequired;
             double builtEntertainmentProvided = prevStatus.EntertainmentProvided;
-            double builtEntertainmentRequired = prevStatus.EntertainmentProvided;
+            double builtEntertainmentRequired = prevStatus.EntertainmentRequired;
             double builtWarehouseCapacity = prevStatus.WarehouseCapacity;
-            double builtWarehouseRequired = prevStatus.WarehouseCapacity;
-            List<ColonyWorker> ColonyWorkers = new List<ColonyWorker>();
+            double builtWarehouseRequired = prevStatus.WarehouseRequired;
+            bool unallocatedBlueCollarPresent = prevStatus.UnallocatedBlueCollarPresent;
+            bool unallocatedWhiteCollarPresent = prevStatus.UnallocatedWhiteCollarPresent;
+            bool unallocatedSpecialistPresent = prevStatus.UnallocatedSpecialistPresent;
+
+            List <ColonyWorker> ColonyWorkers = new List<ColonyWorker>();
+            bool needUnallocatedBlueCollar = false;
+            bool needUnallocatedWhiteCollar = false;
+            bool needUnallocatedSpecialist = false;
 
             // Ensure the structure has a unique identifier for lookups
             if (structure.UUID == null || structure.UUID.Length == 0)
@@ -207,6 +227,12 @@ namespace OE2EmpireTracker.Baseline
                         }
                     }
                 }
+                long unassignedBlueCollarDetail = 0;
+                flatpackBlueprint.Properties.getLong("UnassignedBlueCollarDetail", 0, out unassignedBlueCollarDetail);
+                if (unassignedBlueCollarDetail > 0)
+                {
+                    needUnallocatedBlueCollar = true;
+                }
 
                 // --- Worker Assignment Parsing (White Collar) ---
                 if (flatpackBlueprint.Properties.ContainsKey("WhiteCollarDetail"))
@@ -223,6 +249,12 @@ namespace OE2EmpireTracker.Baseline
                             ColonyWorkers.Add(new ColonyWorker(structure, key, whiteCollarAssigned));
                         }
                     }
+                }
+                long unassignedWhiteCollarDetail = 0;
+                flatpackBlueprint.Properties.getLong("UnassignedWhiteCollarDetail", 0, out unassignedWhiteCollarDetail);
+                if (unassignedWhiteCollarDetail > 0)
+                {
+                    needUnallocatedWhiteCollar = true;
                 }
 
                 // --- Worker Assignment Parsing (Specialists) ---
@@ -241,6 +273,30 @@ namespace OE2EmpireTracker.Baseline
                         }
                     }
                 }
+                long unassignedSpecialistDetail = 0;
+                flatpackBlueprint.Properties.getLong("UnassignedSpecialistDetail", 0, out unassignedSpecialistDetail);
+                if (unassignedSpecialistDetail > 0)
+                {
+                    needUnallocatedSpecialist = true;
+                }
+            }
+
+
+            int unallocatedWorkersAdded = 0;
+            if (needUnallocatedBlueCollar && !unallocatedBlueCollarPresent && workerSource.IsUnassignedWorkerAvailable("BlueCollar"))
+            {
+                unallocatedBlueCollarPresent = true;
+                unallocatedWorkersAdded++;
+            }
+            if (needUnallocatedWhiteCollar && !unallocatedWhiteCollarPresent && workerSource.IsUnassignedWorkerAvailable("WhiteCollar"))
+            {
+                unallocatedWhiteCollarPresent = true;
+                unallocatedWorkersAdded++;
+            }
+            if (needUnallocatedSpecialist && !unallocatedSpecialistPresent && workerSource.IsUnassignedWorkerAvailable("Specialist"))
+            {
+                unallocatedSpecialistPresent = true;
+                unallocatedWorkersAdded++;
             }
 
             // Assign aggregated values to public properties. 
@@ -249,19 +305,23 @@ namespace OE2EmpireTracker.Baseline
             status.PowerRequired = builtPowerRequired;
             status.HabitationProvision = builtHabitationProvision;
             // Habitation required is calculated based on workers in current implementation
-            status.HabitationRequired = builtHabitationRequired + ColonyWorkers.Count;
+            status.HabitationRequired = builtHabitationRequired + ColonyWorkers.Count + unallocatedWorkersAdded;
 
             status.FoodProvision = builtFoodProvision;
             // Food required is calculated based on workers in current implementation
-            status.FoodRequired = builtFoodRequired + ColonyWorkers.Count;
+            status.FoodRequired = builtFoodRequired + ColonyWorkers.Count + unallocatedWorkersAdded;
 
             status.EntertainmentProvided = builtEntertainmentProvided;
             // Entertainment required is calculated based on workers in current implementation
-            status.EntertainmentRequired = builtEntertainmentRequired + ColonyWorkers.Count;
+            status.EntertainmentRequired = builtEntertainmentRequired + ColonyWorkers.Count + unallocatedWorkersAdded;
 
             status.WarehouseCapacity = builtWarehouseCapacity;
             // Warehouse required is calculated based on workers in current implementation
             status.WarehouseRequired = builtWarehouseRequired;
+
+            status.UnallocatedBlueCollarPresent = unallocatedBlueCollarPresent;
+            status.UnallocatedWhiteCollarPresent = unallocatedWhiteCollarPresent;
+            status.UnallocatedSpecialistPresent = unallocatedSpecialistPresent;
         }
 
         /// <summary>

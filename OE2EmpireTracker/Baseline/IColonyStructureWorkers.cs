@@ -22,6 +22,8 @@ namespace OE2EmpireTracker.Baseline
         /// Returns the Built, Staged and Online state for the given structure.
         /// </summary>
         void GetStructureState(ColonyStructure structure, out bool built, out bool staged, out bool online);
+
+        bool IsUnassignedWorkerAvailable(string workerKey);
     }
 
     /// <summary>
@@ -49,6 +51,12 @@ namespace OE2EmpireTracker.Baseline
             structure.Properties.getBoolean("Staged", false, out staged);
             online = false;
             structure.Properties.getBoolean("Online", false, out online);
+        }
+
+        public bool IsUnassignedWorkerAvailable(string workerKey)
+        {
+            // TODO: FIXME: Need to look into the colony's warehouse and verify there is a worker available with the given workerKey (e.g., "BlueCollarDetail").
+            return true;
         }
     }
 
@@ -79,6 +87,11 @@ namespace OE2EmpireTracker.Baseline
             built = true;
             staged = false;
             online = true;
+        }
+
+        public bool IsUnassignedWorkerAvailable(string workerKey)
+        {
+            return true;
         }
     }
 }

@@ -16,6 +16,7 @@ namespace OE2EmpireTracker.Baseline
         public ItemBag Items { get; set; }
 
         public List<ColonyStructure> Structures { get; set; }
+
         public List<CommodityRequested> Commodities { get; set; }
 
         public Colony() : base()

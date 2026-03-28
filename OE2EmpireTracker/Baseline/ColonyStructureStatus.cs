@@ -61,6 +61,10 @@ namespace OE2EmpireTracker.Baseline
         /// </summary>
         public double WarehouseRequired { get; set; }
 
+        public bool UnallocatedBlueCollarPresent { get; set; }
+        public bool UnallocatedWhiteCollarPresent { get; set; }
+        public bool UnallocatedSpecialistPresent { get; set; }
+
         public ColonyStructureStatus()
         {
             // Default values are set explicitly in CalculateBuilt, but setting properties here is good practice 
@@ -75,6 +79,9 @@ namespace OE2EmpireTracker.Baseline
             EntertainmentRequired = 0;
             WarehouseCapacity = 0;
             WarehouseRequired = 0;
-        }
+            UnallocatedBlueCollarPresent = false;
+            UnallocatedWhiteCollarPresent = false;
+            UnallocatedSpecialistPresent = false;
     }
+}
 }
