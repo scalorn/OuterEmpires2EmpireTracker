@@ -40,7 +40,6 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
             selectedProfile = new Data.PlayerProfile();
 
-
             SkillGroups["Colony Director"] = chkColonyDirector;
             SkillGroups["Colony Founder"] = chkColonyFounder;
             SkillGroups["Colony Operations"] = chkColonyOperations;
@@ -75,6 +74,15 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             configureSkillBlockOnce(chkSurveyor, pskQuartermaster, "Quartermaster");
             configureSkillBlockOnce(chkTrader, pskBroker, "Broker");
 
+            txtNameFilter.TextChanged += txtNameFilter_TextChanged;
+            lvwPlayerProfiles.ItemSelectionChanged += lvwPlayerProfiles_ItemSelectionChanged;
+
+            lvwPlayerProfiles.View = View.Details;
+            lvwPlayerProfiles.Columns.Clear();
+            lvwPlayerProfiles.Columns.Add("Name", 200);
+            lvwPlayerProfiles.Columns.Add("Faction", 200);
+
+            populateListView();
             PopulateForm();
         }
 
@@ -194,12 +202,60 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             PopulateForm();
         }
 
+        private void populateListView()
+        {
+            string filter = txtNameFilter.Text;
+            var profiles = playerContext.playerProfileList
+                .Where(p => string.IsNullOrEmpty(filter) ||
+                            p.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                .ToList();
+
+            lvwPlayerProfiles.Items.Clear();
+            foreach (var profile in profiles)
+            {
+                var item = new ListViewItem(profile.Name);
+                item.SubItems.Add(profile.Faction);
+                item.Tag = profile;
+                lvwPlayerProfiles.Items.Add(item);
+            }
+        }
+
+        private void txtNameFilter_TextChanged(object sender, EventArgs e)
+        {
+            populateListView();
+        }
+
+        private void lvwPlayerProfiles_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            if (lvwPlayerProfiles.SelectedItems.Count == 1)
+            {
+                selectedProfile = lvwPlayerProfiles.SelectedItems[0].Tag as Data.PlayerProfile;
+                PopulateForm();
+            }
+        }
+
         private void cmdSave_Click(object sender, EventArgs e)
         {
-
             // Add or update in player context
-            playerContext.playerProfileList.Add(selectedProfile);
+            if (string.IsNullOrEmpty(selectedProfile.UUID))
+            {
+                selectedProfile.UUID = Guid.NewGuid().ToString();
+                playerContext.playerProfileList.Add(selectedProfile);
+            }
 
+            selectedProfile.Name = txtPlayerName.Text;
+            selectedProfile.Faction = cmbFaction.Text;
+            selectedProfile.Public.Rank = int.Parse(txtPublicRank.Text);
+            selectedProfile.Public.CurrentXP = long.Parse(txtPublicRankCurXP.Text);
+            selectedProfile.Public.NextXP = long.Parse(txtPublicRankNextXP.Text);
+            selectedProfile.Private.Rank = int.Parse(txtPrivateRank.Text);
+            selectedProfile.Private.CurrentXP = long.Parse(txtPrivateRankCurXP.Text);
+            selectedProfile.Private.NextXP = long.Parse(txtPrivateRankNextXP.Text);
+            selectedProfile.Military.Rank = int.Parse(txtPrivateRank.Text);
+            selectedProfile.Military.CurrentXP = long.Parse(txtPrivateRankCurXP.Text);
+            selectedProfile.Military.NextXP = long.Parse(txtPrivateRankNextXP.Text);
+            selectedProfile.TotalCredits = decimal.Parse(txtTotalCredits.Text);
+            selectedProfile.SkillPoints = int.Parse(txtSkillPoints.Text);
             // Persist changes to player context
             playerContext.writeContext();
         }

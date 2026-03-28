@@ -1,6 +1,8 @@
 {
   "PlayerProfile": [
     {
+      "Name": "aaa",
+      "Faction": "",
       "TotalCredits": 0.0,
       "Public": {
         "Rank": 0,
@@ -197,6 +199,8 @@
       }
     },
     {
+      "Name": "bbb",
+      "Faction": "",
       "TotalCredits": 0.0,
       "Public": {
         "Rank": 0,
@@ -340,6 +344,204 @@
           "CompletionTime": {
             "StartTime": "2026-03-28T10:08:26.0648107-07:00",
             "EndTime": "2026-03-29T10:08:39.139973-07:00"
+          }
+        },
+        "Research Methods": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Research Focus": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Surveying Methods": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Scanning Methods": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Quartermaster": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Broker": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        }
+      }
+    },
+    {
+      "Name": "ccc",
+      "Faction": "",
+      "TotalCredits": 0.0,
+      "Public": {
+        "Rank": 0,
+        "CurrentXP": 0,
+        "NextXP": 0
+      },
+      "Private": {
+        "Rank": 0,
+        "CurrentXP": 0,
+        "NextXP": 0
+      },
+      "Military": {
+        "Rank": 0,
+        "CurrentXP": 0,
+        "NextXP": 0
+      },
+      "Skills": {
+        "Human Resources": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Foreman": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Founder": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Energy Efficiency": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Builder": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Refining Focus": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Production Focus": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Extraction Focus": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Damage Control": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Engineering Capacity": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Sounds As A Pound": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Self Made Millionaire": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "AAA Healthcare": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Job Opportunities": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Contract Management": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
+          }
+        },
+        "Research Review": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "0001-01-01T00:00:00",
+            "EndTime": "0001-01-01T00:00:00"
           }
         },
         "Research Methods": {
@@ -671,12 +873,12 @@
       "ResourcePurity": ""
     },
     {
-      "baseBlueprintUUID": "82609bb4-32e5-42f4-aee8-244181501ace",
+      "baseBlueprintUUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
       "BluePrintType": "SystemObjectScanner",
-      "Evolution": 5,
+      "Evolution": 2,
       "TechLevel": "MilSpec",
       "Class": 6,
-      "CopyCost": 1,
+      "CopyCost": 0,
       "Properties": {
         "ManufactureTime": "4h 0m",
         "Mass": "116",
@@ -684,103 +886,24 @@
         "MaxAllowedOnShip": "1",
         "PowerRequired": "182",
         "Health": "635",
-        "EngCapacityRequired": "448",
-        "WearAndTearRate": "3.214",
-        "MaximumDamageRepairRate": "80",
-        "SensorAbundanceFactor": "3",
-        "PurityModifier": "22.5",
-        "ScanLevel": "105"
-      },
-      "Resources": {
-        "Heavy Noble Gases": "1167",
-        "Acidic Inorganics": "249",
-        "Metaloids": "454",
-        "Complex Non-Metallics": "104",
-        "Strong Acidic Inorganics": "285",
-        "Heavy Alkali Metals": "65",
-        "S1. Translivermoric Exotics": "87",
-        "S2. Element 126": "42"
-      },
-      "UUID": "4a908839-be77-4e45-b6de-8067b9e0b188",
-      "ItemType": 9,
-      "BaseItemTypeID": "",
-      "Name": "RAK-LL MatScan",
-      "NickName": "105 Scan",
-      "Description": "",
-      "Quantity": 0,
-      "ResourcePurity": ""
-    },
-    {
-      "baseBlueprintUUID": "",
-      "BluePrintType": "SystemObjectScanner",
-      "Evolution": 0,
-      "TechLevel": "MilSpec",
-      "Class": 6,
-      "CopyCost": 0,
-      "Properties": {
-        "ManufactureTime": "4h 0m",
-        "Mass": "110",
-        "CargoVolumeSize": "145",
-        "MaxAllowedOnShip": "1",
-        "PowerRequired": "182",
-        "Health": "660",
         "EngCapacityRequired": "430",
         "WearAndTearRate": "3",
         "MaximumDamageRepairRate": "80",
         "SensorAbundanceFactor": "3",
         "PurityModifier": "22.5",
-        "ScanLevel": "75"
+        "ScanLevel": "86"
       },
       "Resources": {
-        "Post-Trans Metals": "1622",
-        "Non-Metallics": "285",
-        "Heavy Post-Trans Metals": "558",
-        "Strong Alkali Organics": "284"
+        "Post-Trans Metals": "1433",
+        "Metallics": "218",
+        "Metaloids": "508",
+        "Complex Metallics": "235"
       },
-      "UUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
+      "UUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
       "ItemType": 9,
       "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
-      "NickName": "",
-      "Description": "",
-      "Quantity": 0,
-      "ResourcePurity": ""
-    },
-    {
-      "baseBlueprintUUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
-      "BluePrintType": "SystemObjectScanner",
-      "Evolution": 3,
-      "TechLevel": "MilSpec",
-      "Class": 6,
-      "CopyCost": 0,
-      "Properties": {
-        "ManufactureTime": "4h 0m",
-        "Mass": "116",
-        "CargoVolumeSize": "145",
-        "MaxAllowedOnShip": "1",
-        "PowerRequired": "182",
-        "Health": "635",
-        "EngCapacityRequired": "430",
-        "WearAndTearRate": "3.115",
-        "MaximumDamageRepairRate": "80",
-        "SensorAbundanceFactor": "3",
-        "PurityModifier": "22.5",
-        "ScanLevel": "90"
-      },
-      "Resources": {
-        "Alkali Metals": "1537",
-        "Non-Metallics": "280",
-        "Heavy Trans-Metals": "387",
-        "Strong Alkali Inorganics": "27",
-        "Strong Acidic Inorganics": "318",
-        "Heavy Alkali Metals": "24",
-        "S1. Translivermoric Exotics": "22"
-      },
-      "UUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
-      "ItemType": 9,
-      "BaseItemTypeID": "",
-      "Name": "RAK-LL MatScan",
-      "NickName": "90 Scan",
+      "NickName": "86 Scan",
       "Description": "",
       "Quantity": 0,
       "ResourcePurity": ""
@@ -826,9 +949,85 @@
       "ResourcePurity": ""
     },
     {
-      "baseBlueprintUUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
+      "baseBlueprintUUID": "",
       "BluePrintType": "SystemObjectScanner",
-      "Evolution": 2,
+      "Evolution": 0,
+      "TechLevel": "MilSpec",
+      "Class": 6,
+      "CopyCost": 0,
+      "Properties": {
+        "ManufactureTime": "4h 0m",
+        "Mass": "110",
+        "CargoVolumeSize": "145",
+        "MaxAllowedOnShip": "1",
+        "PowerRequired": "182",
+        "Health": "660",
+        "EngCapacityRequired": "430",
+        "WearAndTearRate": "3",
+        "MaximumDamageRepairRate": "80",
+        "SensorAbundanceFactor": "3",
+        "PurityModifier": "22.5",
+        "ScanLevel": "75"
+      },
+      "Resources": {
+        "Post-Trans Metals": "1622",
+        "Non-Metallics": "285",
+        "Heavy Post-Trans Metals": "558",
+        "Strong Alkali Organics": "284"
+      },
+      "UUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
+      "ItemType": 9,
+      "BaseItemTypeID": "",
+      "Name": "RAK-LL MatScan",
+      "NickName": "",
+      "Description": "",
+      "Quantity": 0,
+      "ResourcePurity": ""
+    },
+    {
+      "baseBlueprintUUID": "82609bb4-32e5-42f4-aee8-244181501ace",
+      "BluePrintType": "SystemObjectScanner",
+      "Evolution": 5,
+      "TechLevel": "MilSpec",
+      "Class": 6,
+      "CopyCost": 1,
+      "Properties": {
+        "ManufactureTime": "4h 0m",
+        "Mass": "116",
+        "CargoVolumeSize": "145",
+        "MaxAllowedOnShip": "1",
+        "PowerRequired": "182",
+        "Health": "635",
+        "EngCapacityRequired": "448",
+        "WearAndTearRate": "3.214",
+        "MaximumDamageRepairRate": "80",
+        "SensorAbundanceFactor": "3",
+        "PurityModifier": "22.5",
+        "ScanLevel": "105"
+      },
+      "Resources": {
+        "Heavy Noble Gases": "1167",
+        "Acidic Inorganics": "249",
+        "Metaloids": "454",
+        "Complex Non-Metallics": "104",
+        "Strong Acidic Inorganics": "285",
+        "Heavy Alkali Metals": "65",
+        "S1. Translivermoric Exotics": "87",
+        "S2. Element 126": "42"
+      },
+      "UUID": "4a908839-be77-4e45-b6de-8067b9e0b188",
+      "ItemType": 9,
+      "BaseItemTypeID": "",
+      "Name": "RAK-LL MatScan",
+      "NickName": "105 Scan",
+      "Description": "",
+      "Quantity": 0,
+      "ResourcePurity": ""
+    },
+    {
+      "baseBlueprintUUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
+      "BluePrintType": "SystemObjectScanner",
+      "Evolution": 3,
       "TechLevel": "MilSpec",
       "Class": 6,
       "CopyCost": 0,
@@ -840,23 +1039,26 @@
         "PowerRequired": "182",
         "Health": "635",
         "EngCapacityRequired": "430",
-        "WearAndTearRate": "3",
+        "WearAndTearRate": "3.115",
         "MaximumDamageRepairRate": "80",
         "SensorAbundanceFactor": "3",
         "PurityModifier": "22.5",
-        "ScanLevel": "86"
+        "ScanLevel": "90"
       },
       "Resources": {
-        "Post-Trans Metals": "1433",
-        "Metallics": "218",
-        "Metaloids": "508",
-        "Complex Metallics": "235"
+        "Alkali Metals": "1537",
+        "Non-Metallics": "280",
+        "Heavy Trans-Metals": "387",
+        "Strong Alkali Inorganics": "27",
+        "Strong Acidic Inorganics": "318",
+        "Heavy Alkali Metals": "24",
+        "S1. Translivermoric Exotics": "22"
       },
-      "UUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
+      "UUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
       "ItemType": 9,
       "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
-      "NickName": "86 Scan",
+      "NickName": "90 Scan",
       "Description": "",
       "Quantity": 0,
       "ResourcePurity": ""

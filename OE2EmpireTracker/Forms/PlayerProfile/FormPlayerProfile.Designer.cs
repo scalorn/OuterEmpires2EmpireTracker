@@ -148,8 +148,6 @@
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.Name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.Faction = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
             this.flpBlueprintSearch.SuspendLayout();
@@ -282,9 +280,6 @@
             // 
             // lvwPlayerProfiles
             // 
-            this.lvwPlayerProfiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Name,
-            this.Faction});
             this.lvwPlayerProfiles.FullRowSelect = true;
             this.lvwPlayerProfiles.HideSelection = false;
             this.lvwPlayerProfiles.Location = new System.Drawing.Point(3, 62);
@@ -1611,7 +1606,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1079, 594);
             this.Controls.Add(this.flpBase);
-            this.Name = "FormPlayerProfile";
             this.Text = "FormPlayerProfile";
             this.flpBase.ResumeLayout(false);
             this.flpSearchList.ResumeLayout(false);
@@ -1823,7 +1817,5 @@
         private System.Windows.Forms.FlowLayoutPanel flpSkillPoints;
         private System.Windows.Forms.Label lblSkillPoints;
         private System.Windows.Forms.TextBox txtSkillPoints;
-        private System.Windows.Forms.ColumnHeader Name;
-        private System.Windows.Forms.ColumnHeader Faction;
     }
 }
