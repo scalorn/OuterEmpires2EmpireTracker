@@ -4,7 +4,7 @@
       "UUID": "3a60e7bb-3b07-4784-b42d-0415c8c0bf5c",
       "Name": "fred",
       "Faction": "",
-      "TotalCredits": 1231231.0,
+      "TotalCredits": 1.0,
       "Public": {
         "Rank": 31,
         "CurrentXP": 123,
@@ -27,7 +27,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Foreman": {
@@ -35,7 +36,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Founder": {
@@ -43,7 +45,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Energy Efficiency": {
@@ -51,7 +54,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Builder": {
@@ -59,7 +63,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Refining Focus": {
@@ -67,7 +72,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Production Focus": {
@@ -75,7 +81,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Extraction Focus": {
@@ -83,7 +90,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Damage Control": {
@@ -91,7 +99,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Engineering Capacity": {
@@ -99,7 +108,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Sounds As A Pound": {
@@ -107,7 +117,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Self Made Millionaire": {
@@ -115,7 +126,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "AAA Healthcare": {
@@ -123,7 +135,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Job Opportunities": {
@@ -131,7 +144,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Contract Management": {
@@ -139,7 +153,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Research Review": {
@@ -147,7 +162,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Research Methods": {
@@ -155,7 +171,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Research Focus": {
@@ -163,7 +180,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Surveying Methods": {
@@ -171,7 +189,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Scanning Methods": {
@@ -179,7 +198,8 @@
           "TrainingStarted": true,
           "CompletionTime": {
             "StartTime": "2026-03-28T10:03:36.8406157-07:00",
-            "EndTime": "2026-04-02T05:03:52.2618752-07:00"
+            "EndTime": "2026-04-02T05:03:52.2618752-07:00",
+            "TimeRemainingString": "4d 16h 23m 16s"
           }
         },
         "Quartermaster": {
@@ -187,7 +207,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Broker": {
@@ -195,7 +216,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         }
       }
@@ -204,7 +226,7 @@
       "UUID": "a86abd3e-c935-4c1b-a35c-bb6548a51272",
       "Name": "Scalorn",
       "Faction": "",
-      "TotalCredits": 100.0,
+      "TotalCredits": 123.0,
       "Public": {
         "Rank": 0,
         "CurrentXP": 0,
@@ -227,7 +249,8 @@
           "TrainingStarted": true,
           "CompletionTime": {
             "StartTime": "2026-03-28T12:09:13.4117122-07:00",
-            "EndTime": "2026-03-29T12:09:24.5507442-07:00"
+            "EndTime": "2026-03-29T12:09:24.5507442-07:00",
+            "TimeRemainingString": "23h 28m 48s"
           }
         },
         "Foreman": {
@@ -235,7 +258,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Founder": {
@@ -243,7 +267,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Energy Efficiency": {
@@ -251,7 +276,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Builder": {
@@ -259,7 +285,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Refining Focus": {
@@ -267,7 +294,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Production Focus": {
@@ -275,7 +303,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Extraction Focus": {
@@ -283,7 +312,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Damage Control": {
@@ -291,7 +321,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Engineering Capacity": {
@@ -299,7 +330,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Sounds As A Pound": {
@@ -307,7 +339,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Self Made Millionaire": {
@@ -315,7 +348,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "AAA Healthcare": {
@@ -323,7 +357,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Job Opportunities": {
@@ -331,7 +366,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Contract Management": {
@@ -339,7 +375,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Research Review": {
@@ -347,7 +384,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Research Methods": {
@@ -355,7 +393,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Research Focus": {
@@ -363,7 +402,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Surveying Methods": {
@@ -371,7 +411,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Scanning Methods": {
@@ -379,7 +420,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Quartermaster": {
@@ -387,7 +429,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         },
         "Broker": {
@@ -395,7 +438,8 @@
           "TrainingStarted": false,
           "CompletionTime": {
             "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00"
+            "EndTime": "0001-01-01T00:00:00",
+            "TimeRemainingString": "-12h -40m -36s"
           }
         }
       }
@@ -679,45 +723,9 @@
       "ResourcePurity": ""
     },
     {
-      "baseBlueprintUUID": "",
+      "baseBlueprintUUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
       "BluePrintType": "SystemObjectScanner",
-      "Evolution": 0,
-      "TechLevel": "MilSpec",
-      "Class": 6,
-      "CopyCost": 0,
-      "Properties": {
-        "ManufactureTime": "4h 0m",
-        "Mass": "110",
-        "CargoVolumeSize": "145",
-        "MaxAllowedOnShip": "1",
-        "PowerRequired": "182",
-        "Health": "660",
-        "EngCapacityRequired": "430",
-        "WearAndTearRate": "3",
-        "MaximumDamageRepairRate": "80",
-        "SensorAbundanceFactor": "3",
-        "PurityModifier": "22.5",
-        "ScanLevel": "75"
-      },
-      "Resources": {
-        "Post-Trans Metals": "1622",
-        "Non-Metallics": "285",
-        "Heavy Post-Trans Metals": "558",
-        "Strong Alkali Organics": "284"
-      },
-      "UUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
-      "ItemType": 9,
-      "BaseItemTypeID": "",
-      "Name": "RAK-LL MatScan",
-      "NickName": "",
-      "Description": "",
-      "Quantity": 0,
-      "ResourcePurity": ""
-    },
-    {
-      "baseBlueprintUUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
-      "BluePrintType": "SystemObjectScanner",
-      "Evolution": 2,
+      "Evolution": 4,
       "TechLevel": "MilSpec",
       "Class": 6,
       "CopyCost": 0,
@@ -729,63 +737,27 @@
         "PowerRequired": "182",
         "Health": "635",
         "EngCapacityRequired": "430",
-        "WearAndTearRate": "3",
-        "MaximumDamageRepairRate": "80",
-        "SensorAbundanceFactor": "3",
-        "PurityModifier": "22.5",
-        "ScanLevel": "86"
-      },
-      "Resources": {
-        "Post-Trans Metals": "1433",
-        "Metallics": "218",
-        "Metaloids": "508",
-        "Complex Metallics": "235"
-      },
-      "UUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
-      "ItemType": 9,
-      "BaseItemTypeID": "",
-      "Name": "RAK-LL MatScan",
-      "NickName": "86 Scan",
-      "Description": "",
-      "Quantity": 0,
-      "ResourcePurity": ""
-    },
-    {
-      "baseBlueprintUUID": "82609bb4-32e5-42f4-aee8-244181501ace",
-      "BluePrintType": "SystemObjectScanner",
-      "Evolution": 5,
-      "TechLevel": "MilSpec",
-      "Class": 6,
-      "CopyCost": 1,
-      "Properties": {
-        "ManufactureTime": "4h 0m",
-        "Mass": "116",
-        "CargoVolumeSize": "145",
-        "MaxAllowedOnShip": "1",
-        "PowerRequired": "182",
-        "Health": "635",
-        "EngCapacityRequired": "448",
         "WearAndTearRate": "3.214",
         "MaximumDamageRepairRate": "80",
         "SensorAbundanceFactor": "3",
         "PurityModifier": "22.5",
-        "ScanLevel": "105"
+        "ScanLevel": "98"
       },
       "Resources": {
-        "Heavy Noble Gases": "1167",
-        "Acidic Inorganics": "249",
-        "Metaloids": "454",
-        "Complex Non-Metallics": "104",
-        "Strong Acidic Inorganics": "285",
-        "Heavy Alkali Metals": "65",
-        "S1. Translivermoric Exotics": "87",
-        "S2. Element 126": "42"
+        "Alkaline Earth Metals": "1540",
+        "Metallics": "246",
+        "Heavy Trans-Metals": "476",
+        "Strong Alkali Inorganics": "52",
+        "Lanthanides": "43",
+        "Strong Alkali Organics": "291",
+        "S1. Translanthanic Exotics": "53",
+        "S2. Superactinides": "30"
       },
-      "UUID": "4a908839-be77-4e45-b6de-8067b9e0b188",
+      "UUID": "82609bb4-32e5-42f4-aee8-244181501ace",
       "ItemType": 9,
       "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
-      "NickName": "105 Scan",
+      "NickName": "98 Scan",
       "Description": "",
       "Quantity": 0,
       "ResourcePurity": ""
@@ -830,9 +802,9 @@
       "ResourcePurity": ""
     },
     {
-      "baseBlueprintUUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
+      "baseBlueprintUUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
       "BluePrintType": "SystemObjectScanner",
-      "Evolution": 4,
+      "Evolution": 2,
       "TechLevel": "MilSpec",
       "Class": 6,
       "CopyCost": 0,
@@ -844,27 +816,99 @@
         "PowerRequired": "182",
         "Health": "635",
         "EngCapacityRequired": "430",
+        "WearAndTearRate": "3",
+        "MaximumDamageRepairRate": "80",
+        "SensorAbundanceFactor": "3",
+        "PurityModifier": "22.5",
+        "ScanLevel": "86"
+      },
+      "Resources": {
+        "Post-Trans Metals": "1433",
+        "Metallics": "218",
+        "Metaloids": "508",
+        "Complex Metallics": "235"
+      },
+      "UUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
+      "ItemType": 9,
+      "BaseItemTypeID": "",
+      "Name": "RAK-LL MatScan",
+      "NickName": "86 Scan",
+      "Description": "",
+      "Quantity": 0,
+      "ResourcePurity": ""
+    },
+    {
+      "baseBlueprintUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "Evolution": 0,
+      "TechLevel": "MilSpec",
+      "Class": 6,
+      "CopyCost": 0,
+      "Properties": {
+        "ManufactureTime": "4h 0m",
+        "Mass": "110",
+        "CargoVolumeSize": "145",
+        "MaxAllowedOnShip": "1",
+        "PowerRequired": "182",
+        "Health": "660",
+        "EngCapacityRequired": "430",
+        "WearAndTearRate": "3",
+        "MaximumDamageRepairRate": "80",
+        "SensorAbundanceFactor": "3",
+        "PurityModifier": "22.5",
+        "ScanLevel": "75"
+      },
+      "Resources": {
+        "Post-Trans Metals": "1622",
+        "Non-Metallics": "285",
+        "Heavy Post-Trans Metals": "558",
+        "Strong Alkali Organics": "284"
+      },
+      "UUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
+      "ItemType": 9,
+      "BaseItemTypeID": "",
+      "Name": "RAK-LL MatScan",
+      "NickName": "",
+      "Description": "",
+      "Quantity": 0,
+      "ResourcePurity": ""
+    },
+    {
+      "baseBlueprintUUID": "82609bb4-32e5-42f4-aee8-244181501ace",
+      "BluePrintType": "SystemObjectScanner",
+      "Evolution": 5,
+      "TechLevel": "MilSpec",
+      "Class": 6,
+      "CopyCost": 1,
+      "Properties": {
+        "ManufactureTime": "4h 0m",
+        "Mass": "116",
+        "CargoVolumeSize": "145",
+        "MaxAllowedOnShip": "1",
+        "PowerRequired": "182",
+        "Health": "635",
+        "EngCapacityRequired": "448",
         "WearAndTearRate": "3.214",
         "MaximumDamageRepairRate": "80",
         "SensorAbundanceFactor": "3",
         "PurityModifier": "22.5",
-        "ScanLevel": "98"
+        "ScanLevel": "105"
       },
       "Resources": {
-        "Alkaline Earth Metals": "1540",
-        "Metallics": "246",
-        "Heavy Trans-Metals": "476",
-        "Strong Alkali Inorganics": "52",
-        "Lanthanides": "43",
-        "Strong Alkali Organics": "291",
-        "S1. Translanthanic Exotics": "53",
-        "S2. Superactinides": "30"
+        "Heavy Noble Gases": "1167",
+        "Acidic Inorganics": "249",
+        "Metaloids": "454",
+        "Complex Non-Metallics": "104",
+        "Strong Acidic Inorganics": "285",
+        "Heavy Alkali Metals": "65",
+        "S1. Translivermoric Exotics": "87",
+        "S2. Element 126": "42"
       },
-      "UUID": "82609bb4-32e5-42f4-aee8-244181501ace",
+      "UUID": "4a908839-be77-4e45-b6de-8067b9e0b188",
       "ItemType": 9,
       "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
-      "NickName": "98 Scan",
+      "NickName": "105 Scan",
       "Description": "",
       "Quantity": 0,
       "ResourcePurity": ""
