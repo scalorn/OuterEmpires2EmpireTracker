@@ -58,19 +58,27 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private bool completionModification = false;
 
+        public CheckBox SkillGroupCheckbox { get; set; }
+
         public PlayerSkillBlock()
         {
             InitializeComponent();
         }
 
         public void PopulateForm()
-        { 
-          this.txtSkillLevel.Text = PlayerSkill.Level.ToString();
-          if (!PlayerSkill.TrainingStarted)
+        {
+            if (PlayerSkill == null)
+            {
+                return;
+            }
+            this.txtSkillLevel.Text = PlayerSkill.Level.ToString();
+
+            bool canStart = CanStartTraining && (SkillGroupCheckbox != null && SkillGroupCheckbox.Checked);
+            if (!PlayerSkill.TrainingStarted)
             {
                 this.lblCompletion.Visible = false;
                 this.txtCompletion.Visible = false;
-                this.cmdStart.Visible = CanStartTraining;
+                this.cmdStart.Visible = canStart;
                 timerCountdown.Stop();
             }
             else

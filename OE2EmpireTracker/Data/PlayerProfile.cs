@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -17,6 +18,7 @@ namespace OE2EmpireTracker.Data
         public PlayerRank Private { get; set; } = new PlayerRank();
         public PlayerRank Military { get; set; } = new PlayerRank();
 
+        private Dictionary<string, bool> SkillGroups { get; set; } = new Dictionary<string, bool>();
         public Dictionary<string, PlayerSkill> Skills { get; set; } = new Dictionary<string, PlayerSkill>();
 
         public PlayerProfile()
@@ -30,6 +32,18 @@ namespace OE2EmpireTracker.Data
                 Skills[skillName] = new PlayerSkill();
             }
             return Skills[skillName];
+        }
+        public bool GetSkillGroup(string skillGroup)
+        {
+            if (!SkillGroups.ContainsKey(skillGroup))
+            {
+                SkillGroups[skillGroup] = false;
+            }
+            return SkillGroups[skillGroup];
+        }
+        public void SetSkillGroup(string skillGroup, bool value)
+        {
+            SkillGroups[skillGroup] = value;
         }
     }
 }

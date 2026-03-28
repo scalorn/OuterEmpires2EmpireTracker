@@ -87,67 +87,67 @@
             this.lblColonyDirector = new System.Windows.Forms.Label();
             this.chkColonyDirector = new System.Windows.Forms.CheckBox();
             this.flpColonyFounderSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel17 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label16 = new System.Windows.Forms.Label();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.flpColonyFounder = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblColonyFounder = new System.Windows.Forms.Label();
+            this.chkColonyFounder = new System.Windows.Forms.CheckBox();
             this.flpColonyOperationsSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel15 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label10 = new System.Windows.Forms.Label();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.flpColonyOperations = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblColonyOperations = new System.Windows.Forms.Label();
+            this.chkColonyOperations = new System.Windows.Forms.CheckBox();
             this.flpCommanderSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel19 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label11 = new System.Windows.Forms.Label();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.flpCommander = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblCommander = new System.Windows.Forms.Label();
+            this.chkCommander = new System.Windows.Forms.CheckBox();
             this.flpEngineerSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel21 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label12 = new System.Windows.Forms.Label();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
+            this.flpEngineer = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblEngineer = new System.Windows.Forms.Label();
+            this.chkEngineer = new System.Windows.Forms.CheckBox();
             this.flpEntrepeneurSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel23 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label13 = new System.Windows.Forms.Label();
-            this.checkBox6 = new System.Windows.Forms.CheckBox();
+            this.flpEntrepeneur = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblEntrepeneur = new System.Windows.Forms.Label();
+            this.chkEntrepeneur = new System.Windows.Forms.CheckBox();
             this.flpJobManagementSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel25 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label14 = new System.Windows.Forms.Label();
-            this.checkBox7 = new System.Windows.Forms.CheckBox();
+            this.flpJobManagement = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblJobManagement = new System.Windows.Forms.Label();
+            this.chkJobManagement = new System.Windows.Forms.CheckBox();
             this.flpResearcherSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel27 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label15 = new System.Windows.Forms.Label();
-            this.checkBox8 = new System.Windows.Forms.CheckBox();
+            this.flpResearcher = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblResearcher = new System.Windows.Forms.Label();
+            this.chkResearcher = new System.Windows.Forms.CheckBox();
             this.flpSurveyorSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel29 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label17 = new System.Windows.Forms.Label();
-            this.checkBox9 = new System.Windows.Forms.CheckBox();
+            this.flpSurveyor = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblSurveyor = new System.Windows.Forms.Label();
+            this.chkSurveyor = new System.Windows.Forms.CheckBox();
             this.flpTraderSkillGroup = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel31 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label18 = new System.Windows.Forms.Label();
-            this.checkBox10 = new System.Windows.Forms.CheckBox();
+            this.flpTrader = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblTrader = new System.Windows.Forms.Label();
+            this.chkTrader = new System.Windows.Forms.CheckBox();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnSave = new System.Windows.Forms.Button();
+            this.cmdSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
+            this.cmdCancel = new System.Windows.Forms.Button();
             this.pskHumanResources = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
             this.pskForeman = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock2 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock1 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock3 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock4 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock5 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock6 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock7 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock8 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock9 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock10 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock11 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock12 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock13 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock14 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock15 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock16 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock17 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock18 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock19 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
-            this.playerSkillBlock20 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskFounder = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskEnergyEfficiency = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskBuilder = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskRefiningFocus = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskProductionFocus = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskExtractionFocus = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskDamageControl = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskEngineeringCapacity = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskSoundAsAPound = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskSelfMadeMillionaire = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskAAAHealthcare = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskJobOpportunities = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskContractManagement = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskResearchReview = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskResearchMethods = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskResearchFocus = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskSurveyingMethods = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskScanningMethods = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskQuartermaster = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
+            this.pskBroker = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
             this.flpBlueprintSearch.SuspendLayout();
@@ -173,23 +173,23 @@
             this.flpColonyDirectorSkillGroup.SuspendLayout();
             this.flpColonyDirector.SuspendLayout();
             this.flpColonyFounderSkillGroup.SuspendLayout();
-            this.flowLayoutPanel17.SuspendLayout();
+            this.flpColonyFounder.SuspendLayout();
             this.flpColonyOperationsSkillGroup.SuspendLayout();
-            this.flowLayoutPanel15.SuspendLayout();
+            this.flpColonyOperations.SuspendLayout();
             this.flpCommanderSkillGroup.SuspendLayout();
-            this.flowLayoutPanel19.SuspendLayout();
+            this.flpCommander.SuspendLayout();
             this.flpEngineerSkillGroup.SuspendLayout();
-            this.flowLayoutPanel21.SuspendLayout();
+            this.flpEngineer.SuspendLayout();
             this.flpEntrepeneurSkillGroup.SuspendLayout();
-            this.flowLayoutPanel23.SuspendLayout();
+            this.flpEntrepeneur.SuspendLayout();
             this.flpJobManagementSkillGroup.SuspendLayout();
-            this.flowLayoutPanel25.SuspendLayout();
+            this.flpJobManagement.SuspendLayout();
             this.flpResearcherSkillGroup.SuspendLayout();
-            this.flowLayoutPanel27.SuspendLayout();
+            this.flpResearcher.SuspendLayout();
             this.flpSurveyorSkillGroup.SuspendLayout();
-            this.flowLayoutPanel29.SuspendLayout();
+            this.flpSurveyor.SuspendLayout();
             this.flpTraderSkillGroup.SuspendLayout();
-            this.flowLayoutPanel31.SuspendLayout();
+            this.flpTrader.SuspendLayout();
             this.flpCommands.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -822,14 +822,15 @@
             this.chkColonyDirector.TabIndex = 3;
             this.chkColonyDirector.Text = "Unlocked";
             this.chkColonyDirector.UseVisualStyleBackColor = true;
+            this.chkColonyDirector.Click += new System.EventHandler(this.chkColonyDirector_Click);
             // 
             // flpColonyFounderSkillGroup
             // 
             this.flpColonyFounderSkillGroup.AutoSize = true;
-            this.flpColonyFounderSkillGroup.Controls.Add(this.flowLayoutPanel17);
-            this.flpColonyFounderSkillGroup.Controls.Add(this.playerSkillBlock2);
-            this.flpColonyFounderSkillGroup.Controls.Add(this.playerSkillBlock1);
-            this.flpColonyFounderSkillGroup.Controls.Add(this.playerSkillBlock3);
+            this.flpColonyFounderSkillGroup.Controls.Add(this.flpColonyFounder);
+            this.flpColonyFounderSkillGroup.Controls.Add(this.pskFounder);
+            this.flpColonyFounderSkillGroup.Controls.Add(this.pskEnergyEfficiency);
+            this.flpColonyFounderSkillGroup.Controls.Add(this.pskBuilder);
             this.flpColonyFounderSkillGroup.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpColonyFounderSkillGroup.Location = new System.Drawing.Point(3, 489);
             this.flpColonyFounderSkillGroup.Name = "flpColonyFounderSkillGroup";
@@ -837,46 +838,47 @@
             this.flpColonyFounderSkillGroup.TabIndex = 12;
             this.flpColonyFounderSkillGroup.WrapContents = false;
             // 
-            // flowLayoutPanel17
+            // flpColonyFounder
             // 
-            this.flowLayoutPanel17.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel17.AutoSize = true;
-            this.flowLayoutPanel17.Controls.Add(this.label16);
-            this.flowLayoutPanel17.Controls.Add(this.checkBox2);
-            this.flowLayoutPanel17.Location = new System.Drawing.Point(2, 2);
-            this.flowLayoutPanel17.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel17.Name = "flowLayoutPanel17";
-            this.flowLayoutPanel17.Size = new System.Drawing.Size(426, 23);
-            this.flowLayoutPanel17.TabIndex = 4;
+            this.flpColonyFounder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpColonyFounder.AutoSize = true;
+            this.flpColonyFounder.Controls.Add(this.lblColonyFounder);
+            this.flpColonyFounder.Controls.Add(this.chkColonyFounder);
+            this.flpColonyFounder.Location = new System.Drawing.Point(2, 2);
+            this.flpColonyFounder.Margin = new System.Windows.Forms.Padding(2);
+            this.flpColonyFounder.Name = "flpColonyFounder";
+            this.flpColonyFounder.Size = new System.Drawing.Size(426, 23);
+            this.flpColonyFounder.TabIndex = 4;
             // 
-            // label16
+            // lblColonyFounder
             // 
-            this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label16.Location = new System.Drawing.Point(2, 3);
-            this.label16.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(100, 17);
-            this.label16.TabIndex = 2;
-            this.label16.Text = "Colony Founder";
-            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblColonyFounder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblColonyFounder.Location = new System.Drawing.Point(2, 3);
+            this.lblColonyFounder.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblColonyFounder.Name = "lblColonyFounder";
+            this.lblColonyFounder.Size = new System.Drawing.Size(100, 17);
+            this.lblColonyFounder.TabIndex = 2;
+            this.lblColonyFounder.Text = "Colony Founder";
+            this.lblColonyFounder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // checkBox2
+            // chkColonyFounder
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(107, 3);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(72, 17);
-            this.checkBox2.TabIndex = 3;
-            this.checkBox2.Text = "Unlocked";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.chkColonyFounder.AutoSize = true;
+            this.chkColonyFounder.Location = new System.Drawing.Point(107, 3);
+            this.chkColonyFounder.Name = "chkColonyFounder";
+            this.chkColonyFounder.Size = new System.Drawing.Size(72, 17);
+            this.chkColonyFounder.TabIndex = 3;
+            this.chkColonyFounder.Text = "Unlocked";
+            this.chkColonyFounder.UseVisualStyleBackColor = true;
+            this.chkColonyFounder.Click += new System.EventHandler(this.chkColonyFounder_Click);
             // 
             // flpColonyOperationsSkillGroup
             // 
             this.flpColonyOperationsSkillGroup.AutoSize = true;
-            this.flpColonyOperationsSkillGroup.Controls.Add(this.flowLayoutPanel15);
-            this.flpColonyOperationsSkillGroup.Controls.Add(this.playerSkillBlock4);
-            this.flpColonyOperationsSkillGroup.Controls.Add(this.playerSkillBlock5);
-            this.flpColonyOperationsSkillGroup.Controls.Add(this.playerSkillBlock6);
+            this.flpColonyOperationsSkillGroup.Controls.Add(this.flpColonyOperations);
+            this.flpColonyOperationsSkillGroup.Controls.Add(this.pskRefiningFocus);
+            this.flpColonyOperationsSkillGroup.Controls.Add(this.pskProductionFocus);
+            this.flpColonyOperationsSkillGroup.Controls.Add(this.pskExtractionFocus);
             this.flpColonyOperationsSkillGroup.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpColonyOperationsSkillGroup.Location = new System.Drawing.Point(3, 612);
             this.flpColonyOperationsSkillGroup.Name = "flpColonyOperationsSkillGroup";
@@ -884,44 +886,44 @@
             this.flpColonyOperationsSkillGroup.TabIndex = 15;
             this.flpColonyOperationsSkillGroup.WrapContents = false;
             // 
-            // flowLayoutPanel15
+            // flpColonyOperations
             // 
-            this.flowLayoutPanel15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel15.AutoSize = true;
-            this.flowLayoutPanel15.Controls.Add(this.label10);
-            this.flowLayoutPanel15.Controls.Add(this.checkBox3);
-            this.flowLayoutPanel15.Location = new System.Drawing.Point(2, 2);
-            this.flowLayoutPanel15.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel15.Name = "flowLayoutPanel15";
-            this.flowLayoutPanel15.Size = new System.Drawing.Size(426, 23);
-            this.flowLayoutPanel15.TabIndex = 4;
+            this.flpColonyOperations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpColonyOperations.AutoSize = true;
+            this.flpColonyOperations.Controls.Add(this.lblColonyOperations);
+            this.flpColonyOperations.Controls.Add(this.chkColonyOperations);
+            this.flpColonyOperations.Location = new System.Drawing.Point(2, 2);
+            this.flpColonyOperations.Margin = new System.Windows.Forms.Padding(2);
+            this.flpColonyOperations.Name = "flpColonyOperations";
+            this.flpColonyOperations.Size = new System.Drawing.Size(426, 23);
+            this.flpColonyOperations.TabIndex = 4;
             // 
-            // label10
+            // lblColonyOperations
             // 
-            this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label10.Location = new System.Drawing.Point(2, 3);
-            this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(100, 17);
-            this.label10.TabIndex = 2;
-            this.label10.Text = "Colony Operations";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblColonyOperations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblColonyOperations.Location = new System.Drawing.Point(2, 3);
+            this.lblColonyOperations.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblColonyOperations.Name = "lblColonyOperations";
+            this.lblColonyOperations.Size = new System.Drawing.Size(100, 17);
+            this.lblColonyOperations.TabIndex = 2;
+            this.lblColonyOperations.Text = "Colony Operations";
+            this.lblColonyOperations.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // checkBox3
+            // chkColonyOperations
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(107, 3);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(72, 17);
-            this.checkBox3.TabIndex = 3;
-            this.checkBox3.Text = "Unlocked";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.chkColonyOperations.AutoSize = true;
+            this.chkColonyOperations.Location = new System.Drawing.Point(107, 3);
+            this.chkColonyOperations.Name = "chkColonyOperations";
+            this.chkColonyOperations.Size = new System.Drawing.Size(72, 17);
+            this.chkColonyOperations.TabIndex = 3;
+            this.chkColonyOperations.Text = "Unlocked";
+            this.chkColonyOperations.UseVisualStyleBackColor = true;
             // 
             // flpCommanderSkillGroup
             // 
             this.flpCommanderSkillGroup.AutoSize = true;
-            this.flpCommanderSkillGroup.Controls.Add(this.flowLayoutPanel19);
-            this.flpCommanderSkillGroup.Controls.Add(this.playerSkillBlock7);
+            this.flpCommanderSkillGroup.Controls.Add(this.flpCommander);
+            this.flpCommanderSkillGroup.Controls.Add(this.pskDamageControl);
             this.flpCommanderSkillGroup.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpCommanderSkillGroup.Location = new System.Drawing.Point(3, 735);
             this.flpCommanderSkillGroup.Name = "flpCommanderSkillGroup";
@@ -929,44 +931,45 @@
             this.flpCommanderSkillGroup.TabIndex = 16;
             this.flpCommanderSkillGroup.WrapContents = false;
             // 
-            // flowLayoutPanel19
+            // flpCommander
             // 
-            this.flowLayoutPanel19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel19.AutoSize = true;
-            this.flowLayoutPanel19.Controls.Add(this.label11);
-            this.flowLayoutPanel19.Controls.Add(this.checkBox4);
-            this.flowLayoutPanel19.Location = new System.Drawing.Point(2, 2);
-            this.flowLayoutPanel19.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel19.Name = "flowLayoutPanel19";
-            this.flowLayoutPanel19.Size = new System.Drawing.Size(426, 23);
-            this.flowLayoutPanel19.TabIndex = 4;
+            this.flpCommander.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpCommander.AutoSize = true;
+            this.flpCommander.Controls.Add(this.lblCommander);
+            this.flpCommander.Controls.Add(this.chkCommander);
+            this.flpCommander.Location = new System.Drawing.Point(2, 2);
+            this.flpCommander.Margin = new System.Windows.Forms.Padding(2);
+            this.flpCommander.Name = "flpCommander";
+            this.flpCommander.Size = new System.Drawing.Size(426, 23);
+            this.flpCommander.TabIndex = 4;
             // 
-            // label11
+            // lblCommander
             // 
-            this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label11.Location = new System.Drawing.Point(2, 3);
-            this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(100, 17);
-            this.label11.TabIndex = 2;
-            this.label11.Text = "Commander";
-            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblCommander.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCommander.Location = new System.Drawing.Point(2, 3);
+            this.lblCommander.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblCommander.Name = "lblCommander";
+            this.lblCommander.Size = new System.Drawing.Size(100, 17);
+            this.lblCommander.TabIndex = 2;
+            this.lblCommander.Text = "Commander";
+            this.lblCommander.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // checkBox4
+            // chkCommander
             // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(107, 3);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(72, 17);
-            this.checkBox4.TabIndex = 3;
-            this.checkBox4.Text = "Unlocked";
-            this.checkBox4.UseVisualStyleBackColor = true;
+            this.chkCommander.AutoSize = true;
+            this.chkCommander.Location = new System.Drawing.Point(107, 3);
+            this.chkCommander.Name = "chkCommander";
+            this.chkCommander.Size = new System.Drawing.Size(72, 17);
+            this.chkCommander.TabIndex = 3;
+            this.chkCommander.Text = "Unlocked";
+            this.chkCommander.UseVisualStyleBackColor = true;
+            this.chkCommander.Click += new System.EventHandler(this.chkCommander_Click);
             // 
             // flpEngineerSkillGroup
             // 
             this.flpEngineerSkillGroup.AutoSize = true;
-            this.flpEngineerSkillGroup.Controls.Add(this.flowLayoutPanel21);
-            this.flpEngineerSkillGroup.Controls.Add(this.playerSkillBlock8);
+            this.flpEngineerSkillGroup.Controls.Add(this.flpEngineer);
+            this.flpEngineerSkillGroup.Controls.Add(this.pskEngineeringCapacity);
             this.flpEngineerSkillGroup.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpEngineerSkillGroup.Location = new System.Drawing.Point(3, 798);
             this.flpEngineerSkillGroup.Name = "flpEngineerSkillGroup";
@@ -974,46 +977,47 @@
             this.flpEngineerSkillGroup.TabIndex = 17;
             this.flpEngineerSkillGroup.WrapContents = false;
             // 
-            // flowLayoutPanel21
+            // flpEngineer
             // 
-            this.flowLayoutPanel21.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel21.AutoSize = true;
-            this.flowLayoutPanel21.Controls.Add(this.label12);
-            this.flowLayoutPanel21.Controls.Add(this.checkBox5);
-            this.flowLayoutPanel21.Location = new System.Drawing.Point(2, 2);
-            this.flowLayoutPanel21.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel21.Name = "flowLayoutPanel21";
-            this.flowLayoutPanel21.Size = new System.Drawing.Size(426, 23);
-            this.flowLayoutPanel21.TabIndex = 4;
+            this.flpEngineer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpEngineer.AutoSize = true;
+            this.flpEngineer.Controls.Add(this.lblEngineer);
+            this.flpEngineer.Controls.Add(this.chkEngineer);
+            this.flpEngineer.Location = new System.Drawing.Point(2, 2);
+            this.flpEngineer.Margin = new System.Windows.Forms.Padding(2);
+            this.flpEngineer.Name = "flpEngineer";
+            this.flpEngineer.Size = new System.Drawing.Size(426, 23);
+            this.flpEngineer.TabIndex = 4;
             // 
-            // label12
+            // lblEngineer
             // 
-            this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label12.Location = new System.Drawing.Point(2, 3);
-            this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(100, 17);
-            this.label12.TabIndex = 2;
-            this.label12.Text = "Engineer";
-            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblEngineer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblEngineer.Location = new System.Drawing.Point(2, 3);
+            this.lblEngineer.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblEngineer.Name = "lblEngineer";
+            this.lblEngineer.Size = new System.Drawing.Size(100, 17);
+            this.lblEngineer.TabIndex = 2;
+            this.lblEngineer.Text = "Engineer";
+            this.lblEngineer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // checkBox5
+            // chkEngineer
             // 
-            this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(107, 3);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(72, 17);
-            this.checkBox5.TabIndex = 3;
-            this.checkBox5.Text = "Unlocked";
-            this.checkBox5.UseVisualStyleBackColor = true;
+            this.chkEngineer.AutoSize = true;
+            this.chkEngineer.Location = new System.Drawing.Point(107, 3);
+            this.chkEngineer.Name = "chkEngineer";
+            this.chkEngineer.Size = new System.Drawing.Size(72, 17);
+            this.chkEngineer.TabIndex = 3;
+            this.chkEngineer.Text = "Unlocked";
+            this.chkEngineer.UseVisualStyleBackColor = true;
+            this.chkEngineer.Click += new System.EventHandler(this.chkEngineer_Click);
             // 
             // flpEntrepeneurSkillGroup
             // 
             this.flpEntrepeneurSkillGroup.AutoSize = true;
-            this.flpEntrepeneurSkillGroup.Controls.Add(this.flowLayoutPanel23);
-            this.flpEntrepeneurSkillGroup.Controls.Add(this.playerSkillBlock9);
-            this.flpEntrepeneurSkillGroup.Controls.Add(this.playerSkillBlock10);
-            this.flpEntrepeneurSkillGroup.Controls.Add(this.playerSkillBlock11);
+            this.flpEntrepeneurSkillGroup.Controls.Add(this.flpEntrepeneur);
+            this.flpEntrepeneurSkillGroup.Controls.Add(this.pskSoundAsAPound);
+            this.flpEntrepeneurSkillGroup.Controls.Add(this.pskSelfMadeMillionaire);
+            this.flpEntrepeneurSkillGroup.Controls.Add(this.pskAAAHealthcare);
             this.flpEntrepeneurSkillGroup.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpEntrepeneurSkillGroup.Location = new System.Drawing.Point(3, 861);
             this.flpEntrepeneurSkillGroup.Name = "flpEntrepeneurSkillGroup";
@@ -1021,45 +1025,46 @@
             this.flpEntrepeneurSkillGroup.TabIndex = 16;
             this.flpEntrepeneurSkillGroup.WrapContents = false;
             // 
-            // flowLayoutPanel23
+            // flpEntrepeneur
             // 
-            this.flowLayoutPanel23.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel23.AutoSize = true;
-            this.flowLayoutPanel23.Controls.Add(this.label13);
-            this.flowLayoutPanel23.Controls.Add(this.checkBox6);
-            this.flowLayoutPanel23.Location = new System.Drawing.Point(2, 2);
-            this.flowLayoutPanel23.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel23.Name = "flowLayoutPanel23";
-            this.flowLayoutPanel23.Size = new System.Drawing.Size(426, 23);
-            this.flowLayoutPanel23.TabIndex = 4;
+            this.flpEntrepeneur.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpEntrepeneur.AutoSize = true;
+            this.flpEntrepeneur.Controls.Add(this.lblEntrepeneur);
+            this.flpEntrepeneur.Controls.Add(this.chkEntrepeneur);
+            this.flpEntrepeneur.Location = new System.Drawing.Point(2, 2);
+            this.flpEntrepeneur.Margin = new System.Windows.Forms.Padding(2);
+            this.flpEntrepeneur.Name = "flpEntrepeneur";
+            this.flpEntrepeneur.Size = new System.Drawing.Size(426, 23);
+            this.flpEntrepeneur.TabIndex = 4;
             // 
-            // label13
+            // lblEntrepeneur
             // 
-            this.label13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label13.Location = new System.Drawing.Point(2, 3);
-            this.label13.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(100, 17);
-            this.label13.TabIndex = 2;
-            this.label13.Text = "Entrepeneur";
-            this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblEntrepeneur.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblEntrepeneur.Location = new System.Drawing.Point(2, 3);
+            this.lblEntrepeneur.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblEntrepeneur.Name = "lblEntrepeneur";
+            this.lblEntrepeneur.Size = new System.Drawing.Size(100, 17);
+            this.lblEntrepeneur.TabIndex = 2;
+            this.lblEntrepeneur.Text = "Entrepeneur";
+            this.lblEntrepeneur.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // checkBox6
+            // chkEntrepeneur
             // 
-            this.checkBox6.AutoSize = true;
-            this.checkBox6.Location = new System.Drawing.Point(107, 3);
-            this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(72, 17);
-            this.checkBox6.TabIndex = 3;
-            this.checkBox6.Text = "Unlocked";
-            this.checkBox6.UseVisualStyleBackColor = true;
+            this.chkEntrepeneur.AutoSize = true;
+            this.chkEntrepeneur.Location = new System.Drawing.Point(107, 3);
+            this.chkEntrepeneur.Name = "chkEntrepeneur";
+            this.chkEntrepeneur.Size = new System.Drawing.Size(72, 17);
+            this.chkEntrepeneur.TabIndex = 3;
+            this.chkEntrepeneur.Text = "Unlocked";
+            this.chkEntrepeneur.UseVisualStyleBackColor = true;
+            this.chkEntrepeneur.Click += new System.EventHandler(this.chkEntrepeneur_Click);
             // 
             // flpJobManagementSkillGroup
             // 
             this.flpJobManagementSkillGroup.AutoSize = true;
-            this.flpJobManagementSkillGroup.Controls.Add(this.flowLayoutPanel25);
-            this.flpJobManagementSkillGroup.Controls.Add(this.playerSkillBlock12);
-            this.flpJobManagementSkillGroup.Controls.Add(this.playerSkillBlock13);
+            this.flpJobManagementSkillGroup.Controls.Add(this.flpJobManagement);
+            this.flpJobManagementSkillGroup.Controls.Add(this.pskJobOpportunities);
+            this.flpJobManagementSkillGroup.Controls.Add(this.pskContractManagement);
             this.flpJobManagementSkillGroup.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpJobManagementSkillGroup.Location = new System.Drawing.Point(3, 984);
             this.flpJobManagementSkillGroup.Name = "flpJobManagementSkillGroup";
@@ -1067,46 +1072,47 @@
             this.flpJobManagementSkillGroup.TabIndex = 16;
             this.flpJobManagementSkillGroup.WrapContents = false;
             // 
-            // flowLayoutPanel25
+            // flpJobManagement
             // 
-            this.flowLayoutPanel25.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel25.AutoSize = true;
-            this.flowLayoutPanel25.Controls.Add(this.label14);
-            this.flowLayoutPanel25.Controls.Add(this.checkBox7);
-            this.flowLayoutPanel25.Location = new System.Drawing.Point(2, 2);
-            this.flowLayoutPanel25.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel25.Name = "flowLayoutPanel25";
-            this.flowLayoutPanel25.Size = new System.Drawing.Size(426, 23);
-            this.flowLayoutPanel25.TabIndex = 4;
+            this.flpJobManagement.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpJobManagement.AutoSize = true;
+            this.flpJobManagement.Controls.Add(this.lblJobManagement);
+            this.flpJobManagement.Controls.Add(this.chkJobManagement);
+            this.flpJobManagement.Location = new System.Drawing.Point(2, 2);
+            this.flpJobManagement.Margin = new System.Windows.Forms.Padding(2);
+            this.flpJobManagement.Name = "flpJobManagement";
+            this.flpJobManagement.Size = new System.Drawing.Size(426, 23);
+            this.flpJobManagement.TabIndex = 4;
             // 
-            // label14
+            // lblJobManagement
             // 
-            this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label14.Location = new System.Drawing.Point(2, 3);
-            this.label14.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(100, 17);
-            this.label14.TabIndex = 2;
-            this.label14.Text = "Job Management";
-            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblJobManagement.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblJobManagement.Location = new System.Drawing.Point(2, 3);
+            this.lblJobManagement.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblJobManagement.Name = "lblJobManagement";
+            this.lblJobManagement.Size = new System.Drawing.Size(100, 17);
+            this.lblJobManagement.TabIndex = 2;
+            this.lblJobManagement.Text = "Job Management";
+            this.lblJobManagement.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // checkBox7
+            // chkJobManagement
             // 
-            this.checkBox7.AutoSize = true;
-            this.checkBox7.Location = new System.Drawing.Point(107, 3);
-            this.checkBox7.Name = "checkBox7";
-            this.checkBox7.Size = new System.Drawing.Size(72, 17);
-            this.checkBox7.TabIndex = 3;
-            this.checkBox7.Text = "Unlocked";
-            this.checkBox7.UseVisualStyleBackColor = true;
+            this.chkJobManagement.AutoSize = true;
+            this.chkJobManagement.Location = new System.Drawing.Point(107, 3);
+            this.chkJobManagement.Name = "chkJobManagement";
+            this.chkJobManagement.Size = new System.Drawing.Size(72, 17);
+            this.chkJobManagement.TabIndex = 3;
+            this.chkJobManagement.Text = "Unlocked";
+            this.chkJobManagement.UseVisualStyleBackColor = true;
+            this.chkJobManagement.Click += new System.EventHandler(this.chkJobManagement_Click);
             // 
             // flpResearcherSkillGroup
             // 
             this.flpResearcherSkillGroup.AutoSize = true;
-            this.flpResearcherSkillGroup.Controls.Add(this.flowLayoutPanel27);
-            this.flpResearcherSkillGroup.Controls.Add(this.playerSkillBlock14);
-            this.flpResearcherSkillGroup.Controls.Add(this.playerSkillBlock15);
-            this.flpResearcherSkillGroup.Controls.Add(this.playerSkillBlock16);
+            this.flpResearcherSkillGroup.Controls.Add(this.flpResearcher);
+            this.flpResearcherSkillGroup.Controls.Add(this.pskResearchReview);
+            this.flpResearcherSkillGroup.Controls.Add(this.pskResearchMethods);
+            this.flpResearcherSkillGroup.Controls.Add(this.pskResearchFocus);
             this.flpResearcherSkillGroup.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpResearcherSkillGroup.Location = new System.Drawing.Point(3, 1077);
             this.flpResearcherSkillGroup.Name = "flpResearcherSkillGroup";
@@ -1114,46 +1120,47 @@
             this.flpResearcherSkillGroup.TabIndex = 16;
             this.flpResearcherSkillGroup.WrapContents = false;
             // 
-            // flowLayoutPanel27
+            // flpResearcher
             // 
-            this.flowLayoutPanel27.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel27.AutoSize = true;
-            this.flowLayoutPanel27.Controls.Add(this.label15);
-            this.flowLayoutPanel27.Controls.Add(this.checkBox8);
-            this.flowLayoutPanel27.Location = new System.Drawing.Point(2, 2);
-            this.flowLayoutPanel27.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel27.Name = "flowLayoutPanel27";
-            this.flowLayoutPanel27.Size = new System.Drawing.Size(426, 23);
-            this.flowLayoutPanel27.TabIndex = 4;
+            this.flpResearcher.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpResearcher.AutoSize = true;
+            this.flpResearcher.Controls.Add(this.lblResearcher);
+            this.flpResearcher.Controls.Add(this.chkResearcher);
+            this.flpResearcher.Location = new System.Drawing.Point(2, 2);
+            this.flpResearcher.Margin = new System.Windows.Forms.Padding(2);
+            this.flpResearcher.Name = "flpResearcher";
+            this.flpResearcher.Size = new System.Drawing.Size(426, 23);
+            this.flpResearcher.TabIndex = 4;
             // 
-            // label15
+            // lblResearcher
             // 
-            this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label15.Location = new System.Drawing.Point(2, 3);
-            this.label15.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(100, 17);
-            this.label15.TabIndex = 2;
-            this.label15.Text = "Researcher";
-            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblResearcher.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblResearcher.Location = new System.Drawing.Point(2, 3);
+            this.lblResearcher.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblResearcher.Name = "lblResearcher";
+            this.lblResearcher.Size = new System.Drawing.Size(100, 17);
+            this.lblResearcher.TabIndex = 2;
+            this.lblResearcher.Text = "Researcher";
+            this.lblResearcher.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // checkBox8
+            // chkResearcher
             // 
-            this.checkBox8.AutoSize = true;
-            this.checkBox8.Location = new System.Drawing.Point(107, 3);
-            this.checkBox8.Name = "checkBox8";
-            this.checkBox8.Size = new System.Drawing.Size(72, 17);
-            this.checkBox8.TabIndex = 3;
-            this.checkBox8.Text = "Unlocked";
-            this.checkBox8.UseVisualStyleBackColor = true;
+            this.chkResearcher.AutoSize = true;
+            this.chkResearcher.Location = new System.Drawing.Point(107, 3);
+            this.chkResearcher.Name = "chkResearcher";
+            this.chkResearcher.Size = new System.Drawing.Size(72, 17);
+            this.chkResearcher.TabIndex = 3;
+            this.chkResearcher.Text = "Unlocked";
+            this.chkResearcher.UseVisualStyleBackColor = true;
+            this.chkResearcher.Click += new System.EventHandler(this.chkResearcher_Click);
             // 
             // flpSurveyorSkillGroup
             // 
             this.flpSurveyorSkillGroup.AutoSize = true;
-            this.flpSurveyorSkillGroup.Controls.Add(this.flowLayoutPanel29);
-            this.flpSurveyorSkillGroup.Controls.Add(this.playerSkillBlock17);
-            this.flpSurveyorSkillGroup.Controls.Add(this.playerSkillBlock18);
-            this.flpSurveyorSkillGroup.Controls.Add(this.playerSkillBlock19);
+            this.flpSurveyorSkillGroup.Controls.Add(this.flpSurveyor);
+            this.flpSurveyorSkillGroup.Controls.Add(this.pskSurveyingMethods);
+            this.flpSurveyorSkillGroup.Controls.Add(this.pskScanningMethods);
+            this.flpSurveyorSkillGroup.Controls.Add(this.pskQuartermaster);
             this.flpSurveyorSkillGroup.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpSurveyorSkillGroup.Location = new System.Drawing.Point(3, 1200);
             this.flpSurveyorSkillGroup.Name = "flpSurveyorSkillGroup";
@@ -1161,44 +1168,45 @@
             this.flpSurveyorSkillGroup.TabIndex = 16;
             this.flpSurveyorSkillGroup.WrapContents = false;
             // 
-            // flowLayoutPanel29
+            // flpSurveyor
             // 
-            this.flowLayoutPanel29.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel29.AutoSize = true;
-            this.flowLayoutPanel29.Controls.Add(this.label17);
-            this.flowLayoutPanel29.Controls.Add(this.checkBox9);
-            this.flowLayoutPanel29.Location = new System.Drawing.Point(2, 2);
-            this.flowLayoutPanel29.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel29.Name = "flowLayoutPanel29";
-            this.flowLayoutPanel29.Size = new System.Drawing.Size(426, 23);
-            this.flowLayoutPanel29.TabIndex = 4;
+            this.flpSurveyor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpSurveyor.AutoSize = true;
+            this.flpSurveyor.Controls.Add(this.lblSurveyor);
+            this.flpSurveyor.Controls.Add(this.chkSurveyor);
+            this.flpSurveyor.Location = new System.Drawing.Point(2, 2);
+            this.flpSurveyor.Margin = new System.Windows.Forms.Padding(2);
+            this.flpSurveyor.Name = "flpSurveyor";
+            this.flpSurveyor.Size = new System.Drawing.Size(426, 23);
+            this.flpSurveyor.TabIndex = 4;
             // 
-            // label17
+            // lblSurveyor
             // 
-            this.label17.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label17.Location = new System.Drawing.Point(2, 3);
-            this.label17.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(100, 17);
-            this.label17.TabIndex = 2;
-            this.label17.Text = "Surveyor";
-            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblSurveyor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSurveyor.Location = new System.Drawing.Point(2, 3);
+            this.lblSurveyor.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblSurveyor.Name = "lblSurveyor";
+            this.lblSurveyor.Size = new System.Drawing.Size(100, 17);
+            this.lblSurveyor.TabIndex = 2;
+            this.lblSurveyor.Text = "Surveyor";
+            this.lblSurveyor.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // checkBox9
+            // chkSurveyor
             // 
-            this.checkBox9.AutoSize = true;
-            this.checkBox9.Location = new System.Drawing.Point(107, 3);
-            this.checkBox9.Name = "checkBox9";
-            this.checkBox9.Size = new System.Drawing.Size(72, 17);
-            this.checkBox9.TabIndex = 3;
-            this.checkBox9.Text = "Unlocked";
-            this.checkBox9.UseVisualStyleBackColor = true;
+            this.chkSurveyor.AutoSize = true;
+            this.chkSurveyor.Location = new System.Drawing.Point(107, 3);
+            this.chkSurveyor.Name = "chkSurveyor";
+            this.chkSurveyor.Size = new System.Drawing.Size(72, 17);
+            this.chkSurveyor.TabIndex = 3;
+            this.chkSurveyor.Text = "Unlocked";
+            this.chkSurveyor.UseVisualStyleBackColor = true;
+            this.chkSurveyor.Click += new System.EventHandler(this.chkSurveyor_Click);
             // 
             // flpTraderSkillGroup
             // 
             this.flpTraderSkillGroup.AutoSize = true;
-            this.flpTraderSkillGroup.Controls.Add(this.flowLayoutPanel31);
-            this.flpTraderSkillGroup.Controls.Add(this.playerSkillBlock20);
+            this.flpTraderSkillGroup.Controls.Add(this.flpTrader);
+            this.flpTraderSkillGroup.Controls.Add(this.pskBroker);
             this.flpTraderSkillGroup.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpTraderSkillGroup.Location = new System.Drawing.Point(3, 1323);
             this.flpTraderSkillGroup.Name = "flpTraderSkillGroup";
@@ -1206,46 +1214,47 @@
             this.flpTraderSkillGroup.TabIndex = 16;
             this.flpTraderSkillGroup.WrapContents = false;
             // 
-            // flowLayoutPanel31
+            // flpTrader
             // 
-            this.flowLayoutPanel31.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel31.AutoSize = true;
-            this.flowLayoutPanel31.Controls.Add(this.label18);
-            this.flowLayoutPanel31.Controls.Add(this.checkBox10);
-            this.flowLayoutPanel31.Location = new System.Drawing.Point(2, 2);
-            this.flowLayoutPanel31.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel31.Name = "flowLayoutPanel31";
-            this.flowLayoutPanel31.Size = new System.Drawing.Size(426, 23);
-            this.flowLayoutPanel31.TabIndex = 4;
+            this.flpTrader.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpTrader.AutoSize = true;
+            this.flpTrader.Controls.Add(this.lblTrader);
+            this.flpTrader.Controls.Add(this.chkTrader);
+            this.flpTrader.Location = new System.Drawing.Point(2, 2);
+            this.flpTrader.Margin = new System.Windows.Forms.Padding(2);
+            this.flpTrader.Name = "flpTrader";
+            this.flpTrader.Size = new System.Drawing.Size(426, 23);
+            this.flpTrader.TabIndex = 4;
             // 
-            // label18
+            // lblTrader
             // 
-            this.label18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label18.Location = new System.Drawing.Point(2, 3);
-            this.label18.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(100, 17);
-            this.label18.TabIndex = 2;
-            this.label18.Text = "Trader";
-            this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblTrader.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTrader.Location = new System.Drawing.Point(2, 3);
+            this.lblTrader.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblTrader.Name = "lblTrader";
+            this.lblTrader.Size = new System.Drawing.Size(100, 17);
+            this.lblTrader.TabIndex = 2;
+            this.lblTrader.Text = "Trader";
+            this.lblTrader.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // checkBox10
+            // chkTrader
             // 
-            this.checkBox10.AutoSize = true;
-            this.checkBox10.Location = new System.Drawing.Point(107, 3);
-            this.checkBox10.Name = "checkBox10";
-            this.checkBox10.Size = new System.Drawing.Size(72, 17);
-            this.checkBox10.TabIndex = 3;
-            this.checkBox10.Text = "Unlocked";
-            this.checkBox10.UseVisualStyleBackColor = true;
+            this.chkTrader.AutoSize = true;
+            this.chkTrader.Location = new System.Drawing.Point(107, 3);
+            this.chkTrader.Name = "chkTrader";
+            this.chkTrader.Size = new System.Drawing.Size(72, 17);
+            this.chkTrader.TabIndex = 3;
+            this.chkTrader.Text = "Unlocked";
+            this.chkTrader.UseVisualStyleBackColor = true;
+            this.chkTrader.Click += new System.EventHandler(this.chkTrader_Click);
             // 
             // flpCommands
             // 
             this.flpCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.flpCommands.AutoSize = true;
-            this.flpCommands.Controls.Add(this.btnSave);
+            this.flpCommands.Controls.Add(this.cmdSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
-            this.flpCommands.Controls.Add(this.btnCancel);
+            this.flpCommands.Controls.Add(this.cmdCancel);
             this.flpCommands.Location = new System.Drawing.Point(2, 406);
             this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
             this.flpCommands.Name = "flpCommands";
@@ -1253,14 +1262,15 @@
             this.flpCommands.TabIndex = 1;
             this.flpCommands.WrapContents = false;
             // 
-            // btnSave
+            // cmdSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(3, 3);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 0;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
+            this.cmdSave.Location = new System.Drawing.Point(3, 3);
+            this.cmdSave.Name = "cmdSave";
+            this.cmdSave.Size = new System.Drawing.Size(75, 23);
+            this.cmdSave.TabIndex = 0;
+            this.cmdSave.Text = "Save";
+            this.cmdSave.UseVisualStyleBackColor = true;
+            this.cmdSave.Click += new System.EventHandler(this.cmdSave_Click);
             // 
             // cmdDelete
             // 
@@ -1270,257 +1280,325 @@
             this.cmdDelete.TabIndex = 1;
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
+            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
-            // btnCancel
+            // cmdCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(165, 3);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 2;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
+            this.cmdCancel.Location = new System.Drawing.Point(165, 3);
+            this.cmdCancel.Name = "cmdCancel";
+            this.cmdCancel.Size = new System.Drawing.Size(75, 23);
+            this.cmdCancel.TabIndex = 2;
+            this.cmdCancel.Text = "Cancel";
+            this.cmdCancel.UseVisualStyleBackColor = true;
+            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
             // pskHumanResources
             // 
             this.pskHumanResources.AutoSize = true;
+            this.pskHumanResources.CanStartTraining = false;
             this.pskHumanResources.Location = new System.Drawing.Point(3, 30);
             this.pskHumanResources.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskHumanResources.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskHumanResources.Name = "pskHumanResources";
+            this.pskHumanResources.PlayerSkill = null;
             this.pskHumanResources.Size = new System.Drawing.Size(424, 24);
+            this.pskHumanResources.SkillGroupCheckbox = null;
             this.pskHumanResources.SkillName = "Human Resources";
             this.pskHumanResources.TabIndex = 9;
             // 
             // pskForeman
             // 
             this.pskForeman.AutoSize = true;
+            this.pskForeman.CanStartTraining = false;
             this.pskForeman.Location = new System.Drawing.Point(3, 60);
             this.pskForeman.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskForeman.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskForeman.Name = "pskForeman";
+            this.pskForeman.PlayerSkill = null;
             this.pskForeman.Size = new System.Drawing.Size(424, 24);
+            this.pskForeman.SkillGroupCheckbox = null;
             this.pskForeman.SkillName = "Foreman";
             this.pskForeman.TabIndex = 10;
             // 
-            // playerSkillBlock2
+            // pskFounder
             // 
-            this.playerSkillBlock2.AutoSize = true;
-            this.playerSkillBlock2.Location = new System.Drawing.Point(3, 30);
-            this.playerSkillBlock2.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock2.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock2.Name = "playerSkillBlock2";
-            this.playerSkillBlock2.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock2.SkillName = "Founder";
-            this.playerSkillBlock2.TabIndex = 13;
+            this.pskFounder.AutoSize = true;
+            this.pskFounder.CanStartTraining = false;
+            this.pskFounder.Location = new System.Drawing.Point(3, 30);
+            this.pskFounder.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskFounder.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskFounder.Name = "pskFounder";
+            this.pskFounder.PlayerSkill = null;
+            this.pskFounder.Size = new System.Drawing.Size(424, 24);
+            this.pskFounder.SkillGroupCheckbox = null;
+            this.pskFounder.SkillName = "Founder";
+            this.pskFounder.TabIndex = 13;
             // 
-            // playerSkillBlock1
+            // pskEnergyEfficiency
             // 
-            this.playerSkillBlock1.AutoSize = true;
-            this.playerSkillBlock1.Location = new System.Drawing.Point(3, 60);
-            this.playerSkillBlock1.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock1.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock1.Name = "playerSkillBlock1";
-            this.playerSkillBlock1.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock1.SkillName = "Energy Efficiency";
-            this.playerSkillBlock1.TabIndex = 12;
+            this.pskEnergyEfficiency.AutoSize = true;
+            this.pskEnergyEfficiency.CanStartTraining = false;
+            this.pskEnergyEfficiency.Location = new System.Drawing.Point(3, 60);
+            this.pskEnergyEfficiency.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskEnergyEfficiency.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskEnergyEfficiency.Name = "pskEnergyEfficiency";
+            this.pskEnergyEfficiency.PlayerSkill = null;
+            this.pskEnergyEfficiency.Size = new System.Drawing.Size(424, 24);
+            this.pskEnergyEfficiency.SkillGroupCheckbox = null;
+            this.pskEnergyEfficiency.SkillName = "Energy Efficiency";
+            this.pskEnergyEfficiency.TabIndex = 12;
             // 
-            // playerSkillBlock3
+            // pskBuilder
             // 
-            this.playerSkillBlock3.AutoSize = true;
-            this.playerSkillBlock3.Location = new System.Drawing.Point(3, 90);
-            this.playerSkillBlock3.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock3.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock3.Name = "playerSkillBlock3";
-            this.playerSkillBlock3.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock3.SkillName = "Builder";
-            this.playerSkillBlock3.TabIndex = 14;
+            this.pskBuilder.AutoSize = true;
+            this.pskBuilder.CanStartTraining = false;
+            this.pskBuilder.Location = new System.Drawing.Point(3, 90);
+            this.pskBuilder.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskBuilder.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskBuilder.Name = "pskBuilder";
+            this.pskBuilder.PlayerSkill = null;
+            this.pskBuilder.Size = new System.Drawing.Size(424, 24);
+            this.pskBuilder.SkillGroupCheckbox = null;
+            this.pskBuilder.SkillName = "Builder";
+            this.pskBuilder.TabIndex = 14;
             // 
-            // playerSkillBlock4
+            // pskRefiningFocus
             // 
-            this.playerSkillBlock4.AutoSize = true;
-            this.playerSkillBlock4.Location = new System.Drawing.Point(3, 30);
-            this.playerSkillBlock4.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock4.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock4.Name = "playerSkillBlock4";
-            this.playerSkillBlock4.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock4.SkillName = "Refining Focus";
-            this.playerSkillBlock4.TabIndex = 13;
+            this.pskRefiningFocus.AutoSize = true;
+            this.pskRefiningFocus.CanStartTraining = false;
+            this.pskRefiningFocus.Location = new System.Drawing.Point(3, 30);
+            this.pskRefiningFocus.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskRefiningFocus.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskRefiningFocus.Name = "pskRefiningFocus";
+            this.pskRefiningFocus.PlayerSkill = null;
+            this.pskRefiningFocus.Size = new System.Drawing.Size(424, 24);
+            this.pskRefiningFocus.SkillGroupCheckbox = null;
+            this.pskRefiningFocus.SkillName = "Refining Focus";
+            this.pskRefiningFocus.TabIndex = 13;
             // 
-            // playerSkillBlock5
+            // pskProductionFocus
             // 
-            this.playerSkillBlock5.AutoSize = true;
-            this.playerSkillBlock5.Location = new System.Drawing.Point(3, 60);
-            this.playerSkillBlock5.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock5.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock5.Name = "playerSkillBlock5";
-            this.playerSkillBlock5.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock5.SkillName = "Production Focus";
-            this.playerSkillBlock5.TabIndex = 12;
+            this.pskProductionFocus.AutoSize = true;
+            this.pskProductionFocus.CanStartTraining = false;
+            this.pskProductionFocus.Location = new System.Drawing.Point(3, 60);
+            this.pskProductionFocus.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskProductionFocus.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskProductionFocus.Name = "pskProductionFocus";
+            this.pskProductionFocus.PlayerSkill = null;
+            this.pskProductionFocus.Size = new System.Drawing.Size(424, 24);
+            this.pskProductionFocus.SkillGroupCheckbox = null;
+            this.pskProductionFocus.SkillName = "Production Focus";
+            this.pskProductionFocus.TabIndex = 12;
             // 
-            // playerSkillBlock6
+            // pskExtractionFocus
             // 
-            this.playerSkillBlock6.AutoSize = true;
-            this.playerSkillBlock6.Location = new System.Drawing.Point(3, 90);
-            this.playerSkillBlock6.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock6.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock6.Name = "playerSkillBlock6";
-            this.playerSkillBlock6.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock6.SkillName = "Extraction Focus";
-            this.playerSkillBlock6.TabIndex = 14;
+            this.pskExtractionFocus.AutoSize = true;
+            this.pskExtractionFocus.CanStartTraining = false;
+            this.pskExtractionFocus.Location = new System.Drawing.Point(3, 90);
+            this.pskExtractionFocus.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskExtractionFocus.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskExtractionFocus.Name = "pskExtractionFocus";
+            this.pskExtractionFocus.PlayerSkill = null;
+            this.pskExtractionFocus.Size = new System.Drawing.Size(424, 24);
+            this.pskExtractionFocus.SkillGroupCheckbox = null;
+            this.pskExtractionFocus.SkillName = "Extraction Focus";
+            this.pskExtractionFocus.TabIndex = 14;
             // 
-            // playerSkillBlock7
+            // pskDamageControl
             // 
-            this.playerSkillBlock7.AutoSize = true;
-            this.playerSkillBlock7.Location = new System.Drawing.Point(3, 30);
-            this.playerSkillBlock7.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock7.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock7.Name = "playerSkillBlock7";
-            this.playerSkillBlock7.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock7.SkillName = "Damage Control";
-            this.playerSkillBlock7.TabIndex = 13;
+            this.pskDamageControl.AutoSize = true;
+            this.pskDamageControl.CanStartTraining = false;
+            this.pskDamageControl.Location = new System.Drawing.Point(3, 30);
+            this.pskDamageControl.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskDamageControl.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskDamageControl.Name = "pskDamageControl";
+            this.pskDamageControl.PlayerSkill = null;
+            this.pskDamageControl.Size = new System.Drawing.Size(424, 24);
+            this.pskDamageControl.SkillGroupCheckbox = null;
+            this.pskDamageControl.SkillName = "Damage Control";
+            this.pskDamageControl.TabIndex = 13;
             // 
-            // playerSkillBlock8
+            // pskEngineeringCapacity
             // 
-            this.playerSkillBlock8.AutoSize = true;
-            this.playerSkillBlock8.Location = new System.Drawing.Point(3, 30);
-            this.playerSkillBlock8.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock8.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock8.Name = "playerSkillBlock8";
-            this.playerSkillBlock8.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock8.SkillName = "Engineering Capacity";
-            this.playerSkillBlock8.TabIndex = 13;
+            this.pskEngineeringCapacity.AutoSize = true;
+            this.pskEngineeringCapacity.CanStartTraining = false;
+            this.pskEngineeringCapacity.Location = new System.Drawing.Point(3, 30);
+            this.pskEngineeringCapacity.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskEngineeringCapacity.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskEngineeringCapacity.Name = "pskEngineeringCapacity";
+            this.pskEngineeringCapacity.PlayerSkill = null;
+            this.pskEngineeringCapacity.Size = new System.Drawing.Size(424, 24);
+            this.pskEngineeringCapacity.SkillGroupCheckbox = null;
+            this.pskEngineeringCapacity.SkillName = "Engineering Capacity";
+            this.pskEngineeringCapacity.TabIndex = 13;
             // 
-            // playerSkillBlock9
+            // pskSoundAsAPound
             // 
-            this.playerSkillBlock9.AutoSize = true;
-            this.playerSkillBlock9.Location = new System.Drawing.Point(3, 30);
-            this.playerSkillBlock9.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock9.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock9.Name = "playerSkillBlock9";
-            this.playerSkillBlock9.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock9.SkillName = "Sounds As A Pound";
-            this.playerSkillBlock9.TabIndex = 13;
+            this.pskSoundAsAPound.AutoSize = true;
+            this.pskSoundAsAPound.CanStartTraining = false;
+            this.pskSoundAsAPound.Location = new System.Drawing.Point(3, 30);
+            this.pskSoundAsAPound.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskSoundAsAPound.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskSoundAsAPound.Name = "pskSoundAsAPound";
+            this.pskSoundAsAPound.PlayerSkill = null;
+            this.pskSoundAsAPound.Size = new System.Drawing.Size(424, 24);
+            this.pskSoundAsAPound.SkillGroupCheckbox = null;
+            this.pskSoundAsAPound.SkillName = "Sounds As A Pound";
+            this.pskSoundAsAPound.TabIndex = 13;
             // 
-            // playerSkillBlock10
+            // pskSelfMadeMillionaire
             // 
-            this.playerSkillBlock10.AutoSize = true;
-            this.playerSkillBlock10.Location = new System.Drawing.Point(3, 60);
-            this.playerSkillBlock10.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock10.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock10.Name = "playerSkillBlock10";
-            this.playerSkillBlock10.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock10.SkillName = "Self-made Millionaire";
-            this.playerSkillBlock10.TabIndex = 12;
+            this.pskSelfMadeMillionaire.AutoSize = true;
+            this.pskSelfMadeMillionaire.CanStartTraining = false;
+            this.pskSelfMadeMillionaire.Location = new System.Drawing.Point(3, 60);
+            this.pskSelfMadeMillionaire.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskSelfMadeMillionaire.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskSelfMadeMillionaire.Name = "pskSelfMadeMillionaire";
+            this.pskSelfMadeMillionaire.PlayerSkill = null;
+            this.pskSelfMadeMillionaire.Size = new System.Drawing.Size(424, 24);
+            this.pskSelfMadeMillionaire.SkillGroupCheckbox = null;
+            this.pskSelfMadeMillionaire.SkillName = "Self-made Millionaire";
+            this.pskSelfMadeMillionaire.TabIndex = 12;
             // 
-            // playerSkillBlock11
+            // pskAAAHealthcare
             // 
-            this.playerSkillBlock11.AutoSize = true;
-            this.playerSkillBlock11.Location = new System.Drawing.Point(3, 90);
-            this.playerSkillBlock11.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock11.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock11.Name = "playerSkillBlock11";
-            this.playerSkillBlock11.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock11.SkillName = "AAA Healthcare";
-            this.playerSkillBlock11.TabIndex = 14;
+            this.pskAAAHealthcare.AutoSize = true;
+            this.pskAAAHealthcare.CanStartTraining = false;
+            this.pskAAAHealthcare.Location = new System.Drawing.Point(3, 90);
+            this.pskAAAHealthcare.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskAAAHealthcare.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskAAAHealthcare.Name = "pskAAAHealthcare";
+            this.pskAAAHealthcare.PlayerSkill = null;
+            this.pskAAAHealthcare.Size = new System.Drawing.Size(424, 24);
+            this.pskAAAHealthcare.SkillGroupCheckbox = null;
+            this.pskAAAHealthcare.SkillName = "AAA Healthcare";
+            this.pskAAAHealthcare.TabIndex = 14;
             // 
-            // playerSkillBlock12
+            // pskJobOpportunities
             // 
-            this.playerSkillBlock12.AutoSize = true;
-            this.playerSkillBlock12.Location = new System.Drawing.Point(3, 30);
-            this.playerSkillBlock12.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock12.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock12.Name = "playerSkillBlock12";
-            this.playerSkillBlock12.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock12.SkillName = "Job Opportunities";
-            this.playerSkillBlock12.TabIndex = 13;
+            this.pskJobOpportunities.AutoSize = true;
+            this.pskJobOpportunities.CanStartTraining = false;
+            this.pskJobOpportunities.Location = new System.Drawing.Point(3, 30);
+            this.pskJobOpportunities.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskJobOpportunities.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskJobOpportunities.Name = "pskJobOpportunities";
+            this.pskJobOpportunities.PlayerSkill = null;
+            this.pskJobOpportunities.Size = new System.Drawing.Size(424, 24);
+            this.pskJobOpportunities.SkillGroupCheckbox = null;
+            this.pskJobOpportunities.SkillName = "Job Opportunities";
+            this.pskJobOpportunities.TabIndex = 13;
             // 
-            // playerSkillBlock13
+            // pskContractManagement
             // 
-            this.playerSkillBlock13.AutoSize = true;
-            this.playerSkillBlock13.Location = new System.Drawing.Point(3, 60);
-            this.playerSkillBlock13.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock13.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock13.Name = "playerSkillBlock13";
-            this.playerSkillBlock13.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock13.SkillName = "Contract Management";
-            this.playerSkillBlock13.TabIndex = 12;
+            this.pskContractManagement.AutoSize = true;
+            this.pskContractManagement.CanStartTraining = false;
+            this.pskContractManagement.Location = new System.Drawing.Point(3, 60);
+            this.pskContractManagement.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskContractManagement.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskContractManagement.Name = "pskContractManagement";
+            this.pskContractManagement.PlayerSkill = null;
+            this.pskContractManagement.Size = new System.Drawing.Size(424, 24);
+            this.pskContractManagement.SkillGroupCheckbox = null;
+            this.pskContractManagement.SkillName = "Contract Management";
+            this.pskContractManagement.TabIndex = 12;
             // 
-            // playerSkillBlock14
+            // pskResearchReview
             // 
-            this.playerSkillBlock14.AutoSize = true;
-            this.playerSkillBlock14.Location = new System.Drawing.Point(3, 30);
-            this.playerSkillBlock14.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock14.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock14.Name = "playerSkillBlock14";
-            this.playerSkillBlock14.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock14.SkillName = "Research Review";
-            this.playerSkillBlock14.TabIndex = 13;
+            this.pskResearchReview.AutoSize = true;
+            this.pskResearchReview.CanStartTraining = false;
+            this.pskResearchReview.Location = new System.Drawing.Point(3, 30);
+            this.pskResearchReview.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskResearchReview.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskResearchReview.Name = "pskResearchReview";
+            this.pskResearchReview.PlayerSkill = null;
+            this.pskResearchReview.Size = new System.Drawing.Size(424, 24);
+            this.pskResearchReview.SkillGroupCheckbox = null;
+            this.pskResearchReview.SkillName = "Research Review";
+            this.pskResearchReview.TabIndex = 13;
             // 
-            // playerSkillBlock15
+            // pskResearchMethods
             // 
-            this.playerSkillBlock15.AutoSize = true;
-            this.playerSkillBlock15.Location = new System.Drawing.Point(3, 60);
-            this.playerSkillBlock15.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock15.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock15.Name = "playerSkillBlock15";
-            this.playerSkillBlock15.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock15.SkillName = "Research Methods";
-            this.playerSkillBlock15.TabIndex = 12;
+            this.pskResearchMethods.AutoSize = true;
+            this.pskResearchMethods.CanStartTraining = false;
+            this.pskResearchMethods.Location = new System.Drawing.Point(3, 60);
+            this.pskResearchMethods.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskResearchMethods.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskResearchMethods.Name = "pskResearchMethods";
+            this.pskResearchMethods.PlayerSkill = null;
+            this.pskResearchMethods.Size = new System.Drawing.Size(424, 24);
+            this.pskResearchMethods.SkillGroupCheckbox = null;
+            this.pskResearchMethods.SkillName = "Research Methods";
+            this.pskResearchMethods.TabIndex = 12;
             // 
-            // playerSkillBlock16
+            // pskResearchFocus
             // 
-            this.playerSkillBlock16.AutoSize = true;
-            this.playerSkillBlock16.Location = new System.Drawing.Point(3, 90);
-            this.playerSkillBlock16.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock16.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock16.Name = "playerSkillBlock16";
-            this.playerSkillBlock16.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock16.SkillName = "Research Focus";
-            this.playerSkillBlock16.TabIndex = 14;
+            this.pskResearchFocus.AutoSize = true;
+            this.pskResearchFocus.CanStartTraining = false;
+            this.pskResearchFocus.Location = new System.Drawing.Point(3, 90);
+            this.pskResearchFocus.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskResearchFocus.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskResearchFocus.Name = "pskResearchFocus";
+            this.pskResearchFocus.PlayerSkill = null;
+            this.pskResearchFocus.Size = new System.Drawing.Size(424, 24);
+            this.pskResearchFocus.SkillGroupCheckbox = null;
+            this.pskResearchFocus.SkillName = "Research Focus";
+            this.pskResearchFocus.TabIndex = 14;
             // 
-            // playerSkillBlock17
+            // pskSurveyingMethods
             // 
-            this.playerSkillBlock17.AutoSize = true;
-            this.playerSkillBlock17.Location = new System.Drawing.Point(3, 30);
-            this.playerSkillBlock17.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock17.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock17.Name = "playerSkillBlock17";
-            this.playerSkillBlock17.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock17.SkillName = "Surveying Methods";
-            this.playerSkillBlock17.TabIndex = 13;
+            this.pskSurveyingMethods.AutoSize = true;
+            this.pskSurveyingMethods.CanStartTraining = false;
+            this.pskSurveyingMethods.Location = new System.Drawing.Point(3, 30);
+            this.pskSurveyingMethods.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskSurveyingMethods.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskSurveyingMethods.Name = "pskSurveyingMethods";
+            this.pskSurveyingMethods.PlayerSkill = null;
+            this.pskSurveyingMethods.Size = new System.Drawing.Size(424, 24);
+            this.pskSurveyingMethods.SkillGroupCheckbox = null;
+            this.pskSurveyingMethods.SkillName = "Surveying Methods";
+            this.pskSurveyingMethods.TabIndex = 13;
             // 
-            // playerSkillBlock18
+            // pskScanningMethods
             // 
-            this.playerSkillBlock18.AutoSize = true;
-            this.playerSkillBlock18.Location = new System.Drawing.Point(3, 60);
-            this.playerSkillBlock18.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock18.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock18.Name = "playerSkillBlock18";
-            this.playerSkillBlock18.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock18.SkillName = "Scanning Methods";
-            this.playerSkillBlock18.TabIndex = 12;
+            this.pskScanningMethods.AutoSize = true;
+            this.pskScanningMethods.CanStartTraining = false;
+            this.pskScanningMethods.Location = new System.Drawing.Point(3, 60);
+            this.pskScanningMethods.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskScanningMethods.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskScanningMethods.Name = "pskScanningMethods";
+            this.pskScanningMethods.PlayerSkill = null;
+            this.pskScanningMethods.Size = new System.Drawing.Size(424, 24);
+            this.pskScanningMethods.SkillGroupCheckbox = null;
+            this.pskScanningMethods.SkillName = "Scanning Methods";
+            this.pskScanningMethods.TabIndex = 12;
             // 
-            // playerSkillBlock19
+            // pskQuartermaster
             // 
-            this.playerSkillBlock19.AutoSize = true;
-            this.playerSkillBlock19.Location = new System.Drawing.Point(3, 90);
-            this.playerSkillBlock19.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock19.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock19.Name = "playerSkillBlock19";
-            this.playerSkillBlock19.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock19.SkillName = "Quartermaster";
-            this.playerSkillBlock19.TabIndex = 14;
+            this.pskQuartermaster.AutoSize = true;
+            this.pskQuartermaster.CanStartTraining = false;
+            this.pskQuartermaster.Location = new System.Drawing.Point(3, 90);
+            this.pskQuartermaster.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskQuartermaster.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskQuartermaster.Name = "pskQuartermaster";
+            this.pskQuartermaster.PlayerSkill = null;
+            this.pskQuartermaster.Size = new System.Drawing.Size(424, 24);
+            this.pskQuartermaster.SkillGroupCheckbox = null;
+            this.pskQuartermaster.SkillName = "Quartermaster";
+            this.pskQuartermaster.TabIndex = 14;
             // 
-            // playerSkillBlock20
+            // pskBroker
             // 
-            this.playerSkillBlock20.AutoSize = true;
-            this.playerSkillBlock20.Location = new System.Drawing.Point(3, 30);
-            this.playerSkillBlock20.MaximumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock20.MinimumSize = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock20.Name = "playerSkillBlock20";
-            this.playerSkillBlock20.Size = new System.Drawing.Size(424, 24);
-            this.playerSkillBlock20.SkillName = "Broker";
-            this.playerSkillBlock20.TabIndex = 13;
+            this.pskBroker.AutoSize = true;
+            this.pskBroker.CanStartTraining = false;
+            this.pskBroker.Location = new System.Drawing.Point(3, 30);
+            this.pskBroker.MaximumSize = new System.Drawing.Size(424, 24);
+            this.pskBroker.MinimumSize = new System.Drawing.Size(424, 24);
+            this.pskBroker.Name = "pskBroker";
+            this.pskBroker.PlayerSkill = null;
+            this.pskBroker.Size = new System.Drawing.Size(424, 24);
+            this.pskBroker.SkillGroupCheckbox = null;
+            this.pskBroker.SkillName = "Broker";
+            this.pskBroker.TabIndex = 13;
             // 
             // FormPlayerProfile
             // 
@@ -1578,40 +1656,40 @@
             this.flpColonyDirector.PerformLayout();
             this.flpColonyFounderSkillGroup.ResumeLayout(false);
             this.flpColonyFounderSkillGroup.PerformLayout();
-            this.flowLayoutPanel17.ResumeLayout(false);
-            this.flowLayoutPanel17.PerformLayout();
+            this.flpColonyFounder.ResumeLayout(false);
+            this.flpColonyFounder.PerformLayout();
             this.flpColonyOperationsSkillGroup.ResumeLayout(false);
             this.flpColonyOperationsSkillGroup.PerformLayout();
-            this.flowLayoutPanel15.ResumeLayout(false);
-            this.flowLayoutPanel15.PerformLayout();
+            this.flpColonyOperations.ResumeLayout(false);
+            this.flpColonyOperations.PerformLayout();
             this.flpCommanderSkillGroup.ResumeLayout(false);
             this.flpCommanderSkillGroup.PerformLayout();
-            this.flowLayoutPanel19.ResumeLayout(false);
-            this.flowLayoutPanel19.PerformLayout();
+            this.flpCommander.ResumeLayout(false);
+            this.flpCommander.PerformLayout();
             this.flpEngineerSkillGroup.ResumeLayout(false);
             this.flpEngineerSkillGroup.PerformLayout();
-            this.flowLayoutPanel21.ResumeLayout(false);
-            this.flowLayoutPanel21.PerformLayout();
+            this.flpEngineer.ResumeLayout(false);
+            this.flpEngineer.PerformLayout();
             this.flpEntrepeneurSkillGroup.ResumeLayout(false);
             this.flpEntrepeneurSkillGroup.PerformLayout();
-            this.flowLayoutPanel23.ResumeLayout(false);
-            this.flowLayoutPanel23.PerformLayout();
+            this.flpEntrepeneur.ResumeLayout(false);
+            this.flpEntrepeneur.PerformLayout();
             this.flpJobManagementSkillGroup.ResumeLayout(false);
             this.flpJobManagementSkillGroup.PerformLayout();
-            this.flowLayoutPanel25.ResumeLayout(false);
-            this.flowLayoutPanel25.PerformLayout();
+            this.flpJobManagement.ResumeLayout(false);
+            this.flpJobManagement.PerformLayout();
             this.flpResearcherSkillGroup.ResumeLayout(false);
             this.flpResearcherSkillGroup.PerformLayout();
-            this.flowLayoutPanel27.ResumeLayout(false);
-            this.flowLayoutPanel27.PerformLayout();
+            this.flpResearcher.ResumeLayout(false);
+            this.flpResearcher.PerformLayout();
             this.flpSurveyorSkillGroup.ResumeLayout(false);
             this.flpSurveyorSkillGroup.PerformLayout();
-            this.flowLayoutPanel29.ResumeLayout(false);
-            this.flowLayoutPanel29.PerformLayout();
+            this.flpSurveyor.ResumeLayout(false);
+            this.flpSurveyor.PerformLayout();
             this.flpTraderSkillGroup.ResumeLayout(false);
             this.flpTraderSkillGroup.PerformLayout();
-            this.flowLayoutPanel31.ResumeLayout(false);
-            this.flowLayoutPanel31.PerformLayout();
+            this.flpTrader.ResumeLayout(false);
+            this.flpTrader.PerformLayout();
             this.flpCommands.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -1645,9 +1723,9 @@
         private System.Windows.Forms.Label lblPublicRank;
         private System.Windows.Forms.TextBox txtPublicRank;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
-        private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Button cmdDelete;
-        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.FlowLayoutPanel flpPublicRankBlock;
         private System.Windows.Forms.FlowLayoutPanel flpPublicRankCurXP;
         private System.Windows.Forms.Label lblPublicRankCurXP;
@@ -1680,63 +1758,63 @@
         private System.Windows.Forms.Label lblColonyDirector;
         private System.Windows.Forms.CheckBox chkColonyDirector;
         private System.Windows.Forms.FlowLayoutPanel flpColonyFounderSkillGroup;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel17;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.FlowLayoutPanel flpColonyFounder;
+        private System.Windows.Forms.Label lblColonyFounder;
+        private System.Windows.Forms.CheckBox chkColonyFounder;
         private PlayerSkillBlock pskHumanResources;
         private PlayerSkillBlock pskForeman;
-        private PlayerSkillBlock playerSkillBlock2;
-        private PlayerSkillBlock playerSkillBlock1;
-        private PlayerSkillBlock playerSkillBlock3;
+        private PlayerSkillBlock pskFounder;
+        private PlayerSkillBlock pskEnergyEfficiency;
+        private PlayerSkillBlock pskBuilder;
         private System.Windows.Forms.FlowLayoutPanel flpColonyOperationsSkillGroup;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel15;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.CheckBox checkBox3;
-        private PlayerSkillBlock playerSkillBlock4;
-        private PlayerSkillBlock playerSkillBlock5;
-        private PlayerSkillBlock playerSkillBlock6;
+        private System.Windows.Forms.FlowLayoutPanel flpColonyOperations;
+        private System.Windows.Forms.Label lblColonyOperations;
+        private System.Windows.Forms.CheckBox chkColonyOperations;
+        private PlayerSkillBlock pskRefiningFocus;
+        private PlayerSkillBlock pskProductionFocus;
+        private PlayerSkillBlock pskExtractionFocus;
         private System.Windows.Forms.FlowLayoutPanel flpCommanderSkillGroup;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel19;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.CheckBox checkBox4;
-        private PlayerSkillBlock playerSkillBlock7;
+        private System.Windows.Forms.FlowLayoutPanel flpCommander;
+        private System.Windows.Forms.Label lblCommander;
+        private System.Windows.Forms.CheckBox chkCommander;
+        private PlayerSkillBlock pskDamageControl;
         private System.Windows.Forms.FlowLayoutPanel flpEngineerSkillGroup;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel21;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.CheckBox checkBox5;
-        private PlayerSkillBlock playerSkillBlock8;
+        private System.Windows.Forms.FlowLayoutPanel flpEngineer;
+        private System.Windows.Forms.Label lblEngineer;
+        private System.Windows.Forms.CheckBox chkEngineer;
+        private PlayerSkillBlock pskEngineeringCapacity;
         private System.Windows.Forms.FlowLayoutPanel flpEntrepeneurSkillGroup;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel23;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.CheckBox checkBox6;
-        private PlayerSkillBlock playerSkillBlock9;
-        private PlayerSkillBlock playerSkillBlock10;
-        private PlayerSkillBlock playerSkillBlock11;
+        private System.Windows.Forms.FlowLayoutPanel flpEntrepeneur;
+        private System.Windows.Forms.Label lblEntrepeneur;
+        private System.Windows.Forms.CheckBox chkEntrepeneur;
+        private PlayerSkillBlock pskSoundAsAPound;
+        private PlayerSkillBlock pskSelfMadeMillionaire;
+        private PlayerSkillBlock pskAAAHealthcare;
         private System.Windows.Forms.FlowLayoutPanel flpJobManagementSkillGroup;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel25;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.CheckBox checkBox7;
-        private PlayerSkillBlock playerSkillBlock12;
-        private PlayerSkillBlock playerSkillBlock13;
+        private System.Windows.Forms.FlowLayoutPanel flpJobManagement;
+        private System.Windows.Forms.Label lblJobManagement;
+        private System.Windows.Forms.CheckBox chkJobManagement;
+        private PlayerSkillBlock pskJobOpportunities;
+        private PlayerSkillBlock pskContractManagement;
         private System.Windows.Forms.FlowLayoutPanel flpResearcherSkillGroup;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel27;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.CheckBox checkBox8;
-        private PlayerSkillBlock playerSkillBlock14;
-        private PlayerSkillBlock playerSkillBlock15;
-        private PlayerSkillBlock playerSkillBlock16;
+        private System.Windows.Forms.FlowLayoutPanel flpResearcher;
+        private System.Windows.Forms.Label lblResearcher;
+        private System.Windows.Forms.CheckBox chkResearcher;
+        private PlayerSkillBlock pskResearchReview;
+        private PlayerSkillBlock pskResearchMethods;
+        private PlayerSkillBlock pskResearchFocus;
         private System.Windows.Forms.FlowLayoutPanel flpSurveyorSkillGroup;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel29;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.CheckBox checkBox9;
-        private PlayerSkillBlock playerSkillBlock17;
-        private PlayerSkillBlock playerSkillBlock18;
-        private PlayerSkillBlock playerSkillBlock19;
+        private System.Windows.Forms.FlowLayoutPanel flpSurveyor;
+        private System.Windows.Forms.Label lblSurveyor;
+        private System.Windows.Forms.CheckBox chkSurveyor;
+        private PlayerSkillBlock pskSurveyingMethods;
+        private PlayerSkillBlock pskScanningMethods;
+        private PlayerSkillBlock pskQuartermaster;
         private System.Windows.Forms.FlowLayoutPanel flpTraderSkillGroup;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel31;
-        private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.CheckBox checkBox10;
-        private PlayerSkillBlock playerSkillBlock20;
+        private System.Windows.Forms.FlowLayoutPanel flpTrader;
+        private System.Windows.Forms.Label lblTrader;
+        private System.Windows.Forms.CheckBox chkTrader;
+        private PlayerSkillBlock pskBroker;
         private System.Windows.Forms.FlowLayoutPanel flpSkillPoints;
         private System.Windows.Forms.Label lblSkillPoints;
         private System.Windows.Forms.TextBox txtSkillPoints;
