@@ -229,7 +229,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             PopulateForm();
         }
 
-        private void populateListView()
+        private void populateListView(Data.PlayerProfile profileToSelect = null)
         {
             string filter = txtNameFilter.Text;
             var profiles = playerContext.playerProfileList
@@ -244,6 +244,12 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 item.SubItems.Add(profile.Faction);
                 item.Tag = profile;
                 lvwPlayerProfiles.Items.Add(item);
+
+                if (profileToSelect != null && profile.UUID == profileToSelect.UUID)
+                {
+                    item.Selected = true;
+                    item.EnsureVisible();
+                }
             }
         }
 
@@ -254,7 +260,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private void lvwPlayerProfiles_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            if (lvwPlayerProfiles.SelectedItems.Count == 1)
+            if (e.IsSelected && lvwPlayerProfiles.SelectedItems.Count == 1)
             {
                 selectedProfile = lvwPlayerProfiles.SelectedItems[0].Tag as Data.PlayerProfile;
                 PopulateForm();
@@ -289,7 +295,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             }
 
             playerContext.writeContext();
-            populateListView();
+            populateListView(selectedProfile);
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
