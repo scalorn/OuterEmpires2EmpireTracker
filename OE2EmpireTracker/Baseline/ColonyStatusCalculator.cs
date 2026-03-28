@@ -44,7 +44,7 @@ namespace OE2EmpireTracker.Baseline
         /// Collection of workers assigned to structures within this colony.
         /// Populated during <see cref="CalculateBuilt"/>.
         /// </summary>
-        public List<ColonyWorker> ColonyWorkers { get; set; }
+        //public List<ColonyWorker> ColonyWorkers { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ColonyStatusCalculator"/> class for a specific colony.
@@ -57,7 +57,7 @@ namespace OE2EmpireTracker.Baseline
             // Uses Singleton pattern access to retrieve contexts from the global state.
             empireContext = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
-            ColonyWorkers = new List<ColonyWorker>();
+            //ColonyWorkers = new List<ColonyWorker>();
         }
         /// <summary>
         /// Calculates the resource status and worker assignments for the tracked colony.
@@ -86,7 +86,7 @@ namespace OE2EmpireTracker.Baseline
         {
             var workers = new ActualColonyStructureWorkers();
             ColonyStructureStatus previousStatus = new ColonyStructureStatus();
-            ColonyWorkers.Clear();
+            //ColonyWorkers.Clear();
 
             foreach (ColonyStructure structure in colony.Structures)
             {
@@ -102,6 +102,7 @@ namespace OE2EmpireTracker.Baseline
         {
             var workers = new IdealColonyStructureWorkers();
             ColonyStructureStatus previousStatus = new ColonyStructureStatus();
+            //ColonyWorkers.Clear();
 
             foreach (ColonyStructure structure in colony.Structures)
             {
@@ -126,6 +127,7 @@ namespace OE2EmpireTracker.Baseline
             double builtEntertainmentRequired = prevStatus.EntertainmentProvided;
             double builtWarehouseCapacity = prevStatus.WarehouseCapacity;
             double builtWarehouseRequired = prevStatus.WarehouseCapacity;
+            List<ColonyWorker> ColonyWorkers = new List<ColonyWorker>();
 
             // Ensure the structure has a unique identifier for lookups
             if (structure.UUID == null || structure.UUID.Length == 0)
@@ -136,12 +138,9 @@ namespace OE2EmpireTracker.Baseline
             Data.Blueprint flatpackBlueprint = playerContext.findBlueprint(structure.FlatpackBlueprintUUID);
 
             bool built = false;
-            // Reads raw property flags from the structure
-            structure.Properties.getBoolean("Built", false, out built);
             bool staged = false;
-            structure.Properties.getBoolean("Staged", false, out staged);
             bool online = false;
-            structure.Properties.getBoolean("Online", false, out online);
+            workerSource.GetStructureState(structure, out built, out staged, out online);
 
             if (flatpackBlueprint != null)
             {
@@ -201,7 +200,7 @@ namespace OE2EmpireTracker.Baseline
                     {
                         string key = "BlueCollar" + i;
                         bool blueCollarAssigned = workerSource.IsWorkerAssigned(structure, key);
-                        structure.AssignedWorkers.setProperty(key, blueCollarAssigned);
+                        workerSource.SetWorkerAssigned(structure, key, blueCollarAssigned);
                         if (blueCollarAssigned)
                         {
                             ColonyWorkers.Add(new ColonyWorker(structure, key, blueCollarAssigned));
@@ -218,7 +217,7 @@ namespace OE2EmpireTracker.Baseline
                     {
                         string key = "WhiteCollar" + i;
                         bool whiteCollarAssigned = workerSource.IsWorkerAssigned(structure, key);
-                        structure.AssignedWorkers.setProperty(key, whiteCollarAssigned);
+                        workerSource.SetWorkerAssigned(structure, key, whiteCollarAssigned);
                         if (whiteCollarAssigned)
                         {
                             ColonyWorkers.Add(new ColonyWorker(structure, key, whiteCollarAssigned));
@@ -235,7 +234,7 @@ namespace OE2EmpireTracker.Baseline
                     {
                         string key = "Specialist" + i;
                         bool specialistAssigned = workerSource.IsWorkerAssigned(structure, key);
-                        structure.AssignedWorkers.setProperty(key, specialistAssigned);
+                        workerSource.SetWorkerAssigned(structure, key, specialistAssigned);
                         if (specialistAssigned)
                         {
                             ColonyWorkers.Add(new ColonyWorker(structure, key, specialistAssigned));

@@ -12,6 +12,16 @@ namespace OE2EmpireTracker.Baseline
         /// Returns whether the named worker slot is assigned for the given structure.
         /// </summary>
         bool IsWorkerAssigned(ColonyStructure structure, string workerKey);
+
+        /// <summary>
+        /// Persists the resolved worker assignment state back to the structure.
+        /// </summary>
+        void SetWorkerAssigned(ColonyStructure structure, string workerKey, bool assigned);
+
+        /// <summary>
+        /// Returns the Built, Staged and Online state for the given structure.
+        /// </summary>
+        void GetStructureState(ColonyStructure structure, out bool built, out bool staged, out bool online);
     }
 
     /// <summary>
@@ -25,6 +35,21 @@ namespace OE2EmpireTracker.Baseline
             structure.AssignedWorkers.getBoolean(workerKey, false, out assigned);
             return assigned;
         }
+
+        public void SetWorkerAssigned(ColonyStructure structure, string workerKey, bool assigned)
+        {
+            structure.AssignedWorkers.setProperty(workerKey, assigned);
+        }
+
+        public void GetStructureState(ColonyStructure structure, out bool built, out bool staged, out bool online)
+        {
+            built = false;
+            structure.Properties.getBoolean("Built", false, out built);
+            staged = false;
+            structure.Properties.getBoolean("Staged", false, out staged);
+            online = false;
+            structure.Properties.getBoolean("Online", false, out online);
+        }
     }
 
     /// <summary>
@@ -36,6 +61,24 @@ namespace OE2EmpireTracker.Baseline
         public bool IsWorkerAssigned(ColonyStructure structure, string workerKey)
         {
             return true;
+        }
+
+        /// <summary>
+        /// No-op: ideal simulation must not mutate actual worker assignment data.
+        /// </summary>
+        public void SetWorkerAssigned(ColonyStructure structure, string workerKey, bool assigned)
+        {
+            // intentionally empty
+        }
+
+        /// <summary>
+        /// Returns ideal state: Built=true, Staged=false, Online=true.
+        /// </summary>
+        public void GetStructureState(ColonyStructure structure, out bool built, out bool staged, out bool online)
+        {
+            built = true;
+            staged = false;
+            online = true;
         }
     }
 }

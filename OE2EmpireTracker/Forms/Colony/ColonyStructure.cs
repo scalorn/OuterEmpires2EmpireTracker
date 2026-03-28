@@ -235,6 +235,12 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     ColonyStatusCalculator.populateStatus(rtbStatus, status);
                 }
+                ColonyStructureData.Statuses.TryGetValue("Ideal", out ColonyStructureStatus idealStatus);
+                if (idealStatus != null)
+                {
+                    rtbStatus.AppendText("\n");
+                    ColonyStatusCalculator.populateStatus(rtbStatus, idealStatus);
+                }
             }
 
             /*

@@ -44,6 +44,7 @@ namespace OE2EmpireTracker.Forms.Colony
             selectedColony = new Baseline.Colony();
             statusCalculator = new ColonyStatusCalculator(selectedColony);
             statusCalculator.CalculateBuilt();
+            statusCalculator.CalculateIdeal();
 
             //ColonyStructure colonyStructure = new ColonyStructure();
             //flpColonyStructure.Controls.Add(colonyStructure);
@@ -109,6 +110,7 @@ namespace OE2EmpireTracker.Forms.Colony
             flpColonyStructure.Controls.Add(colonyStructureControl);
 
             statusCalculator.CalculateBuilt();
+            statusCalculator.CalculateIdeal();
             colonyStructureControl.UpdateData();
             rtbStatus.Text = "";
             ColonyStatusCalculator.populateStatus(rtbStatus, statusCalculator.finalActualStatus);
@@ -341,6 +343,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             Debug.Print("populateForm: Calling CalculateBuilt started");
             statusCalculator.CalculateBuilt();
+            statusCalculator.CalculateIdeal();
             Debug.Print("populateForm: Calling CalculateBuilt finished");
             Debug.Print("populateForm: Calling populateStatus started");
             rtbStatus.Text = "";
