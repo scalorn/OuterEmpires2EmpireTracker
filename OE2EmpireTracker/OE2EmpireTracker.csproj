@@ -118,6 +118,7 @@
     <Compile Include="Baseline\Colony.cs" />
     <Compile Include="Baseline\ColonyStatusCalculator.cs" />
     <Compile Include="Baseline\ColonyStructureStatus.cs" />
+    <Compile Include="Baseline\IColonyStructureWorkers.cs" />
     <Compile Include="Baseline\PlayerContext.cs" />
     <Compile Include="Baseline\TechLevel.cs" />
     <Compile Include="Baseline\EmpireContext.cs" />

@@ -38,6 +38,7 @@ namespace OE2EmpireTracker.Baseline
         private Baseline.Colony colony;
 
         public ColonyStructureStatus finalActualStatus;
+        public ColonyStructureStatus finalIdealStatus;
 
         /// <summary>
         /// Collection of workers assigned to structures within this colony.
@@ -83,21 +84,36 @@ namespace OE2EmpireTracker.Baseline
         /// </remarks>
         public void CalculateBuilt()
         {
-            List<ColonyStructureStatus> actualStatusList = new List<ColonyStructureStatus>();
-            ColonyStructureStatus previousActualStatus = new ColonyStructureStatus();
-            // Reset worker list to clear previous state
+            var workers = new ActualColonyStructureWorkers();
+            ColonyStructureStatus previousStatus = new ColonyStructureStatus();
             ColonyWorkers.Clear();
 
             foreach (ColonyStructure structure in colony.Structures)
             {
                 ColonyStructureStatus currentStatus = new ColonyStructureStatus();
-                CalculateBuilt(structure, previousActualStatus, currentStatus);
+                CalculateBuilt(structure, previousStatus, currentStatus, workers);
                 structure.Statuses["Actual"] = currentStatus;
-                previousActualStatus = currentStatus;
+                previousStatus = currentStatus;
             }
-            finalActualStatus = previousActualStatus;
+            finalActualStatus = previousStatus;
         }
-        public void CalculateBuilt(ColonyStructure structure, ColonyStructureStatus prevStatus, ColonyStructureStatus status)
+
+        public void CalculateIdeal()
+        {
+            var workers = new IdealColonyStructureWorkers();
+            ColonyStructureStatus previousStatus = new ColonyStructureStatus();
+
+            foreach (ColonyStructure structure in colony.Structures)
+            {
+                ColonyStructureStatus currentStatus = new ColonyStructureStatus();
+                CalculateBuilt(structure, previousStatus, currentStatus, workers);
+                structure.Statuses["Ideal"] = currentStatus;
+                previousStatus = currentStatus;
+            }
+            finalIdealStatus = previousStatus;
+        }
+
+        public void CalculateBuilt(ColonyStructure structure, ColonyStructureStatus prevStatus, ColonyStructureStatus status, IColonyStructureWorkers workerSource)
         {
             // Aggregators for resource stats
             double builtPowerProvided = prevStatus.PowerProvided;
@@ -183,12 +199,12 @@ namespace OE2EmpireTracker.Baseline
                     flatpackBlueprint.Properties.getLong("BlueCollarDetail", 0, out blueCollarDetail);
                     for (int i = 1; i <= blueCollarDetail; i++)
                     {
-                        bool blueCollarAssigned = false;
-                        structure.AssignedWorkers.getBoolean("BlueCollar" + i, false, out blueCollarAssigned);
-                        structure.AssignedWorkers.setProperty("BlueCollar" + i, blueCollarAssigned);
+                        string key = "BlueCollar" + i;
+                        bool blueCollarAssigned = workerSource.IsWorkerAssigned(structure, key);
+                        structure.AssignedWorkers.setProperty(key, blueCollarAssigned);
                         if (blueCollarAssigned)
                         {
-                            ColonyWorkers.Add(new ColonyWorker(structure, "BlueCollar" + i, blueCollarAssigned));
+                            ColonyWorkers.Add(new ColonyWorker(structure, key, blueCollarAssigned));
                         }
                     }
                 }
@@ -200,12 +216,12 @@ namespace OE2EmpireTracker.Baseline
                     flatpackBlueprint.Properties.getLong("WhiteCollarDetail", 0, out whiteCollarDetail);
                     for (int i = 1; i <= whiteCollarDetail; i++)
                     {
-                        bool whiteCollarAssigned = false;
-                        structure.AssignedWorkers.getBoolean("WhiteCollar" + i, false, out whiteCollarAssigned);
-                        structure.AssignedWorkers.setProperty("WhiteCollar" + i, whiteCollarAssigned);
+                        string key = "WhiteCollar" + i;
+                        bool whiteCollarAssigned = workerSource.IsWorkerAssigned(structure, key);
+                        structure.AssignedWorkers.setProperty(key, whiteCollarAssigned);
                         if (whiteCollarAssigned)
                         {
-                            ColonyWorkers.Add(new ColonyWorker(structure, "WhiteCollar" + i, whiteCollarAssigned));
+                            ColonyWorkers.Add(new ColonyWorker(structure, key, whiteCollarAssigned));
                         }
                     }
                 }
@@ -217,12 +233,12 @@ namespace OE2EmpireTracker.Baseline
                     flatpackBlueprint.Properties.getLong("SpecialistDetail", 0, out specialistDetail);
                     for (int i = 1; i <= specialistDetail; i++)
                     {
-                        bool specialistAssigned = false;
-                        structure.AssignedWorkers.getBoolean("Specialist" + i, false, out specialistAssigned);
-                        structure.AssignedWorkers.setProperty("Specialist" + i, specialistAssigned);
+                        string key = "Specialist" + i;
+                        bool specialistAssigned = workerSource.IsWorkerAssigned(structure, key);
+                        structure.AssignedWorkers.setProperty(key, specialistAssigned);
                         if (specialistAssigned)
                         {
-                            ColonyWorkers.Add(new ColonyWorker(structure, "Specialist" + i, specialistAssigned));
+                            ColonyWorkers.Add(new ColonyWorker(structure, key, specialistAssigned));
                         }
                     }
                 }
