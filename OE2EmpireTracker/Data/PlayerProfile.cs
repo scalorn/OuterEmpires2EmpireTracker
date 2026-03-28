@@ -35,6 +35,8 @@ namespace OE2EmpireTracker.Data
             }
             return Skills[skillName];
         }
+        public PlayerSkill GetSkill(SkillName skill) => GetSkill(skill.ToDisplayName());
+
         public bool GetSkillGroup(string skillGroup)
         {
             if (!SkillGroups.ContainsKey(skillGroup))

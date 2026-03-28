@@ -51,28 +51,28 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             SkillGroups["Surveyor"] = chkSurveyor;
             SkillGroups["Trader"] = chkTrader;
 
-            configureSkillBlockOnce(chkColonyDirector, pskHumanResources, "Human Resources");
-            configureSkillBlockOnce(chkColonyDirector, pskForeman, "Foreman");
-            configureSkillBlockOnce(chkColonyFounder, pskFounder, "Founder");
-            configureSkillBlockOnce(chkColonyFounder, pskEnergyEfficiency, "Energy Efficiency");
-            configureSkillBlockOnce(chkColonyFounder, pskBuilder, "Builder");
-            configureSkillBlockOnce(chkColonyOperations, pskRefiningFocus, "Refining Focus");
-            configureSkillBlockOnce(chkColonyOperations, pskProductionFocus, "Production Focus");
-            configureSkillBlockOnce(chkColonyOperations, pskExtractionFocus, "Extraction Focus");
-            configureSkillBlockOnce(chkCommander, pskDamageControl, "Damage Control");
-            configureSkillBlockOnce(chkEngineer, pskEngineeringCapacity, "Engineering Capacity");
-            configureSkillBlockOnce(chkEntrepeneur, pskSoundAsAPound, "Sounds As A Pound");
-            configureSkillBlockOnce(chkEntrepeneur, pskSelfMadeMillionaire, "Self Made Millionaire");
-            configureSkillBlockOnce(chkEntrepeneur, pskAAAHealthcare, "AAA Healthcare");
-            configureSkillBlockOnce(chkJobManagement, pskJobOpportunities, "Job Opportunities");
-            configureSkillBlockOnce(chkJobManagement, pskContractManagement, "Contract Management");
-            configureSkillBlockOnce(chkResearcher, pskResearchReview, "Research Review");
-            configureSkillBlockOnce(chkResearcher, pskResearchMethods, "Research Methods");
-            configureSkillBlockOnce(chkResearcher, pskResearchFocus, "Research Focus");
-            configureSkillBlockOnce(chkSurveyor, pskSurveyingMethods, "Surveying Methods");
-            configureSkillBlockOnce(chkSurveyor, pskScanningMethods, "Scanning Methods");
-            configureSkillBlockOnce(chkSurveyor, pskQuartermaster, "Quartermaster");
-            configureSkillBlockOnce(chkTrader, pskBroker, "Broker");
+            configureSkillBlockOnce(chkColonyDirector, pskHumanResources, SkillName.HumanResources);
+            configureSkillBlockOnce(chkColonyDirector, pskForeman, SkillName.Foreman);
+            configureSkillBlockOnce(chkColonyFounder, pskFounder, SkillName.Founder);
+            configureSkillBlockOnce(chkColonyFounder, pskEnergyEfficiency, SkillName.EnergyEfficiency);
+            configureSkillBlockOnce(chkColonyFounder, pskBuilder, SkillName.Builder);
+            configureSkillBlockOnce(chkColonyOperations, pskRefiningFocus, SkillName.RefiningFocus);
+            configureSkillBlockOnce(chkColonyOperations, pskProductionFocus, SkillName.ProductionFocus);
+            configureSkillBlockOnce(chkColonyOperations, pskExtractionFocus, SkillName.ExtractionFocus);
+            configureSkillBlockOnce(chkCommander, pskDamageControl, SkillName.DamageControl);
+            configureSkillBlockOnce(chkEngineer, pskEngineeringCapacity, SkillName.EngineeringCapacity);
+            configureSkillBlockOnce(chkEntrepeneur, pskSoundAsAPound, SkillName.SoundsAsAPound);
+            configureSkillBlockOnce(chkEntrepeneur, pskSelfMadeMillionaire, SkillName.SelfMadeMillionaire);
+            configureSkillBlockOnce(chkEntrepeneur, pskAAAHealthcare, SkillName.AAAHealthcare);
+            configureSkillBlockOnce(chkJobManagement, pskJobOpportunities, SkillName.JobOpportunities);
+            configureSkillBlockOnce(chkJobManagement, pskContractManagement, SkillName.ContractManagement);
+            configureSkillBlockOnce(chkResearcher, pskResearchReview, SkillName.ResearchReview);
+            configureSkillBlockOnce(chkResearcher, pskResearchMethods, SkillName.ResearchMethods);
+            configureSkillBlockOnce(chkResearcher, pskResearchFocus, SkillName.ResearchFocus);
+            configureSkillBlockOnce(chkSurveyor, pskSurveyingMethods, SkillName.SurveyingMethods);
+            configureSkillBlockOnce(chkSurveyor, pskScanningMethods, SkillName.ScanningMethods);
+            configureSkillBlockOnce(chkSurveyor, pskQuartermaster, SkillName.Quartermaster);
+            configureSkillBlockOnce(chkTrader, pskBroker, SkillName.Broker);
 
             txtNameFilter.TextChanged += txtNameFilter_TextChanged;
             lvwPlayerProfiles.ItemSelectionChanged += lvwPlayerProfiles_ItemSelectionChanged;
@@ -111,28 +111,28 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 entry.Value.Checked = selectedProfile.GetSkillGroup(entry.Key);
             }
 
-            updateSkillBlock(pskHumanResources, "Human Resources");
-            updateSkillBlock(pskForeman, "Foreman");
-            updateSkillBlock(pskFounder, "Founder");
-            updateSkillBlock(pskEnergyEfficiency, "Energy Efficiency");
-            updateSkillBlock(pskBuilder, "Builder");
-            updateSkillBlock(pskRefiningFocus, "Refining Focus");
-            updateSkillBlock(pskProductionFocus, "Production Focus");
-            updateSkillBlock(pskExtractionFocus, "Extraction Focus");
-            updateSkillBlock(pskDamageControl, "Damage Control");
-            updateSkillBlock(pskEngineeringCapacity, "Engineering Capacity");
-            updateSkillBlock(pskSoundAsAPound, "Sounds As A Pound");
-            updateSkillBlock(pskSelfMadeMillionaire, "Self Made Millionaire");
-            updateSkillBlock(pskAAAHealthcare, "AAA Healthcare");
-            updateSkillBlock(pskJobOpportunities, "Job Opportunities");
-            updateSkillBlock(pskContractManagement, "Contract Management");
-            updateSkillBlock(pskResearchReview, "Research Review");
-            updateSkillBlock(pskResearchMethods, "Research Methods");
-            updateSkillBlock(pskResearchFocus, "Research Focus");
-            updateSkillBlock(pskSurveyingMethods, "Surveying Methods");
-            updateSkillBlock(pskScanningMethods, "Scanning Methods");
-            updateSkillBlock(pskQuartermaster, "Quartermaster");
-            updateSkillBlock(pskBroker, "Broker");
+            updateSkillBlock(pskHumanResources, SkillName.HumanResources);
+            updateSkillBlock(pskForeman, SkillName.Foreman);
+            updateSkillBlock(pskFounder, SkillName.Founder);
+            updateSkillBlock(pskEnergyEfficiency, SkillName.EnergyEfficiency);
+            updateSkillBlock(pskBuilder, SkillName.Builder);
+            updateSkillBlock(pskRefiningFocus, SkillName.RefiningFocus);
+            updateSkillBlock(pskProductionFocus, SkillName.ProductionFocus);
+            updateSkillBlock(pskExtractionFocus, SkillName.ExtractionFocus);
+            updateSkillBlock(pskDamageControl, SkillName.DamageControl);
+            updateSkillBlock(pskEngineeringCapacity, SkillName.EngineeringCapacity);
+            updateSkillBlock(pskSoundAsAPound, SkillName.SoundsAsAPound);
+            updateSkillBlock(pskSelfMadeMillionaire, SkillName.SelfMadeMillionaire);
+            updateSkillBlock(pskAAAHealthcare, SkillName.AAAHealthcare);
+            updateSkillBlock(pskJobOpportunities, SkillName.JobOpportunities);
+            updateSkillBlock(pskContractManagement, SkillName.ContractManagement);
+            updateSkillBlock(pskResearchReview, SkillName.ResearchReview);
+            updateSkillBlock(pskResearchMethods, SkillName.ResearchMethods);
+            updateSkillBlock(pskResearchFocus, SkillName.ResearchFocus);
+            updateSkillBlock(pskSurveyingMethods, SkillName.SurveyingMethods);
+            updateSkillBlock(pskScanningMethods, SkillName.ScanningMethods);
+            updateSkillBlock(pskQuartermaster, SkillName.Quartermaster);
+            updateSkillBlock(pskBroker, SkillName.Broker);
 
             bool isTraining = false;
             foreach (KeyValuePair<string, PlayerSkill> skillEntry in selectedProfile.Skills)
@@ -149,17 +149,17 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             }
         }
 
-        private void configureSkillBlockOnce(CheckBox skillGroup, PlayerSkillBlock skillBlock, string skillName)
+        private void configureSkillBlockOnce(CheckBox skillGroup, PlayerSkillBlock skillBlock, SkillName skill)
         {
             skillBlock.SkillGroupCheckbox = skillGroup;
-            skillBlock.SkillName = skillName;
-            skillBlocks[skillName] = skillBlock;
+            skillBlock.SkillName = skill.ToDisplayName();
+            skillBlocks[skill.ToDisplayName()] = skillBlock;
             skillBlock.TrainingStatusChanged += TrainingStatusChanged;
         }
 
-        private void updateSkillBlock(PlayerSkillBlock skillBlock, string skillName)
+        private void updateSkillBlock(PlayerSkillBlock skillBlock, SkillName skill)
         {
-            skillBlock.PlayerSkill = selectedProfile.GetSkill(skillName);
+            skillBlock.PlayerSkill = selectedProfile.GetSkill(skill);
             skillBlock.PopulateForm();
         }
 
