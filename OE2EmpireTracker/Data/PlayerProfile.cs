@@ -45,9 +45,12 @@ namespace OE2EmpireTracker.Data
             }
             return SkillGroups[skillGroup];
         }
+        public bool GetSkillGroup(SkillGroupName group) => GetSkillGroup(group.ToDisplayName());
+
         public void SetSkillGroup(string skillGroup, bool value)
         {
             SkillGroups[skillGroup] = value;
         }
+        public void SetSkillGroup(SkillGroupName group, bool value) => SetSkillGroup(group.ToDisplayName(), value);
     }
 }

@@ -34,6 +34,20 @@ namespace OE2EmpireTracker.Data
         [Description("Broker")]             Broker,
     }
 
+    public enum SkillGroupName
+    {
+        [Description("Colony Director")]    ColonyDirector,
+        [Description("Colony Founder")]     ColonyFounder,
+        [Description("Colony Operations")]  ColonyOperations,
+        [Description("Commander")]          Commander,
+        [Description("Engineer")]           Engineer,
+        [Description("Entrepeneur")]        Entrepeneur,
+        [Description("Job Management")]     JobManagement,
+        [Description("Researcher")]         Researcher,
+        [Description("Surveyor")]           Surveyor,
+        [Description("Trader")]             Trader,
+    }
+
     public static class SkillNameExtensions
     {
         public static string ToDisplayName(this SkillName skill)
@@ -41,6 +55,13 @@ namespace OE2EmpireTracker.Data
             FieldInfo fi = skill.GetType().GetField(skill.ToString());
             var attr = fi?.GetCustomAttribute<DescriptionAttribute>();
             return attr?.Description ?? skill.ToString();
+        }
+
+        public static string ToDisplayName(this SkillGroupName group)
+        {
+            FieldInfo fi = group.GetType().GetField(group.ToString());
+            var attr = fi?.GetCustomAttribute<DescriptionAttribute>();
+            return attr?.Description ?? group.ToString();
         }
     }
 

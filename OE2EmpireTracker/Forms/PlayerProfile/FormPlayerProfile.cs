@@ -26,7 +26,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private Data.PlayerProfile selectedProfile;
 
-        private Dictionary<string, CheckBox> SkillGroups = new Dictionary<string, CheckBox>();
+        private Dictionary<SkillGroupName, CheckBox> SkillGroups = new Dictionary<SkillGroupName, CheckBox>();
 
         private Dictionary<string, PlayerSkillBlock> skillBlocks = new Dictionary<string, PlayerSkillBlock>();
 
@@ -40,16 +40,16 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
             selectedProfile = new Data.PlayerProfile();
 
-            SkillGroups["Colony Director"] = chkColonyDirector;
-            SkillGroups["Colony Founder"] = chkColonyFounder;
-            SkillGroups["Colony Operations"] = chkColonyOperations;
-            SkillGroups["Commander"] = chkCommander;
-            SkillGroups["Engineer"] = chkEngineer;
-            SkillGroups["Entrepeneur"] = chkEntrepeneur;
-            SkillGroups["Job Management"] = chkJobManagement;
-            SkillGroups["Researcher"] = chkResearcher;
-            SkillGroups["Surveyor"] = chkSurveyor;
-            SkillGroups["Trader"] = chkTrader;
+            SkillGroups[SkillGroupName.ColonyDirector]   = chkColonyDirector;
+            SkillGroups[SkillGroupName.ColonyFounder]    = chkColonyFounder;
+            SkillGroups[SkillGroupName.ColonyOperations] = chkColonyOperations;
+            SkillGroups[SkillGroupName.Commander]        = chkCommander;
+            SkillGroups[SkillGroupName.Engineer]         = chkEngineer;
+            SkillGroups[SkillGroupName.Entrepeneur]      = chkEntrepeneur;
+            SkillGroups[SkillGroupName.JobManagement]    = chkJobManagement;
+            SkillGroups[SkillGroupName.Researcher]       = chkResearcher;
+            SkillGroups[SkillGroupName.Surveyor]         = chkSurveyor;
+            SkillGroups[SkillGroupName.Trader]           = chkTrader;
 
             configureSkillBlockOnce(chkColonyDirector, pskHumanResources, SkillName.HumanResources);
             configureSkillBlockOnce(chkColonyDirector, pskForeman, SkillName.Foreman);
@@ -171,61 +171,61 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private void chkColonyDirector_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup("Colony Director", chkColonyDirector.Checked);
+            selectedProfile.SetSkillGroup(SkillGroupName.ColonyDirector, chkColonyDirector.Checked);
             PopulateForm();
         }
 
         private void chkColonyFounder_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup("Colony Founder", chkColonyFounder.Checked);
+            selectedProfile.SetSkillGroup(SkillGroupName.ColonyFounder, chkColonyFounder.Checked);
             PopulateForm();
         }
 
         private void chkColonyOperations_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup("Colony Operations", chkColonyOperations.Checked);
+            selectedProfile.SetSkillGroup(SkillGroupName.ColonyOperations, chkColonyOperations.Checked);
             PopulateForm();
         }
 
         private void chkCommander_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup("Commander", chkCommander.Checked);
+            selectedProfile.SetSkillGroup(SkillGroupName.Commander, chkCommander.Checked);
             PopulateForm();
         }
 
         private void chkEngineer_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup("Engineer", chkEngineer.Checked);
+            selectedProfile.SetSkillGroup(SkillGroupName.Engineer, chkEngineer.Checked);
             PopulateForm();
         }
 
         private void chkEntrepeneur_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup("Entrepeneur", chkEntrepeneur.Checked);
+            selectedProfile.SetSkillGroup(SkillGroupName.Entrepeneur, chkEntrepeneur.Checked);
             PopulateForm();
         }
 
         private void chkJobManagement_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup("Job Management", chkJobManagement.Checked);
+            selectedProfile.SetSkillGroup(SkillGroupName.JobManagement, chkJobManagement.Checked);
             PopulateForm();
         }
 
         private void chkResearcher_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup("Researcher", chkResearcher.Checked);
+            selectedProfile.SetSkillGroup(SkillGroupName.Researcher, chkResearcher.Checked);
             PopulateForm();
         }
 
         private void chkSurveyor_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup("Surveyor", chkSurveyor.Checked);
+            selectedProfile.SetSkillGroup(SkillGroupName.Surveyor, chkSurveyor.Checked);
             PopulateForm();
         }
 
         private void chkTrader_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup("Trader", chkTrader.Checked);
+            selectedProfile.SetSkillGroup(SkillGroupName.Trader, chkTrader.Checked);
             PopulateForm();
         }
 
