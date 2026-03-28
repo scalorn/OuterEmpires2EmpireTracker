@@ -843,13 +843,13 @@ namespace OE2EmpireTracker
             // Clear and regenerate blueprint type list
             txtFilterBlueprintType.Text = "";
             updateBlueprintTypeListBase();
-            
+
             // Load blueprint type selection
             cmbBlueprintType.SelectedItem = empireContext.findBlueprintType(selectedBlueprint.BluePrintType);
-            
+
             // Update property grid based on selected type
             updatePropertyGrid();
-            
+
             // Load dependent dropdowns
             cmbShipClass.SelectedItem = empireContext.findShipClass(selectedBlueprint.Class);
             cmbTechLevel.SelectedItem = empireContext.findTechLevel(selectedBlueprint.TechLevel);
@@ -858,7 +858,7 @@ namespace OE2EmpireTracker
             // Clear and regenerate base blueprint list
             txtFilterBaseBlueprint.Text = "";
             updateBaseBlueprintList();
-            
+
             // Load base blueprint selection (if this is not the base blueprint)
             cmbBaseBlueprint.SelectedItem = playerContext.findBlueprint(selectedBlueprint.baseBlueprintUUID);
 
@@ -880,7 +880,10 @@ namespace OE2EmpireTracker
                 }
                 row.Cells["CurrentValue"].Value = value;
             }
-
+            populateResources();
+        }
+        private void populateResources()
+        { 
             // Populate resources grid with blueprint's resource data
             dgvResources.Rows.Clear();
             foreach (KeyValuePair<string, string> resource in selectedBlueprint.Resources)
@@ -958,7 +961,8 @@ namespace OE2EmpireTracker
         private void cmdImport_Click(object sender, EventArgs e)
         {
             BlueprintScanner scanner = new BlueprintScanner();
-            scanner.processClipboard();
+            scanner.processClipboard(selectedBlueprint);
+            populateForm();
         }
     }
 }

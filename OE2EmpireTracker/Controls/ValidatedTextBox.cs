@@ -75,7 +75,11 @@ namespace OE2EmpireTracker.Controls
 
         public ValidatedTextBox()
         {
-            Font = new Font(FindForm().Font.Name, 10);
+            Form form = FindForm();
+            if (form != null && form.Font != null)
+            {
+                Font = new Font(form.Font.Name, 10);
+            }
             Enabled = true;
             TabIndex = 1;
             //SizeMode = Mode.Single;
@@ -142,7 +146,7 @@ namespace OE2EmpireTracker.Controls
             var currentText = Text;
             var match = _validationRegex?.Match(currentText);
 
-            if (AllowSpaces && match.Success)
+            if (AllowSpaces && (match != null && match.Success))
             {
                 IsValid = true;
                 ErrorMessage = "";

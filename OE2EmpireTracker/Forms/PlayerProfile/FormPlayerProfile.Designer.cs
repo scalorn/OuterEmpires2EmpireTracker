@@ -49,20 +49,16 @@
             this.lblScannerBlueprint = new System.Windows.Forms.Label();
             this.txtFilterScannerBlueprint = new System.Windows.Forms.TextBox();
             this.cmbScannerBlueprint = new System.Windows.Forms.ComboBox();
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.flpScannedBy = new System.Windows.Forms.FlowLayoutPanel();
             this.lblScannedBy = new System.Windows.Forms.Label();
             this.txtScannedBy = new System.Windows.Forms.TextBox();
-            this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.cmdDelete = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
@@ -86,19 +82,50 @@
             this.flowLayoutPanel12 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel13 = new System.Windows.Forms.FlowLayoutPanel();
             this.label9 = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel14 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label12 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.textBox10 = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.flowLayoutPanel15 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label13 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.textBox11 = new System.Windows.Forms.TextBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
-            this.textBox9 = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
+            this.flowLayoutPanel16 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel17 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label16 = new System.Windows.Forms.Label();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.flowLayoutPanel18 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.textBox9 = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.flowLayoutPanel19 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
             this.textBox12 = new System.Windows.Forms.TextBox();
+            this.label22 = new System.Windows.Forms.Label();
+            this.flowLayoutPanel20 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label23 = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
+            this.textBox13 = new System.Windows.Forms.TextBox();
+            this.label25 = new System.Windows.Forms.Label();
+            this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnSave = new System.Windows.Forms.Button();
+            this.cmdDelete = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
+            this.validatedTextBox1 = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.validatedTextBox2 = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.validatedTextBox3 = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.validatedTextBox4 = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.validatedTextBox5 = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
             this.flpBlueprintSearch.SuspendLayout();
@@ -108,11 +135,10 @@
             this.flpPlanetName.SuspendLayout();
             this.flpSurveyID.SuspendLayout();
             this.flpScannerBlueprint.SuspendLayout();
+            this.flowLayoutPanel3.SuspendLayout();
             this.flpScannedBy.SuspendLayout();
-            this.flpCommands.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
-            this.flowLayoutPanel3.SuspendLayout();
             this.flowLayoutPanel4.SuspendLayout();
             this.flowLayoutPanel5.SuspendLayout();
             this.flowLayoutPanel6.SuspendLayout();
@@ -125,6 +151,12 @@
             this.flowLayoutPanel13.SuspendLayout();
             this.flowLayoutPanel14.SuspendLayout();
             this.flowLayoutPanel15.SuspendLayout();
+            this.flowLayoutPanel16.SuspendLayout();
+            this.flowLayoutPanel17.SuspendLayout();
+            this.flowLayoutPanel18.SuspendLayout();
+            this.flowLayoutPanel19.SuspendLayout();
+            this.flowLayoutPanel20.SuspendLayout();
+            this.flpCommands.SuspendLayout();
             this.SuspendLayout();
             // 
             // flpBase
@@ -132,10 +164,12 @@
             this.flpBase.AutoSize = true;
             this.flpBase.Controls.Add(this.flpSearchList);
             this.flpBase.Controls.Add(this.flpSurveyData);
+            this.flpBase.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBase.Location = new System.Drawing.Point(0, 0);
             this.flpBase.Name = "flpBase";
-            this.flpBase.Size = new System.Drawing.Size(1100, 647);
+            this.flpBase.Size = new System.Drawing.Size(1079, 594);
             this.flpBase.TabIndex = 11;
+            this.flpBase.WrapContents = false;
             // 
             // flpSearchList
             // 
@@ -223,17 +257,23 @@
             // 
             // flpSurveyData
             // 
+            this.flpSurveyData.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpSurveyData.AutoScroll = true;
+            this.flpSurveyData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpSurveyData.Controls.Add(this.flpSurveyDetails);
             this.flpSurveyData.Controls.Add(this.flpCommands);
             this.flpSurveyData.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpSurveyData.Location = new System.Drawing.Point(436, 3);
             this.flpSurveyData.Name = "flpSurveyData";
-            this.flpSurveyData.Size = new System.Drawing.Size(661, 641);
+            this.flpSurveyData.Size = new System.Drawing.Size(661, 596);
             this.flpSurveyData.TabIndex = 3;
+            this.flpSurveyData.WrapContents = false;
             // 
             // flpSurveyDetails
             // 
-            this.flpSurveyDetails.AutoSize = true;
+            this.flpSurveyDetails.AutoScroll = true;
+            this.flpSurveyDetails.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpSurveyDetails.Controls.Add(this.flpPlanetName);
             this.flpSurveyDetails.Controls.Add(this.flpSurveyID);
             this.flpSurveyDetails.Controls.Add(this.flpScannerBlueprint);
@@ -241,12 +281,14 @@
             this.flpSurveyDetails.Controls.Add(this.flowLayoutPanel4);
             this.flpSurveyDetails.Controls.Add(this.flowLayoutPanel8);
             this.flpSurveyDetails.Controls.Add(this.flowLayoutPanel12);
+            this.flpSurveyDetails.Controls.Add(this.flowLayoutPanel16);
             this.flpSurveyDetails.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpSurveyDetails.Location = new System.Drawing.Point(2, 2);
             this.flpSurveyDetails.Margin = new System.Windows.Forms.Padding(2);
             this.flpSurveyDetails.Name = "flpSurveyDetails";
-            this.flpSurveyDetails.Size = new System.Drawing.Size(419, 454);
+            this.flpSurveyDetails.Size = new System.Drawing.Size(613, 400);
             this.flpSurveyDetails.TabIndex = 0;
+            this.flpSurveyDetails.WrapContents = false;
             // 
             // flpPlanetName
             // 
@@ -348,6 +390,18 @@
             this.cmbScannerBlueprint.Size = new System.Drawing.Size(201, 21);
             this.cmbScannerBlueprint.TabIndex = 1;
             // 
+            // flowLayoutPanel3
+            // 
+            this.flowLayoutPanel3.Controls.Add(this.flpScannedBy);
+            this.flowLayoutPanel3.Controls.Add(this.flowLayoutPanel1);
+            this.flowLayoutPanel3.Controls.Add(this.flowLayoutPanel2);
+            this.flowLayoutPanel3.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 93);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(412, 85);
+            this.flowLayoutPanel3.TabIndex = 8;
+            this.flowLayoutPanel3.WrapContents = false;
+            // 
             // flpScannedBy
             // 
             this.flpScannedBy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -378,46 +432,6 @@
             this.txtScannedBy.Name = "txtScannedBy";
             this.txtScannedBy.Size = new System.Drawing.Size(201, 20);
             this.txtScannedBy.TabIndex = 7;
-            // 
-            // flpCommands
-            // 
-            this.flpCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.flpCommands.AutoSize = true;
-            this.flpCommands.Controls.Add(this.btnSave);
-            this.flpCommands.Controls.Add(this.cmdDelete);
-            this.flpCommands.Controls.Add(this.btnCancel);
-            this.flpCommands.Location = new System.Drawing.Point(2, 460);
-            this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
-            this.flpCommands.Name = "flpCommands";
-            this.flpCommands.Size = new System.Drawing.Size(419, 29);
-            this.flpCommands.TabIndex = 1;
-            // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(3, 3);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 0;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            // 
-            // cmdDelete
-            // 
-            this.cmdDelete.Location = new System.Drawing.Point(84, 3);
-            this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(75, 23);
-            this.cmdDelete.TabIndex = 1;
-            this.cmdDelete.Text = "Delete";
-            this.cmdDelete.UseVisualStyleBackColor = true;
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Location = new System.Drawing.Point(165, 3);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 2;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // flowLayoutPanel1
             // 
@@ -480,18 +494,6 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(201, 20);
             this.textBox2.TabIndex = 7;
-            // 
-            // flowLayoutPanel3
-            // 
-            this.flowLayoutPanel3.Controls.Add(this.flpScannedBy);
-            this.flowLayoutPanel3.Controls.Add(this.flowLayoutPanel1);
-            this.flowLayoutPanel3.Controls.Add(this.flowLayoutPanel2);
-            this.flowLayoutPanel3.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 93);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(412, 85);
-            this.flowLayoutPanel3.TabIndex = 8;
-            this.flowLayoutPanel3.WrapContents = false;
             // 
             // flowLayoutPanel4
             // 
@@ -705,13 +707,14 @@
             // 
             // flowLayoutPanel12
             // 
+            this.flowLayoutPanel12.AutoSize = true;
             this.flowLayoutPanel12.Controls.Add(this.flowLayoutPanel13);
             this.flowLayoutPanel12.Controls.Add(this.flowLayoutPanel14);
             this.flowLayoutPanel12.Controls.Add(this.flowLayoutPanel15);
             this.flowLayoutPanel12.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel12.Location = new System.Drawing.Point(3, 366);
             this.flowLayoutPanel12.Name = "flowLayoutPanel12";
-            this.flowLayoutPanel12.Size = new System.Drawing.Size(412, 85);
+            this.flowLayoutPanel12.Size = new System.Drawing.Size(429, 93);
             this.flowLayoutPanel12.TabIndex = 11;
             this.flowLayoutPanel12.WrapContents = false;
             // 
@@ -724,7 +727,7 @@
             this.flowLayoutPanel13.Location = new System.Drawing.Point(2, 2);
             this.flowLayoutPanel13.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanel13.Name = "flowLayoutPanel13";
-            this.flowLayoutPanel13.Size = new System.Drawing.Size(332, 23);
+            this.flowLayoutPanel13.Size = new System.Drawing.Size(425, 23);
             this.flowLayoutPanel13.TabIndex = 4;
             // 
             // label9
@@ -738,6 +741,16 @@
             this.label9.Text = "Colony Director";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(107, 3);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(72, 17);
+            this.checkBox1.TabIndex = 3;
+            this.checkBox1.Text = "Unlocked";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // flowLayoutPanel14
             // 
             this.flowLayoutPanel14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -746,17 +759,28 @@
             this.flowLayoutPanel14.Controls.Add(this.label10);
             this.flowLayoutPanel14.Controls.Add(this.textBox10);
             this.flowLayoutPanel14.Controls.Add(this.label14);
-            this.flowLayoutPanel14.Controls.Add(this.textBox9);
+            this.flowLayoutPanel14.Controls.Add(this.validatedTextBox1);
+            this.flowLayoutPanel14.Controls.Add(this.button1);
             this.flowLayoutPanel14.Location = new System.Drawing.Point(2, 29);
             this.flowLayoutPanel14.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanel14.Name = "flowLayoutPanel14";
-            this.flowLayoutPanel14.Size = new System.Drawing.Size(332, 24);
+            this.flowLayoutPanel14.Size = new System.Drawing.Size(425, 29);
             this.flowLayoutPanel14.TabIndex = 5;
+            this.flowLayoutPanel14.WrapContents = false;
+            // 
+            // label12
+            // 
+            this.label12.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label12.Location = new System.Drawing.Point(3, 0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(40, 22);
+            this.label12.TabIndex = 8;
+            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label10
             // 
             this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label10.Location = new System.Drawing.Point(48, 3);
+            this.label10.Location = new System.Drawing.Point(48, 6);
             this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(100, 17);
@@ -772,6 +796,17 @@
             this.textBox10.Size = new System.Drawing.Size(31, 20);
             this.textBox10.TabIndex = 7;
             // 
+            // label14
+            // 
+            this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label14.Location = new System.Drawing.Point(187, 6);
+            this.label14.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(61, 17);
+            this.label14.TabIndex = 9;
+            this.label14.Text = "Completion";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // flowLayoutPanel15
             // 
             this.flowLayoutPanel15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -780,17 +815,27 @@
             this.flowLayoutPanel15.Controls.Add(this.label11);
             this.flowLayoutPanel15.Controls.Add(this.textBox11);
             this.flowLayoutPanel15.Controls.Add(this.label15);
-            this.flowLayoutPanel15.Controls.Add(this.textBox12);
-            this.flowLayoutPanel15.Location = new System.Drawing.Point(2, 57);
+            this.flowLayoutPanel15.Controls.Add(this.validatedTextBox2);
+            this.flowLayoutPanel15.Controls.Add(this.button2);
+            this.flowLayoutPanel15.Location = new System.Drawing.Point(2, 62);
             this.flowLayoutPanel15.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanel15.Name = "flowLayoutPanel15";
-            this.flowLayoutPanel15.Size = new System.Drawing.Size(332, 24);
+            this.flowLayoutPanel15.Size = new System.Drawing.Size(425, 29);
             this.flowLayoutPanel15.TabIndex = 8;
+            this.flowLayoutPanel15.WrapContents = false;
+            // 
+            // label13
+            // 
+            this.label13.Location = new System.Drawing.Point(3, 0);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(40, 20);
+            this.label13.TabIndex = 9;
+            this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label11
             // 
             this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label11.Location = new System.Drawing.Point(48, 3);
+            this.label11.Location = new System.Drawing.Point(48, 6);
             this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(100, 17);
@@ -806,57 +851,10 @@
             this.textBox11.Size = new System.Drawing.Size(31, 20);
             this.textBox11.TabIndex = 7;
             // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(107, 3);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(72, 17);
-            this.checkBox1.TabIndex = 3;
-            this.checkBox1.Text = "Unlocked";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // label12
-            // 
-            this.label12.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
-            this.label12.Location = new System.Drawing.Point(3, 0);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(40, 22);
-            this.label12.TabIndex = 8;
-            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label13
-            // 
-            this.label13.Location = new System.Drawing.Point(3, 0);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(40, 20);
-            this.label13.TabIndex = 9;
-            this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label14
-            // 
-            this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label14.Location = new System.Drawing.Point(187, 3);
-            this.label14.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(61, 17);
-            this.label14.TabIndex = 9;
-            this.label14.Text = "Completion";
-            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBox9
-            // 
-            this.textBox9.Location = new System.Drawing.Point(252, 2);
-            this.textBox9.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(78, 20);
-            this.textBox9.TabIndex = 10;
-            this.textBox9.Text = "99d 23h 59m";
-            // 
             // label15
             // 
             this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label15.Location = new System.Drawing.Point(187, 3);
+            this.label15.Location = new System.Drawing.Point(187, 6);
             this.label15.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(61, 17);
@@ -864,14 +862,386 @@
             this.label15.Text = "Completion";
             this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // flowLayoutPanel16
+            // 
+            this.flowLayoutPanel16.AutoSize = true;
+            this.flowLayoutPanel16.Controls.Add(this.flowLayoutPanel17);
+            this.flowLayoutPanel16.Controls.Add(this.flowLayoutPanel18);
+            this.flowLayoutPanel16.Controls.Add(this.flowLayoutPanel19);
+            this.flowLayoutPanel16.Controls.Add(this.flowLayoutPanel20);
+            this.flowLayoutPanel16.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel16.Location = new System.Drawing.Point(3, 465);
+            this.flowLayoutPanel16.Name = "flowLayoutPanel16";
+            this.flowLayoutPanel16.Size = new System.Drawing.Size(429, 126);
+            this.flowLayoutPanel16.TabIndex = 12;
+            this.flowLayoutPanel16.WrapContents = false;
+            // 
+            // flowLayoutPanel17
+            // 
+            this.flowLayoutPanel17.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel17.AutoSize = true;
+            this.flowLayoutPanel17.Controls.Add(this.label16);
+            this.flowLayoutPanel17.Controls.Add(this.checkBox2);
+            this.flowLayoutPanel17.Location = new System.Drawing.Point(2, 2);
+            this.flowLayoutPanel17.Margin = new System.Windows.Forms.Padding(2);
+            this.flowLayoutPanel17.Name = "flowLayoutPanel17";
+            this.flowLayoutPanel17.Size = new System.Drawing.Size(425, 23);
+            this.flowLayoutPanel17.TabIndex = 4;
+            // 
+            // label16
+            // 
+            this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label16.Location = new System.Drawing.Point(2, 3);
+            this.label16.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(100, 17);
+            this.label16.TabIndex = 2;
+            this.label16.Text = "Colony Founder";
+            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(107, 3);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(72, 17);
+            this.checkBox2.TabIndex = 3;
+            this.checkBox2.Text = "Unlocked";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // flowLayoutPanel18
+            // 
+            this.flowLayoutPanel18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel18.AutoSize = true;
+            this.flowLayoutPanel18.Controls.Add(this.label17);
+            this.flowLayoutPanel18.Controls.Add(this.label18);
+            this.flowLayoutPanel18.Controls.Add(this.textBox9);
+            this.flowLayoutPanel18.Controls.Add(this.label19);
+            this.flowLayoutPanel18.Controls.Add(this.validatedTextBox3);
+            this.flowLayoutPanel18.Controls.Add(this.button3);
+            this.flowLayoutPanel18.Location = new System.Drawing.Point(2, 29);
+            this.flowLayoutPanel18.Margin = new System.Windows.Forms.Padding(2);
+            this.flowLayoutPanel18.Name = "flowLayoutPanel18";
+            this.flowLayoutPanel18.Size = new System.Drawing.Size(425, 29);
+            this.flowLayoutPanel18.TabIndex = 5;
+            // 
+            // label17
+            // 
+            this.label17.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label17.Location = new System.Drawing.Point(3, 0);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(40, 22);
+            this.label17.TabIndex = 8;
+            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label18
+            // 
+            this.label18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label18.Location = new System.Drawing.Point(48, 6);
+            this.label18.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(100, 17);
+            this.label18.TabIndex = 2;
+            this.label18.Text = "Founder";
+            this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox9
+            // 
+            this.textBox9.Location = new System.Drawing.Point(152, 2);
+            this.textBox9.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox9.Name = "textBox9";
+            this.textBox9.Size = new System.Drawing.Size(31, 20);
+            this.textBox9.TabIndex = 7;
+            // 
+            // label19
+            // 
+            this.label19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label19.Location = new System.Drawing.Point(187, 6);
+            this.label19.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(61, 17);
+            this.label19.TabIndex = 9;
+            this.label19.Text = "Completion";
+            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // flowLayoutPanel19
+            // 
+            this.flowLayoutPanel19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel19.AutoSize = true;
+            this.flowLayoutPanel19.Controls.Add(this.label20);
+            this.flowLayoutPanel19.Controls.Add(this.label21);
+            this.flowLayoutPanel19.Controls.Add(this.textBox12);
+            this.flowLayoutPanel19.Controls.Add(this.label22);
+            this.flowLayoutPanel19.Controls.Add(this.validatedTextBox4);
+            this.flowLayoutPanel19.Controls.Add(this.button4);
+            this.flowLayoutPanel19.Location = new System.Drawing.Point(2, 62);
+            this.flowLayoutPanel19.Margin = new System.Windows.Forms.Padding(2);
+            this.flowLayoutPanel19.Name = "flowLayoutPanel19";
+            this.flowLayoutPanel19.Size = new System.Drawing.Size(425, 29);
+            this.flowLayoutPanel19.TabIndex = 8;
+            // 
+            // label20
+            // 
+            this.label20.Location = new System.Drawing.Point(3, 0);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(40, 20);
+            this.label20.TabIndex = 9;
+            this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label21
+            // 
+            this.label21.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label21.Location = new System.Drawing.Point(48, 6);
+            this.label21.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(100, 17);
+            this.label21.TabIndex = 2;
+            this.label21.Text = "Energy Efficiency";
+            this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // textBox12
             // 
-            this.textBox12.Location = new System.Drawing.Point(252, 2);
+            this.textBox12.Location = new System.Drawing.Point(152, 2);
             this.textBox12.Margin = new System.Windows.Forms.Padding(2);
             this.textBox12.Name = "textBox12";
-            this.textBox12.Size = new System.Drawing.Size(78, 20);
-            this.textBox12.TabIndex = 12;
-            this.textBox12.Text = "99d 23h 59m";
+            this.textBox12.Size = new System.Drawing.Size(31, 20);
+            this.textBox12.TabIndex = 7;
+            // 
+            // label22
+            // 
+            this.label22.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label22.Location = new System.Drawing.Point(187, 6);
+            this.label22.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(61, 17);
+            this.label22.TabIndex = 11;
+            this.label22.Text = "Completion";
+            this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // flowLayoutPanel20
+            // 
+            this.flowLayoutPanel20.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel20.AutoSize = true;
+            this.flowLayoutPanel20.Controls.Add(this.label23);
+            this.flowLayoutPanel20.Controls.Add(this.label24);
+            this.flowLayoutPanel20.Controls.Add(this.textBox13);
+            this.flowLayoutPanel20.Controls.Add(this.label25);
+            this.flowLayoutPanel20.Controls.Add(this.validatedTextBox5);
+            this.flowLayoutPanel20.Controls.Add(this.button5);
+            this.flowLayoutPanel20.Location = new System.Drawing.Point(2, 95);
+            this.flowLayoutPanel20.Margin = new System.Windows.Forms.Padding(2);
+            this.flowLayoutPanel20.Name = "flowLayoutPanel20";
+            this.flowLayoutPanel20.Size = new System.Drawing.Size(425, 29);
+            this.flowLayoutPanel20.TabIndex = 9;
+            // 
+            // label23
+            // 
+            this.label23.Location = new System.Drawing.Point(3, 0);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(40, 20);
+            this.label23.TabIndex = 9;
+            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label24
+            // 
+            this.label24.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label24.Location = new System.Drawing.Point(48, 6);
+            this.label24.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(100, 17);
+            this.label24.TabIndex = 2;
+            this.label24.Text = "Builder";
+            this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBox13
+            // 
+            this.textBox13.Location = new System.Drawing.Point(152, 2);
+            this.textBox13.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox13.Name = "textBox13";
+            this.textBox13.Size = new System.Drawing.Size(31, 20);
+            this.textBox13.TabIndex = 7;
+            // 
+            // label25
+            // 
+            this.label25.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label25.Location = new System.Drawing.Point(187, 6);
+            this.label25.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(61, 17);
+            this.label25.TabIndex = 11;
+            this.label25.Text = "Completion";
+            this.label25.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // flpCommands
+            // 
+            this.flpCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.flpCommands.AutoSize = true;
+            this.flpCommands.Controls.Add(this.btnSave);
+            this.flpCommands.Controls.Add(this.cmdDelete);
+            this.flpCommands.Controls.Add(this.btnCancel);
+            this.flpCommands.Location = new System.Drawing.Point(2, 406);
+            this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
+            this.flpCommands.Name = "flpCommands";
+            this.flpCommands.Size = new System.Drawing.Size(243, 29);
+            this.flpCommands.TabIndex = 1;
+            this.flpCommands.WrapContents = false;
+            // 
+            // btnSave
+            // 
+            this.btnSave.Location = new System.Drawing.Point(3, 3);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.TabIndex = 0;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            // 
+            // cmdDelete
+            // 
+            this.cmdDelete.Location = new System.Drawing.Point(84, 3);
+            this.cmdDelete.Name = "cmdDelete";
+            this.cmdDelete.Size = new System.Drawing.Size(75, 23);
+            this.cmdDelete.TabIndex = 1;
+            this.cmdDelete.Text = "Delete";
+            this.cmdDelete.UseVisualStyleBackColor = true;
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(165, 3);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 2;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(347, 3);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 10;
+            this.button1.Text = "Start";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(347, 3);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 13;
+            this.button2.Text = "Start";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(347, 3);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 11;
+            this.button3.Text = "Start";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(347, 3);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 13;
+            this.button4.Text = "Start";
+            this.button4.UseVisualStyleBackColor = true;
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(347, 3);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(75, 23);
+            this.button5.TabIndex = 13;
+            this.button5.Text = "Start";
+            this.button5.UseVisualStyleBackColor = true;
+            // 
+            // validatedTextBox1
+            // 
+            this.validatedTextBox1.AllowSpaces = true;
+            this.validatedTextBox1.AutoFormat = true;
+            this.validatedTextBox1.BackColor = System.Drawing.Color.White;
+            this.validatedTextBox1.ErrorMessage = "";
+            this.validatedTextBox1.InvalidColor = System.Drawing.Color.LightCoral;
+            this.validatedTextBox1.IsValid = true;
+            this.validatedTextBox1.Location = new System.Drawing.Point(253, 3);
+            this.validatedTextBox1.Name = "validatedTextBox1";
+            this.validatedTextBox1.Size = new System.Drawing.Size(88, 20);
+            this.validatedTextBox1.TabIndex = 1;
+            this.validatedTextBox1.Text = "99d 23h 59m 59s";
+            this.validatedTextBox1.ValidationPattern = "^\\s*(?:\\d+d\\s*)?(?:(?:[01]?\\d|2[0-3])h\\s*)?(?:(?:[0-5]?\\d)m\\s*)?(?:(?:[0-5]?\\d)s)" +
+    "?\\s*$";
+            this.validatedTextBox1.ValidColor = System.Drawing.Color.White;
+            // 
+            // validatedTextBox2
+            // 
+            this.validatedTextBox2.AllowSpaces = true;
+            this.validatedTextBox2.AutoFormat = true;
+            this.validatedTextBox2.BackColor = System.Drawing.Color.White;
+            this.validatedTextBox2.ErrorMessage = "";
+            this.validatedTextBox2.InvalidColor = System.Drawing.Color.LightCoral;
+            this.validatedTextBox2.IsValid = true;
+            this.validatedTextBox2.Location = new System.Drawing.Point(253, 3);
+            this.validatedTextBox2.Name = "validatedTextBox2";
+            this.validatedTextBox2.Size = new System.Drawing.Size(88, 20);
+            this.validatedTextBox2.TabIndex = 12;
+            this.validatedTextBox2.Text = "99d 23h 59m 59s";
+            this.validatedTextBox2.ValidationPattern = "^\\s*(?:\\d+d\\s*)?(?:(?:[01]?\\d|2[0-3])h\\s*)?(?:(?:[0-5]?\\d)m\\s*)?(?:(?:[0-5]?\\d)s)" +
+    "?\\s*$";
+            this.validatedTextBox2.ValidColor = System.Drawing.Color.White;
+            // 
+            // validatedTextBox3
+            // 
+            this.validatedTextBox3.AllowSpaces = true;
+            this.validatedTextBox3.AutoFormat = true;
+            this.validatedTextBox3.BackColor = System.Drawing.Color.White;
+            this.validatedTextBox3.ErrorMessage = "";
+            this.validatedTextBox3.InvalidColor = System.Drawing.Color.LightCoral;
+            this.validatedTextBox3.IsValid = true;
+            this.validatedTextBox3.Location = new System.Drawing.Point(253, 3);
+            this.validatedTextBox3.Name = "validatedTextBox3";
+            this.validatedTextBox3.Size = new System.Drawing.Size(88, 20);
+            this.validatedTextBox3.TabIndex = 1;
+            this.validatedTextBox3.Text = "99d 23h 59m 59s";
+            this.validatedTextBox3.ValidationPattern = "^\\s*(?:\\d+d\\s*)?(?:(?:[01]?\\d|2[0-3])h\\s*)?(?:(?:[0-5]?\\d)m\\s*)?(?:(?:[0-5]?\\d)s)" +
+    "?\\s*$";
+            this.validatedTextBox3.ValidColor = System.Drawing.Color.White;
+            // 
+            // validatedTextBox4
+            // 
+            this.validatedTextBox4.AllowSpaces = true;
+            this.validatedTextBox4.AutoFormat = true;
+            this.validatedTextBox4.BackColor = System.Drawing.Color.White;
+            this.validatedTextBox4.ErrorMessage = "";
+            this.validatedTextBox4.InvalidColor = System.Drawing.Color.LightCoral;
+            this.validatedTextBox4.IsValid = true;
+            this.validatedTextBox4.Location = new System.Drawing.Point(253, 3);
+            this.validatedTextBox4.Name = "validatedTextBox4";
+            this.validatedTextBox4.Size = new System.Drawing.Size(88, 20);
+            this.validatedTextBox4.TabIndex = 12;
+            this.validatedTextBox4.Text = "99d 23h 59m 59s";
+            this.validatedTextBox4.ValidationPattern = "^\\s*(?:\\d+d\\s*)?(?:(?:[01]?\\d|2[0-3])h\\s*)?(?:(?:[0-5]?\\d)m\\s*)?(?:(?:[0-5]?\\d)s)" +
+    "?\\s*$";
+            this.validatedTextBox4.ValidColor = System.Drawing.Color.White;
+            // 
+            // validatedTextBox5
+            // 
+            this.validatedTextBox5.AllowSpaces = true;
+            this.validatedTextBox5.AutoFormat = true;
+            this.validatedTextBox5.BackColor = System.Drawing.Color.White;
+            this.validatedTextBox5.ErrorMessage = "";
+            this.validatedTextBox5.InvalidColor = System.Drawing.Color.LightCoral;
+            this.validatedTextBox5.IsValid = true;
+            this.validatedTextBox5.Location = new System.Drawing.Point(253, 3);
+            this.validatedTextBox5.Name = "validatedTextBox5";
+            this.validatedTextBox5.Size = new System.Drawing.Size(88, 20);
+            this.validatedTextBox5.TabIndex = 12;
+            this.validatedTextBox5.Text = "99d 23h 59m 59s";
+            this.validatedTextBox5.ValidationPattern = "^\\s*(?:\\d+d\\s*)?(?:(?:[01]?\\d|2[0-3])h\\s*)?(?:(?:[0-5]?\\d)m\\s*)?(?:(?:[0-5]?\\d)s)" +
+    "?\\s*$";
+            this.validatedTextBox5.ValidColor = System.Drawing.Color.White;
             // 
             // FormPlayerProfile
             // 
@@ -897,15 +1267,14 @@
             this.flpSurveyID.PerformLayout();
             this.flpScannerBlueprint.ResumeLayout(false);
             this.flpScannerBlueprint.PerformLayout();
+            this.flowLayoutPanel3.ResumeLayout(false);
+            this.flowLayoutPanel3.PerformLayout();
             this.flpScannedBy.ResumeLayout(false);
             this.flpScannedBy.PerformLayout();
-            this.flpCommands.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
-            this.flowLayoutPanel3.ResumeLayout(false);
-            this.flowLayoutPanel3.PerformLayout();
             this.flowLayoutPanel4.ResumeLayout(false);
             this.flowLayoutPanel4.PerformLayout();
             this.flowLayoutPanel5.ResumeLayout(false);
@@ -930,6 +1299,17 @@
             this.flowLayoutPanel14.PerformLayout();
             this.flowLayoutPanel15.ResumeLayout(false);
             this.flowLayoutPanel15.PerformLayout();
+            this.flowLayoutPanel16.ResumeLayout(false);
+            this.flowLayoutPanel16.PerformLayout();
+            this.flowLayoutPanel17.ResumeLayout(false);
+            this.flowLayoutPanel17.PerformLayout();
+            this.flowLayoutPanel18.ResumeLayout(false);
+            this.flowLayoutPanel18.PerformLayout();
+            this.flowLayoutPanel19.ResumeLayout(false);
+            this.flowLayoutPanel19.PerformLayout();
+            this.flowLayoutPanel20.ResumeLayout(false);
+            this.flowLayoutPanel20.PerformLayout();
+            this.flpCommands.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1004,9 +1384,36 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox textBox11;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.TextBox textBox9;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label15;
+        private Controls.ValidatedTextBox validatedTextBox1;
+        private Controls.ValidatedTextBox validatedTextBox2;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel16;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel17;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel18;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.TextBox textBox9;
+        private System.Windows.Forms.Label label19;
+        private Controls.ValidatedTextBox validatedTextBox3;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel19;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label label21;
         private System.Windows.Forms.TextBox textBox12;
+        private System.Windows.Forms.Label label22;
+        private Controls.ValidatedTextBox validatedTextBox4;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel20;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.TextBox textBox13;
+        private System.Windows.Forms.Label label25;
+        private Controls.ValidatedTextBox validatedTextBox5;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button5;
     }
 }

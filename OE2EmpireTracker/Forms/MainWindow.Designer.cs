@@ -41,6 +41,7 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.managePlayerProfiles = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -91,7 +92,8 @@
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addSurveyToolStripMenuItem,
             this.addBlueprintToolStripMenuItem,
-            this.addColonyToolStripMenuItem});
+            this.addColonyToolStripMenuItem,
+            this.managePlayerProfiles});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 22);
             this.editToolStripMenuItem.Text = "Edit";
@@ -99,21 +101,21 @@
             // addSurveyToolStripMenuItem
             // 
             this.addSurveyToolStripMenuItem.Name = "addSurveyToolStripMenuItem";
-            this.addSurveyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addSurveyToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.addSurveyToolStripMenuItem.Text = "Add Survey";
             this.addSurveyToolStripMenuItem.Click += new System.EventHandler(this.addSurveyToolStripMenuItem_Click);
             // 
             // addBlueprintToolStripMenuItem
             // 
             this.addBlueprintToolStripMenuItem.Name = "addBlueprintToolStripMenuItem";
-            this.addBlueprintToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addBlueprintToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.addBlueprintToolStripMenuItem.Text = "Add Blueprint";
             this.addBlueprintToolStripMenuItem.Click += new System.EventHandler(this.addBlueprintToolStripMenuItem_Click);
             // 
             // addColonyToolStripMenuItem
             // 
             this.addColonyToolStripMenuItem.Name = "addColonyToolStripMenuItem";
-            this.addColonyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addColonyToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.addColonyToolStripMenuItem.Text = "Add Colony";
             this.addColonyToolStripMenuItem.Click += new System.EventHandler(this.addColonyToolStripMenuItem_Click);
             // 
@@ -136,6 +138,13 @@
             this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // managePlayerProfiles
+            // 
+            this.managePlayerProfiles.Name = "managePlayerProfiles";
+            this.managePlayerProfiles.Size = new System.Drawing.Size(194, 22);
+            this.managePlayerProfiles.Text = "Manage Player Profiles";
+            this.managePlayerProfiles.Click += new System.EventHandler(this.managePlayerProfiles_Click);
             // 
             // MainWindow
             // 
@@ -169,6 +178,7 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem addColonyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem managePlayerProfiles;
     }
 }
 

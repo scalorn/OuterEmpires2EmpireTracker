@@ -1,5 +1,6 @@
 ﻿using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Forms.Colony;
+using OE2EmpireTracker.Forms.PlayerProfile;
 using OE2EmpireTracker.Forms.Survey;
 using System;
 using System.Collections.Generic;
@@ -46,6 +47,13 @@ namespace OE2EmpireTracker
             Form survey = new FormSurvey();
             survey.MdiParent = this;
             survey.Show();
+        }
+
+        private void managePlayerProfiles_Click(object sender, EventArgs e)
+        {
+            Form playerProfile = new FormPlayerProfile();
+            playerProfile.MdiParent = this;
+            playerProfile.Show();
         }
     }
 }
