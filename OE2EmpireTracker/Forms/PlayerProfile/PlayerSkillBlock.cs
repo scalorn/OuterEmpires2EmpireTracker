@@ -97,7 +97,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             if (!completionModification)
             {
                 TimeSpan span = TimeSpan.FromSeconds(PlayerSkill.CompletionTime.TimeRemaining);
-                this.txtCompletion.Text = span.ToString(@"d\d\ h\h\ m\m\ s\s");
+                this.txtCompletion.Text = PlayerSkill.CompletionTime.TimeRemainingString;
                 if (span.TotalSeconds <= 0)
                 {
                     PlayerSkill.TrainingStarted = false;
@@ -133,15 +133,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         {
             completionModification = false;
 
-            var match = Regex.Match(txtCompletion.Text, @"(?:(\d+)d\s*)?(?:(\d+)h\s*)?(?:(\d+)m\s*)?(?:(\d+)s)?");
-
-            int days = match.Groups[1].Success ? int.Parse(match.Groups[1].Value) : 0;
-            int hours = match.Groups[2].Success ? int.Parse(match.Groups[2].Value) : 0;
-            int minutes = match.Groups[3].Success ? int.Parse(match.Groups[3].Value) : 0;
-            int seconds = match.Groups[4].Success ? int.Parse(match.Groups[4].Value) : 0;
-
-            int totalSeconds = ((days * 24 + hours) * 60 + minutes) * 60 + seconds;
-            PlayerSkill.CompletionTime.TimeRemaining = totalSeconds;
+            PlayerSkill.CompletionTime.TimeRemainingString = txtCompletion.Text;
         }
     }
 }
