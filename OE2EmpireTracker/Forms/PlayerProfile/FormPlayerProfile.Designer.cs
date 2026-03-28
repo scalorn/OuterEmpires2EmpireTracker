@@ -83,16 +83,22 @@
             this.flowLayoutPanel13 = new System.Windows.Forms.FlowLayoutPanel();
             this.label9 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.flowLayoutPanel21 = new System.Windows.Forms.FlowLayoutPanel();
+            this.playerSkillBlock1 = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
             this.flowLayoutPanel14 = new System.Windows.Forms.FlowLayoutPanel();
             this.label12 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.textBox10 = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
+            this.validatedTextBox1 = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.flowLayoutPanel15 = new System.Windows.Forms.FlowLayoutPanel();
             this.label13 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.textBox11 = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
+            this.validatedTextBox2 = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.button2 = new System.Windows.Forms.Button();
             this.flowLayoutPanel16 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel17 = new System.Windows.Forms.FlowLayoutPanel();
             this.label16 = new System.Windows.Forms.Label();
@@ -102,30 +108,26 @@
             this.label18 = new System.Windows.Forms.Label();
             this.textBox9 = new System.Windows.Forms.TextBox();
             this.label19 = new System.Windows.Forms.Label();
+            this.validatedTextBox3 = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.button3 = new System.Windows.Forms.Button();
             this.flowLayoutPanel19 = new System.Windows.Forms.FlowLayoutPanel();
             this.label20 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.textBox12 = new System.Windows.Forms.TextBox();
             this.label22 = new System.Windows.Forms.Label();
+            this.validatedTextBox4 = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.button4 = new System.Windows.Forms.Button();
             this.flowLayoutPanel20 = new System.Windows.Forms.FlowLayoutPanel();
             this.label23 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.textBox13 = new System.Windows.Forms.TextBox();
             this.label25 = new System.Windows.Forms.Label();
+            this.validatedTextBox5 = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.button5 = new System.Windows.Forms.Button();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.btnSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.validatedTextBox1 = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.validatedTextBox2 = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.validatedTextBox3 = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.validatedTextBox4 = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.validatedTextBox5 = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
             this.flpBlueprintSearch.SuspendLayout();
@@ -149,6 +151,7 @@
             this.flowLayoutPanel11.SuspendLayout();
             this.flowLayoutPanel12.SuspendLayout();
             this.flowLayoutPanel13.SuspendLayout();
+            this.flowLayoutPanel21.SuspendLayout();
             this.flowLayoutPanel14.SuspendLayout();
             this.flowLayoutPanel15.SuspendLayout();
             this.flowLayoutPanel16.SuspendLayout();
@@ -709,12 +712,13 @@
             // 
             this.flowLayoutPanel12.AutoSize = true;
             this.flowLayoutPanel12.Controls.Add(this.flowLayoutPanel13);
+            this.flowLayoutPanel12.Controls.Add(this.flowLayoutPanel21);
             this.flowLayoutPanel12.Controls.Add(this.flowLayoutPanel14);
             this.flowLayoutPanel12.Controls.Add(this.flowLayoutPanel15);
             this.flowLayoutPanel12.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel12.Location = new System.Drawing.Point(3, 366);
             this.flowLayoutPanel12.Name = "flowLayoutPanel12";
-            this.flowLayoutPanel12.Size = new System.Drawing.Size(429, 93);
+            this.flowLayoutPanel12.Size = new System.Drawing.Size(429, 127);
             this.flowLayoutPanel12.TabIndex = 11;
             this.flowLayoutPanel12.WrapContents = false;
             // 
@@ -751,6 +755,27 @@
             this.checkBox1.Text = "Unlocked";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
+            // flowLayoutPanel21
+            // 
+            this.flowLayoutPanel21.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel21.Controls.Add(this.playerSkillBlock1);
+            this.flowLayoutPanel21.Location = new System.Drawing.Point(2, 29);
+            this.flowLayoutPanel21.Margin = new System.Windows.Forms.Padding(2);
+            this.flowLayoutPanel21.Name = "flowLayoutPanel21";
+            this.flowLayoutPanel21.Size = new System.Drawing.Size(425, 30);
+            this.flowLayoutPanel21.TabIndex = 10;
+            this.flowLayoutPanel21.WrapContents = false;
+            // 
+            // playerSkillBlock1
+            // 
+            this.playerSkillBlock1.AutoSize = true;
+            this.playerSkillBlock1.Location = new System.Drawing.Point(3, 3);
+            this.playerSkillBlock1.MaximumSize = new System.Drawing.Size(424, 24);
+            this.playerSkillBlock1.MinimumSize = new System.Drawing.Size(424, 24);
+            this.playerSkillBlock1.Name = "playerSkillBlock1";
+            this.playerSkillBlock1.Size = new System.Drawing.Size(424, 24);
+            this.playerSkillBlock1.TabIndex = 9;
+            // 
             // flowLayoutPanel14
             // 
             this.flowLayoutPanel14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -761,7 +786,7 @@
             this.flowLayoutPanel14.Controls.Add(this.label14);
             this.flowLayoutPanel14.Controls.Add(this.validatedTextBox1);
             this.flowLayoutPanel14.Controls.Add(this.button1);
-            this.flowLayoutPanel14.Location = new System.Drawing.Point(2, 29);
+            this.flowLayoutPanel14.Location = new System.Drawing.Point(2, 63);
             this.flowLayoutPanel14.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanel14.Name = "flowLayoutPanel14";
             this.flowLayoutPanel14.Size = new System.Drawing.Size(425, 29);
@@ -807,6 +832,32 @@
             this.label14.Text = "Completion";
             this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // validatedTextBox1
+            // 
+            this.validatedTextBox1.AllowSpaces = true;
+            this.validatedTextBox1.AutoFormat = true;
+            this.validatedTextBox1.BackColor = System.Drawing.Color.White;
+            this.validatedTextBox1.ErrorMessage = "";
+            this.validatedTextBox1.InvalidColor = System.Drawing.Color.LightCoral;
+            this.validatedTextBox1.IsValid = true;
+            this.validatedTextBox1.Location = new System.Drawing.Point(253, 3);
+            this.validatedTextBox1.Name = "validatedTextBox1";
+            this.validatedTextBox1.Size = new System.Drawing.Size(88, 20);
+            this.validatedTextBox1.TabIndex = 1;
+            this.validatedTextBox1.Text = "99d 23h 59m 59s";
+            this.validatedTextBox1.ValidationPattern = "^\\s*(?:\\d+d\\s*)?(?:(?:[01]?\\d|2[0-3])h\\s*)?(?:(?:[0-5]?\\d)m\\s*)?(?:(?:[0-5]?\\d)s)" +
+    "?\\s*$";
+            this.validatedTextBox1.ValidColor = System.Drawing.Color.White;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(347, 3);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 10;
+            this.button1.Text = "Start";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // flowLayoutPanel15
             // 
             this.flowLayoutPanel15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -817,7 +868,7 @@
             this.flowLayoutPanel15.Controls.Add(this.label15);
             this.flowLayoutPanel15.Controls.Add(this.validatedTextBox2);
             this.flowLayoutPanel15.Controls.Add(this.button2);
-            this.flowLayoutPanel15.Location = new System.Drawing.Point(2, 62);
+            this.flowLayoutPanel15.Location = new System.Drawing.Point(2, 96);
             this.flowLayoutPanel15.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanel15.Name = "flowLayoutPanel15";
             this.flowLayoutPanel15.Size = new System.Drawing.Size(425, 29);
@@ -862,6 +913,32 @@
             this.label15.Text = "Completion";
             this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // validatedTextBox2
+            // 
+            this.validatedTextBox2.AllowSpaces = true;
+            this.validatedTextBox2.AutoFormat = true;
+            this.validatedTextBox2.BackColor = System.Drawing.Color.White;
+            this.validatedTextBox2.ErrorMessage = "";
+            this.validatedTextBox2.InvalidColor = System.Drawing.Color.LightCoral;
+            this.validatedTextBox2.IsValid = true;
+            this.validatedTextBox2.Location = new System.Drawing.Point(253, 3);
+            this.validatedTextBox2.Name = "validatedTextBox2";
+            this.validatedTextBox2.Size = new System.Drawing.Size(88, 20);
+            this.validatedTextBox2.TabIndex = 12;
+            this.validatedTextBox2.Text = "99d 23h 59m 59s";
+            this.validatedTextBox2.ValidationPattern = "^\\s*(?:\\d+d\\s*)?(?:(?:[01]?\\d|2[0-3])h\\s*)?(?:(?:[0-5]?\\d)m\\s*)?(?:(?:[0-5]?\\d)s)" +
+    "?\\s*$";
+            this.validatedTextBox2.ValidColor = System.Drawing.Color.White;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(347, 3);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 13;
+            this.button2.Text = "Start";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
             // flowLayoutPanel16
             // 
             this.flowLayoutPanel16.AutoSize = true;
@@ -870,7 +947,7 @@
             this.flowLayoutPanel16.Controls.Add(this.flowLayoutPanel19);
             this.flowLayoutPanel16.Controls.Add(this.flowLayoutPanel20);
             this.flowLayoutPanel16.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel16.Location = new System.Drawing.Point(3, 465);
+            this.flowLayoutPanel16.Location = new System.Drawing.Point(3, 499);
             this.flowLayoutPanel16.Name = "flowLayoutPanel16";
             this.flowLayoutPanel16.Size = new System.Drawing.Size(429, 126);
             this.flowLayoutPanel16.TabIndex = 12;
@@ -964,6 +1041,32 @@
             this.label19.Text = "Completion";
             this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // validatedTextBox3
+            // 
+            this.validatedTextBox3.AllowSpaces = true;
+            this.validatedTextBox3.AutoFormat = true;
+            this.validatedTextBox3.BackColor = System.Drawing.Color.White;
+            this.validatedTextBox3.ErrorMessage = "";
+            this.validatedTextBox3.InvalidColor = System.Drawing.Color.LightCoral;
+            this.validatedTextBox3.IsValid = true;
+            this.validatedTextBox3.Location = new System.Drawing.Point(253, 3);
+            this.validatedTextBox3.Name = "validatedTextBox3";
+            this.validatedTextBox3.Size = new System.Drawing.Size(88, 20);
+            this.validatedTextBox3.TabIndex = 1;
+            this.validatedTextBox3.Text = "99d 23h 59m 59s";
+            this.validatedTextBox3.ValidationPattern = "^\\s*(?:\\d+d\\s*)?(?:(?:[01]?\\d|2[0-3])h\\s*)?(?:(?:[0-5]?\\d)m\\s*)?(?:(?:[0-5]?\\d)s)" +
+    "?\\s*$";
+            this.validatedTextBox3.ValidColor = System.Drawing.Color.White;
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(347, 3);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 11;
+            this.button3.Text = "Start";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
             // flowLayoutPanel19
             // 
             this.flowLayoutPanel19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -1017,6 +1120,32 @@
             this.label22.TabIndex = 11;
             this.label22.Text = "Completion";
             this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // validatedTextBox4
+            // 
+            this.validatedTextBox4.AllowSpaces = true;
+            this.validatedTextBox4.AutoFormat = true;
+            this.validatedTextBox4.BackColor = System.Drawing.Color.White;
+            this.validatedTextBox4.ErrorMessage = "";
+            this.validatedTextBox4.InvalidColor = System.Drawing.Color.LightCoral;
+            this.validatedTextBox4.IsValid = true;
+            this.validatedTextBox4.Location = new System.Drawing.Point(253, 3);
+            this.validatedTextBox4.Name = "validatedTextBox4";
+            this.validatedTextBox4.Size = new System.Drawing.Size(88, 20);
+            this.validatedTextBox4.TabIndex = 12;
+            this.validatedTextBox4.Text = "99d 23h 59m 59s";
+            this.validatedTextBox4.ValidationPattern = "^\\s*(?:\\d+d\\s*)?(?:(?:[01]?\\d|2[0-3])h\\s*)?(?:(?:[0-5]?\\d)m\\s*)?(?:(?:[0-5]?\\d)s)" +
+    "?\\s*$";
+            this.validatedTextBox4.ValidColor = System.Drawing.Color.White;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(347, 3);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 13;
+            this.button4.Text = "Start";
+            this.button4.UseVisualStyleBackColor = true;
             // 
             // flowLayoutPanel20
             // 
@@ -1072,6 +1201,32 @@
             this.label25.Text = "Completion";
             this.label25.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // validatedTextBox5
+            // 
+            this.validatedTextBox5.AllowSpaces = true;
+            this.validatedTextBox5.AutoFormat = true;
+            this.validatedTextBox5.BackColor = System.Drawing.Color.White;
+            this.validatedTextBox5.ErrorMessage = "";
+            this.validatedTextBox5.InvalidColor = System.Drawing.Color.LightCoral;
+            this.validatedTextBox5.IsValid = true;
+            this.validatedTextBox5.Location = new System.Drawing.Point(253, 3);
+            this.validatedTextBox5.Name = "validatedTextBox5";
+            this.validatedTextBox5.Size = new System.Drawing.Size(88, 20);
+            this.validatedTextBox5.TabIndex = 12;
+            this.validatedTextBox5.Text = "99d 23h 59m 59s";
+            this.validatedTextBox5.ValidationPattern = "^\\s*(?:\\d+d\\s*)?(?:(?:[01]?\\d|2[0-3])h\\s*)?(?:(?:[0-5]?\\d)m\\s*)?(?:(?:[0-5]?\\d)s)" +
+    "?\\s*$";
+            this.validatedTextBox5.ValidColor = System.Drawing.Color.White;
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(347, 3);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(75, 23);
+            this.button5.TabIndex = 13;
+            this.button5.Text = "Start";
+            this.button5.UseVisualStyleBackColor = true;
+            // 
             // flpCommands
             // 
             this.flpCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -1112,136 +1267,6 @@
             this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(347, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 10;
-            this.button1.Text = "Start";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(347, 3);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 13;
-            this.button2.Text = "Start";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(347, 3);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 11;
-            this.button3.Text = "Start";
-            this.button3.UseVisualStyleBackColor = true;
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(347, 3);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 13;
-            this.button4.Text = "Start";
-            this.button4.UseVisualStyleBackColor = true;
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(347, 3);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 23);
-            this.button5.TabIndex = 13;
-            this.button5.Text = "Start";
-            this.button5.UseVisualStyleBackColor = true;
-            // 
-            // validatedTextBox1
-            // 
-            this.validatedTextBox1.AllowSpaces = true;
-            this.validatedTextBox1.AutoFormat = true;
-            this.validatedTextBox1.BackColor = System.Drawing.Color.White;
-            this.validatedTextBox1.ErrorMessage = "";
-            this.validatedTextBox1.InvalidColor = System.Drawing.Color.LightCoral;
-            this.validatedTextBox1.IsValid = true;
-            this.validatedTextBox1.Location = new System.Drawing.Point(253, 3);
-            this.validatedTextBox1.Name = "validatedTextBox1";
-            this.validatedTextBox1.Size = new System.Drawing.Size(88, 20);
-            this.validatedTextBox1.TabIndex = 1;
-            this.validatedTextBox1.Text = "99d 23h 59m 59s";
-            this.validatedTextBox1.ValidationPattern = "^\\s*(?:\\d+d\\s*)?(?:(?:[01]?\\d|2[0-3])h\\s*)?(?:(?:[0-5]?\\d)m\\s*)?(?:(?:[0-5]?\\d)s)" +
-    "?\\s*$";
-            this.validatedTextBox1.ValidColor = System.Drawing.Color.White;
-            // 
-            // validatedTextBox2
-            // 
-            this.validatedTextBox2.AllowSpaces = true;
-            this.validatedTextBox2.AutoFormat = true;
-            this.validatedTextBox2.BackColor = System.Drawing.Color.White;
-            this.validatedTextBox2.ErrorMessage = "";
-            this.validatedTextBox2.InvalidColor = System.Drawing.Color.LightCoral;
-            this.validatedTextBox2.IsValid = true;
-            this.validatedTextBox2.Location = new System.Drawing.Point(253, 3);
-            this.validatedTextBox2.Name = "validatedTextBox2";
-            this.validatedTextBox2.Size = new System.Drawing.Size(88, 20);
-            this.validatedTextBox2.TabIndex = 12;
-            this.validatedTextBox2.Text = "99d 23h 59m 59s";
-            this.validatedTextBox2.ValidationPattern = "^\\s*(?:\\d+d\\s*)?(?:(?:[01]?\\d|2[0-3])h\\s*)?(?:(?:[0-5]?\\d)m\\s*)?(?:(?:[0-5]?\\d)s)" +
-    "?\\s*$";
-            this.validatedTextBox2.ValidColor = System.Drawing.Color.White;
-            // 
-            // validatedTextBox3
-            // 
-            this.validatedTextBox3.AllowSpaces = true;
-            this.validatedTextBox3.AutoFormat = true;
-            this.validatedTextBox3.BackColor = System.Drawing.Color.White;
-            this.validatedTextBox3.ErrorMessage = "";
-            this.validatedTextBox3.InvalidColor = System.Drawing.Color.LightCoral;
-            this.validatedTextBox3.IsValid = true;
-            this.validatedTextBox3.Location = new System.Drawing.Point(253, 3);
-            this.validatedTextBox3.Name = "validatedTextBox3";
-            this.validatedTextBox3.Size = new System.Drawing.Size(88, 20);
-            this.validatedTextBox3.TabIndex = 1;
-            this.validatedTextBox3.Text = "99d 23h 59m 59s";
-            this.validatedTextBox3.ValidationPattern = "^\\s*(?:\\d+d\\s*)?(?:(?:[01]?\\d|2[0-3])h\\s*)?(?:(?:[0-5]?\\d)m\\s*)?(?:(?:[0-5]?\\d)s)" +
-    "?\\s*$";
-            this.validatedTextBox3.ValidColor = System.Drawing.Color.White;
-            // 
-            // validatedTextBox4
-            // 
-            this.validatedTextBox4.AllowSpaces = true;
-            this.validatedTextBox4.AutoFormat = true;
-            this.validatedTextBox4.BackColor = System.Drawing.Color.White;
-            this.validatedTextBox4.ErrorMessage = "";
-            this.validatedTextBox4.InvalidColor = System.Drawing.Color.LightCoral;
-            this.validatedTextBox4.IsValid = true;
-            this.validatedTextBox4.Location = new System.Drawing.Point(253, 3);
-            this.validatedTextBox4.Name = "validatedTextBox4";
-            this.validatedTextBox4.Size = new System.Drawing.Size(88, 20);
-            this.validatedTextBox4.TabIndex = 12;
-            this.validatedTextBox4.Text = "99d 23h 59m 59s";
-            this.validatedTextBox4.ValidationPattern = "^\\s*(?:\\d+d\\s*)?(?:(?:[01]?\\d|2[0-3])h\\s*)?(?:(?:[0-5]?\\d)m\\s*)?(?:(?:[0-5]?\\d)s)" +
-    "?\\s*$";
-            this.validatedTextBox4.ValidColor = System.Drawing.Color.White;
-            // 
-            // validatedTextBox5
-            // 
-            this.validatedTextBox5.AllowSpaces = true;
-            this.validatedTextBox5.AutoFormat = true;
-            this.validatedTextBox5.BackColor = System.Drawing.Color.White;
-            this.validatedTextBox5.ErrorMessage = "";
-            this.validatedTextBox5.InvalidColor = System.Drawing.Color.LightCoral;
-            this.validatedTextBox5.IsValid = true;
-            this.validatedTextBox5.Location = new System.Drawing.Point(253, 3);
-            this.validatedTextBox5.Name = "validatedTextBox5";
-            this.validatedTextBox5.Size = new System.Drawing.Size(88, 20);
-            this.validatedTextBox5.TabIndex = 12;
-            this.validatedTextBox5.Text = "99d 23h 59m 59s";
-            this.validatedTextBox5.ValidationPattern = "^\\s*(?:\\d+d\\s*)?(?:(?:[01]?\\d|2[0-3])h\\s*)?(?:(?:[0-5]?\\d)m\\s*)?(?:(?:[0-5]?\\d)s)" +
-    "?\\s*$";
-            this.validatedTextBox5.ValidColor = System.Drawing.Color.White;
             // 
             // FormPlayerProfile
             // 
@@ -1295,6 +1320,8 @@
             this.flowLayoutPanel12.PerformLayout();
             this.flowLayoutPanel13.ResumeLayout(false);
             this.flowLayoutPanel13.PerformLayout();
+            this.flowLayoutPanel21.ResumeLayout(false);
+            this.flowLayoutPanel21.PerformLayout();
             this.flowLayoutPanel14.ResumeLayout(false);
             this.flowLayoutPanel14.PerformLayout();
             this.flowLayoutPanel15.ResumeLayout(false);
@@ -1415,5 +1442,7 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
+        private PlayerSkillBlock playerSkillBlock1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel21;
     }
 }

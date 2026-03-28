@@ -93,26 +93,12 @@ namespace OE2EmpireTracker.Controls
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            if (IsValid && _autoFormat && !e.KeyCode.ToString().StartsWith("Back"))
-            {
-                FormatInput(e.KeyValue);
-            }
-            else
-            {
-                base.OnKeyDown(e);
-            }
+            base.OnKeyDown(e);
         }
 
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
-            if (e.KeyChar != '\r' && IsValid && _autoFormat)
-            {
-                FormatInput(e.KeyChar);
-            }
-            else
-            {
-                base.OnKeyPress(e);
-            }
+            base.OnKeyPress(e);
         }
 
         public void Reset()
@@ -175,52 +161,6 @@ namespace OE2EmpireTracker.Controls
         {
             ValidateInput();
             _debounceTimer.Stop();
-        }
-
-        private void FormatInput(int keyChar)
-        {
-            string input = Text;
-            if (AllowSpaces && !Regex.IsMatch(input, @"^[\d\s]+$")) return;
-
-            var validChars = Regex.Matches(ValidationPattern ?? "", @"[^\\s]").Cast<char>().ToList();
-            if (validChars.Count <= input.Length) return;
-
-            for (int i = 0; i < input.Length; i++)
-            {
-                if (i >= validChars.Count) break;
-
-                char expected = validChars[i];
-
-                if (i == 0 && keyChar != '\r')
-                {
-                    Text = expected.ToString();
-                }
-                else
-                {
-                    char current = input[i];
-                    int currentIndex = i > 0 ? i - 1 : -1;
-                    if (currentIndex >= validChars.Count) break;
-
-                    if (current != '\r')
-                    {
-                        int matchIndex = Array.IndexOf(input.ToArray(), expected);
-
-                        if (matchIndex != currentIndex && matchIndex >= 0)
-                            Text = InputWithReplaced(expected).ToString();
-                    }
-                }
-            }
-        }
-
-        private string InputWithReplaced(char replacement)
-        {
-            var newText = "";
-            for (int i = 0; i < Text.Length; i++)
-            {
-                if (Text[i].Equals(replacement)) newText += replacement;
-                else newText += '\u201F';
-            }
-            return newText;
         }
 
         #endregion
