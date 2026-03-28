@@ -1,4 +1,4 @@
-﻿using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Data;
 using System;
 using System.Collections.Generic;
@@ -89,6 +89,27 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         public void PopulateForm()
         {
             txtPlayerName.Text = selectedProfile.Name;
+            cmbFaction.Text = selectedProfile.Faction;
+            txtTotalCredits.Text = selectedProfile.TotalCredits.ToString();
+            txtSkillPoints.Text = selectedProfile.SkillPoints.ToString();
+
+            txtPublicRank.Text = selectedProfile.Public.Rank.ToString();
+            txtPublicRankCurXP.Text = selectedProfile.Public.CurrentXP.ToString();
+            txtPublicRankNextXP.Text = selectedProfile.Public.NextXP.ToString();
+
+            txtPrivateRank.Text = selectedProfile.Private.Rank.ToString();
+            txtPrivateRankCurXP.Text = selectedProfile.Private.CurrentXP.ToString();
+            txtPrivateRankNextXP.Text = selectedProfile.Private.NextXP.ToString();
+
+            txtMilitaryRank.Text = selectedProfile.Military.Rank.ToString();
+            txtMilitaryRankCurXP.Text = selectedProfile.Military.CurrentXP.ToString();
+            txtMilitaryRankNextXP.Text = selectedProfile.Military.NextXP.ToString();
+
+            // Restore skill group checkbox states from the profile
+            foreach (var entry in SkillGroups)
+            {
+                entry.Value.Checked = selectedProfile.GetSkillGroup(entry.Key);
+            }
 
             updateSkillBlock(pskHumanResources, "Human Resources");
             updateSkillBlock(pskForeman, "Foreman");
@@ -157,6 +178,12 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private void chkColonyFounder_Click(object sender, EventArgs e)
         {
             selectedProfile.SetSkillGroup("Colony Founder", chkColonyFounder.Checked);
+            PopulateForm();
+        }
+
+        private void chkColonyOperations_Click(object sender, EventArgs e)
+        {
+            selectedProfile.SetSkillGroup("Colony Operations", chkColonyOperations.Checked);
             PopulateForm();
         }
 
@@ -236,38 +263,55 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private void cmdSave_Click(object sender, EventArgs e)
         {
-            // Add or update in player context
+            // Populate fields first so the profile is complete before adding to the list
+            selectedProfile.Name = txtPlayerName.Text;
+            selectedProfile.Faction = cmbFaction.Text;
+            selectedProfile.TotalCredits = decimal.TryParse(txtTotalCredits.Text, out var credits) ? credits : 0;
+            selectedProfile.SkillPoints = int.TryParse(txtSkillPoints.Text, out var sp) ? sp : 0;
+
+            selectedProfile.Public.Rank = int.TryParse(txtPublicRank.Text, out var pubRank) ? pubRank : 0;
+            selectedProfile.Public.CurrentXP = long.TryParse(txtPublicRankCurXP.Text, out var pubCur) ? pubCur : 0;
+            selectedProfile.Public.NextXP = long.TryParse(txtPublicRankNextXP.Text, out var pubNext) ? pubNext : 0;
+
+            selectedProfile.Private.Rank = int.TryParse(txtPrivateRank.Text, out var priRank) ? priRank : 0;
+            selectedProfile.Private.CurrentXP = long.TryParse(txtPrivateRankCurXP.Text, out var priCur) ? priCur : 0;
+            selectedProfile.Private.NextXP = long.TryParse(txtPrivateRankNextXP.Text, out var priNext) ? priNext : 0;
+
+            selectedProfile.Military.Rank = int.TryParse(txtMilitaryRank.Text, out var milRank) ? milRank : 0;
+            selectedProfile.Military.CurrentXP = long.TryParse(txtMilitaryRankCurXP.Text, out var milCur) ? milCur : 0;
+            selectedProfile.Military.NextXP = long.TryParse(txtMilitaryRankNextXP.Text, out var milNext) ? milNext : 0;
+
+            // Add to list only if this is a new profile
             if (string.IsNullOrEmpty(selectedProfile.UUID))
             {
                 selectedProfile.UUID = Guid.NewGuid().ToString();
                 playerContext.playerProfileList.Add(selectedProfile);
             }
 
-            selectedProfile.Name = txtPlayerName.Text;
-            selectedProfile.Faction = cmbFaction.Text;
-            selectedProfile.Public.Rank = int.Parse(txtPublicRank.Text);
-            selectedProfile.Public.CurrentXP = long.Parse(txtPublicRankCurXP.Text);
-            selectedProfile.Public.NextXP = long.Parse(txtPublicRankNextXP.Text);
-            selectedProfile.Private.Rank = int.Parse(txtPrivateRank.Text);
-            selectedProfile.Private.CurrentXP = long.Parse(txtPrivateRankCurXP.Text);
-            selectedProfile.Private.NextXP = long.Parse(txtPrivateRankNextXP.Text);
-            selectedProfile.Military.Rank = int.Parse(txtPrivateRank.Text);
-            selectedProfile.Military.CurrentXP = long.Parse(txtPrivateRankCurXP.Text);
-            selectedProfile.Military.NextXP = long.Parse(txtPrivateRankNextXP.Text);
-            selectedProfile.TotalCredits = decimal.Parse(txtTotalCredits.Text);
-            selectedProfile.SkillPoints = int.Parse(txtSkillPoints.Text);
-            // Persist changes to player context
             playerContext.writeContext();
+            populateListView();
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(selectedProfile.UUID)) return;
 
+            playerContext.playerProfileList.Remove(selectedProfile);
+            playerContext.writeContext();
+
+            selectedProfile = new Data.PlayerProfile();
+            populateListView();
+            PopulateForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-
+            // Discard changes by re-selecting the saved profile, or reset to blank if new
+            if (string.IsNullOrEmpty(selectedProfile.UUID))
+            {
+                selectedProfile = new Data.PlayerProfile();
+            }
+            PopulateForm();
         }
     }
 }

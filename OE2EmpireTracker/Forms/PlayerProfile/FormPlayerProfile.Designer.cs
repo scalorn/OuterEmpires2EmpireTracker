@@ -1,4 +1,4 @@
-﻿namespace OE2EmpireTracker.Forms.PlayerProfile
+namespace OE2EmpireTracker.Forms.PlayerProfile
 {
     partial class FormPlayerProfile
     {
@@ -72,7 +72,7 @@
             this.flpMilitaryRankBlock = new System.Windows.Forms.FlowLayoutPanel();
             this.flpMilitaryRank = new System.Windows.Forms.FlowLayoutPanel();
             this.lblMilitaryRank = new System.Windows.Forms.Label();
-            this.txtMililtaryRank = new System.Windows.Forms.TextBox();
+            this.txtMilitaryRank = new System.Windows.Forms.TextBox();
             this.flpMilitaryRankCurXP = new System.Windows.Forms.FlowLayoutPanel();
             this.lblMilitaryRankCurXP = new System.Windows.Forms.Label();
             this.txtMilitaryRankCurXP = new System.Windows.Forms.TextBox();
@@ -660,7 +660,7 @@
             this.flpMilitaryRank.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.flpMilitaryRank.AutoSize = true;
             this.flpMilitaryRank.Controls.Add(this.lblMilitaryRank);
-            this.flpMilitaryRank.Controls.Add(this.txtMililtaryRank);
+            this.flpMilitaryRank.Controls.Add(this.txtMilitaryRank);
             this.flpMilitaryRank.Location = new System.Drawing.Point(2, 2);
             this.flpMilitaryRank.Margin = new System.Windows.Forms.Padding(2);
             this.flpMilitaryRank.Name = "flpMilitaryRank";
@@ -678,13 +678,13 @@
             this.lblMilitaryRank.Text = "Military Rank";
             this.lblMilitaryRank.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // txtMililtaryRank
+            // txtMilitaryRank
             // 
-            this.txtMililtaryRank.Location = new System.Drawing.Point(106, 2);
-            this.txtMililtaryRank.Margin = new System.Windows.Forms.Padding(2);
-            this.txtMililtaryRank.Name = "txtMililtaryRank";
-            this.txtMililtaryRank.Size = new System.Drawing.Size(201, 20);
-            this.txtMililtaryRank.TabIndex = 7;
+            this.txtMilitaryRank.Location = new System.Drawing.Point(106, 2);
+            this.txtMilitaryRank.Margin = new System.Windows.Forms.Padding(2);
+            this.txtMilitaryRank.Name = "txtMilitaryRank";
+            this.txtMilitaryRank.Size = new System.Drawing.Size(201, 20);
+            this.txtMilitaryRank.TabIndex = 7;
             // 
             // flpMilitaryRankCurXP
             // 
@@ -1745,7 +1745,7 @@
         private System.Windows.Forms.FlowLayoutPanel flpMilitaryRankBlock;
         private System.Windows.Forms.FlowLayoutPanel flpMilitaryRank;
         private System.Windows.Forms.Label lblMilitaryRank;
-        private System.Windows.Forms.TextBox txtMililtaryRank;
+        private System.Windows.Forms.TextBox txtMilitaryRank;
         private System.Windows.Forms.FlowLayoutPanel flpMilitaryRankCurXP;
         private System.Windows.Forms.Label lblMilitaryRankCurXP;
         private System.Windows.Forms.TextBox txtMilitaryRankCurXP;
