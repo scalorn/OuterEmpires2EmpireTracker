@@ -529,6 +529,10 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     populateItemWithSurveys();
                 }
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.Blueprint)
+                {
+                    populateItemWithBlueprints();
+                }
             }
         }
 
@@ -588,6 +592,15 @@ namespace OE2EmpireTracker.Forms.Colony
                     {
                         item.BaseItemTypeID = survey.UUID;
                         item.Name = survey.Name;
+                    }
+                }
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.Blueprint)
+                {
+                    Data.Blueprint blueprint = cmbItem.SelectedItem as Data.Blueprint;
+                    if (blueprint != null)
+                    {
+                        item.BaseItemTypeID = blueprint.UUID;
+                        item.Name = blueprint.Name;
                     }
                 }
 
@@ -667,8 +680,35 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     populateItemWithSurveys();
                 }
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.Blueprint)
+                {
+                    populateItemWithBlueprints();
+                }
             }
             cmbItem.DroppedDown = true;
+        }
+
+        public void populateItemWithBlueprints()
+        {
+            string searchText = txtItemFilter.Text;
+
+            List<Data.Blueprint> filteredList = new List<Data.Blueprint>(playerContext.blueprintList);
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(b => b.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .OrderBy(b => b.ExtendedName)
+                    .ToList();
+            }
+            filteredList.Sort((x, y) => x.ExtendedName.CompareTo(y.ExtendedName));
+            filteredList.Insert(0, new Data.Blueprint());
+
+            var bindingList = new BindingSource();
+            bindingList.DataSource = filteredList;
+
+            cmbItem.DataSource = bindingList;
+            cmbItem.ValueMember = "UUID";
+            cmbItem.DisplayMember = "ExtendedName";
         }
 
         public void populateItemWithSurveys()

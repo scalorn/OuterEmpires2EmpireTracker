@@ -52,6 +52,32 @@ namespace OE2EmpireTracker.Data
                         }
                     }
                 }
+                if (ItemType == Data.ItemType.ItemTypeEnum.Blueprint)
+                {
+                    Blueprint blueprint = EmpireContext.PlayerContext?.findBlueprint(BaseItemTypeID);
+                    if (blueprint != null)
+                    {
+                        extendedName = "";
+                        if (blueprint.Class > 0)
+                        {
+                            extendedName += $"C{blueprint.Class} ";
+                        }
+                        if (blueprint.Evolution > 0)
+                        {
+                            extendedName += $"(Ev{blueprint.Evolution}) ";
+                        }
+                        extendedName += blueprint.Name + " ";
+                        if (!string.IsNullOrEmpty(blueprint.TechLevel))
+                        {
+                            extendedName += $"({blueprint.TechLevel}) ";
+                        }
+                        if (!string.IsNullOrEmpty(blueprint.NickName))
+                        {
+                            extendedName += $"[{blueprint.NickName}] ";
+                        }
+                        extendedName = extendedName.Trim();
+                    }
+                }
                 return extendedName;
             }
         }

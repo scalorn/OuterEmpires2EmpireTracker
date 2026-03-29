@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using OE2EmpireTracker.Baseline;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -37,64 +38,6 @@ namespace OE2EmpireTracker.Data
         public PropertyBag Properties { get; set; }
         public Dictionary<string, string> Resources { get; set; }
 
-        //public KeyValuePair<int, int> Mass { get; set; }
-        //public KeyValuePair<int, int> CargoVolumeSize { get; set; }
-        //public KeyValuePair<int, int> PowerRequired { get; set; }
-        //public KeyValuePair<int, int> Health { get; set; }
-        //public KeyValuePair<int, int> EngCapacityRequired { get; set; }
-        //public KeyValuePair<double, double> WearAndTearRate { get; set; }
-        //public KeyValuePair<double, double> MaximumDamageRepairPercentage { get; set; }
-
-        // Hulls
-        //public KeyValuePair<int, int> CargoCapacity {  get; set; }
-        //public KeyValuePair<int, int> FuelCapacity { get; set; }
-        //public KeyValuePair<int, int> LargeWeaponMounts { get; set; }
-        //public KeyValuePair<int, int> MediumWeaponMounts { get; set; }
-        //public KeyValuePair<int, int> SmallWeaponMounts { get; set; }
-        //public KeyValuePair<int, int> EnergyDefense { get; set; }
-        //public KeyValuePair<int, int> KineticDamageDefense { get; set; }
-        //public KeyValuePair<int, int> MissileDamageDefense { get; set; }
-        //public KeyValuePair<int, int> NumberOfCrewSupported { get; set; }
-
-        // Cargo Pods
-        //public KeyValuePair<int, int> AdditionalCargoCapacity { get; set; }
-
-        // Fuel Pods
-        //public KeyValuePair<int, int> AdditionalFuelCapacity { get; set; }
-
-        // Thrusters
-//        public KeyValuePair<double, double> RotationalThrust { get; set; }
-
-        // Main Drives
-        //public KeyValuePair<double, double> AccelerationRate { get; set; }
-
-        // Reactor Cores
-        //public KeyValuePair<double, double> PowerGenerated { get; set; }
-        //public KeyValuePair<double, double> PowerRegenerationRate { get; set; }
-
-        // Jump Drives
-        //public KeyValuePair<double, double> FuelUsed { get; set; }
-        //public KeyValuePair<double, double> MaxJumpDistance { get; set; }
-
-        // For Navigation Computers.
-        //public KeyValuePair<int, int> JumpChargeTime { get; set; }
-
-        // Shields
-        //public KeyValuePair<int, int> PowerDrawPerSecond { get; set; }
-        //public KeyValuePair<int, int> EnergyDefence { get; set; }
-        //public KeyValuePair<int, int> ShieldHitPoints { get; set; }
-        //public KeyValuePair<int, int> ShieldRegenPerSecond { get; set; }
-
-        // System Object Scanner
-        //public KeyValuePair<int, int> SensorAbundanceFactor { get; set; }
-        //public KeyValuePair<double, double> PurityModifier { get; set; }
-        //public KeyValuePair<int, int> ScanLevel { get; set; }
-        //public KeyValuePair<int, int> MaterialFocus { get; set; }
-        //public KeyValuePair<int, int> MaterialFocusBonus { get; set; }
-
-        // Universal Coupler
-        //public KeyValuePair<int, int> FuelTransferRate { get; set; }
-
         [JsonIgnore]
         public override string ExtendedName {
             get {
@@ -102,18 +45,24 @@ namespace OE2EmpireTracker.Data
                 {
                     return string.Empty;
                 }
-                string extendedName = Name;
-                if (Evolution > 0) {
-                    extendedName += " Ev(" + Evolution + ")";
+                string extendedName = "";
+                if (Class > 0)
+                {
+                    extendedName += $"C{Class} ";
                 }
+                if (Evolution > 0) {
+                    extendedName += "Ev(" + Evolution + ") ";
+                }
+                extendedName += Name + " ";
                 if (TechLevel != null)
                 {
-                    extendedName += " (" + TechLevel + ")";
+                    extendedName += "(" + TechLevel + ") ";
                 }
                 if (!String.IsNullOrEmpty(NickName))
                 {
-                    extendedName += " [" + NickName + "]";
+                    extendedName += "[" + NickName + "] ";
                 }
+                extendedName = extendedName.Trim();
                 return extendedName;
             }
         }
