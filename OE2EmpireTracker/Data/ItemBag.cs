@@ -34,6 +34,18 @@ namespace OE2EmpireTracker.Data
             return Items.Count;
         }
 
+        /// <summary>
+        /// Returns the total quantity of all items in the bag that match
+        /// the given ItemType and BaseItemTypeID. Sums across multiple stacks.
+        /// </summary>
+        public int CountByType(ItemType.ItemTypeEnum itemType, string baseItemTypeID)
+        {
+            return Items.Values
+                .Where(i => i.ItemType == itemType &&
+                            string.Equals(i.BaseItemTypeID, baseItemTypeID, StringComparison.Ordinal))
+                .Sum(i => i.Quantity);
+        }
+
         public bool Remove(string uuid)
         {
             bool present = false;
