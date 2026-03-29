@@ -325,90 +325,100 @@ namespace OE2EmpireTracker.Baseline
         }
 
         /// <summary>
-        /// Populates a RichTextBox UI component with the current colony status summary.
+        /// Builds an RTF document string from colored text runs.
+        /// Assign the result to RichTextBox.Rtf to update the control in a single operation.
         /// </summary>
-        /// <param name="rtbStatus">The RichTextBox control to update.</param>
-        /// <remarks>
-        /// <para>Calls <c>AppendColoredText</c> for each statistic category (Power, Habitation, Food, Entertainment, Warehouse).</para>
-        /// <para>Color Coding:</para>
-        /// <list type="bullet">
-        /// <item><description><b>Red Text:</b> Statistic is in deficit (e.g., Power Required > Power Provided).</description></item>
-        /// <item><description><b>Green Text:</b> Statistic meets the requirement (e.g., Provision >= Requirement).</description></item>
-        /// </list>
-        /// <para>The UI text follows the format: "Name : [Required] / [Provided]" or similar based on property availability.</para>
-        /// </remarks>
-        public static void populateStatus(RichTextBox rtbStatus, ColonyStructureStatus status)
+        public class RtfBuilder
         {
-            // Clear previous status to start fresh
-            //rtbStatus.Text = "";
+            private readonly StringBuilder _sb = new StringBuilder();
+            private readonly List<Color> _colorTable = new List<Color>();
 
-            // --- Power Status ---
-            UpdateStatus(rtbStatus, "Power:", Color.Black, status.PowerRequired, status.PowerProvided);
+            public RtfBuilder()
+            {
+                // Seed with a placeholder so color indices are 1-based
+                _colorTable.Add(Color.Empty);
+            }
 
-            // --- Habitation Status ---
-            UpdateStatus(rtbStatus, " Habitation: ",
-                ((status.HabitationProvision < status.HabitationRequired) ? Color.Red : Color.Green), // Simplified logic check based on property names below
+            private int GetColorIndex(Color color)
+            {
+                int idx = _colorTable.IndexOf(color);
+                if (idx < 0)
+                {
+                    _colorTable.Add(color);
+                    idx = _colorTable.Count - 1;
+                }
+                return idx;
+            }
+
+            public void Append(string text, Color color)
+            {
+                if (string.IsNullOrEmpty(text)) return;
+                int idx = GetColorIndex(color);
+                // Escape RTF special characters
+                string escaped = text
+                    .Replace("\\", "\\\\")
+                    .Replace("{", "\\{")
+                    .Replace("}", "\\}")
+                    .Replace("\n", "\\line ");
+                _sb.Append(@"\cf").Append(idx).Append(' ').Append(escaped);
+            }
+
+            public string ToRtf()
+            {
+                // Build color table header
+                var header = new StringBuilder();
+                header.Append(@"{\rtf1\ansi{\colortbl;");
+                foreach (Color c in _colorTable.Skip(1))
+                {
+                    header.Append($@"\red{c.R}\green{c.G}\blue{c.B};");
+                }
+                header.Append('}');
+                header.Append(_sb);
+                header.Append('}');
+                return header.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Populates a RichTextBox with the colony status summary in a single RTF assignment.
+        /// </summary>
+        public static void populateStatus(RtfBuilder builder, ColonyStructureStatus status)
+        {
+            AppendStatus(builder, "Power:", Color.Black, status.PowerRequired, status.PowerProvided);
+            AppendStatus(builder, " Habitation: ",
+                status.HabitationProvision < status.HabitationRequired ? Color.Red : Color.Green,
                 status.HabitationRequired, status.HabitationProvision);
-
-            // --- Food Status ---
-            UpdateStatus(rtbStatus, " Food: ",
+            AppendStatus(builder, " Food: ",
                 status.FoodProvision < status.FoodRequired ? Color.Red : Color.Green,
                 status.FoodRequired, status.FoodProvision);
-
-            // --- Entertainment Status ---
-            UpdateStatus(rtbStatus, " Entertainment: ",
+            AppendStatus(builder, " Entertainment: ",
                 status.EntertainmentProvided < status.EntertainmentRequired ? Color.Red : Color.Green,
                 status.EntertainmentRequired, status.EntertainmentProvided);
-
-            // --- Warehouse Status ---
-            UpdateStatus(rtbStatus, " Warehouse: ",
+            AppendStatus(builder, " Warehouse: ",
                 status.WarehouseCapacity < status.WarehouseRequired ? Color.Red : Color.Green,
                 status.WarehouseRequired, status.WarehouseCapacity);
         }
 
-        /// <summary>
-        /// Helper to append text with color status checks.
-        /// </summary>
-        private static void UpdateStatus(RichTextBox rtb, string name, Color errorColor, double required, double provided)
+        private static void AppendStatus(RtfBuilder builder, string name, Color color, double required, double provided)
         {
-            AppendColoredText(rtb, name, Color.Black); // Just keeping logic simple for now or refactor
-
-            // Logic simplified to use existing AppendColoredText pattern
-            Color statusColor = Color.Green;
-            if (required > provided)
-            {
-                statusColor = Color.Red;
-            }
-            AppendColoredText(rtb, "" + required, statusColor);
-            AppendColoredText(rtb, "/", Color.Black);
-            AppendColoredText(rtb, "" + provided, Color.Black);
+            builder.Append(name, Color.Black);
+            builder.Append("" + required, required > provided ? Color.Red : Color.Green);
+            builder.Append("/", Color.Black);
+            builder.Append("" + provided, Color.Black);
         }
 
         /// <summary>
-        /// Helper method to append text to a RichTextBox with color encoding based on current selection.
+        /// Appends colored text to a RichTextBox. Prefer building an RtfBuilder and
+        /// assigning Rtf once for better performance when appending multiple runs.
         /// </summary>
-        /// <param name="box">The control to append to.</param>
-        /// <param name="text">The string content to add.</param>
-        /// <param name="color">The drawing color (e.g., Red for deficit, Black/Green for normal).</param>
-        public static void AppendColoredText(RichTextBox box, string text, Color color)
+        public static void AppendColoredTextOLD(RichTextBox box, string text, Color color)
         {
-            // Set the selection point to the end of the existing text
             box.SelectionStart = box.TextLength;
             box.SelectionLength = 0;
-
-            // Set the color for the text to be appended
             box.SelectionColor = color;
-
-            // Append the new text
             box.AppendText(text);
-
-            // Reset the selection color to the default (e.g., black) for future user input
             box.SelectionColor = box.ForeColor;
         }
-
-        /// <summary>
-        /// Static method to simplify status checks in main loop.
-        /// </summary>
     }
 }
 

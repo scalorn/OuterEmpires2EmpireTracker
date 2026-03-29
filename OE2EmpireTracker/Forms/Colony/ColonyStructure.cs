@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static OE2EmpireTracker.Baseline.ColonyStatusCalculator;
 using static System.Windows.Forms.AxHost;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
@@ -215,17 +216,17 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
 
-            rtbStatus.Text = "";
+            RtfBuilder builder = new RtfBuilder();
 
             if (ColonyStructureData != null)
             {
-                ColonyStatusCalculator.AppendColoredText(rtbStatus, "#" + ColonyStructureData.gameSequence + " ", Color.Black);
+                builder.Append("#" + ColonyStructureData.gameSequence + " ", Color.Black);
             }
             if (FlatpackBlueprint != null)
             {
-                ColonyStatusCalculator.AppendColoredText(rtbStatus, FlatpackBlueprint.ExtendedName, Color.Black);
+                builder.Append(FlatpackBlueprint.ExtendedName, Color.Black);
 
-                rtbStatus.AppendText("\n");
+                builder.Append("\n", Color.Black);
             }
 
             if (ColonyStructureData != null && ColonyStructureData.Statuses != null)
@@ -233,13 +234,13 @@ namespace OE2EmpireTracker.Forms.Colony
                 ColonyStructureData.Statuses.TryGetValue("Actual", out ColonyStructureStatus status);
                 if (status != null)
                 {
-                    ColonyStatusCalculator.populateStatus(rtbStatus, status);
+                    ColonyStatusCalculator.populateStatus(builder, status);
                 }
                 ColonyStructureData.Statuses.TryGetValue("Ideal", out ColonyStructureStatus idealStatus);
                 if (idealStatus != null)
                 {
                     rtbStatus.AppendText("\n");
-                    ColonyStatusCalculator.populateStatus(rtbStatus, idealStatus);
+                    ColonyStatusCalculator.populateStatus(builder, idealStatus);
                 }
             }
 
@@ -271,6 +272,7 @@ namespace OE2EmpireTracker.Forms.Colony
             ColonyStatusCalculator.AppendColoredText(rtbStatus, "10 ", Color.Black);
             */
 
+            rtbStatus.Rtf = builder.ToRtf();
             guard.release();
         }
 
@@ -395,6 +397,33 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 release();
             }
+        }
+
+        private void cmdUp_Click(object sender, EventArgs e)
+        {
+            if (Colony == null || ColonyStructureData == null) return;
+            int index = Colony.Structures.IndexOf(ColonyStructureData);
+            if (index <= 0) return;
+            Colony.Structures.RemoveAt(index);
+            Colony.Structures.Insert(index - 1, ColonyStructureData);
+            ColonyStructureDataChanged?.Invoke(this, e);
+        }
+
+        private void cmdDelete_Click(object sender, EventArgs e)
+        {
+            if (Colony == null || ColonyStructureData == null) return;
+            Colony.Structures.Remove(ColonyStructureData);
+            ColonyStructureDataChanged?.Invoke(this, e);
+        }
+
+        private void cmdDown_Click(object sender, EventArgs e)
+        {
+            if (Colony == null || ColonyStructureData == null) return;
+            int index = Colony.Structures.IndexOf(ColonyStructureData);
+            if (index < 0 || index >= Colony.Structures.Count - 1) return;
+            Colony.Structures.RemoveAt(index);
+            Colony.Structures.Insert(index + 1, ColonyStructureData);
+            ColonyStructureDataChanged?.Invoke(this, e);
         }
     }
 }

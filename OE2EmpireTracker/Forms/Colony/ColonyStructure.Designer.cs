@@ -32,9 +32,9 @@
             this.flpColonyStructure = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.cmdUp = new System.Windows.Forms.Button();
+            this.cmdDelete = new System.Windows.Forms.Button();
+            this.cmdDown = new System.Windows.Forms.Button();
             this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel7 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel9 = new System.Windows.Forms.FlowLayoutPanel();
@@ -103,41 +103,44 @@
             // flowLayoutPanel3
             // 
             this.flowLayoutPanel3.AutoScroll = true;
-            this.flowLayoutPanel3.Controls.Add(this.button1);
-            this.flowLayoutPanel3.Controls.Add(this.button4);
-            this.flowLayoutPanel3.Controls.Add(this.button2);
+            this.flowLayoutPanel3.Controls.Add(this.cmdUp);
+            this.flowLayoutPanel3.Controls.Add(this.cmdDelete);
+            this.flowLayoutPanel3.Controls.Add(this.cmdDown);
             this.flowLayoutPanel3.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
             this.flowLayoutPanel3.Size = new System.Drawing.Size(56, 87);
             this.flowLayoutPanel3.TabIndex = 0;
             // 
-            // button1
+            // cmdUp
             // 
-            this.button1.Location = new System.Drawing.Point(3, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(50, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Up";
-            this.button1.UseVisualStyleBackColor = true;
+            this.cmdUp.Location = new System.Drawing.Point(3, 3);
+            this.cmdUp.Name = "cmdUp";
+            this.cmdUp.Size = new System.Drawing.Size(50, 23);
+            this.cmdUp.TabIndex = 0;
+            this.cmdUp.Text = "Up";
+            this.cmdUp.UseVisualStyleBackColor = true;
+            this.cmdUp.Click += new System.EventHandler(this.cmdUp_Click);
             // 
-            // button4
+            // cmdDelete
             // 
-            this.button4.Location = new System.Drawing.Point(3, 32);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(50, 23);
-            this.button4.TabIndex = 0;
-            this.button4.Text = "Delete";
-            this.button4.UseVisualStyleBackColor = true;
+            this.cmdDelete.Location = new System.Drawing.Point(3, 32);
+            this.cmdDelete.Name = "cmdDelete";
+            this.cmdDelete.Size = new System.Drawing.Size(50, 23);
+            this.cmdDelete.TabIndex = 0;
+            this.cmdDelete.Text = "Delete";
+            this.cmdDelete.UseVisualStyleBackColor = true;
+            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
-            // button2
+            // cmdDown
             // 
-            this.button2.Location = new System.Drawing.Point(3, 61);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(50, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Down";
-            this.button2.UseVisualStyleBackColor = true;
+            this.cmdDown.Location = new System.Drawing.Point(3, 61);
+            this.cmdDown.Name = "cmdDown";
+            this.cmdDown.Size = new System.Drawing.Size(50, 23);
+            this.cmdDown.TabIndex = 1;
+            this.cmdDown.Text = "Down";
+            this.cmdDown.UseVisualStyleBackColor = true;
+            this.cmdDown.Click += new System.EventHandler(this.cmdDown_Click);
             // 
             // flowLayoutPanel4
             // 
@@ -340,14 +343,14 @@
         private System.Windows.Forms.FlowLayoutPanel flpColonyStructure;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button cmdUp;
+        private System.Windows.Forms.Button cmdDown;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel5;
         private System.Windows.Forms.CheckBox chkWorkDetail1;
         private System.Windows.Forms.CheckBox chkWorkDetail2;
         private System.Windows.Forms.CheckBox chkWorkDetail3;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.CheckBox chkOnline;
         private System.Windows.Forms.CheckBox chkBuilt;
         private System.Windows.Forms.CheckBox chkStaged;

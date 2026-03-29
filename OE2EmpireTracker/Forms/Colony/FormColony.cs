@@ -8,11 +8,13 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using System.Xml.Linq;
+using static OE2EmpireTracker.Baseline.ColonyStatusCalculator;
 
 namespace OE2EmpireTracker.Forms.Colony
 {
@@ -112,8 +114,10 @@ namespace OE2EmpireTracker.Forms.Colony
             statusCalculator.CalculateBuilt();
             statusCalculator.CalculateIdeal();
             colonyStructureControl.UpdateData();
-            rtbStatus.Text = "";
-            ColonyStatusCalculator.populateStatus(rtbStatus, statusCalculator.finalActualStatus);
+
+            RtfBuilder builder = new RtfBuilder();
+            ColonyStatusCalculator.populateStatus(builder, statusCalculator.finalActualStatus);
+            rtbStatus.Rtf = builder.ToRtf();
 
             colonyStructureControl.Visible = true;
             this.ResumeLayout();
@@ -121,10 +125,73 @@ namespace OE2EmpireTracker.Forms.Colony
         private void structures_ColonyStructureDataChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
+            ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
+            this.SuspendLayout();
 
             statusCalculator.CalculateBuilt();
-            rtbStatus.Text = "";
-            ColonyStatusCalculator.populateStatus(rtbStatus, statusCalculator.finalActualStatus);
+            statusCalculator.CalculateIdeal();
+
+            flpColonyStructure.SuspendLayout();
+
+            // Build a map of existing controls by their data reference
+            var controlMap = new Dictionary<Baseline.ColonyStructure, ColonyStructure>();
+            foreach (Control c in flpColonyStructure.Controls)
+            {
+                if (c is ColonyStructure cs && cs.ColonyStructureData != null)
+                {
+                    controlMap[cs.ColonyStructureData] = cs;
+                }
+            }
+
+            // Remove controls whose structure was deleted
+            foreach (var orphan in controlMap
+                .Where(kv => !selectedColony.Structures.Contains(kv.Key))
+                .Select(kv => kv.Value)
+                .ToList())
+            {
+                flpColonyStructure.Controls.Remove(orphan);
+                orphan.Dispose();
+            }
+
+            var controlIndexMap = new Dictionary<Control, int>();
+            int index = 0;
+            foreach (Control c in flpColonyStructure.Controls)
+            {
+                controlIndexMap[c] = index;
+                index++;
+            }
+
+            // Reorder and update existing controls to match selectedColony.Structures order
+            for (int i = 0; i < selectedColony.Structures.Count; i++)
+            {
+                Baseline.ColonyStructure structure = selectedColony.Structures[i];
+                ColonyStructure ctrl;
+                if (!controlMap.TryGetValue(structure, out ctrl))
+                {
+                    // New structure — create a control for it
+                    ctrl = new ColonyStructure();
+                    ctrl.Colony = selectedColony;
+                    ctrl.ColonyStructureData = structure;
+                    ctrl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
+                    flpColonyStructure.Controls.Add(ctrl);
+                }
+                // Move to correct position without removing/re-adding
+                index = controlIndexMap[ctrl];
+                if (index != i)
+                {
+                    flpColonyStructure.Controls.SetChildIndex(ctrl, i);
+                }
+                ctrl.UpdateData();
+            }
+
+            flpColonyStructure.ResumeLayout();
+
+            RtfBuilder builder = new RtfBuilder();
+            ColonyStatusCalculator.populateStatus(builder, statusCalculator.finalActualStatus);
+            rtbStatus.Rtf = builder.ToRtf();
+
+            guard.release();
+            this.ResumeLayout();
         }
 
         private void txtFilterFlatpack_TextChanged(object sender, EventArgs e)
@@ -318,6 +385,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 //colonyStructureControl.Visible = false;
                 //colonyStructureControl.SuspendLayout();
                 colonyStructureControl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
+                colonyStructureControl.Colony = selectedColony;
                 colonyStructureControl.ColonyStructureData = structure;
                 colonyStructureControl.UpdateData();
                 //flpColonyStructure.Controls.Add(colonyStructureControl);
@@ -346,8 +414,9 @@ namespace OE2EmpireTracker.Forms.Colony
             statusCalculator.CalculateIdeal();
             Debug.Print("populateForm: Calling CalculateBuilt finished");
             Debug.Print("populateForm: Calling populateStatus started");
-            rtbStatus.Text = "";
-            ColonyStatusCalculator.populateStatus(rtbStatus, statusCalculator.finalActualStatus);
+            RtfBuilder builder = new RtfBuilder();
+            ColonyStatusCalculator.populateStatus(builder, statusCalculator.finalActualStatus);
+            rtbStatus.Rtf = builder.ToRtf();
             Debug.Print("populateForm: Calling populateStatus finished");
 
             tabDetailedData.Visible = true;
