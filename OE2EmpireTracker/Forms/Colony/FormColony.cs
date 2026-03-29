@@ -831,6 +831,8 @@ namespace OE2EmpireTracker.Forms.Colony
             if (dgvItems.CurrentCell == null)
                 return;
 
+            if (dgvItems.SelectedRows.Count > 0) return;
+
             // Check if the current cell is not in the "Amount" column.
             if (dgvItems.Columns[dgvItems.CurrentCell.ColumnIndex].Name != "Amount")
             {
@@ -917,11 +919,43 @@ namespace OE2EmpireTracker.Forms.Colony
             }
         }
 
+        private void dgvCommodityRequests_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Delete) return;
+            if (dgvCommodityRequests.SelectedRows.Count == 0) return;
+
+            foreach (DataGridViewRow row in dgvCommodityRequests.SelectedRows)
+            {
+                CommodityRequested request = row.Tag as CommodityRequested;
+                if (request != null)
+                    selectedColony.Commodities.Remove(request);
+            }
+            populateCommodityRequestGrid();
+            e.Handled = true;
+        }
+
+        private void dgvItems_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Delete) return;
+            if (dgvItems.SelectedRows.Count == 0) return;
+
+            foreach (DataGridViewRow row in dgvItems.SelectedRows)
+            {
+                Item item = row.Tag as Item;
+                if (item != null)
+                    selectedColony.Items.Remove(item.UUID);
+            }
+            populateItemGrid();
+            e.Handled = true;
+        }
+
         private void dgvCommodityRequests_SelectionChanged(object sender, EventArgs e)
         {
             // Prevent the SelectionChanged event from triggering an error if the current cell is null
             if (dgvCommodityRequests.CurrentCell == null)
                 return;
+
+            if (dgvCommodityRequests.SelectedRows.Count > 0) return;
 
             // Check if the current cell is not in the "Amount" column.
             if (dgvCommodityRequests.Columns[dgvCommodityRequests.CurrentCell.ColumnIndex].Name != "Amount")

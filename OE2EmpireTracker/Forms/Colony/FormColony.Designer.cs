@@ -561,11 +561,13 @@
             this.CommodityRequestedName,
             this.CommodityRequestedAmount});
             this.dgvCommodityRequests.Location = new System.Drawing.Point(3, 85);
+            this.dgvCommodityRequests.MultiSelect = false;
             this.dgvCommodityRequests.Name = "dgvCommodityRequests";
             this.dgvCommodityRequests.Size = new System.Drawing.Size(889, 430);
             this.dgvCommodityRequests.TabIndex = 7;
             this.dgvCommodityRequests.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvCommodityRequests_CellValueChanged);
             this.dgvCommodityRequests.SelectionChanged += new System.EventHandler(this.dgvCommodityRequests_SelectionChanged);
+            this.dgvCommodityRequests.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvCommodityRequests_KeyDown);
             // 
             // CommodityRequestedName
             // 
@@ -722,6 +724,7 @@
             this.dgvItems.Size = new System.Drawing.Size(889, 430);
             this.dgvItems.TabIndex = 7;
             this.dgvItems.SelectionChanged += new System.EventHandler(this.dgvItems_SelectionChanged);
+            this.dgvItems.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvItems_KeyDown);
             // 
             // ItemType
             // 
