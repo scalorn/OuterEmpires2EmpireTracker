@@ -85,7 +85,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                 doc.Load(sgmlReader);
 
                 // Extract title / evolution / tech level / description
-                XmlNode evoLeftNode = doc.SelectSingleNode("//div[contains(@class,'EvolutionLeft')]");
+                XmlNode iconBaseNode = doc.SelectSingleNode("//div[contains(@class,'ui_icon_base')]");
                 XmlNode titleNode = doc.SelectSingleNode("//div[contains(@class,'SmallSlideOut_Form_Row_Text_Bold')]");
                 XmlNode evoNode = doc.SelectSingleNode("//div[contains(@class,'EvolutionNumber')]");
                 XmlNode descNode = doc.SelectSingleNode("//div[contains(@class,'SmallSlideOut_Form_Row_Description')]");
@@ -99,6 +99,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                 // Populate blueprint name, evolution, techlevel and description if available
                 try
                 {
+                    /*
                     if (evoLeftNode != null)
                     {
                         string bpTypeImage = "";
@@ -107,6 +108,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                             //Log.Info("attr.innerText = " + attr.InnerText);
                             //Log.Info("attr.innerXml = " + attr.InnerXml);
                             string innerXml = attr.InnerXml;
+                            Log.Info("Background Inner XML = " + innerXml);
                             var match = Regex.Match(innerXml, @"background:\s*url\([""']?([^""')]+)[""']?\)");
                             if (match.Success)
                             {
@@ -122,6 +124,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                             Log.Info("Unknown Background Type Image = " + bpTypeImage);
                         }
                     }
+                    */
 
                     // Evolution
                     if (evoNode != null && int.TryParse(evoNode.InnerText.Trim(), out int evo))
