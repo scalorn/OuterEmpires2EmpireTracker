@@ -59,6 +59,18 @@
             this.cmdAddFlatpack = new System.Windows.Forms.Button();
             this.flpColonyStructure = new System.Windows.Forms.FlowLayoutPanel();
             this.tabPWorkers = new System.Windows.Forms.TabPage();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtCommodityRequestFilter = new System.Windows.Forms.TextBox();
+            this.cmbCommodityRequest = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtCommodityRequestQuantity = new System.Windows.Forms.TextBox();
+            this.cmdAddCommodityRequest = new System.Windows.Forms.Button();
+            this.dgvCommodityRequests = new System.Windows.Forms.DataGridView();
+            this.CommodityRequestedName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CommodityRequestedAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPWarehousing = new System.Windows.Forms.TabPage();
             this.flowLayoutPanel7 = new System.Windows.Forms.FlowLayoutPanel();
             this.flpAddItemBox = new System.Windows.Forms.FlowLayoutPanel();
@@ -94,6 +106,10 @@
             this.flpStructureData.SuspendLayout();
             this.flpStatus.SuspendLayout();
             this.flpAddBox.SuspendLayout();
+            this.tabPWorkers.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
+            this.flowLayoutPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCommodityRequests)).BeginInit();
             this.tabPWarehousing.SuspendLayout();
             this.flowLayoutPanel7.SuspendLayout();
             this.flpAddItemBox.SuspendLayout();
@@ -434,12 +450,136 @@
             // 
             // tabPWorkers
             // 
+            this.tabPWorkers.Controls.Add(this.flowLayoutPanel1);
             this.tabPWorkers.Location = new System.Drawing.Point(4, 22);
             this.tabPWorkers.Name = "tabPWorkers";
             this.tabPWorkers.Size = new System.Drawing.Size(792, 174);
             this.tabPWorkers.TabIndex = 2;
             this.tabPWorkers.Text = "Workers";
             this.tabPWorkers.UseVisualStyleBackColor = true;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.richTextBox1);
+            this.flowLayoutPanel1.Controls.Add(this.flowLayoutPanel2);
+            this.flowLayoutPanel1.Controls.Add(this.dgvCommodityRequests);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(886, 174);
+            this.flowLayoutPanel1.TabIndex = 9;
+            this.flowLayoutPanel1.WrapContents = false;
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox1.Location = new System.Drawing.Point(3, 3);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.ReadOnly = true;
+            this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.richTextBox1.Size = new System.Drawing.Size(421, 40);
+            this.richTextBox1.TabIndex = 8;
+            this.richTextBox1.Text = "Worker Detail Space";
+            this.richTextBox1.WordWrap = false;
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flowLayoutPanel2.Controls.Add(this.label2);
+            this.flowLayoutPanel2.Controls.Add(this.txtCommodityRequestFilter);
+            this.flowLayoutPanel2.Controls.Add(this.cmbCommodityRequest);
+            this.flowLayoutPanel2.Controls.Add(this.label4);
+            this.flowLayoutPanel2.Controls.Add(this.txtCommodityRequestQuantity);
+            this.flowLayoutPanel2.Controls.Add(this.cmdAddCommodityRequest);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 49);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(889, 30);
+            this.flowLayoutPanel2.TabIndex = 6;
+            this.flowLayoutPanel2.WrapContents = false;
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(3, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(40, 24);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Filter:";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // txtCommodityRequestFilter
+            // 
+            this.txtCommodityRequestFilter.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtCommodityRequestFilter.Location = new System.Drawing.Point(49, 4);
+            this.txtCommodityRequestFilter.Name = "txtCommodityRequestFilter";
+            this.txtCommodityRequestFilter.Size = new System.Drawing.Size(97, 20);
+            this.txtCommodityRequestFilter.TabIndex = 4;
+            this.txtCommodityRequestFilter.TextChanged += new System.EventHandler(this.txtCommodityRequestFilter_TextChanged);
+            // 
+            // cmbCommodityRequest
+            // 
+            this.cmbCommodityRequest.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmbCommodityRequest.FormattingEnabled = true;
+            this.cmbCommodityRequest.Location = new System.Drawing.Point(152, 4);
+            this.cmbCommodityRequest.Name = "cmbCommodityRequest";
+            this.cmbCommodityRequest.Size = new System.Drawing.Size(191, 21);
+            this.cmbCommodityRequest.TabIndex = 5;
+            // 
+            // label4
+            // 
+            this.label4.Location = new System.Drawing.Point(349, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(51, 24);
+            this.label4.TabIndex = 9;
+            this.label4.Text = "Quantity:";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // txtCommodityRequestQuantity
+            // 
+            this.txtCommodityRequestQuantity.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtCommodityRequestQuantity.Location = new System.Drawing.Point(406, 4);
+            this.txtCommodityRequestQuantity.Name = "txtCommodityRequestQuantity";
+            this.txtCommodityRequestQuantity.Size = new System.Drawing.Size(97, 20);
+            this.txtCommodityRequestQuantity.TabIndex = 8;
+            // 
+            // cmdAddCommodityRequest
+            // 
+            this.cmdAddCommodityRequest.Location = new System.Drawing.Point(509, 3);
+            this.cmdAddCommodityRequest.Name = "cmdAddCommodityRequest";
+            this.cmdAddCommodityRequest.Size = new System.Drawing.Size(39, 23);
+            this.cmdAddCommodityRequest.TabIndex = 1;
+            this.cmdAddCommodityRequest.Text = "Add";
+            this.cmdAddCommodityRequest.UseVisualStyleBackColor = true;
+            this.cmdAddCommodityRequest.Click += new System.EventHandler(this.cmdAddCommodityRequest_Click);
+            // 
+            // dgvCommodityRequests
+            // 
+            this.dgvCommodityRequests.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvCommodityRequests.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvCommodityRequests.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.CommodityRequestedName,
+            this.CommodityRequestedAmount});
+            this.dgvCommodityRequests.Location = new System.Drawing.Point(3, 85);
+            this.dgvCommodityRequests.Name = "dgvCommodityRequests";
+            this.dgvCommodityRequests.Size = new System.Drawing.Size(889, 430);
+            this.dgvCommodityRequests.TabIndex = 7;
+            this.dgvCommodityRequests.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvCommodityRequests_CellValueChanged);
+            this.dgvCommodityRequests.SelectionChanged += new System.EventHandler(this.dgvCommodityRequests_SelectionChanged);
+            // 
+            // CommodityRequestedName
+            // 
+            this.CommodityRequestedName.HeaderText = "Commodity";
+            this.CommodityRequestedName.Name = "CommodityRequestedName";
+            this.CommodityRequestedName.ReadOnly = true;
+            this.CommodityRequestedName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.CommodityRequestedName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.CommodityRequestedName.Width = 300;
+            // 
+            // CommodityRequestedAmount
+            // 
+            this.CommodityRequestedAmount.HeaderText = "Amount";
+            this.CommodityRequestedAmount.Name = "CommodityRequestedAmount";
             // 
             // tabPWarehousing
             // 
@@ -688,6 +828,11 @@
             this.flpStatus.ResumeLayout(false);
             this.flpAddBox.ResumeLayout(false);
             this.flpAddBox.PerformLayout();
+            this.tabPWorkers.ResumeLayout(false);
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCommodityRequests)).EndInit();
             this.tabPWarehousing.ResumeLayout(false);
             this.flowLayoutPanel7.ResumeLayout(false);
             this.flpAddItemBox.ResumeLayout(false);
@@ -754,5 +899,17 @@
         private System.Windows.Forms.ComboBox cmbPurity;
         private System.Windows.Forms.Label lblQuantity;
         private System.Windows.Forms.TextBox txtQuantity;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox txtCommodityRequestFilter;
+        private System.Windows.Forms.ComboBox cmbCommodityRequest;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtCommodityRequestQuantity;
+        private System.Windows.Forms.Button cmdAddCommodityRequest;
+        private System.Windows.Forms.DataGridView dgvCommodityRequests;
+        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn CommodityRequestedName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn CommodityRequestedAmount;
     }
 }

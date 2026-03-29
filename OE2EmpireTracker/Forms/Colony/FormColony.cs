@@ -60,6 +60,8 @@ namespace OE2EmpireTracker.Forms.Colony
             lvwColonies.Columns.Add("Name", 100);
             populateListView(new List<Baseline.Colony>(playerContext.colonyList));
 
+            updateCommodityRequestList();
+
             //flpColonyData.BackColor = Color.LightCoral;
             //tlpBase.BackColor = Color.LightBlue;
 
@@ -425,6 +427,7 @@ namespace OE2EmpireTracker.Forms.Colony
             tabDetailedData.Visible = true;
 
             populateItemGrid();
+            populateCommodityRequestGrid();
 
             this.ResumeLayout();
             guard.release();
@@ -838,6 +841,98 @@ namespace OE2EmpireTracker.Forms.Colony
                 if (dgvItems.Rows[dgvItems.CurrentCell.RowIndex].Cells.Count > 1)
                 {
                     dgvItems.CurrentCell = dgvItems.Rows[dgvItems.CurrentCell.RowIndex].Cells[3];
+                }
+            }
+        }
+
+        private void cmdAddCommodityRequest_Click(object sender, EventArgs e)
+        {
+            Data.Commodity commodity = cmbCommodityRequest.SelectedItem as Data.Commodity;
+            if (commodity == null || string.IsNullOrEmpty(commodity.ID)) return;
+
+            var request = new CommodityRequested
+            {
+                Name = commodity.Name,
+                Requested = int.Parse(txtCommodityRequestQuantity.Text),
+                Delivered = 0
+            };
+            selectedColony.Commodities.Add(request);
+            populateCommodityRequestGrid();
+        }
+
+        private void txtCommodityRequestFilter_TextChanged(object sender, EventArgs e)
+        {
+            updateCommodityRequestList();
+            cmbCommodityRequest.DroppedDown = true;
+        }
+
+        private void updateCommodityRequestList()
+        {
+            string searchText = txtCommodityRequestFilter.Text;
+
+            List<Data.Commodity> filteredList = new List<Data.Commodity>(Data.Commodity.Commodities);
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(c => c.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .OrderBy(c => c.ExtendedName)
+                    .ToList();
+                filteredList.Insert(0, new Data.Commodity());
+            }
+
+            var bindingList = new BindingSource();
+            bindingList.DataSource = filteredList;
+
+            cmbCommodityRequest.DataSource = bindingList;
+            cmbCommodityRequest.ValueMember = "Name";
+            cmbCommodityRequest.DisplayMember = "ExtendedName";
+        }
+
+        private void populateCommodityRequestGrid()
+        {
+            dgvCommodityRequests.Rows.Clear();
+            foreach (CommodityRequested request in selectedColony.Commodities)
+            {
+                dgvCommodityRequests.Rows.Add();
+                DataGridViewRow row = dgvCommodityRequests.Rows[dgvCommodityRequests.RowCount - 2];
+                row.Tag = request;
+                row.Cells[0].Value = request.Name;
+                row.Cells[1].Value = request.Requested;
+            }
+        }
+
+        private void dgvCommodityRequests_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            DataGridViewRow row = dgvCommodityRequests.Rows[e.RowIndex];
+            CommodityRequested request = row.Tag as CommodityRequested;
+            if (request == null) return;
+
+            // Column 1 = Amount (Requested)
+            if (e.ColumnIndex == 1)
+            {
+                int value;
+                if (int.TryParse(row.Cells[1].Value?.ToString(), out value))
+                    request.Requested = value;
+            }
+        }
+
+        private void dgvCommodityRequests_SelectionChanged(object sender, EventArgs e)
+        {
+            // Prevent the SelectionChanged event from triggering an error if the current cell is null
+            if (dgvCommodityRequests.CurrentCell == null)
+                return;
+
+            // Check if the current cell is not in the "Amount" column.
+            if (dgvCommodityRequests.Columns[dgvCommodityRequests.CurrentCell.ColumnIndex].Name != "Amount")
+            {
+                // Programmatically deselect the cell
+                dgvCommodityRequests.CurrentCell.Selected = false;
+
+                // Focus the "Amount" cell in the same row, if it exists.
+                if (dgvCommodityRequests.Rows[dgvCommodityRequests.CurrentCell.RowIndex].Cells.Count > 1)
+                {
+                    dgvCommodityRequests.CurrentCell = dgvCommodityRequests.Rows[dgvCommodityRequests.CurrentCell.RowIndex].Cells[1];
                 }
             }
         }
