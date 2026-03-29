@@ -217,6 +217,7 @@
     <Compile Include="Data\ItemTypeTests.cs" />
     <Compile Include="Data\PlayerProfileTests.cs" />
     <Compile Include="Data\ResourceGroupTests.cs" />
+    <Compile Include="Data\ResourcePurityTests.cs" />
     <Compile Include="Data\LockTrackingTests.cs" />
     <None Include="app.config" />
     <None Include="packages.config" />
