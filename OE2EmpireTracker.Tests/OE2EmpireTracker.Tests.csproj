@@ -212,8 +212,9 @@
     <Compile Include="Blueprint\BlueprintScannerTests.cs" />
     <Compile Include="Data\CommodityTests.cs" />
     <Compile Include="Data\CountDownTimeTests.cs" />
-    <Compile Include="Data\ItemTests.cs" />
     <Compile Include="Data\ItemBagTests.cs" />
+    <Compile Include="Data\ItemTests.cs" />
+    <Compile Include="Data\ItemTypeTests.cs" />
     <Compile Include="Data\LockTrackingTests.cs" />
     <None Include="app.config" />
     <None Include="packages.config" />
