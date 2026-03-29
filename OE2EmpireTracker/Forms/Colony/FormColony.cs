@@ -157,8 +157,7 @@ namespace OE2EmpireTracker.Forms.Colony
             int index = 0;
             foreach (Control c in flpColonyStructure.Controls)
             {
-                controlIndexMap[c] = index;
-                index++;
+                controlIndexMap[c] = index++;
             }
 
             // Reorder and update existing controls to match selectedColony.Structures order
@@ -172,12 +171,15 @@ namespace OE2EmpireTracker.Forms.Colony
                     ctrl = new ColonyStructure();
                     ctrl.Colony = selectedColony;
                     ctrl.ColonyStructureData = structure;
+                    ctrl.ColonyStructureDataChanged -= structures_ColonyStructureDataChanged;
                     ctrl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
                     flpColonyStructure.Controls.Add(ctrl);
+                    // New control goes to end; SetChildIndex will move it into place
+                    controlIndexMap[ctrl] = flpColonyStructure.Controls.Count - 1;
                 }
                 // Move to correct position without removing/re-adding
-                index = controlIndexMap[ctrl];
-                if (index != i)
+                int currentIndex;
+                if (controlIndexMap.TryGetValue(ctrl, out currentIndex) && currentIndex != i)
                 {
                     flpColonyStructure.Controls.SetChildIndex(ctrl, i);
                 }
@@ -384,6 +386,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 }
                 //colonyStructureControl.Visible = false;
                 //colonyStructureControl.SuspendLayout();
+                colonyStructureControl.ColonyStructureDataChanged -= structures_ColonyStructureDataChanged;
                 colonyStructureControl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
                 colonyStructureControl.Colony = selectedColony;
                 colonyStructureControl.ColonyStructureData = structure;

@@ -101,10 +101,10 @@ namespace OE2EmpireTracker.Baseline
                     count++;
                     StructureCounts[FlatpackBlueprint.BluePrintType] = count;
                     structure.gameSequence = count;
-                } 
+                }
 
                 ColonyStructureStatus currentStatus = new ColonyStructureStatus();
-                CalculateBuilt(structure, previousStatus, currentStatus, workers);
+                CalculateBuilt(structure, previousStatus, currentStatus, workers, FlatpackBlueprint);
                 structure.Statuses["Actual"] = currentStatus;
                 previousStatus = currentStatus;
             }
@@ -119,15 +119,16 @@ namespace OE2EmpireTracker.Baseline
 
             foreach (ColonyStructure structure in colony.Structures)
             {
+                Data.Blueprint FlatpackBlueprint = playerContext.findBlueprint(structure.FlatpackBlueprintUUID);
                 ColonyStructureStatus currentStatus = new ColonyStructureStatus();
-                CalculateBuilt(structure, previousStatus, currentStatus, workers);
+                CalculateBuilt(structure, previousStatus, currentStatus, workers, FlatpackBlueprint);
                 structure.Statuses["Ideal"] = currentStatus;
                 previousStatus = currentStatus;
             }
             finalIdealStatus = previousStatus;
         }
 
-        public void CalculateBuilt(ColonyStructure structure, ColonyStructureStatus prevStatus, ColonyStructureStatus status, IColonyStructureWorkers workerSource)
+        public void CalculateBuilt(ColonyStructure structure, ColonyStructureStatus prevStatus, ColonyStructureStatus status, IColonyStructureWorkers workerSource, Data.Blueprint flatpackBlueprint)
         {
             // Aggregators for resource stats
             double builtPowerProvided = prevStatus.PowerProvided;
@@ -154,8 +155,6 @@ namespace OE2EmpireTracker.Baseline
             {
                 structure.UUID = Guid.NewGuid().ToString();
             }
-
-            Data.Blueprint flatpackBlueprint = playerContext.findBlueprint(structure.FlatpackBlueprintUUID);
 
             bool built = false;
             bool staged = false;
@@ -332,6 +331,7 @@ namespace OE2EmpireTracker.Baseline
         {
             private readonly StringBuilder _sb = new StringBuilder();
             private readonly List<Color> _colorTable = new List<Color>();
+            private readonly Dictionary<Color, int> _colorIndex = new Dictionary<Color, int>();
 
             public RtfBuilder()
             {
@@ -341,11 +341,12 @@ namespace OE2EmpireTracker.Baseline
 
             private int GetColorIndex(Color color)
             {
-                int idx = _colorTable.IndexOf(color);
-                if (idx < 0)
+                int idx;
+                if (!_colorIndex.TryGetValue(color, out idx))
                 {
                     _colorTable.Add(color);
                     idx = _colorTable.Count - 1;
+                    _colorIndex[color] = idx;
                 }
                 return idx;
             }

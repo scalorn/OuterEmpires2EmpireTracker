@@ -71,16 +71,8 @@ namespace OE2EmpireTracker.Data
         }
         public bool setProperty(string name, string value)
         {
-            bool present = false;
-            // Write the value so the UI knows what to do.
-            if (Properties.ContainsKey(name))
-            {
-                present = true;
-                Properties.Remove(name);
-            }
-            Properties.Add(name, value);
-
-            return present;
+            Properties[name] = value;
+            return true;
         }
         public bool Remove(string name)
         {

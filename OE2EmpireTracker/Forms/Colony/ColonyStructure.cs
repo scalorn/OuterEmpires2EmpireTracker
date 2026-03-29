@@ -239,7 +239,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 ColonyStructureData.Statuses.TryGetValue("Ideal", out ColonyStructureStatus idealStatus);
                 if (idealStatus != null)
                 {
-                    rtbStatus.AppendText("\n");
+                    builder.Append("\n", Color.Black);
                     ColonyStatusCalculator.populateStatus(builder, idealStatus);
                 }
             }
