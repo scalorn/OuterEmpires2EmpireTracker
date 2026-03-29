@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Amazon.Runtime.Internal.Transform;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -16,6 +18,25 @@ namespace OE2EmpireTracker.Forms.Blueprint
 {
     public class BlueprintScanner
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+        private static Dictionary<string, string> PropertyRemap = new Dictionary<string, string>()
+        {
+            { "Manufacture Run Time", "ManufactureTime" },
+            { "Cargo Volume Size", "CargoVolumeSize" },
+            { "Power Generated", "PowerGenerated" },
+            { "Health (Hitpoints)", "Health" },
+            { "Eng. Capacity Required", "EngCapacityRequired" },
+            { "Power regeneration rate", "PowerRegenerationRate" },
+            { "Wear and Tear Rate", "WearAndTearRate" },
+            { "Maximum Damage Repair %", "MaximumDamageRepairRate" }
+        };
+
+        private static Dictionary<string, string> BPTypeImageRemap = new Dictionary<string, string>()
+        {
+            { "0f3e805217c98030f0c5.png", "Reactor" }
+        };
+
         /// <summary>
         /// Handles the click event for the Import button.
         /// </summary>
@@ -24,8 +45,8 @@ namespace OE2EmpireTracker.Forms.Blueprint
         /// <remarks>
         /// Checks if clipboard contains HTML text and retrieves it for import operations.
         /// The HTML fragment is extracted from clipboard data which typically includes
-        // start/end fragment markers. Currently commented out - can be re-enabled when needed.
-        /// </remarks>
+            // start/end fragment markers. Currently commented out - can be re-enabled when needed.
+            /// </remarks>
         public void processClipboard(Data.Blueprint blueprint)
         {
             String returnHtmlText = null;
@@ -35,7 +56,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                 string output = $@"@""{returnHtmlText.Replace("\"", "\"\"")}""";
                 //output = $@"@""{output.Replace("\n", "\"\n")}""";
                 //output = $@"@""{output.Replace("\r", "\"\r")}""";
-                Debug.Print(output);
+                Log.Info(output);
                 //string html = ExtractHtmlFragmentFromClipboardData(returnHtmlText);
                 processHtml(blueprint, returnHtmlText);
             }
@@ -64,6 +85,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                 doc.Load(sgmlReader);
 
                 // Extract title / evolution / tech level / description
+                XmlNode evoLeftNode = doc.SelectSingleNode("//div[contains(@class,'EvolutionLeft')]");
                 XmlNode titleNode = doc.SelectSingleNode("//div[contains(@class,'SmallSlideOut_Form_Row_Text_Bold')]");
                 XmlNode evoNode = doc.SelectSingleNode("//div[contains(@class,'EvolutionNumber')]");
                 XmlNode descNode = doc.SelectSingleNode("//div[contains(@class,'SmallSlideOut_Form_Row_Description')]");
@@ -77,6 +99,30 @@ namespace OE2EmpireTracker.Forms.Blueprint
                 // Populate blueprint name, evolution, techlevel and description if available
                 try
                 {
+                    if (evoLeftNode != null)
+                    {
+                        string bpTypeImage = "";
+                        foreach (XmlAttribute attr in evoLeftNode.Attributes)
+                        {
+                            //Log.Info("attr.innerText = " + attr.InnerText);
+                            //Log.Info("attr.innerXml = " + attr.InnerXml);
+                            string innerXml = attr.InnerXml;
+                            var match = Regex.Match(innerXml, @"background:\s*url\([""']?([^""')]+)[""']?\)");
+                            if (match.Success)
+                            {
+                                bpTypeImage = match.Groups[1].Value;
+                            }
+                        }
+                        string bpType;
+                        if(BPTypeImageRemap.TryGetValue(bpTypeImage, out bpType))
+                        {
+                            blueprint.BluePrintType = bpType;
+                        } else
+                        {
+                            Log.Info("Unknown Background Type Image = " + bpTypeImage);
+                        }
+                    }
+
                     // Evolution
                     if (evoNode != null && int.TryParse(evoNode.InnerText.Trim(), out int evo))
                     {
@@ -115,7 +161,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                 }
                 catch (Exception ex)
                 {
-                    Debug.Print("Error extracting blueprint metadata: " + ex.Message);
+                    Log.Error("Error extracting blueprint metadata: " + ex.Message);
                 }
 
                 // Populate blueprint properties from propNodes
@@ -129,7 +175,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                         }
                         else
                         {
-                            blueprint.Properties.Clear();
+                            //blueprint.Properties.Clear();
                         }
 
                         foreach (XmlNode prop in propNodes)
@@ -157,15 +203,30 @@ namespace OE2EmpireTracker.Forms.Blueprint
                                 // Remove inline delta text like "(▲ 435)" or "(▼ -9)"
                                 rawValue = Regex.Replace(rawValue, "\\(.*?\\)", "").Trim();
 
-                                blueprint.Properties.setProperty(key, rawValue);
-                                Debug.Print($"Extracted property: {key} = {rawValue}");
+                                string remapKey = key;
+                                if (!PropertyRemap.TryGetValue(key, out remapKey)) {
+                                    // If no remap defined, use original key with whitespace removed for consistency
+                                    remapKey = key;
+                                }
+
+                                blueprint.Properties.setProperty(remapKey, rawValue);
+                                Log.Info($"Extracted property: {remapKey} = {rawValue}");
                             }
                         }
+
+                        // Remap properties.
+                        string equipClass;
+                        blueprint.Properties.getString("Class", null, out equipClass);
+                        if (equipClass != null)
+                        {
+                            blueprint.Class = int.Parse(equipClass);
+                        }
+
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.Print("Error extracting blueprint properties: " + ex.Message);
+                    Log.Error("Error extracting blueprint properties: " + ex.Message);
                 }
 
                 if (blueprint.Resources == null)
@@ -193,12 +254,12 @@ namespace OE2EmpireTracker.Forms.Blueprint
 
                     // Store into blueprint resource dictionary. Key = resource name, Value = quantity string
                     blueprint.Resources[name] = qtyNormalized;
-                    Debug.Print($"Extracted resource: {name} = {qtyNormalized}");
+                    Log.Info($"Extracted resource: {name} = {qtyNormalized}");
                 }
             }
             catch (Exception ex)
             {
-                Debug.Print("Error parsing blueprint HTML fragment: " + ex.Message);
+                Log.Info("Error parsing blueprint HTML fragment: " + ex.Message);
             }
         }
 
@@ -293,7 +354,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
             // Debug: Print inner text of each node
             foreach (XmlNode item in doc)
             {
-                Debug.Print("T = " + item.InnerText);
+                Log.Info("T = " + item.InnerText);
                 if (item.HasChildNodes)
                 {
                     children(0, item.ChildNodes);
@@ -314,7 +375,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
         {
             foreach (XmlNode item in nodes)
             {
-                Debug.Print("C" + depth + " = " + item.InnerText);
+                Log.Info("C" + depth + " = " + item.InnerText);
                 if (item.HasChildNodes)
                 {
                     children((depth + 1), item.ChildNodes);

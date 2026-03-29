@@ -92,7 +92,9 @@
     },
     {
       "Id": "Reactor",
-      "Name": "Reactor"
+      "Name": "Reactor",
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerGenerated", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "PowerRegenerationRate" ],
+      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "PowerGenerated", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "PowerRegenerationRate" ]
     },
     {
       "Id": "Shield",
