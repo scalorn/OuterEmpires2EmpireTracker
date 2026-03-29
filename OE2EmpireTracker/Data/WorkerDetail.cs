@@ -34,6 +34,7 @@ namespace OE2EmpireTracker.Data
         {
             return new List<WorkerDetail>
             {
+                new WorkerDetail { ID = "",   Name = ""   },
                 new WorkerDetail { ID = "BlueCollarDetail",   Name = "Blue Collar Detail"   },
                 new WorkerDetail { ID = "WhiteCollarDetail",  Name = "White Collar Detail"  },
                 new WorkerDetail { ID = "SpecialistDetail",   Name = "Specialist Detail"    },

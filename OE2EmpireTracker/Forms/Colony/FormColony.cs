@@ -521,6 +521,10 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     populateItemWithCommodities();
                 }
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.WorkDetail)
+                {
+                    populateItemWithWorkerDetails();
+                }
             }
         }
 
@@ -562,6 +566,15 @@ namespace OE2EmpireTracker.Forms.Colony
                     {
                         item.BaseItemTypeID = commodity.Name;
                         item.Name = commodity.Name;
+                    }
+                }
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.WorkDetail)
+                {
+                    Data.WorkerDetail workerDetail = cmbItem.SelectedItem as Data.WorkerDetail;
+                    if (workerDetail != null)
+                    {
+                        item.BaseItemTypeID = workerDetail.ID;
+                        item.Name = workerDetail.Name;
                     }
                 }
 
@@ -633,8 +646,34 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     populateItemWithCommodities();
                 }
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.WorkDetail)
+                {
+                    populateItemWithWorkerDetails();
+                }
             }
             cmbItem.DroppedDown = true;
+        }
+
+        public void populateItemWithWorkerDetails()
+        {
+            string searchText = txtItemFilter.Text;
+
+            List<WorkerDetail> filteredList = new List<WorkerDetail>(Data.WorkerDetail.WorkerDetails);
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(item => item.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .OrderBy(p => p.Name)
+                    .ToList();
+                filteredList.Insert(0, new WorkerDetail());
+            }
+
+            var bindingList = new BindingSource();
+            bindingList.DataSource = filteredList;
+
+            cmbItem.DataSource = bindingList;
+            cmbItem.ValueMember = "ID";
+            cmbItem.DisplayMember = "Name";
         }
 
         public void populateItemWithCommodities()
