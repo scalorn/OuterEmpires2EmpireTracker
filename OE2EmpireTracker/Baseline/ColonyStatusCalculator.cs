@@ -1,4 +1,5 @@
 ﻿using Amazon.Runtime.Internal.Transform;
+using NLog;
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Controls;
 using System;
@@ -23,6 +24,8 @@ namespace OE2EmpireTracker.Baseline
     /// </remarks>
     public class ColonyStatusCalculator
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// The global context for the empire tracker instance. Used to access game engine states.
         /// </summary>
