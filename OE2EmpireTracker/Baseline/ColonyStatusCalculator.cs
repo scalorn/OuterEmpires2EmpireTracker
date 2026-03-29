@@ -1,5 +1,6 @@
 ﻿using Amazon.Runtime.Internal.Transform;
 using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Controls;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -324,63 +325,6 @@ namespace OE2EmpireTracker.Baseline
         }
 
         /// <summary>
-        /// Builds an RTF document string from colored text runs.
-        /// Assign the result to RichTextBox.Rtf to update the control in a single operation.
-        /// </summary>
-        public class RtfBuilder
-        {
-            private readonly StringBuilder _sb = new StringBuilder();
-            private readonly List<Color> _colorTable = new List<Color>();
-            private readonly Dictionary<Color, int> _colorIndex = new Dictionary<Color, int>();
-
-            public RtfBuilder()
-            {
-                // Seed with a placeholder so color indices are 1-based
-                _colorTable.Add(Color.Empty);
-            }
-
-            private int GetColorIndex(Color color)
-            {
-                int idx;
-                if (!_colorIndex.TryGetValue(color, out idx))
-                {
-                    _colorTable.Add(color);
-                    idx = _colorTable.Count - 1;
-                    _colorIndex[color] = idx;
-                }
-                return idx;
-            }
-
-            public void Append(string text, Color color)
-            {
-                if (string.IsNullOrEmpty(text)) return;
-                int idx = GetColorIndex(color);
-                // Escape RTF special characters
-                string escaped = text
-                    .Replace("\\", "\\\\")
-                    .Replace("{", "\\{")
-                    .Replace("}", "\\}")
-                    .Replace("\n", "\\line ");
-                _sb.Append(@"\cf").Append(idx).Append(' ').Append(escaped);
-            }
-
-            public string ToRtf()
-            {
-                // Build color table header
-                var header = new StringBuilder();
-                header.Append(@"{\rtf1\ansi{\colortbl;");
-                foreach (Color c in _colorTable.Skip(1))
-                {
-                    header.Append($@"\red{c.R}\green{c.G}\blue{c.B};");
-                }
-                header.Append('}');
-                header.Append(_sb);
-                header.Append('}');
-                return header.ToString();
-            }
-        }
-
-        /// <summary>
         /// Populates a RichTextBox with the colony status summary in a single RTF assignment.
         /// </summary>
         public static void populateStatus(RtfBuilder builder, ColonyStructureStatus status)
@@ -407,57 +351,5 @@ namespace OE2EmpireTracker.Baseline
             builder.Append("/", Color.Black);
             builder.Append("" + provided, Color.Black);
         }
-
-        /// <summary>
-        /// Appends colored text to a RichTextBox. Prefer building an RtfBuilder and
-        /// assigning Rtf once for better performance when appending multiple runs.
-        /// </summary>
-        public static void AppendColoredTextOLD(RichTextBox box, string text, Color color)
-        {
-            box.SelectionStart = box.TextLength;
-            box.SelectionLength = 0;
-            box.SelectionColor = color;
-            box.AppendText(text);
-            box.SelectionColor = box.ForeColor;
-        }
-    }
-}
-
-public class ColonyWorker
-{
-    /// <summary>
-    /// Represents a single worker unit assigned to a colony structure.
-    /// Used for tracking labor capacity within the <see cref="ColonyStatusCalculator"/>.
-    /// </summary>
-
-    /// <summary>
-    /// The structure that this worker is currently assigned to.
-    /// Holds the structural context (building UUID, blueprint reference, etc.).
-    /// </summary>
-    public ColonyStructure Structure { get; set; }
-
-    /// <summary>
-    /// Categorization of the worker role (e.g., "BlueCollar1", "WhiteCollar1", "Specialist").
-    /// This string helps identify what job function the worker performs.
-    /// </summary>
-    public string WorkerType { get; set; }
-
-    /// <summary>
-    /// Indicates if this worker slot is currently active/assigned to a task.
-    /// Used to distinguish between potential slots and actual labor being performed.
-    /// </summary>
-    public bool Assigned { get; set; }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ColonyWorker"/> class.
-    /// </summary>
-    /// <param name="structure">The structure entity the worker belongs to.</param>
-    /// <param name="workerType">Identifier for the role (e.g., "BlueCollar1").</param>
-    /// <param name="assigned">Current state of assignment (true = assigned).</param>
-    public ColonyWorker(ColonyStructure structure, string workerType, bool assigned)
-    {
-        Structure = structure;
-        WorkerType = workerType;
-        Assigned = assigned;
     }
 }

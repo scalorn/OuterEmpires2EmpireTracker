@@ -1,4 +1,5 @@
 ﻿using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Data;
 using System;
 using System.Collections;
@@ -14,7 +15,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using System.Xml.Linq;
-using static OE2EmpireTracker.Baseline.ColonyStatusCalculator;
 
 namespace OE2EmpireTracker.Forms.Colony
 {

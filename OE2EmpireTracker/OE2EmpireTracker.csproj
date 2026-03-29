@@ -118,11 +118,13 @@
     <Compile Include="Baseline\Colony.cs" />
     <Compile Include="Baseline\ColonyStatusCalculator.cs" />
     <Compile Include="Baseline\ColonyStructureStatus.cs" />
+    <Compile Include="Baseline\ColonyWorker.cs" />
     <Compile Include="Baseline\IColonyStructureWorkers.cs" />
     <Compile Include="Baseline\PlayerContext.cs" />
     <Compile Include="Baseline\TechLevel.cs" />
     <Compile Include="Baseline\EmpireContext.cs" />
     <Compile Include="Controls\DataGridViewValidatedTextBoxColumn.cs" />
+    <Compile Include="Controls\RtfBuilder.cs" />
     <Compile Include="Data\Commodity.cs" />
     <Compile Include="Data\CommodityGroup.cs" />
     <Compile Include="Data\CommodityIndustry.cs" />
