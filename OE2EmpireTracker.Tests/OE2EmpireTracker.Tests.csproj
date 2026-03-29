@@ -210,6 +210,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Blueprint\BlueprintScannerTests.cs" />
+    <Compile Include="Data\LockTrackingTests.cs" />
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
