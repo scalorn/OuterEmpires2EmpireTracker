@@ -525,6 +525,10 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     populateItemWithWorkerDetails();
                 }
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.Survey)
+                {
+                    populateItemWithSurveys();
+                }
             }
         }
 
@@ -575,6 +579,15 @@ namespace OE2EmpireTracker.Forms.Colony
                     {
                         item.BaseItemTypeID = workerDetail.ID;
                         item.Name = workerDetail.Name;
+                    }
+                }
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.Survey)
+                {
+                    Baseline.Survey survey = cmbItem.SelectedItem as Baseline.Survey;
+                    if (survey != null)
+                    {
+                        item.BaseItemTypeID = survey.UUID;
+                        item.Name = survey.Name;
                     }
                 }
 
@@ -650,8 +663,35 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     populateItemWithWorkerDetails();
                 }
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.Survey)
+                {
+                    populateItemWithSurveys();
+                }
             }
             cmbItem.DroppedDown = true;
+        }
+
+        public void populateItemWithSurveys()
+        {
+            string searchText = txtItemFilter.Text;
+
+            List<Baseline.Survey> filteredList = new List<Baseline.Survey>(playerContext.surveyList);
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(s => s.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0
+                             || s.PlanetName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .OrderBy(s => s.PlanetName)
+                    .ToList();
+            }
+            filteredList.Insert(0, new Baseline.Survey());
+
+            var bindingList = new BindingSource();
+            bindingList.DataSource = filteredList;
+
+            cmbItem.DataSource = bindingList;
+            cmbItem.ValueMember = "UUID";
+            cmbItem.DisplayMember = "ExtendedName";
         }
 
         public void populateItemWithWorkerDetails()

@@ -16,6 +16,29 @@ namespace OE2EmpireTracker.Baseline
         public string ScannerBlueprintUUID { get; set; }
         public Dictionary<string, string> Properties { get; set; }
         public Dictionary<string, SurveyResource> Resources { get; set; }
+
+        public override string ExtendedName
+        {
+            get
+            {
+                string extendedName = "";
+                if (!string.IsNullOrEmpty(PlanetName))
+                {
+                    extendedName += $"{PlanetName}";
+                }
+                if (!string.IsNullOrEmpty(SurveyID))
+                {
+                    extendedName += $" ({SurveyID})";
+                }
+                if (!string.IsNullOrEmpty(NickName))
+                {
+                    extendedName += $" [{NickName}]";
+                }
+                return extendedName;
+            }
+        }
+
+
         public Survey(string name /*, int quantity*/) : base(Data.ItemType.ItemTypeEnum.Survey, name /* , quantity */)
         {
             Properties = new Dictionary<string, string>();

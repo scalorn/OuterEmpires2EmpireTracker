@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
+using OE2EmpireTracker.Baseline;
 
 namespace OE2EmpireTracker.Data
 {
@@ -37,6 +38,18 @@ namespace OE2EmpireTracker.Data
                     if (commodity != null)
                     {
                         extendedName = commodity.ExtendedName;
+                    }
+                }
+                if (ItemType == Data.ItemType.ItemTypeEnum.Survey)
+                {
+                    Survey survey = EmpireContext.PlayerContext?.findSurvey(BaseItemTypeID);
+                    if (survey != null)
+                    {
+                        extendedName = $"{survey.PlanetName} ({survey.SurveyID})";
+                        if (!string.IsNullOrEmpty(survey.NickName))
+                        {
+                            extendedName += $" [{survey.NickName}]";
+                        }
                     }
                 }
                 return extendedName;
