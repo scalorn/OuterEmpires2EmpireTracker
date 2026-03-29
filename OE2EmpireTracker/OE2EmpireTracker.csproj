@@ -165,6 +165,7 @@
     <Compile Include="Controls\ValidatedTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Data\WorkerDetail.cs" />
     <Compile Include="Data\Blueprint.cs" />
     <Compile Include="Data\ItemProperty.cs" />
     <Compile Include="Data\ItemType.cs" />
