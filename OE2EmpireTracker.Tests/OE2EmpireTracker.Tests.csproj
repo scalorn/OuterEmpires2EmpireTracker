@@ -225,6 +225,7 @@
     <Compile Include="Data\ResourcePurityTests.cs" />
     <Compile Include="Data\WorkerDetailTests.cs" />
     <Compile Include="Data\LockTrackingTests.cs" />
+    <Compile Include="Controls\ValidatedTextBoxTests.cs" />
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>

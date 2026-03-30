@@ -26,8 +26,11 @@ namespace OE2EmpireTracker.Forms.Colony
         public Baseline.Colony Colony { get; set; }
         public Baseline.ColonyStructure ColonyStructureData { get; set; }
         private Data.Blueprint FlatpackBlueprint { get; set; }
-        private double PowerProvided { get; set; }
-        private double PowerRequired { get; set; }
+        //private double PowerProvided { get; set; }
+        //private double PowerRequired { get; set; }
+
+        public string MiningSurvey { get; set; }
+        public string MiningSurveyResource { get; set; }
 
         [Browsable(true)]
         [Category("Action")]
@@ -58,8 +61,8 @@ namespace OE2EmpireTracker.Forms.Colony
                 double powerRequired = 0;
                 FlatpackBlueprint.Properties.getDouble("PowerRequired", 0, out powerRequired);
 
-                PowerProvided = powerProvided;
-                PowerRequired = powerRequired;
+                //PowerProvided = powerProvided;
+                //PowerRequired = powerRequired;
 
                 Log.Info("FlatpackBlueprint.BluePrintType = " + FlatpackBlueprint.BluePrintType);
                 if (FlatpackBlueprint.BluePrintType == "Flatpacks/MiningRig")

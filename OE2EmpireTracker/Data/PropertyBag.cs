@@ -30,6 +30,10 @@ namespace OE2EmpireTracker.Data
             {
                 ret = Double.TryParse(valueStr, out value);
             }
+            if (!ret)
+            {
+                value = defaultValue;
+            }
             return ret;
         }
         public bool getLong(string name, long defaultValue, out long value)
@@ -58,7 +62,12 @@ namespace OE2EmpireTracker.Data
         public bool getString(string name, string defaultValue, out string value)
         {
             value = defaultValue;
-            return Properties.TryGetValue(name, out value);
+            bool ret = Properties.TryGetValue(name, out value);
+            if (!ret)
+            {
+                value = defaultValue;
+            }
+            return ret;
         }
 
         public bool setProperty(string name, double value)

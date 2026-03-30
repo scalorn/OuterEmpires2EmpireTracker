@@ -17,7 +17,7 @@ namespace OE2EmpireTracker.Controls
     {
         #region Properties
 
-        private bool _allowSpaces = false;
+        private bool _allowSpaces = true;
         private bool _autoFormat = true;
         private Regex _validationRegex;
         private string _validationErrorPattern;
@@ -70,6 +70,13 @@ namespace OE2EmpireTracker.Controls
         }
 
         #endregion
+
+        #region Constants
+        public static string EMAIL_VALIDATION = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+        public static string DECIMAL_VALIDATION = @"^[+-]?\d+$";
+        public static string NUMBER_VALIDATION = @"^[+-]?\d+$";
+        #endregion
+
 
         #region Constructor & Initialization
 
@@ -188,11 +195,15 @@ namespace OE2EmpireTracker.Controls
             Invalidate();
         }
 
-        private bool HasInvalidCharacter(char c)
+        public bool HasInvalidCharacter(char c)
         {
             if (c == '\r') return false;
 
             var allowedChars = ValidationPattern ?? string.Empty;
+            if (string.IsNullOrEmpty(allowedChars))
+            {
+                return false;
+            }
             return !allowedChars.Contains(c);
         }
     }

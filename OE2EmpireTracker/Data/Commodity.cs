@@ -2586,7 +2586,7 @@ namespace OE2EmpireTracker.Data
             instance.Sort((x, y) => x.Name.CompareTo(y.Name));
 
             // Make sure the blank none entry is first.
-            instance.Insert(0, new Commodity() { CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.None,  ID = "", Name = ""});
+            //instance.Insert(0, new Commodity() { CommodityIndustry = Data.CommodityIndustry.CommodityIndustryEnum.None,  ID = "", Name = ""});
 
             _commodityMapByEnum = new Dictionary<string, Commodity>();
             _commodityMapByString = new Dictionary<string, Commodity>();

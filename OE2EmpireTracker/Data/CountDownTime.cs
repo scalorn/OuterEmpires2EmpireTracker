@@ -34,7 +34,7 @@ namespace OE2EmpireTracker.Data
                 if (timeSpan.Days > 0) { 
                     timeString = $"{(int)timeSpan.Days}d";
                 }
-                if (timeSpan.Hours < 24)
+                if (timeSpan.Hours < 24 && timeSpan.Hours > 0)
                 {
                     if (timeString.Length > 0)
                     {
@@ -42,7 +42,7 @@ namespace OE2EmpireTracker.Data
                     }
                     timeString += $"{(int)timeSpan.Hours}h";
                 }
-                if (timeSpan.Minutes < 60)
+                if (timeSpan.Minutes < 60 && timeSpan.Minutes > 0)
                 {
                     if (timeString.Length > 0)
                     {
@@ -50,7 +50,7 @@ namespace OE2EmpireTracker.Data
                     }
                     timeString += $"{(int)timeSpan.Minutes}m";
                 }
-                if (timeSpan.Seconds < 60)
+                if (timeSpan.Seconds < 60 && timeSpan.Seconds > 0)
                 {
                     if (timeString.Length > 0)
                     {

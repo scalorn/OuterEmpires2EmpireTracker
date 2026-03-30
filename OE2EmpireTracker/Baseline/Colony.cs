@@ -47,7 +47,7 @@ namespace OE2EmpireTracker.Baseline
         public int WorkersAssigned { get; set; }
 
         DateTime completion { get; set; }
-        public string CurrentAttitude { get; set; }
+        public string CurrentAttitude { get; set; } = string.Empty;
         public int ContentmentIndex { get; set; }
 
         public int WageLevel { get; set; }
