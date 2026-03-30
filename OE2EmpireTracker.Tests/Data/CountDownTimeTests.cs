@@ -173,5 +173,60 @@ namespace OE2EmpireTracker.Tests.Data
             StringAssert.Contains("4h", result);
             StringAssert.Contains("15m", result);
         }
+
+        [Test]
+        public void StartRepeating_SetsRepeatIntervalAndNextInterval()
+        {
+            var cdt = new CountDownTime();
+            cdt.StartRepeating(60);
+
+            Assert.IsTrue(cdt.IsRepeating);
+            Assert.AreEqual(60, cdt.RepeatIntervalSeconds);
+            Assert.That(cdt.TimeRemaining, Is.InRange(58L, 60L));
+        }
+
+        [Test]
+        public void TimeRemaining_RepeatingTimer_ReturnsSecondsUntilNextIntervalBoundary()
+        {
+            var cdt = new CountDownTime();
+            cdt.StartRepeating(60, 10);
+
+            Assert.That(cdt.TimeRemaining, Is.InRange(8L, 10L));
+            Assert.AreEqual(60, cdt.RepeatIntervalSeconds);
+        }
+
+        [Test]
+        public void IntervalsPassed_ReturnsFullIntervalsSinceStart()
+        {
+            var cdt = new CountDownTime();
+            cdt.StartRepeating(60);
+            cdt.StartTime = DateTime.Now.AddSeconds(-300);
+
+            Assert.AreEqual(5, cdt.IntervalsPassed);
+        }
+
+        [Test]
+        public void ConsumeIntervals_AdvancesStartTimeAndReducesPassedIntervals()
+        {
+            var cdt = new CountDownTime();
+            cdt.StartRepeating(60);
+            cdt.StartTime = DateTime.Now.AddSeconds(-300);
+
+            Assert.AreEqual(5, cdt.IntervalsPassed);
+            cdt.ConsumeIntervals(2);
+            Assert.AreEqual(3, cdt.IntervalsPassed);
+        }
+
+        [Test]
+        public void ConsumeIntervals_DoesNotConsumeMoreThanPassed()
+        {
+            var cdt = new CountDownTime();
+            cdt.StartRepeating(60);
+            cdt.StartTime = DateTime.Now.AddSeconds(-90);
+
+            Assert.AreEqual(1, cdt.IntervalsPassed);
+            cdt.ConsumeIntervals(5);
+            Assert.AreEqual(0, cdt.IntervalsPassed);
+        }
     }
 }
