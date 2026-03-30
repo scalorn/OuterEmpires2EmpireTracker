@@ -15,7 +15,7 @@ namespace OE2EmpireTracker.Baseline
     public class PlayerContext
     {
         private static PlayerContext Instance;
-        private static string filePath = @"..\..\PlayerData.json";
+        public static string FilePath { get; set; } = @"..\..\PlayerData.json";
 
         public BindingList<PlayerProfile> playerProfileList;
         public BindingSource bindingSourcePlayerProfile;
@@ -38,15 +38,21 @@ namespace OE2EmpireTracker.Baseline
             }
             return Instance;
         }
+
+        public static void Reset()
+        {
+            Instance = null;
+        }
+
         private PlayerContext() : base()
         {
             Instance = this;
 
             PlayerRoot playerRoot = null;
-            if (File.Exists(filePath))
+            if (File.Exists(FilePath))
             {
                 // Read the file content into a string
-                string jsonContent = File.ReadAllText(filePath);
+                string jsonContent = File.ReadAllText(FilePath);
                 playerRoot = JsonConvert.DeserializeObject<PlayerRoot>(jsonContent);
             }
             else
@@ -68,7 +74,7 @@ namespace OE2EmpireTracker.Baseline
             playerRoot.Colony = colonyList.ToArray();
 
             string jsonContent = JsonConvert.SerializeObject(playerRoot, Formatting.Indented);
-            File.WriteAllText(filePath, jsonContent);
+            File.WriteAllText(FilePath, jsonContent);
             Debug.Print("Player.WriteContext done");
         }
         public void initPlayerProfiles(PlayerRoot playerRoot)

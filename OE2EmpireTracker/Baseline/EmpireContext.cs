@@ -25,7 +25,7 @@ namespace OE2EmpireTracker.Baseline
     public class EmpireContext
     {
         private static EmpireContext Instance;
-        public static string filePath = @"..\..\BaselineData.json";
+        public static string FilePath { get; set; } = @"..\..\BaselineData.json";
 
         public static PlayerContext PlayerContext;
         public BindingList<BlueprintType> blueprintTypeList;
@@ -52,13 +52,20 @@ namespace OE2EmpireTracker.Baseline
             return Instance;
         }
 
+        public static void Reset()
+        {
+            Instance = null;
+            PlayerContext = null;
+            OE2EmpireTracker.Baseline.PlayerContext.Reset();
+        }
+
         private EmpireContext() : base()
         {
             Instance = this;
             PlayerContext = PlayerContext.getInstance();
 
             // Read the file content into a string
-            string jsonContent = File.ReadAllText(filePath);
+            string jsonContent = File.ReadAllText(FilePath);
             BaselineRoot baselineRoot = JsonConvert.DeserializeObject<BaselineRoot>(jsonContent);
 
             initBlueprintTypes(baselineRoot);
@@ -78,8 +85,8 @@ namespace OE2EmpireTracker.Baseline
             //baselineRoot.ResourcePurity = resourcePurityList.ToArray();
             //baselineRoot.Resource = resourceList.ToArray();
             baselineRoot.TechLevel = techLevelList.ToArray();
-        string jsonContent = JsonConvert.SerializeObject(baselineRoot, Formatting.Indented);
-            File.WriteAllText(filePath + ".new", jsonContent);
+            string jsonContent = JsonConvert.SerializeObject(baselineRoot, Formatting.Indented);
+            File.WriteAllText(FilePath + ".new", jsonContent);
         }
         public void initBlueprintTypes(BaselineRoot baselineRoot)
         {
