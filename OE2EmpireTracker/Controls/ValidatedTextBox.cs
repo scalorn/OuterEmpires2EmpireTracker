@@ -73,7 +73,7 @@ namespace OE2EmpireTracker.Controls
 
         #region Constants
         public static string EMAIL_VALIDATION = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-        public static string DECIMAL_VALIDATION = @"^[+-]?\d+$";
+        public static string DECIMAL_VALIDATION = @"^[+-]?\d+\.\d{2}$";
         public static string NUMBER_VALIDATION = @"^[+-]?\d+$";
         #endregion
 
