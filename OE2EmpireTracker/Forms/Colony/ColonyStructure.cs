@@ -1,4 +1,5 @@
-﻿using OE2EmpireTracker.Baseline;
+﻿using NLog;
+using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Data;
 using System;
@@ -17,6 +18,8 @@ namespace OE2EmpireTracker.Forms.Colony
 {
     public partial class ColonyStructure : UserControl
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private EmpireContext empireContext;
         private PlayerContext playerContext;
         private int _isProgrammaticUpdate = 0;
@@ -57,6 +60,17 @@ namespace OE2EmpireTracker.Forms.Colony
 
                 PowerProvided = powerProvided;
                 PowerRequired = powerRequired;
+
+                Log.Info("FlatpackBlueprint.BluePrintType = " + FlatpackBlueprint.BluePrintType);
+                if (FlatpackBlueprint.BluePrintType == "Flatpacks/MiningRig")
+                {
+                    handleMiningRigControls();
+                }
+                else {
+                    flpSelection.Visible = false;
+                    flpSubSelection.Visible = false;
+                    flpCompletionTime.Visible = false;
+                }
             }
 
             chkBuilt.Checked = false;
@@ -208,8 +222,106 @@ namespace OE2EmpireTracker.Forms.Colony
             }
 
             populateStats();
+
             this.ResumeLayout();
             guard.release();
+        }
+
+        private void handleMiningRigControls()
+        {
+            if (ColonyStructureData.CompletionTime != null)
+            {
+                flpSelection.Visible = true;
+                flpSubSelection.Visible = true;
+                flpCompletionTime.Visible = true;
+                txtCompletionTime.Text = ColonyStructureData.CompletionTime.TimeRemainingString;
+                timerCountdown.Interval = 1000;
+                timerCountdown.Start();
+            }
+            else
+            {
+                flpCompletionTime.Visible = false;
+                flpSelection.Visible = true;
+                cmdStart.Visible = false;
+                if (cmbSelection.SelectedItem != null)
+                {
+                    flpSubSelection.Visible = true;
+
+                    if (cmbSubSelection.Items.Count == 0)
+                    {
+                        populateSubSelectionWithResources();
+                    }
+
+                    if (cmbSubSelection.SelectedItem != null)
+                    {
+                        cmdSubStart.Visible = true;
+                    }
+                    else
+                    {
+                        cmdSubStart.Visible = false;
+                    }
+                }
+                else
+                {
+                    if (cmbSelection.Items.Count == 0)
+                    {
+                        populateSelectionWithSurveys();
+                    }
+                    flpSubSelection.Visible = false;
+                }
+            }
+        }
+
+        private void populateSelectionWithSurveys()
+        {
+            cmbSelection.Items.Clear();
+            string searchText = txtSelectionFilter.Text;
+            if (searchText == null)
+            {
+                searchText = ""; 
+            }
+
+            List<Baseline.Survey> filteredList = new List<Baseline.Survey>(playerContext.surveyList);
+
+            filteredList = filteredList
+                .Where(item => string.Equals(item.PlanetName, Colony.PlanetName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            filteredList = filteredList
+                .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                .ToList();
+
+            cmbSelection.DisplayMember = "ExtendedName";
+            cmbSelection.ValueMember = "UUID";
+            cmbSelection.DataSource = filteredList;
+            cmbSelection.SelectedIndex = -1;
+        }
+
+        private void populateSubSelectionWithResources()
+        {
+            cmbSubSelection.Items.Clear();
+            string searchText = txtSubSelectionFilter.Text;
+            if (searchText == null)
+            {
+                searchText = "";
+            }
+
+            Baseline.Survey survey = cmbSelection.SelectedItem as Baseline.Survey; 
+            if (survey == null)
+            {
+                return;
+            }
+
+            List<SurveyResource> filteredList = survey.Resources.Values.ToList<SurveyResource>();
+
+            filteredList = filteredList
+                .Where(item => item.Resource.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                .ToList();
+
+            cmbSubSelection.DisplayMember = "ExtendedName";
+            cmbSubSelection.ValueMember = "UUID";
+            cmbSubSelection.DataSource = filteredList;
+            cmbSubSelection.SelectedIndex = -1;
         }
 
         private void populateStats()
@@ -424,6 +536,62 @@ namespace OE2EmpireTracker.Forms.Colony
             Colony.Structures.RemoveAt(index);
             Colony.Structures.Insert(index + 1, ColonyStructureData);
             ColonyStructureDataChanged?.Invoke(this, e);
+        }
+
+        private void txtSelectionFilter_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmbSelection_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (FlatpackBlueprint != null)
+            {
+                if (FlatpackBlueprint.BluePrintType == "Flatpacks/MiningRig")
+                {
+                    handleMiningRigControls();
+                }
+            }
+        }
+
+        private void cmdStart_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtSubSelectionFilter_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmbSubSelection_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (FlatpackBlueprint != null)
+            {
+                if (FlatpackBlueprint.BluePrintType == "Flatpacks/MiningRig")
+                {
+                    handleMiningRigControls();
+                }
+            }
+        }
+
+        private void cmdSubStart_Click(object sender, EventArgs e)
+        {
+            // TODO: FIXME: This needs to be customized per type.
+            ColonyStructureData.CompletionTime = new CountDownTime();
+            ColonyStructureData.CompletionTime.StartTime = DateTime.Now;
+            ColonyStructureData.CompletionTime.TimeRemaining = 3600;
+            timerCountdown.Interval = 1000;
+            timerCountdown.Start();
+            handleMiningRigControls();
+        }
+
+        private void timerCountdown_Tick(object sender, EventArgs e)
+        {
+            if (ColonyStructureData.CompletionTime != null)
+            {
+                txtCompletionTime.Text = ColonyStructureData.CompletionTime.TimeRemainingString;
+            }
         }
     }
 }

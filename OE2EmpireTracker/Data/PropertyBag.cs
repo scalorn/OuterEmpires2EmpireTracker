@@ -86,6 +86,14 @@ namespace OE2EmpireTracker.Data
 
             return present;
         }
+
+        public int Count 
+        {
+            get
+            {
+                return Properties.Count;
+            }
+        }
         public void Clear()
         {
             Properties.Clear();

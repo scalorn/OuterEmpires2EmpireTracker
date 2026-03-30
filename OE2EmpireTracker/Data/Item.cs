@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -21,6 +22,7 @@ namespace OE2EmpireTracker.Data
         [Required]
         public virtual string Name { get; set; }= string.Empty;
 
+        [JsonIgnore]
         public virtual string ExtendedName { 
             get 
             {

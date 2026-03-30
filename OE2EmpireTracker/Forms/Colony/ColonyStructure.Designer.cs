@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.rtbStatus = new System.Windows.Forms.RichTextBox();
             this.flpColonyStructure = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
@@ -37,14 +38,19 @@
             this.cmdDown = new System.Windows.Forms.Button();
             this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel7 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel9 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.button3 = new System.Windows.Forms.Button();
-            this.flowLayoutPanel8 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpSelection = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblSelection = new System.Windows.Forms.Label();
+            this.txtSelectionFilter = new System.Windows.Forms.TextBox();
+            this.cmbSelection = new System.Windows.Forms.ComboBox();
+            this.cmdStart = new System.Windows.Forms.Button();
+            this.flpSubSelection = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblSubSelection = new System.Windows.Forms.Label();
+            this.txtSubSelectionFilter = new System.Windows.Forms.TextBox();
+            this.cmbSubSelection = new System.Windows.Forms.ComboBox();
+            this.cmdSubStart = new System.Windows.Forms.Button();
+            this.flpCompletionTime = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtCompletionTime = new System.Windows.Forms.TextBox();
             this.button5 = new System.Windows.Forms.Button();
             this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
             this.chkBuilt = new System.Windows.Forms.CheckBox();
@@ -53,13 +59,16 @@
             this.chkWorkDetail1 = new System.Windows.Forms.CheckBox();
             this.chkWorkDetail2 = new System.Windows.Forms.CheckBox();
             this.chkWorkDetail3 = new System.Windows.Forms.CheckBox();
+            this.timerCountdown = new System.Windows.Forms.Timer(this.components);
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.flpColonyStructure.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
             this.flowLayoutPanel4.SuspendLayout();
             this.flowLayoutPanel7.SuspendLayout();
-            this.flowLayoutPanel9.SuspendLayout();
-            this.flowLayoutPanel8.SuspendLayout();
+            this.flpSelection.SuspendLayout();
+            this.flpSubSelection.SuspendLayout();
+            this.flpCompletionTime.SuspendLayout();
             this.flowLayoutPanel5.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -85,7 +94,7 @@
             this.flpColonyStructure.Location = new System.Drawing.Point(0, 0);
             this.flpColonyStructure.MinimumSize = new System.Drawing.Size(572, 160);
             this.flpColonyStructure.Name = "flpColonyStructure";
-            this.flpColonyStructure.Size = new System.Drawing.Size(672, 160);
+            this.flpColonyStructure.Size = new System.Drawing.Size(672, 229);
             this.flpColonyStructure.TabIndex = 1;
             this.flpColonyStructure.WrapContents = false;
             // 
@@ -96,7 +105,7 @@
             this.flowLayoutPanel2.Controls.Add(this.flowLayoutPanel5);
             this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(660, 144);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(660, 200);
             this.flowLayoutPanel2.TabIndex = 1;
             this.flowLayoutPanel2.WrapContents = false;
             // 
@@ -149,73 +158,124 @@
             this.flowLayoutPanel4.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel4.Location = new System.Drawing.Point(65, 3);
             this.flowLayoutPanel4.Name = "flowLayoutPanel4";
-            this.flowLayoutPanel4.Size = new System.Drawing.Size(435, 135);
+            this.flowLayoutPanel4.Size = new System.Drawing.Size(435, 192);
             this.flowLayoutPanel4.TabIndex = 1;
             this.flowLayoutPanel4.WrapContents = false;
             // 
             // flowLayoutPanel7
             // 
-            this.flowLayoutPanel7.Controls.Add(this.flowLayoutPanel9);
-            this.flowLayoutPanel7.Controls.Add(this.flowLayoutPanel8);
+            this.flowLayoutPanel7.Controls.Add(this.flpSelection);
+            this.flowLayoutPanel7.Controls.Add(this.flpSubSelection);
+            this.flowLayoutPanel7.Controls.Add(this.flpCompletionTime);
             this.flowLayoutPanel7.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel7.Location = new System.Drawing.Point(3, 49);
             this.flowLayoutPanel7.Name = "flowLayoutPanel7";
-            this.flowLayoutPanel7.Size = new System.Drawing.Size(330, 70);
+            this.flowLayoutPanel7.Size = new System.Drawing.Size(432, 121);
             this.flowLayoutPanel7.TabIndex = 2;
             this.flowLayoutPanel7.WrapContents = false;
             // 
-            // flowLayoutPanel9
+            // flpSelection
             // 
-            this.flowLayoutPanel9.Controls.Add(this.label2);
-            this.flowLayoutPanel9.Controls.Add(this.textBox2);
-            this.flowLayoutPanel9.Controls.Add(this.comboBox1);
-            this.flowLayoutPanel9.Controls.Add(this.button3);
-            this.flowLayoutPanel9.Location = new System.Drawing.Point(3, 3);
-            this.flowLayoutPanel9.Name = "flowLayoutPanel9";
-            this.flowLayoutPanel9.Size = new System.Drawing.Size(324, 29);
-            this.flowLayoutPanel9.TabIndex = 5;
+            this.flpSelection.Controls.Add(this.lblSelection);
+            this.flpSelection.Controls.Add(this.txtSelectionFilter);
+            this.flpSelection.Controls.Add(this.cmbSelection);
+            this.flpSelection.Controls.Add(this.cmdStart);
+            this.flpSelection.Location = new System.Drawing.Point(3, 3);
+            this.flpSelection.Name = "flpSelection";
+            this.flpSelection.Size = new System.Drawing.Size(418, 29);
+            this.flpSelection.TabIndex = 5;
             // 
-            // label2
+            // lblSelection
             // 
-            this.label2.Location = new System.Drawing.Point(3, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(40, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Select:";
+            this.lblSelection.Location = new System.Drawing.Point(3, 0);
+            this.lblSelection.Name = "lblSelection";
+            this.lblSelection.Size = new System.Drawing.Size(40, 13);
+            this.lblSelection.TabIndex = 3;
+            this.lblSelection.Text = "Select:";
             // 
-            // textBox2
+            // txtSelectionFilter
             // 
-            this.textBox2.Location = new System.Drawing.Point(49, 3);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 4;
+            this.txtSelectionFilter.Location = new System.Drawing.Point(49, 3);
+            this.txtSelectionFilter.Name = "txtSelectionFilter";
+            this.txtSelectionFilter.Size = new System.Drawing.Size(100, 20);
+            this.txtSelectionFilter.TabIndex = 4;
+            this.txtSelectionFilter.TextChanged += new System.EventHandler(this.txtSelectionFilter_TextChanged);
             // 
-            // comboBox1
+            // cmbSelection
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(155, 3);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 0;
+            this.cmbSelection.FormattingEnabled = true;
+            this.cmbSelection.Location = new System.Drawing.Point(155, 3);
+            this.cmbSelection.Name = "cmbSelection";
+            this.cmbSelection.Size = new System.Drawing.Size(121, 21);
+            this.cmbSelection.TabIndex = 0;
+            this.cmbSelection.SelectedValueChanged += new System.EventHandler(this.cmbSelection_SelectedValueChanged);
             // 
-            // button3
+            // cmdStart
             // 
-            this.button3.Location = new System.Drawing.Point(282, 3);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(39, 23);
-            this.button3.TabIndex = 1;
-            this.button3.Text = "Stop";
-            this.button3.UseVisualStyleBackColor = true;
+            this.cmdStart.Location = new System.Drawing.Point(282, 3);
+            this.cmdStart.Name = "cmdStart";
+            this.cmdStart.Size = new System.Drawing.Size(39, 23);
+            this.cmdStart.TabIndex = 1;
+            this.cmdStart.Text = "Start";
+            this.cmdStart.UseVisualStyleBackColor = true;
+            this.cmdStart.Click += new System.EventHandler(this.cmdStart_Click);
             // 
-            // flowLayoutPanel8
+            // flpSubSelection
             // 
-            this.flowLayoutPanel8.Controls.Add(this.label1);
-            this.flowLayoutPanel8.Controls.Add(this.textBox1);
-            this.flowLayoutPanel8.Controls.Add(this.button5);
-            this.flowLayoutPanel8.Location = new System.Drawing.Point(3, 38);
-            this.flowLayoutPanel8.Name = "flowLayoutPanel8";
-            this.flowLayoutPanel8.Size = new System.Drawing.Size(281, 29);
-            this.flowLayoutPanel8.TabIndex = 4;
+            this.flpSubSelection.Controls.Add(this.lblSubSelection);
+            this.flpSubSelection.Controls.Add(this.txtSubSelectionFilter);
+            this.flpSubSelection.Controls.Add(this.cmbSubSelection);
+            this.flpSubSelection.Controls.Add(this.cmdSubStart);
+            this.flpSubSelection.Location = new System.Drawing.Point(3, 38);
+            this.flpSubSelection.Name = "flpSubSelection";
+            this.flpSubSelection.Size = new System.Drawing.Size(418, 29);
+            this.flpSubSelection.TabIndex = 6;
+            this.flpSubSelection.WrapContents = false;
+            // 
+            // lblSubSelection
+            // 
+            this.lblSubSelection.Location = new System.Drawing.Point(3, 0);
+            this.lblSubSelection.Name = "lblSubSelection";
+            this.lblSubSelection.Size = new System.Drawing.Size(40, 13);
+            this.lblSubSelection.TabIndex = 3;
+            this.lblSubSelection.Text = "Select:";
+            // 
+            // txtSubSelectionFilter
+            // 
+            this.txtSubSelectionFilter.Location = new System.Drawing.Point(49, 3);
+            this.txtSubSelectionFilter.Name = "txtSubSelectionFilter";
+            this.txtSubSelectionFilter.Size = new System.Drawing.Size(100, 20);
+            this.txtSubSelectionFilter.TabIndex = 4;
+            this.txtSubSelectionFilter.TextChanged += new System.EventHandler(this.txtSubSelectionFilter_TextChanged);
+            // 
+            // cmbSubSelection
+            // 
+            this.cmbSubSelection.FormattingEnabled = true;
+            this.cmbSubSelection.Location = new System.Drawing.Point(155, 3);
+            this.cmbSubSelection.Name = "cmbSubSelection";
+            this.cmbSubSelection.Size = new System.Drawing.Size(166, 21);
+            this.cmbSubSelection.TabIndex = 0;
+            this.cmbSubSelection.SelectedValueChanged += new System.EventHandler(this.cmbSubSelection_SelectedValueChanged);
+            // 
+            // cmdSubStart
+            // 
+            this.cmdSubStart.Location = new System.Drawing.Point(327, 3);
+            this.cmdSubStart.Name = "cmdSubStart";
+            this.cmdSubStart.Size = new System.Drawing.Size(39, 23);
+            this.cmdSubStart.TabIndex = 1;
+            this.cmdSubStart.Text = "Start";
+            this.cmdSubStart.UseVisualStyleBackColor = true;
+            this.cmdSubStart.Click += new System.EventHandler(this.cmdSubStart_Click);
+            // 
+            // flpCompletionTime
+            // 
+            this.flpCompletionTime.Controls.Add(this.label1);
+            this.flpCompletionTime.Controls.Add(this.txtCompletionTime);
+            this.flpCompletionTime.Controls.Add(this.button5);
+            this.flpCompletionTime.Location = new System.Drawing.Point(3, 73);
+            this.flpCompletionTime.Name = "flpCompletionTime";
+            this.flpCompletionTime.Size = new System.Drawing.Size(281, 29);
+            this.flpCompletionTime.TabIndex = 4;
             // 
             // label1
             // 
@@ -225,12 +285,12 @@
             this.label1.TabIndex = 2;
             this.label1.Text = "Completion Time:";
             // 
-            // textBox1
+            // txtCompletionTime
             // 
-            this.textBox1.Location = new System.Drawing.Point(97, 3);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 3;
+            this.txtCompletionTime.Location = new System.Drawing.Point(97, 3);
+            this.txtCompletionTime.Name = "txtCompletionTime";
+            this.txtCompletionTime.Size = new System.Drawing.Size(100, 20);
+            this.txtCompletionTime.TabIndex = 3;
             // 
             // button5
             // 
@@ -316,22 +376,28 @@
             this.chkWorkDetail3.UseVisualStyleBackColor = true;
             this.chkWorkDetail3.CheckStateChanged += new System.EventHandler(this.chkWorkDetail3_CheckStateChanged);
             // 
+            // timerCountdown
+            // 
+            this.timerCountdown.Tick += new System.EventHandler(this.timerCountdown_Tick);
+            // 
             // ColonyStructure
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.flpColonyStructure);
             this.Name = "ColonyStructure";
-            this.Size = new System.Drawing.Size(787, 165);
+            this.Size = new System.Drawing.Size(787, 232);
             this.flpColonyStructure.ResumeLayout(false);
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel3.ResumeLayout(false);
             this.flowLayoutPanel4.ResumeLayout(false);
             this.flowLayoutPanel7.ResumeLayout(false);
-            this.flowLayoutPanel9.ResumeLayout(false);
-            this.flowLayoutPanel9.PerformLayout();
-            this.flowLayoutPanel8.ResumeLayout(false);
-            this.flowLayoutPanel8.PerformLayout();
+            this.flpSelection.ResumeLayout(false);
+            this.flpSelection.PerformLayout();
+            this.flpSubSelection.ResumeLayout(false);
+            this.flpSubSelection.PerformLayout();
+            this.flpCompletionTime.ResumeLayout(false);
+            this.flpCompletionTime.PerformLayout();
             this.flowLayoutPanel5.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -355,14 +421,21 @@
         private System.Windows.Forms.CheckBox chkBuilt;
         private System.Windows.Forms.CheckBox chkStaged;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel7;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.ComboBox cmbSelection;
+        private System.Windows.Forms.Button cmdStart;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel9;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel8;
+        private System.Windows.Forms.TextBox txtCompletionTime;
+        private System.Windows.Forms.FlowLayoutPanel flpSelection;
+        private System.Windows.Forms.Label lblSelection;
+        private System.Windows.Forms.TextBox txtSelectionFilter;
+        private System.Windows.Forms.FlowLayoutPanel flpCompletionTime;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.FlowLayoutPanel flpSubSelection;
+        private System.Windows.Forms.Label lblSubSelection;
+        private System.Windows.Forms.TextBox txtSubSelectionFilter;
+        private System.Windows.Forms.ComboBox cmbSubSelection;
+        private System.Windows.Forms.Button cmdSubStart;
+        private System.Windows.Forms.Timer timerCountdown;
+        private System.Windows.Forms.Timer timer1;
     }
 }

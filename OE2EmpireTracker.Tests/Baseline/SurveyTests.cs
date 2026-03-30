@@ -153,7 +153,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         [Test]
         public void SurveyResource_PropertiesCanBeSetAndRead()
         {
-            var resource = new SurveyResource { Purity = "Refined", Amount = "500" };
+            var resource = new SurveyResource { Resource = "Resource", Purity = "Refined", Amount = "500" };
             Assert.AreEqual("Refined", resource.Purity);
             Assert.AreEqual("500", resource.Amount);
         }
@@ -188,7 +188,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void JsonRoundTrip_Resources_Preserved()
         {
             var survey = new Survey { UUID = "uuid-1" };
-            survey.Resources["Iron"] = new SurveyResource { Purity = "Refined", Amount = "500" };
+            survey.Resources["Iron"] = new SurveyResource { Resource = "Resource", Purity = "Refined", Amount = "500" };
 
             string json = JsonConvert.SerializeObject(survey);
             var restored = JsonConvert.DeserializeObject<Survey>(json);

@@ -26,6 +26,10 @@ namespace OE2EmpireTracker.Baseline
         public BindingList<Colony> colonyList;
         public BindingSource bindingSourceColony;
 
+        public IEnumerable<CountDownTimeReference> ActiveCountdowns => AllCountdownSources()
+            .Where(c => c.countDownTime.TimeRemaining > 0)
+            .OrderBy(c => c.countDownTime.TimeRemaining);
+
         public static PlayerContext getInstance()
         {
             if (Instance == null)
@@ -63,7 +67,7 @@ namespace OE2EmpireTracker.Baseline
             playerRoot.Survey = surveyList.ToArray();
             playerRoot.Colony = colonyList.ToArray();
 
-            string jsonContent = JsonConvert.SerializeObject(playerRoot,Formatting.Indented);
+            string jsonContent = JsonConvert.SerializeObject(playerRoot, Formatting.Indented);
             File.WriteAllText(filePath, jsonContent);
             Debug.Print("Player.WriteContext done");
         }
@@ -144,8 +148,50 @@ namespace OE2EmpireTracker.Baseline
             }
             return null;
         }
-    }
 
+
+        public List<CountDownTimeReference> AllCountdownSources()
+        {
+            List<CountDownTimeReference> countdowns = new List<CountDownTimeReference>();
+            foreach (var player in playerProfileList)
+            {
+                if (player.Skills != null)
+                {
+                    foreach (var skill in player.Skills)
+                    {
+                        if (skill.Value.CompletionTime != null && skill.Value.CompletionTime.TimeRemaining > 0)
+                        {
+                            CountDownTimeReference reference = new CountDownTimeReference();
+                            reference.source = CountDownTimeReference.SourceType.Player;
+                            reference.sourceUUID = player.UUID;
+                            reference.internalUUID = skill.Key;
+                            reference.countDownTime = skill.Value.CompletionTime;
+                            countdowns.Add(reference);
+                        }
+                    }
+                }
+            }
+            foreach (var colony in colonyList)
+            {
+                if (colony.Structures != null)
+                {
+                    foreach (var structure in colony.Structures)
+                    {
+                        if (structure.CompletionTime != null && structure.CompletionTime.TimeRemaining > 0)
+                        {
+                            CountDownTimeReference reference = new CountDownTimeReference();
+                            reference.source = CountDownTimeReference.SourceType.Colony;
+                            reference.sourceUUID = colony.UUID;
+                            reference.internalUUID = structure.UUID;
+                            reference.countDownTime = structure.CompletionTime;
+                            countdowns.Add(reference);
+                        }
+                    }
+                }
+            }
+            return countdowns;
+        }
+    }
 
     public class PlayerRoot
     {
@@ -160,6 +206,21 @@ namespace OE2EmpireTracker.Baseline
             Survey = new Survey[0];
             Colony = new Colony[0];
         }
+    }
+
+    public class CountDownTimeReference
+    {
+        public enum SourceType
+        {
+            None,
+            Player,
+            Colony
+        }
+
+        public SourceType source { get; set; }
+        public string sourceUUID { get; set; }
+        public string internalUUID { get; set; }
+        public CountDownTime countDownTime { get; set; }
     }
 
 }

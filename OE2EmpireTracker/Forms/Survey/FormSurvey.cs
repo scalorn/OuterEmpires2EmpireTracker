@@ -259,7 +259,7 @@ namespace OE2EmpireTracker.Forms.Survey
                 string resourceName = row.Cells[0].Value as string;
                 string resourcePurity = row.Cells[1].Value as string;
                 string resourceAmount = row.Cells[2].Value as string;
-                SurveyResource surveyResource = new SurveyResource();
+                SurveyResource surveyResource = new SurveyResource(resourceName, resourcePurity, resourceAmount);
                 surveyResource.Purity = resourcePurity;
                 surveyResource.Amount = resourceAmount;
                 if (resourceName != null)

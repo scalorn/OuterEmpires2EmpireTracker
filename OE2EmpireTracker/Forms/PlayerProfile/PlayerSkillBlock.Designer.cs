@@ -32,12 +32,11 @@
             this.flowLayoutPanel20 = new System.Windows.Forms.FlowLayoutPanel();
             this.label23 = new System.Windows.Forms.Label();
             this.lblSkillName = new System.Windows.Forms.Label();
+            this.txtSkillLevel = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.lblCompletion = new System.Windows.Forms.Label();
+            this.txtCompletion = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmdStart = new System.Windows.Forms.Button();
             this.timerCountdown = new System.Windows.Forms.Timer(this.components);
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.txtSkillLevel = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.txtCompletion = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flowLayoutPanel20.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -77,31 +76,6 @@
             this.lblSkillName.Text = "SkillName";
             this.lblSkillName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // lblCompletion
-            // 
-            this.lblCompletion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCompletion.Location = new System.Drawing.Point(206, 3);
-            this.lblCompletion.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblCompletion.Name = "lblCompletion";
-            this.lblCompletion.Size = new System.Drawing.Size(61, 20);
-            this.lblCompletion.TabIndex = 11;
-            this.lblCompletion.Text = "Completion";
-            this.lblCompletion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cmdStart
-            // 
-            this.cmdStart.Location = new System.Drawing.Point(366, 3);
-            this.cmdStart.Name = "cmdStart";
-            this.cmdStart.Size = new System.Drawing.Size(75, 20);
-            this.cmdStart.TabIndex = 13;
-            this.cmdStart.Text = "Start";
-            this.cmdStart.UseVisualStyleBackColor = true;
-            this.cmdStart.Click += new System.EventHandler(this.cmdStart_Click);
-            // 
-            // timerCountdown
-            // 
-            this.timerCountdown.Tick += new System.EventHandler(this.timerCountdown_Tick);
-            // 
             // txtSkillLevel
             // 
             this.txtSkillLevel.AllowSpaces = false;
@@ -116,6 +90,17 @@
             this.txtSkillLevel.TabIndex = 7;
             this.txtSkillLevel.ValidationPattern = "^(10|[0-9])$";
             this.txtSkillLevel.ValidColor = System.Drawing.Color.White;
+            // 
+            // lblCompletion
+            // 
+            this.lblCompletion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCompletion.Location = new System.Drawing.Point(206, 3);
+            this.lblCompletion.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblCompletion.Name = "lblCompletion";
+            this.lblCompletion.Size = new System.Drawing.Size(61, 20);
+            this.lblCompletion.TabIndex = 11;
+            this.lblCompletion.Text = "Completion";
+            this.lblCompletion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // txtCompletion
             // 
@@ -135,6 +120,20 @@
             this.txtCompletion.ValidColor = System.Drawing.Color.White;
             this.txtCompletion.Enter += new System.EventHandler(this.txtCompletion_Enter);
             this.txtCompletion.Leave += new System.EventHandler(this.txtCompletion_Leave);
+            // 
+            // cmdStart
+            // 
+            this.cmdStart.Location = new System.Drawing.Point(366, 3);
+            this.cmdStart.Name = "cmdStart";
+            this.cmdStart.Size = new System.Drawing.Size(75, 20);
+            this.cmdStart.TabIndex = 13;
+            this.cmdStart.Text = "Start";
+            this.cmdStart.UseVisualStyleBackColor = true;
+            this.cmdStart.Click += new System.EventHandler(this.cmdStart_Click);
+            // 
+            // timerCountdown
+            // 
+            this.timerCountdown.Tick += new System.EventHandler(this.timerCountdown_Tick);
             // 
             // PlayerSkillBlock
             // 
@@ -160,6 +159,5 @@
         private Controls.ValidatedTextBox txtCompletion;
         private System.Windows.Forms.Button cmdStart;
         private System.Windows.Forms.Timer timerCountdown;
-        private System.Windows.Forms.Timer timer1;
     }
 }

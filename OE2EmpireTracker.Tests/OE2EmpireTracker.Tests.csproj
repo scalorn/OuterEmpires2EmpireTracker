@@ -209,6 +209,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Baseline\ColonyStructureTests.cs" />
     <Compile Include="Blueprint\BlueprintScannerTests.cs" />
     <Compile Include="Baseline\SurveyTests.cs" />
     <Compile Include="Data\BlueprintTests.cs" />

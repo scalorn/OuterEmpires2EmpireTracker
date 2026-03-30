@@ -1,4 +1,5 @@
-﻿using Amazon.Auth.AccessControlPolicy;
+﻿using Newtonsoft.Json;
+using Amazon.Auth.AccessControlPolicy;
 using Amazon.Runtime.Documents;
 using Sgml;
 using System;
@@ -28,6 +29,7 @@ namespace OE2EmpireTracker.Data
 
         public string ID { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
+        [JsonIgnore]
         public string ExtendedName { 
             get {
                 if (string.IsNullOrEmpty(Name))

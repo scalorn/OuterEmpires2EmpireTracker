@@ -35,6 +35,7 @@ namespace OE2EmpireTracker.Baseline
         public int buildQueueSequence { get; set; }
         public PropertyBag Properties { get; set; }
         public PropertyBag AssignedWorkers { get; set; }
+        public CountDownTime CompletionTime { get; set; }
 
         public Dictionary<string, ColonyStructureStatus> Statuses { get; set; } = new Dictionary<string, ColonyStructureStatus>();
 

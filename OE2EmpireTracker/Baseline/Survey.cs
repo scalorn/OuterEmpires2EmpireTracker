@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,7 @@ namespace OE2EmpireTracker.Baseline
         public Dictionary<string, string> Properties { get; set; }
         public Dictionary<string, SurveyResource> Resources { get; set; }
 
+        [JsonIgnore]
         public override string ExtendedName
         {
             get
@@ -54,7 +56,29 @@ namespace OE2EmpireTracker.Baseline
     }
     public class SurveyResource
     {
-        public string Purity { get; set; }
-        public string Amount { get; set; }
+        public string Resource { get; set; } = string.Empty;
+        public string Purity { get; set; } = string.Empty;
+        public string Amount { get; set; } = string.Empty;
+
+        [JsonIgnore]
+        public string ExtendedName
+        {
+            get
+            {
+                string extendedName = Resource + (!string.IsNullOrEmpty(Purity) ? $" ({Purity})" : "") + (!string.IsNullOrEmpty(Amount) ? $" ({Amount})/h" : "");
+                return extendedName;
+            }
+        }
+        public SurveyResource()
+        {
+
+        }
+
+        public SurveyResource(string resource, string purity, string amount)
+        {
+            Resource = resource;
+            Purity = purity;
+            Amount = amount;
+        }
     }
 }
