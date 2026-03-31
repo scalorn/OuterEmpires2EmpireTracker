@@ -29,8 +29,7 @@ namespace OE2EmpireTracker.Forms.Colony
         //private double PowerProvided { get; set; }
         //private double PowerRequired { get; set; }
 
-        public string MiningSurvey { get; set; }
-        public string MiningSurveyResource { get; set; }
+        public bool completionModification = false;
 
         [Browsable(true)]
         [Category("Action")]
@@ -232,52 +231,101 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void handleMiningRigControls()
         {
+            ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
+            bool showSelection = false;
+            bool showSubSelection = false;
+            bool showCompletionTime = false;
+            bool showCmdSubStart = false;
+            bool enableCmbSelection = true;
+            bool enableCmbSubSelection = true;
+
+
             if (ColonyStructureData.CompletionTime != null)
             {
+                showSelection = true;
+                showSubSelection = true;
+                showCompletionTime = true;
+                enableCmbSelection = false;
+                enableCmbSubSelection = false;
+            }
+            else
+            {
+                showSelection = true;
+            }
+
+            if (showSelection && cmbSelection.SelectedIndex >= 0)
+            {
+                showSubSelection = true;
+            }
+
+            if (showSubSelection && cmbSubSelection.SelectedIndex >= 0)
+            {
+                showCmdSubStart = true;
+            }
+
+
+
+
+            if (showSelection)
+            {
                 flpSelection.Visible = true;
+                if (cmbSelection.Items.Count == 0 || !string.IsNullOrEmpty(ColonyStructureData.MiningSurvey))
+                {
+                    populateSelectionWithSurveys();
+                    if (!string.IsNullOrEmpty(ColonyStructureData.MiningSurvey))
+                    {
+                        cmbSelection.SelectedValue = ColonyStructureData.MiningSurvey;
+                    }
+                }
+                txtSelectionFilter.Enabled = enableCmbSelection;
+                cmbSelection.Enabled = enableCmbSelection;
+                cmdStart.Visible = false;
+            }
+            else
+            {
+                flpSelection.Visible = false;
+            }
+
+            if ( showSubSelection)
+            {
                 flpSubSelection.Visible = true;
+                if (cmbSubSelection.Items.Count == 0 || !string.IsNullOrEmpty(ColonyStructureData.MiningSurveyResource))
+                {
+                    populateSubSelectionWithResources();
+                    if (!string.IsNullOrEmpty(ColonyStructureData.MiningSurveyResource))
+                    {
+                        cmbSubSelection.SelectedValue = ColonyStructureData.MiningSurveyResource;
+                    }
+                }
+                txtSubSelectionFilter.Enabled = enableCmbSubSelection;
+                cmbSubSelection.Enabled = enableCmbSubSelection;
+                cmdSubStart.Visible = showCmdSubStart;
+            }
+            else
+            {
+                flpSubSelection.Visible = false;
+            }
+
+            if (showCompletionTime)
+            {
                 flpCompletionTime.Visible = true;
                 txtCompletionTime.Text = ColonyStructureData.CompletionTime.TimeRemainingString;
-                timerCountdown.Interval = 1000;
-                timerCountdown.Start();
+                if (timerCountdown.Enabled == false)
+                {
+                    timerCountdown.Interval = 1000;
+                    timerCountdown.Start();
+                }
             }
             else
             {
                 flpCompletionTime.Visible = false;
-                flpSelection.Visible = true;
-                cmdStart.Visible = false;
-                if (cmbSelection.SelectedItem != null)
-                {
-                    flpSubSelection.Visible = true;
-
-                    if (cmbSubSelection.Items.Count == 0)
-                    {
-                        populateSubSelectionWithResources();
-                    }
-
-                    if (cmbSubSelection.SelectedItem != null)
-                    {
-                        cmdSubStart.Visible = true;
-                    }
-                    else
-                    {
-                        cmdSubStart.Visible = false;
-                    }
-                }
-                else
-                {
-                    if (cmbSelection.Items.Count == 0)
-                    {
-                        populateSelectionWithSurveys();
-                    }
-                    flpSubSelection.Visible = false;
-                }
             }
+            guard.release();
         }
 
         private void populateSelectionWithSurveys()
         {
-            cmbSelection.Items.Clear();
+            //cmbSelection.Items.Clear();
             string searchText = txtSelectionFilter.Text;
             if (searchText == null)
             {
@@ -302,7 +350,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void populateSubSelectionWithResources()
         {
-            cmbSubSelection.Items.Clear();
+            //cmbSubSelection.Items.Clear();
             string searchText = txtSubSelectionFilter.Text;
             if (searchText == null)
             {
@@ -322,7 +370,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 .ToList();
 
             cmbSubSelection.DisplayMember = "ExtendedName";
-            cmbSubSelection.ValueMember = "UUID";
+            cmbSubSelection.ValueMember = "Resource";
             cmbSubSelection.DataSource = filteredList;
             cmbSubSelection.SelectedIndex = -1;
         }
@@ -546,17 +594,6 @@ namespace OE2EmpireTracker.Forms.Colony
 
         }
 
-        private void cmbSelection_SelectedValueChanged(object sender, EventArgs e)
-        {
-            if (FlatpackBlueprint != null)
-            {
-                if (FlatpackBlueprint.BluePrintType == "Flatpacks/MiningRig")
-                {
-                    handleMiningRigControls();
-                }
-            }
-        }
-
         private void cmdStart_Click(object sender, EventArgs e)
         {
 
@@ -567,23 +604,13 @@ namespace OE2EmpireTracker.Forms.Colony
 
         }
 
-        private void cmbSubSelection_SelectedValueChanged(object sender, EventArgs e)
-        {
-            if (FlatpackBlueprint != null)
-            {
-                if (FlatpackBlueprint.BluePrintType == "Flatpacks/MiningRig")
-                {
-                    handleMiningRigControls();
-                }
-            }
-        }
-
         private void cmdSubStart_Click(object sender, EventArgs e)
         {
             // TODO: FIXME: This needs to be customized per type.
             ColonyStructureData.CompletionTime = new CountDownTime();
             ColonyStructureData.CompletionTime.StartTime = DateTime.Now;
-            ColonyStructureData.CompletionTime.TimeRemaining = 3600;
+            //ColonyStructureData.CompletionTime.TimeRemaining = 3600;
+            ColonyStructureData.CompletionTime.StartRepeating(3600);
             timerCountdown.Interval = 1000;
             timerCountdown.Start();
             handleMiningRigControls();
@@ -591,9 +618,67 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void timerCountdown_Tick(object sender, EventArgs e)
         {
-            if (ColonyStructureData.CompletionTime != null)
+            if (!completionModification && ColonyStructureData.CompletionTime != null)
             {
                 txtCompletionTime.Text = ColonyStructureData.CompletionTime.TimeRemainingString;
+            }
+        }
+        private void txtCompletionTime_Enter(object sender, EventArgs e)
+        {
+            completionModification = true;
+        }
+
+        private void txtCompletionTime_Leave(object sender, EventArgs e)
+        {
+            completionModification = false;
+
+            if (ColonyStructureData.CompletionTime != null)
+            {
+                ColonyStructureData.CompletionTime.TimeRemainingString = txtCompletionTime.Text;
+            }
+        }
+
+        private void cmdDone_Click(object sender, EventArgs e)
+        {
+            timerCountdown.Stop();
+            ColonyStructureData.CompletionTime = null;
+            txtCompletionTime.Text = "";
+            handleMiningRigControls();
+        }
+
+        private void cmbSelection_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+
+            if (FlatpackBlueprint != null)
+            {
+                if (FlatpackBlueprint.BluePrintType == "Flatpacks/MiningRig")
+                {
+                    string survey = cmbSelection.SelectedValue as string;
+                    if (survey != null)
+                    {
+                        ColonyStructureData.MiningSurvey = survey;
+                    }
+                    handleMiningRigControls();
+                }
+            }
+        }
+
+        private void cmbSubSelection_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+
+            if (FlatpackBlueprint != null)
+            {
+                if (FlatpackBlueprint.BluePrintType == "Flatpacks/MiningRig")
+                {
+                    string surveyResource = cmbSubSelection.SelectedValue as string;
+                    if (surveyResource != null)
+                    {
+                        ColonyStructureData.MiningSurveyResource = surveyResource;
+                    }
+                    handleMiningRigControls();
+                }
             }
         }
     }

@@ -37,6 +37,9 @@ namespace OE2EmpireTracker.Baseline
         public PropertyBag AssignedWorkers { get; set; }
         public CountDownTime CompletionTime { get; set; }
 
+        public string MiningSurvey { get; set; }
+        public string MiningSurveyResource { get; set; }
+
         public Dictionary<string, ColonyStructureStatus> Statuses { get; set; } = new Dictionary<string, ColonyStructureStatus>();
 
         public double Power { get; set; }

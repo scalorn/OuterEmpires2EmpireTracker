@@ -51,7 +51,7 @@
             this.flpCompletionTime = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.txtCompletionTime = new System.Windows.Forms.TextBox();
-            this.button5 = new System.Windows.Forms.Button();
+            this.cmdDone = new System.Windows.Forms.Button();
             this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
             this.chkBuilt = new System.Windows.Forms.CheckBox();
             this.chkStaged = new System.Windows.Forms.CheckBox();
@@ -208,7 +208,7 @@
             this.cmbSelection.Name = "cmbSelection";
             this.cmbSelection.Size = new System.Drawing.Size(121, 21);
             this.cmbSelection.TabIndex = 0;
-            this.cmbSelection.SelectedValueChanged += new System.EventHandler(this.cmbSelection_SelectedValueChanged);
+            this.cmbSelection.SelectedIndexChanged += new System.EventHandler(this.cmbSelection_SelectedIndexChanged);
             // 
             // cmdStart
             // 
@@ -255,7 +255,7 @@
             this.cmbSubSelection.Name = "cmbSubSelection";
             this.cmbSubSelection.Size = new System.Drawing.Size(166, 21);
             this.cmbSubSelection.TabIndex = 0;
-            this.cmbSubSelection.SelectedValueChanged += new System.EventHandler(this.cmbSubSelection_SelectedValueChanged);
+            this.cmbSubSelection.SelectedIndexChanged += new System.EventHandler(this.cmbSubSelection_SelectedIndexChanged);
             // 
             // cmdSubStart
             // 
@@ -271,7 +271,7 @@
             // 
             this.flpCompletionTime.Controls.Add(this.label1);
             this.flpCompletionTime.Controls.Add(this.txtCompletionTime);
-            this.flpCompletionTime.Controls.Add(this.button5);
+            this.flpCompletionTime.Controls.Add(this.cmdDone);
             this.flpCompletionTime.Location = new System.Drawing.Point(3, 73);
             this.flpCompletionTime.Name = "flpCompletionTime";
             this.flpCompletionTime.Size = new System.Drawing.Size(281, 29);
@@ -291,15 +291,18 @@
             this.txtCompletionTime.Name = "txtCompletionTime";
             this.txtCompletionTime.Size = new System.Drawing.Size(100, 20);
             this.txtCompletionTime.TabIndex = 3;
+            this.txtCompletionTime.Enter += new System.EventHandler(this.txtCompletionTime_Enter);
+            this.txtCompletionTime.Leave += new System.EventHandler(this.txtCompletionTime_Leave);
             // 
-            // button5
+            // cmdDone
             // 
-            this.button5.Location = new System.Drawing.Point(203, 3);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 23);
-            this.button5.TabIndex = 6;
-            this.button5.Text = "Done";
-            this.button5.UseVisualStyleBackColor = true;
+            this.cmdDone.Location = new System.Drawing.Point(203, 3);
+            this.cmdDone.Name = "cmdDone";
+            this.cmdDone.Size = new System.Drawing.Size(75, 23);
+            this.cmdDone.TabIndex = 6;
+            this.cmdDone.Text = "Done";
+            this.cmdDone.UseVisualStyleBackColor = true;
+            this.cmdDone.Click += new System.EventHandler(this.cmdDone_Click);
             // 
             // flowLayoutPanel5
             // 
@@ -429,7 +432,7 @@
         private System.Windows.Forms.Label lblSelection;
         private System.Windows.Forms.TextBox txtSelectionFilter;
         private System.Windows.Forms.FlowLayoutPanel flpCompletionTime;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button cmdDone;
         private System.Windows.Forms.FlowLayoutPanel flpSubSelection;
         private System.Windows.Forms.Label lblSubSelection;
         private System.Windows.Forms.TextBox txtSubSelectionFilter;
