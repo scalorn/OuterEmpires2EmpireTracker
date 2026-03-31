@@ -183,13 +183,13 @@ namespace OE2EmpireTracker.Baseline
                 {
                     foreach (var structure in colony.Structures)
                     {
-                        if (structure.CompletionTime != null && structure.CompletionTime.TimeRemaining > 0)
+                        if (structure.ProcessCompletionTime != null && structure.ProcessCompletionTime.TimeRemaining > 0)
                         {
                             CountDownTimeReference reference = new CountDownTimeReference();
                             reference.source = CountDownTimeReference.SourceType.Colony;
                             reference.sourceUUID = colony.UUID;
                             reference.internalUUID = structure.UUID;
-                            reference.countDownTime = structure.CompletionTime;
+                            reference.countDownTime = structure.ProcessCompletionTime;
                             countdowns.Add(reference);
                         }
                     }

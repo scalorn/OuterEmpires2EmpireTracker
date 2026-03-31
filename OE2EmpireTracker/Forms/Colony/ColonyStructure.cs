@@ -240,7 +240,7 @@ namespace OE2EmpireTracker.Forms.Colony
             bool enableCmbSubSelection = true;
 
 
-            if (ColonyStructureData.CompletionTime != null)
+            if (ColonyStructureData.ProcessCompletionTime != null)
             {
                 showSelection = true;
                 showSubSelection = true;
@@ -309,7 +309,7 @@ namespace OE2EmpireTracker.Forms.Colony
             if (showCompletionTime)
             {
                 flpCompletionTime.Visible = true;
-                txtCompletionTime.Text = ColonyStructureData.CompletionTime.TimeRemainingString;
+                txtCompletionTime.Text = ColonyStructureData.ProcessCompletionTime.TimeRemainingString;
                 if (timerCountdown.Enabled == false)
                 {
                     timerCountdown.Interval = 1000;
@@ -607,10 +607,10 @@ namespace OE2EmpireTracker.Forms.Colony
         private void cmdSubStart_Click(object sender, EventArgs e)
         {
             // TODO: FIXME: This needs to be customized per type.
-            ColonyStructureData.CompletionTime = new CountDownTime();
-            ColonyStructureData.CompletionTime.StartTime = DateTime.Now;
-            //ColonyStructureData.CompletionTime.TimeRemaining = 3600;
-            ColonyStructureData.CompletionTime.StartRepeating(3600);
+            ColonyStructureData.ProcessCompletionTime = new CountDownTime();
+            ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.Now;
+            //ColonyStructureData.ProcessCompletionTime.TimeRemaining = 3600;
+            ColonyStructureData.ProcessCompletionTime.StartRepeating(3600);
             timerCountdown.Interval = 1000;
             timerCountdown.Start();
             handleMiningRigControls();
@@ -618,9 +618,9 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void timerCountdown_Tick(object sender, EventArgs e)
         {
-            if (!completionModification && ColonyStructureData.CompletionTime != null)
+            if (!completionModification && ColonyStructureData.ProcessCompletionTime != null)
             {
-                txtCompletionTime.Text = ColonyStructureData.CompletionTime.TimeRemainingString;
+                txtCompletionTime.Text = ColonyStructureData.ProcessCompletionTime.TimeRemainingString;
             }
         }
         private void txtCompletionTime_Enter(object sender, EventArgs e)
@@ -632,17 +632,21 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             completionModification = false;
 
-            if (ColonyStructureData.CompletionTime != null)
+            if (ColonyStructureData.ProcessCompletionTime != null)
             {
-                ColonyStructureData.CompletionTime.TimeRemainingString = txtCompletionTime.Text;
+                ColonyStructureData.ProcessCompletionTime.TimeRemainingString = txtCompletionTime.Text;
             }
         }
 
         private void cmdDone_Click(object sender, EventArgs e)
         {
+            // TODO: FIXME: Temporary hack.
+            Colony.ProcessColony();
+
             timerCountdown.Stop();
-            ColonyStructureData.CompletionTime = null;
+            ColonyStructureData.ProcessCompletionTime = null;
             txtCompletionTime.Text = "";
+
             handleMiningRigControls();
         }
 

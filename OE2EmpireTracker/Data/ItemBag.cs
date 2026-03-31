@@ -45,6 +45,24 @@ namespace OE2EmpireTracker.Data
                             string.Equals(i.BaseItemTypeID, baseItemTypeID, StringComparison.Ordinal))
                 .Sum(i => i.Quantity);
         }
+        public List<Item> FindByType(ItemType.ItemTypeEnum itemType, string baseItemTypeID)
+        {
+            List<Item> results = new List<Item>();
+            return Items.Values
+                .Where(i => i.ItemType == itemType &&
+                            string.Equals(i.BaseItemTypeID, baseItemTypeID, StringComparison.Ordinal))
+                .ToList<Item>();
+        }
+
+        public List<Item> FindResource(string resource, string purity)
+        {
+            List<Item> results = new List<Item>();
+            return Items.Values
+                .Where(i => i.ItemType == Data.ItemType.ItemTypeEnum.Resource &&
+                            string.Equals(i.BaseItemTypeID, resource, StringComparison.Ordinal) &&
+                            string.Equals(i.ResourcePurity, purity, StringComparison.Ordinal))
+                .ToList<Item>();
+        }
 
         public bool Remove(string uuid)
         {
