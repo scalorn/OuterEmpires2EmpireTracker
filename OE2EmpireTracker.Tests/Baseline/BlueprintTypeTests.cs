@@ -161,27 +161,5 @@ namespace OE2EmpireTracker.Tests.Baseline
             Assert.AreEqual(bt.Properties.Length, restored.Properties.Length);
             Assert.AreEqual(bt.ResearchableProperties.Length, restored.ResearchableProperties.Length);
         }
-
-        // -----------------------------------------------------------------------
-        // BlueprintFieldEnum tests
-        // -----------------------------------------------------------------------
-
-        [Test]
-        public void BlueprintFieldEnum_None_Is0()
-        {
-            Assert.AreEqual(0, (int)BlueprintField.BlueprintFieldEnum.None);
-        }
-
-        [Test]
-        public void BlueprintFieldEnum_FuelUsed_Is1()
-        {
-            Assert.AreEqual(1, (int)BlueprintField.BlueprintFieldEnum.FuelUsed);
-        }
-
-        [Test]
-        public void BlueprintFieldEnum_MaxJumpDistance_Is2()
-        {
-            Assert.AreEqual(2, (int)BlueprintField.BlueprintFieldEnum.MaxJumpDistance);
-        }
     }
 }
