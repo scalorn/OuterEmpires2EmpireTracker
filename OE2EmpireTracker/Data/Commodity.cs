@@ -2593,10 +2593,6 @@ namespace OE2EmpireTracker.Data
 
             foreach (Commodity commodity in instance)
             {
-                if (string.IsNullOrEmpty(commodity.Name))
-                {
-                    continue;
-                }
                 if (commodity.CommodityIndustry == Data.CommodityIndustry.CommodityIndustryEnum.None)
                 {
                     Debug.Print($"Commodity with name {commodity.Name} has no industry configured!");

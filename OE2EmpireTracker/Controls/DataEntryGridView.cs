@@ -65,7 +65,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
             // We are on a read only cell. move forward.
             if (col >=0 && col < this.Columns.Count && this.Columns[col].ReadOnly)
             {
-                bool handled = handleForward(this.Focused);
+                handleForward(this.Focused);
             }
         }
     }
@@ -140,7 +140,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
         for (; col >= 0;
         col--)
         {
-            if (!this.Columns[col].ReadOnly)
+            if (this.Columns[col] != null && !this.Columns[col].ReadOnly)
             {
                 break;
             }

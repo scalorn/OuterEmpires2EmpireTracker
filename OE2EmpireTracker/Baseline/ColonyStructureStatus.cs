@@ -82,6 +82,6 @@ namespace OE2EmpireTracker.Baseline
             UnallocatedBlueCollarPresent = false;
             UnallocatedWhiteCollarPresent = false;
             UnallocatedSpecialistPresent = false;
+        }
     }
-}
 }
