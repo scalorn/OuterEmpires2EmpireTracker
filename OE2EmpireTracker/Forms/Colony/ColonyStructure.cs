@@ -291,7 +291,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 flpSubSelection.Visible = true;
                 if (cmbSubSelection.Items.Count == 0 || !string.IsNullOrEmpty(ColonyStructureData.MiningSurveyResource))
                 {
-                    populateSubSelectionWithResources();
+                    populateSubSelectionWithSurveyResources();
                     if (!string.IsNullOrEmpty(ColonyStructureData.MiningSurveyResource))
                     {
                         cmbSubSelection.SelectedValue = ColonyStructureData.MiningSurveyResource;
@@ -342,13 +342,15 @@ namespace OE2EmpireTracker.Forms.Colony
                 .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                 .ToList();
 
+            filteredList.Insert(0, new Baseline.Survey());
+
             cmbSelection.DisplayMember = "ExtendedName";
             cmbSelection.ValueMember = "UUID";
             cmbSelection.DataSource = filteredList;
             cmbSelection.SelectedIndex = -1;
         }
 
-        private void populateSubSelectionWithResources()
+        private void populateSubSelectionWithSurveyResources()
         {
             //cmbSubSelection.Items.Clear();
             string searchText = txtSubSelectionFilter.Text;
@@ -368,6 +370,8 @@ namespace OE2EmpireTracker.Forms.Colony
             filteredList = filteredList
                 .Where(item => item.Resource.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                 .ToList();
+
+            filteredList.Insert(0, new SurveyResource());
 
             cmbSubSelection.DisplayMember = "ExtendedName";
             cmbSubSelection.ValueMember = "Resource";
