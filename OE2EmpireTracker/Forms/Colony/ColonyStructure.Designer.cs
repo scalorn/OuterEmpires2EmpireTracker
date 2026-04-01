@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             this.rtbStatus = new System.Windows.Forms.RichTextBox();
             this.flpColonyStructure = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.flpMovement = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdUp = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
@@ -60,8 +59,8 @@
             this.chkWorkDetail2 = new System.Windows.Forms.CheckBox();
             this.chkWorkDetail3 = new System.Windows.Forms.CheckBox();
             this.timerCountdown = new System.Windows.Forms.Timer(this.components);
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.flpColonyStructure.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
             this.flpMovement.SuspendLayout();
             this.flpStructureDetails.SuspendLayout();
             this.flpStructureCommands.SuspendLayout();
@@ -87,25 +86,14 @@
             // flpColonyStructure
             // 
             this.flpColonyStructure.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.flpColonyStructure.Controls.Add(this.flowLayoutPanel2);
-            this.flpColonyStructure.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpColonyStructure.Controls.Add(this.flpMovement);
+            this.flpColonyStructure.Controls.Add(this.flpStructureDetails);
+            this.flpColonyStructure.Controls.Add(this.flpStructureStatus);
             this.flpColonyStructure.Location = new System.Drawing.Point(0, 0);
-            this.flpColonyStructure.MinimumSize = new System.Drawing.Size(572, 160);
             this.flpColonyStructure.Name = "flpColonyStructure";
-            this.flpColonyStructure.Size = new System.Drawing.Size(672, 229);
+            this.flpColonyStructure.Size = new System.Drawing.Size(642, 163);
             this.flpColonyStructure.TabIndex = 1;
             this.flpColonyStructure.WrapContents = false;
-            // 
-            // flowLayoutPanel2
-            // 
-            this.flowLayoutPanel2.Controls.Add(this.flpMovement);
-            this.flowLayoutPanel2.Controls.Add(this.flpStructureDetails);
-            this.flowLayoutPanel2.Controls.Add(this.flpStructureStatus);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 3);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(660, 200);
-            this.flowLayoutPanel2.TabIndex = 1;
-            this.flowLayoutPanel2.WrapContents = false;
             // 
             // flpMovement
             // 
@@ -151,26 +139,30 @@
             // 
             // flpStructureDetails
             // 
+            this.flpStructureDetails.AutoSize = true;
             this.flpStructureDetails.Controls.Add(this.rtbStatus);
             this.flpStructureDetails.Controls.Add(this.flpStructureCommands);
             this.flpStructureDetails.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpStructureDetails.Location = new System.Drawing.Point(65, 3);
             this.flpStructureDetails.Name = "flpStructureDetails";
-            this.flpStructureDetails.Size = new System.Drawing.Size(435, 192);
+            this.flpStructureDetails.Size = new System.Drawing.Size(430, 157);
             this.flpStructureDetails.TabIndex = 1;
             this.flpStructureDetails.WrapContents = false;
+            this.flpStructureDetails.Layout += new System.Windows.Forms.LayoutEventHandler(this.flpStructureDetails_Layout);
             // 
             // flpStructureCommands
             // 
+            this.flpStructureCommands.AutoSize = true;
             this.flpStructureCommands.Controls.Add(this.flpSelection);
             this.flpStructureCommands.Controls.Add(this.flpSubSelection);
             this.flpStructureCommands.Controls.Add(this.flpCompletionTime);
             this.flpStructureCommands.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpStructureCommands.Location = new System.Drawing.Point(3, 49);
             this.flpStructureCommands.Name = "flpStructureCommands";
-            this.flpStructureCommands.Size = new System.Drawing.Size(432, 121);
+            this.flpStructureCommands.Size = new System.Drawing.Size(424, 105);
             this.flpStructureCommands.TabIndex = 2;
             this.flpStructureCommands.WrapContents = false;
+            this.flpStructureCommands.Layout += new System.Windows.Forms.LayoutEventHandler(this.flpStructureCommands_Layout);
             // 
             // flpSelection
             // 
@@ -267,17 +259,18 @@
             // 
             // flpCompletionTime
             // 
+            this.flpCompletionTime.Controls.Add(this.richTextBox1);
             this.flpCompletionTime.Controls.Add(this.label1);
             this.flpCompletionTime.Controls.Add(this.txtCompletionTime);
             this.flpCompletionTime.Controls.Add(this.cmdDone);
             this.flpCompletionTime.Location = new System.Drawing.Point(3, 73);
             this.flpCompletionTime.Name = "flpCompletionTime";
-            this.flpCompletionTime.Size = new System.Drawing.Size(281, 29);
+            this.flpCompletionTime.Size = new System.Drawing.Size(418, 29);
             this.flpCompletionTime.TabIndex = 4;
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(3, 0);
+            this.label1.Location = new System.Drawing.Point(140, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(88, 13);
             this.label1.TabIndex = 2;
@@ -285,7 +278,7 @@
             // 
             // txtCompletionTime
             // 
-            this.txtCompletionTime.Location = new System.Drawing.Point(97, 3);
+            this.txtCompletionTime.Location = new System.Drawing.Point(234, 3);
             this.txtCompletionTime.Name = "txtCompletionTime";
             this.txtCompletionTime.Size = new System.Drawing.Size(100, 20);
             this.txtCompletionTime.TabIndex = 3;
@@ -294,7 +287,7 @@
             // 
             // cmdDone
             // 
-            this.cmdDone.Location = new System.Drawing.Point(203, 3);
+            this.cmdDone.Location = new System.Drawing.Point(340, 3);
             this.cmdDone.Name = "cmdDone";
             this.cmdDone.Size = new System.Drawing.Size(75, 23);
             this.cmdDone.TabIndex = 6;
@@ -311,7 +304,7 @@
             this.flpStructureStatus.Controls.Add(this.chkWorkDetail2);
             this.flpStructureStatus.Controls.Add(this.chkWorkDetail3);
             this.flpStructureStatus.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpStructureStatus.Location = new System.Drawing.Point(506, 3);
+            this.flpStructureStatus.Location = new System.Drawing.Point(501, 3);
             this.flpStructureStatus.Name = "flpStructureStatus";
             this.flpStructureStatus.Size = new System.Drawing.Size(132, 138);
             this.flpStructureStatus.TabIndex = 2;
@@ -381,17 +374,31 @@
             // 
             this.timerCountdown.Tick += new System.EventHandler(this.timerCountdown_Tick);
             // 
+            // richTextBox1
+            // 
+            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox1.Location = new System.Drawing.Point(3, 3);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.ReadOnly = true;
+            this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.richTextBox1.Size = new System.Drawing.Size(131, 23);
+            this.richTextBox1.TabIndex = 7;
+            this.richTextBox1.Text = "[red]6[/red]/4";
+            this.richTextBox1.WordWrap = false;
+            // 
             // ColonyStructure
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.flpColonyStructure);
             this.Name = "ColonyStructure";
-            this.Size = new System.Drawing.Size(787, 232);
+            this.Size = new System.Drawing.Size(644, 166);
+            this.Layout += new System.Windows.Forms.LayoutEventHandler(this.ColonyStructure_Layout);
             this.flpColonyStructure.ResumeLayout(false);
-            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flpColonyStructure.PerformLayout();
             this.flpMovement.ResumeLayout(false);
             this.flpStructureDetails.ResumeLayout(false);
+            this.flpStructureDetails.PerformLayout();
             this.flpStructureCommands.ResumeLayout(false);
             this.flpSelection.ResumeLayout(false);
             this.flpSelection.PerformLayout();
@@ -408,7 +415,6 @@
 
         private System.Windows.Forms.RichTextBox rtbStatus;
         private System.Windows.Forms.FlowLayoutPanel flpColonyStructure;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.FlowLayoutPanel flpMovement;
         private System.Windows.Forms.Button cmdUp;
         private System.Windows.Forms.Button cmdDown;
@@ -437,5 +443,6 @@
         private System.Windows.Forms.ComboBox cmbSubSelection;
         private System.Windows.Forms.Button cmdSubStart;
         private System.Windows.Forms.Timer timerCountdown;
+        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }

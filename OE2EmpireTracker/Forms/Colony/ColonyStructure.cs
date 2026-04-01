@@ -317,7 +317,14 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 flpCompletionTime.Visible = false;
             }
+
             guard.release();
+
+            // TODO: FIXME: Changing visibilty isn't triggering a layout call.
+            // flpStructureCommands.PerformLayout(); - Does NOT work.
+            flpStructureCommands_Layout(null, null);
+            flpStructureDetails_Layout(null, null);
+            ColonyStructure_Layout(null, null);
         }
 
         private void populateSelectionWithSurveys()
@@ -679,6 +686,50 @@ namespace OE2EmpireTracker.Forms.Colony
                     handleMiningRigControls();
                 }
             }
+        }
+
+        private void ColonyStructure_Layout(object sender, LayoutEventArgs e)
+        {
+            int width = this.Size.Width - flpMovement.Width - flpStructureDetails.Width;
+            flpStructureDetails.Size = new Size(width, flpStructureDetails.Size.Height);
+
+            int height = Math.Max(Math.Max(flpStructureDetails.Height+ flpStructureDetails.Margin.Vertical, flpMovement.Height + flpMovement.Margin.Vertical), flpStructureDetails.Height + flpStructureDetails.Margin.Vertical);
+            if (this.Height != height)
+            {
+                this.Size = new Size(this.Size.Width, height);
+            }
+        }
+
+        private void flpStructureDetails_Layout(object sender, LayoutEventArgs e)
+        {
+            int height = 0;
+            if (rtbStatus.Visible)
+            {
+                height += rtbStatus.Size.Height + rtbStatus.Margin.Vertical;
+            }
+            if (flpStructureCommands.Visible)
+            {
+                height += flpStructureCommands.Size.Height + flpStructureCommands.Margin.Vertical;
+            }
+            flpStructureDetails.Size = new Size(flpStructureDetails.Size.Width, height);
+        }
+
+        private void flpStructureCommands_Layout(object sender, LayoutEventArgs e)
+        {
+            int height = 0;
+            if (flpSelection.Visible)
+            {
+                height += flpSelection.Size.Height + flpSelection.Margin.Vertical;
+            }
+            if (flpSubSelection.Visible)
+            {
+                height += flpSubSelection.Size.Height + flpSubSelection.Margin.Vertical;
+            }
+            if (flpCompletionTime.Visible)
+            {
+                height += flpCompletionTime.Size.Height + flpCompletionTime.Margin.Vertical;
+            }
+            flpStructureCommands.Size = new Size(flpStructureCommands.Size.Width, height);
         }
     }
 }
