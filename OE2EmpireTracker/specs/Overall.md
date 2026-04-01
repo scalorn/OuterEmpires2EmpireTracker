@@ -7,12 +7,13 @@ Data locking
 Colony
 	Timed processing
 		Needs to process in this order:
-			1. Mining
-			2. Refining Base Resources
-			3. Refining S1 Synthetics
-			4. Refining S2 Synthetics
-			5. Manufacturing
-			6. Research
+			1. Structure building
+			2. Mining
+			3. Refining Base Resources
+			4. Refining S1 Synthetics
+			5. Refining S2 Synthetics
+			6. Manufacturing
+			7. Research
 
 Timed Event Review Form
 	Need to be able to review all the timed events in the system.

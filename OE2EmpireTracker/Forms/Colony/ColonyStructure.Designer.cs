@@ -32,12 +32,12 @@
             this.rtbStatus = new System.Windows.Forms.RichTextBox();
             this.flpColonyStructure = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpMovement = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdUp = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cmdDown = new System.Windows.Forms.Button();
-            this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel7 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpStructureDetails = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpStructureCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.flpSelection = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSelection = new System.Windows.Forms.Label();
             this.txtSelectionFilter = new System.Windows.Forms.TextBox();
@@ -52,7 +52,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtCompletionTime = new System.Windows.Forms.TextBox();
             this.cmdDone = new System.Windows.Forms.Button();
-            this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpStructureStatus = new System.Windows.Forms.FlowLayoutPanel();
             this.chkBuilt = new System.Windows.Forms.CheckBox();
             this.chkStaged = new System.Windows.Forms.CheckBox();
             this.chkOnline = new System.Windows.Forms.CheckBox();
@@ -60,16 +60,15 @@
             this.chkWorkDetail2 = new System.Windows.Forms.CheckBox();
             this.chkWorkDetail3 = new System.Windows.Forms.CheckBox();
             this.timerCountdown = new System.Windows.Forms.Timer(this.components);
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.flpColonyStructure.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
-            this.flowLayoutPanel3.SuspendLayout();
-            this.flowLayoutPanel4.SuspendLayout();
-            this.flowLayoutPanel7.SuspendLayout();
+            this.flpMovement.SuspendLayout();
+            this.flpStructureDetails.SuspendLayout();
+            this.flpStructureCommands.SuspendLayout();
             this.flpSelection.SuspendLayout();
             this.flpSubSelection.SuspendLayout();
             this.flpCompletionTime.SuspendLayout();
-            this.flowLayoutPanel5.SuspendLayout();
+            this.flpStructureStatus.SuspendLayout();
             this.SuspendLayout();
             // 
             // rtbStatus
@@ -87,7 +86,6 @@
             // 
             // flpColonyStructure
             // 
-            this.flpColonyStructure.AutoScroll = true;
             this.flpColonyStructure.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.flpColonyStructure.Controls.Add(this.flowLayoutPanel2);
             this.flpColonyStructure.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
@@ -100,26 +98,26 @@
             // 
             // flowLayoutPanel2
             // 
-            this.flowLayoutPanel2.Controls.Add(this.flowLayoutPanel3);
-            this.flowLayoutPanel2.Controls.Add(this.flowLayoutPanel4);
-            this.flowLayoutPanel2.Controls.Add(this.flowLayoutPanel5);
+            this.flowLayoutPanel2.Controls.Add(this.flpMovement);
+            this.flowLayoutPanel2.Controls.Add(this.flpStructureDetails);
+            this.flowLayoutPanel2.Controls.Add(this.flpStructureStatus);
             this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(660, 200);
             this.flowLayoutPanel2.TabIndex = 1;
             this.flowLayoutPanel2.WrapContents = false;
             // 
-            // flowLayoutPanel3
+            // flpMovement
             // 
-            this.flowLayoutPanel3.AutoScroll = true;
-            this.flowLayoutPanel3.Controls.Add(this.cmdUp);
-            this.flowLayoutPanel3.Controls.Add(this.cmdDelete);
-            this.flowLayoutPanel3.Controls.Add(this.cmdDown);
-            this.flowLayoutPanel3.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 3);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(56, 87);
-            this.flowLayoutPanel3.TabIndex = 0;
+            this.flpMovement.AutoScroll = true;
+            this.flpMovement.Controls.Add(this.cmdUp);
+            this.flpMovement.Controls.Add(this.cmdDelete);
+            this.flpMovement.Controls.Add(this.cmdDown);
+            this.flpMovement.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpMovement.Location = new System.Drawing.Point(3, 3);
+            this.flpMovement.Name = "flpMovement";
+            this.flpMovement.Size = new System.Drawing.Size(56, 87);
+            this.flpMovement.TabIndex = 0;
             // 
             // cmdUp
             // 
@@ -151,28 +149,28 @@
             this.cmdDown.UseVisualStyleBackColor = true;
             this.cmdDown.Click += new System.EventHandler(this.cmdDown_Click);
             // 
-            // flowLayoutPanel4
+            // flpStructureDetails
             // 
-            this.flowLayoutPanel4.Controls.Add(this.rtbStatus);
-            this.flowLayoutPanel4.Controls.Add(this.flowLayoutPanel7);
-            this.flowLayoutPanel4.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel4.Location = new System.Drawing.Point(65, 3);
-            this.flowLayoutPanel4.Name = "flowLayoutPanel4";
-            this.flowLayoutPanel4.Size = new System.Drawing.Size(435, 192);
-            this.flowLayoutPanel4.TabIndex = 1;
-            this.flowLayoutPanel4.WrapContents = false;
+            this.flpStructureDetails.Controls.Add(this.rtbStatus);
+            this.flpStructureDetails.Controls.Add(this.flpStructureCommands);
+            this.flpStructureDetails.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpStructureDetails.Location = new System.Drawing.Point(65, 3);
+            this.flpStructureDetails.Name = "flpStructureDetails";
+            this.flpStructureDetails.Size = new System.Drawing.Size(435, 192);
+            this.flpStructureDetails.TabIndex = 1;
+            this.flpStructureDetails.WrapContents = false;
             // 
-            // flowLayoutPanel7
+            // flpStructureCommands
             // 
-            this.flowLayoutPanel7.Controls.Add(this.flpSelection);
-            this.flowLayoutPanel7.Controls.Add(this.flpSubSelection);
-            this.flowLayoutPanel7.Controls.Add(this.flpCompletionTime);
-            this.flowLayoutPanel7.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel7.Location = new System.Drawing.Point(3, 49);
-            this.flowLayoutPanel7.Name = "flowLayoutPanel7";
-            this.flowLayoutPanel7.Size = new System.Drawing.Size(432, 121);
-            this.flowLayoutPanel7.TabIndex = 2;
-            this.flowLayoutPanel7.WrapContents = false;
+            this.flpStructureCommands.Controls.Add(this.flpSelection);
+            this.flpStructureCommands.Controls.Add(this.flpSubSelection);
+            this.flpStructureCommands.Controls.Add(this.flpCompletionTime);
+            this.flpStructureCommands.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpStructureCommands.Location = new System.Drawing.Point(3, 49);
+            this.flpStructureCommands.Name = "flpStructureCommands";
+            this.flpStructureCommands.Size = new System.Drawing.Size(432, 121);
+            this.flpStructureCommands.TabIndex = 2;
+            this.flpStructureCommands.WrapContents = false;
             // 
             // flpSelection
             // 
@@ -304,20 +302,20 @@
             this.cmdDone.UseVisualStyleBackColor = true;
             this.cmdDone.Click += new System.EventHandler(this.cmdDone_Click);
             // 
-            // flowLayoutPanel5
+            // flpStructureStatus
             // 
-            this.flowLayoutPanel5.Controls.Add(this.chkBuilt);
-            this.flowLayoutPanel5.Controls.Add(this.chkStaged);
-            this.flowLayoutPanel5.Controls.Add(this.chkOnline);
-            this.flowLayoutPanel5.Controls.Add(this.chkWorkDetail1);
-            this.flowLayoutPanel5.Controls.Add(this.chkWorkDetail2);
-            this.flowLayoutPanel5.Controls.Add(this.chkWorkDetail3);
-            this.flowLayoutPanel5.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel5.Location = new System.Drawing.Point(506, 3);
-            this.flowLayoutPanel5.Name = "flowLayoutPanel5";
-            this.flowLayoutPanel5.Size = new System.Drawing.Size(132, 138);
-            this.flowLayoutPanel5.TabIndex = 2;
-            this.flowLayoutPanel5.WrapContents = false;
+            this.flpStructureStatus.Controls.Add(this.chkBuilt);
+            this.flpStructureStatus.Controls.Add(this.chkStaged);
+            this.flpStructureStatus.Controls.Add(this.chkOnline);
+            this.flpStructureStatus.Controls.Add(this.chkWorkDetail1);
+            this.flpStructureStatus.Controls.Add(this.chkWorkDetail2);
+            this.flpStructureStatus.Controls.Add(this.chkWorkDetail3);
+            this.flpStructureStatus.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpStructureStatus.Location = new System.Drawing.Point(506, 3);
+            this.flpStructureStatus.Name = "flpStructureStatus";
+            this.flpStructureStatus.Size = new System.Drawing.Size(132, 138);
+            this.flpStructureStatus.TabIndex = 2;
+            this.flpStructureStatus.WrapContents = false;
             // 
             // chkBuilt
             // 
@@ -392,16 +390,16 @@
             this.Size = new System.Drawing.Size(787, 232);
             this.flpColonyStructure.ResumeLayout(false);
             this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel3.ResumeLayout(false);
-            this.flowLayoutPanel4.ResumeLayout(false);
-            this.flowLayoutPanel7.ResumeLayout(false);
+            this.flpMovement.ResumeLayout(false);
+            this.flpStructureDetails.ResumeLayout(false);
+            this.flpStructureCommands.ResumeLayout(false);
             this.flpSelection.ResumeLayout(false);
             this.flpSelection.PerformLayout();
             this.flpSubSelection.ResumeLayout(false);
             this.flpSubSelection.PerformLayout();
             this.flpCompletionTime.ResumeLayout(false);
             this.flpCompletionTime.PerformLayout();
-            this.flowLayoutPanel5.ResumeLayout(false);
+            this.flpStructureStatus.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -411,11 +409,11 @@
         private System.Windows.Forms.RichTextBox rtbStatus;
         private System.Windows.Forms.FlowLayoutPanel flpColonyStructure;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
+        private System.Windows.Forms.FlowLayoutPanel flpMovement;
         private System.Windows.Forms.Button cmdUp;
         private System.Windows.Forms.Button cmdDown;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel5;
+        private System.Windows.Forms.FlowLayoutPanel flpStructureDetails;
+        private System.Windows.Forms.FlowLayoutPanel flpStructureStatus;
         private System.Windows.Forms.CheckBox chkWorkDetail1;
         private System.Windows.Forms.CheckBox chkWorkDetail2;
         private System.Windows.Forms.CheckBox chkWorkDetail3;
@@ -423,7 +421,7 @@
         private System.Windows.Forms.CheckBox chkOnline;
         private System.Windows.Forms.CheckBox chkBuilt;
         private System.Windows.Forms.CheckBox chkStaged;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel7;
+        private System.Windows.Forms.FlowLayoutPanel flpStructureCommands;
         private System.Windows.Forms.ComboBox cmbSelection;
         private System.Windows.Forms.Button cmdStart;
         private System.Windows.Forms.Label label1;
@@ -439,6 +437,5 @@
         private System.Windows.Forms.ComboBox cmbSubSelection;
         private System.Windows.Forms.Button cmdSubStart;
         private System.Windows.Forms.Timer timerCountdown;
-        private System.Windows.Forms.Timer timer1;
     }
 }
