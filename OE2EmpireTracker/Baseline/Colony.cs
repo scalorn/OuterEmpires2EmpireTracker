@@ -1,4 +1,5 @@
-﻿using OE2EmpireTracker.Data;
+﻿using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace OE2EmpireTracker.Baseline
                 if (structure.ProcessCompletionTime != null && structure.ProcessCompletionTime.IntervalsPassed > 0)
                 {
                     Blueprint FlatpackBlueprint = PlayerContext.getInstance().findBlueprint(structure.FlatpackBlueprintUUID);
-                    if (FlatpackBlueprint.BluePrintType == "Flatpacks/MiningRig")
+                    if (FlatpackBlueprint.BluePrintType == BlueprintTypes.MiningRig)
                     {
                         Survey survey = PlayerContext.getInstance().findSurvey(structure.MiningSurvey);
                         SurveyResource surveyResource = survey.Resources[structure.MiningSurveyResource];

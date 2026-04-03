@@ -1,4 +1,5 @@
 ﻿using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Data;
 using System;
@@ -210,7 +211,7 @@ namespace OE2EmpireTracker.Forms.Colony
             List<Data.Blueprint> filteredList = new List<Data.Blueprint>(playerContext.blueprintList);
 
             filteredList = filteredList
-                .Where(item => item.BluePrintType.IndexOf("Flatpacks/", StringComparison.OrdinalIgnoreCase) == 0)
+                .Where(item => item.BluePrintType.IsFlatpack())
                 .ToList();
 
             if (!string.IsNullOrEmpty(searchText))

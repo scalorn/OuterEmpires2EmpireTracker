@@ -1,5 +1,6 @@
 ﻿using NLog;
 using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Data;
 using System;
@@ -64,7 +65,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 //PowerRequired = powerRequired;
 
                 Log.Info("FlatpackBlueprint.BluePrintType = " + FlatpackBlueprint.BluePrintType);
-                if (FlatpackBlueprint.BluePrintType == "Flatpacks/MiningRig")
+                if (FlatpackBlueprint.BluePrintType == BlueprintTypes.MiningRig)
                 {
                     handleMiningRigControls();
                 }
@@ -664,7 +665,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             if (FlatpackBlueprint != null)
             {
-                if (FlatpackBlueprint.BluePrintType == "Flatpacks/MiningRig")
+                if (FlatpackBlueprint.BluePrintType == BlueprintTypes.MiningRig)
                 {
                     string survey = cmbSelection.SelectedValue as string;
                     ColonyStructureData.MiningSurvey = survey;
@@ -679,7 +680,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             if (FlatpackBlueprint != null)
             {
-                if (FlatpackBlueprint.BluePrintType == "Flatpacks/MiningRig")
+                if (FlatpackBlueprint.BluePrintType == BlueprintTypes.MiningRig)
                 {
                     string surveyResource = cmbSubSelection.SelectedValue as string;
                     ColonyStructureData.MiningSurveyResource = surveyResource;
