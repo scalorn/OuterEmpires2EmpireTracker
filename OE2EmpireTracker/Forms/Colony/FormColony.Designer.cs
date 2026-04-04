@@ -33,9 +33,6 @@
             this.lblBlueprintListFilter = new System.Windows.Forms.Label();
             this.txtBlueprintListFilter = new System.Windows.Forms.TextBox();
             this.lvwColonies = new System.Windows.Forms.ListView();
-            this.Property = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.BaseValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CurrentValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tlpBase = new System.Windows.Forms.TableLayoutPanel();
             this.flpColonyData = new System.Windows.Forms.FlowLayoutPanel();
             this.flpBaseDetails = new System.Windows.Forms.FlowLayoutPanel();
@@ -69,8 +66,6 @@
             this.txtCommodityRequestQuantity = new System.Windows.Forms.TextBox();
             this.cmdAddCommodityRequest = new System.Windows.Forms.Button();
             this.dgvCommodityRequests = new System.Windows.Forms.DataGridView();
-            this.CommodityRequestedName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CommodityRequestedAmount = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
             this.tabPWarehousing = new System.Windows.Forms.TabPage();
             this.flowLayoutPanel7 = new System.Windows.Forms.FlowLayoutPanel();
             this.flpAddItemBox = new System.Windows.Forms.FlowLayoutPanel();
@@ -84,15 +79,29 @@
             this.txtQuantity = new System.Windows.Forms.TextBox();
             this.cmdAdd = new System.Windows.Forms.Button();
             this.dgvItems = new System.Windows.Forms.DataGridView();
+            this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdSave = new System.Windows.Forms.Button();
+            this.cmdDelete = new System.Windows.Forms.Button();
+            this.cmdCancel = new System.Windows.Forms.Button();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewValidatedTextBoxColumn1 = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewValidatedTextBoxColumn2 = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
+            this.CommodityRequestedName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CommodityRequestedAmount = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
             this.ItemType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Item = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LockedAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Amount = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
-            this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkGlobalBlueprint = new System.Windows.Forms.CheckBox();
-            this.cmdSave = new System.Windows.Forms.Button();
-            this.cmdDelete = new System.Windows.Forms.Button();
-            this.cmdCancel = new System.Windows.Forms.Button();
+            this.Property = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.BaseValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CurrentValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdBootstrap = new System.Windows.Forms.Button();
+            this.cmdOptimize = new System.Windows.Forms.Button();
+            this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.flpSearchList.SuspendLayout();
             this.flpBlueprintSearch.SuspendLayout();
             this.tlpBase.SuspendLayout();
@@ -101,6 +110,7 @@
             this.flpPlanetName.SuspendLayout();
             this.flpColonyName.SuspendLayout();
             this.tabDetailedData.SuspendLayout();
+            this.tabPAdministration.SuspendLayout();
             this.tabPStructures.SuspendLayout();
             this.flpStructures.SuspendLayout();
             this.flpStructureData.SuspendLayout();
@@ -115,6 +125,8 @@
             this.flpAddItemBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvItems)).BeginInit();
             this.flpCommands.SuspendLayout();
+            this.flowLayoutPanel3.SuspendLayout();
+            this.flowLayoutPanel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // flpSearchList
@@ -172,26 +184,6 @@
             this.lvwColonies.UseCompatibleStateImageBehavior = false;
             this.lvwColonies.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.lvwColonies_ItemSelectionChanged);
             this.lvwColonies.SelectedIndexChanged += new System.EventHandler(this.lvwColonies_SelectedIndexChanged);
-            // 
-            // Property
-            // 
-            this.Property.HeaderText = "Property";
-            this.Property.Name = "Property";
-            this.Property.ReadOnly = true;
-            this.Property.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // BaseValue
-            // 
-            this.BaseValue.HeaderText = "BaseValue";
-            this.BaseValue.Name = "BaseValue";
-            this.BaseValue.ReadOnly = true;
-            this.BaseValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // CurrentValue
-            // 
-            this.CurrentValue.HeaderText = "CurrentValue";
-            this.CurrentValue.Name = "CurrentValue";
-            this.CurrentValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // tlpBase
             // 
@@ -315,6 +307,7 @@
             // 
             // tabPAdministration
             // 
+            this.tabPAdministration.Controls.Add(this.flowLayoutPanel4);
             this.tabPAdministration.Location = new System.Drawing.Point(4, 22);
             this.tabPAdministration.Margin = new System.Windows.Forms.Padding(2);
             this.tabPAdministration.Name = "tabPAdministration";
@@ -566,25 +559,10 @@
             this.dgvCommodityRequests.Name = "dgvCommodityRequests";
             this.dgvCommodityRequests.Size = new System.Drawing.Size(889, 430);
             this.dgvCommodityRequests.TabIndex = 7;
-            this.dgvCommodityRequests.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvCommodityRequests_CellValueChanged);
             this.dgvCommodityRequests.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvCommodityRequests_CellValidating);
+            this.dgvCommodityRequests.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvCommodityRequests_CellValueChanged);
             this.dgvCommodityRequests.SelectionChanged += new System.EventHandler(this.dgvCommodityRequests_SelectionChanged);
             this.dgvCommodityRequests.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvCommodityRequests_KeyDown);
-            // 
-            // CommodityRequestedName
-            // 
-            this.CommodityRequestedName.HeaderText = "Commodity";
-            this.CommodityRequestedName.Name = "CommodityRequestedName";
-            this.CommodityRequestedName.ReadOnly = true;
-            this.CommodityRequestedName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.CommodityRequestedName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.CommodityRequestedName.Width = 300;
-            // 
-            // CommodityRequestedAmount
-            // 
-            this.CommodityRequestedAmount.HeaderText = "Amount";
-            this.CommodityRequestedAmount.Name = "CommodityRequestedAmount";
-            this.CommodityRequestedAmount.ValidationPattern = OE2EmpireTracker.Controls.ValidatedTextBox.NUMBER_VALIDATION;
             // 
             // tabPWarehousing
             // 
@@ -726,10 +704,116 @@
             this.dgvItems.Name = "dgvItems";
             this.dgvItems.Size = new System.Drawing.Size(889, 430);
             this.dgvItems.TabIndex = 7;
+            this.dgvItems.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvItems_CellValidating);
+            this.dgvItems.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvItems_CellValueChanged);
             this.dgvItems.SelectionChanged += new System.EventHandler(this.dgvItems_SelectionChanged);
             this.dgvItems.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvItems_KeyDown);
-            this.dgvItems.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvItems_CellValueChanged);
-            this.dgvItems.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvItems_CellValidating);
+            // 
+            // flpCommands
+            // 
+            this.flpCommands.Controls.Add(this.cmdSave);
+            this.flpCommands.Controls.Add(this.cmdDelete);
+            this.flpCommands.Controls.Add(this.cmdCancel);
+            this.flpCommands.Location = new System.Drawing.Point(2, 270);
+            this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
+            this.flpCommands.Name = "flpCommands";
+            this.flpCommands.Size = new System.Drawing.Size(800, 29);
+            this.flpCommands.TabIndex = 9;
+            this.flpCommands.WrapContents = false;
+            // 
+            // cmdSave
+            // 
+            this.cmdSave.Location = new System.Drawing.Point(3, 3);
+            this.cmdSave.Name = "cmdSave";
+            this.cmdSave.Size = new System.Drawing.Size(75, 23);
+            this.cmdSave.TabIndex = 9;
+            this.cmdSave.Text = "Save";
+            this.cmdSave.UseVisualStyleBackColor = true;
+            this.cmdSave.Click += new System.EventHandler(this.cmdSave_Click);
+            // 
+            // cmdDelete
+            // 
+            this.cmdDelete.Location = new System.Drawing.Point(84, 3);
+            this.cmdDelete.Name = "cmdDelete";
+            this.cmdDelete.Size = new System.Drawing.Size(75, 23);
+            this.cmdDelete.TabIndex = 11;
+            this.cmdDelete.Text = "Delete";
+            this.cmdDelete.UseVisualStyleBackColor = true;
+            // 
+            // cmdCancel
+            // 
+            this.cmdCancel.Location = new System.Drawing.Point(165, 3);
+            this.cmdCancel.Name = "cmdCancel";
+            this.cmdCancel.Size = new System.Drawing.Size(75, 23);
+            this.cmdCancel.TabIndex = 10;
+            this.cmdCancel.Text = "Cancel";
+            this.cmdCancel.UseVisualStyleBackColor = true;
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.HeaderText = "Commodity";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.ReadOnly = true;
+            this.dataGridViewTextBoxColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewTextBoxColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.dataGridViewTextBoxColumn1.Width = 300;
+            // 
+            // dataGridViewValidatedTextBoxColumn1
+            // 
+            this.dataGridViewValidatedTextBoxColumn1.AllowSpaces = false;
+            this.dataGridViewValidatedTextBoxColumn1.HeaderText = "Amount";
+            this.dataGridViewValidatedTextBoxColumn1.InvalidColor = System.Drawing.Color.LightCoral;
+            this.dataGridViewValidatedTextBoxColumn1.Name = "dataGridViewValidatedTextBoxColumn1";
+            this.dataGridViewValidatedTextBoxColumn1.ValidationPattern = "^[+-]?\\d+$";
+            this.dataGridViewValidatedTextBoxColumn1.ValidColor = System.Drawing.Color.White;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            this.dataGridViewTextBoxColumn2.HeaderText = "ItemType";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.dataGridViewTextBoxColumn2.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn3
+            // 
+            this.dataGridViewTextBoxColumn3.HeaderText = "Item";
+            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            this.dataGridViewTextBoxColumn3.ReadOnly = true;
+            this.dataGridViewTextBoxColumn3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewTextBoxColumn3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.dataGridViewTextBoxColumn3.Width = 150;
+            // 
+            // dataGridViewTextBoxColumn4
+            // 
+            this.dataGridViewTextBoxColumn4.HeaderText = "Locked Amount";
+            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            this.dataGridViewTextBoxColumn4.ReadOnly = true;
+            // 
+            // dataGridViewValidatedTextBoxColumn2
+            // 
+            this.dataGridViewValidatedTextBoxColumn2.AllowSpaces = false;
+            this.dataGridViewValidatedTextBoxColumn2.HeaderText = "Amount";
+            this.dataGridViewValidatedTextBoxColumn2.InvalidColor = System.Drawing.Color.LightCoral;
+            this.dataGridViewValidatedTextBoxColumn2.Name = "dataGridViewValidatedTextBoxColumn2";
+            this.dataGridViewValidatedTextBoxColumn2.ValidationPattern = "^[+-]?\\d+$";
+            this.dataGridViewValidatedTextBoxColumn2.ValidColor = System.Drawing.Color.White;
+            // 
+            // CommodityRequestedName
+            // 
+            this.CommodityRequestedName.HeaderText = "Commodity";
+            this.CommodityRequestedName.Name = "CommodityRequestedName";
+            this.CommodityRequestedName.ReadOnly = true;
+            this.CommodityRequestedName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.CommodityRequestedName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.CommodityRequestedName.Width = 300;
+            // 
+            // CommodityRequestedAmount
+            // 
+            this.CommodityRequestedAmount.AllowSpaces = false;
+            this.CommodityRequestedAmount.HeaderText = "Amount";
+            this.CommodityRequestedAmount.InvalidColor = System.Drawing.Color.LightCoral;
+            this.CommodityRequestedAmount.Name = "CommodityRequestedAmount";
+            this.CommodityRequestedAmount.ValidationPattern = "^[+-]?\\d+$";
+            this.CommodityRequestedAmount.ValidColor = System.Drawing.Color.White;
             // 
             // ItemType
             // 
@@ -754,61 +838,72 @@
             // 
             // Amount
             // 
+            this.Amount.AllowSpaces = false;
             this.Amount.HeaderText = "Amount";
+            this.Amount.InvalidColor = System.Drawing.Color.LightCoral;
             this.Amount.Name = "Amount";
-            this.Amount.ValidationPattern = OE2EmpireTracker.Controls.ValidatedTextBox.NUMBER_VALIDATION;
+            this.Amount.ValidationPattern = "^[+-]?\\d+$";
+            this.Amount.ValidColor = System.Drawing.Color.White;
             // 
-            // flpCommands
+            // Property
             // 
-            this.flpCommands.Controls.Add(this.chkGlobalBlueprint);
-            this.flpCommands.Controls.Add(this.cmdSave);
-            this.flpCommands.Controls.Add(this.cmdDelete);
-            this.flpCommands.Controls.Add(this.cmdCancel);
-            this.flpCommands.Location = new System.Drawing.Point(2, 270);
-            this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
-            this.flpCommands.Name = "flpCommands";
-            this.flpCommands.Size = new System.Drawing.Size(800, 29);
-            this.flpCommands.TabIndex = 9;
-            this.flpCommands.WrapContents = false;
+            this.Property.HeaderText = "Property";
+            this.Property.Name = "Property";
+            this.Property.ReadOnly = true;
+            this.Property.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
-            // chkGlobalBlueprint
+            // BaseValue
             // 
-            this.chkGlobalBlueprint.AutoSize = true;
-            this.chkGlobalBlueprint.Location = new System.Drawing.Point(3, 3);
-            this.chkGlobalBlueprint.Name = "chkGlobalBlueprint";
-            this.chkGlobalBlueprint.Size = new System.Drawing.Size(100, 17);
-            this.chkGlobalBlueprint.TabIndex = 8;
-            this.chkGlobalBlueprint.Text = "Global Blueprint";
-            this.chkGlobalBlueprint.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkGlobalBlueprint.UseVisualStyleBackColor = true;
+            this.BaseValue.HeaderText = "BaseValue";
+            this.BaseValue.Name = "BaseValue";
+            this.BaseValue.ReadOnly = true;
+            this.BaseValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
-            // cmdSave
+            // CurrentValue
             // 
-            this.cmdSave.Location = new System.Drawing.Point(109, 3);
-            this.cmdSave.Name = "cmdSave";
-            this.cmdSave.Size = new System.Drawing.Size(75, 23);
-            this.cmdSave.TabIndex = 9;
-            this.cmdSave.Text = "Save";
-            this.cmdSave.UseVisualStyleBackColor = true;
-            this.cmdSave.Click += new System.EventHandler(this.cmdSave_Click);
+            this.CurrentValue.HeaderText = "CurrentValue";
+            this.CurrentValue.Name = "CurrentValue";
+            this.CurrentValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
-            // cmdDelete
+            // flowLayoutPanel3
             // 
-            this.cmdDelete.Location = new System.Drawing.Point(190, 3);
-            this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(75, 23);
-            this.cmdDelete.TabIndex = 11;
-            this.cmdDelete.Text = "Delete";
-            this.cmdDelete.UseVisualStyleBackColor = true;
+            this.flowLayoutPanel3.Controls.Add(this.cmdBootstrap);
+            this.flowLayoutPanel3.Controls.Add(this.cmdOptimize);
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(2, 2);
+            this.flowLayoutPanel3.Margin = new System.Windows.Forms.Padding(2);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(800, 29);
+            this.flowLayoutPanel3.TabIndex = 10;
+            this.flowLayoutPanel3.WrapContents = false;
             // 
-            // cmdCancel
+            // cmdBootstrap
             // 
-            this.cmdCancel.Location = new System.Drawing.Point(271, 3);
-            this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(75, 23);
-            this.cmdCancel.TabIndex = 10;
-            this.cmdCancel.Text = "Cancel";
-            this.cmdCancel.UseVisualStyleBackColor = true;
+            this.cmdBootstrap.AutoSize = true;
+            this.cmdBootstrap.Location = new System.Drawing.Point(3, 3);
+            this.cmdBootstrap.Name = "cmdBootstrap";
+            this.cmdBootstrap.Size = new System.Drawing.Size(129, 23);
+            this.cmdBootstrap.TabIndex = 9;
+            this.cmdBootstrap.Text = "Bootstrap From Surveys";
+            this.cmdBootstrap.UseVisualStyleBackColor = true;
+            // 
+            // cmdOptimize
+            // 
+            this.cmdOptimize.AutoSize = true;
+            this.cmdOptimize.Location = new System.Drawing.Point(138, 3);
+            this.cmdOptimize.Name = "cmdOptimize";
+            this.cmdOptimize.Size = new System.Drawing.Size(112, 23);
+            this.cmdOptimize.TabIndex = 11;
+            this.cmdOptimize.Text = "Optimize Build Order";
+            this.cmdOptimize.UseVisualStyleBackColor = true;
+            this.cmdOptimize.Click += new System.EventHandler(this.cmdOptimize_Click);
+            // 
+            // flowLayoutPanel4
+            // 
+            this.flowLayoutPanel4.Controls.Add(this.flowLayoutPanel3);
+            this.flowLayoutPanel4.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel4.Name = "flowLayoutPanel4";
+            this.flowLayoutPanel4.Size = new System.Drawing.Size(764, 38);
+            this.flowLayoutPanel4.TabIndex = 11;
             // 
             // FormColony
             // 
@@ -829,6 +924,7 @@
             this.flpColonyName.ResumeLayout(false);
             this.flpColonyName.PerformLayout();
             this.tabDetailedData.ResumeLayout(false);
+            this.tabPAdministration.ResumeLayout(false);
             this.tabPStructures.ResumeLayout(false);
             this.flpStructures.ResumeLayout(false);
             this.flpStructures.PerformLayout();
@@ -848,7 +944,9 @@
             this.flpAddItemBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvItems)).EndInit();
             this.flpCommands.ResumeLayout(false);
-            this.flpCommands.PerformLayout();
+            this.flowLayoutPanel3.ResumeLayout(false);
+            this.flowLayoutPanel3.PerformLayout();
+            this.flowLayoutPanel4.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -901,7 +999,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn LockedAmount;
         private OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn Amount;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
-        private System.Windows.Forms.CheckBox chkGlobalBlueprint;
         private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Button cmdCancel;
@@ -920,5 +1017,15 @@
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.DataGridViewTextBoxColumn CommodityRequestedName;
         private OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn CommodityRequestedAmount;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
+        private System.Windows.Forms.Button cmdBootstrap;
+        private System.Windows.Forms.Button cmdOptimize;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private Controls.DataGridViewValidatedTextBoxColumn dataGridViewValidatedTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
+        private Controls.DataGridViewValidatedTextBoxColumn dataGridViewValidatedTextBoxColumn2;
     }
 }

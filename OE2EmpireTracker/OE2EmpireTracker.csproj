@@ -124,6 +124,7 @@
     <Compile Include="Baseline\BlueprintType.cs" />
     <Compile Include="Baseline\Colony.cs" />
     <Compile Include="Baseline\ColonyStatusCalculator.cs" />
+    <Compile Include="Baseline\BuildOrderOptimizer.cs" />
     <Compile Include="Baseline\ColonyStructureStatus.cs" />
     <Compile Include="Baseline\ColonyWorker.cs" />
     <Compile Include="Baseline\IColonyStructureWorkers.cs" />

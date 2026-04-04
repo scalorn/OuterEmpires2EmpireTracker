@@ -76,6 +76,21 @@ namespace OE2EmpireTracker.Forms.Colony
             colonyViewModel.Save();
         }
 
+        private void cmdOptimize_Click(object sender, EventArgs e)
+        {
+            if (selectedColony == null) return;
+
+            var optimizer = new BuildOrderOptimizer(playerContext);
+            var optimized = optimizer.Optimize(selectedColony);
+
+            // Replace the colony's structure list with the optimized order
+            selectedColony.Structures.Clear();
+            selectedColony.Structures.AddRange(optimized);
+
+            // Refresh the UI
+            structures_ColonyStructureDataChanged(sender, e);
+        }
+
         private void cmdAddFlatpack_Click(object sender, EventArgs e)
         {
             this.SuspendLayout();
