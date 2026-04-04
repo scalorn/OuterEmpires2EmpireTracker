@@ -89,10 +89,9 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 
 ---
 
-### AMB-012 — Commodity.ExtendedName is [JsonIgnore] but the spec does not mention this
-**Code behavior:** `Commodity.ExtendedName` has `[JsonIgnore]`.  
-**Spec (REQ-ARCH-041):** Says computed properties SHALL be `[JsonIgnore]` — this is consistent.  
-**Clarification needed:** Confirm that `Commodity.ExtendedName` is intentionally excluded from JSON (it is computed from Name + Industry + Group which are all serialized).
+### AMB-012 — RESOLVED
+**Resolution:** `ExtendedName` is a computed UI display property that concatenates all relevant identifying fields into a single human-readable string (e.g. Blueprint combines Class, Evolution, Name, TechLevel, NickName). It is intentionally `[JsonIgnore]` on all types because it is derived from other serialized fields and does not need to be stored. This is consistent with REQ-ARCH-041.  
+**Action:** REQ-ARCH-041 updated to explicitly mention ExtendedName as an example.
 
 ---
 

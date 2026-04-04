@@ -36,7 +36,7 @@
 ## Serialization
 
 **REQ-ARCH-040** Newtonsoft.Json SHALL be used for all JSON serialization.  
-**REQ-ARCH-041** Computed properties (ExtendedName, TimeRemaining) SHALL be decorated with [JsonIgnore].  
+**REQ-ARCH-041** Computed properties SHALL be decorated with [JsonIgnore] and not appear in serialized JSON. ExtendedName is a computed UI display property present on Item, Blueprint, Survey, Commodity, and SurveyResource — all SHALL be [JsonIgnore]. ExtendedName concatenates identifying fields (e.g. Class, Evolution, Name, TechLevel, NickName for Blueprint) into a human-readable string for display in combo boxes and grids.  
 **REQ-ARCH-042** Custom JsonConverters SHALL be used for PropertyBag, ItemBag, and LockTracking to control the exact JSON format.  
 **REQ-ARCH-043** JSON files SHALL be written with Formatting.Indented for human readability.
 
