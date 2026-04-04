@@ -223,9 +223,9 @@ Volume SHALL be set when an item is added to the warehouse.
 
 ---
 
-### AMB-029 — ColonyStructure.ColonyStructureData.Statuses serialized to JSON
-**Context:** `ColonyStructureStatus` objects are stored in `structure.Statuses["Actual"]` and `structure.Statuses["Ideal"]`. These are computed values that are recalculated on every change. They are currently serialized to JSON, adding significant bulk to the save file.  
-**Question:** Should `Statuses` be `[JsonIgnore]` since they are recomputed on load? Or are they intentionally persisted so the UI can display them without recalculating?
+### AMB-029 — RESOLVED
+**Resolution:** `ColonyStructure.Statuses` contains computed values (Actual and Ideal status) that are recalculated on every change. They do not need to be persisted. `[JsonIgnore]` added to `Statuses` to stop serializing them, reducing save file size significantly.  
+**Action:** Colony.cs updated. REQ-ARCH-041 already covers this (computed properties SHALL be JsonIgnore).
 
 ---
 

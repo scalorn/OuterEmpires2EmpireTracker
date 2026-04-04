@@ -1,4 +1,5 @@
-﻿using OE2EmpireTracker.Constants;
+﻿using Newtonsoft.Json;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Data;
 using System;
 using System.Collections.Generic;
@@ -94,6 +95,7 @@ namespace OE2EmpireTracker.Baseline
         public string MiningSurveyResource { get; set; } = null;
         public Decimal MiningLeftOvers { get; set; } = Decimal.Zero;
 
+        [JsonIgnore]
         public Dictionary<string, ColonyStructureStatus> Statuses { get; set; } = new Dictionary<string, ColonyStructureStatus>();
 
         DateTime completion { get; set; }
