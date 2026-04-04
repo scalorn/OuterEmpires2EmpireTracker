@@ -64,9 +64,9 @@ Each item references the relevant requirement ID where one exists.
 
 ---
 
-### AMB-009 — ColonyStatusCalculator: WarehouseRequired is never incremented
-**Code behavior:** `builtWarehouseRequired` is seeded from `prevStatus.WarehouseRequired` but nothing ever adds to it. It stays at 0 for all colonies.  
-**Question:** Is WarehouseRequired always 0 by design (warehouse capacity is a provision, not a requirement), or is there a missing calculation? REQ-COL-017 says workers contribute to Habitation/Food/Entertainment required but does not mention Warehouse.
+### AMB-009 — RESOLVED
+**Resolution:** WarehouseRequired SHALL be calculated as the sum of `item.Quantity * item.Volume` across all items in the colony's ItemBag. `Item` needs a `Volume` property (double, default 0). The calculator SHALL pass the colony's ItemBag to CalculateBuilt so it can compute the total.  
+**Action:** Item.Volume added. ColonyStatusCalculator updated. REQ-COL-017 and REQ-DM updated.
 
 ---
 

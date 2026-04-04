@@ -90,10 +90,7 @@ namespace OE2EmpireTracker.Baseline
         {
             var workers = new ActualColonyStructureWorkers();
             ColonyStructureStatus previousStatus = new ColonyStructureStatus();
-            //ColonyWorkers.Clear();
             Dictionary<string, int> StructureCounts = new Dictionary<string, int>();
-
-
 
             foreach (ColonyStructure structure in colony.Structures)
             {
@@ -113,13 +110,13 @@ namespace OE2EmpireTracker.Baseline
                 previousStatus = currentStatus;
             }
             finalActualStatus = previousStatus;
+            finalActualStatus.WarehouseRequired = CalculateWarehouseRequired();
         }
 
         public void CalculateIdeal()
         {
             var workers = new IdealColonyStructureWorkers();
             ColonyStructureStatus previousStatus = new ColonyStructureStatus();
-            //ColonyWorkers.Clear();
 
             foreach (ColonyStructure structure in colony.Structures)
             {
@@ -130,6 +127,17 @@ namespace OE2EmpireTracker.Baseline
                 previousStatus = currentStatus;
             }
             finalIdealStatus = previousStatus;
+            finalIdealStatus.WarehouseRequired = CalculateWarehouseRequired();
+        }
+
+        private double CalculateWarehouseRequired()
+        {
+            double total = 0;
+            foreach (var item in colony.Items.Items.Values)
+            {
+                total += item.Quantity * item.Volume;
+            }
+            return total;
         }
 
         public void CalculateBuilt(ColonyStructure structure, ColonyStructureStatus prevStatus, ColonyStructureStatus status, IColonyStructureWorkers workerSource, Data.Blueprint flatpackBlueprint)

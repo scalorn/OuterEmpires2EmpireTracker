@@ -91,6 +91,7 @@ namespace OE2EmpireTracker.Data
         //[Required]
         public int Quantity { get; set; } = 0;
         public string ResourcePurity { get; set; } = string.Empty;
+        public double Volume { get; set; } = 0;
         
         public Item(ItemType.ItemTypeEnum itemType, string name)
         {

@@ -19,6 +19,7 @@
 **REQ-COL-015** Power, Habitation, Entertainment, and Warehouse resources SHALL only be counted when the structure is Online.  
 **REQ-COL-016** Food provision SHALL be counted regardless of Online status.  
 **REQ-COL-017** Worker counts (BlueCollar, WhiteCollar, Specialist) SHALL contribute to HabitationRequired, FoodRequired, and EntertainmentRequired.  
+**REQ-COL-017a** WarehouseRequired SHALL be calculated as the sum of `item.Quantity * item.Volume` across all items in the colony's ItemBag. This value is independent of structure order and SHALL be set on the final status only.  
 **REQ-COL-018** Unallocated worker types (UnassignedBlueCollarDetail etc.) SHALL be counted once per colony, not once per structure.  
 **REQ-COL-019** IColonyStructureWorkers.ActualColonyStructureWorkers SHALL read worker state from the structure's AssignedWorkers PropertyBag.  
 **REQ-COL-020** IColonyStructureWorkers.IdealColonyStructureWorkers SHALL return true for all worker slots, return Built=true/Staged=false/Online=true for structure state, and be a no-op for SetWorkerAssigned.

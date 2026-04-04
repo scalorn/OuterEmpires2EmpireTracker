@@ -26,7 +26,8 @@
 **REQ-DM-021** Item.ExtendedName for ItemType=Commodity SHALL return the Commodity's own ExtendedName looked up by BaseItemTypeID; if not found, return Name.  
 **REQ-DM-022** Item.ExtendedName for ItemType=Survey SHALL return `PlanetName (SurveyID)` with `[NickName]` appended when NickName is non-empty, looked up via PlayerContext.findSurvey(BaseItemTypeID); if PlayerContext is null or survey not found, return Name.  
 **REQ-DM-023** Item.ExtendedName for ItemType=Blueprint SHALL return `C{Class} Ev({Evolution}) Name (TechLevel) [NickName]` with each segment omitted when its value is zero/null/empty, looked up via PlayerContext.findBlueprint(BaseItemTypeID); if not found, return Name.  
-**REQ-DM-024** Item.ExtendedName SHALL be decorated with [JsonIgnore] and not appear in serialized JSON.
+**REQ-DM-024** Item.ExtendedName SHALL be decorated with [JsonIgnore] and not appear in serialized JSON.  
+**REQ-DM-025** Item SHALL have a Volume property (double, default 0) representing the cargo volume of a single unit of the item. WarehouseRequired for a colony is the sum of Quantity * Volume across all items in the colony's ItemBag.
 
 ## Blueprint
 
