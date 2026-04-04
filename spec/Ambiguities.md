@@ -41,9 +41,9 @@ Each item references the relevant requirement ID where one exists.
 
 ---
 
-### AMB-006 — CommodityRequested.NeedBy and Fulfilled are private/not serialized
-**Code behavior:** `NeedBy` (DateTime) and `Fulfilled` (bool) are declared with no access modifier (private by default in a class) and are not serialized.  
-**Question:** Are these intentionally private/unused, or should they be public and serialized? The Commodity Delivery Form (REQ-ARCH-064) may need them.
+### AMB-006 — RESOLVED
+**Resolution:** `CommodityRequested` represents a colony's request for a commodity delivery. It SHALL have Name, Requested (quantity), Delivered (quantity), NeedBy (DateTime), and Fulfilled (bool) — all public and serialized. NeedBy SHALL be user-enterable in the Colony Form. Fulfilled SHALL be set when Delivered >= Requested. The Commodity Delivery Form (REQ-ARCH-064) will aggregate open (unfulfilled) requests across all colonies.  
+**Action:** CommodityRequested fields made public and serialized. Colony.md and DataModel.md updated. Colony Form requirements updated to include NeedBy entry.
 
 ---
 

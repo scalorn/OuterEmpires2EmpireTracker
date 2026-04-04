@@ -68,8 +68,9 @@
 ## Commodity Requests
 
 **REQ-COL-070** The user SHALL be able to add a commodity request by selecting a commodity from a filtered combo and clicking Add.  
-**REQ-COL-071** A new CommodityRequested SHALL be created with the commodity Name, Requested quantity from the quantity field, and Delivered=0.  
-**REQ-COL-072** The commodity requests grid SHALL display Name and Requested amount for each request.  
+**REQ-COL-071** A new CommodityRequested SHALL be created with the commodity Name, Requested quantity from the quantity field, NeedBy date from a date field, Delivered=0, and Fulfilled=false.  
+**REQ-COL-071a** CommodityRequested.Fulfilled SHALL be set to true when Delivered >= Requested.  
+**REQ-COL-072** The commodity requests grid SHALL display Name, Requested amount, Delivered amount, and NeedBy date for each request.  
 **REQ-COL-073** Editing the Amount cell in the grid SHALL immediately update the Requested field of the backing CommodityRequested object.  
 **REQ-COL-074** Pressing the Delete key when a commodity request row is selected SHALL remove that request from the colony.  
 **REQ-COL-075** The commodity requests grid SHALL use FullRowSelect mode so that clicking any cell selects the entire row.
