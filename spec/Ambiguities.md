@@ -204,10 +204,9 @@ Volume SHALL be set when an item is added to the warehouse.
 
 ## Post-Resolution Review (new items found during final cross-reference)
 
-### AMB-026 — BaselineData.json OutputItemType not yet populated
-**Context:** AMB-022 added `OutputItemType` to `BlueprintType.cs` but `BaselineData.json` has not been updated to include this field for any BlueprintType entry.  
-**Impact:** Manufacturing processing (REQ-ARCH-083) cannot be implemented until this data is populated.  
-**Question:** Should this be populated now as part of the MVVM work, or deferred until manufacturing is prioritized?
+### AMB-026 — RESOLVED
+**Resolution:** OutputItemType data has been populated in BaselineData.json by the user.  
+**Action:** No code change needed.
 
 ---
 
