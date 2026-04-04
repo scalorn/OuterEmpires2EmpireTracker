@@ -185,6 +185,9 @@ namespace OE2EmpireTracker.Baseline
         {
             List<Item> sourceItems = Items.FindResource(recipe.InputResource, recipe.InputPurity);
 
+            // Per-unit cost: how many input resources per 1 output unit
+            int perUnitCost = recipe.ConsumeRate / recipe.ProduceRate;
+
             while (structure.ProcessCompletionTime.IntervalsPassed > 0)
             {
                 int available = 0;
@@ -195,24 +198,24 @@ namespace OE2EmpireTracker.Baseline
                     available = sourceItem.Quantity;
                 }
 
-                int consumed = Math.Min(recipe.ConsumeRate, available);
-                if (consumed <= 0)
+                // Only consume whole units — floor to nearest multiple of perUnitCost
+                int wholeUnits = available / perUnitCost;
+                int maxUnits = recipe.ProduceRate; // cap at full batch size
+                int produced = Math.Min(wholeUnits, maxUnits);
+
+                if (produced <= 0)
                 {
                     structure.ProcessCompletionTime.ConsumeIntervals(1);
                     continue;
                 }
 
+                int consumed = produced * perUnitCost;
                 sourceItem.Quantity -= consumed;
                 if (sourceItem.Quantity <= 0)
                 {
                     Items.Remove(sourceItem.UUID);
                     sourceItems.Remove(sourceItem);
                 }
-
-                // Produce proportional output (partial batches produce proportionally)
-                int produced = (consumed == recipe.ConsumeRate)
-                    ? recipe.ProduceRate
-                    : (int)Math.Floor((double)consumed / recipe.ConsumeRate * recipe.ProduceRate);
 
                 if (produced > 0)
                 {

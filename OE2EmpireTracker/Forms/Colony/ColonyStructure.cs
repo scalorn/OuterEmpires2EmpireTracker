@@ -509,7 +509,9 @@ namespace OE2EmpireTracker.Forms.Colony
                 var inputItems = Colony.Items.FindResource(recipe.InputResource, recipe.InputPurity);
                 int totalAvailable = inputItems.Sum(i => i.Quantity);
 
-                if (totalAvailable >= recipe.ConsumeRate)
+                // Minimum: enough for at least 1 unit of output
+                int perUnitCost = recipe.ConsumeRate / recipe.ProduceRate;
+                if (totalAvailable >= perUnitCost)
                 {
                     string key = recipe.InputResource + "|" + recipe.InputPurity + "|S" + recipe.Tier;
                     if (!unrefinedItems.Any(u => u.Key == key))
