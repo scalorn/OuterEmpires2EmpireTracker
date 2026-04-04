@@ -1,4 +1,4 @@
-ï»¿using NLog;
+using NLog;
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
@@ -13,12 +13,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.AxHost;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace OE2EmpireTracker.Forms.Colony
 {
-    public partial class ColonyStructure : UserControl
+    public partial class ColonyStructure : UserControl, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
@@ -43,8 +41,6 @@ namespace OE2EmpireTracker.Forms.Colony
         public ColonyStructureViewModel ViewModel { get; private set; }
 
         private Data.Blueprint FlatpackBlueprint { get; set; }
-        //private double PowerProvided { get; set; }
-        //private double PowerRequired { get; set; }
 
         public bool completionModification = false;
 
@@ -65,7 +61,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         public void UpdateData()
         {
-            ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
+            ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
 
             this.SuspendLayout();
             FlatpackBlueprint = playerContext.findBlueprint(ColonyStructureData.FlatpackBlueprintUUID);
@@ -76,9 +72,6 @@ namespace OE2EmpireTracker.Forms.Colony
                 FlatpackBlueprint.Properties.getDouble("PowerProvided", 0, out powerProvided);
                 double powerRequired = 0;
                 FlatpackBlueprint.Properties.getDouble("PowerRequired", 0, out powerRequired);
-
-                //PowerProvided = powerProvided;
-                //PowerRequired = powerRequired;
 
                 Log.Info("FlatpackBlueprint.BluePrintType = " + FlatpackBlueprint.BluePrintType);
                 if (FlatpackBlueprint.BluePrintType == BlueprintTypes.MiningRig)
@@ -238,7 +231,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void handleMiningRigControls()
         {
-            ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
+            ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
 
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
@@ -377,7 +370,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void handleRefineryControls()
         {
-            ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
+            ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
 
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
@@ -615,7 +608,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void handleResearchLabControls()
         {
-            ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
+            ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
 
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
@@ -749,7 +742,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void handleManufactoryControls()
         {
-            ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
+            ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
 
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
@@ -788,7 +781,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // Sub-selection: not used for manufactory
             flpSubSelection.Visible = false;
 
-            // Quantity input â€” only visible when a blueprint is selected
+            // Quantity input — only visible when a blueprint is selected
             txtQuantity.Visible = showCmdStart;
             txtQuantity.Enabled = !showCompletionTime;
             if (showCompletionTime && ColonyStructureData.ManufacturingQuantity > 0)
@@ -944,7 +937,7 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             if (ColonyStructureData == null) return false;
 
-            // Check this structure's actual status â€” the calculator determined availability
+            // Check this structure's actual status — the calculator determined availability
             // during its pass with locks cleared, so it's the authoritative answer
             ColonyStructureStatus status;
             if (ColonyStructureData.Statuses.TryGetValue("Actual", out status))
@@ -962,7 +955,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void populateStats()
         {
-            ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
+            ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
 
             RtfBuilder builder = new RtfBuilder();
 
@@ -1089,30 +1082,8 @@ namespace OE2EmpireTracker.Forms.Colony
             ColonyStructureDataChanged?.Invoke(this, e);
         }
 
-        public class ProgramaticUpdateGuard
-        {
-            private ColonyStructure _parent;
-            private bool _hasLocked;
-
-            public ProgramaticUpdateGuard(ColonyStructure parent)
-            {
-                _parent = parent;
-                _parent._isProgrammaticUpdate++;
-                _hasLocked = true;
-            }
-            public void release()
-            {
-                if (_hasLocked)
-                {
-                    _parent._isProgrammaticUpdate--;
-                    _hasLocked = false;
-                }
-            }
-            ~ProgramaticUpdateGuard()
-            {
-                release();
-            }
-        }
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
         private void cmdUp_Click(object sender, EventArgs e)
         {

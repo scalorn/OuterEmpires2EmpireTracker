@@ -98,3 +98,9 @@ ColonyStructure_Layout was comparing flpStructureDetails with itself instead of 
 
 ## 29. Code Quality Scan
 Full codebase scan completed. Identified 7 categories of issues: dead code, naming inconsistencies, large methods, duplicate code, magic strings/numbers, large files, duplicated ProgramaticUpdateGuard. Findings recorded in Rec #12.
+
+## 30. Dead Code Removal (Rec 12a)
+Removed commented-out fields, assignments, structure creation, layout traces, and unused `using` statements from ColonyStructure.cs, FormColony.cs, ColonyStatusCalculator.cs, and Colony.cs.
+
+## 31. Extract Shared ProgrammaticUpdateGuard (Rec 12b)
+Created `IProgrammaticUpdateSource` interface and shared `ProgrammaticUpdateGuard` class in Controls/ProgrammaticUpdateGuard.cs. ColonyStructure and FormColony implement the interface. Removed duplicated nested classes. Fixed typo throughout.

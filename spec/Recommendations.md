@@ -103,14 +103,17 @@ A new class of flatpack structures for manufacturing commodities. Requires:
 Full codebase scan identified issues in 7 categories. Lower-risk items can be done incrementally; larger refactors should be planned carefully.
 
 ### 12a. Dead code removal (Low risk)
-- Commented-out `//PowerProvided`, `//PowerRequired` fields in ColonyStructure.cs
-- Commented-out structure creation and layout trace logging in FormColony.cs
-- Unused `using` statements: `static System.Windows.Forms.AxHost` and `static ...VisualStyleElement.ListView` in ColonyStructure.cs, `Amazon.Runtime.Internal.Transform` in ColonyStatusCalculator.cs, `static ...VisualStyleElement.Tab` in Colony.cs, `static ...VisualStyleElement` in ColonyStatusCalculator.cs
+**Status: Complete**
+- Removed commented-out `//PowerProvided`, `//PowerRequired` fields and assignments in ColonyStructure.cs
+- Removed commented-out structure creation, layout traces, and old code in FormColony.cs
+- Removed unused `using` statements: `static AxHost`, `static VisualStyleElement.ListView` (ColonyStructure.cs), `Amazon.Runtime.Internal.Transform`, `static VisualStyleElement`, `System.Windows.Forms`, `System.Text`, `System.Threading.Tasks` (ColonyStatusCalculator.cs), `static Item`, `static VisualStyleElement.Tab`, `System.Text`, `System.Threading.Tasks` (Colony.cs), `System.Collections`, `System.Data`, `System.Reflection`, `System.Windows.Forms.VisualStyles`, `System.Xml.Linq` (FormColony.cs)
 
-### 12b. Extract shared ProgramaticUpdateGuard (Low risk)
-- Identical class duplicated in FormColony and ColonyStructure (same fields, same logic)
-- Should be extracted to a shared generic class (e.g. `ProgrammaticUpdateGuard<T>` or interface-based)
-- Also fix the typo: `ProgramaticUpdateGuard` → `ProgrammaticUpdateGuard`
+### 12b. Extract shared ProgrammaticUpdateGuard (Low risk)
+**Status: Complete**
+- Created `IProgrammaticUpdateSource` interface and shared `ProgrammaticUpdateGuard` class in `Controls/ProgrammaticUpdateGuard.cs`
+- ColonyStructure and FormColony now implement `IProgrammaticUpdateSource` with `BeginProgrammaticUpdate()`/`EndProgrammaticUpdate()`
+- Removed duplicated nested `ProgramaticUpdateGuard` classes from both files
+- Fixed typo: `ProgramaticUpdateGuard` → `ProgrammaticUpdateGuard` throughout
 
 ### 12c. Magic strings/numbers → constants (Low-Medium risk)
 - Worker type strings: `"BlueCollar"`, `"WhiteCollar"`, `"Specialist"`, `"BlueCollarDetail"`, `"WhiteCollarDetail"`, `"SpecialistDetail"`

@@ -42,6 +42,8 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 27 | Build order optimization (REQ-COL-095) | Complete |
 | 28 | Colony structure layout fix | Complete |
 | 29 | Code quality scan | Complete — findings in Rec #12 |
+| 30 | Dead code removal (Rec 12a) | Complete |
+| 31 | Extract shared ProgrammaticUpdateGuard (Rec 12b) | Complete |
 
 ---
 

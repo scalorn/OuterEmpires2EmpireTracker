@@ -4,10 +4,6 @@ using OE2EmpireTracker.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static OE2EmpireTracker.Data.Item;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace OE2EmpireTracker.Baseline
 {
