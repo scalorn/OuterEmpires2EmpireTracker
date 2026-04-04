@@ -15,6 +15,7 @@ namespace OE2EmpireTracker.Baseline
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly PlayerContext _playerContext;
+        private List<ColonyStructure> _currentResult;
 
         public BuildOrderOptimizer(PlayerContext playerContext)
         {
@@ -44,6 +45,7 @@ namespace OE2EmpireTracker.Baseline
         public List<ColonyStructure> Optimize(Colony colony)
         {
             var result = new List<ColonyStructure>();
+            _currentResult = result;
             var builtStructures = new List<ColonyStructure>();
             var primaryPool = new List<ColonyStructure>();
             var supportPool = new List<ColonyStructure>();
@@ -224,6 +226,15 @@ namespace OE2EmpireTracker.Baseline
             {
                 if (bp.UUID == null) continue;
                 if (!bp.BluePrintType.IsFlatpack()) continue;
+
+                // Check MaxPerColony limit
+                long maxPerColony = 0;
+                bp.Properties.getLong("MaxPerColony", 0, out maxPerColony);
+                if (maxPerColony > 0)
+                {
+                    int currentCount = _currentResult.Count(s => s.FlatpackBlueprintUUID == bp.UUID);
+                    if (currentCount >= maxPerColony) continue;
+                }
 
                 double val;
                 foreach (string prop in deficitProperties)
