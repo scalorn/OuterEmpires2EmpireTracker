@@ -110,3 +110,6 @@ Renamed all camelCase methods to PascalCase across the codebase. Covers form pop
 
 ## 33. Deduplicate Worker Parsing (Rec 12f)
 Created `WorkerTypeInfo` class and `WorkerDetail.WorkerTypes` array. Replaced 12 near-identical worker parsing blocks across ColonyStructure.UpdateData and ColonyStatusCalculator.CalculateBuilt with data-driven loops. Added `GetUnallocatedPresent`/`SetUnallocatedPresent` helpers on ColonyStructureStatus. 465 tests passing.
+
+## 34. Split Colony.cs into Separate Files (Rec 12g)
+Extracted `ColonyStructure` and `CommodityRequested` classes from Colony.cs into their own files under Baseline/. Colony.cs now contains only the Colony class. 465 tests passing.

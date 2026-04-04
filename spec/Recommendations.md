@@ -146,7 +146,11 @@ Renamed all camelCase methods to PascalCase across the codebase:
 - `LockAssignedWorkers` already used the shared pattern via `LockWorkerType` — no change needed
 
 ### 12g. Large file splitting (Medium-High risk)
-- Colony.cs contains `Colony`, `ColonyStructure`, and `CommodityRequested` — should be separate files
-- ColonyStructure.cs (1421 lines) and FormColony.cs (1192 lines) are large but mostly cohesive
+**Status: Complete**
+- Extracted `ColonyStructure` class from Colony.cs into `Baseline/ColonyStructure.cs`
+- Extracted `CommodityRequested` class from Colony.cs into `Baseline/CommodityRequested.cs`
+- Colony.cs now contains only the `Colony` class
+- Removed unused `Newtonsoft.Json` using from Colony.cs
+- ColonyStructure.cs (1400+ lines) and FormColony.cs (1100+ lines) remain large but are cohesive single-class files — no further split needed
 
 **Needs approval: yes — user should pick which items to tackle and in what order.**

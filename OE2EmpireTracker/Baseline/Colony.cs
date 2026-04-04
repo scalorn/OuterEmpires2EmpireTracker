@@ -1,4 +1,3 @@
-using Newtonsoft.Json;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Data;
 using System;
@@ -198,7 +197,7 @@ namespace OE2EmpireTracker.Baseline
                     available = sourceItem.Quantity;
                 }
 
-                // Only consume whole units — floor to nearest multiple of perUnitCost
+                // Only consume whole units ï¿½ floor to nearest multiple of perUnitCost
                 int wholeUnits = available / perUnitCost;
                 int maxUnits = recipe.ProduceRate; // cap at full batch size
                 int produced = Math.Min(wholeUnits, maxUnits);
@@ -254,7 +253,7 @@ namespace OE2EmpireTracker.Baseline
             if (sourceBp == null)
                 return;
 
-            // Research is a one-shot timer — check if time has expired
+            // Research is a one-shot timer ï¿½ check if time has expired
             if (structure.ProcessCompletionTime.TimeRemaining > 0)
                 return;
 
@@ -274,7 +273,7 @@ namespace OE2EmpireTracker.Baseline
             {
                 newBp.Properties.setProperty(prop.Key, prop.Value);
             }
-            // Resources intentionally empty — user imports via Blueprint Form
+            // Resources intentionally empty ï¿½ user imports via Blueprint Form
 
             // Add to player's blueprint list
             pc.blueprintList.Add(newBp);
@@ -309,7 +308,7 @@ namespace OE2EmpireTracker.Baseline
                 Enum.TryParse(bpType.OutputItemType, out outputType);
             }
 
-            // Process each completed interval — one item per interval
+            // Process each completed interval ï¿½ one item per interval
             while (structure.ProcessCompletionTime.IntervalsPassed > 0 &&
                    structure.ManufacturingCompleted < structure.ManufacturingQuantity)
             {
@@ -338,56 +337,5 @@ namespace OE2EmpireTracker.Baseline
                 structure.ProcessCompletionTime.ConsumeIntervals(1);
             }
         }
-    }
-    public class ColonyStructure
-    {
-        public string UUID { get; set; } = null;
-        public string FlatpackBlueprintUUID { get; set; } = null;
-        public int gameSequence { get; set; } = 0;
-        public int buildQueueSequence { get; set; } = 0;
-        public PropertyBag Properties { get; set; }
-        public PropertyBag AssignedWorkers { get; set; }
-        public CountDownTime BuildCompletionTime { get; set; } = null;
-        public CountDownTime ProcessCompletionTime { get; set; } = null;
-
-        public string MiningSurvey { get; set; } = null;
-        public string MiningSurveyResource { get; set; } = null;
-        public Decimal MiningLeftOvers { get; set; } = Decimal.Zero;
-
-        public string RefiningResource { get; set; } = null;
-        public string RefiningResourcePurity { get; set; } = null;
-
-        public string ResearchingBlueprintUUID { get; set; } = null;
-
-        public string ManufacturingBlueprintUUID { get; set; } = null;
-        public int ManufacturingQuantity { get; set; } = 0;
-        public int ManufacturingCompleted { get; set; } = 0;
-
-        [JsonIgnore]
-        public Dictionary<string, ColonyStructureStatus> Statuses { get; set; } = new Dictionary<string, ColonyStructureStatus>();
-
-        DateTime completion { get; set; }
-        public string CurrentAttitude { get; set; } = string.Empty;
-        public int ContentmentIndex { get; set; }
-
-        public int WageLevel { get; set; }
-        DateTime WageAdjustmentTime { get; set; }
-
-
-
-        public ColonyStructure() : base()
-        {
-            Properties = new PropertyBag();
-            AssignedWorkers = new PropertyBag();
-        }
-    }
-
-    public class CommodityRequested
-    {
-        public string Name { get; set; }
-        public int Requested { get; set; }
-        public int Delivered { get; set; }
-        public DateTime NeedBy { get; set; }
-        public bool Fulfilled { get; set; }
     }
 }

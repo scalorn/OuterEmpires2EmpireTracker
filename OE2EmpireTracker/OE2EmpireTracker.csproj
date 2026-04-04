@@ -123,6 +123,8 @@
   <ItemGroup>
     <Compile Include="Baseline\BlueprintType.cs" />
     <Compile Include="Baseline\Colony.cs" />
+    <Compile Include="Baseline\ColonyStructure.cs" />
+    <Compile Include="Baseline\CommodityRequested.cs" />
     <Compile Include="Baseline\ColonyStatusCalculator.cs" />
     <Compile Include="Baseline\BuildOrderOptimizer.cs" />
     <Compile Include="Baseline\ColonyBootstrap.cs" />
