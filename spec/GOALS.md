@@ -22,7 +22,7 @@ Per AMB-016 and AMB-017, MVVM must be applied to all forms before new features a
 | Form | Status | ViewModel(s) needed |
 |------|--------|---------------------|
 | FormColony + ColonyStructure | Complete | ColonyViewModel, ColonyStructureViewModel |
-| FormPlayerProfile | Not started | PlayerProfileViewModel |
+| FormPlayerProfile | Complete | PlayerProfileViewModel |
 | FormBlueprint | Not started | BlueprintViewModel |
 | FormSurvey | Not started | SurveyViewModel |
 | MainWindow | Not started | (assess scope) |

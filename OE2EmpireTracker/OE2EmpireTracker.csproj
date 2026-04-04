@@ -172,6 +172,7 @@
     <Compile Include="Data\WorkerDetail.cs" />
     <Compile Include="ViewModels\ColonyStructureViewModel.cs" />
     <Compile Include="ViewModels\ColonyViewModel.cs" />
+    <Compile Include="ViewModels\PlayerProfileViewModel.cs" />
     <Compile Include="Data\Blueprint.cs" />
     <Compile Include="Data\ItemProperty.cs" />
     <Compile Include="Data\ItemType.cs" />

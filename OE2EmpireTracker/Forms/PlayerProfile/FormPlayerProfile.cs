@@ -1,5 +1,6 @@
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Data;
+using OE2EmpireTracker.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,22 +15,12 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 {
     public partial class FormPlayerProfile : Form
     {
-        /// <summary>
-        /// Gets or sets the empire context instance for accessing empire-wide data.
-        /// </summary>
         private EmpireContext empireContext;
-
-        /// <summary>
-        /// Gets or sets the player context instance for accessing player-specific data.
-        /// </summary>
         private PlayerContext playerContext;
-
-        private Data.PlayerProfile selectedProfile;
+        private PlayerProfileViewModel viewModel;
 
         private Dictionary<SkillGroupName, CheckBox> SkillGroups = new Dictionary<SkillGroupName, CheckBox>();
-
         private Dictionary<string, PlayerSkillBlock> skillBlocks = new Dictionary<string, PlayerSkillBlock>();
-
 
         public FormPlayerProfile()
         {
@@ -37,8 +28,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
             empireContext = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
-
-            selectedProfile = new Data.PlayerProfile();
+            viewModel = new PlayerProfileViewModel(new Data.PlayerProfile(), playerContext);
 
             SkillGroups[SkillGroupName.ColonyDirector]   = chkColonyDirector;
             SkillGroups[SkillGroupName.ColonyFounder]    = chkColonyFounder;
@@ -88,27 +78,26 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         public void PopulateForm()
         {
-            txtPlayerName.Text = selectedProfile.Name;
-            cmbFaction.Text = selectedProfile.Faction;
-            txtTotalCredits.Text = selectedProfile.TotalCredits.ToString();
-            txtSkillPoints.Text = selectedProfile.SkillPoints.ToString();
+            txtPlayerName.Text = viewModel.Name;
+            cmbFaction.Text = viewModel.Faction;
+            txtTotalCredits.Text = viewModel.TotalCredits.ToString();
+            txtSkillPoints.Text = viewModel.SkillPoints.ToString();
 
-            txtPublicRank.Text = selectedProfile.Public.Rank.ToString();
-            txtPublicRankCurXP.Text = selectedProfile.Public.CurrentXP.ToString();
-            txtPublicRankNextXP.Text = selectedProfile.Public.NextXP.ToString();
+            txtPublicRank.Text = viewModel.PublicRank.Rank.ToString();
+            txtPublicRankCurXP.Text = viewModel.PublicRank.CurrentXP.ToString();
+            txtPublicRankNextXP.Text = viewModel.PublicRank.NextXP.ToString();
 
-            txtPrivateRank.Text = selectedProfile.Private.Rank.ToString();
-            txtPrivateRankCurXP.Text = selectedProfile.Private.CurrentXP.ToString();
-            txtPrivateRankNextXP.Text = selectedProfile.Private.NextXP.ToString();
+            txtPrivateRank.Text = viewModel.PrivateRank.Rank.ToString();
+            txtPrivateRankCurXP.Text = viewModel.PrivateRank.CurrentXP.ToString();
+            txtPrivateRankNextXP.Text = viewModel.PrivateRank.NextXP.ToString();
 
-            txtMilitaryRank.Text = selectedProfile.Military.Rank.ToString();
-            txtMilitaryRankCurXP.Text = selectedProfile.Military.CurrentXP.ToString();
-            txtMilitaryRankNextXP.Text = selectedProfile.Military.NextXP.ToString();
+            txtMilitaryRank.Text = viewModel.MilitaryRank.Rank.ToString();
+            txtMilitaryRankCurXP.Text = viewModel.MilitaryRank.CurrentXP.ToString();
+            txtMilitaryRankNextXP.Text = viewModel.MilitaryRank.NextXP.ToString();
 
-            // Restore skill group checkbox states from the profile
             foreach (var entry in SkillGroups)
             {
-                entry.Value.Checked = selectedProfile.GetSkillGroup(entry.Key);
+                entry.Value.Checked = viewModel.GetSkillGroup(entry.Key);
             }
 
             updateSkillBlock(pskHumanResources, SkillName.HumanResources);
@@ -134,16 +123,8 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             updateSkillBlock(pskQuartermaster, SkillName.Quartermaster);
             updateSkillBlock(pskBroker, SkillName.Broker);
 
-            bool isTraining = false;
-            foreach (KeyValuePair<string, PlayerSkill> skillEntry in selectedProfile.Skills)
-            {
-                if (skillEntry.Value.TrainingStarted)
-                {
-                    isTraining = true;
-                    break;
-                }
-            }
-            foreach (KeyValuePair<string, PlayerSkillBlock> skillBlockEntry in skillBlocks)
+            bool isTraining = viewModel.IsAnySkillTraining();
+            foreach (var skillBlockEntry in skillBlocks)
             {
                 skillBlockEntry.Value.CanStartTraining = !isTraining;
             }
@@ -159,83 +140,78 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private void updateSkillBlock(PlayerSkillBlock skillBlock, SkillName skill)
         {
-            skillBlock.PlayerSkill = selectedProfile.GetSkill(skill);
+            skillBlock.PlayerSkill = viewModel.GetSkill(skill);
             skillBlock.PopulateForm();
         }
 
-
-        private void TrainingStatusChanged (object sender, EventArgs e)
+        private void TrainingStatusChanged(object sender, EventArgs e)
         {
             PopulateForm();
         }
 
         private void chkColonyDirector_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup(SkillGroupName.ColonyDirector, chkColonyDirector.Checked);
+            viewModel.SetSkillGroup(SkillGroupName.ColonyDirector, chkColonyDirector.Checked);
             PopulateForm();
         }
 
         private void chkColonyFounder_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup(SkillGroupName.ColonyFounder, chkColonyFounder.Checked);
+            viewModel.SetSkillGroup(SkillGroupName.ColonyFounder, chkColonyFounder.Checked);
             PopulateForm();
         }
 
         private void chkColonyOperations_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup(SkillGroupName.ColonyOperations, chkColonyOperations.Checked);
+            viewModel.SetSkillGroup(SkillGroupName.ColonyOperations, chkColonyOperations.Checked);
             PopulateForm();
         }
 
         private void chkCommander_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup(SkillGroupName.Commander, chkCommander.Checked);
+            viewModel.SetSkillGroup(SkillGroupName.Commander, chkCommander.Checked);
             PopulateForm();
         }
 
         private void chkEngineer_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup(SkillGroupName.Engineer, chkEngineer.Checked);
+            viewModel.SetSkillGroup(SkillGroupName.Engineer, chkEngineer.Checked);
             PopulateForm();
         }
 
         private void chkEntrepeneur_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup(SkillGroupName.Entrepeneur, chkEntrepeneur.Checked);
+            viewModel.SetSkillGroup(SkillGroupName.Entrepeneur, chkEntrepeneur.Checked);
             PopulateForm();
         }
 
         private void chkJobManagement_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup(SkillGroupName.JobManagement, chkJobManagement.Checked);
+            viewModel.SetSkillGroup(SkillGroupName.JobManagement, chkJobManagement.Checked);
             PopulateForm();
         }
 
         private void chkResearcher_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup(SkillGroupName.Researcher, chkResearcher.Checked);
+            viewModel.SetSkillGroup(SkillGroupName.Researcher, chkResearcher.Checked);
             PopulateForm();
         }
 
         private void chkSurveyor_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup(SkillGroupName.Surveyor, chkSurveyor.Checked);
+            viewModel.SetSkillGroup(SkillGroupName.Surveyor, chkSurveyor.Checked);
             PopulateForm();
         }
 
         private void chkTrader_Click(object sender, EventArgs e)
         {
-            selectedProfile.SetSkillGroup(SkillGroupName.Trader, chkTrader.Checked);
+            viewModel.SetSkillGroup(SkillGroupName.Trader, chkTrader.Checked);
             PopulateForm();
         }
 
         private void populateListView(Data.PlayerProfile profileToSelect = null)
         {
-            string filter = txtNameFilter.Text;
-            var profiles = playerContext.playerProfileList
-                .Where(p => string.IsNullOrEmpty(filter) ||
-                            p.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
-                .ToList();
+            var profiles = viewModel.GetFilteredProfiles(txtNameFilter.Text);
 
             lvwPlayerProfiles.Items.Clear();
             foreach (var profile in profiles)
@@ -262,60 +238,47 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         {
             if (e.IsSelected && lvwPlayerProfiles.SelectedItems.Count == 1)
             {
-                selectedProfile = lvwPlayerProfiles.SelectedItems[0].Tag as Data.PlayerProfile;
+                viewModel.SelectProfile(lvwPlayerProfiles.SelectedItems[0].Tag as Data.PlayerProfile);
                 PopulateForm();
             }
         }
 
         private void cmdSave_Click(object sender, EventArgs e)
         {
-            // Populate fields first so the profile is complete before adding to the list
-            selectedProfile.Name = txtPlayerName.Text;
-            selectedProfile.Faction = cmbFaction.Text;
-            selectedProfile.TotalCredits = decimal.TryParse(txtTotalCredits.Text, out var credits) ? credits : 0;
-            selectedProfile.SkillPoints = int.TryParse(txtSkillPoints.Text, out var sp) ? sp : 0;
+            viewModel.Name = txtPlayerName.Text;
+            viewModel.Faction = cmbFaction.Text;
+            viewModel.TotalCredits = decimal.TryParse(txtTotalCredits.Text, out var credits) ? credits : 0;
+            viewModel.SkillPoints = int.TryParse(txtSkillPoints.Text, out var sp) ? sp : 0;
 
-            selectedProfile.Public.Rank = int.TryParse(txtPublicRank.Text, out var pubRank) ? pubRank : 0;
-            selectedProfile.Public.CurrentXP = long.TryParse(txtPublicRankCurXP.Text, out var pubCur) ? pubCur : 0;
-            selectedProfile.Public.NextXP = long.TryParse(txtPublicRankNextXP.Text, out var pubNext) ? pubNext : 0;
+            viewModel.PublicRank.Rank = int.TryParse(txtPublicRank.Text, out var pubRank) ? pubRank : 0;
+            viewModel.PublicRank.CurrentXP = long.TryParse(txtPublicRankCurXP.Text, out var pubCur) ? pubCur : 0;
+            viewModel.PublicRank.NextXP = long.TryParse(txtPublicRankNextXP.Text, out var pubNext) ? pubNext : 0;
 
-            selectedProfile.Private.Rank = int.TryParse(txtPrivateRank.Text, out var priRank) ? priRank : 0;
-            selectedProfile.Private.CurrentXP = long.TryParse(txtPrivateRankCurXP.Text, out var priCur) ? priCur : 0;
-            selectedProfile.Private.NextXP = long.TryParse(txtPrivateRankNextXP.Text, out var priNext) ? priNext : 0;
+            viewModel.PrivateRank.Rank = int.TryParse(txtPrivateRank.Text, out var priRank) ? priRank : 0;
+            viewModel.PrivateRank.CurrentXP = long.TryParse(txtPrivateRankCurXP.Text, out var priCur) ? priCur : 0;
+            viewModel.PrivateRank.NextXP = long.TryParse(txtPrivateRankNextXP.Text, out var priNext) ? priNext : 0;
 
-            selectedProfile.Military.Rank = int.TryParse(txtMilitaryRank.Text, out var milRank) ? milRank : 0;
-            selectedProfile.Military.CurrentXP = long.TryParse(txtMilitaryRankCurXP.Text, out var milCur) ? milCur : 0;
-            selectedProfile.Military.NextXP = long.TryParse(txtMilitaryRankNextXP.Text, out var milNext) ? milNext : 0;
+            viewModel.MilitaryRank.Rank = int.TryParse(txtMilitaryRank.Text, out var milRank) ? milRank : 0;
+            viewModel.MilitaryRank.CurrentXP = long.TryParse(txtMilitaryRankCurXP.Text, out var milCur) ? milCur : 0;
+            viewModel.MilitaryRank.NextXP = long.TryParse(txtMilitaryRankNextXP.Text, out var milNext) ? milNext : 0;
 
-            // Add to list only if this is a new profile
-            if (string.IsNullOrEmpty(selectedProfile.UUID))
-            {
-                selectedProfile.UUID = Guid.NewGuid().ToString();
-                playerContext.playerProfileList.Add(selectedProfile);
-            }
-
-            playerContext.writeContext();
-            populateListView(selectedProfile);
+            viewModel.Save();
+            populateListView(viewModel.Data);
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(selectedProfile.UUID)) return;
-
-            playerContext.playerProfileList.Remove(selectedProfile);
-            playerContext.writeContext();
-
-            selectedProfile = new Data.PlayerProfile();
+            viewModel.Delete();
+            viewModel.Reset();
             populateListView();
             PopulateForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            // Discard changes by re-selecting the saved profile, or reset to blank if new
-            if (string.IsNullOrEmpty(selectedProfile.UUID))
+            if (string.IsNullOrEmpty(viewModel.Data.UUID))
             {
-                selectedProfile = new Data.PlayerProfile();
+                viewModel.Reset();
             }
             PopulateForm();
         }
