@@ -531,6 +531,17 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     populateItemWithBlueprints();
                 }
+
+                // Blueprint-based item types: populate from blueprints whose BlueprintType.OutputItemType matches
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.ShipPart ||
+                    itemType.ID == Data.ItemType.ItemTypeEnum.ShipHull ||
+                    itemType.ID == Data.ItemType.ItemTypeEnum.Munition ||
+                    itemType.ID == Data.ItemType.ItemTypeEnum.Flatpack ||
+                    itemType.ID == Data.ItemType.ItemTypeEnum.SpaceBuildPackage ||
+                    itemType.ID == Data.ItemType.ItemTypeEnum.Share)
+                {
+                    populateItemWithBlueprintsByOutputType(itemType.ID);
+                }
             }
         }
 
@@ -593,6 +604,22 @@ namespace OE2EmpireTracker.Forms.Colony
                     }
                 }
                 if (itemType.ID == Data.ItemType.ItemTypeEnum.Blueprint)
+                {
+                    Data.Blueprint blueprint = cmbItem.SelectedItem as Data.Blueprint;
+                    if (blueprint != null)
+                    {
+                        item.BaseItemTypeID = blueprint.UUID;
+                        item.Name = blueprint.Name;
+                    }
+                }
+
+                // Blueprint-based item types (ShipPart, ShipHull, Munition, Flatpack, etc.)
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.ShipPart ||
+                    itemType.ID == Data.ItemType.ItemTypeEnum.ShipHull ||
+                    itemType.ID == Data.ItemType.ItemTypeEnum.Munition ||
+                    itemType.ID == Data.ItemType.ItemTypeEnum.Flatpack ||
+                    itemType.ID == Data.ItemType.ItemTypeEnum.SpaceBuildPackage ||
+                    itemType.ID == Data.ItemType.ItemTypeEnum.Share)
                 {
                     Data.Blueprint blueprint = cmbItem.SelectedItem as Data.Blueprint;
                     if (blueprint != null)
@@ -717,6 +744,15 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     populateItemWithBlueprints();
                 }
+                if (itemType.ID == Data.ItemType.ItemTypeEnum.ShipPart ||
+                    itemType.ID == Data.ItemType.ItemTypeEnum.ShipHull ||
+                    itemType.ID == Data.ItemType.ItemTypeEnum.Munition ||
+                    itemType.ID == Data.ItemType.ItemTypeEnum.Flatpack ||
+                    itemType.ID == Data.ItemType.ItemTypeEnum.SpaceBuildPackage ||
+                    itemType.ID == Data.ItemType.ItemTypeEnum.Share)
+                {
+                    populateItemWithBlueprintsByOutputType(itemType.ID);
+                }
             }
             cmbItem.DroppedDown = true;
         }
@@ -731,6 +767,37 @@ namespace OE2EmpireTracker.Forms.Colony
                 filteredList = filteredList
                     .Where(b => b.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                     .OrderBy(b => b.ExtendedName)
+                    .ToList();
+            }
+            filteredList.Sort((x, y) => x.ExtendedName.CompareTo(y.ExtendedName));
+            filteredList.Insert(0, new Data.Blueprint());
+
+            var bindingList = new BindingSource();
+            bindingList.DataSource = filteredList;
+
+            cmbItem.DataSource = bindingList;
+            cmbItem.ValueMember = "UUID";
+            cmbItem.DisplayMember = "ExtendedName";
+        }
+
+        public void populateItemWithBlueprintsByOutputType(Data.ItemType.ItemTypeEnum outputType)
+        {
+            string searchText = txtItemFilter.Text;
+            string outputTypeName = outputType.ToString();
+
+            List<Data.Blueprint> filteredList = new List<Data.Blueprint>();
+            foreach (Data.Blueprint bp in playerContext.blueprintList)
+            {
+                if (bp.UUID == null) continue;
+                BlueprintType bpType = empireContext.findBlueprintType(bp.BluePrintType);
+                if (bpType == null || bpType.OutputItemType != outputTypeName) continue;
+                filteredList.Add(bp);
+            }
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(b => b.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
             }
             filteredList.Sort((x, y) => x.ExtendedName.CompareTo(y.ExtendedName));
