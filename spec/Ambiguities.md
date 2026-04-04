@@ -151,9 +151,16 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 
 ---
 
-### AMB-021 — Colony flatpack ordering optimization not specified
-**Overall.md:** "Need the ability to optimize flatpack ordering to meet needs ideally."  
-**Question:** What is the optimization goal? Minimize power deficit? Maximize resource output? This needs a clear objective function before it can be designed.
+### AMB-021 — RESOLVED
+**Resolution:** The optimized flatpack build order algorithm is:
+1. Take all planned (staged/unbuilt) flatpacks and separate them into two groups:
+   - **Support structures**: Power, Habitation, Food, Entertainment providers
+   - **Primary structures**: everything else (in their planned build order)
+2. Walk through the primary structures in order. Before each primary structure is added to the output sequence, check whether building it (with all its workers fully staffed) would cause a deficit in Power, Habitation, Food, or Entertainment.
+3. If a deficit would occur, insert the minimum required support structures from the support group ahead of the primary structure to satisfy the constraint.
+4. The result is a reordered sequence where all resource constraints are satisfied after each build step.
+
+**Action:** Colony.md updated with REQ-COL-095 series for the optimization algorithm.
 
 ---
 

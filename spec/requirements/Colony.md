@@ -92,3 +92,12 @@
 **REQ-COL-091** All direct Colony.Structures, Colony.Items, and Colony.Commodities list manipulation SHALL go through ColonyViewModel, not directly from the UI.  
 **REQ-COL-092** ColonyViewModel.RecalculateStatus() SHALL call both CalculateBuilt() and CalculateIdeal().  
 **REQ-COL-093** ColonyViewModel.Save() SHALL ensure UUID is set, add to playerContext if absent, and call writeContext().
+
+## Flatpack Build Order Optimization (Future)
+
+**REQ-COL-095** The colony form SHALL provide an "Optimize Build Order" action that reorders the colony's planned (staged/unbuilt) structures to satisfy resource constraints at every build step.  
+**REQ-COL-095a** Structures SHALL be classified as either Support (Power, Habitation, Food, Entertainment providers) or Primary (all others).  
+**REQ-COL-095b** The algorithm SHALL walk through Primary structures in their current planned order. Before each Primary structure is placed in the output sequence, it SHALL simulate building that structure with all workers fully staffed using the Ideal calculation.  
+**REQ-COL-095c** If the simulation shows a deficit in Power, Habitation, Food, or Entertainment after building the Primary structure, the algorithm SHALL insert the minimum number of Support structures from the Support pool ahead of it to eliminate the deficit.  
+**REQ-COL-095d** The resulting sequence SHALL guarantee that after each build step, Power >= PowerRequired, HabitationProvision >= HabitationRequired, FoodProvision >= FoodRequired, and EntertainmentProvided >= EntertainmentRequired.  
+**REQ-COL-095e** Support structures that are not needed to satisfy any constraint SHALL be appended at the end of the sequence.
