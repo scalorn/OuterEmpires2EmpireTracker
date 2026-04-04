@@ -191,3 +191,18 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 
 Volume SHALL be set when an item is added to the warehouse.  
 **Action:** REQ-DM-025 updated. FormColony.cmdAdd_Click updated to set Volume on creation.
+
+
+---
+
+### AMB-025 — PlayerData.json migration: Item.ItemType integer values
+**Context:** Adding `[JsonConverter(typeof(StringEnumConverter))]` to `Item.ItemType` (AMB-022) means new saves will write `"ItemType": "Survey"` but existing `PlayerData.json` files contain integer values (e.g. `"ItemType": 9`). Newtonsoft's `StringEnumConverter` cannot deserialize integers — these items will fail to load and ItemType will default to `None`.
+
+**Confirmed affected values in current PlayerData.json:**
+- `9` = Survey
+- `7` = Blueprint
+
+**Question:** How should existing data be migrated?
+- Option A: Write a one-time migration that reads the old file, converts integer ItemType values to strings, and writes it back before the converter change takes effect.
+- Option B: Use a custom converter that accepts both integer and string forms during deserialization (tolerant reader), writing only strings on save.
+- Option C: Accept data loss — the existing test data can be re-entered manually since it is not production data.
