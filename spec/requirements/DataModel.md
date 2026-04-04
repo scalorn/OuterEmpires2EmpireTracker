@@ -35,6 +35,9 @@
 - WorkDetail: 50
 - Manufactured items (Flatpack, ShipHull, ShipPart, Munition, SpaceBuildPackage, Share): from the blueprint's CargoVolumeSize property (parsed as double, default 0 if absent)
 
+**REQ-DM-026** Item.ItemType SHALL serialize as the enum name string (e.g. `"Resource"`, `"Commodity"`) not as an integer. This SHALL be achieved via `[JsonConverter(typeof(StringEnumConverter))]` on the ItemType property.  
+**REQ-DM-027** BlueprintType SHALL have an OutputItemType string field recording what ItemType is produced when a blueprint of this type is manufactured. The value SHALL be the ItemType.ItemTypeEnum name (e.g. `"ShipHull"`, `"Flatpack"`). This field SHALL be populated in BaselineData.json for all BlueprintTypes.
+
 ## Blueprint
 
 **REQ-DM-030** Blueprint.ExtendedName SHALL return empty string when UUID is null.  

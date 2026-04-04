@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,6 +17,7 @@ namespace OE2EmpireTracker.Data
         public string UUID { get; set; }
 
         [Required]
+        [JsonConverter(typeof(StringEnumConverter))]
         public ItemType.ItemTypeEnum ItemType { get; set; } = Data.ItemType.ItemTypeEnum.None;
         public string BaseItemTypeID { get; set; } = string.Empty;
 

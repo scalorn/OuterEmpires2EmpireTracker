@@ -164,9 +164,12 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 
 ---
 
-### AMB-022 — Manufacturing structure: blueprint does not contain output item information
-**Overall.md:** "Not sure the blueprint has the necessary information to create the resulting item."  
-**Question:** Does the game's blueprint HTML include the output item type and quantity for manufacturing blueprints? If not, where does this information come from? This blocks the Manufacturing structure implementation.
+### AMB-022 — RESOLVED
+**Resolution:**
+1. `BlueprintType` SHALL have an `OutputItemType` string field that records what `ItemType` is produced when a blueprint of this type is manufactured. The value SHALL be the `ItemType.ItemTypeEnum` name as a human-readable string (e.g. `"ShipHull"`, `"ShipPart"`, `"Flatpack"`). This field SHALL be populated in `BaselineData.json`.
+2. `Item.ItemType` (and all `ItemType.ItemTypeEnum` fields) SHALL serialize as the enum name string, not as an integer. This requires adding `[JsonConverter(typeof(StringEnumConverter))]` to the `ItemType` property on `Item`.
+
+**Action:** BlueprintType.cs updated. Item.cs updated with StringEnumConverter. BaselineData.json needs OutputItemType populated for each BlueprintType. DataModel.md updated.
 
 ---
 
