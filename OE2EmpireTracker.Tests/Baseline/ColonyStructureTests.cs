@@ -31,58 +31,6 @@ namespace OE2EmpireTracker.Tests.Baseline
         }
 
         // -----------------------------------------------------------------------
-        // Basic Property Setting and Getting
-        // -----------------------------------------------------------------------
-
-        [Test]
-        public void SetProperty_PowerCanBeSetAndRead()
-        {
-            var structure = new ColonyStructure();
-            structure.Power = 100.5;
-            Assert.AreEqual(100.5, structure.Power);
-        }
-
-        [Test]
-        public void SetProperty_HabitationCanBeSetAndRead()
-        {
-            var structure = new ColonyStructure();
-            structure.Habitation = 50.0;
-            Assert.AreEqual(50.0, structure.Habitation, 0.0);
-        }
-
-        [Test]
-        public void SetProperty_FoodCanBeSetAndRead()
-        {
-            var structure = new ColonyStructure();
-            structure.Food = 75.25;
-            Assert.AreEqual(75.25, structure.Food, 0.0);
-        }
-
-        [Test]
-        public void SetProperty_EntertainmentCanBeSetAndRead()
-        {
-            var structure = new ColonyStructure();
-            structure.Entertainment = 123.456;
-            Assert.AreEqual(123.456, structure.Entertainment, 0.0);
-        }
-
-        [Test]
-        public void SetProperty_WarehouseCapacityCanBeSetAndRead()
-        {
-            var structure = new ColonyStructure();
-            structure.WarehouseCapacity = 1000;
-            Assert.AreEqual(1000, structure.WarehouseCapacity);
-        }
-
-        [Test]
-        public void SetProperty_WorkersAssignedCanBeSetAndRead()
-        {
-            var structure = new ColonyStructure();
-            structure.WorkersAssigned = 5;
-            Assert.AreEqual(5, structure.WorkersAssigned);
-        }
-
-        // -----------------------------------------------------------------------
         // UUID and FlatpackBlueprintUUID
         // -----------------------------------------------------------------------
 
@@ -312,6 +260,23 @@ namespace OE2EmpireTracker.Tests.Baseline
         }
 
         // -----------------------------------------------------------------------
+        // Statuses are [JsonIgnore] — not serialized (AMB-029)
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void JsonRoundTrip_Statuses_AreNotSerialized()
+        {
+            var structure = new ColonyStructure();
+            structure.Statuses["Actual"] = new ColonyStructureStatus { PowerProvided = 100.0 };
+
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(structure);
+            var restored = Newtonsoft.Json.JsonConvert.DeserializeObject<ColonyStructure>(json);
+
+            // Statuses are [JsonIgnore] so they should be empty after deserialization
+            Assert.AreEqual(0, restored.Statuses.Count);
+        }
+
+        // -----------------------------------------------------------------------
         // JSON Round-Trip Tests
         // -----------------------------------------------------------------------
 
@@ -324,12 +289,6 @@ namespace OE2EmpireTracker.Tests.Baseline
                 FlatpackBlueprintUUID = "blueprint-uuid",
                 gameSequence = 5,
                 buildQueueSequence = 3,
-                Power = 100.5,
-                Habitation = 50.0,
-                Food = 75.25,
-                Entertainment = 123.456,
-                WarehouseCapacity = 1000,
-                WorkersAssigned = 5,
                 CurrentAttitude = "Happy",
                 ContentmentIndex = 80,
                 WageLevel = 2
@@ -342,30 +301,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             Assert.AreEqual(structure.FlatpackBlueprintUUID, restored.FlatpackBlueprintUUID);
             Assert.AreEqual(structure.gameSequence, restored.gameSequence);
             Assert.AreEqual(structure.buildQueueSequence, restored.buildQueueSequence);
-            Assert.AreEqual(structure.Power, restored.Power, 0.01);
-            Assert.AreEqual(structure.Habitation, restored.Habitation, 0.0);
-            Assert.AreEqual(structure.Food, restored.Food, 0.01);
-            Assert.AreEqual(structure.Entertainment, restored.Entertainment, 0.01);
-            Assert.AreEqual(structure.WarehouseCapacity, restored.WarehouseCapacity);
-            Assert.AreEqual(structure.WorkersAssigned, restored.WorkersAssigned);
-        }
-
-        [Test]
-        public void JsonRoundTrip_WithStatusEntries_Preserved()
-        {
-            var structure = new ColonyStructure();
-            var status = new ColonyStructureStatus();
-            status.PowerProvided = 50.0;
-            status.HabitationProvision = 25.0;
-            structure.Statuses["Power"] = status;
-
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(structure);
-            var restored = Newtonsoft.Json.JsonConvert.DeserializeObject<ColonyStructure>(json);
-
-            Assert.AreEqual(1, restored.Statuses.Count);
-            Assert.IsTrue(restored.Statuses.ContainsKey("Power"));
-            Assert.AreEqual(50.0, restored.Statuses["Power"].PowerProvided, 0.01);
-            Assert.AreEqual(25.0, restored.Statuses["Power"].HabitationProvision, 0.01);
+            Assert.AreEqual(structure.CurrentAttitude, restored.CurrentAttitude);
+            Assert.AreEqual(structure.ContentmentIndex, restored.ContentmentIndex);
+            Assert.AreEqual(structure.WageLevel, restored.WageLevel);
         }
 
         [Test]
@@ -413,22 +351,13 @@ namespace OE2EmpireTracker.Tests.Baseline
                 FlatpackBlueprintUUID = "bp-full-test",
                 gameSequence = 10,
                 buildQueueSequence = 2,
-                Power = 250.75,
-                Habitation = 125.5,
-                Food = 88.25,
-                Entertainment = 456.789,
-                WarehouseCapacity = 5000,
-                WorkersAssigned = 12,
                 CurrentAttitude = "Satisfied",
                 ContentmentIndex = 75,
-                WageLevel = 3
+                WageLevel = 3,
+                MiningSurvey = "survey-uuid",
+                MiningSurveyResource = "Iron",
+                MiningLeftOvers = 0.75m
             };
-
-            structure.Statuses["Power"] = new ColonyStructureStatus { PowerProvided = 200.0, PowerRequired = 180.0 };
-            structure.Statuses["Habitation"] = new ColonyStructureStatus { HabitationProvision = 100.0, HabitationRequired = 95.0 };
-            structure.Statuses["Food"] = new ColonyStructureStatus { FoodProvision = 75.0, FoodRequired = 80.0 };
-            structure.Statuses["Entertainment"] = new ColonyStructureStatus { EntertainmentProvided = 35.0, EntertainmentRequired = 30.0 };
-            structure.Statuses["Warehouse"] = new ColonyStructureStatus { WarehouseCapacity = 4500.0, WarehouseRequired = 200.0 };
 
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(structure);
             var restored = Newtonsoft.Json.JsonConvert.DeserializeObject<ColonyStructure>(json);
@@ -437,16 +366,12 @@ namespace OE2EmpireTracker.Tests.Baseline
             Assert.AreEqual(structure.FlatpackBlueprintUUID, restored.FlatpackBlueprintUUID);
             Assert.AreEqual(structure.gameSequence, restored.gameSequence);
             Assert.AreEqual(structure.buildQueueSequence, restored.buildQueueSequence);
-            Assert.AreEqual(structure.Power, restored.Power, 0.01);
-            Assert.AreEqual(structure.Habitation, restored.Habitation, 0.0);
-            Assert.AreEqual(structure.Food, restored.Food, 0.01);
-            Assert.AreEqual(structure.Entertainment, restored.Entertainment, 0.01);
-            Assert.AreEqual(structure.WarehouseCapacity, restored.WarehouseCapacity);
-            Assert.AreEqual(structure.WorkersAssigned, restored.WorkersAssigned);
-
-            Assert.AreEqual(5, restored.Statuses.Count);
-            Assert.AreEqual(200.0, restored.Statuses["Power"].PowerProvided, 0.01);
-            Assert.AreEqual(100.0, restored.Statuses["Habitation"].HabitationProvision, 0.0);
+            Assert.AreEqual(structure.CurrentAttitude, restored.CurrentAttitude);
+            Assert.AreEqual(structure.ContentmentIndex, restored.ContentmentIndex);
+            Assert.AreEqual(structure.WageLevel, restored.WageLevel);
+            Assert.AreEqual(structure.MiningSurvey, restored.MiningSurvey);
+            Assert.AreEqual(structure.MiningSurveyResource, restored.MiningSurveyResource);
+            Assert.AreEqual(structure.MiningLeftOvers, restored.MiningLeftOvers);
         }
 
         // -----------------------------------------------------------------------
@@ -468,17 +393,17 @@ namespace OE2EmpireTracker.Tests.Baseline
         }
 
         [Test]
-        public void NewStructure_HasZeroWorkersAssigned()
+        public void NewStructure_HasZeroMiningLeftOvers()
         {
             var structure = new ColonyStructure();
-            Assert.AreEqual(0, structure.WorkersAssigned);
+            Assert.AreEqual(Decimal.Zero, structure.MiningLeftOvers);
         }
 
         [Test]
-        public void NewStructure_HasZeroWarehouseCapacity()
+        public void NewStructure_HasNullMiningSurvey()
         {
             var structure = new ColonyStructure();
-            Assert.AreEqual(0.0, structure.WarehouseCapacity);
+            Assert.IsNull(structure.MiningSurvey);
         }
     }
 }
