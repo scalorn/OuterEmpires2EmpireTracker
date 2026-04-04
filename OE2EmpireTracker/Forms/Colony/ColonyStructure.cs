@@ -506,13 +506,13 @@ namespace OE2EmpireTracker.Forms.Colony
                 }
             }
 
-            // Add synthetic recipes whose input resources are available in warehouse
+            // Add synthetic recipes whose input resources are available in sufficient quantity
             foreach (var recipe in RefiningRecipes.Recipes)
             {
                 var inputItems = Colony.Items.FindResource(recipe.InputResource, recipe.InputPurity);
-                bool hasInput = inputItems.Any(i => i.Quantity > 0);
+                int totalAvailable = inputItems.Sum(i => i.Quantity);
 
-                if (hasInput)
+                if (totalAvailable >= recipe.ConsumeRate)
                 {
                     string key = recipe.InputResource + "|" + recipe.InputPurity + "|S" + recipe.Tier;
                     if (!unrefinedItems.Any(u => u.Key == key))
