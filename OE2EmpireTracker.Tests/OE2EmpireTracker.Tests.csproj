@@ -231,6 +231,12 @@
     <Compile Include="Controls\ValidatedTextBoxTests.cs" />
     <None Include="app.config" />
     <None Include="packages.config" />
+    <Content Include="TestData\ZehVazoranIIM2.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\QuogarV2249II.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

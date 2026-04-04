@@ -133,11 +133,13 @@ namespace OE2EmpireTracker.Baseline
             {
                 resourceName = m.Groups[1].Value.Trim();
                 purity = m.Groups[2].Value.Trim();
-                // Normalize purity: "High Purity" -> "High", "Low Purity" -> "Low"
+                // Normalize purity: "High Purity" -> "High", "Low Purity" -> "Low", "Med Purity" -> "Medium"
                 if (purity.EndsWith(" Purity", StringComparison.OrdinalIgnoreCase))
                 {
                     purity = purity.Substring(0, purity.Length - " Purity".Length).Trim();
                 }
+                // Normalize abbreviations
+                purity = NormalizePurity(purity);
             }
 
             // Extract numeric amount from "41/hour" or "36.3/hour"
@@ -147,6 +149,21 @@ namespace OE2EmpireTracker.Baseline
 
             var resource = new SurveyResource(resourceName, purity, amount);
             survey.Resources[resourceName] = resource;
+        }
+
+        /// <summary>
+        /// Normalizes purity abbreviations to match ResourcePurity.Name values.
+        /// </summary>
+        public static string NormalizePurity(string purity)
+        {
+            if (string.IsNullOrEmpty(purity)) return purity;
+            switch (purity.ToLowerInvariant())
+            {
+                case "med": return "Medium";
+                case "hi": return "High";
+                case "lo": return "Low";
+                default: return purity;
+            }
         }
 
         /// <summary>
