@@ -234,6 +234,16 @@ namespace OE2EmpireTracker.Forms.Colony
         private void handleMiningRigControls()
         {
             ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
+
+            if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
+            {
+                flpSelection.Visible = false;
+                flpSubSelection.Visible = false;
+                flpCompletionTime.Visible = false;
+                guard.release();
+                return;
+            }
+
             bool showSelection = false;
             bool showSubSelection = false;
             bool showCompletionTime = false;
@@ -362,6 +372,16 @@ namespace OE2EmpireTracker.Forms.Colony
         private void handleRefineryControls()
         {
             ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
+
+            if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
+            {
+                flpSelection.Visible = false;
+                flpSubSelection.Visible = false;
+                flpCompletionTime.Visible = false;
+                guard.release();
+                return;
+            }
+
             bool showCompletionTime = false;
             bool enableCmbSelection = true;
             bool showCmdStart = false;
