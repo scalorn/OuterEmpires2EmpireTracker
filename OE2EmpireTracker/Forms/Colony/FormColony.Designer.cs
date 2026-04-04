@@ -70,7 +70,7 @@
             this.cmdAddCommodityRequest = new System.Windows.Forms.Button();
             this.dgvCommodityRequests = new System.Windows.Forms.DataGridView();
             this.CommodityRequestedName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CommodityRequestedAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CommodityRequestedAmount = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
             this.tabPWarehousing = new System.Windows.Forms.TabPage();
             this.flowLayoutPanel7 = new System.Windows.Forms.FlowLayoutPanel();
             this.flpAddItemBox = new System.Windows.Forms.FlowLayoutPanel();
@@ -567,6 +567,7 @@
             this.dgvCommodityRequests.Size = new System.Drawing.Size(889, 430);
             this.dgvCommodityRequests.TabIndex = 7;
             this.dgvCommodityRequests.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvCommodityRequests_CellValueChanged);
+            this.dgvCommodityRequests.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvCommodityRequests_CellValidating);
             this.dgvCommodityRequests.SelectionChanged += new System.EventHandler(this.dgvCommodityRequests_SelectionChanged);
             this.dgvCommodityRequests.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvCommodityRequests_KeyDown);
             // 
@@ -583,6 +584,7 @@
             // 
             this.CommodityRequestedAmount.HeaderText = "Amount";
             this.CommodityRequestedAmount.Name = "CommodityRequestedAmount";
+            this.CommodityRequestedAmount.ValidationPattern = OE2EmpireTracker.Controls.ValidatedTextBox.NUMBER_VALIDATION;
             // 
             // tabPWarehousing
             // 
@@ -917,6 +919,6 @@
         private System.Windows.Forms.DataGridView dgvCommodityRequests;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.DataGridViewTextBoxColumn CommodityRequestedName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn CommodityRequestedAmount;
+        private OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn CommodityRequestedAmount;
     }
 }
