@@ -1247,10 +1247,22 @@ namespace OE2EmpireTracker.Forms.Colony
 
             Colony.ProcessColony();
 
-            timerCountdown.Stop();
-            ColonyStructureData.ProcessCompletionTime = null;
-            txtCompletionTime.Text = "";
-            rtbProgressStatus.Text = "";
+            // For manufactories with remaining items, keep the timer running
+            bool keepTimer = false;
+            if (FlatpackBlueprint != null &&
+                FlatpackBlueprint.BluePrintType == BlueprintTypes.Manufactory &&
+                ColonyStructureData.ManufacturingCompleted < ColonyStructureData.ManufacturingQuantity)
+            {
+                keepTimer = true;
+            }
+
+            if (!keepTimer)
+            {
+                timerCountdown.Stop();
+                ColonyStructureData.ProcessCompletionTime = null;
+                txtCompletionTime.Text = "";
+                rtbProgressStatus.Text = "";
+            }
 
             if (FlatpackBlueprint != null)
             {
