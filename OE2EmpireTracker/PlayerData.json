@@ -1,272 +1,6 @@
 {
   "PlayerProfile": [
     {
-      "UUID": "a86abd3e-c935-4c1b-a35c-bb6548a51272",
-      "Name": "Scalorn",
-      "Faction": "",
-      "TotalCredits": 123.0,
-      "Public": {
-        "Rank": 0,
-        "CurrentXP": 0,
-        "NextXP": 0
-      },
-      "Private": {
-        "Rank": 0,
-        "CurrentXP": 0,
-        "NextXP": 0
-      },
-      "Military": {
-        "Rank": 0,
-        "CurrentXP": 0,
-        "NextXP": 0
-      },
-      "SkillPoints": 0,
-      "Skills": {
-        "Human Resources": {
-          "Level": 0,
-          "TrainingStarted": true,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-05T07:24:43.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "22h 47m 42s"
-          }
-        },
-        "Foreman": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Founder": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Energy Efficiency": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Builder": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Refining Focus": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Production Focus": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Extraction Focus": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Damage Control": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Engineering Capacity": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Sounds As A Pound": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Self Made Millionaire": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "AAA Healthcare": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Job Opportunities": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Contract Management": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Research Review": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Research Methods": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Research Focus": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Surveying Methods": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Scanning Methods": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Quartermaster": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        },
-        "Broker": {
-          "Level": 0,
-          "TrainingStarted": false,
-          "CompletionTime": {
-            "StartTime": "2026-04-04T08:35:16.3218896-07:00",
-            "EndTime": "2026-04-04T08:35:16.3218896-07:00",
-            "RepeatIntervalSeconds": 0,
-            "IsRepeating": false,
-            "TimeRemainingString": "0s"
-          }
-        }
-      }
-    },
-    {
       "UUID": "4f57cb19-c3c6-4929-9b72-87e200aabf24",
       "Name": "",
       "Faction": "",
@@ -292,8 +26,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -303,8 +37,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -314,8 +48,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -325,8 +59,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -336,8 +70,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -347,8 +81,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -358,8 +92,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -369,8 +103,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -380,8 +114,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -391,8 +125,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -402,8 +136,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -413,8 +147,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -424,8 +158,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -435,8 +169,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -446,8 +180,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -457,8 +191,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -468,8 +202,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -479,8 +213,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -490,8 +224,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -501,8 +235,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -512,8 +246,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -523,8 +257,274 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "0001-01-01T00:00:00",
-            "EndTime": "0001-01-01T00:00:00",
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        }
+      }
+    },
+    {
+      "UUID": "a86abd3e-c935-4c1b-a35c-bb6548a51272",
+      "Name": "Scalorn",
+      "Faction": "",
+      "TotalCredits": 123.0,
+      "Public": {
+        "Rank": 0,
+        "CurrentXP": 0,
+        "NextXP": 0
+      },
+      "Private": {
+        "Rank": 0,
+        "CurrentXP": 0,
+        "NextXP": 0
+      },
+      "Military": {
+        "Rank": 0,
+        "CurrentXP": 0,
+        "NextXP": 0
+      },
+      "SkillPoints": 0,
+      "Skills": {
+        "Human Resources": {
+          "Level": 0,
+          "TrainingStarted": true,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-05T08:24:22.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "22h 45m 50s"
+          }
+        },
+        "Foreman": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Founder": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Energy Efficiency": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Builder": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Refining Focus": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Production Focus": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Extraction Focus": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Damage Control": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Engineering Capacity": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Sounds As A Pound": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Self Made Millionaire": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "AAA Healthcare": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Job Opportunities": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Contract Management": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Research Review": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Research Methods": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Research Focus": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Surveying Methods": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Scanning Methods": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Quartermaster": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Broker": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T09:37:17.0377729-07:00",
+            "EndTime": "2026-04-04T09:37:17.0377729-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -864,41 +864,37 @@
       "Volume": 0.0
     },
     {
-      "baseBlueprintUUID": "82609bb4-32e5-42f4-aee8-244181501ace",
+      "baseBlueprintUUID": "",
       "BluePrintType": "SystemObjectScanner",
-      "Evolution": 5,
+      "Evolution": 0,
       "TechLevel": "MilSpec",
       "Class": 6,
-      "CopyCost": 1,
+      "CopyCost": 0,
       "Properties": {
         "ManufactureTime": "4h 0m",
-        "Mass": "116",
+        "Mass": "110",
         "CargoVolumeSize": "145",
         "MaxAllowedOnShip": "1",
         "PowerRequired": "182",
-        "Health": "635",
-        "EngCapacityRequired": "448",
-        "WearAndTearRate": "3.214",
+        "Health": "660",
+        "EngCapacityRequired": "430",
+        "WearAndTearRate": "3",
         "MaximumDamageRepairRate": "80",
         "SensorAbundanceFactor": "3",
         "PurityModifier": "22.5",
-        "ScanLevel": "105"
+        "ScanLevel": "75"
       },
       "Resources": {
-        "Heavy Noble Gases": "1167",
-        "Acidic Inorganics": "249",
-        "Metaloids": "454",
-        "Complex Non-Metallics": "104",
-        "Strong Acidic Inorganics": "285",
-        "Heavy Alkali Metals": "65",
-        "S1. Translivermoric Exotics": "87",
-        "S2. Element 126": "42"
+        "Post-Trans Metals": "1622",
+        "Non-Metallics": "285",
+        "Heavy Post-Trans Metals": "558",
+        "Strong Alkali Organics": "284"
       },
-      "UUID": "4a908839-be77-4e45-b6de-8067b9e0b188",
+      "UUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
       "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
-      "NickName": "105 Scan",
+      "NickName": "",
       "Description": "",
       "Quantity": 0,
       "ResourcePurity": "",
@@ -945,37 +941,37 @@
       "Volume": 0.0
     },
     {
-      "baseBlueprintUUID": "",
+      "baseBlueprintUUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
       "BluePrintType": "SystemObjectScanner",
-      "Evolution": 0,
+      "Evolution": 2,
       "TechLevel": "MilSpec",
       "Class": 6,
       "CopyCost": 0,
       "Properties": {
         "ManufactureTime": "4h 0m",
-        "Mass": "110",
+        "Mass": "116",
         "CargoVolumeSize": "145",
         "MaxAllowedOnShip": "1",
         "PowerRequired": "182",
-        "Health": "660",
+        "Health": "635",
         "EngCapacityRequired": "430",
         "WearAndTearRate": "3",
         "MaximumDamageRepairRate": "80",
         "SensorAbundanceFactor": "3",
         "PurityModifier": "22.5",
-        "ScanLevel": "75"
+        "ScanLevel": "86"
       },
       "Resources": {
-        "Post-Trans Metals": "1622",
-        "Non-Metallics": "285",
-        "Heavy Post-Trans Metals": "558",
-        "Strong Alkali Organics": "284"
+        "Post-Trans Metals": "1433",
+        "Metallics": "218",
+        "Metaloids": "508",
+        "Complex Metallics": "235"
       },
-      "UUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
+      "UUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
       "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
-      "NickName": "",
+      "NickName": "86 Scan",
       "Description": "",
       "Quantity": 0,
       "ResourcePurity": "",
@@ -1023,12 +1019,12 @@
       "Volume": 0.0
     },
     {
-      "baseBlueprintUUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
+      "baseBlueprintUUID": "82609bb4-32e5-42f4-aee8-244181501ace",
       "BluePrintType": "SystemObjectScanner",
-      "Evolution": 2,
+      "Evolution": 5,
       "TechLevel": "MilSpec",
       "Class": 6,
-      "CopyCost": 0,
+      "CopyCost": 1,
       "Properties": {
         "ManufactureTime": "4h 0m",
         "Mass": "116",
@@ -1036,24 +1032,28 @@
         "MaxAllowedOnShip": "1",
         "PowerRequired": "182",
         "Health": "635",
-        "EngCapacityRequired": "430",
-        "WearAndTearRate": "3",
+        "EngCapacityRequired": "448",
+        "WearAndTearRate": "3.214",
         "MaximumDamageRepairRate": "80",
         "SensorAbundanceFactor": "3",
         "PurityModifier": "22.5",
-        "ScanLevel": "86"
+        "ScanLevel": "105"
       },
       "Resources": {
-        "Post-Trans Metals": "1433",
-        "Metallics": "218",
-        "Metaloids": "508",
-        "Complex Metallics": "235"
+        "Heavy Noble Gases": "1167",
+        "Acidic Inorganics": "249",
+        "Metaloids": "454",
+        "Complex Non-Metallics": "104",
+        "Strong Acidic Inorganics": "285",
+        "Heavy Alkali Metals": "65",
+        "S1. Translivermoric Exotics": "87",
+        "S2. Element 126": "42"
       },
-      "UUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
+      "UUID": "4a908839-be77-4e45-b6de-8067b9e0b188",
       "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
-      "NickName": "86 Scan",
+      "NickName": "105 Scan",
       "Description": "",
       "Quantity": 0,
       "ResourcePurity": "",
@@ -1270,6 +1270,28 @@
   ],
   "Survey": [
     {
+      "ScannedBy": "",
+      "DateTime": "",
+      "PlanetName": "",
+      "SurveyID": "",
+      "ScannerBlueprintUUID": "",
+      "Properties": {
+        "SensorAbundance": "",
+        "PurityModifier": "",
+        "ScanLevel": ""
+      },
+      "Resources": {},
+      "UUID": "08a80c38-fe2f-4630-9009-3d0b01bf95e9",
+      "ItemType": "Survey",
+      "BaseItemTypeID": "",
+      "Name": "",
+      "NickName": "",
+      "Description": "",
+      "Quantity": 0,
+      "ResourcePurity": "",
+      "Volume": 0.0
+    },
+    {
       "ScannedBy": "Scalorn Scorpus",
       "DateTime": "2026-02-19 22:31:00",
       "PlanetName": "Alef Wynthoril I",
@@ -1371,6 +1393,84 @@
       "Name": null,
       "NickName": null,
       "Description": null,
+      "Quantity": 0,
+      "ResourcePurity": "",
+      "Volume": 0.0
+    },
+    {
+      "ScannedBy": "Scalorn Scorpus",
+      "DateTime": "19FEB26-09:39p",
+      "PlanetName": "Quogar V2249 II",
+      "SurveyID": "FC2F6CC",
+      "ScannerBlueprintUUID": "4a908839-be77-4e45-b6de-8067b9e0b188",
+      "Properties": {
+        "SensorAbundance": "",
+        "PurityModifier": "",
+        "ScanLevel": ""
+      },
+      "Resources": {
+        "Post-Trans Metals": {
+          "Resource": "Post-Trans Metals",
+          "Purity": "High",
+          "Amount": "112.2"
+        },
+        "Halogens": {
+          "Resource": "Halogens",
+          "Purity": "High",
+          "Amount": "9.9"
+        },
+        "Heavy Trans-Metals": {
+          "Resource": "Heavy Trans-Metals",
+          "Purity": "High",
+          "Amount": "16.5"
+        },
+        "Heavy Post-Trans Metals": {
+          "Resource": "Heavy Post-Trans Metals",
+          "Purity": "High",
+          "Amount": "33"
+        },
+        "Complex Metallics": {
+          "Resource": "Complex Metallics",
+          "Purity": "High",
+          "Amount": "19.8"
+        },
+        "Complex Non-Metallics": {
+          "Resource": "Complex Non-Metallics",
+          "Purity": "High",
+          "Amount": "19.8"
+        },
+        "Alkali Organics": {
+          "Resource": "Alkali Organics",
+          "Purity": "Medium",
+          "Amount": "72.6"
+        },
+        "Heavy Alkali Metals": {
+          "Resource": "Heavy Alkali Metals",
+          "Purity": "High",
+          "Amount": "9.9"
+        },
+        "Lanthanides": {
+          "Resource": "Lanthanides",
+          "Purity": "High",
+          "Amount": "16.5"
+        },
+        "Transuranic Volatiles": {
+          "Resource": "Transuranic Volatiles",
+          "Purity": "High",
+          "Amount": "3.3"
+        },
+        "Strong Alkali Organics": {
+          "Resource": "Strong Alkali Organics",
+          "Purity": "High",
+          "Amount": "3.3"
+        }
+      },
+      "UUID": "a7467233-de2e-4fb5-a29c-92b35490e76d",
+      "ItemType": "Survey",
+      "BaseItemTypeID": "",
+      "Name": "",
+      "NickName": "",
+      "Description": "",
       "Quantity": 0,
       "ResourcePurity": "",
       "Volume": 0.0
