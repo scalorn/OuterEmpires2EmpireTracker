@@ -319,18 +319,25 @@ namespace OE2EmpireTracker.Baseline
             {
                 structure.ManufacturingCompleted++;
 
-                // Create the manufactured item
-                Item mfgItem = new Item(outputType, sourceBp.Name);
-                mfgItem.UUID = Guid.NewGuid().ToString();
-                mfgItem.BaseItemTypeID = sourceBp.UUID;
-                mfgItem.Quantity = 1;
+                // Stack with existing item if same type and blueprint
+                List<Item> existing = Items.FindByType(outputType, sourceBp.UUID);
+                if (existing.Count > 0)
+                {
+                    existing[0].Quantity++;
+                }
+                else
+                {
+                    Item mfgItem = new Item(outputType, sourceBp.Name);
+                    mfgItem.UUID = Guid.NewGuid().ToString();
+                    mfgItem.BaseItemTypeID = sourceBp.UUID;
+                    mfgItem.Quantity = 1;
 
-                // Volume from blueprint CargoVolumeSize
-                double vol = 0;
-                sourceBp.Properties.getDouble("CargoVolumeSize", 0, out vol);
-                mfgItem.Volume = vol;
+                    double vol = 0;
+                    sourceBp.Properties.getDouble("CargoVolumeSize", 0, out vol);
+                    mfgItem.Volume = vol;
 
-                Items.AddItem(mfgItem);
+                    Items.AddItem(mfgItem);
+                }
 
                 structure.ProcessCompletionTime.ConsumeIntervals(1);
             }
