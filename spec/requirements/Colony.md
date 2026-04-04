@@ -3,6 +3,8 @@
 ## Colony Data
 
 **REQ-COL-001** A Colony SHALL have a UUID, PlanetName, ColonyName, an ItemBag, a list of ColonyStructures, and a list of CommodityRequested.  
+**REQ-COL-001a** ColonyStructure SHALL NOT have redundant resource fields (Power, Habitation, Food, Entertainment, WarehouseCapacity, WorkersAssigned). All calculated resource values SHALL be accessed via `structure.Statuses["Actual"]` and `structure.Statuses["Ideal"]`.  
+**REQ-COL-001b** ColonyStructure MAY retain incomplete-feature fields (CurrentAttitude, ContentmentIndex, WageLevel, WageAdjustmentTime) for future use.  
 **REQ-COL-002** Colony UUID SHALL be generated as a new GUID when first saved if not already set.  
 **REQ-COL-003** Colony SHALL serialize to and deserialize from JSON, preserving all fields including nested structures and items.
 

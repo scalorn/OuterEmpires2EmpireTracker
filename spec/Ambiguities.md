@@ -25,9 +25,13 @@ Each item references the relevant requirement ID where one exists.
 
 ---
 
-### AMB-004 — ColonyStructure has unused fields: Power, Habitation, Food, Entertainment, WarehouseCapacity, WorkersAssigned, CurrentAttitude, ContentmentIndex, WageLevel, WageAdjustmentTime
-**Code behavior:** These fields exist on `ColonyStructure` but are never written or read by any current code. They serialize to JSON.  
-**Question:** Are these placeholders for future features, or dead code that should be removed? If future features, which ones?
+### AMB-004 — RESOLVED
+**Resolution:**
+- `CurrentAttitude`, `ContentmentIndex`, `WageLevel`, `WageAdjustmentTime` — incomplete features, leave as-is. No action.
+- `Power`, `Habitation`, `Food`, `Entertainment`, `WarehouseCapacity`, `WorkersAssigned` on `ColonyStructure` — these are dead code. The correct location for these values is `ColonyStructureStatus` (accessed via `structure.Statuses["Actual"]` and `structure.Statuses["Ideal"]`). These fields SHALL be removed from `ColonyStructure`.
+- `buildQueueSequence` — see AMB-005.
+
+**Action:** Dead fields removed from ColonyStructure. Colony.md updated.
 
 ---
 

@@ -94,13 +94,6 @@ namespace OE2EmpireTracker.Baseline
 
         public Dictionary<string, ColonyStructureStatus> Statuses { get; set; } = new Dictionary<string, ColonyStructureStatus>();
 
-        public double Power { get; set; }
-        public double Habitation { get; set; }
-        public double Food { get; set; }
-        public double Entertainment { get; set; }
-        public double WarehouseCapacity { get; set; }
-        public int WorkersAssigned { get; set; }
-
         DateTime completion { get; set; }
         public string CurrentAttitude { get; set; } = string.Empty;
         public int ContentmentIndex { get; set; }
