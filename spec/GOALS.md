@@ -184,22 +184,64 @@ Wraps `Baseline.Colony` to hide direct list/bag manipulation:
 - `OE2EmpireTracker/Forms/Colony/FormColony.cs`
 
 
-**Status: Pending implementation**
+**Status: Complete**
 
-- NLog.config added to project
-- Package installed
-- No logging calls added to code yet
+- NLog loggers added to all forms, contexts, and data classes
+- All Debug.Print calls replaced with NLog (Debug/Info/Warn/Error levels)
 
 ---
 
-## Recently Completed (last session)
-- Survey unit tests added
-- Blueprint unit tests added
-- WorkerDetail unit tests added
-- PropertyBag unit tests added
-- ResourceClass, ResourceGroup, ResourcePurity unit tests added
-- PlayerProfile, PlayerRank, PlayerSkill, SkillName extension unit tests added
-- ItemType unit tests added
-- Item unit tests added
-- CountDownTime unit tests added
-- Commodity, CommodityGroup, CommodityIndustry unit tests added
+### 11. Survey Import (SurveyParser + FormSurvey)
+**Status: Complete**
+
+- SurveyParser refactored from debug-only code to proper `processHtml(Survey, string)`
+- Extracts PlanetName, SurveyID, DateTime, ScannedBy from HTML
+- Extracts resources with name, purity (normalized: "Med Purity" → "Medium"), and decimal amounts
+- Skips unknown/trace elements
+- Import button added to FormSurvey, wired via `processClipboard`
+- `populateFormFromViewModel` populates form without requiring UUID (works for unsaved imports)
+- NLog clipboard HTML logging for test data capture
+- Test data moved to external files in `TestData/` folder
+- 44 tests covering 3 real game HTML fragments (SampleHtml, ZehVazoranIIM2, QuogarV2249II)
+
+### 12. Refinery Rig Support
+**Status: Complete**
+
+- BlueprintTypes.Refinery = "Flatpacks/Refinery"
+- ColonyStructure data: RefiningResource, RefiningResourcePurity fields
+- Selection combo populated with unrefined resources from warehouse + actively mined resources
+- Start button starts 1-hour repeating timer
+- Progress status: `<consumed>:<produced> <resource> (<purity>)` with purity multipliers (Low=1x, Med=3x, High=5x of base rate 25)
+- Colony.ProcessRefinery: consumes up to 25 unrefined per interval, produces refined output
+- Depleted unrefined resources removed from warehouse (no zero-quantity items)
+- Done button force-processes one interval and fires ColonyStructureDataChanged
+- Item grid refreshes on structure data changes
+
+### 13. Colony Structure — Built+Online Gate
+**Status: Complete**
+
+- All structure types (mining rig, refinery, future types) require Built=true AND Online=true before showing selection/process controls
+- Structures that are not built+online hide flpSelection, flpSubSelection, flpCompletionTime
+- Applied consistently in handleMiningRigControls, handleRefineryControls, and the default else branch
+
+### 14. Mining Rig Improvements
+**Status: Complete**
+
+- Sub-selection hidden when empty survey selected (fixed SelectedIndex >= 0 check)
+- rtbProgressStatus shows `<Rate>/h <Resource> (<Purity>)` when process is active
+- Cleared when no process running
+
+---
+
+## Recently Completed (this session)
+- MVVM completed across all forms (Blueprint, Survey)
+- All Recommendations (1-8) resolved
+- SurveyParser implemented, tested, wired into FormSurvey
+- Refinery rig feature implemented
+- Colony structure built+online gate applied
+- Mining rig UI improvements
+- NLog logging added throughout codebase
+- Test data moved to external files
+- Delete confirmation dialog added to FormPlayerProfile
+- Resource static data unit tests added
+- 465 total tests, all passing
