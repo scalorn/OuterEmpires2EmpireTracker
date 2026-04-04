@@ -258,7 +258,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
 
             string manuTime;
             bp.Properties.getString("ManufactureTime", null, out manuTime);
-            Assert.AreEqual("9 hours", manuTime);
+            Assert.AreEqual("9h", manuTime);
 
             string mass;
             bp.Properties.getString("Mass", null, out mass);

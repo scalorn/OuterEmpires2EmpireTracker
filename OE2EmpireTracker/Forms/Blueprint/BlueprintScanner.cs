@@ -212,7 +212,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                                     remapKey = key;
                                 }
 
-                                blueprint.Properties.setProperty(remapKey, rawValue);
+                                blueprint.Properties.setProperty(remapKey, NormalizePropertyValue(remapKey, rawValue));
                                 Log.Info($"Extracted property: {remapKey} = {rawValue}");
                             }
                         }
@@ -323,6 +323,26 @@ namespace OE2EmpireTracker.Forms.Blueprint
             // Convert bytes to string using UTF-8 encoding
             byte[] bytes = Encoding.UTF8.GetBytes(htmlDataString);
             return Encoding.UTF8.GetString(bytes, startFragmentIndex, endFragmentIndex - startFragmentIndex);
+        }
+
+        /// <summary>
+        /// Normalizes property values based on the property key.
+        /// Time properties like ManufactureTime get "hours" -> "h", "minutes" -> "m" etc.
+        /// </summary>
+        private static string NormalizePropertyValue(string key, string value)
+        {
+            if (string.IsNullOrEmpty(value)) return value;
+
+            if (key == "ManufactureTime")
+            {
+                value = Regex.Replace(value, @"\s*hours?\s*", "h ", RegexOptions.IgnoreCase);
+                value = Regex.Replace(value, @"\s*minutes?\s*", "m ", RegexOptions.IgnoreCase);
+                value = Regex.Replace(value, @"\s*seconds?\s*", "s ", RegexOptions.IgnoreCase);
+                value = Regex.Replace(value, @"\s*days?\s*", "d ", RegexOptions.IgnoreCase);
+                value = value.Trim();
+            }
+
+            return value;
         }
 
         /// <summary>

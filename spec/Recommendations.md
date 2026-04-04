@@ -63,3 +63,16 @@ Added MessageBox.Show confirmation ("Delete profile '{name}'?") with Yes/No butt
 ## ~~8. SurveyParser — no unit tests~~
 **Status: Complete**
 SurveyParser refactored from debug-only code to a proper `processHtml(Survey, string)` method following the BlueprintScanner pattern. Extracts DateTime, ScannedBy, and resources (name, purity, amount) from game HTML. 17 tests covering ParseDescription, ParseResource, full HTML integration, edge cases (empty, malformed, null, unknown trace, duplicates).
+
+
+---
+
+## 9. Grid validation for SurveyForm and BlueprintForm
+**Priority: Medium**
+Currently no format validation on grid cell edits:
+- SurveyForm dgvResources: Resource name must exist in Resource static data, Amount must be a decimal number
+- BlueprintForm dgvStatistics: Format varies by property name (time values, numbers, percentages)
+- BlueprintForm dgvResources: Resource name must exist, quantity must be an integer
+
+Recommendation: implement CellValidating handlers on each grid that validate based on column/property type. Use ValidatedTextBox patterns where applicable.
+**Needs approval: no — can proceed when prioritised.**
