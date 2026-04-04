@@ -957,6 +957,23 @@ namespace OE2EmpireTracker.Forms.Colony
             e.Handled = true;
         }
 
+        private void dgvItems_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+
+            DataGridViewRow row = dgvItems.Rows[e.RowIndex];
+            Item item = row.Tag as Item;
+            if (item == null) return;
+
+            // Amount column is index 3
+            if (e.ColumnIndex == 3)
+            {
+                int qty = 0;
+                int.TryParse(row.Cells[3].Value?.ToString(), out qty);
+                item.Quantity = qty;
+            }
+        }
+
         private void dgvCommodityRequests_SelectionChanged(object sender, EventArgs e)
         {
             // Prevent the SelectionChanged event from triggering an error if the current cell is null
