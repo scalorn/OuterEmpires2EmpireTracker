@@ -51,7 +51,7 @@
 **REQ-DM-051** CountDownTime.TimeRemaining setter SHALL set EndTime to now + the given seconds.  
 **REQ-DM-052** CountDownTime.TimeRemainingString getter SHALL format as `Xd Yh Zm Ws`. Leading zero-value segments (before the first non-zero segment) SHALL be omitted. Once the first non-zero segment has been included, all subsequent lower segments SHALL be shown even if their value is zero (e.g. `1h 0m 30s`, not `1h 30s`). When TimeRemaining <= 0 it SHALL return `"0s"`.  
 **REQ-DM-053** CountDownTime.TimeRemainingString setter SHALL parse `Xd Yh Zm Ws` (all segments optional) and set TimeRemaining to the total seconds.  
-**REQ-DM-054** CountDownTime.TimeRemaining SHALL be decorated with [JsonIgnore].  
+**REQ-DM-054** CountDownTime.TimeRemaining and IntervalsPassed SHALL be decorated with [JsonIgnore] as they are computed from persisted fields. StartTime, EndTime, and RepeatIntervalSeconds SHALL be serialized to JSON so that active countdowns survive app restarts.  
 **REQ-DM-055** CountDownTime in repeating mode SHALL track IntervalsPassed as the number of complete intervals elapsed since StartTime.  
 **REQ-DM-056** ConsumeIntervals(n) SHALL advance StartTime by n * RepeatIntervalSeconds, reducing IntervalsPassed by n.  
 **REQ-DM-057** StartRepeating(intervalSeconds) SHALL set RepeatIntervalSeconds, StartTime=now, EndTime=now+interval.

@@ -19,10 +19,9 @@ Each item references the relevant requirement ID where one exists.
 
 ---
 
-### AMB-003 — CountDownTime: RepeatIntervalSeconds is serialized to JSON
-**Code behavior:** `RepeatIntervalSeconds`, `StartTime`, and `EndTime` are all serialized. `TimeRemaining` and `IntervalsPassed` are `[JsonIgnore]`.  
-**Spec (REQ-DM-054):** Only mentions TimeRemaining as JsonIgnore.  
-**Question:** Should `StartTime` and `EndTime` also be `[JsonIgnore]` (recomputed on load), or must they be persisted to survive app restarts? Currently they are persisted — is that correct?
+### AMB-003 — RESOLVED
+**Resolution:** `StartTime`, `EndTime`, and `RepeatIntervalSeconds` SHALL be persisted to JSON so that active countdowns survive app restarts. `TimeRemaining` and `IntervalsPassed` SHALL remain `[JsonIgnore]` as they are computed from the persisted fields. The current code is already correct — no code change needed.  
+**Action:** REQ-DM-054 updated to clarify which fields are serialized vs ignored.
 
 ---
 
