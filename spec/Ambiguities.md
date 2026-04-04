@@ -176,7 +176,7 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 - Survey: 0
 - Resource: 1
 - Commodity: 10
-- WorkDetail: 40
+- WorkDetail: 50
 - Manufactured items (Flatpack, ShipHull, ShipPart, etc.): from blueprint's CargoVolumeSize property
 
 Volume SHALL be set when an item is added to the warehouse.  

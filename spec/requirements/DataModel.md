@@ -32,7 +32,7 @@
 - Survey: 0
 - Resource: 1
 - Commodity: 10
-- WorkDetail: 40
+- WorkDetail: 50
 - Manufactured items (Flatpack, ShipHull, ShipPart, Munition, SpaceBuildPackage, Share): from the blueprint's CargoVolumeSize property (parsed as double, default 0 if absent)
 
 ## Blueprint

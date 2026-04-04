@@ -623,7 +623,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 case Data.ItemType.ItemTypeEnum.Commodity:
                     return 10.0;
                 case Data.ItemType.ItemTypeEnum.WorkDetail:
-                    return 40.0;
+                    return 50.0;
                 case Data.ItemType.ItemTypeEnum.Blueprint:
                 case Data.ItemType.ItemTypeEnum.Survey:
                     return 0.0;
