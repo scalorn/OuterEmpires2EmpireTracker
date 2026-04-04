@@ -101,3 +101,25 @@
 **REQ-COL-095c** If the simulation shows a deficit in Power, Habitation, Food, or Entertainment after building the Primary structure, the algorithm SHALL insert the minimum number of Support structures from the Support pool ahead of it to eliminate the deficit.  
 **REQ-COL-095d** The resulting sequence SHALL guarantee that after each build step, Power >= PowerRequired, HabitationProvision >= HabitationRequired, FoodProvision >= FoodRequired, and EntertainmentProvided >= EntertainmentRequired.  
 **REQ-COL-095e** Support structures that are not needed to satisfy any constraint SHALL be appended at the end of the sequence.
+
+## Colony Bootstrap (Future)
+
+**REQ-COL-096** The colony form SHALL provide a "Bootstrap Colony" action that generates a foundation set of planned structures based on the surveys available for the colony's planet.
+
+**REQ-COL-096a** Survey selection: for each unique resource found across all surveys for the planet, the algorithm SHALL select the survey entry that yields the highest refined output rate. Refined output rate = `Amount * (1 + ExtractionFocusLevel * 0.01) * RefiningOutputPerHour(purity)` where RefiningOutputPerHour is 1 for Low, 3 for Medium, 5 for High purity.
+
+**REQ-COL-096b** Mining rigs: one MiningRig flatpack (BlueprintType = `Flatpacks/MiningRig`) SHALL be added per unique resource, configured with the best survey and resource selected in REQ-COL-096a.
+
+**REQ-COL-096c** Refiners: for each resource, calculate the raw mining rate per hour as `Amount * (1 + ExtractionFocusLevel * 0.01)`. Each refiner consumes 25 raw resources per hour. The number of refiners required is `ceil(miningRatePerHour / 25)`. One Refiner flatpack SHALL be added per required refiner.
+
+**REQ-COL-096d** Fixed structure sequence: the output structure list SHALL always begin with:
+1. Command Centre (`Flatpacks/ColonyCommandCentre`)
+2. Remote Operations Array (`Flatpacks/RemoteOperationsArray`)
+3. Mining rigs (one per resource, in resource name order)
+4. Refiners (grouped by resource, in resource name order)
+
+**REQ-COL-096e** After the bootstrap structures are added, the build order optimization algorithm (REQ-COL-095) SHALL be applied automatically to insert Power, Habitation, Food, and Entertainment structures as needed.
+
+**REQ-COL-096f** The bootstrap action SHALL NOT remove any existing structures from the colony. It SHALL only add new planned structures. The user can then modify the list via the UI and re-run the optimization.
+
+**REQ-COL-096g** The ExtractionFocusLevel used in calculations SHALL come from the owning player's Extraction Focus skill (REQ-ARCH-072). Until multi-player support is implemented (REQ-ARCH-070), a level of 0 SHALL be used as the default.

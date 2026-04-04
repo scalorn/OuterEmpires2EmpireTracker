@@ -145,9 +145,9 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 
 ---
 
-### AMB-020 — Colony auto-fill / bootstrap case not specified
-**Overall.md:** "Need the ability to auto fillout a colony based on available surveys (bootstrap case)."  
-**Question:** What does "auto fillout" mean exactly? Does it mean auto-select the best survey for each resource type? Auto-add the optimal set of flatpack structures? Both? This needs a design before it can become a requirement.
+### AMB-020 — RESOLVED
+**Resolution:** The colony bootstrap algorithm generates a foundation set of structures from surveys for a planet. See REQ-COL-096 series in Colony.md for the full specification.  
+**Action:** Colony.md updated with REQ-COL-096 series.
 
 ---
 
