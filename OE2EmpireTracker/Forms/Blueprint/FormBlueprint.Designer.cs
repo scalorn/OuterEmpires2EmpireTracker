@@ -537,6 +537,7 @@ namespace OE2EmpireTracker
             this.CurrentValue});
             this.dgvStatistics.Location = new System.Drawing.Point(-2, 0);
             this.dgvStatistics.Name = "dgvStatistics";
+            this.dgvStatistics.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvStatistics_CellValidating);
             this.dgvStatistics.previousControl = null;
             this.dgvStatistics.Size = new System.Drawing.Size(828, 298);
             this.dgvStatistics.TabIndex = 1;

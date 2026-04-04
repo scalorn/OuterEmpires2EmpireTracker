@@ -133,6 +133,7 @@
     <Compile Include="Constants\BlueprintTypes.cs" />
     <Compile Include="Constants\ResearchTimeLookup.cs" />
     <Compile Include="Constants\RefiningRecipes.cs" />
+    <Compile Include="Constants\BlueprintPropertyValidation.cs" />
     <Compile Include="Controls\DataGridViewValidatedTextBoxColumn.cs" />
     <Compile Include="Controls\RtfBuilder.cs" />
     <Compile Include="Data\Commodity.cs" />

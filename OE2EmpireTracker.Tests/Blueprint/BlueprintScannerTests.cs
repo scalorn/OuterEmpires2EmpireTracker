@@ -278,15 +278,15 @@ namespace OE2EmpireTracker.Tests.Blueprint
 
             string powerRegenRate;
             bp.Properties.getString("PowerRegenerationRate", null, out powerRegenRate);
-            Assert.AreEqual("31.5MW/s", powerRegenRate);
+            Assert.AreEqual("31.5", powerRegenRate);
 
             string wearRate;
             bp.Properties.getString("WearAndTearRate", null, out wearRate);
-            Assert.AreEqual("2.959%", wearRate);
+            Assert.AreEqual("2.959", wearRate);
 
             string dmgRate;
             bp.Properties.getString("MaximumDamageRepairRate", null, out dmgRate);
-            Assert.AreEqual("86.57%", dmgRate);
+            Assert.AreEqual("86.57", dmgRate);
 
             Assert.AreEqual("9366", bp.Resources["Alkaline Earth Metals"]);
             Assert.AreEqual("1927", bp.Resources["Acidic Inorganics"]);

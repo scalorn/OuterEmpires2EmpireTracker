@@ -949,5 +949,40 @@ namespace OE2EmpireTracker
                 dgvResources.Rows[e.RowIndex].ErrorText = "";
             }
         }
+
+        private void dgvStatistics_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            // Only validate the CurrentValue column (index 2)
+            if (e.ColumnIndex != 2) return;
+            if (e.RowIndex < 0) return;
+
+            string value = e.FormattedValue?.ToString();
+            if (string.IsNullOrEmpty(value)) return; // Allow empty
+
+            // Get the property name from the Property cell's Tag
+            string propertyName = dgvStatistics.Rows[e.RowIndex].Cells[0].Tag as string;
+            if (string.IsNullOrEmpty(propertyName)) return;
+
+            string pattern = Constants.BlueprintPropertyValidation.GetValidationPattern(propertyName);
+            if (pattern == null)
+            {
+                // Unknown property — log and allow free-form
+                Log.Warn("Unknown blueprint property for validation: {0}", propertyName);
+                return;
+            }
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(value, pattern))
+            {
+                e.Cancel = true;
+                dgvStatistics.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.LightCoral;
+                var propType = Constants.BlueprintPropertyValidation.GetPropertyType(propertyName);
+                dgvStatistics.Rows[e.RowIndex].ErrorText = $"{propertyName} must be a valid {propType}";
+            }
+            else
+            {
+                dgvStatistics.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
+                dgvStatistics.Rows[e.RowIndex].ErrorText = "";
+            }
+        }
     }
 }

@@ -333,16 +333,31 @@ namespace OE2EmpireTracker.Forms.Blueprint
         {
             if (string.IsNullOrEmpty(value)) return value;
 
-            if (key == "ManufactureTime")
-            {
-                value = Regex.Replace(value, @"\s*hours?\s*", "h ", RegexOptions.IgnoreCase);
-                value = Regex.Replace(value, @"\s*minutes?\s*", "m ", RegexOptions.IgnoreCase);
-                value = Regex.Replace(value, @"\s*seconds?\s*", "s ", RegexOptions.IgnoreCase);
-                value = Regex.Replace(value, @"\s*days?\s*", "d ", RegexOptions.IgnoreCase);
-                value = value.Trim();
-            }
+            var propType = Constants.BlueprintPropertyValidation.GetPropertyType(key);
 
-            return value;
+            switch (propType)
+            {
+                case Constants.PropertyValueType.Time:
+                    // "9 hours" -> "9h", "30 minutes" -> "30m"
+                    value = Regex.Replace(value, @"\s*hours?\s*", "h ", RegexOptions.IgnoreCase);
+                    value = Regex.Replace(value, @"\s*minutes?\s*", "m ", RegexOptions.IgnoreCase);
+                    value = Regex.Replace(value, @"\s*seconds?\s*", "s ", RegexOptions.IgnoreCase);
+                    value = Regex.Replace(value, @"\s*days?\s*", "d ", RegexOptions.IgnoreCase);
+                    return value.Trim();
+
+                case Constants.PropertyValueType.Decimal:
+                    // Strip units: "31.5MW/s" -> "31.5", "2.959%" -> "2.959"
+                    var decMatch = Regex.Match(value, @"[+-]?\d+(\.\d+)?");
+                    return decMatch.Success ? decMatch.Value : value;
+
+                case Constants.PropertyValueType.Integer:
+                    // Strip any non-digit characters except leading +/-
+                    var intMatch = Regex.Match(value, @"[+-]?\d+");
+                    return intMatch.Success ? intMatch.Value : value;
+
+                default:
+                    return value;
+            }
         }
 
         /// <summary>
