@@ -626,6 +626,11 @@ namespace OE2EmpireTracker.Forms.Colony
                 if (FlatpackBlueprint.BluePrintType == BlueprintTypes.MiningRig)
                 {
                     string survey = cmbSelection.SelectedValue as string;
+                    if (survey != ColonyStructureData.MiningSurvey)
+                    {
+                        ColonyStructureData.MiningLeftOvers = Decimal.Zero;
+                        ColonyStructureData.MiningSurveyResource = null;
+                    }
                     ColonyStructureData.MiningSurvey = survey;
                     handleMiningRigControls();
                 }
@@ -641,6 +646,10 @@ namespace OE2EmpireTracker.Forms.Colony
                 if (FlatpackBlueprint.BluePrintType == BlueprintTypes.MiningRig)
                 {
                     string surveyResource = cmbSubSelection.SelectedValue as string;
+                    if (surveyResource != ColonyStructureData.MiningSurveyResource)
+                    {
+                        ColonyStructureData.MiningLeftOvers = Decimal.Zero;
+                    }
                     ColonyStructureData.MiningSurveyResource = surveyResource;
                     handleMiningRigControls();
                 }

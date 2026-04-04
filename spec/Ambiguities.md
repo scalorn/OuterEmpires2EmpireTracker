@@ -47,9 +47,14 @@ Each item references the relevant requirement ID where one exists.
 
 ---
 
-### AMB-007 — Colony.ProcessColony() mined quantity calculation
-**Code (REQ-COL-056):** The spec says "Amount * IntervalsPassed". The actual code does `Decimal.Parse(surveyResource.Amount) + leftOver` per interval, accumulating a running leftOver for fractional amounts.  
-**Question:** Is the leftOver/fractional accumulation intentional and correct? The spec should reflect this. Also, the TODO comment says "Need to adjust for extraction bonus" — is this a known gap?
+### AMB-007 — RESOLVED
+**Resolution:**
+- The fractional leftover accumulation is correct. Survey amounts are fractional; items are integer quantities. MiningLeftOvers accumulates the fractional remainder across cycles.
+- MiningLeftOvers SHALL be reset to 0 when the mining rig's MiningSurvey or MiningSurveyResource changes (i.e. the user selects a different resource to mine).
+- The Extraction Focus skill provides a 1% bonus per skill level to mined quantity. This is currently a TODO in Colony.ProcessColony().
+- Implementing the extraction bonus requires multi-player support: a Colony SHALL be owned by a Player, and the owning player's Extraction Focus skill level SHALL be used to calculate the bonus. This is a larger feature tracked as a new requirement.
+
+**Action:** Colony.cs fixed to reset MiningLeftOvers on resource change. Colony.md updated. New multi-player requirements added to Architecture.md.
 
 ---
 

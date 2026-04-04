@@ -56,3 +56,11 @@
 **REQ-ARCH-064** A Commodity Delivery form SHALL summarize all CommodityRequested entries across all colonies.  
 **REQ-ARCH-065** A Flatpack Building form SHALL list colonies with staged but unbuilt structures.  
 **REQ-ARCH-066** A Worker Delivery form SHALL list colonies with built structures that have unassigned workers.
+
+## Multi-Player Support (Future — required for extraction bonus)
+
+**REQ-ARCH-070** The application SHALL support multiple PlayerProfiles. Each Colony SHALL have an OwnerUUID field identifying the PlayerProfile that owns it.  
+**REQ-ARCH-071** PlayerContext SHALL maintain a currently selected player (CurrentPlayerUUID). All colony, blueprint, and survey data SHALL be filterable by the currently selected player.  
+**REQ-ARCH-072** Colony.ProcessColony() SHALL look up the owning player's Extraction Focus skill level via the OwnerUUID and apply a `(1 + level * 0.01)` multiplier to mined quantity per interval (REQ-COL-056b).  
+**REQ-ARCH-073** The Colony Form SHALL only display colonies owned by the currently selected player.  
+**REQ-ARCH-074** Colony.OwnerUUID SHALL be serialized to JSON and SHALL default to empty string for backward compatibility with existing save files.
