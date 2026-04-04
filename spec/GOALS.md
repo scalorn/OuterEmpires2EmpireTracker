@@ -252,6 +252,35 @@ Wraps `Baseline.Colony` to hide direct list/bag manipulation:
 - New blueprint added to playerContext.blueprintList and colony warehouse
 - One-shot timer completion handled correctly in ProcessColony outer gate and cmdDone_Click
 
+### 16. Manufactory Support
+**Status: Complete**
+
+- BlueprintTypes.Manufactory = "Flatpacks/Manufactory"
+- ColonyStructure data: ManufacturingBlueprintUUID, ManufacturingQuantity, ManufacturingCompleted
+- Selection combo populated with manufacturable blueprints (CanManufacture property in PropertyBag, default true; must have ManufactureTime)
+- txtQuantity input field visible only after blueprint selection (defaults to 1)
+- Start button parses ManufactureTime from blueprint properties, starts repeating timer for quantity items
+- ManufactureTime normalized at scan time in BlueprintScanner ("9 hours" → "9h")
+- Safety normalization also in ColonyStructure for existing data
+- Progress status: `(completed/total) BlueprintExtendedName`
+- Colony.ProcessManufactory: creates one item per interval, ItemType from BlueprintType.OutputItemType, Volume from CargoVolumeSize
+- Built+online gate applied
+
+### 17. Synthetic Refining — Whole-Unit Consumption
+**Status: Complete**
+
+- Synthetic recipes only appear when warehouse has enough for at least 1 output unit (50 for S1, 20 for S2)
+- Processing consumes only whole units: 55 input with 1:50 rate → consume 50, produce 1, leave 5
+- Selection combo key includes tier suffix for proper restore after re-render
+- Combo always repopulates from current warehouse state
+- Structures tab switch triggers UpdateData on all visible structure controls
+
+### 18. Colony Form — Item Grid Editing
+**Status: Complete**
+
+- CellValueChanged handler on dgvItems writes edited quantity back to backing Item.Quantity
+- Changes persist on save
+
 ---
 
 ## Recently Completed (this session)
@@ -260,11 +289,16 @@ Wraps `Baseline.Colony` to hide direct list/bag manipulation:
 - SurveyParser implemented, tested, wired into FormSurvey
 - Refinery rig feature with synthetic resource support
 - Research laboratory feature
+- Manufactory feature
 - Colony structure built+online gate applied
 - Mining rig UI improvements and top-of-hour alignment
+- Synthetic refining whole-unit consumption and per-unit thresholds
+- Item grid quantity editing
 - NLog logging added throughout codebase
 - Test data moved to external files
 - Delete confirmation dialog added to FormPlayerProfile
 - Resource static data unit tests added
-- Multiple bug fixes (timer completion, item grid refresh, zero-quantity cleanup)
+- BlueprintScanner ManufactureTime normalization
+- Tab switch refreshes structure controls
+- Multiple bug fixes (timer completion, item grid refresh, zero-quantity cleanup, combo restore keys)
 - 465 total tests, all passing
