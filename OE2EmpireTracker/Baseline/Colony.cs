@@ -187,7 +187,7 @@ namespace OE2EmpireTracker.Baseline
             newBp.CopyCost = sourceBp.CopyCost;
             newBp.baseBlueprintUUID = sourceBp.baseBlueprintUUID;
             newBp.Description = sourceBp.Description;
-            newBp.NickName = ""; // User must set this
+            newBp.NickName = "NEEDS SCANNED"; // Searchable marker for unscanned blueprints
             // Properties copied, resources left empty for user to import
             foreach (var prop in sourceBp.Properties.Properties)
             {
