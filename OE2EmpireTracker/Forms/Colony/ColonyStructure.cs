@@ -403,19 +403,16 @@ namespace OE2EmpireTracker.Forms.Colony
 
             // Selection: unrefined resources from warehouse + actively mined resources
             flpSelection.Visible = true;
-            if (cmbSelection.Items.Count <= 1 || !string.IsNullOrEmpty(ColonyStructureData.RefiningResource))
+            populateSelectionWithUnrefinedResources();
+            if (!string.IsNullOrEmpty(ColonyStructureData.RefiningResource))
             {
-                populateSelectionWithUnrefinedResources();
-                if (!string.IsNullOrEmpty(ColonyStructureData.RefiningResource))
+                string restoreKey = ColonyStructureData.RefiningResource + "|" + ColonyStructureData.RefiningResourcePurity;
+                var recipe = RefiningRecipes.FindByInput(ColonyStructureData.RefiningResource, ColonyStructureData.RefiningResourcePurity);
+                if (recipe != null)
                 {
-                    string restoreKey = ColonyStructureData.RefiningResource + "|" + ColonyStructureData.RefiningResourcePurity;
-                    var recipe = RefiningRecipes.FindByInput(ColonyStructureData.RefiningResource, ColonyStructureData.RefiningResourcePurity);
-                    if (recipe != null)
-                    {
-                        restoreKey += "|S" + recipe.Tier;
-                    }
-                    cmbSelection.SelectedValue = restoreKey;
+                    restoreKey += "|S" + recipe.Tier;
                 }
+                cmbSelection.SelectedValue = restoreKey;
             }
             txtSelectionFilter.Enabled = enableCmbSelection;
             cmbSelection.Enabled = enableCmbSelection;
