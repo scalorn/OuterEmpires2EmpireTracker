@@ -268,6 +268,16 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(viewModel.Data.UUID)) return;
+
+            var result = MessageBox.Show(
+                $"Delete profile '{viewModel.Name}'?",
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (result != DialogResult.Yes) return;
+
             viewModel.Delete();
             viewModel.Reset();
             populateListView();

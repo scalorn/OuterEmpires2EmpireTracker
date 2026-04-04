@@ -38,10 +38,9 @@ Recommendation: implement as a method on `PlayerContext` or `EmpireContext` that
 
 ---
 
-## 6. cmdDelete in FormPlayerProfile — no confirmation dialog
-**Priority: Low**
-Deleting a player profile is immediate with no undo. A confirmation dialog (`MessageBox.Show`) would prevent accidental deletion.
-**Needs approval: yes — UX decision.**
+## ~~6. cmdDelete in FormPlayerProfile — no confirmation dialog~~
+**Status: Complete**
+Added MessageBox.Show confirmation ("Delete profile '{name}'?") with Yes/No buttons before deleting. Also guards against deleting when no profile is selected.
 
 ---
 
