@@ -229,9 +229,9 @@ Volume SHALL be set when an item is added to the warehouse.
 
 ---
 
-### AMB-030 — EmpireContext.writeContext writes to .new file
-**Context:** `EmpireContext.writeContext()` writes to `FilePath + ".new"` instead of `FilePath`. This means baseline data changes are never written back to the original file.  
-**Question:** Is this intentional (to prevent accidental overwrite of the baseline data), or a bug?
+### AMB-030 — RESOLVED
+**Resolution:** Bug — `EmpireContext.writeContext()` was writing to `FilePath + ".new"` instead of `FilePath`, so baseline data changes were never persisted to the actual file. Fixed to write to `FilePath` directly.  
+**Action:** EmpireContext.cs fixed.
 
 ---
 
