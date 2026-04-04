@@ -822,6 +822,15 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void cmdDone_Click(object sender, EventArgs e)
         {
+            // Force at least one interval so Done always processes
+            if (ColonyStructureData.ProcessCompletionTime != null &&
+                ColonyStructureData.ProcessCompletionTime.IntervalsPassed == 0)
+            {
+                // Advance StartTime back by one full interval to simulate completion
+                ColonyStructureData.ProcessCompletionTime.StartTime =
+                    DateTime.Now.AddSeconds(-ColonyStructureData.ProcessCompletionTime.RepeatIntervalSeconds);
+            }
+
             Colony.ProcessColony();
 
             timerCountdown.Stop();
@@ -836,6 +845,8 @@ namespace OE2EmpireTracker.Forms.Colony
                 else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Refinery)
                     handleRefineryControls();
             }
+
+            ColonyStructureDataChanged?.Invoke(this, e);
         }
 
         private void cmbSelection_SelectedIndexChanged(object sender, EventArgs e)
