@@ -23,9 +23,6 @@ namespace OE2EmpireTracker
         {
             context = EmpireContext.getInstance();
             InitializeComponent();
-
-            SurveyParser parser = new SurveyParser();
-            parser.parseIt();
         }
 
         private void addBlueprintToolStripMenuItem_Click(object sender, EventArgs e)

@@ -235,6 +235,9 @@ Volume SHALL be set when an item is added to the warehouse.
 
 ---
 
-### AMB-031 — MainWindow calls SurveyParser.parseIt() on startup
-**Context:** `MainWindow` constructor calls `SurveyParser parser = new SurveyParser(); parser.parseIt();` on every application start. SurveyParser has no unit tests and its behavior is undocumented in the spec.  
-**Question:** What does `parseIt()` do? Is it a one-time import that should only run conditionally, or is it needed on every startup?
+### AMB-031 — RESOLVED
+**Resolution:** `SurveyParser.parseIt()` is test code that should not run on every application startup. The call SHALL be removed from `MainWindow`. The SurveyParser needs:
+1. Real HTML fragments provided by the user for proper unit tests.
+2. Once tests confirm it works, it SHALL be wired into the SurveyForm (similar to how BlueprintScanner is wired into FormBlueprint for clipboard HTML processing).
+
+**Action:** MainWindow.cs fixed — parseIt() call removed. SurveyParser testing and SurveyForm integration tracked as future work in Recommendations.md.
