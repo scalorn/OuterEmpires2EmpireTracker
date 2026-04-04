@@ -486,6 +486,24 @@ namespace OE2EmpireTracker.Forms.Colony
 
         }
 
+        private void tabDetailedData_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+
+            // When switching to the Structures tab, refresh all structure controls
+            // so their selection combos reflect current warehouse state
+            if (tabDetailedData.SelectedTab == tabPStructures)
+            {
+                foreach (Control c in flpColonyStructure.Controls)
+                {
+                    if (c is ColonyStructure cs && cs.Visible)
+                    {
+                        cs.UpdateData();
+                    }
+                }
+            }
+        }
+
         private void cmbItemType_SelectedIndexChanged(object sender, EventArgs e)
         {
             Data.ItemType itemType = cmbItemType.SelectedItem as Data.ItemType;

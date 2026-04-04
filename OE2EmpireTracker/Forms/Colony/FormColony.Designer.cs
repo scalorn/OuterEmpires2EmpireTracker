@@ -311,6 +311,7 @@
             this.tabDetailedData.SelectedIndex = 0;
             this.tabDetailedData.Size = new System.Drawing.Size(800, 200);
             this.tabDetailedData.TabIndex = 8;
+            this.tabDetailedData.SelectedIndexChanged += new System.EventHandler(this.tabDetailedData_SelectedIndexChanged);
             // 
             // tabPAdministration
             // 
