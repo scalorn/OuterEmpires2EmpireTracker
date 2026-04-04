@@ -210,6 +210,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                                 if (!PropertyRemap.TryGetValue(key, out remapKey)) {
                                     // If no remap defined, use original key with whitespace removed for consistency
                                     remapKey = key;
+                                    Log.Warn("No property remap defined for: '{0}'", key);
                                 }
 
                                 blueprint.Properties.setProperty(remapKey, NormalizePropertyValue(remapKey, rawValue));
@@ -356,6 +357,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                     return intMatch.Success ? intMatch.Value : value;
 
                 default:
+                    Log.Warn("No normalization rule for property: '{0}' (type: Unknown)", key);
                     return value;
             }
         }
