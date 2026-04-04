@@ -35,7 +35,9 @@ namespace OE2EmpireTracker.Baseline
         {
             foreach (ColonyStructure structure in Structures)
             {
-                if (structure.ProcessCompletionTime != null && structure.ProcessCompletionTime.IntervalsPassed > 0)
+                if (structure.ProcessCompletionTime != null &&
+                    (structure.ProcessCompletionTime.IntervalsPassed > 0 || 
+                     (!structure.ProcessCompletionTime.IsRepeating && structure.ProcessCompletionTime.TimeRemaining <= 0)))
                 {
                     Blueprint FlatpackBlueprint = PlayerContext.getInstance().findBlueprint(structure.FlatpackBlueprintUUID);
                     if (FlatpackBlueprint.BluePrintType == BlueprintTypes.MiningRig)
