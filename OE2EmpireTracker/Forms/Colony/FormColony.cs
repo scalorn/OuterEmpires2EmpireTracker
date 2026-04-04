@@ -999,7 +999,15 @@ namespace OE2EmpireTracker.Forms.Colony
             if (e.RowIndex < 0) return;
 
             string value = e.FormattedValue?.ToString();
-            if (string.IsNullOrEmpty(value)) return;
+
+            // Treat empty as 0
+            if (string.IsNullOrEmpty(value))
+            {
+                dgvItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = 0;
+                dgvItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
+                dgvItems.Rows[e.RowIndex].ErrorText = "";
+                return;
+            }
 
             if (!int.TryParse(value, out _))
             {
