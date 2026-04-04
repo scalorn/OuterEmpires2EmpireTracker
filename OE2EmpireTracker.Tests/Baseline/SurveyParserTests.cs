@@ -78,7 +78,7 @@ SourceURL:https://game.dev.outerempires.net/game
             Assert.IsTrue(survey.Resources.ContainsKey("Post-Trans Metals"));
             var r = survey.Resources["Post-Trans Metals"];
             Assert.AreEqual("Post-Trans Metals", r.Resource);
-            Assert.AreEqual("Low Purity", r.Purity);
+            Assert.AreEqual("Low", r.Purity);
             Assert.AreEqual("41", r.Amount);
         }
 
@@ -168,7 +168,7 @@ SourceURL:https://game.dev.outerempires.net/game
             _parser.processHtml(survey, SampleHtml);
 
             var r = survey.Resources["Post-Trans Metals"];
-            Assert.AreEqual("Low Purity", r.Purity);
+            Assert.AreEqual("Low", r.Purity);
             Assert.AreEqual("41", r.Amount);
         }
 
@@ -179,7 +179,7 @@ SourceURL:https://game.dev.outerempires.net/game
             _parser.processHtml(survey, SampleHtml);
 
             var r = survey.Resources["Lanthanides"];
-            Assert.AreEqual("High Purity", r.Purity);
+            Assert.AreEqual("High", r.Purity);
             Assert.AreEqual("5", r.Amount);
         }
 
@@ -191,7 +191,7 @@ SourceURL:https://game.dev.outerempires.net/game
 
             // Two Heavy Trans-Metals entries: 20/hour and 38/hour — last wins
             var r = survey.Resources["Heavy Trans-Metals"];
-            Assert.AreEqual("High Purity", r.Purity);
+            Assert.AreEqual("High", r.Purity);
             Assert.AreEqual("38", r.Amount);
         }
 
@@ -332,7 +332,7 @@ SourceURL:https://game.dev.outerempires.net/game
         {
             var survey = ParseZehVazoran();
             var r = survey.Resources["Heavy Trans-Metals"];
-            Assert.AreEqual("High Purity", r.Purity);
+            Assert.AreEqual("High", r.Purity);
             Assert.AreEqual("36.3", r.Amount);
         }
 
@@ -341,7 +341,7 @@ SourceURL:https://game.dev.outerempires.net/game
         {
             var survey = ParseZehVazoran();
             var r = survey.Resources["Complex Metallics"];
-            Assert.AreEqual("High Purity", r.Purity);
+            Assert.AreEqual("High", r.Purity);
             Assert.AreEqual("23.1", r.Amount);
         }
 
@@ -350,7 +350,7 @@ SourceURL:https://game.dev.outerempires.net/game
         {
             var survey = ParseZehVazoran();
             var r = survey.Resources["Alkali Organics"];
-            Assert.AreEqual("Low Purity", r.Purity);
+            Assert.AreEqual("Low", r.Purity);
             Assert.AreEqual("3.3", r.Amount);
         }
 

@@ -133,6 +133,11 @@ namespace OE2EmpireTracker.Baseline
             {
                 resourceName = m.Groups[1].Value.Trim();
                 purity = m.Groups[2].Value.Trim();
+                // Normalize purity: "High Purity" -> "High", "Low Purity" -> "Low"
+                if (purity.EndsWith(" Purity", StringComparison.OrdinalIgnoreCase))
+                {
+                    purity = purity.Substring(0, purity.Length - " Purity".Length).Trim();
+                }
             }
 
             // Extract numeric amount from "41/hour" or "36.3/hour"
