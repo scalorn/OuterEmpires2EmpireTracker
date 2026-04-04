@@ -938,19 +938,22 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private bool IsUnallocatedWorkerAvailable(string workerDetailID)
         {
-            if (Colony == null) return false;
+            if (ColonyStructureData == null) return false;
 
-            int total = Colony.Items.CountByType(
-                Data.ItemType.ItemTypeEnum.WorkDetail, workerDetailID);
-
-            int locked = 0;
-            if (Colony.Locks != null)
+            // Check this structure's actual status — the calculator determined availability
+            // during its pass with locks cleared, so it's the authoritative answer
+            ColonyStructureStatus status;
+            if (ColonyStructureData.Statuses.TryGetValue("Actual", out status))
             {
-                locked = Colony.Locks.GetLockedQuantity(
-                    Data.ItemType.ItemTypeEnum.WorkDetail, workerDetailID);
+                switch (workerDetailID)
+                {
+                    case "BlueCollarDetail": return status.UnallocatedBlueCollarPresent;
+                    case "WhiteCollarDetail": return status.UnallocatedWhiteCollarPresent;
+                    case "SpecialistDetail": return status.UnallocatedSpecialistPresent;
+                }
             }
 
-            return (total - locked) > 0;
+            return false;
         }
 
         private void populateStats()
