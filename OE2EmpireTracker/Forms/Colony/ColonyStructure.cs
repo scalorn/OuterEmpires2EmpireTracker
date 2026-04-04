@@ -116,87 +116,41 @@ namespace OE2EmpireTracker.Forms.Colony
                 chkStaged.Checked = ViewModel.IsStaged;
                 chkOnline.Checked = ViewModel.IsOnline;
 
-                int index = 1;
-                string key = "BlueCollar1";
-
-                while (ViewModel.WorkerKeyExists(key))
+                // --- Assigned Workers ---
+                foreach (var wt in Data.WorkerDetail.WorkerTypes)
                 {
-                    checkControls[controlIndex].Visible = true;
-                    checkControls[controlIndex].Enabled = true;
-                    checkControls[controlIndex].Text = "Blue Collar";
-                    checkControls[controlIndex].Tag = key;
-                    checkControls[controlIndex].Checked = ViewModel.GetWorkerAssigned(key);
-                    controlIndex++;
-                    index++;
-                    key = "BlueCollar" + index;
+                    int index = 1;
+                    string key = wt.WorkerPrefix + index;
+                    while (ViewModel.WorkerKeyExists(key))
+                    {
+                        checkControls[controlIndex].Visible = true;
+                        checkControls[controlIndex].Enabled = true;
+                        checkControls[controlIndex].Text = wt.DisplayName;
+                        checkControls[controlIndex].Tag = key;
+                        checkControls[controlIndex].Checked = ViewModel.GetWorkerAssigned(key);
+                        controlIndex++;
+                        index++;
+                        key = wt.WorkerPrefix + index;
+                    }
                 }
 
-                index = 1;
-                key = "WhiteCollar1";
-                while (ViewModel.WorkerKeyExists(key))
+                // --- Unallocated Workers ---
+                foreach (var wt in Data.WorkerDetail.WorkerTypes)
                 {
-                    checkControls[controlIndex].Visible = true;
-                    checkControls[controlIndex].Enabled = true;
-                    checkControls[controlIndex].Text = "White Collar";
-                    checkControls[controlIndex].Tag = key;
-                    checkControls[controlIndex].Checked = ViewModel.GetWorkerAssigned(key);
-                    controlIndex++;
-                    index++;
-                    key = "WhiteCollar" + index;
-                }
-
-                index = 1;
-                key = "Specialist1";
-                while (ViewModel.WorkerKeyExists(key))
-                {
-                    checkControls[controlIndex].Visible = true;
-                    checkControls[controlIndex].Enabled = true;
-                    checkControls[controlIndex].Text = "Specialist";
-                    checkControls[controlIndex].Tag = key;
-                    checkControls[controlIndex].Checked = ViewModel.GetWorkerAssigned(key);
-                    controlIndex++;
-                    index++;
-                    key = "Specialist" + index;
-                }
-
-                key = "UnassignedBlueCollarDetail";
-                if (FlatpackBlueprint.Properties.ContainsKey(key))
-                {
-                    bool available = IsUnallocatedWorkerAvailable("BlueCollarDetail");
-                    checkControls[controlIndex].Visible = true;
-                    checkControls[controlIndex].Enabled = false;
-                    checkControls[controlIndex].Text = "Support - Blue Collar";
-                    checkControls[controlIndex].Tag = key;
-                    checkControls[controlIndex].Checked = available;
-                    controlIndex++;
-                }
-
-                key = "UnassignedWhiteCollarDetail";
-                if (FlatpackBlueprint.Properties.ContainsKey(key))
-                {
-                    bool available = IsUnallocatedWorkerAvailable("WhiteCollarDetail");
-                    checkControls[controlIndex].Visible = true;
-                    checkControls[controlIndex].Enabled = false;
-                    checkControls[controlIndex].Text = "Support - White Collar";
-                    checkControls[controlIndex].Tag = key;
-                    checkControls[controlIndex].Checked = available;
-                    controlIndex++;
-                }
-
-                key = "UnassignedSpecialistDetail";
-                if (FlatpackBlueprint.Properties.ContainsKey(key))
-                {
-                    bool available = IsUnallocatedWorkerAvailable("SpecialistDetail");
-                    checkControls[controlIndex].Visible = true;
-                    checkControls[controlIndex].Enabled = false;
-                    checkControls[controlIndex].Text = "Support - Specialist";
-                    checkControls[controlIndex].Tag = key;
-                    checkControls[controlIndex].Checked = available;
-                    controlIndex++;
+                    if (FlatpackBlueprint.Properties.ContainsKey(wt.UnassignedKey))
+                    {
+                        bool available = IsUnallocatedWorkerAvailable(wt.DetailKey);
+                        checkControls[controlIndex].Visible = true;
+                        checkControls[controlIndex].Enabled = false;
+                        checkControls[controlIndex].Text = "Support - " + wt.DisplayName;
+                        checkControls[controlIndex].Tag = wt.UnassignedKey;
+                        checkControls[controlIndex].Checked = available;
+                        controlIndex++;
+                    }
                 }
 
                 bool hasAllWorkers = true;
-                for (index = 0; index < controlIndex; index++) {
+                for (int index = 0; index < controlIndex; index++) {
                     if (checkControls[index].Checked == false)
                     {
                         hasAllWorkers = false;

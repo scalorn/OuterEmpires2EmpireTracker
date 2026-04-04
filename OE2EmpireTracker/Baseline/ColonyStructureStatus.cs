@@ -65,6 +65,33 @@ namespace OE2EmpireTracker.Baseline
         public bool UnallocatedWhiteCollarPresent { get; set; }
         public bool UnallocatedSpecialistPresent { get; set; }
 
+        /// <summary>
+        /// Gets the unallocated worker present flag by detail key.
+        /// </summary>
+        public bool GetUnallocatedPresent(string detailKey)
+        {
+            switch (detailKey)
+            {
+                case "BlueCollarDetail": return UnallocatedBlueCollarPresent;
+                case "WhiteCollarDetail": return UnallocatedWhiteCollarPresent;
+                case "SpecialistDetail": return UnallocatedSpecialistPresent;
+                default: return false;
+            }
+        }
+
+        /// <summary>
+        /// Sets the unallocated worker present flag by detail key.
+        /// </summary>
+        public void SetUnallocatedPresent(string detailKey, bool value)
+        {
+            switch (detailKey)
+            {
+                case "BlueCollarDetail": UnallocatedBlueCollarPresent = value; break;
+                case "WhiteCollarDetail": UnallocatedWhiteCollarPresent = value; break;
+                case "SpecialistDetail": UnallocatedSpecialistPresent = value; break;
+            }
+        }
+
         public ColonyStructureStatus()
         {
             // Default values are set explicitly in CalculateBuilt, but setting properties here is good practice 

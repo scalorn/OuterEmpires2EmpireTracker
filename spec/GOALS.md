@@ -45,6 +45,7 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 30 | Dead code removal (Rec 12a) | Complete |
 | 31 | Extract shared ProgrammaticUpdateGuard (Rec 12b) | Complete |
 | 32 | Method naming — camelCase → PascalCase (Rec 12d) | Complete |
+| 33 | Deduplicate worker parsing (Rec 12f) | Complete |
 
 ---
 

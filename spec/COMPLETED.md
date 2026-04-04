@@ -107,3 +107,6 @@ Created `IProgrammaticUpdateSource` interface and shared `ProgrammaticUpdateGuar
 
 ## 32. Method Naming — camelCase → PascalCase (Rec 12d)
 Renamed all camelCase methods to PascalCase across the codebase. Covers form populate/update methods, context find/init methods, control helper methods, and data accessor methods. All callers updated across 15+ files. 465 tests passing.
+
+## 33. Deduplicate Worker Parsing (Rec 12f)
+Created `WorkerTypeInfo` class and `WorkerDetail.WorkerTypes` array. Replaced 12 near-identical worker parsing blocks across ColonyStructure.UpdateData and ColonyStatusCalculator.CalculateBuilt with data-driven loops. Added `GetUnallocatedPresent`/`SetUnallocatedPresent` helpers on ColonyStructureStatus. 465 tests passing.

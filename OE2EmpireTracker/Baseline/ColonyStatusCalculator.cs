@@ -291,14 +291,10 @@ namespace OE2EmpireTracker.Baseline
             double builtEntertainmentRequired = prevStatus.EntertainmentRequired;
             double builtWarehouseCapacity = prevStatus.WarehouseCapacity;
             double builtWarehouseRequired = prevStatus.WarehouseRequired;
-            bool unallocatedBlueCollarPresent = prevStatus.UnallocatedBlueCollarPresent;
-            bool unallocatedWhiteCollarPresent = prevStatus.UnallocatedWhiteCollarPresent;
-            bool unallocatedSpecialistPresent = prevStatus.UnallocatedSpecialistPresent;
-
             List <ColonyWorker> ColonyWorkers = new List<ColonyWorker>();
-            bool needUnallocatedBlueCollar = false;
-            bool needUnallocatedWhiteCollar = false;
-            bool needUnallocatedSpecialist = false;
+            var needUnallocated = new Dictionary<string, bool>();
+            foreach (var wt in Data.WorkerDetail.WorkerTypes)
+                needUnallocated[wt.DetailKey] = false;
 
             // Ensure the structure has a unique identifier for lookups
             if (structure.UUID == null || structure.UUID.Length == 0)
@@ -360,92 +356,48 @@ namespace OE2EmpireTracker.Baseline
                     builtWarehouseCapacity += warehouseCapacity;
                 }
 
-                // --- Worker Assignment Parsing (Blue Collar) ---
-                if (flatpackBlueprint.Properties.ContainsKey("BlueCollarDetail"))
+                // --- Worker Assignment Parsing ---
+                foreach (var wt in Data.WorkerDetail.WorkerTypes)
                 {
-                    long blueCollarDetail = 0;
-                    flatpackBlueprint.Properties.getLong("BlueCollarDetail", 0, out blueCollarDetail);
-                    for (int i = 1; i <= blueCollarDetail; i++)
+                    if (flatpackBlueprint.Properties.ContainsKey(wt.DetailKey))
                     {
-                        string key = "BlueCollar" + i;
-                        bool blueCollarAssigned = workerSource.IsWorkerAssigned(structure, key);
-                        workerSource.SetWorkerAssigned(structure, key, blueCollarAssigned);
-                        if (blueCollarAssigned)
+                        long count = 0;
+                        flatpackBlueprint.Properties.getLong(wt.DetailKey, 0, out count);
+                        for (int i = 1; i <= count; i++)
                         {
-                            ColonyWorkers.Add(new ColonyWorker(structure, key, blueCollarAssigned));
+                            string key = wt.WorkerPrefix + i;
+                            bool assigned = workerSource.IsWorkerAssigned(structure, key);
+                            workerSource.SetWorkerAssigned(structure, key, assigned);
+                            if (assigned)
+                            {
+                                ColonyWorkers.Add(new ColonyWorker(structure, key, assigned));
+                            }
                         }
                     }
-                }
-                long unassignedBlueCollarDetail = 0;
-                flatpackBlueprint.Properties.getLong("UnassignedBlueCollarDetail", 0, out unassignedBlueCollarDetail);
-                if (unassignedBlueCollarDetail > 0)
-                {
-                    needUnallocatedBlueCollar = true;
-                }
-
-                // --- Worker Assignment Parsing (White Collar) ---
-                if (flatpackBlueprint.Properties.ContainsKey("WhiteCollarDetail"))
-                {
-                    long whiteCollarDetail = 0;
-                    flatpackBlueprint.Properties.getLong("WhiteCollarDetail", 0, out whiteCollarDetail);
-                    for (int i = 1; i <= whiteCollarDetail; i++)
+                    long unassignedCount = 0;
+                    flatpackBlueprint.Properties.getLong(wt.UnassignedKey, 0, out unassignedCount);
+                    if (unassignedCount > 0)
                     {
-                        string key = "WhiteCollar" + i;
-                        bool whiteCollarAssigned = workerSource.IsWorkerAssigned(structure, key);
-                        workerSource.SetWorkerAssigned(structure, key, whiteCollarAssigned);
-                        if (whiteCollarAssigned)
-                        {
-                            ColonyWorkers.Add(new ColonyWorker(structure, key, whiteCollarAssigned));
-                        }
+                        needUnallocated[wt.DetailKey] = true;
                     }
-                }
-                long unassignedWhiteCollarDetail = 0;
-                flatpackBlueprint.Properties.getLong("UnassignedWhiteCollarDetail", 0, out unassignedWhiteCollarDetail);
-                if (unassignedWhiteCollarDetail > 0)
-                {
-                    needUnallocatedWhiteCollar = true;
-                }
-
-                // --- Worker Assignment Parsing (Specialists) ---
-                if (flatpackBlueprint.Properties.ContainsKey("SpecialistDetail"))
-                {
-                    long specialistDetail = 0;
-                    flatpackBlueprint.Properties.getLong("SpecialistDetail", 0, out specialistDetail);
-                    for (int i = 1; i <= specialistDetail; i++)
-                    {
-                        string key = "Specialist" + i;
-                        bool specialistAssigned = workerSource.IsWorkerAssigned(structure, key);
-                        workerSource.SetWorkerAssigned(structure, key, specialistAssigned);
-                        if (specialistAssigned)
-                        {
-                            ColonyWorkers.Add(new ColonyWorker(structure, key, specialistAssigned));
-                        }
-                    }
-                }
-                long unassignedSpecialistDetail = 0;
-                flatpackBlueprint.Properties.getLong("UnassignedSpecialistDetail", 0, out unassignedSpecialistDetail);
-                if (unassignedSpecialistDetail > 0)
-                {
-                    needUnallocatedSpecialist = true;
                 }
             }
 
 
             int unallocatedWorkersAdded = 0;
-            if (needUnallocatedBlueCollar && !unallocatedBlueCollarPresent && workerSource.IsUnassignedWorkerAvailable("BlueCollarDetail"))
+            foreach (var wt in Data.WorkerDetail.WorkerTypes)
             {
-                unallocatedBlueCollarPresent = true;
-                unallocatedWorkersAdded++;
-            }
-            if (needUnallocatedWhiteCollar && !unallocatedWhiteCollarPresent && workerSource.IsUnassignedWorkerAvailable("WhiteCollarDetail"))
-            {
-                unallocatedWhiteCollarPresent = true;
-                unallocatedWorkersAdded++;
-            }
-            if (needUnallocatedSpecialist && !unallocatedSpecialistPresent && workerSource.IsUnassignedWorkerAvailable("SpecialistDetail"))
-            {
-                unallocatedSpecialistPresent = true;
-                unallocatedWorkersAdded++;
+                bool need = needUnallocated[wt.DetailKey];
+                bool alreadyPresent = prevStatus.GetUnallocatedPresent(wt.DetailKey);
+                if (need && !alreadyPresent && workerSource.IsUnassignedWorkerAvailable(wt.DetailKey))
+                {
+                    status.SetUnallocatedPresent(wt.DetailKey, true);
+                    unallocatedWorkersAdded++;
+                }
+                else
+                {
+                    status.SetUnallocatedPresent(wt.DetailKey, alreadyPresent);
+                }
             }
 
             // Assign aggregated values to public properties. 
@@ -467,10 +419,6 @@ namespace OE2EmpireTracker.Baseline
             status.WarehouseCapacity = builtWarehouseCapacity;
             // Warehouse required is calculated based on workers in current implementation
             status.WarehouseRequired = builtWarehouseRequired;
-
-            status.UnallocatedBlueCollarPresent = unallocatedBlueCollarPresent;
-            status.UnallocatedWhiteCollarPresent = unallocatedWhiteCollarPresent;
-            status.UnallocatedSpecialistPresent = unallocatedSpecialistPresent;
         }
 
         /// <summary>

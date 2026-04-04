@@ -138,11 +138,12 @@ Renamed all camelCase methods to PascalCase across the codebase:
 - `processHtml` in SurveyParser.cs (~200 lines)
 
 ### 12f. Duplicate worker parsing (Medium risk)
-- Worker type parsing (BlueCollar/WhiteCollar/Specialist) appears as 3 near-identical blocks in:
-  - `ColonyStructure.UpdateData` (checkbox setup)
-  - `ColonyStatusCalculator.CalculateBuilt` (status calculation)
-  - `ColonyStatusCalculator.LockAssignedWorkers` (lock management)
-- Could be driven by a shared worker type list/enum
+**Status: Complete**
+- Created `WorkerTypeInfo` class and `WorkerDetail.WorkerTypes` static array defining BlueCollar/WhiteCollar/Specialist with DetailKey, WorkerPrefix, DisplayName, UnassignedKey
+- `ColonyStructure.UpdateData`: Replaced 6 near-identical blocks (3 assigned + 3 unallocated) with 2 `foreach` loops over `WorkerTypes`
+- `ColonyStatusCalculator.CalculateBuilt`: Replaced 6 near-identical blocks (3 assignment parsing + 3 unassigned checks) with 1 `foreach` loop, plus refactored unallocated availability check into a loop
+- Added `GetUnallocatedPresent`/`SetUnallocatedPresent` helpers on `ColonyStructureStatus` to access per-type booleans by key
+- `LockAssignedWorkers` already used the shared pattern via `LockWorkerType` — no change needed
 
 ### 12g. Large file splitting (Medium-High risk)
 - Colony.cs contains `Colony`, `ColonyStructure`, and `CommodityRequested` — should be separate files
