@@ -92,6 +92,9 @@ namespace OE2EmpireTracker.Baseline
             ColonyStructureStatus previousStatus = new ColonyStructureStatus();
             Dictionary<string, int> StructureCounts = new Dictionary<string, int>();
 
+            // Clear all existing worker locks — will be rebuilt from current state
+            ClearAllWorkerLocks();
+
             foreach (ColonyStructure structure in colony.Structures)
             {
                 Data.Blueprint FlatpackBlueprint = playerContext.findBlueprint(structure.FlatpackBlueprintUUID);
@@ -102,6 +105,9 @@ namespace OE2EmpireTracker.Baseline
                     count++;
                     StructureCounts[FlatpackBlueprint.BluePrintType] = count;
                     structure.gameSequence = count;
+
+                    // Lock assigned workers for this structure
+                    LockAssignedWorkers(structure, FlatpackBlueprint);
                 }
 
                 ColonyStructureStatus currentStatus = new ColonyStructureStatus();
@@ -111,6 +117,9 @@ namespace OE2EmpireTracker.Baseline
             }
             finalActualStatus = previousStatus;
             finalActualStatus.WarehouseRequired = CalculateWarehouseRequired();
+
+            // Lock unallocated workers against the colony
+            LockUnallocatedWorkers(previousStatus);
         }
 
         public void CalculateIdeal()
@@ -138,6 +147,94 @@ namespace OE2EmpireTracker.Baseline
                 total += item.Quantity * item.Volume;
             }
             return total;
+        }
+
+        // -----------------------------------------------------------------------
+        // Worker Lock Management
+        // -----------------------------------------------------------------------
+
+        private void ClearAllWorkerLocks()
+        {
+            if (colony.Locks == null) return;
+
+            // Clear locks for each structure
+            foreach (var structure in colony.Structures)
+            {
+                if (!string.IsNullOrEmpty(structure.UUID))
+                    colony.Locks.ClearLocksForProcess(structure.UUID);
+            }
+            // Clear unallocated worker locks for the colony
+            if (!string.IsNullOrEmpty(colony.UUID))
+                colony.Locks.ClearLocksForProcess(colony.UUID);
+        }
+
+        private void LockAssignedWorkers(ColonyStructure structure, Data.Blueprint flatpackBlueprint)
+        {
+            if (colony.Locks == null || string.IsNullOrEmpty(structure.UUID)) return;
+
+            LockWorkerType(structure, flatpackBlueprint, "BlueCollarDetail", "BlueCollar");
+            LockWorkerType(structure, flatpackBlueprint, "WhiteCollarDetail", "WhiteCollar");
+            LockWorkerType(structure, flatpackBlueprint, "SpecialistDetail", "Specialist");
+        }
+
+        private void LockWorkerType(ColonyStructure structure, Data.Blueprint flatpackBlueprint,
+            string detailKey, string workerPrefix)
+        {
+            if (!flatpackBlueprint.Properties.ContainsKey(detailKey)) return;
+
+            long count = 0;
+            flatpackBlueprint.Properties.getLong(detailKey, 0, out count);
+
+            for (int i = 1; i <= count; i++)
+            {
+                string key = workerPrefix + i;
+                bool assigned = false;
+                structure.AssignedWorkers.getBoolean(key, false, out assigned);
+                if (assigned)
+                {
+                    EnsureWorkerItemExists(detailKey);
+                    colony.Locks.LockItem(structure.UUID,
+                        Data.ItemType.ItemTypeEnum.WorkDetail, detailKey, 1);
+                }
+            }
+        }
+
+        private void LockUnallocatedWorkers(ColonyStructureStatus finalStatus)
+        {
+            if (colony.Locks == null || string.IsNullOrEmpty(colony.UUID)) return;
+
+            if (finalStatus.UnallocatedBlueCollarPresent)
+            {
+                EnsureWorkerItemExists("BlueCollarDetail");
+                colony.Locks.LockItem(colony.UUID,
+                    Data.ItemType.ItemTypeEnum.WorkDetail, "BlueCollarDetail", 1);
+            }
+            if (finalStatus.UnallocatedWhiteCollarPresent)
+            {
+                EnsureWorkerItemExists("WhiteCollarDetail");
+                colony.Locks.LockItem(colony.UUID,
+                    Data.ItemType.ItemTypeEnum.WorkDetail, "WhiteCollarDetail", 1);
+            }
+            if (finalStatus.UnallocatedSpecialistPresent)
+            {
+                EnsureWorkerItemExists("SpecialistDetail");
+                colony.Locks.LockItem(colony.UUID,
+                    Data.ItemType.ItemTypeEnum.WorkDetail, "SpecialistDetail", 1);
+            }
+        }
+
+        private void EnsureWorkerItemExists(string workerDetailID)
+        {
+            var existing = colony.Items.FindByType(Data.ItemType.ItemTypeEnum.WorkDetail, workerDetailID);
+            if (existing.Count == 0)
+            {
+                var workerItem = new Data.Item(Data.ItemType.ItemTypeEnum.WorkDetail, workerDetailID);
+                workerItem.UUID = System.Guid.NewGuid().ToString();
+                workerItem.BaseItemTypeID = workerDetailID;
+                workerItem.Quantity = 0;
+                workerItem.Volume = 50;
+                colony.Items.AddItem(workerItem);
+            }
         }
 
         public void CalculateBuilt(ColonyStructure structure, ColonyStructureStatus prevStatus, ColonyStructureStatus status, IColonyStructureWorkers workerSource, Data.Blueprint flatpackBlueprint)

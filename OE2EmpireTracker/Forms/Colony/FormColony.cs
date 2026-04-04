@@ -1065,7 +1065,22 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 Item item = row.Tag as Item;
                 if (item != null)
+                {
+                    // Prevent deletion of items with locked quantities
+                    int locked = colonyViewModel.Data.Locks != null
+                        ? colonyViewModel.Data.Locks.GetLockedQuantity(item.ItemType, item.BaseItemTypeID)
+                        : 0;
+                    if (locked > 0)
+                    {
+                        System.Windows.Forms.MessageBox.Show(
+                            $"Cannot delete '{item.ExtendedName}' — {locked} locked by structures.",
+                            "Item Locked",
+                            System.Windows.Forms.MessageBoxButtons.OK,
+                            System.Windows.Forms.MessageBoxIcon.Warning);
+                        continue;
+                    }
                     colonyViewModel.RemoveItem(item.UUID);
+                }
             }
             populateItemGrid();
             e.Handled = true;
