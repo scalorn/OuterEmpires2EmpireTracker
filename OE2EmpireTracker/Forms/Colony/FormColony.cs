@@ -992,6 +992,28 @@ namespace OE2EmpireTracker.Forms.Colony
             }
         }
 
+        private void dgvItems_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            // Only validate the Amount column (index 3)
+            if (e.ColumnIndex != 3) return;
+            if (e.RowIndex < 0) return;
+
+            string value = e.FormattedValue?.ToString();
+            if (string.IsNullOrEmpty(value)) return;
+
+            if (!int.TryParse(value, out _))
+            {
+                e.Cancel = true;
+                dgvItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.LightCoral;
+                dgvItems.Rows[e.RowIndex].ErrorText = "Amount must be an integer";
+            }
+            else
+            {
+                dgvItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
+                dgvItems.Rows[e.RowIndex].ErrorText = "";
+            }
+        }
+
         private void dgvCommodityRequests_SelectionChanged(object sender, EventArgs e)
         {
             // Prevent the SelectionChanged event from triggering an error if the current cell is null
