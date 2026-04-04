@@ -340,7 +340,9 @@ namespace OE2EmpireTracker.Baseline
         /// </summary>
         public static void populateStatus(RtfBuilder builder, ColonyStructureStatus status)
         {
-            AppendStatus(builder, "Power:", Color.Black, status.PowerRequired, status.PowerProvided);
+            AppendStatus(builder, "Power:",
+                status.PowerRequired > status.PowerProvided ? Color.Red : Color.Green,
+                status.PowerRequired, status.PowerProvided);
             AppendStatus(builder, " Habitation: ",
                 status.HabitationProvision < status.HabitationRequired ? Color.Red : Color.Green,
                 status.HabitationRequired, status.HabitationProvision);

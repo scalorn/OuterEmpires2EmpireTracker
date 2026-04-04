@@ -35,6 +35,7 @@
 **REQ-COL-035** The user SHALL be able to delete a structure using a Delete button; the structure SHALL be removed from the colony and the display SHALL update immediately.  
 **REQ-COL-036** Pressing the Delete key when a structure control is focused SHALL delete that structure.  
 **REQ-COL-037** After any structure change (add, reorder, delete, worker assignment, state change), CalculateBuilt() and CalculateIdeal() SHALL be called and all structure controls SHALL be refreshed.  
+**REQ-COL-037a** The status display SHALL color each resource label red when Required > Provided (or Capacity for Warehouse), and green otherwise. This applies to all five resources: Power, Habitation, Food, Entertainment, and Warehouse.  
 **REQ-COL-038** The structure background color SHALL indicate state: Yellow=Staged, PaleVioletRed=Built but Offline, LightGreen=Online with missing workers, Green=Online with all workers.
 
 ## Structure State

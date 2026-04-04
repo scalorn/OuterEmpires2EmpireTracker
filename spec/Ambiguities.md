@@ -112,9 +112,9 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 
 ---
 
-### AMB-015 — ColonyStatusCalculator.populateStatus color logic for Power
-**Code behavior:** Power label is always black regardless of deficit. All other resources use red/green.  
-**Question:** Is this intentional? Should Power also show red when PowerRequired > PowerProvided?
+### AMB-015 — RESOLVED
+**Resolution:** The Power label SHALL show red when PowerRequired > PowerProvided, consistent with all other resources. The required number is already colored correctly by AppendStatus — only the label color was wrong.  
+**Action:** populateStatus fixed. Colony.md updated.
 
 ---
 
