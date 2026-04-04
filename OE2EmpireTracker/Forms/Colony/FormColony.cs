@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
+using NLog;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -22,6 +22,7 @@ namespace OE2EmpireTracker.Forms.Colony
 {
     public partial class FormColony : Form
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private EmpireContext empireContext;
         private PlayerContext playerContext;
         private int _isProgrammaticUpdate = 0;
@@ -238,11 +239,11 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void lvwColonies_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            Debug.Print("lvwBlueprints.SelectedItems.Count = " + lvwColonies.SelectedItems.Count);
+            Log.Debug("lvwBlueprints.SelectedItems.Count = " + lvwColonies.SelectedItems.Count);
             if (lvwColonies.SelectedItems.Count == 1)
             {
-                Debug.Print("Selected item = " + lvwColonies.SelectedItems[0].SubItems[0].Text);
-                Debug.Print("Selected item = " + lvwColonies.SelectedItems[0].SubItems[0].Tag);
+                Log.Debug("Selected item = " + lvwColonies.SelectedItems[0].SubItems[0].Text);
+                Log.Debug("Selected item = " + lvwColonies.SelectedItems[0].SubItems[0].Tag);
                 selectedColony = lvwColonies.SelectedItems[0].SubItems[0].Tag as Baseline.Colony;
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
                 populateForm();
@@ -295,7 +296,7 @@ namespace OE2EmpireTracker.Forms.Colony
         }
         private void populateForm()
         {
-            Debug.Print("populateForm called! selectedColony = " + (selectedColony != null ? selectedColony.PlanetName : "null"));
+            Log.Debug("populateForm called! selectedColony = " + (selectedColony != null ? selectedColony.PlanetName : "null"));
             ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
             this.SuspendLayout();
             tabDetailedData.Visible = false;
@@ -324,7 +325,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
 
             //flpColonyStructure.Controls.Clear();
-            Debug.Print("populatForm: Hiding excess controls started");
+            Log.Debug("populatForm: Hiding excess controls started");
             int controlIndex = 0;
             foreach (Control control in flpColonyStructure.Controls)
             {
@@ -338,7 +339,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 }
                 controlIndex++;
             }
-            Debug.Print("populatForm: Hiding excess controls finished");
+            Log.Debug("populatForm: Hiding excess controls finished");
 
             colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
             //statusCalculator.CalculateBuilt();
@@ -349,7 +350,7 @@ namespace OE2EmpireTracker.Forms.Colony
             controlIndex = 0;
             foreach (Baseline.ColonyStructure structure in selectedColony.Structures)
             {
-                Debug.Print("populatForm: processing structure started");
+                Log.Debug("populatForm: processing structure started");
                 ColonyStructure colonyStructureControl = null;
                 bool addControl = false;
                 if (controlIndex < flpColonyStructure.Controls.Count)
@@ -376,27 +377,27 @@ namespace OE2EmpireTracker.Forms.Colony
                 //colonyStructureControl.ResumeLayout();
                 //colonyStructureControl.Visible = true;
                 controlIndex++;
-                Debug.Print("populatForm: processing structure finished");
+                Log.Debug("populatForm: processing structure finished");
             }
-            Debug.Print("populatForm: Adding new controls started");
+            Log.Debug("populatForm: Adding new controls started");
             flpColonyStructure.Controls.AddRange(structureControls.ToArray());
-            Debug.Print("populatForm: Adding new controls finished");
-            Debug.Print("populatForm: Making new controls visible started");
+            Log.Debug("populatForm: Adding new controls finished");
+            Log.Debug("populatForm: Making new controls visible started");
             foreach (ColonyStructure structureControl in structureControls)
             {
                 structureControl.Visible = true;
             }
-            Debug.Print("populatForm: Making new controls visible finished");
+            Log.Debug("populatForm: Making new controls visible finished");
             //flpColonyStructure.Visible = true;
 
-            Debug.Print("populateForm: Calling CalculateBuilt started");
+            Log.Debug("populateForm: Calling CalculateBuilt started");
             colonyViewModel.RecalculateStatus();
-            Debug.Print("populateForm: Calling CalculateBuilt finished");
-            Debug.Print("populateForm: Calling populateStatus started");
+            Log.Debug("populateForm: Calling CalculateBuilt finished");
+            Log.Debug("populateForm: Calling populateStatus started");
             RtfBuilder builder = new RtfBuilder();
             ColonyStatusCalculator.populateStatus(builder, statusCalculator.finalActualStatus);
             rtbStatus.Rtf = builder.ToRtf();
-            Debug.Print("populateForm: Calling populateStatus finished");
+            Log.Debug("populateForm: Calling populateStatus finished");
 
             tabDetailedData.Visible = true;
 
@@ -405,52 +406,52 @@ namespace OE2EmpireTracker.Forms.Colony
 
             this.ResumeLayout();
             guard.release();
-            Debug.Print("populateForm completed!");
+            Log.Debug("populateForm completed!");
         }
 
         private void tlpBase_Layout(object sender, LayoutEventArgs e)
         {
-            //Debug.Print("tlpBase_Layout called! tlpBase = " + tlpBase.Size.Width + " " + tlpBase.Size.Height);
-            //Debug.Print("tlpBase_Layout called!flpSearchList =  " + flpSearchList.Size.Width + " " + flpSearchList.Size.Height);
+            //Log.Trace("tlpBase_Layout called! tlpBase = " + tlpBase.Size.Width + " " + tlpBase.Size.Height);
+            //Log.Trace("tlpBase_Layout called!flpSearchList =  " + flpSearchList.Size.Width + " " + flpSearchList.Size.Height);
         }
 
         private void tlpBase_Resize(object sender, EventArgs e)
         {
-            //Debug.Print("tlpBase_Resize called! tlpBase = " + tlpBase.Size.Width + " " + tlpBase.Size.Height);
-            //Debug.Print("tlpBase_Resize called!flpSearchList =  " + flpSearchList.Size.Width + " " + flpSearchList.Size.Height);
+            //Log.Trace("tlpBase_Resize called! tlpBase = " + tlpBase.Size.Width + " " + tlpBase.Size.Height);
+            //Log.Trace("tlpBase_Resize called!flpSearchList =  " + flpSearchList.Size.Width + " " + flpSearchList.Size.Height);
             flpColonyData.Size = new System.Drawing.Size(tlpBase.Size.Width - flpSearchList.Size.Width - flpSearchList.Margin.Right - flpSearchList.Margin.Left, flpColonyData.Size.Height);
         }
 
         private void flpSearchList_Layout(object sender, LayoutEventArgs e)
         {
-            //Debug.Print("flpSearchList_Layout called! tlpBase = " + tlpBase.Size.Width + " " + tlpBase.Size.Height);
-            //Debug.Print("flpSearchList_Layout called!flpSearchList =  " + flpSearchList.Size.Width + " " + flpSearchList.Size.Height);
+            //Log.Trace("flpSearchList_Layout called! tlpBase = " + tlpBase.Size.Width + " " + tlpBase.Size.Height);
+            //Log.Trace("flpSearchList_Layout called!flpSearchList =  " + flpSearchList.Size.Width + " " + flpSearchList.Size.Height);
             lvwColonies.Size = new System.Drawing.Size(lvwColonies.Size.Width, flpSearchList.Size.Height - flpBlueprintSearch.Size.Height - flpBlueprintSearch.Margin.Top - flpBlueprintSearch.Margin.Bottom - lvwColonies.Margin.Top - lvwColonies.Margin.Bottom);
             //lvwColonies.Size.Height = flpSearchList.Size.Height - flpBlueprintSearch.Size.Height;
         }
 
         private void flpSearchList_Resize(object sender, EventArgs e)
         {
-            //Debug.Print("flpSearchList_Resize called! tlpBase = " + tlpBase.Size.Width + " " + tlpBase.Size.Height);
-            //Debug.Print("flpSearchList_Resize called!flpSearchList =  " + flpSearchList.Size.Width + " " + flpSearchList.Size.Height);
+            //Log.Trace("flpSearchList_Resize called! tlpBase = " + tlpBase.Size.Width + " " + tlpBase.Size.Height);
+            //Log.Trace("flpSearchList_Resize called!flpSearchList =  " + flpSearchList.Size.Width + " " + flpSearchList.Size.Height);
         }
 
         private void flpColonyData_Layout(object sender, LayoutEventArgs e)
         {
-            //Debug.Print("flpColonyData_Layout called!");
+            //Log.Trace("flpColonyData_Layout called!");
             tabDetailedData.Size = new System.Drawing.Size(flpColonyData.Size.Width - tabDetailedData.Margin.Right - tabDetailedData.Margin.Left, flpColonyData.Size.Height - flpBaseDetails.Size.Height - flpBaseDetails.Margin.Top - flpBaseDetails.Margin.Bottom - flpCommands.Size.Height - flpCommands.Margin.Top - flpCommands.Margin.Bottom - tabDetailedData.Margin.Top - tabDetailedData.Margin.Bottom);
         }
 
         private void flpStructures_Layout(object sender, LayoutEventArgs e)
         {
-            //Debug.Print("flpStructures_Layout called!");
+            //Log.Trace("flpStructures_Layout called!");
             flpStructureData.Size = new System.Drawing.Size(flpStructures.Size.Width - lvwStructureTypes.Size.Width - lvwStructureTypes.Margin.Right - lvwStructureTypes.Margin.Left, flpStructures.Size.Height - flpStructureData.Margin.Top - flpStructureData.Margin.Bottom);
             lvwStructureTypes.Size = new System.Drawing.Size(lvwStructureTypes.Size.Width, flpStructures.Size.Height - lvwStructureTypes.Margin.Top - lvwStructureTypes.Margin.Bottom);
         }
 
         private void flpStructureData_Layout(object sender, LayoutEventArgs e)
         {
-            //Debug.Print("flpStructureData_Layout called!");
+            //Log.Trace("flpStructureData_Layout called!");
             flpColonyStructure.Size = new System.Drawing.Size(flpStructureData.Size.Width - flpColonyStructure.Margin.Left - flpColonyStructure.Margin.Right, flpStructureData.Size.Height - flpStatus.Size.Height - flpStatus.Margin.Top - flpStatus.Margin.Bottom - flpAddBox.Size.Height - flpAddBox.Margin.Top - flpAddBox.Margin.Bottom - flpColonyStructure.Margin.Top - flpColonyStructure.Margin.Bottom);
         }
         public class ProgramaticUpdateGuard

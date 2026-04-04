@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
+using NLog;
 using OE2EmpireTracker.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,6 +14,7 @@ namespace OE2EmpireTracker.Baseline
 {
     public class PlayerContext
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static PlayerContext Instance;
         public static string FilePath { get; set; } = @"..\..\PlayerData.json";
 
@@ -51,12 +52,16 @@ namespace OE2EmpireTracker.Baseline
             PlayerRoot playerRoot = null;
             if (File.Exists(FilePath))
             {
-                // Read the file content into a string
+                Log.Info("Loading player data from {0}", FilePath);
                 string jsonContent = File.ReadAllText(FilePath);
                 playerRoot = JsonConvert.DeserializeObject<PlayerRoot>(jsonContent);
+                Log.Info("Loaded {0} profiles, {1} blueprints, {2} surveys, {3} colonies",
+                    playerRoot.PlayerProfile.Length, playerRoot.Blueprint.Length,
+                    playerRoot.Survey.Length, playerRoot.Colony.Length);
             }
             else
             {
+                Log.Warn("Player data file not found at {0}, starting with empty data", FilePath);
                 playerRoot = new PlayerRoot();
             }
             initPlayerProfiles(playerRoot);
@@ -75,7 +80,7 @@ namespace OE2EmpireTracker.Baseline
 
             string jsonContent = JsonConvert.SerializeObject(playerRoot, Formatting.Indented);
             File.WriteAllText(FilePath, jsonContent);
-            Debug.Print("Player.WriteContext done");
+            Log.Info("Player data saved to {0}", FilePath);
         }
         public void initPlayerProfiles(PlayerRoot playerRoot)
         {

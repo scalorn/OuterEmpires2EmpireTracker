@@ -1,11 +1,11 @@
-﻿using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Data;
 using OE2EmpireTracker.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
+using NLog;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -19,6 +19,7 @@ namespace OE2EmpireTracker.Forms.Survey
     /// </summary>
     public partial class FormSurvey : Form
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private EmpireContext empireContext;
         private PlayerContext playerContext;
         private SurveyViewModel viewModel;
@@ -184,11 +185,11 @@ namespace OE2EmpireTracker.Forms.Survey
 
         private void lvwSurveys_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            Debug.Print("lvwSurveys.SelectedItems.Count = " + lvwSurveys.SelectedItems.Count);
+            Log.Debug("lvwSurveys.SelectedItems.Count = " + lvwSurveys.SelectedItems.Count);
 
             if (lvwSurveys.SelectedItems.Count == 1)
             {
-                Debug.Print("Selected item = " + lvwSurveys.SelectedItems[0].SubItems[0].Text);
+                Log.Debug("Selected item = " + lvwSurveys.SelectedItems[0].SubItems[0].Text);
                 viewModel.SelectSurvey(lvwSurveys.SelectedItems[0].SubItems[0].Tag as OE2EmpireTracker.Baseline.Survey);
                 populateForm();
             }

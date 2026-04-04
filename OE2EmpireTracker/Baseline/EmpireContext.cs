@@ -1,5 +1,6 @@
 ﻿using Amazon;
 using Newtonsoft.Json;
+using NLog;
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Data;
 using Sgml;
@@ -7,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Common;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -23,6 +23,7 @@ namespace OE2EmpireTracker.Baseline
 {
     public class EmpireContext
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static EmpireContext Instance;
         public static string FilePath { get; set; } = @"..\..\BaselineData.json";
 
@@ -63,9 +64,11 @@ namespace OE2EmpireTracker.Baseline
             Instance = this;
             PlayerContext = PlayerContext.getInstance();
 
-            // Read the file content into a string
+            Log.Info("Loading baseline data from {0}", FilePath);
             string jsonContent = File.ReadAllText(FilePath);
             BaselineRoot baselineRoot = JsonConvert.DeserializeObject<BaselineRoot>(jsonContent);
+            Log.Info("Baseline data loaded: {0} blueprint types, {1} ship classes, {2} tech levels",
+                baselineRoot.BlueprintType?.Length ?? 0, baselineRoot.ShipClass?.Length ?? 0, baselineRoot.TechLevel?.Length ?? 0);
 
             initBlueprintTypes(baselineRoot);
             initShipClasses(baselineRoot);

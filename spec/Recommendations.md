@@ -4,11 +4,16 @@ Items listed here need clarification or approval before work begins.
 
 ---
 
-## 1. NLog — Add logging calls to the codebase
-**Priority: Low**
-NLog is installed and configured (NLog.config exists). No logging calls have been added to any class yet.
-Recommendation: decide which areas to instrument first — ColonyStatusCalculator hot path, PlayerContext load/save, and form-level errors are the highest-value targets.
-**Needs approval: yes — scope of logging to be defined.**
+## ~~1. NLog — Add logging calls to the codebase~~
+**Status: Complete**
+Added NLog loggers and replaced all `Debug.Print` calls across the codebase:
+- PlayerContext: Info-level load/save with counts, file path
+- EmpireContext: Info-level load with baseline data counts
+- FormColony, FormBlueprint, FormSurvey: Debug-level selection/populate logging
+- DataEntryGridView: Debug-level key/selection logging
+- Commodity: Warn-level data validation messages
+- SurveyParser: Error-level exception logging in catch blocks
+- Removed all `using System.Diagnostics` imports where no longer needed
 
 ---
 

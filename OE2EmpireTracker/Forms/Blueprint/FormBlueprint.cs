@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
+using NLog;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -31,6 +31,7 @@ namespace OE2EmpireTracker
     /// </remarks>
     public partial class FormBlueprint : Form
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Gets or sets the empire context instance for accessing empire-wide data.
         /// </summary>
@@ -126,7 +127,7 @@ namespace OE2EmpireTracker
         /// <param name="e">Event data containing event information.</param>
         private void rtbCopyTarget_TextChanged(object sender, EventArgs e)
         {
-            // Debug.Print(e.ToString());
+            // Log.Debug(e.ToString());
         }
 
         /// <summary>
@@ -242,7 +243,7 @@ namespace OE2EmpireTracker
             // Debug: Print inner text of each node
             foreach (XmlNode item in doc)
             {
-                Debug.Print("T = " + item.InnerText);
+                Log.Debug("T = " + item.InnerText);
                 if (item.HasChildNodes)
                 {
                     children(0, item.ChildNodes);
@@ -263,7 +264,7 @@ namespace OE2EmpireTracker
         {
             foreach (XmlNode item in nodes)
             {
-                Debug.Print("C" + depth + " = " + item.InnerText);
+                Log.Debug("C" + depth + " = " + item.InnerText);
                 if (item.HasChildNodes)
                 {
                     children((depth + 1), item.ChildNodes);
@@ -394,7 +395,7 @@ namespace OE2EmpireTracker
         /// <param name="e">Event data containing event information.</param>
         private void dgvStatistics_SelectionChanged(object sender, EventArgs e)
         {
-            Debug.Print("dgvStatistics_SelectionChanged Sender = " + sender + " Event Args " + e);
+            Log.Debug("dgvStatistics_SelectionChanged Sender = " + sender + " Event Args " + e);
         }
 
         /// <summary>
@@ -564,16 +565,16 @@ namespace OE2EmpireTracker
         /// - Retrieves the Blueprint object from the ListView item's Tag property
         /// - Populates all form fields with the selected blueprint's data
         /// 
-        /// Uses Debug.Print for logging; should be replaced with proper logging in production.
+        /// Uses NLog for logging selection changes.
         /// </remarks>
         private void lvwBlueprints_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            Debug.Print("lvwBlueprints.SelectedItems.Count = " + lvwBlueprints.SelectedItems.Count);
+            Log.Debug("lvwBlueprints.SelectedItems.Count = " + lvwBlueprints.SelectedItems.Count);
 
             if (lvwBlueprints.SelectedItems.Count == 1)
             {
-                Debug.Print("Selected item = " + lvwBlueprints.SelectedItems[0].SubItems[0].Text);
-                Debug.Print("Selected item = " + lvwBlueprints.SelectedItems[0].SubItems[0].Tag);
+                Log.Debug("Selected item = " + lvwBlueprints.SelectedItems[0].SubItems[0].Text);
+                Log.Debug("Selected item = " + lvwBlueprints.SelectedItems[0].SubItems[0].Tag);
 
                 // Get the Blueprint object from the ListView item tag
                 viewModel.SelectBlueprint(lvwBlueprints.SelectedItems[0].SubItems[0].Tag as Blueprint);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -75,7 +74,7 @@ namespace OE2EmpireTracker.Baseline
             }
             catch (Exception ex)
             {
-                Debug.Print("Error parsing survey HTML fragment: " + ex.Message);
+                Log.Error(ex, "Error parsing survey HTML fragment");
             }
         }
 

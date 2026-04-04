@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Amazon.Auth.AccessControlPolicy;
 using Amazon.Runtime.Documents;
 using Sgml;
 using System;
+using NLog;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -23,6 +23,7 @@ namespace OE2EmpireTracker.Data
 {
     public class Commodity
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         [Required]
         public Data.CommodityIndustry.CommodityIndustryEnum CommodityIndustry { get; set; }
         public Data.CommodityGroup.CommodityGroupEnum CommodityGroup { get; set; }
@@ -2595,11 +2596,11 @@ namespace OE2EmpireTracker.Data
             {
                 if (commodity.CommodityIndustry == Data.CommodityIndustry.CommodityIndustryEnum.None)
                 {
-                    Debug.Print($"Commodity with name {commodity.Name} has no industry configured!");
+                    Log.Warn($"Commodity with name {commodity.Name} has no industry configured!");
                 }
                 if (commodity.CommodityGroup == Data.CommodityGroup.CommodityGroupEnum.None)
                 {
-                    Debug.Print($"Commodity with name {commodity.Name} has no group configured!");
+                    Log.Warn($"Commodity with name {commodity.Name} has no group configured!");
                 }
                 foreach (KeyValuePair<string, string> constructionResource in commodity.ConstructionResources)
                 {
@@ -2607,7 +2608,7 @@ namespace OE2EmpireTracker.Data
                     string resourceAmount = constructionResource.Value;
                     if (string.IsNullOrEmpty(constructionResource.Value))
                     {
-                        Debug.Print($"Commodity with name {commodity.Name} and resource {resourceName} not fully configured!");
+                        Log.Warn($"Commodity with name {commodity.Name} and resource {resourceName} not fully configured!");
                         continue;
                     }
 

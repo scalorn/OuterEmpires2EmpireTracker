@@ -1,9 +1,10 @@
-﻿using System;
-using System.Diagnostics;
+using NLog;
+using System;
 using System.Windows.Forms;
 
 public class DataEntryGridView : System.Windows.Forms.DataGridView
 {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
     public Control previousControl { get; set; }
     private bool changingSelection = false;
     public DataEntryGridView()
@@ -12,7 +13,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
 
     protected override bool ProcessDialogKey(Keys keyData)
     {
-        Debug.Print("ProcessDialogKey Key = " + keyData);
+        Log.Debug("ProcessDialogKey Key = " + keyData);
         Keys key = (keyData & (Keys.KeyCode | Keys.Shift));
 
         if (key == Keys.Tab)
@@ -36,7 +37,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
     }
     protected override bool ProcessDataGridViewKey(KeyEventArgs e)
     {
-        Debug.Print("ProcessDataGridViewKey Key = " + e);
+        Log.Debug("ProcessDataGridViewKey Key = " + e);
         if (e.KeyData == Keys.Tab)
         {
             bool handled = handleForward(this.Focused);
@@ -57,7 +58,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
     }
     protected override void OnSelectionChanged(EventArgs e)
     {
-        Debug.Print("OnSelectionChanged Event Args " + e + " " + e.ToString());
+        Log.Debug("OnSelectionChanged Event Args " + e + " " + e.ToString());
 
         if (!changingSelection && this.CurrentCell != null)
         {
@@ -84,7 +85,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
             if (this.CurrentCell.RowIndex != 0)
             {
                 col = findPreviousCell(this.Columns.Count - 1);
-                Debug.Print("Backwards col = " + col);
+                Log.Debug("Backwards col = " + col);
                 if (col >= 0)
                 {
                     handleEditCell(this.CurrentCell.RowIndex - 1, col, enableEdit);
@@ -93,7 +94,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
             }
             else
             {
-                Debug.Print("Need to reverse jump control! " + previousControl);
+                Log.Debug("Need to reverse jump control! " + previousControl);
                 if (previousControl != null)
                 {
                     this.previousControl.Focus();
