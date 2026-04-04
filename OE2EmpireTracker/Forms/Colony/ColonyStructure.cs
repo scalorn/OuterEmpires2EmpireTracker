@@ -251,7 +251,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 showSelection = true;
             }
 
-            if (showSelection && (cmbSelection.SelectedIndex >= 0 || !string.IsNullOrEmpty(ColonyStructureData.MiningSurvey)))
+            if (showSelection && !string.IsNullOrEmpty(ColonyStructureData.MiningSurvey))
             {
                 showSubSelection = true;
             }
