@@ -33,6 +33,9 @@ namespace OE2EmpireTracker.Constants
         /// <summary>Research laboratory structure type</summary>
         public const string ResearchLaboratory = "Flatpacks/ResearchLaboratory";
 
+        /// <summary>Manufactory structure type</summary>
+        public const string Manufactory = "Flatpacks/Manufactory";
+
         // Add more blueprint types as discovered in the codebase
         // Example:
         // public const string Agridome = "Flatpacks/Agridome";

@@ -88,6 +88,10 @@ namespace OE2EmpireTracker.Baseline
                     {
                         ProcessResearchLab(structure);
                     }
+                    else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Manufactory)
+                    {
+                        ProcessManufactory(structure);
+                    }
                 }
             }
 
@@ -289,6 +293,48 @@ namespace OE2EmpireTracker.Baseline
 
             structure.ProcessCompletionTime.ConsumeIntervals(1);
         }
+
+        private void ProcessManufactory(ColonyStructure structure)
+        {
+            if (string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID))
+                return;
+
+            PlayerContext pc = PlayerContext.getInstance();
+            Blueprint sourceBp = pc.findBlueprint(structure.ManufacturingBlueprintUUID);
+            if (sourceBp == null)
+                return;
+
+            // Find the output item type from the BlueprintType
+            EmpireContext ec = EmpireContext.getInstance();
+            BlueprintType bpType = ec.findBlueprintType(sourceBp.BluePrintType);
+            ItemType.ItemTypeEnum outputType = ItemType.ItemTypeEnum.None;
+            if (bpType != null && !string.IsNullOrEmpty(bpType.OutputItemType))
+            {
+                Enum.TryParse(bpType.OutputItemType, out outputType);
+            }
+
+            // Process each completed interval — one item per interval
+            while (structure.ProcessCompletionTime.IntervalsPassed > 0 &&
+                   structure.ManufacturingCompleted < structure.ManufacturingQuantity)
+            {
+                structure.ManufacturingCompleted++;
+
+                // Create the manufactured item
+                Item mfgItem = new Item(outputType, sourceBp.Name);
+                mfgItem.UUID = Guid.NewGuid().ToString();
+                mfgItem.BaseItemTypeID = sourceBp.UUID;
+                mfgItem.Quantity = 1;
+
+                // Volume from blueprint CargoVolumeSize
+                double vol = 0;
+                sourceBp.Properties.getDouble("CargoVolumeSize", 0, out vol);
+                mfgItem.Volume = vol;
+
+                Items.AddItem(mfgItem);
+
+                structure.ProcessCompletionTime.ConsumeIntervals(1);
+            }
+        }
     }
     public class ColonyStructure
     {
@@ -309,6 +355,10 @@ namespace OE2EmpireTracker.Baseline
         public string RefiningResourcePurity { get; set; } = null;
 
         public string ResearchingBlueprintUUID { get; set; } = null;
+
+        public string ManufacturingBlueprintUUID { get; set; } = null;
+        public int ManufacturingQuantity { get; set; } = 0;
+        public int ManufacturingCompleted { get; set; } = 0;
 
         [JsonIgnore]
         public Dictionary<string, ColonyStructureStatus> Statuses { get; set; } = new Dictionary<string, ColonyStructureStatus>();

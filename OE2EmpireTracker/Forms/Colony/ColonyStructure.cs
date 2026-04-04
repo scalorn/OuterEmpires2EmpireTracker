@@ -93,6 +93,10 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     handleResearchLabControls();
                 }
+                else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Manufactory)
+                {
+                    handleManufactoryControls();
+                }
                 else {
                     flpSelection.Visible = false;
                     flpSubSelection.Visible = false;
@@ -725,6 +729,141 @@ namespace OE2EmpireTracker.Forms.Colony
             public string DisplayName { get; set; }
         }
 
+        // -----------------------------------------------------------------------
+        // Manufactory Controls
+        // -----------------------------------------------------------------------
+
+        private void handleManufactoryControls()
+        {
+            ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
+
+            if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
+            {
+                flpSelection.Visible = false;
+                flpSubSelection.Visible = false;
+                flpCompletionTime.Visible = false;
+                guard.release();
+                return;
+            }
+
+            bool showCompletionTime = false;
+            bool enableCmbSelection = true;
+            bool showCmdStart = false;
+
+            if (ColonyStructureData.ProcessCompletionTime != null)
+            {
+                showCompletionTime = true;
+                enableCmbSelection = false;
+            }
+
+            if (!string.IsNullOrEmpty(ColonyStructureData.ManufacturingBlueprintUUID))
+            {
+                showCmdStart = true;
+            }
+
+            // Selection: manufacturable blueprints
+            flpSelection.Visible = true;
+            populateSelectionWithManufacturableBlueprints();
+            if (!string.IsNullOrEmpty(ColonyStructureData.ManufacturingBlueprintUUID))
+            {
+                cmbSelection.SelectedValue = ColonyStructureData.ManufacturingBlueprintUUID;
+            }
+            txtSelectionFilter.Enabled = enableCmbSelection;
+            cmbSelection.Enabled = enableCmbSelection;
+
+            // Sub-selection: quantity input
+            flpSubSelection.Visible = true;
+            txtSubSelectionFilter.Enabled = !showCompletionTime;
+            cmbSubSelection.Visible = false;
+            if (string.IsNullOrEmpty(txtSubSelectionFilter.Text) || !int.TryParse(txtSubSelectionFilter.Text, out _))
+            {
+                txtSubSelectionFilter.Text = "1";
+            }
+            cmdStart.Visible = showCmdStart && !showCompletionTime;
+            cmdSubStart.Visible = false;
+
+            if (showCompletionTime)
+            {
+                flpCompletionTime.Visible = true;
+                txtCompletionTime.Text = ColonyStructureData.ProcessCompletionTime.TimeRemainingString;
+                populateManufactoryProgressStatus();
+                if (timerCountdown.Enabled == false)
+                {
+                    timerCountdown.Interval = 1000;
+                    timerCountdown.Start();
+                }
+            }
+            else
+            {
+                flpCompletionTime.Visible = false;
+                rtbProgressStatus.Text = "";
+            }
+
+            guard.release();
+            flpStructureCommands_Layout(null, null);
+            flpStructureDetails_Layout(null, null);
+            ColonyStructure_Layout(null, null);
+        }
+
+        private void populateSelectionWithManufacturableBlueprints()
+        {
+            string searchText = txtSelectionFilter.Text ?? "";
+
+            var items = new List<ResearchSelectionItem>();
+
+            foreach (Data.Blueprint bp in playerContext.blueprintList)
+            {
+                if (bp.UUID == null) continue;
+
+                bool canManufacture = true;
+                bp.Properties.getBoolean("CanManufacture", true, out canManufacture);
+                if (!canManufacture) continue;
+
+                // Must have a ManufactureTime
+                string mfgTime;
+                bp.Properties.getString("ManufactureTime", null, out mfgTime);
+                if (string.IsNullOrEmpty(mfgTime)) continue;
+
+                string display = bp.ExtendedName;
+                if (!string.IsNullOrEmpty(searchText) &&
+                    display.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) < 0)
+                    continue;
+
+                items.Add(new ResearchSelectionItem
+                {
+                    UUID = bp.UUID,
+                    DisplayName = display
+                });
+            }
+
+            items.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
+            items.Insert(0, new ResearchSelectionItem { UUID = "", DisplayName = "" });
+
+            cmbSelection.DisplayMember = "DisplayName";
+            cmbSelection.ValueMember = "UUID";
+            cmbSelection.DataSource = items;
+            cmbSelection.SelectedIndex = -1;
+        }
+
+        private void populateManufactoryProgressStatus()
+        {
+            if (ColonyStructureData.ProcessCompletionTime == null ||
+                string.IsNullOrEmpty(ColonyStructureData.ManufacturingBlueprintUUID))
+            {
+                rtbProgressStatus.Text = "";
+                return;
+            }
+
+            Data.Blueprint bp = playerContext.findBlueprint(ColonyStructureData.ManufacturingBlueprintUUID);
+            if (bp == null)
+            {
+                rtbProgressStatus.Text = "";
+                return;
+            }
+
+            rtbProgressStatus.Text = $"({ColonyStructureData.ManufacturingCompleted}/{ColonyStructureData.ManufacturingQuantity}) {bp.ExtendedName}";
+        }
+
         private void populateSelectionWithSurveys()
         {
             //cmbSelection.Items.Clear();
@@ -992,6 +1131,38 @@ namespace OE2EmpireTracker.Forms.Colony
                 timerCountdown.Start();
                 handleResearchLabControls();
             }
+            else if (FlatpackBlueprint != null && FlatpackBlueprint.BluePrintType == BlueprintTypes.Manufactory)
+            {
+                if (string.IsNullOrEmpty(ColonyStructureData.ManufacturingBlueprintUUID)) return;
+
+                Data.Blueprint bp = playerContext.findBlueprint(ColonyStructureData.ManufacturingBlueprintUUID);
+                if (bp == null) return;
+
+                // Parse manufacture time from blueprint properties (format: "22h 0m", "9 hours", etc.)
+                string mfgTimeStr;
+                bp.Properties.getString("ManufactureTime", null, out mfgTimeStr);
+                if (string.IsNullOrEmpty(mfgTimeStr)) return;
+
+                // Parse using CountDownTime's TimeRemainingString parser
+                CountDownTime tempTimer = new CountDownTime();
+                tempTimer.TimeRemainingString = mfgTimeStr;
+                long mfgSeconds = tempTimer.TimeRemaining;
+                if (mfgSeconds <= 0) return;
+
+                // Parse quantity from txtSubSelectionFilter (reused as quantity input)
+                int qty = 1;
+                int.TryParse(txtSubSelectionFilter.Text, out qty);
+                if (qty <= 0) qty = 1;
+
+                ColonyStructureData.ManufacturingQuantity = qty;
+                ColonyStructureData.ManufacturingCompleted = 0;
+                ColonyStructureData.ProcessCompletionTime = new CountDownTime();
+                ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.Now;
+                ColonyStructureData.ProcessCompletionTime.StartRepeating(mfgSeconds);
+                timerCountdown.Interval = 1000;
+                timerCountdown.Start();
+                handleManufactoryControls();
+            }
         }
 
         private void txtSubSelectionFilter_TextChanged(object sender, EventArgs e)
@@ -1067,6 +1238,8 @@ namespace OE2EmpireTracker.Forms.Colony
                     handleRefineryControls();
                 else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
                     handleResearchLabControls();
+                else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Manufactory)
+                    handleManufactoryControls();
             }
 
             ColonyStructureDataChanged?.Invoke(this, e);
@@ -1110,6 +1283,13 @@ namespace OE2EmpireTracker.Forms.Colony
                     string uuid = cmbSelection.SelectedValue as string;
                     ColonyStructureData.ResearchingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
                     handleResearchLabControls();
+                }
+                else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Manufactory)
+                {
+                    string uuid = cmbSelection.SelectedValue as string;
+                    ColonyStructureData.ManufacturingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
+                    ColonyStructureData.ManufacturingCompleted = 0;
+                    handleManufactoryControls();
                 }
             }
         }
