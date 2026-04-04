@@ -1,4 +1,4 @@
-﻿using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Baseline;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -60,7 +60,7 @@ namespace OE2EmpireTracker.Data
         public ResourceEnum ID { get; set; }
         public string Name { get; set; }
 
-        private static List<Resource> _resources = getResources();
+        private static List<Resource> _resources = GetResources();
         private static Dictionary<ResourceEnum, Resource> _resourceMapByEnum;
         private static Dictionary<string, Resource> _resourceMapByString;
 
@@ -69,7 +69,7 @@ namespace OE2EmpireTracker.Data
         public static IReadOnlyDictionary<string, Resource> ResourceMapByString => _resourceMapByString;
 
 
-        private static List<Resource> getResources()
+        private static List<Resource> GetResources()
         {
             List<Resource> instance = new List<Resource>();
             instance.Add(new Resource()

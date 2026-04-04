@@ -1,4 +1,4 @@
-﻿using Amazon;
+using Amazon;
 using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Baseline;
@@ -74,7 +74,7 @@ namespace OE2EmpireTracker.Baseline
             initShipClasses(baselineRoot);
             initTechLevels(baselineRoot);
             initEvolutions(baselineRoot);
-            initResources(baselineRoot);
+            InitResources(baselineRoot);
             initResourceGroups(baselineRoot);
             initResourcePurities(baselineRoot);
         }
@@ -101,7 +101,7 @@ namespace OE2EmpireTracker.Baseline
             bindingSourceBlueprintType.DataSource = blueprintTypeList;
         }
 
-        public BlueprintType findBlueprintType(string id)
+        public BlueprintType FindBlueprintType(string id)
         {
             var filteredList = blueprintTypeList
                 .Where(item => item.Id == id)
@@ -123,7 +123,7 @@ namespace OE2EmpireTracker.Baseline
             bindingSourceShipClass.DataSource = shipClassList;
         }
 
-        public ShipClass findShipClass(int id)
+        public ShipClass FindShipClass(int id)
         {
             var filteredList = shipClassList
                 .Where(item => item.Id == id)
@@ -145,7 +145,7 @@ namespace OE2EmpireTracker.Baseline
             // Set the in-memory list as the DataSource for the BindingSource
             bindingSourceTechLevel.DataSource = techLevelList;
         }
-        public TechLevel findTechLevel(string id)
+        public TechLevel FindTechLevel(string id)
         {
             var filteredList = techLevelList
                 .Where(item => item.Name == id)
@@ -170,7 +170,7 @@ namespace OE2EmpireTracker.Baseline
             // Set the in-memory list as the DataSource for the BindingSource
             bindingSourceEvolution.DataSource = evolutionList;
         }
-        public string findEvolution(int id)
+        public string FindEvolution(int id)
         {
             string key = "" + id;
             var filteredList = evolutionList
@@ -182,7 +182,7 @@ namespace OE2EmpireTracker.Baseline
             }
             return null;
         }
-        public void initResources(BaselineRoot baselineRoot)
+        public void InitResources(BaselineRoot baselineRoot)
         {
             List<Resource> list = new List<Resource>(Resource.Resources);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));

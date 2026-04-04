@@ -1,4 +1,4 @@
-ï»¿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Data;
 using System;
@@ -37,10 +37,10 @@ namespace OE2EmpireTracker.Baseline
                     (structure.ProcessCompletionTime.IntervalsPassed > 0 || 
                      (!structure.ProcessCompletionTime.IsRepeating && structure.ProcessCompletionTime.TimeRemaining <= 0)))
                 {
-                    Blueprint FlatpackBlueprint = PlayerContext.getInstance().findBlueprint(structure.FlatpackBlueprintUUID);
+                    Blueprint FlatpackBlueprint = PlayerContext.getInstance().FindBlueprint(structure.FlatpackBlueprintUUID);
                     if (FlatpackBlueprint.BluePrintType == BlueprintTypes.MiningRig)
                     {
-                        Survey survey = PlayerContext.getInstance().findSurvey(structure.MiningSurvey);
+                        Survey survey = PlayerContext.getInstance().FindSurvey(structure.MiningSurvey);
                         SurveyResource surveyResource = survey.Resources[structure.MiningSurveyResource];
                         List<Item> items = Items.FindResource(surveyResource.Resource, surveyResource.Purity);
                         int quantityInt = 0;
@@ -198,7 +198,7 @@ namespace OE2EmpireTracker.Baseline
                     available = sourceItem.Quantity;
                 }
 
-                // Only consume whole units â€” floor to nearest multiple of perUnitCost
+                // Only consume whole units — floor to nearest multiple of perUnitCost
                 int wholeUnits = available / perUnitCost;
                 int maxUnits = recipe.ProduceRate; // cap at full batch size
                 int produced = Math.Min(wholeUnits, maxUnits);
@@ -250,11 +250,11 @@ namespace OE2EmpireTracker.Baseline
                 return;
 
             PlayerContext pc = PlayerContext.getInstance();
-            Blueprint sourceBp = pc.findBlueprint(structure.ResearchingBlueprintUUID);
+            Blueprint sourceBp = pc.FindBlueprint(structure.ResearchingBlueprintUUID);
             if (sourceBp == null)
                 return;
 
-            // Research is a one-shot timer â€” check if time has expired
+            // Research is a one-shot timer — check if time has expired
             if (structure.ProcessCompletionTime.TimeRemaining > 0)
                 return;
 
@@ -274,7 +274,7 @@ namespace OE2EmpireTracker.Baseline
             {
                 newBp.Properties.setProperty(prop.Key, prop.Value);
             }
-            // Resources intentionally empty â€” user imports via Blueprint Form
+            // Resources intentionally empty — user imports via Blueprint Form
 
             // Add to player's blueprint list
             pc.blueprintList.Add(newBp);
@@ -296,20 +296,20 @@ namespace OE2EmpireTracker.Baseline
                 return;
 
             PlayerContext pc = PlayerContext.getInstance();
-            Blueprint sourceBp = pc.findBlueprint(structure.ManufacturingBlueprintUUID);
+            Blueprint sourceBp = pc.FindBlueprint(structure.ManufacturingBlueprintUUID);
             if (sourceBp == null)
                 return;
 
             // Find the output item type from the BlueprintType
             EmpireContext ec = EmpireContext.getInstance();
-            BlueprintType bpType = ec.findBlueprintType(sourceBp.BluePrintType);
+            BlueprintType bpType = ec.FindBlueprintType(sourceBp.BluePrintType);
             ItemType.ItemTypeEnum outputType = ItemType.ItemTypeEnum.None;
             if (bpType != null && !string.IsNullOrEmpty(bpType.OutputItemType))
             {
                 Enum.TryParse(bpType.OutputItemType, out outputType);
             }
 
-            // Process each completed interval â€” one item per interval
+            // Process each completed interval — one item per interval
             while (structure.ProcessCompletionTime.IntervalsPassed > 0 &&
                    structure.ManufacturingCompleted < structure.ManufacturingQuantity)
             {

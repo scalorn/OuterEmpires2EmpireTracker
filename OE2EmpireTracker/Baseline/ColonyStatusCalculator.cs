@@ -1,4 +1,4 @@
-﻿using NLog;
+using NLog;
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Controls;
 using System;
@@ -92,7 +92,7 @@ namespace OE2EmpireTracker.Baseline
 
             foreach (ColonyStructure structure in colony.Structures)
             {
-                Data.Blueprint FlatpackBlueprint = playerContext.findBlueprint(structure.FlatpackBlueprintUUID);
+                Data.Blueprint FlatpackBlueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (FlatpackBlueprint != null)
                 {
                     int count = 0;
@@ -127,7 +127,7 @@ namespace OE2EmpireTracker.Baseline
 
             foreach (ColonyStructure structure in colony.Structures)
             {
-                Data.Blueprint FlatpackBlueprint = playerContext.findBlueprint(structure.FlatpackBlueprintUUID);
+                Data.Blueprint FlatpackBlueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 ColonyStructureStatus currentStatus = new ColonyStructureStatus();
                 CalculateBuilt(structure, previousStatus, currentStatus, workers, FlatpackBlueprint);
                 structure.Statuses["Ideal"] = currentStatus;
@@ -245,7 +245,7 @@ namespace OE2EmpireTracker.Baseline
             if (string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID)) return;
             if (structure.ProcessCompletionTime == null) return;
 
-            Data.Blueprint mfgBlueprint = playerContext.findBlueprint(structure.ManufacturingBlueprintUUID);
+            Data.Blueprint mfgBlueprint = playerContext.FindBlueprint(structure.ManufacturingBlueprintUUID);
             if (mfgBlueprint == null || mfgBlueprint.Resources == null) return;
 
             int remaining = structure.ManufacturingQuantity - structure.ManufacturingCompleted;
@@ -476,7 +476,7 @@ namespace OE2EmpireTracker.Baseline
         /// <summary>
         /// Populates a RichTextBox with the colony status summary in a single RTF assignment.
         /// </summary>
-        public static void populateStatus(RtfBuilder builder, ColonyStructureStatus status)
+        public static void PopulateStatus(RtfBuilder builder, ColonyStructureStatus status)
         {
             AppendStatus(builder, "Power:",
                 status.PowerRequired > status.PowerProvided ? Color.Red : Color.Green,

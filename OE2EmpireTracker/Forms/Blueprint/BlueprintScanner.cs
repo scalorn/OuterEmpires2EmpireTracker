@@ -1,4 +1,4 @@
-﻿using Amazon.Runtime.Internal.Transform;
+using Amazon.Runtime.Internal.Transform;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -58,11 +58,11 @@ namespace OE2EmpireTracker.Forms.Blueprint
                 //output = $@"@""{output.Replace("\r", "\"\r")}""";
                 Log.Info(output);
                 //string html = ExtractHtmlFragmentFromClipboardData(returnHtmlText);
-                processHtml(blueprint, returnHtmlText);
+                ProcessHtml(blueprint, returnHtmlText);
             }
         }
 
-        public void processHtml(Data.Blueprint blueprint, string htmlFragment)
+        public void ProcessHtml(Data.Blueprint blueprint, string htmlFragment)
         {
             // Convert html fragment into Resources on the blueprint.
             try
@@ -203,7 +203,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                                 string rawValue = valueNode.InnerText.Trim();
                                 // Normalize whitespace and remove any embedded arrows or parentheses content used for delta indicators
                                 rawValue = Regex.Replace(rawValue, "\\s+", " ").Trim();
-                                // Remove inline delta text like "(▲ 435)" or "(▼ -9)"
+                                // Remove inline delta text like "(? 435)" or "(? -9)"
                                 rawValue = Regex.Replace(rawValue, "\\(.*?\\)", "").Trim();
 
                                 string remapKey = key;
@@ -370,7 +370,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
         /// Currently used for debugging - prints inner text of each node to Debug window.
         /// Uses SgmlReader for HTML parsing with whitespace handling preserved.
         /// </remarks>
-        private void processHTML(string inputText)
+        private void ProcessHTML(string inputText)
         {
             StringReader reader = new StringReader(inputText);
 
@@ -408,7 +408,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
         /// <param name="depth">Current recursion depth for indentation.</param>
         /// <param name="nodes">List of child nodes to process.</param>
         /// <remarks>
-        /// Used by processHTML() to traverse and debug HTML node structure.
+        /// Used by ProcessHTML() to traverse and debug HTML node structure.
         /// Increments depth parameter for recursive calls to show nesting level.
         /// </remarks>
         private void children(int depth, XmlNodeList nodes)

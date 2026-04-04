@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Data;
 using System;
@@ -65,8 +65,8 @@ namespace OE2EmpireTracker.Baseline
                 playerRoot = new PlayerRoot();
             }
             initPlayerProfiles(playerRoot);
-            initBlueprints(playerRoot);
-            initSurveys(playerRoot);
+            InitBlueprints(playerRoot);
+            InitSurveys(playerRoot);
             initColonies(playerRoot);
         }
 
@@ -92,7 +92,7 @@ namespace OE2EmpireTracker.Baseline
             // Set the in-memory list as the DataSource for the BindingSource
             bindingSourcePlayerProfile.DataSource = playerProfileList;
         }
-        public void initBlueprints(PlayerRoot playerRoot)
+        public void InitBlueprints(PlayerRoot playerRoot)
         {
             List<Blueprint> list = new List<Blueprint>(playerRoot.Blueprint);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
@@ -102,7 +102,7 @@ namespace OE2EmpireTracker.Baseline
             // Set the in-memory list as the DataSource for the BindingSource
             bindingSourceBlueprint.DataSource = blueprintList;
         }
-        public Blueprint findBlueprint(string id)
+        public Blueprint FindBlueprint(string id)
         {
             var filteredList = blueprintList
                 .Where(item => item.UUID == id)
@@ -114,7 +114,7 @@ namespace OE2EmpireTracker.Baseline
             return null;
         }
 
-        public void initSurveys(PlayerRoot playerRoot)
+        public void InitSurveys(PlayerRoot playerRoot)
         {
             List<Survey> list = new List<Survey>(playerRoot.Survey);
             list = list.OrderBy(p => p.PlanetName).ThenBy(p => p.DateTime).ToList();
@@ -125,7 +125,7 @@ namespace OE2EmpireTracker.Baseline
             // Set the in-memory list as the DataSource for the BindingSource
             bindingSourceSurvey.DataSource = surveyList;
         }
-        public Survey findSurvey(string id)
+        public Survey FindSurvey(string id)
         {
             var filteredList = surveyList
                 .Where(item => item.UUID == id)
@@ -148,7 +148,7 @@ namespace OE2EmpireTracker.Baseline
             // Set the in-memory list as the DataSource for the BindingSource
             bindingSourceColony.DataSource = colonyList;
         }
-        public Colony findColony(string id)
+        public Colony FindColony(string id)
         {
             var filteredList = colonyList
                 .Where(item => item.UUID == id)

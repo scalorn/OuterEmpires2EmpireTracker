@@ -117,7 +117,7 @@ namespace OE2EmpireTracker
             lvwBlueprints.Columns.Add("Tech Level", 60);
             lvwBlueprints.Columns.Add("Evolution", 30);
             lvwBlueprints.Columns.Add("Nick Name", 100);
-            populateListView(viewModel.GetFilteredBlueprints(null));
+            PopulateListView(viewModel.GetFilteredBlueprints(null));
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace OE2EmpireTracker
                 returnHtmlText = Clipboard.GetText(TextDataFormat.Html);
                 string html = ExtractHtmlFragmentFromClipboardData(returnHtmlText);
                 //rtbCopyTarget.Text = html;
-                //processHTML(html);
+                //ProcessHTML(html);
             }
         }
 
@@ -219,7 +219,7 @@ namespace OE2EmpireTracker
         /// Currently used for debugging - prints inner text of each node to Debug window.
         /// Uses SgmlReader for HTML parsing with whitespace handling preserved.
         /// </remarks>
-        private void processHTML(string inputText)
+        private void ProcessHTML(string inputText)
         {
             StringReader reader = new StringReader(inputText);
 
@@ -257,7 +257,7 @@ namespace OE2EmpireTracker
         /// <param name="depth">Current recursion depth for indentation.</param>
         /// <param name="nodes">List of child nodes to process.</param>
         /// <remarks>
-        /// Used by processHTML() to traverse and debug HTML node structure.
+        /// Used by ProcessHTML() to traverse and debug HTML node structure.
         /// Increments depth parameter for recursive calls to show nesting level.
         /// </remarks>
         private void children(int depth, XmlNodeList nodes)
@@ -283,7 +283,7 @@ namespace OE2EmpireTracker
         /// </remarks>
         private void cmbBlueprintType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            updatePropertyGrid();
+            UpdatePropertyGrid();
         }
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace OE2EmpireTracker
         /// 
         /// An empty Blueprint entry is inserted at the beginning to allow deselecting a base blueprint.
         /// </remarks>
-        public void updateBlueprintTypeListBase()
+        public void UpdateBlueprintTypeListBase()
         {
             string searchText = txtFilterBlueprintType.Text;
             List<BlueprintType> filteredList = new List<BlueprintType>(empireContext.blueprintTypeList);
@@ -339,7 +339,7 @@ namespace OE2EmpireTracker
         /// - Stores property tag for later value retrieval
         /// - Removes excess rows if fewer than defined properties
         /// </remarks>
-        public void updatePropertyGrid()
+        public void UpdatePropertyGrid()
         {
             BlueprintType bt = cmbBlueprintType.SelectedItem as BlueprintType;
             
@@ -405,7 +405,7 @@ namespace OE2EmpireTracker
         /// <param name="e">Event data containing event information.</param>
         private void txtFilterBaseBlueprint_TextChanged(object sender, EventArgs e)
         {
-            updateBaseBlueprintList();
+            UpdateBaseBlueprintList();
             cmbBaseBlueprint.DroppedDown = true;
         }
 
@@ -417,7 +417,7 @@ namespace OE2EmpireTracker
         private void txtBlueprintListFilter_TextChanged(object sender, EventArgs e)
         {
             string searchText = txtBlueprintListFilter.Text;
-            populateListView(viewModel.GetFilteredBlueprints(searchText));
+            PopulateListView(viewModel.GetFilteredBlueprints(searchText));
         }
 
         /// <summary>
@@ -432,7 +432,7 @@ namespace OE2EmpireTracker
         /// 
         /// An empty Blueprint entry is inserted at the beginning to allow deselecting a base blueprint.
         /// </remarks>
-        private void updateBaseBlueprintList()
+        private void UpdateBaseBlueprintList()
         {
             string searchText = txtFilterBaseBlueprint.Text;
             List<Blueprint> filteredList = new List<Blueprint>(playerContext.blueprintList);
@@ -501,7 +501,7 @@ namespace OE2EmpireTracker
         /// After processing all items, removes any remaining ListView items whose 
         /// corresponding blueprints were deleted or filtered out.
         /// </remarks>
-        void populateListView(IReadOnlyList<Blueprint> blueprints)
+        void PopulateListView(IReadOnlyList<Blueprint> blueprints)
         {
             if (blueprints == null)
             {
@@ -580,7 +580,7 @@ namespace OE2EmpireTracker
                 viewModel.SelectBlueprint(lvwBlueprints.SelectedItems[0].SubItems[0].Tag as Blueprint);
 
                 // Populate form fields with selected blueprint data
-                populateForm();
+                PopulateForm();
             }
         }
 
@@ -601,7 +601,7 @@ namespace OE2EmpireTracker
         /// <param name="e">Event data containing event information.</param>
         private void txtFilterBlueprintType_TextChanged(object sender, EventArgs e)
         {
-            updateBlueprintTypeListBase();
+            UpdateBlueprintTypeListBase();
             cmbBlueprintType.DroppedDown = true;
         }
 
@@ -636,10 +636,10 @@ namespace OE2EmpireTracker
             {
                 viewModel.Delete();
                 viewModel.Reset();
-                populateListView(viewModel.GetFilteredBlueprints(null));
+                PopulateListView(viewModel.GetFilteredBlueprints(null));
                 lvwBlueprints.SelectedItems.Clear();
 
-                clearForm();
+                ClearForm();
             }
         }
 
@@ -654,7 +654,7 @@ namespace OE2EmpireTracker
         /// </remarks>
         private void cmdNew_Click(object sender, EventArgs e)
         {
-            clearForm();
+            ClearForm();
         }
 
         /// <summary>
@@ -763,11 +763,11 @@ namespace OE2EmpireTracker
             viewModel.Save();
             
             // Refresh list view
-            populateListView(viewModel.GetFilteredBlueprints(null));
+            PopulateListView(viewModel.GetFilteredBlueprints(null));
 
             // Reset viewModel and clear form for next entry
             viewModel.Reset();
-            clearForm();
+            ClearForm();
             
             // Restore focus
             txtBlueprintListFilter.Focus();
@@ -789,7 +789,7 @@ namespace OE2EmpireTracker
         /// - Populates the statistics grid with property values
         /// - Populates the resources grid with the blueprint's resource data
         /// </remarks>
-        private void populateForm()
+        private void PopulateForm()
         {
             if (viewModel.Data.UUID == null)
             {
@@ -798,25 +798,25 @@ namespace OE2EmpireTracker
 
             // Clear and regenerate blueprint type list
             txtFilterBlueprintType.Text = "";
-            updateBlueprintTypeListBase();
+            UpdateBlueprintTypeListBase();
 
             // Load blueprint type selection
-            cmbBlueprintType.SelectedItem = empireContext.findBlueprintType(viewModel.Data.BluePrintType);
+            cmbBlueprintType.SelectedItem = empireContext.FindBlueprintType(viewModel.Data.BluePrintType);
 
             // Update property grid based on selected type
-            updatePropertyGrid();
+            UpdatePropertyGrid();
 
             // Load dependent dropdowns
-            cmbShipClass.SelectedItem = empireContext.findShipClass(viewModel.Data.Class);
-            cmbTechLevel.SelectedItem = empireContext.findTechLevel(viewModel.Data.TechLevel);
-            cmbEvolution.SelectedItem = empireContext.findEvolution(viewModel.Data.Evolution);
+            cmbShipClass.SelectedItem = empireContext.FindShipClass(viewModel.Data.Class);
+            cmbTechLevel.SelectedItem = empireContext.FindTechLevel(viewModel.Data.TechLevel);
+            cmbEvolution.SelectedItem = empireContext.FindEvolution(viewModel.Data.Evolution);
 
             // Clear and regenerate base blueprint list
             txtFilterBaseBlueprint.Text = "";
-            updateBaseBlueprintList();
+            UpdateBaseBlueprintList();
 
             // Load base blueprint selection (if this is not the base blueprint)
-            cmbBaseBlueprint.SelectedItem = playerContext.findBlueprint(viewModel.Data.baseBlueprintUUID);
+            cmbBaseBlueprint.SelectedItem = playerContext.FindBlueprint(viewModel.Data.baseBlueprintUUID);
 
             // Populate text input fields
             txtName.Text = viewModel.Data.Name;
@@ -836,9 +836,9 @@ namespace OE2EmpireTracker
                 }
                 row.Cells["CurrentValue"].Value = value;
             }
-            populateResources();
+            PopulateResources();
         }
-        private void populateResources()
+        private void PopulateResources()
         { 
             // Populate resources grid with blueprint's resource data
             dgvResources.Rows.Clear();
@@ -862,7 +862,7 @@ namespace OE2EmpireTracker
         /// - Regenerates filtered lists for type and base blueprint selectors
         /// - Clears both statistics and resources grids
         /// </remarks>
-        private void clearForm()
+        private void ClearForm()
         {
             viewModel.Reset();
 
@@ -871,7 +871,7 @@ namespace OE2EmpireTracker
             txtFilterBaseBlueprint.Text = "";
 
             // Regenerate type list with empty selection
-            updateBlueprintTypeListBase();
+            UpdateBlueprintTypeListBase();
             cmbBlueprintType.SelectedItem = null;
             cmbBlueprintType.Text = "";
             
@@ -886,7 +886,7 @@ namespace OE2EmpireTracker
             cmbEvolution.Text = "";
 
             // Regenerate base blueprint list with empty selection
-            updateBaseBlueprintList();
+            UpdateBaseBlueprintList();
             cmbBaseBlueprint.SelectedItem = null;
 
             // Clear text inputs
@@ -918,7 +918,7 @@ namespace OE2EmpireTracker
         {
             BlueprintScanner scanner = new BlueprintScanner();
             scanner.processClipboard(viewModel.Data);
-            populateForm();
+            PopulateForm();
         }
 
         private void dgvResources_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
@@ -966,7 +966,7 @@ namespace OE2EmpireTracker
             string pattern = Constants.BlueprintPropertyValidation.GetValidationPattern(propertyName);
             if (pattern == null)
             {
-                // Unknown property — log and allow free-form
+                // Unknown property Ã¢â‚¬â€ log and allow free-form
                 Log.Warn("Unknown blueprint property for validation: {0}", propertyName);
                 return;
             }

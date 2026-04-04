@@ -121,9 +121,14 @@ Full codebase scan identified issues in 7 categories. Lower-risk items can be do
 - Numbers: `25` (refining base rate), `50` (worker volume), `3600` (seconds/hour)
 
 ### 12d. Method naming — camelCase → PascalCase (Medium risk)
-- `populateStats`, `populateForm`, `populateItemGrid`, `populateListView`, `populateCommodityRequestGrid`, `populateProgressStatus`, `populateRefineryProgressStatus`, `populateResearchLabProgressStatus`, `populateSelectionWithSurveys`, `populateSelectionWithUnrefinedResources`, `populateSubSelectionWithSurveyResources`, `updateFlatpackListBase`, `updatePurityList`, `updateItemTypeList`, `updateCommodityRequestList`
-- `processHtml` in SurveyParser (note: has 44 tests referencing it)
-- Should use semantic rename to update all references
+**Status: Complete**
+Renamed all camelCase methods to PascalCase across the codebase:
+- Form methods: `populateForm`, `populateItemGrid`, `populateStats`, `populateListView`, `populateCommodityRequestGrid`, `populateResources`, `populateFormFromViewModel`, `clearForm` and all `populate*`/`update*` variants
+- Context methods: `findBlueprint`, `findSurvey`, `findColony`, `findBlueprintType`, `findShipClass`, `findTechLevel`, `findEvolution`, `initBlueprints`, `initSurveys`, `initResources`
+- Control methods: `findPreviousCell`, `findNextCell`
+- Data methods: `getResources`
+- Status method: `populateStatus`
+- All callers updated across 15+ files. `processHtml`/`ProcessHtml` was already PascalCase from a prior session.
 
 ### 12e. Large method extraction (Medium-High risk)
 - `UpdateData` in ColonyStructure.cs (~183 lines) — worker checkbox setup could be extracted

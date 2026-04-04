@@ -31,12 +31,12 @@ namespace OE2EmpireTracker.Forms.Colony
             empireContext = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
 
-            updateItemTypeList();
-            updatePurityList();
+            UpdateItemTypeList();
+            UpdatePurityList();
 
             cmbFlatpacks.DisplayMember = "Name";
             cmbFlatpacks.ValueMember = "UUID";
-            updateFlatpackListBase();
+            UpdateFlatpackListBase();
             cmbFlatpacks.SelectedIndex = -1;
 
             flpColonyStructure.Controls.Clear();
@@ -48,9 +48,9 @@ namespace OE2EmpireTracker.Forms.Colony
             lvwColonies.View = View.Details;
             lvwColonies.Columns.Add("Planet", 50);
             lvwColonies.Columns.Add("Name", 100);
-            populateListView(new List<Baseline.Colony>(playerContext.colonyList));
+            PopulateListView(new List<Baseline.Colony>(playerContext.colonyList));
 
-            updateCommodityRequestList();
+            UpdateCommodityRequestList();
 
         }
 
@@ -113,7 +113,7 @@ namespace OE2EmpireTracker.Forms.Colony
             colonyStructureControl.UpdateData();
 
             RtfBuilder builder = new RtfBuilder();
-            ColonyStatusCalculator.populateStatus(builder, statusCalculator.finalActualStatus);
+            ColonyStatusCalculator.PopulateStatus(builder, statusCalculator.finalActualStatus);
             rtbStatus.Rtf = builder.ToRtf();
 
             colonyStructureControl.Visible = true;
@@ -163,7 +163,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 ColonyStructure ctrl;
                 if (!controlMap.TryGetValue(structure, out ctrl))
                 {
-                    // New structure � create a control for it
+                    // New structure ï¿½ create a control for it
                     ctrl = new ColonyStructure();
                     ctrl.Colony = selectedColony;
                     ctrl.ColonyStructureData = structure;
@@ -185,10 +185,10 @@ namespace OE2EmpireTracker.Forms.Colony
             flpColonyStructure.ResumeLayout();
 
             RtfBuilder builder = new RtfBuilder();
-            ColonyStatusCalculator.populateStatus(builder, statusCalculator.finalActualStatus);
+            ColonyStatusCalculator.PopulateStatus(builder, statusCalculator.finalActualStatus);
             rtbStatus.Rtf = builder.ToRtf();
 
-            populateItemGrid();
+            PopulateItemGrid();
 
             guard.release();
             this.ResumeLayout();
@@ -196,11 +196,11 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void txtFilterFlatpack_TextChanged(object sender, EventArgs e)
         {
-            updateFlatpackListBase();
+            UpdateFlatpackListBase();
             cmbFlatpacks.DroppedDown = true;
         }
 
-        public void updateFlatpackListBase()
+        public void UpdateFlatpackListBase()
         {
             string searchText = txtFilterFlatpack.Text;
             List<Data.Blueprint> filteredList = new List<Data.Blueprint>(playerContext.blueprintList);
@@ -226,7 +226,7 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbFlatpacks.DataSource = filteredItemsBindingList;
         }
 
-        public void updatePurityList()
+        public void UpdatePurityList()
         {
             IReadOnlyList<ResourcePurity> purities = Data.ResourcePurity.Purities;
 
@@ -237,7 +237,7 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbPurity.DataSource = filteredPurityBindingList;
         }
 
-        public void updateItemTypeList()
+        public void UpdateItemTypeList()
         {
             IReadOnlyList<ItemType> itemTypes = Data.ItemType.ItemTypes;
 
@@ -267,10 +267,10 @@ namespace OE2EmpireTracker.Forms.Colony
                 Log.Debug("Selected item = " + lvwColonies.SelectedItems[0].SubItems[0].Tag);
                 selectedColony = lvwColonies.SelectedItems[0].SubItems[0].Tag as Baseline.Colony;
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
-                populateForm();
+                PopulateForm();
             }
         }
-        void populateListView(List<Baseline.Colony> colonies)
+        void PopulateListView(List<Baseline.Colony> colonies)
         {
             if (colonies == null)
             {
@@ -314,9 +314,9 @@ namespace OE2EmpireTracker.Forms.Colony
                 lvwColonies.Items.Remove(viewableColony.Value);
             }
         }
-        private void populateForm()
+        private void PopulateForm()
         {
-            Log.Debug("populateForm called! selectedColony = " + (selectedColony != null ? selectedColony.PlanetName : "null"));
+            Log.Debug("PopulateForm called! selectedColony = " + (selectedColony != null ? selectedColony.PlanetName : "null"));
             ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
             this.SuspendLayout();
             tabDetailedData.Visible = false;
@@ -394,23 +394,23 @@ namespace OE2EmpireTracker.Forms.Colony
             }
             Log.Debug("populatForm: Making new controls visible finished");
 
-            Log.Debug("populateForm: Calling CalculateBuilt started");
+            Log.Debug("PopulateForm: Calling CalculateBuilt started");
             colonyViewModel.RecalculateStatus();
-            Log.Debug("populateForm: Calling CalculateBuilt finished");
-            Log.Debug("populateForm: Calling populateStatus started");
+            Log.Debug("PopulateForm: Calling CalculateBuilt finished");
+            Log.Debug("PopulateForm: Calling PopulateStatus started");
             RtfBuilder builder = new RtfBuilder();
-            ColonyStatusCalculator.populateStatus(builder, statusCalculator.finalActualStatus);
+            ColonyStatusCalculator.PopulateStatus(builder, statusCalculator.finalActualStatus);
             rtbStatus.Rtf = builder.ToRtf();
-            Log.Debug("populateForm: Calling populateStatus finished");
+            Log.Debug("PopulateForm: Calling PopulateStatus finished");
 
             tabDetailedData.Visible = true;
 
-            populateItemGrid();
-            populateCommodityRequestGrid();
+            PopulateItemGrid();
+            PopulateCommodityRequestGrid();
 
             this.ResumeLayout();
             guard.release();
-            Log.Debug("populateForm completed!");
+            Log.Debug("PopulateForm completed!");
         }
 
         private void tlpBase_Layout(object sender, LayoutEventArgs e)
@@ -481,24 +481,24 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 if (itemType.ID == Data.ItemType.ItemTypeEnum.Resource)
                 {
-                    populateItemWithResources();
+                    PopulateItemWithResources();
                     cmbPurity.Visible = true;
                 }
                 if (itemType.ID == Data.ItemType.ItemTypeEnum.Commodity)
                 {
-                    populateItemWithCommodities();
+                    PopulateItemWithCommodities();
                 }
                 if (itemType.ID == Data.ItemType.ItemTypeEnum.WorkDetail)
                 {
-                    populateItemWithWorkerDetails();
+                    PopulateItemWithWorkerDetails();
                 }
                 if (itemType.ID == Data.ItemType.ItemTypeEnum.Survey)
                 {
-                    populateItemWithSurveys();
+                    PopulateItemWithSurveys();
                 }
                 if (itemType.ID == Data.ItemType.ItemTypeEnum.Blueprint)
                 {
-                    populateItemWithBlueprints();
+                    PopulateItemWithBlueprints();
                 }
 
                 // Blueprint-based item types: populate from blueprints whose BlueprintType.OutputItemType matches
@@ -509,7 +509,7 @@ namespace OE2EmpireTracker.Forms.Colony
                     itemType.ID == Data.ItemType.ItemTypeEnum.SpaceBuildPackage ||
                     itemType.ID == Data.ItemType.ItemTypeEnum.Share)
                 {
-                    populateItemWithBlueprintsByOutputType(itemType.ID);
+                    PopulateItemWithBlueprintsByOutputType(itemType.ID);
                 }
             }
         }
@@ -610,7 +610,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 item.Volume = GetItemVolume(item, playerContext);
 
                 colonyViewModel.AddItem(item);
-                populateItemGrid();
+                PopulateItemGrid();
             }
         }
 
@@ -631,7 +631,7 @@ namespace OE2EmpireTracker.Forms.Colony
                     // Manufactured items: read CargoVolumeSize from blueprint
                     if (!string.IsNullOrEmpty(item.BaseItemTypeID) && playerContext != null)
                     {
-                        Data.Blueprint bp = playerContext.findBlueprint(item.BaseItemTypeID);
+                        Data.Blueprint bp = playerContext.FindBlueprint(item.BaseItemTypeID);
                         if (bp != null)
                         {
                             double vol = 0;
@@ -643,7 +643,7 @@ namespace OE2EmpireTracker.Forms.Colony
             }
         }
 
-        private void populateItemGrid()
+        private void PopulateItemGrid()
         {
             // Populate item grid colonies items.
             dgvItems.Rows.Clear();
@@ -695,23 +695,23 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 if (itemType.ID == Data.ItemType.ItemTypeEnum.Resource)
                 {
-                    populateItemWithResources();
+                    PopulateItemWithResources();
                 }
                 if (itemType.ID == Data.ItemType.ItemTypeEnum.Commodity)
                 {
-                    populateItemWithCommodities();
+                    PopulateItemWithCommodities();
                 }
                 if (itemType.ID == Data.ItemType.ItemTypeEnum.WorkDetail)
                 {
-                    populateItemWithWorkerDetails();
+                    PopulateItemWithWorkerDetails();
                 }
                 if (itemType.ID == Data.ItemType.ItemTypeEnum.Survey)
                 {
-                    populateItemWithSurveys();
+                    PopulateItemWithSurveys();
                 }
                 if (itemType.ID == Data.ItemType.ItemTypeEnum.Blueprint)
                 {
-                    populateItemWithBlueprints();
+                    PopulateItemWithBlueprints();
                 }
                 if (itemType.ID == Data.ItemType.ItemTypeEnum.ShipPart ||
                     itemType.ID == Data.ItemType.ItemTypeEnum.ShipHull ||
@@ -720,13 +720,13 @@ namespace OE2EmpireTracker.Forms.Colony
                     itemType.ID == Data.ItemType.ItemTypeEnum.SpaceBuildPackage ||
                     itemType.ID == Data.ItemType.ItemTypeEnum.Share)
                 {
-                    populateItemWithBlueprintsByOutputType(itemType.ID);
+                    PopulateItemWithBlueprintsByOutputType(itemType.ID);
                 }
             }
             cmbItem.DroppedDown = true;
         }
 
-        public void populateItemWithBlueprints()
+        public void PopulateItemWithBlueprints()
         {
             string searchText = txtItemFilter.Text;
 
@@ -749,7 +749,7 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbItem.DisplayMember = "ExtendedName";
         }
 
-        public void populateItemWithBlueprintsByOutputType(Data.ItemType.ItemTypeEnum outputType)
+        public void PopulateItemWithBlueprintsByOutputType(Data.ItemType.ItemTypeEnum outputType)
         {
             string searchText = txtItemFilter.Text;
             string outputTypeName = outputType.ToString();
@@ -758,7 +758,7 @@ namespace OE2EmpireTracker.Forms.Colony
             foreach (Data.Blueprint bp in playerContext.blueprintList)
             {
                 if (bp.UUID == null) continue;
-                BlueprintType bpType = empireContext.findBlueprintType(bp.BluePrintType);
+                BlueprintType bpType = empireContext.FindBlueprintType(bp.BluePrintType);
                 if (bpType == null || bpType.OutputItemType != outputTypeName) continue;
                 filteredList.Add(bp);
             }
@@ -780,7 +780,7 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbItem.DisplayMember = "ExtendedName";
         }
 
-        public void populateItemWithSurveys()
+        public void PopulateItemWithSurveys()
         {
             string searchText = txtItemFilter.Text;
 
@@ -803,7 +803,7 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbItem.DisplayMember = "ExtendedName";
         }
 
-        public void populateItemWithWorkerDetails()
+        public void PopulateItemWithWorkerDetails()
         {
             string searchText = txtItemFilter.Text;
 
@@ -825,7 +825,7 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbItem.DisplayMember = "Name";
         }
 
-        public void populateItemWithCommodities()
+        public void PopulateItemWithCommodities()
         {
             string searchText = txtItemFilter.Text;
 
@@ -858,7 +858,7 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbItem.DisplayMember = "ExtendedName";
 
         }
-        public void populateItemWithResources()
+        public void PopulateItemWithResources()
         {
             string searchText = txtItemFilter.Text;
 
@@ -921,16 +921,16 @@ namespace OE2EmpireTracker.Forms.Colony
             int qty;
             int.TryParse(txtCommodityRequestQuantity.Text, out qty);
             colonyViewModel.AddCommodityRequest(commodity.Name, qty);
-            populateCommodityRequestGrid();
+            PopulateCommodityRequestGrid();
         }
 
         private void txtCommodityRequestFilter_TextChanged(object sender, EventArgs e)
         {
-            updateCommodityRequestList();
+            UpdateCommodityRequestList();
             cmbCommodityRequest.DroppedDown = true;
         }
 
-        private void updateCommodityRequestList()
+        private void UpdateCommodityRequestList()
         {
             string searchText = txtCommodityRequestFilter.Text;
 
@@ -952,7 +952,7 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbCommodityRequest.DisplayMember = "ExtendedName";
         }
 
-        private void populateCommodityRequestGrid()
+        private void PopulateCommodityRequestGrid()
         {
             dgvCommodityRequests.Rows.Clear();
             foreach (CommodityRequested request in colonyViewModel.GetCommodityRequests())
@@ -1021,7 +1021,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 if (request != null)
                     colonyViewModel.RemoveCommodityRequest(request);
             }
-            populateCommodityRequestGrid();
+            PopulateCommodityRequestGrid();
             e.Handled = true;
         }
 
@@ -1042,7 +1042,7 @@ namespace OE2EmpireTracker.Forms.Colony
                     if (locked > 0)
                     {
                         System.Windows.Forms.MessageBox.Show(
-                            $"Cannot delete '{item.ExtendedName}' — {locked} locked by structures.",
+                            $"Cannot delete '{item.ExtendedName}' â€” {locked} locked by structures.",
                             "Item Locked",
                             System.Windows.Forms.MessageBoxButtons.OK,
                             System.Windows.Forms.MessageBoxIcon.Warning);
@@ -1051,7 +1051,7 @@ namespace OE2EmpireTracker.Forms.Colony
                     colonyViewModel.RemoveItem(item.UUID);
                 }
             }
-            populateItemGrid();
+            PopulateItemGrid();
             e.Handled = true;
         }
 

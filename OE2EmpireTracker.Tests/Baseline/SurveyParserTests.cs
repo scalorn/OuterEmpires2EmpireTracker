@@ -187,14 +187,14 @@ namespace OE2EmpireTracker.Tests.Baseline
         }
 
         // -----------------------------------------------------------------------
-        // processHtml — SampleHtml (inline, no clipboard headers)
+        // ProcessHtml — SampleHtml (inline, no clipboard headers)
         // -----------------------------------------------------------------------
 
         [Test]
         public void ProcessHtml_SampleData_ExtractsDateTime()
         {
             var survey = new Survey();
-            _parser.processHtml(survey, SampleHtml);
+            _parser.ProcessHtml(survey, SampleHtml);
             Assert.AreEqual("27JUL24-11:44p", survey.DateTime);
         }
 
@@ -202,7 +202,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void ProcessHtml_SampleData_ExtractsScannedBy()
         {
             var survey = new Survey();
-            _parser.processHtml(survey, SampleHtml);
+            _parser.ProcessHtml(survey, SampleHtml);
             Assert.AreEqual("Scalorn Scorpus", survey.ScannedBy);
         }
 
@@ -210,7 +210,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void ProcessHtml_SampleData_ExtractsKnownResources()
         {
             var survey = new Survey();
-            _parser.processHtml(survey, SampleHtml);
+            _parser.ProcessHtml(survey, SampleHtml);
 
             Assert.IsTrue(survey.Resources.ContainsKey("Post-Trans Metals"));
             Assert.IsTrue(survey.Resources.ContainsKey("Heavy Trans-Metals"));
@@ -221,7 +221,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void ProcessHtml_SampleData_SkipsUnknownTrace()
         {
             var survey = new Survey();
-            _parser.processHtml(survey, SampleHtml);
+            _parser.ProcessHtml(survey, SampleHtml);
             Assert.IsFalse(survey.Resources.Keys.Any(k => k.Contains("Unknown")));
         }
 
@@ -229,7 +229,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void ProcessHtml_SampleData_PostTransMetals_CorrectValues()
         {
             var survey = new Survey();
-            _parser.processHtml(survey, SampleHtml);
+            _parser.ProcessHtml(survey, SampleHtml);
 
             var r = survey.Resources["Post-Trans Metals"];
             Assert.AreEqual("Low", r.Purity);
@@ -240,7 +240,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void ProcessHtml_SampleData_Lanthanides_CorrectValues()
         {
             var survey = new Survey();
-            _parser.processHtml(survey, SampleHtml);
+            _parser.ProcessHtml(survey, SampleHtml);
 
             var r = survey.Resources["Lanthanides"];
             Assert.AreEqual("High", r.Purity);
@@ -251,7 +251,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void ProcessHtml_SampleData_DuplicateHeavyTransMetals_LastAmountWins()
         {
             var survey = new Survey();
-            _parser.processHtml(survey, SampleHtml);
+            _parser.ProcessHtml(survey, SampleHtml);
 
             var r = survey.Resources["Heavy Trans-Metals"];
             Assert.AreEqual("High", r.Purity);
@@ -262,7 +262,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void ProcessHtml_EmptyHtml_DoesNotCrash()
         {
             var survey = new Survey();
-            _parser.processHtml(survey, "");
+            _parser.ProcessHtml(survey, "");
             Assert.AreEqual(0, survey.Resources.Count);
         }
 
@@ -270,7 +270,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void ProcessHtml_MalformedHtml_DoesNotCrash()
         {
             var survey = new Survey();
-            _parser.processHtml(survey, "<div>not a survey</div>");
+            _parser.ProcessHtml(survey, "<div>not a survey</div>");
             Assert.AreEqual(0, survey.Resources.Count);
         }
 
@@ -278,7 +278,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void ProcessHtml_NullHtml_DoesNotCrash()
         {
             var survey = new Survey();
-            Assert.DoesNotThrow(() => _parser.processHtml(survey, null));
+            Assert.DoesNotThrow(() => _parser.ProcessHtml(survey, null));
         }
 
         // -----------------------------------------------------------------------
@@ -290,7 +290,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             string clipboardData = LoadTestData("ZehVazoranIIM2.html");
             string html = ExtractFragment(clipboardData);
             var survey = new Survey();
-            _parser.processHtml(survey, html);
+            _parser.ProcessHtml(survey, html);
             return survey;
         }
 
@@ -363,7 +363,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             string clipboardData = LoadTestData("QuogarV2249II.html");
             string html = ExtractFragment(clipboardData);
             var survey = new Survey();
-            _parser.processHtml(survey, html);
+            _parser.ProcessHtml(survey, html);
             return survey;
         }
 

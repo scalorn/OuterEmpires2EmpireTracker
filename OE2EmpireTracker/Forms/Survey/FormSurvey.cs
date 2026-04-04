@@ -34,7 +34,7 @@ namespace OE2EmpireTracker.Forms.Survey
             // Configure scanner blueprint combo box
             cmbScannerBlueprint.DisplayMember = "ExtendedName";
             cmbScannerBlueprint.ValueMember = "UUID";
-            updateScannerBlueprintList();
+            UpdateScannerBlueprintList();
             cmbScannerBlueprint.SelectedIndex = -1;
 
             // Set up survey list view with columns
@@ -43,7 +43,7 @@ namespace OE2EmpireTracker.Forms.Survey
             lvwSurveys.Columns.Add("PlanetName", 100);
             lvwSurveys.Columns.Add("NickName", 100);
             lvwSurveys.Columns.Add("DateTime", 100);
-            populateListView(viewModel.GetFilteredSurveys(null));
+            PopulateListView(viewModel.GetFilteredSurveys(null));
 
             // Configure resource data grid
             DataGridViewComboBoxColumn cmbResource = (DataGridViewComboBoxColumn)dgvResources.Columns["Resource"];
@@ -57,7 +57,7 @@ namespace OE2EmpireTracker.Forms.Survey
             cmbPurity.DataSource = empireContext.bindingSourceResourcePurity;
         }
 
-        private void updateScannerBlueprintList()
+        private void UpdateScannerBlueprintList()
         {
             string searchText = txtFilterScannerBlueprint.Text;
             var filteredList = viewModel.GetFilteredScannerBlueprints(searchText);
@@ -67,7 +67,7 @@ namespace OE2EmpireTracker.Forms.Survey
             cmbScannerBlueprint.DataSource = filteredItemsBindingList;
         }
 
-        void populateListView(IReadOnlyList<OE2EmpireTracker.Baseline.Survey> surveys)
+        void PopulateListView(IReadOnlyList<OE2EmpireTracker.Baseline.Survey> surveys)
         {
             if (surveys == null) return;
 
@@ -145,12 +145,12 @@ namespace OE2EmpireTracker.Forms.Survey
 
             viewModel.Save();
 
-            populateListView(viewModel.GetFilteredSurveys(null));
+            PopulateListView(viewModel.GetFilteredSurveys(null));
             viewModel.Reset();
-            clearForm();
+            ClearForm();
         }
 
-        private void clearForm()
+        private void ClearForm()
         {
             viewModel.Reset();
 
@@ -173,9 +173,9 @@ namespace OE2EmpireTracker.Forms.Survey
             {
                 viewModel.Delete();
                 viewModel.Reset();
-                populateListView(viewModel.GetFilteredSurveys(null));
+                PopulateListView(viewModel.GetFilteredSurveys(null));
                 lvwSurveys.SelectedItems.Clear();
-                clearForm();
+                ClearForm();
             }
         }
 
@@ -191,19 +191,19 @@ namespace OE2EmpireTracker.Forms.Survey
             {
                 Log.Debug("Selected item = " + lvwSurveys.SelectedItems[0].SubItems[0].Text);
                 viewModel.SelectSurvey(lvwSurveys.SelectedItems[0].SubItems[0].Tag as OE2EmpireTracker.Baseline.Survey);
-                populateForm();
+                PopulateForm();
             }
         }
 
-        private void populateForm()
+        private void PopulateForm()
         {
             if (string.IsNullOrEmpty(viewModel.UUID)) return;
-            populateFormFromViewModel();
+            PopulateFormFromViewModel();
         }
 
         private void txtFilterScannerBlueprint_TextChanged(object sender, EventArgs e)
         {
-            updateScannerBlueprintList();
+            UpdateScannerBlueprintList();
             cmbScannerBlueprint.DroppedDown = true;
         }
 
@@ -241,14 +241,14 @@ namespace OE2EmpireTracker.Forms.Survey
         {
             SurveyParser parser = new SurveyParser();
             parser.processClipboard(viewModel.Data);
-            populateFormFromViewModel();
+            PopulateFormFromViewModel();
         }
 
         /// <summary>
         /// Populates form fields from the current viewModel state.
-        /// Unlike populateForm(), this does not require a UUID (works for unsaved/imported surveys).
+        /// Unlike PopulateForm(), this does not require a UUID (works for unsaved/imported surveys).
         /// </summary>
-        private void populateFormFromViewModel()
+        private void PopulateFormFromViewModel()
         {
             txtPlanetName.Text = viewModel.PlanetName ?? "";
             txtSurveyID.Text = viewModel.SurveyID ?? "";

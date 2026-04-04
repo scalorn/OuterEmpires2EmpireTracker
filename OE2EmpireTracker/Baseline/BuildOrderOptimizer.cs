@@ -61,7 +61,7 @@ namespace OE2EmpireTracker.Baseline
                     continue;
                 }
 
-                Blueprint bp = _playerContext.findBlueprint(structure.FlatpackBlueprintUUID);
+                Blueprint bp = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (bp != null && IsSupportStructure(bp))
                 {
                     supportPool.Add(structure);
@@ -82,7 +82,7 @@ namespace OE2EmpireTracker.Baseline
             foreach (var primary in primaryPool)
             {
                 // Simulate adding this primary structure
-                Blueprint primaryBp = _playerContext.findBlueprint(primary.FlatpackBlueprintUUID);
+                Blueprint primaryBp = _playerContext.FindBlueprint(primary.FlatpackBlueprintUUID);
                 ColonyStructureStatus afterPrimary = SimulateOneMore(runningStatus, primary, primaryBp, idealWorkers);
 
                 // Check for deficits and insert support structures to fix them
@@ -104,7 +104,7 @@ namespace OE2EmpireTracker.Baseline
                     result.Add(bestSupport);
 
                     // Update running status with the support structure
-                    Blueprint supportBp = _playerContext.findBlueprint(bestSupport.FlatpackBlueprintUUID);
+                    Blueprint supportBp = _playerContext.FindBlueprint(bestSupport.FlatpackBlueprintUUID);
                     runningStatus = SimulateOneMore(runningStatus, bestSupport, supportBp, idealWorkers);
 
                     // Re-simulate primary after adding support
@@ -131,7 +131,7 @@ namespace OE2EmpireTracker.Baseline
 
             foreach (var structure in structures)
             {
-                Blueprint bp = _playerContext.findBlueprint(structure.FlatpackBlueprintUUID);
+                Blueprint bp = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 ColonyStructureStatus current = new ColonyStructureStatus();
                 calculator.CalculateBuilt(structure, prev, current, workerSource, bp);
                 prev = current;
@@ -169,7 +169,7 @@ namespace OE2EmpireTracker.Baseline
 
             foreach (var candidate in supportPool)
             {
-                Blueprint bp = _playerContext.findBlueprint(candidate.FlatpackBlueprintUUID);
+                Blueprint bp = _playerContext.FindBlueprint(candidate.FlatpackBlueprintUUID);
                 if (bp == null) continue;
 
                 int score = 0;

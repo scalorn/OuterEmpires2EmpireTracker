@@ -104,3 +104,6 @@ Removed commented-out fields, assignments, structure creation, layout traces, an
 
 ## 31. Extract Shared ProgrammaticUpdateGuard (Rec 12b)
 Created `IProgrammaticUpdateSource` interface and shared `ProgrammaticUpdateGuard` class in Controls/ProgrammaticUpdateGuard.cs. ColonyStructure and FormColony implement the interface. Removed duplicated nested classes. Fixed typo throughout.
+
+## 32. Method Naming — camelCase → PascalCase (Rec 12d)
+Renamed all camelCase methods to PascalCase across the codebase. Covers form populate/update methods, context find/init methods, control helper methods, and data accessor methods. All callers updated across 15+ files. 465 tests passing.

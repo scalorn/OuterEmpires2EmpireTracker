@@ -95,7 +95,7 @@ namespace OE2EmpireTracker.ViewModels
 
         public string FlatpackBlueprintUUID => _structure.FlatpackBlueprintUUID;
 
-        public Blueprint Blueprint => _playerContext.findBlueprint(_structure.FlatpackBlueprintUUID);
+        public Blueprint Blueprint => _playerContext.FindBlueprint(_structure.FlatpackBlueprintUUID);
 
         public string BlueprintType => Blueprint?.BluePrintType ?? string.Empty;
 

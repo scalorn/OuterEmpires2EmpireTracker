@@ -79,12 +79,12 @@ namespace OE2EmpireTracker.ViewModels
         public Blueprint FindScannerBlueprint()
         {
             if (string.IsNullOrEmpty(_survey.ScannerBlueprintUUID)) return null;
-            return _playerContext.findBlueprint(_survey.ScannerBlueprintUUID);
+            return _playerContext.FindBlueprint(_survey.ScannerBlueprintUUID);
         }
 
         public IReadOnlyList<Blueprint> GetFilteredScannerBlueprints(string nameFilter)
         {
-            BlueprintType scanners = _empireContext.findBlueprintType("SystemObjectScanner");
+            BlueprintType scanners = _empireContext.FindBlueprintType("SystemObjectScanner");
             var list = _playerContext.blueprintList
                 .Where(b => b.BluePrintType == scanners.Id)
                 .ToList();

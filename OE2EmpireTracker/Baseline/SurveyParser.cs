@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace OE2EmpireTracker.Baseline
         /// Parses an HTML fragment from the game's survey clipboard data and populates
         /// the given Survey object with extracted data.
         /// </summary>
-        public void processHtml(Survey survey, string htmlFragment)
+        public void ProcessHtml(Survey survey, string htmlFragment)
         {
             try
             {
@@ -177,7 +177,7 @@ namespace OE2EmpireTracker.Baseline
                 Log.Info(output);
                 string html = OE2EmpireTracker.Forms.Blueprint.BlueprintScanner
                     .ExtractHtmlFragmentFromClipboardData(clipboardData);
-                processHtml(survey, html);
+                ProcessHtml(survey, html);
             }
         }
     }

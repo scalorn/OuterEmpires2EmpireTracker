@@ -55,7 +55,7 @@ namespace OE2EmpireTracker.Forms.Colony
             playerContext = EmpireContext.PlayerContext;
 
             this.SuspendLayout();
-            populateStats();
+            PopulateStats();
             this.ResumeLayout();
         }
 
@@ -64,7 +64,7 @@ namespace OE2EmpireTracker.Forms.Colony
             ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
 
             this.SuspendLayout();
-            FlatpackBlueprint = playerContext.findBlueprint(ColonyStructureData.FlatpackBlueprintUUID);
+            FlatpackBlueprint = playerContext.FindBlueprint(ColonyStructureData.FlatpackBlueprintUUID);
 
             if (FlatpackBlueprint != null)
             {
@@ -223,7 +223,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 }
             }
 
-            populateStats();
+            PopulateStats();
 
             this.ResumeLayout();
             guard.release();
@@ -279,7 +279,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 txtQuantity.Visible = false;
                 if (cmbSelection.Items.Count <= 1 || !string.IsNullOrEmpty(ColonyStructureData.MiningSurvey))
                 {
-                    populateSelectionWithSurveys();
+                    PopulateSelectionWithSurveys();
                     if (!string.IsNullOrEmpty(ColonyStructureData.MiningSurvey))
                     {
                         cmbSelection.SelectedValue = ColonyStructureData.MiningSurvey;
@@ -299,7 +299,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 flpSubSelection.Visible = true;
                 if (cmbSubSelection.Items.Count <= 1 || !string.IsNullOrEmpty(ColonyStructureData.MiningSurveyResource))
                 {
-                    populateSubSelectionWithSurveyResources();
+                    PopulateSubSelectionWithSurveyResources();
                     if (!string.IsNullOrEmpty(ColonyStructureData.MiningSurveyResource))
                     {
                         cmbSubSelection.SelectedValue = ColonyStructureData.MiningSurveyResource;
@@ -320,7 +320,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 txtCompletionTime.Text = ColonyStructureData.ProcessCompletionTime.TimeRemainingString;
 
                 // Show mining progress: "<Rate>/h <Resource> (<Purity>)"
-                populateProgressStatus();
+                PopulateProgressStatus();
 
                 if (timerCountdown.Enabled == false)
                 {
@@ -343,7 +343,7 @@ namespace OE2EmpireTracker.Forms.Colony
             ColonyStructure_Layout(null, null);
         }
 
-        private void populateProgressStatus()
+        private void PopulateProgressStatus()
         {
             if (ColonyStructureData.ProcessCompletionTime == null ||
                 string.IsNullOrEmpty(ColonyStructureData.MiningSurvey) ||
@@ -353,7 +353,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 return;
             }
 
-            Baseline.Survey survey = playerContext.findSurvey(ColonyStructureData.MiningSurvey);
+            Baseline.Survey survey = playerContext.FindSurvey(ColonyStructureData.MiningSurvey);
             if (survey == null || !survey.Resources.ContainsKey(ColonyStructureData.MiningSurveyResource))
             {
                 rtbProgressStatus.Text = "";
@@ -399,7 +399,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // Selection: unrefined resources from warehouse + actively mined resources
             flpSelection.Visible = true;
             txtQuantity.Visible = false;
-            populateSelectionWithUnrefinedResources();
+            PopulateSelectionWithUnrefinedResources();
             if (!string.IsNullOrEmpty(ColonyStructureData.RefiningResource))
             {
                 string restoreKey = ColonyStructureData.RefiningResource + "|" + ColonyStructureData.RefiningResourcePurity;
@@ -421,7 +421,7 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 flpCompletionTime.Visible = true;
                 txtCompletionTime.Text = ColonyStructureData.ProcessCompletionTime.TimeRemainingString;
-                populateRefineryProgressStatus();
+                PopulateRefineryProgressStatus();
                 if (timerCountdown.Enabled == false)
                 {
                     timerCountdown.Interval = 1000;
@@ -440,7 +440,7 @@ namespace OE2EmpireTracker.Forms.Colony
             ColonyStructure_Layout(null, null);
         }
 
-        private void populateSelectionWithUnrefinedResources()
+        private void PopulateSelectionWithUnrefinedResources()
         {
             string searchText = txtSelectionFilter.Text ?? "";
 
@@ -476,7 +476,7 @@ namespace OE2EmpireTracker.Forms.Colony
                         !string.IsNullOrEmpty(structure.MiningSurvey) &&
                         !string.IsNullOrEmpty(structure.MiningSurveyResource))
                     {
-                        Baseline.Survey survey = playerContext.findSurvey(structure.MiningSurvey);
+                        Baseline.Survey survey = playerContext.FindSurvey(structure.MiningSurvey);
                         if (survey != null && survey.Resources.ContainsKey(structure.MiningSurveyResource))
                         {
                             SurveyResource sr = survey.Resources[structure.MiningSurveyResource];
@@ -540,7 +540,7 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbSelection.SelectedIndex = -1;
         }
 
-        private void populateRefineryProgressStatus()
+        private void PopulateRefineryProgressStatus()
         {
             if (ColonyStructureData.ProcessCompletionTime == null ||
                 string.IsNullOrEmpty(ColonyStructureData.RefiningResource) ||
@@ -639,7 +639,7 @@ namespace OE2EmpireTracker.Forms.Colony
             txtQuantity.Visible = false;
             if (cmbSelection.Items.Count <= 1 || !string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID))
             {
-                populateSelectionWithResearchableBlueprints();
+                PopulateSelectionWithResearchableBlueprints();
                 if (!string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID))
                 {
                     cmbSelection.SelectedValue = ColonyStructureData.ResearchingBlueprintUUID;
@@ -655,7 +655,7 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 flpCompletionTime.Visible = true;
                 txtCompletionTime.Text = ColonyStructureData.ProcessCompletionTime.TimeRemainingString;
-                populateResearchLabProgressStatus();
+                PopulateResearchLabProgressStatus();
                 if (timerCountdown.Enabled == false)
                 {
                     timerCountdown.Interval = 1000;
@@ -674,7 +674,7 @@ namespace OE2EmpireTracker.Forms.Colony
             ColonyStructure_Layout(null, null);
         }
 
-        private void populateSelectionWithResearchableBlueprints()
+        private void PopulateSelectionWithResearchableBlueprints()
         {
             string searchText = txtSelectionFilter.Text ?? "";
 
@@ -711,7 +711,7 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbSelection.SelectedIndex = -1;
         }
 
-        private void populateResearchLabProgressStatus()
+        private void PopulateResearchLabProgressStatus()
         {
             if (ColonyStructureData.ProcessCompletionTime == null ||
                 string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID))
@@ -720,7 +720,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 return;
             }
 
-            Data.Blueprint bp = playerContext.findBlueprint(ColonyStructureData.ResearchingBlueprintUUID);
+            Data.Blueprint bp = playerContext.FindBlueprint(ColonyStructureData.ResearchingBlueprintUUID);
             if (bp == null)
             {
                 rtbProgressStatus.Text = "";
@@ -770,7 +770,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             // Selection: manufacturable blueprints
             flpSelection.Visible = true;
-            populateSelectionWithManufacturableBlueprints();
+            PopulateSelectionWithManufacturableBlueprints();
             if (!string.IsNullOrEmpty(ColonyStructureData.ManufacturingBlueprintUUID))
             {
                 cmbSelection.SelectedValue = ColonyStructureData.ManufacturingBlueprintUUID;
@@ -781,7 +781,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // Sub-selection: not used for manufactory
             flpSubSelection.Visible = false;
 
-            // Quantity input — only visible when a blueprint is selected
+            // Quantity input â€” only visible when a blueprint is selected
             txtQuantity.Visible = showCmdStart;
             txtQuantity.Enabled = !showCompletionTime;
             if (showCompletionTime && ColonyStructureData.ManufacturingQuantity > 0)
@@ -799,7 +799,7 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 flpCompletionTime.Visible = true;
                 txtCompletionTime.Text = ColonyStructureData.ProcessCompletionTime.TimeRemainingString;
-                populateManufactoryProgressStatus();
+                PopulateManufactoryProgressStatus();
                 if (timerCountdown.Enabled == false)
                 {
                     timerCountdown.Interval = 1000;
@@ -818,7 +818,7 @@ namespace OE2EmpireTracker.Forms.Colony
             ColonyStructure_Layout(null, null);
         }
 
-        private void populateSelectionWithManufacturableBlueprints()
+        private void PopulateSelectionWithManufacturableBlueprints()
         {
             string searchText = txtSelectionFilter.Text ?? "";
 
@@ -858,7 +858,7 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbSelection.SelectedIndex = -1;
         }
 
-        private void populateManufactoryProgressStatus()
+        private void PopulateManufactoryProgressStatus()
         {
             if (ColonyStructureData.ProcessCompletionTime == null ||
                 string.IsNullOrEmpty(ColonyStructureData.ManufacturingBlueprintUUID))
@@ -867,7 +867,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 return;
             }
 
-            Data.Blueprint bp = playerContext.findBlueprint(ColonyStructureData.ManufacturingBlueprintUUID);
+            Data.Blueprint bp = playerContext.FindBlueprint(ColonyStructureData.ManufacturingBlueprintUUID);
             if (bp == null)
             {
                 rtbProgressStatus.Text = "";
@@ -877,7 +877,7 @@ namespace OE2EmpireTracker.Forms.Colony
             rtbProgressStatus.Text = $"({ColonyStructureData.ManufacturingCompleted}/{ColonyStructureData.ManufacturingQuantity}) {bp.ExtendedName}";
         }
 
-        private void populateSelectionWithSurveys()
+        private void PopulateSelectionWithSurveys()
         {
             //cmbSelection.Items.Clear();
             string searchText = txtSelectionFilter.Text;
@@ -904,7 +904,7 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbSelection.SelectedIndex = -1;
         }
 
-        private void populateSubSelectionWithSurveyResources()
+        private void PopulateSubSelectionWithSurveyResources()
         {
             //cmbSubSelection.Items.Clear();
             string searchText = txtSubSelectionFilter.Text;
@@ -937,7 +937,7 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             if (ColonyStructureData == null) return false;
 
-            // Check this structure's actual status — the calculator determined availability
+            // Check this structure's actual status â€” the calculator determined availability
             // during its pass with locks cleared, so it's the authoritative answer
             ColonyStructureStatus status;
             if (ColonyStructureData.Statuses.TryGetValue("Actual", out status))
@@ -953,7 +953,7 @@ namespace OE2EmpireTracker.Forms.Colony
             return false;
         }
 
-        private void populateStats()
+        private void PopulateStats()
         {
             ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
 
@@ -975,13 +975,13 @@ namespace OE2EmpireTracker.Forms.Colony
                 ColonyStructureData.Statuses.TryGetValue("Actual", out ColonyStructureStatus status);
                 if (status != null)
                 {
-                    ColonyStatusCalculator.populateStatus(builder, status);
+                    ColonyStatusCalculator.PopulateStatus(builder, status);
                 }
                 ColonyStructureData.Statuses.TryGetValue("Ideal", out ColonyStructureStatus idealStatus);
                 if (idealStatus != null)
                 {
                     builder.Append("\n", Color.Black);
-                    ColonyStatusCalculator.populateStatus(builder, idealStatus);
+                    ColonyStatusCalculator.PopulateStatus(builder, idealStatus);
                 }
             }
 
@@ -1129,7 +1129,7 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 if (string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID)) return;
 
-                Data.Blueprint bp = playerContext.findBlueprint(ColonyStructureData.ResearchingBlueprintUUID);
+                Data.Blueprint bp = playerContext.FindBlueprint(ColonyStructureData.ResearchingBlueprintUUID);
                 if (bp == null) return;
 
                 long researchSeconds = ResearchTimeLookup.GetResearchTimeSeconds(bp.Evolution);
@@ -1146,7 +1146,7 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 if (string.IsNullOrEmpty(ColonyStructureData.ManufacturingBlueprintUUID)) return;
 
-                Data.Blueprint bp = playerContext.findBlueprint(ColonyStructureData.ManufacturingBlueprintUUID);
+                Data.Blueprint bp = playerContext.FindBlueprint(ColonyStructureData.ManufacturingBlueprintUUID);
                 if (bp == null) return;
 
                 // Parse manufacture time from blueprint properties

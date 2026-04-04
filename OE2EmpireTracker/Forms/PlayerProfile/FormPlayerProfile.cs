@@ -72,7 +72,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             lvwPlayerProfiles.Columns.Add("Name", 200);
             lvwPlayerProfiles.Columns.Add("Faction", 200);
 
-            populateListView();
+            PopulateListView();
             PopulateForm();
         }
 
@@ -100,28 +100,28 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 entry.Value.Checked = viewModel.GetSkillGroup(entry.Key);
             }
 
-            updateSkillBlock(pskHumanResources, SkillName.HumanResources);
-            updateSkillBlock(pskForeman, SkillName.Foreman);
-            updateSkillBlock(pskFounder, SkillName.Founder);
-            updateSkillBlock(pskEnergyEfficiency, SkillName.EnergyEfficiency);
-            updateSkillBlock(pskBuilder, SkillName.Builder);
-            updateSkillBlock(pskRefiningFocus, SkillName.RefiningFocus);
-            updateSkillBlock(pskProductionFocus, SkillName.ProductionFocus);
-            updateSkillBlock(pskExtractionFocus, SkillName.ExtractionFocus);
-            updateSkillBlock(pskDamageControl, SkillName.DamageControl);
-            updateSkillBlock(pskEngineeringCapacity, SkillName.EngineeringCapacity);
-            updateSkillBlock(pskSoundAsAPound, SkillName.SoundsAsAPound);
-            updateSkillBlock(pskSelfMadeMillionaire, SkillName.SelfMadeMillionaire);
-            updateSkillBlock(pskAAAHealthcare, SkillName.AAAHealthcare);
-            updateSkillBlock(pskJobOpportunities, SkillName.JobOpportunities);
-            updateSkillBlock(pskContractManagement, SkillName.ContractManagement);
-            updateSkillBlock(pskResearchReview, SkillName.ResearchReview);
-            updateSkillBlock(pskResearchMethods, SkillName.ResearchMethods);
-            updateSkillBlock(pskResearchFocus, SkillName.ResearchFocus);
-            updateSkillBlock(pskSurveyingMethods, SkillName.SurveyingMethods);
-            updateSkillBlock(pskScanningMethods, SkillName.ScanningMethods);
-            updateSkillBlock(pskQuartermaster, SkillName.Quartermaster);
-            updateSkillBlock(pskBroker, SkillName.Broker);
+            UpdateSkillBlock(pskHumanResources, SkillName.HumanResources);
+            UpdateSkillBlock(pskForeman, SkillName.Foreman);
+            UpdateSkillBlock(pskFounder, SkillName.Founder);
+            UpdateSkillBlock(pskEnergyEfficiency, SkillName.EnergyEfficiency);
+            UpdateSkillBlock(pskBuilder, SkillName.Builder);
+            UpdateSkillBlock(pskRefiningFocus, SkillName.RefiningFocus);
+            UpdateSkillBlock(pskProductionFocus, SkillName.ProductionFocus);
+            UpdateSkillBlock(pskExtractionFocus, SkillName.ExtractionFocus);
+            UpdateSkillBlock(pskDamageControl, SkillName.DamageControl);
+            UpdateSkillBlock(pskEngineeringCapacity, SkillName.EngineeringCapacity);
+            UpdateSkillBlock(pskSoundAsAPound, SkillName.SoundsAsAPound);
+            UpdateSkillBlock(pskSelfMadeMillionaire, SkillName.SelfMadeMillionaire);
+            UpdateSkillBlock(pskAAAHealthcare, SkillName.AAAHealthcare);
+            UpdateSkillBlock(pskJobOpportunities, SkillName.JobOpportunities);
+            UpdateSkillBlock(pskContractManagement, SkillName.ContractManagement);
+            UpdateSkillBlock(pskResearchReview, SkillName.ResearchReview);
+            UpdateSkillBlock(pskResearchMethods, SkillName.ResearchMethods);
+            UpdateSkillBlock(pskResearchFocus, SkillName.ResearchFocus);
+            UpdateSkillBlock(pskSurveyingMethods, SkillName.SurveyingMethods);
+            UpdateSkillBlock(pskScanningMethods, SkillName.ScanningMethods);
+            UpdateSkillBlock(pskQuartermaster, SkillName.Quartermaster);
+            UpdateSkillBlock(pskBroker, SkillName.Broker);
 
             bool isTraining = viewModel.IsAnySkillTraining();
             foreach (var skillBlockEntry in skillBlocks)
@@ -138,7 +138,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             skillBlock.TrainingStatusChanged += TrainingStatusChanged;
         }
 
-        private void updateSkillBlock(PlayerSkillBlock skillBlock, SkillName skill)
+        private void UpdateSkillBlock(PlayerSkillBlock skillBlock, SkillName skill)
         {
             skillBlock.PlayerSkill = viewModel.GetSkill(skill);
             skillBlock.PopulateForm();
@@ -209,7 +209,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             PopulateForm();
         }
 
-        private void populateListView(Data.PlayerProfile profileToSelect = null)
+        private void PopulateListView(Data.PlayerProfile profileToSelect = null)
         {
             var profiles = viewModel.GetFilteredProfiles(txtNameFilter.Text);
 
@@ -231,7 +231,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private void txtNameFilter_TextChanged(object sender, EventArgs e)
         {
-            populateListView();
+            PopulateListView();
         }
 
         private void lvwPlayerProfiles_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
@@ -263,7 +263,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             viewModel.MilitaryRank.NextXP = long.TryParse(txtMilitaryRankNextXP.Text, out var milNext) ? milNext : 0;
 
             viewModel.Save();
-            populateListView(viewModel.Data);
+            PopulateListView(viewModel.Data);
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
@@ -280,7 +280,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
             viewModel.Delete();
             viewModel.Reset();
-            populateListView();
+            PopulateListView();
             PopulateForm();
         }
 

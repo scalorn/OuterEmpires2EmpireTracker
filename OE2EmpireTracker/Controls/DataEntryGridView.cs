@@ -74,7 +74,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
     private bool handleBackwards(bool enableEdit)
     {
         int col = this.CurrentCell.ColumnIndex - 1;
-        col = findPreviousCell(col);
+        col = FindPreviousCell(col);
         if (col >= 0)
         {
             handleEditCell(this.CurrentCell.RowIndex, col, enableEdit);
@@ -84,7 +84,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
         {
             if (this.CurrentCell.RowIndex != 0)
             {
-                col = findPreviousCell(this.Columns.Count - 1);
+                col = FindPreviousCell(this.Columns.Count - 1);
                 Log.Debug("Backwards col = " + col);
                 if (col >= 0)
                 {
@@ -110,7 +110,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
     private bool handleForward(bool enableEdit)
     {
         int col = this.CurrentCell.ColumnIndex + 1;
-        col = findNextCell(col);
+        col = FindNextCell(col);
         if (col < this.Columns.Count)
         {
             handleEditCell(this.CurrentCell.RowIndex, col, enableEdit);
@@ -120,7 +120,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
         {
             if (this.CurrentCell.RowIndex != this.Rows.Count - 1)
             {
-                col = findNextCell(0);
+                col = FindNextCell(0);
                 if (col <= this.CurrentCell.ColumnIndex)
                 {
                     handleEditCell(this.CurrentCell.RowIndex + 1, col, enableEdit);
@@ -136,7 +136,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
         return false;
     }
 
-    private int findPreviousCell(int col)
+    private int FindPreviousCell(int col)
     {
         for (; col >= 0;
         col--)
@@ -149,7 +149,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
         return col;
     }
 
-    private int findNextCell(int col)
+    private int FindNextCell(int col)
     {
         for (; col < this.Columns.Count;
         col++)

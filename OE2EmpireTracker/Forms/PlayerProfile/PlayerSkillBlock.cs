@@ -1,4 +1,4 @@
-﻿using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

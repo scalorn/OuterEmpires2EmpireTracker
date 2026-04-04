@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
@@ -46,7 +46,7 @@ namespace OE2EmpireTracker.Data
                 }
                 if (ItemType == Data.ItemType.ItemTypeEnum.Survey)
                 {
-                    Survey survey = EmpireContext.PlayerContext?.findSurvey(BaseItemTypeID);
+                    Survey survey = EmpireContext.PlayerContext?.FindSurvey(BaseItemTypeID);
                     if (survey != null)
                     {
                         extendedName = $"{survey.PlanetName} ({survey.SurveyID})";
@@ -58,7 +58,7 @@ namespace OE2EmpireTracker.Data
                 }
                 if (ItemType == Data.ItemType.ItemTypeEnum.Blueprint)
                 {
-                    Blueprint blueprint = EmpireContext.PlayerContext?.findBlueprint(BaseItemTypeID);
+                    Blueprint blueprint = EmpireContext.PlayerContext?.FindBlueprint(BaseItemTypeID);
                     if (blueprint != null)
                     {
                         extendedName = "";
