@@ -588,6 +588,20 @@ namespace OE2EmpireTracker.Forms.Colony
         }
 
         /// <summary>
+        /// Normalizes time strings from blueprint properties to the format expected by
+        /// CountDownTime.TimeRemainingString (e.g. "9 hours" -> "9h", "30 minutes" -> "30m").
+        /// </summary>
+        private static string NormalizeTimeString(string timeStr)
+        {
+            if (string.IsNullOrEmpty(timeStr)) return timeStr;
+            timeStr = System.Text.RegularExpressions.Regex.Replace(timeStr, @"\s*hours?\s*", "h ", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            timeStr = System.Text.RegularExpressions.Regex.Replace(timeStr, @"\s*minutes?\s*", "m ", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            timeStr = System.Text.RegularExpressions.Regex.Replace(timeStr, @"\s*seconds?\s*", "s ", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            timeStr = System.Text.RegularExpressions.Regex.Replace(timeStr, @"\s*days?\s*", "d ", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            return timeStr.Trim();
+        }
+
+        /// <summary>
         /// Helper class for refinery resource selection combo box.
         /// </summary>
         private class RefinerySelectionItem
@@ -777,8 +791,8 @@ namespace OE2EmpireTracker.Forms.Colony
             // Sub-selection: not used for manufactory
             flpSubSelection.Visible = false;
 
-            // Quantity input
-            txtQuantity.Visible = true;
+            // Quantity input — only visible when a blueprint is selected
+            txtQuantity.Visible = showCmdStart;
             txtQuantity.Enabled = !showCompletionTime;
             if (string.IsNullOrEmpty(txtQuantity.Text) || !int.TryParse(txtQuantity.Text, out _))
             {
@@ -1143,10 +1157,13 @@ namespace OE2EmpireTracker.Forms.Colony
                 Data.Blueprint bp = playerContext.findBlueprint(ColonyStructureData.ManufacturingBlueprintUUID);
                 if (bp == null) return;
 
-                // Parse manufacture time from blueprint properties (format: "22h 0m", "9 hours", etc.)
+                // Parse manufacture time from blueprint properties
                 string mfgTimeStr;
                 bp.Properties.getString("ManufactureTime", null, out mfgTimeStr);
                 if (string.IsNullOrEmpty(mfgTimeStr)) return;
+
+                // Normalize time format: "9 hours" -> "9h", "30 minutes" -> "30m", etc.
+                mfgTimeStr = NormalizeTimeString(mfgTimeStr);
 
                 // Parse using CountDownTime's TimeRemainingString parser
                 CountDownTime tempTimer = new CountDownTime();
