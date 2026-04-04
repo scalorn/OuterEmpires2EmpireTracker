@@ -3,6 +3,7 @@ using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Data;
+using OE2EmpireTracker.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,7 +26,22 @@ namespace OE2EmpireTracker.Forms.Colony
         private PlayerContext playerContext;
         private int _isProgrammaticUpdate = 0;
         public Baseline.Colony Colony { get; set; }
-        public Baseline.ColonyStructure ColonyStructureData { get; set; }
+
+        private Baseline.ColonyStructure _colonyStructureData;
+        public Baseline.ColonyStructure ColonyStructureData
+        {
+            get => _colonyStructureData;
+            set
+            {
+                _colonyStructureData = value;
+                ViewModel = value != null
+                    ? new ColonyStructureViewModel(value, playerContext)
+                    : null;
+            }
+        }
+
+        public ColonyStructureViewModel ViewModel { get; private set; }
+
         private Data.Blueprint FlatpackBlueprint { get; set; }
         //private double PowerProvided { get; set; }
         //private double PowerRequired { get; set; }
@@ -91,28 +107,20 @@ namespace OE2EmpireTracker.Forms.Colony
 
             if (ColonyStructureData != null)
             {
-                bool built = false;
-                ColonyStructureData.Properties.getBoolean("Built", false, out built);
-                chkBuilt.Checked = built;
-                bool staged = false;
-                ColonyStructureData.Properties.getBoolean("Staged", false, out staged);
-                chkStaged.Checked = staged;
-                bool online = false;
-                ColonyStructureData.Properties.getBoolean("Online", false, out online);
-                chkOnline.Checked = online;
+                chkBuilt.Checked = ViewModel.IsBuilt;
+                chkStaged.Checked = ViewModel.IsStaged;
+                chkOnline.Checked = ViewModel.IsOnline;
 
                 int index = 1;
                 string key = "BlueCollar1";
 
-                while (ColonyStructureData.AssignedWorkers.ContainsKey(key))
+                while (ViewModel.WorkerKeyExists(key))
                 {
-                    bool blueCollarAssigned = false;
-                    ColonyStructureData.AssignedWorkers.getBoolean(key, false, out blueCollarAssigned);
                     checkControls[controlIndex].Visible = true;
                     checkControls[controlIndex].Enabled = true;
                     checkControls[controlIndex].Text = "Blue Collar";
                     checkControls[controlIndex].Tag = key;
-                    checkControls[controlIndex].Checked = blueCollarAssigned;
+                    checkControls[controlIndex].Checked = ViewModel.GetWorkerAssigned(key);
                     controlIndex++;
                     index++;
                     key = "BlueCollar" + index;
@@ -120,15 +128,13 @@ namespace OE2EmpireTracker.Forms.Colony
 
                 index = 1;
                 key = "WhiteCollar1";
-                while (ColonyStructureData.AssignedWorkers.ContainsKey(key))
+                while (ViewModel.WorkerKeyExists(key))
                 {
-                    bool whiteCollarAssigned = false;
-                    ColonyStructureData.AssignedWorkers.getBoolean(key, false, out whiteCollarAssigned);
                     checkControls[controlIndex].Visible = true;
                     checkControls[controlIndex].Enabled = true;
                     checkControls[controlIndex].Text = "White Collar";
                     checkControls[controlIndex].Tag = key;
-                    checkControls[controlIndex].Checked = whiteCollarAssigned;
+                    checkControls[controlIndex].Checked = ViewModel.GetWorkerAssigned(key);
                     controlIndex++;
                     index++;
                     key = "WhiteCollar" + index;
@@ -136,15 +142,13 @@ namespace OE2EmpireTracker.Forms.Colony
 
                 index = 1;
                 key = "Specialist1";
-                while (ColonyStructureData.AssignedWorkers.ContainsKey(key))
+                while (ViewModel.WorkerKeyExists(key))
                 {
-                    bool specialistAssigned = false;
-                    ColonyStructureData.AssignedWorkers.getBoolean(key, false, out specialistAssigned);
                     checkControls[controlIndex].Visible = true;
                     checkControls[controlIndex].Enabled = true;
                     checkControls[controlIndex].Text = "Specialist";
                     checkControls[controlIndex].Tag = key;
-                    checkControls[controlIndex].Checked = specialistAssigned;
+                    checkControls[controlIndex].Checked = ViewModel.GetWorkerAssigned(key);
                     controlIndex++;
                     index++;
                     key = "Specialist" + index;
@@ -196,26 +200,19 @@ namespace OE2EmpireTracker.Forms.Colony
                         hasAllWorkers = false;
                     }
                 }
-                if (staged)
+                if (ViewModel.IsStaged)
                 {
                     flpColonyStructure.BackColor = Color.Yellow;
                 }
-                else if (built)
+                else if (ViewModel.IsBuilt)
                 {
-                    if (online == false)
+                    if (!ViewModel.IsOnline)
                     {
                         flpColonyStructure.BackColor = Color.PaleVioletRed;
                     }
                     else
                     {
-                        if (hasAllWorkers)
-                        {
-                            flpColonyStructure.BackColor = Color.Green;
-                        }
-                        else
-                        {
-                            flpColonyStructure.BackColor = Color.LightGreen;
-                        }
+                        flpColonyStructure.BackColor = hasAllWorkers ? Color.Green : Color.LightGreen;
                     }
                 }
                 else
@@ -461,11 +458,8 @@ namespace OE2EmpireTracker.Forms.Colony
         private void chkWorkDetail1_CheckStateChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-
-            bool state = chkWorkDetail1.Checked;
             string prop = chkWorkDetail1.Tag as string;
-            ColonyStructureData.AssignedWorkers.setProperty(prop, state);
-
+            ViewModel.SetWorkerAssigned(prop, chkWorkDetail1.Checked);
             UpdateData();
             ColonyStructureDataChanged?.Invoke(this, e);
         }
@@ -473,11 +467,8 @@ namespace OE2EmpireTracker.Forms.Colony
         private void chkWorkDetail2_CheckStateChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-
-            bool state = chkWorkDetail2.Checked;
             string prop = chkWorkDetail2.Tag as string;
-            ColonyStructureData.AssignedWorkers.setProperty(prop, state);
-
+            ViewModel.SetWorkerAssigned(prop, chkWorkDetail2.Checked);
             UpdateData();
             ColonyStructureDataChanged?.Invoke(this, e);
         }
@@ -485,11 +476,8 @@ namespace OE2EmpireTracker.Forms.Colony
         private void chkWorkDetail3_CheckStateChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-
-            bool state = chkWorkDetail3.Checked;
             string prop = chkWorkDetail3.Tag as string;
-            ColonyStructureData.AssignedWorkers.setProperty(prop, state);
-
+            ViewModel.SetWorkerAssigned(prop, chkWorkDetail3.Checked);
             UpdateData();
             ColonyStructureDataChanged?.Invoke(this, e);
         }
@@ -497,19 +485,9 @@ namespace OE2EmpireTracker.Forms.Colony
         private void chkBuilt_CheckStateChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-
-            bool state = chkBuilt.Checked;
-            ColonyStructureData.Properties.setProperty("Built", state);
-
-            if (state == true)
-            {
-                chkStaged.Checked = false;
-            }
-            if (state == false)
-            {
-                chkOnline.Checked = false;
-            }
-
+            ViewModel.IsBuilt = chkBuilt.Checked;
+            if (chkBuilt.Checked) chkStaged.Checked = false;
+            else chkOnline.Checked = false;
             UpdateData();
             ColonyStructureDataChanged?.Invoke(this, e);
         }
@@ -517,15 +495,8 @@ namespace OE2EmpireTracker.Forms.Colony
         private void chkStaged_CheckStateChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-
-            bool state = chkStaged.Checked;
-            ColonyStructureData.Properties.setProperty("Staged", state);
-            if (state == true)
-            {
-                chkBuilt.Checked = false;
-                chkOnline.Checked = false;
-            }
-
+            ViewModel.IsStaged = chkStaged.Checked;
+            if (chkStaged.Checked) { chkBuilt.Checked = false; chkOnline.Checked = false; }
             UpdateData();
             ColonyStructureDataChanged?.Invoke(this, e);
         }
@@ -533,15 +504,8 @@ namespace OE2EmpireTracker.Forms.Colony
         private void chkOnline_CheckStateChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-
-            bool state = chkOnline.Checked;
-            ColonyStructureData.Properties.setProperty("Online", state);
-            if (state == true)
-            {
-                chkBuilt.Checked = true;
-                chkStaged.Checked = false;
-            }
-
+            ViewModel.IsOnline = chkOnline.Checked;
+            if (chkOnline.Checked) { chkBuilt.Checked = true; chkStaged.Checked = false; }
             UpdateData();
             ColonyStructureDataChanged?.Invoke(this, e);
         }
@@ -573,28 +537,22 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void cmdUp_Click(object sender, EventArgs e)
         {
-            if (Colony == null || ColonyStructureData == null) return;
-            int index = Colony.Structures.IndexOf(ColonyStructureData);
-            if (index <= 0) return;
-            Colony.Structures.RemoveAt(index);
-            Colony.Structures.Insert(index - 1, ColonyStructureData);
+            if (ViewModel == null || Colony == null) return;
+            ViewModel.MoveUp(Colony);
             ColonyStructureDataChanged?.Invoke(this, e);
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
-            if (Colony == null || ColonyStructureData == null) return;
-            Colony.Structures.Remove(ColonyStructureData);
+            if (ViewModel == null || Colony == null) return;
+            ViewModel.Delete(Colony);
             ColonyStructureDataChanged?.Invoke(this, e);
         }
 
         private void cmdDown_Click(object sender, EventArgs e)
         {
-            if (Colony == null || ColonyStructureData == null) return;
-            int index = Colony.Structures.IndexOf(ColonyStructureData);
-            if (index < 0 || index >= Colony.Structures.Count - 1) return;
-            Colony.Structures.RemoveAt(index);
-            Colony.Structures.Insert(index + 1, ColonyStructureData);
+            if (ViewModel == null || Colony == null) return;
+            ViewModel.MoveDown(Colony);
             ColonyStructureDataChanged?.Invoke(this, e);
         }
 

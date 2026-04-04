@@ -1,7 +1,8 @@
-﻿using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Data;
+using OE2EmpireTracker.ViewModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,8 +27,8 @@ namespace OE2EmpireTracker.Forms.Colony
         private int _isProgrammaticUpdate = 0;
 
         private Baseline.Colony selectedColony;
-        //private List<Baseline.ColonyStructure> colonyStructures = new List<Baseline.ColonyStructure>();
-        private ColonyStatusCalculator statusCalculator;
+        private ColonyViewModel colonyViewModel;
+        private ColonyStatusCalculator statusCalculator => colonyViewModel?.Calculator;
         public FormColony()
         {
             InitializeComponent();
@@ -45,9 +46,8 @@ namespace OE2EmpireTracker.Forms.Colony
             flpColonyStructure.Controls.Clear();
 
             selectedColony = new Baseline.Colony();
-            statusCalculator = new ColonyStatusCalculator(selectedColony);
-            statusCalculator.CalculateBuilt();
-            statusCalculator.CalculateIdeal();
+            colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
+            colonyViewModel.RecalculateStatus();
 
             //ColonyStructure colonyStructure = new ColonyStructure();
             //flpColonyStructure.Controls.Add(colonyStructure);
@@ -87,35 +87,26 @@ namespace OE2EmpireTracker.Forms.Colony
                 colony.UUID = myUuid.ToString();
             }
 
-            colony.PlanetName = txtPlanetName.Text;
-            colony.ColonyName = txtColonyName.Text;
-
-
-            if (playerContext.colonyList.Contains(colony) == false)
-            {
-                playerContext.colonyList.Add(colony);
-            }
-            playerContext.writeContext();
+            colonyViewModel.PlanetName = txtPlanetName.Text;
+            colonyViewModel.ColonyName = txtColonyName.Text;
+            colonyViewModel.Save();
         }
 
         private void cmdAddFlatpack_Click(object sender, EventArgs e)
         {
             this.SuspendLayout();
 
-            Baseline.ColonyStructure colonyStructureData = new Baseline.ColonyStructure();
-            colonyStructureData.UUID = Guid.NewGuid().ToString();
-            colonyStructureData.FlatpackBlueprintUUID = cmbFlatpacks.SelectedValue.ToString();
-            selectedColony.Structures.Add(colonyStructureData);
+            var structureViewModel = colonyViewModel.AddStructure(cmbFlatpacks.SelectedValue.ToString());
             ColonyStructure colonyStructureControl = new ColonyStructure();
             colonyStructureControl.Visible = false;
+            colonyStructureControl.ColonyStructureDataChanged -= structures_ColonyStructureDataChanged;
             colonyStructureControl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
             colonyStructureControl.Colony = selectedColony;
-            colonyStructureControl.ColonyStructureData = colonyStructureData;
+            colonyStructureControl.ColonyStructureData = structureViewModel.Data;
             colonyStructureControl.UpdateData();
             flpColonyStructure.Controls.Add(colonyStructureControl);
 
-            statusCalculator.CalculateBuilt();
-            statusCalculator.CalculateIdeal();
+            colonyViewModel.RecalculateStatus();
             colonyStructureControl.UpdateData();
 
             RtfBuilder builder = new RtfBuilder();
@@ -131,8 +122,7 @@ namespace OE2EmpireTracker.Forms.Colony
             ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
             this.SuspendLayout();
 
-            statusCalculator.CalculateBuilt();
-            statusCalculator.CalculateIdeal();
+            colonyViewModel.RecalculateStatus();
 
             flpColonyStructure.SuspendLayout();
 
@@ -170,7 +160,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 ColonyStructure ctrl;
                 if (!controlMap.TryGetValue(structure, out ctrl))
                 {
-                    // New structure — create a control for it
+                    // New structure � create a control for it
                     ctrl = new ColonyStructure();
                     ctrl.Colony = selectedColony;
                     ctrl.ColonyStructureData = structure;
@@ -271,6 +261,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 Debug.Print("Selected item = " + lvwColonies.SelectedItems[0].SubItems[0].Text);
                 Debug.Print("Selected item = " + lvwColonies.SelectedItems[0].SubItems[0].Tag);
                 selectedColony = lvwColonies.SelectedItems[0].SubItems[0].Tag as Baseline.Colony;
+                colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
                 populateForm();
             }
         }
@@ -344,8 +335,8 @@ namespace OE2EmpireTracker.Forms.Colony
             //cmbTechLevel.SelectedItem = empireContext.findTechLevel(selectedBlueprint.TechLevel);
             //cmbEvolution.SelectedItem = empireContext.findEvolution(selectedBlueprint.Evolution);
 
-            txtPlanetName.Text = selectedColony.PlanetName;
-            txtColonyName.Text = selectedColony.ColonyName;
+            txtPlanetName.Text = colonyViewModel.PlanetName;
+            txtColonyName.Text = colonyViewModel.ColonyName;
 
 
 
@@ -366,7 +357,7 @@ namespace OE2EmpireTracker.Forms.Colony
             }
             Debug.Print("populatForm: Hiding excess controls finished");
 
-            statusCalculator = new ColonyStatusCalculator(selectedColony);
+            colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
             //statusCalculator.CalculateBuilt();
 
             //flpColonyStructure.Visible = false;
@@ -416,8 +407,7 @@ namespace OE2EmpireTracker.Forms.Colony
             //flpColonyStructure.Visible = true;
 
             Debug.Print("populateForm: Calling CalculateBuilt started");
-            statusCalculator.CalculateBuilt();
-            statusCalculator.CalculateIdeal();
+            colonyViewModel.RecalculateStatus();
             Debug.Print("populateForm: Calling CalculateBuilt finished");
             Debug.Print("populateForm: Calling populateStatus started");
             RtfBuilder builder = new RtfBuilder();
@@ -616,7 +606,7 @@ namespace OE2EmpireTracker.Forms.Colony
                     item.Quantity = quantity;
                 }
 
-                selectedColony.Items.AddItem(item);
+                colonyViewModel.AddItem(item);
                 populateItemGrid();
             }
         }
@@ -625,7 +615,7 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             // Populate item grid colonies items.
             dgvItems.Rows.Clear();
-            foreach (KeyValuePair<string, Item> itemEntry in selectedColony.Items.Items)
+            foreach (KeyValuePair<string, Item> itemEntry in colonyViewModel.GetItems())
             {
                 dgvItems.Rows.Add();
                 DataGridViewRow row = dgvItems.Rows[dgvItems.RowCount - 2];
@@ -853,13 +843,10 @@ namespace OE2EmpireTracker.Forms.Colony
             Data.Commodity commodity = cmbCommodityRequest.SelectedItem as Data.Commodity;
             if (commodity == null || string.IsNullOrEmpty(commodity.ID)) return;
 
-            var request = new CommodityRequested
-            {
-                Name = commodity.Name,
-                Requested = int.Parse(txtCommodityRequestQuantity.Text),
-                Delivered = 0
-            };
-            selectedColony.Commodities.Add(request);
+            var request = colonyViewModel.AddCommodityRequest(commodity.Name);
+            int qty;
+            if (int.TryParse(txtCommodityRequestQuantity.Text, out qty))
+                request.Requested = qty;
             populateCommodityRequestGrid();
         }
 
@@ -894,7 +881,7 @@ namespace OE2EmpireTracker.Forms.Colony
         private void populateCommodityRequestGrid()
         {
             dgvCommodityRequests.Rows.Clear();
-            foreach (CommodityRequested request in selectedColony.Commodities)
+            foreach (CommodityRequested request in colonyViewModel.GetCommodityRequests())
             {
                 dgvCommodityRequests.Rows.Add();
                 DataGridViewRow row = dgvCommodityRequests.Rows[dgvCommodityRequests.RowCount - 2];
@@ -929,7 +916,7 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 CommodityRequested request = row.Tag as CommodityRequested;
                 if (request != null)
-                    selectedColony.Commodities.Remove(request);
+                    colonyViewModel.RemoveCommodityRequest(request);
             }
             populateCommodityRequestGrid();
             e.Handled = true;
@@ -944,7 +931,7 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 Item item = row.Tag as Item;
                 if (item != null)
-                    selectedColony.Items.Remove(item.UUID);
+                    colonyViewModel.RemoveItem(item.UUID);
             }
             populateItemGrid();
             e.Handled = true;

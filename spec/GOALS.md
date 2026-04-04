@@ -104,7 +104,54 @@
 - SurveyParser
 - Resource static data
 
-### 9. NLog Logging
+### 10. MVVM Pilot — FormColony and ColonyStructure
+**Status: Complete**
+
+**Goal:** Decouple UI from data by introducing lightweight ViewModels. FormColony and ColonyStructure are the pilot. No library dependencies — plain C# classes with methods the form calls from event handlers.
+
+**Breakdown:**
+
+#### Task 10.1 — ColonyStructureViewModel
+Wraps `Baseline.ColonyStructure` (the data class) to hide `PropertyBag` access:
+- `IsBuilt`, `IsStaged`, `IsOnline` — typed bool properties over `Properties.getBoolean/setProperty`
+- `GetWorkerAssigned(key)` / `SetWorkerAssigned(key, bool)` — over `AssignedWorkers`
+- `MiningSurvey`, `MiningSurveyResource`, `MiningLeftOvers`, `ProcessCompletionTime` — typed pass-through properties
+- `MoveUp(colony)`, `MoveDown(colony)`, `Delete(colony)` — structure list manipulation
+- `BlueprintType` — resolved from `FlatpackBlueprintUUID` via `PlayerContext`
+
+#### Task 10.2 — ColonyViewModel
+Wraps `Baseline.Colony` to hide direct list/bag manipulation:
+- `PlanetName`, `ColonyName` — typed string properties
+- `AddStructure(blueprintUUID)` — creates `ColonyStructure`, adds to list, returns `ColonyStructureViewModel`
+- `RecalculateStatus()` — runs `CalculateBuilt` and `CalculateIdeal`
+- `AddItem(itemType, baseID, ...)` — delegates to `Colony.Items`
+- `RemoveItem(uuid)` — delegates to `Colony.Items.Remove`
+- `AddCommodityRequest(commodityName)` — creates and adds `CommodityRequested`
+- `RemoveCommodityRequest(request)` — removes from list
+- `Save(playerContext)` — delegates to `playerContext.writeContext()`
+- `StructureViewModels` — `IReadOnlyList<ColonyStructureViewModel>` derived from `Colony.Structures`
+
+#### Task 10.3 — Update ColonyStructure UserControl
+- Replace all direct `ColonyStructureData.Properties.setProperty/getBoolean` calls with `ViewModel.IsBuilt` etc.
+- Replace all direct `ColonyStructureData.AssignedWorkers` calls with `ViewModel.GetWorkerAssigned/SetWorkerAssigned`
+- Replace `cmdUp/Down/Delete` direct list manipulation with `ViewModel.MoveUp/Down/Delete`
+- `ColonyStructureData` property remains for backward compat but all logic goes through ViewModel
+
+#### Task 10.4 — Update FormColony
+- Replace direct `Colony.Structures.Add`, `Colony.Items`, `Colony.Commodities` access with `ColonyViewModel` methods
+- Replace direct `colony.PlanetName/ColonyName` reads/writes with ViewModel properties
+- `structures_ColonyStructureDataChanged` calls `ViewModel.RecalculateStatus()`
+- `cmdSave_Click` calls `ViewModel.Save(playerContext)`
+
+**Files to create:**
+- `OE2EmpireTracker/ViewModels/ColonyStructureViewModel.cs`
+- `OE2EmpireTracker/ViewModels/ColonyViewModel.cs`
+
+**Files to modify:**
+- `OE2EmpireTracker/Forms/Colony/ColonyStructure.cs`
+- `OE2EmpireTracker/Forms/Colony/FormColony.cs`
+
+
 **Status: Pending implementation**
 
 - NLog.config added to project
