@@ -72,6 +72,7 @@
             this.btnSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.cmdImport = new System.Windows.Forms.Button();
             this.Resource = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.Purity = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.Amount = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -523,6 +524,7 @@
             this.flpCommands.Controls.Add(this.btnSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
             this.flpCommands.Controls.Add(this.btnCancel);
+            this.flpCommands.Controls.Add(this.cmdImport);
             this.flpCommands.Location = new System.Drawing.Point(2, 575);
             this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
             this.flpCommands.Name = "flpCommands";
@@ -558,6 +560,16 @@
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // cmdImport
+            // 
+            this.cmdImport.Location = new System.Drawing.Point(246, 3);
+            this.cmdImport.Name = "cmdImport";
+            this.cmdImport.Size = new System.Drawing.Size(75, 23);
+            this.cmdImport.TabIndex = 3;
+            this.cmdImport.Text = "Import";
+            this.cmdImport.UseVisualStyleBackColor = true;
+            this.cmdImport.Click += new System.EventHandler(this.cmdImport_Click);
             // 
             // Resource
             // 
@@ -656,6 +668,7 @@
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button cmdImport;
         private System.Windows.Forms.FlowLayoutPanel flpSurveyID;
         private System.Windows.Forms.Label lblSurveyID;
         private System.Windows.Forms.TextBox txtSurveyID;

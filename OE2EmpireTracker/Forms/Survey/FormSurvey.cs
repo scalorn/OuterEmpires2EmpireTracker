@@ -226,5 +226,12 @@ namespace OE2EmpireTracker.Forms.Survey
             updateScannerBlueprintList();
             cmbScannerBlueprint.DroppedDown = true;
         }
+
+        private void cmdImport_Click(object sender, EventArgs e)
+        {
+            SurveyParser parser = new SurveyParser();
+            parser.processClipboard(viewModel.Data);
+            populateForm();
+        }
     }
 }
