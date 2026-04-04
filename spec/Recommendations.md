@@ -12,22 +12,15 @@ Recommendation: decide which areas to instrument first — ColonyStatusCalculato
 
 ---
 
-## 2. ActualColonyStructureWorkers.IsUnassignedWorkerAvailable — stub implementation
-**Priority: Medium**
-The method currently returns `true` unconditionally with a TODO comment:
-> "Need to look into the colony's warehouse and verify there is a worker available with the given workerKey"
-
-This means unallocated worker counts are always treated as available regardless of actual colony inventory.
-Recommendation: implement using `Colony.Items.CountByType(WorkDetail, workerKey)` minus any locked quantity from `LockTracking`.
-**Needs approval: yes — locking model for workers needs to be confirmed.**
+## ~~2. ActualColonyStructureWorkers.IsUnassignedWorkerAvailable — stub implementation~~
+**Status: Complete**
+Implemented using `Colony.Items.CountByType(WorkDetail, workerKey)` minus `Colony.Locks.GetLockedQuantity()`. Returns true only when unlocked workers are available. Covered by 5 unit tests in ColonyStatusCalculatorTests.
 
 ---
 
-## 3. LockTracking — not yet wired into Colony
-**Priority: Medium**
-`LockTracking` is implemented and tested but not yet added to the `Colony` class or serialized. The `dgvItems` "Locked Amount" column is hardcoded to "0".
-Recommendation: add `LockTracking Locks { get; set; }` to `Colony`, wire `populateItemGrid` to show real locked quantities, and implement lock/unlock UI.
-**Needs approval: yes — UI design for locking workflow needed.**
+## ~~3. LockTracking — not yet wired into Colony~~
+**Status: Complete**
+`Colony.Locks` property exists and serializes. `populateItemGrid` in FormColony now shows real locked quantities via `colonyViewModel.Data.Locks.GetLockedQuantity()`.
 
 ---
 
@@ -39,11 +32,9 @@ Recommendation: implement as a method on `PlayerContext` or `EmpireContext` that
 
 ---
 
-## 5. ColonyStatusCalculator unit tests
-**Priority: Medium**
-`ColonyStatusCalculator` has no unit tests. It is the most complex calculation class in the project and has had multiple bugs fixed (entertainment/warehouse accumulator seeds, unallocated worker tracking).
-Recommendation: add tests using mock `IColonyStructureWorkers` implementations to verify resource accumulation, worker counting, and the actual vs ideal distinction without requiring a full `EmpireContext`.
-**Needs approval: no — can proceed when prioritised.**
+## ~~5. ColonyStatusCalculator unit tests~~
+**Status: Complete**
+34 tests added covering: power/habitation/food/entertainment/warehouse accumulation, online vs offline, previous status chaining, actual vs ideal workers, unallocated worker tracking with lock integration, null blueprint safety, combined scenarios, and all IColonyStructureWorkers implementations.
 
 ---
 

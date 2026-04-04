@@ -638,7 +638,10 @@ namespace OE2EmpireTracker.Forms.Colony
                 row.Cells[0].Tag = itemEntry.Value;
                 row.Cells[0].Value = itemEntry.Value.ItemType.ToString();
                 row.Cells[1].Value = itemEntry.Value.ExtendedName;
-                row.Cells[2].Value = "0"; // TODO: Implement locks.
+                int lockedQty = colonyViewModel.Data.Locks != null
+                    ? colonyViewModel.Data.Locks.GetLockedQuantity(itemEntry.Value.ItemType, itemEntry.Value.BaseItemTypeID)
+                    : 0;
+                row.Cells[2].Value = lockedQty;
                 row.Cells[3].Value = itemEntry.Value.Quantity;
             }
         }
