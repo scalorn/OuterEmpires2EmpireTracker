@@ -224,6 +224,7 @@
     <Compile Include="Data\PlayerProfileTests.cs" />
     <Compile Include="Data\PropertyBagTests.cs" />
     <Compile Include="Data\ResourceClassTests.cs" />
+    <Compile Include="Data\ResourceTests.cs" />
     <Compile Include="Data\ResourceGroupTests.cs" />
     <Compile Include="Data\ResourcePurityTests.cs" />
     <Compile Include="Data\WorkerDetailTests.cs" />

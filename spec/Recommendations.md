@@ -44,10 +44,9 @@ Added MessageBox.Show confirmation ("Delete profile '{name}'?") with Yes/No butt
 
 ---
 
-## 7. Resource static data — no unit tests
-**Priority: Low**
-`Resource.cs` follows the same static list pattern as `Commodity`, `ResourceGroup`, etc. but has no unit tests yet.
-**Needs approval: no — can proceed when prioritised.**
+## ~~7. Resource static data — no unit tests~~
+**Status: Complete**
+17 tests added: list integrity, enum coverage, no duplicates, alphabetical sort, map lookups, round-trip, ResourceGroup/ResourceClass validation, synthetic group verification.
 
 ---
 
