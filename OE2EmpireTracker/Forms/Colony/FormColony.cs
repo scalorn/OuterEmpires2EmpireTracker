@@ -91,6 +91,25 @@ namespace OE2EmpireTracker.Forms.Colony
             structures_ColonyStructureDataChanged(sender, e);
         }
 
+        private void cmdBootstrap_Click(object sender, EventArgs e)
+        {
+            if (selectedColony == null) return;
+            if (string.IsNullOrEmpty(selectedColony.PlanetName))
+            {
+                System.Windows.Forms.MessageBox.Show(
+                    "Set a planet name before bootstrapping.",
+                    "No Planet",
+                    System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxIcon.Warning);
+                return;
+            }
+
+            var bootstrap = new ColonyBootstrap(playerContext);
+            bootstrap.Bootstrap(selectedColony);
+
+            structures_ColonyStructureDataChanged(sender, e);
+        }
+
         private void cmdAddFlatpack_Click(object sender, EventArgs e)
         {
             this.SuspendLayout();

@@ -885,6 +885,7 @@
             this.cmdBootstrap.TabIndex = 9;
             this.cmdBootstrap.Text = "Bootstrap From Surveys";
             this.cmdBootstrap.UseVisualStyleBackColor = true;
+            this.cmdBootstrap.Click += new System.EventHandler(this.cmdBootstrap_Click);
             // 
             // cmdOptimize
             // 
