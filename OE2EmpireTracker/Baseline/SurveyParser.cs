@@ -8,11 +8,13 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using NLog;
 
 namespace OE2EmpireTracker.Baseline
 {
     public class SurveyParser
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Parses an HTML fragment from the game's survey clipboard data and populates
         /// the given Survey object with extracted data.
@@ -120,6 +122,8 @@ namespace OE2EmpireTracker.Baseline
             if (Clipboard.ContainsText(TextDataFormat.Html))
             {
                 string clipboardData = Clipboard.GetText(TextDataFormat.Html);
+                string output = $@"@""{clipboardData.Replace("\"", "\"\"")}""";
+                Log.Info(output);
                 string html = OE2EmpireTracker.Forms.Blueprint.BlueprintScanner
                     .ExtractHtmlFragmentFromClipboardData(clipboardData);
                 processHtml(survey, html);
