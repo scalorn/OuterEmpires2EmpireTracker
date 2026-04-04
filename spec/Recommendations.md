@@ -30,10 +30,15 @@ Implemented using `Colony.Items.CountByType(WorkDetail, workerKey)` minus `Colon
 ---
 
 ## 4. CountDownTime master list / active timers view
-**Priority: Low**
-A master sorted list of active `CountDownTime` instances was discussed. The recommended approach is a computed/transient view (Option 4) that scans all owners at runtime rather than persisting a separate list.
-Recommendation: implement as a method on `PlayerContext` or `EmpireContext` that yields all active `CountDownTime` instances sorted by `TimeRemaining`.
-**Needs approval: yes — where this view should live and how it should be surfaced in the UI.**
+**Priority: Medium — Major Feature**
+A master sorted list of active `CountDownTime` instances with UI, data locking, and a background processing thread. The `PlayerContext.ActiveCountdowns` property already provides the computed view, but the full feature requires:
+- A dedicated form/panel to display active timers sorted by time remaining
+- Background thread to tick timers and trigger processing (e.g. mining cycle completion)
+- Data locking to prevent concurrent modification during background processing
+- Integration with Colony.ProcessColony() for automated resource generation
+
+This is on par with the other large features (colony bootstrap, flatpack optimization, multi-player, commodity delivery) and should be planned as a full feature spec.
+**Needs approval: yes — should be specced as a feature before implementation.**
 
 ---
 
