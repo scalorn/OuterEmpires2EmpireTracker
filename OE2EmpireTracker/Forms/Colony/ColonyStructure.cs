@@ -931,7 +931,8 @@ namespace OE2EmpireTracker.Forms.Colony
 
                 ColonyStructureData.ProcessCompletionTime = new CountDownTime();
                 ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.Now;
-                ColonyStructureData.ProcessCompletionTime.StartRepeating(3600);
+                long secondsUntilNextHour = 3600 - (long)(DateTime.Now - DateTime.Now.Date.AddHours(DateTime.Now.Hour)).TotalSeconds;
+                ColonyStructureData.ProcessCompletionTime.StartRepeating(3600, secondsUntilNextHour);
                 timerCountdown.Interval = 1000;
                 timerCountdown.Start();
                 handleRefineryControls();
@@ -962,11 +963,10 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void cmdSubStart_Click(object sender, EventArgs e)
         {
-            // TODO: FIXME: This needs to be customized per type.
             ColonyStructureData.ProcessCompletionTime = new CountDownTime();
             ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.Now;
-            //ColonyStructureData.ProcessCompletionTime.TimeRemaining = 3600;
-            ColonyStructureData.ProcessCompletionTime.StartRepeating(3600);
+            long secondsUntilNextHour = 3600 - (long)(DateTime.Now - DateTime.Now.Date.AddHours(DateTime.Now.Hour)).TotalSeconds;
+            ColonyStructureData.ProcessCompletionTime.StartRepeating(3600, secondsUntilNextHour);
             timerCountdown.Interval = 1000;
             timerCountdown.Start();
             handleMiningRigControls();
