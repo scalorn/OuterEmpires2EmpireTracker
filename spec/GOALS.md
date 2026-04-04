@@ -275,11 +275,31 @@ Wraps `Baseline.Colony` to hide direct list/bag manipulation:
 - Combo always repopulates from current warehouse state
 - Structures tab switch triggers UpdateData on all visible structure controls
 
-### 18. Colony Form — Item Grid Editing
+### 18. Colony Form — Item Grid Editing & Validation
 **Status: Complete**
 
 - CellValueChanged handler on dgvItems writes edited quantity back to backing Item.Quantity
+- Amount column uses DataGridViewValidatedTextBoxColumn with NUMBER_VALIDATION
+- CellValidating prevents leaving cell with invalid value (red background, error icon)
+- Empty cells auto-fill to 0
+- Same validation applied to commodity request grid Amount column
 - Changes persist on save
+
+### 19. Colony Form — Blueprint-Based Item Types
+**Status: Complete**
+
+- Warehouse tab now supports all item types: ShipPart, ShipHull, Munition, Flatpack, SpaceBuildPackage, Share
+- Selecting a blueprint-based item type populates cmbItem with player blueprints filtered by BlueprintType.OutputItemType
+- Add button creates item with correct ItemType, BaseItemTypeID = blueprint UUID, Volume from CargoVolumeSize
+- Filter text works for blueprint-based types
+- Manufactured items stack (increment quantity) instead of creating separate entries
+
+### 20. Manufactory — Multi-Item Build Improvements
+**Status: Complete**
+
+- Done button completes one cycle only, keeps timer running for remaining items
+- Timer and controls only clear when ManufacturingCompleted reaches ManufacturingQuantity
+- Building 3 items requires 3 Done clicks
 
 ---
 
@@ -289,16 +309,18 @@ Wraps `Baseline.Colony` to hide direct list/bag manipulation:
 - SurveyParser implemented, tested, wired into FormSurvey
 - Refinery rig feature with synthetic resource support
 - Research laboratory feature
-- Manufactory feature
+- Manufactory feature with multi-item builds
 - Colony structure built+online gate applied
 - Mining rig UI improvements and top-of-hour alignment
 - Synthetic refining whole-unit consumption and per-unit thresholds
-- Item grid quantity editing
+- Item grid quantity editing with validation
+- Blueprint-based item types in warehouse
+- Commodity request grid validation
 - NLog logging added throughout codebase
 - Test data moved to external files
 - Delete confirmation dialog added to FormPlayerProfile
 - Resource static data unit tests added
 - BlueprintScanner ManufactureTime normalization
 - Tab switch refreshes structure controls
-- Multiple bug fixes (timer completion, item grid refresh, zero-quantity cleanup, combo restore keys)
+- Multiple bug fixes (timer completion, item grid refresh, zero-quantity cleanup, combo restore keys, item stacking)
 - 465 total tests, all passing
