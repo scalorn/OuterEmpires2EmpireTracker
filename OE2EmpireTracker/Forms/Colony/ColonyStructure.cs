@@ -305,6 +305,10 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 flpCompletionTime.Visible = true;
                 txtCompletionTime.Text = ColonyStructureData.ProcessCompletionTime.TimeRemainingString;
+
+                // Show mining progress: "<Rate>/h <Resource> (<Purity>)"
+                populateProgressStatus();
+
                 if (timerCountdown.Enabled == false)
                 {
                     timerCountdown.Interval = 1000;
@@ -314,6 +318,7 @@ namespace OE2EmpireTracker.Forms.Colony
             else
             {
                 flpCompletionTime.Visible = false;
+                rtbProgressStatus.Text = "";
             }
 
             guard.release();
@@ -323,6 +328,27 @@ namespace OE2EmpireTracker.Forms.Colony
             flpStructureCommands_Layout(null, null);
             flpStructureDetails_Layout(null, null);
             ColonyStructure_Layout(null, null);
+        }
+
+        private void populateProgressStatus()
+        {
+            if (ColonyStructureData.ProcessCompletionTime == null ||
+                string.IsNullOrEmpty(ColonyStructureData.MiningSurvey) ||
+                string.IsNullOrEmpty(ColonyStructureData.MiningSurveyResource))
+            {
+                rtbProgressStatus.Text = "";
+                return;
+            }
+
+            Baseline.Survey survey = playerContext.findSurvey(ColonyStructureData.MiningSurvey);
+            if (survey == null || !survey.Resources.ContainsKey(ColonyStructureData.MiningSurveyResource))
+            {
+                rtbProgressStatus.Text = "";
+                return;
+            }
+
+            SurveyResource resource = survey.Resources[ColonyStructureData.MiningSurveyResource];
+            rtbProgressStatus.Text = $"{resource.Amount}/h {resource.Resource} ({resource.Purity})";
         }
 
         private void populateSelectionWithSurveys()
