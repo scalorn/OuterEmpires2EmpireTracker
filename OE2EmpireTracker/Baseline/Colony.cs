@@ -20,12 +20,14 @@ namespace OE2EmpireTracker.Baseline
         public List<ColonyStructure> Structures { get; set; }
 
         public List<CommodityRequested> Commodities { get; set; }
+        public OE2EmpireTracker.Data.LockTracking Locks { get; set; }
 
         public Colony() : base()
         {
             Items = new ItemBag();
             Structures = new List<ColonyStructure>();
             Commodities = new List<CommodityRequested>();
+            Locks = new OE2EmpireTracker.Data.LockTracking();
         }
 
         public void ProcessColony()

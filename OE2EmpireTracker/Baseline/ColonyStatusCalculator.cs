@@ -88,7 +88,7 @@ namespace OE2EmpireTracker.Baseline
         /// </remarks>
         public void CalculateBuilt()
         {
-            var workers = new ActualColonyStructureWorkers();
+            var workers = new ActualColonyStructureWorkers(colony);
             ColonyStructureStatus previousStatus = new ColonyStructureStatus();
             Dictionary<string, int> StructureCounts = new Dictionary<string, int>();
 
@@ -294,17 +294,17 @@ namespace OE2EmpireTracker.Baseline
 
 
             int unallocatedWorkersAdded = 0;
-            if (needUnallocatedBlueCollar && !unallocatedBlueCollarPresent && workerSource.IsUnassignedWorkerAvailable("BlueCollar"))
+            if (needUnallocatedBlueCollar && !unallocatedBlueCollarPresent && workerSource.IsUnassignedWorkerAvailable("BlueCollarDetail"))
             {
                 unallocatedBlueCollarPresent = true;
                 unallocatedWorkersAdded++;
             }
-            if (needUnallocatedWhiteCollar && !unallocatedWhiteCollarPresent && workerSource.IsUnassignedWorkerAvailable("WhiteCollar"))
+            if (needUnallocatedWhiteCollar && !unallocatedWhiteCollarPresent && workerSource.IsUnassignedWorkerAvailable("WhiteCollarDetail"))
             {
                 unallocatedWhiteCollarPresent = true;
                 unallocatedWorkersAdded++;
             }
-            if (needUnallocatedSpecialist && !unallocatedSpecialistPresent && workerSource.IsUnassignedWorkerAvailable("Specialist"))
+            if (needUnallocatedSpecialist && !unallocatedSpecialistPresent && workerSource.IsUnassignedWorkerAvailable("SpecialistDetail"))
             {
                 unallocatedSpecialistPresent = true;
                 unallocatedWorkersAdded++;

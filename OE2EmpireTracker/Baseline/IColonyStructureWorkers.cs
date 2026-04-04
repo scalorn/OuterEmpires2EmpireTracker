@@ -31,6 +31,13 @@ namespace OE2EmpireTracker.Baseline
     /// </summary>
     public class ActualColonyStructureWorkers : IColonyStructureWorkers
     {
+        private readonly Colony _colony;
+
+        public ActualColonyStructureWorkers(Colony colony = null)
+        {
+            _colony = colony;
+        }
+
         public bool IsWorkerAssigned(ColonyStructure structure, string workerKey)
         {
             bool assigned = false;
@@ -55,8 +62,20 @@ namespace OE2EmpireTracker.Baseline
 
         public bool IsUnassignedWorkerAvailable(string workerKey)
         {
-            // TODO: FIXME: Need to look into the colony's warehouse and verify there is a worker available with the given workerKey (e.g., "BlueCollarDetail").
-            return true;
+            if (_colony == null) return true; // fallback when no colony context
+
+            int total = _colony.Items.CountByType(
+                OE2EmpireTracker.Data.ItemType.ItemTypeEnum.WorkDetail, workerKey);
+
+            // Subtract locked quantity if LockTracking is available
+            int locked = 0;
+            if (_colony.Locks != null)
+            {
+                locked = _colony.Locks.GetLockedQuantity(
+                    OE2EmpireTracker.Data.ItemType.ItemTypeEnum.WorkDetail, workerKey);
+            }
+
+            return (total - locked) > 0;
         }
     }
 

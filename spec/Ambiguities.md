@@ -70,9 +70,16 @@ Each item references the relevant requirement ID where one exists.
 
 ---
 
-### AMB-010 — ColonyStatusCalculator: IsUnassignedWorkerAvailable parameter is "BlueCollar" not "BlueCollarDetail"
-**Code behavior:** `IsUnassignedWorkerAvailable` is called with `"BlueCollar"`, `"WhiteCollar"`, `"Specialist"` — but the WorkerDetail IDs are `"BlueCollarDetail"`, `"WhiteCollarDetail"`, `"SpecialistDetail"`.  
-**Question:** When REQ-ARCH-062 is implemented (checking colony warehouse for available workers), which key should be used — the short form or the full WorkerDetail ID? This needs to be consistent.
+### AMB-010 — RESOLVED
+**Resolution:** An unassigned worker is a WorkDetail item sitting in the colony warehouse (ItemBag) that is unlocked (not locked by LockTracking). One unassigned worker of a given type supports all structures in the colony that need that type — it is not consumed per structure.
+
+`IsUnassignedWorkerAvailable(workerKey)` SHALL check whether the colony warehouse contains at least 1 unlocked WorkDetail item whose BaseItemTypeID equals the full WorkerDetail ID (e.g. `"BlueCollarDetail"`, `"WhiteCollarDetail"`, `"SpecialistDetail"`).
+
+The short-form keys `"BlueCollar"`, `"WhiteCollar"`, `"Specialist"` currently passed to `IsUnassignedWorkerAvailable` are incorrect and SHALL be changed to the full WorkerDetail IDs.
+
+When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar1, etc.), the corresponding WorkDetail item in the warehouse SHALL be locked via LockTracking using the structure's UUID as the process key.
+
+**Action:** IColonyStructureWorkers.cs updated. ColonyStatusCalculator call sites updated. REQ-ARCH-062 updated. Colony.md updated.
 
 ---
 
