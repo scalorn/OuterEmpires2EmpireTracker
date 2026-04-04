@@ -48,6 +48,7 @@
             this.cmbSubSelection = new System.Windows.Forms.ComboBox();
             this.cmdSubStart = new System.Windows.Forms.Button();
             this.flpCompletionTime = new System.Windows.Forms.FlowLayoutPanel();
+            this.rtbProgressStatus = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.txtCompletionTime = new System.Windows.Forms.TextBox();
             this.cmdDone = new System.Windows.Forms.Button();
@@ -59,7 +60,7 @@
             this.chkWorkDetail2 = new System.Windows.Forms.CheckBox();
             this.chkWorkDetail3 = new System.Windows.Forms.CheckBox();
             this.timerCountdown = new System.Windows.Forms.Timer(this.components);
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.txtQuantity = new System.Windows.Forms.TextBox();
             this.flpColonyStructure.SuspendLayout();
             this.flpMovement.SuspendLayout();
             this.flpStructureDetails.SuspendLayout();
@@ -169,6 +170,7 @@
             this.flpSelection.Controls.Add(this.lblSelection);
             this.flpSelection.Controls.Add(this.txtSelectionFilter);
             this.flpSelection.Controls.Add(this.cmbSelection);
+            this.flpSelection.Controls.Add(this.txtQuantity);
             this.flpSelection.Controls.Add(this.cmdStart);
             this.flpSelection.Location = new System.Drawing.Point(3, 3);
             this.flpSelection.Name = "flpSelection";
@@ -202,7 +204,7 @@
             // 
             // cmdStart
             // 
-            this.cmdStart.Location = new System.Drawing.Point(282, 3);
+            this.cmdStart.Location = new System.Drawing.Point(327, 3);
             this.cmdStart.Name = "cmdStart";
             this.cmdStart.Size = new System.Drawing.Size(39, 23);
             this.cmdStart.TabIndex = 1;
@@ -259,7 +261,7 @@
             // 
             // flpCompletionTime
             // 
-            this.flpCompletionTime.Controls.Add(this.richTextBox1);
+            this.flpCompletionTime.Controls.Add(this.rtbProgressStatus);
             this.flpCompletionTime.Controls.Add(this.label1);
             this.flpCompletionTime.Controls.Add(this.txtCompletionTime);
             this.flpCompletionTime.Controls.Add(this.cmdDone);
@@ -267,6 +269,18 @@
             this.flpCompletionTime.Name = "flpCompletionTime";
             this.flpCompletionTime.Size = new System.Drawing.Size(418, 29);
             this.flpCompletionTime.TabIndex = 4;
+            // 
+            // rtbProgressStatus
+            // 
+            this.rtbProgressStatus.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbProgressStatus.Location = new System.Drawing.Point(3, 3);
+            this.rtbProgressStatus.Name = "rtbProgressStatus";
+            this.rtbProgressStatus.ReadOnly = true;
+            this.rtbProgressStatus.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.rtbProgressStatus.Size = new System.Drawing.Size(131, 23);
+            this.rtbProgressStatus.TabIndex = 7;
+            this.rtbProgressStatus.Text = "[red]6[/red]/4";
+            this.rtbProgressStatus.WordWrap = false;
             // 
             // label1
             // 
@@ -306,6 +320,7 @@
             this.flpStructureStatus.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpStructureStatus.Location = new System.Drawing.Point(501, 3);
             this.flpStructureStatus.Name = "flpStructureStatus";
+            this.flpStructureStatus.AutoSize = true;
             this.flpStructureStatus.Size = new System.Drawing.Size(132, 138);
             this.flpStructureStatus.TabIndex = 2;
             this.flpStructureStatus.WrapContents = false;
@@ -374,17 +389,12 @@
             // 
             this.timerCountdown.Tick += new System.EventHandler(this.timerCountdown_Tick);
             // 
-            // richTextBox1
+            // txtQuantity
             // 
-            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox1.Location = new System.Drawing.Point(3, 3);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.ReadOnly = true;
-            this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox1.Size = new System.Drawing.Size(131, 23);
-            this.richTextBox1.TabIndex = 7;
-            this.richTextBox1.Text = "[red]6[/red]/4";
-            this.richTextBox1.WordWrap = false;
+            this.txtQuantity.Location = new System.Drawing.Point(282, 3);
+            this.txtQuantity.Name = "txtQuantity";
+            this.txtQuantity.Size = new System.Drawing.Size(39, 20);
+            this.txtQuantity.TabIndex = 5;
             // 
             // ColonyStructure
             // 
@@ -443,6 +453,7 @@
         private System.Windows.Forms.ComboBox cmbSubSelection;
         private System.Windows.Forms.Button cmdSubStart;
         private System.Windows.Forms.Timer timerCountdown;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox rtbProgressStatus;
+        private System.Windows.Forms.TextBox txtQuantity;
     }
 }
