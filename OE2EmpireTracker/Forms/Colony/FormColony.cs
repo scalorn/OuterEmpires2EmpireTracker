@@ -606,8 +606,40 @@ namespace OE2EmpireTracker.Forms.Colony
                     item.Quantity = quantity;
                 }
 
+                // Set volume based on item type
+                item.Volume = GetItemVolume(item, playerContext);
+
                 colonyViewModel.AddItem(item);
                 populateItemGrid();
+            }
+        }
+
+        private static double GetItemVolume(Data.Item item, PlayerContext playerContext)
+        {
+            switch (item.ItemType)
+            {
+                case Data.ItemType.ItemTypeEnum.Resource:
+                    return 1.0;
+                case Data.ItemType.ItemTypeEnum.Commodity:
+                    return 10.0;
+                case Data.ItemType.ItemTypeEnum.WorkDetail:
+                    return 40.0;
+                case Data.ItemType.ItemTypeEnum.Blueprint:
+                case Data.ItemType.ItemTypeEnum.Survey:
+                    return 0.0;
+                default:
+                    // Manufactured items: read CargoVolumeSize from blueprint
+                    if (!string.IsNullOrEmpty(item.BaseItemTypeID) && playerContext != null)
+                    {
+                        Data.Blueprint bp = playerContext.findBlueprint(item.BaseItemTypeID);
+                        if (bp != null)
+                        {
+                            double vol = 0;
+                            bp.Properties.getDouble("CargoVolumeSize", 0, out vol);
+                            return vol;
+                        }
+                    }
+                    return 0.0;
             }
         }
 

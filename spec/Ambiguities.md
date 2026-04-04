@@ -170,10 +170,14 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 
 ---
 
-### AMB-024 — Item.Volume: where does the volume value come from?
-**Context:** Item.Volume was added (REQ-DM-025) to support WarehouseRequired calculation. All existing items default to Volume=0, so WarehouseRequired will be 0 until volumes are populated.  
-**Question:** Where does the volume value for an item come from?
-- Is it stored in the blueprint's `CargoVolumeSize` property and should be copied to the item when it is added to the warehouse?
-- Is it a static lookup table per resource/commodity type?
-- Is it entered manually by the user?
-- Does it vary by item type (e.g. resources have volume, work details do not)?
+### AMB-024 — RESOLVED
+**Resolution:** Item volume by type:
+- Blueprint: 0
+- Survey: 0
+- Resource: 1
+- Commodity: 10
+- WorkDetail: 40
+- Manufactured items (Flatpack, ShipHull, ShipPart, etc.): from blueprint's CargoVolumeSize property
+
+Volume SHALL be set when an item is added to the warehouse.  
+**Action:** REQ-DM-025 updated. FormColony.cmdAdd_Click updated to set Volume on creation.
