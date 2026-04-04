@@ -791,7 +791,11 @@ namespace OE2EmpireTracker.Forms.Colony
             // Quantity input — only visible when a blueprint is selected
             txtQuantity.Visible = showCmdStart;
             txtQuantity.Enabled = !showCompletionTime;
-            if (string.IsNullOrEmpty(txtQuantity.Text) || !int.TryParse(txtQuantity.Text, out _))
+            if (showCompletionTime && ColonyStructureData.ManufacturingQuantity > 0)
+            {
+                txtQuantity.Text = ColonyStructureData.ManufacturingQuantity.ToString();
+            }
+            else if (string.IsNullOrEmpty(txtQuantity.Text) || !int.TryParse(txtQuantity.Text, out _))
             {
                 txtQuantity.Text = "1";
             }
