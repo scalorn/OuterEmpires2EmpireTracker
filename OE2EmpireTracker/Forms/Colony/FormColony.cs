@@ -169,6 +169,8 @@ namespace OE2EmpireTracker.Forms.Colony
             ColonyStatusCalculator.populateStatus(builder, statusCalculator.finalActualStatus);
             rtbStatus.Rtf = builder.ToRtf();
 
+            populateItemGrid();
+
             guard.release();
             this.ResumeLayout();
         }
