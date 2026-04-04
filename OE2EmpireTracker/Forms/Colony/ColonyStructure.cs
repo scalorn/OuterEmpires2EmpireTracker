@@ -1371,6 +1371,8 @@ namespace OE2EmpireTracker.Forms.Colony
                     flpStructureDetails.Height + flpStructureDetails.Margin.Vertical,
                     flpMovement.Height + flpMovement.Margin.Vertical),
                 flpStructureStatus.Height + flpStructureStatus.Margin.Vertical);
+            // Account for flpColonyStructure border (FixedSingle = 2px)
+            height += 2;
             if (this.Height != height)
             {
                 this.Size = new Size(this.Size.Width, height);
