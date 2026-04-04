@@ -286,6 +286,7 @@ namespace OE2EmpireTracker.Forms.Colony
             if (showSelection)
             {
                 flpSelection.Visible = true;
+                txtQuantity.Visible = false;
                 if (cmbSelection.Items.Count <= 1 || !string.IsNullOrEmpty(ColonyStructureData.MiningSurvey))
                 {
                     populateSelectionWithSurveys();
@@ -407,6 +408,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             // Selection: unrefined resources from warehouse + actively mined resources
             flpSelection.Visible = true;
+            txtQuantity.Visible = false;
             populateSelectionWithUnrefinedResources();
             if (!string.IsNullOrEmpty(ColonyStructureData.RefiningResource))
             {
@@ -630,6 +632,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             // Selection: researchable blueprints
             flpSelection.Visible = true;
+            txtQuantity.Visible = false;
             if (cmbSelection.Items.Count <= 1 || !string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID))
             {
                 populateSelectionWithResearchableBlueprints();
@@ -771,13 +774,15 @@ namespace OE2EmpireTracker.Forms.Colony
             txtSelectionFilter.Enabled = enableCmbSelection;
             cmbSelection.Enabled = enableCmbSelection;
 
-            // Sub-selection: quantity input
-            flpSubSelection.Visible = true;
-            txtSubSelectionFilter.Enabled = !showCompletionTime;
-            cmbSubSelection.Visible = false;
-            if (string.IsNullOrEmpty(txtSubSelectionFilter.Text) || !int.TryParse(txtSubSelectionFilter.Text, out _))
+            // Sub-selection: not used for manufactory
+            flpSubSelection.Visible = false;
+
+            // Quantity input
+            txtQuantity.Visible = true;
+            txtQuantity.Enabled = !showCompletionTime;
+            if (string.IsNullOrEmpty(txtQuantity.Text) || !int.TryParse(txtQuantity.Text, out _))
             {
-                txtSubSelectionFilter.Text = "1";
+                txtQuantity.Text = "1";
             }
             cmdStart.Visible = showCmdStart && !showCompletionTime;
             cmdSubStart.Visible = false;
@@ -1149,9 +1154,9 @@ namespace OE2EmpireTracker.Forms.Colony
                 long mfgSeconds = tempTimer.TimeRemaining;
                 if (mfgSeconds <= 0) return;
 
-                // Parse quantity from txtSubSelectionFilter (reused as quantity input)
+                // Parse quantity from txtQuantity
                 int qty = 1;
-                int.TryParse(txtSubSelectionFilter.Text, out qty);
+                int.TryParse(txtQuantity.Text, out qty);
                 if (qty <= 0) qty = 1;
 
                 ColonyStructureData.ManufacturingQuantity = qty;
