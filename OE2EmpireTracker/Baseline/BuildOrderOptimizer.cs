@@ -1,4 +1,5 @@
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Data;
 using System;
 using System.Collections.Generic;
@@ -83,12 +84,21 @@ namespace OE2EmpireTracker.Baseline
                 ColonyStructureStatus afterPrimary = SimulateOneMore(runningStatus, primary, primaryBp, idealWorkers);
 
                 // Check for deficits and insert support structures to fix them
-                while (HasDeficit(afterPrimary) && supportPool.Count > 0)
+                while (HasDeficit(afterPrimary))
                 {
                     ColonyStructure bestSupport = FindBestSupport(supportPool, afterPrimary, idealWorkers, runningStatus);
-                    if (bestSupport == null) break; // No support can help
 
-                    supportPool.Remove(bestSupport);
+                    if (bestSupport != null)
+                    {
+                        supportPool.Remove(bestSupport);
+                    }
+                    else
+                    {
+                        // No existing support structure can help — create one from player blueprints
+                        bestSupport = CreateSupportStructure(afterPrimary);
+                        if (bestSupport == null) break; // No blueprint available
+                    }
+
                     result.Add(bestSupport);
 
                     // Update running status with the support structure
@@ -188,6 +198,50 @@ namespace OE2EmpireTracker.Baseline
             }
 
             return best;
+        }
+
+        /// <summary>
+        /// Creates a new support structure from player blueprints to address the deficit.
+        /// Returns null if no suitable blueprint is available.
+        /// </summary>
+        private ColonyStructure CreateSupportStructure(ColonyStructureStatus afterPrimary)
+        {
+            // Determine which deficit to address (priority order)
+            string[] deficitProperties;
+            if (afterPrimary.PowerRequired > afterPrimary.PowerProvided)
+                deficitProperties = new[] { "PowerProvided" };
+            else if (afterPrimary.HabitationRequired > afterPrimary.HabitationProvision)
+                deficitProperties = new[] { "HabitationProvision" };
+            else if (afterPrimary.FoodRequired > afterPrimary.FoodProvision)
+                deficitProperties = new[] { "FoodProvision" };
+            else if (afterPrimary.EntertainmentRequired > afterPrimary.EntertainmentProvided)
+                deficitProperties = new[] { "EntertainmentProvided" };
+            else
+                return null;
+
+            // Find a player blueprint that provides this resource
+            foreach (var bp in _playerContext.blueprintList)
+            {
+                if (bp.UUID == null) continue;
+                if (!bp.BluePrintType.IsFlatpack()) continue;
+
+                double val;
+                foreach (string prop in deficitProperties)
+                {
+                    if (bp.Properties.getDouble(prop, 0, out val) && val > 0)
+                    {
+                        Log.Info("Auto-creating support structure: {0} (provides {1})", bp.ExtendedName, prop);
+                        return new ColonyStructure
+                        {
+                            UUID = System.Guid.NewGuid().ToString(),
+                            FlatpackBlueprintUUID = bp.UUID
+                        };
+                    }
+                }
+            }
+
+            Log.Warn("No player blueprint found to address deficit");
+            return null;
         }
     }
 }
