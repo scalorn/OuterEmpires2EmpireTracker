@@ -87,7 +87,7 @@
             this.ItemType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Item = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LockedAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Amount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Amount = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.chkGlobalBlueprint = new System.Windows.Forms.CheckBox();
             this.cmdSave = new System.Windows.Forms.Button();
@@ -753,6 +753,7 @@
             // 
             this.Amount.HeaderText = "Amount";
             this.Amount.Name = "Amount";
+            this.Amount.ValidationPattern = OE2EmpireTracker.Controls.ValidatedTextBox.NUMBER_VALIDATION;
             // 
             // flpCommands
             // 
@@ -895,7 +896,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ItemType;
         private System.Windows.Forms.DataGridViewTextBoxColumn Item;
         private System.Windows.Forms.DataGridViewTextBoxColumn LockedAmount;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Amount;
+        private OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn Amount;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
         private System.Windows.Forms.CheckBox chkGlobalBlueprint;
         private System.Windows.Forms.Button cmdSave;
