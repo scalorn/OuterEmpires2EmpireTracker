@@ -843,10 +843,9 @@ namespace OE2EmpireTracker.Forms.Colony
             Data.Commodity commodity = cmbCommodityRequest.SelectedItem as Data.Commodity;
             if (commodity == null || string.IsNullOrEmpty(commodity.ID)) return;
 
-            var request = colonyViewModel.AddCommodityRequest(commodity.Name);
             int qty;
-            if (int.TryParse(txtCommodityRequestQuantity.Text, out qty))
-                request.Requested = qty;
+            int.TryParse(txtCommodityRequestQuantity.Text, out qty);
+            colonyViewModel.AddCommodityRequest(commodity.Name, qty);
             populateCommodityRequestGrid();
         }
 

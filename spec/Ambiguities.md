@@ -132,10 +132,9 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 
 ---
 
-### AMB-018 — ColonyViewModel.AddCommodityRequest ignores the Requested quantity
-**Code behavior:** `ColonyViewModel.AddCommodityRequest(commodityName)` creates a request with `Requested=0`. The form then sets `request.Requested = qty` directly on the returned object — bypassing the ViewModel.  
-**Spec (REQ-COL-091):** All Colony.Commodities manipulation SHALL go through ColonyViewModel.  
-**Question:** Should `AddCommodityRequest` accept a quantity parameter, or should there be a separate `SetRequestedQuantity(request, qty)` method on the ViewModel?
+### AMB-018 — RESOLVED
+**Resolution:** The Requested quantity SHALL be specified when adding a commodity request (from the quantity field). Existing requests SHALL be editable in-place via the grid (CellValueChanged already handles this). The ViewModel's AddCommodityRequest SHALL accept the quantity so the form doesn't bypass it.  
+**Action:** ColonyViewModel.AddCommodityRequest updated to accept quantity. Colony.md updated.
 
 ---
 

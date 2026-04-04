@@ -92,12 +92,12 @@ namespace OE2EmpireTracker.ViewModels
         // Commodity request management
         // -----------------------------------------------------------------------
 
-        public CommodityRequested AddCommodityRequest(string commodityName)
+        public CommodityRequested AddCommodityRequest(string commodityName, int requested = 0)
         {
             var request = new CommodityRequested
             {
                 Name = commodityName,
-                Requested = 0,
+                Requested = requested,
                 Delivered = 0
             };
             _colony.Commodities.Add(request);
