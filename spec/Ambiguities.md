@@ -211,9 +211,9 @@ Volume SHALL be set when an item is added to the warehouse.
 
 ---
 
-### AMB-027 — Colony.Locks added but not serialized in writeContext
-**Context:** AMB-010 added `Colony.Locks` (LockTracking) to the Colony class and it's initialized in the constructor. However, `PlayerRoot` (the serialization root in PlayerContext) does not include `Locks` — it serializes `Colony[]` which will include `Locks` via Newtonsoft auto-serialization of public properties. But the `LockTrackingJsonConverter` needs to be verified against the actual round-trip.  
-**Question:** Has the Colony → JSON → Colony round-trip been tested with the new `Locks` field? If `Locks` is empty on load (no existing data), does it deserialize correctly as an empty `LockTracking` or as null?
+### AMB-027 — RESOLVED
+**Resolution:** `Colony.Locks` (LockTracking) was added to the Colony class and initializes correctly. It serializes via `LockTrackingJsonConverter` — an empty `LockTracking` serializes as `{}` and deserializes back to an empty instance. However, nothing currently writes to `Locks` — the worker assignment UI does not call `LockItem` or `ClearLocksForProcess` when workers are assigned/unassigned. This is expected: REQ-ARCH-062b and REQ-ARCH-062c specify the locking behavior but are listed as future work. The `Locks` field is a correctly wired placeholder waiting for the locking UI to be implemented.  
+**Action:** No code change needed. Locking UI is tracked under REQ-ARCH-062b/c.
 
 ---
 
