@@ -173,9 +173,9 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 
 ---
 
-### AMB-023 — Data locking between UI and background processing
-**Overall.md:** "Need to be able to lock the colony between the form and background processing."  
-**Question:** Is background processing currently running on a separate thread? If so, what is the threading model — timer-based on the UI thread, or a background Task? The locking strategy depends on this.
+### AMB-023 — RESOLVED
+**Resolution:** There is no background processing currently. All processing (Colony.ProcessColony, etc.) runs on the UI thread triggered by user actions. Background processing is a future feature. When implemented, a data locking strategy will need to be designed to prevent concurrent modification between the UI and background processing. This is deferred until the feature is prioritized.  
+**Action:** No code change. Noted as future work.
 
 
 ---
@@ -195,14 +195,6 @@ Volume SHALL be set when an item is added to the warehouse.
 
 ---
 
-### AMB-025 — PlayerData.json migration: Item.ItemType integer values
-**Context:** Adding `[JsonConverter(typeof(StringEnumConverter))]` to `Item.ItemType` (AMB-022) means new saves will write `"ItemType": "Survey"` but existing `PlayerData.json` files contain integer values (e.g. `"ItemType": 9`). Newtonsoft's `StringEnumConverter` cannot deserialize integers — these items will fail to load and ItemType will default to `None`.
-
-**Confirmed affected values in current PlayerData.json:**
-- `9` = Survey
-- `7` = Blueprint
-
-**Question:** How should existing data be migrated?
-- Option A: Write a one-time migration that reads the old file, converts integer ItemType values to strings, and writes it back before the converter change takes effect.
-- Option B: Use a custom converter that accepts both integer and string forms during deserialization (tolerant reader), writing only strings on save.
-- Option C: Accept data loss — the existing test data can be re-entered manually since it is not production data.
+### AMB-025 — RESOLVED
+**Resolution:** Option C — accept data loss. The existing PlayerData.json test data will be updated manually by the user. No migration code needed.  
+**Action:** No code change.
