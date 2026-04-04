@@ -197,15 +197,36 @@ namespace OE2EmpireTracker.Forms.Survey
         private void populateForm()
         {
             if (string.IsNullOrEmpty(viewModel.UUID)) return;
+            populateFormFromViewModel();
+        }
 
-            txtPlanetName.Text = viewModel.PlanetName;
-            txtSurveyID.Text = viewModel.SurveyID;
-            txtNickName.Text = viewModel.NickName;
-            txtScannedBy.Text = viewModel.ScannedBy;
-            txtScanDateTime.Text = viewModel.DateTime;
-            txtSensorAbundance.Text = viewModel.SensorAbundance;
-            txtPurityModifier.Text = viewModel.PurityModifier;
-            txtScanLevel.Text = viewModel.ScanLevel;
+        private void txtFilterScannerBlueprint_TextChanged(object sender, EventArgs e)
+        {
+            updateScannerBlueprintList();
+            cmbScannerBlueprint.DroppedDown = true;
+        }
+
+        private void cmdImport_Click(object sender, EventArgs e)
+        {
+            SurveyParser parser = new SurveyParser();
+            parser.processClipboard(viewModel.Data);
+            populateFormFromViewModel();
+        }
+
+        /// <summary>
+        /// Populates form fields from the current viewModel state.
+        /// Unlike populateForm(), this does not require a UUID (works for unsaved/imported surveys).
+        /// </summary>
+        private void populateFormFromViewModel()
+        {
+            txtPlanetName.Text = viewModel.PlanetName ?? "";
+            txtSurveyID.Text = viewModel.SurveyID ?? "";
+            txtNickName.Text = viewModel.NickName ?? "";
+            txtScannedBy.Text = viewModel.ScannedBy ?? "";
+            txtScanDateTime.Text = viewModel.DateTime ?? "";
+            txtSensorAbundance.Text = viewModel.SensorAbundance ?? "";
+            txtPurityModifier.Text = viewModel.PurityModifier ?? "";
+            txtScanLevel.Text = viewModel.ScanLevel ?? "";
 
             txtFilterScannerBlueprint.Text = "";
             cmbScannerBlueprint.SelectedItem = viewModel.FindScannerBlueprint();
@@ -219,19 +240,6 @@ namespace OE2EmpireTracker.Forms.Survey
                 row.Cells[1].Value = resource.Value.Purity;
                 row.Cells[2].Value = resource.Value.Amount;
             }
-        }
-
-        private void txtFilterScannerBlueprint_TextChanged(object sender, EventArgs e)
-        {
-            updateScannerBlueprintList();
-            cmbScannerBlueprint.DroppedDown = true;
-        }
-
-        private void cmdImport_Click(object sender, EventArgs e)
-        {
-            SurveyParser parser = new SurveyParser();
-            parser.processClipboard(viewModel.Data);
-            populateForm();
         }
     }
 }
