@@ -97,10 +97,12 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 
 ## Colony Status Calculation
 
-### AMB-013 — What does "worker count" mean for Required calculations?
-**Code behavior:** `HabitationRequired`, `FoodRequired`, and `EntertainmentRequired` are each incremented by `ColonyWorkers.Count + unallocatedWorkersAdded` per structure. This means a colony with 3 structures each having 2 workers would have Required = 6 per resource, not 2.  
-**Spec (REQ-COL-017):** Says "worker counts SHALL contribute to HabitationRequired, FoodRequired, and EntertainmentRequired" — but does not specify whether this is per-structure or cumulative.  
-**Question:** Is the current cumulative behavior correct? Or should Required be the total number of workers in the colony (not summed per structure)?
+### AMB-013 — RESOLVED
+**Resolution:** The current implementation is correct:
+- Each structure's assigned workers (BlueCollar1, WhiteCollar1, etc.) are counted in a local `ColonyWorkers` list per structure. The count is added to HabitationRequired, FoodRequired, and EntertainmentRequired for that structure only.
+- Unallocated workers (UnassignedBlueCollarDetail etc.) are tracked via `unallocatedBlueCollarPresent` which propagates through `prevStatus`. The first structure that needs an unallocated worker of a given type adds 1; subsequent structures that also need it see it is already present and do not add again.
+
+**Action:** REQ-COL-017 updated to document this behavior precisely.
 
 ---
 

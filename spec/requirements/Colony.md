@@ -18,9 +18,10 @@
 **REQ-COL-014** WarehouseRequired accumulator SHALL be seeded from the previous structure's WarehouseRequired (not WarehouseCapacity).  
 **REQ-COL-015** Power, Habitation, Entertainment, and Warehouse resources SHALL only be counted when the structure is Online.  
 **REQ-COL-016** Food provision SHALL be counted regardless of Online status.  
-**REQ-COL-017** Worker counts (BlueCollar, WhiteCollar, Specialist) SHALL contribute to HabitationRequired, FoodRequired, and EntertainmentRequired.  
+**REQ-COL-017** Each structure's assigned workers SHALL contribute their count to HabitationRequired, FoodRequired, and EntertainmentRequired for that structure's status entry. A structure with 2 assigned workers adds 2 to each of those required values.  
+**REQ-COL-017b** Unallocated workers (UnassignedBlueCollarDetail, UnassignedWhiteCollarDetail, UnassignedSpecialistDetail) are counted once per colony per type. The first structure in the list that requires an unallocated worker of a given type adds 1 to the required values. Subsequent structures that also require the same unallocated worker type do not add again — the `UnallocatedXxxPresent` flag propagates through the status chain to prevent double-counting.  
 **REQ-COL-017a** WarehouseRequired SHALL be calculated as the sum of `item.Quantity * item.Volume` across all items in the colony's ItemBag. This value is independent of structure order and SHALL be set on the final status only.  
-**REQ-COL-018** Unallocated worker types (UnassignedBlueCollarDetail etc.) SHALL be counted once per colony, not once per structure.  
+**REQ-COL-018** Unallocated worker types (UnassignedBlueCollarDetail etc.) SHALL be counted once per colony, not once per structure — superseded by REQ-COL-017b.  
 **REQ-COL-019** IColonyStructureWorkers.ActualColonyStructureWorkers SHALL read worker state from the structure's AssignedWorkers PropertyBag.  
 **REQ-COL-020** IColonyStructureWorkers.IdealColonyStructureWorkers SHALL return true for all worker slots, return Built=true/Staged=false/Online=true for structure state, and be a no-op for SetWorkerAssigned.
 
