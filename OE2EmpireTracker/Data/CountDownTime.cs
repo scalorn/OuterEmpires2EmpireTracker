@@ -114,36 +114,31 @@ namespace OE2EmpireTracker.Data
 
                 var timeSpan = TimeSpan.FromSeconds(seconds);
                 string timeString = string.Empty;
+                bool started = false;
 
                 if (timeSpan.Days > 0)
                 {
                     timeString = $"{timeSpan.Days}d";
+                    started = true;
                 }
 
-                if (timeSpan.Hours > 0)
+                if (started || timeSpan.Hours > 0)
                 {
-                    if (timeString.Length > 0)
-                    {
-                        timeString += " ";
-                    }
+                    if (timeString.Length > 0) timeString += " ";
                     timeString += $"{timeSpan.Hours}h";
+                    started = true;
                 }
 
-                if (timeSpan.Minutes > 0)
+                if (started || timeSpan.Minutes > 0)
                 {
-                    if (timeString.Length > 0)
-                    {
-                        timeString += " ";
-                    }
+                    if (timeString.Length > 0) timeString += " ";
                     timeString += $"{timeSpan.Minutes}m";
+                    started = true;
                 }
 
-                if (timeSpan.Seconds > 0)
+                if (started || timeSpan.Seconds > 0)
                 {
-                    if (timeString.Length > 0)
-                    {
-                        timeString += " ";
-                    }
+                    if (timeString.Length > 0) timeString += " ";
                     timeString += $"{timeSpan.Seconds}s";
                 }
 

@@ -13,9 +13,9 @@ Each item references the relevant requirement ID where one exists.
 
 ---
 
-### AMB-002 — CountDownTime: TimeRemainingString omits segments with value zero, but spec says "omitting zero-value segments"
-**Code behavior:** Hours, minutes, and seconds segments are only included when their value is > 0. So "1h 0m 30s" would display as "1h 30s".  
-**Question:** Is this the intended behavior, or should intermediate zero segments always be shown (e.g. "1h 0m 30s")?
+### AMB-002 — RESOLVED
+**Resolution:** Once the highest non-zero segment has been included, all lower segments SHALL be shown even if their value is zero. Leading zero segments (before the first non-zero segment) are still omitted. Example: `1h 0m 30s` shows `0m`; `30m 0s` shows `0s`.  
+**Action:** REQ-DM-052 updated. Code fixed in CountDownTime.cs.
 
 ---
 
