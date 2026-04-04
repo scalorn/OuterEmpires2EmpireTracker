@@ -109,7 +109,7 @@ namespace OE2EmpireTracker.Data
                 long seconds = TimeRemaining;
                 if (seconds <= 0)
                 {
-                    return string.Empty;
+                    return "0s";
                 }
 
                 var timeSpan = TimeSpan.FromSeconds(seconds);

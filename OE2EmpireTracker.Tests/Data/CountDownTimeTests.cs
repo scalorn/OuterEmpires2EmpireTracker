@@ -115,6 +115,14 @@ namespace OE2EmpireTracker.Tests.Data
         }
 
         [Test]
+        public void TimeRemainingString_Expired_ReturnsZeroSeconds()
+        {
+            var cdt = new CountDownTime();
+            cdt.EndTime = DateTime.Now.AddSeconds(-10); // already expired
+            Assert.AreEqual("0s", cdt.TimeRemainingString);
+        }
+
+        [Test]
         public void TimeRemainingString_OnlySeconds_WhenLessThanOneMinute()
         {
             var cdt = new CountDownTime();

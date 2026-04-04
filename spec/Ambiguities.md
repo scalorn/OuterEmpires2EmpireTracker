@@ -7,10 +7,9 @@ Each item references the relevant requirement ID where one exists.
 
 ## Data Model
 
-### AMB-001 — CountDownTime: TimeRemainingString returns empty when time has expired
-**Code behavior:** `TimeRemainingString` getter returns `string.Empty` when `TimeRemaining <= 0`.  
-**Spec (REQ-DM-052):** Says "format as Xd Yh Zm Ws omitting zero-value segments" — does not address the expired case.  
-**Question:** When the countdown has expired (TimeRemaining <= 0), should TimeRemainingString return empty string, "0s", or something else?
+### AMB-001 — RESOLVED
+**Resolution:** When the countdown has expired (TimeRemaining <= 0), TimeRemainingString SHALL return `"0s"`.  
+**Action:** REQ-DM-052 updated. Code fixed in CountDownTime.cs.
 
 ---
 

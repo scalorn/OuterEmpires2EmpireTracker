@@ -49,7 +49,7 @@
 
 **REQ-DM-050** CountDownTime.TimeRemaining getter SHALL return the number of seconds until EndTime from now.  
 **REQ-DM-051** CountDownTime.TimeRemaining setter SHALL set EndTime to now + the given seconds.  
-**REQ-DM-052** CountDownTime.TimeRemainingString getter SHALL format as `Xd Yh Zm Ws` omitting zero-value segments.  
+**REQ-DM-052** CountDownTime.TimeRemainingString getter SHALL format as `Xd Yh Zm Ws` omitting zero-value segments. When TimeRemaining <= 0 it SHALL return `"0s"`.  
 **REQ-DM-053** CountDownTime.TimeRemainingString setter SHALL parse `Xd Yh Zm Ws` (all segments optional) and set TimeRemaining to the total seconds.  
 **REQ-DM-054** CountDownTime.TimeRemaining SHALL be decorated with [JsonIgnore].  
 **REQ-DM-055** CountDownTime in repeating mode SHALL track IntervalsPassed as the number of complete intervals elapsed since StartTime.  
