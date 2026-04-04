@@ -33,6 +33,8 @@ namespace OE2EmpireTracker.Baseline
 
         public void ProcessColony()
         {
+            var pendingRefineries = new List<ColonyStructure>();
+
             foreach (ColonyStructure structure in Structures)
             {
                 if (structure.ProcessCompletionTime != null &&
@@ -80,13 +82,20 @@ namespace OE2EmpireTracker.Baseline
                     }
                     else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Refinery)
                     {
-                        ProcessRefinery(structure);
+                        pendingRefineries.Add(structure);
                     }
                     else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
                     {
                         ProcessResearchLab(structure);
                     }
                 }
+            }
+
+            // Process refineries in tier order: normal (0) first, then S1 (1), then S2 (2)
+            foreach (var structure in pendingRefineries.OrderBy(s =>
+                RefiningRecipes.GetTier(s.RefiningResource, s.RefiningResourcePurity)))
+            {
+                ProcessRefinery(structure);
             }
         }
 
@@ -96,6 +105,21 @@ namespace OE2EmpireTracker.Baseline
                 string.IsNullOrEmpty(structure.RefiningResourcePurity))
                 return;
 
+            // Check for synthetic recipe
+            var recipe = RefiningRecipes.FindByInput(structure.RefiningResource, structure.RefiningResourcePurity);
+
+            if (recipe != null)
+            {
+                ProcessSyntheticRefinery(structure, recipe);
+            }
+            else
+            {
+                ProcessNormalRefinery(structure);
+            }
+        }
+
+        private void ProcessNormalRefinery(ColonyStructure structure)
+        {
             int baseRate = 25;
             int outputMultiplier;
             switch (structure.RefiningResourcePurity)
@@ -106,12 +130,10 @@ namespace OE2EmpireTracker.Baseline
                 default: outputMultiplier = 1; break;
             }
 
-            // Find unrefined source in warehouse
             List<Item> sourceItems = Items.FindResource(structure.RefiningResource, structure.RefiningResourcePurity);
 
             while (structure.ProcessCompletionTime.IntervalsPassed > 0)
             {
-                // Determine how much unrefined resource is available
                 int available = 0;
                 Item sourceItem = null;
                 if (sourceItems.Count > 0)
@@ -127,17 +149,13 @@ namespace OE2EmpireTracker.Baseline
                     continue;
                 }
 
-                // Consume unrefined
                 sourceItem.Quantity -= consumed;
-
-                // Remove from warehouse if fully consumed
                 if (sourceItem.Quantity <= 0)
                 {
                     Items.Remove(sourceItem.UUID);
                     sourceItems.Remove(sourceItem);
                 }
 
-                // Produce refined
                 int produced = consumed * outputMultiplier;
                 List<Item> refinedItems = Items.FindResource(structure.RefiningResource, "Refined");
                 Item refinedItem;
@@ -158,6 +176,66 @@ namespace OE2EmpireTracker.Baseline
                     Items.AddItem(refinedItem);
                 }
                 refinedItem.Quantity += produced;
+
+                structure.ProcessCompletionTime.ConsumeIntervals(1);
+            }
+        }
+
+        private void ProcessSyntheticRefinery(ColonyStructure structure, RefiningRecipe recipe)
+        {
+            List<Item> sourceItems = Items.FindResource(recipe.InputResource, recipe.InputPurity);
+
+            while (structure.ProcessCompletionTime.IntervalsPassed > 0)
+            {
+                int available = 0;
+                Item sourceItem = null;
+                if (sourceItems.Count > 0)
+                {
+                    sourceItem = sourceItems[0];
+                    available = sourceItem.Quantity;
+                }
+
+                int consumed = Math.Min(recipe.ConsumeRate, available);
+                if (consumed <= 0)
+                {
+                    structure.ProcessCompletionTime.ConsumeIntervals(1);
+                    continue;
+                }
+
+                sourceItem.Quantity -= consumed;
+                if (sourceItem.Quantity <= 0)
+                {
+                    Items.Remove(sourceItem.UUID);
+                    sourceItems.Remove(sourceItem);
+                }
+
+                // Produce proportional output (partial batches produce proportionally)
+                int produced = (consumed == recipe.ConsumeRate)
+                    ? recipe.ProduceRate
+                    : (int)Math.Floor((double)consumed / recipe.ConsumeRate * recipe.ProduceRate);
+
+                if (produced > 0)
+                {
+                    List<Item> outputItems = Items.FindResource(recipe.OutputResource, "Refined");
+                    Item outputItem;
+                    if (outputItems.Count > 0)
+                    {
+                        outputItem = outputItems[0];
+                    }
+                    else
+                    {
+                        outputItem = new Item();
+                        outputItem.UUID = Guid.NewGuid().ToString();
+                        outputItem.ItemType = ItemType.ItemTypeEnum.Resource;
+                        outputItem.BaseItemTypeID = recipe.OutputResource;
+                        outputItem.Name = recipe.OutputResource;
+                        outputItem.ResourcePurity = "Refined";
+                        outputItem.Volume = 1;
+                        outputItem.Quantity = 0;
+                        Items.AddItem(outputItem);
+                    }
+                    outputItem.Quantity += produced;
+                }
 
                 structure.ProcessCompletionTime.ConsumeIntervals(1);
             }

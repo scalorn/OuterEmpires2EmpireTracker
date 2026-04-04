@@ -500,6 +500,28 @@ namespace OE2EmpireTracker.Forms.Colony
                 }
             }
 
+            // Add synthetic recipes whose input resources are available in warehouse
+            foreach (var recipe in RefiningRecipes.Recipes)
+            {
+                var inputItems = Colony.Items.FindResource(recipe.InputResource, recipe.InputPurity);
+                bool hasInput = inputItems.Any(i => i.Quantity > 0);
+
+                if (hasInput)
+                {
+                    string key = recipe.InputResource + "|" + recipe.InputPurity + "|S" + recipe.Tier;
+                    if (!unrefinedItems.Any(u => u.Key == key))
+                    {
+                        unrefinedItems.Add(new RefinerySelectionItem
+                        {
+                            Key = key,
+                            DisplayName = $"{recipe.OutputResource} <- {recipe.InputResource} ({recipe.InputPurity})",
+                            ResourceName = recipe.InputResource,
+                            Purity = recipe.InputPurity
+                        });
+                    }
+                }
+            }
+
             // Filter by search text
             if (!string.IsNullOrEmpty(searchText))
             {
@@ -527,9 +549,20 @@ namespace OE2EmpireTracker.Forms.Colony
                 return;
             }
 
-            int baseRate = 25;
-            int outputRate = GetRefiningOutputRate(ColonyStructureData.RefiningResourcePurity, baseRate);
-            rtbProgressStatus.Text = $"{baseRate}:{outputRate} {ColonyStructureData.RefiningResource} ({ColonyStructureData.RefiningResourcePurity})";
+            // Check for synthetic recipe
+            var recipe = RefiningRecipes.FindByInput(
+                ColonyStructureData.RefiningResource, ColonyStructureData.RefiningResourcePurity);
+
+            if (recipe != null)
+            {
+                rtbProgressStatus.Text = $"{recipe.ConsumeRate}:{recipe.ProduceRate} {recipe.OutputResource}";
+            }
+            else
+            {
+                int baseRate = 25;
+                int outputRate = GetRefiningOutputRate(ColonyStructureData.RefiningResourcePurity, baseRate);
+                rtbProgressStatus.Text = $"{baseRate}:{outputRate} {ColonyStructureData.RefiningResource} ({ColonyStructureData.RefiningResourcePurity})";
+            }
         }
 
         private static int GetRefiningOutputRate(string purity, int baseRate)
