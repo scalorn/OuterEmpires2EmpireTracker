@@ -198,3 +198,43 @@ Volume SHALL be set when an item is added to the warehouse.
 ### AMB-025 — RESOLVED
 **Resolution:** Option C — accept data loss. The existing PlayerData.json test data will be updated manually by the user. No migration code needed.  
 **Action:** No code change.
+
+
+---
+
+## Post-Resolution Review (new items found during final cross-reference)
+
+### AMB-026 — BaselineData.json OutputItemType not yet populated
+**Context:** AMB-022 added `OutputItemType` to `BlueprintType.cs` but `BaselineData.json` has not been updated to include this field for any BlueprintType entry.  
+**Impact:** Manufacturing processing (REQ-ARCH-083) cannot be implemented until this data is populated.  
+**Question:** Should this be populated now as part of the MVVM work, or deferred until manufacturing is prioritized?
+
+---
+
+### AMB-027 — Colony.Locks added but not serialized in writeContext
+**Context:** AMB-010 added `Colony.Locks` (LockTracking) to the Colony class and it's initialized in the constructor. However, `PlayerRoot` (the serialization root in PlayerContext) does not include `Locks` — it serializes `Colony[]` which will include `Locks` via Newtonsoft auto-serialization of public properties. But the `LockTrackingJsonConverter` needs to be verified against the actual round-trip.  
+**Question:** Has the Colony → JSON → Colony round-trip been tested with the new `Locks` field? If `Locks` is empty on load (no existing data), does it deserialize correctly as an empty `LockTracking` or as null?
+
+---
+
+### AMB-028 — FormColony.cmdSave_Click still has dead code
+**Context:** `cmdSave_Click` creates a local `colony` variable and checks `selectedColony != null`, but then always uses `colonyViewModel` for the actual save. The local variable and the null check are dead code from before the MVVM refactor.  
+**Question:** Should this be cleaned up as part of the MVVM completion work?
+
+---
+
+### AMB-029 — ColonyStructure.ColonyStructureData.Statuses serialized to JSON
+**Context:** `ColonyStructureStatus` objects are stored in `structure.Statuses["Actual"]` and `structure.Statuses["Ideal"]`. These are computed values that are recalculated on every change. They are currently serialized to JSON, adding significant bulk to the save file.  
+**Question:** Should `Statuses` be `[JsonIgnore]` since they are recomputed on load? Or are they intentionally persisted so the UI can display them without recalculating?
+
+---
+
+### AMB-030 — EmpireContext.writeContext writes to .new file
+**Context:** `EmpireContext.writeContext()` writes to `FilePath + ".new"` instead of `FilePath`. This means baseline data changes are never written back to the original file.  
+**Question:** Is this intentional (to prevent accidental overwrite of the baseline data), or a bug?
+
+---
+
+### AMB-031 — MainWindow calls SurveyParser.parseIt() on startup
+**Context:** `MainWindow` constructor calls `SurveyParser parser = new SurveyParser(); parser.parseIt();` on every application start. SurveyParser has no unit tests and its behavior is undocumented in the spec.  
+**Question:** What does `parseIt()` do? Is it a one-time import that should only run conditionally, or is it needed on every startup?
