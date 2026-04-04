@@ -303,6 +303,14 @@
       "OutputItemType": "Flatpack",
       "Universal": true,
       "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "MaxPerColony", "WarehouseCapacity", "BlueCollarDetail", "UnassignedWhiteCollarDetail" ]
+    },
+    {
+      "Id": "Flatpacks/CommodityFactory",
+      "Name": "Commodity Factory Flatpack",
+      "OutputItemType": "Flatpack",
+      "Universal": true,
+      "CanManufacture": false,
+      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "CanManufacture", "MaxPerColony", "BlueCollarDetail", "UnassignedWhiteCollarDetail" ]
     }
   ],
   "ResourceGroup": [
