@@ -128,12 +128,12 @@ Each ViewModel must:
 - SurveyTests — constructors, ExtendedName, SurveyResource, JSON
 - WorkerDetailTests — static list, maps, round-trip, property bag key contract
 - ColonyStatusCalculatorTests — power/habitation/food/entertainment/warehouse accumulation, online vs offline, chaining, actual vs ideal workers, unallocated worker tracking with lock integration, null blueprint, combined scenarios, IColonyStructureWorkers implementations
+- SurveyParserTests — ParseDescription, ParseResource, full HTML integration with real game data, edge cases (empty, malformed, null, unknown trace, duplicates)
 
 #### Not yet tested
 - FormColony (UI — integration test territory)
 - FormPlayerProfile (UI)
 - PlayerContext / EmpireContext (requires file I/O)
-- SurveyParser
 - Resource static data
 
 ### 10. MVVM Pilot — FormColony and ColonyStructure

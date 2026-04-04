@@ -52,7 +52,6 @@ Deleting a player profile is immediate with no undo. A confirmation dialog (`Mes
 
 ---
 
-## 8. SurveyParser — no unit tests
-**Priority: Low**
-`SurveyParser.cs` parses survey data but has no test coverage.
-**Needs approval: no — can proceed when prioritised.**
+## ~~8. SurveyParser — no unit tests~~
+**Status: Complete**
+SurveyParser refactored from debug-only code to a proper `processHtml(Survey, string)` method following the BlueprintScanner pattern. Extracts DateTime, ScannedBy, and resources (name, purity, amount) from game HTML. 17 tests covering ParseDescription, ParseResource, full HTML integration, edge cases (empty, malformed, null, unknown trace, duplicates).
