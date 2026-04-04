@@ -1366,7 +1366,11 @@ namespace OE2EmpireTracker.Forms.Colony
             int width = this.Size.Width - flpMovement.Width - flpStructureDetails.Width;
             flpStructureDetails.Size = new Size(width, flpStructureDetails.Size.Height);
 
-            int height = Math.Max(Math.Max(flpStructureDetails.Height+ flpStructureDetails.Margin.Vertical, flpMovement.Height + flpMovement.Margin.Vertical), flpStructureDetails.Height + flpStructureDetails.Margin.Vertical);
+            int height = Math.Max(
+                Math.Max(
+                    flpStructureDetails.Height + flpStructureDetails.Margin.Vertical,
+                    flpMovement.Height + flpMovement.Margin.Vertical),
+                flpStructureStatus.Height + flpStructureStatus.Margin.Vertical);
             if (this.Height != height)
             {
                 this.Size = new Size(this.Size.Width, height);
