@@ -57,7 +57,20 @@
 **REQ-ARCH-065** A Flatpack Building form SHALL list colonies with staged but unbuilt structures.  
 **REQ-ARCH-066** A Worker Delivery form SHALL list colonies with built structures that have unassigned workers.
 
-## Multi-Player Support (Future — required for extraction bonus)
+## Colony Timed Processing (Future — partial implementation exists for Mining)
+
+**REQ-ARCH-080** Colony.ProcessColony() SHALL process structures in the following order per cycle:
+1. Structure Building (BuildCompletionTime expires → set Built=true)
+2. Mining (MiningRig structures → add resources to warehouse)
+3. Refining Base Resources
+4. Refining S1 Synthetics
+5. Refining S2 Synthetics
+6. Manufacturing
+7. Research
+
+**REQ-ARCH-081** Only Mining (step 2) is currently implemented. Steps 1, 3–7 are planned features.  
+**REQ-ARCH-082** Structure Building (step 1): when BuildCompletionTime.IntervalsPassed > 0, the structure SHALL be marked Built=true and BuildCompletionTime SHALL be cleared.  
+**REQ-ARCH-083** Refining, Manufacturing, and Research processing types require blueprint definitions that specify inputs, outputs, and cycle times. These SHALL be designed before implementation.
 
 **REQ-ARCH-070** The application SHALL support multiple PlayerProfiles. Each Colony SHALL have an OwnerUUID field identifying the PlayerProfile that owns it.  
 **REQ-ARCH-071** PlayerContext SHALL maintain a currently selected player (CurrentPlayerUUID). All colony, blueprint, and survey data SHALL be filterable by the currently selected player.  

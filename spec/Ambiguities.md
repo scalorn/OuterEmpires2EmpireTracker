@@ -58,9 +58,9 @@ Each item references the relevant requirement ID where one exists.
 
 ---
 
-### AMB-008 — Colony.ProcessColony() only handles MiningRig
-**Code behavior:** `ProcessColony()` only processes structures whose blueprint type is `MiningRig`. The Overall.md spec lists 7 processing types (Building, Mining, Refining x2, Manufacturing, Research).  
-**Question:** Is the current implementation intentionally incomplete (mining only as a first pass), or is this a bug? The processing order in Overall.md needs to be formalized as requirements.
+### AMB-008 — RESOLVED
+**Resolution:** Colony.ProcessColony() currently only handles MiningRig. The remaining processing types (Structure Building, Refining, Manufacturing, Research) are planned features not yet implemented. The processing order is defined in Overall.md and SHALL be formalized as requirements.  
+**Action:** Architecture.md updated with the full processing order as future requirements.
 
 ---
 
