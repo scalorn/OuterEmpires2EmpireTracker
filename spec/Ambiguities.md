@@ -106,9 +106,9 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 
 ---
 
-### AMB-014 — gameSequence is per blueprint type, not per structure
-**Code behavior:** `gameSequence` is assigned as a count of how many structures of the same `BluePrintType` have been seen so far. So two Power Plants would be numbered 1 and 2, and a Habitation would also be numbered 1.  
-**Question:** Is this the intended behavior? The spec (REQ-COL-033) says "sequence number" without defining what it sequences.
+### AMB-014 — RESOLVED
+**Resolution:** `gameSequence` is a per-blueprint-type counter, matching the game UI which numbers structures by type (e.g. two Power Plants are numbered 1 and 2, a Habitation is also numbered 1). This is intentional.  
+**Action:** REQ-COL-033 updated to clarify the sequencing rule.
 
 ---
 

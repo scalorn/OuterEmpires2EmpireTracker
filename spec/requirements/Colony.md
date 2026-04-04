@@ -30,7 +30,7 @@
 **REQ-COL-030** The colony form SHALL display a list of all saved colonies filtered by a name search field.  
 **REQ-COL-031** Selecting a colony from the list SHALL populate the form with that colony's data.  
 **REQ-COL-032** The user SHALL be able to add a flatpack structure to the colony by selecting from a filtered list of Flatpack blueprints and clicking Add.  
-**REQ-COL-033** Each structure in the colony SHALL be displayed as a ColonyStructure control showing its blueprint name, sequence number, and Actual/Ideal resource status.  
+**REQ-COL-033** Each structure in the colony SHALL be displayed as a ColonyStructure control showing its blueprint name, sequence number, and Actual/Ideal resource status. The sequence number (gameSequence) is a per-blueprint-type counter matching the game UI convention — structures of the same type are numbered independently (e.g. two Power Plants are #1 and #2; a Habitation is also #1).  
 **REQ-COL-034** The user SHALL be able to reorder structures using Up and Down buttons; the display order SHALL update immediately.  
 **REQ-COL-035** The user SHALL be able to delete a structure using a Delete button; the structure SHALL be removed from the colony and the display SHALL update immediately.  
 **REQ-COL-036** Pressing the Delete key when a structure control is focused SHALL delete that structure.  
