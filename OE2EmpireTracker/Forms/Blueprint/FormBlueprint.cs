@@ -920,5 +920,34 @@ namespace OE2EmpireTracker
             scanner.processClipboard(viewModel.Data);
             populateForm();
         }
+
+        private void dgvResources_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            // Only validate the Amount column (index 1)
+            if (e.ColumnIndex != 1) return;
+            if (e.RowIndex < 0) return;
+
+            string value = e.FormattedValue?.ToString();
+
+            if (string.IsNullOrEmpty(value))
+            {
+                dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = "0";
+                dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
+                dgvResources.Rows[e.RowIndex].ErrorText = "";
+                return;
+            }
+
+            if (!int.TryParse(value, out _))
+            {
+                e.Cancel = true;
+                dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.LightCoral;
+                dgvResources.Rows[e.RowIndex].ErrorText = "Amount must be an integer";
+            }
+            else
+            {
+                dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
+                dgvResources.Rows[e.RowIndex].ErrorText = "";
+            }
+        }
     }
 }
