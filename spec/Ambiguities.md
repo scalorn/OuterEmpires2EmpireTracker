@@ -162,3 +162,14 @@ Each item references the relevant requirement ID where one exists.
 ### AMB-023 — Data locking between UI and background processing
 **Overall.md:** "Need to be able to lock the colony between the form and background processing."  
 **Question:** Is background processing currently running on a separate thread? If so, what is the threading model — timer-based on the UI thread, or a background Task? The locking strategy depends on this.
+
+
+---
+
+### AMB-024 — Item.Volume: where does the volume value come from?
+**Context:** Item.Volume was added (REQ-DM-025) to support WarehouseRequired calculation. All existing items default to Volume=0, so WarehouseRequired will be 0 until volumes are populated.  
+**Question:** Where does the volume value for an item come from?
+- Is it stored in the blueprint's `CargoVolumeSize` property and should be copied to the item when it is added to the warehouse?
+- Is it a static lookup table per resource/commodity type?
+- Is it entered manually by the user?
+- Does it vary by item type (e.g. resources have volume, work details do not)?
