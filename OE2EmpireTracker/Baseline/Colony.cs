@@ -76,7 +76,77 @@ namespace OE2EmpireTracker.Baseline
                         item.Quantity += quantityInt;
                         structure.MiningLeftOvers = leftOver;
                     }
+                    else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Refinery)
+                    {
+                        ProcessRefinery(structure);
+                    }
                 }
+            }
+        }
+
+        private void ProcessRefinery(ColonyStructure structure)
+        {
+            if (string.IsNullOrEmpty(structure.RefiningResource) ||
+                string.IsNullOrEmpty(structure.RefiningResourcePurity))
+                return;
+
+            int baseRate = 25;
+            int outputMultiplier;
+            switch (structure.RefiningResourcePurity)
+            {
+                case "Low": outputMultiplier = 1; break;
+                case "Medium": outputMultiplier = 3; break;
+                case "High": outputMultiplier = 5; break;
+                default: outputMultiplier = 1; break;
+            }
+
+            // Find unrefined source in warehouse
+            List<Item> sourceItems = Items.FindResource(structure.RefiningResource, structure.RefiningResourcePurity);
+
+            while (structure.ProcessCompletionTime.IntervalsPassed > 0)
+            {
+                // Determine how much unrefined resource is available
+                int available = 0;
+                Item sourceItem = null;
+                if (sourceItems.Count > 0)
+                {
+                    sourceItem = sourceItems[0];
+                    available = sourceItem.Quantity;
+                }
+
+                int consumed = Math.Min(baseRate, available);
+                if (consumed <= 0)
+                {
+                    structure.ProcessCompletionTime.ConsumeIntervals(1);
+                    continue;
+                }
+
+                // Consume unrefined
+                sourceItem.Quantity -= consumed;
+
+                // Produce refined
+                int produced = consumed * outputMultiplier;
+                List<Item> refinedItems = Items.FindResource(structure.RefiningResource, "Refined");
+                Item refinedItem;
+                if (refinedItems.Count > 0)
+                {
+                    refinedItem = refinedItems[0];
+                }
+                else
+                {
+                    refinedItem = new Item();
+                    refinedItem.UUID = Guid.NewGuid().ToString();
+                    refinedItem.ItemType = ItemType.ItemTypeEnum.Resource;
+                    refinedItem.BaseItemTypeID = structure.RefiningResource;
+                    refinedItem.Name = structure.RefiningResource;
+                    refinedItem.ResourcePurity = "Refined";
+                    refinedItem.Volume = 1;
+                    refinedItem.Quantity = 0;
+                    Items.AddItem(refinedItem);
+                }
+                refinedItem.Quantity += produced;
+
+                structure.ProcessCompletionTime.ConsumeIntervals(1);
             }
         }
     }
@@ -94,6 +164,9 @@ namespace OE2EmpireTracker.Baseline
         public string MiningSurvey { get; set; } = null;
         public string MiningSurveyResource { get; set; } = null;
         public Decimal MiningLeftOvers { get; set; } = Decimal.Zero;
+
+        public string RefiningResource { get; set; } = null;
+        public string RefiningResourcePurity { get; set; } = null;
 
         [JsonIgnore]
         public Dictionary<string, ColonyStructureStatus> Statuses { get; set; } = new Dictionary<string, ColonyStructureStatus>();

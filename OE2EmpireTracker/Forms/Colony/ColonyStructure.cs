@@ -85,6 +85,10 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     handleMiningRigControls();
                 }
+                else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Refinery)
+                {
+                    handleRefineryControls();
+                }
                 else {
                     flpSelection.Visible = false;
                     flpSubSelection.Visible = false;
@@ -351,6 +355,181 @@ namespace OE2EmpireTracker.Forms.Colony
             rtbProgressStatus.Text = $"{resource.Amount}/h {resource.Resource} ({resource.Purity})";
         }
 
+        // -----------------------------------------------------------------------
+        // Refinery Controls
+        // -----------------------------------------------------------------------
+
+        private void handleRefineryControls()
+        {
+            ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
+            bool showCompletionTime = false;
+            bool enableCmbSelection = true;
+            bool showCmdStart = false;
+
+            if (ColonyStructureData.ProcessCompletionTime != null)
+            {
+                showCompletionTime = true;
+                enableCmbSelection = false;
+            }
+
+            if (!string.IsNullOrEmpty(ColonyStructureData.RefiningResource))
+            {
+                showCmdStart = true;
+            }
+
+            // Selection: unrefined resources from warehouse + actively mined resources
+            flpSelection.Visible = true;
+            if (cmbSelection.Items.Count <= 1 || !string.IsNullOrEmpty(ColonyStructureData.RefiningResource))
+            {
+                populateSelectionWithUnrefinedResources();
+                if (!string.IsNullOrEmpty(ColonyStructureData.RefiningResource))
+                {
+                    cmbSelection.SelectedValue = ColonyStructureData.RefiningResource + "|" + ColonyStructureData.RefiningResourcePurity;
+                }
+            }
+            txtSelectionFilter.Enabled = enableCmbSelection;
+            cmbSelection.Enabled = enableCmbSelection;
+            cmdStart.Visible = showCmdStart && !showCompletionTime;
+
+            // No sub-selection for refinery
+            flpSubSelection.Visible = false;
+
+            if (showCompletionTime)
+            {
+                flpCompletionTime.Visible = true;
+                txtCompletionTime.Text = ColonyStructureData.ProcessCompletionTime.TimeRemainingString;
+                populateRefineryProgressStatus();
+                if (timerCountdown.Enabled == false)
+                {
+                    timerCountdown.Interval = 1000;
+                    timerCountdown.Start();
+                }
+            }
+            else
+            {
+                flpCompletionTime.Visible = false;
+                rtbProgressStatus.Text = "";
+            }
+
+            guard.release();
+            flpStructureCommands_Layout(null, null);
+            flpStructureDetails_Layout(null, null);
+            ColonyStructure_Layout(null, null);
+        }
+
+        private void populateSelectionWithUnrefinedResources()
+        {
+            string searchText = txtSelectionFilter.Text ?? "";
+
+            var unrefinedItems = new List<RefinerySelectionItem>();
+
+            // Add unrefined resources from warehouse
+            foreach (var itemEntry in Colony.Items.Items.Values)
+            {
+                if (itemEntry.ItemType == Data.ItemType.ItemTypeEnum.Resource &&
+                    !string.IsNullOrEmpty(itemEntry.ResourcePurity) &&
+                    itemEntry.ResourcePurity != "Refined")
+                {
+                    string key = itemEntry.BaseItemTypeID + "|" + itemEntry.ResourcePurity;
+                    if (!unrefinedItems.Any(u => u.Key == key))
+                    {
+                        unrefinedItems.Add(new RefinerySelectionItem
+                        {
+                            Key = key,
+                            DisplayName = $"{itemEntry.Name} ({itemEntry.ResourcePurity})",
+                            ResourceName = itemEntry.BaseItemTypeID,
+                            Purity = itemEntry.ResourcePurity
+                        });
+                    }
+                }
+            }
+
+            // Add resources being actively mined
+            if (Colony.Structures != null)
+            {
+                foreach (var structure in Colony.Structures)
+                {
+                    if (structure.ProcessCompletionTime != null &&
+                        !string.IsNullOrEmpty(structure.MiningSurvey) &&
+                        !string.IsNullOrEmpty(structure.MiningSurveyResource))
+                    {
+                        Baseline.Survey survey = playerContext.findSurvey(structure.MiningSurvey);
+                        if (survey != null && survey.Resources.ContainsKey(structure.MiningSurveyResource))
+                        {
+                            SurveyResource sr = survey.Resources[structure.MiningSurveyResource];
+                            if (!string.IsNullOrEmpty(sr.Purity) && sr.Purity != "Refined")
+                            {
+                                string key = sr.Resource + "|" + sr.Purity;
+                                if (!unrefinedItems.Any(u => u.Key == key))
+                                {
+                                    unrefinedItems.Add(new RefinerySelectionItem
+                                    {
+                                        Key = key,
+                                        DisplayName = $"{sr.Resource} ({sr.Purity})",
+                                        ResourceName = sr.Resource,
+                                        Purity = sr.Purity
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Filter by search text
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                unrefinedItems = unrefinedItems
+                    .Where(item => item.DisplayName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+            }
+
+            unrefinedItems.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
+            unrefinedItems.Insert(0, new RefinerySelectionItem { Key = "", DisplayName = "", ResourceName = "", Purity = "" });
+
+            cmbSelection.DisplayMember = "DisplayName";
+            cmbSelection.ValueMember = "Key";
+            cmbSelection.DataSource = unrefinedItems;
+            cmbSelection.SelectedIndex = -1;
+        }
+
+        private void populateRefineryProgressStatus()
+        {
+            if (ColonyStructureData.ProcessCompletionTime == null ||
+                string.IsNullOrEmpty(ColonyStructureData.RefiningResource) ||
+                string.IsNullOrEmpty(ColonyStructureData.RefiningResourcePurity))
+            {
+                rtbProgressStatus.Text = "";
+                return;
+            }
+
+            int baseRate = 25;
+            int outputRate = GetRefiningOutputRate(ColonyStructureData.RefiningResourcePurity, baseRate);
+            rtbProgressStatus.Text = $"{baseRate}:{outputRate} {ColonyStructureData.RefiningResource} ({ColonyStructureData.RefiningResourcePurity})";
+        }
+
+        private static int GetRefiningOutputRate(string purity, int baseRate)
+        {
+            switch (purity)
+            {
+                case "Low": return baseRate;       // 1x
+                case "Medium": return baseRate * 3; // 3x
+                case "High": return baseRate * 5;   // 5x
+                default: return baseRate;
+            }
+        }
+
+        /// <summary>
+        /// Helper class for refinery resource selection combo box.
+        /// </summary>
+        private class RefinerySelectionItem
+        {
+            public string Key { get; set; }
+            public string DisplayName { get; set; }
+            public string ResourceName { get; set; }
+            public string Purity { get; set; }
+        }
+
         private void populateSelectionWithSurveys()
         {
             //cmbSelection.Items.Clear();
@@ -589,7 +768,17 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void cmdStart_Click(object sender, EventArgs e)
         {
+            if (FlatpackBlueprint != null && FlatpackBlueprint.BluePrintType == BlueprintTypes.Refinery)
+            {
+                if (string.IsNullOrEmpty(ColonyStructureData.RefiningResource)) return;
 
+                ColonyStructureData.ProcessCompletionTime = new CountDownTime();
+                ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.Now;
+                ColonyStructureData.ProcessCompletionTime.StartRepeating(3600);
+                timerCountdown.Interval = 1000;
+                timerCountdown.Start();
+                handleRefineryControls();
+            }
         }
 
         private void txtSubSelectionFilter_TextChanged(object sender, EventArgs e)
@@ -633,14 +822,20 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void cmdDone_Click(object sender, EventArgs e)
         {
-            // TODO: FIXME: Temporary hack.
             Colony.ProcessColony();
 
             timerCountdown.Stop();
             ColonyStructureData.ProcessCompletionTime = null;
             txtCompletionTime.Text = "";
+            rtbProgressStatus.Text = "";
 
-            handleMiningRigControls();
+            if (FlatpackBlueprint != null)
+            {
+                if (FlatpackBlueprint.BluePrintType == BlueprintTypes.MiningRig)
+                    handleMiningRigControls();
+                else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Refinery)
+                    handleRefineryControls();
+            }
         }
 
         private void cmbSelection_SelectedIndexChanged(object sender, EventArgs e)
@@ -659,6 +854,22 @@ namespace OE2EmpireTracker.Forms.Colony
                     }
                     ColonyStructureData.MiningSurvey = survey;
                     handleMiningRigControls();
+                }
+                else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Refinery)
+                {
+                    string key = cmbSelection.SelectedValue as string;
+                    if (!string.IsNullOrEmpty(key) && key.Contains("|"))
+                    {
+                        string[] parts = key.Split('|');
+                        ColonyStructureData.RefiningResource = parts[0];
+                        ColonyStructureData.RefiningResourcePurity = parts[1];
+                    }
+                    else
+                    {
+                        ColonyStructureData.RefiningResource = null;
+                        ColonyStructureData.RefiningResourcePurity = null;
+                    }
+                    handleRefineryControls();
                 }
             }
         }

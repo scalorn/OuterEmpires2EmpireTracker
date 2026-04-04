@@ -27,6 +27,9 @@ namespace OE2EmpireTracker.Constants
         /// <summary>Mining rig structure type</summary>
         public const string MiningRig = "Flatpacks/MiningRig";
 
+        /// <summary>Refinery structure type</summary>
+        public const string Refinery = "Flatpacks/Refinery";
+
         // Add more blueprint types as discovered in the codebase
         // Example:
         // public const string Agridome = "Flatpacks/Agridome";
