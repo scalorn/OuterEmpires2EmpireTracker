@@ -76,7 +76,7 @@ namespace OE2EmpireTracker
             this.tabPResources = new System.Windows.Forms.TabPage();
             this.dgvResources = new System.Windows.Forms.DataGridView();
             this.Resource = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.Amount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Amount = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
             this.flpBase = new System.Windows.Forms.FlowLayoutPanel();
             this.flpSearchList = new System.Windows.Forms.FlowLayoutPanel();
             this.flpBlueprintSearch = new System.Windows.Forms.FlowLayoutPanel();
@@ -595,6 +595,7 @@ namespace OE2EmpireTracker
             // 
             this.Amount.HeaderText = "Amount";
             this.Amount.Name = "Amount";
+            this.Amount.ValidationPattern = OE2EmpireTracker.Controls.ValidatedTextBox.NUMBER_VALIDATION;
             // 
             // flpBase
             // 
@@ -766,7 +767,7 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.Label lblNickName;
         private System.Windows.Forms.TextBox txtNickName;
         private System.Windows.Forms.DataGridViewComboBoxColumn Resource;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Amount;
+        private OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn Amount;
         private System.Windows.Forms.FlowLayoutPanel flpSearchList;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flpBlueprintSearch;
