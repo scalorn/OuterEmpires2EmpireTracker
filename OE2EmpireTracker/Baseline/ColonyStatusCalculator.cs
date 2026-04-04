@@ -108,6 +108,9 @@ namespace OE2EmpireTracker.Baseline
 
                     // Lock assigned workers for this structure
                     LockAssignedWorkers(structure, FlatpackBlueprint);
+
+                    // Lock manufacturing resources for active manufactories
+                    LockManufacturingResources(structure, FlatpackBlueprint);
                 }
 
                 ColonyStructureStatus currentStatus = new ColonyStructureStatus();
@@ -234,6 +237,35 @@ namespace OE2EmpireTracker.Baseline
                 workerItem.Quantity = 0;
                 workerItem.Volume = 50;
                 colony.Items.AddItem(workerItem);
+            }
+        }
+
+        // -----------------------------------------------------------------------
+        // Manufacturing Resource Lock Management
+        // -----------------------------------------------------------------------
+
+        private void LockManufacturingResources(ColonyStructure structure, Data.Blueprint flatpackBlueprint)
+        {
+            if (colony.Locks == null || string.IsNullOrEmpty(structure.UUID)) return;
+            if (string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID)) return;
+            if (structure.ProcessCompletionTime == null) return;
+
+            Data.Blueprint mfgBlueprint = playerContext.findBlueprint(structure.ManufacturingBlueprintUUID);
+            if (mfgBlueprint == null || mfgBlueprint.Resources == null) return;
+
+            int remaining = structure.ManufacturingQuantity - structure.ManufacturingCompleted;
+            if (remaining <= 0) return;
+
+            foreach (var resource in mfgBlueprint.Resources)
+            {
+                string resourceName = resource.Key;
+                int perItem = 0;
+                int.TryParse(resource.Value, out perItem);
+                if (perItem <= 0) continue;
+
+                int totalToLock = perItem * remaining;
+                colony.Locks.LockItem(structure.UUID,
+                    Data.ItemType.ItemTypeEnum.Resource, resourceName, totalToLock);
             }
         }
 
