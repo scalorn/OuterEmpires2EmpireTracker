@@ -996,13 +996,22 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void cmdDone_Click(object sender, EventArgs e)
         {
-            // Force at least one interval so Done always processes
-            if (ColonyStructureData.ProcessCompletionTime != null &&
-                ColonyStructureData.ProcessCompletionTime.IntervalsPassed == 0)
+            // Force completion so Done always processes
+            if (ColonyStructureData.ProcessCompletionTime != null)
             {
-                // Advance StartTime back by one full interval to simulate completion
-                ColonyStructureData.ProcessCompletionTime.StartTime =
-                    DateTime.Now.AddSeconds(-ColonyStructureData.ProcessCompletionTime.RepeatIntervalSeconds);
+                if (ColonyStructureData.ProcessCompletionTime.IsRepeating &&
+                    ColonyStructureData.ProcessCompletionTime.IntervalsPassed == 0)
+                {
+                    // Repeating timer: advance StartTime back by one interval
+                    ColonyStructureData.ProcessCompletionTime.StartTime =
+                        DateTime.Now.AddSeconds(-ColonyStructureData.ProcessCompletionTime.RepeatIntervalSeconds);
+                }
+                else if (!ColonyStructureData.ProcessCompletionTime.IsRepeating &&
+                         ColonyStructureData.ProcessCompletionTime.TimeRemaining > 0)
+                {
+                    // One-shot timer: set TimeRemaining to 0 so it's expired
+                    ColonyStructureData.ProcessCompletionTime.TimeRemaining = 0;
+                }
             }
 
             Colony.ProcessColony();

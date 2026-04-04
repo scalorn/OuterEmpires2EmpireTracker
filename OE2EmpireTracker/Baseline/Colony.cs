@@ -171,8 +171,8 @@ namespace OE2EmpireTracker.Baseline
             if (sourceBp == null)
                 return;
 
-            // Research is a one-shot timer — check if the interval has passed
-            if (structure.ProcessCompletionTime.IntervalsPassed <= 0)
+            // Research is a one-shot timer — check if time has expired
+            if (structure.ProcessCompletionTime.TimeRemaining > 0)
                 return;
 
             // Create the evolved blueprint
