@@ -169,39 +169,36 @@ namespace OE2EmpireTracker.Forms.Colony
                 key = "UnassignedBlueCollarDetail";
                 if (FlatpackBlueprint.Properties.ContainsKey(key))
                 {
-                    bool unassignedBlueCollarPresent = true;
-                    //ColonyStructureData.AssignedWorkers.getBoolean(key, false, out blueCollarAssigned);
+                    bool available = IsUnallocatedWorkerAvailable("BlueCollarDetail");
                     checkControls[controlIndex].Visible = true;
                     checkControls[controlIndex].Enabled = false;
                     checkControls[controlIndex].Text = "Support - Blue Collar";
                     checkControls[controlIndex].Tag = key;
-                    checkControls[controlIndex].Checked = unassignedBlueCollarPresent;
+                    checkControls[controlIndex].Checked = available;
                     controlIndex++;
                 }
 
                 key = "UnassignedWhiteCollarDetail";
                 if (FlatpackBlueprint.Properties.ContainsKey(key))
                 {
-                    bool unassignedWhiteCollarPresent = true;
-                    //ColonyStructureData.AssignedWorkers.getBoolean(key, false, out blueCollarAssigned);
+                    bool available = IsUnallocatedWorkerAvailable("WhiteCollarDetail");
                     checkControls[controlIndex].Visible = true;
                     checkControls[controlIndex].Enabled = false;
                     checkControls[controlIndex].Text = "Support - White Collar";
                     checkControls[controlIndex].Tag = key;
-                    checkControls[controlIndex].Checked = unassignedWhiteCollarPresent;
+                    checkControls[controlIndex].Checked = available;
                     controlIndex++;
                 }
 
                 key = "UnassignedSpecialistDetail";
                 if (FlatpackBlueprint.Properties.ContainsKey(key))
                 {
-                    bool unassignedSpecialistPresent = true;
-                    //ColonyStructureData.AssignedWorkers.getBoolean(key, false, out blueCollarAssigned);
+                    bool available = IsUnallocatedWorkerAvailable("SpecialistDetail");
                     checkControls[controlIndex].Visible = true;
                     checkControls[controlIndex].Enabled = false;
                     checkControls[controlIndex].Text = "Support - Specialist";
                     checkControls[controlIndex].Tag = key;
-                    checkControls[controlIndex].Checked = unassignedSpecialistPresent;
+                    checkControls[controlIndex].Checked = available;
                     controlIndex++;
                 }
 
@@ -937,6 +934,23 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbSubSelection.ValueMember = "Resource";
             cmbSubSelection.DataSource = filteredList;
             cmbSubSelection.SelectedIndex = -1;
+        }
+
+        private bool IsUnallocatedWorkerAvailable(string workerDetailID)
+        {
+            if (Colony == null) return false;
+
+            int total = Colony.Items.CountByType(
+                Data.ItemType.ItemTypeEnum.WorkDetail, workerDetailID);
+
+            int locked = 0;
+            if (Colony.Locks != null)
+            {
+                locked = Colony.Locks.GetLockedQuantity(
+                    Data.ItemType.ItemTypeEnum.WorkDetail, workerDetailID);
+            }
+
+            return (total - locked) > 0;
         }
 
         private void populateStats()
