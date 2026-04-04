@@ -67,22 +67,20 @@ SurveyParser refactored from debug-only code to a proper `processHtml(Survey, st
 
 ---
 
-## 9. Grid validation for SurveyForm
-**Priority: Medium**
-Currently no format validation on SurveyForm dgvResources grid cell edits:
-- Resource column: name must exist in Resource static data (use combo box or CellValidating)
-- Amount column: must be a decimal number (use DataGridViewValidatedTextBoxColumn with DECIMAL_VALIDATION)
-**Needs approval: no — can proceed when prioritised.**
+## ~~9. Grid validation for SurveyForm~~
+**Status: Complete**
+- Resource column: combo box bound to Resource static data (validates by selection)
+- Purity column: combo box bound to ResourcePurity static data
+- Amount column: DataGridViewValidatedTextBoxColumn with DECIMAL_PATTERN
+- CellValidating prevents leaving with invalid values, empty=0
 
 ---
 
-## 10. Grid validation for BlueprintForm
-**Priority: Medium**
-Currently no format validation on BlueprintForm grid cell edits:
-- dgvStatistics: format varies by property name (time values like ManufactureTime, numbers, percentages)
-- dgvResources: Resource name must exist in Resource static data, quantity must be an integer
-- Consider using DataGridViewValidatedTextBoxColumn with property-specific validation patterns
-**Needs approval: no — can proceed when prioritised.**
+## ~~10. Grid validation for BlueprintForm~~
+**Status: Complete**
+- dgvStatistics: CellValidating with type-specific patterns from BlueprintPropertyValidation (54 properties)
+- dgvResources Resource column: combo box bound to Resource static data (validates by selection)
+- dgvResources Amount column: DataGridViewValidatedTextBoxColumn with NUMBER_VALIDATION + CellValidating
 
 
 ---

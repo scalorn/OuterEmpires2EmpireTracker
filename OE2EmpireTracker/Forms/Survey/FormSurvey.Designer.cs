@@ -75,7 +75,7 @@
             this.cmdImport = new System.Windows.Forms.Button();
             this.Resource = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.Purity = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.Amount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Amount = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
             this.flpBlueprintSearch.SuspendLayout();
@@ -514,6 +514,7 @@
             this.Amount});
             this.dgvResources.Location = new System.Drawing.Point(3, 263);
             this.dgvResources.Name = "dgvResources";
+            this.dgvResources.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvResources_CellValidating);
             this.dgvResources.Size = new System.Drawing.Size(825, 303);
             this.dgvResources.TabIndex = 9;
             // 
@@ -587,6 +588,7 @@
             // 
             this.Amount.HeaderText = "Amount";
             this.Amount.Name = "Amount";
+            this.Amount.ValidationPattern = OE2EmpireTracker.Constants.BlueprintPropertyValidation.DECIMAL_PATTERN;
             // 
             // FormSurvey
             // 
@@ -680,6 +682,6 @@
         private System.Windows.Forms.TextBox txtNickName;
         private System.Windows.Forms.DataGridViewComboBoxColumn Resource;
         private System.Windows.Forms.DataGridViewComboBoxColumn Purity;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Amount;
+        private OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn Amount;
     }
 }

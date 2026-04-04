@@ -207,6 +207,36 @@ namespace OE2EmpireTracker.Forms.Survey
             cmbScannerBlueprint.DroppedDown = true;
         }
 
+        private void dgvResources_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            // Only validate the Amount column (index 2)
+            if (e.ColumnIndex != 2) return;
+            if (e.RowIndex < 0) return;
+
+            string value = e.FormattedValue?.ToString();
+
+            if (string.IsNullOrEmpty(value))
+            {
+                dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = "0";
+                dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
+                dgvResources.Rows[e.RowIndex].ErrorText = "";
+                return;
+            }
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(value,
+                OE2EmpireTracker.Constants.BlueprintPropertyValidation.DECIMAL_PATTERN))
+            {
+                e.Cancel = true;
+                dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.LightCoral;
+                dgvResources.Rows[e.RowIndex].ErrorText = "Amount must be a decimal number";
+            }
+            else
+            {
+                dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
+                dgvResources.Rows[e.RowIndex].ErrorText = "";
+            }
+        }
+
         private void cmdImport_Click(object sender, EventArgs e)
         {
             SurveyParser parser = new SurveyParser();
