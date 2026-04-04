@@ -83,10 +83,9 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 
 ---
 
-### AMB-011 — Survey.ExtendedName: leading space when PlanetName is empty but SurveyID is set
-**Code behavior:** If PlanetName is null/empty but SurveyID is set, ExtendedName returns `" (SurveyID)"` with a leading space.  
-**Spec (REQ-DM-040/041):** Does not address this edge case.  
-**Question:** Should the leading space be trimmed? Should SurveyID only be shown when PlanetName is also present?
+### AMB-011 — RESOLVED
+**Resolution:** A Survey SHALL always have a non-empty PlanetName. A survey without a PlanetName is invalid and cannot be used. The leading-space edge case (SurveyID present but PlanetName empty) is therefore not a valid state. REQ-DM-040 updated to require PlanetName. The ExtendedName getter will still trim defensively.  
+**Action:** REQ-DM-040 and REQ-SRV updated.
 
 ---
 

@@ -36,7 +36,7 @@ namespace OE2EmpireTracker.Baseline
                 {
                     extendedName += $" [{NickName}]";
                 }
-                return extendedName;
+                return extendedName.Trim();
             }
         }
 

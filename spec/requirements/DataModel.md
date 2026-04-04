@@ -41,7 +41,8 @@
 
 ## Survey and SurveyResource
 
-**REQ-DM-040** Survey.ExtendedName SHALL return `PlanetName (SurveyID)` with `[NickName]` appended when NickName is non-empty.  
+**REQ-DM-040** Survey.ExtendedName SHALL return `PlanetName (SurveyID)` with `[NickName]` appended when NickName is non-empty. PlanetName is always present on a valid survey.  
+**REQ-DM-040a** A Survey SHALL always have a non-empty PlanetName. A survey without a PlanetName is invalid and SHALL NOT be saved or used in any colony operation.  
 **REQ-DM-041** Survey.ExtendedName SHALL return empty string when PlanetName, SurveyID, and NickName are all null or empty.  
 **REQ-DM-042** SurveyResource SHALL have Resource, Purity, and Amount string properties.  
 **REQ-DM-043** SurveyResource.ExtendedName SHALL return `Resource (Purity) (Amount)/h` omitting segments that are null or empty.
