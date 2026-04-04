@@ -140,9 +140,8 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 
 ## Overall.md Items Not Yet in Formal Requirements
 
-### AMB-019 — Colony timed processing order not formalized
-**Overall.md:** Lists 7 processing types in order (Building, Mining, Refining x2, Manufacturing, Research). Only Mining is implemented.  
-**Question:** Should the processing order be added as formal requirements now, even though only Mining is implemented? This would prevent future implementations from getting the order wrong.
+### AMB-019 — RESOLVED
+**Resolution:** The processing order was already formalized as REQ-ARCH-080 through REQ-ARCH-083 when AMB-008 was resolved. No further action needed.
 
 ---
 
