@@ -120,16 +120,15 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 
 ## Architecture / MVVM
 
-### AMB-016 — FormColony still has direct selectedColony references after MVVM refactor
-**Code behavior:** `selectedColony` field still exists and is used directly in `structures_ColonyStructureDataChanged` (e.g. `selectedColony.Structures.Contains(kv.Key)`).  
-**Spec (REQ-COL-091):** Says all Colony.Structures manipulation SHALL go through ColonyViewModel.  
-**Question:** Should `selectedColony` be removed entirely and all access go through `colonyViewModel.Data`? Or is direct read access to the data object acceptable as long as mutations go through the ViewModel?
+### AMB-016 — RESOLVED
+**Resolution:** The MVVM pattern SHALL be applied to all forms. No form SHALL directly access PropertyBag, data lists, or data object internals. All such access SHALL go through a ViewModel.  
+**Action:** REQ-ARCH-010 and REQ-ARCH-014 updated. GOALS.md updated with MVVM completion as a priority task.
 
 ---
 
-### AMB-017 — MVVM pattern not yet applied to FormPlayerProfile, FormBlueprint, FormSurvey
-**Spec (REQ-ARCH-014):** Says the MVVM pattern SHALL serve as a template for other forms.  
-**Question:** What is the priority order for applying MVVM to the remaining forms? Should this be done before or after other feature work?
+### AMB-017 — RESOLVED
+**Resolution:** MVVM completion across all forms SHALL be done before any additional feature work. This is the highest priority task after the current ambiguity resolution pass.  
+**Action:** GOALS.md updated with MVVM completion task and priority ordering.
 
 ---
 

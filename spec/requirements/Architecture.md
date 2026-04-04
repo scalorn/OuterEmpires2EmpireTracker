@@ -11,10 +11,10 @@
 ## MVVM Pattern
 
 **REQ-ARCH-010** UI forms SHALL NOT directly access PropertyBag methods (getBoolean, setProperty, etc.) on data objects. All such access SHALL go through a ViewModel.  
-**REQ-ARCH-011** UI forms SHALL NOT directly manipulate Colony.Structures, Colony.Items, or Colony.Commodities lists. All such access SHALL go through ColonyViewModel.  
+**REQ-ARCH-011** UI forms SHALL NOT directly manipulate data object lists or collections (Colony.Structures, Colony.Items, Colony.Commodities, PlayerContext lists, etc.). All such access SHALL go through a ViewModel.  
 **REQ-ARCH-012** ViewModels SHALL be plain C# classes with no WinForms dependencies.  
 **REQ-ARCH-013** ViewModels SHALL expose typed properties (bool IsBuilt, string PlanetName) rather than raw PropertyBag access.  
-**REQ-ARCH-014** The MVVM pattern established in FormColony/ColonyStructure SHALL serve as the template for applying the same pattern to other forms.
+**REQ-ARCH-014** The MVVM pattern SHALL be applied to ALL forms before any new feature work is started. Forms requiring ViewModels: FormColony (complete), FormPlayerProfile, FormBlueprint, FormSurvey, MainWindow.
 
 ## Unit Testing
 

@@ -14,6 +14,27 @@
 
 ## Approved Tasks
 
+### PRIORITY: Complete MVVM Across All Forms (before any new feature work)
+**Status: In Progress**
+
+Per AMB-016 and AMB-017, MVVM must be applied to all forms before new features are added.
+
+| Form | Status | ViewModel(s) needed |
+|------|--------|---------------------|
+| FormColony + ColonyStructure | Complete | ColonyViewModel, ColonyStructureViewModel |
+| FormPlayerProfile | Not started | PlayerProfileViewModel |
+| FormBlueprint | Not started | BlueprintViewModel |
+| FormSurvey | Not started | SurveyViewModel |
+| MainWindow | Not started | (assess scope) |
+
+Each ViewModel must:
+- Wrap all PropertyBag access with typed properties
+- Wrap all data list manipulation with methods
+- Have no WinForms dependencies
+- Be covered by unit tests
+
+---
+
 ### 1. Colony Form — Structure Management
 **Status: Complete**
 
