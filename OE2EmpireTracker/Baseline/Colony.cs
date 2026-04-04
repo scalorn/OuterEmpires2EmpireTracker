@@ -124,6 +124,13 @@ namespace OE2EmpireTracker.Baseline
                 // Consume unrefined
                 sourceItem.Quantity -= consumed;
 
+                // Remove from warehouse if fully consumed
+                if (sourceItem.Quantity <= 0)
+                {
+                    Items.Remove(sourceItem.UUID);
+                    sourceItems.Remove(sourceItem);
+                }
+
                 // Produce refined
                 int produced = consumed * outputMultiplier;
                 List<Item> refinedItems = Items.FindResource(structure.RefiningResource, "Refined");
