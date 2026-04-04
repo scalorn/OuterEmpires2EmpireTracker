@@ -408,7 +408,13 @@ namespace OE2EmpireTracker.Forms.Colony
                 populateSelectionWithUnrefinedResources();
                 if (!string.IsNullOrEmpty(ColonyStructureData.RefiningResource))
                 {
-                    cmbSelection.SelectedValue = ColonyStructureData.RefiningResource + "|" + ColonyStructureData.RefiningResourcePurity;
+                    string restoreKey = ColonyStructureData.RefiningResource + "|" + ColonyStructureData.RefiningResourcePurity;
+                    var recipe = RefiningRecipes.FindByInput(ColonyStructureData.RefiningResource, ColonyStructureData.RefiningResourcePurity);
+                    if (recipe != null)
+                    {
+                        restoreKey += "|S" + recipe.Tier;
+                    }
+                    cmbSelection.SelectedValue = restoreKey;
                 }
             }
             txtSelectionFilter.Enabled = enableCmbSelection;
