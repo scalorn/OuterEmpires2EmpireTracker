@@ -38,6 +38,10 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 23 | Blueprint property validation (54 properties) | Complete |
 | 24 | NLog logging throughout codebase | Complete |
 | 25 | Blueprint resource grid validation | Complete |
+| 26 | Colony bootstrap algorithm (REQ-COL-096) | Complete |
+| 27 | Build order optimization (REQ-COL-095) | Complete |
+| 28 | Colony structure layout fix | Complete |
+| 29 | Code quality scan | Complete — findings in Rec #12 |
 
 ---
 
@@ -45,12 +49,9 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 
 See [Recommendations](Recommendations.md) for details:
 - **Rec #4**: CountDownTime master list — major feature (UI, locking, background thread)
-- **Rec #9**: SurveyForm grid validation
-- **Rec #10**: BlueprintForm grid validation (partially done — statistics grid complete, resources done)
 - **Rec #11**: Commodity Manufacturing — major feature (new flatpack class, data design needed)
+- **Rec #12**: Code quality — dead code, naming, magic strings, duplicated guard class, large methods/files
 
 ### Large Features (from requirements, not yet started)
-- Colony bootstrap algorithm (REQ-COL-096 series)
-- Flatpack build order optimization (REQ-COL-095 series)
 - Multi-player support (REQ-ARCH-070-074)
 - Commodity delivery form

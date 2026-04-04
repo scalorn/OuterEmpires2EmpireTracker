@@ -86,3 +86,15 @@ All Debug.Print replaced with NLog. PlayerContext/EmpireContext Info-level load/
 
 ## 25. Blueprint Resource Grid Validation
 DataGridViewValidatedTextBoxColumn with NUMBER_VALIDATION. CellValidating prevents invalid Amount values.
+
+## 26. Colony Bootstrap Algorithm (REQ-COL-096)
+ColonyBootstrap generates foundation structures from surveys. Selects best survey per resource by refined output rate. Adds Command Centre → ROA → Miners → Refiners. Runs optimizer after. Appends only. ExtractionFocusLevel defaults to 0.
+
+## 27. Build Order Optimization (REQ-COL-095)
+BuildOrderOptimizer separates built/support/primary structures. Walks primary in order, inserts support to fix deficits. Auto-creates support structures from player blueprints when pool is empty. Respects MaxPerColony. Priority: Power(4) > Hab(3) > Food(2) > Entertainment(1).
+
+## 28. Colony Structure Layout Fix
+ColonyStructure_Layout was comparing flpStructureDetails with itself instead of including flpStructureStatus. Fixed to include all three panels. Added 2px for FixedSingle border. flpStructureStatus set to AutoSize=true.
+
+## 29. Code Quality Scan
+Full codebase scan completed. Identified 7 categories of issues: dead code, naming inconsistencies, large methods, duplicate code, magic strings/numbers, large files, duplicated ProgramaticUpdateGuard. Findings recorded in Rec #12.

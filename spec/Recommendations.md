@@ -94,3 +94,50 @@ A new class of flatpack structures for manufacturing commodities. Requires:
 - Integration with existing commodity request system
 - Needs design discussion before implementation to determine data structure and recipe format.
 **Needs approval: yes — requires data design and recipe specification.**
+
+
+---
+
+## 12. Code Quality — scan findings
+**Priority: Low-Medium — Incremental cleanup**
+Full codebase scan identified issues in 7 categories. Lower-risk items can be done incrementally; larger refactors should be planned carefully.
+
+### 12a. Dead code removal (Low risk)
+- Commented-out `//PowerProvided`, `//PowerRequired` fields in ColonyStructure.cs
+- Commented-out structure creation and layout trace logging in FormColony.cs
+- Unused `using` statements: `static System.Windows.Forms.AxHost` and `static ...VisualStyleElement.ListView` in ColonyStructure.cs, `Amazon.Runtime.Internal.Transform` in ColonyStatusCalculator.cs, `static ...VisualStyleElement.Tab` in Colony.cs, `static ...VisualStyleElement` in ColonyStatusCalculator.cs
+
+### 12b. Extract shared ProgramaticUpdateGuard (Low risk)
+- Identical class duplicated in FormColony and ColonyStructure (same fields, same logic)
+- Should be extracted to a shared generic class (e.g. `ProgrammaticUpdateGuard<T>` or interface-based)
+- Also fix the typo: `ProgramaticUpdateGuard` → `ProgrammaticUpdateGuard`
+
+### 12c. Magic strings/numbers → constants (Low-Medium risk)
+- Worker type strings: `"BlueCollar"`, `"WhiteCollar"`, `"Specialist"`, `"BlueCollarDetail"`, `"WhiteCollarDetail"`, `"SpecialistDetail"`
+- State strings: `"Built"`, `"Staged"`, `"Online"`, `"Actual"`, `"Ideal"`, `"Refined"`
+- Numbers: `25` (refining base rate), `50` (worker volume), `3600` (seconds/hour)
+
+### 12d. Method naming — camelCase → PascalCase (Medium risk)
+- `populateStats`, `populateForm`, `populateItemGrid`, `populateListView`, `populateCommodityRequestGrid`, `populateProgressStatus`, `populateRefineryProgressStatus`, `populateResearchLabProgressStatus`, `populateSelectionWithSurveys`, `populateSelectionWithUnrefinedResources`, `populateSubSelectionWithSurveyResources`, `updateFlatpackListBase`, `updatePurityList`, `updateItemTypeList`, `updateCommodityRequestList`
+- `processHtml` in SurveyParser (note: has 44 tests referencing it)
+- Should use semantic rename to update all references
+
+### 12e. Large method extraction (Medium-High risk)
+- `UpdateData` in ColonyStructure.cs (~183 lines) — worker checkbox setup could be extracted
+- `populateForm` in FormColony.cs (~140 lines) — structure control setup could be extracted
+- `CalculateBuilt` per-structure overload in ColonyStatusCalculator.cs (~250 lines) — worker parsing is 3 near-identical blocks
+- `ProcessColony` in Colony.cs (~200 lines) — already partially extracted per structure type
+- `processHtml` in SurveyParser.cs (~200 lines)
+
+### 12f. Duplicate worker parsing (Medium risk)
+- Worker type parsing (BlueCollar/WhiteCollar/Specialist) appears as 3 near-identical blocks in:
+  - `ColonyStructure.UpdateData` (checkbox setup)
+  - `ColonyStatusCalculator.CalculateBuilt` (status calculation)
+  - `ColonyStatusCalculator.LockAssignedWorkers` (lock management)
+- Could be driven by a shared worker type list/enum
+
+### 12g. Large file splitting (Medium-High risk)
+- Colony.cs contains `Colony`, `ColonyStructure`, and `CommodityRequested` — should be separate files
+- ColonyStructure.cs (1421 lines) and FormColony.cs (1192 lines) are large but mostly cohesive
+
+**Needs approval: yes — user should pick which items to tackle and in what order.**
