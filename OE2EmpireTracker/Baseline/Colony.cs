@@ -80,6 +80,10 @@ namespace OE2EmpireTracker.Baseline
                     {
                         ProcessRefinery(structure);
                     }
+                    else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
+                    {
+                        ProcessResearchLab(structure);
+                    }
                 }
             }
         }
@@ -156,6 +160,52 @@ namespace OE2EmpireTracker.Baseline
                 structure.ProcessCompletionTime.ConsumeIntervals(1);
             }
         }
+
+        private void ProcessResearchLab(ColonyStructure structure)
+        {
+            if (string.IsNullOrEmpty(structure.ResearchingBlueprintUUID))
+                return;
+
+            PlayerContext pc = PlayerContext.getInstance();
+            Blueprint sourceBp = pc.findBlueprint(structure.ResearchingBlueprintUUID);
+            if (sourceBp == null)
+                return;
+
+            // Research is a one-shot timer — check if the interval has passed
+            if (structure.ProcessCompletionTime.IntervalsPassed <= 0)
+                return;
+
+            // Create the evolved blueprint
+            Blueprint newBp = new Blueprint(sourceBp.Name);
+            newBp.UUID = System.Guid.NewGuid().ToString();
+            newBp.BluePrintType = sourceBp.BluePrintType;
+            newBp.Class = sourceBp.Class;
+            newBp.TechLevel = sourceBp.TechLevel;
+            newBp.Evolution = sourceBp.Evolution + 1;
+            newBp.CopyCost = sourceBp.CopyCost;
+            newBp.baseBlueprintUUID = sourceBp.baseBlueprintUUID;
+            newBp.Description = sourceBp.Description;
+            newBp.NickName = ""; // User must set this
+            // Properties copied, resources left empty for user to import
+            foreach (var prop in sourceBp.Properties.Properties)
+            {
+                newBp.Properties.setProperty(prop.Key, prop.Value);
+            }
+            // Resources intentionally empty — user imports via Blueprint Form
+
+            // Add to player's blueprint list
+            pc.blueprintList.Add(newBp);
+
+            // Add an item to the colony warehouse
+            Item bpItem = new Item(ItemType.ItemTypeEnum.Blueprint, newBp.Name);
+            bpItem.UUID = System.Guid.NewGuid().ToString();
+            bpItem.BaseItemTypeID = newBp.UUID;
+            bpItem.Quantity = 1;
+            bpItem.Volume = 0;
+            Items.AddItem(bpItem);
+
+            structure.ProcessCompletionTime.ConsumeIntervals(1);
+        }
     }
     public class ColonyStructure
     {
@@ -174,6 +224,8 @@ namespace OE2EmpireTracker.Baseline
 
         public string RefiningResource { get; set; } = null;
         public string RefiningResourcePurity { get; set; } = null;
+
+        public string ResearchingBlueprintUUID { get; set; } = null;
 
         [JsonIgnore]
         public Dictionary<string, ColonyStructureStatus> Statuses { get; set; } = new Dictionary<string, ColonyStructureStatus>();

@@ -89,6 +89,10 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     handleRefineryControls();
                 }
+                else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
+                {
+                    handleResearchLabControls();
+                }
                 else {
                     flpSelection.Visible = false;
                     flpSubSelection.Visible = false;
@@ -550,6 +554,139 @@ namespace OE2EmpireTracker.Forms.Colony
             public string Purity { get; set; }
         }
 
+        // -----------------------------------------------------------------------
+        // Research Lab Controls
+        // -----------------------------------------------------------------------
+
+        private void handleResearchLabControls()
+        {
+            ProgramaticUpdateGuard guard = new ProgramaticUpdateGuard(this);
+
+            if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
+            {
+                flpSelection.Visible = false;
+                flpSubSelection.Visible = false;
+                flpCompletionTime.Visible = false;
+                guard.release();
+                return;
+            }
+
+            bool showCompletionTime = false;
+            bool enableCmbSelection = true;
+            bool showCmdStart = false;
+
+            if (ColonyStructureData.ProcessCompletionTime != null)
+            {
+                showCompletionTime = true;
+                enableCmbSelection = false;
+            }
+
+            if (!string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID))
+            {
+                showCmdStart = true;
+            }
+
+            // Selection: researchable blueprints
+            flpSelection.Visible = true;
+            if (cmbSelection.Items.Count <= 1 || !string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID))
+            {
+                populateSelectionWithResearchableBlueprints();
+                if (!string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID))
+                {
+                    cmbSelection.SelectedValue = ColonyStructureData.ResearchingBlueprintUUID;
+                }
+            }
+            txtSelectionFilter.Enabled = enableCmbSelection;
+            cmbSelection.Enabled = enableCmbSelection;
+            cmdStart.Visible = showCmdStart && !showCompletionTime;
+
+            flpSubSelection.Visible = false;
+
+            if (showCompletionTime)
+            {
+                flpCompletionTime.Visible = true;
+                txtCompletionTime.Text = ColonyStructureData.ProcessCompletionTime.TimeRemainingString;
+                populateResearchLabProgressStatus();
+                if (timerCountdown.Enabled == false)
+                {
+                    timerCountdown.Interval = 1000;
+                    timerCountdown.Start();
+                }
+            }
+            else
+            {
+                flpCompletionTime.Visible = false;
+                rtbProgressStatus.Text = "";
+            }
+
+            guard.release();
+            flpStructureCommands_Layout(null, null);
+            flpStructureDetails_Layout(null, null);
+            ColonyStructure_Layout(null, null);
+        }
+
+        private void populateSelectionWithResearchableBlueprints()
+        {
+            string searchText = txtSelectionFilter.Text ?? "";
+
+            var items = new List<ResearchSelectionItem>();
+
+            foreach (Data.Blueprint bp in playerContext.blueprintList)
+            {
+                if (bp.UUID == null) continue;
+                if (bp.Evolution >= 15) continue;
+                if (!ResearchTimeLookup.CanResearchEvolution(bp.Evolution)) continue;
+
+                bool canResearch = true;
+                bp.Properties.getBoolean("CanResearch", true, out canResearch);
+                if (!canResearch) continue;
+
+                string display = bp.ExtendedName;
+                if (!string.IsNullOrEmpty(searchText) &&
+                    display.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) < 0)
+                    continue;
+
+                items.Add(new ResearchSelectionItem
+                {
+                    UUID = bp.UUID,
+                    DisplayName = display
+                });
+            }
+
+            items.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
+            items.Insert(0, new ResearchSelectionItem { UUID = "", DisplayName = "" });
+
+            cmbSelection.DisplayMember = "DisplayName";
+            cmbSelection.ValueMember = "UUID";
+            cmbSelection.DataSource = items;
+            cmbSelection.SelectedIndex = -1;
+        }
+
+        private void populateResearchLabProgressStatus()
+        {
+            if (ColonyStructureData.ProcessCompletionTime == null ||
+                string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID))
+            {
+                rtbProgressStatus.Text = "";
+                return;
+            }
+
+            Data.Blueprint bp = playerContext.findBlueprint(ColonyStructureData.ResearchingBlueprintUUID);
+            if (bp == null)
+            {
+                rtbProgressStatus.Text = "";
+                return;
+            }
+
+            rtbProgressStatus.Text = $"Evo {bp.Evolution}->{bp.Evolution + 1} {bp.Name}";
+        }
+
+        private class ResearchSelectionItem
+        {
+            public string UUID { get; set; }
+            public string DisplayName { get; set; }
+        }
+
         private void populateSelectionWithSurveys()
         {
             //cmbSelection.Items.Clear();
@@ -799,6 +936,23 @@ namespace OE2EmpireTracker.Forms.Colony
                 timerCountdown.Start();
                 handleRefineryControls();
             }
+            else if (FlatpackBlueprint != null && FlatpackBlueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
+            {
+                if (string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID)) return;
+
+                Data.Blueprint bp = playerContext.findBlueprint(ColonyStructureData.ResearchingBlueprintUUID);
+                if (bp == null) return;
+
+                long researchSeconds = ResearchTimeLookup.GetResearchTimeSeconds(bp.Evolution);
+                if (researchSeconds <= 0) return;
+
+                ColonyStructureData.ProcessCompletionTime = new CountDownTime();
+                ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.Now;
+                ColonyStructureData.ProcessCompletionTime.TimeRemaining = researchSeconds;
+                timerCountdown.Interval = 1000;
+                timerCountdown.Start();
+                handleResearchLabControls();
+            }
         }
 
         private void txtSubSelectionFilter_TextChanged(object sender, EventArgs e)
@@ -864,6 +1018,8 @@ namespace OE2EmpireTracker.Forms.Colony
                     handleMiningRigControls();
                 else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Refinery)
                     handleRefineryControls();
+                else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
+                    handleResearchLabControls();
             }
 
             ColonyStructureDataChanged?.Invoke(this, e);
@@ -901,6 +1057,12 @@ namespace OE2EmpireTracker.Forms.Colony
                         ColonyStructureData.RefiningResourcePurity = null;
                     }
                     handleRefineryControls();
+                }
+                else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
+                {
+                    string uuid = cmbSelection.SelectedValue as string;
+                    ColonyStructureData.ResearchingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
+                    handleResearchLabControls();
                 }
             }
         }
