@@ -26,242 +26,242 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.5343546-07:00",
-            "EndTime": "2026-03-31T19:55:14.5343546-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Foreman": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Founder": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Energy Efficiency": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Builder": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Refining Focus": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Production Focus": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Extraction Focus": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Damage Control": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Engineering Capacity": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Sounds As A Pound": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Self Made Millionaire": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "AAA Healthcare": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Job Opportunities": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Contract Management": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Research Review": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Research Methods": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Research Focus": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Surveying Methods": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Scanning Methods": {
           "Level": 0,
           "TrainingStarted": true,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-04-05T11:40:46.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-08T23:48:24.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": "4d 15h 44m 57s"
+            "TimeRemainingString": "4d 15h 43m 55s"
           }
         },
         "Quartermaster": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Broker": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.616028-07:00",
+            "EndTime": "2026-04-04T08:04:11.616028-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         }
       }
@@ -292,242 +292,242 @@
           "Level": 0,
           "TrainingStarted": true,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-04-01T18:46:18.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-05T06:53:56.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": "22h 50m 29s"
+            "TimeRemainingString": "22h 49m 27s"
           }
         },
         "Foreman": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Founder": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Energy Efficiency": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Builder": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Refining Focus": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Production Focus": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Extraction Focus": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Damage Control": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Engineering Capacity": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Sounds As A Pound": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Self Made Millionaire": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "AAA Healthcare": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Job Opportunities": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Contract Management": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Research Review": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Research Methods": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Research Focus": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Surveying Methods": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Scanning Methods": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Quartermaster": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         },
         "Broker": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-03-31T19:55:14.535353-07:00",
-            "EndTime": "2026-03-31T19:55:14.535353-07:00",
+            "StartTime": "2026-04-04T08:04:11.6170282-07:00",
+            "EndTime": "2026-04-04T08:04:11.6170282-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": ""
+            "TimeRemainingString": "0s"
           }
         }
       }
@@ -562,13 +562,14 @@
         "S1. Translivermoric Exotics": "699"
       },
       "UUID": "6cb8fc7c-9ee8-4a9b-bb53-45f5feb229cb",
-      "ItemType": 9,
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "AMX-LL Reactor Core",
       "NickName": "test baseblueprint",
       "Description": "Reactor that generates power for the ship",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "baseBlueprintUUID": "",
@@ -602,13 +603,14 @@
         "Strong Alkali Organics": "142"
       },
       "UUID": "49f3198c-292f-4dd0-ab72-9c873b97f8a2",
-      "ItemType": 9,
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "Colony Command Centre Flatpack",
       "NickName": "",
       "Description": "The heart of the colony and the absolute minimum structure needed to secure the claim on a colony site.",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "baseBlueprintUUID": "",
@@ -635,13 +637,14 @@
         "Heavy Post-Trans Metals": "161"
       },
       "UUID": "5221424f-ed0b-4ce0-8c86-c64b597fc7b2",
-      "ItemType": 7,
+      "ItemType": "Blueprint",
       "BaseItemTypeID": "",
       "Name": "Corvette",
       "NickName": "",
       "Description": "Ship Hull",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "baseBlueprintUUID": "",
@@ -670,13 +673,14 @@
         "Heavy Alkali Metals": "125"
       },
       "UUID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
-      "ItemType": 9,
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "Entertainment Centre Flatpack",
       "NickName": "",
       "Description": "Where colonist go to relax and blow off some steam.",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "baseBlueprintUUID": "",
@@ -702,13 +706,14 @@
         "Heavy Post-Trans Metals": "156"
       },
       "UUID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
-      "ItemType": 9,
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "Habitation Block Flatpack",
       "NickName": "",
       "Description": "Life support and habitation functions enough for 4 Details.",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "baseBlueprintUUID": "",
@@ -737,13 +742,14 @@
         "Heavy Alkali Metals": "60"
       },
       "UUID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
-      "ItemType": 9,
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "Hydroponics Bay Flatpack",
       "NickName": "",
       "Description": "Provide food enough for 4 Details.",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "baseBlueprintUUID": "",
@@ -773,13 +779,14 @@
         "Lanthanides": "100"
       },
       "UUID": "ebbf669a-3987-4e4f-87db-a3236e6dd4ea",
-      "ItemType": 9,
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "Manufactory Flatpack",
       "NickName": "",
       "Description": "Manufacturing plant.",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "baseBlueprintUUID": "",
@@ -810,13 +817,14 @@
         "Heavy Alkali Metals": "90"
       },
       "UUID": "584616b3-b8c0-4ca5-98d2-66e39587ae57",
-      "ItemType": 9,
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "Mining Rig Flatpack",
       "NickName": "",
       "Description": "Can mine one surveyed resource vein.",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "baseBlueprintUUID": "",
@@ -846,53 +854,51 @@
         "Strong Alkali Organics": "352"
       },
       "UUID": "b0633002-68ea-4c02-83cf-10292a9a420c",
-      "ItemType": 9,
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "RAK-L MatScan",
       "NickName": "",
       "Description": "",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
-      "baseBlueprintUUID": "82609bb4-32e5-42f4-aee8-244181501ace",
+      "baseBlueprintUUID": "",
       "BluePrintType": "SystemObjectScanner",
-      "Evolution": 5,
+      "Evolution": 0,
       "TechLevel": "MilSpec",
       "Class": 6,
-      "CopyCost": 1,
+      "CopyCost": 0,
       "Properties": {
         "ManufactureTime": "4h 0m",
-        "Mass": "116",
+        "Mass": "110",
         "CargoVolumeSize": "145",
         "MaxAllowedOnShip": "1",
         "PowerRequired": "182",
-        "Health": "635",
-        "EngCapacityRequired": "448",
-        "WearAndTearRate": "3.214",
+        "Health": "660",
+        "EngCapacityRequired": "430",
+        "WearAndTearRate": "3",
         "MaximumDamageRepairRate": "80",
         "SensorAbundanceFactor": "3",
         "PurityModifier": "22.5",
-        "ScanLevel": "105"
+        "ScanLevel": "75"
       },
       "Resources": {
-        "Heavy Noble Gases": "1167",
-        "Acidic Inorganics": "249",
-        "Metaloids": "454",
-        "Complex Non-Metallics": "104",
-        "Strong Acidic Inorganics": "285",
-        "Heavy Alkali Metals": "65",
-        "S1. Translivermoric Exotics": "87",
-        "S2. Element 126": "42"
+        "Post-Trans Metals": "1622",
+        "Non-Metallics": "285",
+        "Heavy Post-Trans Metals": "558",
+        "Strong Alkali Organics": "284"
       },
-      "UUID": "4a908839-be77-4e45-b6de-8067b9e0b188",
-      "ItemType": 9,
+      "UUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
-      "NickName": "105 Scan",
+      "NickName": "",
       "Description": "",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "baseBlueprintUUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
@@ -926,49 +932,51 @@
         "S2. Superactinides": "30"
       },
       "UUID": "82609bb4-32e5-42f4-aee8-244181501ace",
-      "ItemType": 9,
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
       "NickName": "98 Scan",
       "Description": "",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
-      "baseBlueprintUUID": "",
+      "baseBlueprintUUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
       "BluePrintType": "SystemObjectScanner",
-      "Evolution": 0,
+      "Evolution": 2,
       "TechLevel": "MilSpec",
       "Class": 6,
       "CopyCost": 0,
       "Properties": {
         "ManufactureTime": "4h 0m",
-        "Mass": "110",
+        "Mass": "116",
         "CargoVolumeSize": "145",
         "MaxAllowedOnShip": "1",
         "PowerRequired": "182",
-        "Health": "660",
+        "Health": "635",
         "EngCapacityRequired": "430",
         "WearAndTearRate": "3",
         "MaximumDamageRepairRate": "80",
         "SensorAbundanceFactor": "3",
         "PurityModifier": "22.5",
-        "ScanLevel": "75"
+        "ScanLevel": "86"
       },
       "Resources": {
-        "Post-Trans Metals": "1622",
-        "Non-Metallics": "285",
-        "Heavy Post-Trans Metals": "558",
-        "Strong Alkali Organics": "284"
+        "Post-Trans Metals": "1433",
+        "Metallics": "218",
+        "Metaloids": "508",
+        "Complex Metallics": "235"
       },
-      "UUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
-      "ItemType": 9,
+      "UUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
-      "NickName": "",
+      "NickName": "86 Scan",
       "Description": "",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "baseBlueprintUUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
@@ -1001,21 +1009,22 @@
         "S1. Translivermoric Exotics": "22"
       },
       "UUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
-      "ItemType": 9,
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
       "NickName": "90 Scan",
       "Description": "",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
-      "baseBlueprintUUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
+      "baseBlueprintUUID": "82609bb4-32e5-42f4-aee8-244181501ace",
       "BluePrintType": "SystemObjectScanner",
-      "Evolution": 2,
+      "Evolution": 5,
       "TechLevel": "MilSpec",
       "Class": 6,
-      "CopyCost": 0,
+      "CopyCost": 1,
       "Properties": {
         "ManufactureTime": "4h 0m",
         "Mass": "116",
@@ -1023,27 +1032,32 @@
         "MaxAllowedOnShip": "1",
         "PowerRequired": "182",
         "Health": "635",
-        "EngCapacityRequired": "430",
-        "WearAndTearRate": "3",
+        "EngCapacityRequired": "448",
+        "WearAndTearRate": "3.214",
         "MaximumDamageRepairRate": "80",
         "SensorAbundanceFactor": "3",
         "PurityModifier": "22.5",
-        "ScanLevel": "86"
+        "ScanLevel": "105"
       },
       "Resources": {
-        "Post-Trans Metals": "1433",
-        "Metallics": "218",
-        "Metaloids": "508",
-        "Complex Metallics": "235"
+        "Heavy Noble Gases": "1167",
+        "Acidic Inorganics": "249",
+        "Metaloids": "454",
+        "Complex Non-Metallics": "104",
+        "Strong Acidic Inorganics": "285",
+        "Heavy Alkali Metals": "65",
+        "S1. Translivermoric Exotics": "87",
+        "S2. Element 126": "42"
       },
-      "UUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
-      "ItemType": 9,
+      "UUID": "4a908839-be77-4e45-b6de-8067b9e0b188",
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
-      "NickName": "86 Scan",
+      "NickName": "105 Scan",
       "Description": "",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "baseBlueprintUUID": "",
@@ -1070,13 +1084,14 @@
         "Heavy Alkali Metals": "145"
       },
       "UUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
-      "ItemType": 9,
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "Reactor Core Flatpack",
       "NickName": "",
       "Description": "Provides 6Mw of power per core.",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "baseBlueprintUUID": "",
@@ -1107,13 +1122,14 @@
         "Heavy Alkali Metals": "123"
       },
       "UUID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
-      "ItemType": 9,
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "Refinery Flatpack",
       "NickName": "",
       "Description": "Process raw materials into refined materials.",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "baseBlueprintUUID": "",
@@ -1140,13 +1156,14 @@
         "Metaloids": "241"
       },
       "UUID": "ebaa1a5d-1b2a-49f4-ac46-639ffbde7511",
-      "ItemType": 9,
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "Remote Operations Array Flatpack",
       "NickName": "",
       "Description": "Colony owner can control all colony operations remotely within a set range.",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "baseBlueprintUUID": "",
@@ -1174,13 +1191,14 @@
         "Strong Alkali Organics": "76"
       },
       "UUID": "a86cc2fa-478a-498c-8c17-166f9fa5c9d7",
-      "ItemType": 9,
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "Research Laboratory Flatpack",
       "NickName": "",
       "Description": "Research & Development facility.",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "baseBlueprintUUID": "",
@@ -1207,13 +1225,14 @@
         "Metaloids": "178"
       },
       "UUID": "513b5bc8-db3d-4808-8cc4-a93bc9f65354",
-      "ItemType": 9,
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "Warehouse Flatpack",
       "NickName": "",
       "Description": "Colony mass storage facility.",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "baseBlueprintUUID": "",
@@ -1239,13 +1258,14 @@
         "Acidic Inorganics": "112"
       },
       "UUID": "f5ca46b3-9264-4f73-aa2c-df4dcff93238",
-      "ItemType": 9,
+      "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "WSMS-L test77123",
       "NickName": "JAS37",
       "Description": "JAS37 desc",
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     }
   ],
   "Survey": [
@@ -1298,13 +1318,14 @@
         }
       },
       "UUID": "88df53eb-5d71-451b-abf9-8273e5805b93",
-      "ItemType": 11,
+      "ItemType": "Share",
       "BaseItemTypeID": "",
       "Name": null,
       "NickName": "Nick",
       "Description": null,
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
       "ScannedBy": "Scalorn Scorpus",
@@ -1345,13 +1366,14 @@
         }
       },
       "UUID": "e0dc95ca-ff80-452b-90e8-3ab9a24a64e8",
-      "ItemType": 11,
+      "ItemType": "Share",
       "BaseItemTypeID": "",
       "Name": null,
       "NickName": null,
       "Description": null,
       "Quantity": 0,
-      "ResourcePurity": ""
+      "ResourcePurity": "",
+      "Volume": 0.0
     }
   ],
   "Colony": [
@@ -1362,93 +1384,102 @@
       "Items": {
         "9c7400d4-d0c6-4e1a-aa31-b789510d5973": {
   "UUID": "9c7400d4-d0c6-4e1a-aa31-b789510d5973",
-  "ItemType": 6,
+  "ItemType": "Resource",
   "BaseItemTypeID": "Lanthanides",
   "Name": "Lanthanides",
   "NickName": "",
   "Description": "",
   "Quantity": 52354,
-  "ResourcePurity": "High"
+  "ResourcePurity": "High",
+  "Volume": 0.0
 },
         "9b1f7433-cc3c-4480-89c0-cec22dd3e8b2": {
   "UUID": "9b1f7433-cc3c-4480-89c0-cec22dd3e8b2",
-  "ItemType": 1,
+  "ItemType": "Commodity",
   "BaseItemTypeID": "Advanced Biolubricants",
   "Name": "Advanced Biolubricants",
   "NickName": "",
   "Description": "",
   "Quantity": 1,
-  "ResourcePurity": ""
+  "ResourcePurity": "",
+  "Volume": 0.0
 },
         "76f1d0d3-a587-4ebd-8e65-7868c32f0224": {
   "UUID": "76f1d0d3-a587-4ebd-8e65-7868c32f0224",
-  "ItemType": 9,
+  "ItemType": "Survey",
   "BaseItemTypeID": "88df53eb-5d71-451b-abf9-8273e5805b93",
   "Name": null,
   "NickName": "",
   "Description": "",
   "Quantity": 1,
-  "ResourcePurity": ""
+  "ResourcePurity": "",
+  "Volume": 0.0
 },
         "af7c791a-5d10-45f8-8f7f-db2164f38d7a": {
   "UUID": "af7c791a-5d10-45f8-8f7f-db2164f38d7a",
-  "ItemType": 7,
+  "ItemType": "Blueprint",
   "BaseItemTypeID": "6cb8fc7c-9ee8-4a9b-bb53-45f5feb229cb",
   "Name": "AMX-LL Reactor Core",
   "NickName": "",
   "Description": "",
   "Quantity": 1,
-  "ResourcePurity": ""
+  "ResourcePurity": "",
+  "Volume": 0.0
 },
         "de380384-cfe9-4b4b-b767-de17bafe1dc6": {
   "UUID": "de380384-cfe9-4b4b-b767-de17bafe1dc6",
-  "ItemType": 6,
+  "ItemType": "Resource",
   "BaseItemTypeID": "Transuranic Volatiles",
   "Name": "Transuranic Volatiles",
   "NickName": "",
   "Description": "",
   "Quantity": 3,
-  "ResourcePurity": "High"
+  "ResourcePurity": "High",
+  "Volume": 0.0
 },
         "0d3e326c-1169-4901-b0d3-72fed877e39e": {
   "UUID": "0d3e326c-1169-4901-b0d3-72fed877e39e",
-  "ItemType": 6,
+  "ItemType": "Resource",
   "BaseItemTypeID": "Superheavy Exotics",
   "Name": "Superheavy Exotics",
   "NickName": "",
   "Description": "",
   "Quantity": 3,
-  "ResourcePurity": "Low"
+  "ResourcePurity": "Low",
+  "Volume": 0.0
 },
         "2d092dbd-c512-4747-8e25-16e4a7e6d9cb": {
   "UUID": "2d092dbd-c512-4747-8e25-16e4a7e6d9cb",
-  "ItemType": 6,
+  "ItemType": "Resource",
   "BaseItemTypeID": "Non-Metallics",
   "Name": "Non-Metallics",
   "NickName": "",
   "Description": "",
   "Quantity": 127,
-  "ResourcePurity": "High"
+  "ResourcePurity": "High",
+  "Volume": 0.0
 },
         "2ebbb3c6-9531-407b-90e9-d642a337ed79": {
   "UUID": "2ebbb3c6-9531-407b-90e9-d642a337ed79",
-  "ItemType": 6,
+  "ItemType": "Resource",
   "BaseItemTypeID": "Alkali Inorganics",
   "Name": "Alkali Inorganics",
   "NickName": "",
   "Description": "",
   "Quantity": 161,
-  "ResourcePurity": "High"
+  "ResourcePurity": "High",
+  "Volume": 0.0
 },
         "1779ccde-4d88-4ec3-8617-0f090f4a1aa3": {
   "UUID": "1779ccde-4d88-4ec3-8617-0f090f4a1aa3",
-  "ItemType": 6,
+  "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Alkali Metals",
   "Name": "Heavy Alkali Metals",
   "NickName": "",
   "Description": "",
   "Quantity": 6,
-  "ResourcePurity": "High"
+  "ResourcePurity": "High",
+  "Volume": 0.0
 }
       },
       "Structures": [
@@ -1471,44 +1502,6 @@
           "MiningSurvey": null,
           "MiningSurveyResource": null,
           "MiningLeftOvers": 0.0,
-          "Statuses": {
-            "Actual": {
-              "PowerProvided": 0.0,
-              "PowerRequired": 0.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 2.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 2.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 2.0,
-              "WarehouseCapacity": 10000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": false,
-              "UnallocatedSpecialistPresent": true
-            },
-            "Ideal": {
-              "PowerProvided": 0.0,
-              "PowerRequired": 0.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 2.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 2.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 2.0,
-              "WarehouseCapacity": 10000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": false,
-              "UnallocatedSpecialistPresent": true
-            }
-          },
-          "Power": 0.0,
-          "Habitation": 0.0,
-          "Food": 0.0,
-          "Entertainment": 0.0,
-          "WarehouseCapacity": 0.0,
-          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -1531,44 +1524,6 @@
           "MiningSurvey": null,
           "MiningSurveyResource": null,
           "MiningLeftOvers": 0.0,
-          "Statuses": {
-            "Actual": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 0.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 2.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 2.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 2.0,
-              "WarehouseCapacity": 10000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": false,
-              "UnallocatedSpecialistPresent": true
-            },
-            "Ideal": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 0.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 2.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 2.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 2.0,
-              "WarehouseCapacity": 10000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": false,
-              "UnallocatedSpecialistPresent": true
-            }
-          },
-          "Power": 0.0,
-          "Habitation": 0.0,
-          "Food": 0.0,
-          "Entertainment": 0.0,
-          "WarehouseCapacity": 0.0,
-          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -1591,44 +1546,6 @@
           "MiningSurvey": null,
           "MiningSurveyResource": null,
           "MiningLeftOvers": 0.0,
-          "Statuses": {
-            "Actual": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 2.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 4.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 4.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 4.0,
-              "WarehouseCapacity": 10000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            },
-            "Ideal": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 2.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 4.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 4.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 4.0,
-              "WarehouseCapacity": 10000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            }
-          },
-          "Power": 0.0,
-          "Habitation": 0.0,
-          "Food": 0.0,
-          "Entertainment": 0.0,
-          "WarehouseCapacity": 0.0,
-          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -1651,44 +1568,6 @@
           "MiningSurvey": null,
           "MiningSurveyResource": null,
           "MiningLeftOvers": 0.0,
-          "Statuses": {
-            "Actual": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 4.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 5.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 5.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 5.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            },
-            "Ideal": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 4.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 5.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 5.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 5.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            }
-          },
-          "Power": 0.0,
-          "Habitation": 0.0,
-          "Food": 0.0,
-          "Entertainment": 0.0,
-          "WarehouseCapacity": 0.0,
-          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -1713,44 +1592,6 @@
           "MiningSurvey": null,
           "MiningSurveyResource": null,
           "MiningLeftOvers": 0.0,
-          "Statuses": {
-            "Actual": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 4.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 5.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 5.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 5.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            },
-            "Ideal": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 9.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 6.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 6.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 6.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            }
-          },
-          "Power": 0.0,
-          "Habitation": 0.0,
-          "Food": 0.0,
-          "Entertainment": 0.0,
-          "WarehouseCapacity": 0.0,
-          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -1775,44 +1616,6 @@
           "MiningSurvey": null,
           "MiningSurveyResource": null,
           "MiningLeftOvers": 0.0,
-          "Statuses": {
-            "Actual": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 4.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 5.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 5.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 5.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            },
-            "Ideal": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 14.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 7.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 7.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 7.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            }
-          },
-          "Power": 0.0,
-          "Habitation": 0.0,
-          "Food": 0.0,
-          "Entertainment": 0.0,
-          "WarehouseCapacity": 0.0,
-          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -1835,44 +1638,6 @@
           "MiningSurvey": null,
           "MiningSurveyResource": null,
           "MiningLeftOvers": 0.0,
-          "Statuses": {
-            "Actual": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 6.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 6.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 6.0,
-              "EntertainmentProvided": 10.0,
-              "EntertainmentRequired": 6.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            },
-            "Ideal": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 16.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 8.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 8.0,
-              "EntertainmentProvided": 10.0,
-              "EntertainmentRequired": 8.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            }
-          },
-          "Power": 0.0,
-          "Habitation": 0.0,
-          "Food": 0.0,
-          "Entertainment": 0.0,
-          "WarehouseCapacity": 0.0,
-          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -1894,44 +1659,6 @@
           "MiningSurvey": null,
           "MiningSurveyResource": null,
           "MiningLeftOvers": 0.0,
-          "Statuses": {
-            "Actual": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 7.0,
-              "HabitationProvision": 6.0,
-              "HabitationRequired": 6.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 6.0,
-              "EntertainmentProvided": 10.0,
-              "EntertainmentRequired": 6.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            },
-            "Ideal": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 17.0,
-              "HabitationProvision": 6.0,
-              "HabitationRequired": 8.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 8.0,
-              "EntertainmentProvided": 10.0,
-              "EntertainmentRequired": 8.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            }
-          },
-          "Power": 0.0,
-          "Habitation": 0.0,
-          "Food": 0.0,
-          "Entertainment": 0.0,
-          "WarehouseCapacity": 0.0,
-          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -1954,44 +1681,6 @@
           "MiningSurvey": null,
           "MiningSurveyResource": null,
           "MiningLeftOvers": 0.0,
-          "Statuses": {
-            "Actual": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 8.0,
-              "HabitationProvision": 6.0,
-              "HabitationRequired": 7.0,
-              "FoodProvision": 6.0,
-              "FoodRequired": 7.0,
-              "EntertainmentProvided": 10.0,
-              "EntertainmentRequired": 7.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            },
-            "Ideal": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 18.0,
-              "HabitationProvision": 6.0,
-              "HabitationRequired": 9.0,
-              "FoodProvision": 6.0,
-              "FoodRequired": 9.0,
-              "EntertainmentProvided": 10.0,
-              "EntertainmentRequired": 9.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            }
-          },
-          "Power": 0.0,
-          "Habitation": 0.0,
-          "Food": 0.0,
-          "Entertainment": 0.0,
-          "WarehouseCapacity": 0.0,
-          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -2011,44 +1700,6 @@
           "MiningSurvey": null,
           "MiningSurveyResource": null,
           "MiningLeftOvers": 0.0,
-          "Statuses": {
-            "Actual": {
-              "PowerProvided": 12.0,
-              "PowerRequired": 8.0,
-              "HabitationProvision": 6.0,
-              "HabitationRequired": 7.0,
-              "FoodProvision": 6.0,
-              "FoodRequired": 7.0,
-              "EntertainmentProvided": 10.0,
-              "EntertainmentRequired": 7.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            },
-            "Ideal": {
-              "PowerProvided": 12.0,
-              "PowerRequired": 18.0,
-              "HabitationProvision": 6.0,
-              "HabitationRequired": 9.0,
-              "FoodProvision": 6.0,
-              "FoodRequired": 9.0,
-              "EntertainmentProvided": 10.0,
-              "EntertainmentRequired": 9.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            }
-          },
-          "Power": 0.0,
-          "Habitation": 0.0,
-          "Food": 0.0,
-          "Entertainment": 0.0,
-          "WarehouseCapacity": 0.0,
-          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -2070,44 +1721,6 @@
           "MiningSurvey": null,
           "MiningSurveyResource": "",
           "MiningLeftOvers": 4.1,
-          "Statuses": {
-            "Actual": {
-              "PowerProvided": 12.0,
-              "PowerRequired": 10.0,
-              "HabitationProvision": 6.0,
-              "HabitationRequired": 8.0,
-              "FoodProvision": 6.0,
-              "FoodRequired": 8.0,
-              "EntertainmentProvided": 10.0,
-              "EntertainmentRequired": 8.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            },
-            "Ideal": {
-              "PowerProvided": 12.0,
-              "PowerRequired": 20.0,
-              "HabitationProvision": 6.0,
-              "HabitationRequired": 10.0,
-              "FoodProvision": 6.0,
-              "FoodRequired": 10.0,
-              "EntertainmentProvided": 10.0,
-              "EntertainmentRequired": 10.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            }
-          },
-          "Power": 0.0,
-          "Habitation": 0.0,
-          "Food": 0.0,
-          "Entertainment": 0.0,
-          "WarehouseCapacity": 0.0,
-          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -2130,44 +1743,6 @@
           "MiningSurvey": null,
           "MiningSurveyResource": null,
           "MiningLeftOvers": 0.0,
-          "Statuses": {
-            "Actual": {
-              "PowerProvided": 12.0,
-              "PowerRequired": 14.0,
-              "HabitationProvision": 6.0,
-              "HabitationRequired": 9.0,
-              "FoodProvision": 6.0,
-              "FoodRequired": 9.0,
-              "EntertainmentProvided": 10.0,
-              "EntertainmentRequired": 9.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            },
-            "Ideal": {
-              "PowerProvided": 12.0,
-              "PowerRequired": 24.0,
-              "HabitationProvision": 6.0,
-              "HabitationRequired": 11.0,
-              "FoodProvision": 6.0,
-              "FoodRequired": 11.0,
-              "EntertainmentProvided": 10.0,
-              "EntertainmentRequired": 11.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            }
-          },
-          "Power": 0.0,
-          "Habitation": 0.0,
-          "Food": 0.0,
-          "Entertainment": 0.0,
-          "WarehouseCapacity": 0.0,
-          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -2177,14 +1752,19 @@
         {
           "Name": "Advanced Biolubricants",
           "Requested": 23,
-          "Delivered": 0
+          "Delivered": 0,
+          "NeedBy": "0001-01-01T00:00:00",
+          "Fulfilled": false
         },
         {
           "Name": "AI Finance Cubes",
           "Requested": 1231,
-          "Delivered": 0
+          "Delivered": 0,
+          "NeedBy": "0001-01-01T00:00:00",
+          "Fulfilled": false
         }
-      ]
+      ],
+      "Locks": {}
     },
     {
       "UUID": "a94b0eef-267d-4a30-9e92-7ac1f07f667c",
@@ -2193,13 +1773,14 @@
       "Items": {
         "d384a543-130c-4b96-8d65-c60f9011bf74": {
   "UUID": "d384a543-130c-4b96-8d65-c60f9011bf74",
-  "ItemType": 0,
+  "ItemType": "None",
   "BaseItemTypeID": "",
   "Name": "",
   "NickName": "",
   "Description": "",
   "Quantity": 0,
-  "ResourcePurity": ""
+  "ResourcePurity": "",
+  "Volume": 0.0
 }
       },
       "Structures": [
@@ -2221,44 +1802,6 @@
           "MiningSurvey": null,
           "MiningSurveyResource": null,
           "MiningLeftOvers": 0.0,
-          "Statuses": {
-            "Actual": {
-              "PowerProvided": 0.0,
-              "PowerRequired": 0.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 2.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 2.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 2.0,
-              "WarehouseCapacity": 10000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": false,
-              "UnallocatedSpecialistPresent": true
-            },
-            "Ideal": {
-              "PowerProvided": 0.0,
-              "PowerRequired": 0.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 2.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 2.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 2.0,
-              "WarehouseCapacity": 10000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": false,
-              "UnallocatedSpecialistPresent": true
-            }
-          },
-          "Power": 0.0,
-          "Habitation": 0.0,
-          "Food": 0.0,
-          "Entertainment": 0.0,
-          "WarehouseCapacity": 0.0,
-          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -2280,44 +1823,6 @@
           "MiningSurvey": null,
           "MiningSurveyResource": null,
           "MiningLeftOvers": 0.0,
-          "Statuses": {
-            "Actual": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 0.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 2.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 2.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 2.0,
-              "WarehouseCapacity": 10000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": false,
-              "UnallocatedSpecialistPresent": true
-            },
-            "Ideal": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 0.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 2.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 2.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 2.0,
-              "WarehouseCapacity": 10000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": false,
-              "UnallocatedSpecialistPresent": true
-            }
-          },
-          "Power": 0.0,
-          "Habitation": 0.0,
-          "Food": 0.0,
-          "Entertainment": 0.0,
-          "WarehouseCapacity": 0.0,
-          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -2340,44 +1845,6 @@
           "MiningSurvey": null,
           "MiningSurveyResource": null,
           "MiningLeftOvers": 0.0,
-          "Statuses": {
-            "Actual": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 2.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 4.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 4.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 4.0,
-              "WarehouseCapacity": 10000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            },
-            "Ideal": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 2.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 4.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 4.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 4.0,
-              "WarehouseCapacity": 10000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            }
-          },
-          "Power": 0.0,
-          "Habitation": 0.0,
-          "Food": 0.0,
-          "Entertainment": 0.0,
-          "WarehouseCapacity": 0.0,
-          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
@@ -2400,50 +1867,13 @@
           "MiningSurvey": null,
           "MiningSurveyResource": null,
           "MiningLeftOvers": 0.0,
-          "Statuses": {
-            "Actual": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 4.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 5.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 5.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 5.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            },
-            "Ideal": {
-              "PowerProvided": 6.0,
-              "PowerRequired": 4.0,
-              "HabitationProvision": 2.0,
-              "HabitationRequired": 5.0,
-              "FoodProvision": 2.0,
-              "FoodRequired": 5.0,
-              "EntertainmentProvided": 0.0,
-              "EntertainmentRequired": 5.0,
-              "WarehouseCapacity": 260000.0,
-              "WarehouseRequired": 0.0,
-              "UnallocatedBlueCollarPresent": false,
-              "UnallocatedWhiteCollarPresent": true,
-              "UnallocatedSpecialistPresent": true
-            }
-          },
-          "Power": 0.0,
-          "Habitation": 0.0,
-          "Food": 0.0,
-          "Entertainment": 0.0,
-          "WarehouseCapacity": 0.0,
-          "WorkersAssigned": 0,
           "CurrentAttitude": null,
           "ContentmentIndex": 0,
           "WageLevel": 0
         }
       ],
-      "Commodities": []
+      "Commodities": [],
+      "Locks": {}
     }
   ]
 }
