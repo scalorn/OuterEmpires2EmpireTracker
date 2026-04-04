@@ -70,23 +70,6 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void cmdSave_Click(object sender, EventArgs e)
         {
-            Baseline.Colony colony;
-
-            if (selectedColony != null)
-            {
-                colony = selectedColony;
-            }
-            else
-            {
-                colony = new Baseline.Colony();
-            }
-
-            if (colony.UUID == null)
-            {
-                Guid myUuid = Guid.NewGuid();
-                colony.UUID = myUuid.ToString();
-            }
-
             colonyViewModel.PlanetName = txtPlanetName.Text;
             colonyViewModel.ColonyName = txtColonyName.Text;
             colonyViewModel.Save();

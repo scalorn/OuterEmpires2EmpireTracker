@@ -217,9 +217,9 @@ Volume SHALL be set when an item is added to the warehouse.
 
 ---
 
-### AMB-028 — FormColony.cmdSave_Click still has dead code
-**Context:** `cmdSave_Click` creates a local `colony` variable and checks `selectedColony != null`, but then always uses `colonyViewModel` for the actual save. The local variable and the null check are dead code from before the MVVM refactor.  
-**Question:** Should this be cleaned up as part of the MVVM completion work?
+### AMB-028 — RESOLVED
+**Resolution:** Dead code removed from `cmdSave_Click`. The local `colony` variable, `selectedColony` null check, and UUID assignment were all superseded by `colonyViewModel.Save()` which handles UUID generation and persistence.  
+**Action:** FormColony.cs cleaned up.
 
 ---
 
