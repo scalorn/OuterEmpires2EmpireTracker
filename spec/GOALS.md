@@ -210,19 +210,27 @@ Wraps `Baseline.Colony` to hide direct list/bag manipulation:
 - BlueprintTypes.Refinery = "Flatpacks/Refinery"
 - ColonyStructure data: RefiningResource, RefiningResourcePurity fields
 - Selection combo populated with unrefined resources from warehouse + actively mined resources
-- Start button starts 1-hour repeating timer
+- Synthetic recipes shown when input resources available (e.g. "S1. Translanthanic Exotics <- Lanthanides (Refined)")
+- Start button starts 1-hour repeating timer aligned to top-of-hour boundaries
 - Progress status: `<consumed>:<produced> <resource> (<purity>)` with purity multipliers (Low=1x, Med=3x, High=5x of base rate 25)
-- Colony.ProcessRefinery: consumes up to 25 unrefined per interval, produces refined output
+- Synthetic progress: `<consumeRate>:<produceRate> <outputResource>`
+- Colony.ProcessRefinery dispatches to normal or synthetic processing based on RefiningRecipes
 - Depleted unrefined resources removed from warehouse (no zero-quantity items)
-- Done button force-processes one interval and fires ColonyStructureDataChanged
+- Done button force-processes one interval (repeating) or expires timer (one-shot), fires ColonyStructureDataChanged
 - Item grid refreshes on structure data changes
+
+#### Synthetic Refining (RefiningRecipes)
+- S1 tier: Lanthanides→S1.Translanthanic, Superheavy Exotics→S1.Translivermoric, Transuranic Volatiles→S1.Transuranic (consume 1250, produce 25)
+- S2 tier: S1.Translanthanic→S2.Element126, S1.Translivermoric→S2.Element127, S1.Transuranic→S2.Superactinides (consume 500, produce 25)
+- ProcessColony processes refineries in tier order: normal→S1→S2 (ensures S1 output available for S2)
+- Partial batches produce proportionally
 
 ### 13. Colony Structure — Built+Online Gate
 **Status: Complete**
 
-- All structure types (mining rig, refinery, future types) require Built=true AND Online=true before showing selection/process controls
+- All structure types (mining rig, refinery, research lab, future types) require Built=true AND Online=true before showing selection/process controls
 - Structures that are not built+online hide flpSelection, flpSubSelection, flpCompletionTime
-- Applied consistently in handleMiningRigControls, handleRefineryControls, and the default else branch
+- Applied consistently in handleMiningRigControls, handleRefineryControls, handleResearchLabControls, and the default else branch
 
 ### 14. Mining Rig Improvements
 **Status: Complete**
@@ -230,6 +238,19 @@ Wraps `Baseline.Colony` to hide direct list/bag manipulation:
 - Sub-selection hidden when empty survey selected (fixed SelectedIndex >= 0 check)
 - rtbProgressStatus shows `<Rate>/h <Resource> (<Purity>)` when process is active
 - Cleared when no process running
+- Timer aligned to top-of-hour boundaries
+
+### 15. Research Laboratory Support
+**Status: Complete**
+
+- BlueprintTypes.ResearchLaboratory = "Flatpacks/ResearchLaboratory"
+- ColonyStructure data: ResearchingBlueprintUUID field
+- Selection combo populated with researchable blueprints (CanResearch property in PropertyBag, default true; evolution < 15)
+- Start button starts one-shot timer based on ResearchTimeLookup (configurable table, evolution 0-14)
+- Progress status: `Evo N->N+1 BlueprintName`
+- Colony.ProcessResearchLab: creates evolved blueprint (evolution+1, copies properties, empty resources, NickName="NEEDS SCANNED")
+- New blueprint added to playerContext.blueprintList and colony warehouse
+- One-shot timer completion handled correctly in ProcessColony outer gate and cmdDone_Click
 
 ---
 
@@ -237,11 +258,13 @@ Wraps `Baseline.Colony` to hide direct list/bag manipulation:
 - MVVM completed across all forms (Blueprint, Survey)
 - All Recommendations (1-8) resolved
 - SurveyParser implemented, tested, wired into FormSurvey
-- Refinery rig feature implemented
+- Refinery rig feature with synthetic resource support
+- Research laboratory feature
 - Colony structure built+online gate applied
-- Mining rig UI improvements
+- Mining rig UI improvements and top-of-hour alignment
 - NLog logging added throughout codebase
 - Test data moved to external files
 - Delete confirmation dialog added to FormPlayerProfile
 - Resource static data unit tests added
+- Multiple bug fixes (timer completion, item grid refresh, zero-quantity cleanup)
 - 465 total tests, all passing
