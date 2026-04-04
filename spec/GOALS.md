@@ -1,5 +1,17 @@
 # OE2 Empire Tracker — Goals & Progress
 
+## Specification Documents
+
+- [Requirements README](requirements/README.md) — index of all requirement files
+- [Data Model Requirements](requirements/DataModel.md)
+- [Colony Requirements](requirements/Colony.md)
+- [Player Profile Requirements](requirements/PlayerProfile.md)
+- [Survey Requirements](requirements/Survey.md)
+- [Architecture Requirements](requirements/Architecture.md)
+- [Recommendations](../spec/Recommendations.md) — open issues needing approval
+
+---
+
 ## Approved Tasks
 
 ### 1. Colony Form — Structure Management
