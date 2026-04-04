@@ -35,9 +35,9 @@ Each item references the relevant requirement ID where one exists.
 
 ---
 
-### AMB-005 — ColonyStructure.buildQueueSequence is never used
-**Code behavior:** `buildQueueSequence` is declared and serialized but never set or read.  
-**Question:** Is this intended for the Flatpack Building Form (REQ-ARCH-065)? Should it be documented as such?
+### AMB-005 — RESOLVED
+**Resolution:** `buildQueueSequence` is an intentional field for explicitly tracking the order in which structures are queued to be built, independent of their display order in the list. It is a placeholder for the Flatpack Building Form feature (REQ-ARCH-065). The field SHALL be retained and serialized. No code change needed now.  
+**Action:** Colony.md updated with a requirement for buildQueueSequence.
 
 ---
 
