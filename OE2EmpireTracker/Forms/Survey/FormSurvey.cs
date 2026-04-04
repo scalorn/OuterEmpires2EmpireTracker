@@ -120,7 +120,7 @@ namespace OE2EmpireTracker.Forms.Survey
             // Scanner blueprint
             if (cmbScannerBlueprint.SelectedItem != null)
             {
-                Blueprint baseBlueprint = cmbScannerBlueprint.SelectedItem as Blueprint;
+                Data.Blueprint baseBlueprint = cmbScannerBlueprint.SelectedItem as Data.Blueprint;
                 viewModel.ScannerBlueprintUUID = baseBlueprint.UUID;
             }
             else

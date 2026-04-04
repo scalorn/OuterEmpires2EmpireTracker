@@ -396,3 +396,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Temp commit message file used by AI tooling
+COMMIT_MSG.tmp
