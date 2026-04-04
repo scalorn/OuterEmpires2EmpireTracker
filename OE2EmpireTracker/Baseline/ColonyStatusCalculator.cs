@@ -264,6 +264,20 @@ namespace OE2EmpireTracker.Baseline
                 if (perItem <= 0) continue;
 
                 int totalToLock = perItem * remaining;
+
+                // Ensure the resource item exists in the warehouse
+                var existing = colony.Items.FindResource(resourceName, "Refined");
+                if (existing.Count == 0)
+                {
+                    var resourceItem = new Data.Item(Data.ItemType.ItemTypeEnum.Resource, resourceName);
+                    resourceItem.UUID = System.Guid.NewGuid().ToString();
+                    resourceItem.BaseItemTypeID = resourceName;
+                    resourceItem.ResourcePurity = "Refined";
+                    resourceItem.Quantity = 0;
+                    resourceItem.Volume = 1;
+                    colony.Items.AddItem(resourceItem);
+                }
+
                 colony.Locks.LockItem(structure.UUID,
                     Data.ItemType.ItemTypeEnum.Resource, resourceName, totalToLock);
             }
