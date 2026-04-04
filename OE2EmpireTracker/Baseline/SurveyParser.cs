@@ -40,13 +40,22 @@ namespace OE2EmpireTracker.Baseline
                 };
                 doc.Load(sgmlReader);
 
-                // Extract the description line: "A detailed survey report taken on {date} by {name}"
+                // Extract the description line
                 XmlNode descNode = doc.SelectSingleNode(
                     "//div[contains(@class,'SmallSlideOut_Form_Row_Description')]");
                 if (descNode != null)
                 {
                     string descText = descNode.InnerText.Trim();
                     ParseDescription(survey, descText);
+                }
+
+                // Extract planet name from the title node (e.g. "Zeh Vazoran II M2, Zeh Vazoran (B465873)")
+                XmlNode titleNode = doc.SelectSingleNode(
+                    "//div[contains(@class,'SmallSlideOut_Form_Row_Text_Bold')]");
+                if (titleNode != null)
+                {
+                    string titleText = titleNode.InnerText.Trim();
+                    ParseTitle(survey, titleText);
                 }
 
                 // Extract resource rows
@@ -76,13 +85,34 @@ namespace OE2EmpireTracker.Baseline
         /// </summary>
         public static void ParseDescription(Survey survey, string descText)
         {
-            // Pattern: "...taken on {date} by {name}"
-            var match = Regex.Match(descText, @"taken\s+on\s+(.+?)\s+by\s+(.+)$", RegexOptions.IgnoreCase);
+            // Matches both "taken on {date} by {name}" and "generated on {date} by {name}"
+            var match = Regex.Match(descText, @"(?:taken|generated)\s+on\s+(.+?)\s+by\s+(.+)$", RegexOptions.IgnoreCase);
             if (match.Success)
             {
                 survey.DateTime = match.Groups[1].Value.Trim();
                 survey.ScannedBy = match.Groups[2].Value.Trim();
             }
+        }
+
+        /// <summary>
+        /// Parses the title line to extract PlanetName and optionally SurveyID.
+        /// Expected format: "PlanetName, SystemName (SurveyID)" or just "PlanetName"
+        /// </summary>
+        public static void ParseTitle(Survey survey, string titleText)
+        {
+            if (string.IsNullOrEmpty(titleText)) return;
+
+            // Try "PlanetName, SystemName (SurveyID)"
+            var m = Regex.Match(titleText, @"^(.+?),\s*.+?\((.+?)\)\s*$");
+            if (m.Success)
+            {
+                survey.PlanetName = m.Groups[1].Value.Trim();
+                survey.SurveyID = m.Groups[2].Value.Trim();
+                return;
+            }
+
+            // Fallback: use the whole title as planet name
+            survey.PlanetName = titleText;
         }
 
         /// <summary>
@@ -105,8 +135,8 @@ namespace OE2EmpireTracker.Baseline
                 purity = m.Groups[2].Value.Trim();
             }
 
-            // Extract numeric amount from "41/hour"
-            string amount = new string(rawDetail.Where(c => char.IsDigit(c)).ToArray());
+            // Extract numeric amount from "41/hour" or "36.3/hour"
+            string amount = new string(rawDetail.Where(c => char.IsDigit(c) || c == '.').ToArray());
             if (string.IsNullOrEmpty(amount))
                 amount = rawDetail;
 

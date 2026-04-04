@@ -283,7 +283,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
         /// TODO: Current implementation assumes 10-digit indices which may be brittle for non-standard cases.
         /// More flexible parsing should be implemented to handle edge cases.
         /// </remarks>
-        internal static string ExtractHtmlFragmentFromClipboardData(string htmlDataString)
+        public static string ExtractHtmlFragmentFromClipboardData(string htmlDataString)
         {
             // HTML Clipboard Format:
             // (https://msdn.microsoft.com/en-us/library/aa767917(v=vs.85).aspx)
