@@ -215,3 +215,6 @@ Part B — Fulfillment: `DeliveryItem_CheckedChanged` extended for commodity ite
 
 ## 63. Commodity Request Grid: Completed, NeedBy, Strikethrough, Auto-Delete
 Added Completed (checkbox) and Need By (countdown format) columns to the colony form commodity request grid. Fulfilled requests shown with strikethrough + gray text. NeedBy input on add row and editable in grid using CountDownTime format (e.g. "2d 6h 30m"). Completed checkbox editable in grid — checking sets Delivered=Requested, unchecking reverses. Fulfilled requests 3+ days past NeedBy auto-deleted on colony load. ColonyDataChanged event on PlayerContext for cross-form refresh when delivery execution updates a colony. ProgrammaticUpdateGuard used throughout to prevent StackOverflowException from cascading grid events. 590 tests passing.
+
+## 64. Forms Steering Compliance (Rec 16)
+Audited all forms against `.kiro/steering/forms.md` and applied `IProgrammaticUpdateSource` to all 6 non-compliant forms: FormBlueprint, FormSurvey, FormDeliveryRoute, FormDeliveryExecution, FormPlayerProfile, MainWindow. Added `ProgrammaticUpdateGuard` to all grid-mutating methods and `_isProgrammaticUpdate > 0` guard checks to all grid event handlers. FormPlayerProfile now subscribes to `CurrentPlayerChanged`. ColonyStructure left as-is (managed by parent FormColony). 590 tests passing.

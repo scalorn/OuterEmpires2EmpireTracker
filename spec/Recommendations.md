@@ -231,39 +231,14 @@ See [Delivery.md](requirements/Delivery.md) for full requirements.
 
 ---
 
-## 16. Forms Steering Compliance Audit
-**Priority: Medium — Code Quality**
-Audit of all forms against `.kiro/steering/forms.md` found the following gaps:
+## ~~16. Forms Steering Compliance Audit~~
+**Status: Complete**
+Audit of all forms against `.kiro/steering/forms.md`. All forms now implement `IProgrammaticUpdateSource`:
 
-### FormBlueprint.cs
-- [ ] Implement `IProgrammaticUpdateSource` with `_isProgrammaticUpdate` field
-- [ ] Add `ProgrammaticUpdateGuard` to all populate/clear grid methods
-- [ ] Add `_isProgrammaticUpdate > 0` guard to grid event handlers (CellValueChanged, CellValidating, SelectionChanged)
-
-### FormSurvey.cs
-- [ ] Implement `IProgrammaticUpdateSource` with `_isProgrammaticUpdate` field
-- [ ] Add `ProgrammaticUpdateGuard` to all populate/clear grid methods
-- [ ] Add `_isProgrammaticUpdate > 0` guard to grid event handlers
-
-### FormDeliveryRoute.cs
-- [ ] Implement `IProgrammaticUpdateSource` with `_isProgrammaticUpdate` field
-- [ ] Add `ProgrammaticUpdateGuard` to `PopulateStopsGrid`, `PopulatePlanGrids`, `ClearPlanGrids`
-- [ ] Add `_isProgrammaticUpdate > 0` guard to `dgvStops_SelectionChanged`
-
-### FormDeliveryExecution.cs
-- [ ] Implement `IProgrammaticUpdateSource` with `_isProgrammaticUpdate` field
-- [ ] Add `ProgrammaticUpdateGuard` to `BuildExecution`, `ClearExecution`
-
-### FormPlayerProfile.cs
-- [ ] Implement `IProgrammaticUpdateSource` with `_isProgrammaticUpdate` field
-- [ ] Subscribe to `playerContext.CurrentPlayerChanged` and refresh data
-
-### MainWindow.cs
-- [ ] Implement `IProgrammaticUpdateSource` with `_isProgrammaticUpdate` field (minimal — no grids, but establishes the pattern)
-
-### ColonyStructure.cs (UserControl)
-- Already implements `IProgrammaticUpdateSource` ✓
-- [ ] Subscribe to `playerContext.CurrentPlayerChanged` (currently relies on parent FormColony to refresh)
-
-### Already Compliant
-- **FormColony.cs** — fully compliant
+- FormBlueprint: guard in UpdatePropertyGrid/ClearForm/PopulateResources, guard checks in CellValidating/SelectionChanged
+- FormSurvey: guard in ClearForm/PopulateFormFromViewModel, guard check in CellValidating
+- FormDeliveryRoute: guard in PopulateStopsGrid/PopulatePlanGrids/ClearPlanGrids, guard check in dgvStops_SelectionChanged
+- FormDeliveryExecution: guard in BuildExecution/ClearExecution
+- FormPlayerProfile: added CurrentPlayerChanged subscription + handler
+- MainWindow: added interface (no grids, establishes pattern)
+- FormColony + ColonyStructure: already compliant
