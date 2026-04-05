@@ -952,7 +952,15 @@ namespace OE2EmpireTracker.Forms.Colony
 
             int qty;
             int.TryParse(txtCommodityRequestQuantity.Text, out qty);
-            colonyViewModel.AddCommodityRequest(commodity.Name, qty);
+
+            DateTime? needBy = null;
+            string needByText = txtCommodityRequestNeedBy.Text?.Trim();
+            if (!string.IsNullOrEmpty(needByText))
+            {
+                needBy = ParseCountdownToDateTime(needByText);
+            }
+
+            colonyViewModel.AddCommodityRequest(commodity.Name, qty, needBy);
             PopulateCommodityRequestGrid();
         }
 
@@ -990,13 +998,27 @@ namespace OE2EmpireTracker.Forms.Colony
             try { dgvCommodityRequests.EndEdit(); } catch { }
             dgvCommodityRequests.Rows.Clear();
             dgvCommodityRequests.CellValidating += dgvCommodityRequests_CellValidating;
+
+            // Auto-delete expired fulfilled requests
+            int cleaned = colonyViewModel.CleanupExpiredCommodityRequests();
+            if (cleaned > 0)
+                Log.Debug("Cleaned up {0} expired commodity requests", cleaned);
+
             foreach (CommodityRequested request in colonyViewModel.GetCommodityRequests())
             {
-                dgvCommodityRequests.Rows.Add();
-                DataGridViewRow row = dgvCommodityRequests.Rows[dgvCommodityRequests.RowCount - 2];
+                int idx = dgvCommodityRequests.Rows.Add();
+                DataGridViewRow row = dgvCommodityRequests.Rows[idx];
                 row.Tag = request;
                 row.Cells[0].Value = request.Name;
                 row.Cells[1].Value = request.Requested;
+                row.Cells[2].Value = request.Fulfilled;
+                row.Cells[3].Value = FormatNeedByCountdown(request.NeedBy);
+
+                if (request.Fulfilled)
+                {
+                    row.DefaultCellStyle.Font = new System.Drawing.Font(dgvCommodityRequests.Font, System.Drawing.FontStyle.Strikeout);
+                    row.DefaultCellStyle.ForeColor = System.Drawing.Color.Gray;
+                }
             }
         }
 
@@ -1014,34 +1036,76 @@ namespace OE2EmpireTracker.Forms.Colony
                 if (int.TryParse(row.Cells[1].Value?.ToString(), out value))
                     request.Requested = value;
             }
+            // Column 2 = Fulfilled (checkbox)
+            else if (e.ColumnIndex == 2)
+            {
+                bool fulfilled = row.Cells[2].Value is bool b && b;
+                request.Fulfilled = fulfilled;
+                if (fulfilled)
+                    request.Delivered = request.Requested;
+                else
+                    request.Delivered = 0;
+                // Refresh to update strikethrough
+                PopulateCommodityRequestGrid();
+            }
+            // Column 3 = NeedBy (countdown format)
+            else if (e.ColumnIndex == 3)
+            {
+                string text = row.Cells[3].Value?.ToString() ?? "";
+                DateTime? parsed = ParseCountdownToDateTime(text);
+                if (parsed.HasValue)
+                    request.NeedBy = parsed.Value;
+            }
         }
 
         private void dgvCommodityRequests_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
-            // Only validate the Amount column (index 1)
-            if (e.ColumnIndex != 1) return;
             if (e.RowIndex < 0) return;
 
-            string value = e.FormattedValue?.ToString();
-
-            if (string.IsNullOrEmpty(value))
+            // Column 1 = Amount
+            if (e.ColumnIndex == 1)
             {
-                dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = 0;
-                dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
-                dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "";
-                return;
+                string value = e.FormattedValue?.ToString();
+                if (string.IsNullOrEmpty(value))
+                {
+                    dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = 0;
+                    dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
+                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "";
+                    return;
+                }
+                if (!int.TryParse(value, out _))
+                {
+                    e.Cancel = true;
+                    dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.LightCoral;
+                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "Amount must be an integer";
+                }
+                else
+                {
+                    dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
+                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "";
+                }
             }
-
-            if (!int.TryParse(value, out _))
+            // Column 3 = NeedBy (countdown format)
+            else if (e.ColumnIndex == 3)
             {
-                e.Cancel = true;
-                dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.LightCoral;
-                dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "Amount must be an integer";
-            }
-            else
-            {
-                dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
-                dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "";
+                string value = e.FormattedValue?.ToString();
+                if (string.IsNullOrEmpty(value))
+                {
+                    dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
+                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "";
+                    return;
+                }
+                if (ParseCountdownToDateTime(value) == null)
+                {
+                    e.Cancel = true;
+                    dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.LightCoral;
+                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "Use countdown format: e.g. 2d 6h 30m";
+                }
+                else
+                {
+                    dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
+                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "";
+                }
             }
         }
 
@@ -1058,6 +1122,52 @@ namespace OE2EmpireTracker.Forms.Colony
             }
             PopulateCommodityRequestGrid();
             e.Handled = true;
+        }
+
+        // -----------------------------------------------------------------------
+        // Countdown Format Helpers
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Parses a countdown string (e.g. "2d 6h 30m") into a DateTime (now + duration).
+        /// Returns null if the format is invalid.
+        /// </summary>
+        private DateTime? ParseCountdownToDateTime(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return null;
+            var match = System.Text.RegularExpressions.Regex.Match(text.Trim(),
+                @"^(?:(\d+)d\s*)?(?:(\d+)h\s*)?(?:(\d+)m\s*)?(?:(\d+)s)?$");
+            if (!match.Success) return null;
+            if (!match.Groups[1].Success && !match.Groups[2].Success && !match.Groups[3].Success && !match.Groups[4].Success)
+                return null;
+
+            int days = match.Groups[1].Success ? int.Parse(match.Groups[1].Value) : 0;
+            int hours = match.Groups[2].Success ? int.Parse(match.Groups[2].Value) : 0;
+            int minutes = match.Groups[3].Success ? int.Parse(match.Groups[3].Value) : 0;
+            int seconds = match.Groups[4].Success ? int.Parse(match.Groups[4].Value) : 0;
+
+            long totalSeconds = ((long)days * 24 + hours) * 3600 + minutes * 60 + seconds;
+            if (totalSeconds <= 0) return null;
+            return DateTime.Now.AddSeconds(totalSeconds);
+        }
+
+        /// <summary>
+        /// Formats a NeedBy DateTime as a countdown string relative to now.
+        /// Returns empty string for DateTime.MinValue. Shows negative values as "overdue".
+        /// </summary>
+        private string FormatNeedByCountdown(DateTime needBy)
+        {
+            if (needBy == DateTime.MinValue) return "";
+            var remaining = needBy - DateTime.Now;
+            if (remaining.TotalSeconds <= 0)
+                return "overdue";
+
+            string result = "";
+            if (remaining.Days > 0) result += $"{remaining.Days}d ";
+            if (remaining.Hours > 0 || remaining.Days > 0) result += $"{remaining.Hours}h ";
+            if (remaining.Minutes > 0 || remaining.Hours > 0 || remaining.Days > 0) result += $"{remaining.Minutes}m";
+            else result += $"{remaining.Seconds}s";
+            return result.Trim();
         }
 
         private void dgvItems_KeyDown(object sender, KeyEventArgs e)
@@ -1149,13 +1259,12 @@ namespace OE2EmpireTracker.Forms.Colony
 
             if (dgvCommodityRequests.SelectedRows.Count > 0) return;
 
-            // Check if the current cell is not in the "Amount" column.
-            if (dgvCommodityRequests.Columns[dgvCommodityRequests.CurrentCell.ColumnIndex].Name != "Amount")
+            // Allow editing Amount (1), Fulfilled (2), and NeedBy (3) columns.
+            // Redirect Name column (0) clicks to Amount.
+            int col = dgvCommodityRequests.CurrentCell.ColumnIndex;
+            if (col == 0)
             {
-                // Programmatically deselect the cell
                 dgvCommodityRequests.CurrentCell.Selected = false;
-
-                // Focus the "Amount" cell in the same row, if it exists.
                 if (dgvCommodityRequests.Rows[dgvCommodityRequests.CurrentCell.RowIndex].Cells.Count > 1)
                 {
                     dgvCommodityRequests.CurrentCell = dgvCommodityRequests.Rows[dgvCommodityRequests.CurrentCell.RowIndex].Cells[1];

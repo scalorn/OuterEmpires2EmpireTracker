@@ -92,13 +92,14 @@ namespace OE2EmpireTracker.ViewModels
         // Commodity request management
         // -----------------------------------------------------------------------
 
-        public CommodityRequested AddCommodityRequest(string commodityName, int requested = 0)
+        public CommodityRequested AddCommodityRequest(string commodityName, int requested = 0, DateTime? needBy = null)
         {
             var request = new CommodityRequested
             {
                 Name = commodityName,
                 Requested = requested,
-                Delivered = 0
+                Delivered = 0,
+                NeedBy = needBy ?? DateTime.MinValue
             };
             _colony.Commodities.Add(request);
             return request;
@@ -107,6 +108,20 @@ namespace OE2EmpireTracker.ViewModels
         public void RemoveCommodityRequest(CommodityRequested request)
         {
             _colony.Commodities.Remove(request);
+        }
+
+        /// <summary>
+        /// Removes fulfilled commodity requests that are more than 3 days past their NeedBy date.
+        /// </summary>
+        public int CleanupExpiredCommodityRequests()
+        {
+            var now = DateTime.Now;
+            var expired = _colony.Commodities
+                .Where(cr => cr.Fulfilled && cr.NeedBy != DateTime.MinValue && (now - cr.NeedBy).TotalDays > 3)
+                .ToList();
+            foreach (var cr in expired)
+                _colony.Commodities.Remove(cr);
+            return expired.Count;
         }
 
         public IReadOnlyList<CommodityRequested> GetCommodityRequests() =>

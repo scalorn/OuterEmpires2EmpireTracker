@@ -67,6 +67,8 @@ namespace OE2EmpireTracker.Forms.Colony
             this.cmbCommodityRequest = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.txtCommodityRequestQuantity = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.lblNeedBy = new System.Windows.Forms.Label();
+            this.txtCommodityRequestNeedBy = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmdAddCommodityRequest = new System.Windows.Forms.Button();
             this.dgvCommodityRequests = new System.Windows.Forms.DataGridView();
             this.tabPWarehousing = new System.Windows.Forms.TabPage();
@@ -94,6 +96,8 @@ namespace OE2EmpireTracker.Forms.Colony
             this.dataGridViewValidatedTextBoxColumn2 = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
             this.CommodityRequestedName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CommodityRequestedAmount = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
+            this.CommodityRequestedFulfilled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.CommodityRequestedNeedBy = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ItemType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Item = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LockedAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -519,6 +523,8 @@ namespace OE2EmpireTracker.Forms.Colony
             this.flowLayoutPanel2.Controls.Add(this.cmbCommodityRequest);
             this.flowLayoutPanel2.Controls.Add(this.label4);
             this.flowLayoutPanel2.Controls.Add(this.txtCommodityRequestQuantity);
+            this.flowLayoutPanel2.Controls.Add(this.lblNeedBy);
+            this.flowLayoutPanel2.Controls.Add(this.txtCommodityRequestNeedBy);
             this.flowLayoutPanel2.Controls.Add(this.cmdAddCommodityRequest);
             this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 49);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
@@ -580,6 +586,23 @@ namespace OE2EmpireTracker.Forms.Colony
             this.cmdAddCommodityRequest.UseVisualStyleBackColor = true;
             this.cmdAddCommodityRequest.Click += new System.EventHandler(this.cmdAddCommodityRequest_Click);
             // 
+            // lblNeedBy
+            // 
+            this.lblNeedBy.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblNeedBy.AutoSize = true;
+            this.lblNeedBy.Location = new System.Drawing.Point(554, 8);
+            this.lblNeedBy.Name = "lblNeedBy";
+            this.lblNeedBy.Text = "Need By:";
+            this.lblNeedBy.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // txtCommodityRequestNeedBy
+            // 
+            this.txtCommodityRequestNeedBy.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtCommodityRequestNeedBy.Location = new System.Drawing.Point(610, 4);
+            this.txtCommodityRequestNeedBy.Name = "txtCommodityRequestNeedBy";
+            this.txtCommodityRequestNeedBy.Size = new System.Drawing.Size(97, 20);
+            this.txtCommodityRequestNeedBy.TabIndex = 9;
+            // 
             // dgvCommodityRequests
             // 
             this.dgvCommodityRequests.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -587,7 +610,9 @@ namespace OE2EmpireTracker.Forms.Colony
             this.dgvCommodityRequests.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvCommodityRequests.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.CommodityRequestedName,
-            this.CommodityRequestedAmount});
+            this.CommodityRequestedAmount,
+            this.CommodityRequestedFulfilled,
+            this.CommodityRequestedNeedBy});
             this.dgvCommodityRequests.Location = new System.Drawing.Point(3, 85);
             this.dgvCommodityRequests.MultiSelect = false;
             this.dgvCommodityRequests.Name = "dgvCommodityRequests";
@@ -849,6 +874,18 @@ namespace OE2EmpireTracker.Forms.Colony
             this.CommodityRequestedAmount.ValidationPattern = "^[+-]?\\d+$";
             this.CommodityRequestedAmount.ValidColor = System.Drawing.Color.White;
             // 
+            // CommodityRequestedFulfilled
+            // 
+            this.CommodityRequestedFulfilled.HeaderText = "Completed";
+            this.CommodityRequestedFulfilled.Name = "CommodityRequestedFulfilled";
+            this.CommodityRequestedFulfilled.Width = 70;
+            // 
+            // CommodityRequestedNeedBy
+            // 
+            this.CommodityRequestedNeedBy.HeaderText = "Need By";
+            this.CommodityRequestedNeedBy.Name = "CommodityRequestedNeedBy";
+            this.CommodityRequestedNeedBy.Width = 120;
+            // 
             // ItemType
             // 
             this.ItemType.HeaderText = "ItemType";
@@ -1052,11 +1089,15 @@ namespace OE2EmpireTracker.Forms.Colony
         private System.Windows.Forms.ComboBox cmbCommodityRequest;
         private System.Windows.Forms.Label label4;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtCommodityRequestQuantity;
+        private System.Windows.Forms.Label lblNeedBy;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtCommodityRequestNeedBy;
         private System.Windows.Forms.Button cmdAddCommodityRequest;
         private System.Windows.Forms.DataGridView dgvCommodityRequests;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.DataGridViewTextBoxColumn CommodityRequestedName;
         private OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn CommodityRequestedAmount;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn CommodityRequestedFulfilled;
+        private System.Windows.Forms.DataGridViewTextBoxColumn CommodityRequestedNeedBy;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
         private System.Windows.Forms.Button cmdBootstrap;
