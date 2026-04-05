@@ -461,8 +461,20 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 planViewModel = new DeliveryPlanViewModel(plan, playerContext);
                 txtPlanName.Text = plan.Name ?? "";
                 cmdAutoFill.Visible = true;
-                // Re-trigger stop selection to load plan items
-                dgvStops_SelectionChanged(sender, e);
+                // Load plan items for the currently selected stop
+                if (dgvStops.SelectedRows.Count == 1)
+                {
+                    var routeStop = dgvStops.SelectedRows[0].Tag as RouteStop;
+                    if (routeStop != null)
+                    {
+                        selectedPlanStop = planViewModel.GetOrCreateStop(routeStop.ColonyUUID, routeStop.Sequence);
+                        var colony = playerContext.FindColony(routeStop.ColonyUUID);
+                        lblPlanStop.Text = colony != null
+                            ? $"{colony.PlanetName} - {colony.ColonyName}"
+                            : "(unknown colony)";
+                        PopulatePlanGrids();
+                    }
+                }
             }
         }
 
