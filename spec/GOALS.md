@@ -79,4 +79,5 @@ See [Recommendations](Recommendations.md) for details:
 - **Rec #4**: CountDownTime master list — major feature (UI, locking, background thread)
 
 ### Large Features (from requirements, not yet started)
-- Delivery planning — Phase 4+ (commodity summary, worker/resource deliveries)
+- Delivery planning UI — Phase 5 (REQ-DEL-040-044), see Rec #15
+- Delivery execution form — Phase 6 (REQ-DEL-050-056)

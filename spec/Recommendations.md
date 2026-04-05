@@ -200,27 +200,27 @@ All 4 phases implemented:
 **Priority: High — Major Feature (phased)**
 See [Delivery.md](requirements/Delivery.md) for full requirements.
 
-### Phase 1: System Name Tracking (REQ-DEL-001-005)
-- Add `SystemName` to Colony and Survey
-- SurveyParser extracts SystemName from title
-- Colony form gets SystemName field
-- Small, low-risk prerequisite for route building
+### Phase 1: System Name Tracking (REQ-DEL-001-005) — Complete
+### Phase 2: Route Builder Data Model (REQ-DEL-010-015) — Complete
+### Phase 3: Route Builder UI (REQ-DEL-020-025) — Complete
+### Phase 4: Delivery Plan Data Model (REQ-DEL-030-035) — Complete
 
-### Phase 2: Route Builder Data Model (REQ-DEL-010-015)
-- `DeliveryRoute` and `RouteStop` data classes
-- Serialized in PlayerData.json
-- Per-player ownership
-- PlayerContext maintains deliveryRouteList
+### Phase 5: Delivery Planning UI (REQ-DEL-040-044) — Ready
+- Add "Plan" tab to Route Builder form
+- Select a stop, switch to Plan tab to add drop-off/pick-up items
+- Item type → item picker → quantity (same pattern as colony warehouse)
+- Remove items from lists
+- Persisted via DeliveryPlan
 
-### Phase 3: Route Builder UI (REQ-DEL-020-025)
-- New form: route list, stop grid with reorder, colony picker
-- Save/Delete/New, player filtering
-- Accessible from MainWindow Edit menu
+### Phase 6: Delivery Execution Form (REQ-DEL-050-056) — Next
+- Separate form showing stop-by-stop delivery
+- Consolidated load list at top
+- Per-stop drop-off/pick-up with checkboxes
+- Mark-as-delivered updates CommodityRequested and structure staging
 
-### Phases 4-7: Future
-- Commodity delivery planning (consolidated requests, per-stop manifests)
-- Worker & resource delivery planning
+### Phases 7-9: Future
+- Auto-fill delivery plans by request type
 - Ship integration (cargo capacity)
 - Space station hub modeling
 
-**Ready for implementation: Phase 1 can start immediately.**
+**Ready for implementation: Phase 5 can start immediately.**
