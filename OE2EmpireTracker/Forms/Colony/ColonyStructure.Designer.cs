@@ -417,6 +417,7 @@ namespace OE2EmpireTracker.Forms.Colony
             this.txtQuantity.Name = "txtQuantity";
             this.txtQuantity.Size = new System.Drawing.Size(39, 20);
             this.txtQuantity.TabIndex = 5;
+            this.txtQuantity.TextChanged += new System.EventHandler(this.txtQuantity_TextChanged);
             // 
             // ColonyStructure
             // 

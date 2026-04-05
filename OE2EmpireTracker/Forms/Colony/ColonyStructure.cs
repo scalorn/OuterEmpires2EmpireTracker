@@ -1240,6 +1240,15 @@ namespace OE2EmpireTracker.Forms.Colony
             ColonyStructureDataChanged?.Invoke(this, e);
         }
 
+        private void txtQuantity_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            int qty = 0;
+            int.TryParse(txtQuantity.Text, out qty);
+            if (qty > 0)
+                ColonyStructureData.ManufacturingQuantity = qty;
+        }
+
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
