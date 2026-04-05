@@ -374,10 +374,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 return;
             }
 
-            var cr = colony.Commodities.FirstOrDefault(c => c.Name == item.Name);
+            var cr = colony.Commodities.FirstOrDefault(c => c.Name == item.BaseItemTypeID);
             if (cr == null)
             {
-                Log.Warn("No matching CommodityRequested '{0}' on colony {1}", item.Name, colony.ColonyName);
+                Log.Warn("No matching CommodityRequested '{0}' on colony {1}", item.BaseItemTypeID, colony.ColonyName);
                 return;
             }
 
