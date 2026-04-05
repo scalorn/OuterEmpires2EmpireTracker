@@ -78,6 +78,7 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 63 | Commodity request grid: Completed, NeedBy, strikethrough, auto-delete | Complete |
 | 64 | Forms steering compliance (Rec 16): IProgrammaticUpdateSource on all forms | Complete |
 | 65 | Delivery Phase 7: Auto-fill Flatpacks, Resources, Workers + Flatpack Staging | Complete |
+| 66 | ProgrammaticUpdateGuard IDisposable fix + using var across all forms | Complete |
 
 ---
 

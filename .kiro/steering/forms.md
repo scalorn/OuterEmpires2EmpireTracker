@@ -21,6 +21,7 @@ Rules and patterns learned from building forms in this project. Follow these whe
 - When a grid has `CellValidating` handlers that set `e.Cancel = true`, `CancelEdit()` alone is not enough. Detach the handler, call `EndEdit()`, then reattach.
 - Apply this pattern in save handlers that iterate grid rows, and in any method that clears/repopulates a grid.
 - Use `Rows.Add()` return value for the new row index. Do NOT use `RowCount - 2` unless `AllowUserToAddRows = true`.
+- For grids with `DataGridViewCheckBoxColumn`: wire `CurrentCellDirtyStateChanged` to call `CommitEdit(DataGridViewDataErrorContexts.Commit)` so that `CellValueChanged` fires immediately on checkbox click instead of waiting for the user to leave the row.
 
 ## ComboBox / Dropdown Binding
 

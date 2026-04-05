@@ -228,3 +228,8 @@ Extended auto-fill from commodity-only to all four request types:
 - Flatpack staging on delivery execution: checking flatpack delivery sets Properties["Staged"]="True" on matching colony structure, fires ColonyDataChanged
 - All FormAutoFill checkboxes enabled, orchestration calls all four methods
 - 22 new tests. 612 total tests passing.
+
+## 66. ProgrammaticUpdateGuard IDisposable Fix
+Critical bug: ProgrammaticUpdateGuard relied on the GC finalizer to decrement `_isProgrammaticUpdate`, but finalizers run at unpredictable times. After the first `PopulateForm` call, the counter stayed > 0 permanently, blocking all grid event handlers (CellValueChanged, SelectionChanged, CellValidating) for the rest of the form's lifetime. This caused commodity request grid edits (NeedBy, Completed checkbox) to silently fail, and plan grid population to not show items.
+
+Fix: Made ProgrammaticUpdateGuard implement IDisposable. Converted all 22 usages across 6 files to `using var guard` (C# 8 using declaration) for deterministic disposal. Added `LangVersion=latest` to .csproj. Removed 16 manual `guard.release()` calls. Also added `CurrentCellDirtyStateChanged` + `CommitEdit` for DataGridViewCheckBoxColumn immediate commit. 612 tests passing.
