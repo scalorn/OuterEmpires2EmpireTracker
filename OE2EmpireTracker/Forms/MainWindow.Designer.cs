@@ -42,6 +42,7 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.managePlayerProfiles = new System.Windows.Forms.ToolStripMenuItem();
+            this.deliveryRoutesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripPlayerLabel = new System.Windows.Forms.ToolStripLabel();
             this.cmbCurrentPlayer = new System.Windows.Forms.ToolStripComboBox();
             this.menuStrip1.SuspendLayout();
@@ -97,7 +98,8 @@
             this.addSurveyToolStripMenuItem,
             this.addBlueprintToolStripMenuItem,
             this.addColonyToolStripMenuItem,
-            this.managePlayerProfiles});
+            this.managePlayerProfiles,
+            this.deliveryRoutesToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 22);
             this.editToolStripMenuItem.Text = "Edit";
@@ -150,6 +152,13 @@
             this.managePlayerProfiles.Text = "Manage Player Profiles";
             this.managePlayerProfiles.Click += new System.EventHandler(this.managePlayerProfiles_Click);
             // 
+            // deliveryRoutesToolStripMenuItem
+            // 
+            this.deliveryRoutesToolStripMenuItem.Name = "deliveryRoutesToolStripMenuItem";
+            this.deliveryRoutesToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.deliveryRoutesToolStripMenuItem.Text = "Delivery Routes";
+            this.deliveryRoutesToolStripMenuItem.Click += new System.EventHandler(this.deliveryRoutesToolStripMenuItem_Click);
+            // 
             // toolStripPlayerLabel
             // 
             this.toolStripPlayerLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -198,6 +207,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem addColonyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem managePlayerProfiles;
+        private System.Windows.Forms.ToolStripMenuItem deliveryRoutesToolStripMenuItem;
         private System.Windows.Forms.ToolStripLabel toolStripPlayerLabel;
         private System.Windows.Forms.ToolStripComboBox cmbCurrentPlayer;
     }

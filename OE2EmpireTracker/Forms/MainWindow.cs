@@ -91,5 +91,12 @@ namespace OE2EmpireTracker
             playerProfile.MdiParent = this;
             playerProfile.Show();
         }
+
+        private void deliveryRoutesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form routes = new Forms.Delivery.FormDeliveryRoute();
+            routes.MdiParent = this;
+            routes.Show();
+        }
     }
 }
