@@ -184,7 +184,6 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             // 
             // colLoadExtName
             // 
-            this.colLoadExtName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLoadExtName.HeaderText = "Extended Name";
             this.colLoadExtName.Name = "colLoadExtName";
             this.colLoadExtName.ReadOnly = true;
