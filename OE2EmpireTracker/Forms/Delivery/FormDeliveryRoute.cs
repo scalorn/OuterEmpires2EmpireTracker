@@ -353,7 +353,18 @@ namespace OE2EmpireTracker.Forms.Delivery
 
         private void dgvStops_SelectionChanged(object sender, EventArgs e)
         {
-            if (dgvStops.SelectedRows.Count != 1 || planViewModel == null)
+            // Create plan on demand if route has a UUID
+            if (planViewModel == null && !string.IsNullOrEmpty(viewModel.UUID))
+            {
+                planViewModel = DeliveryPlanViewModel.FindOrCreateForRoute(viewModel.UUID, playerContext);
+            }
+            // For unsaved routes, create a temporary plan
+            if (planViewModel == null)
+            {
+                planViewModel = new DeliveryPlanViewModel(new DeliveryPlan(), playerContext);
+            }
+
+            if (dgvStops.SelectedRows.Count != 1)
             {
                 selectedPlanStop = null;
                 ClearPlanTab();
