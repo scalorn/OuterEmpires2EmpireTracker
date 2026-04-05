@@ -42,6 +42,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             cmdCompletePlan.Click += cmdCompletePlan_Click;
             cmdDeletePlan.Click += cmdDeletePlan_Click;
+            cmdCompletePlan.Visible = false;
+            cmdDeletePlan.Visible = false;
 
             PopulateRouteDropdown();
 
@@ -191,12 +193,16 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             {
                 selectedPlan = null;
                 ClearExecution();
+                cmdCompletePlan.Visible = false;
+                cmdDeletePlan.Visible = false;
                 return;
             }
 
             selectedPlan = playerContext.deliveryPlanList.FirstOrDefault(p => p.UUID == planUUID);
             if (selectedPlan != null)
             {
+                cmdCompletePlan.Visible = true;
+                cmdDeletePlan.Visible = true;
                 BuildExecution();
             }
         }
@@ -210,6 +216,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             dgvLoadList.Rows.Clear();
             flpStops.Controls.Clear();
             selectedPlan = null;
+            cmdCompletePlan.Visible = false;
+            cmdDeletePlan.Visible = false;
         }
 
         private void BuildExecution()
