@@ -220,6 +220,12 @@
     <Compile Include="Forms\Delivery\FormDeliveryRoute.Designer.cs">
       <DependentUpon>FormDeliveryRoute.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Delivery\FormDeliveryExecution.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Delivery\FormDeliveryExecution.Designer.cs">
+      <DependentUpon>FormDeliveryExecution.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -263,6 +269,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Delivery\FormDeliveryRoute.resx">
       <DependentUpon>FormDeliveryRoute.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Delivery\FormDeliveryExecution.resx">
+      <DependentUpon>FormDeliveryExecution.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>

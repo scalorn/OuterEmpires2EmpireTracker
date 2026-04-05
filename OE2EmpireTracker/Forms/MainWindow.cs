@@ -98,5 +98,12 @@ namespace OE2EmpireTracker
             routes.MdiParent = this;
             routes.Show();
         }
+
+        private void deliveryExecutionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form execution = new Forms.Delivery.FormDeliveryExecution();
+            execution.MdiParent = this;
+            execution.Show();
+        }
     }
 }

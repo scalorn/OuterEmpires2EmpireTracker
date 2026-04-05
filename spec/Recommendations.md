@@ -205,14 +205,9 @@ See [Delivery.md](requirements/Delivery.md) for full requirements.
 ### Phase 3: Route Builder UI (REQ-DEL-020-025) — Complete
 ### Phase 4: Delivery Plan Data Model (REQ-DEL-030-035) — Complete
 
-### Phase 5: Delivery Planning UI (REQ-DEL-040-044) — Ready
-- Add "Plan" tab to Route Builder form
-- Select a stop, switch to Plan tab to add drop-off/pick-up items
-- Item type → item picker → quantity (same pattern as colony warehouse)
-- Remove items from lists
-- Persisted via DeliveryPlan
+### Phase 5: Delivery Planning UI (REQ-DEL-040-045) — Complete
 
-### Phase 6: Delivery Execution Form (REQ-DEL-050-056) — Next
+### Phase 6: Delivery Execution Form (REQ-DEL-050-057) — Ready
 - Separate form showing stop-by-stop delivery
 - Consolidated load list at top
 - Per-stop drop-off/pick-up with checkboxes

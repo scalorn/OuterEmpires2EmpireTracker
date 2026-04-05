@@ -188,3 +188,6 @@ Created `DeliveryPlan` (UUID, Name, OwnerUUID, RouteUUID, List<DeliveryPlanStop>
 
 ## 58. Delivery Phase 5: Planning Tab Wired Up (REQ-DEL-040-044)
 Created DeliveryPlanViewModel with stop management, add/remove drop-off and pick-up items. Plan tab on route builder: select a stop on Stops tab, switch to Plan tab to see/edit drop-off and pick-up lists. Item type → item picker → quantity pattern (same as colony warehouse). Plan auto-created per route, persisted on save. 513 tests passing.
+
+## 59. Multi-Plan Support + Plan Selector UX
+Plan tab updated with multi-plan support: plan dropdown with filter and "Show Completed" checkbox, New/Delete/Execute buttons, plan name validation (red when empty), auto-select first open plan on route load, auto-create plan on first item add, preserve selection on filter/save/toggle. 513 tests passing.
