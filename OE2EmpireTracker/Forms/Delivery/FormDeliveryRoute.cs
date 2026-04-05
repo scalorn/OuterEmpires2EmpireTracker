@@ -165,12 +165,12 @@ namespace OE2EmpireTracker.Forms.Delivery
             foreach (var stop in viewModel.Stops)
             {
                 var colony = playerContext.FindColony(stop.ColonyUUID);
-                dgvStops.Rows.Add(
+                int rowIndex = dgvStops.Rows.Add(
                     stop.Sequence + 1,
                     colony?.ColonyName ?? "(unknown)",
                     colony?.PlanetName ?? "",
                     colony?.SystemName ?? "");
-                dgvStops.Rows[dgvStops.RowCount - 2].Tag = stop;
+                dgvStops.Rows[rowIndex].Tag = stop;
             }
         }
 
