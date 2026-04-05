@@ -394,6 +394,9 @@ namespace OE2EmpireTracker.Forms.Delivery
                 return;
             }
 
+            // Preserve current selection
+            string previousUUID = cmbPlan.SelectedValue as string;
+
             string filter = txtPlanFilter.Text ?? "";
             bool showCompleted = chkShowCompleted.Checked;
 
@@ -417,6 +420,12 @@ namespace OE2EmpireTracker.Forms.Delivery
             cmbPlan.DisplayMember = "Display";
             cmbPlan.ValueMember = "UUID";
             cmbPlan.DataSource = items;
+
+            // Restore previous selection if still in the list
+            if (!string.IsNullOrEmpty(previousUUID) && items.Any(i => i.UUID == previousUUID))
+            {
+                cmbPlan.SelectedValue = previousUUID;
+            }
         }
 
         private void cmbPlan_SelectedIndexChanged(object sender, EventArgs e)
