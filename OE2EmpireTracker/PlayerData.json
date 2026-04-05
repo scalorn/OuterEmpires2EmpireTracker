@@ -27,19 +27,19 @@
           "Level": 0,
           "TrainingStarted": true,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-06T09:34:23.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-06T09:40:06.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": "21h 24m 14s"
+            "TimeRemainingString": "21h 20m 20s"
           }
         },
         "Foreman": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -49,8 +49,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -60,8 +60,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -71,8 +71,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -82,8 +82,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -93,8 +93,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -104,8 +104,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -115,8 +115,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -126,8 +126,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -137,8 +137,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -148,8 +148,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -159,8 +159,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -170,8 +170,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -181,8 +181,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -192,8 +192,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -203,8 +203,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -214,8 +214,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -225,8 +225,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -236,8 +236,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -247,8 +247,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -258,8 +258,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -293,8 +293,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -304,8 +304,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -315,8 +315,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -326,8 +326,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -337,8 +337,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -348,8 +348,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -359,8 +359,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -370,8 +370,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -381,8 +381,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -392,8 +392,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -403,8 +403,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -414,8 +414,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -425,8 +425,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -436,8 +436,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -447,8 +447,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -458,8 +458,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -469,8 +469,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -480,8 +480,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -491,8 +491,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -502,8 +502,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -513,8 +513,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -524,8 +524,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T12:09:34.5060753-07:00",
-            "EndTime": "2026-04-05T12:09:34.5060753-07:00",
+            "StartTime": "2026-04-05T12:15:52.5225494-07:00",
+            "EndTime": "2026-04-05T12:15:52.5225494-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -1628,11 +1628,11 @@
           },
           "BuildCompletionTime": null,
           "ProcessCompletionTime": {
-            "StartTime": "2026-04-05T10:58:52.5425949-07:00",
-            "EndTime": "2026-04-05T23:58:52.5425949-07:00",
+            "StartTime": "2026-04-05T11:04:35.5585697-07:00",
+            "EndTime": "2026-04-06T00:04:35.5585697-07:00",
             "RepeatIntervalSeconds": 46800,
             "IsRepeating": true,
-            "TimeRemainingString": "11h 48m 43s"
+            "TimeRemainingString": "11h 44m 49s"
           },
           "MiningSurvey": null,
           "MiningSurveyResource": null,
@@ -1887,13 +1887,13 @@
         }
       ],
       "Locks": {
-        "a729571f-958d-4d86-9168-1bc18fdadf83": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
         "dc695683-d726-4005-8e8e-02264bcb06ea": {
           "Resource:Halogens": 1260,
           "Resource:Non-Metallics": 126,
           "Resource:Heavy Post-Trans Metals": 322
+        },
+        "a729571f-958d-4d86-9168-1bc18fdadf83": {
+          "WorkDetail:BlueCollarDetail": 1
         }
       }
     },
@@ -1911,7 +1911,7 @@
   "Name": "WhiteCollarDetail",
   "NickName": "",
   "Description": "",
-  "Quantity": 2,
+  "Quantity": 0,
   "ResourcePurity": "",
   "Volume": 50.0
 },
@@ -1922,7 +1922,7 @@
   "Name": "SpecialistDetail",
   "NickName": "",
   "Description": "",
-  "Quantity": 2,
+  "Quantity": 0,
   "ResourcePurity": "",
   "Volume": 50.0
 },
@@ -1933,7 +1933,7 @@
   "Name": "BlueCollarDetail",
   "NickName": "",
   "Description": "",
-  "Quantity": 2,
+  "Quantity": 0,
   "ResourcePurity": "",
   "Volume": 50.0
 }
@@ -1950,7 +1950,7 @@
           },
           "AssignedWorkers": {
             "UnassignedSpecialistDetail": "True",
-            "WhiteCollar1": "True"
+            "WhiteCollar1": "False"
           },
           "BuildCompletionTime": null,
           "ProcessCompletionTime": null,
@@ -1979,7 +1979,7 @@
             "Online": "True"
           },
           "AssignedWorkers": {
-            "BlueCollar1": "True"
+            "BlueCollar1": "False"
           },
           "BuildCompletionTime": null,
           "ProcessCompletionTime": null,
@@ -2176,7 +2176,7 @@
             "Built": "True"
           },
           "AssignedWorkers": {
-            "BlueCollar1": "True"
+            "BlueCollar1": "False"
           },
           "BuildCompletionTime": null,
           "ProcessCompletionTime": null,
@@ -2237,7 +2237,7 @@
             "Staged": "False"
           },
           "AssignedWorkers": {
-            "BlueCollar1": "True"
+            "BlueCollar1": "False"
           },
           "BuildCompletionTime": null,
           "ProcessCompletionTime": null,
@@ -2266,7 +2266,7 @@
             "Online": "True"
           },
           "AssignedWorkers": {
-            "BlueCollar1": "True"
+            "BlueCollar1": "False"
           },
           "BuildCompletionTime": null,
           "ProcessCompletionTime": null,
@@ -2295,15 +2295,15 @@
             "Built": "True"
           },
           "AssignedWorkers": {
-            "BlueCollar1": "True"
+            "BlueCollar1": "False"
           },
           "BuildCompletionTime": null,
           "ProcessCompletionTime": {
-            "StartTime": "2026-04-05T11:35:30.5515985-07:00",
-            "EndTime": "2026-04-05T12:35:30.5515985-07:00",
+            "StartTime": "2026-04-05T11:41:13.5675722-07:00",
+            "EndTime": "2026-04-05T12:41:13.5675722-07:00",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true,
-            "TimeRemainingString": "25m 21s"
+            "TimeRemainingString": "21m 27s"
           },
           "MiningSurvey": "a7467233-de2e-4fb5-a29c-92b35490e76d",
           "MiningSurveyResource": "Heavy Post-Trans Metals",
@@ -2331,36 +2331,14 @@
         }
       ],
       "Locks": {
-        "1eb394cd-df4f-4059-a98a-43dfd63df237": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "1b738d71-90fa-47e5-98af-c31c15d3ccf0": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "6b949e8f-c37b-48f7-aa0f-8a6fb0d09d7a": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "80b6396b-8a31-44a4-a656-5e7c911cb808": {
+        "398c4385-7cf5-40f0-9095-ff50d62f93f5": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "c93cbdc0-26c9-46e6-af71-0e082db53441": {
           "WorkDetail:SpecialistDetail": 1
         },
-        "74d2d889-f616-417e-a216-10f6154e4dd4": {
+        "1b738d71-90fa-47e5-98af-c31c15d3ccf0": {
           "WorkDetail:BlueCollarDetail": 1
-        },
-        "398c4385-7cf5-40f0-9095-ff50d62f93f5": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "fc0687eb-4fb0-4c13-9d68-65b36aa27b2b": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "a94b0eef-267d-4a30-9e92-7ac1f07f667c": {
-          "WorkDetail:WhiteCollarDetail": 1,
-          "WorkDetail:SpecialistDetail": 1
-        },
-        "1fc3b7af-d342-4f1a-90e1-666241091072": {
-          "WorkDetail:WhiteCollarDetail": 1
         }
       }
     },
@@ -4622,50 +4600,50 @@
         }
       ],
       "Locks": {
-        "e11ec995-22e7-4b45-9057-af9ec80aa7ac": {
+        "1f16a679-2495-4a1b-8635-d4334fce315e": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "5f876b44-3621-4d0f-8ad5-c5148fd623bb": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "5982dec3-a5a9-4e13-b3ed-946887555513": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "1f16a679-2495-4a1b-8635-d4334fce315e": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "646e5845-b518-4f77-88cd-23bae4c1f794": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
         "e6cbc78f-d1ac-450e-8965-d07395d6946e": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "0b5e3d98-c17d-4420-be48-4d791e0d84f0": {
+        "e11ec995-22e7-4b45-9057-af9ec80aa7ac": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "d5b79aee-6168-44ee-b323-bf2b360bb9e9": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "9a5a0b23-7cb7-4e14-8bfc-9e5e90183f03": {
+        "5982dec3-a5a9-4e13-b3ed-946887555513": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "a8ca58ad-cb2e-4b3a-ba5a-fe2339d7919a": {
           "WorkDetail:SpecialistDetail": 1
         },
-        "5e60105e-83fa-49f3-9139-2f344acb0a5e": {
+        "646e5845-b518-4f77-88cd-23bae4c1f794": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "e9b0a8e1-1189-48ba-a6f9-ccf3de0bec75": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "bc9a835b-4cd5-463f-a480-59cfe294d94d": {
-          "WorkDetail:SpecialistDetail": 1
+        "0b5e3d98-c17d-4420-be48-4d791e0d84f0": {
+          "WorkDetail:BlueCollarDetail": 1
         },
         "3ce85171-74ad-480c-9a95-8514d084bfe9": {
           "WorkDetail:BlueCollarDetail": 1
         },
+        "9a5a0b23-7cb7-4e14-8bfc-9e5e90183f03": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
         "877918ae-6150-4f8a-ac05-2da15d8284de": {
           "WorkDetail:WhiteCollarDetail": 1
+        },
+        "5e60105e-83fa-49f3-9139-2f344acb0a5e": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "bc9a835b-4cd5-463f-a480-59cfe294d94d": {
+          "WorkDetail:SpecialistDetail": 1
         }
       }
     }
@@ -4860,6 +4838,30 @@
               "ResourcePurity": "",
               "Quantity": 1231,
               "Delivered": false
+            },
+            {
+              "ItemType": "WorkDetail",
+              "BaseItemTypeID": "BlueCollarDetail",
+              "Name": "Blue Collar Detail",
+              "ResourcePurity": "",
+              "Quantity": 8,
+              "Delivered": false
+            },
+            {
+              "ItemType": "WorkDetail",
+              "BaseItemTypeID": "WhiteCollarDetail",
+              "Name": "White Collar Detail",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "WorkDetail",
+              "BaseItemTypeID": "SpecialistDetail",
+              "Name": "Specialist Detail",
+              "ResourcePurity": "",
+              "Quantity": 2,
+              "Delivered": false
             }
           ],
           "PickUp": []
@@ -4916,6 +4918,14 @@
               "ResourcePurity": "",
               "Quantity": 18,
               "Delivered": false
+            },
+            {
+              "ItemType": "WorkDetail",
+              "BaseItemTypeID": "BlueCollarDetail",
+              "Name": "Blue Collar Detail",
+              "ResourcePurity": "",
+              "Quantity": 34,
+              "Delivered": false
             }
           ],
           "PickUp": []
@@ -4924,7 +4934,72 @@
           "ColonyUUID": "a94b0eef-267d-4a30-9e92-7ac1f07f667c",
           "Sequence": 1,
           "StopCompleted": false,
-          "DropOff": [],
+          "DropOff": [
+            {
+              "ItemType": "Resource",
+              "BaseItemTypeID": "Alkali Metals",
+              "Name": "Alkali Metals",
+              "ResourcePurity": "Refined",
+              "Quantity": 10,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Resource",
+              "BaseItemTypeID": "Heavy Noble Gases",
+              "Name": "Heavy Noble Gases",
+              "ResourcePurity": "Refined",
+              "Quantity": 10,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Resource",
+              "BaseItemTypeID": "Alkaline Earth Metals",
+              "Name": "Alkaline Earth Metals",
+              "ResourcePurity": "Refined",
+              "Quantity": 6453,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Resource",
+              "BaseItemTypeID": "Non-Metallics",
+              "Name": "Non-Metallics",
+              "ResourcePurity": "Refined",
+              "Quantity": 1272,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Resource",
+              "BaseItemTypeID": "Heavy Post-Trans Metals",
+              "Name": "Heavy Post-Trans Metals",
+              "ResourcePurity": "Refined",
+              "Quantity": 2133,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Resource",
+              "BaseItemTypeID": "Strong Alkali Organics",
+              "Name": "Strong Alkali Organics",
+              "ResourcePurity": "Refined",
+              "Quantity": 1056,
+              "Delivered": false
+            },
+            {
+              "ItemType": "WorkDetail",
+              "BaseItemTypeID": "BlueCollarDetail",
+              "Name": "Blue Collar Detail",
+              "ResourcePurity": "",
+              "Quantity": 5,
+              "Delivered": true
+            },
+            {
+              "ItemType": "WorkDetail",
+              "BaseItemTypeID": "WhiteCollarDetail",
+              "Name": "White Collar Detail",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": true
+            }
+          ],
           "PickUp": []
         }
       ]

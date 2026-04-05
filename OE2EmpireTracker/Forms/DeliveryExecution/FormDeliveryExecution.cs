@@ -235,10 +235,19 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         private void BuildExecution()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
+            this.SuspendLayout();
+            pnlExecution.SuspendLayout();
+            flpStops.SuspendLayout();
             dgvLoadList.Rows.Clear();
             flpStops.Controls.Clear();
 
-            if (selectedPlan == null) return;
+            if (selectedPlan == null)
+            {
+                flpStops.ResumeLayout();
+                pnlExecution.ResumeLayout();
+                this.ResumeLayout();
+                return;
+            }
 
             Log.Debug("BuildExecution: plan={0}, stops={1}", selectedPlan.Name, selectedPlan.Stops.Count);
 
@@ -330,6 +339,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     flpStops.Controls.Add(btnComplete);
                 }
             }
+
+            flpStops.ResumeLayout();
+            pnlExecution.ResumeLayout();
+            this.ResumeLayout();
         }
 
         // -----------------------------------------------------------------------
@@ -358,10 +371,18 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 UpdateFlatpackStaging(item, chk.Checked);
             }
 
+            // Worker delivery: add/remove workers from colony warehouse
+            if (item.ItemType == ItemType.ItemTypeEnum.WorkDetail && selectedPlan != null)
+            {
+                UpdateWorkerDelivery(item, chk.Checked);
+            }
+
             playerContext.writeContext();
 
             // Rebuild to show/hide "Complete Stop" buttons
+            flpStops.SuspendLayout();
             BuildExecution();
+            flpStops.ResumeLayout();
 
             if (selectedPlan != null && IsAllDelivered(selectedPlan))
             {
@@ -439,6 +460,50 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             {
                 structure.Properties.setProperty("Staged", "False");
                 Log.Info("Flatpack '{0}' unstaged on colony {1}", item.Name, colony.ColonyName);
+            }
+
+            playerContext.OnColonyDataChanged(stop.ColonyUUID);
+        }
+
+        private void UpdateWorkerDelivery(DeliveryItem item, bool delivered)
+        {
+            var stop = selectedPlan.Stops.FirstOrDefault(s =>
+                s.DropOff.Contains(item) || s.PickUp.Contains(item));
+            if (stop == null) return;
+
+            var colony = playerContext.FindColony(stop.ColonyUUID);
+            if (colony == null)
+            {
+                Log.Warn("Colony not found for stop {0} during worker delivery", stop.ColonyUUID);
+                return;
+            }
+
+            var existing = colony.Items.FindByType(ItemType.ItemTypeEnum.WorkDetail, item.BaseItemTypeID);
+            if (delivered)
+            {
+                if (existing.Count > 0)
+                {
+                    existing[0].Quantity += item.Quantity;
+                }
+                else
+                {
+                    var workerItem = new Item(ItemType.ItemTypeEnum.WorkDetail, item.BaseItemTypeID);
+                    workerItem.UUID = System.Guid.NewGuid().ToString();
+                    workerItem.BaseItemTypeID = item.BaseItemTypeID;
+                    workerItem.Name = item.Name;
+                    workerItem.Quantity = item.Quantity;
+                    workerItem.Volume = Constants.GameConstants.WorkerVolume;
+                    colony.Items.AddItem(workerItem);
+                }
+                Log.Info("Worker '{0}' x{1} delivered to colony {2}", item.Name, item.Quantity, colony.ColonyName);
+            }
+            else
+            {
+                if (existing.Count > 0)
+                {
+                    existing[0].Quantity = Math.Max(0, existing[0].Quantity - item.Quantity);
+                }
+                Log.Info("Worker '{0}' x{1} undelivered from colony {2}", item.Name, item.Quantity, colony.ColonyName);
             }
 
             playerContext.OnColonyDataChanged(stop.ColonyUUID);
