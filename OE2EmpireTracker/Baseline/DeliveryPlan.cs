@@ -55,5 +55,19 @@ namespace OE2EmpireTracker.Baseline
         public string ResourcePurity { get; set; } = string.Empty;
         public int Quantity { get; set; } = 0;
         public bool Delivered { get; set; } = false;
+
+        /// <summary>
+        /// Display name including purity for resources (e.g. "Iron (High)").
+        /// </summary>
+        [JsonIgnore]
+        public string ExtendedName
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(ResourcePurity))
+                    return $"{Name} ({ResourcePurity})";
+                return Name;
+            }
+        }
     }
 }
