@@ -8,6 +8,7 @@ Rules and patterns learned from building forms in this project. Follow these whe
 
 ## Layout & Resize
 
+- Each form and its supporting components (Designer.cs, .resx) MUST be in its own directory under `Forms/`. Do NOT group multiple forms in a shared directory. Example: `Forms/DeliveryRoute/`, `Forms/DeliveryExecution/`, not `Forms/Delivery/`.
 - All forms with a left list / right detail pattern MUST have layout event handlers (`flpBase.Layout`, `flpSearchList.Layout`, etc.) that resize panels and grids when the form resizes.
 - DataGridView controls inside FlowLayoutPanels do NOT auto-resize. They need explicit sizing in layout handlers.
 - FlowLayoutPanels with `AutoSize = true` will override explicit sizing from layout handlers. Set `AutoSize = false` on panels that need programmatic sizing.

@@ -1,4 +1,4 @@
-﻿using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Data;
 using OE2EmpireTracker.Forms.Colony;
 using OE2EmpireTracker.Forms.PlayerProfile;
@@ -94,14 +94,14 @@ namespace OE2EmpireTracker
 
         private void deliveryRoutesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form routes = new Forms.Delivery.FormDeliveryRoute();
+            Form routes = new Forms.DeliveryRoute.FormDeliveryRoute();
             routes.MdiParent = this;
             routes.Show();
         }
 
         private void deliveryExecutionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form execution = new Forms.Delivery.FormDeliveryExecution();
+            Form execution = new Forms.DeliveryExecution.FormDeliveryExecution();
             execution.MdiParent = this;
             execution.Show();
         }

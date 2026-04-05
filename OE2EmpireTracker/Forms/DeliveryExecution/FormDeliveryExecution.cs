@@ -8,7 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace OE2EmpireTracker.Forms.Delivery
+namespace OE2EmpireTracker.Forms.DeliveryExecution
 {
     public partial class FormDeliveryExecution : Form
     {

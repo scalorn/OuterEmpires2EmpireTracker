@@ -10,7 +10,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace OE2EmpireTracker.Forms.Delivery
+namespace OE2EmpireTracker.Forms.DeliveryRoute
 {
     public partial class FormDeliveryRoute : Form
     {
@@ -26,7 +26,7 @@ namespace OE2EmpireTracker.Forms.Delivery
             InitializeComponent();
             empireContext = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
-            viewModel = new DeliveryRouteViewModel(new DeliveryRoute(), playerContext);
+            viewModel = new DeliveryRouteViewModel(new Baseline.DeliveryRoute(), playerContext);
 
             lvwRoutes.View = View.Details;
             lvwRoutes.Columns.Add("Name", 200);
@@ -168,7 +168,7 @@ namespace OE2EmpireTracker.Forms.Delivery
         {
             if (lvwRoutes.SelectedItems.Count == 1)
             {
-                var route = lvwRoutes.SelectedItems[0].Tag as DeliveryRoute;
+                var route = lvwRoutes.SelectedItems[0].Tag as Baseline.DeliveryRoute;
                 viewModel.SelectRoute(route);
                 PopulateForm();
 

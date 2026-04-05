@@ -1,4 +1,4 @@
-namespace OE2EmpireTracker.Forms.Delivery
+namespace OE2EmpireTracker.Forms.DeliveryRoute
 {
     partial class FormDeliveryRoute
     {

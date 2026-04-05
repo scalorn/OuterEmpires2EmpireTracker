@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -214,16 +214,16 @@
     <Compile Include="Forms\Colony\FormColony.Designer.cs">
       <DependentUpon>FormColony.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Delivery\FormDeliveryRoute.cs">
+    <Compile Include="Forms\DeliveryRoute\FormDeliveryRoute.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Delivery\FormDeliveryRoute.Designer.cs">
+    <Compile Include="Forms\DeliveryRoute\FormDeliveryRoute.Designer.cs">
       <DependentUpon>FormDeliveryRoute.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Delivery\FormDeliveryExecution.cs">
+    <Compile Include="Forms\DeliveryExecution\FormDeliveryExecution.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Delivery\FormDeliveryExecution.Designer.cs">
+    <Compile Include="Forms\DeliveryExecution\FormDeliveryExecution.Designer.cs">
       <DependentUpon>FormDeliveryExecution.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MainWindow.cs">
@@ -267,10 +267,10 @@
     <EmbeddedResource Include="Forms\Colony\FormColony.resx">
       <DependentUpon>FormColony.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Delivery\FormDeliveryRoute.resx">
+    <EmbeddedResource Include="Forms\DeliveryRoute\FormDeliveryRoute.resx">
       <DependentUpon>FormDeliveryRoute.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Delivery\FormDeliveryExecution.resx">
+    <EmbeddedResource Include="Forms\DeliveryExecution\FormDeliveryExecution.resx">
       <DependentUpon>FormDeliveryExecution.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainWindow.resx">
