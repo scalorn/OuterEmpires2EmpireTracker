@@ -352,6 +352,12 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 UpdateCommodityFulfillment(item, chk.Checked);
             }
 
+            // Flatpack staging: mark matching colony structure as staged/unstaged
+            if (item.ItemType == ItemType.ItemTypeEnum.Flatpack && selectedPlan != null)
+            {
+                UpdateFlatpackStaging(item, chk.Checked);
+            }
+
             playerContext.writeContext();
 
             // Rebuild to show/hide "Complete Stop" buttons
@@ -397,6 +403,42 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 cr.Delivered = 0;
                 cr.Fulfilled = false;
                 Log.Info("Commodity '{0}' unfulfilled on colony {1}", item.Name, colony.ColonyName);
+            }
+
+            playerContext.OnColonyDataChanged(stop.ColonyUUID);
+        }
+
+        private void UpdateFlatpackStaging(DeliveryItem item, bool delivered)
+        {
+            var stop = selectedPlan.Stops.FirstOrDefault(s =>
+                s.DropOff.Contains(item) || s.PickUp.Contains(item));
+            if (stop == null) return;
+
+            var colony = playerContext.FindColony(stop.ColonyUUID);
+            if (colony == null)
+            {
+                Log.Warn("Colony not found for stop {0} during flatpack staging", stop.ColonyUUID);
+                return;
+            }
+
+            var structure = colony.Structures.FirstOrDefault(s =>
+                s.FlatpackBlueprintUUID == item.BaseItemTypeID);
+            if (structure == null)
+            {
+                Log.Warn("No matching ColonyStructure with FlatpackBlueprintUUID '{0}' on colony {1}",
+                    item.BaseItemTypeID, colony.ColonyName);
+                return;
+            }
+
+            if (delivered)
+            {
+                structure.Properties.setProperty("Staged", "True");
+                Log.Info("Flatpack '{0}' staged on colony {1}", item.Name, colony.ColonyName);
+            }
+            else
+            {
+                structure.Properties.setProperty("Staged", "False");
+                Log.Info("Flatpack '{0}' unstaged on colony {1}", item.Name, colony.ColonyName);
             }
 
             playerContext.OnColonyDataChanged(stop.ColonyUUID);

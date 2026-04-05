@@ -29,6 +29,7 @@ namespace OE2EmpireTracker.Baseline
         public string ManufacturingCommodityName { get; set; } = null;
         public int ManufacturingQuantity { get; set; } = 0;
         public int ManufacturingCompleted { get; set; } = 0;
+        public bool StagingResources { get; set; } = false;
 
         [JsonIgnore]
         public Dictionary<string, ColonyStructureStatus> Statuses { get; set; } = new Dictionary<string, ColonyStructureStatus>();

@@ -61,6 +61,7 @@ namespace OE2EmpireTracker.Forms.Colony
             this.chkWorkDetail3 = new System.Windows.Forms.CheckBox();
             this.timerCountdown = new System.Windows.Forms.Timer(this.components);
             this.txtQuantity = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.chkStageResources = new System.Windows.Forms.CheckBox();
             this.flpColonyStructure.SuspendLayout();
             this.flpMovement.SuspendLayout();
             this.flpStructureDetails.SuspendLayout();
@@ -171,6 +172,7 @@ namespace OE2EmpireTracker.Forms.Colony
             this.flpSelection.Controls.Add(this.txtSelectionFilter);
             this.flpSelection.Controls.Add(this.cmbSelection);
             this.flpSelection.Controls.Add(this.txtQuantity);
+            this.flpSelection.Controls.Add(this.chkStageResources);
             this.flpSelection.Controls.Add(this.cmdStart);
             this.flpSelection.Location = new System.Drawing.Point(3, 3);
             this.flpSelection.Name = "flpSelection";
@@ -389,6 +391,16 @@ namespace OE2EmpireTracker.Forms.Colony
             // 
             this.timerCountdown.Tick += new System.EventHandler(this.timerCountdown_Tick);
             // 
+            // chkStageResources
+            // 
+            this.chkStageResources.AutoSize = true;
+            this.chkStageResources.Location = new System.Drawing.Point(282, 3);
+            this.chkStageResources.Name = "chkStageResources";
+            this.chkStageResources.Text = "Stage Resources";
+            this.chkStageResources.Visible = false;
+            this.chkStageResources.UseVisualStyleBackColor = true;
+            this.chkStageResources.CheckedChanged += new System.EventHandler(this.chkStageResources_CheckedChanged);
+            // 
             // txtQuantity
             // 
             this.txtQuantity.Location = new System.Drawing.Point(282, 3);
@@ -455,5 +467,6 @@ namespace OE2EmpireTracker.Forms.Colony
         private System.Windows.Forms.Timer timerCountdown;
         private System.Windows.Forms.RichTextBox rtbProgressStatus;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtQuantity;
+        private System.Windows.Forms.CheckBox chkStageResources;
     }
 }

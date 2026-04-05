@@ -2,6 +2,7 @@ using NUnit.Framework;
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Data;
 using OE2EmpireTracker.ViewModels;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -15,10 +16,16 @@ namespace OE2EmpireTracker.Tests.Baseline
         [SetUp]
         public void SetUp()
         {
-            PlayerContext.Reset();
+            // Set file paths before any initialization
             EmpireContext.FilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\..\OE2EmpireTracker\BaselineData.json");
             PlayerContext.FilePath = "nonexistent_player_data.json";
+            // Ensure EmpireContext singleton exists (ColonyStatusCalculator depends on it)
+            // Must be done before PlayerContext.Reset() to avoid stale references
+            var ec = EmpireContext.getInstance();
+            PlayerContext.Reset();
             playerContext = PlayerContext.getInstance();
+            // Update EmpireContext's PlayerContext reference
+            EmpireContext.PlayerContext = playerContext;
         }
 
         private DeliveryPlanViewModel CreateViewModel()
@@ -374,6 +381,482 @@ namespace OE2EmpireTracker.Tests.Baseline
             Assert.AreEqual(1, stop2.DropOff.Count);
             Assert.AreEqual("Glass Panels", stop2.DropOff[0].Name);
             Assert.AreEqual(15, stop2.DropOff[0].Quantity);
+        }
+
+        // -----------------------------------------------------------------------
+        // AutoFillFlatpacks — Property 1
+        // Validates: Requirements 2.1, 2.2, 2.3
+        // -----------------------------------------------------------------------
+
+        private OE2EmpireTracker.Data.Blueprint CreateTestBlueprint(string uuid, string name, string bpType = "Flatpacks/Habitat")
+        {
+            var bp = new OE2EmpireTracker.Data.Blueprint(name) { UUID = uuid, BluePrintType = bpType };
+            playerContext.blueprintList.Add(bp);
+            return bp;
+        }
+
+        private Colony CreateColonyWithStructures(string uuid, params ColonyStructure[] structures)
+        {
+            var colony = new Colony { UUID = uuid };
+            colony.Structures.AddRange(structures);
+            return colony;
+        }
+
+        private ColonyStructure MakeStructure(string bpUUID, bool built, bool staged)
+        {
+            var s = new ColonyStructure { UUID = System.Guid.NewGuid().ToString(), FlatpackBlueprintUUID = bpUUID };
+            if (built) s.Properties.setProperty("Built", true);
+            if (staged) s.Properties.setProperty("Staged", true);
+            return s;
+        }
+
+        [Test]
+        public void AutoFillFlatpacks_NoStructures_ReturnsZero()
+        {
+            var vm = CreateViewModel();
+            var colony = new Colony { UUID = "c1" };
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
+
+            Assert.AreEqual(0, added);
+        }
+
+        [Test]
+        public void AutoFillFlatpacks_AllBuilt_ReturnsZero()
+        {
+            var bp = CreateTestBlueprint("bp1", "Habitat");
+            var vm = CreateViewModel();
+            var colony = CreateColonyWithStructures("c1",
+                MakeStructure("bp1", built: true, staged: false));
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
+
+            Assert.AreEqual(0, added);
+        }
+
+        [Test]
+        public void AutoFillFlatpacks_AllStaged_ReturnsZero()
+        {
+            var bp = CreateTestBlueprint("bp2", "Refinery");
+            var vm = CreateViewModel();
+            var colony = CreateColonyWithStructures("c1",
+                MakeStructure("bp2", built: false, staged: true));
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
+
+            Assert.AreEqual(0, added);
+        }
+
+        [Test]
+        public void AutoFillFlatpacks_MixOfStates_CorrectCount()
+        {
+            CreateTestBlueprint("bp-a", "Mining Rig");
+            CreateTestBlueprint("bp-b", "Refinery");
+            CreateTestBlueprint("bp-c", "Habitat");
+            var vm = CreateViewModel();
+            var colony = CreateColonyWithStructures("c1",
+                MakeStructure("bp-a", built: true, staged: false),   // built — skip
+                MakeStructure("bp-b", built: false, staged: true),   // staged — skip
+                MakeStructure("bp-c", built: false, staged: false)); // unbuilt+unstaged — add
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
+
+            Assert.AreEqual(1, added);
+            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            Assert.AreEqual(1, stop.DropOff.Count);
+            Assert.AreEqual(ItemType.ItemTypeEnum.Flatpack, stop.DropOff[0].ItemType);
+            Assert.AreEqual("bp-c", stop.DropOff[0].BaseItemTypeID);
+            Assert.AreEqual(1, stop.DropOff[0].Quantity);
+        }
+
+        [Test]
+        public void AutoFillFlatpacks_PreservesExistingItems()
+        {
+            CreateTestBlueprint("bp-d", "Power Plant");
+            var vm = CreateViewModel();
+            var stop = vm.GetOrCreateStop("c1", 0);
+            vm.AddDropOffItem(stop, ItemType.ItemTypeEnum.Resource, "Iron", "Iron", 100, "High");
+
+            var colony = CreateColonyWithStructures("c1",
+                MakeStructure("bp-d", built: false, staged: false));
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
+
+            Assert.AreEqual(2, stop.DropOff.Count);
+            Assert.AreEqual("Iron", stop.DropOff[0].BaseItemTypeID);
+            Assert.AreEqual(ItemType.ItemTypeEnum.Flatpack, stop.DropOff[1].ItemType);
+        }
+
+        [Test]
+        public void AutoFillFlatpacks_MissingColony_SkipsStop()
+        {
+            var vm = CreateViewModel();
+            var stops = new[] { new RouteStop { ColonyUUID = "missing", Sequence = 0 } };
+
+            int added = vm.AutoFillFlatpacks(stops, uuid => null);
+
+            Assert.AreEqual(0, added);
+        }
+
+        [Test]
+        public void AutoFillFlatpacks_MissingBlueprint_SkipsStructure()
+        {
+            var vm = CreateViewModel();
+            var colony = CreateColonyWithStructures("c1",
+                MakeStructure("nonexistent-bp", built: false, staged: false));
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
+
+            Assert.AreEqual(0, added);
+        }
+
+        // -----------------------------------------------------------------------
+        // AutoFillManufacturingResources — Property 3
+        // Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5, 8.1, 8.2, 8.3, 8.4
+        // -----------------------------------------------------------------------
+
+        private OE2EmpireTracker.Data.Blueprint CreateManufactoryBlueprint(string uuid, string name, Dictionary<string, string> resources)
+        {
+            var bp = new OE2EmpireTracker.Data.Blueprint(name) { UUID = uuid, BluePrintType = "Flatpacks/Manufactory", Resources = resources };
+            bp.Properties.setProperty("ManufactureTime", "1h");
+            bp.Properties.setProperty("CanManufacture", true);
+            playerContext.blueprintList.Add(bp);
+            return bp;
+        }
+
+        private ColonyStructure MakeStagingManufactory(string flatpackBpUUID, string mfgBpUUID, int qty)
+        {
+            var s = new ColonyStructure
+            {
+                UUID = System.Guid.NewGuid().ToString(),
+                FlatpackBlueprintUUID = flatpackBpUUID,
+                ManufacturingBlueprintUUID = mfgBpUUID,
+                ManufacturingQuantity = qty,
+                StagingResources = true
+            };
+            s.Properties.setProperty("Built", true);
+            s.Properties.setProperty("Online", true);
+            return s;
+        }
+
+        private ColonyStructure MakeStagingCommodityFactory(string flatpackBpUUID, string commodityName, int qty)
+        {
+            var s = new ColonyStructure
+            {
+                UUID = System.Guid.NewGuid().ToString(),
+                FlatpackBlueprintUUID = flatpackBpUUID,
+                ManufacturingCommodityName = commodityName,
+                ManufacturingQuantity = qty,
+                StagingResources = true
+            };
+            s.Properties.setProperty("Built", true);
+            s.Properties.setProperty("Online", true);
+            return s;
+        }
+
+        [Test]
+        public void AutoFillManufacturingResources_NoStagingStructures_ReturnsZero()
+        {
+            var vm = CreateViewModel();
+            var colony = new Colony { UUID = "c1" };
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillManufacturingResources(stops,
+                uuid => uuid == "c1" ? colony : null,
+                uuid => playerContext.FindBlueprint(uuid));
+
+            Assert.AreEqual(0, added);
+        }
+
+        [Test]
+        public void AutoFillManufacturingResources_WarehouseFullyStocked_ReturnsZero()
+        {
+            // Create flatpack blueprint for the manufactory structure
+            var flatpackBp = new OE2EmpireTracker.Data.Blueprint("Manufactory") { UUID = "fp-mfg1", BluePrintType = "Flatpacks/Manufactory" };
+            playerContext.blueprintList.Add(flatpackBp);
+
+            // Create the manufacturing target blueprint with resources
+            var mfgBp = CreateManufactoryBlueprint("mfg-bp1", "Widget",
+                new Dictionary<string, string> { { "Iron", "5" } });
+
+            var vm = CreateViewModel();
+            var structure = MakeStagingManufactory("fp-mfg1", "mfg-bp1", 2); // needs 10 Iron
+            var colony = CreateColonyWithStructures("c1", structure);
+
+            // Add 10 Refined Iron to warehouse
+            var item = new Item(ItemType.ItemTypeEnum.Resource, "Iron")
+            {
+                UUID = System.Guid.NewGuid().ToString(),
+                BaseItemTypeID = "Iron",
+                ResourcePurity = "Refined",
+                Quantity = 10
+            };
+            colony.Items.AddItem(item);
+
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillManufacturingResources(stops,
+                uuid => uuid == "c1" ? colony : null,
+                uuid => playerContext.FindBlueprint(uuid));
+
+            Assert.AreEqual(0, added);
+        }
+
+        [Test]
+        public void AutoFillManufacturingResources_PartialWarehouse_CorrectShortfall()
+        {
+            var flatpackBp = new OE2EmpireTracker.Data.Blueprint("Manufactory") { UUID = "fp-mfg2", BluePrintType = "Flatpacks/Manufactory" };
+            playerContext.blueprintList.Add(flatpackBp);
+
+            CreateManufactoryBlueprint("mfg-bp2", "Gadget",
+                new Dictionary<string, string> { { "Iron", "5" }, { "Copper", "3" } });
+
+            var vm = CreateViewModel();
+            var structure = MakeStagingManufactory("fp-mfg2", "mfg-bp2", 2); // needs 10 Iron, 6 Copper
+            var colony = CreateColonyWithStructures("c1", structure);
+
+            // Add 4 Refined Iron (shortfall = 6) and 0 Copper (shortfall = 6)
+            var ironItem = new Item(ItemType.ItemTypeEnum.Resource, "Iron")
+            {
+                UUID = System.Guid.NewGuid().ToString(),
+                BaseItemTypeID = "Iron",
+                ResourcePurity = "Refined",
+                Quantity = 4
+            };
+            colony.Items.AddItem(ironItem);
+
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillManufacturingResources(stops,
+                uuid => uuid == "c1" ? colony : null,
+                uuid => playerContext.FindBlueprint(uuid));
+
+            Assert.AreEqual(2, added);
+            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            var ironDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Iron");
+            var copperDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Copper");
+            Assert.IsNotNull(ironDrop);
+            Assert.AreEqual(6, ironDrop.Quantity);
+            Assert.AreEqual("Refined", ironDrop.ResourcePurity);
+            Assert.AreEqual(ItemType.ItemTypeEnum.Resource, ironDrop.ItemType);
+            Assert.IsNotNull(copperDrop);
+            Assert.AreEqual(6, copperDrop.Quantity);
+        }
+
+        [Test]
+        public void AutoFillManufacturingResources_MultipleStagingStructures_AggregatesNeeds()
+        {
+            var flatpackBp = new OE2EmpireTracker.Data.Blueprint("Manufactory") { UUID = "fp-mfg3", BluePrintType = "Flatpacks/Manufactory" };
+            playerContext.blueprintList.Add(flatpackBp);
+
+            CreateManufactoryBlueprint("mfg-bp3", "Part",
+                new Dictionary<string, string> { { "Iron", "2" } });
+
+            var vm = CreateViewModel();
+            var s1 = MakeStagingManufactory("fp-mfg3", "mfg-bp3", 3); // needs 6 Iron
+            var s2 = MakeStagingManufactory("fp-mfg3", "mfg-bp3", 2); // needs 4 Iron
+            var colony = CreateColonyWithStructures("c1", s1, s2);     // total = 10 Iron
+
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillManufacturingResources(stops,
+                uuid => uuid == "c1" ? colony : null,
+                uuid => playerContext.FindBlueprint(uuid));
+
+            Assert.AreEqual(1, added);
+            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            Assert.AreEqual(10, stop.DropOff[0].Quantity);
+        }
+
+        [Test]
+        public void AutoFillManufacturingResources_CommodityFactory_CorrectShortfall()
+        {
+            var flatpackBp = new OE2EmpireTracker.Data.Blueprint("CommodityFactory") { UUID = "fp-cf1", BluePrintType = "Flatpacks/CommodityFactory" };
+            playerContext.blueprintList.Add(flatpackBp);
+
+            // Use a real commodity — "Advanced Biolubricants" needs Alkali Organics (2) and Strong Acidic Inorganics (2)
+            var vm = CreateViewModel();
+            var structure = MakeStagingCommodityFactory("fp-cf1", "Advanced Biolubricants", 3);
+            var colony = CreateColonyWithStructures("c1", structure);
+
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillManufacturingResources(stops,
+                uuid => uuid == "c1" ? colony : null,
+                uuid => playerContext.FindBlueprint(uuid));
+
+            Assert.AreEqual(2, added); // 2 resource types
+            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            var alkali = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Alkali Organics");
+            var acidic = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Strong Acidic Inorganics");
+            Assert.IsNotNull(alkali);
+            Assert.AreEqual(6, alkali.Quantity); // 2 * 3
+            Assert.IsNotNull(acidic);
+            Assert.AreEqual(6, acidic.Quantity); // 2 * 3
+        }
+
+        [Test]
+        public void AutoFillManufacturingResources_ZeroQuantity_Skipped()
+        {
+            var flatpackBp = new OE2EmpireTracker.Data.Blueprint("Manufactory") { UUID = "fp-mfg4", BluePrintType = "Flatpacks/Manufactory" };
+            playerContext.blueprintList.Add(flatpackBp);
+
+            CreateManufactoryBlueprint("mfg-bp4", "Thing",
+                new Dictionary<string, string> { { "Iron", "5" } });
+
+            var vm = CreateViewModel();
+            var structure = MakeStagingManufactory("fp-mfg4", "mfg-bp4", 0); // qty = 0
+            var colony = CreateColonyWithStructures("c1", structure);
+
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillManufacturingResources(stops,
+                uuid => uuid == "c1" ? colony : null,
+                uuid => playerContext.FindBlueprint(uuid));
+
+            Assert.AreEqual(0, added);
+        }
+
+        [Test]
+        public void AutoFillManufacturingResources_PreservesExistingItems()
+        {
+            var flatpackBp = new OE2EmpireTracker.Data.Blueprint("Manufactory") { UUID = "fp-mfg5", BluePrintType = "Flatpacks/Manufactory" };
+            playerContext.blueprintList.Add(flatpackBp);
+
+            CreateManufactoryBlueprint("mfg-bp5", "Gizmo",
+                new Dictionary<string, string> { { "Iron", "1" } });
+
+            var vm = CreateViewModel();
+            var stop = vm.GetOrCreateStop("c1", 0);
+            vm.AddDropOffItem(stop, ItemType.ItemTypeEnum.Commodity, "Steel", "Steel", 50);
+
+            var structure = MakeStagingManufactory("fp-mfg5", "mfg-bp5", 1);
+            var colony = CreateColonyWithStructures("c1", structure);
+
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            vm.AutoFillManufacturingResources(stops,
+                uuid => uuid == "c1" ? colony : null,
+                uuid => playerContext.FindBlueprint(uuid));
+
+            Assert.AreEqual(2, stop.DropOff.Count);
+            Assert.AreEqual("Steel", stop.DropOff[0].BaseItemTypeID);
+        }
+
+        // -----------------------------------------------------------------------
+        // AutoFillWorkers — Property 4
+        // Validates: Requirements 10.1, 10.2, 10.3, 10.4
+        // -----------------------------------------------------------------------
+
+        private OE2EmpireTracker.Data.Blueprint CreateBlueprintWithWorkers(string uuid, string name, string bpType,
+            int blueCollar = 0, int whiteCollar = 0, int specialist = 0)
+        {
+            var bp = new OE2EmpireTracker.Data.Blueprint(name) { UUID = uuid, BluePrintType = bpType };
+            if (blueCollar > 0) bp.Properties.setProperty("BlueCollarDetail", blueCollar.ToString());
+            if (whiteCollar > 0) bp.Properties.setProperty("WhiteCollarDetail", whiteCollar.ToString());
+            if (specialist > 0) bp.Properties.setProperty("SpecialistDetail", specialist.ToString());
+            playerContext.blueprintList.Add(bp);
+            return bp;
+        }
+
+        private ColonyStructure MakeBuiltOnlineStructure(string bpUUID, int blueAssigned = 0, int whiteAssigned = 0, int specAssigned = 0)
+        {
+            var s = new ColonyStructure
+            {
+                UUID = System.Guid.NewGuid().ToString(),
+                FlatpackBlueprintUUID = bpUUID
+            };
+            s.Properties.setProperty("Built", true);
+            s.Properties.setProperty("Online", true);
+            for (int i = 1; i <= blueAssigned; i++)
+                s.AssignedWorkers.setProperty("BlueCollar" + i, true);
+            for (int i = 1; i <= whiteAssigned; i++)
+                s.AssignedWorkers.setProperty("WhiteCollar" + i, true);
+            for (int i = 1; i <= specAssigned; i++)
+                s.AssignedWorkers.setProperty("Specialist" + i, true);
+            return s;
+        }
+
+        [Test]
+        public void AutoFillWorkers_FullyStaffed_ReturnsZero()
+        {
+            var bp = CreateBlueprintWithWorkers("bp-w1", "Habitat", "Flatpacks/Habitat", blueCollar: 1);
+            var vm = CreateViewModel();
+            var structure = MakeBuiltOnlineStructure("bp-w1", blueAssigned: 1);
+            var colony = CreateColonyWithStructures("c1", structure);
+
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillWorkers(stops,
+                uuid => uuid == "c1" ? colony : null, playerContext);
+
+            Assert.AreEqual(0, added);
+        }
+
+        [Test]
+        public void AutoFillWorkers_PartialStaffing_CorrectGap()
+        {
+            var bp = CreateBlueprintWithWorkers("bp-w2", "Factory", "Flatpacks/Factory",
+                blueCollar: 2, whiteCollar: 1);
+            var vm = CreateViewModel();
+            // Assign 1 of 2 blue collar, 0 of 1 white collar
+            var structure = MakeBuiltOnlineStructure("bp-w2", blueAssigned: 1, whiteAssigned: 0);
+            var colony = CreateColonyWithStructures("c1", structure);
+
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillWorkers(stops,
+                uuid => uuid == "c1" ? colony : null, playerContext);
+
+            Assert.AreEqual(2, added); // 1 BlueCollar gap + 1 WhiteCollar gap
+            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            var blueDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "BlueCollarDetail");
+            var whiteDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "WhiteCollarDetail");
+            Assert.IsNotNull(blueDrop);
+            Assert.AreEqual(1, blueDrop.Quantity);
+            Assert.AreEqual(ItemType.ItemTypeEnum.WorkDetail, blueDrop.ItemType);
+            Assert.AreEqual("Blue Collar Detail", blueDrop.Name);
+            Assert.IsNotNull(whiteDrop);
+            Assert.AreEqual(1, whiteDrop.Quantity);
+        }
+
+        [Test]
+        public void AutoFillWorkers_NoStructures_ReturnsZero()
+        {
+            var vm = CreateViewModel();
+            var colony = new Colony { UUID = "c1" };
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillWorkers(stops,
+                uuid => uuid == "c1" ? colony : null, playerContext);
+
+            Assert.AreEqual(0, added);
+        }
+
+        [Test]
+        public void AutoFillWorkers_PreservesExistingItems()
+        {
+            var bp = CreateBlueprintWithWorkers("bp-w3", "Lab", "Flatpacks/Lab", blueCollar: 1);
+            var vm = CreateViewModel();
+            var stop = vm.GetOrCreateStop("c1", 0);
+            vm.AddDropOffItem(stop, ItemType.ItemTypeEnum.Resource, "Iron", "Iron", 100);
+
+            var structure = MakeBuiltOnlineStructure("bp-w3", blueAssigned: 0);
+            var colony = CreateColonyWithStructures("c1", structure);
+
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            vm.AutoFillWorkers(stops,
+                uuid => uuid == "c1" ? colony : null, playerContext);
+
+            Assert.AreEqual("Iron", stop.DropOff[0].BaseItemTypeID);
+            Assert.IsTrue(stop.DropOff.Count >= 2);
         }
     }
 }

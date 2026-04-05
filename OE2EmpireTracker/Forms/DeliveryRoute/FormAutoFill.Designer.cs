@@ -44,26 +44,26 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             // chkFlatpacks
             // 
             this.chkFlatpacks.AutoSize = true;
-            this.chkFlatpacks.Enabled = false;
+            this.chkFlatpacks.Enabled = true;
             this.chkFlatpacks.Location = new System.Drawing.Point(15, 61);
             this.chkFlatpacks.Name = "chkFlatpacks";
-            this.chkFlatpacks.Text = "Flatpacks (Future)";
+            this.chkFlatpacks.Text = "Flatpacks";
             // 
             // chkResources
             // 
             this.chkResources.AutoSize = true;
-            this.chkResources.Enabled = false;
+            this.chkResources.Enabled = true;
             this.chkResources.Location = new System.Drawing.Point(15, 84);
             this.chkResources.Name = "chkResources";
-            this.chkResources.Text = "Resources for Manufacturing (Future)";
+            this.chkResources.Text = "Resources for Manufacturing";
             // 
             // chkWorkers
             // 
             this.chkWorkers.AutoSize = true;
-            this.chkWorkers.Enabled = false;
+            this.chkWorkers.Enabled = true;
             this.chkWorkers.Location = new System.Drawing.Point(15, 107);
             this.chkWorkers.Name = "chkWorkers";
-            this.chkWorkers.Text = "Workers (Future)";
+            this.chkWorkers.Text = "Workers";
             // 
             // cmdOK
             // 

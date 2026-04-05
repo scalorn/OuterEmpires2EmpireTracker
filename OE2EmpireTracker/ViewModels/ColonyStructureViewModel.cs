@@ -94,6 +94,12 @@ namespace OE2EmpireTracker.ViewModels
         // Blueprint info
         // -----------------------------------------------------------------------
 
+        public bool StagingResources
+        {
+            get => _structure.StagingResources;
+            set => _structure.StagingResources = value;
+        }
+
         public string FlatpackBlueprintUUID => _structure.FlatpackBlueprintUUID;
 
         public Blueprint Blueprint => _playerContext.FindBlueprint(_structure.FlatpackBlueprintUUID);

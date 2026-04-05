@@ -1,8 +1,11 @@
+using Newtonsoft.Json;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Data;
+using OE2EmpireTracker.ViewModels;
 using System;
+using System.IO;
 
 namespace OE2EmpireTracker.Tests.Baseline
 {
@@ -437,6 +440,58 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var status = new ColonyStructureStatus();
             Assert.IsFalse(status.GetUnallocatedPresent("UnknownWorkerDetail"));
+        }
+
+        // -----------------------------------------------------------------------
+        // StagingResources — Property 5: StagingResources serialization round-trip
+        // Validates: Requirements 4.1, 4.2
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void StagingResources_DefaultsToFalse()
+        {
+            var structure = new ColonyStructure();
+            Assert.IsFalse(structure.StagingResources);
+        }
+
+        [Test]
+        public void StagingResources_SetTrueViaViewModel_ReadBackTrue()
+        {
+            PlayerContext.Reset();
+            EmpireContext.FilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\..\OE2EmpireTracker\BaselineData.json");
+            PlayerContext.FilePath = "nonexistent_player_data.json";
+            var pc = PlayerContext.getInstance();
+
+            var structure = new ColonyStructure();
+            var vm = new ColonyStructureViewModel(structure, pc);
+            vm.StagingResources = true;
+
+            Assert.IsTrue(vm.StagingResources);
+            Assert.IsTrue(structure.StagingResources);
+        }
+
+        [Test]
+        public void StagingResources_JsonRoundTrip_PreservesTrue()
+        {
+            var structure = new ColonyStructure();
+            structure.StagingResources = true;
+
+            string json = JsonConvert.SerializeObject(structure);
+            var restored = JsonConvert.DeserializeObject<ColonyStructure>(json);
+
+            Assert.IsTrue(restored.StagingResources);
+        }
+
+        [Test]
+        public void StagingResources_JsonRoundTrip_PreservesFalse()
+        {
+            var structure = new ColonyStructure();
+            structure.StagingResources = false;
+
+            string json = JsonConvert.SerializeObject(structure);
+            var restored = JsonConvert.DeserializeObject<ColonyStructure>(json);
+
+            Assert.IsFalse(restored.StagingResources);
         }
     }
 }

@@ -65,6 +65,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             this.SuspendLayout();
             FlatpackBlueprint = playerContext.FindBlueprint(ColonyStructureData.FlatpackBlueprintUUID);
+            chkStageResources.Visible = false;
 
             if (FlatpackBlueprint != null)
             {
@@ -757,6 +758,20 @@ namespace OE2EmpireTracker.Forms.Colony
             cmdStart.Visible = showCmdStart && !showCompletionTime;
             cmdSubStart.Visible = false;
 
+            // Stage Resources checkbox: visible for Manufactory, hidden when manufacturing running
+            if (showCompletionTime)
+            {
+                chkStageResources.Visible = false;
+            }
+            else
+            {
+                chkStageResources.Visible = true;
+                int mfgQty = 0;
+                int.TryParse(txtQuantity.Text, out mfgQty);
+                chkStageResources.Enabled = !string.IsNullOrEmpty(ColonyStructureData.ManufacturingBlueprintUUID) && mfgQty > 0;
+                chkStageResources.Checked = ViewModel.StagingResources;
+            }
+
             if (showCompletionTime)
             {
                 flpCompletionTime.Visible = true;
@@ -898,6 +913,20 @@ namespace OE2EmpireTracker.Forms.Colony
             }
             cmdStart.Visible = showCmdStart && !showCompletionTime;
             cmdSubStart.Visible = false;
+
+            // Stage Resources checkbox: visible for CommodityFactory, hidden when manufacturing running
+            if (showCompletionTime)
+            {
+                chkStageResources.Visible = false;
+            }
+            else
+            {
+                chkStageResources.Visible = true;
+                int mfgQty = 0;
+                int.TryParse(txtQuantity.Text, out mfgQty);
+                chkStageResources.Enabled = !string.IsNullOrEmpty(ColonyStructureData.ManufacturingCommodityName) && mfgQty > 0;
+                chkStageResources.Checked = ViewModel.StagingResources;
+            }
 
             if (showCompletionTime)
             {
@@ -1192,6 +1221,13 @@ namespace OE2EmpireTracker.Forms.Colony
             ViewModel.IsOnline = chkOnline.Checked;
             if (chkOnline.Checked) { chkBuilt.Checked = true; chkStaged.Checked = false; }
             UpdateData();
+            ColonyStructureDataChanged?.Invoke(this, e);
+        }
+
+        private void chkStageResources_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            ViewModel.StagingResources = chkStageResources.Checked;
             ColonyStructureDataChanged?.Invoke(this, e);
         }
 

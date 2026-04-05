@@ -494,17 +494,26 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             {
                 if (dlg.ShowDialog(this) != DialogResult.OK) return;
 
-                if (dlg.IncludeCommodities)
-                {
-                    int added = planViewModel.AutoFillCommodities(
-                        viewModel.Stops,
-                        uuid => playerContext.FindColony(uuid));
+                int added = 0;
+                Func<string, Baseline.Colony> colonyFinder = uuid => playerContext.FindColony(uuid);
 
-                    if (added > 0)
-                    {
-                        planViewModel.Save();
-                        PopulatePlanGrids();
-                    }
+                if (dlg.IncludeCommodities)
+                    added += planViewModel.AutoFillCommodities(viewModel.Stops, colonyFinder);
+
+                if (dlg.IncludeFlatpacks)
+                    added += planViewModel.AutoFillFlatpacks(viewModel.Stops, colonyFinder);
+
+                if (dlg.IncludeResources)
+                    added += planViewModel.AutoFillManufacturingResources(viewModel.Stops, colonyFinder,
+                        uuid => playerContext.FindBlueprint(uuid));
+
+                if (dlg.IncludeWorkers)
+                    added += planViewModel.AutoFillWorkers(viewModel.Stops, colonyFinder, playerContext);
+
+                if (added > 0)
+                {
+                    planViewModel.Save();
+                    PopulatePlanGrids();
                 }
             }
         }
