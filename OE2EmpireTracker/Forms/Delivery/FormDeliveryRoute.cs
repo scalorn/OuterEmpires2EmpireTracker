@@ -175,6 +175,17 @@ namespace OE2EmpireTracker.Forms.Delivery
                 planViewModel = null;
                 selectedPlanStop = null;
                 PopulatePlanDropdown();
+
+                // Auto-select the first open (non-completed) plan
+                var firstOpenPlan = playerContext.GetCurrentPlayerPlans()
+                    .Where(p => p.RouteUUID == route.UUID && !p.Completed)
+                    .OrderBy(p => p.Name)
+                    .FirstOrDefault();
+                if (firstOpenPlan != null)
+                {
+                    cmbPlan.SelectedValue = firstOpenPlan.UUID;
+                }
+
                 // Trigger plan tab update for the currently selected stop
                 dgvStops_SelectionChanged(sender, e);
             }
