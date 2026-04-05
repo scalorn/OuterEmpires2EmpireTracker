@@ -1,5 +1,6 @@
 using NLog;
 using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using System;
 using System.Collections.Generic;
@@ -110,7 +111,7 @@ namespace OE2EmpireTracker.Baseline
 
                 ColonyStructureStatus currentStatus = new ColonyStructureStatus();
                 CalculateBuilt(structure, previousStatus, currentStatus, workers, FlatpackBlueprint);
-                structure.Statuses["Actual"] = currentStatus;
+                structure.Statuses[GameConstants.StatusActual] = currentStatus;
                 previousStatus = currentStatus;
             }
             finalActualStatus = previousStatus;
@@ -130,7 +131,7 @@ namespace OE2EmpireTracker.Baseline
                 Data.Blueprint FlatpackBlueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 ColonyStructureStatus currentStatus = new ColonyStructureStatus();
                 CalculateBuilt(structure, previousStatus, currentStatus, workers, FlatpackBlueprint);
-                structure.Statuses["Ideal"] = currentStatus;
+                structure.Statuses[GameConstants.StatusIdeal] = currentStatus;
                 previousStatus = currentStatus;
             }
             finalIdealStatus = previousStatus;
@@ -230,7 +231,7 @@ namespace OE2EmpireTracker.Baseline
                 workerItem.UUID = System.Guid.NewGuid().ToString();
                 workerItem.BaseItemTypeID = workerDetailID;
                 workerItem.Quantity = 0;
-                workerItem.Volume = 50;
+                workerItem.Volume = GameConstants.WorkerVolume;
                 colony.Items.AddItem(workerItem);
             }
         }
@@ -261,13 +262,13 @@ namespace OE2EmpireTracker.Baseline
                 int totalToLock = perItem * remaining;
 
                 // Ensure the resource item exists in the warehouse
-                var existing = colony.Items.FindResource(resourceName, "Refined");
+                var existing = colony.Items.FindResource(resourceName, GameConstants.PurityRefined);
                 if (existing.Count == 0)
                 {
                     var resourceItem = new Data.Item(Data.ItemType.ItemTypeEnum.Resource, resourceName);
                     resourceItem.UUID = System.Guid.NewGuid().ToString();
                     resourceItem.BaseItemTypeID = resourceName;
-                    resourceItem.ResourcePurity = "Refined";
+                    resourceItem.ResourcePurity = GameConstants.PurityRefined;
                     resourceItem.Quantity = 0;
                     resourceItem.Volume = 1;
                     colony.Items.AddItem(resourceItem);

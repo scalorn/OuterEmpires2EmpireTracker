@@ -1,3 +1,4 @@
+using OE2EmpireTracker.Constants;
 using System;
 
 namespace OE2EmpireTracker.Baseline
@@ -53,11 +54,11 @@ namespace OE2EmpireTracker.Baseline
         public void GetStructureState(ColonyStructure structure, out bool built, out bool staged, out bool online)
         {
             built = false;
-            structure.Properties.getBoolean("Built", false, out built);
+            structure.Properties.getBoolean(GameConstants.PropBuilt, false, out built);
             staged = false;
-            structure.Properties.getBoolean("Staged", false, out staged);
+            structure.Properties.getBoolean(GameConstants.PropStaged, false, out staged);
             online = false;
-            structure.Properties.getBoolean("Online", false, out online);
+            structure.Properties.getBoolean(GameConstants.PropOnline, false, out online);
         }
 
         public bool IsUnassignedWorkerAvailable(string workerKey)

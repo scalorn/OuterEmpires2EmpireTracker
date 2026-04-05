@@ -405,7 +405,7 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 if (itemEntry.ItemType == Data.ItemType.ItemTypeEnum.Resource &&
                     !string.IsNullOrEmpty(itemEntry.ResourcePurity) &&
-                    itemEntry.ResourcePurity != "Refined")
+                    itemEntry.ResourcePurity != GameConstants.PurityRefined)
                 {
                     string key = itemEntry.BaseItemTypeID + "|" + itemEntry.ResourcePurity;
                     if (!unrefinedItems.Any(u => u.Key == key))
@@ -434,7 +434,7 @@ namespace OE2EmpireTracker.Forms.Colony
                         if (survey != null && survey.Resources.ContainsKey(structure.MiningSurveyResource))
                         {
                             SurveyResource sr = survey.Resources[structure.MiningSurveyResource];
-                            if (!string.IsNullOrEmpty(sr.Purity) && sr.Purity != "Refined")
+                            if (!string.IsNullOrEmpty(sr.Purity) && sr.Purity != GameConstants.PurityRefined)
                             {
                                 string key = sr.Resource + "|" + sr.Purity;
                                 if (!unrefinedItems.Any(u => u.Key == key))
@@ -514,7 +514,7 @@ namespace OE2EmpireTracker.Forms.Colony
             }
             else
             {
-                int baseRate = 25;
+                int baseRate = GameConstants.RefiningBaseRate;
                 int outputRate = GetRefiningOutputRate(ColonyStructureData.RefiningResourcePurity, baseRate);
                 rtbProgressStatus.Text = $"{baseRate}:{outputRate} {ColonyStructureData.RefiningResource} ({ColonyStructureData.RefiningResourcePurity})";
             }
@@ -894,7 +894,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // Check this structure's actual status — the calculator determined availability
             // during its pass with locks cleared, so it's the authoritative answer
             ColonyStructureStatus status;
-            if (ColonyStructureData.Statuses.TryGetValue("Actual", out status))
+            if (ColonyStructureData.Statuses.TryGetValue(GameConstants.StatusActual, out status))
             {
                 switch (workerDetailID)
                 {
@@ -926,12 +926,12 @@ namespace OE2EmpireTracker.Forms.Colony
 
             if (ColonyStructureData != null && ColonyStructureData.Statuses != null)
             {
-                ColonyStructureData.Statuses.TryGetValue("Actual", out ColonyStructureStatus status);
+                ColonyStructureData.Statuses.TryGetValue(GameConstants.StatusActual, out ColonyStructureStatus status);
                 if (status != null)
                 {
                     ColonyStatusCalculator.PopulateStatus(builder, status);
                 }
-                ColonyStructureData.Statuses.TryGetValue("Ideal", out ColonyStructureStatus idealStatus);
+                ColonyStructureData.Statuses.TryGetValue(GameConstants.StatusIdeal, out ColonyStructureStatus idealStatus);
                 if (idealStatus != null)
                 {
                     builder.Append("\n", Color.Black);
@@ -1073,8 +1073,8 @@ namespace OE2EmpireTracker.Forms.Colony
 
                 ColonyStructureData.ProcessCompletionTime = new CountDownTime();
                 ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.Now;
-                long secondsUntilNextHour = 3600 - (long)(DateTime.Now - DateTime.Now.Date.AddHours(DateTime.Now.Hour)).TotalSeconds;
-                ColonyStructureData.ProcessCompletionTime.StartRepeating(3600, secondsUntilNextHour);
+                long secondsUntilNextHour = GameConstants.SecondsPerHour - (long)(DateTime.Now - DateTime.Now.Date.AddHours(DateTime.Now.Hour)).TotalSeconds;
+                ColonyStructureData.ProcessCompletionTime.StartRepeating(GameConstants.SecondsPerHour, secondsUntilNextHour);
                 timerCountdown.Interval = 1000;
                 timerCountdown.Start();
                 handleRefineryControls();
@@ -1142,8 +1142,8 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             ColonyStructureData.ProcessCompletionTime = new CountDownTime();
             ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.Now;
-            long secondsUntilNextHour = 3600 - (long)(DateTime.Now - DateTime.Now.Date.AddHours(DateTime.Now.Hour)).TotalSeconds;
-            ColonyStructureData.ProcessCompletionTime.StartRepeating(3600, secondsUntilNextHour);
+            long secondsUntilNextHour = GameConstants.SecondsPerHour - (long)(DateTime.Now - DateTime.Now.Date.AddHours(DateTime.Now.Hour)).TotalSeconds;
+            ColonyStructureData.ProcessCompletionTime.StartRepeating(GameConstants.SecondsPerHour, secondsUntilNextHour);
             timerCountdown.Interval = 1000;
             timerCountdown.Start();
             handleMiningRigControls();

@@ -119,7 +119,7 @@ namespace OE2EmpireTracker.Baseline
 
         private void ProcessNormalRefinery(ColonyStructure structure)
         {
-            int baseRate = 25;
+            int baseRate = GameConstants.RefiningBaseRate;
             int outputMultiplier;
             switch (structure.RefiningResourcePurity)
             {
@@ -156,7 +156,7 @@ namespace OE2EmpireTracker.Baseline
                 }
 
                 int produced = consumed * outputMultiplier;
-                List<Item> refinedItems = Items.FindResource(structure.RefiningResource, "Refined");
+                List<Item> refinedItems = Items.FindResource(structure.RefiningResource, GameConstants.PurityRefined);
                 Item refinedItem;
                 if (refinedItems.Count > 0)
                 {
@@ -169,7 +169,7 @@ namespace OE2EmpireTracker.Baseline
                     refinedItem.ItemType = ItemType.ItemTypeEnum.Resource;
                     refinedItem.BaseItemTypeID = structure.RefiningResource;
                     refinedItem.Name = structure.RefiningResource;
-                    refinedItem.ResourcePurity = "Refined";
+                    refinedItem.ResourcePurity = GameConstants.PurityRefined;
                     refinedItem.Volume = 1;
                     refinedItem.Quantity = 0;
                     Items.AddItem(refinedItem);
@@ -218,7 +218,7 @@ namespace OE2EmpireTracker.Baseline
 
                 if (produced > 0)
                 {
-                    List<Item> outputItems = Items.FindResource(recipe.OutputResource, "Refined");
+                    List<Item> outputItems = Items.FindResource(recipe.OutputResource, GameConstants.PurityRefined);
                     Item outputItem;
                     if (outputItems.Count > 0)
                     {
@@ -231,7 +231,7 @@ namespace OE2EmpireTracker.Baseline
                         outputItem.ItemType = ItemType.ItemTypeEnum.Resource;
                         outputItem.BaseItemTypeID = recipe.OutputResource;
                         outputItem.Name = recipe.OutputResource;
-                        outputItem.ResourcePurity = "Refined";
+                        outputItem.ResourcePurity = GameConstants.PurityRefined;
                         outputItem.Volume = 1;
                         outputItem.Quantity = 0;
                         Items.AddItem(outputItem);

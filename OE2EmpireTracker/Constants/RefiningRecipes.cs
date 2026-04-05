@@ -36,19 +36,19 @@ namespace OE2EmpireTracker.Constants
             // S1 synthetics: consume 1250 refined natural, produce 25 S1
             new RefiningRecipe
             {
-                InputResource = "Lanthanides", InputPurity = "Refined",
+                InputResource = "Lanthanides", InputPurity = GameConstants.PurityRefined,
                 OutputResource = "S1. Translanthanic Exotics",
                 ConsumeRate = 1250, ProduceRate = 25, Tier = 1
             },
             new RefiningRecipe
             {
-                InputResource = "Superheavy Exotics", InputPurity = "Refined",
+                InputResource = "Superheavy Exotics", InputPurity = GameConstants.PurityRefined,
                 OutputResource = "S1. Translivermoric Exotics",
                 ConsumeRate = 1250, ProduceRate = 25, Tier = 1
             },
             new RefiningRecipe
             {
-                InputResource = "Transuranic Volatiles", InputPurity = "Refined",
+                InputResource = "Transuranic Volatiles", InputPurity = GameConstants.PurityRefined,
                 OutputResource = "S1. Transuranic Exotics",
                 ConsumeRate = 1250, ProduceRate = 25, Tier = 1
             },
@@ -56,19 +56,19 @@ namespace OE2EmpireTracker.Constants
             // S2 synthetics: consume 500 refined S1, produce 25 S2
             new RefiningRecipe
             {
-                InputResource = "S1. Translanthanic Exotics", InputPurity = "Refined",
+                InputResource = "S1. Translanthanic Exotics", InputPurity = GameConstants.PurityRefined,
                 OutputResource = "S2. Element 126",
                 ConsumeRate = 500, ProduceRate = 25, Tier = 2
             },
             new RefiningRecipe
             {
-                InputResource = "S1. Translivermoric Exotics", InputPurity = "Refined",
+                InputResource = "S1. Translivermoric Exotics", InputPurity = GameConstants.PurityRefined,
                 OutputResource = "S2. Element 127",
                 ConsumeRate = 500, ProduceRate = 25, Tier = 2
             },
             new RefiningRecipe
             {
-                InputResource = "S1. Transuranic Exotics", InputPurity = "Refined",
+                InputResource = "S1. Transuranic Exotics", InputPurity = GameConstants.PurityRefined,
                 OutputResource = "S2. Superactinides",
                 ConsumeRate = 500, ProduceRate = 25, Tier = 2
             },

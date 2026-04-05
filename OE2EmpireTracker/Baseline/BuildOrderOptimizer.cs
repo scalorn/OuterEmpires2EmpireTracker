@@ -54,7 +54,7 @@ namespace OE2EmpireTracker.Baseline
             foreach (var structure in colony.Structures)
             {
                 bool built = false;
-                structure.Properties.getBoolean("Built", false, out built);
+                structure.Properties.getBoolean(GameConstants.PropBuilt, false, out built);
                 if (built)
                 {
                     builtStructures.Add(structure);

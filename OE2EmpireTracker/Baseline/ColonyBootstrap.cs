@@ -83,7 +83,7 @@ namespace OE2EmpireTracker.Baseline
             foreach (var entry in bestResources.OrderBy(r => r.ResourceName))
             {
                 double miningRate = entry.RawAmount * (1.0 + _extractionFocusLevel * 0.01);
-                int refinersNeeded = (int)Math.Ceiling(miningRate / 25.0);
+                int refinersNeeded = (int)Math.Ceiling(miningRate / GameConstants.RefiningBaseRate);
 
                 for (int i = 0; i < refinersNeeded; i++)
                 {
@@ -123,7 +123,7 @@ namespace OE2EmpireTracker.Baseline
                 foreach (var resource in survey.Resources.Values)
                 {
                     if (string.IsNullOrEmpty(resource.Resource)) continue;
-                    if (resource.Purity == "Refined") continue; // Skip already-refined
+                    if (resource.Purity == GameConstants.PurityRefined) continue; // Skip already-refined
 
                     double amount;
                     if (!double.TryParse(resource.Amount, out amount)) continue;

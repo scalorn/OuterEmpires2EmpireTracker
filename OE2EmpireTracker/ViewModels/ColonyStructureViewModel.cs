@@ -1,4 +1,5 @@
 using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Data;
 using System;
 
@@ -27,20 +28,20 @@ namespace OE2EmpireTracker.ViewModels
 
         public bool IsBuilt
         {
-            get { bool v; _structure.Properties.getBoolean("Built", false, out v); return v; }
-            set { _structure.Properties.setProperty("Built", value); }
+            get { bool v; _structure.Properties.getBoolean(GameConstants.PropBuilt, false, out v); return v; }
+            set { _structure.Properties.setProperty(GameConstants.PropBuilt, value); }
         }
 
         public bool IsStaged
         {
-            get { bool v; _structure.Properties.getBoolean("Staged", false, out v); return v; }
-            set { _structure.Properties.setProperty("Staged", value); }
+            get { bool v; _structure.Properties.getBoolean(GameConstants.PropStaged, false, out v); return v; }
+            set { _structure.Properties.setProperty(GameConstants.PropStaged, value); }
         }
 
         public bool IsOnline
         {
-            get { bool v; _structure.Properties.getBoolean("Online", false, out v); return v; }
-            set { _structure.Properties.setProperty("Online", value); }
+            get { bool v; _structure.Properties.getBoolean(GameConstants.PropOnline, false, out v); return v; }
+            set { _structure.Properties.setProperty(GameConstants.PropOnline, value); }
         }
 
         // -----------------------------------------------------------------------

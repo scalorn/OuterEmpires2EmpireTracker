@@ -116,9 +116,14 @@ Full codebase scan identified issues in 7 categories. Lower-risk items can be do
 - Fixed typo: `ProgramaticUpdateGuard` → `ProgrammaticUpdateGuard` throughout
 
 ### 12c. Magic strings/numbers → constants (Low-Medium risk)
-- Worker type strings: `"BlueCollar"`, `"WhiteCollar"`, `"Specialist"`, `"BlueCollarDetail"`, `"WhiteCollarDetail"`, `"SpecialistDetail"`
-- State strings: `"Built"`, `"Staged"`, `"Online"`, `"Actual"`, `"Ideal"`, `"Refined"`
-- Numbers: `25` (refining base rate), `50` (worker volume), `3600` (seconds/hour)
+**Status: Complete**
+Created `Constants/GameConstants.cs` with:
+- `RefiningBaseRate` (25), `WorkerVolume` (50), `SecondsPerHour` (3600)
+- `PropBuilt`, `PropStaged`, `PropOnline` (structure property keys)
+- `StatusActual`, `StatusIdeal` (status dictionary keys)
+- `PurityRefined` (resource purity value)
+
+Replaced all occurrences across 9 production files. Test files left with literal values (they test the data, not the constants).
 
 ### 12d. Method naming — camelCase → PascalCase (Medium risk)
 **Status: Complete**

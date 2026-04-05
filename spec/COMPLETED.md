@@ -113,3 +113,6 @@ Created `WorkerTypeInfo` class and `WorkerDetail.WorkerTypes` array. Replaced 12
 
 ## 34. Split Colony.cs into Separate Files (Rec 12g)
 Extracted `ColonyStructure` and `CommodityRequested` classes from Colony.cs into their own files under Baseline/. Colony.cs now contains only the Colony class. 465 tests passing.
+
+## 35. Magic Strings/Numbers → Constants (Rec 12c)
+Created `Constants/GameConstants.cs` with RefiningBaseRate (25), WorkerVolume (50), SecondsPerHour (3600), PropBuilt/PropStaged/PropOnline, StatusActual/StatusIdeal, PurityRefined. Replaced all occurrences across 9 production files. Worker type strings already handled by WorkerDetail.WorkerTypes (Rec 12f). 465 tests passing.
