@@ -272,9 +272,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             PopulateColonyPicker();
             planViewModel = null;
             selectedPlanStop = null;
+            txtPlanFilter.Text = "";
             txtPlanName.Text = "";
             txtPlanName.SetError("Plan name is required");
             cmbPlan.DataSource = null;
+            cmbPlan.Text = "";
+            cmdAutoFill.Visible = false;
             ClearPlanGrids();
         }
 
