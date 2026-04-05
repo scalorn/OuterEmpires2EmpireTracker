@@ -116,8 +116,9 @@ namespace OE2EmpireTracker.Forms.Delivery
             int availWidth = flpPlanContent.ClientSize.Width;
             int availHeight = flpPlanContent.ClientSize.Height;
 
-            // Fixed heights: labels, add rows
-            int fixedHeight = lblPlanStop.Size.Height + lblPlanStop.Margin.Top + lblPlanStop.Margin.Bottom
+            int fixedHeight = flpPlanSelector.Size.Height + flpPlanSelector.Margin.Top + flpPlanSelector.Margin.Bottom
+                + flpPlanName.Size.Height + flpPlanName.Margin.Top + flpPlanName.Margin.Bottom
+                + lblPlanStop.Size.Height + lblPlanStop.Margin.Top + lblPlanStop.Margin.Bottom
                 + lblDropOff.Size.Height + lblDropOff.Margin.Top + lblDropOff.Margin.Bottom
                 + flpDropOffAdd.Size.Height + flpDropOffAdd.Margin.Top + flpDropOffAdd.Margin.Bottom
                 + lblPickUp.Size.Height + lblPickUp.Margin.Top + lblPickUp.Margin.Bottom

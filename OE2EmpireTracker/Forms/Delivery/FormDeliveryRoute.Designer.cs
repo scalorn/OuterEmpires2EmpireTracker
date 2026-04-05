@@ -69,6 +69,16 @@ namespace OE2EmpireTracker.Forms.Delivery
             this.cmdAddPickUp = new System.Windows.Forms.Button();
             this.txtPickFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmdRemovePickUp = new System.Windows.Forms.Button();
+            this.flpPlanSelector = new System.Windows.Forms.FlowLayoutPanel();
+            this.txtPlanFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.cmbPlan = new System.Windows.Forms.ComboBox();
+            this.chkShowCompleted = new System.Windows.Forms.CheckBox();
+            this.cmdNewPlan = new System.Windows.Forms.Button();
+            this.cmdDeletePlan = new System.Windows.Forms.Button();
+            this.cmdExecutePlan = new System.Windows.Forms.Button();
+            this.flpPlanName = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblPlanNameLabel = new System.Windows.Forms.Label();
+            this.txtPlanName = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdNew = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
@@ -260,6 +270,8 @@ namespace OE2EmpireTracker.Forms.Delivery
             // 
             // flpPlanContent
             // 
+            this.flpPlanContent.Controls.Add(this.flpPlanSelector);
+            this.flpPlanContent.Controls.Add(this.flpPlanName);
             this.flpPlanContent.Controls.Add(this.lblPlanStop);
             this.flpPlanContent.Controls.Add(this.lblDropOff);
             this.flpPlanContent.Controls.Add(this.dgvDropOff);
@@ -272,6 +284,89 @@ namespace OE2EmpireTracker.Forms.Delivery
             this.flpPlanContent.Name = "flpPlanContent";
             this.flpPlanContent.Size = new System.Drawing.Size(616, 398);
             this.flpPlanContent.WrapContents = false;
+            // 
+            // flpPlanSelector
+            // 
+            this.flpPlanSelector.Controls.Add(this.txtPlanFilter);
+            this.flpPlanSelector.Controls.Add(this.cmbPlan);
+            this.flpPlanSelector.Controls.Add(this.chkShowCompleted);
+            this.flpPlanSelector.Controls.Add(this.cmdNewPlan);
+            this.flpPlanSelector.Controls.Add(this.cmdDeletePlan);
+            this.flpPlanSelector.Controls.Add(this.cmdExecutePlan);
+            this.flpPlanSelector.Location = new System.Drawing.Point(2, 2);
+            this.flpPlanSelector.Margin = new System.Windows.Forms.Padding(2);
+            this.flpPlanSelector.Name = "flpPlanSelector";
+            this.flpPlanSelector.Size = new System.Drawing.Size(610, 28);
+            // 
+            // txtPlanFilter
+            // 
+            this.txtPlanFilter.Location = new System.Drawing.Point(3, 3);
+            this.txtPlanFilter.Name = "txtPlanFilter";
+            this.txtPlanFilter.Size = new System.Drawing.Size(80, 20);
+            // 
+            // cmbPlan
+            // 
+            this.cmbPlan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPlan.Location = new System.Drawing.Point(89, 3);
+            this.cmbPlan.Name = "cmbPlan";
+            this.cmbPlan.Size = new System.Drawing.Size(200, 21);
+            // 
+            // chkShowCompleted
+            // 
+            this.chkShowCompleted.AutoSize = true;
+            this.chkShowCompleted.Location = new System.Drawing.Point(295, 5);
+            this.chkShowCompleted.Name = "chkShowCompleted";
+            this.chkShowCompleted.Size = new System.Drawing.Size(75, 17);
+            this.chkShowCompleted.Text = "Completed";
+            this.chkShowCompleted.UseVisualStyleBackColor = true;
+            // 
+            // cmdNewPlan
+            // 
+            this.cmdNewPlan.Location = new System.Drawing.Point(376, 3);
+            this.cmdNewPlan.Name = "cmdNewPlan";
+            this.cmdNewPlan.Size = new System.Drawing.Size(40, 23);
+            this.cmdNewPlan.Text = "New";
+            this.cmdNewPlan.UseVisualStyleBackColor = true;
+            // 
+            // cmdDeletePlan
+            // 
+            this.cmdDeletePlan.Location = new System.Drawing.Point(422, 3);
+            this.cmdDeletePlan.Name = "cmdDeletePlan";
+            this.cmdDeletePlan.Size = new System.Drawing.Size(50, 23);
+            this.cmdDeletePlan.Text = "Delete";
+            this.cmdDeletePlan.UseVisualStyleBackColor = true;
+            // 
+            // cmdExecutePlan
+            // 
+            this.cmdExecutePlan.Location = new System.Drawing.Point(478, 3);
+            this.cmdExecutePlan.Name = "cmdExecutePlan";
+            this.cmdExecutePlan.Size = new System.Drawing.Size(55, 23);
+            this.cmdExecutePlan.Text = "Execute";
+            this.cmdExecutePlan.UseVisualStyleBackColor = true;
+            // 
+            // flpPlanName
+            // 
+            this.flpPlanName.Controls.Add(this.lblPlanNameLabel);
+            this.flpPlanName.Controls.Add(this.txtPlanName);
+            this.flpPlanName.Location = new System.Drawing.Point(2, 34);
+            this.flpPlanName.Margin = new System.Windows.Forms.Padding(2);
+            this.flpPlanName.Name = "flpPlanName";
+            this.flpPlanName.Size = new System.Drawing.Size(400, 26);
+            // 
+            // lblPlanNameLabel
+            // 
+            this.lblPlanNameLabel.Location = new System.Drawing.Point(2, 4);
+            this.lblPlanNameLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblPlanNameLabel.Name = "lblPlanNameLabel";
+            this.lblPlanNameLabel.Size = new System.Drawing.Size(70, 17);
+            this.lblPlanNameLabel.Text = "Plan Name";
+            this.lblPlanNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtPlanName
+            // 
+            this.txtPlanName.Location = new System.Drawing.Point(77, 3);
+            this.txtPlanName.Name = "txtPlanName";
+            this.txtPlanName.Size = new System.Drawing.Size(300, 20);
             // 
             // lblPlanStop
             // 
@@ -679,6 +774,16 @@ namespace OE2EmpireTracker.Forms.Delivery
         private System.Windows.Forms.Button cmdAddPickUp;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtPickFilter;
         private System.Windows.Forms.Button cmdRemovePickUp;
+        private System.Windows.Forms.FlowLayoutPanel flpPlanSelector;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtPlanFilter;
+        private System.Windows.Forms.ComboBox cmbPlan;
+        private System.Windows.Forms.CheckBox chkShowCompleted;
+        private System.Windows.Forms.Button cmdNewPlan;
+        private System.Windows.Forms.Button cmdDeletePlan;
+        private System.Windows.Forms.Button cmdExecutePlan;
+        private System.Windows.Forms.FlowLayoutPanel flpPlanName;
+        private System.Windows.Forms.Label lblPlanNameLabel;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtPlanName;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
         private System.Windows.Forms.Button cmdNew;
         private System.Windows.Forms.Button cmdSave;
