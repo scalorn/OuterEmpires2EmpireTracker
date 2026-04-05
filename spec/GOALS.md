@@ -75,6 +75,7 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 60 | Delivery Phase 6: Execution form wired up | Complete |
 | 61 | Delivery feature unit tests (68 tests) | Complete |
 | 62 | Commodity delivery loop: auto-fill + fulfillment | Complete |
+| 63 | Commodity request grid: Completed, NeedBy, strikethrough, auto-delete | Complete |
 
 ---
 
