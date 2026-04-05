@@ -68,14 +68,14 @@ namespace OE2EmpireTracker.Forms.Survey
             this.lblScanLevel = new System.Windows.Forms.Label();
             this.txtScanLevel = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.dgvResources = new System.Windows.Forms.DataGridView();
+            this.Resource = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.Purity = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.Amount = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.btnSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.cmdImport = new System.Windows.Forms.Button();
-            this.Resource = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.Purity = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.Amount = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
             this.flpBlueprintSearch.SuspendLayout();
@@ -103,8 +103,9 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpBase.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBase.Location = new System.Drawing.Point(0, 0);
             this.flpBase.Name = "flpBase";
-            this.flpBase.Size = new System.Drawing.Size(1100, 647);
+            this.flpBase.Size = new System.Drawing.Size(1074, 704);
             this.flpBase.TabIndex = 10;
+            this.flpBase.WrapContents = false;
             // 
             // flpSearchList
             // 
@@ -140,10 +141,17 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             // txtPlanetFilter
             // 
+            this.txtPlanetFilter.AllowSpaces = true;
+            this.txtPlanetFilter.AutoFormat = true;
+            this.txtPlanetFilter.ErrorMessage = "";
+            this.txtPlanetFilter.InvalidColor = System.Drawing.Color.LightCoral;
+            this.txtPlanetFilter.IsValid = true;
             this.txtPlanetFilter.Location = new System.Drawing.Point(107, 3);
             this.txtPlanetFilter.Name = "txtPlanetFilter";
             this.txtPlanetFilter.Size = new System.Drawing.Size(202, 20);
             this.txtPlanetFilter.TabIndex = 0;
+            this.txtPlanetFilter.ValidationPattern = null;
+            this.txtPlanetFilter.ValidColor = System.Drawing.Color.White;
             // 
             // flpResource
             // 
@@ -203,7 +211,6 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             // flpSurveyDetails
             // 
-            this.flpSurveyDetails.AutoSize = false;
             this.flpSurveyDetails.Controls.Add(this.flpPlanetName);
             this.flpSurveyDetails.Controls.Add(this.flpSurveyID);
             this.flpSurveyDetails.Controls.Add(this.flpNickName);
@@ -231,6 +238,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpPlanetName.Name = "flpPlanetName";
             this.flpPlanetName.Size = new System.Drawing.Size(310, 26);
             this.flpPlanetName.TabIndex = 0;
+            this.flpPlanetName.WrapContents = false;
             // 
             // lblPlanetName
             // 
@@ -245,10 +253,17 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             // txtPlanetName
             // 
+            this.txtPlanetName.AllowSpaces = true;
+            this.txtPlanetName.AutoFormat = true;
+            this.txtPlanetName.ErrorMessage = "";
+            this.txtPlanetName.InvalidColor = System.Drawing.Color.LightCoral;
+            this.txtPlanetName.IsValid = true;
             this.txtPlanetName.Location = new System.Drawing.Point(107, 3);
             this.txtPlanetName.Name = "txtPlanetName";
             this.txtPlanetName.Size = new System.Drawing.Size(200, 20);
             this.txtPlanetName.TabIndex = 0;
+            this.txtPlanetName.ValidationPattern = null;
+            this.txtPlanetName.ValidColor = System.Drawing.Color.White;
             // 
             // flpSurveyID
             // 
@@ -260,6 +275,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpSurveyID.Name = "flpSurveyID";
             this.flpSurveyID.Size = new System.Drawing.Size(310, 26);
             this.flpSurveyID.TabIndex = 1;
+            this.flpSurveyID.WrapContents = false;
             // 
             // lblSurveyID
             // 
@@ -274,10 +290,17 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             // txtSurveyID
             // 
+            this.txtSurveyID.AllowSpaces = true;
+            this.txtSurveyID.AutoFormat = true;
+            this.txtSurveyID.ErrorMessage = "";
+            this.txtSurveyID.InvalidColor = System.Drawing.Color.LightCoral;
+            this.txtSurveyID.IsValid = true;
             this.txtSurveyID.Location = new System.Drawing.Point(107, 3);
             this.txtSurveyID.Name = "txtSurveyID";
             this.txtSurveyID.Size = new System.Drawing.Size(200, 20);
             this.txtSurveyID.TabIndex = 0;
+            this.txtSurveyID.ValidationPattern = null;
+            this.txtSurveyID.ValidColor = System.Drawing.Color.White;
             // 
             // flpNickName
             // 
@@ -289,6 +312,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpNickName.Name = "flpNickName";
             this.flpNickName.Size = new System.Drawing.Size(310, 26);
             this.flpNickName.TabIndex = 2;
+            this.flpNickName.WrapContents = false;
             // 
             // lblNickName
             // 
@@ -303,10 +327,17 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             // txtNickName
             // 
+            this.txtNickName.AllowSpaces = true;
+            this.txtNickName.AutoFormat = true;
+            this.txtNickName.ErrorMessage = "";
+            this.txtNickName.InvalidColor = System.Drawing.Color.LightCoral;
+            this.txtNickName.IsValid = true;
             this.txtNickName.Location = new System.Drawing.Point(107, 3);
             this.txtNickName.Name = "txtNickName";
             this.txtNickName.Size = new System.Drawing.Size(200, 20);
             this.txtNickName.TabIndex = 0;
+            this.txtNickName.ValidationPattern = null;
+            this.txtNickName.ValidColor = System.Drawing.Color.White;
             // 
             // flpScannerBlueprint
             // 
@@ -319,6 +350,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpScannerBlueprint.Name = "flpScannerBlueprint";
             this.flpScannerBlueprint.Size = new System.Drawing.Size(415, 26);
             this.flpScannerBlueprint.TabIndex = 3;
+            this.flpScannerBlueprint.WrapContents = false;
             // 
             // lblScannerBlueprint
             // 
@@ -333,10 +365,17 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             // txtFilterScannerBlueprint
             // 
+            this.txtFilterScannerBlueprint.AllowSpaces = true;
+            this.txtFilterScannerBlueprint.AutoFormat = true;
+            this.txtFilterScannerBlueprint.ErrorMessage = "";
+            this.txtFilterScannerBlueprint.InvalidColor = System.Drawing.Color.LightCoral;
+            this.txtFilterScannerBlueprint.IsValid = true;
             this.txtFilterScannerBlueprint.Location = new System.Drawing.Point(107, 3);
             this.txtFilterScannerBlueprint.Name = "txtFilterScannerBlueprint";
             this.txtFilterScannerBlueprint.Size = new System.Drawing.Size(100, 20);
             this.txtFilterScannerBlueprint.TabIndex = 0;
+            this.txtFilterScannerBlueprint.ValidationPattern = null;
+            this.txtFilterScannerBlueprint.ValidColor = System.Drawing.Color.White;
             this.txtFilterScannerBlueprint.TextChanged += new System.EventHandler(this.txtFilterScannerBlueprint_TextChanged);
             // 
             // cmbScannerBlueprint
@@ -362,6 +401,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpScannedBy.Name = "flpScannedBy";
             this.flpScannedBy.Size = new System.Drawing.Size(827, 24);
             this.flpScannedBy.TabIndex = 4;
+            this.flpScannedBy.WrapContents = false;
             // 
             // lblScannedBy
             // 
@@ -376,11 +416,18 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             // txtScannedBy
             // 
+            this.txtScannedBy.AllowSpaces = true;
+            this.txtScannedBy.AutoFormat = true;
+            this.txtScannedBy.ErrorMessage = "";
+            this.txtScannedBy.InvalidColor = System.Drawing.Color.LightCoral;
+            this.txtScannedBy.IsValid = true;
             this.txtScannedBy.Location = new System.Drawing.Point(106, 2);
             this.txtScannedBy.Margin = new System.Windows.Forms.Padding(2);
             this.txtScannedBy.Name = "txtScannedBy";
             this.txtScannedBy.Size = new System.Drawing.Size(201, 20);
             this.txtScannedBy.TabIndex = 7;
+            this.txtScannedBy.ValidationPattern = null;
+            this.txtScannedBy.ValidColor = System.Drawing.Color.White;
             // 
             // flpScanDateTime
             // 
@@ -393,6 +440,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpScanDateTime.Name = "flpScanDateTime";
             this.flpScanDateTime.Size = new System.Drawing.Size(827, 24);
             this.flpScanDateTime.TabIndex = 5;
+            this.flpScanDateTime.WrapContents = false;
             // 
             // lblScanDateTime
             // 
@@ -407,11 +455,18 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             // txtScanDateTime
             // 
+            this.txtScanDateTime.AllowSpaces = true;
+            this.txtScanDateTime.AutoFormat = true;
+            this.txtScanDateTime.ErrorMessage = "";
+            this.txtScanDateTime.InvalidColor = System.Drawing.Color.LightCoral;
+            this.txtScanDateTime.IsValid = true;
             this.txtScanDateTime.Location = new System.Drawing.Point(106, 2);
             this.txtScanDateTime.Margin = new System.Windows.Forms.Padding(2);
             this.txtScanDateTime.Name = "txtScanDateTime";
             this.txtScanDateTime.Size = new System.Drawing.Size(201, 20);
             this.txtScanDateTime.TabIndex = 7;
+            this.txtScanDateTime.ValidationPattern = null;
+            this.txtScanDateTime.ValidColor = System.Drawing.Color.White;
             // 
             // flpSensorAbundance
             // 
@@ -424,6 +479,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpSensorAbundance.Name = "flpSensorAbundance";
             this.flpSensorAbundance.Size = new System.Drawing.Size(827, 24);
             this.flpSensorAbundance.TabIndex = 6;
+            this.flpSensorAbundance.WrapContents = false;
             // 
             // lblSensorAbundance
             // 
@@ -438,11 +494,18 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             // txtSensorAbundance
             // 
+            this.txtSensorAbundance.AllowSpaces = true;
+            this.txtSensorAbundance.AutoFormat = true;
+            this.txtSensorAbundance.ErrorMessage = "";
+            this.txtSensorAbundance.InvalidColor = System.Drawing.Color.LightCoral;
+            this.txtSensorAbundance.IsValid = true;
             this.txtSensorAbundance.Location = new System.Drawing.Point(106, 2);
             this.txtSensorAbundance.Margin = new System.Windows.Forms.Padding(2);
             this.txtSensorAbundance.Name = "txtSensorAbundance";
             this.txtSensorAbundance.Size = new System.Drawing.Size(201, 20);
             this.txtSensorAbundance.TabIndex = 7;
+            this.txtSensorAbundance.ValidationPattern = null;
+            this.txtSensorAbundance.ValidColor = System.Drawing.Color.White;
             // 
             // flpPurityModifier
             // 
@@ -455,6 +518,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpPurityModifier.Name = "flpPurityModifier";
             this.flpPurityModifier.Size = new System.Drawing.Size(827, 24);
             this.flpPurityModifier.TabIndex = 7;
+            this.flpPurityModifier.WrapContents = false;
             // 
             // lblPurityModifier
             // 
@@ -469,11 +533,18 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             // txtPurityModifier
             // 
+            this.txtPurityModifier.AllowSpaces = true;
+            this.txtPurityModifier.AutoFormat = true;
+            this.txtPurityModifier.ErrorMessage = "";
+            this.txtPurityModifier.InvalidColor = System.Drawing.Color.LightCoral;
+            this.txtPurityModifier.IsValid = true;
             this.txtPurityModifier.Location = new System.Drawing.Point(106, 2);
             this.txtPurityModifier.Margin = new System.Windows.Forms.Padding(2);
             this.txtPurityModifier.Name = "txtPurityModifier";
             this.txtPurityModifier.Size = new System.Drawing.Size(201, 20);
             this.txtPurityModifier.TabIndex = 7;
+            this.txtPurityModifier.ValidationPattern = null;
+            this.txtPurityModifier.ValidColor = System.Drawing.Color.White;
             // 
             // flpScanLevel
             // 
@@ -486,6 +557,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpScanLevel.Name = "flpScanLevel";
             this.flpScanLevel.Size = new System.Drawing.Size(827, 24);
             this.flpScanLevel.TabIndex = 8;
+            this.flpScanLevel.WrapContents = false;
             // 
             // lblScanLevel
             // 
@@ -500,11 +572,18 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             // txtScanLevel
             // 
+            this.txtScanLevel.AllowSpaces = true;
+            this.txtScanLevel.AutoFormat = true;
+            this.txtScanLevel.ErrorMessage = "";
+            this.txtScanLevel.InvalidColor = System.Drawing.Color.LightCoral;
+            this.txtScanLevel.IsValid = true;
             this.txtScanLevel.Location = new System.Drawing.Point(106, 2);
             this.txtScanLevel.Margin = new System.Windows.Forms.Padding(2);
             this.txtScanLevel.Name = "txtScanLevel";
             this.txtScanLevel.Size = new System.Drawing.Size(201, 20);
             this.txtScanLevel.TabIndex = 7;
+            this.txtScanLevel.ValidationPattern = null;
+            this.txtScanLevel.ValidColor = System.Drawing.Color.White;
             // 
             // dgvResources
             // 
@@ -515,9 +594,30 @@ namespace OE2EmpireTracker.Forms.Survey
             this.Amount});
             this.dgvResources.Location = new System.Drawing.Point(3, 263);
             this.dgvResources.Name = "dgvResources";
-            this.dgvResources.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvResources_CellValidating);
             this.dgvResources.Size = new System.Drawing.Size(825, 303);
             this.dgvResources.TabIndex = 9;
+            this.dgvResources.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvResources_CellValidating);
+            // 
+            // Resource
+            // 
+            this.Resource.FillWeight = 250F;
+            this.Resource.HeaderText = "Resource";
+            this.Resource.Name = "Resource";
+            this.Resource.Width = 250;
+            // 
+            // Purity
+            // 
+            this.Purity.HeaderText = "Purity";
+            this.Purity.Name = "Purity";
+            // 
+            // Amount
+            // 
+            this.Amount.AllowSpaces = false;
+            this.Amount.HeaderText = "Amount";
+            this.Amount.InvalidColor = System.Drawing.Color.LightCoral;
+            this.Amount.Name = "Amount";
+            this.Amount.ValidationPattern = "^[+-]?\\d+(\\.\\d+)?$";
+            this.Amount.ValidColor = System.Drawing.Color.White;
             // 
             // flpCommands
             // 
@@ -572,24 +672,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.cmdImport.Text = "Import";
             this.cmdImport.UseVisualStyleBackColor = true;
             this.cmdImport.Click += new System.EventHandler(this.cmdImport_Click);
-            // 
-            // Resource
-            // 
-            this.Resource.FillWeight = 250F;
-            this.Resource.HeaderText = "Resource";
-            this.Resource.Name = "Resource";
-            this.Resource.Width = 250;
-            // 
-            // Purity
-            // 
-            this.Purity.HeaderText = "Purity";
-            this.Purity.Name = "Purity";
-            // 
-            // Amount
-            // 
-            this.Amount.HeaderText = "Amount";
-            this.Amount.Name = "Amount";
-            this.Amount.ValidationPattern = OE2EmpireTracker.Constants.BlueprintPropertyValidation.DECIMAL_PATTERN;
             // 
             // FormSurvey
             // 
