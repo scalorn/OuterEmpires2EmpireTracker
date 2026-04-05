@@ -197,26 +197,38 @@ namespace OE2EmpireTracker.Forms.Delivery
         private void cmdUp_Click(object sender, EventArgs e)
         {
             if (dgvStops.SelectedRows.Count == 0) return;
-            int index = dgvStops.SelectedRows[0].Index;
-            viewModel.MoveStopUp(index);
+            var indices = new List<int>();
+            foreach (DataGridViewRow row in dgvStops.SelectedRows)
+                indices.Add(row.Index);
+            var newIndices = viewModel.MoveStopsUp(indices);
             PopulateStopsGrid();
-            if (index > 0) dgvStops.Rows[index - 1].Selected = true;
+            dgvStops.ClearSelection();
+            foreach (int i in newIndices)
+                if (i >= 0 && i < dgvStops.Rows.Count)
+                    dgvStops.Rows[i].Selected = true;
         }
 
         private void cmdDown_Click(object sender, EventArgs e)
         {
             if (dgvStops.SelectedRows.Count == 0) return;
-            int index = dgvStops.SelectedRows[0].Index;
-            viewModel.MoveStopDown(index);
+            var indices = new List<int>();
+            foreach (DataGridViewRow row in dgvStops.SelectedRows)
+                indices.Add(row.Index);
+            var newIndices = viewModel.MoveStopsDown(indices);
             PopulateStopsGrid();
-            if (index < dgvStops.Rows.Count - 1) dgvStops.Rows[index + 1].Selected = true;
+            dgvStops.ClearSelection();
+            foreach (int i in newIndices)
+                if (i >= 0 && i < dgvStops.Rows.Count)
+                    dgvStops.Rows[i].Selected = true;
         }
 
         private void cmdRemoveStop_Click(object sender, EventArgs e)
         {
             if (dgvStops.SelectedRows.Count == 0) return;
-            int index = dgvStops.SelectedRows[0].Index;
-            viewModel.RemoveStop(index);
+            var indices = new List<int>();
+            foreach (DataGridViewRow row in dgvStops.SelectedRows)
+                indices.Add(row.Index);
+            viewModel.RemoveStops(indices);
             PopulateStopsGrid();
         }
 
