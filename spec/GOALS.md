@@ -76,6 +76,7 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 61 | Delivery feature unit tests (68 tests) | Complete |
 | 62 | Commodity delivery loop: auto-fill + fulfillment | Complete |
 | 63 | Commodity request grid: Completed, NeedBy, strikethrough, auto-delete | Complete |
+| 64 | Forms steering compliance (Rec 16): IProgrammaticUpdateSource on all forms | Complete |
 
 ---
 
