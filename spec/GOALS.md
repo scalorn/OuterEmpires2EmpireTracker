@@ -58,6 +58,10 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 43 | PlayerProfile form resize layout | Complete |
 | 44 | Survey form resize layout | Complete |
 | 45 | Blueprint property grid: ComboBox and CheckBox cell types | Complete |
+| 46 | Global blueprints in all colony/structure blueprint lists | Complete |
+| 47 | Recalculate colony status on item quantity change | Complete |
+| 48 | Optimizer adds support for built structure deficits | Complete |
+| 49 | Centralized GetAllBlueprints() for player + global | Complete |
 
 ---
 

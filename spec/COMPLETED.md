@@ -149,3 +149,15 @@ Added layout handlers (flpBase_Layout, flpSearchList_Layout, flpSurveyData_Layou
 
 ## 45. Blueprint Property Grid: ComboBox and CheckBox Cell Types
 Extended `BlueprintPropertyValidation` with `ComboBox` and `CheckBox` property value types. `UpdatePropertyGrid` in FormBlueprint now swaps individual cells to `DataGridViewComboBoxCell` or `DataGridViewCheckBoxCell` based on property type. Added `GetComboBoxDataSource()` for data-driven combo sources. `CommodityIndustry` added as first ComboBox property (bound to CommodityIndustry static data). Boolean properties (`CanManufacture`, `CanResearch`, `Consumable`) changed to CheckBox type. Save handler reads bool values from checkbox cells correctly. `CommodityIndustry` added to `Flatpacks/CommodityFactory` properties in BaselineData.json. 465 tests passing.
+
+## 46. Global Blueprints in All Colony/Structure Blueprint Lists
+Fixed all blueprint selection lists (flatpack dropdown, warehouse items, research lab, manufactory, base blueprint list, scanner blueprints, bootstrap, optimizer) to include global blueprints from BaselineData.json.
+
+## 47. Recalculate Colony Status on Item Quantity Change
+dgvItems_CellValueChanged now triggers structures_ColonyStructureDataChanged to recalculate locks and unallocated worker availability when worker quantities are edited.
+
+## 48. Optimizer Adds Support for Built Structure Deficits
+BuildOrderOptimizer now checks for deficits in the built structure baseline before processing unbuilt primary structures. Creates support structures for existing deficits.
+
+## 49. Centralized GetAllBlueprints()
+Added PlayerContext.GetAllBlueprints() that merges player + global blueprint lists. Replaced all 8+ locations that were doing manual merges or missing global blueprints. Only save/delete mutations access blueprintList directly.
