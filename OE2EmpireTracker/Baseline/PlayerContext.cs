@@ -305,13 +305,13 @@ namespace OE2EmpireTracker.Baseline
             int removed = 0;
 
             foreach (var colony in colonyList.Where(c => !string.IsNullOrEmpty(c.OwnerUUID) && !validUUIDs.Contains(c.OwnerUUID)).ToList())
-            { colonyList.Remove(colony); removed++; }
+            { Log.Warn("Removing orphaned colony: {0} ({1}) owner={2}", colony.PlanetName, colony.ColonyName, colony.OwnerUUID); colonyList.Remove(colony); removed++; }
             foreach (var bp in blueprintList.Where(b => !string.IsNullOrEmpty(b.OwnerUUID) && !validUUIDs.Contains(b.OwnerUUID)).ToList())
-            { blueprintList.Remove(bp); removed++; }
+            { Log.Warn("Removing orphaned blueprint: {0} owner={1}", bp.ExtendedName, bp.OwnerUUID); blueprintList.Remove(bp); removed++; }
             foreach (var survey in surveyList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
-            { surveyList.Remove(survey); removed++; }
+            { Log.Warn("Removing orphaned survey: {0} owner={1}", survey.ExtendedName, survey.OwnerUUID); surveyList.Remove(survey); removed++; }
             foreach (var route in deliveryRouteList.Where(r => !string.IsNullOrEmpty(r.OwnerUUID) && !validUUIDs.Contains(r.OwnerUUID)).ToList())
-            { deliveryRouteList.Remove(route); removed++; }
+            { Log.Warn("Removing orphaned route: {0} owner={1}", route.Name, route.OwnerUUID); deliveryRouteList.Remove(route); removed++; }
 
             if (removed > 0)
                 Log.Info("Cleaned up {0} orphaned items on load", removed);
