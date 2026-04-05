@@ -475,6 +475,19 @@ namespace OE2EmpireTracker.Forms.Delivery
             txtPlanName.Text = "";
             ClearPlanGrids();
             PopulatePlanDropdown();
+
+            // Auto-create a new plan if none remain for this route
+            var remaining = playerContext.GetCurrentPlayerPlans()
+                .Where(p => p.RouteUUID == viewModel.UUID && !p.Completed)
+                .FirstOrDefault();
+            if (remaining != null)
+            {
+                cmbPlan.SelectedValue = remaining.UUID;
+            }
+            else if (!string.IsNullOrEmpty(viewModel.UUID))
+            {
+                cmdNewPlan_Click(sender, e);
+            }
         }
 
         private void ClearPlanGrids()
