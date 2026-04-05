@@ -1557,11 +1557,13 @@ namespace OE2EmpireTracker.Forms.Colony
             int height = 0;
             if (flpSelection.Visible)
             {
+                // Adjust flpSelection height based on whether manufacturing controls row is visible
+                int selHeight = 29;
+                if (flpManufacturingControls.Visible)
+                    selHeight = 58;
+                flpSelection.Size = new Size(flpSelection.Size.Width, selHeight);
+
                 height += flpSelection.Size.Height + flpSelection.Margin.Vertical;
-            }
-            if (flpManufacturingControls.Visible)
-            {
-                height += flpManufacturingControls.Size.Height + flpManufacturingControls.Margin.Vertical;
             }
             if (flpSubSelection.Visible)
             {
