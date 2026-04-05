@@ -60,5 +60,5 @@ See [Recommendations](Recommendations.md) for details:
 - **Rec #12**: Code quality — dead code, naming, magic strings, duplicated guard class, large methods/files
 
 ### Large Features (from requirements, not yet started)
-- Multi-player support (REQ-ARCH-070-074)
+- Multi-player support (REQ-ARCH-070-075) — clarified, see Rec #13
 - Commodity delivery form

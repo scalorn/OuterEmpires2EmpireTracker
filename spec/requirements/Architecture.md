@@ -75,8 +75,21 @@
 **REQ-ARCH-082** Structure Building (step 1): when BuildCompletionTime.IntervalsPassed > 0, the structure SHALL be marked Built=true and BuildCompletionTime SHALL be cleared.  
 **REQ-ARCH-083** Refining, Manufacturing, and Research processing types require blueprint definitions that specify inputs, outputs, and cycle times. These SHALL be designed before implementation.
 
-**REQ-ARCH-070** The application SHALL support multiple PlayerProfiles. Each Colony SHALL have an OwnerUUID field identifying the PlayerProfile that owns it.  
-**REQ-ARCH-071** PlayerContext SHALL maintain a currently selected player (CurrentPlayerUUID). All colony, blueprint, and survey data SHALL be filterable by the currently selected player.  
-**REQ-ARCH-072** Colony.ProcessColony() SHALL look up the owning player's Extraction Focus skill level via the OwnerUUID and apply a `(1 + level * 0.01)` multiplier to mined quantity per interval (REQ-COL-056b).  
-**REQ-ARCH-073** The Colony Form SHALL only display colonies owned by the currently selected player.  
-**REQ-ARCH-074** Colony.OwnerUUID SHALL be serialized to JSON and SHALL default to empty string for backward compatibility with existing save files.
+**REQ-ARCH-070** The application SHALL support multiple PlayerProfiles. Each Colony, Blueprint, and Survey SHALL have an OwnerUUID field identifying the PlayerProfile that owns it.  
+**REQ-ARCH-070a** Colony.OwnerUUID, Blueprint.OwnerUUID, and Survey.OwnerUUID SHALL be serialized to JSON and SHALL default to empty string for backward compatibility with existing save files.  
+**REQ-ARCH-070b** On load, if any Colony, Blueprint, or Survey has an empty OwnerUUID, it SHALL be auto-assigned to the first PlayerProfile (alphabetically by Name). This handles migration of existing save data.  
+**REQ-ARCH-071** PlayerContext SHALL maintain a CurrentPlayerUUID property identifying the currently selected player. All colony, blueprint, and survey lists displayed in forms SHALL be filtered to show only items owned by the current player.  
+**REQ-ARCH-071a** CurrentPlayerUUID SHALL be persisted (e.g. in the save file or a settings file) so the last selected player is restored on app restart.  
+**REQ-ARCH-071b** MainWindow SHALL display a player selection dropdown. Changing the selection SHALL update CurrentPlayerUUID and fire a `CurrentPlayerChanged` event on PlayerContext.  
+**REQ-ARCH-071c** All open forms (Colony, Blueprint, Survey) SHALL subscribe to `CurrentPlayerChanged` and immediately refresh their data to reflect the newly selected player.  
+**REQ-ARCH-072** Colony.ProcessColony() SHALL look up the owning player's skills via OwnerUUID and apply skill-based multipliers:  
+- ExtractionFocus: mining quantity per interval × `(1 + level * 0.01)`  
+- RefiningFocus: refining output rate × `(1 + level * 0.02)`  
+- ProductionFocus: manufacture time × `(1 - level * 0.03)` (minimum 1 second)  
+- Builder: build time × `(1 - level * 0.02)` (minimum 1 second)  
+- ResearchFocus: research time × `(1 - level * 0.03)` (minimum 1 second)  
+**REQ-ARCH-073** The Colony Form SHALL only display colonies owned by the currently selected player. No cross-player colony view at this time.  
+**REQ-ARCH-074** Blueprint transfer: a blueprint can be copied (deep copy with new UUID, same properties/resources) and the copy transferred to another player by setting its OwnerUUID. The original remains with the source player. Blueprint.CopyCost is user-entered and opaque (not calculated).  
+**REQ-ARCH-074a** Survey transfer: a survey can be transferred to another player by changing its OwnerUUID. Surveys cannot be copied — each scan produces a unique survey.  
+**REQ-ARCH-074b** Transfer UI is deferred to a later phase. The data model (OwnerUUID) SHALL support transfers, but no transfer UI is required in the initial implementation.  
+**REQ-ARCH-075** When a user creates a new Colony, Blueprint, or Survey, it SHALL automatically be assigned to the currently selected player (CurrentPlayerUUID).
