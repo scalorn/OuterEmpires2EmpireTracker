@@ -408,7 +408,6 @@ namespace OE2EmpireTracker.Forms.Delivery
                 .ToList();
 
             var items = new List<PlanDropdownItem>();
-            items.Add(new PlanDropdownItem { UUID = "", Display = "" });
             foreach (var plan in plans)
             {
                 string display = plan.Name;
