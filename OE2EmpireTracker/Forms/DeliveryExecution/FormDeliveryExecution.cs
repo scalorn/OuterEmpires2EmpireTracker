@@ -137,7 +137,11 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 ClearExecution();
                 return;
             }
+            // Preserve plan selection if route didn't actually change
+            string currentPlanUUID = cmbPlan.SelectedValue as string;
             PopulatePlanDropdown(routeUUID);
+            if (!string.IsNullOrEmpty(currentPlanUUID))
+                cmbPlan.SelectedValue = currentPlanUUID;
         }
 
         private void PopulatePlanDropdown(string routeUUID)
