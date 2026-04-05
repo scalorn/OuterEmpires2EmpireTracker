@@ -994,6 +994,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void PopulateCommodityRequestGrid()
         {
+            var guard = new ProgrammaticUpdateGuard(this);
             dgvCommodityRequests.CellValidating -= dgvCommodityRequests_CellValidating;
             try { dgvCommodityRequests.EndEdit(); } catch { }
             dgvCommodityRequests.Rows.Clear();
@@ -1024,6 +1025,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void dgvCommodityRequests_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
             if (e.RowIndex < 0) return;
             DataGridViewRow row = dgvCommodityRequests.Rows[e.RowIndex];
             CommodityRequested request = row.Tag as CommodityRequested;
@@ -1251,11 +1253,9 @@ namespace OE2EmpireTracker.Forms.Colony
             }
         }
 
-        private bool _suppressCommoditySelectionChanged = false;
-
         private void dgvCommodityRequests_SelectionChanged(object sender, EventArgs e)
         {
-            if (_suppressCommoditySelectionChanged) return;
+            if (_isProgrammaticUpdate > 0) return;
             if (dgvCommodityRequests.CurrentCell == null) return;
             if (dgvCommodityRequests.SelectedRows.Count > 0) return;
 
@@ -1264,15 +1264,8 @@ namespace OE2EmpireTracker.Forms.Colony
             int col = dgvCommodityRequests.CurrentCell.ColumnIndex;
             if (col == 0)
             {
-                _suppressCommoditySelectionChanged = true;
-                try
-                {
-                    dgvCommodityRequests.CurrentCell = dgvCommodityRequests.Rows[dgvCommodityRequests.CurrentCell.RowIndex].Cells[1];
-                }
-                finally
-                {
-                    _suppressCommoditySelectionChanged = false;
-                }
+                var guard = new ProgrammaticUpdateGuard(this);
+                dgvCommodityRequests.CurrentCell = dgvCommodityRequests.Rows[dgvCommodityRequests.CurrentCell.RowIndex].Cells[1];
             }
         }
     }
