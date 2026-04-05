@@ -203,3 +203,12 @@ Added 68 new tests across 4 new test files covering all delivery data models and
 - DeliveryPlanViewModelTests (14): GetOrCreateStop (new, existing, different colonies), AddDropOffItem (basic, with purity, no purity), AddPickUpItem, AddMultipleItems, RemoveDropOffItems (single, multiple, invalid), RemovePickUpItems (single, negative), constructor validation (null plan, null context), UUID property
 
 Also extracted `CalculateLoadList` from `FormDeliveryExecution` to `DeliveryPlan.CalculateLoadList()` instance method for testability. 581 tests passing.
+
+## 62. Commodity Delivery Loop: Auto-Fill + Fulfillment
+Two-part feature closing the loop between colony commodity requests and delivery execution:
+
+Part A — Auto-Fill: `AutoFillCommodities` method on `DeliveryPlanViewModel` (accepts colony-finder delegate for testability). Scans each stop's colony for unfulfilled `CommodityRequested` entries (`!Fulfilled && Requested - Delivered > 0`), adds drop-off `DeliveryItem` for the shortfall. Additive, drop-off only. `FormAutoFill` modal dialog with Commodities checkbox enabled, Flatpacks/Resources/Workers disabled with "(Future)" labels. Auto-Fill button on plan tab, visible when plan selected.
+
+Part B — Fulfillment: `DeliveryItem_CheckedChanged` extended for commodity items. On check: finds matching `CommodityRequested` on target colony by name, sets `Delivered = Requested`, `Fulfilled = true`. On uncheck: sets `Delivered = 0`, `Fulfilled = false`. Logs warning if colony or CommodityRequested not found. All-or-nothing per line item.
+
+9 new unit tests for AutoFillCommodities (unfulfilled, partial, fulfilled skip, zero shortfall, missing colony, additive, pick-up invariant, empty commodities, multi-stop mixed). 590 tests passing.

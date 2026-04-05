@@ -12,7 +12,7 @@
 
 ## Current Status
 
-**581 total tests, all passing.**
+**590 total tests, all passing.**
 
 All original Recommendations (1-8) resolved. MVVM complete across all forms. NLog logging throughout.
 
@@ -74,6 +74,7 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 59 | Multi-plan support + plan selector UX | Complete |
 | 60 | Delivery Phase 6: Execution form wired up | Complete |
 | 61 | Delivery feature unit tests (68 tests) | Complete |
+| 62 | Commodity delivery loop: auto-fill + fulfillment | Complete |
 
 ---
 
@@ -83,6 +84,7 @@ See [Recommendations](Recommendations.md) for details:
 - **Rec #4**: CountDownTime master list — major feature (UI, locking, background thread)
 
 ### Large Features (from requirements, not yet started)
-- Delivery auto-fill — Phase 7 (REQ-DEL-060-062)
+- Delivery auto-fill — Phase 7 remaining types: Flatpacks, Resources, Workers (REQ-DEL-060-062)
+- Delivery fulfillment — Flatpack staging (REQ-DEL-055)
 - Ship integration — Phase 8 (REQ-DEL-070-071)
 - Space station hub — Phase 9 (REQ-DEL-080-082)

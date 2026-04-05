@@ -211,7 +211,15 @@ See [Delivery.md](requirements/Delivery.md) for full requirements.
 - Separate form showing stop-by-stop delivery
 - Consolidated load list at top
 - Per-stop drop-off/pick-up with checkboxes
-- Mark-as-delivered updates CommodityRequested and structure staging
+- Commodity fulfillment on delivery check (REQ-DEL-054): sets CommodityRequested.Delivered = Requested, Fulfilled = true
+- Commodity unfulfillment on uncheck: reverses to Delivered = 0, Fulfilled = false
+- Flatpack staging (REQ-DEL-055) deferred to future phase
+
+### Phase 7: Auto-Fill Delivery Plans (REQ-DEL-060-062) — Partial (Commodities only)
+- Auto-Fill button on plan tab with request type checkboxes
+- Commodities enabled: scans each stop's colony for unfulfilled CommodityRequested, adds drop-off items for shortfall
+- Flatpacks, Resources for Manufacturing, Workers: disabled (Future)
+- Additive behavior, drop-off only
 
 ### Phases 7-9: Future
 - Auto-fill delivery plans by request type
