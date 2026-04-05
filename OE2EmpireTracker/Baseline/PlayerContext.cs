@@ -77,6 +77,7 @@ namespace OE2EmpireTracker.Baseline
         public BindingList<Colony> colonyList;
         public BindingSource bindingSourceColony;
         public BindingList<DeliveryRoute> deliveryRouteList;
+        public BindingList<DeliveryPlan> deliveryPlanList;
 
         public IEnumerable<CountDownTimeReference> ActiveCountdowns => AllCountdownSources()
             .Where(c => c.countDownTime.TimeRemaining > 0)
@@ -120,6 +121,7 @@ namespace OE2EmpireTracker.Baseline
             InitSurveys(playerRoot);
             initColonies(playerRoot);
             InitDeliveryRoutes(playerRoot);
+            InitDeliveryPlans(playerRoot);
 
             // Migrate and restore current player
             MigrateOwnerUUIDs();
@@ -136,6 +138,7 @@ namespace OE2EmpireTracker.Baseline
             playerRoot.Survey = surveyList.ToArray();
             playerRoot.Colony = colonyList.ToArray();
             playerRoot.DeliveryRoute = deliveryRouteList.ToArray();
+            playerRoot.DeliveryPlan = deliveryPlanList.ToArray();
 
             string jsonContent = JsonConvert.SerializeObject(playerRoot, Formatting.Indented);
             File.WriteAllText(FilePath, jsonContent);
@@ -211,6 +214,13 @@ namespace OE2EmpireTracker.Baseline
             var list = new List<DeliveryRoute>(playerRoot.DeliveryRoute ?? new DeliveryRoute[0]);
             list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
             deliveryRouteList = new BindingList<DeliveryRoute>(list);
+        }
+
+        public void InitDeliveryPlans(PlayerRoot playerRoot)
+        {
+            var list = new List<DeliveryPlan>(playerRoot.DeliveryPlan ?? new DeliveryPlan[0]);
+            list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
+            deliveryPlanList = new BindingList<DeliveryPlan>(list);
         }
 
         public Colony FindColony(string id)
@@ -290,6 +300,8 @@ namespace OE2EmpireTracker.Baseline
             { surveyList.Remove(survey); removed++; }
             foreach (var route in deliveryRouteList.Where(r => r.OwnerUUID == playerUUID).ToList())
             { deliveryRouteList.Remove(route); removed++; }
+            foreach (var plan in deliveryPlanList.Where(p => p.OwnerUUID == playerUUID).ToList())
+            { deliveryPlanList.Remove(plan); removed++; }
 
             if (removed > 0)
                 Log.Info("Cascade deleted {0} items for player {1}", removed, playerUUID);
@@ -312,6 +324,8 @@ namespace OE2EmpireTracker.Baseline
             { Log.Warn("Removing orphaned survey: {0} owner={1}", survey.ExtendedName, survey.OwnerUUID); surveyList.Remove(survey); removed++; }
             foreach (var route in deliveryRouteList.Where(r => !string.IsNullOrEmpty(r.OwnerUUID) && !validUUIDs.Contains(r.OwnerUUID)).ToList())
             { Log.Warn("Removing orphaned route: {0} owner={1}", route.Name, route.OwnerUUID); deliveryRouteList.Remove(route); removed++; }
+            foreach (var plan in deliveryPlanList.Where(p => !string.IsNullOrEmpty(p.OwnerUUID) && !validUUIDs.Contains(p.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned delivery plan: {0} owner={1}", plan.Name, plan.OwnerUUID); deliveryPlanList.Remove(plan); removed++; }
 
             if (removed > 0)
                 Log.Info("Cleaned up {0} orphaned items on load", removed);
@@ -381,6 +395,14 @@ namespace OE2EmpireTracker.Baseline
             return deliveryRouteList.Where(r => r.OwnerUUID == _currentPlayerUUID).ToList();
         }
 
+        /// <summary>
+        /// Returns delivery plans owned by the current player.
+        /// </summary>
+        public List<DeliveryPlan> GetCurrentPlayerPlans()
+        {
+            return deliveryPlanList.Where(p => p.OwnerUUID == _currentPlayerUUID).ToList();
+        }
+
 
         public List<CountDownTimeReference> AllCountdownSources()
         {
@@ -433,6 +455,7 @@ namespace OE2EmpireTracker.Baseline
         public Survey[] Survey;
         public Colony[] Colony;
         public DeliveryRoute[] DeliveryRoute;
+        public DeliveryPlan[] DeliveryPlan;
         public PlayerRoot()
         {
             CurrentPlayerUUID = string.Empty;
@@ -441,6 +464,7 @@ namespace OE2EmpireTracker.Baseline
             Survey = new Survey[0];
             Colony = new Colony[0];
             DeliveryRoute = new DeliveryRoute[0];
+            DeliveryPlan = new DeliveryPlan[0];
         }
     }
 
