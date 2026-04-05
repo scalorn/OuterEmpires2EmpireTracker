@@ -182,10 +182,14 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             if (selectedPlan == null) return;
 
+            Log.Debug("BuildExecution: plan={0}, stops={1}", selectedPlan.Name, selectedPlan.Stops.Count);
+
             // Build consolidated load list
             var loadItems = CalculateLoadList(selectedPlan);
+            Log.Debug("BuildExecution: loadItems={0}", loadItems.Count);
             foreach (var item in loadItems)
             {
+                Log.Debug("  Load: {0} x{1}", item.Name, item.Quantity);
                 dgvLoadList.Rows.Add(item.ItemType.ToString(), item.Name, item.Quantity);
             }
 
