@@ -1,4 +1,5 @@
 ﻿using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Data;
 using OE2EmpireTracker.Forms.Colony;
 using OE2EmpireTracker.Forms.PlayerProfile;
 using OE2EmpireTracker.Forms.Survey;
@@ -18,11 +19,48 @@ namespace OE2EmpireTracker
     public partial class MainWindow : Form
     {
         EmpireContext context = null;
+        PlayerContext playerContext = null;
 
         public MainWindow()
         {
             context = EmpireContext.getInstance();
+            playerContext = EmpireContext.PlayerContext;
             InitializeComponent();
+            PopulatePlayerDropdown();
+        }
+
+        private void PopulatePlayerDropdown()
+        {
+            cmbCurrentPlayer.Items.Clear();
+            foreach (var profile in playerContext.playerProfileList)
+            {
+                cmbCurrentPlayer.Items.Add(profile.Name);
+            }
+
+            // Select the current player
+            var current = playerContext.CurrentPlayer;
+            if (current != null)
+            {
+                int idx = playerContext.playerProfileList.IndexOf(current);
+                if (idx >= 0) cmbCurrentPlayer.SelectedIndex = idx;
+            }
+            else if (cmbCurrentPlayer.Items.Count > 0)
+            {
+                cmbCurrentPlayer.SelectedIndex = 0;
+            }
+        }
+
+        private void cmbCurrentPlayer_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int idx = cmbCurrentPlayer.SelectedIndex;
+            if (idx >= 0 && idx < playerContext.playerProfileList.Count)
+            {
+                var selected = playerContext.playerProfileList[idx];
+                if (selected.UUID != playerContext.CurrentPlayerUUID)
+                {
+                    playerContext.CurrentPlayerUUID = selected.UUID;
+                }
+            }
         }
 
         private void addBlueprintToolStripMenuItem_Click(object sender, EventArgs e)

@@ -164,39 +164,11 @@ Renamed all camelCase methods to PascalCase across the codebase:
 
 ---
 
-## 13. Multi-Player Support (REQ-ARCH-070-075)
-**Priority: High — Major Feature**
-All clarifications resolved. Implementation scope:
-
-### Phase 1: Data Model
-- Add `OwnerUUID` (string, default "") to Colony, Blueprint, Survey
-- Add `CurrentPlayerUUID` (string) to PlayerContext, persisted across restarts
-- Add `CurrentPlayerChanged` event to PlayerContext
-- On load: auto-assign empty OwnerUUID items to first player (alphabetical)
-
-### Phase 2: MainWindow Player Dropdown
-- Player selection dropdown on MainWindow
-- Changing selection updates `CurrentPlayerUUID`, fires `CurrentPlayerChanged`
-- Restores last selected player on startup
-
-### Phase 3: Form Filtering
-- Colony Form: filter colonyList by CurrentPlayerUUID
-- Blueprint Form: filter blueprintList by CurrentPlayerUUID
-- Survey Form: filter surveyList by CurrentPlayerUUID
-- All forms subscribe to `CurrentPlayerChanged` and refresh
-- New items auto-assigned to current player
-
-### Phase 4: Skill-Based Processing
-- ExtractionFocus: mining rate × (1 + level × 0.01)
-- RefiningFocus: refining rate × (1 + level × 0.02)
-- ProductionFocus: manufacture time × (1 - level × 0.03), min 1s
-- Builder: build time × (1 - level × 0.02), min 1s
-- ResearchFocus: research time × (1 - level × 0.03), min 1s
-- Colony.ProcessColony() looks up owner's skills via OwnerUUID
-
-### Deferred
-- Blueprint copy + transfer UI
-- Survey transfer UI
-- Cross-player colony overview
-
-**Needs approval: yes — ready for implementation when approved.**
+## ~~13. Multi-Player Support (REQ-ARCH-070-075)~~
+**Status: Complete**
+All 4 phases implemented:
+- Phase 1: OwnerUUID on Colony/Blueprint/Survey, CurrentPlayerUUID on PlayerContext/PlayerRoot, CurrentPlayerChanged event, auto-migration on load
+- Phase 2: Player dropdown on MainWindow menu bar, restores last selected player on startup
+- Phase 3: Colony/Blueprint/Survey forms filter by current player, subscribe to CurrentPlayerChanged, auto-assign OwnerUUID on save
+- Phase 4: Skill multipliers in Colony.ProcessColony — ExtractionFocus (+1%/lvl mining), RefiningFocus (+2%/lvl refining), ProductionFocus/Builder/ResearchFocus time reductions deferred until timer processing is implemented (Rec #4)
+- Transfer UI deferred to later phase

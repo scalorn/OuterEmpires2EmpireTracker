@@ -9,6 +9,7 @@ namespace OE2EmpireTracker.Baseline
     public class Colony
     {
         public string UUID { get; set; }
+        public string OwnerUUID { get; set; } = string.Empty;
         public string PlanetName { get; set; }
         public string ColonyName { get; set; }
         public ItemBag Items { get; set; }
@@ -24,6 +25,18 @@ namespace OE2EmpireTracker.Baseline
             Structures = new List<ColonyStructure>();
             Commodities = new List<CommodityRequested>();
             Locks = new OE2EmpireTracker.Data.LockTracking();
+        }
+
+        /// <summary>
+        /// Returns the owner's skill level for the given skill, or 0 if no owner.
+        /// </summary>
+        private int GetOwnerSkillLevel(SkillName skill)
+        {
+            if (string.IsNullOrEmpty(OwnerUUID)) return 0;
+            PlayerContext pc = PlayerContext.getInstance();
+            var owner = pc.playerProfileList.FirstOrDefault(p => p.UUID == OwnerUUID);
+            if (owner == null) return 0;
+            return owner.GetSkill(skill).Level;
         }
 
         public void ProcessColony()
@@ -88,12 +101,13 @@ namespace OE2EmpireTracker.Baseline
                 Items.AddItem(item);
             }
 
+            // ExtractionFocus: +1% per level
+            double extractionMultiplier = 1.0 + GetOwnerSkillLevel(SkillName.ExtractionFocus) * 0.01;
+
             while (structure.ProcessCompletionTime.IntervalsPassed > 0)
             {
-                Decimal quantity = Decimal.Parse(surveyResource.Amount) + leftOver;
+                Decimal quantity = (Decimal)(double.Parse(surveyResource.Amount) * extractionMultiplier) + leftOver;
 
-                /// TODO: FIXME: Need to adjust for extraction bonus.
-                // quantity *= (1 + playerProfile.getExtractionBonus());
                 quantityInt += (int)quantity;
 
                 leftOver += (quantity - quantityInt);
@@ -125,6 +139,8 @@ namespace OE2EmpireTracker.Baseline
         private void ProcessNormalRefinery(ColonyStructure structure)
         {
             int baseRate = GameConstants.RefiningBaseRate;
+            // RefiningFocus: +2% per level
+            double refiningMultiplier = 1.0 + GetOwnerSkillLevel(SkillName.RefiningFocus) * 0.02;
             int outputMultiplier;
             switch (structure.RefiningResourcePurity)
             {
@@ -160,7 +176,7 @@ namespace OE2EmpireTracker.Baseline
                     sourceItems.Remove(sourceItem);
                 }
 
-                int produced = consumed * outputMultiplier;
+                int produced = (int)(consumed * outputMultiplier * refiningMultiplier);
                 List<Item> refinedItems = Items.FindResource(structure.RefiningResource, GameConstants.PurityRefined);
                 Item refinedItem;
                 if (refinedItems.Count > 0)
@@ -191,6 +207,8 @@ namespace OE2EmpireTracker.Baseline
 
             // Per-unit cost: how many input resources per 1 output unit
             int perUnitCost = recipe.ConsumeRate / recipe.ProduceRate;
+            // RefiningFocus: +2% per level
+            double refiningMultiplier = 1.0 + GetOwnerSkillLevel(SkillName.RefiningFocus) * 0.02;
 
             while (structure.ProcessCompletionTime.IntervalsPassed > 0)
             {
@@ -205,7 +223,7 @@ namespace OE2EmpireTracker.Baseline
                 // Only consume whole units � floor to nearest multiple of perUnitCost
                 int wholeUnits = available / perUnitCost;
                 int maxUnits = recipe.ProduceRate; // cap at full batch size
-                int produced = Math.Min(wholeUnits, maxUnits);
+                int produced = (int)(Math.Min(wholeUnits, maxUnits) * refiningMultiplier);
 
                 if (produced <= 0)
                 {

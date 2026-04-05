@@ -55,6 +55,16 @@ namespace OE2EmpireTracker.Forms.Survey
             cmbPurity.DisplayMember = "Name";
             cmbPurity.ValueMember = "Name";
             cmbPurity.DataSource = empireContext.bindingSourceResourcePurity;
+
+            playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+        }
+
+        private void OnCurrentPlayerChanged(object sender, EventArgs e)
+        {
+            lvwSurveys.Items.Clear();
+            viewModel.Reset();
+            ClearForm();
+            PopulateListView(viewModel.GetFilteredSurveys(null));
         }
 
         private void UpdateScannerBlueprintList()

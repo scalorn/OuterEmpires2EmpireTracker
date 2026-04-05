@@ -13,6 +13,8 @@ namespace OE2EmpireTracker.Data
 {
     public class Blueprint : Item
     {
+        public string OwnerUUID { get; set; } = string.Empty;
+
         //[NotMapped]
         public string baseBlueprintUUID { get; set; }
 

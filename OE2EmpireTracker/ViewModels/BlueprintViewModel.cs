@@ -65,7 +65,7 @@ namespace OE2EmpireTracker.ViewModels
 
         public IReadOnlyList<Blueprint> GetFilteredBlueprints(string nameFilter)
         {
-            var list = new List<Blueprint>(_playerContext.blueprintList);
+            var list = _playerContext.GetCurrentPlayerBlueprints();
             if (!string.IsNullOrEmpty(nameFilter))
             {
                 list = list
@@ -85,6 +85,10 @@ namespace OE2EmpireTracker.ViewModels
             {
                 _blueprint.UUID = Guid.NewGuid().ToString();
                 _playerContext.blueprintList.Add(_blueprint);
+            }
+            if (string.IsNullOrEmpty(_blueprint.OwnerUUID))
+            {
+                _blueprint.OwnerUUID = _playerContext.CurrentPlayerUUID;
             }
             _playerContext.writeContext();
         }

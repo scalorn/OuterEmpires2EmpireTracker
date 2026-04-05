@@ -106,7 +106,7 @@ namespace OE2EmpireTracker.ViewModels
 
         public IReadOnlyList<Survey> GetFilteredSurveys(string nameFilter)
         {
-            var list = new List<Survey>(_playerContext.surveyList);
+            var list = _playerContext.GetCurrentPlayerSurveys();
             if (!string.IsNullOrEmpty(nameFilter))
             {
                 list = list
@@ -126,6 +126,10 @@ namespace OE2EmpireTracker.ViewModels
             {
                 _survey.UUID = Guid.NewGuid().ToString();
                 _playerContext.surveyList.Add(_survey);
+            }
+            if (string.IsNullOrEmpty(_survey.OwnerUUID))
+            {
+                _survey.OwnerUUID = _playerContext.CurrentPlayerUUID;
             }
             _playerContext.writeContext();
         }

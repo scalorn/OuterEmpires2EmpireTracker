@@ -42,6 +42,8 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.managePlayerProfiles = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripPlayerLabel = new System.Windows.Forms.ToolStripLabel();
+            this.cmbCurrentPlayer = new System.Windows.Forms.ToolStripComboBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -51,7 +53,9 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
-            this.helpToolStripMenuItem});
+            this.helpToolStripMenuItem,
+            this.toolStripPlayerLabel,
+            this.cmbCurrentPlayer});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
@@ -146,6 +150,21 @@
             this.managePlayerProfiles.Text = "Manage Player Profiles";
             this.managePlayerProfiles.Click += new System.EventHandler(this.managePlayerProfiles_Click);
             // 
+            // toolStripPlayerLabel
+            // 
+            this.toolStripPlayerLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripPlayerLabel.Name = "toolStripPlayerLabel";
+            this.toolStripPlayerLabel.Size = new System.Drawing.Size(43, 22);
+            this.toolStripPlayerLabel.Text = "Player:";
+            // 
+            // cmbCurrentPlayer
+            // 
+            this.cmbCurrentPlayer.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.cmbCurrentPlayer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbCurrentPlayer.Name = "cmbCurrentPlayer";
+            this.cmbCurrentPlayer.Size = new System.Drawing.Size(160, 22);
+            this.cmbCurrentPlayer.SelectedIndexChanged += new System.EventHandler(this.cmbCurrentPlayer_SelectedIndexChanged);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -179,6 +198,8 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem addColonyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem managePlayerProfiles;
+        private System.Windows.Forms.ToolStripLabel toolStripPlayerLabel;
+        private System.Windows.Forms.ToolStripComboBox cmbCurrentPlayer;
     }
 }
 

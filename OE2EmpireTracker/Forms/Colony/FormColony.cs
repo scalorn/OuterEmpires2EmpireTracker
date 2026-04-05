@@ -48,16 +48,33 @@ namespace OE2EmpireTracker.Forms.Colony
             lvwColonies.View = View.Details;
             lvwColonies.Columns.Add("Planet", 50);
             lvwColonies.Columns.Add("Name", 100);
-            PopulateListView(new List<Baseline.Colony>(playerContext.colonyList));
+            PopulateListView(playerContext.GetCurrentPlayerColonies());
 
             UpdateCommodityRequestList();
 
+            playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+        }
+
+        private void OnCurrentPlayerChanged(object sender, EventArgs e)
+        {
+            lvwColonies.Items.Clear();
+            flpColonyStructure.Controls.Clear();
+            selectedColony = new Baseline.Colony();
+            colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
+            colonyViewModel.RecalculateStatus();
+            PopulateListView(playerContext.GetCurrentPlayerColonies());
+            txtPlanetName.Text = "";
+            txtColonyName.Text = "";
         }
 
         private void cmdSave_Click(object sender, EventArgs e)
         {
             colonyViewModel.PlanetName = txtPlanetName.Text;
             colonyViewModel.ColonyName = txtColonyName.Text;
+            if (string.IsNullOrEmpty(colonyViewModel.Data.OwnerUUID))
+            {
+                colonyViewModel.Data.OwnerUUID = playerContext.CurrentPlayerUUID;
+            }
             colonyViewModel.Save();
         }
 

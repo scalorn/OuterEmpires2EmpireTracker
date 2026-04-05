@@ -10,6 +10,7 @@ namespace OE2EmpireTracker.Baseline
 {
     public class Survey : Item
     {
+        public string OwnerUUID { get; set; } = string.Empty;
         public string ScannedBy { get; set; }
         public string DateTime { get; set; }
         public string PlanetName { get; set; }

@@ -18,6 +18,42 @@ namespace OE2EmpireTracker.Baseline
         private static PlayerContext Instance;
         public static string FilePath { get; set; } = @"..\..\PlayerData.json";
 
+        private string _currentPlayerUUID = string.Empty;
+
+        /// <summary>
+        /// UUID of the currently selected player. Forms filter data by this value.
+        /// </summary>
+        public string CurrentPlayerUUID
+        {
+            get => _currentPlayerUUID;
+            set
+            {
+                if (_currentPlayerUUID != value)
+                {
+                    _currentPlayerUUID = value ?? string.Empty;
+                    Log.Info("Current player changed to {0}", _currentPlayerUUID);
+                    CurrentPlayerChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Fired when CurrentPlayerUUID changes. Forms subscribe to refresh their data.
+        /// </summary>
+        public event EventHandler CurrentPlayerChanged;
+
+        /// <summary>
+        /// Returns the PlayerProfile for the currently selected player, or null.
+        /// </summary>
+        public PlayerProfile CurrentPlayer
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_currentPlayerUUID)) return null;
+                return playerProfileList.FirstOrDefault(p => p.UUID == _currentPlayerUUID);
+            }
+        }
+
         public BindingList<PlayerProfile> playerProfileList;
         public BindingSource bindingSourcePlayerProfile;
         public BindingList<Blueprint> blueprintList;
@@ -68,11 +104,16 @@ namespace OE2EmpireTracker.Baseline
             InitBlueprints(playerRoot);
             InitSurveys(playerRoot);
             initColonies(playerRoot);
+
+            // Migrate and restore current player
+            MigrateOwnerUUIDs();
+            RestoreCurrentPlayer(playerRoot.CurrentPlayerUUID);
         }
 
         public void writeContext()
         {
             PlayerRoot playerRoot = new PlayerRoot();
+            playerRoot.CurrentPlayerUUID = _currentPlayerUUID;
             playerRoot.PlayerProfile = playerProfileList.ToArray();
             playerRoot.Blueprint = blueprintList.ToArray();
             playerRoot.Survey = surveyList.ToArray();
@@ -160,6 +201,97 @@ namespace OE2EmpireTracker.Baseline
             return null;
         }
 
+        // -----------------------------------------------------------------------
+        // Player Selection & Migration
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Auto-assigns empty OwnerUUID on colonies, blueprints, and surveys
+        /// to the first player profile (alphabetically). Handles migration of
+        /// existing save files that predate multi-player support.
+        /// </summary>
+        private void MigrateOwnerUUIDs()
+        {
+            if (playerProfileList.Count == 0) return;
+
+            string firstPlayerUUID = playerProfileList[0].UUID;
+            if (string.IsNullOrEmpty(firstPlayerUUID)) return;
+
+            int migrated = 0;
+            foreach (var colony in colonyList)
+            {
+                if (string.IsNullOrEmpty(colony.OwnerUUID))
+                {
+                    colony.OwnerUUID = firstPlayerUUID;
+                    migrated++;
+                }
+            }
+            foreach (var blueprint in blueprintList)
+            {
+                if (string.IsNullOrEmpty(blueprint.OwnerUUID))
+                {
+                    blueprint.OwnerUUID = firstPlayerUUID;
+                    migrated++;
+                }
+            }
+            foreach (var survey in surveyList)
+            {
+                if (string.IsNullOrEmpty(survey.OwnerUUID))
+                {
+                    survey.OwnerUUID = firstPlayerUUID;
+                    migrated++;
+                }
+            }
+
+            if (migrated > 0)
+            {
+                Log.Info("Migrated {0} items to player {1}", migrated, playerProfileList[0].Name);
+            }
+        }
+
+        /// <summary>
+        /// Restores the current player from the saved UUID, falling back to
+        /// the first player if the saved UUID is invalid or empty.
+        /// Does not fire CurrentPlayerChanged (called during construction).
+        /// </summary>
+        private void RestoreCurrentPlayer(string savedUUID)
+        {
+            if (!string.IsNullOrEmpty(savedUUID) &&
+                playerProfileList.Any(p => p.UUID == savedUUID))
+            {
+                _currentPlayerUUID = savedUUID;
+            }
+            else if (playerProfileList.Count > 0)
+            {
+                _currentPlayerUUID = playerProfileList[0].UUID ?? string.Empty;
+            }
+            Log.Info("Current player restored: {0}", _currentPlayerUUID);
+        }
+
+        /// <summary>
+        /// Returns colonies owned by the current player.
+        /// </summary>
+        public List<Colony> GetCurrentPlayerColonies()
+        {
+            return colonyList.Where(c => c.OwnerUUID == _currentPlayerUUID).ToList();
+        }
+
+        /// <summary>
+        /// Returns blueprints owned by the current player.
+        /// </summary>
+        public List<Blueprint> GetCurrentPlayerBlueprints()
+        {
+            return blueprintList.Where(b => b.OwnerUUID == _currentPlayerUUID).ToList();
+        }
+
+        /// <summary>
+        /// Returns surveys owned by the current player.
+        /// </summary>
+        public List<Survey> GetCurrentPlayerSurveys()
+        {
+            return surveyList.Where(s => s.OwnerUUID == _currentPlayerUUID).ToList();
+        }
+
 
         public List<CountDownTimeReference> AllCountdownSources()
         {
@@ -206,12 +338,14 @@ namespace OE2EmpireTracker.Baseline
 
     public class PlayerRoot
     {
+        public string CurrentPlayerUUID;
         public PlayerProfile[] PlayerProfile;
         public Blueprint[] Blueprint;
         public Survey[] Survey;
         public Colony[] Colony;
         public PlayerRoot()
         {
+            CurrentPlayerUUID = string.Empty;
             PlayerProfile = new PlayerProfile[0];
             Blueprint = new Blueprint[0];
             Survey = new Survey[0];

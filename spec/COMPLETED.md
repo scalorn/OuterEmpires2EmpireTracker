@@ -119,3 +119,9 @@ Created `Constants/GameConstants.cs` with RefiningBaseRate (25), WorkerVolume (5
 
 ## 36. Large Method Extraction (Rec 12e)
 Extracted `ProcessMiningRig()` from inline block in `ProcessColony` — all 4 structure types now have their own method. Collapsed 5 resource accumulation blocks in `CalculateBuilt` into compact calls using `GetBlueprintDouble()` helper. Other methods (UpdateData, PopulateForm, ProcessHtml) already reduced to reasonable sizes by prior refactoring (12a, 12f). 465 tests passing.
+
+## 37. Multi-Player Support (Rec 13, REQ-ARCH-070-075)
+Phase 1: Added OwnerUUID to Colony, Blueprint, Survey. Added CurrentPlayerUUID and CurrentPlayerChanged event to PlayerContext. PlayerRoot persists CurrentPlayerUUID. Auto-migration assigns empty OwnerUUIDs to first player on load.
+Phase 2: Player dropdown on MainWindow menu bar. Restores last selected player on startup.
+Phase 3: Colony/Blueprint/Survey forms filter by current player. All forms subscribe to CurrentPlayerChanged and refresh. New items auto-assigned to current player on save.
+Phase 4: ExtractionFocus (+1%/lvl) applied to mining. RefiningFocus (+2%/lvl) applied to normal and synthetic refining. ProductionFocus/Builder/ResearchFocus time reductions deferred until timer processing is implemented. 465 tests passing.

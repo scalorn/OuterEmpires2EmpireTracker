@@ -118,6 +118,16 @@ namespace OE2EmpireTracker
             lvwBlueprints.Columns.Add("Evolution", 30);
             lvwBlueprints.Columns.Add("Nick Name", 100);
             PopulateListView(viewModel.GetFilteredBlueprints(null));
+
+            playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+        }
+
+        private void OnCurrentPlayerChanged(object sender, EventArgs e)
+        {
+            lvwBlueprints.Items.Clear();
+            viewModel.Reset();
+            ClearForm();
+            PopulateListView(viewModel.GetFilteredBlueprints(null));
         }
 
         /// <summary>
