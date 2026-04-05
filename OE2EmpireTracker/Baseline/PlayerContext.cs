@@ -55,6 +55,26 @@ namespace OE2EmpireTracker.Baseline
         public event EventHandler<ColonyDataChangedEventArgs> ColonyDataChanged;
 
         /// <summary>
+        /// Fired when blueprint data is modified externally (e.g. research completion, scan import).
+        /// </summary>
+        public event EventHandler<BlueprintDataChangedEventArgs> BlueprintDataChanged;
+
+        /// <summary>
+        /// Fired when survey data is modified externally.
+        /// </summary>
+        public event EventHandler<SurveyDataChangedEventArgs> SurveyDataChanged;
+
+        /// <summary>
+        /// Fired when delivery routes or plans are modified externally.
+        /// </summary>
+        public event EventHandler DeliveryDataChanged;
+
+        /// <summary>
+        /// Fired when a player profile is modified externally (e.g. skill training completion).
+        /// </summary>
+        public event EventHandler<PlayerProfileDataChangedEventArgs> PlayerProfileDataChanged;
+
+        /// <summary>
         /// Notifies subscribers that the player profile list has changed.
         /// </summary>
         public void OnPlayerProfilesChanged()
@@ -68,6 +88,38 @@ namespace OE2EmpireTracker.Baseline
         public void OnColonyDataChanged(string colonyUUID)
         {
             ColonyDataChanged?.Invoke(this, new ColonyDataChangedEventArgs(colonyUUID));
+        }
+
+        /// <summary>
+        /// Notifies subscribers that blueprint data has changed externally.
+        /// </summary>
+        public void OnBlueprintDataChanged(string blueprintUUID)
+        {
+            BlueprintDataChanged?.Invoke(this, new BlueprintDataChangedEventArgs(blueprintUUID));
+        }
+
+        /// <summary>
+        /// Notifies subscribers that survey data has changed externally.
+        /// </summary>
+        public void OnSurveyDataChanged(string surveyUUID)
+        {
+            SurveyDataChanged?.Invoke(this, new SurveyDataChangedEventArgs(surveyUUID));
+        }
+
+        /// <summary>
+        /// Notifies subscribers that delivery data has changed externally.
+        /// </summary>
+        public void OnDeliveryDataChanged()
+        {
+            DeliveryDataChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Notifies subscribers that a player profile has changed externally.
+        /// </summary>
+        public void OnPlayerProfileDataChanged(string playerUUID)
+        {
+            PlayerProfileDataChanged?.Invoke(this, new PlayerProfileDataChangedEventArgs(playerUUID));
         }
 
         /// <summary>
@@ -501,6 +553,24 @@ namespace OE2EmpireTracker.Baseline
     {
         public string ColonyUUID { get; }
         public ColonyDataChangedEventArgs(string colonyUUID) { ColonyUUID = colonyUUID; }
+    }
+
+    public class BlueprintDataChangedEventArgs : EventArgs
+    {
+        public string BlueprintUUID { get; }
+        public BlueprintDataChangedEventArgs(string blueprintUUID) { BlueprintUUID = blueprintUUID; }
+    }
+
+    public class SurveyDataChangedEventArgs : EventArgs
+    {
+        public string SurveyUUID { get; }
+        public SurveyDataChangedEventArgs(string surveyUUID) { SurveyUUID = surveyUUID; }
+    }
+
+    public class PlayerProfileDataChangedEventArgs : EventArgs
+    {
+        public string PlayerUUID { get; }
+        public PlayerProfileDataChangedEventArgs(string playerUUID) { PlayerUUID = playerUUID; }
     }
 
 }

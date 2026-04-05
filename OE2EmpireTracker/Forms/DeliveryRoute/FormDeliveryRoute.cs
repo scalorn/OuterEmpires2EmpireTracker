@@ -88,6 +88,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             flpPlanContent.Layout += flpPlanContent_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+            playerContext.DeliveryDataChanged += OnDeliveryDataChanged;
         }
 
         // -----------------------------------------------------------------------
@@ -835,9 +836,17 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             PopulateColonyPicker();
         }
 
+        private void OnDeliveryDataChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed) return;
+            PopulateRouteList();
+            PopulatePlanDropdown();
+        }
+
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.DeliveryDataChanged -= OnDeliveryDataChanged;
             base.OnFormClosed(e);
         }
     }

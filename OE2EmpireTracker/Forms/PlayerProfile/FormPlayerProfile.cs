@@ -98,6 +98,17 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             flpPlayerData.Layout += flpPlayerData_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+            playerContext.PlayerProfileDataChanged += OnPlayerProfileDataChanged;
+        }
+
+        private void OnPlayerProfileDataChanged(object sender, PlayerProfileDataChangedEventArgs e)
+        {
+            if (IsDisposed) return;
+            if (viewModel.Data.UUID == e.PlayerUUID)
+            {
+                PopulateForm();
+            }
+            PopulateListView();
         }
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
@@ -438,6 +449,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.PlayerProfileDataChanged -= OnPlayerProfileDataChanged;
             base.OnFormClosed(e);
         }
     }

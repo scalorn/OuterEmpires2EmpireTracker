@@ -56,6 +56,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             pnlExecution.Layout += pnlExecution_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+            playerContext.DeliveryDataChanged += OnDeliveryDataChanged;
         }
 
         /// <summary>
@@ -646,9 +647,17 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             ClearExecution();
         }
 
+        private void OnDeliveryDataChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed) return;
+            if (selectedPlan != null)
+                BuildExecution();
+        }
+
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.DeliveryDataChanged -= OnDeliveryDataChanged;
             base.OnFormClosed(e);
         }
     }

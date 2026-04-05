@@ -306,26 +306,18 @@ All forms with editable controls now write to the data model immediately on chan
 
 ---
 
-## 18. Data Change Events for All Entity Types
-**Priority: Medium — Required before background processing (Rec #4)**
-Currently only `ColonyDataChanged` exists on PlayerContext. Background processing will modify colonies, blueprints (research completion), and potentially surveys. All forms need to subscribe to data change events and do full refreshes.
+## ~~18. Data Change Events for All Entity Types~~
+**Status: Complete**
+Events added on PlayerContext with EventArgs classes:
+- `BlueprintDataChanged(BlueprintUUID)` — `BlueprintDataChangedEventArgs`
+- `SurveyDataChanged(SurveyUUID)` — `SurveyDataChangedEventArgs`
+- `DeliveryDataChanged` — plain `EventArgs` (no UUID needed, routes/plans refresh as a set)
+- `PlayerProfileDataChanged(PlayerUUID)` — `PlayerProfileDataChangedEventArgs`
 
-### Events to add on PlayerContext:
-- [ ] `BlueprintDataChanged(string blueprintUUID)` — fired when a blueprint is modified externally (research completion, scan import)
-- [ ] `SurveyDataChanged(string surveyUUID)` — fired when a survey is modified externally
-- [ ] `DeliveryDataChanged` — fired when delivery routes or plans are modified externally
-- [ ] `PlayerProfileDataChanged(string playerUUID)` — fired when a player profile is modified externally (skill training completion)
-
-### Forms to subscribe:
-- [ ] FormBlueprint — subscribe to `BlueprintDataChanged`, refresh list and form if selected blueprint matches
-- [ ] FormSurvey — subscribe to `SurveyDataChanged`, refresh list and form if selected survey matches
-- [ ] FormDeliveryRoute — subscribe to `DeliveryDataChanged`, refresh route list and plan data
-- [ ] FormDeliveryExecution — subscribe to `DeliveryDataChanged`, rebuild execution display
-- [ ] FormPlayerProfile — subscribe to `PlayerProfileDataChanged`, refresh if selected profile matches
-
-### Already done:
-- FormColony — subscribes to `ColonyDataChanged`, does full `RecalculateStatus()` + `PopulateForm()` ✓
-
-### Thread safety:
-- Background processing runs on a timer thread — event handlers must use `Invoke`/`BeginInvoke` for cross-thread UI updates
-- This will be addressed as part of Rec #4 (background processing implementation)
+Forms subscribed with `IsDisposed` safety check, unsubscribe in `OnFormClosed`:
+- FormBlueprint → `BlueprintDataChanged` (refresh form if selected matches, refresh list)
+- FormSurvey → `SurveyDataChanged` (refresh form if selected matches, refresh list)
+- FormDeliveryRoute → `DeliveryDataChanged` (refresh route list + plan dropdown)
+- FormDeliveryExecution → `DeliveryDataChanged` (rebuild execution if plan selected)
+- FormPlayerProfile → `PlayerProfileDataChanged` (refresh form if selected matches, refresh list)
+- FormColony → `ColonyDataChanged` (already existed, added `IsDisposed` guard)

@@ -136,6 +136,17 @@ namespace OE2EmpireTracker
             chkGlobalBlueprint.CheckedChanged += chkGlobalBlueprint_CheckedChanged;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+            playerContext.BlueprintDataChanged += OnBlueprintDataChanged;
+        }
+
+        private void OnBlueprintDataChanged(object sender, BlueprintDataChangedEventArgs e)
+        {
+            if (IsDisposed) return;
+            if (viewModel.Data.UUID == e.BlueprintUUID)
+            {
+                PopulateForm();
+            }
+            PopulateListView(viewModel.GetFilteredBlueprints(txtBlueprintListFilter.Text));
         }
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
@@ -1105,6 +1116,7 @@ namespace OE2EmpireTracker
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.BlueprintDataChanged -= OnBlueprintDataChanged;
             base.OnFormClosed(e);
         }
     }

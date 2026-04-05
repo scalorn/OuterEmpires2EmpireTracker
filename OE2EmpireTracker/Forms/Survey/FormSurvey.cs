@@ -73,6 +73,7 @@ namespace OE2EmpireTracker.Forms.Survey
             cmbScannerBlueprint.SelectedIndexChanged += cmbScannerBlueprint_SelectedIndexChanged;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+            playerContext.SurveyDataChanged += OnSurveyDataChanged;
 
             flpBase.Layout += flpBase_Layout;
             flpSearchList.Layout += flpSearchList_Layout;
@@ -123,6 +124,16 @@ namespace OE2EmpireTracker.Forms.Survey
             lvwSurveys.Items.Clear();
             viewModel.Reset();
             ClearForm();
+            PopulateListView(viewModel.GetFilteredSurveys(null));
+        }
+
+        private void OnSurveyDataChanged(object sender, SurveyDataChangedEventArgs e)
+        {
+            if (IsDisposed) return;
+            if (viewModel.UUID == e.SurveyUUID)
+            {
+                PopulateFormFromViewModel();
+            }
             PopulateListView(viewModel.GetFilteredSurveys(null));
         }
 
@@ -401,6 +412,7 @@ namespace OE2EmpireTracker.Forms.Survey
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.SurveyDataChanged -= OnSurveyDataChanged;
             base.OnFormClosed(e);
         }
     }

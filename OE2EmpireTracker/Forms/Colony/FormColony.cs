@@ -76,6 +76,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void OnColonyDataChanged(object sender, ColonyDataChangedEventArgs e)
         {
+            if (IsDisposed) return;
             if (selectedColony != null && selectedColony.UUID == e.ColonyUUID)
             {
                 colonyViewModel.RecalculateStatus();
