@@ -405,5 +405,38 @@ namespace OE2EmpireTracker.Tests.Baseline
             var structure = new ColonyStructure();
             Assert.IsNull(structure.MiningSurvey);
         }
+
+        // -----------------------------------------------------------------------
+        // ColonyStructureStatus — GetUnallocatedPresent / SetUnallocatedPresent
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void GetUnallocatedPresent_DefaultsToFalse()
+        {
+            var status = new ColonyStructureStatus();
+            Assert.IsFalse(status.GetUnallocatedPresent("BlueCollarDetail"));
+            Assert.IsFalse(status.GetUnallocatedPresent("WhiteCollarDetail"));
+            Assert.IsFalse(status.GetUnallocatedPresent("SpecialistDetail"));
+        }
+
+        [TestCase("BlueCollarDetail")]
+        [TestCase("WhiteCollarDetail")]
+        [TestCase("SpecialistDetail")]
+        public void SetThenGetUnallocatedPresent_RoundTrips(string detailKey)
+        {
+            var status = new ColonyStructureStatus();
+            status.SetUnallocatedPresent(detailKey, true);
+            Assert.IsTrue(status.GetUnallocatedPresent(detailKey));
+
+            status.SetUnallocatedPresent(detailKey, false);
+            Assert.IsFalse(status.GetUnallocatedPresent(detailKey));
+        }
+
+        [Test]
+        public void GetUnallocatedPresent_UnknownKey_ReturnsFalse()
+        {
+            var status = new ColonyStructureStatus();
+            Assert.IsFalse(status.GetUnallocatedPresent("UnknownWorkerDetail"));
+        }
     }
 }

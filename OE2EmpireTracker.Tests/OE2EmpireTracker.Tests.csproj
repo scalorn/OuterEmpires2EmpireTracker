@@ -210,9 +210,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Baseline\BlueprintTypeTests.cs" />
+    <Compile Include="Baseline\ColonyProcessingTests.cs" />
     <Compile Include="Baseline\ColonyStructureTests.cs" />
     <Compile Include="Baseline\ColonyStatusCalculatorTests.cs" />
     <Compile Include="Baseline\SurveyParserTests.cs" />
+    <Compile Include="Constants\BlueprintPropertyValidationTests.cs" />
     <Compile Include="Blueprint\BlueprintScannerTests.cs" />
     <Compile Include="Baseline\SurveyTests.cs" />
     <Compile Include="Data\BlueprintTests.cs" />
@@ -228,6 +230,7 @@
     <Compile Include="Data\ResourceGroupTests.cs" />
     <Compile Include="Data\ResourcePurityTests.cs" />
     <Compile Include="Data\WorkerDetailTests.cs" />
+    <Compile Include="Data\WorkerTypeInfoTests.cs" />
     <Compile Include="Data\LockTrackingTests.cs" />
     <Compile Include="Controls\ValidatedTextBoxTests.cs" />
     <None Include="app.config" />
