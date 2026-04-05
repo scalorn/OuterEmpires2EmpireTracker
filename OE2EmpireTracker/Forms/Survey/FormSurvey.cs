@@ -119,6 +119,8 @@ namespace OE2EmpireTracker.Forms.Survey
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            dgvResources.CancelEdit();
+
             // Populate viewModel from form fields
             viewModel.PlanetName = txtPlanetName.Text;
             viewModel.SurveyID = txtSurveyID.Text;

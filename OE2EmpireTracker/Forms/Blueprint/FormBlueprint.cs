@@ -703,6 +703,10 @@ namespace OE2EmpireTracker
         /// </remarks>
         private void btnSave_Click(object sender, EventArgs e)
         {
+            // End any active cell edits before reading grid values
+            dgvStatistics.CancelEdit();
+            dgvResources.CancelEdit();
+
             empireContext = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
 
