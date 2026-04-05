@@ -124,6 +124,7 @@
   <ItemGroup>
     <Compile Include="Baseline\BlueprintType.cs" />
     <Compile Include="Baseline\BuildTimeCalculator.cs" />
+    <Compile Include="Baseline\ColonyActivityCollector.cs" />
     <Compile Include="Baseline\Colony.cs" />
     <Compile Include="Baseline\ColonyBuildEligibility.cs" />
     <Compile Include="Baseline\ColonyStructure.cs" />
@@ -230,6 +231,12 @@
     <Compile Include="Forms\DeliveryRoute\FormAutoFill.Designer.cs">
       <DependentUpon>FormAutoFill.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ColonyActivity\FormColonyActivity.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ColonyActivity\FormColonyActivity.Designer.cs">
+      <DependentUpon>FormColonyActivity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ColonyDailyBuild\FormColonyDailyBuild.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -288,6 +295,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DeliveryRoute\FormAutoFill.resx">
       <DependentUpon>FormAutoFill.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ColonyActivity\FormColonyActivity.resx">
+      <DependentUpon>FormColonyActivity.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ColonyDailyBuild\FormColonyDailyBuild.resx">
       <DependentUpon>FormColonyDailyBuild.cs</DependentUpon>

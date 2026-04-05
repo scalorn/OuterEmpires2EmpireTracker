@@ -211,6 +211,7 @@
   <ItemGroup>
     <Compile Include="Baseline\BuildTimeCalculatorTests.cs" />
     <Compile Include="Baseline\BlueprintTypeTests.cs" />
+    <Compile Include="Baseline\ColonyActivityCollectorTests.cs" />
     <Compile Include="Baseline\ColonyBuildEligibilityTests.cs" />
     <Compile Include="Baseline\ColonyBuildCompletionTests.cs" />
     <Compile Include="Baseline\ColonyProcessingTests.cs" />

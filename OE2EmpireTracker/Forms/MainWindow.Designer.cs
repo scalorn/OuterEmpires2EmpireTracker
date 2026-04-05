@@ -45,6 +45,7 @@
             this.deliveryRoutesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deliveryExecutionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colonyDailyBuildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.colonyActivityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripPlayerLabel = new System.Windows.Forms.ToolStripLabel();
             this.cmbCurrentPlayer = new System.Windows.Forms.ToolStripComboBox();
             this.menuStrip1.SuspendLayout();
@@ -103,7 +104,8 @@
             this.managePlayerProfiles,
             this.deliveryRoutesToolStripMenuItem,
             this.deliveryExecutionToolStripMenuItem,
-            this.colonyDailyBuildToolStripMenuItem});
+            this.colonyDailyBuildToolStripMenuItem,
+            this.colonyActivityToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 22);
             this.editToolStripMenuItem.Text = "Edit";
@@ -177,6 +179,13 @@
             this.colonyDailyBuildToolStripMenuItem.Text = "Colony Daily Build";
             this.colonyDailyBuildToolStripMenuItem.Click += new System.EventHandler(this.colonyDailyBuildToolStripMenuItem_Click);
             // 
+            // colonyActivityToolStripMenuItem
+            // 
+            this.colonyActivityToolStripMenuItem.Name = "colonyActivityToolStripMenuItem";
+            this.colonyActivityToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.colonyActivityToolStripMenuItem.Text = "Colony Activity";
+            this.colonyActivityToolStripMenuItem.Click += new System.EventHandler(this.colonyActivityToolStripMenuItem_Click);
+            // 
             // toolStripPlayerLabel
             // 
             this.toolStripPlayerLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -228,6 +237,7 @@
         private System.Windows.Forms.ToolStripMenuItem deliveryRoutesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deliveryExecutionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colonyDailyBuildToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem colonyActivityToolStripMenuItem;
         private System.Windows.Forms.ToolStripLabel toolStripPlayerLabel;
         private System.Windows.Forms.ToolStripComboBox cmbCurrentPlayer;
     }

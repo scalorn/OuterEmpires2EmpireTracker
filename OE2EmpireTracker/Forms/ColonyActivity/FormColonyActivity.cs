@@ -1,0 +1,203 @@
+using NLog;
+using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Data;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace OE2EmpireTracker.Forms.ColonyActivity
+{
+    public partial class FormColonyActivity : Form, IProgrammaticUpdateSource
+    {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private int _isProgrammaticUpdate = 0;
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        private PlayerContext playerContext;
+        private List<ActivityRow> allRows = new List<ActivityRow>();
+
+        public FormColonyActivity()
+        {
+            InitializeComponent();
+            playerContext = EmpireContext.PlayerContext;
+
+            // Wire checkbox handlers
+            chkBuilding.CheckedChanged += chkFilter_CheckedChanged;
+            chkManufacturing.CheckedChanged += chkFilter_CheckedChanged;
+            chkCommodityManufacturing.CheckedChanged += chkFilter_CheckedChanged;
+            chkCommodityRequest.CheckedChanged += chkFilter_CheckedChanged;
+            chkResearch.CheckedChanged += chkFilter_CheckedChanged;
+            chkMining.CheckedChanged += chkFilter_CheckedChanged;
+            chkRefining.CheckedChanged += chkFilter_CheckedChanged;
+
+            // Wire text filter
+            txtFilter.TextChanged += txtFilter_TextChanged;
+
+            // Wire grid sort
+            dgvActivities.SortCompare += dgvActivities_SortCompare;
+
+            // Wire layout
+            flpBase.Layout += flpBase_Layout;
+
+            // Wire timer
+            timerRefresh.Tick += timerRefresh_Tick;
+
+            // Subscribe to player context events
+            playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+            playerContext.ColonyDataChanged += OnColonyDataChanged;
+
+            // Initial data load
+            RefreshData();
+
+            // Start timer
+            timerRefresh.Start();
+        }
+
+        // -----------------------------------------------------------------------
+        // Layout
+        // -----------------------------------------------------------------------
+
+        private void flpBase_Layout(object sender, LayoutEventArgs e)
+        {
+            int gridWidth = flpBase.ClientSize.Width - dgvActivities.Margin.Left - dgvActivities.Margin.Right;
+            int gridHeight = flpBase.ClientSize.Height - flpFilters.Height - flpFilters.Margin.Top - flpFilters.Margin.Bottom - dgvActivities.Margin.Top - dgvActivities.Margin.Bottom;
+            dgvActivities.Size = new Size(
+                Math.Max(100, gridWidth),
+                Math.Max(100, gridHeight));
+        }
+
+        // -----------------------------------------------------------------------
+        // Data Refresh
+        // -----------------------------------------------------------------------
+
+        private void RefreshData()
+        {
+            allRows = ColonyActivityCollector.CollectActivities(
+                playerContext.GetCurrentPlayerColonies(), playerContext);
+            ApplyFiltersAndPopulate();
+        }
+
+        // -----------------------------------------------------------------------
+        // Filtering
+        // -----------------------------------------------------------------------
+
+        private HashSet<ActivityType> GetSelectedActivityTypes()
+        {
+            var types = new HashSet<ActivityType>();
+            if (chkBuilding.Checked) types.Add(ActivityType.Building);
+            if (chkManufacturing.Checked) types.Add(ActivityType.Manufacturing);
+            if (chkCommodityManufacturing.Checked) types.Add(ActivityType.CommodityManufacturing);
+            if (chkCommodityRequest.Checked) types.Add(ActivityType.CommodityRequest);
+            if (chkResearch.Checked) types.Add(ActivityType.Research);
+            if (chkMining.Checked) types.Add(ActivityType.Mining);
+            if (chkRefining.Checked) types.Add(ActivityType.Refining);
+            return types;
+        }
+
+        private void ApplyFiltersAndPopulate()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            dgvActivities.Rows.Clear();
+
+            var selectedTypes = GetSelectedActivityTypes();
+            string textFilter = txtFilter.Text ?? "";
+
+            var filtered = allRows
+                .Where(r => selectedTypes.Contains(r.Type))
+                .Where(r => PassesTextFilter(r, textFilter))
+                .OrderBy(r => r.GetSecondsRemaining())
+                .ToList();
+
+            foreach (var row in filtered)
+            {
+                long seconds = row.GetSecondsRemaining();
+                dgvActivities.Rows.Add(
+                    row.GetTimeRemainingString(),
+                    row.SystemName,
+                    row.ColonyName,
+                    row.Type.ToString(),
+                    row.SourceName,
+                    row.ProcessDetails,
+                    seconds);
+                dgvActivities.Rows[dgvActivities.Rows.Count - 1].Tag = row;
+            }
+        }
+
+        private static bool PassesTextFilter(ActivityRow row, string textFilter)
+        {
+            if (string.IsNullOrEmpty(textFilter)) return true;
+
+            return (row.GetTimeRemainingString() ?? "").IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
+                || (row.SystemName ?? "").IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
+                || (row.ColonyName ?? "").IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
+                || row.Type.ToString().IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
+                || (row.SourceName ?? "").IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
+                || (row.ProcessDetails ?? "").IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        // -----------------------------------------------------------------------
+        // Event Handlers
+        // -----------------------------------------------------------------------
+
+        private void chkFilter_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            ApplyFiltersAndPopulate();
+        }
+
+        private void txtFilter_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            ApplyFiltersAndPopulate();
+        }
+
+        private void timerRefresh_Tick(object sender, EventArgs e)
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            foreach (DataGridViewRow gridRow in dgvActivities.Rows)
+            {
+                var activityRow = gridRow.Tag as ActivityRow;
+                if (activityRow == null) continue;
+
+                long seconds = activityRow.GetSecondsRemaining();
+                gridRow.Cells[colCountDown.Index].Value = activityRow.GetTimeRemainingString();
+                gridRow.Cells[colSecondsRemaining.Index].Value = seconds;
+            }
+        }
+
+        private void dgvActivities_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
+        {
+            if (e.Column == colCountDown)
+            {
+                long sec1 = Convert.ToInt64(dgvActivities.Rows[e.RowIndex1].Cells[colSecondsRemaining.Index].Value ?? 0);
+                long sec2 = Convert.ToInt64(dgvActivities.Rows[e.RowIndex2].Cells[colSecondsRemaining.Index].Value ?? 0);
+                e.SortResult = sec1.CompareTo(sec2);
+                e.Handled = true;
+            }
+        }
+
+        private void OnCurrentPlayerChanged(object sender, EventArgs e)
+        {
+            RefreshData();
+        }
+
+        private void OnColonyDataChanged(object sender, ColonyDataChangedEventArgs args)
+        {
+            if (IsDisposed) return;
+            RefreshData();
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.ColonyDataChanged -= OnColonyDataChanged;
+            timerRefresh.Stop();
+            timerRefresh.Dispose();
+            base.OnFormClosed(e);
+        }
+    }
+}

@@ -3,6 +3,7 @@ using OE2EmpireTracker.Data;
 using OE2EmpireTracker.Forms.Colony;
 using OE2EmpireTracker.Forms.PlayerProfile;
 using OE2EmpireTracker.Forms.Survey;
+using OE2EmpireTracker.Forms.ColonyActivity;
 using OE2EmpireTracker.Forms.ColonyDailyBuild;
 using System;
 using System.Collections.Generic;
@@ -116,6 +117,13 @@ namespace OE2EmpireTracker
             Form dailyBuild = new FormColonyDailyBuild();
             dailyBuild.MdiParent = this;
             dailyBuild.Show();
+        }
+
+        private void colonyActivityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form colonyActivity = new FormColonyActivity();
+            colonyActivity.MdiParent = this;
+            colonyActivity.Show();
         }
 
         private void OnPlayerProfilesChanged(object sender, EventArgs e)

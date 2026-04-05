@@ -1374,6 +1374,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 timerCountdown.Interval = 1000;
                 timerCountdown.Start();
                 handleRefineryControls();
+                ColonyStructureDataChanged?.Invoke(this, e);
             }
             else if (FlatpackBlueprint != null && FlatpackBlueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
             {
@@ -1391,6 +1392,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 timerCountdown.Interval = 1000;
                 timerCountdown.Start();
                 handleResearchLabControls();
+                ColonyStructureDataChanged?.Invoke(this, e);
             }
             else if (FlatpackBlueprint != null && FlatpackBlueprint.BluePrintType == BlueprintTypes.Manufactory)
             {
@@ -1426,6 +1428,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 timerCountdown.Interval = 1000;
                 timerCountdown.Start();
                 handleManufactoryControls();
+                ColonyStructureDataChanged?.Invoke(this, e);
             }
             else if (FlatpackBlueprint != null && FlatpackBlueprint.BluePrintType == BlueprintTypes.CommodityFactory)
             {
@@ -1444,6 +1447,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 timerCountdown.Interval = 1000;
                 timerCountdown.Start();
                 handleCommodityFactoryControls();
+                ColonyStructureDataChanged?.Invoke(this, e);
             }
         }
 
@@ -1461,6 +1465,7 @@ namespace OE2EmpireTracker.Forms.Colony
             timerCountdown.Interval = 1000;
             timerCountdown.Start();
             handleMiningRigControls();
+            ColonyStructureDataChanged?.Invoke(this, e);
         }
 
         private void timerCountdown_Tick(object sender, EventArgs e)
