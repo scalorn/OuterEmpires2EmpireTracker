@@ -265,6 +265,7 @@ namespace OE2EmpireTracker.Forms.Delivery
             planViewModel = null;
             selectedPlanStop = null;
             txtPlanName.Text = "";
+            txtPlanName.SetError("Plan name is required");
             cmbPlan.DataSource = null;
             ClearPlanGrids();
         }
@@ -426,6 +427,7 @@ namespace OE2EmpireTracker.Forms.Delivery
                 planViewModel = null;
                 selectedPlanStop = null;
                 txtPlanName.Text = "";
+                txtPlanName.SetError("Plan name is required");
                 ClearPlanGrids();
                 return;
             }
