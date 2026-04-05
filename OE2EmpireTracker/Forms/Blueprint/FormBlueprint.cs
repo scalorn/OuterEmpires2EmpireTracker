@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using OE2EmpireTracker.Controls;
 
 namespace OE2EmpireTracker
 {
@@ -30,9 +31,12 @@ namespace OE2EmpireTracker
     /// ship classes, and resource-related items. Each blueprint contains type information,
     /// evolution level, properties, resources, and copy costs.
     /// </remarks>
-    public partial class FormBlueprint : Form
+    public partial class FormBlueprint : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private int _isProgrammaticUpdate = 0;
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
         /// <summary>
         /// Gets or sets the empire context instance for accessing empire-wide data.
         /// </summary>
@@ -352,6 +356,7 @@ namespace OE2EmpireTracker
         /// </remarks>
         public void UpdatePropertyGrid()
         {
+            var guard = new ProgrammaticUpdateGuard(this);
             BlueprintType bt = cmbBlueprintType.SelectedItem as BlueprintType;
             
             // Handle universal vs non-universal blueprints
@@ -433,6 +438,7 @@ namespace OE2EmpireTracker
         /// <param name="e">Event data containing event information.</param>
         private void dgvStatistics_SelectionChanged(object sender, EventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
             Log.Debug("dgvStatistics_SelectionChanged Sender = " + sender + " Event Args " + e);
         }
 
@@ -905,7 +911,8 @@ namespace OE2EmpireTracker
             chkGlobalBlueprint.Checked = viewModel.IsGlobal;
         }
         private void PopulateResources()
-        { 
+        {
+            var guard = new ProgrammaticUpdateGuard(this);
             // Populate resources grid with blueprint's resource data
             dgvResources.CellValidating -= dgvResources_CellValidating;
             try { dgvResources.EndEdit(); } catch { }
@@ -933,6 +940,7 @@ namespace OE2EmpireTracker
         /// </remarks>
         private void ClearForm()
         {
+            var guard = new ProgrammaticUpdateGuard(this);
             viewModel.Reset();
 
             // Clear filters
@@ -1000,6 +1008,7 @@ namespace OE2EmpireTracker
 
         private void dgvResources_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
             // Only validate the Amount column (index 1)
             if (e.ColumnIndex != 1) return;
             if (e.RowIndex < 0) return;
@@ -1029,6 +1038,7 @@ namespace OE2EmpireTracker
 
         private void dgvStatistics_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
             // Only validate the CurrentValue column (index 2)
             if (e.ColumnIndex != 2) return;
             if (e.RowIndex < 0) return;

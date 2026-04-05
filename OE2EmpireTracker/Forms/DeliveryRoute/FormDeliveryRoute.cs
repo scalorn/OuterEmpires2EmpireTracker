@@ -12,9 +12,12 @@ using System.Windows.Forms;
 
 namespace OE2EmpireTracker.Forms.DeliveryRoute
 {
-    public partial class FormDeliveryRoute : Form
+    public partial class FormDeliveryRoute : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private int _isProgrammaticUpdate = 0;
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
         private EmpireContext empireContext;
         private PlayerContext playerContext;
         private DeliveryRouteViewModel viewModel;
@@ -247,6 +250,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void PopulateStopsGrid()
         {
+            var guard = new ProgrammaticUpdateGuard(this);
             dgvStops.Rows.Clear();
             foreach (var stop in viewModel.Stops)
             {
@@ -565,6 +569,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void ClearPlanGrids()
         {
+            var guard = new ProgrammaticUpdateGuard(this);
             lblPlanStop.Text = "(select a stop on Stops tab)";
             dgvDropOff.Rows.Clear();
             dgvPickUp.Rows.Clear();
@@ -593,6 +598,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void dgvStops_SelectionChanged(object sender, EventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
+
             if (planViewModel == null)
             {
                 selectedPlanStop = null;
@@ -705,6 +712,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void PopulatePlanGrids()
         {
+            var guard = new ProgrammaticUpdateGuard(this);
             dgvDropOff.Rows.Clear();
             dgvPickUp.Rows.Clear();
             if (selectedPlanStop == null) return;

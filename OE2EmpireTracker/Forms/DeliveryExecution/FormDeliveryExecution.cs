@@ -10,9 +10,12 @@ using System.Windows.Forms;
 
 namespace OE2EmpireTracker.Forms.DeliveryExecution
 {
-    public partial class FormDeliveryExecution : Form
+    public partial class FormDeliveryExecution : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private int _isProgrammaticUpdate = 0;
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
         private EmpireContext empireContext;
         private PlayerContext playerContext;
         private DeliveryPlan selectedPlan;
@@ -221,6 +224,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void ClearExecution()
         {
+            var guard = new ProgrammaticUpdateGuard(this);
             dgvLoadList.Rows.Clear();
             flpStops.Controls.Clear();
             selectedPlan = null;
@@ -230,6 +234,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void BuildExecution()
         {
+            var guard = new ProgrammaticUpdateGuard(this);
             dgvLoadList.Rows.Clear();
             flpStops.Controls.Clear();
 

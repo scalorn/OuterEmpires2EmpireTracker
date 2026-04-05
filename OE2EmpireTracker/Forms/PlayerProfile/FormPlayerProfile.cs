@@ -10,11 +10,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using OE2EmpireTracker.Controls;
 
 namespace OE2EmpireTracker.Forms.PlayerProfile
 {
-    public partial class FormPlayerProfile : Form
+    public partial class FormPlayerProfile : Form, IProgrammaticUpdateSource
     {
+        private int _isProgrammaticUpdate = 0;
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
         private EmpireContext empireContext;
         private PlayerContext playerContext;
         private PlayerProfileViewModel viewModel;
@@ -78,6 +82,16 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             flpBase.Layout += flpBase_Layout;
             flpSearchList.Layout += flpSearchList_Layout;
             flpPlayerData.Layout += flpPlayerData_Layout;
+
+            playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+        }
+
+        private void OnCurrentPlayerChanged(object sender, EventArgs e)
+        {
+            lvwPlayerProfiles.Items.Clear();
+            viewModel.Reset();
+            PopulateListView();
+            PopulateForm();
         }
 
         private void flpBase_Layout(object sender, LayoutEventArgs e)

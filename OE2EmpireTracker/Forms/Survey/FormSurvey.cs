@@ -11,15 +11,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using OE2EmpireTracker.Controls;
 
 namespace OE2EmpireTracker.Forms.Survey
 {
     /// <summary>
     /// FormSurvey - Main form for managing survey data in the OE2 Empire Tracker.
     /// </summary>
-    public partial class FormSurvey : Form
+    public partial class FormSurvey : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private int _isProgrammaticUpdate = 0;
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
         private EmpireContext empireContext;
         private PlayerContext playerContext;
         private SurveyViewModel viewModel;
@@ -210,6 +214,7 @@ namespace OE2EmpireTracker.Forms.Survey
 
         private void ClearForm()
         {
+            var guard = new ProgrammaticUpdateGuard(this);
             viewModel.Reset();
 
             txtPlanetName.Text = "";
@@ -271,6 +276,7 @@ namespace OE2EmpireTracker.Forms.Survey
 
         private void dgvResources_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
             // Only validate the Amount column (index 2)
             if (e.ColumnIndex != 2) return;
             if (e.RowIndex < 0) return;
@@ -312,6 +318,7 @@ namespace OE2EmpireTracker.Forms.Survey
         /// </summary>
         private void PopulateFormFromViewModel()
         {
+            var guard = new ProgrammaticUpdateGuard(this);
             txtPlanetName.Text = viewModel.PlanetName ?? "";
             txtSystemName.Text = viewModel.SystemName ?? "";
             txtSurveyID.Text = viewModel.SurveyID ?? "";

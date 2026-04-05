@@ -13,11 +13,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using OE2EmpireTracker.Controls;
 
 namespace OE2EmpireTracker
 {
-    public partial class MainWindow : Form
+    public partial class MainWindow : Form, IProgrammaticUpdateSource
     {
+        private int _isProgrammaticUpdate = 0;
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
         EmpireContext context = null;
         PlayerContext playerContext = null;
 
