@@ -139,10 +139,14 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     cmdStart.Text = "Build";
                     cmdStart.Visible = true;
+                    // Show parent panels but hide sibling controls
+                    flpSelection.Visible = true;
+                    lblSelection.Visible = false;
+                    txtSelectionFilter.Visible = false;
+                    cmbSelection.Visible = false;
                     flpManufacturingControls.Visible = true;
                     chkStageResources.Visible = false;
                     txtQuantity.Visible = false;
-                    flpSelection.Visible = false;
                     flpSubSelection.Visible = false;
                     flpCompletionTime.Visible = false;
                     flpStructureCommands_Layout(null, null);
