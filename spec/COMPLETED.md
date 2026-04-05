@@ -267,3 +267,26 @@ Forms subscribed with IsDisposed safety check, unsubscribe in OnFormClosed. Glob
 
 ## 70. Safe File Writer (Temp+Replace Persistence)
 Created `SafeFileWriter.WriteAllText` utility that writes to a `.tmp` file first, then atomically swaps it into place via `File.Replace`, keeping the previous version as a `.bak` file for one-deep recovery. If the write to the temp file fails (crash, disk full), the original file is untouched. If the target doesn't exist yet (first save), falls back to `File.Move`. Both `PlayerContext.writeContext()` and `EmpireContext.writeContext()` now use `SafeFileWriter` instead of `File.WriteAllText`. Added `.json.bak` to `.gitignore`. 9 unit tests covering new file, existing file, backup creation, temp cleanup, multiple saves, empty content, and large content. 626 tests passing.
+
+## 71. Colony Daily Build Feature
+Full structure building lifecycle: staged → building (with countdown) → built.
+
+Domain logic:
+- `BuildTimeCalculator.Calculate(builderSkillLevel)`: 86400 × (1 - level × 0.02), min 1 second
+- `ColonyBuildEligibility`: static methods for IsStagedStructure, IsBuildingStructure, IsEligible, GetFirstStagedStructure
+- `Colony.ProcessColony()` new step 1: build completion — expired BuildCompletionTime sets Built=true, clears timer (before mining/refining/etc.)
+
+FormColonyDailyBuild (new form):
+- Route selector with filter, scrollable content panel showing eligible colonies
+- Each eligible colony shows first staged structure's ExtendedName + Build button
+- Build click: sets IsStaged=false, creates BuildCompletionTime with skill-adjusted duration, persists, fires ColonyDataChanged, removes colony from list
+- Subscribes to CurrentPlayerChanged + ColonyDataChanged, unsubscribes in OnFormClosed
+- Accessible from Edit → Colony Daily Build
+
+ColonyStructure control changes:
+- Building state: shows countdown timer + Done button, hides process controls, disables Built checkbox
+- Staged state: shows Build button (when no sibling building), hides selection/manufacturing controls
+- Build button visibility fix: cmdStart is inside flpManufacturingControls inside flpSelection — both parent panels must be visible with sibling controls hidden
+- txtCompletionTime_Leave now writes back to BuildCompletionTime (was only writing to ProcessCompletionTime)
+
+22 new tests (BuildTimeCalculatorTests, ColonyBuildEligibilityTests, ColonyBuildCompletionTests). 648 tests passing.
