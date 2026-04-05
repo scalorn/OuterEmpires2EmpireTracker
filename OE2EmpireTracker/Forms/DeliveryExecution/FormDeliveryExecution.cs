@@ -128,20 +128,21 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 cmbRoute.SelectedValue = previousUUID;
         }
 
+        private string _lastRouteUUID = "";
+
         private void cmbRoute_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string routeUUID = cmbRoute.SelectedValue as string;
+            string routeUUID = cmbRoute.SelectedValue as string ?? "";
+            if (routeUUID == _lastRouteUUID) return; // Route didn't change
+            _lastRouteUUID = routeUUID;
+
             if (string.IsNullOrEmpty(routeUUID))
             {
                 cmbPlan.DataSource = null;
                 ClearExecution();
                 return;
             }
-            // Preserve plan selection if route didn't actually change
-            string currentPlanUUID = cmbPlan.SelectedValue as string;
             PopulatePlanDropdown(routeUUID);
-            if (!string.IsNullOrEmpty(currentPlanUUID))
-                cmbPlan.SelectedValue = currentPlanUUID;
         }
 
         private void PopulatePlanDropdown(string routeUUID)
