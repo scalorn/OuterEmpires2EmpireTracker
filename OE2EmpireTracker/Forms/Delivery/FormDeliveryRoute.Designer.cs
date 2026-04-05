@@ -40,6 +40,33 @@ namespace OE2EmpireTracker.Forms.Delivery
             this.cmdDown = new System.Windows.Forms.Button();
             this.cmdRemoveStop = new System.Windows.Forms.Button();
             this.chkPreventDuplicates = new System.Windows.Forms.CheckBox();
+            this.tabRouteDetail = new System.Windows.Forms.TabControl();
+            this.tabStops = new System.Windows.Forms.TabPage();
+            this.tabPlan = new System.Windows.Forms.TabPage();
+            this.flpPlanContent = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblPlanStop = new System.Windows.Forms.Label();
+            this.lblDropOff = new System.Windows.Forms.Label();
+            this.dgvDropOff = new System.Windows.Forms.DataGridView();
+            this.colDropType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDropName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDropQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.flpDropOffAdd = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmbDropItemType = new System.Windows.Forms.ComboBox();
+            this.cmbDropItem = new System.Windows.Forms.ComboBox();
+            this.txtDropQty = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.cmdAddDropOff = new System.Windows.Forms.Button();
+            this.cmdRemoveDropOff = new System.Windows.Forms.Button();
+            this.lblPickUp = new System.Windows.Forms.Label();
+            this.dgvPickUp = new System.Windows.Forms.DataGridView();
+            this.colPickType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPickName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPickQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.flpPickUpAdd = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmbPickItemType = new System.Windows.Forms.ComboBox();
+            this.cmbPickItem = new System.Windows.Forms.ComboBox();
+            this.txtPickQty = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.cmdAddPickUp = new System.Windows.Forms.Button();
+            this.cmdRemovePickUp = new System.Windows.Forms.Button();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdNew = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
@@ -112,8 +139,7 @@ namespace OE2EmpireTracker.Forms.Delivery
             // flpRouteData
             // 
             this.flpRouteData.Controls.Add(this.flpRouteName);
-            this.flpRouteData.Controls.Add(this.dgvStops);
-            this.flpRouteData.Controls.Add(this.flpAddStop);
+            this.flpRouteData.Controls.Add(this.tabRouteDetail);
             this.flpRouteData.Controls.Add(this.flpCommands);
             this.flpRouteData.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpRouteData.Location = new System.Drawing.Point(259, 3);
@@ -195,6 +221,255 @@ namespace OE2EmpireTracker.Forms.Delivery
             this.colSystemName.Name = "colSystemName";
             this.colSystemName.ReadOnly = true;
             this.colSystemName.Width = 180;
+            // 
+            // tabRouteDetail
+            // 
+            this.tabRouteDetail.Controls.Add(this.tabStops);
+            this.tabRouteDetail.Controls.Add(this.tabPlan);
+            this.tabRouteDetail.Location = new System.Drawing.Point(2, 32);
+            this.tabRouteDetail.Margin = new System.Windows.Forms.Padding(2);
+            this.tabRouteDetail.Name = "tabRouteDetail";
+            this.tabRouteDetail.SelectedIndex = 0;
+            this.tabRouteDetail.Size = new System.Drawing.Size(630, 430);
+            this.tabRouteDetail.TabIndex = 1;
+            // 
+            // tabStops
+            // 
+            this.tabStops.Controls.Add(this.dgvStops);
+            this.tabStops.Controls.Add(this.flpAddStop);
+            this.tabStops.Location = new System.Drawing.Point(4, 22);
+            this.tabStops.Name = "tabStops";
+            this.tabStops.Padding = new System.Windows.Forms.Padding(3);
+            this.tabStops.Size = new System.Drawing.Size(622, 404);
+            this.tabStops.TabIndex = 0;
+            this.tabStops.Text = "Stops";
+            this.tabStops.UseVisualStyleBackColor = true;
+            // 
+            // tabPlan
+            // 
+            this.tabPlan.Controls.Add(this.flpPlanContent);
+            this.tabPlan.Location = new System.Drawing.Point(4, 22);
+            this.tabPlan.Name = "tabPlan";
+            this.tabPlan.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPlan.Size = new System.Drawing.Size(622, 404);
+            this.tabPlan.TabIndex = 1;
+            this.tabPlan.Text = "Plan";
+            this.tabPlan.UseVisualStyleBackColor = true;
+            // 
+            // flpPlanContent
+            // 
+            this.flpPlanContent.Controls.Add(this.lblPlanStop);
+            this.flpPlanContent.Controls.Add(this.lblDropOff);
+            this.flpPlanContent.Controls.Add(this.dgvDropOff);
+            this.flpPlanContent.Controls.Add(this.flpDropOffAdd);
+            this.flpPlanContent.Controls.Add(this.lblPickUp);
+            this.flpPlanContent.Controls.Add(this.dgvPickUp);
+            this.flpPlanContent.Controls.Add(this.flpPickUpAdd);
+            this.flpPlanContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpPlanContent.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpPlanContent.Name = "flpPlanContent";
+            this.flpPlanContent.Size = new System.Drawing.Size(616, 398);
+            this.flpPlanContent.WrapContents = false;
+            // 
+            // lblPlanStop
+            // 
+            this.lblPlanStop.AutoSize = true;
+            this.lblPlanStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
+            this.lblPlanStop.Location = new System.Drawing.Point(3, 3);
+            this.lblPlanStop.Margin = new System.Windows.Forms.Padding(3);
+            this.lblPlanStop.Name = "lblPlanStop";
+            this.lblPlanStop.Size = new System.Drawing.Size(150, 13);
+            this.lblPlanStop.Text = "(select a stop on Stops tab)";
+            // 
+            // lblDropOff
+            // 
+            this.lblDropOff.AutoSize = true;
+            this.lblDropOff.Location = new System.Drawing.Point(3, 22);
+            this.lblDropOff.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDropOff.Name = "lblDropOff";
+            this.lblDropOff.Size = new System.Drawing.Size(50, 13);
+            this.lblDropOff.Text = "Drop Off:";
+            // 
+            // dgvDropOff
+            // 
+            this.dgvDropOff.AllowUserToAddRows = false;
+            this.dgvDropOff.AllowUserToDeleteRows = false;
+            this.dgvDropOff.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvDropOff.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colDropType, this.colDropName, this.colDropQty});
+            this.dgvDropOff.Location = new System.Drawing.Point(2, 41);
+            this.dgvDropOff.Margin = new System.Windows.Forms.Padding(2);
+            this.dgvDropOff.Name = "dgvDropOff";
+            this.dgvDropOff.ReadOnly = true;
+            this.dgvDropOff.RowHeadersVisible = false;
+            this.dgvDropOff.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvDropOff.Size = new System.Drawing.Size(610, 120);
+            this.dgvDropOff.TabIndex = 2;
+            // 
+            // colDropType
+            // 
+            this.colDropType.HeaderText = "Type";
+            this.colDropType.Name = "colDropType";
+            this.colDropType.ReadOnly = true;
+            this.colDropType.Width = 100;
+            // 
+            // colDropName
+            // 
+            this.colDropName.HeaderText = "Item";
+            this.colDropName.Name = "colDropName";
+            this.colDropName.ReadOnly = true;
+            this.colDropName.Width = 350;
+            // 
+            // colDropQty
+            // 
+            this.colDropQty.HeaderText = "Qty";
+            this.colDropQty.Name = "colDropQty";
+            this.colDropQty.ReadOnly = true;
+            this.colDropQty.Width = 60;
+            // 
+            // flpDropOffAdd
+            // 
+            this.flpDropOffAdd.Controls.Add(this.cmbDropItemType);
+            this.flpDropOffAdd.Controls.Add(this.cmbDropItem);
+            this.flpDropOffAdd.Controls.Add(this.txtDropQty);
+            this.flpDropOffAdd.Controls.Add(this.cmdAddDropOff);
+            this.flpDropOffAdd.Controls.Add(this.cmdRemoveDropOff);
+            this.flpDropOffAdd.Location = new System.Drawing.Point(2, 165);
+            this.flpDropOffAdd.Margin = new System.Windows.Forms.Padding(2);
+            this.flpDropOffAdd.Name = "flpDropOffAdd";
+            this.flpDropOffAdd.Size = new System.Drawing.Size(610, 28);
+            // 
+            // cmbDropItemType
+            // 
+            this.cmbDropItemType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDropItemType.Location = new System.Drawing.Point(3, 3);
+            this.cmbDropItemType.Name = "cmbDropItemType";
+            this.cmbDropItemType.Size = new System.Drawing.Size(100, 21);
+            // 
+            // cmbDropItem
+            // 
+            this.cmbDropItem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDropItem.Location = new System.Drawing.Point(109, 3);
+            this.cmbDropItem.Name = "cmbDropItem";
+            this.cmbDropItem.Size = new System.Drawing.Size(280, 21);
+            // 
+            // txtDropQty
+            // 
+            this.txtDropQty.Location = new System.Drawing.Point(395, 3);
+            this.txtDropQty.Name = "txtDropQty";
+            this.txtDropQty.Size = new System.Drawing.Size(50, 20);
+            this.txtDropQty.Text = "1";
+            // 
+            // cmdAddDropOff
+            // 
+            this.cmdAddDropOff.Location = new System.Drawing.Point(451, 3);
+            this.cmdAddDropOff.Name = "cmdAddDropOff";
+            this.cmdAddDropOff.Size = new System.Drawing.Size(40, 23);
+            this.cmdAddDropOff.Text = "Add";
+            this.cmdAddDropOff.UseVisualStyleBackColor = true;
+            // 
+            // cmdRemoveDropOff
+            // 
+            this.cmdRemoveDropOff.Location = new System.Drawing.Point(497, 3);
+            this.cmdRemoveDropOff.Name = "cmdRemoveDropOff";
+            this.cmdRemoveDropOff.Size = new System.Drawing.Size(60, 23);
+            this.cmdRemoveDropOff.Text = "Remove";
+            this.cmdRemoveDropOff.UseVisualStyleBackColor = true;
+            // 
+            // lblPickUp
+            // 
+            this.lblPickUp.AutoSize = true;
+            this.lblPickUp.Location = new System.Drawing.Point(3, 198);
+            this.lblPickUp.Margin = new System.Windows.Forms.Padding(3);
+            this.lblPickUp.Name = "lblPickUp";
+            this.lblPickUp.Size = new System.Drawing.Size(46, 13);
+            this.lblPickUp.Text = "Pick Up:";
+            // 
+            // dgvPickUp
+            // 
+            this.dgvPickUp.AllowUserToAddRows = false;
+            this.dgvPickUp.AllowUserToDeleteRows = false;
+            this.dgvPickUp.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvPickUp.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colPickType, this.colPickName, this.colPickQty});
+            this.dgvPickUp.Location = new System.Drawing.Point(2, 217);
+            this.dgvPickUp.Margin = new System.Windows.Forms.Padding(2);
+            this.dgvPickUp.Name = "dgvPickUp";
+            this.dgvPickUp.ReadOnly = true;
+            this.dgvPickUp.RowHeadersVisible = false;
+            this.dgvPickUp.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvPickUp.Size = new System.Drawing.Size(610, 120);
+            this.dgvPickUp.TabIndex = 5;
+            // 
+            // colPickType
+            // 
+            this.colPickType.HeaderText = "Type";
+            this.colPickType.Name = "colPickType";
+            this.colPickType.ReadOnly = true;
+            this.colPickType.Width = 100;
+            // 
+            // colPickName
+            // 
+            this.colPickName.HeaderText = "Item";
+            this.colPickName.Name = "colPickName";
+            this.colPickName.ReadOnly = true;
+            this.colPickName.Width = 350;
+            // 
+            // colPickQty
+            // 
+            this.colPickQty.HeaderText = "Qty";
+            this.colPickQty.Name = "colPickQty";
+            this.colPickQty.ReadOnly = true;
+            this.colPickQty.Width = 60;
+            // 
+            // flpPickUpAdd
+            // 
+            this.flpPickUpAdd.Controls.Add(this.cmbPickItemType);
+            this.flpPickUpAdd.Controls.Add(this.cmbPickItem);
+            this.flpPickUpAdd.Controls.Add(this.txtPickQty);
+            this.flpPickUpAdd.Controls.Add(this.cmdAddPickUp);
+            this.flpPickUpAdd.Controls.Add(this.cmdRemovePickUp);
+            this.flpPickUpAdd.Location = new System.Drawing.Point(2, 341);
+            this.flpPickUpAdd.Margin = new System.Windows.Forms.Padding(2);
+            this.flpPickUpAdd.Name = "flpPickUpAdd";
+            this.flpPickUpAdd.Size = new System.Drawing.Size(610, 28);
+            // 
+            // cmbPickItemType
+            // 
+            this.cmbPickItemType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPickItemType.Location = new System.Drawing.Point(3, 3);
+            this.cmbPickItemType.Name = "cmbPickItemType";
+            this.cmbPickItemType.Size = new System.Drawing.Size(100, 21);
+            // 
+            // cmbPickItem
+            // 
+            this.cmbPickItem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPickItem.Location = new System.Drawing.Point(109, 3);
+            this.cmbPickItem.Name = "cmbPickItem";
+            this.cmbPickItem.Size = new System.Drawing.Size(280, 21);
+            // 
+            // txtPickQty
+            // 
+            this.txtPickQty.Location = new System.Drawing.Point(395, 3);
+            this.txtPickQty.Name = "txtPickQty";
+            this.txtPickQty.Size = new System.Drawing.Size(50, 20);
+            this.txtPickQty.Text = "1";
+            // 
+            // cmdAddPickUp
+            // 
+            this.cmdAddPickUp.Location = new System.Drawing.Point(451, 3);
+            this.cmdAddPickUp.Name = "cmdAddPickUp";
+            this.cmdAddPickUp.Size = new System.Drawing.Size(40, 23);
+            this.cmdAddPickUp.Text = "Add";
+            this.cmdAddPickUp.UseVisualStyleBackColor = true;
+            // 
+            // cmdRemovePickUp
+            // 
+            this.cmdRemovePickUp.Location = new System.Drawing.Point(497, 3);
+            this.cmdRemovePickUp.Name = "cmdRemovePickUp";
+            this.cmdRemovePickUp.Size = new System.Drawing.Size(60, 23);
+            this.cmdRemovePickUp.Text = "Remove";
+            this.cmdRemovePickUp.UseVisualStyleBackColor = true;
             // 
             // flpAddStop
             // 
@@ -359,6 +634,33 @@ namespace OE2EmpireTracker.Forms.Delivery
         private System.Windows.Forms.Button cmdDown;
         private System.Windows.Forms.Button cmdRemoveStop;
         private System.Windows.Forms.CheckBox chkPreventDuplicates;
+        private System.Windows.Forms.TabControl tabRouteDetail;
+        private System.Windows.Forms.TabPage tabStops;
+        private System.Windows.Forms.TabPage tabPlan;
+        private System.Windows.Forms.FlowLayoutPanel flpPlanContent;
+        private System.Windows.Forms.Label lblPlanStop;
+        private System.Windows.Forms.Label lblDropOff;
+        private System.Windows.Forms.DataGridView dgvDropOff;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDropType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDropName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDropQty;
+        private System.Windows.Forms.FlowLayoutPanel flpDropOffAdd;
+        private System.Windows.Forms.ComboBox cmbDropItemType;
+        private System.Windows.Forms.ComboBox cmbDropItem;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtDropQty;
+        private System.Windows.Forms.Button cmdAddDropOff;
+        private System.Windows.Forms.Button cmdRemoveDropOff;
+        private System.Windows.Forms.Label lblPickUp;
+        private System.Windows.Forms.DataGridView dgvPickUp;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPickType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPickName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPickQty;
+        private System.Windows.Forms.FlowLayoutPanel flpPickUpAdd;
+        private System.Windows.Forms.ComboBox cmbPickItemType;
+        private System.Windows.Forms.ComboBox cmbPickItem;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtPickQty;
+        private System.Windows.Forms.Button cmdAddPickUp;
+        private System.Windows.Forms.Button cmdRemovePickUp;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
         private System.Windows.Forms.Button cmdNew;
         private System.Windows.Forms.Button cmdSave;

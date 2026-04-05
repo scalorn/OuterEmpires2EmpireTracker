@@ -79,15 +79,14 @@ namespace OE2EmpireTracker.Forms.Delivery
 
         private void flpRouteData_Layout(object sender, LayoutEventArgs e)
         {
-            int gridHeight = flpRouteData.Size.Height
+            int tabHeight = flpRouteData.Size.Height
                 - flpRouteName.Size.Height - flpRouteName.Margin.Top - flpRouteName.Margin.Bottom
-                - flpAddStop.Size.Height - flpAddStop.Margin.Top - flpAddStop.Margin.Bottom
                 - flpCommands.Size.Height - flpCommands.Margin.Top - flpCommands.Margin.Bottom
-                - dgvStops.Margin.Top - dgvStops.Margin.Bottom;
-            if (gridHeight < 50) gridHeight = 50;
-            dgvStops.Size = new Size(
-                flpRouteData.Size.Width - dgvStops.Margin.Left - dgvStops.Margin.Right,
-                gridHeight);
+                - tabRouteDetail.Margin.Top - tabRouteDetail.Margin.Bottom;
+            if (tabHeight < 100) tabHeight = 100;
+            tabRouteDetail.Size = new Size(
+                flpRouteData.Size.Width - tabRouteDetail.Margin.Left - tabRouteDetail.Margin.Right,
+                tabHeight);
         }
 
         // -----------------------------------------------------------------------
