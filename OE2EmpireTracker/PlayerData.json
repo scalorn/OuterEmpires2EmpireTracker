@@ -1,6 +1,272 @@
 {
-  "CurrentPlayerUUID": "a86abd3e-c935-4c1b-a35c-bb6548a51272",
+  "CurrentPlayerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
   "PlayerProfile": [
+    {
+      "UUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
+      "Name": "Scalorn1",
+      "Faction": "",
+      "TotalCredits": 0.0,
+      "Public": {
+        "Rank": 0,
+        "CurrentXP": 0,
+        "NextXP": 0
+      },
+      "Private": {
+        "Rank": 0,
+        "CurrentXP": 0,
+        "NextXP": 0
+      },
+      "Military": {
+        "Rank": 0,
+        "CurrentXP": 0,
+        "NextXP": 0
+      },
+      "SkillPoints": 0,
+      "Skills": {
+        "Human Resources": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Foreman": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Founder": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Energy Efficiency": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Builder": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Refining Focus": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Production Focus": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Extraction Focus": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Damage Control": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Engineering Capacity": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Sounds As A Pound": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Self Made Millionaire": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "AAA Healthcare": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Job Opportunities": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Contract Management": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Research Review": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Research Methods": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Research Focus": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Surveying Methods": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Scanning Methods": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Quartermaster": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        },
+        "Broker": {
+          "Level": 0,
+          "TrainingStarted": false,
+          "CompletionTime": {
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
+            "RepeatIntervalSeconds": 0,
+            "IsRepeating": false,
+            "TimeRemainingString": "0s"
+          }
+        }
+      }
+    },
     {
       "UUID": "a86abd3e-c935-4c1b-a35c-bb6548a51272",
       "Name": "Scalorn",
@@ -27,19 +293,19 @@
           "Level": 0,
           "TrainingStarted": true,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-05T16:15:07.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-05T16:20:11.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": "22h 29m 15s"
+            "TimeRemainingString": "22h 26m 15s"
           }
         },
         "Foreman": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -49,8 +315,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -60,8 +326,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -71,8 +337,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -82,8 +348,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -93,8 +359,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -104,8 +370,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -115,8 +381,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -126,8 +392,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -137,8 +403,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -148,8 +414,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -159,8 +425,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -170,8 +436,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -181,8 +447,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -192,8 +458,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -203,8 +469,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -214,8 +480,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -225,8 +491,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -236,8 +502,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -247,8 +513,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -258,8 +524,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-04T17:45:38.3684334-07:00",
-            "EndTime": "2026-04-04T17:45:38.3684334-07:00",
+            "StartTime": "2026-04-04T17:52:27.4317536-07:00",
+            "EndTime": "2026-04-04T17:52:27.4317536-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -270,7 +536,7 @@
   ],
   "Blueprint": [
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "",
       "BluePrintType": "Reactor",
       "Evolution": 5,
@@ -308,7 +574,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/ColonyCommandCentre",
       "Evolution": 0,
@@ -350,7 +616,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/CommodityFactory",
       "Evolution": 0,
@@ -381,7 +647,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "",
       "BluePrintType": "Hull",
       "Evolution": 0,
@@ -416,7 +682,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/EntertainmentCentreFlatpack",
       "Evolution": 0,
@@ -453,7 +719,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/HabitationBlock",
       "Evolution": 0,
@@ -487,7 +753,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/HydroponicsBay",
       "Evolution": 0,
@@ -524,7 +790,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/Manufactory",
       "Evolution": 0,
@@ -562,7 +828,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/MiningRig",
       "Evolution": 0,
@@ -601,7 +867,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "",
       "BluePrintType": "SystemObjectScanner",
       "Evolution": 0,
@@ -639,7 +905,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
       "BluePrintType": "SystemObjectScanner",
       "Evolution": 2,
@@ -677,48 +943,45 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
-      "baseBlueprintUUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
+      "baseBlueprintUUID": "",
       "BluePrintType": "SystemObjectScanner",
-      "Evolution": 3,
+      "Evolution": 0,
       "TechLevel": "MilSpec",
       "Class": 6,
       "CopyCost": 0,
       "Properties": {
         "ManufactureTime": "4h 0m",
-        "Mass": "116",
+        "Mass": "110",
         "CargoVolumeSize": "145",
         "MaxAllowedOnShip": "1",
         "PowerRequired": "182",
-        "Health": "635",
+        "Health": "660",
         "EngCapacityRequired": "430",
-        "WearAndTearRate": "3.115",
+        "WearAndTearRate": "3",
         "MaximumDamageRepairRate": "80",
         "SensorAbundanceFactor": "3",
         "PurityModifier": "22.5",
-        "ScanLevel": "90"
+        "ScanLevel": "75"
       },
       "Resources": {
-        "Alkali Metals": "1537",
-        "Non-Metallics": "280",
-        "Heavy Trans-Metals": "387",
-        "Strong Alkali Inorganics": "27",
-        "Strong Acidic Inorganics": "318",
-        "Heavy Alkali Metals": "24",
-        "S1. Translivermoric Exotics": "22"
+        "Post-Trans Metals": "1622",
+        "Non-Metallics": "285",
+        "Heavy Post-Trans Metals": "558",
+        "Strong Alkali Organics": "284"
       },
-      "UUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
+      "UUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
       "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
-      "NickName": "90 Scan",
+      "NickName": "",
       "Description": "",
       "Quantity": 0,
       "ResourcePurity": "",
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
       "BluePrintType": "SystemObjectScanner",
       "Evolution": 4,
@@ -760,45 +1023,48 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
-      "baseBlueprintUUID": "",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
+      "baseBlueprintUUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
       "BluePrintType": "SystemObjectScanner",
-      "Evolution": 0,
+      "Evolution": 3,
       "TechLevel": "MilSpec",
       "Class": 6,
       "CopyCost": 0,
       "Properties": {
         "ManufactureTime": "4h 0m",
-        "Mass": "110",
+        "Mass": "116",
         "CargoVolumeSize": "145",
         "MaxAllowedOnShip": "1",
         "PowerRequired": "182",
-        "Health": "660",
+        "Health": "635",
         "EngCapacityRequired": "430",
-        "WearAndTearRate": "3",
+        "WearAndTearRate": "3.115",
         "MaximumDamageRepairRate": "80",
         "SensorAbundanceFactor": "3",
         "PurityModifier": "22.5",
-        "ScanLevel": "75"
+        "ScanLevel": "90"
       },
       "Resources": {
-        "Post-Trans Metals": "1622",
-        "Non-Metallics": "285",
-        "Heavy Post-Trans Metals": "558",
-        "Strong Alkali Organics": "284"
+        "Alkali Metals": "1537",
+        "Non-Metallics": "280",
+        "Heavy Trans-Metals": "387",
+        "Strong Alkali Inorganics": "27",
+        "Strong Acidic Inorganics": "318",
+        "Heavy Alkali Metals": "24",
+        "S1. Translivermoric Exotics": "22"
       },
-      "UUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
+      "UUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
       "ItemType": "Survey",
       "BaseItemTypeID": "",
       "Name": "RAK-LL MatScan",
-      "NickName": "",
+      "NickName": "90 Scan",
       "Description": "",
       "Quantity": 0,
       "ResourcePurity": "",
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "82609bb4-32e5-42f4-aee8-244181501ace",
       "BluePrintType": "SystemObjectScanner",
       "Evolution": 5,
@@ -840,7 +1106,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/ReactorCore",
       "Evolution": 0,
@@ -875,7 +1141,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/Refinery",
       "Evolution": 0,
@@ -914,7 +1180,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/RemoteOperationsArray",
       "Evolution": 0,
@@ -949,7 +1215,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/ResearchLaboratory",
       "Evolution": 0,
@@ -985,7 +1251,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/Warehouse",
       "Evolution": 0,
@@ -1020,7 +1286,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "baseBlueprintUUID": "",
       "BluePrintType": "JumpDrive",
       "Evolution": 1,
@@ -1056,7 +1322,7 @@
   ],
   "Survey": [
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "ScannedBy": "",
       "DateTime": "",
       "PlanetName": "",
@@ -1079,7 +1345,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "ScannedBy": "Scalorn Scorpus",
       "DateTime": "2026-02-19 22:31:00",
       "PlanetName": "Alef Wynthoril I",
@@ -1138,7 +1404,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "ScannedBy": "Scalorn Scorpus",
       "DateTime": "2026-02-19 22:34:00",
       "PlanetName": "Alef Wynthoril II",
@@ -1187,7 +1453,7 @@
       "Volume": 0.0
     },
     {
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "ScannedBy": "Scalorn Scorpus",
       "DateTime": "19FEB26-09:39p",
       "PlanetName": "Quogar V2249 II",
@@ -1269,7 +1535,7 @@
   "Colony": [
     {
       "UUID": "cc4d922c-080d-46bf-90f7-f4b2d839e682",
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "PlanetName": "Alef Wynthoril I",
       "ColonyName": "Alef Wynthoril I",
       "Items": {
@@ -1581,11 +1847,11 @@
           },
           "BuildCompletionTime": null,
           "ProcessCompletionTime": {
-            "StartTime": "2026-04-04T17:39:32.4072227-07:00",
-            "EndTime": "2026-04-05T06:39:32.4072227-07:00",
+            "StartTime": "2026-04-04T17:44:36.4662707-07:00",
+            "EndTime": "2026-04-05T06:44:36.4662707-07:00",
             "RepeatIntervalSeconds": 46800,
             "IsRepeating": true,
-            "TimeRemainingString": "12h 53m 40s"
+            "TimeRemainingString": "12h 50m 41s"
           },
           "MiningSurvey": null,
           "MiningSurveyResource": null,
@@ -1849,7 +2115,7 @@
     },
     {
       "UUID": "bc9a835b-4cd5-463f-a480-59cfe294d94d",
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "PlanetName": "Quogar V2249 II",
       "ColonyName": "Quogar V2249 II",
       "Items": {
@@ -3975,7 +4241,7 @@
     },
     {
       "UUID": "a94b0eef-267d-4a30-9e92-7ac1f07f667c",
-      "OwnerUUID": "d3f4c3a0-c352-4be4-a6b1-26741f3fce22",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "PlanetName": "test545",
       "ColonyName": "yrsy7",
       "Items": {
