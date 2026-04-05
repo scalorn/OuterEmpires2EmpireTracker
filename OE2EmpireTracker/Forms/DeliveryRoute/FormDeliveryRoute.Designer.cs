@@ -300,7 +300,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.flpPlanSelector.Location = new System.Drawing.Point(2, 2);
             this.flpPlanSelector.Margin = new System.Windows.Forms.Padding(2);
             this.flpPlanSelector.Name = "flpPlanSelector";
-            this.flpPlanSelector.Size = new System.Drawing.Size(610, 28);
+            this.flpPlanSelector.Size = new System.Drawing.Size(680, 28);
             // 
             // txtPlanFilter
             // 
