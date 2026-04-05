@@ -663,6 +663,7 @@ namespace OE2EmpireTracker.Forms.Colony
         private void PopulateItemGrid()
         {
             // Populate item grid colonies items.
+            dgvItems.CancelEdit();
             dgvItems.Rows.Clear();
             foreach (KeyValuePair<string, Item> itemEntry in colonyViewModel.GetItems())
             {
@@ -971,6 +972,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void PopulateCommodityRequestGrid()
         {
+            dgvCommodityRequests.CancelEdit();
             dgvCommodityRequests.Rows.Clear();
             foreach (CommodityRequested request in colonyViewModel.GetCommodityRequests())
             {

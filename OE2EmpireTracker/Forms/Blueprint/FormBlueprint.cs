@@ -854,6 +854,7 @@ namespace OE2EmpireTracker
         private void PopulateResources()
         { 
             // Populate resources grid with blueprint's resource data
+            dgvResources.CancelEdit();
             dgvResources.Rows.Clear();
             foreach (KeyValuePair<string, string> resource in viewModel.GetResources())
             {

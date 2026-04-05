@@ -174,6 +174,7 @@ namespace OE2EmpireTracker.Forms.Survey
             txtScanLevel.Text = "";
 
             cmbScannerBlueprint.SelectedItem = null;
+            dgvResources.CancelEdit();
             dgvResources.Rows.Clear();
         }
 
@@ -272,6 +273,7 @@ namespace OE2EmpireTracker.Forms.Survey
             txtFilterScannerBlueprint.Text = "";
             cmbScannerBlueprint.SelectedItem = viewModel.FindScannerBlueprint();
 
+            dgvResources.CancelEdit();
             dgvResources.Rows.Clear();
             foreach (KeyValuePair<string, SurveyResource> resource in viewModel.GetResources())
             {
