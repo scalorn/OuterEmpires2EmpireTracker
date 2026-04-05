@@ -181,6 +181,7 @@
     <Compile Include="Data\LockTracking.cs" />
     <Compile Include="Data\WorkerDetail.cs" />
     <Compile Include="ViewModels\ColonyStructureViewModel.cs" />
+    <Compile Include="ViewModels\DeliveryRouteViewModel.cs" />
     <Compile Include="ViewModels\ColonyViewModel.cs" />
     <Compile Include="ViewModels\BlueprintViewModel.cs" />
     <Compile Include="ViewModels\PlayerProfileViewModel.cs" />

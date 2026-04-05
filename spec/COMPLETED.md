@@ -173,3 +173,6 @@ Added `SystemName` string property to Colony and Survey. SurveyParser.ParseTitle
 
 ## 53. Delivery Phase 2: DeliveryRoute/RouteStop Data Model (REQ-DEL-010-015)
 Created `DeliveryRoute` (UUID, Name, OwnerUUID, List<RouteStop>) and `RouteStop` (ColonyUUID, Sequence) classes. Added `DeliveryRoute[]` to PlayerRoot. PlayerContext maintains `deliveryRouteList` with load/save. Added `GetCurrentPlayerRoutes()` helper. 513 tests passing.
+
+## 54. Delivery Phase 3: Route Builder Form + Wiring (REQ-DEL-020-025)
+Created FormDeliveryRoute with DeliveryRouteViewModel. Route list with filter, stop grid with Up/Down/Remove, colony picker showing "PlanetName - ColonyName (SystemName)", Save/Delete/New with confirmation dialog. Player change refreshes all data. Accessible from Edit → Delivery Routes. 513 tests passing.
