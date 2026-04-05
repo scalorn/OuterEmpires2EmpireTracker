@@ -1020,6 +1020,11 @@ namespace OE2EmpireTracker.Forms.Colony
                     row.DefaultCellStyle.Font = new System.Drawing.Font(dgvCommodityRequests.Font, System.Drawing.FontStyle.Strikeout);
                     row.DefaultCellStyle.ForeColor = System.Drawing.Color.Gray;
                 }
+                else
+                {
+                    row.DefaultCellStyle.Font = dgvCommodityRequests.Font;
+                    row.DefaultCellStyle.ForeColor = dgvCommodityRequests.ForeColor;
+                }
             }
         }
 
@@ -1037,6 +1042,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 int value;
                 if (int.TryParse(row.Cells[1].Value?.ToString(), out value))
                     request.Requested = value;
+                playerContext.writeContext();
             }
             // Column 2 = Fulfilled (checkbox)
             else if (e.ColumnIndex == 2)
@@ -1047,6 +1053,7 @@ namespace OE2EmpireTracker.Forms.Colony
                     request.Delivered = request.Requested;
                 else
                     request.Delivered = 0;
+                playerContext.writeContext();
                 // Refresh to update strikethrough
                 PopulateCommodityRequestGrid();
             }
@@ -1056,7 +1063,10 @@ namespace OE2EmpireTracker.Forms.Colony
                 string text = row.Cells[3].Value?.ToString() ?? "";
                 DateTime? parsed = ParseCountdownToDateTime(text);
                 if (parsed.HasValue)
+                {
                     request.NeedBy = parsed.Value;
+                    playerContext.writeContext();
+                }
             }
         }
 
