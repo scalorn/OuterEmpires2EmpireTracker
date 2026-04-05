@@ -23,6 +23,7 @@ namespace OE2EmpireTracker.Controls
         private string _validationErrorPattern;
         private string _errorMessage = "";
         private bool _isValid = true;
+        private bool _hasExternalError = false;
         private Color _validColor = Color.White;
         private Color _invalidColor = Color.LightCoral;
         private Timer _debounceTimer;
@@ -94,8 +95,12 @@ namespace OE2EmpireTracker.Controls
 
         protected override void OnTextChanged(EventArgs e)
         {
+            _hasExternalError = false;
             base.OnTextChanged(e);
-            ValidateInput();
+            if (!_hasExternalError)
+            {
+                ValidateInput();
+            }
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -185,6 +190,7 @@ namespace OE2EmpireTracker.Controls
         {
             _errorMessage = message;
             _isValid = false;
+            _hasExternalError = true;
             BackColor = InvalidColor;
             Invalidate();
         }
@@ -193,6 +199,7 @@ namespace OE2EmpireTracker.Controls
         {
             _errorMessage = "";
             _isValid = true;
+            _hasExternalError = false;
             BackColor = ValidColor;
             Invalidate();
         }
