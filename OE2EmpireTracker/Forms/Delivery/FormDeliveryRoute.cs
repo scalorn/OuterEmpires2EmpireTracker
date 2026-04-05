@@ -61,6 +61,15 @@ namespace OE2EmpireTracker.Forms.Delivery
             cmdRemovePickUp.Click += cmdRemovePickUp_Click;
             dgvStops.SelectionChanged += dgvStops_SelectionChanged;
 
+            // Plan selector wiring
+            cmbPlan.DisplayMember = "Display";
+            cmbPlan.ValueMember = "UUID";
+            cmbPlan.SelectedIndexChanged += cmbPlan_SelectedIndexChanged;
+            txtPlanFilter.TextChanged += (s, ev) => PopulatePlanDropdown();
+            chkShowCompleted.CheckedChanged += (s, ev) => PopulatePlanDropdown();
+            cmdNewPlan.Click += cmdNewPlan_Click;
+            cmdDeletePlan.Click += cmdDeletePlan_Click;
+
             PopulateRouteList();
 
             flpBase.Layout += flpBase_Layout;
@@ -163,14 +172,9 @@ namespace OE2EmpireTracker.Forms.Delivery
                 PopulateForm();
 
                 // Load or create the delivery plan for this route
-                if (!string.IsNullOrEmpty(route.UUID))
-                {
-                    planViewModel = DeliveryPlanViewModel.FindOrCreateForRoute(route.UUID, playerContext);
-                }
-                else
-                {
-                    planViewModel = null;
-                }
+                planViewModel = null;
+                selectedPlanStop = null;
+                PopulatePlanDropdown();
                 // Trigger plan tab update for the currently selected stop
                 dgvStops_SelectionChanged(sender, e);
             }
@@ -246,6 +250,11 @@ namespace OE2EmpireTracker.Forms.Delivery
             txtRouteName.Text = "";
             dgvStops.Rows.Clear();
             PopulateColonyPicker();
+            planViewModel = null;
+            selectedPlanStop = null;
+            txtPlanName.Text = "";
+            cmbPlan.DataSource = null;
+            ClearPlanGrids();
         }
 
         // -----------------------------------------------------------------------
@@ -316,17 +325,12 @@ namespace OE2EmpireTracker.Forms.Delivery
             viewModel.Name = txtRouteName.Text;
             viewModel.Save();
 
-            // Save the delivery plan if it exists
-            if (planViewModel != null)
+            // Save the plan name if a plan is selected
+            if (planViewModel != null && !string.IsNullOrEmpty(planViewModel.UUID))
             {
-                planViewModel.Data.RouteUUID = viewModel.UUID;
-                planViewModel.Data.Name = viewModel.Data.Name;
+                planViewModel.Data.Name = txtPlanName.Text;
                 planViewModel.Save();
-            }
-            else if (!string.IsNullOrEmpty(viewModel.UUID))
-            {
-                // Create plan for newly saved route
-                planViewModel = DeliveryPlanViewModel.FindOrCreateForRoute(viewModel.UUID, playerContext);
+                PopulatePlanDropdown();
             }
 
             PopulateRouteList();
@@ -352,23 +356,140 @@ namespace OE2EmpireTracker.Forms.Delivery
         // Plan Tab
         // -----------------------------------------------------------------------
 
+        // -----------------------------------------------------------------------
+        // Plan Selector
+        // -----------------------------------------------------------------------
+
+        private class PlanDropdownItem
+        {
+            public string UUID { get; set; }
+            public string Display { get; set; }
+        }
+
+        private void PopulatePlanDropdown()
+        {
+            string routeUUID = viewModel.UUID;
+            if (string.IsNullOrEmpty(routeUUID))
+            {
+                cmbPlan.DataSource = null;
+                return;
+            }
+
+            string filter = txtPlanFilter.Text ?? "";
+            bool showCompleted = chkShowCompleted.Checked;
+
+            var plans = playerContext.GetCurrentPlayerPlans()
+                .Where(p => p.RouteUUID == routeUUID)
+                .Where(p => showCompleted || !p.Completed)
+                .Where(p => string.IsNullOrEmpty(filter) || (p.Name ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                .OrderBy(p => p.Name)
+                .ToList();
+
+            var items = new List<PlanDropdownItem>();
+            items.Add(new PlanDropdownItem { UUID = "", Display = "" });
+            foreach (var plan in plans)
+            {
+                string display = plan.Name;
+                if (plan.Completed) display += " [Done]";
+                items.Add(new PlanDropdownItem { UUID = plan.UUID, Display = display });
+            }
+
+            cmbPlan.DataSource = null;
+            cmbPlan.DisplayMember = "Display";
+            cmbPlan.ValueMember = "UUID";
+            cmbPlan.DataSource = items;
+        }
+
+        private void cmbPlan_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string planUUID = cmbPlan.SelectedValue as string;
+            if (string.IsNullOrEmpty(planUUID))
+            {
+                planViewModel = null;
+                selectedPlanStop = null;
+                txtPlanName.Text = "";
+                ClearPlanGrids();
+                return;
+            }
+
+            var plan = playerContext.deliveryPlanList.FirstOrDefault(p => p.UUID == planUUID);
+            if (plan != null)
+            {
+                planViewModel = new DeliveryPlanViewModel(plan, playerContext);
+                txtPlanName.Text = plan.Name ?? "";
+                // Re-trigger stop selection to load plan items
+                dgvStops_SelectionChanged(sender, e);
+            }
+        }
+
+        private void cmdNewPlan_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(viewModel.UUID))
+            {
+                MessageBox.Show("Save the route first.", "No Route", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string suggestedName = $"{viewModel.Data.Name} - {DateTime.Now:yyyy-MM-dd}";
+            var plan = new DeliveryPlan
+            {
+                UUID = Guid.NewGuid().ToString(),
+                Name = suggestedName,
+                OwnerUUID = playerContext.CurrentPlayerUUID,
+                RouteUUID = viewModel.UUID
+            };
+            playerContext.deliveryPlanList.Add(plan);
+            playerContext.writeContext();
+
+            PopulatePlanDropdown();
+            // Select the new plan
+            cmbPlan.SelectedValue = plan.UUID;
+        }
+
+        private void cmdDeletePlan_Click(object sender, EventArgs e)
+        {
+            if (planViewModel == null || string.IsNullOrEmpty(planViewModel.UUID)) return;
+
+            var result = MessageBox.Show(
+                $"Delete plan '{planViewModel.Data.Name}'?",
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+            if (result != DialogResult.Yes) return;
+
+            playerContext.deliveryPlanList.Remove(planViewModel.Data);
+            playerContext.writeContext();
+            planViewModel = null;
+            selectedPlanStop = null;
+            txtPlanName.Text = "";
+            ClearPlanGrids();
+            PopulatePlanDropdown();
+        }
+
+        private void ClearPlanGrids()
+        {
+            lblPlanStop.Text = "(select a stop on Stops tab)";
+            dgvDropOff.Rows.Clear();
+            dgvPickUp.Rows.Clear();
+        }
+
+        // -----------------------------------------------------------------------
+        // Plan Tab — Stop Items
+        // -----------------------------------------------------------------------
+
         private void dgvStops_SelectionChanged(object sender, EventArgs e)
         {
-            // Create plan on demand if route has a UUID
-            if (planViewModel == null && !string.IsNullOrEmpty(viewModel.UUID))
-            {
-                planViewModel = DeliveryPlanViewModel.FindOrCreateForRoute(viewModel.UUID, playerContext);
-            }
-            // For unsaved routes, create a temporary plan
             if (planViewModel == null)
             {
-                planViewModel = new DeliveryPlanViewModel(new DeliveryPlan(), playerContext);
+                selectedPlanStop = null;
+                ClearPlanGrids();
+                return;
             }
 
             if (dgvStops.SelectedRows.Count != 1)
             {
                 selectedPlanStop = null;
-                ClearPlanTab();
+                ClearPlanGrids();
                 return;
             }
 
@@ -467,13 +588,6 @@ namespace OE2EmpireTracker.Forms.Delivery
                 int idx = dgvPickUp.Rows.Add(item.ItemType.ToString(), item.Name, item.Quantity);
                 dgvPickUp.Rows[idx].Tag = item;
             }
-        }
-
-        private void ClearPlanTab()
-        {
-            lblPlanStop.Text = "(select a stop on Stops tab)";
-            dgvDropOff.Rows.Clear();
-            dgvPickUp.Rows.Clear();
         }
 
         private void cmdAddDropOff_Click(object sender, EventArgs e)
