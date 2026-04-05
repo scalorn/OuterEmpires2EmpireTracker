@@ -49,11 +49,25 @@ namespace OE2EmpireTracker.Baseline
         public event EventHandler PlayerProfilesChanged;
 
         /// <summary>
+        /// Fired when colony data is modified externally (e.g. delivery fulfillment).
+        /// Forms showing colony data subscribe to refresh. EventArgs carries the colony UUID.
+        /// </summary>
+        public event EventHandler<ColonyDataChangedEventArgs> ColonyDataChanged;
+
+        /// <summary>
         /// Notifies subscribers that the player profile list has changed.
         /// </summary>
         public void OnPlayerProfilesChanged()
         {
             PlayerProfilesChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Notifies subscribers that colony data has changed externally.
+        /// </summary>
+        public void OnColonyDataChanged(string colonyUUID)
+        {
+            ColonyDataChanged?.Invoke(this, new ColonyDataChangedEventArgs(colonyUUID));
         }
 
         /// <summary>
@@ -481,6 +495,12 @@ namespace OE2EmpireTracker.Baseline
         public string sourceUUID { get; set; }
         public string internalUUID { get; set; }
         public CountDownTime countDownTime { get; set; }
+    }
+
+    public class ColonyDataChangedEventArgs : EventArgs
+    {
+        public string ColonyUUID { get; }
+        public ColonyDataChangedEventArgs(string colonyUUID) { ColonyUUID = colonyUUID; }
     }
 
 }

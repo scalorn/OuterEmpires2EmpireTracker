@@ -393,6 +393,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 cr.Fulfilled = false;
                 Log.Info("Commodity '{0}' unfulfilled on colony {1}", item.Name, colony.ColonyName);
             }
+
+            playerContext.OnColonyDataChanged(stop.ColonyUUID);
         }
 
         private void CompleteStop_Click(object sender, EventArgs e)

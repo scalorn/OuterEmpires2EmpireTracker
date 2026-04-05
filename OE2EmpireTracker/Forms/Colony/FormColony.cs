@@ -53,6 +53,7 @@ namespace OE2EmpireTracker.Forms.Colony
             UpdateCommodityRequestList();
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+            playerContext.ColonyDataChanged += OnColonyDataChanged;
         }
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
@@ -66,6 +67,14 @@ namespace OE2EmpireTracker.Forms.Colony
             txtPlanetName.Text = "";
             txtColonyName.Text = "";
             txtSystemName.Text = "";
+        }
+
+        private void OnColonyDataChanged(object sender, ColonyDataChangedEventArgs e)
+        {
+            if (selectedColony != null && selectedColony.UUID == e.ColonyUUID)
+            {
+                PopulateCommodityRequestGrid();
+            }
         }
 
         private void cmdSave_Click(object sender, EventArgs e)
