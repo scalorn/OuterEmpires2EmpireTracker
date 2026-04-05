@@ -235,6 +235,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         private void BuildExecution()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
+            var scrollPos = pnlExecution.AutoScrollPosition;
             this.SuspendLayout();
             pnlExecution.SuspendLayout();
             flpStops.SuspendLayout();
@@ -343,6 +344,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             flpStops.ResumeLayout();
             pnlExecution.ResumeLayout();
             this.ResumeLayout();
+
+            // Restore scroll position
+            pnlExecution.AutoScrollPosition = new Point(Math.Abs(scrollPos.X), Math.Abs(scrollPos.Y));
         }
 
         // -----------------------------------------------------------------------
