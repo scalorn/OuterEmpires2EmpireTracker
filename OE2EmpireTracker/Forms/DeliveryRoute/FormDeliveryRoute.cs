@@ -522,6 +522,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 {
                     planViewModel.Save();
                     PopulatePlanGrids();
+                    MessageBox.Show($"{added} items added to the delivery plan.", "Auto-Fill Complete",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }

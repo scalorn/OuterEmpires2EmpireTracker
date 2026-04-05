@@ -27,19 +27,19 @@
           "Level": 0,
           "TrainingStarted": true,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-06T08:25:42.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-06T08:30:11.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
-            "TimeRemainingString": "21h 35m 59s"
+            "TimeRemainingString": "21h 35m 6s"
           }
         },
         "Foreman": {
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -49,8 +49,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -60,8 +60,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -71,8 +71,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -82,8 +82,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -93,8 +93,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -104,8 +104,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -115,8 +115,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -126,8 +126,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -137,8 +137,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -148,8 +148,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -159,8 +159,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -170,8 +170,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -181,8 +181,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -192,8 +192,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -203,8 +203,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -214,8 +214,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -225,8 +225,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -236,8 +236,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -247,8 +247,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -258,8 +258,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -293,8 +293,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -304,8 +304,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -315,8 +315,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -326,8 +326,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -337,8 +337,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -348,8 +348,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -359,8 +359,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -370,8 +370,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -381,8 +381,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -392,8 +392,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -403,8 +403,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5759474-07:00",
-            "EndTime": "2026-04-05T10:45:47.5759474-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -414,8 +414,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5769484-07:00",
-            "EndTime": "2026-04-05T10:45:47.5769484-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -425,8 +425,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5769484-07:00",
-            "EndTime": "2026-04-05T10:45:47.5769484-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -436,8 +436,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5769484-07:00",
-            "EndTime": "2026-04-05T10:45:47.5769484-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -447,8 +447,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5769484-07:00",
-            "EndTime": "2026-04-05T10:45:47.5769484-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -458,8 +458,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5769484-07:00",
-            "EndTime": "2026-04-05T10:45:47.5769484-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -469,8 +469,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5769484-07:00",
-            "EndTime": "2026-04-05T10:45:47.5769484-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -480,8 +480,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5769484-07:00",
-            "EndTime": "2026-04-05T10:45:47.5769484-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -491,8 +491,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5769484-07:00",
-            "EndTime": "2026-04-05T10:45:47.5769484-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -502,8 +502,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5769484-07:00",
-            "EndTime": "2026-04-05T10:45:47.5769484-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -513,8 +513,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5769484-07:00",
-            "EndTime": "2026-04-05T10:45:47.5769484-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -524,8 +524,8 @@
           "Level": 0,
           "TrainingStarted": false,
           "CompletionTime": {
-            "StartTime": "2026-04-05T10:45:47.5769484-07:00",
-            "EndTime": "2026-04-05T10:45:47.5769484-07:00",
+            "StartTime": "2026-04-05T10:54:12.4080677-07:00",
+            "EndTime": "2026-04-05T10:54:12.4080677-07:00",
             "RepeatIntervalSeconds": 0,
             "IsRepeating": false,
             "TimeRemainingString": "0s"
@@ -1628,11 +1628,11 @@
           },
           "BuildCompletionTime": null,
           "ProcessCompletionTime": {
-            "StartTime": "2026-04-05T09:50:11.6114674-07:00",
-            "EndTime": "2026-04-05T22:50:11.6114674-07:00",
+            "StartTime": "2026-04-05T09:54:40.4410759-07:00",
+            "EndTime": "2026-04-05T22:54:40.4410759-07:00",
             "RepeatIntervalSeconds": 46800,
             "IsRepeating": true,
-            "TimeRemainingString": "12h 0m 28s"
+            "TimeRemainingString": "11h 59m 35s"
           },
           "MiningSurvey": null,
           "MiningSurveyResource": null,
@@ -1887,13 +1887,13 @@
         }
       ],
       "Locks": {
+        "a729571f-958d-4d86-9168-1bc18fdadf83": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
         "dc695683-d726-4005-8e8e-02264bcb06ea": {
           "Resource:Halogens": 1260,
           "Resource:Non-Metallics": 126,
           "Resource:Heavy Post-Trans Metals": 322
-        },
-        "a729571f-958d-4d86-9168-1bc18fdadf83": {
-          "WorkDetail:BlueCollarDetail": 1
         }
       }
     },
@@ -4642,40 +4642,6 @@
   ],
   "DeliveryPlan": [
     {
-      "UUID": "5717b923-0152-4738-8e47-2e7f2579d6cf",
-      "Name": "Test Route 1",
-      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
-      "RouteUUID": "f2a9db10-e8e1-4ab1-997f-088159251744",
-      "Completed": false,
-      "Stops": [
-        {
-          "ColonyUUID": "cc4d922c-080d-46bf-90f7-f4b2d839e682",
-          "Sequence": 0,
-          "StopCompleted": false,
-          "DropOff": [
-            {
-              "ItemType": "Commodity",
-              "BaseItemTypeID": "CRM Units",
-              "Name": "CRM Units (Administration Block) [Hi-Tech]",
-              "ResourcePurity": "",
-              "Quantity": 1,
-              "Delivered": false
-            }
-          ],
-          "PickUp": [
-            {
-              "ItemType": "Commodity",
-              "BaseItemTypeID": "Joybot Parts",
-              "Name": "Joybot Parts (Leisure Industry Centre) [Hi-Tech]",
-              "ResourcePurity": "",
-              "Quantity": 1,
-              "Delivered": false
-            }
-          ]
-        }
-      ]
-    },
-    {
       "UUID": "52f147fe-88a7-47e5-befe-b8fe0a2aa3cc",
       "Name": "Flatpack autofill test",
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
@@ -4687,6 +4653,166 @@
           "Sequence": 0,
           "StopCompleted": false,
           "DropOff": [
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "49f3198c-292f-4dd0-ab72-9c873b97f8a2",
+              "Name": "Colony Command Centre Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+              "Name": "Habitation Block Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+              "Name": "Hydroponics Bay Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
+              "Name": "Entertainment Centre Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "ebaa1a5d-1b2a-49f4-ac46-639ffbde7511",
+              "Name": "Remote Operations Array Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+              "Name": "Habitation Block Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+              "Name": "Hydroponics Bay Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "513b5bc8-db3d-4808-8cc4-a93bc9f65354",
+              "Name": "Warehouse Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "ebbf669a-3987-4e4f-87db-a3236e6dd4ea",
+              "Name": "Manufactory Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+              "Name": "Habitation Block Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+              "Name": "Hydroponics Bay Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
+              "Name": "Entertainment Centre Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "584616b3-b8c0-4ca5-98d2-66e39587ae57",
+              "Name": "Mining Rig Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "a86cc2fa-478a-498c-8c17-166f9fa5c9d7",
+              "Name": "Research Laboratory Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
             {
               "ItemType": "Flatpack",
               "BaseItemTypeID": "49f3198c-292f-4dd0-ab72-9c873b97f8a2",
@@ -6013,9 +6139,539 @@
               "ResourcePurity": "",
               "Quantity": 1,
               "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "584616b3-b8c0-4ca5-98d2-66e39587ae57",
+              "Name": "Mining Rig Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "584616b3-b8c0-4ca5-98d2-66e39587ae57",
+              "Name": "Mining Rig Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+              "Name": "Habitation Block Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+              "Name": "Hydroponics Bay Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "584616b3-b8c0-4ca5-98d2-66e39587ae57",
+              "Name": "Mining Rig Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
+              "Name": "Entertainment Centre Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "584616b3-b8c0-4ca5-98d2-66e39587ae57",
+              "Name": "Mining Rig Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+              "Name": "Habitation Block Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+              "Name": "Hydroponics Bay Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "584616b3-b8c0-4ca5-98d2-66e39587ae57",
+              "Name": "Mining Rig Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+              "Name": "Habitation Block Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+              "Name": "Hydroponics Bay Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+              "Name": "Habitation Block Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+              "Name": "Hydroponics Bay Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
+              "Name": "Entertainment Centre Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+              "Name": "Habitation Block Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+              "Name": "Hydroponics Bay Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+              "Name": "Habitation Block Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+              "Name": "Hydroponics Bay Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
+              "Name": "Entertainment Centre Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+              "Name": "Habitation Block Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+              "Name": "Hydroponics Bay Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+              "Name": "Habitation Block Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+              "Name": "Hydroponics Bay Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+              "Name": "Reactor Core Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            },
+            {
+              "ItemType": "Flatpack",
+              "BaseItemTypeID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+              "Name": "Refinery Flatpack",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
             }
           ],
           "PickUp": []
+        }
+      ]
+    },
+    {
+      "UUID": "5717b923-0152-4738-8e47-2e7f2579d6cf",
+      "Name": "Test Route 1",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
+      "RouteUUID": "f2a9db10-e8e1-4ab1-997f-088159251744",
+      "Completed": false,
+      "Stops": [
+        {
+          "ColonyUUID": "cc4d922c-080d-46bf-90f7-f4b2d839e682",
+          "Sequence": 0,
+          "StopCompleted": false,
+          "DropOff": [
+            {
+              "ItemType": "Commodity",
+              "BaseItemTypeID": "CRM Units",
+              "Name": "CRM Units (Administration Block) [Hi-Tech]",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            }
+          ],
+          "PickUp": [
+            {
+              "ItemType": "Commodity",
+              "BaseItemTypeID": "Joybot Parts",
+              "Name": "Joybot Parts (Leisure Industry Centre) [Hi-Tech]",
+              "ResourcePurity": "",
+              "Quantity": 1,
+              "Delivered": false
+            }
+          ]
         }
       ]
     }
