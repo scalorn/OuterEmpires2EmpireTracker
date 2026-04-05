@@ -38,6 +38,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             lvwRoutes.ItemSelectionChanged += lvwRoutes_ItemSelectionChanged;
 
             txtRouteFilter.TextChanged += txtRouteFilter_TextChanged;
+            txtRouteName.TextChanged += txtRouteName_TextChanged;
 
             cmbColony.DisplayMember = "Display";
             cmbColony.ValueMember = "UUID";
@@ -348,14 +349,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void cmdSave_Click(object sender, EventArgs e)
         {
-            viewModel.Name = txtRouteName.Text;
             viewModel.Save();
 
-            // Save the plan name if a plan is selected
+            // Save the plan if a plan is selected
             string selectedPlanUUID = null;
             if (planViewModel != null && !string.IsNullOrEmpty(planViewModel.UUID))
             {
-                planViewModel.Data.Name = txtPlanName.Text;
                 planViewModel.Save();
                 selectedPlanUUID = planViewModel.UUID;
             }
@@ -478,6 +477,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             }
         }
 
+        private void txtRouteName_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.Name = txtRouteName.Text;
+        }
+
         private void txtPlanName_TextChanged(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtPlanName.Text))
@@ -488,6 +493,9 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             {
                 txtPlanName.ClearError();
             }
+
+            if (_isProgrammaticUpdate > 0) return;
+            if (planViewModel != null) planViewModel.Data.Name = txtPlanName.Text;
         }
 
         private void cmdExecutePlan_Click(object sender, EventArgs e)

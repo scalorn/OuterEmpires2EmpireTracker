@@ -60,6 +60,18 @@ namespace OE2EmpireTracker.Forms.Survey
             cmbPurity.ValueMember = "Name";
             cmbPurity.DataSource = empireContext.bindingSourceResourcePurity;
 
+            // Wire write-through handlers
+            txtPlanetName.TextChanged += txtPlanetName_TextChanged;
+            txtSystemName.TextChanged += txtSystemName_TextChanged;
+            txtSurveyID.TextChanged += txtSurveyID_TextChanged;
+            txtNickName.TextChanged += txtNickName_TextChanged;
+            txtScannedBy.TextChanged += txtScannedBy_TextChanged;
+            txtScanDateTime.TextChanged += txtScanDateTime_TextChanged;
+            txtSensorAbundance.TextChanged += txtSensorAbundance_TextChanged;
+            txtPurityModifier.TextChanged += txtPurityModifier_TextChanged;
+            txtScanLevel.TextChanged += txtScanLevel_TextChanged;
+            cmbScannerBlueprint.SelectedIndexChanged += cmbScannerBlueprint_SelectedIndexChanged;
+
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
 
             flpBase.Layout += flpBase_Layout;
@@ -164,32 +176,72 @@ namespace OE2EmpireTracker.Forms.Survey
             }
         }
 
+        private void txtPlanetName_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.PlanetName = txtPlanetName.Text;
+        }
+
+        private void txtSystemName_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.SystemName = txtSystemName.Text;
+        }
+
+        private void txtSurveyID_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.SurveyID = txtSurveyID.Text;
+        }
+
+        private void txtNickName_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.NickName = txtNickName.Text;
+        }
+
+        private void txtScannedBy_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.ScannedBy = txtScannedBy.Text;
+        }
+
+        private void txtScanDateTime_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.DateTime = txtScanDateTime.Text;
+        }
+
+        private void txtSensorAbundance_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.SensorAbundance = txtSensorAbundance.Text;
+        }
+
+        private void txtPurityModifier_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.PurityModifier = txtPurityModifier.Text;
+        }
+
+        private void txtScanLevel_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.ScanLevel = txtScanLevel.Text;
+        }
+
+        private void cmbScannerBlueprint_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            var bp = cmbScannerBlueprint.SelectedItem as Data.Blueprint;
+            viewModel.ScannerBlueprintUUID = bp?.UUID ?? "";
+        }
+
         private void btnSave_Click(object sender, EventArgs e)
         {
             dgvResources.CellValidating -= dgvResources_CellValidating;
             try { dgvResources.EndEdit(); } catch { }
             dgvResources.CellValidating += dgvResources_CellValidating;
-
-            // Populate viewModel from form fields
-            viewModel.PlanetName = txtPlanetName.Text;
-            viewModel.SystemName = txtSystemName.Text;
-            viewModel.SurveyID = txtSurveyID.Text;
-            viewModel.ScannedBy = txtScannedBy.Text;
-            viewModel.DateTime = txtScanDateTime.Text;
-            viewModel.SensorAbundance = txtSensorAbundance.Text;
-            viewModel.PurityModifier = txtPurityModifier.Text;
-            viewModel.ScanLevel = txtScanLevel.Text;
-
-            // Scanner blueprint
-            if (cmbScannerBlueprint.SelectedItem != null)
-            {
-                Data.Blueprint baseBlueprint = cmbScannerBlueprint.SelectedItem as Data.Blueprint;
-                viewModel.ScannerBlueprintUUID = baseBlueprint.UUID;
-            }
-            else
-            {
-                viewModel.ScannerBlueprintUUID = "";
-            }
 
             // Map resources from grid
             viewModel.ClearResources();

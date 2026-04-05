@@ -79,6 +79,20 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             PopulateListView();
             PopulateForm();
 
+            // Wire write-through handlers
+            txtTotalCredits.TextChanged += txtTotalCredits_TextChanged;
+            txtSkillPoints.TextChanged += txtSkillPoints_TextChanged;
+            txtPublicRank.TextChanged += txtPublicRank_TextChanged;
+            txtPublicRankCurXP.TextChanged += txtPublicRankCurXP_TextChanged;
+            txtPublicRankNextXP.TextChanged += txtPublicRankNextXP_TextChanged;
+            txtPrivateRank.TextChanged += txtPrivateRank_TextChanged;
+            txtPrivateRankCurXP.TextChanged += txtPrivateRankCurXP_TextChanged;
+            txtPrivateRankNextXP.TextChanged += txtPrivateRankNextXP_TextChanged;
+            txtMilitaryRank.TextChanged += txtMilitaryRank_TextChanged;
+            txtMilitaryRankCurXP.TextChanged += txtMilitaryRankCurXP_TextChanged;
+            txtMilitaryRankNextXP.TextChanged += txtMilitaryRankNextXP_TextChanged;
+            cmbFaction.TextChanged += cmbFaction_TextChanged;
+
             flpBase.Layout += flpBase_Layout;
             flpSearchList.Layout += flpSearchList_Layout;
             flpPlayerData.Layout += flpPlayerData_Layout;
@@ -305,6 +319,81 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             {
                 txtPlayerName.ClearError();
             }
+
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.Name = txtPlayerName.Text?.Trim() ?? "";
+        }
+
+        private void txtTotalCredits_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.TotalCredits = decimal.TryParse(txtTotalCredits.Text, out var c) ? c : 0;
+        }
+
+        private void txtSkillPoints_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.SkillPoints = int.TryParse(txtSkillPoints.Text, out var sp) ? sp : 0;
+        }
+
+        private void txtPublicRank_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.PublicRank.Rank = int.TryParse(txtPublicRank.Text, out var r) ? r : 0;
+        }
+
+        private void txtPublicRankCurXP_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.PublicRank.CurrentXP = long.TryParse(txtPublicRankCurXP.Text, out var x) ? x : 0;
+        }
+
+        private void txtPublicRankNextXP_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.PublicRank.NextXP = long.TryParse(txtPublicRankNextXP.Text, out var x) ? x : 0;
+        }
+
+        private void txtPrivateRank_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.PrivateRank.Rank = int.TryParse(txtPrivateRank.Text, out var r) ? r : 0;
+        }
+
+        private void txtPrivateRankCurXP_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.PrivateRank.CurrentXP = long.TryParse(txtPrivateRankCurXP.Text, out var x) ? x : 0;
+        }
+
+        private void txtPrivateRankNextXP_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.PrivateRank.NextXP = long.TryParse(txtPrivateRankNextXP.Text, out var x) ? x : 0;
+        }
+
+        private void txtMilitaryRank_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.MilitaryRank.Rank = int.TryParse(txtMilitaryRank.Text, out var r) ? r : 0;
+        }
+
+        private void txtMilitaryRankCurXP_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.MilitaryRank.CurrentXP = long.TryParse(txtMilitaryRankCurXP.Text, out var x) ? x : 0;
+        }
+
+        private void txtMilitaryRankNextXP_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.MilitaryRank.NextXP = long.TryParse(txtMilitaryRankNextXP.Text, out var x) ? x : 0;
+        }
+
+        private void cmbFaction_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.Faction = cmbFaction.Text;
         }
 
         private void cmdSave_Click(object sender, EventArgs e)
@@ -314,23 +403,6 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             {
                 return;
             }
-
-            viewModel.Name = newName;
-            viewModel.Faction = cmbFaction.Text;
-            viewModel.TotalCredits = decimal.TryParse(txtTotalCredits.Text, out var credits) ? credits : 0;
-            viewModel.SkillPoints = int.TryParse(txtSkillPoints.Text, out var sp) ? sp : 0;
-
-            viewModel.PublicRank.Rank = int.TryParse(txtPublicRank.Text, out var pubRank) ? pubRank : 0;
-            viewModel.PublicRank.CurrentXP = long.TryParse(txtPublicRankCurXP.Text, out var pubCur) ? pubCur : 0;
-            viewModel.PublicRank.NextXP = long.TryParse(txtPublicRankNextXP.Text, out var pubNext) ? pubNext : 0;
-
-            viewModel.PrivateRank.Rank = int.TryParse(txtPrivateRank.Text, out var priRank) ? priRank : 0;
-            viewModel.PrivateRank.CurrentXP = long.TryParse(txtPrivateRankCurXP.Text, out var priCur) ? priCur : 0;
-            viewModel.PrivateRank.NextXP = long.TryParse(txtPrivateRankNextXP.Text, out var priNext) ? priNext : 0;
-
-            viewModel.MilitaryRank.Rank = int.TryParse(txtMilitaryRank.Text, out var milRank) ? milRank : 0;
-            viewModel.MilitaryRank.CurrentXP = long.TryParse(txtMilitaryRankCurXP.Text, out var milCur) ? milCur : 0;
-            viewModel.MilitaryRank.NextXP = long.TryParse(txtMilitaryRankNextXP.Text, out var milNext) ? milNext : 0;
 
             viewModel.Save();
             PopulateListView(viewModel.Data);

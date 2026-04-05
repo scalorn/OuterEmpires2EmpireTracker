@@ -52,6 +52,11 @@ namespace OE2EmpireTracker.Forms.Colony
 
             UpdateCommodityRequestList();
 
+            // Wire write-through handlers
+            txtPlanetName.TextChanged += txtPlanetName_TextChanged;
+            txtColonyName.TextChanged += txtColonyName_TextChanged;
+            txtSystemName.TextChanged += txtSystemName_TextChanged;
+
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.ColonyDataChanged += OnColonyDataChanged;
         }
@@ -77,11 +82,26 @@ namespace OE2EmpireTracker.Forms.Colony
             }
         }
 
+        private void txtPlanetName_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            colonyViewModel.PlanetName = txtPlanetName.Text;
+        }
+
+        private void txtColonyName_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            colonyViewModel.ColonyName = txtColonyName.Text;
+        }
+
+        private void txtSystemName_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            colonyViewModel.Data.SystemName = txtSystemName.Text;
+        }
+
         private void cmdSave_Click(object sender, EventArgs e)
         {
-            colonyViewModel.PlanetName = txtPlanetName.Text;
-            colonyViewModel.ColonyName = txtColonyName.Text;
-            colonyViewModel.Data.SystemName = txtSystemName.Text;
             if (string.IsNullOrEmpty(colonyViewModel.Data.OwnerUUID))
             {
                 colonyViewModel.Data.OwnerUUID = playerContext.CurrentPlayerUUID;

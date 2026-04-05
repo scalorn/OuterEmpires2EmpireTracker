@@ -124,6 +124,17 @@ namespace OE2EmpireTracker
             lvwBlueprints.Columns.Add("Nick Name", 100);
             PopulateListView(viewModel.GetFilteredBlueprints(null));
 
+            // Wire write-through handlers
+            txtName.TextChanged += txtName_TextChanged;
+            txtNickName.TextChanged += txtNickName_TextChanged;
+            txtDescription.TextChanged += txtDescription_TextChanged;
+            txtCopyCost.TextChanged += txtCopyCost_TextChanged;
+            cmbShipClass.SelectedIndexChanged += cmbShipClass_SelectedIndexChanged;
+            cmbTechLevel.SelectedIndexChanged += cmbTechLevel_SelectedIndexChanged;
+            cmbEvolution.SelectedIndexChanged += cmbEvolution_SelectedIndexChanged;
+            cmbBaseBlueprint.SelectedIndexChanged += cmbBaseBlueprint_SelectedIndexChanged;
+            chkGlobalBlueprint.CheckedChanged += chkGlobalBlueprint_CheckedChanged;
+
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
         }
 
@@ -298,7 +309,71 @@ namespace OE2EmpireTracker
         /// </remarks>
         private void cmbBlueprintType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
+            var bt = cmbBlueprintType.SelectedItem as BlueprintType;
+            if (bt != null) viewModel.BluePrintType = bt.Id;
             UpdatePropertyGrid();
+        }
+
+        private void txtName_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.Name = txtName.Text;
+        }
+
+        private void txtNickName_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.NickName = txtNickName.Text;
+        }
+
+        private void txtDescription_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            viewModel.Description = txtDescription.Text;
+        }
+
+        private void txtCopyCost_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            int copyCost = 0;
+            int.TryParse(txtCopyCost.Text, out copyCost);
+            viewModel.CopyCost = copyCost;
+        }
+
+        private void cmbShipClass_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            var sc = cmbShipClass.SelectedItem as ShipClass;
+            viewModel.Class = sc != null ? sc.Id : 0;
+        }
+
+        private void cmbTechLevel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            var tl = cmbTechLevel.SelectedItem as TechLevel;
+            viewModel.TechLevel = tl?.Name;
+        }
+
+        private void cmbEvolution_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            string evo = cmbEvolution.SelectedItem as string ?? cmbEvolution.Text ?? "0";
+            int.TryParse(evo, out int ev);
+            viewModel.Evolution = ev;
+        }
+
+        private void cmbBaseBlueprint_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            var bp = cmbBaseBlueprint.SelectedItem as Blueprint;
+            viewModel.BaseBlueprintUUID = bp?.UUID ?? "";
+        }
+
+        private void chkGlobalBlueprint_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            // Global flag is read at save time — no viewModel field to write.
         }
 
         /// <summary>
@@ -750,51 +825,6 @@ namespace OE2EmpireTracker
 
             empireContext = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
-
-            // Set blueprint type ID
-            BlueprintType blueprintType = cmbBlueprintType.SelectedItem as BlueprintType;
-            viewModel.BluePrintType = blueprintType.Id;
-
-            // Set ship class ID for non-universal blueprints
-            ShipClass shipClass = cmbShipClass.SelectedItem as ShipClass;
-            viewModel.Class = shipClass != null ? shipClass.Id : 0;
-
-            // Set tech level (may be null for universal blueprints)
-            TechLevel techLevel = cmbTechLevel.SelectedItem as TechLevel;
-            viewModel.TechLevel = techLevel != null ? techLevel.Name : null;
-
-            // Set evolution level
-            string evolution = "0";
-            if (cmbEvolution.SelectedItem != null)
-            {
-                evolution = cmbEvolution.SelectedItem as string;
-            }
-            else if (cmbEvolution.Text != null)
-            {
-                evolution = cmbEvolution.Text;
-            }
-            viewModel.Evolution = int.Parse(evolution);
-
-            // Set base blueprint UUID
-            if (cmbBaseBlueprint.SelectedItem != null)
-            {
-                Blueprint baseBlueprint = cmbBaseBlueprint.SelectedItem as Blueprint;
-                viewModel.BaseBlueprintUUID = baseBlueprint.UUID;
-            }
-            else
-            {
-                viewModel.BaseBlueprintUUID = "";
-            }
-
-            // Set name fields
-            viewModel.Name = txtName.Text;
-            viewModel.NickName = txtNickName.Text;
-            viewModel.Description = txtDescription.Text;
-
-            // Parse copy cost from text input
-            int copyCost = 0;
-            int.TryParse(txtCopyCost.Text, out copyCost);
-            viewModel.CopyCost = copyCost;
 
             // Map properties from grid via viewModel
             viewModel.ClearProperties();
