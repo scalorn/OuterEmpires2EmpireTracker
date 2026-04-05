@@ -12,7 +12,7 @@
 
 ## Current Status
 
-**617 total tests, all passing.**
+**626 total tests, all passing.**
 
 All original Recommendations (1-8) resolved. MVVM complete across all forms. NLog logging throughout.
 
@@ -82,6 +82,7 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 67 | Incremental execution form updates, worker delivery, event unsubscription | Complete |
 | 68 | Deferred write-through conversion (Rec 17) | Complete |
 | 69 | Data change events for all entity types (Rec 18) | Complete |
+| 70 | Safe file writer (temp+replace persistence) | Complete |
 
 ---
 

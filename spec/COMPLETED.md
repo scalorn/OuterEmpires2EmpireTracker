@@ -264,3 +264,6 @@ All ViewModel Save/Delete methods fire the appropriate event:
 - ColonyViewModel → OnColonyDataChanged
 
 Forms subscribed with IsDisposed safety check, unsubscribe in OnFormClosed. Global blueprint changes route through PlayerContext since all forms use GetAllBlueprints(). 617 tests passing.
+
+## 70. Safe File Writer (Temp+Replace Persistence)
+Created `SafeFileWriter.WriteAllText` utility that writes to a `.tmp` file first, then atomically swaps it into place via `File.Replace`, keeping the previous version as a `.bak` file for one-deep recovery. If the write to the temp file fails (crash, disk full), the original file is untouched. If the target doesn't exist yet (first save), falls back to `File.Move`. Both `PlayerContext.writeContext()` and `EmpireContext.writeContext()` now use `SafeFileWriter` instead of `File.WriteAllText`. Added `.json.bak` to `.gitignore`. 9 unit tests covering new file, existing file, backup creation, temp cleanup, multiple saves, empty content, and large content. 626 tests passing.

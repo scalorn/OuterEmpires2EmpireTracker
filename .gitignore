@@ -399,3 +399,6 @@ FodyWeavers.xsd
 
 # Temp commit message file used by AI tooling
 COMMIT_MSG.tmp
+
+# Safe file writer backup files
+*.json.bak
