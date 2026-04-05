@@ -492,6 +492,8 @@ namespace OE2EmpireTracker.Forms.Colony
             unrefinedItems.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
             unrefinedItems.Insert(0, new RefinerySelectionItem { Key = "", DisplayName = "", ResourceName = "", Purity = "" });
 
+            cmbSelection.DataSource = null;
+
             cmbSelection.DisplayMember = "DisplayName";
             cmbSelection.ValueMember = "Key";
             cmbSelection.DataSource = unrefinedItems;
@@ -663,6 +665,8 @@ namespace OE2EmpireTracker.Forms.Colony
             items.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
             items.Insert(0, new ResearchSelectionItem { UUID = "", DisplayName = "" });
 
+            cmbSelection.DataSource = null;
+
             cmbSelection.DisplayMember = "DisplayName";
             cmbSelection.ValueMember = "UUID";
             cmbSelection.DataSource = items;
@@ -810,6 +814,8 @@ namespace OE2EmpireTracker.Forms.Colony
             items.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
             items.Insert(0, new ResearchSelectionItem { UUID = "", DisplayName = "" });
 
+            cmbSelection.DataSource = null;
+
             cmbSelection.DisplayMember = "DisplayName";
             cmbSelection.ValueMember = "UUID";
             cmbSelection.DataSource = items;
@@ -956,6 +962,8 @@ namespace OE2EmpireTracker.Forms.Colony
             items.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
             items.Insert(0, new CommoditySelectionItem { Name = "", DisplayName = "" });
 
+            cmbSelection.DataSource = null;
+
             cmbSelection.DisplayMember = "DisplayName";
             cmbSelection.ValueMember = "Name";
             cmbSelection.DataSource = items;
@@ -1000,6 +1008,8 @@ namespace OE2EmpireTracker.Forms.Colony
                 .ToList();
 
             filteredList.Insert(0, new Baseline.Survey());
+
+            cmbSelection.DataSource = null;
 
             cmbSelection.DisplayMember = "ExtendedName";
             cmbSelection.ValueMember = "UUID";
