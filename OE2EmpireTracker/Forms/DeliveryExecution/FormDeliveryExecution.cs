@@ -338,7 +338,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 // Check drop-offs against what's been picked up so far
                 foreach (var dropItem in stop.DropOff)
                 {
-                    string key = $"{dropItem.ItemType}|{dropItem.BaseItemTypeID}";
+                    string key = $"{dropItem.ItemType}|{dropItem.BaseItemTypeID}|{dropItem.ResourcePurity}";
                     int available = 0;
                     pickedUp.TryGetValue(key, out available);
 
@@ -356,6 +356,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                                 ItemType = dropItem.ItemType,
                                 BaseItemTypeID = dropItem.BaseItemTypeID,
                                 Name = dropItem.Name,
+                                ResourcePurity = dropItem.ResourcePurity,
                                 Quantity = shortfall
                             };
                         }
@@ -372,7 +373,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 // Add pick-ups to running total
                 foreach (var pickItem in stop.PickUp)
                 {
-                    string key = $"{pickItem.ItemType}|{pickItem.BaseItemTypeID}";
+                    string key = $"{pickItem.ItemType}|{pickItem.BaseItemTypeID}|{pickItem.ResourcePurity}";
                     int current = 0;
                     pickedUp.TryGetValue(key, out current);
                     pickedUp[key] = current + pickItem.Quantity;
