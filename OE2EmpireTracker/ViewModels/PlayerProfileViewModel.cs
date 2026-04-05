@@ -107,6 +107,7 @@ namespace OE2EmpireTracker.ViewModels
                 _playerContext.playerProfileList.Add(_profile);
             }
             _playerContext.writeContext();
+            _playerContext.OnPlayerProfilesChanged();
         }
 
         public void Delete()
@@ -114,6 +115,7 @@ namespace OE2EmpireTracker.ViewModels
             if (string.IsNullOrEmpty(_profile.UUID)) return;
             _playerContext.playerProfileList.Remove(_profile);
             _playerContext.writeContext();
+            _playerContext.OnPlayerProfilesChanged();
         }
 
         /// <summary>

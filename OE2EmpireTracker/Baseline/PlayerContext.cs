@@ -43,6 +43,20 @@ namespace OE2EmpireTracker.Baseline
         public event EventHandler CurrentPlayerChanged;
 
         /// <summary>
+        /// Fired when the player profile list changes (add/rename/delete).
+        /// MainWindow subscribes to refresh the player dropdown.
+        /// </summary>
+        public event EventHandler PlayerProfilesChanged;
+
+        /// <summary>
+        /// Notifies subscribers that the player profile list has changed.
+        /// </summary>
+        public void OnPlayerProfilesChanged()
+        {
+            PlayerProfilesChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
         /// Returns the PlayerProfile for the currently selected player, or null.
         /// </summary>
         public PlayerProfile CurrentPlayer

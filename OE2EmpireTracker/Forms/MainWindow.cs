@@ -27,6 +27,7 @@ namespace OE2EmpireTracker
             playerContext = EmpireContext.PlayerContext;
             InitializeComponent();
             PopulatePlayerDropdown();
+            playerContext.PlayerProfilesChanged += (s, ev) => PopulatePlayerDropdown();
         }
 
         private void PopulatePlayerDropdown()
