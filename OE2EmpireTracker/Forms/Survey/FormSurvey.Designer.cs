@@ -203,7 +203,7 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             // flpSurveyDetails
             // 
-            this.flpSurveyDetails.AutoSize = true;
+            this.flpSurveyDetails.AutoSize = false;
             this.flpSurveyDetails.Controls.Add(this.flpPlanetName);
             this.flpSurveyDetails.Controls.Add(this.flpSurveyID);
             this.flpSurveyDetails.Controls.Add(this.flpNickName);

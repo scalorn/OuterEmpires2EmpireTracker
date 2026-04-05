@@ -85,6 +85,21 @@ namespace OE2EmpireTracker.Forms.Survey
             flpSurveyDetails.Size = new System.Drawing.Size(
                 flpSurveyData.Size.Width - flpSurveyDetails.Margin.Left - flpSurveyDetails.Margin.Right,
                 flpSurveyData.Size.Height - flpCommands.Size.Height - flpCommands.Margin.Top - flpCommands.Margin.Bottom - flpSurveyDetails.Margin.Top - flpSurveyDetails.Margin.Bottom);
+
+            // Size the resources grid to fill remaining space in flpSurveyDetails
+            int usedHeight = 0;
+            foreach (Control c in flpSurveyDetails.Controls)
+            {
+                if (c != dgvResources)
+                {
+                    usedHeight += c.Size.Height + c.Margin.Top + c.Margin.Bottom;
+                }
+            }
+            int gridHeight = flpSurveyDetails.Size.Height - usedHeight - dgvResources.Margin.Top - dgvResources.Margin.Bottom;
+            if (gridHeight < 50) gridHeight = 50;
+            dgvResources.Size = new System.Drawing.Size(
+                flpSurveyDetails.Size.Width - dgvResources.Margin.Left - dgvResources.Margin.Right,
+                gridHeight);
         }
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
