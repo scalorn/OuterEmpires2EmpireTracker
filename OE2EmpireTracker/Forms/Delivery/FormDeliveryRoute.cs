@@ -93,16 +93,8 @@ namespace OE2EmpireTracker.Forms.Delivery
 
         private void tabStops_Layout(object sender, LayoutEventArgs e)
         {
-            int gridHeight = tabStops.ClientSize.Height
-                - flpAddStop.Size.Height - flpAddStop.Margin.Top - flpAddStop.Margin.Bottom
-                - dgvStops.Margin.Top - dgvStops.Margin.Bottom;
-            if (gridHeight < 50) gridHeight = 50;
-            dgvStops.Size = new Size(
-                tabStops.ClientSize.Width - dgvStops.Margin.Left - dgvStops.Margin.Right,
-                gridHeight);
-            flpAddStop.Size = new Size(
-                tabStops.ClientSize.Width - flpAddStop.Margin.Left - flpAddStop.Margin.Right,
-                flpAddStop.Size.Height);
+            flpAddStop.Dock = System.Windows.Forms.DockStyle.Bottom;
+            dgvStops.Dock = System.Windows.Forms.DockStyle.Fill;
         }
 
         private void flpPlanContent_Layout(object sender, LayoutEventArgs e)
