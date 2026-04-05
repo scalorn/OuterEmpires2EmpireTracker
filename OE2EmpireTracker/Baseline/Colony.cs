@@ -11,6 +11,7 @@ namespace OE2EmpireTracker.Baseline
         public string UUID { get; set; }
         public string OwnerUUID { get; set; } = string.Empty;
         public string PlanetName { get; set; }
+        public string SystemName { get; set; } = string.Empty;
         public string ColonyName { get; set; }
         public ItemBag Items { get; set; }
 

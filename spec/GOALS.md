@@ -64,6 +64,8 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 49 | Centralized GetAllBlueprints() for player + global | Complete |
 | 50 | Commodity Manufacturing (Rec 11, CommodityFactory) | Complete |
 | 51 | Unit tests for new features (48 tests) | Complete |
+| 52 | Delivery Phase 1: SystemName on Colony/Survey + SurveyParser | Complete |
+| 53 | Delivery Phase 2: DeliveryRoute/RouteStop data model | Complete |
 
 ---
 

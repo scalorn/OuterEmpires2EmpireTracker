@@ -14,6 +14,7 @@ namespace OE2EmpireTracker.Baseline
         public string ScannedBy { get; set; }
         public string DateTime { get; set; }
         public string PlanetName { get; set; }
+        public string SystemName { get; set; } = string.Empty;
         public string SurveyID { get; set; }
         public string ScannerBlueprintUUID { get; set; }
         public Dictionary<string, string> Properties { get; set; }

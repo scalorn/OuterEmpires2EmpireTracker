@@ -167,3 +167,9 @@ Implemented `Flatpacks/CommodityFactory` structure type. Selection combo filtere
 
 ## 51. Unit Tests for New Features (48 tests)
 Added 48 new tests across 3 new files and 1 updated file: BlueprintPropertyValidationTests (15 — ComboBox/CheckBox types, validation patterns, data sources), WorkerTypeInfoTests (8 — array structure, key mappings), ColonyProcessingTests (20 — commodity factory processing, resource locking, skill multipliers for mining and refining), ColonyStructureTests (+5 — Get/SetUnallocatedPresent). Total: 513 tests passing.
+
+## 52. Delivery Phase 1: SystemName on Colony/Survey (REQ-DEL-001-005)
+Added `SystemName` string property to Colony and Survey. SurveyParser.ParseTitle now extracts SystemName from "PlanetName, SystemName (SurveyID)" format. Colony form has a System text field between Planet and Colony name. 513 tests passing.
+
+## 53. Delivery Phase 2: DeliveryRoute/RouteStop Data Model (REQ-DEL-010-015)
+Created `DeliveryRoute` (UUID, Name, OwnerUUID, List<RouteStop>) and `RouteStop` (ColonyUUID, Sequence) classes. Added `DeliveryRoute[]` to PlayerRoot. PlayerContext maintains `deliveryRouteList` with load/save. Added `GetCurrentPlayerRoutes()` helper. 513 tests passing.

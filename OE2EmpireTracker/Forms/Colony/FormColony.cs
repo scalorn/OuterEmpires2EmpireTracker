@@ -65,12 +65,14 @@ namespace OE2EmpireTracker.Forms.Colony
             PopulateListView(playerContext.GetCurrentPlayerColonies());
             txtPlanetName.Text = "";
             txtColonyName.Text = "";
+            txtSystemName.Text = "";
         }
 
         private void cmdSave_Click(object sender, EventArgs e)
         {
             colonyViewModel.PlanetName = txtPlanetName.Text;
             colonyViewModel.ColonyName = txtColonyName.Text;
+            colonyViewModel.Data.SystemName = txtSystemName.Text;
             if (string.IsNullOrEmpty(colonyViewModel.Data.OwnerUUID))
             {
                 colonyViewModel.Data.OwnerUUID = playerContext.CurrentPlayerUUID;
@@ -351,6 +353,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             txtPlanetName.Text = colonyViewModel.PlanetName;
             txtColonyName.Text = colonyViewModel.ColonyName;
+            txtSystemName.Text = colonyViewModel.Data.SystemName ?? "";
 
 
 

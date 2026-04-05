@@ -76,6 +76,7 @@ namespace OE2EmpireTracker.Baseline
         public BindingSource bindingSourceSurvey;
         public BindingList<Colony> colonyList;
         public BindingSource bindingSourceColony;
+        public BindingList<DeliveryRoute> deliveryRouteList;
 
         public IEnumerable<CountDownTimeReference> ActiveCountdowns => AllCountdownSources()
             .Where(c => c.countDownTime.TimeRemaining > 0)
@@ -118,6 +119,7 @@ namespace OE2EmpireTracker.Baseline
             InitBlueprints(playerRoot);
             InitSurveys(playerRoot);
             initColonies(playerRoot);
+            InitDeliveryRoutes(playerRoot);
 
             // Migrate and restore current player
             MigrateOwnerUUIDs();
@@ -132,6 +134,7 @@ namespace OE2EmpireTracker.Baseline
             playerRoot.Blueprint = blueprintList.ToArray();
             playerRoot.Survey = surveyList.ToArray();
             playerRoot.Colony = colonyList.ToArray();
+            playerRoot.DeliveryRoute = deliveryRouteList.ToArray();
 
             string jsonContent = JsonConvert.SerializeObject(playerRoot, Formatting.Indented);
             File.WriteAllText(FilePath, jsonContent);
@@ -201,6 +204,14 @@ namespace OE2EmpireTracker.Baseline
             // Set the in-memory list as the DataSource for the BindingSource
             bindingSourceColony.DataSource = colonyList;
         }
+
+        public void InitDeliveryRoutes(PlayerRoot playerRoot)
+        {
+            var list = new List<DeliveryRoute>(playerRoot.DeliveryRoute ?? new DeliveryRoute[0]);
+            list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
+            deliveryRouteList = new BindingList<DeliveryRoute>(list);
+        }
+
         public Colony FindColony(string id)
         {
             var filteredList = colonyList
@@ -317,6 +328,14 @@ namespace OE2EmpireTracker.Baseline
             return surveyList.Where(s => s.OwnerUUID == _currentPlayerUUID).ToList();
         }
 
+        /// <summary>
+        /// Returns delivery routes owned by the current player.
+        /// </summary>
+        public List<DeliveryRoute> GetCurrentPlayerRoutes()
+        {
+            return deliveryRouteList.Where(r => r.OwnerUUID == _currentPlayerUUID).ToList();
+        }
+
 
         public List<CountDownTimeReference> AllCountdownSources()
         {
@@ -368,6 +387,7 @@ namespace OE2EmpireTracker.Baseline
         public Blueprint[] Blueprint;
         public Survey[] Survey;
         public Colony[] Colony;
+        public DeliveryRoute[] DeliveryRoute;
         public PlayerRoot()
         {
             CurrentPlayerUUID = string.Empty;
@@ -375,6 +395,7 @@ namespace OE2EmpireTracker.Baseline
             Blueprint = new Blueprint[0];
             Survey = new Survey[0];
             Colony = new Colony[0];
+            DeliveryRoute = new DeliveryRoute[0];
         }
     }
 

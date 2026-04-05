@@ -39,6 +39,9 @@ namespace OE2EmpireTracker.Forms.Colony
             this.flpPlanetName = new System.Windows.Forms.FlowLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
             this.txtPlanetName = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.flpSystemName = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblSystemName = new System.Windows.Forms.Label();
+            this.txtSystemName = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpColonyName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblBlueprintType = new System.Windows.Forms.Label();
             this.txtColonyName = new OE2EmpireTracker.Controls.ValidatedTextBox();
@@ -108,6 +111,7 @@ namespace OE2EmpireTracker.Forms.Colony
             this.flpColonyData.SuspendLayout();
             this.flpBaseDetails.SuspendLayout();
             this.flpPlanetName.SuspendLayout();
+            this.flpSystemName.SuspendLayout();
             this.flpColonyName.SuspendLayout();
             this.tabDetailedData.SuspendLayout();
             this.tabPAdministration.SuspendLayout();
@@ -222,6 +226,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // flpBaseDetails
             // 
             this.flpBaseDetails.Controls.Add(this.flpPlanetName);
+            this.flpBaseDetails.Controls.Add(this.flpSystemName);
             this.flpBaseDetails.Controls.Add(this.flpColonyName);
             this.flpBaseDetails.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBaseDetails.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
@@ -260,6 +265,35 @@ namespace OE2EmpireTracker.Forms.Colony
             this.txtPlanetName.Name = "txtPlanetName";
             this.txtPlanetName.Size = new System.Drawing.Size(254, 20);
             this.txtPlanetName.TabIndex = 0;
+            // 
+            // flpSystemName
+            // 
+            this.flpSystemName.Controls.Add(this.lblSystemName);
+            this.flpSystemName.Controls.Add(this.txtSystemName);
+            this.flpSystemName.Location = new System.Drawing.Point(2, 32);
+            this.flpSystemName.Margin = new System.Windows.Forms.Padding(2);
+            this.flpSystemName.Name = "flpSystemName";
+            this.flpSystemName.Size = new System.Drawing.Size(364, 26);
+            this.flpSystemName.TabIndex = 10;
+            this.flpSystemName.WrapContents = false;
+            // 
+            // lblSystemName
+            // 
+            this.lblSystemName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSystemName.Location = new System.Drawing.Point(2, 4);
+            this.lblSystemName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblSystemName.Name = "lblSystemName";
+            this.lblSystemName.Size = new System.Drawing.Size(99, 17);
+            this.lblSystemName.TabIndex = 1;
+            this.lblSystemName.Text = "System";
+            this.lblSystemName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtSystemName
+            // 
+            this.txtSystemName.Location = new System.Drawing.Point(107, 3);
+            this.txtSystemName.Name = "txtSystemName";
+            this.txtSystemName.Size = new System.Drawing.Size(254, 20);
+            this.txtSystemName.TabIndex = 0;
             // 
             // flpColonyName
             // 
@@ -922,6 +956,8 @@ namespace OE2EmpireTracker.Forms.Colony
             this.flpBaseDetails.ResumeLayout(false);
             this.flpPlanetName.ResumeLayout(false);
             this.flpPlanetName.PerformLayout();
+            this.flpSystemName.ResumeLayout(false);
+            this.flpSystemName.PerformLayout();
             this.flpColonyName.ResumeLayout(false);
             this.flpColonyName.PerformLayout();
             this.tabDetailedData.ResumeLayout(false);
@@ -968,6 +1004,9 @@ namespace OE2EmpireTracker.Forms.Colony
         private System.Windows.Forms.FlowLayoutPanel flpPlanetName;
         private System.Windows.Forms.Label label3;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtPlanetName;
+        private System.Windows.Forms.FlowLayoutPanel flpSystemName;
+        private System.Windows.Forms.Label lblSystemName;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtSystemName;
         private System.Windows.Forms.FlowLayoutPanel flpColonyName;
         private System.Windows.Forms.Label lblBlueprintType;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtColonyName;

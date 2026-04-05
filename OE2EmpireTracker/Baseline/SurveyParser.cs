@@ -94,7 +94,7 @@ namespace OE2EmpireTracker.Baseline
         }
 
         /// <summary>
-        /// Parses the title line to extract PlanetName and optionally SurveyID.
+        /// Parses the title line to extract PlanetName, SystemName, and optionally SurveyID.
         /// Expected format: "PlanetName, SystemName (SurveyID)" or just "PlanetName"
         /// </summary>
         public static void ParseTitle(Survey survey, string titleText)
@@ -102,11 +102,12 @@ namespace OE2EmpireTracker.Baseline
             if (string.IsNullOrEmpty(titleText)) return;
 
             // Try "PlanetName, SystemName (SurveyID)"
-            var m = Regex.Match(titleText, @"^(.+?),\s*.+?\((.+?)\)\s*$");
+            var m = Regex.Match(titleText, @"^(.+?),\s*(.+?)\s*\((.+?)\)\s*$");
             if (m.Success)
             {
                 survey.PlanetName = m.Groups[1].Value.Trim();
-                survey.SurveyID = m.Groups[2].Value.Trim();
+                survey.SystemName = m.Groups[2].Value.Trim();
+                survey.SurveyID = m.Groups[3].Value.Trim();
                 return;
             }
 
