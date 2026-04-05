@@ -1,4 +1,4 @@
-﻿namespace OE2EmpireTracker.Forms.Survey
+namespace OE2EmpireTracker.Forms.Survey
 {
     partial class FormSurvey
     {
@@ -32,7 +32,7 @@
             this.flpSearchList = new System.Windows.Forms.FlowLayoutPanel();
             this.flpBlueprintSearch = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPlanetFilter = new System.Windows.Forms.Label();
-            this.txtPlanetFilter = new System.Windows.Forms.TextBox();
+            this.txtPlanetFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpResource = new System.Windows.Forms.FlowLayoutPanel();
             this.lblResource = new System.Windows.Forms.Label();
             this.cmbResource = new System.Windows.Forms.ComboBox();
@@ -41,32 +41,32 @@
             this.flpSurveyDetails = new System.Windows.Forms.FlowLayoutPanel();
             this.flpPlanetName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPlanetName = new System.Windows.Forms.Label();
-            this.txtPlanetName = new System.Windows.Forms.TextBox();
+            this.txtPlanetName = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpSurveyID = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSurveyID = new System.Windows.Forms.Label();
-            this.txtSurveyID = new System.Windows.Forms.TextBox();
+            this.txtSurveyID = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpNickName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblNickName = new System.Windows.Forms.Label();
-            this.txtNickName = new System.Windows.Forms.TextBox();
+            this.txtNickName = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpScannerBlueprint = new System.Windows.Forms.FlowLayoutPanel();
             this.lblScannerBlueprint = new System.Windows.Forms.Label();
-            this.txtFilterScannerBlueprint = new System.Windows.Forms.TextBox();
+            this.txtFilterScannerBlueprint = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmbScannerBlueprint = new System.Windows.Forms.ComboBox();
             this.flpScannedBy = new System.Windows.Forms.FlowLayoutPanel();
             this.lblScannedBy = new System.Windows.Forms.Label();
-            this.txtScannedBy = new System.Windows.Forms.TextBox();
+            this.txtScannedBy = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpScanDateTime = new System.Windows.Forms.FlowLayoutPanel();
             this.lblScanDateTime = new System.Windows.Forms.Label();
-            this.txtScanDateTime = new System.Windows.Forms.TextBox();
+            this.txtScanDateTime = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpSensorAbundance = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSensorAbundance = new System.Windows.Forms.Label();
-            this.txtSensorAbundance = new System.Windows.Forms.TextBox();
+            this.txtSensorAbundance = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpPurityModifier = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPurityModifier = new System.Windows.Forms.Label();
-            this.txtPurityModifier = new System.Windows.Forms.TextBox();
+            this.txtPurityModifier = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpScanLevel = new System.Windows.Forms.FlowLayoutPanel();
             this.lblScanLevel = new System.Windows.Forms.Label();
-            this.txtScanLevel = new System.Windows.Forms.TextBox();
+            this.txtScanLevel = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.dgvResources = new System.Windows.Forms.DataGridView();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.btnSave = new System.Windows.Forms.Button();
@@ -639,7 +639,7 @@
         private System.Windows.Forms.FlowLayoutPanel flpSearchList;
         private System.Windows.Forms.FlowLayoutPanel flpBlueprintSearch;
         private System.Windows.Forms.Label lblPlanetFilter;
-        private System.Windows.Forms.TextBox txtPlanetFilter;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtPlanetFilter;
         private System.Windows.Forms.FlowLayoutPanel flpResource;
         private System.Windows.Forms.Label lblResource;
         private System.Windows.Forms.ComboBox cmbResource;
@@ -648,23 +648,23 @@
         private System.Windows.Forms.FlowLayoutPanel flpSurveyDetails;
         private System.Windows.Forms.FlowLayoutPanel flpPlanetName;
         private System.Windows.Forms.Label lblPlanetName;
-        private System.Windows.Forms.TextBox txtPlanetName;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtPlanetName;
         private System.Windows.Forms.FlowLayoutPanel flpScannerBlueprint;
         private System.Windows.Forms.Label lblScannerBlueprint;
-        private System.Windows.Forms.TextBox txtFilterScannerBlueprint;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtFilterScannerBlueprint;
         private System.Windows.Forms.ComboBox cmbScannerBlueprint;
         private System.Windows.Forms.FlowLayoutPanel flpScannedBy;
         private System.Windows.Forms.Label lblScannedBy;
-        private System.Windows.Forms.TextBox txtScannedBy;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtScannedBy;
         private System.Windows.Forms.FlowLayoutPanel flpSensorAbundance;
         private System.Windows.Forms.Label lblSensorAbundance;
-        private System.Windows.Forms.TextBox txtSensorAbundance;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtSensorAbundance;
         private System.Windows.Forms.FlowLayoutPanel flpPurityModifier;
         private System.Windows.Forms.Label lblPurityModifier;
-        private System.Windows.Forms.TextBox txtPurityModifier;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtPurityModifier;
         private System.Windows.Forms.FlowLayoutPanel flpScanLevel;
         private System.Windows.Forms.Label lblScanLevel;
-        private System.Windows.Forms.TextBox txtScanLevel;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtScanLevel;
         private System.Windows.Forms.DataGridView dgvResources;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
         private System.Windows.Forms.Button btnSave;
@@ -673,13 +673,13 @@
         private System.Windows.Forms.Button cmdImport;
         private System.Windows.Forms.FlowLayoutPanel flpSurveyID;
         private System.Windows.Forms.Label lblSurveyID;
-        private System.Windows.Forms.TextBox txtSurveyID;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtSurveyID;
         private System.Windows.Forms.FlowLayoutPanel flpScanDateTime;
         private System.Windows.Forms.Label lblScanDateTime;
-        private System.Windows.Forms.TextBox txtScanDateTime;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtScanDateTime;
         private System.Windows.Forms.FlowLayoutPanel flpNickName;
         private System.Windows.Forms.Label lblNickName;
-        private System.Windows.Forms.TextBox txtNickName;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtNickName;
         private System.Windows.Forms.DataGridViewComboBoxColumn Resource;
         private System.Windows.Forms.DataGridViewComboBoxColumn Purity;
         private OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn Amount;

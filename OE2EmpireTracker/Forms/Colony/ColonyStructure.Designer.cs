@@ -1,4 +1,4 @@
-﻿namespace OE2EmpireTracker.Forms.Colony
+namespace OE2EmpireTracker.Forms.Colony
 {
     partial class ColonyStructure
     {
@@ -39,18 +39,18 @@
             this.flpStructureCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.flpSelection = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSelection = new System.Windows.Forms.Label();
-            this.txtSelectionFilter = new System.Windows.Forms.TextBox();
+            this.txtSelectionFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmbSelection = new System.Windows.Forms.ComboBox();
             this.cmdStart = new System.Windows.Forms.Button();
             this.flpSubSelection = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSubSelection = new System.Windows.Forms.Label();
-            this.txtSubSelectionFilter = new System.Windows.Forms.TextBox();
+            this.txtSubSelectionFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmbSubSelection = new System.Windows.Forms.ComboBox();
             this.cmdSubStart = new System.Windows.Forms.Button();
             this.flpCompletionTime = new System.Windows.Forms.FlowLayoutPanel();
             this.rtbProgressStatus = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.txtCompletionTime = new System.Windows.Forms.TextBox();
+            this.txtCompletionTime = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmdDone = new System.Windows.Forms.Button();
             this.flpStructureStatus = new System.Windows.Forms.FlowLayoutPanel();
             this.chkBuilt = new System.Windows.Forms.CheckBox();
@@ -60,7 +60,7 @@
             this.chkWorkDetail2 = new System.Windows.Forms.CheckBox();
             this.chkWorkDetail3 = new System.Windows.Forms.CheckBox();
             this.timerCountdown = new System.Windows.Forms.Timer(this.components);
-            this.txtQuantity = new System.Windows.Forms.TextBox();
+            this.txtQuantity = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpColonyStructure.SuspendLayout();
             this.flpMovement.SuspendLayout();
             this.flpStructureDetails.SuspendLayout();
@@ -441,19 +441,19 @@
         private System.Windows.Forms.ComboBox cmbSelection;
         private System.Windows.Forms.Button cmdStart;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox txtCompletionTime;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtCompletionTime;
         private System.Windows.Forms.FlowLayoutPanel flpSelection;
         private System.Windows.Forms.Label lblSelection;
-        private System.Windows.Forms.TextBox txtSelectionFilter;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtSelectionFilter;
         private System.Windows.Forms.FlowLayoutPanel flpCompletionTime;
         private System.Windows.Forms.Button cmdDone;
         private System.Windows.Forms.FlowLayoutPanel flpSubSelection;
         private System.Windows.Forms.Label lblSubSelection;
-        private System.Windows.Forms.TextBox txtSubSelectionFilter;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtSubSelectionFilter;
         private System.Windows.Forms.ComboBox cmbSubSelection;
         private System.Windows.Forms.Button cmdSubStart;
         private System.Windows.Forms.Timer timerCountdown;
         private System.Windows.Forms.RichTextBox rtbProgressStatus;
-        private System.Windows.Forms.TextBox txtQuantity;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtQuantity;
     }
 }

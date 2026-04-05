@@ -1,4 +1,4 @@
-﻿namespace OE2EmpireTracker.Forms.Colony
+namespace OE2EmpireTracker.Forms.Colony
 {
     partial class FormColony
     {
@@ -31,17 +31,17 @@
             this.flpSearchList = new System.Windows.Forms.FlowLayoutPanel();
             this.flpBlueprintSearch = new System.Windows.Forms.FlowLayoutPanel();
             this.lblBlueprintListFilter = new System.Windows.Forms.Label();
-            this.txtBlueprintListFilter = new System.Windows.Forms.TextBox();
+            this.txtBlueprintListFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.lvwColonies = new System.Windows.Forms.ListView();
             this.tlpBase = new System.Windows.Forms.TableLayoutPanel();
             this.flpColonyData = new System.Windows.Forms.FlowLayoutPanel();
             this.flpBaseDetails = new System.Windows.Forms.FlowLayoutPanel();
             this.flpPlanetName = new System.Windows.Forms.FlowLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
-            this.txtPlanetName = new System.Windows.Forms.TextBox();
+            this.txtPlanetName = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpColonyName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblBlueprintType = new System.Windows.Forms.Label();
-            this.txtColonyName = new System.Windows.Forms.TextBox();
+            this.txtColonyName = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.tabDetailedData = new System.Windows.Forms.TabControl();
             this.tabPAdministration = new System.Windows.Forms.TabPage();
             this.tabPStructures = new System.Windows.Forms.TabPage();
@@ -51,7 +51,7 @@
             this.flpStatus = new System.Windows.Forms.FlowLayoutPanel();
             this.rtbStatus = new System.Windows.Forms.RichTextBox();
             this.flpAddBox = new System.Windows.Forms.FlowLayoutPanel();
-            this.txtFilterFlatpack = new System.Windows.Forms.TextBox();
+            this.txtFilterFlatpack = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmbFlatpacks = new System.Windows.Forms.ComboBox();
             this.cmdAddFlatpack = new System.Windows.Forms.Button();
             this.flpColonyStructure = new System.Windows.Forms.FlowLayoutPanel();
@@ -60,10 +60,10 @@
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
-            this.txtCommodityRequestFilter = new System.Windows.Forms.TextBox();
+            this.txtCommodityRequestFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmbCommodityRequest = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.txtCommodityRequestQuantity = new System.Windows.Forms.TextBox();
+            this.txtCommodityRequestQuantity = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmdAddCommodityRequest = new System.Windows.Forms.Button();
             this.dgvCommodityRequests = new System.Windows.Forms.DataGridView();
             this.tabPWarehousing = new System.Windows.Forms.TabPage();
@@ -72,11 +72,11 @@
             this.lblItemType = new System.Windows.Forms.Label();
             this.cmbItemType = new System.Windows.Forms.ComboBox();
             this.lblFilter = new System.Windows.Forms.Label();
-            this.txtItemFilter = new System.Windows.Forms.TextBox();
+            this.txtItemFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmbItem = new System.Windows.Forms.ComboBox();
             this.cmbPurity = new System.Windows.Forms.ComboBox();
             this.lblQuantity = new System.Windows.Forms.Label();
-            this.txtQuantity = new System.Windows.Forms.TextBox();
+            this.txtQuantity = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmdAdd = new System.Windows.Forms.Button();
             this.dgvItems = new System.Windows.Forms.DataGridView();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
@@ -957,7 +957,7 @@
         private System.Windows.Forms.FlowLayoutPanel flpSearchList;
         private System.Windows.Forms.FlowLayoutPanel flpBlueprintSearch;
         private System.Windows.Forms.Label lblBlueprintListFilter;
-        private System.Windows.Forms.TextBox txtBlueprintListFilter;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtBlueprintListFilter;
         private System.Windows.Forms.ListView lvwColonies;
         private System.Windows.Forms.DataGridViewTextBoxColumn Property;
         private System.Windows.Forms.DataGridViewTextBoxColumn BaseValue;
@@ -967,10 +967,10 @@
         private System.Windows.Forms.FlowLayoutPanel flpBaseDetails;
         private System.Windows.Forms.FlowLayoutPanel flpPlanetName;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtPlanetName;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtPlanetName;
         private System.Windows.Forms.FlowLayoutPanel flpColonyName;
         private System.Windows.Forms.Label lblBlueprintType;
-        private System.Windows.Forms.TextBox txtColonyName;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtColonyName;
         private System.Windows.Forms.TabControl tabDetailedData;
         private System.Windows.Forms.TabPage tabPAdministration;
         private System.Windows.Forms.TabPage tabPStructures;
@@ -980,7 +980,7 @@
         private System.Windows.Forms.FlowLayoutPanel flpStatus;
         private System.Windows.Forms.RichTextBox rtbStatus;
         private System.Windows.Forms.FlowLayoutPanel flpAddBox;
-        private System.Windows.Forms.TextBox txtFilterFlatpack;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtFilterFlatpack;
         private System.Windows.Forms.ComboBox cmbFlatpacks;
         private System.Windows.Forms.Button cmdAddFlatpack;
         private System.Windows.Forms.FlowLayoutPanel flpColonyStructure;
@@ -991,7 +991,7 @@
         private System.Windows.Forms.Label lblItemType;
         private System.Windows.Forms.ComboBox cmbItemType;
         private System.Windows.Forms.Label lblFilter;
-        private System.Windows.Forms.TextBox txtItemFilter;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtItemFilter;
         private System.Windows.Forms.ComboBox cmbItem;
         private System.Windows.Forms.Button cmdAdd;
         private System.Windows.Forms.DataGridView dgvItems;
@@ -1005,14 +1005,14 @@
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.ComboBox cmbPurity;
         private System.Windows.Forms.Label lblQuantity;
-        private System.Windows.Forms.TextBox txtQuantity;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtQuantity;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox txtCommodityRequestFilter;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtCommodityRequestFilter;
         private System.Windows.Forms.ComboBox cmbCommodityRequest;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox txtCommodityRequestQuantity;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtCommodityRequestQuantity;
         private System.Windows.Forms.Button cmdAddCommodityRequest;
         private System.Windows.Forms.DataGridView dgvCommodityRequests;
         private System.Windows.Forms.RichTextBox richTextBox1;

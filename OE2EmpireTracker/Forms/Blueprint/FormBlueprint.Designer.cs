@@ -1,4 +1,4 @@
-﻿using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Baseline;
 using System;
 
 namespace OE2EmpireTracker
@@ -33,7 +33,7 @@ namespace OE2EmpireTracker
         {
             this.lblBlueprintType = new System.Windows.Forms.Label();
             this.flpBlueprintType = new System.Windows.Forms.FlowLayoutPanel();
-            this.txtFilterBlueprintType = new System.Windows.Forms.TextBox();
+            this.txtFilterBlueprintType = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmbBlueprintType = new System.Windows.Forms.ComboBox();
             this.flpTechLevel = new System.Windows.Forms.FlowLayoutPanel();
             this.lblTechLevel = new System.Windows.Forms.Label();
@@ -47,20 +47,20 @@ namespace OE2EmpireTracker
             this.cmbEvolution = new System.Windows.Forms.ComboBox();
             this.flpBaseBlueprint = new System.Windows.Forms.FlowLayoutPanel();
             this.lblBaseBlueprint = new System.Windows.Forms.Label();
-            this.txtFilterBaseBlueprint = new System.Windows.Forms.TextBox();
+            this.txtFilterBaseBlueprint = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmbBaseBlueprint = new System.Windows.Forms.ComboBox();
             this.flpName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblName = new System.Windows.Forms.Label();
-            this.txtName = new System.Windows.Forms.TextBox();
+            this.txtName = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpNickName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblNickName = new System.Windows.Forms.Label();
-            this.txtNickName = new System.Windows.Forms.TextBox();
+            this.txtNickName = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpDescription = new System.Windows.Forms.FlowLayoutPanel();
             this.lblDescription = new System.Windows.Forms.Label();
-            this.txtDescription = new System.Windows.Forms.TextBox();
+            this.txtDescription = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpCopyCost = new System.Windows.Forms.FlowLayoutPanel();
             this.lblCopyCost = new System.Windows.Forms.Label();
-            this.txtCopyCost = new System.Windows.Forms.TextBox();
+            this.txtCopyCost = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.chkGlobalBlueprint = new System.Windows.Forms.CheckBox();
             this.cmdNew = new System.Windows.Forms.Button();
@@ -81,7 +81,7 @@ namespace OE2EmpireTracker
             this.flpSearchList = new System.Windows.Forms.FlowLayoutPanel();
             this.flpBlueprintSearch = new System.Windows.Forms.FlowLayoutPanel();
             this.lblBlueprintListFilter = new System.Windows.Forms.Label();
-            this.txtBlueprintListFilter = new System.Windows.Forms.TextBox();
+            this.txtBlueprintListFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.lvwBlueprints = new System.Windows.Forms.ListView();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdImport = new System.Windows.Forms.Button();
@@ -736,12 +736,12 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.FlowLayoutPanel flpBaseDetails;
         private System.Windows.Forms.FlowLayoutPanel flpName;
         private System.Windows.Forms.Label lblName;
-        private System.Windows.Forms.TextBox txtName;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtName;
         private System.Windows.Forms.FlowLayoutPanel flpEvolution;
         private System.Windows.Forms.Label lblEvolution;
         private System.Windows.Forms.FlowLayoutPanel flpDescription;
         private System.Windows.Forms.Label lblDescription;
-        private System.Windows.Forms.TextBox txtDescription;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtDescription;
         private System.Windows.Forms.TabControl tabDetailedData;
         private System.Windows.Forms.TabPage tabPStatistics;
         private System.Windows.Forms.TabPage tabPResources;
@@ -761,25 +761,25 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.DataGridViewTextBoxColumn Property;
         private System.Windows.Forms.DataGridViewTextBoxColumn BaseValue;
         private System.Windows.Forms.DataGridViewTextBoxColumn CurrentValue;
-        private System.Windows.Forms.TextBox txtFilterBlueprintType;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtFilterBlueprintType;
         private System.Windows.Forms.ComboBox cmbBlueprintType;
-        private System.Windows.Forms.TextBox txtFilterBaseBlueprint;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtFilterBaseBlueprint;
         private System.Windows.Forms.ComboBox cmbBaseBlueprint;
         private System.Windows.Forms.FlowLayoutPanel flpNickName;
         private System.Windows.Forms.Label lblNickName;
-        private System.Windows.Forms.TextBox txtNickName;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtNickName;
         private System.Windows.Forms.DataGridViewComboBoxColumn Resource;
         private OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn Amount;
         private System.Windows.Forms.FlowLayoutPanel flpSearchList;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flpBlueprintSearch;
         private System.Windows.Forms.Label lblBlueprintListFilter;
-        private System.Windows.Forms.TextBox txtBlueprintListFilter;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtBlueprintListFilter;
         private System.Windows.Forms.ListView lvwBlueprints;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.FlowLayoutPanel flpCopyCost;
         private System.Windows.Forms.Label lblCopyCost;
-        private System.Windows.Forms.TextBox txtCopyCost;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtCopyCost;
         private System.Windows.Forms.Button cmdNew;
         private System.Windows.Forms.Button cmdImport;
     }
