@@ -49,6 +49,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             flpBase.Layout += flpBase_Layout;
             flpSelectors.Layout += flpSelectors_Layout;
+            pnlExecution.Layout += pnlExecution_Layout;
 
             playerContext.CurrentPlayerChanged += (s, ev) =>
             {
@@ -91,6 +92,13 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             flpSelectors.Size = new Size(
                 flpSelectors.Size.Width,
                 flpBase.Size.Height - flpSelectors.Margin.Top - flpSelectors.Margin.Bottom);
+        }
+
+        private void pnlExecution_Layout(object sender, LayoutEventArgs e)
+        {
+            int w = pnlExecution.ClientSize.Width - dgvLoadList.Margin.Left - dgvLoadList.Margin.Right;
+            dgvLoadList.Width = w;
+            flpStops.Width = w;
         }
 
         private void flpSelectors_Layout(object sender, LayoutEventArgs e)
