@@ -21,6 +21,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         private DeliveryPlan selectedPlan;
         private string preSelectRouteUUID;
         private string preSelectPlanUUID;
+        private Dictionary<DeliveryPlanStop, Button> _stopCompleteButtons = new Dictionary<DeliveryPlanStop, Button>();
 
         public FormDeliveryExecution()
         {
@@ -227,6 +228,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvLoadList.Rows.Clear();
             flpStops.Controls.Clear();
+            _stopCompleteButtons.Clear();
             selectedPlan = null;
             cmdCompletePlan.Visible = false;
             cmdDeletePlan.Visible = false;
@@ -241,6 +243,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             flpStops.SuspendLayout();
             dgvLoadList.Rows.Clear();
             flpStops.Controls.Clear();
+            _stopCompleteButtons.Clear();
 
             if (selectedPlan == null)
             {
@@ -338,6 +341,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     };
                     btnComplete.Click += CompleteStop_Click;
                     flpStops.Controls.Add(btnComplete);
+                    _stopCompleteButtons[stop] = btnComplete;
                 }
             }
 
@@ -383,10 +387,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             playerContext.writeContext();
 
-            // Rebuild to show/hide "Complete Stop" buttons
-            flpStops.SuspendLayout();
-            BuildExecution();
-            flpStops.ResumeLayout();
+            // Incrementally update the Complete Stop button for the affected stop
+            var affectedStop = selectedPlan?.Stops.FirstOrDefault(s =>
+                s.DropOff.Contains(item) || s.PickUp.Contains(item));
+            UpdateStopCompleteButton(affectedStop);
 
             if (selectedPlan != null && IsAllDelivered(selectedPlan))
             {
@@ -511,6 +515,66 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             }
 
             playerContext.OnColonyDataChanged(stop.ColonyUUID);
+        }
+
+        private void UpdateStopCompleteButton(DeliveryPlanStop stop)
+        {
+            if (stop == null) return;
+
+            bool allDelivered = stop.DropOff.All(i => i.Delivered) && stop.PickUp.All(i => i.Delivered)
+                && (stop.DropOff.Count > 0 || stop.PickUp.Count > 0);
+
+            if (allDelivered && !_stopCompleteButtons.ContainsKey(stop))
+            {
+                // Find insert position before adding the button
+                int insertAfter = FindLastControlIndexForStop(stop);
+
+                var btnComplete = new Button
+                {
+                    Text = "Complete Stop",
+                    AutoSize = true,
+                    Margin = new Padding(20, 3, 3, 3),
+                    Tag = stop
+                };
+                btnComplete.Click += CompleteStop_Click;
+
+                flpStops.Controls.Add(btnComplete);
+
+                // Position the button right after the last control for this stop
+                if (insertAfter >= 0)
+                    flpStops.Controls.SetChildIndex(btnComplete, insertAfter + 1);
+
+                _stopCompleteButtons[stop] = btnComplete;
+            }
+            else if (!allDelivered && _stopCompleteButtons.ContainsKey(stop))
+            {
+                // Remove the Complete Stop button
+                var btn = _stopCompleteButtons[stop];
+                flpStops.Controls.Remove(btn);
+                btn.Click -= CompleteStop_Click;
+                btn.Dispose();
+                _stopCompleteButtons.Remove(stop);
+            }
+        }
+
+        /// <summary>
+        /// Finds the index of the last control in flpStops that belongs to the given stop.
+        /// Checks checkbox Tags (DeliveryItem) against the stop's DropOff/PickUp lists.
+        /// </summary>
+        private int FindLastControlIndexForStop(DeliveryPlanStop stop)
+        {
+            int lastIndex = -1;
+            var stopItems = new HashSet<DeliveryItem>(stop.DropOff.Concat(stop.PickUp));
+
+            for (int i = 0; i < flpStops.Controls.Count; i++)
+            {
+                var ctrl = flpStops.Controls[i];
+                if (ctrl.Tag is DeliveryItem di && stopItems.Contains(di))
+                    lastIndex = i;
+                else if (ctrl.Tag == stop)
+                    lastIndex = i;
+            }
+            return lastIndex;
         }
 
         private void CompleteStop_Click(object sender, EventArgs e)
