@@ -171,12 +171,11 @@ namespace OE2EmpireTracker.Forms.Colony
             this.flpSelection.Controls.Add(this.lblSelection);
             this.flpSelection.Controls.Add(this.txtSelectionFilter);
             this.flpSelection.Controls.Add(this.cmbSelection);
-            this.flpSelection.Controls.Add(this.txtQuantity);
-            this.flpSelection.Controls.Add(this.chkStageResources);
-            this.flpSelection.Controls.Add(this.cmdStart);
+            this.flpManufacturingControls = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpSelection.Controls.Add(this.flpManufacturingControls);
             this.flpSelection.Location = new System.Drawing.Point(3, 3);
             this.flpSelection.Name = "flpSelection";
-            this.flpSelection.Size = new System.Drawing.Size(418, 29);
+            this.flpSelection.Size = new System.Drawing.Size(418, 58);
             this.flpSelection.TabIndex = 5;
             // 
             // lblSelection
@@ -401,6 +400,17 @@ namespace OE2EmpireTracker.Forms.Colony
             this.chkStageResources.UseVisualStyleBackColor = true;
             this.chkStageResources.CheckedChanged += new System.EventHandler(this.chkStageResources_CheckedChanged);
             // 
+            // flpManufacturingControls
+            // 
+            this.flpManufacturingControls.Controls.Add(this.chkStageResources);
+            this.flpManufacturingControls.Controls.Add(this.txtQuantity);
+            this.flpManufacturingControls.Controls.Add(this.cmdStart);
+            this.flpManufacturingControls.Location = new System.Drawing.Point(3, 29);
+            this.flpManufacturingControls.Margin = new System.Windows.Forms.Padding(0);
+            this.flpManufacturingControls.Name = "flpManufacturingControls";
+            this.flpManufacturingControls.Size = new System.Drawing.Size(418, 26);
+            this.flpManufacturingControls.Visible = false;
+            // 
             // txtQuantity
             // 
             this.txtQuantity.Location = new System.Drawing.Point(282, 3);
@@ -467,6 +477,7 @@ namespace OE2EmpireTracker.Forms.Colony
         private System.Windows.Forms.Timer timerCountdown;
         private System.Windows.Forms.RichTextBox rtbProgressStatus;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtQuantity;
+        private System.Windows.Forms.FlowLayoutPanel flpManufacturingControls;
         private System.Windows.Forms.CheckBox chkStageResources;
     }
 }

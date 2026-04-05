@@ -97,6 +97,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 }
                 else {
                     flpSelection.Visible = false;
+                    flpManufacturingControls.Visible = false;
                     flpSubSelection.Visible = false;
                     flpCompletionTime.Visible = false;
                 }
@@ -194,6 +195,7 @@ namespace OE2EmpireTracker.Forms.Colony
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
                 flpSelection.Visible = false;
+                flpManufacturingControls.Visible = false;
                 flpSubSelection.Visible = false;
                 flpCompletionTime.Visible = false;
                 return;
@@ -233,6 +235,7 @@ namespace OE2EmpireTracker.Forms.Colony
             if (showSelection)
             {
                 flpSelection.Visible = true;
+                flpManufacturingControls.Visible = false;
                 txtQuantity.Visible = false;
                 if (cmbSelection.Items.Count <= 1 || !string.IsNullOrEmpty(ColonyStructureData.MiningSurvey))
                 {
@@ -249,6 +252,7 @@ namespace OE2EmpireTracker.Forms.Colony
             else
             {
                 flpSelection.Visible = false;
+                flpManufacturingControls.Visible = false;
             }
 
             if ( showSubSelection)
@@ -330,6 +334,7 @@ namespace OE2EmpireTracker.Forms.Colony
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
                 flpSelection.Visible = false;
+                flpManufacturingControls.Visible = false;
                 flpSubSelection.Visible = false;
                 flpCompletionTime.Visible = false;
                 return;
@@ -352,6 +357,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             // Selection: unrefined resources from warehouse + actively mined resources
             flpSelection.Visible = true;
+            flpManufacturingControls.Visible = false;
             txtQuantity.Visible = false;
             PopulateSelectionWithUnrefinedResources();
             if (!string.IsNullOrEmpty(ColonyStructureData.RefiningResource))
@@ -568,6 +574,7 @@ namespace OE2EmpireTracker.Forms.Colony
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
                 flpSelection.Visible = false;
+                flpManufacturingControls.Visible = false;
                 flpSubSelection.Visible = false;
                 flpCompletionTime.Visible = false;
                 return;
@@ -590,6 +597,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             // Selection: researchable blueprints
             flpSelection.Visible = true;
+            flpManufacturingControls.Visible = false;
             txtQuantity.Visible = false;
             if (cmbSelection.Items.Count <= 1 || !string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID))
             {
@@ -702,6 +710,7 @@ namespace OE2EmpireTracker.Forms.Colony
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
                 flpSelection.Visible = false;
+                flpManufacturingControls.Visible = false;
                 flpSubSelection.Visible = false;
                 flpCompletionTime.Visible = false;
                 return;
@@ -724,6 +733,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             // Selection: manufacturable blueprints
             flpSelection.Visible = true;
+            flpManufacturingControls.Visible = true;
             PopulateSelectionWithManufacturableBlueprints();
             if (!string.IsNullOrEmpty(ColonyStructureData.ManufacturingBlueprintUUID))
             {
@@ -857,6 +867,7 @@ namespace OE2EmpireTracker.Forms.Colony
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
                 flpSelection.Visible = false;
+                flpManufacturingControls.Visible = false;
                 flpSubSelection.Visible = false;
                 flpCompletionTime.Visible = false;
                 return;
@@ -879,6 +890,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             // Selection: commodities filtered by CommodityIndustry
             flpSelection.Visible = true;
+            flpManufacturingControls.Visible = true;
             PopulateSelectionWithCommodities();
             if (!string.IsNullOrEmpty(ColonyStructureData.ManufacturingCommodityName))
             {
@@ -1546,6 +1558,10 @@ namespace OE2EmpireTracker.Forms.Colony
             if (flpSelection.Visible)
             {
                 height += flpSelection.Size.Height + flpSelection.Margin.Vertical;
+            }
+            if (flpManufacturingControls.Visible)
+            {
+                height += flpManufacturingControls.Size.Height + flpManufacturingControls.Margin.Vertical;
             }
             if (flpSubSelection.Visible)
             {
