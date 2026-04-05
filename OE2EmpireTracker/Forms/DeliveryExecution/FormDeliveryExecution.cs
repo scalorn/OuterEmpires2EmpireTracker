@@ -189,8 +189,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             Log.Debug("BuildExecution: loadItems={0}", loadItems.Count);
             foreach (var item in loadItems)
             {
-                Log.Debug("  Load: {0} x{1}", item.Name, item.Quantity);
-                dgvLoadList.Rows.Add(item.ItemType.ToString(), item.Name, item.Quantity);
+                Log.Debug("  Load: {0} x{1}", item.BaseItemTypeID, item.Quantity);
+                dgvLoadList.Rows.Add(item.ItemType.ToString(), item.BaseItemTypeID, item.Quantity);
             }
 
             // Build per-stop sections

@@ -126,6 +126,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.dgvLoadList.Name = "dgvLoadList";
             this.dgvLoadList.ReadOnly = true;
             this.dgvLoadList.RowHeadersVisible = false;
+            this.dgvLoadList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvLoadList.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
             this.dgvLoadList.Size = new System.Drawing.Size(768, 120);
             this.dgvLoadList.TabIndex = 1;
             // 
