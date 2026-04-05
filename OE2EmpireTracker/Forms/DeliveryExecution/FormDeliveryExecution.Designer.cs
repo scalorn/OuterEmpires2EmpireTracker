@@ -177,10 +177,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             // 
             // colLoadName
             // 
-            this.colLoadName.HeaderText = "Item";
+            this.colLoadName.HeaderText = "Name";
             this.colLoadName.Name = "colLoadName";
             this.colLoadName.ReadOnly = true;
-            this.colLoadName.Width = 250;
+            this.colLoadName.Width = 200;
             // 
             // colLoadExtName
             // 
@@ -188,7 +188,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.colLoadExtName.HeaderText = "Extended Name";
             this.colLoadExtName.Name = "colLoadExtName";
             this.colLoadExtName.ReadOnly = true;
-            this.colLoadExtName.Width = 250;
+            this.colLoadExtName.Width = 300;
             // 
             // colLoadQty
             // 
