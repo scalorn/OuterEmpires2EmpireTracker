@@ -87,9 +87,8 @@ Rules and patterns learned from building forms in this project. Follow these whe
 
 ## Data Model Write-Through
 
-- Controls whose values are consumed by other code paths (event handlers, auto-fill, locking, calculations) MUST write back to the data model immediately on change (TextChanged, CheckedChanged, SelectedIndexChanged).
-- If a control's value is ONLY read by the Save handler, deferred write (read from UI in Save handler) is acceptable.
-- The key test: "Is this value used by anything other than the Save button?" If yes, it must write-through immediately.
-- Example: `txtQuantity` on ColonyStructure is used by Stage Resources checkbox and auto-fill — must write-through. `txtPlanetName` on FormColony is only read by Save — deferred is OK.
+- ALL editable UI controls (TextBox, ValidatedTextBox, CheckBox, ComboBox) that map to a data model property MUST write back to the data model immediately on change (TextChanged, CheckedChanged, SelectedIndexChanged).
+- Do NOT defer data model writes to a Save button — the in-memory data model must always reflect the current UI state. Background processing threads and cross-form code paths depend on the data model being current.
+- The Save button's role is to call `writeContext()` to persist to disk, NOT to transfer UI values to the data model.
 - When a control has a default display value (e.g. "1" for quantity), that default must also be written to the data model when the control becomes visible or the default is applied.
 - Use the ProgrammaticUpdateGuard check (`if (_isProgrammaticUpdate > 0) return;`) in the handler to avoid writing back during programmatic population.

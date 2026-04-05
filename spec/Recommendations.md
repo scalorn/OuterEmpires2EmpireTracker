@@ -242,3 +242,63 @@ Audit of all forms against `.kiro/steering/forms.md`. All forms now implement `I
 - FormPlayerProfile: added CurrentPlayerChanged subscription + handler
 - MainWindow: added interface (no grids, establishes pattern)
 - FormColony + ColonyStructure: already compliant
+
+
+---
+
+## 17. Deferred Write-Through Conversion
+**Priority: Medium — Required before background processing (Rec #4)**
+All forms with editable controls must write to the data model immediately on change, not defer to Save. Save should only call `writeContext()` to persist to disk.
+
+### FormColony.cs
+- [ ] `txtPlanetName` → add TextChanged handler writing to `colonyViewModel.PlanetName`
+- [ ] `txtColonyName` → add TextChanged handler writing to `colonyViewModel.ColonyName`
+- [ ] `txtSystemName` → add TextChanged handler writing to `colonyViewModel.Data.SystemName`
+- [ ] Remove duplicate reads from `cmdSave_Click` (keep only `colonyViewModel.Save()`)
+
+### FormBlueprint.cs
+- [ ] `txtName` → add TextChanged handler writing to `viewModel.Name`
+- [ ] `txtNickName` → add TextChanged handler writing to `viewModel.NickName`
+- [ ] `txtDescription` → add TextChanged handler writing to `viewModel.Description`
+- [ ] `txtCopyCost` → add TextChanged handler writing to `viewModel.CopyCost`
+- [ ] `cmbBlueprintType` → write to `viewModel.BluePrintType` on SelectedIndexChanged
+- [ ] `cmbShipClass` → write to `viewModel.Class` on SelectedIndexChanged
+- [ ] `cmbTechLevel` → write to `viewModel.TechLevel` on SelectedIndexChanged
+- [ ] `cmbEvolution` → write to `viewModel.Evolution` on SelectedIndexChanged
+- [ ] `cmbBaseBlueprint` → write to `viewModel.BaseBlueprintUUID` on SelectedIndexChanged
+- [ ] `chkGlobalBlueprint` → write on CheckedChanged
+- [ ] Remove duplicate reads from `btnSave_Click`
+
+### FormSurvey.cs
+- [ ] `txtPlanetName` → add TextChanged handler writing to `viewModel.PlanetName`
+- [ ] `txtSystemName` → add TextChanged handler writing to `viewModel.SystemName`
+- [ ] `txtSurveyID` → add TextChanged handler writing to `viewModel.SurveyID`
+- [ ] `txtNickName` → add TextChanged handler writing to `viewModel.NickName`
+- [ ] `txtScannedBy` → add TextChanged handler writing to `viewModel.ScannedBy`
+- [ ] `txtScanDateTime` → add TextChanged handler writing to `viewModel.DateTime`
+- [ ] `txtSensorAbundance` → add TextChanged handler writing to `viewModel.SensorAbundance`
+- [ ] `txtPurityModifier` → add TextChanged handler writing to `viewModel.PurityModifier`
+- [ ] `txtScanLevel` → add TextChanged handler writing to `viewModel.ScanLevel`
+- [ ] `cmbScannerBlueprint` → write to `viewModel.ScannerBlueprintUUID` on SelectedIndexChanged
+- [ ] Remove duplicate reads from `btnSave_Click`
+
+### FormPlayerProfile.cs
+- [ ] `txtPlayerName` → add write to `viewModel.Name` in existing TextChanged handler
+- [ ] `txtTotalCredits` → add TextChanged handler writing to `viewModel.TotalCredits`
+- [ ] `txtSkillPoints` → add TextChanged handler writing to `viewModel.SkillPoints`
+- [ ] `txtPublicRank`, `txtPublicRankCurXP`, `txtPublicRankNextXP` → add TextChanged handlers
+- [ ] `txtPrivateRank`, `txtPrivateRankCurXP`, `txtPrivateRankNextXP` → add TextChanged handlers
+- [ ] `txtMilitaryRank`, `txtMilitaryRankCurXP`, `txtMilitaryRankNextXP` → add TextChanged handlers
+- [ ] `cmbFaction` → write to `viewModel.Faction` on TextChanged/SelectedIndexChanged
+- [ ] Remove duplicate reads from `cmdSave_Click`
+
+### FormDeliveryRoute.cs
+- [ ] `txtRouteName` → add TextChanged handler writing to `viewModel.Name`
+- [ ] `txtPlanName` → add write to `planViewModel.Data.Name` in existing TextChanged handler
+- [ ] Remove duplicate reads from `cmdSave_Click`
+
+### Already Compliant
+- **ColonyStructure.cs** — `txtQuantity` writes through on TextChanged ✓
+- **FormDeliveryExecution.cs** — no editable fields (read-only) ✓
+- **ColonyStructure.cs** — all checkboxes (Built, Staged, Online, workers, StageResources) write through ✓
+- **FormColony.cs** — commodity request grid writes through on CellValueChanged ✓
