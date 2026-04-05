@@ -213,20 +213,24 @@ See [Delivery.md](requirements/Delivery.md) for full requirements.
 - Per-stop drop-off/pick-up with checkboxes
 - Commodity fulfillment on delivery check (REQ-DEL-054): sets CommodityRequested.Delivered = Requested, Fulfilled = true
 - Commodity unfulfillment on uncheck: reverses to Delivered = 0, Fulfilled = false
-- Flatpack staging (REQ-DEL-055) deferred to future phase
+- Flatpack staging (REQ-DEL-055): checking flatpack delivery sets structure Staged=True, fires ColonyDataChanged
+- Worker delivery: adds/removes workers to colony warehouse on check/uncheck
 
-### Phase 7: Auto-Fill Delivery Plans (REQ-DEL-060-062) — Partial (Commodities only)
+### Phase 7: Auto-Fill Delivery Plans (REQ-DEL-060-062) — Complete
 - Auto-Fill button on plan tab with request type checkboxes
-- Commodities enabled: scans each stop's colony for unfulfilled CommodityRequested, adds drop-off items for shortfall
-- Flatpacks, Resources for Manufacturing, Workers: disabled (Future)
+- Commodities: scans each stop's colony for unfulfilled CommodityRequested, adds drop-off items for shortfall
+- Flatpacks: scans for unbuilt+unstaged structures, adds flatpack drop-offs (stacked by blueprint)
+- Resources for Manufacturing: scans StagingResources=true structures, calculates resource shortfalls
+- Workers: computes ideal vs actual worker gaps, adds WorkDetail drop-offs
+- StagingResources flag on ColonyStructure with UI checkbox for Manufactory/CommodityFactory
 - Additive behavior, drop-off only
+- REQ-DEL-061 (time horizon parameter for flatpack auto-fill) not yet implemented
 
-### Phases 7-9: Future
-- Auto-fill delivery plans by request type
-- Ship integration (cargo capacity)
-- Space station hub modeling
+### Phases 8-9: Future
+- Ship integration (cargo capacity) (REQ-DEL-070-071)
+- Space station hub modeling (REQ-DEL-080-082)
 
-**Phases 1-6 complete. Phase 7+ are future work.**
+**Phases 1-7 complete. Phase 8+ are future work.**
 
 
 ---

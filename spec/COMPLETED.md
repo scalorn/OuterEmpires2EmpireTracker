@@ -247,3 +247,20 @@ Fix: Made ProgrammaticUpdateGuard implement IDisposable. Converted all 22 usages
 
 ## 68. Deferred Write-Through Conversion (Rec 17)
 All editable controls across 5 forms now write to the data model immediately on change via TextChanged/SelectedIndexChanged handlers. Save buttons simplified to only call writeContext() for disk persistence. Forms: FormColony (3 fields), FormBlueprint (4 text + 5 combos), FormSurvey (9 text + 1 combo), FormPlayerProfile (11 text + 1 combo), FormDeliveryRoute (2 text). 612 tests passing.
+
+## 69. Data Change Events for All Entity Types (Rec 18)
+Events added on PlayerContext with EventArgs classes:
+- `BlueprintDataChanged(BlueprintUUID)` — covers both player and global blueprints
+- `SurveyDataChanged(SurveyUUID)`
+- `DeliveryDataChanged` — plain EventArgs (routes/plans refresh as a set)
+- `PlayerProfileDataChanged(PlayerUUID)`
+
+All ViewModel Save/Delete methods fire the appropriate event:
+- BlueprintViewModel → OnBlueprintDataChanged (player + global)
+- SurveyViewModel → OnSurveyDataChanged
+- DeliveryRouteViewModel → OnDeliveryDataChanged
+- DeliveryPlanViewModel → OnDeliveryDataChanged
+- PlayerProfileViewModel → OnPlayerProfileDataChanged
+- ColonyViewModel → OnColonyDataChanged
+
+Forms subscribed with IsDisposed safety check, unsubscribe in OnFormClosed. Global blueprint changes route through PlayerContext since all forms use GetAllBlueprints(). 617 tests passing.
