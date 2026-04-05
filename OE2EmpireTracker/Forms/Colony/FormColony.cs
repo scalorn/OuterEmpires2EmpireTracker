@@ -78,8 +78,8 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             if (selectedColony != null && selectedColony.UUID == e.ColonyUUID)
             {
-                PopulateItemGrid();
-                PopulateCommodityRequestGrid();
+                colonyViewModel.RecalculateStatus();
+                PopulateForm();
             }
         }
 
