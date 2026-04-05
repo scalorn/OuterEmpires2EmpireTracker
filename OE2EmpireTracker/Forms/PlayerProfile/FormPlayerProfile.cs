@@ -77,6 +77,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
             flpBase.Layout += flpBase_Layout;
             flpSearchList.Layout += flpSearchList_Layout;
+            flpPlayerData.Layout += flpPlayerData_Layout;
         }
 
         private void flpBase_Layout(object sender, LayoutEventArgs e)
@@ -94,6 +95,13 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             lvwPlayerProfiles.Size = new System.Drawing.Size(
                 lvwPlayerProfiles.Size.Width,
                 flpSearchList.Size.Height - flpBlueprintSearch.Size.Height - flpBlueprintSearch.Margin.Top - flpBlueprintSearch.Margin.Bottom - flpResource.Size.Height - flpResource.Margin.Top - flpResource.Margin.Bottom - lvwPlayerProfiles.Margin.Top - lvwPlayerProfiles.Margin.Bottom);
+        }
+
+        private void flpPlayerData_Layout(object sender, LayoutEventArgs e)
+        {
+            flpPlayerDetails.Size = new System.Drawing.Size(
+                flpPlayerData.Size.Width - flpPlayerDetails.Margin.Left - flpPlayerDetails.Margin.Right,
+                flpPlayerData.Size.Height - flpCommands.Size.Height - flpCommands.Margin.Top - flpCommands.Margin.Bottom - flpPlayerDetails.Margin.Top - flpPlayerDetails.Margin.Bottom);
         }
 
         public void PopulateForm()
