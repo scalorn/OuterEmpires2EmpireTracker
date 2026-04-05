@@ -12,7 +12,7 @@
 
 ## Current Status
 
-**465 total tests, all passing.**
+**513 total tests, all passing.**
 
 All original Recommendations (1-8) resolved. MVVM complete across all forms. NLog logging throughout.
 
@@ -63,6 +63,7 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 48 | Optimizer adds support for built structure deficits | Complete |
 | 49 | Centralized GetAllBlueprints() for player + global | Complete |
 | 50 | Commodity Manufacturing (Rec 11, CommodityFactory) | Complete |
+| 51 | Unit tests for new features (48 tests) | Complete |
 
 ---
 

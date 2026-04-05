@@ -164,3 +164,6 @@ Added PlayerContext.GetAllBlueprints() that merges player + global blueprint lis
 
 ## 50. Commodity Manufacturing (Rec 11, CommodityFactory)
 Implemented `Flatpacks/CommodityFactory` structure type. Selection combo filtered by blueprint's CommodityIndustry property. Added `ManufacturingCommodityName` to ColonyStructure. 10 commodities per cycle, 10-minute cycle time. Resource consumption from Commodity.ConstructionResources. Resource locking for entire run via LockCommodityFactoryResources. Commodities stack in warehouse. Done completes one cycle. Added CommodityFactory constant to BlueprintTypes and CommoditiesPerCycle/CommodityCycleSeconds to GameConstants. 465 tests passing.
+
+## 51. Unit Tests for New Features (48 tests)
+Added 48 new tests across 3 new files and 1 updated file: BlueprintPropertyValidationTests (15 — ComboBox/CheckBox types, validation patterns, data sources), WorkerTypeInfoTests (8 — array structure, key mappings), ColonyProcessingTests (20 — commodity factory processing, resource locking, skill multipliers for mining and refining), ColonyStructureTests (+5 — Get/SetUnallocatedPresent). Total: 513 tests passing.
