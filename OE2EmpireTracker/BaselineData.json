@@ -822,6 +822,47 @@
       "Quantity": 0,
       "ResourcePurity": "",
       "Volume": 0.0
+    },
+    {
+      "OwnerUUID": "",
+      "baseBlueprintUUID": "",
+      "BluePrintType": "Hull",
+      "Evolution": 0,
+      "TechLevel": null,
+      "Class": 3,
+      "CopyCost": 0,
+      "Properties": {
+        "ManufactureTime": "13 hours",
+        "Mass": "3200",
+        "CargoVolumeSize": "2000",
+        "Health": "",
+        "EngCapacityRequired": "",
+        "CargoCapacity": "1100",
+        "FuelCapacity": "",
+        "LargeWeaponMounts": "1%",
+        "MediumWeaponMounts": "80%",
+        "SmallWeaponMounts": "",
+        "WearAndTearRate": "",
+        "MaximumDamageRepairRate": "",
+        "EnergyDefence": "",
+        "KineticDamageDefence": "",
+        "MissileDamageDefence": "",
+        "CrewSupported": ""
+      },
+      "Resources": {
+        "Halogens": "630",
+        "Non-Metallics": "63",
+        "Heavy Post-Trans Metals": "161"
+      },
+      "UUID": "5221424f-ed0b-4ce0-8c86-c64b597fc7b2",
+      "ItemType": "Blueprint",
+      "BaseItemTypeID": "",
+      "Name": "Corvette",
+      "NickName": "",
+      "Description": "Ship Hull",
+      "Quantity": 0,
+      "ResourcePurity": "",
+      "Volume": 0.0
     }
   ],
   "TechLevel": [

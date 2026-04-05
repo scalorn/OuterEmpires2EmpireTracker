@@ -119,7 +119,9 @@ namespace OE2EmpireTracker.Forms.Survey
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            dgvResources.CancelEdit();
+            dgvResources.CellValidating -= dgvResources_CellValidating;
+            try { dgvResources.EndEdit(); } catch { }
+            dgvResources.CellValidating += dgvResources_CellValidating;
 
             // Populate viewModel from form fields
             viewModel.PlanetName = txtPlanetName.Text;
@@ -176,8 +178,10 @@ namespace OE2EmpireTracker.Forms.Survey
             txtScanLevel.Text = "";
 
             cmbScannerBlueprint.SelectedItem = null;
-            dgvResources.CancelEdit();
+            dgvResources.CellValidating -= dgvResources_CellValidating;
+            try { dgvResources.EndEdit(); } catch { }
             dgvResources.Rows.Clear();
+            dgvResources.CellValidating += dgvResources_CellValidating;
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
@@ -275,8 +279,10 @@ namespace OE2EmpireTracker.Forms.Survey
             txtFilterScannerBlueprint.Text = "";
             cmbScannerBlueprint.SelectedItem = viewModel.FindScannerBlueprint();
 
-            dgvResources.CancelEdit();
+            dgvResources.CellValidating -= dgvResources_CellValidating;
+            try { dgvResources.EndEdit(); } catch { }
             dgvResources.Rows.Clear();
+            dgvResources.CellValidating += dgvResources_CellValidating;
             foreach (KeyValuePair<string, SurveyResource> resource in viewModel.GetResources())
             {
                 dgvResources.Rows.Add();

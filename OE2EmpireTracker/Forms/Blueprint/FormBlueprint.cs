@@ -389,8 +389,10 @@ namespace OE2EmpireTracker
                 // Remove excess rows if there are more than defined properties
                 if (bt.Properties.Length == 0)
                 {
-                    dgvStatistics.CancelEdit();
+                    dgvStatistics.CellValidating -= dgvStatistics_CellValidating;
+                    try { dgvStatistics.EndEdit(); } catch { }
                     dgvStatistics.Rows.Clear();
+                    dgvStatistics.CellValidating += dgvStatistics_CellValidating;
                 }
                 else while (dgvStatistics.Rows.Count > bt.Properties.Length)
                 {
@@ -703,9 +705,17 @@ namespace OE2EmpireTracker
         /// </remarks>
         private void btnSave_Click(object sender, EventArgs e)
         {
-            // End any active cell edits before reading grid values
-            dgvStatistics.CancelEdit();
-            dgvResources.CancelEdit();
+            // Temporarily suppress cell validation so we can exit edit mode
+            dgvStatistics.CellValidating -= dgvStatistics_CellValidating;
+            dgvResources.CellValidating -= dgvResources_CellValidating;
+            try
+            {
+                dgvStatistics.EndEdit();
+                dgvResources.EndEdit();
+            }
+            catch { }
+            dgvStatistics.CellValidating += dgvStatistics_CellValidating;
+            dgvResources.CellValidating += dgvResources_CellValidating;
 
             empireContext = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
@@ -858,8 +868,10 @@ namespace OE2EmpireTracker
         private void PopulateResources()
         { 
             // Populate resources grid with blueprint's resource data
-            dgvResources.CancelEdit();
+            dgvResources.CellValidating -= dgvResources_CellValidating;
+            try { dgvResources.EndEdit(); } catch { }
             dgvResources.Rows.Clear();
+            dgvResources.CellValidating += dgvResources_CellValidating;
             foreach (KeyValuePair<string, string> resource in viewModel.GetResources())
             {
                 dgvResources.Rows.Add();
@@ -914,10 +926,14 @@ namespace OE2EmpireTracker
             txtCopyCost.Text = "";
 
             // Clear grids
-            dgvStatistics.CancelEdit();
+            dgvStatistics.CellValidating -= dgvStatistics_CellValidating;
+            dgvResources.CellValidating -= dgvResources_CellValidating;
+            try { dgvStatistics.EndEdit(); } catch { }
+            try { dgvResources.EndEdit(); } catch { }
             dgvStatistics.Rows.Clear();
-            dgvResources.CancelEdit();
             dgvResources.Rows.Clear();
+            dgvStatistics.CellValidating += dgvStatistics_CellValidating;
+            dgvResources.CellValidating += dgvResources_CellValidating;
 
             chkGlobalBlueprint.Checked = false;
         }
