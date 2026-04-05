@@ -57,6 +57,7 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 42 | Replace all TextBox with ValidatedTextBox | Complete |
 | 43 | PlayerProfile form resize layout | Complete |
 | 44 | Survey form resize layout | Complete |
+| 45 | Blueprint property grid: ComboBox and CheckBox cell types | Complete |
 
 ---
 

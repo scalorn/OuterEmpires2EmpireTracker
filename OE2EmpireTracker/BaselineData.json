@@ -150,6 +150,7 @@
       "Name": "Commodity Factory Flatpack",
       "Universal": true,
       "Properties": [
+        "CommodityIndustry",
         "ManufactureTime",
         "Mass",
         "CargoVolumeSize",

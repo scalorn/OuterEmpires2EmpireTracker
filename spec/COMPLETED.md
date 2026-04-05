@@ -146,3 +146,6 @@ Added layout handlers (flpBase_Layout, flpSearchList_Layout, flpPlayerData_Layou
 
 ## 44. Survey Form Resize Layout
 Added layout handlers (flpBase_Layout, flpSearchList_Layout, flpSurveyData_Layout) with Dock=Fill on flpBase. Disabled AutoSize on flpSurveyDetails. dgvResources grid dynamically fills remaining vertical space. Command buttons stay near the bottom.
+
+## 45. Blueprint Property Grid: ComboBox and CheckBox Cell Types
+Extended `BlueprintPropertyValidation` with `ComboBox` and `CheckBox` property value types. `UpdatePropertyGrid` in FormBlueprint now swaps individual cells to `DataGridViewComboBoxCell` or `DataGridViewCheckBoxCell` based on property type. Added `GetComboBoxDataSource()` for data-driven combo sources. `CommodityIndustry` added as first ComboBox property (bound to CommodityIndustry static data). Boolean properties (`CanManufacture`, `CanResearch`, `Consumable`) changed to CheckBox type. Save handler reads bool values from checkbox cells correctly. `CommodityIndustry` added to `Flatpacks/CommodityFactory` properties in BaselineData.json. 465 tests passing.

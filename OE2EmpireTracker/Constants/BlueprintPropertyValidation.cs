@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OE2EmpireTracker.Constants
 {
@@ -8,7 +10,9 @@ namespace OE2EmpireTracker.Constants
         Integer,
         Decimal,
         Boolean,
-        Time
+        Time,
+        ComboBox,
+        CheckBox
     }
 
     /// <summary>
@@ -52,10 +56,13 @@ namespace OE2EmpireTracker.Constants
             { "UnassignedWhiteCollarDetail", PropertyValueType.Integer },
             { "WarehouseCapacity", PropertyValueType.Integer },
 
-            // Boolean properties
-            { "CanManufacture", PropertyValueType.Boolean },
-            { "CanResearch", PropertyValueType.Boolean },
-            { "Consumable", PropertyValueType.Boolean },
+            // Boolean properties (rendered as CheckBox in grid)
+            { "CanManufacture", PropertyValueType.CheckBox },
+            { "CanResearch", PropertyValueType.CheckBox },
+            { "Consumable", PropertyValueType.CheckBox },
+
+            // ComboBox properties (rendered as ComboBox in grid)
+            { "CommodityIndustry", PropertyValueType.ComboBox },
 
             // Time properties
             { "ManufactureTime", PropertyValueType.Time },
@@ -104,6 +111,22 @@ namespace OE2EmpireTracker.Constants
                 case PropertyValueType.Boolean: return BOOLEAN_PATTERN;
                 case PropertyValueType.Time: return TIME_PATTERN;
                 default: return null; // Unknown — no validation
+            }
+        }
+
+        /// <summary>
+        /// Returns the data source (IList) for ComboBox properties, or null if not applicable.
+        /// </summary>
+        public static IList GetComboBoxDataSource(string propertyName)
+        {
+            switch (propertyName)
+            {
+                case "CommodityIndustry":
+                    return new List<string>(
+                        Data.CommodityIndustry.Groups
+                            .Select(ci => ci.Name));
+                default:
+                    return null;
             }
         }
     }

@@ -1,4 +1,5 @@
 using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Data;
 using OE2EmpireTracker.Forms.Blueprint;
 using OE2EmpireTracker.ViewModels;
@@ -383,6 +384,30 @@ namespace OE2EmpireTracker
                     DataGridViewRow newRow = dgvStatistics.Rows[rowIndex];
                     newRow.Cells["Property"].Value = property;
                     newRow.Cells["Property"].Tag = property;
+
+                    // Swap the CurrentValue cell based on property type
+                    var propType = BlueprintPropertyValidation.GetPropertyType(property);
+                    if (propType == PropertyValueType.ComboBox)
+                    {
+                        var comboCell = new DataGridViewComboBoxCell();
+                        comboCell.DataSource = BlueprintPropertyValidation.GetComboBoxDataSource(property);
+                        comboCell.FlatStyle = FlatStyle.Flat;
+                        newRow.Cells["CurrentValue"] = comboCell;
+                    }
+                    else if (propType == PropertyValueType.CheckBox)
+                    {
+                        var checkCell = new DataGridViewCheckBoxCell();
+                        newRow.Cells["CurrentValue"] = checkCell;
+                    }
+                    else
+                    {
+                        // Ensure it's a text cell (may have been swapped previously)
+                        if (!(newRow.Cells["CurrentValue"] is DataGridViewTextBoxCell))
+                        {
+                            newRow.Cells["CurrentValue"] = new DataGridViewTextBoxCell();
+                        }
+                    }
+
                     row++;
                 }
 
@@ -769,7 +794,10 @@ namespace OE2EmpireTracker
             viewModel.ClearProperties();
             foreach (DataGridViewRow row in dgvStatistics.Rows)
             {
-                viewModel.SetProperty(row.Cells[0].Tag as string, row.Cells[2].Value as string);
+                string propName = row.Cells[0].Tag as string;
+                object cellValue = row.Cells[2].Value;
+                string strValue = cellValue is bool ? cellValue.ToString() : cellValue as string;
+                viewModel.SetProperty(propName, strValue);
             }
 
             // Map resources from grid via viewModel
@@ -859,7 +887,18 @@ namespace OE2EmpireTracker
                 {
                     value = "";
                 }
-                row.Cells["CurrentValue"].Value = value;
+
+                var propType = BlueprintPropertyValidation.GetPropertyType(property);
+                if (propType == PropertyValueType.CheckBox)
+                {
+                    bool boolVal = false;
+                    bool.TryParse(value, out boolVal);
+                    row.Cells["CurrentValue"].Value = boolVal;
+                }
+                else
+                {
+                    row.Cells["CurrentValue"].Value = value;
+                }
             }
             PopulateResources();
 
