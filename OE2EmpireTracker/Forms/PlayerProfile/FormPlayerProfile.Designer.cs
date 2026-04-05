@@ -41,7 +41,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.flpPlayerDetails = new System.Windows.Forms.FlowLayoutPanel();
             this.flpPlayerName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPlayerName = new System.Windows.Forms.Label();
-            this.txtPlayerName = new System.Windows.Forms.TextBox();
+            this.txtPlayerName = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpTotalCredits = new System.Windows.Forms.FlowLayoutPanel();
             this.lblTotalCredits = new System.Windows.Forms.Label();
             this.txtTotalCredits = new System.Windows.Forms.TextBox();
@@ -361,6 +361,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.txtPlayerName.Name = "txtPlayerName";
             this.txtPlayerName.Size = new System.Drawing.Size(200, 20);
             this.txtPlayerName.TabIndex = 0;
+            this.txtPlayerName.TextChanged += new System.EventHandler(this.txtPlayerName_TextChanged);
             // 
             // flpTotalCredits
             // 
@@ -1710,7 +1711,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private System.Windows.Forms.FlowLayoutPanel flpPlayerDetails;
         private System.Windows.Forms.FlowLayoutPanel flpPlayerName;
         private System.Windows.Forms.Label lblPlayerName;
-        private System.Windows.Forms.TextBox txtPlayerName;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtPlayerName;
         private System.Windows.Forms.FlowLayoutPanel flpTotalCredits;
         private System.Windows.Forms.Label lblTotalCredits;
         private System.Windows.Forms.TextBox txtTotalCredits;

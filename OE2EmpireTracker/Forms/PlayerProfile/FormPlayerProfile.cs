@@ -243,24 +243,33 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             }
         }
 
-        private void cmdSave_Click(object sender, EventArgs e)
+        private void txtPlayerName_TextChanged(object sender, EventArgs e)
         {
-            string newName = txtPlayerName.Text?.Trim();
-            if (string.IsNullOrEmpty(newName))
+            string name = txtPlayerName.Text?.Trim();
+            if (string.IsNullOrEmpty(name))
             {
-                MessageBox.Show("Player name cannot be empty.", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtPlayerName.SetError("Name cannot be empty");
                 return;
             }
 
-            // Check for duplicate name (exclude the current profile being edited)
             bool duplicate = playerContext.playerProfileList
                 .Any(p => p.UUID != viewModel.Data.UUID &&
-                     string.Equals(p.Name, newName, StringComparison.OrdinalIgnoreCase));
+                     string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
             if (duplicate)
             {
-                MessageBox.Show($"A player named '{newName}' already exists.", "Duplicate Name",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtPlayerName.SetError("Duplicate name");
+            }
+            else
+            {
+                txtPlayerName.ClearError();
+            }
+        }
+
+        private void cmdSave_Click(object sender, EventArgs e)
+        {
+            string newName = txtPlayerName.Text?.Trim();
+            if (string.IsNullOrEmpty(newName) || !txtPlayerName.IsValid)
+            {
                 return;
             }
 

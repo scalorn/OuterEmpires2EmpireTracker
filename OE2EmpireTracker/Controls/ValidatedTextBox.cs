@@ -184,6 +184,7 @@ namespace OE2EmpireTracker.Controls
         public void SetError(string message)
         {
             _errorMessage = message;
+            _isValid = false;
             BackColor = InvalidColor;
             Invalidate();
         }
@@ -191,6 +192,7 @@ namespace OE2EmpireTracker.Controls
         public void ClearError()
         {
             _errorMessage = "";
+            _isValid = true;
             BackColor = ValidColor;
             Invalidate();
         }
