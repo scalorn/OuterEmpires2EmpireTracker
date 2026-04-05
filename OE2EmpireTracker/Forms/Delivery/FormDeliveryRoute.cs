@@ -170,8 +170,8 @@ namespace OE2EmpireTracker.Forms.Delivery
                 {
                     planViewModel = null;
                 }
-                selectedPlanStop = null;
-                ClearPlanTab();
+                // Trigger plan tab update for the currently selected stop
+                dgvStops_SelectionChanged(sender, e);
             }
         }
 
