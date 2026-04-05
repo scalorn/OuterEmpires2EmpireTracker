@@ -150,7 +150,7 @@ namespace OE2EmpireTracker.Forms.Colony
         private void structures_ColonyStructureDataChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
             this.SuspendLayout();
 
             colonyViewModel.RecalculateStatus();
@@ -218,7 +218,6 @@ namespace OE2EmpireTracker.Forms.Colony
 
             PopulateItemGrid();
 
-            guard.release();
             this.ResumeLayout();
         }
 
@@ -345,7 +344,7 @@ namespace OE2EmpireTracker.Forms.Colony
         private void PopulateForm()
         {
             Log.Debug("PopulateForm called! selectedColony = " + (selectedColony != null ? selectedColony.PlanetName : "null"));
-            ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
             this.SuspendLayout();
             tabDetailedData.Visible = false;
 
@@ -438,7 +437,6 @@ namespace OE2EmpireTracker.Forms.Colony
             PopulateCommodityRequestGrid();
 
             this.ResumeLayout();
-            guard.release();
             Log.Debug("PopulateForm completed!");
         }
 
@@ -994,7 +992,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void PopulateCommodityRequestGrid()
         {
-            var guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
             dgvCommodityRequests.CellValidating -= dgvCommodityRequests_CellValidating;
             try { dgvCommodityRequests.EndEdit(); } catch { }
             dgvCommodityRequests.Rows.Clear();
@@ -1283,7 +1281,7 @@ namespace OE2EmpireTracker.Forms.Colony
             int col = dgvCommodityRequests.CurrentCell.ColumnIndex;
             if (col == 0)
             {
-                var guard = new ProgrammaticUpdateGuard(this);
+                using var guard = new ProgrammaticUpdateGuard(this);
                 dgvCommodityRequests.CurrentCell = dgvCommodityRequests.Rows[dgvCommodityRequests.CurrentCell.RowIndex].Cells[1];
             }
         }

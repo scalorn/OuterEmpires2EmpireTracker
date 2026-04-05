@@ -20,10 +20,10 @@ namespace OE2EmpireTracker.Controls
 
     /// <summary>
     /// RAII-style guard that increments a programmatic update counter on construction
-    /// and decrements it when released or finalized. Prevents event handlers from
+    /// and decrements it when released or disposed. Prevents event handlers from
     /// firing during code-driven UI updates.
     /// </summary>
-    public class ProgrammaticUpdateGuard
+    public class ProgrammaticUpdateGuard : System.IDisposable
     {
         private readonly IProgrammaticUpdateSource _source;
         private bool _hasLocked;
@@ -42,6 +42,11 @@ namespace OE2EmpireTracker.Controls
                 _source.EndProgrammaticUpdate();
                 _hasLocked = false;
             }
+        }
+
+        public void Dispose()
+        {
+            release();
         }
 
         ~ProgrammaticUpdateGuard()

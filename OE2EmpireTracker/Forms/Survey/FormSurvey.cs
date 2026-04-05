@@ -214,7 +214,7 @@ namespace OE2EmpireTracker.Forms.Survey
 
         private void ClearForm()
         {
-            var guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
             viewModel.Reset();
 
             txtPlanetName.Text = "";
@@ -318,7 +318,7 @@ namespace OE2EmpireTracker.Forms.Survey
         /// </summary>
         private void PopulateFormFromViewModel()
         {
-            var guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
             txtPlanetName.Text = viewModel.PlanetName ?? "";
             txtSystemName.Text = viewModel.SystemName ?? "";
             txtSurveyID.Text = viewModel.SurveyID ?? "";

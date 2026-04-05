@@ -224,7 +224,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void ClearExecution()
         {
-            var guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
             dgvLoadList.Rows.Clear();
             flpStops.Controls.Clear();
             selectedPlan = null;
@@ -234,7 +234,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void BuildExecution()
         {
-            var guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
             dgvLoadList.Rows.Clear();
             flpStops.Controls.Clear();
 

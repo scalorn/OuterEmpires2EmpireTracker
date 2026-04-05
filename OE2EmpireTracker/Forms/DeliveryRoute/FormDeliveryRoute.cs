@@ -250,7 +250,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void PopulateStopsGrid()
         {
-            var guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
             dgvStops.Rows.Clear();
             foreach (var stop in viewModel.Stops)
             {
@@ -595,7 +595,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void ClearPlanGrids()
         {
-            var guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
             lblPlanStop.Text = "(select a stop on Stops tab)";
             dgvDropOff.Rows.Clear();
             dgvPickUp.Rows.Clear();
@@ -738,7 +738,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void PopulatePlanGrids()
         {
-            var guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
             dgvDropOff.Rows.Clear();
             dgvPickUp.Rows.Clear();
             if (selectedPlanStop == null) return;

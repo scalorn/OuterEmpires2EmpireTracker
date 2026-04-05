@@ -356,7 +356,7 @@ namespace OE2EmpireTracker
         /// </remarks>
         public void UpdatePropertyGrid()
         {
-            var guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
             BlueprintType bt = cmbBlueprintType.SelectedItem as BlueprintType;
             
             // Handle universal vs non-universal blueprints
@@ -912,7 +912,7 @@ namespace OE2EmpireTracker
         }
         private void PopulateResources()
         {
-            var guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
             // Populate resources grid with blueprint's resource data
             dgvResources.CellValidating -= dgvResources_CellValidating;
             try { dgvResources.EndEdit(); } catch { }
@@ -940,7 +940,7 @@ namespace OE2EmpireTracker
         /// </remarks>
         private void ClearForm()
         {
-            var guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
             viewModel.Reset();
 
             // Clear filters

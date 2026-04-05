@@ -61,7 +61,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         public void UpdateData()
         {
-            ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
 
             this.SuspendLayout();
             FlatpackBlueprint = playerContext.FindBlueprint(ColonyStructureData.FlatpackBlueprintUUID);
@@ -185,19 +185,17 @@ namespace OE2EmpireTracker.Forms.Colony
             PopulateStats();
 
             this.ResumeLayout();
-            guard.release();
         }
 
         private void handleMiningRigControls()
         {
-            ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
 
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
                 flpSelection.Visible = false;
                 flpSubSelection.Visible = false;
                 flpCompletionTime.Visible = false;
-                guard.release();
                 return;
             }
 
@@ -293,8 +291,6 @@ namespace OE2EmpireTracker.Forms.Colony
                 rtbProgressStatus.Text = "";
             }
 
-            guard.release();
-
             // TODO: FIXME: Changing visibilty isn't triggering a layout call.
             // flpStructureCommands.PerformLayout(); - Does NOT work.
             flpStructureCommands_Layout(null, null);
@@ -329,14 +325,13 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void handleRefineryControls()
         {
-            ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
 
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
                 flpSelection.Visible = false;
                 flpSubSelection.Visible = false;
                 flpCompletionTime.Visible = false;
-                guard.release();
                 return;
             }
 
@@ -393,7 +388,6 @@ namespace OE2EmpireTracker.Forms.Colony
                 rtbProgressStatus.Text = "";
             }
 
-            guard.release();
             flpStructureCommands_Layout(null, null);
             flpStructureDetails_Layout(null, null);
             ColonyStructure_Layout(null, null);
@@ -569,14 +563,13 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void handleResearchLabControls()
         {
-            ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
 
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
                 flpSelection.Visible = false;
                 flpSubSelection.Visible = false;
                 flpCompletionTime.Visible = false;
-                guard.release();
                 return;
             }
 
@@ -629,7 +622,6 @@ namespace OE2EmpireTracker.Forms.Colony
                 rtbProgressStatus.Text = "";
             }
 
-            guard.release();
             flpStructureCommands_Layout(null, null);
             flpStructureDetails_Layout(null, null);
             ColonyStructure_Layout(null, null);
@@ -705,14 +697,13 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void handleManufactoryControls()
         {
-            ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
 
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
                 flpSelection.Visible = false;
                 flpSubSelection.Visible = false;
                 flpCompletionTime.Visible = false;
-                guard.release();
                 return;
             }
 
@@ -789,7 +780,6 @@ namespace OE2EmpireTracker.Forms.Colony
                 rtbProgressStatus.Text = "";
             }
 
-            guard.release();
             flpStructureCommands_Layout(null, null);
             flpStructureDetails_Layout(null, null);
             ColonyStructure_Layout(null, null);
@@ -862,14 +852,13 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void handleCommodityFactoryControls()
         {
-            ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
 
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
                 flpSelection.Visible = false;
                 flpSubSelection.Visible = false;
                 flpCompletionTime.Visible = false;
-                guard.release();
                 return;
             }
 
@@ -945,7 +934,6 @@ namespace OE2EmpireTracker.Forms.Colony
                 rtbProgressStatus.Text = "";
             }
 
-            guard.release();
             flpStructureCommands_Layout(null, null);
             flpStructureDetails_Layout(null, null);
             ColonyStructure_Layout(null, null);
@@ -1097,7 +1085,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void PopulateStats()
         {
-            ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
+            using var guard = new ProgrammaticUpdateGuard(this);
 
             RtfBuilder builder = new RtfBuilder();
 
@@ -1156,7 +1144,6 @@ namespace OE2EmpireTracker.Forms.Colony
             */
 
             rtbStatus.Rtf = builder.ToRtf();
-            guard.release();
         }
 
         private void rtbStatus_ContentsResized(object sender, ContentsResizedEventArgs e)
