@@ -76,6 +76,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 rtbProgressStatus.Text = "Building...";
                 cmdDone.Visible = true;
                 cmdStart.Visible = false;
+                chkBuilt.Enabled = false;
                 flpSelection.Visible = false;
                 flpManufacturingControls.Visible = false;
                 flpSubSelection.Visible = false;
@@ -156,6 +157,7 @@ namespace OE2EmpireTracker.Forms.Colony
             }
 
             chkBuilt.Checked = false;
+            chkBuilt.Enabled = true;
             chkStaged.Checked = false;
             chkOnline.Checked = false;
 
