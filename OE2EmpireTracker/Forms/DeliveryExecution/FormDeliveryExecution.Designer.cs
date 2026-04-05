@@ -18,8 +18,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.flpBase = new System.Windows.Forms.FlowLayoutPanel();
             this.flpSelectors = new System.Windows.Forms.FlowLayoutPanel();
             this.lblRoute = new System.Windows.Forms.Label();
+            this.txtRouteFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmbRoute = new System.Windows.Forms.ComboBox();
             this.lblPlan = new System.Windows.Forms.Label();
+            this.txtPlanFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmbPlan = new System.Windows.Forms.ComboBox();
             this.pnlExecution = new System.Windows.Forms.FlowLayoutPanel();
             this.lblLoadListHeader = new System.Windows.Forms.Label();
@@ -48,8 +50,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             // flpSelectors
             // 
             this.flpSelectors.Controls.Add(this.lblRoute);
+            this.flpSelectors.Controls.Add(this.txtRouteFilter);
             this.flpSelectors.Controls.Add(this.cmbRoute);
             this.flpSelectors.Controls.Add(this.lblPlan);
+            this.flpSelectors.Controls.Add(this.txtPlanFilter);
             this.flpSelectors.Controls.Add(this.cmbPlan);
             this.flpSelectors.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpSelectors.Location = new System.Drawing.Point(3, 3);
@@ -67,10 +71,16 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.lblRoute.Size = new System.Drawing.Size(40, 13);
             this.lblRoute.Text = "Route";
             // 
+            // txtRouteFilter
+            // 
+            this.txtRouteFilter.Location = new System.Drawing.Point(3, 22);
+            this.txtRouteFilter.Name = "txtRouteFilter";
+            this.txtRouteFilter.Size = new System.Drawing.Size(214, 20);
+            // 
             // cmbRoute
             // 
             this.cmbRoute.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbRoute.Location = new System.Drawing.Point(3, 22);
+            this.cmbRoute.Location = new System.Drawing.Point(3, 48);
             this.cmbRoute.Name = "cmbRoute";
             this.cmbRoute.Size = new System.Drawing.Size(214, 21);
             // 
@@ -83,6 +93,12 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.lblPlan.Name = "lblPlan";
             this.lblPlan.Size = new System.Drawing.Size(30, 13);
             this.lblPlan.Text = "Plan";
+            // 
+            // txtPlanFilter
+            // 
+            this.txtPlanFilter.Location = new System.Drawing.Point(3, 80);
+            this.txtPlanFilter.Name = "txtPlanFilter";
+            this.txtPlanFilter.Size = new System.Drawing.Size(214, 20);
             // 
             // cmbPlan
             // 
@@ -184,8 +200,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         private System.Windows.Forms.FlowLayoutPanel flpBase;
         private System.Windows.Forms.FlowLayoutPanel flpSelectors;
         private System.Windows.Forms.Label lblRoute;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtRouteFilter;
         private System.Windows.Forms.ComboBox cmbRoute;
         private System.Windows.Forms.Label lblPlan;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtPlanFilter;
         private System.Windows.Forms.ComboBox cmbPlan;
         private System.Windows.Forms.FlowLayoutPanel pnlExecution;
         private System.Windows.Forms.Label lblLoadListHeader;

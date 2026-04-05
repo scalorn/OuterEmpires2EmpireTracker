@@ -33,6 +33,13 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             cmbPlan.ValueMember = "UUID";
             cmbPlan.SelectedIndexChanged += cmbPlan_SelectedIndexChanged;
 
+            txtRouteFilter.TextChanged += (s, ev) => PopulateRouteDropdown();
+            txtPlanFilter.TextChanged += (s, ev) =>
+            {
+                string routeUUID = cmbRoute.SelectedValue as string;
+                if (!string.IsNullOrEmpty(routeUUID)) PopulatePlanDropdown(routeUUID);
+            };
+
             PopulateRouteDropdown();
 
             flpBase.Layout += flpBase_Layout;
@@ -83,12 +90,11 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void flpSelectors_Layout(object sender, LayoutEventArgs e)
         {
-            cmbRoute.Size = new Size(
-                flpSelectors.Size.Width - cmbRoute.Margin.Left - cmbRoute.Margin.Right,
-                cmbRoute.Size.Height);
-            cmbPlan.Size = new Size(
-                flpSelectors.Size.Width - cmbPlan.Margin.Left - cmbPlan.Margin.Right,
-                cmbPlan.Size.Height);
+            int w = flpSelectors.Size.Width - 6;
+            txtRouteFilter.Size = new Size(w, txtRouteFilter.Size.Height);
+            cmbRoute.Size = new Size(w, cmbRoute.Size.Height);
+            txtPlanFilter.Size = new Size(w, txtPlanFilter.Size.Height);
+            cmbPlan.Size = new Size(w, cmbPlan.Size.Height);
         }
 
         // -----------------------------------------------------------------------
@@ -103,17 +109,23 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void PopulateRouteDropdown()
         {
+            string previousUUID = cmbRoute.SelectedValue as string;
+            string filter = txtRouteFilter.Text ?? "";
             var routes = playerContext.GetCurrentPlayerRoutes();
             var items = new List<DropdownItem>();
             items.Add(new DropdownItem { UUID = "", Display = "" });
             foreach (var route in routes.OrderBy(r => r.Name))
             {
+                if (!string.IsNullOrEmpty(filter) && route.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0)
+                    continue;
                 items.Add(new DropdownItem { UUID = route.UUID, Display = route.Name });
             }
             cmbRoute.DataSource = null;
             cmbRoute.DisplayMember = "Display";
             cmbRoute.ValueMember = "UUID";
             cmbRoute.DataSource = items;
+            if (!string.IsNullOrEmpty(previousUUID) && items.Any(i => i.UUID == previousUUID))
+                cmbRoute.SelectedValue = previousUUID;
         }
 
         private void cmbRoute_SelectedIndexChanged(object sender, EventArgs e)
@@ -130,8 +142,11 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void PopulatePlanDropdown(string routeUUID)
         {
+            string previousUUID = cmbPlan.SelectedValue as string;
+            string filter = txtPlanFilter.Text ?? "";
             var plans = playerContext.GetCurrentPlayerPlans()
                 .Where(p => p.RouteUUID == routeUUID && !p.Completed)
+                .Where(p => string.IsNullOrEmpty(filter) || (p.Name ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
                 .OrderBy(p => p.Name)
                 .ToList();
 
@@ -145,6 +160,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             cmbPlan.DisplayMember = "Display";
             cmbPlan.ValueMember = "UUID";
             cmbPlan.DataSource = items;
+            if (!string.IsNullOrEmpty(previousUUID) && items.Any(i => i.UUID == previousUUID))
+                cmbPlan.SelectedValue = previousUUID;
         }
 
         private void cmbPlan_SelectedIndexChanged(object sender, EventArgs e)
