@@ -98,8 +98,8 @@ A new class of flatpack structures for manufacturing commodities. Requires:
 
 ---
 
-## 12. Code Quality — scan findings
-**Priority: Low-Medium — Incremental cleanup**
+## ~~12. Code Quality — scan findings~~
+**Status: Complete (all 7 sub-items)**
 Full codebase scan identified issues in 7 categories. Lower-risk items can be done incrementally; larger refactors should be planned carefully.
 
 ### 12a. Dead code removal (Low risk)
@@ -158,8 +158,6 @@ Renamed all camelCase methods to PascalCase across the codebase:
 - Colony.cs now contains only the `Colony` class
 - Removed unused `Newtonsoft.Json` using from Colony.cs
 - ColonyStructure.cs (1400+ lines) and FormColony.cs (1100+ lines) remain large but are cohesive single-class files — no further split needed
-
-**Needs approval: yes — user should pick which items to tackle and in what order.**
 
 
 ---

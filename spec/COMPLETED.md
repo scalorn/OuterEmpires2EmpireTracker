@@ -128,3 +128,12 @@ Phase 4: ExtractionFocus (+1%/lvl) applied to mining. RefiningFocus (+2%/lvl) ap
 
 ## 38. Global Blueprints in BaselineData.json (Rec 14)
 Added `Blueprint[]` to `BaselineRoot` and `globalBlueprintList` to `EmpireContext`. `chkGlobalBlueprint` on Blueprint Form toggles blueprints between global (BaselineData.json) and player-specific (PlayerData.json). `FindBlueprint` searches both lists. `GetFilteredBlueprints` merges global + player blueprints. Save/delete handle both lists correctly. 465 tests passing.
+
+## 39. Player Dropdown Refresh on Profile Save/Delete
+Added `PlayerProfilesChanged` event to PlayerContext. PlayerProfileViewModel fires it after Save and Delete. MainWindow subscribes and repopulates the player dropdown, preserving current selection.
+
+## 40. Unique Player Name Validation
+Changed txtPlayerName to ValidatedTextBox on FormPlayerProfile. TextChanged handler checks for empty and duplicate names in real-time with red background. Save blocked when invalid. Fixed ValidatedTextBox: SetError/ClearError now set IsValid flag; added `_hasExternalError` flag so OnTextChanged/OnGotFocus/OnLostFocus respect externally-set errors and don't override them.
+
+## 41. Grid CancelEdit Before Rows.Clear/Save Across All Forms
+All DataGridView `Rows.Clear()` and save-handler grid iterations now detach `CellValidating` handlers, call `EndEdit()`, then reattach. Prevents `InvalidOperationException` when a cell is in edit mode with active validation. Applied to FormBlueprint (dgvStatistics, dgvResources), FormSurvey (dgvResources), FormColony (dgvItems, dgvCommodityRequests).

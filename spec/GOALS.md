@@ -51,6 +51,9 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 36 | Large method extraction (Rec 12e) | Complete |
 | 37 | Multi-player support (Rec 13, REQ-ARCH-070-075) | Complete |
 | 38 | Global blueprints in BaselineData.json (Rec 14) | Complete |
+| 39 | Player dropdown refresh on profile save/delete | Complete |
+| 40 | Unique player name validation (ValidatedTextBox) | Complete |
+| 41 | Grid CancelEdit before Rows.Clear/Save across all forms | Complete |
 
 ---
 
@@ -59,7 +62,6 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 See [Recommendations](Recommendations.md) for details:
 - **Rec #4**: CountDownTime master list — major feature (UI, locking, background thread)
 - **Rec #11**: Commodity Manufacturing — major feature (new flatpack class, data design needed)
-- **Rec #12**: Code quality — dead code, naming, magic strings, duplicated guard class, large methods/files
 
 ### Large Features (from requirements, not yet started)
 - Commodity delivery form
