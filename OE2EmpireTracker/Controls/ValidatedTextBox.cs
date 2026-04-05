@@ -123,13 +123,16 @@ namespace OE2EmpireTracker.Controls
         protected override void OnGotFocus(EventArgs e)
         {
             base.OnGotFocus(e);
-            ValidateInput();
+            if (!_hasExternalError)
+            {
+                ValidateInput();
+            }
         }
 
         protected override void OnLostFocus(EventArgs e)
         {
             base.OnLostFocus(e);
-            if (!IsValid && ErrorMessage != "")
+            if (_hasExternalError || (!IsValid && ErrorMessage != ""))
             {
                 Focus();
             }
