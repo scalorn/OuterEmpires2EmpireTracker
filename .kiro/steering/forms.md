@@ -48,6 +48,10 @@ Rules and patterns learned from building forms in this project. Follow these whe
 
 - Use `ProgrammaticUpdateGuard` (from `IProgrammaticUpdateSource`) to suppress event handlers during code-driven UI updates.
 - Forms and controls that implement `IProgrammaticUpdateSource` expose `BeginProgrammaticUpdate()` / `EndProgrammaticUpdate()`.
+- Any method that programmatically modifies grid contents (Rows.Clear, Rows.Add, setting cell values, setting CurrentCell) MUST create a `new ProgrammaticUpdateGuard(this)` at the top.
+- All grid event handlers (CellValueChanged, SelectionChanged, CellValidating) MUST check `if (_isProgrammaticUpdate > 0) return;` as their first line.
+- Do NOT use ad-hoc boolean flags for re-entrancy protection — always use the shared ProgrammaticUpdateGuard pattern.
+- Setting `CurrentCell` triggers `SelectionChanged`. Setting cell values triggers `CellValueChanged`. `Rows.Clear()` triggers `SelectionChanged`. All of these cascade and cause StackOverflowException without the guard.
 
 ## Blueprint Lists
 
