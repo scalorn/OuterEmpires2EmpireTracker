@@ -342,14 +342,20 @@ namespace OE2EmpireTracker.Forms.Delivery
             viewModel.Save();
 
             // Save the plan name if a plan is selected
+            string selectedPlanUUID = null;
             if (planViewModel != null && !string.IsNullOrEmpty(planViewModel.UUID))
             {
                 planViewModel.Data.Name = txtPlanName.Text;
                 planViewModel.Save();
-                PopulatePlanDropdown();
+                selectedPlanUUID = planViewModel.UUID;
             }
 
             PopulateRouteList();
+            PopulatePlanDropdown();
+            if (selectedPlanUUID != null)
+            {
+                cmbPlan.SelectedValue = selectedPlanUUID;
+            }
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
