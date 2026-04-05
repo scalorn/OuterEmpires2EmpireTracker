@@ -676,6 +676,13 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             public string Display { get; set; }
         }
 
+        private string GetItemDisplayName(DeliveryItem item)
+        {
+            if (!string.IsNullOrEmpty(item.ResourcePurity))
+                return $"{item.Name} ({item.ResourcePurity})";
+            return item.Name;
+        }
+
         private void PopulatePlanGrids()
         {
             dgvDropOff.Rows.Clear();
@@ -684,12 +691,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
             foreach (var item in selectedPlanStop.DropOff)
             {
-                int idx = dgvDropOff.Rows.Add(item.ItemType.ToString(), item.Name, item.Quantity);
+                int idx = dgvDropOff.Rows.Add(item.ItemType.ToString(), GetItemDisplayName(item), item.Quantity);
                 dgvDropOff.Rows[idx].Tag = item;
             }
             foreach (var item in selectedPlanStop.PickUp)
             {
-                int idx = dgvPickUp.Rows.Add(item.ItemType.ToString(), item.Name, item.Quantity);
+                int idx = dgvPickUp.Rows.Add(item.ItemType.ToString(), GetItemDisplayName(item), item.Quantity);
                 dgvPickUp.Rows[idx].Tag = item;
             }
         }
