@@ -161,6 +161,7 @@ namespace OE2EmpireTracker.ViewModels
                 _route.OwnerUUID = _playerContext.CurrentPlayerUUID;
             }
             _playerContext.writeContext();
+            _playerContext.OnDeliveryDataChanged();
         }
 
         public void Delete()
@@ -168,6 +169,7 @@ namespace OE2EmpireTracker.ViewModels
             if (string.IsNullOrEmpty(_route.UUID)) return;
             _playerContext.deliveryRouteList.Remove(_route);
             _playerContext.writeContext();
+            _playerContext.OnDeliveryDataChanged();
         }
 
         public void Reset()

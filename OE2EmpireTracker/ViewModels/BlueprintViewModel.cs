@@ -137,11 +137,14 @@ namespace OE2EmpireTracker.ViewModels
                 _playerContext.writeContext();
                 if (wasGlobal) ec.writeContext();
             }
+
+            _playerContext.OnBlueprintDataChanged(_blueprint.UUID);
         }
 
         public void Delete()
         {
             if (_blueprint.UUID == null) return;
+            string deletedUUID = _blueprint.UUID;
             if (_playerContext.blueprintList.Remove(_blueprint))
             {
                 _playerContext.writeContext();
@@ -154,6 +157,7 @@ namespace OE2EmpireTracker.ViewModels
                     ec.writeContext();
                 }
             }
+            _playerContext.OnBlueprintDataChanged(deletedUUID);
         }
 
         /// <summary>

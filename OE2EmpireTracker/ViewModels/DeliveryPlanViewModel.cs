@@ -107,6 +107,7 @@ namespace OE2EmpireTracker.ViewModels
                 _playerContext.deliveryPlanList.Add(_plan);
             }
             _playerContext.writeContext();
+            _playerContext.OnDeliveryDataChanged();
         }
 
         /// <summary>

@@ -133,13 +133,16 @@ namespace OE2EmpireTracker.ViewModels
                 _survey.OwnerUUID = _playerContext.CurrentPlayerUUID;
             }
             _playerContext.writeContext();
+            _playerContext.OnSurveyDataChanged(_survey.UUID);
         }
 
         public void Delete()
         {
             if (string.IsNullOrEmpty(_survey.UUID)) return;
+            string deletedUUID = _survey.UUID;
             _playerContext.surveyList.Remove(_survey);
             _playerContext.writeContext();
+            _playerContext.OnSurveyDataChanged(deletedUUID);
         }
 
         /// <summary>
