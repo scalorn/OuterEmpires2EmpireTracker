@@ -90,6 +90,10 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     handleManufactoryControls();
                 }
+                else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.CommodityFactory)
+                {
+                    handleCommodityFactoryControls();
+                }
                 else {
                     flpSelection.Visible = false;
                     flpSubSelection.Visible = false;
@@ -831,6 +835,151 @@ namespace OE2EmpireTracker.Forms.Colony
             rtbProgressStatus.Text = $"({ColonyStructureData.ManufacturingCompleted}/{ColonyStructureData.ManufacturingQuantity}) {bp.ExtendedName}";
         }
 
+        // -----------------------------------------------------------------------
+        // Commodity Factory Controls
+        // -----------------------------------------------------------------------
+
+        private void handleCommodityFactoryControls()
+        {
+            ProgrammaticUpdateGuard guard = new ProgrammaticUpdateGuard(this);
+
+            if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
+            {
+                flpSelection.Visible = false;
+                flpSubSelection.Visible = false;
+                flpCompletionTime.Visible = false;
+                guard.release();
+                return;
+            }
+
+            bool showCompletionTime = false;
+            bool enableCmbSelection = true;
+            bool showCmdStart = false;
+
+            if (ColonyStructureData.ProcessCompletionTime != null)
+            {
+                showCompletionTime = true;
+                enableCmbSelection = false;
+            }
+
+            if (!string.IsNullOrEmpty(ColonyStructureData.ManufacturingCommodityName))
+            {
+                showCmdStart = true;
+            }
+
+            // Selection: commodities filtered by CommodityIndustry
+            flpSelection.Visible = true;
+            PopulateSelectionWithCommodities();
+            if (!string.IsNullOrEmpty(ColonyStructureData.ManufacturingCommodityName))
+            {
+                cmbSelection.SelectedValue = ColonyStructureData.ManufacturingCommodityName;
+            }
+            txtSelectionFilter.Enabled = enableCmbSelection;
+            cmbSelection.Enabled = enableCmbSelection;
+
+            flpSubSelection.Visible = false;
+
+            // Quantity input (number of cycles)
+            txtQuantity.Visible = showCmdStart;
+            txtQuantity.Enabled = !showCompletionTime;
+            if (showCompletionTime && ColonyStructureData.ManufacturingQuantity > 0)
+            {
+                txtQuantity.Text = ColonyStructureData.ManufacturingQuantity.ToString();
+            }
+            else if (string.IsNullOrEmpty(txtQuantity.Text) || !int.TryParse(txtQuantity.Text, out _))
+            {
+                txtQuantity.Text = "1";
+            }
+            cmdStart.Visible = showCmdStart && !showCompletionTime;
+            cmdSubStart.Visible = false;
+
+            if (showCompletionTime)
+            {
+                flpCompletionTime.Visible = true;
+                txtCompletionTime.Text = ColonyStructureData.ProcessCompletionTime.TimeRemainingString;
+                PopulateCommodityFactoryProgressStatus();
+                if (timerCountdown.Enabled == false)
+                {
+                    timerCountdown.Interval = 1000;
+                    timerCountdown.Start();
+                }
+            }
+            else
+            {
+                flpCompletionTime.Visible = false;
+                rtbProgressStatus.Text = "";
+            }
+
+            guard.release();
+            flpStructureCommands_Layout(null, null);
+            flpStructureDetails_Layout(null, null);
+            ColonyStructure_Layout(null, null);
+        }
+
+        private void PopulateSelectionWithCommodities()
+        {
+            string searchText = txtSelectionFilter.Text ?? "";
+
+            // Get the CommodityIndustry from the flatpack blueprint
+            string industryFilter = "";
+            if (FlatpackBlueprint != null)
+            {
+                FlatpackBlueprint.Properties.getString("CommodityIndustry", "", out industryFilter);
+            }
+
+            var items = new List<CommoditySelectionItem>();
+            foreach (var commodity in Data.Commodity.Commodities)
+            {
+                if (string.IsNullOrEmpty(commodity.Name)) continue;
+
+                // Filter by CommodityIndustry if set
+                if (!string.IsNullOrEmpty(industryFilter))
+                {
+                    var industry = Data.CommodityIndustry.CommodityIndustryMapByEnum.ContainsKey(commodity.CommodityIndustry)
+                        ? Data.CommodityIndustry.CommodityIndustryMapByEnum[commodity.CommodityIndustry]
+                        : null;
+                    if (industry == null || industry.Name != industryFilter) continue;
+                }
+
+                string display = commodity.ExtendedName;
+                if (!string.IsNullOrEmpty(searchText) &&
+                    display.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) < 0)
+                    continue;
+
+                items.Add(new CommoditySelectionItem
+                {
+                    Name = commodity.Name,
+                    DisplayName = display
+                });
+            }
+
+            items.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
+            items.Insert(0, new CommoditySelectionItem { Name = "", DisplayName = "" });
+
+            cmbSelection.DisplayMember = "DisplayName";
+            cmbSelection.ValueMember = "Name";
+            cmbSelection.DataSource = items;
+            cmbSelection.SelectedIndex = -1;
+        }
+
+        private void PopulateCommodityFactoryProgressStatus()
+        {
+            if (ColonyStructureData.ProcessCompletionTime == null ||
+                string.IsNullOrEmpty(ColonyStructureData.ManufacturingCommodityName))
+            {
+                rtbProgressStatus.Text = "";
+                return;
+            }
+
+            rtbProgressStatus.Text = $"({ColonyStructureData.ManufacturingCompleted}/{ColonyStructureData.ManufacturingQuantity}) {ColonyStructureData.ManufacturingCommodityName} x{GameConstants.CommoditiesPerCycle}";
+        }
+
+        private class CommoditySelectionItem
+        {
+            public string Name { get; set; }
+            public string DisplayName { get; set; }
+        }
+
         private void PopulateSelectionWithSurveys()
         {
             //cmbSelection.Items.Clear();
@@ -1131,6 +1280,24 @@ namespace OE2EmpireTracker.Forms.Colony
                 timerCountdown.Start();
                 handleManufactoryControls();
             }
+            else if (FlatpackBlueprint != null && FlatpackBlueprint.BluePrintType == BlueprintTypes.CommodityFactory)
+            {
+                if (string.IsNullOrEmpty(ColonyStructureData.ManufacturingCommodityName)) return;
+
+                // Parse quantity (number of cycles) from txtQuantity
+                int qty = 1;
+                int.TryParse(txtQuantity.Text, out qty);
+                if (qty <= 0) qty = 1;
+
+                ColonyStructureData.ManufacturingQuantity = qty;
+                ColonyStructureData.ManufacturingCompleted = 0;
+                ColonyStructureData.ProcessCompletionTime = new CountDownTime();
+                ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.Now;
+                ColonyStructureData.ProcessCompletionTime.StartRepeating(GameConstants.CommodityCycleSeconds);
+                timerCountdown.Interval = 1000;
+                timerCountdown.Start();
+                handleCommodityFactoryControls();
+            }
         }
 
         private void txtSubSelectionFilter_TextChanged(object sender, EventArgs e)
@@ -1193,10 +1360,16 @@ namespace OE2EmpireTracker.Forms.Colony
 
             Colony.ProcessColony();
 
-            // For manufactories with remaining items, keep the timer running
+            // For manufactories/commodity factories with remaining cycles, keep the timer running
             bool keepTimer = false;
             if (FlatpackBlueprint != null &&
                 FlatpackBlueprint.BluePrintType == BlueprintTypes.Manufactory &&
+                ColonyStructureData.ManufacturingCompleted < ColonyStructureData.ManufacturingQuantity)
+            {
+                keepTimer = true;
+            }
+            if (FlatpackBlueprint != null &&
+                FlatpackBlueprint.BluePrintType == BlueprintTypes.CommodityFactory &&
                 ColonyStructureData.ManufacturingCompleted < ColonyStructureData.ManufacturingQuantity)
             {
                 keepTimer = true;
@@ -1220,6 +1393,8 @@ namespace OE2EmpireTracker.Forms.Colony
                     handleResearchLabControls();
                 else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Manufactory)
                     handleManufactoryControls();
+                else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.CommodityFactory)
+                    handleCommodityFactoryControls();
             }
 
             ColonyStructureDataChanged?.Invoke(this, e);
@@ -1270,6 +1445,13 @@ namespace OE2EmpireTracker.Forms.Colony
                     ColonyStructureData.ManufacturingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
                     ColonyStructureData.ManufacturingCompleted = 0;
                     handleManufactoryControls();
+                }
+                else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.CommodityFactory)
+                {
+                    string name = cmbSelection.SelectedValue as string;
+                    ColonyStructureData.ManufacturingCommodityName = string.IsNullOrEmpty(name) ? null : name;
+                    ColonyStructureData.ManufacturingCompleted = 0;
+                    handleCommodityFactoryControls();
                 }
             }
         }

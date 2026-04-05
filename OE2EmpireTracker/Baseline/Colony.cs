@@ -66,6 +66,10 @@ namespace OE2EmpireTracker.Baseline
                     {
                         ProcessManufactory(structure);
                     }
+                    else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.CommodityFactory)
+                    {
+                        ProcessCommodityFactory(structure);
+                    }
                 }
             }
 
@@ -355,6 +359,60 @@ namespace OE2EmpireTracker.Baseline
                     mfgItem.Volume = vol;
 
                     Items.AddItem(mfgItem);
+                }
+
+                structure.ProcessCompletionTime.ConsumeIntervals(1);
+            }
+        }
+
+        private void ProcessCommodityFactory(ColonyStructure structure)
+        {
+            if (string.IsNullOrEmpty(structure.ManufacturingCommodityName))
+                return;
+
+            Commodity commodity;
+            if (!Commodity.ResourceMapByString.TryGetValue(structure.ManufacturingCommodityName, out commodity))
+                return;
+
+            // Process each completed cycle — 10 commodities per cycle
+            while (structure.ProcessCompletionTime.IntervalsPassed > 0 &&
+                   structure.ManufacturingCompleted < structure.ManufacturingQuantity)
+            {
+                structure.ManufacturingCompleted++;
+
+                // Stack with existing commodity item
+                List<Item> existing = Items.FindByType(ItemType.ItemTypeEnum.Commodity, commodity.Name);
+                if (existing.Count > 0)
+                {
+                    existing[0].Quantity += GameConstants.CommoditiesPerCycle;
+                }
+                else
+                {
+                    Item commodityItem = new Item(ItemType.ItemTypeEnum.Commodity, commodity.Name);
+                    commodityItem.UUID = Guid.NewGuid().ToString();
+                    commodityItem.BaseItemTypeID = commodity.Name;
+                    commodityItem.Quantity = GameConstants.CommoditiesPerCycle;
+                    commodityItem.Volume = 10;
+                    Items.AddItem(commodityItem);
+                }
+
+                // Consume construction resources
+                foreach (var resource in commodity.ConstructionResources)
+                {
+                    string resourceName = resource.Key;
+                    int perCycle = 0;
+                    int.TryParse(resource.Value, out perCycle);
+                    if (perCycle <= 0) continue;
+
+                    List<Item> sourceItems = Items.FindResource(resourceName, GameConstants.PurityRefined);
+                    if (sourceItems.Count > 0)
+                    {
+                        sourceItems[0].Quantity -= perCycle;
+                        if (sourceItems[0].Quantity <= 0)
+                        {
+                            Items.Remove(sourceItems[0].UUID);
+                        }
+                    }
                 }
 
                 structure.ProcessCompletionTime.ConsumeIntervals(1);

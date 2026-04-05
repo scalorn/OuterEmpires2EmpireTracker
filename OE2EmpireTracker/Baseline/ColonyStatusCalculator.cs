@@ -107,6 +107,9 @@ namespace OE2EmpireTracker.Baseline
 
                     // Lock manufacturing resources for active manufactories
                     LockManufacturingResources(structure, FlatpackBlueprint);
+
+                    // Lock commodity factory resources
+                    LockCommodityFactoryResources(structure);
                 }
 
                 ColonyStructureStatus currentStatus = new ColonyStructureStatus();
@@ -262,6 +265,45 @@ namespace OE2EmpireTracker.Baseline
                 int totalToLock = perItem * remaining;
 
                 // Ensure the resource item exists in the warehouse
+                var existing = colony.Items.FindResource(resourceName, GameConstants.PurityRefined);
+                if (existing.Count == 0)
+                {
+                    var resourceItem = new Data.Item(Data.ItemType.ItemTypeEnum.Resource, resourceName);
+                    resourceItem.UUID = System.Guid.NewGuid().ToString();
+                    resourceItem.BaseItemTypeID = resourceName;
+                    resourceItem.ResourcePurity = GameConstants.PurityRefined;
+                    resourceItem.Quantity = 0;
+                    resourceItem.Volume = 1;
+                    colony.Items.AddItem(resourceItem);
+                }
+
+                colony.Locks.LockItem(structure.UUID,
+                    Data.ItemType.ItemTypeEnum.Resource, resourceName, totalToLock);
+            }
+        }
+
+        private void LockCommodityFactoryResources(ColonyStructure structure)
+        {
+            if (colony.Locks == null || string.IsNullOrEmpty(structure.UUID)) return;
+            if (string.IsNullOrEmpty(structure.ManufacturingCommodityName)) return;
+            if (structure.ProcessCompletionTime == null) return;
+
+            Data.Commodity commodity;
+            if (!Data.Commodity.ResourceMapByString.TryGetValue(structure.ManufacturingCommodityName, out commodity))
+                return;
+
+            int remaining = structure.ManufacturingQuantity - structure.ManufacturingCompleted;
+            if (remaining <= 0) return;
+
+            foreach (var resource in commodity.ConstructionResources)
+            {
+                string resourceName = resource.Key;
+                int perCycle = 0;
+                int.TryParse(resource.Value, out perCycle);
+                if (perCycle <= 0) continue;
+
+                int totalToLock = perCycle * remaining;
+
                 var existing = colony.Items.FindResource(resourceName, GameConstants.PurityRefined);
                 if (existing.Count == 0)
                 {

@@ -62,6 +62,7 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 47 | Recalculate colony status on item quantity change | Complete |
 | 48 | Optimizer adds support for built structure deficits | Complete |
 | 49 | Centralized GetAllBlueprints() for player + global | Complete |
+| 50 | Commodity Manufacturing (Rec 11, CommodityFactory) | Complete |
 
 ---
 
@@ -69,7 +70,6 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 
 See [Recommendations](Recommendations.md) for details:
 - **Rec #4**: CountDownTime master list — major feature (UI, locking, background thread)
-- **Rec #11**: Commodity Manufacturing — major feature (new flatpack class, data design needed)
 
 ### Large Features (from requirements, not yet started)
 - Commodity delivery form

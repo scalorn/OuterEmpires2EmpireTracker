@@ -26,6 +26,7 @@ namespace OE2EmpireTracker.Baseline
         public string ResearchingBlueprintUUID { get; set; } = null;
 
         public string ManufacturingBlueprintUUID { get; set; } = null;
+        public string ManufacturingCommodityName { get; set; } = null;
         public int ManufacturingQuantity { get; set; } = 0;
         public int ManufacturingCompleted { get; set; } = 0;
 

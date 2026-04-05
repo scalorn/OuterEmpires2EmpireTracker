@@ -20,6 +20,14 @@ namespace OE2EmpireTracker.Constants
         /// <summary>Seconds in one hour — used for top-of-hour timer alignment.</summary>
         public const long SecondsPerHour = 3600;
 
+        // --- Commodity Manufacturing ---
+
+        /// <summary>Number of commodities produced per cycle.</summary>
+        public const int CommoditiesPerCycle = 10;
+
+        /// <summary>Commodity manufacturing cycle time in seconds (10 minutes).</summary>
+        public const long CommodityCycleSeconds = 600;
+
         // --- Structure Property Keys ---
 
         /// <summary>Property key indicating a structure has been built.</summary>

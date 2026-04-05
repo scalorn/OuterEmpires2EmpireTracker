@@ -85,15 +85,18 @@ SurveyParser refactored from debug-only code to a proper `processHtml(Survey, st
 
 ---
 
-## 11. Commodity Manufacturing support in Colony Form
-**Priority: Medium — Major Feature**
-A new class of flatpack structures for manufacturing commodities. Requires:
-- New BlueprintType(s) for commodity manufacturing flatpacks
-- Data model work to define commodity recipes (input resources, output commodity, rates)
-- Colony structure UI handling similar to existing Manufactory but producing Commodity items
-- Integration with existing commodity request system
-- Needs design discussion before implementation to determine data structure and recipe format.
-**Needs approval: yes — requires data design and recipe specification.**
+## ~~11. Commodity Manufacturing support in Colony Form~~
+**Status: Complete**
+Commodity Factory (`Flatpacks/CommodityFactory`) implemented:
+- Selection combo filtered by blueprint's `CommodityIndustry` property
+- `ManufacturingCommodityName` field on ColonyStructure for commodity identification
+- 10 commodities per cycle, 10-minute cycle time (constants in GameConstants)
+- Quantity input = number of cycles
+- Resource consumption from `Commodity.ConstructionResources` per cycle
+- Resource locking for entire remaining run via `LockCommodityFactoryResources`
+- Commodities stack in warehouse on completion
+- Done button completes one cycle, keeps timer for remaining
+- ProductionFocus skill reduction deferred until timer processing (Rec #4)
 
 
 ---

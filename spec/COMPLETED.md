@@ -161,3 +161,6 @@ BuildOrderOptimizer now checks for deficits in the built structure baseline befo
 
 ## 49. Centralized GetAllBlueprints()
 Added PlayerContext.GetAllBlueprints() that merges player + global blueprint lists. Replaced all 8+ locations that were doing manual merges or missing global blueprints. Only save/delete mutations access blueprintList directly.
+
+## 50. Commodity Manufacturing (Rec 11, CommodityFactory)
+Implemented `Flatpacks/CommodityFactory` structure type. Selection combo filtered by blueprint's CommodityIndustry property. Added `ManufacturingCommodityName` to ColonyStructure. 10 commodities per cycle, 10-minute cycle time. Resource consumption from Commodity.ConstructionResources. Resource locking for entire run via LockCommodityFactoryResources. Commodities stack in warehouse. Done completes one cycle. Added CommodityFactory constant to BlueprintTypes and CommoditiesPerCycle/CommodityCycleSeconds to GameConstants. 465 tests passing.
