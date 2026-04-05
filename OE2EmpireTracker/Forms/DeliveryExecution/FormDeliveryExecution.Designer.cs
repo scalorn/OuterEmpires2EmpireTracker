@@ -21,7 +21,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.cmbRoute = new System.Windows.Forms.ComboBox();
             this.lblPlan = new System.Windows.Forms.Label();
             this.cmbPlan = new System.Windows.Forms.ComboBox();
-            this.pnlExecution = new System.Windows.Forms.Panel();
+            this.pnlExecution = new System.Windows.Forms.FlowLayoutPanel();
             this.lblLoadListHeader = new System.Windows.Forms.Label();
             this.dgvLoadList = new System.Windows.Forms.DataGridView();
             this.colLoadType = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -94,25 +94,15 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             // pnlExecution
             // 
             this.pnlExecution.AutoScroll = true;
-            this.pnlExecution.Controls.Add(this.flpExecutionContent);
+            this.pnlExecution.Controls.Add(this.lblLoadListHeader);
+            this.pnlExecution.Controls.Add(this.dgvLoadList);
+            this.pnlExecution.Controls.Add(this.flpStops);
+            this.pnlExecution.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.pnlExecution.Location = new System.Drawing.Point(229, 3);
             this.pnlExecution.Name = "pnlExecution";
             this.pnlExecution.Size = new System.Drawing.Size(768, 594);
             this.pnlExecution.TabIndex = 1;
-            // 
-            // flpExecutionContent
-            // 
-            this.flpExecutionContent = new System.Windows.Forms.FlowLayoutPanel();
-            this.flpExecutionContent.AutoSize = true;
-            this.flpExecutionContent.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpExecutionContent.Controls.Add(this.lblLoadListHeader);
-            this.flpExecutionContent.Controls.Add(this.dgvLoadList);
-            this.flpExecutionContent.Controls.Add(this.flpStops);
-            this.flpExecutionContent.Dock = System.Windows.Forms.DockStyle.Top;
-            this.flpExecutionContent.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpExecutionContent.Name = "flpExecutionContent";
-            this.flpExecutionContent.Size = new System.Drawing.Size(768, 400);
-            this.flpExecutionContent.WrapContents = false;
+            this.pnlExecution.WrapContents = false;
             // 
             // lblLoadListHeader
             // 
@@ -132,7 +122,6 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.dgvLoadList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLoadList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colLoadType, this.colLoadName, this.colLoadQty});
-            this.dgvLoadList.Dock = System.Windows.Forms.DockStyle.None;
             this.dgvLoadList.Location = new System.Drawing.Point(2, 30);
             this.dgvLoadList.Name = "dgvLoadList";
             this.dgvLoadList.ReadOnly = true;
@@ -196,8 +185,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         private System.Windows.Forms.ComboBox cmbRoute;
         private System.Windows.Forms.Label lblPlan;
         private System.Windows.Forms.ComboBox cmbPlan;
-        private System.Windows.Forms.Panel pnlExecution;
-        private System.Windows.Forms.FlowLayoutPanel flpExecutionContent;
+        private System.Windows.Forms.FlowLayoutPanel pnlExecution;
         private System.Windows.Forms.Label lblLoadListHeader;
         private System.Windows.Forms.DataGridView dgvLoadList;
         private System.Windows.Forms.DataGridViewTextBoxColumn colLoadType;
