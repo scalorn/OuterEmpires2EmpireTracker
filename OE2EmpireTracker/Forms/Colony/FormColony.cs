@@ -1251,12 +1251,12 @@ namespace OE2EmpireTracker.Forms.Colony
             }
         }
 
+        private bool _suppressCommoditySelectionChanged = false;
+
         private void dgvCommodityRequests_SelectionChanged(object sender, EventArgs e)
         {
-            // Prevent the SelectionChanged event from triggering an error if the current cell is null
-            if (dgvCommodityRequests.CurrentCell == null)
-                return;
-
+            if (_suppressCommoditySelectionChanged) return;
+            if (dgvCommodityRequests.CurrentCell == null) return;
             if (dgvCommodityRequests.SelectedRows.Count > 0) return;
 
             // Allow editing Amount (1), Fulfilled (2), and NeedBy (3) columns.
@@ -1264,10 +1264,14 @@ namespace OE2EmpireTracker.Forms.Colony
             int col = dgvCommodityRequests.CurrentCell.ColumnIndex;
             if (col == 0)
             {
-                dgvCommodityRequests.CurrentCell.Selected = false;
-                if (dgvCommodityRequests.Rows[dgvCommodityRequests.CurrentCell.RowIndex].Cells.Count > 1)
+                _suppressCommoditySelectionChanged = true;
+                try
                 {
                     dgvCommodityRequests.CurrentCell = dgvCommodityRequests.Rows[dgvCommodityRequests.CurrentCell.RowIndex].Cells[1];
+                }
+                finally
+                {
+                    _suppressCommoditySelectionChanged = false;
                 }
             }
         }
