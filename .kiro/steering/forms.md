@@ -51,6 +51,8 @@ Rules and patterns learned from building forms in this project. Follow these whe
 - Events on PlayerContext: `ColonyDataChanged(ColonyUUID)` for colony data, plus future events for blueprints, surveys, routes, plans, and profiles.
 - The handler should do a full form refresh (recalculate + repopulate) for the affected entity, not just update individual grids.
 - Background processing will fire these events from a timer thread — handlers must be safe to call from any thread (use `Invoke` if needed for cross-thread UI updates).
+- All forms MUST unsubscribe from PlayerContext events in `OnFormClosed` to prevent `ObjectDisposedException` when events fire on disposed forms.
+- Do NOT use anonymous lambdas for event subscriptions — use named methods so they can be unsubscribed with `-=`.
 
 ## Programmatic Update Guard
 
