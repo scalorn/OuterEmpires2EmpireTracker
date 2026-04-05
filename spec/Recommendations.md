@@ -172,3 +172,22 @@ All 4 phases implemented:
 - Phase 3: Colony/Blueprint/Survey forms filter by current player, subscribe to CurrentPlayerChanged, auto-assign OwnerUUID on save
 - Phase 4: Skill multipliers in Colony.ProcessColony — ExtractionFocus (+1%/lvl mining), RefiningFocus (+2%/lvl refining), ProductionFocus/Builder/ResearchFocus time reductions deferred until timer processing is implemented (Rec #4)
 - Transfer UI deferred to later phase
+
+
+---
+
+## ~~14. Global Blueprints (BaselineData.json)~~
+**Status: Complete**
+- Global blueprints stored in `BaselineRoot.Blueprint[]` in BaselineData.json
+- `EmpireContext.globalBlueprintList` holds them in memory
+- `chkGlobalBlueprint` on Blueprint Form toggles between global and player-specific
+- Save moves blueprint between global list and player list as needed
+- `FindBlueprint` searches player list first, then global list
+- `GetFilteredBlueprints` merges global + current player blueprints
+- Global blueprints have empty OwnerUUID; player blueprints have the player's UUID
+- Editable by all players (may be gated behind permission in future)
+
+### Future enhancements (recorded for later):
+- Visual indicator in blueprint list to distinguish global vs player-specific
+- Permission/setting to gate global blueprint editing
+- Separate file for global blueprints if BaselineData.json grows too large

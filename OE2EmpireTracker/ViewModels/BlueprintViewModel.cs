@@ -38,6 +38,18 @@ namespace OE2EmpireTracker.ViewModels
         public string BaseBlueprintUUID { get => _blueprint.baseBlueprintUUID; set => _blueprint.baseBlueprintUUID = value; }
         public string UUID => _blueprint.UUID;
 
+        /// <summary>
+        /// Returns true if this blueprint is in the global list (BaselineData.json).
+        /// </summary>
+        public bool IsGlobal
+        {
+            get
+            {
+                var ec = EmpireContext.getInstance();
+                return ec?.globalBlueprintList?.Contains(_blueprint) == true;
+            }
+        }
+
         // -----------------------------------------------------------------------
         // Properties
         // -----------------------------------------------------------------------
@@ -65,13 +77,20 @@ namespace OE2EmpireTracker.ViewModels
 
         public IReadOnlyList<Blueprint> GetFilteredBlueprints(string nameFilter)
         {
-            var list = _playerContext.GetCurrentPlayerBlueprints();
+            // Merge global + current player blueprints
+            var list = new List<Blueprint>(_playerContext.GetCurrentPlayerBlueprints());
+            var ec = EmpireContext.getInstance();
+            if (ec?.globalBlueprintList != null)
+            {
+                list.AddRange(ec.globalBlueprintList);
+            }
             if (!string.IsNullOrEmpty(nameFilter))
             {
                 list = list
                     .Where(b => b.ExtendedName.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
             }
+            list.Sort((a, b) => string.Compare(a.ExtendedName, b.ExtendedName, StringComparison.OrdinalIgnoreCase));
             return list.AsReadOnly();
         }
 
@@ -81,23 +100,60 @@ namespace OE2EmpireTracker.ViewModels
 
         public void Save()
         {
+            Save(false);
+        }
+
+        /// <summary>
+        /// Saves the blueprint. If isGlobal is true, moves it to the global list
+        /// in BaselineData.json. If false, moves it to the current player's list.
+        /// </summary>
+        public void Save(bool isGlobal)
+        {
             if (string.IsNullOrEmpty(_blueprint.UUID))
             {
                 _blueprint.UUID = Guid.NewGuid().ToString();
-                _playerContext.blueprintList.Add(_blueprint);
             }
-            if (string.IsNullOrEmpty(_blueprint.OwnerUUID))
+
+            var ec = EmpireContext.getInstance();
+            bool wasGlobal = ec.globalBlueprintList.Contains(_blueprint);
+            bool wasPlayer = _playerContext.blueprintList.Contains(_blueprint);
+
+            if (isGlobal)
             {
-                _blueprint.OwnerUUID = _playerContext.CurrentPlayerUUID;
+                _blueprint.OwnerUUID = string.Empty;
+                if (wasPlayer) _playerContext.blueprintList.Remove(_blueprint);
+                if (!wasGlobal) ec.globalBlueprintList.Add(_blueprint);
+                ec.writeContext();
+                if (wasPlayer) _playerContext.writeContext();
             }
-            _playerContext.writeContext();
+            else
+            {
+                if (string.IsNullOrEmpty(_blueprint.OwnerUUID))
+                {
+                    _blueprint.OwnerUUID = _playerContext.CurrentPlayerUUID;
+                }
+                if (wasGlobal) ec.globalBlueprintList.Remove(_blueprint);
+                if (!wasPlayer) _playerContext.blueprintList.Add(_blueprint);
+                _playerContext.writeContext();
+                if (wasGlobal) ec.writeContext();
+            }
         }
 
         public void Delete()
         {
             if (_blueprint.UUID == null) return;
-            _playerContext.blueprintList.Remove(_blueprint);
-            _playerContext.writeContext();
+            if (_playerContext.blueprintList.Remove(_blueprint))
+            {
+                _playerContext.writeContext();
+            }
+            else
+            {
+                var ec = EmpireContext.getInstance();
+                if (ec.globalBlueprintList.Remove(_blueprint))
+                {
+                    ec.writeContext();
+                }
+            }
         }
 
         /// <summary>

@@ -125,3 +125,6 @@ Phase 1: Added OwnerUUID to Colony, Blueprint, Survey. Added CurrentPlayerUUID a
 Phase 2: Player dropdown on MainWindow menu bar. Restores last selected player on startup.
 Phase 3: Colony/Blueprint/Survey forms filter by current player. All forms subscribe to CurrentPlayerChanged and refresh. New items auto-assigned to current player on save.
 Phase 4: ExtractionFocus (+1%/lvl) applied to mining. RefiningFocus (+2%/lvl) applied to normal and synthetic refining. ProductionFocus/Builder/ResearchFocus time reductions deferred until timer processing is implemented. 465 tests passing.
+
+## 38. Global Blueprints in BaselineData.json (Rec 14)
+Added `Blueprint[]` to `BaselineRoot` and `globalBlueprintList` to `EmpireContext`. `chkGlobalBlueprint` on Blueprint Form toggles blueprints between global (BaselineData.json) and player-specific (PlayerData.json). `FindBlueprint` searches both lists. `GetFilteredBlueprints` merges global + player blueprints. Save/delete handle both lists correctly. 465 tests passing.

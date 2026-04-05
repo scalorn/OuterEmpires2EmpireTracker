@@ -159,14 +159,12 @@ namespace OE2EmpireTracker.Baseline
         }
         public Blueprint FindBlueprint(string id)
         {
-            var filteredList = blueprintList
-                .Where(item => item.UUID == id)
-                .ToList();
-            if (filteredList.Count == 1)
-            {
-                return filteredList[0];
-            }
-            return null;
+            var match = blueprintList.FirstOrDefault(item => item.UUID == id);
+            if (match != null) return match;
+
+            // Fall back to global blueprints
+            var ec = EmpireContext.getInstance();
+            return ec?.FindGlobalBlueprint(id);
         }
 
         public void InitSurveys(PlayerRoot playerRoot)

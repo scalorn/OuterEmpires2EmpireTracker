@@ -42,6 +42,7 @@ namespace OE2EmpireTracker.Baseline
         public BindingSource bindingSourceResourceGroup;
         public BindingList<ResourcePurity> resourcePurityList;
         public BindingSource bindingSourceResourcePurity;
+        public BindingList<Blueprint> globalBlueprintList;
 
         public static EmpireContext getInstance()
         {
@@ -77,15 +78,14 @@ namespace OE2EmpireTracker.Baseline
             InitResources(baselineRoot);
             initResourceGroups(baselineRoot);
             initResourcePurities(baselineRoot);
+            InitGlobalBlueprints(baselineRoot);
         }
         public void writeContext()
         {
             BaselineRoot baselineRoot = new BaselineRoot();
             baselineRoot.ShipClass = shipClassList.ToArray();
             baselineRoot.BlueprintType = blueprintTypeList.ToArray();
-            //baselineRoot.ResourceGroup = resourceGroupList.ToArray();
-            //baselineRoot.ResourcePurity = resourcePurityList.ToArray();
-            //baselineRoot.Resource = resourceList.ToArray();
+            baselineRoot.Blueprint = globalBlueprintList.ToArray();
             baselineRoot.TechLevel = techLevelList.ToArray();
             string jsonContent = JsonConvert.SerializeObject(baselineRoot, Formatting.Indented);
             File.WriteAllText(FilePath, jsonContent);
@@ -207,10 +207,24 @@ namespace OE2EmpireTracker.Baseline
             List<ResourcePurity> list = new List<ResourcePurity>(ResourcePurity.Purities);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
             resourcePurityList = new BindingList<ResourcePurity>(list);
-            // Initialize the BindingSource component
             bindingSourceResourcePurity = new BindingSource();
-            // Set the in-memory list as the DataSource for the BindingSource
             bindingSourceResourcePurity.DataSource = resourcePurityList;
+        }
+
+        public void InitGlobalBlueprints(BaselineRoot baselineRoot)
+        {
+            var list = new List<Blueprint>(baselineRoot.Blueprint ?? new Blueprint[0]);
+            list.Sort((x, y) => x.Name.CompareTo(y.Name));
+            globalBlueprintList = new BindingList<Blueprint>(list);
+            Log.Info("Loaded {0} global blueprints", globalBlueprintList.Count);
+        }
+
+        /// <summary>
+        /// Searches global blueprints by UUID.
+        /// </summary>
+        public Blueprint FindGlobalBlueprint(string id)
+        {
+            return globalBlueprintList.FirstOrDefault(b => b.UUID == id);
         }
 
     }
@@ -218,9 +232,7 @@ namespace OE2EmpireTracker.Baseline
     {
         public ShipClass[] ShipClass;
         public BlueprintType[] BlueprintType;
-        //public ResourceGroup[] ResourceGroup;
-        //public ResourcePurity[] ResourcePurity;
-        //public Resource[] Resource;
+        public Blueprint[] Blueprint;
         public TechLevel[] TechLevel;
     }
 }

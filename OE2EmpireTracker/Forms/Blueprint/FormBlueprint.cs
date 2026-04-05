@@ -770,7 +770,7 @@ namespace OE2EmpireTracker
             }
 
             // Persist via viewModel
-            viewModel.Save();
+            viewModel.Save(chkGlobalBlueprint.Checked);
             
             // Refresh list view
             PopulateListView(viewModel.GetFilteredBlueprints(null));
@@ -847,6 +847,8 @@ namespace OE2EmpireTracker
                 row.Cells["CurrentValue"].Value = value;
             }
             PopulateResources();
+
+            chkGlobalBlueprint.Checked = viewModel.IsGlobal;
         }
         private void PopulateResources()
         { 
@@ -908,6 +910,8 @@ namespace OE2EmpireTracker
             // Clear grids
             dgvStatistics.Rows.Clear();
             dgvResources.Rows.Clear();
+
+            chkGlobalBlueprint.Checked = false;
         }
 
         /// <summary>

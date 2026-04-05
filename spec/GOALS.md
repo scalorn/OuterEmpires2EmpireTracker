@@ -50,6 +50,7 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 35 | Magic strings/numbers → constants (Rec 12c) | Complete |
 | 36 | Large method extraction (Rec 12e) | Complete |
 | 37 | Multi-player support (Rec 13, REQ-ARCH-070-075) | Complete |
+| 38 | Global blueprints in BaselineData.json (Rec 14) | Complete |
 
 ---
 
