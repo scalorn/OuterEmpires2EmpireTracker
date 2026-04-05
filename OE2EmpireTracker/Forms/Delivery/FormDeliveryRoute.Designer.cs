@@ -287,9 +287,9 @@ namespace OE2EmpireTracker.Forms.Delivery
             // 
             // flpPlanSelector
             // 
+            this.flpPlanSelector.Controls.Add(this.chkShowCompleted);
             this.flpPlanSelector.Controls.Add(this.txtPlanFilter);
             this.flpPlanSelector.Controls.Add(this.cmbPlan);
-            this.flpPlanSelector.Controls.Add(this.chkShowCompleted);
             this.flpPlanSelector.Controls.Add(this.cmdNewPlan);
             this.flpPlanSelector.Controls.Add(this.cmdDeletePlan);
             this.flpPlanSelector.Controls.Add(this.cmdExecutePlan);
@@ -317,7 +317,7 @@ namespace OE2EmpireTracker.Forms.Delivery
             this.chkShowCompleted.Location = new System.Drawing.Point(295, 5);
             this.chkShowCompleted.Name = "chkShowCompleted";
             this.chkShowCompleted.Size = new System.Drawing.Size(75, 17);
-            this.chkShowCompleted.Text = "Completed";
+            this.chkShowCompleted.Text = "Show Completed";
             this.chkShowCompleted.UseVisualStyleBackColor = true;
             // 
             // cmdNewPlan
