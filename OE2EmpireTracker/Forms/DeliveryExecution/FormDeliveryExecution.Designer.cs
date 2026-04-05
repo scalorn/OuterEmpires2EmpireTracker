@@ -157,7 +157,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.dgvLoadList.AllowUserToDeleteRows = false;
             this.dgvLoadList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLoadList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colLoadType, this.colLoadName, this.colLoadQty});
+            this.colLoadType, this.colLoadName, this.colLoadExtName, this.colLoadQty});
             this.dgvLoadList.Location = new System.Drawing.Point(2, 30);
             this.dgvLoadList.Name = "dgvLoadList";
             this.dgvLoadList.ReadOnly = true;
@@ -179,7 +179,15 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.colLoadName.HeaderText = "Item";
             this.colLoadName.Name = "colLoadName";
             this.colLoadName.ReadOnly = true;
-            this.colLoadName.Width = 450;
+            this.colLoadName.Width = 250;
+            // 
+            // colLoadExtName
+            // 
+            this.colLoadExtName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colLoadExtName.HeaderText = "Extended Name";
+            this.colLoadExtName.Name = "colLoadExtName";
+            this.colLoadExtName.ReadOnly = true;
+            this.colLoadExtName.Width = 250;
             // 
             // colLoadQty
             // 
@@ -232,6 +240,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         private System.Windows.Forms.DataGridView dgvLoadList;
         private System.Windows.Forms.DataGridViewTextBoxColumn colLoadType;
         private System.Windows.Forms.DataGridViewTextBoxColumn colLoadName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colLoadExtName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colLoadQty;
         private System.Windows.Forms.FlowLayoutPanel flpStops;
     }

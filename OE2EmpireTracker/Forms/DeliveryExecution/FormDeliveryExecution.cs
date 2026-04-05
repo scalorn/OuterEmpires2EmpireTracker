@@ -220,6 +220,13 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             cmdDeletePlan.Visible = false;
         }
 
+        private string GetExtendedName(DeliveryItem item)
+        {
+            if (!string.IsNullOrEmpty(item.ResourcePurity))
+                return $"{item.Name} ({item.ResourcePurity})";
+            return item.Name;
+        }
+
         private void BuildExecution()
         {
             dgvLoadList.Rows.Clear();
@@ -235,7 +242,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             foreach (var item in loadItems)
             {
                 Log.Debug("  Load: {0} x{1}", item.BaseItemTypeID, item.Quantity);
-                dgvLoadList.Rows.Add(item.ItemType.ToString(), item.BaseItemTypeID, item.Quantity);
+                dgvLoadList.Rows.Add(item.ItemType.ToString(), item.BaseItemTypeID, GetExtendedName(item), item.Quantity);
             }
 
             // Build per-stop sections
@@ -269,7 +276,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     {
                         var chk = new CheckBox
                         {
-                            Text = $"{item.BaseItemTypeID} x{item.Quantity}",
+                            Text = $"{GetExtendedName(item)} x{item.Quantity}",
                             Checked = item.Delivered,
                             AutoSize = true,
                             Margin = new Padding(20, 1, 3, 1),
@@ -290,7 +297,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     {
                         var chk = new CheckBox
                         {
-                            Text = $"{item.BaseItemTypeID} x{item.Quantity}",
+                            Text = $"{GetExtendedName(item)} x{item.Quantity}",
                             Checked = item.Delivered,
                             AutoSize = true,
                             Margin = new Padding(20, 1, 3, 1),

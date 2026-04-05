@@ -82,5 +82,6 @@ See [Recommendations](Recommendations.md) for details:
 - **Rec #4**: CountDownTime master list — major feature (UI, locking, background thread)
 
 ### Large Features (from requirements, not yet started)
-- Delivery planning UI — Phase 5 (REQ-DEL-040-044), see Rec #15
-- Delivery execution form — Phase 6 (REQ-DEL-050-056)
+- Delivery auto-fill — Phase 7 (REQ-DEL-060-062)
+- Ship integration — Phase 8 (REQ-DEL-070-071)
+- Space station hub — Phase 9 (REQ-DEL-080-082)
