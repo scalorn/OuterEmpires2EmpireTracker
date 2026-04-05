@@ -190,6 +190,7 @@ namespace OE2EmpireTracker.Forms.Delivery
             viewModel.Reset();
             txtRouteName.Text = "";
             dgvStops.Rows.Clear();
+            PopulateColonyPicker();
         }
 
         // -----------------------------------------------------------------------
