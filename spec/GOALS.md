@@ -12,7 +12,7 @@
 
 ## Current Status
 
-**513 total tests, all passing.**
+**581 total tests, all passing.**
 
 All original Recommendations (1-8) resolved. MVVM complete across all forms. NLog logging throughout.
 
@@ -73,6 +73,7 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 58 | Delivery Phase 5: Planning tab wired up | Complete |
 | 59 | Multi-plan support + plan selector UX | Complete |
 | 60 | Delivery Phase 6: Execution form wired up | Complete |
+| 61 | Delivery feature unit tests (68 tests) | Complete |
 
 ---
 

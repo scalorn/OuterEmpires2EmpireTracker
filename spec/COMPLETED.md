@@ -194,3 +194,12 @@ Plan tab updated with multi-plan support: plan dropdown with filter and "Show Co
 
 ## 60. Delivery Phase 6: Execution Form Wired Up (REQ-DEL-050-057)
 FormDeliveryExecution with route/plan selectors, consolidated load list (calculates pre-load needs by subtracting earlier pick-ups), scrollable stop-by-stop sections with checkboxes for each item. Auto-save on check. Plan marked as Completed when all items delivered. Execute button on route builder launches with pre-selected route/plan. Accessible from Edit menu. 513 tests passing.
+
+## 61. Delivery Feature Unit Tests (68 tests)
+Added 68 new tests across 4 new test files covering all delivery data models and view models:
+- DeliveryRouteTests (8): default constructor, properties, RouteStop, JSON round-trip with/without stops
+- DeliveryPlanTests (22): DeliveryPlan/DeliveryPlanStop/DeliveryItem defaults, ExtendedName (with/without purity), JSON round-trip (empty, completed, with items, ItemType as string, ExtendedName not serialized, StopCompleted), CalculateLoadList (empty, drop-off only, pick-up before/after drop-off, partial pick-up, multi-stop aggregation, different purities, purity preserved, sequence ordering, mixed item types, result sorting)
+- DeliveryRouteViewModelTests (16): AddStop (single, multiple), RemoveStop (valid, invalid, negative, multi-select), MoveStopUp/Down (middle, boundary), MoveStopsUp/Down (multi-select), Reset, SelectRoute (new, null), sequential renumbering
+- DeliveryPlanViewModelTests (14): GetOrCreateStop (new, existing, different colonies), AddDropOffItem (basic, with purity, no purity), AddPickUpItem, AddMultipleItems, RemoveDropOffItems (single, multiple, invalid), RemovePickUpItems (single, negative), constructor validation (null plan, null context), UUID property
+
+Also extracted `CalculateLoadList` from `FormDeliveryExecution` to `DeliveryPlan.CalculateLoadList()` instance method for testability. 581 tests passing.

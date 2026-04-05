@@ -238,7 +238,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             Log.Debug("BuildExecution: plan={0}, stops={1}", selectedPlan.Name, selectedPlan.Stops.Count);
 
             // Build consolidated load list
-            var loadItems = CalculateLoadList(selectedPlan);
+            var loadItems = selectedPlan.CalculateLoadList();
             Log.Debug("BuildExecution: loadItems={0}", loadItems.Count);
             foreach (var item in loadItems)
             {
@@ -325,70 +325,6 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     flpStops.Controls.Add(btnComplete);
                 }
             }
-        }
-
-        // -----------------------------------------------------------------------
-        // Load List Calculation
-        // -----------------------------------------------------------------------
-
-        /// <summary>
-        /// Calculates what needs to be loaded before departure.
-        /// A drop-off item needs pre-loading if it hasn't been picked up
-        /// at an earlier stop in sufficient quantity.
-        /// </summary>
-        private List<DeliveryItem> CalculateLoadList(DeliveryPlan plan)
-        {
-            var pickedUp = new Dictionary<string, int>(); // key: "Type|BaseID"
-            var needed = new Dictionary<string, DeliveryItem>();
-
-            foreach (var stop in plan.Stops.OrderBy(s => s.Sequence))
-            {
-                // Check drop-offs against what's been picked up so far
-                foreach (var dropItem in stop.DropOff)
-                {
-                    string key = $"{dropItem.ItemType}|{dropItem.BaseItemTypeID}|{dropItem.ResourcePurity}";
-                    int available = 0;
-                    pickedUp.TryGetValue(key, out available);
-
-                    int shortfall = dropItem.Quantity - available;
-                    if (shortfall > 0)
-                    {
-                        if (needed.ContainsKey(key))
-                        {
-                            needed[key].Quantity += shortfall;
-                        }
-                        else
-                        {
-                            needed[key] = new DeliveryItem
-                            {
-                                ItemType = dropItem.ItemType,
-                                BaseItemTypeID = dropItem.BaseItemTypeID,
-                                Name = dropItem.Name,
-                                ResourcePurity = dropItem.ResourcePurity,
-                                Quantity = shortfall
-                            };
-                        }
-                        // Consume available
-                        if (available > 0)
-                            pickedUp[key] = 0;
-                    }
-                    else
-                    {
-                        pickedUp[key] = available - dropItem.Quantity;
-                    }
-                }
-
-                // Add pick-ups to running total
-                foreach (var pickItem in stop.PickUp)
-                {
-                    string key = $"{pickItem.ItemType}|{pickItem.BaseItemTypeID}|{pickItem.ResourcePurity}";
-                    int current = 0;
-                    pickedUp.TryGetValue(key, out current);
-                    pickedUp[key] = current + pickItem.Quantity;
-                }
-            }
-
-            return needed.Values.OrderBy(i => i.Name).ToList();
         }
 
         // -----------------------------------------------------------------------

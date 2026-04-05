@@ -213,6 +213,10 @@
     <Compile Include="Baseline\ColonyProcessingTests.cs" />
     <Compile Include="Baseline\ColonyStructureTests.cs" />
     <Compile Include="Baseline\ColonyStatusCalculatorTests.cs" />
+    <Compile Include="Baseline\DeliveryPlanTests.cs" />
+    <Compile Include="Baseline\DeliveryPlanViewModelTests.cs" />
+    <Compile Include="Baseline\DeliveryRouteTests.cs" />
+    <Compile Include="Baseline\DeliveryRouteViewModelTests.cs" />
     <Compile Include="Baseline\SurveyParserTests.cs" />
     <Compile Include="Constants\BlueprintPropertyValidationTests.cs" />
     <Compile Include="Blueprint\BlueprintScannerTests.cs" />

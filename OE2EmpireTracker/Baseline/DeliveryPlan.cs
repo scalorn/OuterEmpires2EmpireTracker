@@ -3,6 +3,7 @@ using Newtonsoft.Json.Converters;
 using OE2EmpireTracker.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OE2EmpireTracker.Baseline
 {
@@ -22,6 +23,63 @@ namespace OE2EmpireTracker.Baseline
         public DeliveryPlan()
         {
             Stops = new List<DeliveryPlanStop>();
+        }
+
+        /// <summary>
+        /// Calculates what needs to be loaded before departure.
+        /// A drop-off item needs pre-loading if it hasn't been picked up
+        /// at an earlier stop in sufficient quantity.
+        /// </summary>
+        public List<DeliveryItem> CalculateLoadList()
+        {
+            var pickedUp = new Dictionary<string, int>();
+            var needed = new Dictionary<string, DeliveryItem>();
+
+            foreach (var stop in Stops.OrderBy(s => s.Sequence))
+            {
+                foreach (var dropItem in stop.DropOff)
+                {
+                    string key = $"{dropItem.ItemType}|{dropItem.BaseItemTypeID}|{dropItem.ResourcePurity}";
+                    int available = 0;
+                    pickedUp.TryGetValue(key, out available);
+
+                    int shortfall = dropItem.Quantity - available;
+                    if (shortfall > 0)
+                    {
+                        if (needed.ContainsKey(key))
+                        {
+                            needed[key].Quantity += shortfall;
+                        }
+                        else
+                        {
+                            needed[key] = new DeliveryItem
+                            {
+                                ItemType = dropItem.ItemType,
+                                BaseItemTypeID = dropItem.BaseItemTypeID,
+                                Name = dropItem.Name,
+                                ResourcePurity = dropItem.ResourcePurity,
+                                Quantity = shortfall
+                            };
+                        }
+                        if (available > 0)
+                            pickedUp[key] = 0;
+                    }
+                    else
+                    {
+                        pickedUp[key] = available - dropItem.Quantity;
+                    }
+                }
+
+                foreach (var pickItem in stop.PickUp)
+                {
+                    string key = $"{pickItem.ItemType}|{pickItem.BaseItemTypeID}|{pickItem.ResourcePurity}";
+                    int current = 0;
+                    pickedUp.TryGetValue(key, out current);
+                    pickedUp[key] = current + pickItem.Quantity;
+                }
+            }
+
+            return needed.Values.OrderBy(i => i.Name).ToList();
         }
     }
 
