@@ -1,5 +1,5 @@
 {
-  "Shipclass": [
+  "ShipClass": [
     {
       "Id": 0,
       "Name": "None"
@@ -39,481 +39,830 @@
   ],
   "BlueprintType": [
     {
-      "Id": "CargoPod",
-      "Name": "Cargo Pod",
-      "OutputItemType": "ShipPart",
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "Health", "EngCapacityRequired", "CargoCapacity", "WearAndTearRate", "MaximumDamageRepairRate" ],
-      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "Health", "EngCapacityRequired", "CargoCapacity", "WearAndTearRate", "MaximumDamageRepairRate" ]
-    },
-    {
-      "Id": "FuelTank",
-      "Name": "Fuel Tank",
-      "OutputItemType": "ShipPart",
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerRequired", "EngCapacityRequired", "Consumable", "MaximumDamageRepairRate", "HPPercentRestored" ],
-      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "PowerRequired", "EngCapacityRequired", "MaximumDamageRepairRate", "HPPercentRestored" ]
-    },
-    {
-      "Id": "GERTYDroneRack",
-      "Name": "GERTY Drone Rack",
-      "OutputItemType": "ShipPart",
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "Health", "EngCapacityRequired", "FuelCapacity", "WearAndTearRate", "MaximumDamageRepairRate" ],
-      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "Health", "EngCapacityRequired", "FuelCapacity", "WearAndTearRate", "MaximumDamageRepairRate" ]
-    },
-    {
-      "Id": "Hull",
-      "Name": "Hull",
-      "OutputItemType": "ShipHull",
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "Health", "EngCapacityRequired", "CargoCapacity", "FuelCapacity", "LargeWeaponMounts", "MediumWeaponMounts", "SmallWeaponMounts", "WearAndTearRate", "MaximumDamageRepairRate", "EnergyDefence", "KineticDamageDefence", "MissileDamageDefence", "CrewSupported" ],
-      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "Health", "EngCapacityRequired", "CargoCapacity", "FuelCapacity", "WearAndTearRate", "MaximumDamageRepairRate", "EnergyDefence", "KineticDamageDefence", "MissileDamageDefence" ]
-    },
-    {
-      "Id": "HullReinforcement",
-      "Name": "HullReinforcement",
-      "OutputItemType": "ShipPart",
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate" ],
-      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "Health", "EngCapacityRequired", "CargoCapacity", "WearAndTearRate", "MaximumDamageRepairRate" ]
-    },
-    {
-      "Id": "HullSealantInjectionUnit",
-      "Name": "Hull Sealant Injection Unit",
-      "OutputItemType": "ShipPart",
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerRequired", "EngCapacityRequired", "Consumable", "MaximumDamageRepairRate", "HullHPPercentRestored", "CooldownTime" ],
-      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "PowerRequired", "EngCapacityRequired", "MaximumDamageRepairRate", "HullHPPercentRestored", "CooldownTime" ]
-    },
-    {
-      "Id": "JumpDrive",
-      "Name": "Jump Drive",
-      "OutputItemType": "ShipPart",
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "FuelUsed", "MaxJumpDistance" ],
-      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "FuelUsed", "MaxJumpDistance" ]
-    },
-    {
-      "Id": "MainDrive",
-      "Name": "Main Drive",
-      "OutputItemType": "ShipPart",
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "FuelUsed", "MaxJumpDistance" ],
-      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "FuelUsed", "MaxJumpDistance" ]
-    },
-    {
-      "Id": "NavComp",
-      "Name": "Nav Comp",
-      "OutputItemType": "ShipPart"
-    },
-    {
-      "Id": "Reactor",
-      "Name": "Reactor",
-      "OutputItemType": "ShipPart",
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerGenerated", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "PowerRegenerationRate" ],
-      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "PowerGenerated", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "PowerRegenerationRate" ]
-    },
-    {
-      "Id": "Shield",
-      "Name": "Shield",
-      "OutputItemType": "ShipPart"
-    },
-    {
-      "Id": "SystemObjectScanner",
-      "Name": "System Object Scanner",
-      "OutputItemType": "ShipPart",
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "MaxAllowedOnShip", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "SensorAbundanceFactor", "PurityModifier", "ScanLevel" ],
-      "ResearchableProperties": [ "Mass", "CargoVolumeSize", "PowerRequired", "Health", "EngCapacityRequired", "WearAndTearRate", "MaximumDamageRepairRate", "SensorAbundanceFactor", "PurityModifier", "ScanLevel" ]
-    },
-    {
-      "Id": "Thruster",
-      "Name": "Thruster",
-      "OutputItemType": "ShipPart"
-    },
-    {
-      "Id": "UniversalCoupler",
-      "Name": "Universal Coupler",
-      "OutputItemType": "ShipPart"
-    },
-    {
-      "Id": "Beamer/Small",
-      "Name": "Beamer Small",
+      "Id": "Beamer/Large",
+      "Name": "Beamer Large",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
       "OutputItemType": "ShipPart"
     },
     {
       "Id": "Beamer/Medium",
       "Name": "Beamer Medium",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
       "OutputItemType": "ShipPart"
     },
     {
-      "Id": "Beamer/Large",
-      "Name": "Beamer Large",
+      "Id": "Beamer/Small",
+      "Name": "Beamer Small",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
       "OutputItemType": "ShipPart"
     },
     {
-      "Id": "CoilGun/Small",
-      "Name": "Coil Gun Small",
-      "OutputItemType": "ShipPart"
-    },
-    {
-      "Id": "CoilGun/Medium",
-      "Name": "Coil Gun Medium",
+      "Id": "CargoPod",
+      "Name": "Cargo Pod",
+      "Universal": false,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "MaxAllowedOnShip",
+        "Health",
+        "EngCapacityRequired",
+        "CargoCapacity",
+        "WearAndTearRate",
+        "MaximumDamageRepairRate"
+      ],
+      "ResearchableProperties": [
+        "Mass",
+        "CargoVolumeSize",
+        "Health",
+        "EngCapacityRequired",
+        "CargoCapacity",
+        "WearAndTearRate",
+        "MaximumDamageRepairRate"
+      ],
       "OutputItemType": "ShipPart"
     },
     {
       "Id": "CoilGun/Large",
       "Name": "Coil Gun Large",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
       "OutputItemType": "ShipPart"
     },
     {
-      "Id": "MissileLauncher/Small",
-      "Name": "Missile Launcher Small",
+      "Id": "CoilGun/Medium",
+      "Name": "Coil Gun Medium",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
       "OutputItemType": "ShipPart"
     },
     {
-      "Id": "MissileLauncher/Medium",
-      "Name": "Missile Launcher Medium",
-      "OutputItemType": "ShipPart"
-    },
-    {
-      "Id": "MissileLauncherLarge",
-      "Name": "Missile Launcher Large",
-      "OutputItemType": "ShipPart"
-    },
-    {
-      "Id": "Railgun/Small",
-      "Name": "Railgun Small",
-      "OutputItemType": "ShipPart"
-    },
-    {
-      "Id": "Railgun/Medium",
-      "Name": "Railgun Medium",
-      "OutputItemType": "ShipPart"
-    },
-    {
-      "Id": "Railgun/Large",
-      "Name": "Railgun Large",
-      "OutputItemType": "ShipPart"
-    },
-    {
-      "Id": "TorpedoLauncher/Small",
-      "Name": "Torpedo Launcher Small",
-      "OutputItemType": "ShipPart"
-    },
-    {
-      "Id": "TorpedoLauncher/Medium",
-      "Name": "Torpedo Launcher Medium",
-      "OutputItemType": "ShipPart"
-    },
-    {
-      "Id": "TorpedoLauncher/Large",
-      "Name": "Torpedo Launcher Large",
+      "Id": "CoilGun/Small",
+      "Name": "Coil Gun Small",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
       "OutputItemType": "ShipPart"
     },
     {
       "Id": "Munitions/CoilgunMunitions",
       "Name": "Coilgun Munitions",
       "Universal": true,
-      "OutputItemType": "Munition"
-    },
-    {
-      "Id": "Munitions/RailgunMunitions",
-      "Name": "Railgun Munitions",
-      "Universal": true,
-      "OutputItemType": "Munition"
-    },
-    {
-      "Id": "Munitions/MissileMunitions",
-      "Name": "Missile Munitions",
-      "Universal": true,
-      "OutputItemType": "Munition"
-    },
-    {
-      "Id": "Munitions/TorpedoMunitions",
-      "Name": "Torpedo Munitions",
-      "Universal": true,
+      "Properties": [],
+      "ResearchableProperties": [],
       "OutputItemType": "Munition"
     },
     {
       "Id": "Flatpacks/ColonyCommandCentre",
       "Name": "Colony Command Centre Flatpack",
-      "OutputItemType": "Flatpack",
       "Universal": true,
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "HullManufactureTimeModification", "CanResearch", "UnassignedSpecialistDetail", "MaxPerColony", "WhiteCollarDetail", "ManufactureTimeReduction", "WarehouseCapacity", "MiningYieldModification", "HabitationProvision", "RefiningTimeModification", "ResearchTimeModification", "FoodProvision" ]
-    },
-    {
-      "Id": "Flatpacks/EntertainmentCentreFlatpack",
-      "Name": "Entertainment Centre Flatpack",
-      "OutputItemType": "Flatpack",
-      "Universal": true,
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "EntertainmentProvided", "StructuralIntegrity", "PowerRequired", "CanResearch", "UnassignedSpecialistDetail", "MaxPerColony", "BlueCollarDetail" ]
-    },
-    {
-      "Id": "Flatpacks/HabitationBlock",
-      "Name": "Habitation Block Flatpack",
-      "OutputItemType": "Flatpack",
-      "Universal": true,
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "UnassignedSpecialistDetail", "MaxPerColony", "HabitationProvision" ]
-    },
-    {
-      "Id": "Flatpacks/HydroponicsBay",
-      "Name": "Hydroponics Bay Flatpack",
-      "OutputItemType": "Flatpack",
-      "Universal": true,
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "UnassignedSpecialistDetail", "MaxPerColony", "BlueCollarDetail", "FoodProvision" ]
-    },
-    {
-      "Id": "Flatpacks/Manufactory",
-      "Name": "Manufactory Flatpack",
-      "OutputItemType": "Flatpack",
-      "Universal": true,
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "UnassignedSpecialistDetail", "MaxPerColony", "BlueCollarDetail", "UnassignedWhiteCollarDetail", "ManufactureSlot" ]
-    },
-    {
-      "Id": "Flatpacks/MiningRig",
-      "Name": "Mining Rig Flatpack",
-      "OutputItemType": "Flatpack",
-      "Universal": true,
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "ExtractionEfficiency", "UnassignedSpecialistDetail", "MaxPerColony", "BlueCollarDetail", "UnassignedWhiteCollarDetail", "MiningSlot" ]
-    },
-    {
-      "Id": "Flatpacks/ReactorCore",
-      "Name": "Reactor Core Flatpack",
-      "OutputItemType": "Flatpack",
-      "Universal": true,
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerProvided", "CanResearch", "UnassignedSpecialistDetail", "MaxPerColony" ]
-    },
-    {
-      "Id": "Flatpacks/Refinery",
-      "Name": "Refinery Flatpack",
-      "OutputItemType": "Flatpack",
-      "Universal": true,
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "UnassignedSpecialistDetail", "MaxPerColony", "RefiningRate", "BlueCollarDetail", "UnassignedWhiteCollarDetail", "RefiningSlot" ]
-    },
-    {
-      "Id": "Flatpacks/RemoteOperationsArray",
-      "Name": "Remote Operations Array Flatpack",
-      "OutputItemType": "Flatpack",
-      "Universal": true,
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "RemoteOperations", "CanResearch", "MaxPerColony", "SpecialistDetail", "UnassignedWhiteCollarDetail" ]
-    },
-    {
-      "Id": "Flatpacks/ResearchLaboratory",
-      "Name": "Research Laboratory Flatpack",
-      "OutputItemType": "Flatpack",
-      "Universal": true,
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "MaxPerColony", "ResearchTimeModification", "SpecialistDetail", "ResearchSlot" ]
-    },
-    {
-      "Id": "Flatpacks/Warehouse",
-      "Name": "Warehouse Flatpack",
-      "OutputItemType": "Flatpack",
-      "Universal": true,
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "MaxPerColony", "WarehouseCapacity", "BlueCollarDetail", "UnassignedWhiteCollarDetail" ]
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "StructuralIntegrity",
+        "HullManufactureTimeModification",
+        "CanResearch",
+        "UnassignedSpecialistDetail",
+        "MaxPerColony",
+        "WhiteCollarDetail",
+        "ManufactureTimeReduction",
+        "WarehouseCapacity",
+        "MiningYieldModification",
+        "HabitationProvision",
+        "RefiningTimeModification",
+        "ResearchTimeModification",
+        "FoodProvision"
+      ],
+      "ResearchableProperties": [],
+      "OutputItemType": "Flatpack"
     },
     {
       "Id": "Flatpacks/CommodityFactory",
       "Name": "Commodity Factory Flatpack",
-      "OutputItemType": "Flatpack",
       "Universal": true,
-      "CanManufacture": false,
-      "Properties": [ "ManufactureTime", "Mass", "CargoVolumeSize", "StructuralIntegrity", "PowerRequired", "CanResearch", "CanManufacture", "MaxPerColony", "BlueCollarDetail", "UnassignedWhiteCollarDetail" ]
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "StructuralIntegrity",
+        "PowerRequired",
+        "CanResearch",
+        "CanManufacture",
+        "MaxPerColony",
+        "BlueCollarDetail",
+        "UnassignedWhiteCollarDetail"
+      ],
+      "ResearchableProperties": [],
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/EntertainmentCentreFlatpack",
+      "Name": "Entertainment Centre Flatpack",
+      "Universal": true,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "EntertainmentProvided",
+        "StructuralIntegrity",
+        "PowerRequired",
+        "CanResearch",
+        "UnassignedSpecialistDetail",
+        "MaxPerColony",
+        "BlueCollarDetail"
+      ],
+      "ResearchableProperties": [],
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "FuelTank",
+      "Name": "Fuel Tank",
+      "Universal": false,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "MaxAllowedOnShip",
+        "PowerRequired",
+        "EngCapacityRequired",
+        "Consumable",
+        "MaximumDamageRepairRate",
+        "HPPercentRestored"
+      ],
+      "ResearchableProperties": [
+        "Mass",
+        "CargoVolumeSize",
+        "PowerRequired",
+        "EngCapacityRequired",
+        "MaximumDamageRepairRate",
+        "HPPercentRestored"
+      ],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "GERTYDroneRack",
+      "Name": "GERTY Drone Rack",
+      "Universal": false,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "MaxAllowedOnShip",
+        "Health",
+        "EngCapacityRequired",
+        "FuelCapacity",
+        "WearAndTearRate",
+        "MaximumDamageRepairRate"
+      ],
+      "ResearchableProperties": [
+        "Mass",
+        "CargoVolumeSize",
+        "Health",
+        "EngCapacityRequired",
+        "FuelCapacity",
+        "WearAndTearRate",
+        "MaximumDamageRepairRate"
+      ],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "Flatpacks/HabitationBlock",
+      "Name": "Habitation Block Flatpack",
+      "Universal": true,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "StructuralIntegrity",
+        "PowerRequired",
+        "CanResearch",
+        "UnassignedSpecialistDetail",
+        "MaxPerColony",
+        "HabitationProvision"
+      ],
+      "ResearchableProperties": [],
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Hull",
+      "Name": "Hull",
+      "Universal": false,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "Health",
+        "EngCapacityRequired",
+        "CargoCapacity",
+        "FuelCapacity",
+        "LargeWeaponMounts",
+        "MediumWeaponMounts",
+        "SmallWeaponMounts",
+        "WearAndTearRate",
+        "MaximumDamageRepairRate",
+        "EnergyDefence",
+        "KineticDamageDefence",
+        "MissileDamageDefence",
+        "CrewSupported"
+      ],
+      "ResearchableProperties": [
+        "Mass",
+        "CargoVolumeSize",
+        "Health",
+        "EngCapacityRequired",
+        "CargoCapacity",
+        "FuelCapacity",
+        "WearAndTearRate",
+        "MaximumDamageRepairRate",
+        "EnergyDefence",
+        "KineticDamageDefence",
+        "MissileDamageDefence"
+      ],
+      "OutputItemType": "ShipHull"
+    },
+    {
+      "Id": "HullSealantInjectionUnit",
+      "Name": "Hull Sealant Injection Unit",
+      "Universal": false,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "MaxAllowedOnShip",
+        "PowerRequired",
+        "EngCapacityRequired",
+        "Consumable",
+        "MaximumDamageRepairRate",
+        "HullHPPercentRestored",
+        "CooldownTime"
+      ],
+      "ResearchableProperties": [
+        "Mass",
+        "CargoVolumeSize",
+        "PowerRequired",
+        "EngCapacityRequired",
+        "MaximumDamageRepairRate",
+        "HullHPPercentRestored",
+        "CooldownTime"
+      ],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "HullReinforcement",
+      "Name": "HullReinforcement",
+      "Universal": false,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "MaxAllowedOnShip",
+        "PowerRequired",
+        "Health",
+        "EngCapacityRequired",
+        "WearAndTearRate",
+        "MaximumDamageRepairRate"
+      ],
+      "ResearchableProperties": [
+        "Mass",
+        "CargoVolumeSize",
+        "Health",
+        "EngCapacityRequired",
+        "CargoCapacity",
+        "WearAndTearRate",
+        "MaximumDamageRepairRate"
+      ],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "Flatpacks/HydroponicsBay",
+      "Name": "Hydroponics Bay Flatpack",
+      "Universal": true,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "StructuralIntegrity",
+        "PowerRequired",
+        "CanResearch",
+        "UnassignedSpecialistDetail",
+        "MaxPerColony",
+        "BlueCollarDetail",
+        "FoodProvision"
+      ],
+      "ResearchableProperties": [],
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "JumpDrive",
+      "Name": "Jump Drive",
+      "Universal": false,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "MaxAllowedOnShip",
+        "PowerRequired",
+        "Health",
+        "EngCapacityRequired",
+        "WearAndTearRate",
+        "MaximumDamageRepairRate",
+        "FuelUsed",
+        "MaxJumpDistance"
+      ],
+      "ResearchableProperties": [
+        "Mass",
+        "CargoVolumeSize",
+        "PowerRequired",
+        "Health",
+        "EngCapacityRequired",
+        "WearAndTearRate",
+        "MaximumDamageRepairRate",
+        "FuelUsed",
+        "MaxJumpDistance"
+      ],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "MainDrive",
+      "Name": "Main Drive",
+      "Universal": false,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "MaxAllowedOnShip",
+        "PowerRequired",
+        "Health",
+        "EngCapacityRequired",
+        "WearAndTearRate",
+        "MaximumDamageRepairRate",
+        "FuelUsed",
+        "MaxJumpDistance"
+      ],
+      "ResearchableProperties": [
+        "Mass",
+        "CargoVolumeSize",
+        "PowerRequired",
+        "Health",
+        "EngCapacityRequired",
+        "WearAndTearRate",
+        "MaximumDamageRepairRate",
+        "FuelUsed",
+        "MaxJumpDistance"
+      ],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "Flatpacks/Manufactory",
+      "Name": "Manufactory Flatpack",
+      "Universal": true,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "StructuralIntegrity",
+        "PowerRequired",
+        "CanResearch",
+        "UnassignedSpecialistDetail",
+        "MaxPerColony",
+        "BlueCollarDetail",
+        "UnassignedWhiteCollarDetail",
+        "ManufactureSlot"
+      ],
+      "ResearchableProperties": [],
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/MiningRig",
+      "Name": "Mining Rig Flatpack",
+      "Universal": true,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "StructuralIntegrity",
+        "PowerRequired",
+        "CanResearch",
+        "ExtractionEfficiency",
+        "UnassignedSpecialistDetail",
+        "MaxPerColony",
+        "BlueCollarDetail",
+        "UnassignedWhiteCollarDetail",
+        "MiningSlot"
+      ],
+      "ResearchableProperties": [],
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "MissileLauncherLarge",
+      "Name": "Missile Launcher Large",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "MissileLauncher/Medium",
+      "Name": "Missile Launcher Medium",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "MissileLauncher/Small",
+      "Name": "Missile Launcher Small",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "Munitions/MissileMunitions",
+      "Name": "Missile Munitions",
+      "Universal": true,
+      "Properties": [],
+      "ResearchableProperties": [],
+      "OutputItemType": "Munition"
+    },
+    {
+      "Id": "NavComp",
+      "Name": "Nav Comp",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "Railgun/Large",
+      "Name": "Railgun Large",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "Railgun/Medium",
+      "Name": "Railgun Medium",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "Munitions/RailgunMunitions",
+      "Name": "Railgun Munitions",
+      "Universal": true,
+      "Properties": [],
+      "ResearchableProperties": [],
+      "OutputItemType": "Munition"
+    },
+    {
+      "Id": "Railgun/Small",
+      "Name": "Railgun Small",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "Reactor",
+      "Name": "Reactor",
+      "Universal": false,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "MaxAllowedOnShip",
+        "PowerGenerated",
+        "Health",
+        "EngCapacityRequired",
+        "WearAndTearRate",
+        "MaximumDamageRepairRate",
+        "PowerRegenerationRate"
+      ],
+      "ResearchableProperties": [
+        "Mass",
+        "CargoVolumeSize",
+        "PowerGenerated",
+        "Health",
+        "EngCapacityRequired",
+        "WearAndTearRate",
+        "MaximumDamageRepairRate",
+        "PowerRegenerationRate"
+      ],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "Flatpacks/ReactorCore",
+      "Name": "Reactor Core Flatpack",
+      "Universal": true,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "StructuralIntegrity",
+        "PowerProvided",
+        "CanResearch",
+        "UnassignedSpecialistDetail",
+        "MaxPerColony"
+      ],
+      "ResearchableProperties": [],
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/Refinery",
+      "Name": "Refinery Flatpack",
+      "Universal": true,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "StructuralIntegrity",
+        "PowerRequired",
+        "CanResearch",
+        "UnassignedSpecialistDetail",
+        "MaxPerColony",
+        "RefiningRate",
+        "BlueCollarDetail",
+        "UnassignedWhiteCollarDetail",
+        "RefiningSlot"
+      ],
+      "ResearchableProperties": [],
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/RemoteOperationsArray",
+      "Name": "Remote Operations Array Flatpack",
+      "Universal": true,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "StructuralIntegrity",
+        "PowerRequired",
+        "RemoteOperations",
+        "CanResearch",
+        "MaxPerColony",
+        "SpecialistDetail",
+        "UnassignedWhiteCollarDetail"
+      ],
+      "ResearchableProperties": [],
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/ResearchLaboratory",
+      "Name": "Research Laboratory Flatpack",
+      "Universal": true,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "StructuralIntegrity",
+        "PowerRequired",
+        "CanResearch",
+        "MaxPerColony",
+        "ResearchTimeModification",
+        "SpecialistDetail",
+        "ResearchSlot"
+      ],
+      "ResearchableProperties": [],
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Shield",
+      "Name": "Shield",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "SystemObjectScanner",
+      "Name": "System Object Scanner",
+      "Universal": false,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "MaxAllowedOnShip",
+        "PowerRequired",
+        "Health",
+        "EngCapacityRequired",
+        "WearAndTearRate",
+        "MaximumDamageRepairRate",
+        "SensorAbundanceFactor",
+        "PurityModifier",
+        "ScanLevel"
+      ],
+      "ResearchableProperties": [
+        "Mass",
+        "CargoVolumeSize",
+        "PowerRequired",
+        "Health",
+        "EngCapacityRequired",
+        "WearAndTearRate",
+        "MaximumDamageRepairRate",
+        "SensorAbundanceFactor",
+        "PurityModifier",
+        "ScanLevel"
+      ],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "Thruster",
+      "Name": "Thruster",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "TorpedoLauncher/Large",
+      "Name": "Torpedo Launcher Large",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "TorpedoLauncher/Medium",
+      "Name": "Torpedo Launcher Medium",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "TorpedoLauncher/Small",
+      "Name": "Torpedo Launcher Small",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "Munitions/TorpedoMunitions",
+      "Name": "Torpedo Munitions",
+      "Universal": true,
+      "Properties": [],
+      "ResearchableProperties": [],
+      "OutputItemType": "Munition"
+    },
+    {
+      "Id": "UniversalCoupler",
+      "Name": "Universal Coupler",
+      "Universal": false,
+      "Properties": [],
+      "ResearchableProperties": [],
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "Flatpacks/Warehouse",
+      "Name": "Warehouse Flatpack",
+      "Universal": true,
+      "Properties": [
+        "ManufactureTime",
+        "Mass",
+        "CargoVolumeSize",
+        "StructuralIntegrity",
+        "PowerRequired",
+        "CanResearch",
+        "MaxPerColony",
+        "WarehouseCapacity",
+        "BlueCollarDetail",
+        "UnassignedWhiteCollarDetail"
+      ],
+      "ResearchableProperties": [],
+      "OutputItemType": "Flatpack"
     }
   ],
-  "ResourceGroup": [
+  "Blueprint": [
     {
-      "Name": "Crystalline"
+      "OwnerUUID": "",
+      "baseBlueprintUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "Evolution": 0,
+      "TechLevel": "MilSpec",
+      "Class": 7,
+      "CopyCost": 0,
+      "Properties": {
+        "ManufactureTime": "4h 0m",
+        "Mass": "130",
+        "CargoVolumeSize": "165",
+        "MaxAllowedOnShip": "1",
+        "PowerRequired": "319",
+        "Health": "910",
+        "EngCapacityRequired": "490",
+        "WearAndTearRate": "3",
+        "MaximumDamageRepairRate": "80",
+        "SensorAbundanceFactor": "3.375",
+        "PurityModifier": "30",
+        "ScanLevel": "90"
+      },
+      "Resources": {
+        "Alkaline Earth Metals": "2151",
+        "Non-Metallics": "424",
+        "Heavy Post-Trans Metals": "711",
+        "Strong Alkali Organics": "352"
+      },
+      "UUID": "b0633002-68ea-4c02-83cf-10292a9a420c",
+      "ItemType": "Survey",
+      "BaseItemTypeID": "",
+      "Name": "RAK-L MatScan",
+      "NickName": "",
+      "Description": "",
+      "Quantity": 0,
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
-      "Name": "Exotic"
+      "OwnerUUID": "",
+      "baseBlueprintUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "Evolution": 0,
+      "TechLevel": "MilSpec",
+      "Class": 6,
+      "CopyCost": 0,
+      "Properties": {
+        "ManufactureTime": "4h 0m",
+        "Mass": "110",
+        "CargoVolumeSize": "145",
+        "MaxAllowedOnShip": "1",
+        "PowerRequired": "182",
+        "Health": "660",
+        "EngCapacityRequired": "430",
+        "WearAndTearRate": "3",
+        "MaximumDamageRepairRate": "80",
+        "SensorAbundanceFactor": "3",
+        "PurityModifier": "22.5",
+        "ScanLevel": "75"
+      },
+      "Resources": {
+        "Post-Trans Metals": "1622",
+        "Non-Metallics": "285",
+        "Heavy Post-Trans Metals": "558",
+        "Strong Alkali Organics": "284"
+      },
+      "UUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
+      "ItemType": "Survey",
+      "BaseItemTypeID": "",
+      "Name": "RAK-LL MatScan",
+      "NickName": "",
+      "Description": "",
+      "Quantity": 0,
+      "ResourcePurity": "",
+      "Volume": 0.0
     },
     {
-      "Name": "Inert"
-    },
-    {
-      "Name": "Metallic"
-    },
-    {
-      "Name": "Non-Carbon"
-    },
-    {
-      "Name": "Organic"
-    },
-    {
-      "Name": "Reactive"
-    },
-    {
-      "Name": "Volatile"
-    }
-  ],
-  "ResourcePurity": [
-    {
-      "Name": "High"
-    },
-    {
-      "Name": "Med"
-    },
-    {
-      "Name": "Low"
-    }
-  ],
-  "Resource": [
-    {
-      "Name": "Acidic Inorganics",
-      "Group": "Non-Carbon",
-      "Synthetic": false
-    },
-    {
-      "Name": "Acidic Organics",
-      "Group": "Organic",
-      "Synthetic": false
-    },
-    {
-      "Name": "Alkali Inorganics",
-      "Group": "Non-Carbon",
-      "Synthetic": false
-    },
-    {
-      "Name": "Alkali Metals",
-      "Group": "Metallic",
-      "Synthetic": false
-    },
-    {
-      "Name": "Alkali Organics",
-      "Group": "Organic",
-      "Synthetic": false
-    },
-    {
-      "Name": "Alkaline Earth Metals",
-      "Group": "Metallic",
-      "Synthetic": false
-    },
-    {
-      "Name": "Complex Metallics",
-      "Group": "Crystalline",
-      "Synthetic": false
-    },
-    {
-      "Name": "Complex Non-Metallics",
-      "Group": "Crystalline",
-      "Synthetic": false
-    },
-    {
-      "Name": "Halogens",
-      "Group": "Reactive",
-      "Synthetic": false
-    },
-    {
-      "Name": "Heavy Alkali Metals",
-      "Group": "Metallic",
-      "Synthetic": false
-    },
-    {
-      "Name": "Heavy Alkaline Earth Metals",
-      "Group": "Metallic",
-      "Synthetic": false
-    },
-    {
-      "Name": "Heavy Noble Gases",
-      "Group": "Inert",
-      "Synthetic": false
-    },
-    {
-      "Name": "Heavy Post-Trans Metals",
-      "Group": "Metallic",
-      "Synthetic": false
-    },
-    {
-      "Name": "Heavy Trans-Metals",
-      "Group": "Metallic",
-      "Synthetic": false
-    },
-    {
-      "Name": "Lanthanide Volatiles",
-      "Group": "Volatile",
-      "Synthetic": false
-    },
-    {
-      "Name": "Lanthanides",
-      "Group": "Volatile",
-      "Synthetic": false
-    },
-    {
-      "Name": "Light Halogens",
-      "Group": "Reactive",
-      "Synthetic": false
-    },
-    {
-      "Name": "Metallics",
-      "Group": "Crystalline",
-      "Synthetic": false
-    },
-    {
-      "Name": "Metaloids",
-      "Group": "Metallic",
-      "Synthetic": false
-    },
-    {
-      "Name": "Noble Gases",
-      "Group": "Inert",
-      "Synthetic": false
-    },
-    {
-      "Name": "Non-Metallics",
-      "Group": "Crystalline",
-      "Synthetic": false
-    },
-    {
-      "Name": "Post-Trans Metals",
-      "Group": "Metallic",
-      "Synthetic": false
-    },
-    {
-      "Name": "S1. Translanthanic Exotics",
-      "Synthetic": true
-    },
-    {
-      "Name": "S1. Translivermoric Exotics",
-      "Synthetic": true
-    },
-    {
-      "Name": "S1. Transuranic Exotics",
-      "Synthetic": true
-    },
-    {
-      "Name": "S2. Element 126",
-      "Synthetic": true
-    },
-    {
-      "Name": "S2. Element 127",
-      "Synthetic": true
-    },
-    {
-      "Name": "S2. Superactinides",
-      "Synthetic": true
-    },
-    {
-      "Name": "Strong Acidic Inorganics",
-      "Group": "Non-Carbon",
-      "Synthetic": false
-    },
-    {
-      "Name": "Strong Alkali Inorganics",
-      "Group": "Non-Carbon",
-      "Synthetic": false
-    },
-    {
-      "Name": "Strong Alkali Organics",
-      "Group": "Organic",
-      "Synthetic": false
-    },
-    {
-      "Name": "Superheavy Exotics",
-      "Group": "Exotic",
-      "Synthetic": false
-    },
-    {
-      "Name": "Trans-Metals",
-      "Group": "Metallic",
-      "Synthetic": false
-    },
-    {
-      "Name": "Transuranic Volatiles",
-      "Group": "Volatile",
-      "Synthetic": false
+      "OwnerUUID": "",
+      "baseBlueprintUUID": "",
+      "BluePrintType": "Hull",
+      "Evolution": 0,
+      "TechLevel": null,
+      "Class": 3,
+      "CopyCost": 0,
+      "Properties": {
+        "ManufactureTime": "13 hours",
+        "Mass": "3200",
+        "CargoVolumeSize": "2000",
+        "Health": "",
+        "EngCapacityRequired": "",
+        "CargoCapacity": "1100",
+        "FuelCapacity": "",
+        "LargeWeaponMounts": "1%",
+        "MediumWeaponMounts": "80%",
+        "SmallWeaponMounts": "",
+        "WearAndTearRate": "",
+        "MaximumDamageRepairRate": "",
+        "EnergyDefence": "",
+        "KineticDamageDefence": "",
+        "MissileDamageDefence": "",
+        "CrewSupported": ""
+      },
+      "Resources": {
+        "Halogens": "630",
+        "Non-Metallics": "63",
+        "Heavy Post-Trans Metals": "161"
+      },
+      "UUID": "5221424f-ed0b-4ce0-8c86-c64b597fc7b2",
+      "ItemType": "Blueprint",
+      "BaseItemTypeID": "",
+      "Name": "Corvette",
+      "NickName": "",
+      "Description": "Ship Hull",
+      "Quantity": 0,
+      "ResourcePurity": "",
+      "Volume": 0.0
     }
   ],
   "TechLevel": [

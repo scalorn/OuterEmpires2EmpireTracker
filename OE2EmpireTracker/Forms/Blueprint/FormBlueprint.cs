@@ -389,6 +389,7 @@ namespace OE2EmpireTracker
                 // Remove excess rows if there are more than defined properties
                 if (bt.Properties.Length == 0)
                 {
+                    dgvStatistics.CancelEdit();
                     dgvStatistics.Rows.Clear();
                 }
                 else while (dgvStatistics.Rows.Count > bt.Properties.Length)
@@ -908,7 +909,9 @@ namespace OE2EmpireTracker
             txtCopyCost.Text = "";
 
             // Clear grids
+            dgvStatistics.CancelEdit();
             dgvStatistics.Rows.Clear();
+            dgvResources.CancelEdit();
             dgvResources.Rows.Clear();
 
             chkGlobalBlueprint.Checked = false;
