@@ -30,6 +30,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.dgvLoadList = new System.Windows.Forms.DataGridView();
             this.colLoadType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLoadName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colLoadExtName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLoadQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.flpStops = new System.Windows.Forms.FlowLayoutPanel();
             this.flpBase.SuspendLayout();
