@@ -110,6 +110,9 @@ namespace OE2EmpireTracker.Baseline
 
                     // Lock commodity factory resources
                     LockCommodityFactoryResources(structure);
+
+                    // Lock flatpack for staged structures
+                    LockStagedFlatpack(structure);
                 }
 
                 ColonyStructureStatus currentStatus = new ColonyStructureStatus();
@@ -319,6 +322,32 @@ namespace OE2EmpireTracker.Baseline
                 colony.Locks.LockItem(structure.UUID,
                     Data.ItemType.ItemTypeEnum.Resource, resourceName, totalToLock);
             }
+        }
+
+        private void LockStagedFlatpack(ColonyStructure structure)
+        {
+            if (colony.Locks == null || string.IsNullOrEmpty(structure.UUID)) return;
+            if (string.IsNullOrEmpty(structure.FlatpackBlueprintUUID)) return;
+
+            bool isStaged = false;
+            structure.Properties.getBoolean(GameConstants.PropStaged, false, out isStaged);
+            if (!isStaged) return;
+
+            // Ensure a flatpack item exists in the warehouse
+            var existing = colony.Items.FindByType(Data.ItemType.ItemTypeEnum.Flatpack, structure.FlatpackBlueprintUUID);
+            if (existing.Count == 0)
+            {
+                var blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                var flatpackItem = new Data.Item(Data.ItemType.ItemTypeEnum.Flatpack, blueprint?.ExtendedName ?? "Flatpack");
+                flatpackItem.UUID = System.Guid.NewGuid().ToString();
+                flatpackItem.BaseItemTypeID = structure.FlatpackBlueprintUUID;
+                flatpackItem.Quantity = 0;
+                flatpackItem.Volume = 1;
+                colony.Items.AddItem(flatpackItem);
+            }
+
+            colony.Locks.LockItem(structure.UUID,
+                Data.ItemType.ItemTypeEnum.Flatpack, structure.FlatpackBlueprintUUID, 1);
         }
 
         public void CalculateBuilt(ColonyStructure structure, ColonyStructureStatus prevStatus, ColonyStructureStatus status, IColonyStructureWorkers workerSource, Data.Blueprint flatpackBlueprint)
