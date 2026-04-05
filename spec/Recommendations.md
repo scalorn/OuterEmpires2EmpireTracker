@@ -136,11 +136,12 @@ Renamed all camelCase methods to PascalCase across the codebase:
 - All callers updated across 15+ files. `processHtml`/`ProcessHtml` was already PascalCase from a prior session.
 
 ### 12e. Large method extraction (Medium-High risk)
-- `UpdateData` in ColonyStructure.cs (~183 lines) — worker checkbox setup could be extracted
-- `populateForm` in FormColony.cs (~140 lines) — structure control setup could be extracted
-- `CalculateBuilt` per-structure overload in ColonyStatusCalculator.cs (~250 lines) — worker parsing is 3 near-identical blocks
-- `ProcessColony` in Colony.cs (~200 lines) — already partially extracted per structure type
-- `processHtml` in SurveyParser.cs (~200 lines)
+**Status: Complete**
+- `ProcessColony` in Colony.cs: Extracted inline mining rig processing into `ProcessMiningRig()` — now all 4 structure types have their own method
+- `CalculateBuilt` (per-structure) in ColonyStatusCalculator.cs: Collapsed 5 resource accumulation blocks (Power/Habitation/Food/Entertainment/Warehouse) into compact calls using `GetBlueprintDouble()` helper
+- `UpdateData` in ColonyStructure.cs: Already reduced to ~100 lines by 12f worker deduplication — no further extraction needed
+- `PopulateForm` in FormColony.cs: Already reduced to ~100 lines by 12a dead code removal — no further extraction needed
+- `ProcessHtml` in SurveyParser.cs: Already well-structured at ~80 lines with extracted ParseDescription/ParseTitle/ParseResource helpers
 
 ### 12f. Duplicate worker parsing (Medium risk)
 **Status: Complete**

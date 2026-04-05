@@ -310,52 +310,17 @@ namespace OE2EmpireTracker.Baseline
 
             if (flatpackBlueprint != null)
             {
-                // --- Power Logic ---
+                // --- Resource Accumulation ---
                 if (online)
                 {
-                    double powerProvided = 0;
-                    flatpackBlueprint.Properties.getDouble("PowerProvided", 0, out powerProvided);
-                    double powerRequired = 0;
-                    flatpackBlueprint.Properties.getDouble("PowerRequired", 0, out powerRequired);
-
-                    builtPowerProvided += powerProvided;
-                    builtPowerRequired += powerRequired;
+                    builtPowerProvided += GetBlueprintDouble(flatpackBlueprint, "PowerProvided");
+                    builtPowerRequired += GetBlueprintDouble(flatpackBlueprint, "PowerRequired");
+                    builtHabitationProvision += GetBlueprintDouble(flatpackBlueprint, "HabitationProvision");
+                    builtEntertainmentProvided += GetBlueprintDouble(flatpackBlueprint, "EntertainmentProvided");
+                    builtWarehouseCapacity += GetBlueprintDouble(flatpackBlueprint, "WarehouseCapacity");
                 }
-
-                // --- Habitation Logic ---
-                if (online)
-                {
-                    double habitationProvision = 0;
-                    flatpackBlueprint.Properties.getDouble("HabitationProvision", 0, out habitationProvision);
-
-                    builtHabitationProvision += habitationProvision;
-                }
-
-                // --- Food Logic ---
-                {
-                    double foodProvision = 0;
-                    flatpackBlueprint.Properties.getDouble("FoodProvision", 0, out foodProvision);
-
-                    builtFoodProvision += foodProvision;
-                }
-
-                // --- Entertainment Logic ---
-                if (online)
-                {
-                    double entertainmentProvided = 0;
-                    flatpackBlueprint.Properties.getDouble("EntertainmentProvided", 0, out entertainmentProvided);
-
-                    builtEntertainmentProvided += entertainmentProvided;
-                }
-
-                // --- Warehouse Logic ---
-                if (online)
-                {
-                    double warehouseCapacity = 0;
-                    flatpackBlueprint.Properties.getDouble("WarehouseCapacity", 0, out warehouseCapacity);
-
-                    builtWarehouseCapacity += warehouseCapacity;
-                }
+                // Food accumulates regardless of online state
+                builtFoodProvision += GetBlueprintDouble(flatpackBlueprint, "FoodProvision");
 
                 // --- Worker Assignment Parsing ---
                 foreach (var wt in Data.WorkerDetail.WorkerTypes)
@@ -420,6 +385,13 @@ namespace OE2EmpireTracker.Baseline
             status.WarehouseCapacity = builtWarehouseCapacity;
             // Warehouse required is calculated based on workers in current implementation
             status.WarehouseRequired = builtWarehouseRequired;
+        }
+
+        private static double GetBlueprintDouble(Data.Blueprint blueprint, string propertyName)
+        {
+            double value = 0;
+            blueprint.Properties.getDouble(propertyName, 0, out value);
+            return value;
         }
 
         /// <summary>

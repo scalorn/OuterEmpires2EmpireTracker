@@ -39,41 +39,7 @@ namespace OE2EmpireTracker.Baseline
                     Blueprint FlatpackBlueprint = PlayerContext.getInstance().FindBlueprint(structure.FlatpackBlueprintUUID);
                     if (FlatpackBlueprint.BluePrintType == BlueprintTypes.MiningRig)
                     {
-                        Survey survey = PlayerContext.getInstance().FindSurvey(structure.MiningSurvey);
-                        SurveyResource surveyResource = survey.Resources[structure.MiningSurveyResource];
-                        List<Item> items = Items.FindResource(surveyResource.Resource, surveyResource.Purity);
-                        int quantityInt = 0;
-                        Decimal leftOver = structure.MiningLeftOvers;
-                        Item item = null;
-                        if (items.Count > 0)
-                        {
-                            item = items[0];
-                        }
-                        else
-                        {
-                            item = new Item();
-                            item.UUID = Guid.NewGuid().ToString();
-                            item.ItemType = ItemType.ItemTypeEnum.Resource;
-                            item.BaseItemTypeID = surveyResource.Resource;
-                            item.Name = surveyResource.Resource;
-                            item.ResourcePurity = surveyResource.Purity;
-                            item.Quantity = 0;
-                            Items.AddItem(item);
-                        }
-
-                        while (structure.ProcessCompletionTime.IntervalsPassed > 0)
-                        {
-                            Decimal quantity = Decimal.Parse(surveyResource.Amount) + leftOver;
-
-                            /// TODO: FIXME: Need to adjust for extraction bonus.
-                            // quantity *= (1 + playerProfile.getExtractionBonus());
-                            quantityInt += (int)quantity;
-
-                            leftOver += (quantity - quantityInt);
-                            structure.ProcessCompletionTime.ConsumeIntervals(1);
-                        }
-                        item.Quantity += quantityInt;
-                        structure.MiningLeftOvers = leftOver;
+                        ProcessMiningRig(structure);
                     }
                     else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Refinery)
                     {
@@ -96,6 +62,45 @@ namespace OE2EmpireTracker.Baseline
             {
                 ProcessRefinery(structure);
             }
+        }
+
+        private void ProcessMiningRig(ColonyStructure structure)
+        {
+            Survey survey = PlayerContext.getInstance().FindSurvey(structure.MiningSurvey);
+            SurveyResource surveyResource = survey.Resources[structure.MiningSurveyResource];
+            List<Item> items = Items.FindResource(surveyResource.Resource, surveyResource.Purity);
+            int quantityInt = 0;
+            Decimal leftOver = structure.MiningLeftOvers;
+            Item item = null;
+            if (items.Count > 0)
+            {
+                item = items[0];
+            }
+            else
+            {
+                item = new Item();
+                item.UUID = Guid.NewGuid().ToString();
+                item.ItemType = ItemType.ItemTypeEnum.Resource;
+                item.BaseItemTypeID = surveyResource.Resource;
+                item.Name = surveyResource.Resource;
+                item.ResourcePurity = surveyResource.Purity;
+                item.Quantity = 0;
+                Items.AddItem(item);
+            }
+
+            while (structure.ProcessCompletionTime.IntervalsPassed > 0)
+            {
+                Decimal quantity = Decimal.Parse(surveyResource.Amount) + leftOver;
+
+                /// TODO: FIXME: Need to adjust for extraction bonus.
+                // quantity *= (1 + playerProfile.getExtractionBonus());
+                quantityInt += (int)quantity;
+
+                leftOver += (quantity - quantityInt);
+                structure.ProcessCompletionTime.ConsumeIntervals(1);
+            }
+            item.Quantity += quantityInt;
+            structure.MiningLeftOvers = leftOver;
         }
 
         private void ProcessRefinery(ColonyStructure structure)

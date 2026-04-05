@@ -116,3 +116,6 @@ Extracted `ColonyStructure` and `CommodityRequested` classes from Colony.cs into
 
 ## 35. Magic Strings/Numbers → Constants (Rec 12c)
 Created `Constants/GameConstants.cs` with RefiningBaseRate (25), WorkerVolume (50), SecondsPerHour (3600), PropBuilt/PropStaged/PropOnline, StatusActual/StatusIdeal, PurityRefined. Replaced all occurrences across 9 production files. Worker type strings already handled by WorkerDetail.WorkerTypes (Rec 12f). 465 tests passing.
+
+## 36. Large Method Extraction (Rec 12e)
+Extracted `ProcessMiningRig()` from inline block in `ProcessColony` — all 4 structure types now have their own method. Collapsed 5 resource accumulation blocks in `CalculateBuilt` into compact calls using `GetBlueprintDouble()` helper. Other methods (UpdateData, PopulateForm, ProcessHtml) already reduced to reasonable sizes by prior refactoring (12a, 12f). 465 tests passing.

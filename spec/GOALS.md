@@ -48,6 +48,7 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 33 | Deduplicate worker parsing (Rec 12f) | Complete |
 | 34 | Split Colony.cs into separate files (Rec 12g) | Complete |
 | 35 | Magic strings/numbers → constants (Rec 12c) | Complete |
+| 36 | Large method extraction (Rec 12e) | Complete |
 
 ---
 
