@@ -67,6 +67,8 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 52 | Delivery Phase 1: SystemName on Colony/Survey + SurveyParser | Complete |
 | 53 | Delivery Phase 2: DeliveryRoute/RouteStop data model | Complete |
 | 54 | Delivery Phase 3: Route Builder form + wiring | Complete |
+| 55 | Cascade delete player data + orphan cleanup on load | Complete |
+| 56 | Prevent duplicate stops checkbox on route builder | Complete |
 
 ---
 
@@ -76,4 +78,4 @@ See [Recommendations](Recommendations.md) for details:
 - **Rec #4**: CountDownTime master list — major feature (UI, locking, background thread)
 
 ### Large Features (from requirements, not yet started)
-- Delivery routes & planning (REQ-DEL-001-062) — Phase 1-3 ready, see Rec #15
+- Delivery planning — Phase 4+ (commodity summary, worker/resource deliveries)

@@ -176,3 +176,9 @@ Created `DeliveryRoute` (UUID, Name, OwnerUUID, List<RouteStop>) and `RouteStop`
 
 ## 54. Delivery Phase 3: Route Builder Form + Wiring (REQ-DEL-020-025)
 Created FormDeliveryRoute with DeliveryRouteViewModel. Route list with filter, stop grid with Up/Down/Remove, colony picker showing "PlanetName - ColonyName (SystemName)", Save/Delete/New with confirmation dialog. Player change refreshes all data. Accessible from Edit → Delivery Routes. 513 tests passing.
+
+## 55. Cascade Delete Player Data + Orphan Cleanup on Load
+CascadeDeletePlayer removes all colonies, blueprints, surveys, and routes owned by deleted player. CleanupOrphanedData on load removes data owned by non-existent players with per-item Warn-level logging.
+
+## 56. Prevent Duplicate Stops Checkbox on Route Builder
+"No Duplicates" checkbox filters colony picker to exclude colonies already in the route. Refreshes on add/remove/new/clear. Off by default.
