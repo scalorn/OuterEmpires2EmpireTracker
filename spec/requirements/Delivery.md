@@ -40,25 +40,50 @@ Colonies are on planets. Planets are in systems. Travel between systems costs ti
 **REQ-DEL-024** The route list SHALL filter by current player and refresh on CurrentPlayerChanged.
 **REQ-DEL-025** The colony picker SHALL show colonies as "PlanetName - ColonyName (SystemName)".
 
-## Phase 4: Delivery Planning — Commodity Summary (Future)
+## Phase 4: Delivery Planning — Data Model
 
-**REQ-DEL-030** Given a route, the system SHALL generate a consolidated commodity request list across all colonies in the route.
-**REQ-DEL-031** For each stop, the system SHALL show what commodities to drop off.
-**REQ-DEL-032** The user SHALL be able to manually add/remove items from the delivery plan.
+**REQ-DEL-030** A `DeliveryPlan` SHALL have: UUID, Name, OwnerUUID, RouteUUID, and an ordered list of `DeliveryPlanStop` entries.
+**REQ-DEL-031** A `DeliveryPlanStop` SHALL have: ColonyUUID, Sequence, a list of `DeliveryItem` for drop-off, and a list of `DeliveryItem` for pick-up.
+**REQ-DEL-032** A `DeliveryItem` SHALL have: ItemType (same enum as colony warehouse), BaseItemTypeID, Name, Quantity, and a Delivered boolean (default false).
+**REQ-DEL-033** DeliveryPlan SHALL be persisted to JSON as part of PlayerData.json (new `DeliveryPlan[]` array on PlayerRoot).
+**REQ-DEL-034** DeliveryPlan.OwnerUUID SHALL match the owning player's UUID. Plans are per-player.
+**REQ-DEL-035** A delivery item can be any item type that can be placed in a colony warehouse: Resource, Commodity, WorkDetail, Blueprint, Survey, ShipPart, ShipHull, Munition, Flatpack, SpaceBuildPackage, Share.
 
-## Phase 5: Delivery Planning — Workers & Resources (Future)
+## Phase 5: Delivery Planning — UI
 
-**REQ-DEL-040** The system SHALL identify colonies with unmet worker needs (actual vs ideal) and include worker deliveries.
-**REQ-DEL-041** The system SHALL identify colonies with manufacturing resource shortages and include resource deliveries.
-**REQ-DEL-042** The system SHALL identify colonies with warehouse overflow risk and include resource pickups.
+**REQ-DEL-040** The Route Builder form SHALL have a second tab "Plan" for delivery planning.
+**REQ-DEL-041** The Plan tab SHALL show the selected stop's drop-off and pick-up item lists.
+**REQ-DEL-042** The user SHALL be able to add items to drop-off or pick-up lists using the same item type → item picker → quantity pattern as the colony warehouse.
+**REQ-DEL-043** The user SHALL be able to remove items from the lists.
+**REQ-DEL-044** Switching stops on the Stops tab SHALL update the Plan tab to show that stop's items.
 
-## Phase 6: Ship Integration (Future)
+## Phase 6: Delivery Execution — Form
 
-**REQ-DEL-050** When ships are modeled, delivery plans SHALL respect cargo capacity.
-**REQ-DEL-051** Multi-route deliveries SHALL be supported when cargo exceeds single-route capacity.
+**REQ-DEL-050** A separate Delivery Execution form SHALL display a delivery plan in stop-by-stop sequence.
+**REQ-DEL-051** The form SHALL show a consolidated "load list" at the top — all items across all stops that need to be picked up or delivered, summed by item.
+**REQ-DEL-052** For each stop in sequence, the form SHALL show the drop-off items and pick-up items.
+**REQ-DEL-053** Each item SHALL have a checkbox to mark it as delivered/picked up.
+**REQ-DEL-054** When a commodity is marked as delivered, the corresponding CommodityRequested on the colony SHALL be updated (Delivered count incremented, Fulfilled set if complete).
+**REQ-DEL-055** When a flatpack is marked as delivered, the corresponding planned structure on the colony SHALL be marked as Staged.
+**REQ-DEL-056** The execution form SHALL be accessible from the Route Builder or from a menu item.
 
-## Phase 7: Space Station Hub (Future)
+## Phase 7: Auto-Fill Delivery Plans (Future)
 
-**REQ-DEL-060** Space stations SHALL be modeled as build structures not tied to a planet.
-**REQ-DEL-061** Space stations SHALL serve as the central hub for resource storage and delivery staging.
-**REQ-DEL-062** Space stations SHALL have no storage limitations.
+**REQ-DEL-060** The planning tab SHALL offer auto-fill options by request type:
+  - Commodity requests: fill from unfulfilled CommodityRequested entries
+  - Workers: fill from ideal vs actual worker gaps
+  - Manufacturing resources: fill from active manufacturing resource needs
+  - Flatpacks: fill from planned/unbuilt structures
+**REQ-DEL-061** Flatpack auto-fill SHALL support a time horizon parameter (e.g. "next N days of building").
+**REQ-DEL-062** Auto-fill SHALL be additive — it adds to existing plan items, not replaces them.
+
+## Phase 8: Ship Integration (Future)
+
+**REQ-DEL-070** When ships are modeled, delivery plans SHALL respect cargo capacity.
+**REQ-DEL-071** Multi-route deliveries SHALL be supported when cargo exceeds single-route capacity.
+
+## Phase 9: Space Station Hub (Future)
+
+**REQ-DEL-080** Space stations SHALL be modeled as build structures not tied to a planet.
+**REQ-DEL-081** Space stations SHALL serve as the central hub for resource storage and delivery staging.
+**REQ-DEL-082** Space stations SHALL have no storage limitations.
