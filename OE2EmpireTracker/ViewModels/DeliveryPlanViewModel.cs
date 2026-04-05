@@ -1,6 +1,7 @@
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Data;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace OE2EmpireTracker.ViewModels
 {
     public class DeliveryPlanViewModel
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly PlayerContext _playerContext;
         private DeliveryPlan _plan;
 
@@ -147,23 +149,28 @@ namespace OE2EmpireTracker.ViewModels
             foreach (var routeStop in routeStops.OrderBy(s => s.Sequence))
             {
                 var colony = colonyFinder(routeStop.ColonyUUID);
-                if (colony == null) continue;
+                if (colony == null) { Log.Debug("AutoFillFlatpacks: colony not found for {0}", routeStop.ColonyUUID); continue; }
 
+                Log.Debug("AutoFillFlatpacks: colony {0} has {1} structures", colony.ColonyName, colony.Structures.Count);
                 var stop = GetOrCreateStop(routeStop.ColonyUUID, routeStop.Sequence);
 
                 foreach (var structure in colony.Structures)
                 {
                     var vm = new ColonyStructureViewModel(structure, _playerContext);
+                    Log.Debug("  Structure {0}: IsBuilt={1}, IsStaged={2}, FlatpackBP={3}",
+                        structure.UUID, vm.IsBuilt, vm.IsStaged, structure.FlatpackBlueprintUUID);
                     if (vm.IsBuilt || vm.IsStaged) continue;
 
                     var blueprint = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
-                    if (blueprint == null) continue;
+                    if (blueprint == null) { Log.Debug("  Blueprint not found: {0}", structure.FlatpackBlueprintUUID); continue; }
 
                     AddDropOffItem(stop, ItemType.ItemTypeEnum.Flatpack,
                         structure.FlatpackBlueprintUUID, blueprint.ExtendedName, 1);
                     added++;
+                    Log.Debug("  Added flatpack: {0}", blueprint.ExtendedName);
                 }
             }
+            Log.Debug("AutoFillFlatpacks: total added={0}", added);
             return added;
         }
 

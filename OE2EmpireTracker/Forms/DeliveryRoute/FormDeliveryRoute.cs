@@ -506,7 +506,10 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                     added += planViewModel.AutoFillCommodities(viewModel.Stops, colonyFinder);
 
                 if (dlg.IncludeFlatpacks)
+                {
+                    Log.Debug("AutoFill: calling AutoFillFlatpacks with {0} route stops", viewModel.Stops.Count);
                     added += planViewModel.AutoFillFlatpacks(viewModel.Stops, colonyFinder);
+                }
 
                 if (dlg.IncludeResources)
                     added += planViewModel.AutoFillManufacturingResources(viewModel.Stops, colonyFinder,
