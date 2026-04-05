@@ -16,6 +16,7 @@ namespace OE2EmpireTracker.Baseline
         public string Name { get; set; } = string.Empty;
         public string OwnerUUID { get; set; } = string.Empty;
         public string RouteUUID { get; set; } = string.Empty;
+        public bool Completed { get; set; } = false;
         public List<DeliveryPlanStop> Stops { get; set; }
 
         public DeliveryPlan()

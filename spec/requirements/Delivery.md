@@ -52,20 +52,27 @@ Colonies are on planets. Planets are in systems. Travel between systems costs ti
 ## Phase 5: Delivery Planning — UI
 
 **REQ-DEL-040** The Route Builder form SHALL have a second tab "Plan" for delivery planning.
-**REQ-DEL-041** The Plan tab SHALL show the selected stop's drop-off and pick-up item lists.
-**REQ-DEL-042** The user SHALL be able to add items to drop-off or pick-up lists using the same item type → item picker → quantity pattern as the colony warehouse.
-**REQ-DEL-043** The user SHALL be able to remove items from the lists.
-**REQ-DEL-044** Switching stops on the Stops tab SHALL update the Plan tab to show that stop's items.
+**REQ-DEL-041** The Plan tab SHALL show a plan selector (list with filter, "Show Completed" checkbox, New/Delete buttons) allowing multiple plans per route.
+**REQ-DEL-041a** New plans SHALL auto-suggest a name of "RouteName - YYYY-MM-DD". The user can edit the name.
+**REQ-DEL-041b** Completed plans SHALL be hidden by default. The "Show Completed" checkbox reveals them.
+**REQ-DEL-041c** Plans SHALL be deletable from the plan list.
+**REQ-DEL-042** The Plan tab SHALL show the selected stop's drop-off and pick-up item lists for the selected plan.
+**REQ-DEL-043** The user SHALL be able to add items to drop-off or pick-up lists using the same item type → filter → item picker → quantity pattern as the colony warehouse.
+**REQ-DEL-044** The user SHALL be able to remove items from the lists.
+**REQ-DEL-045** DeliveryPlan SHALL have a `Completed` boolean property (default false) and a `Name` string property.
 
 ## Phase 6: Delivery Execution — Form
 
 **REQ-DEL-050** A separate Delivery Execution form SHALL display a delivery plan in stop-by-stop sequence.
-**REQ-DEL-051** The form SHALL show a consolidated "load list" at the top — all items across all stops that need to be picked up or delivered, summed by item.
-**REQ-DEL-052** For each stop in sequence, the form SHALL show the drop-off items and pick-up items.
-**REQ-DEL-053** Each item SHALL have a checkbox to mark it as delivered/picked up.
+**REQ-DEL-050a** The form SHALL be launchable from the Route Builder (with route+plan pre-selected) or from the Edit menu (user selects route then plan).
+**REQ-DEL-050b** The form left panel SHALL have route selector and plan selector dropdowns.
+**REQ-DEL-051** The form SHALL show a consolidated "load list" at the top — items that need to be loaded before departure. An item needs pre-loading if it is dropped off at a stop but not picked up at any earlier stop in sufficient quantity.
+**REQ-DEL-052** Below the load list, all stops SHALL be visible at once in a scrollable layout, each showing drop-off and pick-up items.
+**REQ-DEL-053** Each item SHALL have a checkbox to mark it as delivered/picked up. Checking SHALL auto-save immediately.
 **REQ-DEL-054** When a commodity is marked as delivered, the corresponding CommodityRequested on the colony SHALL be updated (Delivered count incremented, Fulfilled set if complete).
 **REQ-DEL-055** When a flatpack is marked as delivered, the corresponding planned structure on the colony SHALL be marked as Staged.
-**REQ-DEL-056** The execution form SHALL be accessible from the Route Builder or from a menu item.
+**REQ-DEL-056** When all items on all stops are marked delivered/picked up, the plan SHALL be marked as Completed.
+**REQ-DEL-057** The execution form SHALL be accessible from the Route Builder via an "Execute" button, or from the Edit menu as "Delivery Execution".
 
 ## Phase 7: Auto-Fill Delivery Plans (Future)
 
