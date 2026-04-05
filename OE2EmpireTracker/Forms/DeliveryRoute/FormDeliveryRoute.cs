@@ -51,8 +51,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
             // Plan tab wiring
             PopulateItemTypeCombos();
-            cmbDropItemType.SelectedIndexChanged += (s, ev) => PopulateItemPicker(cmbDropItemType, txtDropFilter, cmbDropItem);
-            cmbPickItemType.SelectedIndexChanged += (s, ev) => PopulateItemPicker(cmbPickItemType, txtPickFilter, cmbPickItem);
+            cmbDropItemType.SelectedIndexChanged += (s, ev) => { PopulateItemPicker(cmbDropItemType, txtDropFilter, cmbDropItem); UpdatePurityVisibility(cmbDropItemType, cmbDropPurity); };
+            cmbPickItemType.SelectedIndexChanged += (s, ev) => { PopulateItemPicker(cmbPickItemType, txtPickFilter, cmbPickItem); UpdatePurityVisibility(cmbPickItemType, cmbPickPurity); };
             txtDropFilter.TextChanged += (s, ev) => PopulateItemPicker(cmbDropItemType, txtDropFilter, cmbDropItem);
             txtPickFilter.TextChanged += (s, ev) => PopulateItemPicker(cmbPickItemType, txtPickFilter, cmbPickItem);
             cmdAddDropOff.Click += cmdAddDropOff_Click;
@@ -62,6 +62,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             dgvStops.SelectionChanged += dgvStops_SelectionChanged;
 
             // Plan selector wiring
+            PopulatePurityCombos();
             cmbPlan.DisplayMember = "Display";
             cmbPlan.ValueMember = "UUID";
             cmbPlan.SelectedIndexChanged += cmbPlan_SelectedIndexChanged;
@@ -601,6 +602,23 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             cmbPickItemType.ValueMember = "ID";
         }
 
+        private void PopulatePurityCombos()
+        {
+            var purities = new List<Data.ResourcePurity>(Data.ResourcePurity.Purities);
+            cmbDropPurity.DataSource = new List<Data.ResourcePurity>(purities);
+            cmbDropPurity.DisplayMember = "Name";
+            cmbDropPurity.ValueMember = "Name";
+            cmbPickPurity.DataSource = new List<Data.ResourcePurity>(purities);
+            cmbPickPurity.DisplayMember = "Name";
+            cmbPickPurity.ValueMember = "Name";
+        }
+
+        private void UpdatePurityVisibility(ComboBox typeCombo, ComboBox purityCombo)
+        {
+            var itemType = typeCombo.SelectedItem as ItemType;
+            purityCombo.Visible = itemType != null && itemType.ID == ItemType.ItemTypeEnum.Resource;
+        }
+
         private void PopulateItemPicker(ComboBox typeCombo, ValidatedTextBox filterBox, ComboBox itemCombo)
         {
             var itemType = typeCombo.SelectedItem as ItemType;
@@ -692,7 +710,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             int.TryParse(txtDropQty.Text, out qty);
             if (qty <= 0) qty = 1;
 
-            planViewModel.AddDropOffItem(selectedPlanStop, itemType.ID, entry.ID, entry.Display, qty);
+            planViewModel.AddDropOffItem(selectedPlanStop, itemType.ID, entry.ID, entry.Display, qty,
+                itemType.ID == ItemType.ItemTypeEnum.Resource ? (cmbDropPurity.SelectedItem as Data.ResourcePurity)?.Name ?? "" : "");
             PopulatePlanGrids();
         }
 
@@ -711,7 +730,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             int.TryParse(txtPickQty.Text, out qty);
             if (qty <= 0) qty = 1;
 
-            planViewModel.AddPickUpItem(selectedPlanStop, itemType.ID, entry.ID, entry.Display, qty);
+            planViewModel.AddPickUpItem(selectedPlanStop, itemType.ID, entry.ID, entry.Display, qty,
+                itemType.ID == ItemType.ItemTypeEnum.Resource ? (cmbPickPurity.SelectedItem as Data.ResourcePurity)?.Name ?? "" : "");
             PopulatePlanGrids();
         }
 

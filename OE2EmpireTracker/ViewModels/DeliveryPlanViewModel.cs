@@ -39,26 +39,28 @@ namespace OE2EmpireTracker.ViewModels
         }
 
         public void AddDropOffItem(DeliveryPlanStop stop, ItemType.ItemTypeEnum itemType,
-            string baseItemTypeID, string name, int quantity)
+            string baseItemTypeID, string name, int quantity, string resourcePurity = "")
         {
             stop.DropOff.Add(new DeliveryItem
             {
                 ItemType = itemType,
                 BaseItemTypeID = baseItemTypeID,
                 Name = name,
-                Quantity = quantity
+                Quantity = quantity,
+                ResourcePurity = resourcePurity
             });
         }
 
         public void AddPickUpItem(DeliveryPlanStop stop, ItemType.ItemTypeEnum itemType,
-            string baseItemTypeID, string name, int quantity)
+            string baseItemTypeID, string name, int quantity, string resourcePurity = "")
         {
             stop.PickUp.Add(new DeliveryItem
             {
                 ItemType = itemType,
                 BaseItemTypeID = baseItemTypeID,
                 Name = name,
-                Quantity = quantity
+                Quantity = quantity,
+                ResourcePurity = resourcePurity
             });
         }
 

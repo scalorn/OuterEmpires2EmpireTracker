@@ -52,6 +52,7 @@ namespace OE2EmpireTracker.Baseline
         public ItemType.ItemTypeEnum ItemType { get; set; } = Data.ItemType.ItemTypeEnum.None;
         public string BaseItemTypeID { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
+        public string ResourcePurity { get; set; } = string.Empty;
         public int Quantity { get; set; } = 0;
         public bool Delivered { get; set; } = false;
     }

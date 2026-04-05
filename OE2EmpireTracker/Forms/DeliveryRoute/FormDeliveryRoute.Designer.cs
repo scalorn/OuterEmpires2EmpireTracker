@@ -56,6 +56,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.txtDropQty = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmdAddDropOff = new System.Windows.Forms.Button();
             this.txtDropFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.cmbDropPurity = new System.Windows.Forms.ComboBox();
             this.cmdRemoveDropOff = new System.Windows.Forms.Button();
             this.lblPickUp = new System.Windows.Forms.Label();
             this.dgvPickUp = new System.Windows.Forms.DataGridView();
@@ -68,6 +69,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.txtPickQty = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmdAddPickUp = new System.Windows.Forms.Button();
             this.txtPickFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.cmbPickPurity = new System.Windows.Forms.ComboBox();
             this.cmdRemovePickUp = new System.Windows.Forms.Button();
             this.flpPlanSelector = new System.Windows.Forms.FlowLayoutPanel();
             this.txtPlanFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
@@ -429,6 +431,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.flpDropOffAdd.Controls.Add(this.cmbDropItemType);
             this.flpDropOffAdd.Controls.Add(this.txtDropFilter);
             this.flpDropOffAdd.Controls.Add(this.cmbDropItem);
+            this.flpDropOffAdd.Controls.Add(this.cmbDropPurity);
             this.flpDropOffAdd.Controls.Add(this.txtDropQty);
             this.flpDropOffAdd.Controls.Add(this.cmdAddDropOff);
             this.flpDropOffAdd.Controls.Add(this.cmdRemoveDropOff);
@@ -455,7 +458,15 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.cmbDropItem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbDropItem.Location = new System.Drawing.Point(195, 3);
             this.cmbDropItem.Name = "cmbDropItem";
-            this.cmbDropItem.Size = new System.Drawing.Size(280, 21);
+            this.cmbDropItem.Size = new System.Drawing.Size(200, 21);
+            // 
+            // cmbDropPurity
+            // 
+            this.cmbDropPurity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDropPurity.Location = new System.Drawing.Point(401, 3);
+            this.cmbDropPurity.Name = "cmbDropPurity";
+            this.cmbDropPurity.Size = new System.Drawing.Size(70, 21);
+            this.cmbDropPurity.Visible = false;
             // 
             // txtDropQty
             // 
@@ -531,6 +542,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.flpPickUpAdd.Controls.Add(this.cmbPickItemType);
             this.flpPickUpAdd.Controls.Add(this.txtPickFilter);
             this.flpPickUpAdd.Controls.Add(this.cmbPickItem);
+            this.flpPickUpAdd.Controls.Add(this.cmbPickPurity);
             this.flpPickUpAdd.Controls.Add(this.txtPickQty);
             this.flpPickUpAdd.Controls.Add(this.cmdAddPickUp);
             this.flpPickUpAdd.Controls.Add(this.cmdRemovePickUp);
@@ -557,7 +569,15 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.cmbPickItem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbPickItem.Location = new System.Drawing.Point(195, 3);
             this.cmbPickItem.Name = "cmbPickItem";
-            this.cmbPickItem.Size = new System.Drawing.Size(280, 21);
+            this.cmbPickItem.Size = new System.Drawing.Size(200, 21);
+            // 
+            // cmbPickPurity
+            // 
+            this.cmbPickPurity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPickPurity.Location = new System.Drawing.Point(401, 3);
+            this.cmbPickPurity.Name = "cmbPickPurity";
+            this.cmbPickPurity.Size = new System.Drawing.Size(70, 21);
+            this.cmbPickPurity.Visible = false;
             // 
             // txtPickQty
             // 
@@ -761,6 +781,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         private OE2EmpireTracker.Controls.ValidatedTextBox txtDropQty;
         private System.Windows.Forms.Button cmdAddDropOff;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtDropFilter;
+        private System.Windows.Forms.ComboBox cmbDropPurity;
         private System.Windows.Forms.Button cmdRemoveDropOff;
         private System.Windows.Forms.Label lblPickUp;
         private System.Windows.Forms.DataGridView dgvPickUp;
@@ -773,6 +794,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         private OE2EmpireTracker.Controls.ValidatedTextBox txtPickQty;
         private System.Windows.Forms.Button cmdAddPickUp;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtPickFilter;
+        private System.Windows.Forms.ComboBox cmbPickPurity;
         private System.Windows.Forms.Button cmdRemovePickUp;
         private System.Windows.Forms.FlowLayoutPanel flpPlanSelector;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtPlanFilter;
