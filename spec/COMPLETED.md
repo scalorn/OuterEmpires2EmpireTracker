@@ -218,3 +218,13 @@ Added Completed (checkbox) and Need By (countdown format) columns to the colony 
 
 ## 64. Forms Steering Compliance (Rec 16)
 Audited all forms against `.kiro/steering/forms.md` and applied `IProgrammaticUpdateSource` to all 6 non-compliant forms: FormBlueprint, FormSurvey, FormDeliveryRoute, FormDeliveryExecution, FormPlayerProfile, MainWindow. Added `ProgrammaticUpdateGuard` to all grid-mutating methods and `_isProgrammaticUpdate > 0` guard checks to all grid event handlers. FormPlayerProfile now subscribes to `CurrentPlayerChanged`. ColonyStructure left as-is (managed by parent FormColony). 590 tests passing.
+
+## 65. Delivery Phase 7: Auto-Fill Flatpacks, Resources, Workers + Flatpack Staging
+Extended auto-fill from commodity-only to all four request types:
+- AutoFillFlatpacks: scans for unbuilt+unstaged structures (IsBuilt=false AND IsStaged=false), adds Flatpack drop-offs with blueprint ExtendedName
+- AutoFillManufacturingResources: scans for StagingResources=true structures (Manufactory/CommodityFactory), calculates resource shortfalls (needed × quantity - warehouse Refined stock), adds Resource drop-offs
+- AutoFillWorkers: computes ideal vs actual worker gaps via ColonyStatusCalculator, adds WorkDetail drop-offs per worker type
+- StagingResources boolean property on ColonyStructure + ColonyStructureViewModel, "Stage Resources" checkbox on ColonyStructure UI for Manufactory/CommodityFactory
+- Flatpack staging on delivery execution: checking flatpack delivery sets Properties["Staged"]="True" on matching colony structure, fires ColonyDataChanged
+- All FormAutoFill checkboxes enabled, orchestration calls all four methods
+- 22 new tests. 612 total tests passing.
