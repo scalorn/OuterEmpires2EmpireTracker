@@ -123,6 +123,7 @@ namespace OE2EmpireTracker.Baseline
 
             // Migrate and restore current player
             MigrateOwnerUUIDs();
+            CleanupOrphanedData();
             RestoreCurrentPlayer(playerRoot.CurrentPlayerUUID);
         }
 
@@ -270,6 +271,50 @@ namespace OE2EmpireTracker.Baseline
             {
                 Log.Info("Migrated {0} items to player {1}", migrated, playerProfileList[0].Name);
             }
+        }
+
+        /// <summary>
+        /// Removes all colonies, blueprints, surveys, and routes owned by the given player UUID.
+        /// Called during cascade delete.
+        /// </summary>
+        public void CascadeDeletePlayer(string playerUUID)
+        {
+            if (string.IsNullOrEmpty(playerUUID)) return;
+
+            int removed = 0;
+            foreach (var colony in colonyList.Where(c => c.OwnerUUID == playerUUID).ToList())
+            { colonyList.Remove(colony); removed++; }
+            foreach (var bp in blueprintList.Where(b => b.OwnerUUID == playerUUID).ToList())
+            { blueprintList.Remove(bp); removed++; }
+            foreach (var survey in surveyList.Where(s => s.OwnerUUID == playerUUID).ToList())
+            { surveyList.Remove(survey); removed++; }
+            foreach (var route in deliveryRouteList.Where(r => r.OwnerUUID == playerUUID).ToList())
+            { deliveryRouteList.Remove(route); removed++; }
+
+            if (removed > 0)
+                Log.Info("Cascade deleted {0} items for player {1}", removed, playerUUID);
+        }
+
+        /// <summary>
+        /// Removes data owned by players that no longer exist.
+        /// Called on load after all lists are initialized.
+        /// </summary>
+        private void CleanupOrphanedData()
+        {
+            var validUUIDs = new HashSet<string>(playerProfileList.Select(p => p.UUID));
+            int removed = 0;
+
+            foreach (var colony in colonyList.Where(c => !string.IsNullOrEmpty(c.OwnerUUID) && !validUUIDs.Contains(c.OwnerUUID)).ToList())
+            { colonyList.Remove(colony); removed++; }
+            foreach (var bp in blueprintList.Where(b => !string.IsNullOrEmpty(b.OwnerUUID) && !validUUIDs.Contains(b.OwnerUUID)).ToList())
+            { blueprintList.Remove(bp); removed++; }
+            foreach (var survey in surveyList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
+            { surveyList.Remove(survey); removed++; }
+            foreach (var route in deliveryRouteList.Where(r => !string.IsNullOrEmpty(r.OwnerUUID) && !validUUIDs.Contains(r.OwnerUUID)).ToList())
+            { deliveryRouteList.Remove(route); removed++; }
+
+            if (removed > 0)
+                Log.Info("Cleaned up {0} orphaned items on load", removed);
         }
 
         /// <summary>

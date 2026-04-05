@@ -113,7 +113,12 @@ namespace OE2EmpireTracker.ViewModels
         public void Delete()
         {
             if (string.IsNullOrEmpty(_profile.UUID)) return;
+            string deletedUUID = _profile.UUID;
             _playerContext.playerProfileList.Remove(_profile);
+
+            // Cascade delete: remove all data owned by this player
+            _playerContext.CascadeDeletePlayer(deletedUUID);
+
             _playerContext.writeContext();
             _playerContext.OnPlayerProfilesChanged();
         }
