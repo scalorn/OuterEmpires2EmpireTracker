@@ -100,6 +100,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpBase.AutoSize = true;
             this.flpBase.Controls.Add(this.flpSearchList);
             this.flpBase.Controls.Add(this.flpSurveyData);
+            this.flpBase.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBase.Location = new System.Drawing.Point(0, 0);
             this.flpBase.Name = "flpBase";
             this.flpBase.Size = new System.Drawing.Size(1100, 647);

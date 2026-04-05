@@ -57,6 +57,34 @@ namespace OE2EmpireTracker.Forms.Survey
             cmbPurity.DataSource = empireContext.bindingSourceResourcePurity;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+
+            flpBase.Layout += flpBase_Layout;
+            flpSearchList.Layout += flpSearchList_Layout;
+            flpSurveyData.Layout += flpSurveyData_Layout;
+        }
+
+        private void flpBase_Layout(object sender, LayoutEventArgs e)
+        {
+            flpSurveyData.Size = new System.Drawing.Size(
+                flpBase.Size.Width - flpSearchList.Size.Width - flpSearchList.Margin.Right - flpSearchList.Margin.Left - flpSurveyData.Margin.Left - flpSurveyData.Margin.Right,
+                flpBase.Size.Height - flpSurveyData.Margin.Top - flpSurveyData.Margin.Bottom);
+            flpSearchList.Size = new System.Drawing.Size(
+                flpSearchList.Size.Width,
+                flpBase.Size.Height - flpSearchList.Margin.Top - flpSearchList.Margin.Bottom);
+        }
+
+        private void flpSearchList_Layout(object sender, LayoutEventArgs e)
+        {
+            lvwSurveys.Size = new System.Drawing.Size(
+                lvwSurveys.Size.Width,
+                flpSearchList.Size.Height - flpBlueprintSearch.Size.Height - flpBlueprintSearch.Margin.Top - flpBlueprintSearch.Margin.Bottom - flpResource.Size.Height - flpResource.Margin.Top - flpResource.Margin.Bottom - lvwSurveys.Margin.Top - lvwSurveys.Margin.Bottom);
+        }
+
+        private void flpSurveyData_Layout(object sender, LayoutEventArgs e)
+        {
+            flpSurveyDetails.Size = new System.Drawing.Size(
+                flpSurveyData.Size.Width - flpSurveyDetails.Margin.Left - flpSurveyDetails.Margin.Right,
+                flpSurveyData.Size.Height - flpCommands.Size.Height - flpCommands.Margin.Top - flpCommands.Margin.Bottom - flpSurveyDetails.Margin.Top - flpSurveyDetails.Margin.Bottom);
         }
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
