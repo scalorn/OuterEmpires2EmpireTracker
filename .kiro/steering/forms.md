@@ -53,3 +53,28 @@ Rules and patterns learned from building forms in this project. Follow these whe
 
 - Always use `playerContext.GetAllBlueprints()` to get the combined player + global blueprint list. Never iterate `blueprintList` directly for read operations.
 - Only save/delete mutations should access `blueprintList` or `globalBlueprintList` directly.
+
+## Scrollable Content Panels
+
+- For forms with variable-height content (e.g. dynamically generated checkboxes, labels, buttons), use a FlowLayoutPanel with `AutoScroll = true` and `WrapContents = false`.
+- The scrollable panel needs explicit sizing via a layout handler — `AutoScroll` only works when the panel has a fixed size and its children overflow it.
+- Child controls inside the scrollable panel (grids, nested FlowLayoutPanels) need their widths set in the parent's layout handler since they won't auto-resize.
+
+## Designer.cs Column Declarations
+
+- When adding columns to a DataGridView in Designer.cs, ensure three things are present:
+  1. The `new` instantiation in the control creation block at the top of `InitializeComponent()`
+  2. The column configuration block (HeaderText, Name, Width, ReadOnly) — do NOT put a second `new` here
+  3. The field declaration at the bottom of the class
+- A duplicate `new` in the configuration block creates a second instance that overwrites the one already added to the grid's Columns collection, resulting in blank headers and default widths.
+
+## Display Names & ExtendedName
+
+- Data model classes that need a display name with context (e.g. purity for resources) should have a `[JsonIgnore] ExtendedName` property on the data class itself.
+- Do NOT duplicate display name logic in form code — use the data model's property.
+- Example: `DeliveryItem.ExtendedName` returns `"Name (Purity)"` for resources, plain `Name` otherwise.
+
+## Dropdown Change Suppression
+
+- When programmatically rebuilding a ComboBox data source, detach `SelectedIndexChanged` before the rebuild and reattach after to prevent cascading events.
+- Use a `_lastSelectedUUID` field to detect actual selection changes vs. spurious events from data source rebinding.

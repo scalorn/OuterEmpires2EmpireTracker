@@ -193,7 +193,7 @@ Created DeliveryPlanViewModel with stop management, add/remove drop-off and pick
 Plan tab updated with multi-plan support: plan dropdown with filter and "Show Completed" checkbox, New/Delete/Execute buttons, plan name validation (red when empty), auto-select first open plan on route load, auto-create plan on first item add, preserve selection on filter/save/toggle. 513 tests passing.
 
 ## 60. Delivery Phase 6: Execution Form Wired Up (REQ-DEL-050-057)
-FormDeliveryExecution with route/plan selectors, consolidated load list (calculates pre-load needs by subtracting earlier pick-ups), scrollable stop-by-stop sections with checkboxes for each item. Auto-save on check. Plan marked as Completed when all items delivered. Execute button on route builder launches with pre-selected route/plan. Accessible from Edit menu. 513 tests passing.
+FormDeliveryExecution with route/plan selectors, consolidated load list (calculates pre-load needs by subtracting earlier pick-ups), scrollable stop-by-stop sections with checkboxes for each item. Auto-save on check. Plan marked as Completed when all items delivered. Execute button on route builder launches with pre-selected route/plan. Accessible from Edit menu. Complete Stop button hides delivered stops. Complete Plan and Delete Plan buttons. Extended Name column on load grid. Purity-aware grouping in load list calculation. CalculateLoadList extracted to DeliveryPlan instance method. 581 tests passing.
 
 ## 61. Delivery Feature Unit Tests (68 tests)
 Added 68 new tests across 4 new test files covering all delivery data models and view models:
