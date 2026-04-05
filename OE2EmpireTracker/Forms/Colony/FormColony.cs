@@ -241,6 +241,10 @@ namespace OE2EmpireTracker.Forms.Colony
             PopulateItemGrid();
 
             this.ResumeLayout();
+
+            // Notify other forms (e.g. ColonyActivityForm) that colony data changed
+            if (selectedColony != null)
+                playerContext.OnColonyDataChanged(selectedColony.UUID);
         }
 
         private void txtFilterFlatpack_TextChanged(object sender, EventArgs e)
