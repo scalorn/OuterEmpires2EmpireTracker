@@ -1496,6 +1496,8 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 ColonyStructureData.BuildCompletionTime.TimeRemainingString = txtCompletionTime.Text;
             }
+
+            ColonyStructureDataChanged?.Invoke(this, e);
         }
 
         private void cmdDone_Click(object sender, EventArgs e)
