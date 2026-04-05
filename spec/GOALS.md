@@ -70,6 +70,7 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 55 | Cascade delete player data + orphan cleanup on load | Complete |
 | 56 | Prevent duplicate stops checkbox on route builder | Complete |
 | 57 | Delivery Phase 4: DeliveryPlan data model | Complete |
+| 58 | Delivery Phase 5: Planning tab wired up | Complete |
 
 ---
 

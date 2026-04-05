@@ -1,0 +1,107 @@
+using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace OE2EmpireTracker.ViewModels
+{
+    public class DeliveryPlanViewModel
+    {
+        private readonly PlayerContext _playerContext;
+        private DeliveryPlan _plan;
+
+        public DeliveryPlan Data => _plan;
+        public string UUID => _plan.UUID;
+
+        public DeliveryPlanViewModel(DeliveryPlan plan, PlayerContext playerContext)
+        {
+            _plan = plan ?? throw new ArgumentNullException(nameof(plan));
+            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+        }
+
+        /// <summary>
+        /// Gets or creates the DeliveryPlanStop for the given colony UUID.
+        /// </summary>
+        public DeliveryPlanStop GetOrCreateStop(string colonyUUID, int sequence)
+        {
+            var stop = _plan.Stops.FirstOrDefault(s => s.ColonyUUID == colonyUUID);
+            if (stop == null)
+            {
+                stop = new DeliveryPlanStop
+                {
+                    ColonyUUID = colonyUUID,
+                    Sequence = sequence
+                };
+                _plan.Stops.Add(stop);
+            }
+            return stop;
+        }
+
+        public void AddDropOffItem(DeliveryPlanStop stop, ItemType.ItemTypeEnum itemType,
+            string baseItemTypeID, string name, int quantity)
+        {
+            stop.DropOff.Add(new DeliveryItem
+            {
+                ItemType = itemType,
+                BaseItemTypeID = baseItemTypeID,
+                Name = name,
+                Quantity = quantity
+            });
+        }
+
+        public void AddPickUpItem(DeliveryPlanStop stop, ItemType.ItemTypeEnum itemType,
+            string baseItemTypeID, string name, int quantity)
+        {
+            stop.PickUp.Add(new DeliveryItem
+            {
+                ItemType = itemType,
+                BaseItemTypeID = baseItemTypeID,
+                Name = name,
+                Quantity = quantity
+            });
+        }
+
+        public void RemoveDropOffItems(DeliveryPlanStop stop, IEnumerable<int> indices)
+        {
+            foreach (int i in indices.OrderByDescending(x => x))
+                if (i >= 0 && i < stop.DropOff.Count)
+                    stop.DropOff.RemoveAt(i);
+        }
+
+        public void RemovePickUpItems(DeliveryPlanStop stop, IEnumerable<int> indices)
+        {
+            foreach (int i in indices.OrderByDescending(x => x))
+                if (i >= 0 && i < stop.PickUp.Count)
+                    stop.PickUp.RemoveAt(i);
+        }
+
+        /// <summary>
+        /// Finds or creates a DeliveryPlan for the given route.
+        /// </summary>
+        public static DeliveryPlanViewModel FindOrCreateForRoute(string routeUUID, PlayerContext playerContext)
+        {
+            var existing = playerContext.deliveryPlanList
+                .FirstOrDefault(p => p.RouteUUID == routeUUID && p.OwnerUUID == playerContext.CurrentPlayerUUID);
+            if (existing != null)
+                return new DeliveryPlanViewModel(existing, playerContext);
+
+            var plan = new DeliveryPlan
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = playerContext.CurrentPlayerUUID,
+                RouteUUID = routeUUID
+            };
+            return new DeliveryPlanViewModel(plan, playerContext);
+        }
+
+        public void Save()
+        {
+            if (!_playerContext.deliveryPlanList.Contains(_plan))
+            {
+                _playerContext.deliveryPlanList.Add(_plan);
+            }
+            _playerContext.writeContext();
+        }
+    }
+}

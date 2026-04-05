@@ -185,3 +185,6 @@ CascadeDeletePlayer removes all colonies, blueprints, surveys, and routes owned 
 
 ## 57. Delivery Phase 4: DeliveryPlan Data Model (REQ-DEL-030-035)
 Created `DeliveryPlan` (UUID, Name, OwnerUUID, RouteUUID, List<DeliveryPlanStop>), `DeliveryPlanStop` (ColonyUUID, Sequence, DropOff list, PickUp list), and `DeliveryItem` (ItemType, BaseItemTypeID, Name, Quantity, Delivered). Added to PlayerRoot, PlayerContext (deliveryPlanList, GetCurrentPlayerPlans), cascade delete, and orphan cleanup. 513 tests passing.
+
+## 58. Delivery Phase 5: Planning Tab Wired Up (REQ-DEL-040-044)
+Created DeliveryPlanViewModel with stop management, add/remove drop-off and pick-up items. Plan tab on route builder: select a stop on Stops tab, switch to Plan tab to see/edit drop-off and pick-up lists. Item type → item picker → quantity pattern (same as colony warehouse). Plan auto-created per route, persisted on save. 513 tests passing.

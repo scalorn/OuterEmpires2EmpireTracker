@@ -18,6 +18,8 @@ namespace OE2EmpireTracker.Forms.Delivery
         private EmpireContext empireContext;
         private PlayerContext playerContext;
         private DeliveryRouteViewModel viewModel;
+        private DeliveryPlanViewModel planViewModel;
+        private DeliveryPlanStop selectedPlanStop;
 
         public FormDeliveryRoute()
         {
@@ -46,6 +48,16 @@ namespace OE2EmpireTracker.Forms.Delivery
             cmdNew.Click += cmdNew_Click;
             cmdSave.Click += cmdSave_Click;
             cmdDelete.Click += cmdDelete_Click;
+
+            // Plan tab wiring
+            PopulateItemTypeCombos();
+            cmbDropItemType.SelectedIndexChanged += (s, ev) => PopulateItemPicker(cmbDropItemType, cmbDropItem);
+            cmbPickItemType.SelectedIndexChanged += (s, ev) => PopulateItemPicker(cmbPickItemType, cmbPickItem);
+            cmdAddDropOff.Click += cmdAddDropOff_Click;
+            cmdAddPickUp.Click += cmdAddPickUp_Click;
+            cmdRemoveDropOff.Click += cmdRemoveDropOff_Click;
+            cmdRemovePickUp.Click += cmdRemovePickUp_Click;
+            dgvStops.SelectionChanged += dgvStops_SelectionChanged;
 
             PopulateRouteList();
 
@@ -146,6 +158,18 @@ namespace OE2EmpireTracker.Forms.Delivery
                 var route = lvwRoutes.SelectedItems[0].Tag as DeliveryRoute;
                 viewModel.SelectRoute(route);
                 PopulateForm();
+
+                // Load or create the delivery plan for this route
+                if (!string.IsNullOrEmpty(route.UUID))
+                {
+                    planViewModel = DeliveryPlanViewModel.FindOrCreateForRoute(route.UUID, playerContext);
+                }
+                else
+                {
+                    planViewModel = null;
+                }
+                selectedPlanStop = null;
+                ClearPlanTab();
             }
         }
 
@@ -288,6 +312,20 @@ namespace OE2EmpireTracker.Forms.Delivery
         {
             viewModel.Name = txtRouteName.Text;
             viewModel.Save();
+
+            // Save the delivery plan if it exists
+            if (planViewModel != null)
+            {
+                planViewModel.Data.RouteUUID = viewModel.UUID;
+                planViewModel.Data.Name = viewModel.Data.Name;
+                planViewModel.Save();
+            }
+            else if (!string.IsNullOrEmpty(viewModel.UUID))
+            {
+                // Create plan for newly saved route
+                planViewModel = DeliveryPlanViewModel.FindOrCreateForRoute(viewModel.UUID, playerContext);
+            }
+
             PopulateRouteList();
         }
 
@@ -305,6 +343,164 @@ namespace OE2EmpireTracker.Forms.Delivery
             viewModel.Delete();
             ClearForm();
             PopulateRouteList();
+        }
+
+        // -----------------------------------------------------------------------
+        // Plan Tab
+        // -----------------------------------------------------------------------
+
+        private void dgvStops_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvStops.SelectedRows.Count != 1 || planViewModel == null)
+            {
+                selectedPlanStop = null;
+                ClearPlanTab();
+                return;
+            }
+
+            var routeStop = dgvStops.SelectedRows[0].Tag as RouteStop;
+            if (routeStop == null) return;
+
+            selectedPlanStop = planViewModel.GetOrCreateStop(routeStop.ColonyUUID, routeStop.Sequence);
+            var colony = playerContext.FindColony(routeStop.ColonyUUID);
+            lblPlanStop.Text = colony != null
+                ? $"{colony.PlanetName} - {colony.ColonyName}"
+                : "(unknown colony)";
+            PopulatePlanGrids();
+        }
+
+        private void PopulateItemTypeCombos()
+        {
+            IReadOnlyList<ItemType> itemTypes = Data.ItemType.ItemTypes;
+            cmbDropItemType.DataSource = new List<ItemType>(itemTypes);
+            cmbDropItemType.DisplayMember = "Name";
+            cmbDropItemType.ValueMember = "ID";
+            cmbPickItemType.DataSource = new List<ItemType>(itemTypes);
+            cmbPickItemType.DisplayMember = "Name";
+            cmbPickItemType.ValueMember = "ID";
+        }
+
+        private void PopulateItemPicker(ComboBox typeCombo, ComboBox itemCombo)
+        {
+            var itemType = typeCombo.SelectedItem as ItemType;
+            if (itemType == null) return;
+
+            itemCombo.DataSource = null;
+            var items = GetItemsForType(itemType.ID);
+            itemCombo.DisplayMember = "Display";
+            itemCombo.ValueMember = "ID";
+            itemCombo.DataSource = items;
+        }
+
+        private List<ItemPickerEntry> GetItemsForType(ItemType.ItemTypeEnum typeEnum)
+        {
+            var result = new List<ItemPickerEntry>();
+            result.Add(new ItemPickerEntry { ID = "", Display = "" });
+
+            switch (typeEnum)
+            {
+                case ItemType.ItemTypeEnum.Resource:
+                    foreach (var r in Data.Resource.Resources)
+                        if (!string.IsNullOrEmpty(r.Name))
+                            result.Add(new ItemPickerEntry { ID = r.Name, Display = r.Name });
+                    break;
+                case ItemType.ItemTypeEnum.Commodity:
+                    foreach (var c in Data.Commodity.Commodities)
+                        if (!string.IsNullOrEmpty(c.Name))
+                            result.Add(new ItemPickerEntry { ID = c.Name, Display = c.ExtendedName });
+                    break;
+                case ItemType.ItemTypeEnum.WorkDetail:
+                    foreach (var w in Data.WorkerDetail.WorkerDetails)
+                        if (!string.IsNullOrEmpty(w.ID))
+                            result.Add(new ItemPickerEntry { ID = w.ID, Display = w.Name });
+                    break;
+                default:
+                    // Blueprint-based types
+                    foreach (var bp in playerContext.GetAllBlueprints())
+                        if (bp.UUID != null)
+                            result.Add(new ItemPickerEntry { ID = bp.UUID, Display = bp.ExtendedName });
+                    break;
+            }
+            return result;
+        }
+
+        private class ItemPickerEntry
+        {
+            public string ID { get; set; }
+            public string Display { get; set; }
+        }
+
+        private void PopulatePlanGrids()
+        {
+            dgvDropOff.Rows.Clear();
+            dgvPickUp.Rows.Clear();
+            if (selectedPlanStop == null) return;
+
+            foreach (var item in selectedPlanStop.DropOff)
+            {
+                int idx = dgvDropOff.Rows.Add(item.ItemType.ToString(), item.Name, item.Quantity);
+                dgvDropOff.Rows[idx].Tag = item;
+            }
+            foreach (var item in selectedPlanStop.PickUp)
+            {
+                int idx = dgvPickUp.Rows.Add(item.ItemType.ToString(), item.Name, item.Quantity);
+                dgvPickUp.Rows[idx].Tag = item;
+            }
+        }
+
+        private void ClearPlanTab()
+        {
+            lblPlanStop.Text = "(select a stop on Stops tab)";
+            dgvDropOff.Rows.Clear();
+            dgvPickUp.Rows.Clear();
+        }
+
+        private void cmdAddDropOff_Click(object sender, EventArgs e)
+        {
+            if (selectedPlanStop == null || planViewModel == null) return;
+            var entry = cmbDropItem.SelectedItem as ItemPickerEntry;
+            if (entry == null || string.IsNullOrEmpty(entry.ID)) return;
+            var itemType = cmbDropItemType.SelectedItem as ItemType;
+            int qty = 1;
+            int.TryParse(txtDropQty.Text, out qty);
+            if (qty <= 0) qty = 1;
+
+            planViewModel.AddDropOffItem(selectedPlanStop, itemType.ID, entry.ID, entry.Display, qty);
+            PopulatePlanGrids();
+        }
+
+        private void cmdAddPickUp_Click(object sender, EventArgs e)
+        {
+            if (selectedPlanStop == null || planViewModel == null) return;
+            var entry = cmbPickItem.SelectedItem as ItemPickerEntry;
+            if (entry == null || string.IsNullOrEmpty(entry.ID)) return;
+            var itemType = cmbPickItemType.SelectedItem as ItemType;
+            int qty = 1;
+            int.TryParse(txtPickQty.Text, out qty);
+            if (qty <= 0) qty = 1;
+
+            planViewModel.AddPickUpItem(selectedPlanStop, itemType.ID, entry.ID, entry.Display, qty);
+            PopulatePlanGrids();
+        }
+
+        private void cmdRemoveDropOff_Click(object sender, EventArgs e)
+        {
+            if (selectedPlanStop == null || planViewModel == null) return;
+            var indices = new List<int>();
+            foreach (DataGridViewRow row in dgvDropOff.SelectedRows)
+                indices.Add(row.Index);
+            planViewModel.RemoveDropOffItems(selectedPlanStop, indices);
+            PopulatePlanGrids();
+        }
+
+        private void cmdRemovePickUp_Click(object sender, EventArgs e)
+        {
+            if (selectedPlanStop == null || planViewModel == null) return;
+            var indices = new List<int>();
+            foreach (DataGridViewRow row in dgvPickUp.SelectedRows)
+                indices.Add(row.Index);
+            planViewModel.RemovePickUpItems(selectedPlanStop, indices);
+            PopulatePlanGrids();
         }
 
         // -----------------------------------------------------------------------
