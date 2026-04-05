@@ -85,7 +85,7 @@ namespace OE2EmpireTracker.ViewModels
         public IReadOnlyList<Blueprint> GetFilteredScannerBlueprints(string nameFilter)
         {
             BlueprintType scanners = _empireContext.FindBlueprintType("SystemObjectScanner");
-            var list = _playerContext.blueprintList
+            var list = _playerContext.GetAllBlueprints()
                 .Where(b => b.BluePrintType == scanners.Id)
                 .ToList();
 

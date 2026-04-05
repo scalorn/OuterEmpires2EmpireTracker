@@ -164,7 +164,7 @@ namespace OE2EmpireTracker.Baseline
 
         private Blueprint FindPlayerBlueprint(string blueprintTypeId)
         {
-            return _playerContext.blueprintList
+            return _playerContext.GetAllBlueprints()
                 .FirstOrDefault(bp => bp.BluePrintType == blueprintTypeId && bp.UUID != null);
         }
 

@@ -297,6 +297,19 @@ namespace OE2EmpireTracker.Baseline
         }
 
         /// <summary>
+        /// Returns all blueprints: current player's + global.
+        /// Use this instead of accessing blueprintList directly.
+        /// </summary>
+        public List<Blueprint> GetAllBlueprints()
+        {
+            var all = new List<Blueprint>(blueprintList);
+            var ec = EmpireContext.getInstance();
+            if (ec?.globalBlueprintList != null)
+                all.AddRange(ec.globalBlueprintList);
+            return all;
+        }
+
+        /// <summary>
         /// Returns surveys owned by the current player.
         /// </summary>
         public List<Survey> GetCurrentPlayerSurveys()

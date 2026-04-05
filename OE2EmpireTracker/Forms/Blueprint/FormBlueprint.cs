@@ -473,7 +473,7 @@ namespace OE2EmpireTracker
         private void UpdateBaseBlueprintList()
         {
             string searchText = txtFilterBaseBlueprint.Text;
-            List<Blueprint> filteredList = new List<Blueprint>(playerContext.blueprintList);
+            List<Blueprint> filteredList = new List<Blueprint>(playerContext.GetAllBlueprints());
 
             // Filter by blueprint type if selected
             if (cmbBlueprintType.SelectedItem != null)

@@ -221,8 +221,8 @@ namespace OE2EmpireTracker.Baseline
             else
                 return null;
 
-            // Find a player blueprint that provides this resource
-            foreach (var bp in _playerContext.blueprintList)
+            // Find a blueprint that provides this resource (player + global)
+            foreach (var bp in _playerContext.GetAllBlueprints())
             {
                 if (bp.UUID == null) continue;
                 if (!bp.BluePrintType.IsFlatpack()) continue;
