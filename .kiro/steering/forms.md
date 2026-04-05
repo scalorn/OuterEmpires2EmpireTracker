@@ -45,6 +45,13 @@ Rules and patterns learned from building forms in this project. Follow these whe
 - All forms that show player-specific data MUST subscribe to `playerContext.CurrentPlayerChanged` and refresh their data.
 - On player change: clear selections, reset ViewModels, repopulate lists.
 
+## Data Change Events
+
+- All forms MUST subscribe to data change events on PlayerContext and do a full refresh when the data they display is modified externally (by other forms, delivery execution, or background processing).
+- Events on PlayerContext: `ColonyDataChanged(ColonyUUID)` for colony data, plus future events for blueprints, surveys, routes, plans, and profiles.
+- The handler should do a full form refresh (recalculate + repopulate) for the affected entity, not just update individual grids.
+- Background processing will fire these events from a timer thread — handlers must be safe to call from any thread (use `Invoke` if needed for cross-thread UI updates).
+
 ## Programmatic Update Guard
 
 - ALL forms MUST implement `IProgrammaticUpdateSource` with `BeginProgrammaticUpdate()` / `EndProgrammaticUpdate()` and a `private int _isProgrammaticUpdate = 0;` field.
