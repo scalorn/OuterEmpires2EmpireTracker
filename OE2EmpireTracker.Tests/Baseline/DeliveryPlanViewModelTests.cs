@@ -451,6 +451,45 @@ namespace OE2EmpireTracker.Tests.Baseline
         }
 
         [Test]
+        public void AutoFillFlatpacks_UnbuiltUnstaged_AddsFlatpackItem()
+        {
+            var bp = CreateTestBlueprint("bp-unbuilt", "Habitat");
+            var vm = CreateViewModel();
+            var colony = CreateColonyWithStructures("c1",
+                MakeStructure("bp-unbuilt", built: false, staged: false));
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
+
+            Assert.AreEqual(1, added);
+            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            Assert.AreEqual(1, stop.DropOff.Count);
+            Assert.AreEqual(ItemType.ItemTypeEnum.Flatpack, stop.DropOff[0].ItemType);
+            Assert.AreEqual("bp-unbuilt", stop.DropOff[0].BaseItemTypeID);
+            Assert.AreEqual(1, stop.DropOff[0].Quantity);
+        }
+
+        [Test]
+        public void AutoFillFlatpacks_StacksSameBlueprintUUID()
+        {
+            CreateTestBlueprint("bp-stack", "Refinery");
+            var vm = CreateViewModel();
+            var colony = CreateColonyWithStructures("c1",
+                MakeStructure("bp-stack", built: false, staged: false),
+                MakeStructure("bp-stack", built: false, staged: false),
+                MakeStructure("bp-stack", built: false, staged: false));
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
+
+            Assert.AreEqual(1, added); // 1 aggregated item, not 3
+            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            Assert.AreEqual(1, stop.DropOff.Count);
+            Assert.AreEqual("bp-stack", stop.DropOff[0].BaseItemTypeID);
+            Assert.AreEqual(3, stop.DropOff[0].Quantity);
+        }
+
+        [Test]
         public void AutoFillFlatpacks_MixOfStates_CorrectCount()
         {
             CreateTestBlueprint("bp-a", "Mining Rig");
@@ -572,6 +611,75 @@ namespace OE2EmpireTracker.Tests.Baseline
                 uuid => playerContext.FindBlueprint(uuid));
 
             Assert.AreEqual(0, added);
+        }
+
+        [Test]
+        public void AutoFillManufacturingResources_StagingManufactory_AddsResourceShortfall()
+        {
+            var flatpackBp = new OE2EmpireTracker.Data.Blueprint("Manufactory") { UUID = "fp-mfg-shortfall", BluePrintType = "Flatpacks/Manufactory" };
+            playerContext.blueprintList.Add(flatpackBp);
+
+            CreateManufactoryBlueprint("mfg-bp-shortfall", "Widget",
+                new Dictionary<string, string> { { "Iron", "5" }, { "Copper", "3" } });
+
+            var vm = CreateViewModel();
+            var structure = MakeStagingManufactory("fp-mfg-shortfall", "mfg-bp-shortfall", 2); // needs 10 Iron, 6 Copper
+            var colony = CreateColonyWithStructures("c1", structure);
+
+            // Add 4 Refined Iron to warehouse (shortfall = 6), no Copper (shortfall = 6)
+            var ironItem = new Item(ItemType.ItemTypeEnum.Resource, "Iron")
+            {
+                UUID = System.Guid.NewGuid().ToString(),
+                BaseItemTypeID = "Iron",
+                ResourcePurity = "Refined",
+                Quantity = 4
+            };
+            colony.Items.AddItem(ironItem);
+
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillManufacturingResources(stops,
+                uuid => uuid == "c1" ? colony : null,
+                uuid => playerContext.FindBlueprint(uuid));
+
+            Assert.AreEqual(2, added);
+            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            var ironDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Iron");
+            var copperDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Copper");
+            Assert.IsNotNull(ironDrop);
+            Assert.AreEqual(6, ironDrop.Quantity);
+            Assert.AreEqual(ItemType.ItemTypeEnum.Resource, ironDrop.ItemType);
+            Assert.IsNotNull(copperDrop);
+            Assert.AreEqual(6, copperDrop.Quantity);
+        }
+
+        [Test]
+        public void AutoFillManufacturingResources_ResourcePurityIsRefined()
+        {
+            var flatpackBp = new OE2EmpireTracker.Data.Blueprint("Manufactory") { UUID = "fp-mfg-purity", BluePrintType = "Flatpacks/Manufactory" };
+            playerContext.blueprintList.Add(flatpackBp);
+
+            CreateManufactoryBlueprint("mfg-bp-purity", "Gadget",
+                new Dictionary<string, string> { { "Iron", "3" }, { "Copper", "2" } });
+
+            var vm = CreateViewModel();
+            var structure = MakeStagingManufactory("fp-mfg-purity", "mfg-bp-purity", 1);
+            var colony = CreateColonyWithStructures("c1", structure);
+
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillManufacturingResources(stops,
+                uuid => uuid == "c1" ? colony : null,
+                uuid => playerContext.FindBlueprint(uuid));
+
+            Assert.AreEqual(2, added);
+            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            foreach (var item in stop.DropOff)
+            {
+                Assert.AreEqual("Refined", item.ResourcePurity,
+                    $"Resource '{item.BaseItemTypeID}' should have Refined purity");
+                Assert.AreEqual(ItemType.ItemTypeEnum.Resource, item.ItemType);
+            }
         }
 
         [Test]

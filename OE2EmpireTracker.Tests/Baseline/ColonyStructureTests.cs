@@ -471,6 +471,31 @@ namespace OE2EmpireTracker.Tests.Baseline
         }
 
         [Test]
+        public void StagingResources_ViewModelPassThrough()
+        {
+            PlayerContext.Reset();
+            EmpireContext.FilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\..\OE2EmpireTracker\BaselineData.json");
+            PlayerContext.FilePath = "nonexistent_player_data.json";
+            var pc = PlayerContext.getInstance();
+
+            var structure = new ColonyStructure();
+            var vm = new ColonyStructureViewModel(structure, pc);
+
+            // Default is false
+            Assert.IsFalse(vm.StagingResources);
+
+            // Set true via ViewModel, read back via ViewModel and underlying model
+            vm.StagingResources = true;
+            Assert.IsTrue(vm.StagingResources);
+            Assert.IsTrue(structure.StagingResources);
+
+            // Set false via ViewModel, read back
+            vm.StagingResources = false;
+            Assert.IsFalse(vm.StagingResources);
+            Assert.IsFalse(structure.StagingResources);
+        }
+
+        [Test]
         public void StagingResources_JsonRoundTrip_PreservesTrue()
         {
             var structure = new ColonyStructure();
