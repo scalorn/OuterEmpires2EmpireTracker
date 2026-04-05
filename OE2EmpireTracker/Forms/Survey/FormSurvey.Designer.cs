@@ -278,7 +278,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpSystemName.Margin = new System.Windows.Forms.Padding(2);
             this.flpSystemName.Name = "flpSystemName";
             this.flpSystemName.Size = new System.Drawing.Size(310, 26);
-            this.flpSystemName.TabIndex = 11;
+            this.flpSystemName.TabIndex = 1;
             // 
             // lblSystemName
             // 
@@ -307,7 +307,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpSurveyID.Margin = new System.Windows.Forms.Padding(2);
             this.flpSurveyID.Name = "flpSurveyID";
             this.flpSurveyID.Size = new System.Drawing.Size(310, 26);
-            this.flpSurveyID.TabIndex = 1;
+            this.flpSurveyID.TabIndex = 2;
             this.flpSurveyID.WrapContents = false;
             // 
             // lblSurveyID
@@ -344,7 +344,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpNickName.Margin = new System.Windows.Forms.Padding(2);
             this.flpNickName.Name = "flpNickName";
             this.flpNickName.Size = new System.Drawing.Size(310, 26);
-            this.flpNickName.TabIndex = 2;
+            this.flpNickName.TabIndex = 3;
             this.flpNickName.WrapContents = false;
             // 
             // lblNickName
