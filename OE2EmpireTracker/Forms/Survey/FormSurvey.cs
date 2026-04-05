@@ -397,5 +397,11 @@ namespace OE2EmpireTracker.Forms.Survey
                 row.Cells[2].Value = resource.Value.Amount;
             }
         }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            base.OnFormClosed(e);
+        }
     }
 }

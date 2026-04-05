@@ -55,11 +55,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             flpSelectors.Layout += flpSelectors_Layout;
             pnlExecution.Layout += pnlExecution_Layout;
 
-            playerContext.CurrentPlayerChanged += (s, ev) =>
-            {
-                PopulateRouteDropdown();
-                ClearExecution();
-            };
+            playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
         }
 
         /// <summary>
@@ -642,6 +638,18 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     if (!item.Delivered) return false;
             }
             return true;
+        }
+
+        private void OnCurrentPlayerChanged(object sender, EventArgs e)
+        {
+            PopulateRouteDropdown();
+            ClearExecution();
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            base.OnFormClosed(e);
         }
     }
 }

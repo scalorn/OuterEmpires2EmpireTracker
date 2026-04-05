@@ -834,5 +834,11 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             PopulateRouteList();
             PopulateColonyPicker();
         }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            base.OnFormClosed(e);
+        }
     }
 }

@@ -1306,5 +1306,12 @@ namespace OE2EmpireTracker.Forms.Colony
                 dgvCommodityRequests.CurrentCell = dgvCommodityRequests.Rows[dgvCommodityRequests.CurrentCell.RowIndex].Cells[1];
             }
         }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.ColonyDataChanged -= OnColonyDataChanged;
+            base.OnFormClosed(e);
+        }
     }
 }

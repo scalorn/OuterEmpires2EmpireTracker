@@ -1101,5 +1101,11 @@ namespace OE2EmpireTracker
                 dgvStatistics.Rows[e.RowIndex].ErrorText = "";
             }
         }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            base.OnFormClosed(e);
+        }
     }
 }

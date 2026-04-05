@@ -31,7 +31,7 @@ namespace OE2EmpireTracker
             playerContext = EmpireContext.PlayerContext;
             InitializeComponent();
             PopulatePlayerDropdown();
-            playerContext.PlayerProfilesChanged += (s, ev) => PopulatePlayerDropdown();
+            playerContext.PlayerProfilesChanged += OnPlayerProfilesChanged;
         }
 
         private void PopulatePlayerDropdown()
@@ -108,6 +108,17 @@ namespace OE2EmpireTracker
             Form execution = new Forms.DeliveryExecution.FormDeliveryExecution();
             execution.MdiParent = this;
             execution.Show();
+        }
+
+        private void OnPlayerProfilesChanged(object sender, EventArgs e)
+        {
+            PopulatePlayerDropdown();
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            playerContext.PlayerProfilesChanged -= OnPlayerProfilesChanged;
+            base.OnFormClosed(e);
         }
     }
 }

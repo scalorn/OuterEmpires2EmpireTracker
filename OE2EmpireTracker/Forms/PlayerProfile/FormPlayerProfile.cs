@@ -434,5 +434,11 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             }
             PopulateForm();
         }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            base.OnFormClosed(e);
+        }
     }
 }
