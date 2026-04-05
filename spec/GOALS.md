@@ -54,6 +54,9 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 39 | Player dropdown refresh on profile save/delete | Complete |
 | 40 | Unique player name validation (ValidatedTextBox) | Complete |
 | 41 | Grid CancelEdit before Rows.Clear/Save across all forms | Complete |
+| 42 | Replace all TextBox with ValidatedTextBox | Complete |
+| 43 | PlayerProfile form resize layout | Complete |
+| 44 | Survey form resize layout | Complete |
 
 ---
 

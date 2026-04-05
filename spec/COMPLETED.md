@@ -137,3 +137,12 @@ Changed txtPlayerName to ValidatedTextBox on FormPlayerProfile. TextChanged hand
 
 ## 41. Grid CancelEdit Before Rows.Clear/Save Across All Forms
 All DataGridView `Rows.Clear()` and save-handler grid iterations now detach `CellValidating` handlers, call `EndEdit()`, then reattach. Prevents `InvalidOperationException` when a cell is in edit mode with active validation. Applied to FormBlueprint (dgvStatistics, dgvResources), FormSurvey (dgvResources), FormColony (dgvItems, dgvCommodityRequests).
+
+## 42. Replace All TextBox with ValidatedTextBox
+Replaced `System.Windows.Forms.TextBox` with `ValidatedTextBox` in all 5 form Designer files. Without a ValidationPattern, ValidatedTextBox behaves identically to TextBox. Allows validation to be added to any field later without changing the control type.
+
+## 43. PlayerProfile Form Resize Layout
+Added layout handlers (flpBase_Layout, flpSearchList_Layout, flpPlayerData_Layout) so the list view, editing area, and command buttons all resize properly with the form.
+
+## 44. Survey Form Resize Layout
+Added layout handlers (flpBase_Layout, flpSearchList_Layout, flpSurveyData_Layout) with Dock=Fill on flpBase. Disabled AutoSize on flpSurveyDetails. dgvResources grid dynamically fills remaining vertical space. Command buttons stay near the bottom.
