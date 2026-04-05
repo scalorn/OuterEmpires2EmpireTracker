@@ -634,7 +634,10 @@ namespace OE2EmpireTracker.Forms.Colony
 
             var items = new List<ResearchSelectionItem>();
 
-            foreach (Data.Blueprint bp in playerContext.blueprintList)
+            var allBlueprints = new List<Data.Blueprint>(playerContext.blueprintList);
+            if (empireContext.globalBlueprintList != null)
+                allBlueprints.AddRange(empireContext.globalBlueprintList);
+            foreach (Data.Blueprint bp in allBlueprints)
             {
                 if (bp.UUID == null) continue;
                 if (bp.Evolution >= 15) continue;
@@ -778,7 +781,10 @@ namespace OE2EmpireTracker.Forms.Colony
 
             var items = new List<ResearchSelectionItem>();
 
-            foreach (Data.Blueprint bp in playerContext.blueprintList)
+            var allBlueprints = new List<Data.Blueprint>(playerContext.blueprintList);
+            if (empireContext.globalBlueprintList != null)
+                allBlueprints.AddRange(empireContext.globalBlueprintList);
+            foreach (Data.Blueprint bp in allBlueprints)
             {
                 if (bp.UUID == null) continue;
 

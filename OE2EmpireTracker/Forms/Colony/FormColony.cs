@@ -220,7 +220,12 @@ namespace OE2EmpireTracker.Forms.Colony
         public void UpdateFlatpackListBase()
         {
             string searchText = txtFilterFlatpack.Text;
-            List<Data.Blueprint> filteredList = new List<Data.Blueprint>(playerContext.blueprintList);
+            var filteredList = new List<Data.Blueprint>(playerContext.blueprintList);
+            // Include global blueprints
+            if (empireContext.globalBlueprintList != null)
+            {
+                filteredList.AddRange(empireContext.globalBlueprintList);
+            }
 
             filteredList = filteredList
                 .Where(item => item.BluePrintType.IsFlatpack())
@@ -751,6 +756,8 @@ namespace OE2EmpireTracker.Forms.Colony
             string searchText = txtItemFilter.Text;
 
             List<Data.Blueprint> filteredList = new List<Data.Blueprint>(playerContext.blueprintList);
+            if (empireContext.globalBlueprintList != null)
+                filteredList.AddRange(empireContext.globalBlueprintList);
             if (!string.IsNullOrEmpty(searchText))
             {
                 filteredList = filteredList
@@ -775,7 +782,10 @@ namespace OE2EmpireTracker.Forms.Colony
             string outputTypeName = outputType.ToString();
 
             List<Data.Blueprint> filteredList = new List<Data.Blueprint>();
-            foreach (Data.Blueprint bp in playerContext.blueprintList)
+            var allBlueprints = new List<Data.Blueprint>(playerContext.blueprintList);
+            if (empireContext.globalBlueprintList != null)
+                allBlueprints.AddRange(empireContext.globalBlueprintList);
+            foreach (Data.Blueprint bp in allBlueprints)
             {
                 if (bp.UUID == null) continue;
                 BlueprintType bpType = empireContext.FindBlueprintType(bp.BluePrintType);
