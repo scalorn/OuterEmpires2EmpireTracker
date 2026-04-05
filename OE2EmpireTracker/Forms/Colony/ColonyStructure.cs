@@ -1227,6 +1227,16 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             if (_isProgrammaticUpdate > 0) return;
             ViewModel.StagingResources = chkStageResources.Checked;
+
+            // Persist the quantity from the UI to the data model when staging
+            if (chkStageResources.Checked)
+            {
+                int qty = 1;
+                int.TryParse(txtQuantity.Text, out qty);
+                if (qty <= 0) qty = 1;
+                ColonyStructureData.ManufacturingQuantity = qty;
+            }
+
             ColonyStructureDataChanged?.Invoke(this, e);
         }
 
