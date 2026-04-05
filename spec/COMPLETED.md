@@ -290,3 +290,29 @@ ColonyStructure control changes:
 - txtCompletionTime_Leave now writes back to BuildCompletionTime (was only writing to ProcessCompletionTime)
 
 22 new tests (BuildTimeCalculatorTests, ColonyBuildEligibilityTests, ColonyBuildCompletionTests). 648 tests passing.
+
+## 72. Colony Activity Form (Rec 4: CountDownTime Master List)
+Read-only form aggregating all active countdown timers and unfulfilled commodity requests across all colonies for the current player.
+
+Domain logic:
+- `ColonyActivityCollector.CollectActivities(colonies, playerContext)`: scans structures for BuildCompletionTime and ProcessCompletionTime, classifies by BluePrintType (Building, Mining, Refining, Research, Manufacturing, CommodityManufacturing), collects unfulfilled CommodityRequested entries
+- `ActivityType` enum: Building, Manufacturing, CommodityManufacturing, CommodityRequest, Research, Mining, Refining
+- `ActivityRow` POCO: Type, SystemName, ColonyName, SourceName, ProcessDetails, CountDown ref, NeedBy DateTime, GetSecondsRemaining(), GetTimeRemainingString(), FormatSeconds()
+- Source name: "#gameSequence ExtendedName" for structures, "Commodity Request" for commodities
+- Process details match existing ColonyStructure PopulateProgressStatus patterns per type
+
+FormColonyActivity:
+- Multi-select activity type filter checkboxes (Mining/Refining off by default)
+- Cross-column text filter (case-insensitive substring match on any visible column)
+- DataGridView with columns: CountDownTime, System Name, Colony Name, Activity Type, Source, Process Details + hidden SecondsRemaining for numeric sort
+- Default sort: time remaining ascending (soonest first), sortable on any column
+- 1-second auto-refresh timer updates countdown display
+- Subscribes to CurrentPlayerChanged + ColonyDataChanged, unsubscribes in OnFormClosed
+- Accessible from Edit → Colony Activity
+
+Bug fixes during testing:
+- All 5 ColonyStructure process Start handlers (mining, refining, research, manufacturing, commodity manufacturing) now fire ColonyStructureDataChanged
+- FormColony.structures_ColonyStructureDataChanged now fires PlayerContext.OnColonyDataChanged for cross-form notification
+- txtCompletionTime_Leave now fires ColonyStructureDataChanged so manual timer edits propagate
+
+14 new tests (4 property tests + 10 edge case tests). 662 tests passing.

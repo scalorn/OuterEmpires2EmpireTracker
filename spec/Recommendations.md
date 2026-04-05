@@ -29,16 +29,11 @@ Implemented using `Colony.Items.CountByType(WorkDetail, workerKey)` minus `Colon
 
 ---
 
-## 4. CountDownTime master list / active timers view
-**Priority: Medium — Major Feature**
-A master sorted list of active `CountDownTime` instances with UI, data locking, and a background processing thread. The `PlayerContext.ActiveCountdowns` property already provides the computed view, but the full feature requires:
-- A dedicated form/panel to display active timers sorted by time remaining
-- Background thread to tick timers and trigger processing (e.g. mining cycle completion)
-- Data locking to prevent concurrent modification during background processing
-- Integration with Colony.ProcessColony() for automated resource generation
+## ~~4. CountDownTime master list / active timers view~~
+**Status: Complete**
+Implemented as the Colony Activity Form (FormColonyActivity). Displays all active countdown timers and unfulfilled commodity requests across all colonies for the current player. Features: multi-select activity type filter (Building, Manufacturing, CommodityManufacturing, CommodityRequest, Research, Mining, Refining — Mining/Refining off by default), cross-column text filter, sortable DataGridView with numeric countdown sort, 1-second auto-refresh timer, PlayerContext event subscriptions for live updates. Read-only form accessible from Edit → Colony Activity.
 
-This is on par with the other large features (colony bootstrap, flatpack optimization, multi-player, commodity delivery) and should be planned as a full feature spec.
-**Needs approval: yes — should be specced as a feature before implementation.**
+Also fixed: all ColonyStructure process Start handlers now fire ColonyStructureDataChanged, FormColony propagates structure changes to PlayerContext.OnColonyDataChanged, and txtCompletionTime manual edits fire ColonyStructureDataChanged for proper cross-form notification.
 
 ---
 
