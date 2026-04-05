@@ -460,11 +460,17 @@ namespace OE2EmpireTracker.Forms.Delivery
                 return;
             }
 
-            string suggestedName = $"{viewModel.Data.Name} - {DateTime.Now:yyyy-MM-dd}";
+            // Use the name the user already typed, or auto-suggest
+            string name = txtPlanName.Text?.Trim();
+            if (string.IsNullOrEmpty(name))
+            {
+                name = $"{viewModel.Data.Name} - {DateTime.Now:yyyy-MM-dd}";
+            }
+
             var plan = new DeliveryPlan
             {
                 UUID = Guid.NewGuid().ToString(),
-                Name = suggestedName,
+                Name = name,
                 OwnerUUID = playerContext.CurrentPlayerUUID,
                 RouteUUID = viewModel.UUID
             };
@@ -472,7 +478,6 @@ namespace OE2EmpireTracker.Forms.Delivery
             playerContext.writeContext();
 
             PopulatePlanDropdown();
-            // Select the new plan
             cmbPlan.SelectedValue = plan.UUID;
         }
 
