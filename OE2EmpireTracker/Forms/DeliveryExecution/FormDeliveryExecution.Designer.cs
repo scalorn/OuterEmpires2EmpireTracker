@@ -23,6 +23,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.lblPlan = new System.Windows.Forms.Label();
             this.txtPlanFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmbPlan = new System.Windows.Forms.ComboBox();
+            this.cmdCompletePlan = new System.Windows.Forms.Button();
+            this.cmdDeletePlan = new System.Windows.Forms.Button();
             this.pnlExecution = new System.Windows.Forms.FlowLayoutPanel();
             this.lblLoadListHeader = new System.Windows.Forms.Label();
             this.dgvLoadList = new System.Windows.Forms.DataGridView();
@@ -55,6 +57,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.flpSelectors.Controls.Add(this.lblPlan);
             this.flpSelectors.Controls.Add(this.txtPlanFilter);
             this.flpSelectors.Controls.Add(this.cmbPlan);
+            this.flpSelectors.Controls.Add(this.cmdCompletePlan);
+            this.flpSelectors.Controls.Add(this.cmdDeletePlan);
             this.flpSelectors.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpSelectors.Location = new System.Drawing.Point(3, 3);
             this.flpSelectors.Name = "flpSelectors";
@@ -106,6 +110,22 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.cmbPlan.Location = new System.Drawing.Point(3, 71);
             this.cmbPlan.Name = "cmbPlan";
             this.cmbPlan.Size = new System.Drawing.Size(214, 21);
+            // 
+            // cmdCompletePlan
+            // 
+            this.cmdCompletePlan.Location = new System.Drawing.Point(3, 98);
+            this.cmdCompletePlan.Name = "cmdCompletePlan";
+            this.cmdCompletePlan.Size = new System.Drawing.Size(100, 23);
+            this.cmdCompletePlan.Text = "Complete Plan";
+            this.cmdCompletePlan.UseVisualStyleBackColor = true;
+            // 
+            // cmdDeletePlan
+            // 
+            this.cmdDeletePlan.Location = new System.Drawing.Point(109, 98);
+            this.cmdDeletePlan.Name = "cmdDeletePlan";
+            this.cmdDeletePlan.Size = new System.Drawing.Size(80, 23);
+            this.cmdDeletePlan.Text = "Delete Plan";
+            this.cmdDeletePlan.UseVisualStyleBackColor = true;
             // 
             // pnlExecution
             // 
@@ -205,6 +225,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         private System.Windows.Forms.Label lblPlan;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtPlanFilter;
         private System.Windows.Forms.ComboBox cmbPlan;
+        private System.Windows.Forms.Button cmdCompletePlan;
+        private System.Windows.Forms.Button cmdDeletePlan;
         private System.Windows.Forms.FlowLayoutPanel pnlExecution;
         private System.Windows.Forms.Label lblLoadListHeader;
         private System.Windows.Forms.DataGridView dgvLoadList;

@@ -40,6 +40,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 if (!string.IsNullOrEmpty(routeUUID)) PopulatePlanDropdown(routeUUID);
             };
 
+            cmdCompletePlan.Click += cmdCompletePlan_Click;
+            cmdDeletePlan.Click += cmdDeletePlan_Click;
+
             PopulateRouteDropdown();
 
             flpBase.Layout += flpBase_Layout;
@@ -415,6 +418,41 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 playerContext.writeContext();
                 Log.Info("Delivery plan '{0}' marked as completed", selectedPlan.Name);
             }
+        }
+
+        private void cmdCompletePlan_Click(object sender, EventArgs e)
+        {
+            if (selectedPlan == null) return;
+
+            selectedPlan.Completed = true;
+            playerContext.writeContext();
+            Log.Info("Delivery plan '{0}' manually marked as completed", selectedPlan.Name);
+
+            ClearExecution();
+            string routeUUID = cmbRoute.SelectedValue as string;
+            if (!string.IsNullOrEmpty(routeUUID))
+                PopulatePlanDropdown(routeUUID);
+        }
+
+        private void cmdDeletePlan_Click(object sender, EventArgs e)
+        {
+            if (selectedPlan == null) return;
+
+            var result = MessageBox.Show(
+                $"Delete plan '{selectedPlan.Name}'?",
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+            if (result != DialogResult.Yes) return;
+
+            playerContext.deliveryPlanList.Remove(selectedPlan);
+            playerContext.writeContext();
+            Log.Info("Delivery plan '{0}' deleted", selectedPlan.Name);
+
+            ClearExecution();
+            string routeUUID = cmbRoute.SelectedValue as string;
+            if (!string.IsNullOrEmpty(routeUUID))
+                PopulatePlanDropdown(routeUUID);
         }
 
         private bool IsAllDelivered(DeliveryPlan plan)
