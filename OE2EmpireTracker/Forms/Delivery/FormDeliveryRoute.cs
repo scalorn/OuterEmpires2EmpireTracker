@@ -185,6 +185,11 @@ namespace OE2EmpireTracker.Forms.Delivery
                 {
                     cmbPlan.SelectedValue = firstOpenPlan.UUID;
                 }
+                else if (!string.IsNullOrEmpty(route.UUID))
+                {
+                    // No plans exist — auto-create one
+                    cmdNewPlan_Click(sender, e);
+                }
 
                 // Trigger plan tab update for the currently selected stop
                 dgvStops_SelectionChanged(sender, e);
