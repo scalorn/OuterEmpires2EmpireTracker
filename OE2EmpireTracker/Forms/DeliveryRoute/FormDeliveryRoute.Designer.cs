@@ -78,6 +78,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.cmdNewPlan = new System.Windows.Forms.Button();
             this.cmdDeletePlan = new System.Windows.Forms.Button();
             this.cmdExecutePlan = new System.Windows.Forms.Button();
+            this.cmdAutoFill = new System.Windows.Forms.Button();
             this.flpPlanName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPlanNameLabel = new System.Windows.Forms.Label();
             this.txtPlanName = new OE2EmpireTracker.Controls.ValidatedTextBox();
@@ -295,6 +296,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.flpPlanSelector.Controls.Add(this.cmdNewPlan);
             this.flpPlanSelector.Controls.Add(this.cmdDeletePlan);
             this.flpPlanSelector.Controls.Add(this.cmdExecutePlan);
+            this.flpPlanSelector.Controls.Add(this.cmdAutoFill);
             this.flpPlanSelector.Location = new System.Drawing.Point(2, 2);
             this.flpPlanSelector.Margin = new System.Windows.Forms.Padding(2);
             this.flpPlanSelector.Name = "flpPlanSelector";
@@ -345,6 +347,14 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.cmdExecutePlan.Size = new System.Drawing.Size(55, 23);
             this.cmdExecutePlan.Text = "Execute";
             this.cmdExecutePlan.UseVisualStyleBackColor = true;
+            // 
+            // cmdAutoFill
+            // 
+            this.cmdAutoFill.Location = new System.Drawing.Point(539, 3);
+            this.cmdAutoFill.Name = "cmdAutoFill";
+            this.cmdAutoFill.Size = new System.Drawing.Size(60, 23);
+            this.cmdAutoFill.Text = "Auto-Fill";
+            this.cmdAutoFill.UseVisualStyleBackColor = true;
             // 
             // flpPlanName
             // 
@@ -803,6 +813,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         private System.Windows.Forms.Button cmdNewPlan;
         private System.Windows.Forms.Button cmdDeletePlan;
         private System.Windows.Forms.Button cmdExecutePlan;
+        private System.Windows.Forms.Button cmdAutoFill;
         private System.Windows.Forms.FlowLayoutPanel flpPlanName;
         private System.Windows.Forms.Label lblPlanNameLabel;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtPlanName;

@@ -340,6 +340,13 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             if (item == null) return;
 
             item.Delivered = chk.Checked;
+
+            // Commodity fulfillment: update CommodityRequested on the target colony
+            if (item.ItemType == ItemType.ItemTypeEnum.Commodity && selectedPlan != null)
+            {
+                UpdateCommodityFulfillment(item, chk.Checked);
+            }
+
             playerContext.writeContext();
 
             // Rebuild to show/hide "Complete Stop" buttons
@@ -350,6 +357,41 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 selectedPlan.Completed = true;
                 playerContext.writeContext();
                 Log.Info("Delivery plan '{0}' marked as completed", selectedPlan.Name);
+            }
+        }
+
+        private void UpdateCommodityFulfillment(DeliveryItem item, bool delivered)
+        {
+            // Find the stop containing this item
+            var stop = selectedPlan.Stops.FirstOrDefault(s =>
+                s.DropOff.Contains(item) || s.PickUp.Contains(item));
+            if (stop == null) return;
+
+            var colony = playerContext.FindColony(stop.ColonyUUID);
+            if (colony == null)
+            {
+                Log.Warn("Colony not found for stop {0} during commodity fulfillment", stop.ColonyUUID);
+                return;
+            }
+
+            var cr = colony.Commodities.FirstOrDefault(c => c.Name == item.Name);
+            if (cr == null)
+            {
+                Log.Warn("No matching CommodityRequested '{0}' on colony {1}", item.Name, colony.ColonyName);
+                return;
+            }
+
+            if (delivered)
+            {
+                cr.Delivered = cr.Requested;
+                cr.Fulfilled = true;
+                Log.Info("Commodity '{0}' fulfilled on colony {1}", item.Name, colony.ColonyName);
+            }
+            else
+            {
+                cr.Delivered = 0;
+                cr.Fulfilled = false;
+                Log.Info("Commodity '{0}' unfulfilled on colony {1}", item.Name, colony.ColonyName);
             }
         }
 

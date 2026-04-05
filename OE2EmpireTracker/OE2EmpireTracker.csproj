@@ -220,6 +220,12 @@
     <Compile Include="Forms\DeliveryRoute\FormDeliveryRoute.Designer.cs">
       <DependentUpon>FormDeliveryRoute.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\DeliveryRoute\FormAutoFill.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DeliveryRoute\FormAutoFill.Designer.cs">
+      <DependentUpon>FormAutoFill.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\DeliveryExecution\FormDeliveryExecution.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -269,6 +275,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DeliveryRoute\FormDeliveryRoute.resx">
       <DependentUpon>FormDeliveryRoute.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DeliveryRoute\FormAutoFill.resx">
+      <DependentUpon>FormAutoFill.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DeliveryExecution\FormDeliveryExecution.resx">
       <DependentUpon>FormDeliveryExecution.cs</DependentUpon>

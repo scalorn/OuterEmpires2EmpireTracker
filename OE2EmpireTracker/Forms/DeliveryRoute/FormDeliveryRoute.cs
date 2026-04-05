@@ -72,6 +72,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             cmdDeletePlan.Click += cmdDeletePlan_Click;
             txtPlanName.TextChanged += txtPlanName_TextChanged;
             cmdExecutePlan.Click += cmdExecutePlan_Click;
+            cmdAutoFill.Click += cmdAutoFill_Click;
+            cmdAutoFill.Visible = false;
 
             PopulateRouteList();
 
@@ -439,6 +441,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 selectedPlanStop = null;
                 txtPlanName.Text = "";
                 txtPlanName.SetError("Plan name is required");
+                cmdAutoFill.Visible = false;
                 ClearPlanGrids();
                 return;
             }
@@ -448,6 +451,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             {
                 planViewModel = new DeliveryPlanViewModel(plan, playerContext);
                 txtPlanName.Text = plan.Name ?? "";
+                cmdAutoFill.Visible = true;
                 // Re-trigger stop selection to load plan items
                 dgvStops_SelectionChanged(sender, e);
             }
@@ -476,6 +480,29 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             var execution = new DeliveryExecution.FormDeliveryExecution(viewModel.UUID, planViewModel.UUID);
             execution.MdiParent = this.MdiParent;
             execution.Show();
+        }
+
+        private void cmdAutoFill_Click(object sender, EventArgs e)
+        {
+            if (planViewModel == null || string.IsNullOrEmpty(planViewModel.UUID)) return;
+
+            using (var dlg = new FormAutoFill())
+            {
+                if (dlg.ShowDialog(this) != DialogResult.OK) return;
+
+                if (dlg.IncludeCommodities)
+                {
+                    int added = planViewModel.AutoFillCommodities(
+                        viewModel.Stops,
+                        uuid => playerContext.FindColony(uuid));
+
+                    if (added > 0)
+                    {
+                        planViewModel.Save();
+                        PopulatePlanGrids();
+                    }
+                }
+            }
         }
 
         private void cmdNewPlan_Click(object sender, EventArgs e)

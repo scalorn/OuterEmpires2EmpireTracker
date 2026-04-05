@@ -105,5 +105,35 @@ namespace OE2EmpireTracker.ViewModels
             }
             _playerContext.writeContext();
         }
+
+        /// <summary>
+        /// Scans each stop's colony for unfulfilled CommodityRequested entries
+        /// and adds drop-off DeliveryItems for the shortfall quantities.
+        /// </summary>
+        /// <param name="routeStops">Route stops providing ColonyUUID and Sequence.</param>
+        /// <param name="colonyFinder">Delegate to find a Colony by UUID.</param>
+        /// <returns>Number of items added.</returns>
+        public int AutoFillCommodities(IEnumerable<RouteStop> routeStops, Func<string, Colony> colonyFinder)
+        {
+            int added = 0;
+            foreach (var routeStop in routeStops.OrderBy(s => s.Sequence))
+            {
+                var colony = colonyFinder(routeStop.ColonyUUID);
+                if (colony == null) continue;
+
+                var stop = GetOrCreateStop(routeStop.ColonyUUID, routeStop.Sequence);
+
+                foreach (var cr in colony.Commodities)
+                {
+                    if (cr.Fulfilled) continue;
+                    int shortfall = cr.Requested - cr.Delivered;
+                    if (shortfall <= 0) continue;
+
+                    AddDropOffItem(stop, ItemType.ItemTypeEnum.Commodity, cr.Name, cr.Name, shortfall);
+                    added++;
+                }
+            }
+            return added;
+        }
     }
 }

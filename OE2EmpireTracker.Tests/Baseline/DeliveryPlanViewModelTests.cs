@@ -205,5 +205,175 @@ namespace OE2EmpireTracker.Tests.Baseline
             var vm = CreateViewModel();
             Assert.AreEqual("plan-1", vm.UUID);
         }
+
+        // -----------------------------------------------------------------------
+        // AutoFillCommodities
+        // -----------------------------------------------------------------------
+
+        private Colony CreateColonyWithCommodities(string uuid, params CommodityRequested[] commodities)
+        {
+            var colony = new Colony { UUID = uuid };
+            colony.Commodities.AddRange(commodities);
+            return colony;
+        }
+
+        [Test]
+        public void AutoFillCommodities_UnfulfilledCommodity_AddsDropOffItem()
+        {
+            var vm = CreateViewModel();
+            var colony = CreateColonyWithCommodities("c1",
+                new CommodityRequested { Name = "Steel Plates", Requested = 50, Delivered = 0, Fulfilled = false });
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillCommodities(stops, uuid => uuid == "c1" ? colony : null);
+
+            Assert.AreEqual(1, added);
+            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            Assert.AreEqual(1, stop.DropOff.Count);
+            Assert.AreEqual("Steel Plates", stop.DropOff[0].Name);
+            Assert.AreEqual("Steel Plates", stop.DropOff[0].BaseItemTypeID);
+            Assert.AreEqual(50, stop.DropOff[0].Quantity);
+            Assert.AreEqual(ItemType.ItemTypeEnum.Commodity, stop.DropOff[0].ItemType);
+        }
+
+        [Test]
+        public void AutoFillCommodities_PartiallyDelivered_AddsShortfall()
+        {
+            var vm = CreateViewModel();
+            var colony = CreateColonyWithCommodities("c1",
+                new CommodityRequested { Name = "Steel Plates", Requested = 100, Delivered = 30, Fulfilled = false });
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            vm.AutoFillCommodities(stops, uuid => uuid == "c1" ? colony : null);
+
+            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            Assert.AreEqual(70, stop.DropOff[0].Quantity);
+        }
+
+        [Test]
+        public void AutoFillCommodities_FulfilledCommodity_Skipped()
+        {
+            var vm = CreateViewModel();
+            var colony = CreateColonyWithCommodities("c1",
+                new CommodityRequested { Name = "Steel Plates", Requested = 50, Delivered = 50, Fulfilled = true });
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillCommodities(stops, uuid => uuid == "c1" ? colony : null);
+
+            Assert.AreEqual(0, added);
+        }
+
+        [Test]
+        public void AutoFillCommodities_ZeroShortfall_Skipped()
+        {
+            var vm = CreateViewModel();
+            var colony = CreateColonyWithCommodities("c1",
+                new CommodityRequested { Name = "Steel Plates", Requested = 50, Delivered = 50, Fulfilled = false });
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillCommodities(stops, uuid => uuid == "c1" ? colony : null);
+
+            Assert.AreEqual(0, added);
+        }
+
+        [Test]
+        public void AutoFillCommodities_MissingColony_SkipsStop()
+        {
+            var vm = CreateViewModel();
+            var colony = CreateColonyWithCommodities("c2",
+                new CommodityRequested { Name = "Steel Plates", Requested = 50, Delivered = 0, Fulfilled = false });
+            var stops = new[]
+            {
+                new RouteStop { ColonyUUID = "c1", Sequence = 0 },
+                new RouteStop { ColonyUUID = "c2", Sequence = 1 }
+            };
+
+            int added = vm.AutoFillCommodities(stops, uuid => uuid == "c2" ? colony : null);
+
+            Assert.AreEqual(1, added);
+            Assert.IsFalse(vm.Data.Stops.Any(s => s.ColonyUUID == "c1"));
+        }
+
+        [Test]
+        public void AutoFillCommodities_PreservesExistingDropOffItems()
+        {
+            var vm = CreateViewModel();
+            var stop = vm.GetOrCreateStop("c1", 0);
+            vm.AddDropOffItem(stop, ItemType.ItemTypeEnum.Resource, "Iron", "Iron", 100, "High");
+
+            var colony = CreateColonyWithCommodities("c1",
+                new CommodityRequested { Name = "Steel Plates", Requested = 50, Delivered = 0, Fulfilled = false });
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            vm.AutoFillCommodities(stops, uuid => uuid == "c1" ? colony : null);
+
+            Assert.AreEqual(2, stop.DropOff.Count);
+            Assert.AreEqual("Iron", stop.DropOff[0].BaseItemTypeID);
+            Assert.AreEqual("High", stop.DropOff[0].ResourcePurity);
+            Assert.AreEqual("Steel Plates", stop.DropOff[1].Name);
+        }
+
+        [Test]
+        public void AutoFillCommodities_DoesNotModifyPickUpList()
+        {
+            var vm = CreateViewModel();
+            var stop = vm.GetOrCreateStop("c1", 0);
+            vm.AddPickUpItem(stop, ItemType.ItemTypeEnum.Resource, "Iron", "Iron", 200);
+
+            var colony = CreateColonyWithCommodities("c1",
+                new CommodityRequested { Name = "Steel Plates", Requested = 50, Delivered = 0, Fulfilled = false });
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            vm.AutoFillCommodities(stops, uuid => uuid == "c1" ? colony : null);
+
+            Assert.AreEqual(1, stop.PickUp.Count);
+            Assert.AreEqual("Iron", stop.PickUp[0].BaseItemTypeID);
+        }
+
+        [Test]
+        public void AutoFillCommodities_EmptyCommoditiesList_AddsNothing()
+        {
+            var vm = CreateViewModel();
+            var colony = new Colony { UUID = "c1" };
+            var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
+
+            int added = vm.AutoFillCommodities(stops, uuid => uuid == "c1" ? colony : null);
+
+            Assert.AreEqual(0, added);
+        }
+
+        [Test]
+        public void AutoFillCommodities_MultipleStops_MixedCommodities()
+        {
+            var vm = CreateViewModel();
+            var colony1 = CreateColonyWithCommodities("c1",
+                new CommodityRequested { Name = "Steel Plates", Requested = 50, Delivered = 0, Fulfilled = false },
+                new CommodityRequested { Name = "Copper Wire", Requested = 30, Delivered = 30, Fulfilled = true });
+            var colony2 = CreateColonyWithCommodities("c2",
+                new CommodityRequested { Name = "Glass Panels", Requested = 20, Delivered = 5, Fulfilled = false });
+            var stops = new[]
+            {
+                new RouteStop { ColonyUUID = "c1", Sequence = 0 },
+                new RouteStop { ColonyUUID = "c2", Sequence = 1 }
+            };
+
+            int added = vm.AutoFillCommodities(stops, uuid =>
+            {
+                if (uuid == "c1") return colony1;
+                if (uuid == "c2") return colony2;
+                return null;
+            });
+
+            Assert.AreEqual(2, added);
+            var stop1 = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            Assert.AreEqual(1, stop1.DropOff.Count);
+            Assert.AreEqual("Steel Plates", stop1.DropOff[0].Name);
+            Assert.AreEqual(50, stop1.DropOff[0].Quantity);
+
+            var stop2 = vm.Data.Stops.First(s => s.ColonyUUID == "c2");
+            Assert.AreEqual(1, stop2.DropOff.Count);
+            Assert.AreEqual("Glass Panels", stop2.DropOff[0].Name);
+            Assert.AreEqual(15, stop2.DropOff[0].Quantity);
+        }
     }
 }
