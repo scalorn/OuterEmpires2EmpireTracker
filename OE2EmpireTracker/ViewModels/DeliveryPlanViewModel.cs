@@ -152,7 +152,10 @@ namespace OE2EmpireTracker.ViewModels
                 if (colony == null) { Log.Debug("AutoFillFlatpacks: colony not found for {0}", routeStop.ColonyUUID); continue; }
 
                 Log.Debug("AutoFillFlatpacks: colony {0} has {1} structures", colony.ColonyName, colony.Structures.Count);
-                var stop = GetOrCreateStop(routeStop.ColonyUUID, routeStop.Sequence);
+
+                // Aggregate flatpack counts by blueprint UUID
+                var flatpackCounts = new Dictionary<string, int>();
+                var flatpackNames = new Dictionary<string, string>();
 
                 foreach (var structure in colony.Structures)
                 {
@@ -164,10 +167,22 @@ namespace OE2EmpireTracker.ViewModels
                     var blueprint = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                     if (blueprint == null) { Log.Debug("  Blueprint not found: {0}", structure.FlatpackBlueprintUUID); continue; }
 
+                    string bpUUID = structure.FlatpackBlueprintUUID;
+                    int count = 0;
+                    flatpackCounts.TryGetValue(bpUUID, out count);
+                    flatpackCounts[bpUUID] = count + 1;
+                    flatpackNames[bpUUID] = blueprint.ExtendedName;
+                }
+
+                if (flatpackCounts.Count == 0) continue;
+
+                var stop = GetOrCreateStop(routeStop.ColonyUUID, routeStop.Sequence);
+                foreach (var entry in flatpackCounts)
+                {
                     AddDropOffItem(stop, ItemType.ItemTypeEnum.Flatpack,
-                        structure.FlatpackBlueprintUUID, blueprint.ExtendedName, 1);
+                        entry.Key, flatpackNames[entry.Key], entry.Value);
                     added++;
-                    Log.Debug("  Added flatpack: {0}", blueprint.ExtendedName);
+                    Log.Debug("  Added flatpack: {0} x{1}", flatpackNames[entry.Key], entry.Value);
                 }
             }
             Log.Debug("AutoFillFlatpacks: total added={0}", added);
