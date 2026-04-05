@@ -111,6 +111,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         {
             string previousUUID = cmbRoute.SelectedValue as string;
             string filter = txtRouteFilter.Text ?? "";
+
+            cmbRoute.SelectedIndexChanged -= cmbRoute_SelectedIndexChanged;
+
             var routes = playerContext.GetCurrentPlayerRoutes();
             var items = new List<DropdownItem>();
             items.Add(new DropdownItem { UUID = "", Display = "" });
@@ -125,7 +128,16 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             cmbRoute.ValueMember = "UUID";
             cmbRoute.DataSource = items;
             if (!string.IsNullOrEmpty(previousUUID) && items.Any(i => i.UUID == previousUUID))
+            {
                 cmbRoute.SelectedValue = previousUUID;
+                _lastRouteUUID = previousUUID;
+            }
+            else
+            {
+                _lastRouteUUID = "";
+            }
+
+            cmbRoute.SelectedIndexChanged += cmbRoute_SelectedIndexChanged;
         }
 
         private string _lastRouteUUID = "";
