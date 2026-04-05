@@ -1090,6 +1090,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void dgvItems_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
             if (e.RowIndex < 0) return;
 
             DataGridViewRow row = dgvItems.Rows[e.RowIndex];
@@ -1102,6 +1103,9 @@ namespace OE2EmpireTracker.Forms.Colony
                 int qty = 0;
                 int.TryParse(row.Cells[3].Value?.ToString(), out qty);
                 item.Quantity = qty;
+
+                // Recalculate status so locks and unallocated workers update
+                structures_ColonyStructureDataChanged(sender, EventArgs.Empty);
             }
         }
 
