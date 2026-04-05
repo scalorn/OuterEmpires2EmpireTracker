@@ -1028,6 +1028,15 @@ namespace OE2EmpireTracker.Forms.Colony
             }
         }
 
+        private void dgvCommodityRequests_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (dgvCommodityRequests.IsCurrentCellDirty)
+            {
+                dgvCommodityRequests.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
+
         private void dgvCommodityRequests_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;

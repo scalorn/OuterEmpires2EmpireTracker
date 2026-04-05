@@ -620,6 +620,7 @@ namespace OE2EmpireTracker.Forms.Colony
             this.dgvCommodityRequests.TabIndex = 7;
             this.dgvCommodityRequests.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvCommodityRequests_CellValidating);
             this.dgvCommodityRequests.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvCommodityRequests_CellValueChanged);
+            this.dgvCommodityRequests.CurrentCellDirtyStateChanged += new System.EventHandler(this.dgvCommodityRequests_CurrentCellDirtyStateChanged);
             this.dgvCommodityRequests.SelectionChanged += new System.EventHandler(this.dgvCommodityRequests_SelectionChanged);
             this.dgvCommodityRequests.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvCommodityRequests_KeyDown);
             // 
