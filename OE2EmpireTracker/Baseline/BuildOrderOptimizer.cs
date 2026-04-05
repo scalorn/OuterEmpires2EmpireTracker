@@ -75,15 +75,42 @@ namespace OE2EmpireTracker.Baseline
             // Start with built structures
             result.AddRange(builtStructures);
 
+            Log.Info("Optimizer pools: {0} built, {1} primary, {2} support",
+                builtStructures.Count, primaryPool.Count, supportPool.Count);
+
             // Simulate building each primary structure, inserting support as needed
             var idealWorkers = new IdealColonyStructureWorkers();
             ColonyStructureStatus runningStatus = SimulateStatus(result, idealWorkers);
+
+            // Check if built structures already have deficits that need support
+            while (HasDeficit(runningStatus))
+            {
+                ColonyStructure bestSupport = FindBestSupport(supportPool, runningStatus, idealWorkers, runningStatus);
+                if (bestSupport != null)
+                {
+                    supportPool.Remove(bestSupport);
+                }
+                else
+                {
+                    bestSupport = CreateSupportStructure(runningStatus);
+                    if (bestSupport == null) break;
+                }
+                result.Add(bestSupport);
+                Blueprint supportBp = _playerContext.FindBlueprint(bestSupport.FlatpackBlueprintUUID);
+                runningStatus = SimulateOneMore(runningStatus, bestSupport, supportBp, idealWorkers);
+            }
 
             foreach (var primary in primaryPool)
             {
                 // Simulate adding this primary structure
                 Blueprint primaryBp = _playerContext.FindBlueprint(primary.FlatpackBlueprintUUID);
                 ColonyStructureStatus afterPrimary = SimulateOneMore(runningStatus, primary, primaryBp, idealWorkers);
+
+                Log.Debug("Primary {0}: PowerReq={1} PowerProv={2} HabReq={3} HabProv={4} FoodReq={5} FoodProv={6}",
+                    primaryBp?.ExtendedName ?? primary.FlatpackBlueprintUUID,
+                    afterPrimary.PowerRequired, afterPrimary.PowerProvided,
+                    afterPrimary.HabitationRequired, afterPrimary.HabitationProvision,
+                    afterPrimary.FoodRequired, afterPrimary.FoodProvision);
 
                 // Check for deficits and insert support structures to fix them
                 while (HasDeficit(afterPrimary))
@@ -98,7 +125,11 @@ namespace OE2EmpireTracker.Baseline
                     {
                         // No existing support structure can help — create one from player blueprints
                         bestSupport = CreateSupportStructure(afterPrimary);
-                        if (bestSupport == null) break; // No blueprint available
+                        if (bestSupport == null)
+                        {
+                            Log.Warn("No support structure available for deficit. Breaking.");
+                            break;
+                        }
                     }
 
                     result.Add(bestSupport);
