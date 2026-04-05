@@ -79,6 +79,8 @@ All original Recommendations (1-8) resolved. MVVM complete across all forms. NLo
 | 64 | Forms steering compliance (Rec 16): IProgrammaticUpdateSource on all forms | Complete |
 | 65 | Delivery Phase 7: Auto-fill Flatpacks, Resources, Workers + Flatpack Staging | Complete |
 | 66 | ProgrammaticUpdateGuard IDisposable fix + using var across all forms | Complete |
+| 67 | Incremental execution form updates, worker delivery, event unsubscription | Complete |
+| 68 | Deferred write-through conversion (Rec 17) | Complete |
 
 ---
 

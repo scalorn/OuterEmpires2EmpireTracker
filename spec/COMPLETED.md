@@ -233,3 +233,17 @@ Extended auto-fill from commodity-only to all four request types:
 Critical bug: ProgrammaticUpdateGuard relied on the GC finalizer to decrement `_isProgrammaticUpdate`, but finalizers run at unpredictable times. After the first `PopulateForm` call, the counter stayed > 0 permanently, blocking all grid event handlers (CellValueChanged, SelectionChanged, CellValidating) for the rest of the form's lifetime. This caused commodity request grid edits (NeedBy, Completed checkbox) to silently fail, and plan grid population to not show items.
 
 Fix: Made ProgrammaticUpdateGuard implement IDisposable. Converted all 22 usages across 6 files to `using var guard` (C# 8 using declaration) for deterministic disposal. Added `LangVersion=latest` to .csproj. Removed 16 manual `guard.release()` calls. Also added `CurrentCellDirtyStateChanged` + `CommitEdit` for DataGridViewCheckBoxColumn immediate commit. 612 tests passing.
+
+## 67. Incremental Execution Form Updates, Worker Delivery, Event Unsubscription
+- Delivery execution form: incremental updates on checkbox change instead of full rebuild (no flicker, no scroll reset)
+- Worker delivery: adds workers to colony warehouse on check, removes on uncheck, fires ColonyDataChanged
+- ColonyDataChanged handler does full RecalculateStatus + PopulateForm for background processing readiness
+- All 7 forms unsubscribe from PlayerContext events in OnFormClosed (prevents ObjectDisposedException)
+- Anonymous lambda event subscriptions converted to named methods for proper unsubscription
+- Flatpack auto-fill stacks same-blueprint flatpacks into single item with aggregated quantity
+- Manufacturing quantity persists on txtQuantity TextChanged and loads from data model on form populate
+- Stage Resources checkbox persists quantity when checked
+- 612 tests passing.
+
+## 68. Deferred Write-Through Conversion (Rec 17)
+All editable controls across 5 forms now write to the data model immediately on change via TextChanged/SelectedIndexChanged handlers. Save buttons simplified to only call writeContext() for disk persistence. Forms: FormColony (3 fields), FormBlueprint (4 text + 5 combos), FormSurvey (9 text + 1 combo), FormPlayerProfile (11 text + 1 combo), FormDeliveryRoute (2 text). 612 tests passing.
