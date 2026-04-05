@@ -84,3 +84,12 @@ Rules and patterns learned from building forms in this project. Follow these whe
 
 - When programmatically rebuilding a ComboBox data source, detach `SelectedIndexChanged` before the rebuild and reattach after to prevent cascading events.
 - Use a `_lastSelectedUUID` field to detect actual selection changes vs. spurious events from data source rebinding.
+
+## Data Model Write-Through
+
+- Controls whose values are consumed by other code paths (event handlers, auto-fill, locking, calculations) MUST write back to the data model immediately on change (TextChanged, CheckedChanged, SelectedIndexChanged).
+- If a control's value is ONLY read by the Save handler, deferred write (read from UI in Save handler) is acceptable.
+- The key test: "Is this value used by anything other than the Save button?" If yes, it must write-through immediately.
+- Example: `txtQuantity` on ColonyStructure is used by Stage Resources checkbox and auto-fill — must write-through. `txtPlanetName` on FormColony is only read by Save — deferred is OK.
+- When a control has a default display value (e.g. "1" for quantity), that default must also be written to the data model when the control becomes visible or the default is applied.
+- Use the ProgrammaticUpdateGuard check (`if (_isProgrammaticUpdate > 0) return;`) in the handler to avoid writing back during programmatic population.
