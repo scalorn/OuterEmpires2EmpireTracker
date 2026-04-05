@@ -51,8 +51,10 @@ namespace OE2EmpireTracker.Forms.Delivery
 
             // Plan tab wiring
             PopulateItemTypeCombos();
-            cmbDropItemType.SelectedIndexChanged += (s, ev) => PopulateItemPicker(cmbDropItemType, cmbDropItem);
-            cmbPickItemType.SelectedIndexChanged += (s, ev) => PopulateItemPicker(cmbPickItemType, cmbPickItem);
+            cmbDropItemType.SelectedIndexChanged += (s, ev) => PopulateItemPicker(cmbDropItemType, txtDropFilter, cmbDropItem);
+            cmbPickItemType.SelectedIndexChanged += (s, ev) => PopulateItemPicker(cmbPickItemType, txtPickFilter, cmbPickItem);
+            txtDropFilter.TextChanged += (s, ev) => PopulateItemPicker(cmbDropItemType, txtDropFilter, cmbDropItem);
+            txtPickFilter.TextChanged += (s, ev) => PopulateItemPicker(cmbPickItemType, txtPickFilter, cmbPickItem);
             cmdAddDropOff.Click += cmdAddDropOff_Click;
             cmdAddPickUp.Click += cmdAddPickUp_Click;
             cmdRemoveDropOff.Click += cmdRemoveDropOff_Click;
@@ -380,13 +382,20 @@ namespace OE2EmpireTracker.Forms.Delivery
             cmbPickItemType.ValueMember = "ID";
         }
 
-        private void PopulateItemPicker(ComboBox typeCombo, ComboBox itemCombo)
+        private void PopulateItemPicker(ComboBox typeCombo, ValidatedTextBox filterBox, ComboBox itemCombo)
         {
             var itemType = typeCombo.SelectedItem as ItemType;
             if (itemType == null) return;
 
+            string filter = filterBox.Text ?? "";
             itemCombo.DataSource = null;
             var items = GetItemsForType(itemType.ID);
+            if (!string.IsNullOrEmpty(filter))
+            {
+                items = items.Where(i =>
+                    string.IsNullOrEmpty(i.Display) ||
+                    i.Display.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            }
             itemCombo.DisplayMember = "Display";
             itemCombo.ValueMember = "ID";
             itemCombo.DataSource = items;
