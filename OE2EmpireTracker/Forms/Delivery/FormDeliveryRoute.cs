@@ -69,6 +69,7 @@ namespace OE2EmpireTracker.Forms.Delivery
             chkShowCompleted.CheckedChanged += (s, ev) => PopulatePlanDropdown();
             cmdNewPlan.Click += cmdNewPlan_Click;
             cmdDeletePlan.Click += cmdDeletePlan_Click;
+            txtPlanName.TextChanged += txtPlanName_TextChanged;
 
             PopulateRouteList();
 
@@ -184,11 +185,6 @@ namespace OE2EmpireTracker.Forms.Delivery
                 if (firstOpenPlan != null)
                 {
                     cmbPlan.SelectedValue = firstOpenPlan.UUID;
-                }
-                else if (!string.IsNullOrEmpty(route.UUID))
-                {
-                    // No plans exist — auto-create one
-                    cmdNewPlan_Click(sender, e);
                 }
 
                 // Trigger plan tab update for the currently selected stop
@@ -408,6 +404,7 @@ namespace OE2EmpireTracker.Forms.Delivery
                 .ToList();
 
             var items = new List<PlanDropdownItem>();
+            items.Add(new PlanDropdownItem { UUID = "", Display = "" });
             foreach (var plan in plans)
             {
                 string display = plan.Name;
@@ -440,6 +437,18 @@ namespace OE2EmpireTracker.Forms.Delivery
                 txtPlanName.Text = plan.Name ?? "";
                 // Re-trigger stop selection to load plan items
                 dgvStops_SelectionChanged(sender, e);
+            }
+        }
+
+        private void txtPlanName_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtPlanName.Text))
+            {
+                txtPlanName.SetError("Plan name is required");
+            }
+            else
+            {
+                txtPlanName.ClearError();
             }
         }
 
@@ -486,17 +495,13 @@ namespace OE2EmpireTracker.Forms.Delivery
             ClearPlanGrids();
             PopulatePlanDropdown();
 
-            // Auto-create a new plan if none remain for this route
+            // Select next open plan if one exists
             var remaining = playerContext.GetCurrentPlayerPlans()
                 .Where(p => p.RouteUUID == viewModel.UUID && !p.Completed)
                 .FirstOrDefault();
             if (remaining != null)
             {
                 cmbPlan.SelectedValue = remaining.UUID;
-            }
-            else if (!string.IsNullOrEmpty(viewModel.UUID))
-            {
-                cmdNewPlan_Click(sender, e);
             }
         }
 
@@ -505,6 +510,23 @@ namespace OE2EmpireTracker.Forms.Delivery
             lblPlanStop.Text = "(select a stop on Stops tab)";
             dgvDropOff.Rows.Clear();
             dgvPickUp.Rows.Clear();
+        }
+
+        /// <summary>
+        /// Ensures a plan exists for the current route. If no plan is selected,
+        /// auto-creates one (like clicking New). Returns true if a plan is ready.
+        /// </summary>
+        private bool EnsurePlanExists()
+        {
+            if (planViewModel != null && !string.IsNullOrEmpty(planViewModel.UUID))
+                return true;
+
+            if (string.IsNullOrEmpty(viewModel.UUID))
+                return false;
+
+            // Auto-create a plan
+            cmdNewPlan_Click(this, EventArgs.Empty);
+            return planViewModel != null && !string.IsNullOrEmpty(planViewModel.UUID);
         }
 
         // -----------------------------------------------------------------------
@@ -626,7 +648,13 @@ namespace OE2EmpireTracker.Forms.Delivery
 
         private void cmdAddDropOff_Click(object sender, EventArgs e)
         {
-            if (selectedPlanStop == null || planViewModel == null) return;
+            if (!EnsurePlanExists()) return;
+            if (selectedPlanStop == null)
+            {
+                // Try to get the stop from the grid selection
+                dgvStops_SelectionChanged(sender, e);
+                if (selectedPlanStop == null) return;
+            }
             var entry = cmbDropItem.SelectedItem as ItemPickerEntry;
             if (entry == null || string.IsNullOrEmpty(entry.ID)) return;
             var itemType = cmbDropItemType.SelectedItem as ItemType;
@@ -640,7 +668,12 @@ namespace OE2EmpireTracker.Forms.Delivery
 
         private void cmdAddPickUp_Click(object sender, EventArgs e)
         {
-            if (selectedPlanStop == null || planViewModel == null) return;
+            if (!EnsurePlanExists()) return;
+            if (selectedPlanStop == null)
+            {
+                dgvStops_SelectionChanged(sender, e);
+                if (selectedPlanStop == null) return;
+            }
             var entry = cmbPickItem.SelectedItem as ItemPickerEntry;
             if (entry == null || string.IsNullOrEmpty(entry.ID)) return;
             var itemType = cmbPickItemType.SelectedItem as ItemType;
