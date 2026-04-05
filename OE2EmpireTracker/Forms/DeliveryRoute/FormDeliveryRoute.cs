@@ -275,8 +275,10 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             txtPlanFilter.Text = "";
             txtPlanName.Text = "";
             txtPlanName.SetError("Plan name is required");
+            cmbPlan.SelectedIndexChanged -= cmbPlan_SelectedIndexChanged;
             cmbPlan.DataSource = null;
-            cmbPlan.Text = "";
+            cmbPlan.Items.Clear();
+            cmbPlan.SelectedIndexChanged += cmbPlan_SelectedIndexChanged;
             cmdAutoFill.Visible = false;
             ClearPlanGrids();
         }
@@ -529,12 +531,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 return;
             }
 
-            // Use the name the user already typed, or auto-suggest
-            string name = txtPlanName.Text?.Trim();
-            if (string.IsNullOrEmpty(name))
-            {
-                name = $"{viewModel.Data.Name} - {DateTime.Now:yyyy-MM-dd}";
-            }
+            string name = $"{viewModel.Data.Name} - {DateTime.Now:yyyy-MM-dd}";
 
             var plan = new DeliveryPlan
             {
