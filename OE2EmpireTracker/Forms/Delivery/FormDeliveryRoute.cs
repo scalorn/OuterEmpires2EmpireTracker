@@ -42,6 +42,7 @@ namespace OE2EmpireTracker.Forms.Delivery
             cmdUp.Click += cmdUp_Click;
             cmdDown.Click += cmdDown_Click;
             cmdRemoveStop.Click += cmdRemoveStop_Click;
+            chkPreventDuplicates.CheckedChanged += (s, ev) => PopulateColonyPicker();
             cmdNew.Click += cmdNew_Click;
             cmdSave.Click += cmdSave_Click;
             cmdDelete.Click += cmdDelete_Click;
@@ -130,6 +131,13 @@ namespace OE2EmpireTracker.Forms.Delivery
                 .OrderBy(c => c.PlanetName)
                 .ToList();
 
+            // Filter out colonies already in the route when "No Duplicates" is checked
+            if (chkPreventDuplicates.Checked)
+            {
+                var existingUUIDs = new HashSet<string>(viewModel.Stops.Select(s => s.ColonyUUID));
+                colonies = colonies.Where(c => !existingUUIDs.Contains(c.UUID)).ToList();
+            }
+
             var items = new List<ColonyPickerItem>();
             items.Add(new ColonyPickerItem { UUID = "", Display = "" });
             foreach (var colony in colonies)
@@ -140,6 +148,9 @@ namespace OE2EmpireTracker.Forms.Delivery
                 items.Add(new ColonyPickerItem { UUID = colony.UUID, Display = display });
             }
 
+            cmbColony.DataSource = null;
+            cmbColony.DisplayMember = "Display";
+            cmbColony.ValueMember = "UUID";
             cmbColony.DataSource = items;
         }
 
@@ -192,6 +203,7 @@ namespace OE2EmpireTracker.Forms.Delivery
 
             viewModel.AddStop(colonyUUID);
             PopulateStopsGrid();
+            if (chkPreventDuplicates.Checked) PopulateColonyPicker();
         }
 
         private void cmdUp_Click(object sender, EventArgs e)
@@ -230,6 +242,7 @@ namespace OE2EmpireTracker.Forms.Delivery
                 indices.Add(row.Index);
             viewModel.RemoveStops(indices);
             PopulateStopsGrid();
+            if (chkPreventDuplicates.Checked) PopulateColonyPicker();
         }
 
         // -----------------------------------------------------------------------

@@ -39,6 +39,7 @@ namespace OE2EmpireTracker.Forms.Delivery
             this.cmdUp = new System.Windows.Forms.Button();
             this.cmdDown = new System.Windows.Forms.Button();
             this.cmdRemoveStop = new System.Windows.Forms.Button();
+            this.chkPreventDuplicates = new System.Windows.Forms.CheckBox();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdNew = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
@@ -197,6 +198,7 @@ namespace OE2EmpireTracker.Forms.Delivery
             // 
             // flpAddStop
             // 
+            this.flpAddStop.Controls.Add(this.chkPreventDuplicates);
             this.flpAddStop.Controls.Add(this.lblAddStop);
             this.flpAddStop.Controls.Add(this.cmbColony);
             this.flpAddStop.Controls.Add(this.cmdAddStop);
@@ -208,6 +210,16 @@ namespace OE2EmpireTracker.Forms.Delivery
             this.flpAddStop.Name = "flpAddStop";
             this.flpAddStop.Size = new System.Drawing.Size(630, 30);
             this.flpAddStop.TabIndex = 2;
+            // 
+            // chkPreventDuplicates
+            // 
+            this.chkPreventDuplicates.AutoSize = true;
+            this.chkPreventDuplicates.Location = new System.Drawing.Point(3, 5);
+            this.chkPreventDuplicates.Name = "chkPreventDuplicates";
+            this.chkPreventDuplicates.Size = new System.Drawing.Size(95, 17);
+            this.chkPreventDuplicates.TabIndex = 6;
+            this.chkPreventDuplicates.Text = "No Duplicates";
+            this.chkPreventDuplicates.UseVisualStyleBackColor = true;
             // 
             // lblAddStop
             // 
@@ -346,6 +358,7 @@ namespace OE2EmpireTracker.Forms.Delivery
         private System.Windows.Forms.Button cmdUp;
         private System.Windows.Forms.Button cmdDown;
         private System.Windows.Forms.Button cmdRemoveStop;
+        private System.Windows.Forms.CheckBox chkPreventDuplicates;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
         private System.Windows.Forms.Button cmdNew;
         private System.Windows.Forms.Button cmdSave;
