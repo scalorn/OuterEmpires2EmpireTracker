@@ -52,6 +52,8 @@ namespace OE2EmpireTracker.Forms.Delivery
             flpBase.Layout += flpBase_Layout;
             flpSearchList.Layout += flpSearchList_Layout;
             flpRouteData.Layout += flpRouteData_Layout;
+            tabStops.Layout += tabStops_Layout;
+            flpPlanContent.Layout += flpPlanContent_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
         }
@@ -87,6 +89,41 @@ namespace OE2EmpireTracker.Forms.Delivery
             tabRouteDetail.Size = new Size(
                 flpRouteData.Size.Width - tabRouteDetail.Margin.Left - tabRouteDetail.Margin.Right,
                 tabHeight);
+        }
+
+        private void tabStops_Layout(object sender, LayoutEventArgs e)
+        {
+            int gridHeight = tabStops.ClientSize.Height
+                - flpAddStop.Size.Height - flpAddStop.Margin.Top - flpAddStop.Margin.Bottom
+                - dgvStops.Margin.Top - dgvStops.Margin.Bottom;
+            if (gridHeight < 50) gridHeight = 50;
+            dgvStops.Size = new Size(
+                tabStops.ClientSize.Width - dgvStops.Margin.Left - dgvStops.Margin.Right,
+                gridHeight);
+            flpAddStop.Size = new Size(
+                tabStops.ClientSize.Width - flpAddStop.Margin.Left - flpAddStop.Margin.Right,
+                flpAddStop.Size.Height);
+        }
+
+        private void flpPlanContent_Layout(object sender, LayoutEventArgs e)
+        {
+            int availWidth = flpPlanContent.ClientSize.Width;
+            int availHeight = flpPlanContent.ClientSize.Height;
+
+            // Fixed heights: labels, add rows
+            int fixedHeight = lblPlanStop.Size.Height + lblPlanStop.Margin.Top + lblPlanStop.Margin.Bottom
+                + lblDropOff.Size.Height + lblDropOff.Margin.Top + lblDropOff.Margin.Bottom
+                + flpDropOffAdd.Size.Height + flpDropOffAdd.Margin.Top + flpDropOffAdd.Margin.Bottom
+                + lblPickUp.Size.Height + lblPickUp.Margin.Top + lblPickUp.Margin.Bottom
+                + flpPickUpAdd.Size.Height + flpPickUpAdd.Margin.Top + flpPickUpAdd.Margin.Bottom
+                + dgvDropOff.Margin.Top + dgvDropOff.Margin.Bottom
+                + dgvPickUp.Margin.Top + dgvPickUp.Margin.Bottom;
+
+            int gridSpace = availHeight - fixedHeight;
+            int perGrid = Math.Max(50, gridSpace / 2);
+
+            dgvDropOff.Size = new Size(availWidth - dgvDropOff.Margin.Left - dgvDropOff.Margin.Right, perGrid);
+            dgvPickUp.Size = new Size(availWidth - dgvPickUp.Margin.Left - dgvPickUp.Margin.Right, perGrid);
         }
 
         // -----------------------------------------------------------------------
