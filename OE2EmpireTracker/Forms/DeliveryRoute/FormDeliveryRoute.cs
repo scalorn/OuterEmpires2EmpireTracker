@@ -70,6 +70,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             cmdNewPlan.Click += cmdNewPlan_Click;
             cmdDeletePlan.Click += cmdDeletePlan_Click;
             txtPlanName.TextChanged += txtPlanName_TextChanged;
+            cmdExecutePlan.Click += cmdExecutePlan_Click;
 
             PopulateRouteList();
 
@@ -461,6 +462,19 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             {
                 txtPlanName.ClearError();
             }
+        }
+
+        private void cmdExecutePlan_Click(object sender, EventArgs e)
+        {
+            if (planViewModel == null || string.IsNullOrEmpty(planViewModel.UUID) || string.IsNullOrEmpty(viewModel.UUID))
+            {
+                MessageBox.Show("Select a plan to execute.", "No Plan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var execution = new DeliveryExecution.FormDeliveryExecution(viewModel.UUID, planViewModel.UUID);
+            execution.MdiParent = this.MdiParent;
+            execution.Show();
         }
 
         private void cmdNewPlan_Click(object sender, EventArgs e)
