@@ -192,3 +192,35 @@ All 4 phases implemented:
 - Visual indicator in blueprint list to distinguish global vs player-specific
 - Permission/setting to gate global blueprint editing
 - Separate file for global blueprints if BaselineData.json grows too large
+
+
+---
+
+## 15. Delivery Routes & Planning (REQ-DEL-001-062)
+**Priority: High — Major Feature (phased)**
+See [Delivery.md](requirements/Delivery.md) for full requirements.
+
+### Phase 1: System Name Tracking (REQ-DEL-001-005)
+- Add `SystemName` to Colony and Survey
+- SurveyParser extracts SystemName from title
+- Colony form gets SystemName field
+- Small, low-risk prerequisite for route building
+
+### Phase 2: Route Builder Data Model (REQ-DEL-010-015)
+- `DeliveryRoute` and `RouteStop` data classes
+- Serialized in PlayerData.json
+- Per-player ownership
+- PlayerContext maintains deliveryRouteList
+
+### Phase 3: Route Builder UI (REQ-DEL-020-025)
+- New form: route list, stop grid with reorder, colony picker
+- Save/Delete/New, player filtering
+- Accessible from MainWindow Edit menu
+
+### Phases 4-7: Future
+- Commodity delivery planning (consolidated requests, per-stop manifests)
+- Worker & resource delivery planning
+- Ship integration (cargo capacity)
+- Space station hub modeling
+
+**Ready for implementation: Phase 1 can start immediately.**

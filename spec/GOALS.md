@@ -3,7 +3,7 @@
 ## Specification Documents
 
 - [Requirements README](requirements/README.md) — index of all requirement files
-- [Data Model](requirements/DataModel.md) | [Colony](requirements/Colony.md) | [Player Profile](requirements/PlayerProfile.md) | [Survey](requirements/Survey.md) | [Architecture](requirements/Architecture.md)
+- [Data Model](requirements/DataModel.md) | [Colony](requirements/Colony.md) | [Player Profile](requirements/PlayerProfile.md) | [Survey](requirements/Survey.md) | [Architecture](requirements/Architecture.md) | [Delivery](requirements/Delivery.md)
 - [Recommendations](Recommendations.md) — open issues needing approval
 - [Completed Work Archive](COMPLETED.md) — detailed record of all completed tasks
 - [Ambiguities](Ambiguities.md) — all 31 resolved
@@ -73,4 +73,4 @@ See [Recommendations](Recommendations.md) for details:
 - **Rec #4**: CountDownTime master list — major feature (UI, locking, background thread)
 
 ### Large Features (from requirements, not yet started)
-- Commodity delivery form
+- Delivery routes & planning (REQ-DEL-001-062) — Phase 1-3 ready, see Rec #15

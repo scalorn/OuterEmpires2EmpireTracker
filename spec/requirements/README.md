@@ -12,6 +12,7 @@ Each file covers one domain. Requirements are written as verifiable statements.
 | [PlayerProfile.md](PlayerProfile.md) | Player profile management, skills, ranks |
 | [Survey.md](Survey.md) | Survey management and blueprint scanning |
 | [Architecture.md](Architecture.md) | Cross-cutting concerns: persistence, MVVM, testing, logging |
+| [Delivery.md](Delivery.md) | Delivery routes, delivery planning, space stations |
 
 ## Conventions
 
