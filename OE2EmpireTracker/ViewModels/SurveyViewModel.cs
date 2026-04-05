@@ -30,6 +30,7 @@ namespace OE2EmpireTracker.ViewModels
         // -----------------------------------------------------------------------
 
         public string PlanetName { get => _survey.PlanetName; set => _survey.PlanetName = value; }
+        public string SystemName { get => _survey.SystemName; set => _survey.SystemName = value; }
         public string SurveyID { get => _survey.SurveyID; set => _survey.SurveyID = value; }
         public string NickName { get => _survey.NickName; set => _survey.NickName = value; }
         public string ScannedBy { get => _survey.ScannedBy; set => _survey.ScannedBy = value; }

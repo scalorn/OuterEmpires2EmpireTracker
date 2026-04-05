@@ -168,6 +168,7 @@ namespace OE2EmpireTracker.Forms.Survey
 
             // Populate viewModel from form fields
             viewModel.PlanetName = txtPlanetName.Text;
+            viewModel.SystemName = txtSystemName.Text;
             viewModel.SurveyID = txtSurveyID.Text;
             viewModel.ScannedBy = txtScannedBy.Text;
             viewModel.DateTime = txtScanDateTime.Text;
@@ -212,6 +213,7 @@ namespace OE2EmpireTracker.Forms.Survey
             viewModel.Reset();
 
             txtPlanetName.Text = "";
+            txtSystemName.Text = "";
             txtSurveyID.Text = "";
             txtNickName.Text = "";
             txtScannedBy.Text = "";
@@ -311,6 +313,7 @@ namespace OE2EmpireTracker.Forms.Survey
         private void PopulateFormFromViewModel()
         {
             txtPlanetName.Text = viewModel.PlanetName ?? "";
+            txtSystemName.Text = viewModel.SystemName ?? "";
             txtSurveyID.Text = viewModel.SurveyID ?? "";
             txtNickName.Text = viewModel.NickName ?? "";
             txtScannedBy.Text = viewModel.ScannedBy ?? "";

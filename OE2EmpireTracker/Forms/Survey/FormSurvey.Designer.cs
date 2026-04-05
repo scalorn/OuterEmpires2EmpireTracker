@@ -42,6 +42,9 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpPlanetName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPlanetName = new System.Windows.Forms.Label();
             this.txtPlanetName = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.flpSystemName = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblSystemName = new System.Windows.Forms.Label();
+            this.txtSystemName = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpSurveyID = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSurveyID = new System.Windows.Forms.Label();
             this.txtSurveyID = new OE2EmpireTracker.Controls.ValidatedTextBox();
@@ -212,6 +215,7 @@ namespace OE2EmpireTracker.Forms.Survey
             // flpSurveyDetails
             // 
             this.flpSurveyDetails.Controls.Add(this.flpPlanetName);
+            this.flpSurveyDetails.Controls.Add(this.flpSystemName);
             this.flpSurveyDetails.Controls.Add(this.flpSurveyID);
             this.flpSurveyDetails.Controls.Add(this.flpNickName);
             this.flpSurveyDetails.Controls.Add(this.flpScannerBlueprint);
@@ -264,6 +268,35 @@ namespace OE2EmpireTracker.Forms.Survey
             this.txtPlanetName.TabIndex = 0;
             this.txtPlanetName.ValidationPattern = null;
             this.txtPlanetName.ValidColor = System.Drawing.Color.White;
+            // 
+            // flpSystemName
+            // 
+            this.flpSystemName.AutoSize = true;
+            this.flpSystemName.Controls.Add(this.lblSystemName);
+            this.flpSystemName.Controls.Add(this.txtSystemName);
+            this.flpSystemName.Location = new System.Drawing.Point(2, 32);
+            this.flpSystemName.Margin = new System.Windows.Forms.Padding(2);
+            this.flpSystemName.Name = "flpSystemName";
+            this.flpSystemName.Size = new System.Drawing.Size(310, 26);
+            this.flpSystemName.TabIndex = 11;
+            // 
+            // lblSystemName
+            // 
+            this.lblSystemName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSystemName.Location = new System.Drawing.Point(2, 4);
+            this.lblSystemName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblSystemName.Name = "lblSystemName";
+            this.lblSystemName.Size = new System.Drawing.Size(99, 17);
+            this.lblSystemName.TabIndex = 1;
+            this.lblSystemName.Text = "System";
+            this.lblSystemName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtSystemName
+            // 
+            this.txtSystemName.Location = new System.Drawing.Point(107, 3);
+            this.txtSystemName.Name = "txtSystemName";
+            this.txtSystemName.Size = new System.Drawing.Size(200, 20);
+            this.txtSystemName.TabIndex = 0;
             // 
             // flpSurveyID
             // 
@@ -732,6 +765,9 @@ namespace OE2EmpireTracker.Forms.Survey
         private System.Windows.Forms.FlowLayoutPanel flpPlanetName;
         private System.Windows.Forms.Label lblPlanetName;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtPlanetName;
+        private System.Windows.Forms.FlowLayoutPanel flpSystemName;
+        private System.Windows.Forms.Label lblSystemName;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtSystemName;
         private System.Windows.Forms.FlowLayoutPanel flpScannerBlueprint;
         private System.Windows.Forms.Label lblScannerBlueprint;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtFilterScannerBlueprint;
