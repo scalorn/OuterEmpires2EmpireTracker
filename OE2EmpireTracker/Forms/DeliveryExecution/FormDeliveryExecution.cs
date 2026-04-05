@@ -230,6 +230,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             // Build per-stop sections
             foreach (var stop in selectedPlan.Stops.OrderBy(s => s.Sequence))
             {
+                // Skip completed stops
+                if (stop.StopCompleted) continue;
+
                 var colony = playerContext.FindColony(stop.ColonyUUID);
                 string stopTitle = colony != null
                     ? $"Stop {stop.Sequence + 1}: {colony.PlanetName} - {colony.ColonyName}"
@@ -255,7 +258,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     {
                         var chk = new CheckBox
                         {
-                            Text = $"{item.Name} x{item.Quantity}",
+                            Text = $"{item.BaseItemTypeID} x{item.Quantity}",
                             Checked = item.Delivered,
                             AutoSize = true,
                             Margin = new Padding(20, 1, 3, 1),
@@ -276,7 +279,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     {
                         var chk = new CheckBox
                         {
-                            Text = $"{item.Name} x{item.Quantity}",
+                            Text = $"{item.BaseItemTypeID} x{item.Quantity}",
                             Checked = item.Delivered,
                             AutoSize = true,
                             Margin = new Padding(20, 1, 3, 1),
@@ -285,6 +288,22 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                         chk.CheckedChanged += DeliveryItem_CheckedChanged;
                         flpStops.Controls.Add(chk);
                     }
+                }
+
+                // Show "Complete Stop" button if all items at this stop are delivered
+                bool allDelivered = stop.DropOff.All(i => i.Delivered) && stop.PickUp.All(i => i.Delivered)
+                    && (stop.DropOff.Count > 0 || stop.PickUp.Count > 0);
+                if (allDelivered)
+                {
+                    var btnComplete = new Button
+                    {
+                        Text = "Complete Stop",
+                        AutoSize = true,
+                        Margin = new Padding(20, 3, 3, 3),
+                        Tag = stop
+                    };
+                    btnComplete.Click += CompleteStop_Click;
+                    flpStops.Controls.Add(btnComplete);
                 }
             }
         }
@@ -367,7 +386,29 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             item.Delivered = chk.Checked;
             playerContext.writeContext();
 
-            // Check if all items are delivered — mark plan as completed
+            // Rebuild to show/hide "Complete Stop" buttons
+            BuildExecution();
+
+            if (selectedPlan != null && IsAllDelivered(selectedPlan))
+            {
+                selectedPlan.Completed = true;
+                playerContext.writeContext();
+                Log.Info("Delivery plan '{0}' marked as completed", selectedPlan.Name);
+            }
+        }
+
+        private void CompleteStop_Click(object sender, EventArgs e)
+        {
+            var btn = sender as Button;
+            if (btn == null) return;
+
+            var stop = btn.Tag as DeliveryPlanStop;
+            if (stop == null) return;
+
+            stop.StopCompleted = true;
+            playerContext.writeContext();
+            BuildExecution();
+
             if (selectedPlan != null && IsAllDelivered(selectedPlan))
             {
                 selectedPlan.Completed = true;

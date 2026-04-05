@@ -32,6 +32,7 @@ namespace OE2EmpireTracker.Baseline
     {
         public string ColonyUUID { get; set; }
         public int Sequence { get; set; }
+        public bool StopCompleted { get; set; } = false;
         public List<DeliveryItem> DropOff { get; set; }
         public List<DeliveryItem> PickUp { get; set; }
 
