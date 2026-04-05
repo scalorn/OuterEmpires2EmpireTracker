@@ -67,6 +67,29 @@ namespace OE2EmpireTracker.Forms.Colony
             FlatpackBlueprint = playerContext.FindBlueprint(ColonyStructureData.FlatpackBlueprintUUID);
             chkStageResources.Visible = false;
 
+            // Building state — structure is transitioning from staged to built
+            if (ColonyStructureData.BuildCompletionTime != null &&
+                ColonyStructureData.BuildCompletionTime.TimeRemaining > 0)
+            {
+                flpCompletionTime.Visible = true;
+                txtCompletionTime.Text = ColonyStructureData.BuildCompletionTime.TimeRemainingString;
+                rtbProgressStatus.Text = "Building...";
+                cmdDone.Visible = true;
+                cmdStart.Visible = false;
+                flpSelection.Visible = false;
+                flpManufacturingControls.Visible = false;
+                flpSubSelection.Visible = false;
+                if (!timerCountdown.Enabled)
+                {
+                    timerCountdown.Interval = 1000;
+                    timerCountdown.Start();
+                }
+                flpStructureCommands_Layout(null, null);
+                flpStructureDetails_Layout(null, null);
+                ColonyStructure_Layout(null, null);
+                goto SkipBlueprintHandlers;
+            }
+
             if (FlatpackBlueprint != null)
             {
                 double powerProvided = 0;
@@ -100,6 +123,31 @@ namespace OE2EmpireTracker.Forms.Colony
                     flpManufacturingControls.Visible = false;
                     flpSubSelection.Visible = false;
                     flpCompletionTime.Visible = false;
+                }
+            }
+
+            SkipBlueprintHandlers:
+
+            // Build button visibility for staged structures
+            if (ViewModel != null && ViewModel.IsStaged && !ViewModel.IsBuilt)
+            {
+                bool siblingBuilding = Colony != null && Colony.Structures.Any(s =>
+                    s != ColonyStructureData &&
+                    s.BuildCompletionTime != null &&
+                    s.BuildCompletionTime.TimeRemaining > 0);
+                if (!siblingBuilding)
+                {
+                    cmdStart.Text = "Build";
+                    cmdStart.Visible = true;
+                    flpManufacturingControls.Visible = true;
+                    chkStageResources.Visible = false;
+                    txtQuantity.Visible = false;
+                    flpSelection.Visible = false;
+                    flpSubSelection.Visible = false;
+                    flpCompletionTime.Visible = false;
+                    flpStructureCommands_Layout(null, null);
+                    flpStructureDetails_Layout(null, null);
+                    ColonyStructure_Layout(null, null);
                 }
             }
 
@@ -1280,6 +1328,35 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void cmdStart_Click(object sender, EventArgs e)
         {
+            // Handle Build button for staged structures
+            if (ViewModel != null && ViewModel.IsStaged && !ViewModel.IsBuilt && cmdStart.Text == "Build")
+            {
+                // Check single-build constraint
+                if (Colony != null && Colony.Structures.Any(s =>
+                    s != ColonyStructureData &&
+                    s.BuildCompletionTime != null &&
+                    s.BuildCompletionTime.TimeRemaining > 0))
+                    return;
+
+                // Look up Builder skill level
+                int builderLevel = 0;
+                if (Colony != null && !string.IsNullOrEmpty(Colony.OwnerUUID))
+                {
+                    var owner = playerContext.playerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
+                    if (owner != null)
+                        builderLevel = owner.GetSkill(SkillName.Builder).Level;
+                }
+
+                long buildSeconds = BuildTimeCalculator.Calculate(builderLevel);
+
+                ViewModel.IsStaged = false;
+                ColonyStructureData.BuildCompletionTime = new CountDownTime();
+                ColonyStructureData.BuildCompletionTime.TimeRemaining = buildSeconds;
+
+                ColonyStructureDataChanged?.Invoke(this, e);
+                return;
+            }
+
             if (FlatpackBlueprint != null && FlatpackBlueprint.BluePrintType == BlueprintTypes.Refinery)
             {
                 if (string.IsNullOrEmpty(ColonyStructureData.RefiningResource)) return;
@@ -1386,6 +1463,10 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 txtCompletionTime.Text = ColonyStructureData.ProcessCompletionTime.TimeRemainingString;
             }
+            else if (!completionModification && ColonyStructureData.BuildCompletionTime != null)
+            {
+                txtCompletionTime.Text = ColonyStructureData.BuildCompletionTime.TimeRemainingString;
+            }
         }
         private void txtCompletionTime_Enter(object sender, EventArgs e)
         {
@@ -1404,6 +1485,22 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void cmdDone_Click(object sender, EventArgs e)
         {
+            // Handle Build completion (BuildCompletionTime)
+            if (ColonyStructureData.BuildCompletionTime != null)
+            {
+                if (ColonyStructureData.BuildCompletionTime.TimeRemaining > 0)
+                {
+                    ColonyStructureData.BuildCompletionTime.TimeRemaining = 0;
+                }
+                Colony.ProcessColony();
+                timerCountdown.Stop();
+                txtCompletionTime.Text = "";
+                rtbProgressStatus.Text = "";
+                UpdateData();
+                ColonyStructureDataChanged?.Invoke(this, e);
+                return;
+            }
+
             // Force completion so Done always processes
             if (ColonyStructureData.ProcessCompletionTime != null)
             {

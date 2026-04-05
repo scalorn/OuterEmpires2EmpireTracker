@@ -42,6 +42,19 @@ namespace OE2EmpireTracker.Baseline
 
         public void ProcessColony()
         {
+            // Step 1: Structure Building — check BuildCompletionTime expiration
+            foreach (ColonyStructure structure in Structures)
+            {
+                if (structure.BuildCompletionTime != null &&
+                    structure.BuildCompletionTime.TimeRemaining <= 0)
+                {
+                    structure.Properties.setProperty(GameConstants.PropBuilt, true);
+                    structure.Properties.setProperty(GameConstants.PropStaged, false);
+                    structure.BuildCompletionTime = null;
+                }
+            }
+
+            // Step 2: Mining, Refining, Research, Manufacturing, Commodity processing
             var pendingRefineries = new List<ColonyStructure>();
 
             foreach (ColonyStructure structure in Structures)

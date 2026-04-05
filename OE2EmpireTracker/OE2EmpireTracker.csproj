@@ -123,7 +123,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Baseline\BlueprintType.cs" />
+    <Compile Include="Baseline\BuildTimeCalculator.cs" />
     <Compile Include="Baseline\Colony.cs" />
+    <Compile Include="Baseline\ColonyBuildEligibility.cs" />
     <Compile Include="Baseline\ColonyStructure.cs" />
     <Compile Include="Baseline\CommodityRequested.cs" />
     <Compile Include="Baseline\ColonyStatusCalculator.cs" />
@@ -228,6 +230,12 @@
     <Compile Include="Forms\DeliveryRoute\FormAutoFill.Designer.cs">
       <DependentUpon>FormAutoFill.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ColonyDailyBuild\FormColonyDailyBuild.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ColonyDailyBuild\FormColonyDailyBuild.Designer.cs">
+      <DependentUpon>FormColonyDailyBuild.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\DeliveryExecution\FormDeliveryExecution.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -280,6 +288,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DeliveryRoute\FormAutoFill.resx">
       <DependentUpon>FormAutoFill.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ColonyDailyBuild\FormColonyDailyBuild.resx">
+      <DependentUpon>FormColonyDailyBuild.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DeliveryExecution\FormDeliveryExecution.resx">
       <DependentUpon>FormDeliveryExecution.cs</DependentUpon>
