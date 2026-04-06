@@ -123,3 +123,16 @@
 **REQ-COL-096f** The bootstrap action SHALL NOT remove any existing structures from the colony. It SHALL only add new planned structures. The user can then modify the list via the UI and re-run the optimization.
 
 **REQ-COL-096g** The ExtractionFocusLevel used in calculations SHALL come from the owning player's Extraction Focus skill (REQ-ARCH-072). Until multi-player support is implemented (REQ-ARCH-070), a level of 0 SHALL be used as the default.
+
+## Colony Timed Processing Order
+
+**REQ-COL-100** Colony.ProcessColony() SHALL process structures in the following order within each cycle:
+1. Structure building (build completion timers)
+2. Mining
+3. Refining base resources
+4. Refining S1 synthetics
+5. Refining S2 synthetics
+6. Manufacturing
+7. Research
+
+This ordering ensures that resources mined in a cycle are available for refining in the same cycle, and refined resources are available for manufacturing.

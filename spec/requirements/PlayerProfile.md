@@ -43,3 +43,24 @@
 **REQ-PP-060** All skill names used in the form SHALL reference the SkillName enum, not hardcoded strings.  
 **REQ-PP-061** All skill group names used in the form SHALL reference the SkillGroupName enum, not hardcoded strings.  
 **REQ-PP-062** SkillName and SkillGroupName enum values SHALL use Description attributes to provide display names; the display name SHALL be used as the dictionary key for JSON compatibility.
+
+## Skill Tree Reference
+
+The game's skill tree organizes 22 skills under 10 skill groups:
+
+- Colony Director: Human Resources, Foreman
+- Colony Founder: Founder, Energy Efficiency, Builder
+- Colony Operations: Refining Focus, Production Focus, Extraction Focus
+- Commander: Damage Control
+- Engineer: Engineering Capacity
+- Entrepreneur: Sound As A Pound, Self-made Millionaire, AAA Healthcare
+- Job Management: Job Opportunities, Contract Management
+- Researcher: Research Review, Research Methods, Research Focus
+- Surveyor: Surveying Methods, Scanning Methods, Quartermaster
+- Trader: Broker
+
+Additional profile fields from the game (not yet tracked):
+- Citizen ID
+- Registration Date
+- Active Timer
+- Ship License Information (list of ship types based on ranks)
