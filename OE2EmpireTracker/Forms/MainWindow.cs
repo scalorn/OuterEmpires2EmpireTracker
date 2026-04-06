@@ -33,6 +33,7 @@ namespace OE2EmpireTracker
         PlayerContext playerContext = null;
         private BackgroundProcessor _backgroundProcessor;
         private string _lastOpenedPath;
+        private readonly Dictionary<string, int> _windowNumberCounters = new Dictionary<string, int>();
 
         // CPU utilization tracking
         private TimeSpan _lastCpuTime;
@@ -92,60 +93,61 @@ namespace OE2EmpireTracker
             }
         }
 
+        private T OpenMdiChild<T>() where T : Form, new()
+        {
+            string formTypeKey = typeof(T).Name;
+            if (!_windowNumberCounters.ContainsKey(formTypeKey))
+                _windowNumberCounters[formTypeKey] = 0;
+            _windowNumberCounters[formTypeKey]++;
+            int windowNumber = _windowNumberCounters[formTypeKey];
+
+            T form = new T();
+            form.MdiParent = this;
+            form.Tag = windowNumber;
+            form.Text = "#" + windowNumber + " - " + form.Text;
+            WindowStateHelper.RestoreState(form, formTypeKey, windowNumber);
+            form.Show();
+            return form;
+        }
+
         private void addBlueprintToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form blueprint = new FormBlueprint();
-            blueprint.MdiParent = this;
-            blueprint.Show();
+            OpenMdiChild<FormBlueprint>();
         }
 
         private void addColonyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form colony = new FormColony();
-            colony.MdiParent = this;
-            colony.Show();
+            OpenMdiChild<FormColony>();
         }
 
         private void addSurveyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form survey = new FormSurvey();
-            survey.MdiParent = this;
-            survey.Show();
+            OpenMdiChild<FormSurvey>();
         }
 
         private void managePlayerProfiles_Click(object sender, EventArgs e)
         {
-            Form playerProfile = new FormPlayerProfile();
-            playerProfile.MdiParent = this;
-            playerProfile.Show();
+            OpenMdiChild<FormPlayerProfile>();
         }
 
         private void deliveryRoutesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form routes = new Forms.DeliveryRoute.FormDeliveryRoute();
-            routes.MdiParent = this;
-            routes.Show();
+            OpenMdiChild<Forms.DeliveryRoute.FormDeliveryRoute>();
         }
 
         private void deliveryExecutionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form execution = new Forms.DeliveryExecution.FormDeliveryExecution();
-            execution.MdiParent = this;
-            execution.Show();
+            OpenMdiChild<Forms.DeliveryExecution.FormDeliveryExecution>();
         }
 
         private void colonyDailyBuildToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form dailyBuild = new FormColonyDailyBuild();
-            dailyBuild.MdiParent = this;
-            dailyBuild.Show();
+            OpenMdiChild<FormColonyDailyBuild>();
         }
 
         private void colonyActivityToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form colonyActivity = new FormColonyActivity();
-            colonyActivity.MdiParent = this;
-            colonyActivity.Show();
+            OpenMdiChild<FormColonyActivity>();
         }
 
         private void OnPlayerProfilesChanged(object sender, EventArgs e)
