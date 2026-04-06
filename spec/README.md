@@ -11,7 +11,7 @@ Project-level documentation, requirements, and planning.
 | [GOALS.md](GOALS.md) | High-level project goals |
 | [Ambiguities.md](Ambiguities.md) | Open questions and ambiguities |
 | [COMPLETED.md](COMPLETED.md) | Completed work log |
-| [requirements/](requirements/) | Feature requirements documents (Colony, Delivery, Survey, etc.) |
+| [requirements/](requirements/) | Feature requirements documents (15 domains — see [requirements/README.md](requirements/README.md)) |
 
 ## Structured Specs (`.kiro/specs/`)
 
