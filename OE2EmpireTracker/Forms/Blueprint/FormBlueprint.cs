@@ -1118,6 +1118,7 @@ namespace OE2EmpireTracker
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.BlueprintDataChanged -= OnBlueprintDataChanged;
             base.OnFormClosed(e);
