@@ -44,6 +44,7 @@ namespace OE2EmpireTracker
             context = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
             InitializeComponent();
+            WindowStateHelper.RestoreMainWindowState(this);
             PopulatePlayerDropdown();
             playerContext.PlayerProfilesChanged += OnPlayerProfilesChanged;
 
@@ -206,6 +207,12 @@ namespace OE2EmpireTracker
             _lastCheckTime = now;
 
             toolStripPerformance.Text = string.Format("Mem: {0:F0} MB | CPU: {1:F1}%", memMB, cpuPercent);
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            WindowStateHelper.SaveMainWindowState(this);
+            base.OnFormClosing(e);
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
