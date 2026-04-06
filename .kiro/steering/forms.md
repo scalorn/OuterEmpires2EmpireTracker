@@ -101,3 +101,25 @@ Rules and patterns learned from building forms in this project. Follow these whe
 - The Save button's role is to call `writeContext()` to persist to disk, NOT to transfer UI values to the data model.
 - When a control has a default display value (e.g. "1" for quantity), that default must also be written to the data model when the control becomes visible or the default is applied.
 - Use the ProgrammaticUpdateGuard check (`if (_isProgrammaticUpdate > 0) return;`) in the handler to avoid writing back during programmatic population.
+
+## UI State Persistence
+
+All forms and controls must participate in the window state persistence system (UIPreferences.json in %LOCALAPPDATA%\OE2EmpireTracker\).
+
+### MDI Child Forms
+- Must be assigned a per-form-type window number on open (via MainWindow)
+- Title bar format: "#N - <Title>"
+- Position and size must be saved on close and restored on open
+- Bounds validation: not off-screen, 100px margin from right/bottom, min 320x200
+
+### DataGridViews
+- Set AllowUserToOrderColumns = true
+- Enable sorting on all columns
+- Column widths, display order, and sort state must be persisted
+
+### Filter TextBoxes and ComboBoxes
+- Current text/selection must be saved on form close and restored on form open
+
+### Pattern
+- Use the Preferences_Store API to save/restore state
+- Key by form type name + window number + control name
