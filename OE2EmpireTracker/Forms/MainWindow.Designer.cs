@@ -55,6 +55,7 @@
             this.tileVerticalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparatorWindowList = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripNextProcess = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripPerformance = new System.Windows.Forms.ToolStripLabel();
             this.toolStripPlayerLabel = new System.Windows.Forms.ToolStripLabel();
             this.cmbCurrentPlayer = new System.Windows.Forms.ToolStripComboBox();
             this.timerNextProcess = new System.Windows.Forms.Timer(this.components);
@@ -71,7 +72,8 @@
             this.helpToolStripMenuItem,
             this.cmbCurrentPlayer,
             this.toolStripPlayerLabel,
-            this.toolStripNextProcess});
+            this.toolStripNextProcess,
+            this.toolStripPerformance});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.MdiWindowListItem = this.windowToolStripMenuItem;
             this.menuStrip1.Name = "menuStrip1";
@@ -232,6 +234,13 @@
             this.toolStripNextProcess.Size = new System.Drawing.Size(100, 22);
             this.toolStripNextProcess.Text = "Next Process: --";
             // 
+            // toolStripPerformance
+            // 
+            this.toolStripPerformance.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripPerformance.Name = "toolStripPerformance";
+            this.toolStripPerformance.Size = new System.Drawing.Size(130, 22);
+            this.toolStripPerformance.Text = "Mem: -- MB | CPU: --%";
+            // 
             // toolStripPlayerLabel
             // 
             this.toolStripPlayerLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -336,6 +345,7 @@
         private System.Windows.Forms.ToolStripLabel toolStripPlayerLabel;
         private System.Windows.Forms.ToolStripComboBox cmbCurrentPlayer;
         private System.Windows.Forms.ToolStripLabel toolStripNextProcess;
+        private System.Windows.Forms.ToolStripLabel toolStripPerformance;
         private System.Windows.Forms.Timer timerNextProcess;
     }
 }

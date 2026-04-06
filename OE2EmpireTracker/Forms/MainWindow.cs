@@ -18,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using OE2EmpireTracker.Controls;
+using System.Diagnostics;
 
 namespace OE2EmpireTracker
 {
@@ -33,6 +34,10 @@ namespace OE2EmpireTracker
         private BackgroundProcessor _backgroundProcessor;
         private string _lastOpenedPath;
 
+        // CPU utilization tracking
+        private TimeSpan _lastCpuTime;
+        private DateTime _lastCheckTime;
+
         public MainWindow()
         {
             context = EmpireContext.getInstance();
@@ -45,6 +50,10 @@ namespace OE2EmpireTracker
             _backgroundProcessor.Start();
             timerNextProcess.Tick += OnTimerNextProcessTick;
             timerNextProcess.Start();
+
+            var proc = Process.GetCurrentProcess();
+            _lastCpuTime = proc.TotalProcessorTime;
+            _lastCheckTime = DateTime.UtcNow;
 
             TryAutoOpenLastFile();
         }
@@ -180,6 +189,21 @@ namespace OE2EmpireTracker
                 toolStripNextProcess.ForeColor = Color.Red;
             else
                 toolStripNextProcess.ForeColor = SystemColors.ControlText;
+
+            // Update performance label
+            var proc = Process.GetCurrentProcess();
+            double memMB = proc.WorkingSet64 / (1024.0 * 1024.0);
+
+            var now = DateTime.UtcNow;
+            double cpuUsedMs = (proc.TotalProcessorTime - _lastCpuTime).TotalMilliseconds;
+            double elapsedMs = (now - _lastCheckTime).TotalMilliseconds;
+            double cpuPercent = elapsedMs > 0
+                ? (cpuUsedMs / (Environment.ProcessorCount * elapsedMs)) * 100.0
+                : 0;
+            _lastCpuTime = proc.TotalProcessorTime;
+            _lastCheckTime = now;
+
+            toolStripPerformance.Text = string.Format("Mem: {0:F0} MB | CPU: {1:F1}%", memMB, cpuPercent);
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
