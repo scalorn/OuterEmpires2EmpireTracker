@@ -223,6 +223,8 @@
     <Compile Include="Baseline\DeliveryRouteTests.cs" />
     <Compile Include="Baseline\DeliveryRouteViewModelTests.cs" />
     <Compile Include="Baseline\SafeFileWriterTests.cs" />
+    <Compile Include="Baseline\BoundsValidatorTests.cs" />
+    <Compile Include="Baseline\UIPreferencesTests.cs" />
     <Compile Include="Baseline\SurveyParserTests.cs" />
     <Compile Include="Constants\BlueprintPropertyValidationTests.cs" />
     <Compile Include="Blueprint\BlueprintScannerTests.cs" />
