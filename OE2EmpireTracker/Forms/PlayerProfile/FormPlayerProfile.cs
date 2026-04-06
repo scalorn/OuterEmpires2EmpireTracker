@@ -104,6 +104,12 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private void OnPlayerProfileDataChanged(object sender, PlayerProfileDataChangedEventArgs e)
         {
             if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnPlayerProfileDataChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
             if (viewModel.Data.UUID == e.PlayerUUID)
             {
                 PopulateForm();
@@ -113,6 +119,13 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
         {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
             lvwPlayerProfiles.Items.Clear();
             viewModel.Reset();
             PopulateListView();

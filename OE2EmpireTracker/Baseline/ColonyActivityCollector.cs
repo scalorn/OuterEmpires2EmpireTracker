@@ -42,7 +42,12 @@ namespace OE2EmpireTracker.Baseline
         public long GetSecondsRemaining()
         {
             if (CountDown != null)
+            {
+                // Repeating timer with elapsed intervals: show 0 until background processor runs
+                if (CountDown.IsRepeating && CountDown.IntervalsPassed > 0)
+                    return 0;
                 return Math.Max(0, CountDown.TimeRemaining);
+            }
             long seconds = (long)(NeedBy - DateTime.Now).TotalSeconds;
             return Math.Max(0, seconds);
         }
@@ -53,7 +58,12 @@ namespace OE2EmpireTracker.Baseline
         public string GetTimeRemainingString()
         {
             if (CountDown != null)
+            {
+                // Repeating timer with elapsed intervals: show 0s until background processor runs
+                if (CountDown.IsRepeating && CountDown.IntervalsPassed > 0)
+                    return "0s";
                 return CountDown.TimeRemainingString;
+            }
             long seconds = GetSecondsRemaining();
             if (seconds <= 0) return "0s";
             return FormatSeconds(seconds);
@@ -263,7 +273,8 @@ namespace OE2EmpireTracker.Baseline
             if (bp == null)
                 return string.Empty;
 
-            return $"({structure.ManufacturingCompleted}/{structure.ManufacturingQuantity}) {bp.ExtendedName}";
+            int displayProgress = Math.Min(structure.ManufacturingCompleted + 1, structure.ManufacturingQuantity);
+            return $"({displayProgress}/{structure.ManufacturingQuantity}) {bp.ExtendedName}";
         }
 
         private static string GetCommodityManufacturingDetails(ColonyStructure structure)
@@ -271,7 +282,8 @@ namespace OE2EmpireTracker.Baseline
             if (string.IsNullOrEmpty(structure.ManufacturingCommodityName))
                 return string.Empty;
 
-            return $"({structure.ManufacturingCompleted}/{structure.ManufacturingQuantity}) {structure.ManufacturingCommodityName} x{GameConstants.CommoditiesPerCycle}";
+            int displayProgress = Math.Min(structure.ManufacturingCompleted + 1, structure.ManufacturingQuantity);
+            return $"({displayProgress}/{structure.ManufacturingQuantity}) {structure.ManufacturingCommodityName} x{GameConstants.CommoditiesPerCycle}";
         }
 
         private static void CollectCommodityActivities(Colony colony, List<ActivityRow> rows)

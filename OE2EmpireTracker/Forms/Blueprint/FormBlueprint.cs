@@ -142,6 +142,12 @@ namespace OE2EmpireTracker
         private void OnBlueprintDataChanged(object sender, BlueprintDataChangedEventArgs e)
         {
             if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnBlueprintDataChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
             if (viewModel.Data.UUID == e.BlueprintUUID)
             {
                 PopulateForm();
@@ -151,6 +157,13 @@ namespace OE2EmpireTracker
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
         {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
             lvwBlueprints.Items.Clear();
             viewModel.Reset();
             ClearForm();

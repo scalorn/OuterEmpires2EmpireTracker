@@ -182,13 +182,35 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
         {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
             RefreshData();
         }
 
         private void OnColonyDataChanged(object sender, ColonyDataChangedEventArgs args)
         {
             if (IsDisposed) return;
-            RefreshData();
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnColonyDataChanged(sender, args))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
+            try
+            {
+                Log.Info("FormColonyActivity.OnColonyDataChanged: RefreshData starting for colony {0}", args.ColonyUUID);
+                RefreshData();
+                Log.Info("FormColonyActivity.OnColonyDataChanged: RefreshData completed, row count = {0}", allRows.Count);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in OnColonyDataChanged RefreshData");
+            }
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)

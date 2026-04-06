@@ -831,6 +831,13 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
         {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
             ClearForm();
             PopulateRouteList();
             PopulateColonyPicker();
@@ -839,6 +846,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         private void OnDeliveryDataChanged(object sender, EventArgs e)
         {
             if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnDeliveryDataChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
             PopulateRouteList();
             PopulatePlanDropdown();
         }

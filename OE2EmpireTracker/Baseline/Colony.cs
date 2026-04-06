@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Data;
 using System;
@@ -19,6 +20,30 @@ namespace OE2EmpireTracker.Baseline
 
         public List<CommodityRequested> Commodities { get; set; }
         public OE2EmpireTracker.Data.LockTracking Locks { get; set; }
+
+        [JsonIgnore]
+        public object ProcessingLock { get; } = new object();
+
+        public bool HasExpiredTimers()
+        {
+            foreach (var structure in Structures)
+            {
+                if (structure.BuildCompletionTime != null &&
+                    structure.BuildCompletionTime.TimeRemaining <= 0)
+                {
+                    return true;
+                }
+
+                if (structure.ProcessCompletionTime != null &&
+                    (structure.ProcessCompletionTime.IntervalsPassed > 0 ||
+                     (!structure.ProcessCompletionTime.IsRepeating && structure.ProcessCompletionTime.TimeRemaining <= 0)))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         public Colony() : base()
         {
@@ -377,6 +402,12 @@ namespace OE2EmpireTracker.Baseline
 
                 structure.ProcessCompletionTime.ConsumeIntervals(1);
             }
+
+            // Clear timer when all items are complete
+            if (structure.ManufacturingCompleted >= structure.ManufacturingQuantity)
+            {
+                structure.ProcessCompletionTime = null;
+            }
         }
 
         private void ProcessCommodityFactory(ColonyStructure structure)
@@ -430,6 +461,12 @@ namespace OE2EmpireTracker.Baseline
                 }
 
                 structure.ProcessCompletionTime.ConsumeIntervals(1);
+            }
+
+            // Clear timer when all cycles are complete
+            if (structure.ManufacturingCompleted >= structure.ManufacturingQuantity)
+            {
+                structure.ProcessCompletionTime = null;
             }
         }
     }

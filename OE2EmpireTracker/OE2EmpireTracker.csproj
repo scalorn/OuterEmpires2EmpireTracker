@@ -122,6 +122,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Baseline\BackgroundProcessor.cs" />
     <Compile Include="Baseline\BlueprintType.cs" />
     <Compile Include="Baseline\BuildTimeCalculator.cs" />
     <Compile Include="Baseline\ColonyActivityCollector.cs" />
@@ -248,6 +249,12 @@
     </Compile>
     <Compile Include="Forms\DeliveryExecution\FormDeliveryExecution.Designer.cs">
       <DependentUpon>FormDeliveryExecution.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormAbout.Designer.cs">
+      <DependentUpon>FormAbout.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MainWindow.cs">
       <SubType>Form</SubType>

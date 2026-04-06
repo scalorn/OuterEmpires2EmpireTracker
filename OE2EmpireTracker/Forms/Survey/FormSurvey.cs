@@ -121,6 +121,13 @@ namespace OE2EmpireTracker.Forms.Survey
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
         {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
             lvwSurveys.Items.Clear();
             viewModel.Reset();
             ClearForm();
@@ -130,6 +137,12 @@ namespace OE2EmpireTracker.Forms.Survey
         private void OnSurveyDataChanged(object sender, SurveyDataChangedEventArgs e)
         {
             if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnSurveyDataChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
             if (viewModel.UUID == e.SurveyUUID)
             {
                 PopulateFormFromViewModel();

@@ -286,6 +286,13 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
         {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
             PopulateRouteDropdown();
             ClearContent();
         }
@@ -293,6 +300,12 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
         private void OnColonyDataChanged(object sender, ColonyDataChangedEventArgs e)
         {
             if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnColonyDataChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
             string routeUUID = cmbRoute.SelectedValue as string;
             if (!string.IsNullOrEmpty(routeUUID))
                 BuildContent(routeUUID);

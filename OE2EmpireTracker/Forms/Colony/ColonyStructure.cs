@@ -788,6 +788,9 @@ namespace OE2EmpireTracker.Forms.Colony
             // Selection: manufacturable blueprints
             flpSelection.Visible = true;
             flpManufacturingControls.Visible = true;
+            lblSelection.Visible = true;
+            txtSelectionFilter.Visible = true;
+            cmbSelection.Visible = true;
             PopulateSelectionWithManufacturableBlueprints();
             if (!string.IsNullOrEmpty(ColonyStructureData.ManufacturingBlueprintUUID))
             {
@@ -907,7 +910,8 @@ namespace OE2EmpireTracker.Forms.Colony
                 return;
             }
 
-            rtbProgressStatus.Text = $"({ColonyStructureData.ManufacturingCompleted}/{ColonyStructureData.ManufacturingQuantity}) {bp.ExtendedName}";
+            int displayProgress = Math.Min(ColonyStructureData.ManufacturingCompleted + 1, ColonyStructureData.ManufacturingQuantity);
+            rtbProgressStatus.Text = $"({displayProgress}/{ColonyStructureData.ManufacturingQuantity}) {bp.ExtendedName}";
         }
 
         // -----------------------------------------------------------------------
@@ -945,6 +949,9 @@ namespace OE2EmpireTracker.Forms.Colony
             // Selection: commodities filtered by CommodityIndustry
             flpSelection.Visible = true;
             flpManufacturingControls.Visible = true;
+            lblSelection.Visible = true;
+            txtSelectionFilter.Visible = true;
+            cmbSelection.Visible = true;
             PopulateSelectionWithCommodities();
             if (!string.IsNullOrEmpty(ColonyStructureData.ManufacturingCommodityName))
             {
@@ -1062,7 +1069,8 @@ namespace OE2EmpireTracker.Forms.Colony
                 return;
             }
 
-            rtbProgressStatus.Text = $"({ColonyStructureData.ManufacturingCompleted}/{ColonyStructureData.ManufacturingQuantity}) {ColonyStructureData.ManufacturingCommodityName} x{GameConstants.CommoditiesPerCycle}";
+            int displayProgress = Math.Min(ColonyStructureData.ManufacturingCompleted + 1, ColonyStructureData.ManufacturingQuantity);
+            rtbProgressStatus.Text = $"({displayProgress}/{ColonyStructureData.ManufacturingQuantity}) {ColonyStructureData.ManufacturingCommodityName} x{GameConstants.CommoditiesPerCycle}";
         }
 
         private class CommoditySelectionItem
@@ -1505,11 +1513,14 @@ namespace OE2EmpireTracker.Forms.Colony
             // Handle Build completion (BuildCompletionTime)
             if (ColonyStructureData.BuildCompletionTime != null)
             {
-                if (ColonyStructureData.BuildCompletionTime.TimeRemaining > 0)
+                lock (Colony.ProcessingLock)
                 {
-                    ColonyStructureData.BuildCompletionTime.TimeRemaining = 0;
+                    if (ColonyStructureData.BuildCompletionTime.TimeRemaining > 0)
+                    {
+                        ColonyStructureData.BuildCompletionTime.TimeRemaining = 0;
+                    }
+                    Colony.ProcessColony();
                 }
-                Colony.ProcessColony();
                 timerCountdown.Stop();
                 txtCompletionTime.Text = "";
                 rtbProgressStatus.Text = "";
@@ -1518,25 +1529,28 @@ namespace OE2EmpireTracker.Forms.Colony
                 return;
             }
 
-            // Force completion so Done always processes
-            if (ColonyStructureData.ProcessCompletionTime != null)
+            lock (Colony.ProcessingLock)
             {
-                if (ColonyStructureData.ProcessCompletionTime.IsRepeating &&
-                    ColonyStructureData.ProcessCompletionTime.IntervalsPassed == 0)
+                // Force completion so Done always processes
+                if (ColonyStructureData.ProcessCompletionTime != null)
                 {
-                    // Repeating timer: advance StartTime back by one interval
-                    ColonyStructureData.ProcessCompletionTime.StartTime =
-                        DateTime.Now.AddSeconds(-ColonyStructureData.ProcessCompletionTime.RepeatIntervalSeconds);
+                    if (ColonyStructureData.ProcessCompletionTime.IsRepeating &&
+                        ColonyStructureData.ProcessCompletionTime.IntervalsPassed == 0)
+                    {
+                        // Repeating timer: advance StartTime back by one interval
+                        ColonyStructureData.ProcessCompletionTime.StartTime =
+                            DateTime.Now.AddSeconds(-ColonyStructureData.ProcessCompletionTime.RepeatIntervalSeconds);
+                    }
+                    else if (!ColonyStructureData.ProcessCompletionTime.IsRepeating &&
+                             ColonyStructureData.ProcessCompletionTime.TimeRemaining > 0)
+                    {
+                        // One-shot timer: set TimeRemaining to 0 so it's expired
+                        ColonyStructureData.ProcessCompletionTime.TimeRemaining = 0;
+                    }
                 }
-                else if (!ColonyStructureData.ProcessCompletionTime.IsRepeating &&
-                         ColonyStructureData.ProcessCompletionTime.TimeRemaining > 0)
-                {
-                    // One-shot timer: set TimeRemaining to 0 so it's expired
-                    ColonyStructureData.ProcessCompletionTime.TimeRemaining = 0;
-                }
-            }
 
-            Colony.ProcessColony();
+                Colony.ProcessColony();
+            }
 
             // For manufactories/commodity factories with remaining cycles, keep the timer running
             bool keepTimer = false;

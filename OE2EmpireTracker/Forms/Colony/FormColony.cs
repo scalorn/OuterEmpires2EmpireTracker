@@ -63,6 +63,13 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
         {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
             lvwColonies.Items.Clear();
             flpColonyStructure.Controls.Clear();
             selectedColony = new Baseline.Colony();
@@ -77,6 +84,12 @@ namespace OE2EmpireTracker.Forms.Colony
         private void OnColonyDataChanged(object sender, ColonyDataChangedEventArgs e)
         {
             if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnColonyDataChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
             if (selectedColony != null && selectedColony.UUID == e.ColonyUUID)
             {
                 colonyViewModel.RecalculateStatus();

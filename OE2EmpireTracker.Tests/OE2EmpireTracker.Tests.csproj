@@ -209,6 +209,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Baseline\BackgroundProcessorTests.cs" />
     <Compile Include="Baseline\BuildTimeCalculatorTests.cs" />
     <Compile Include="Baseline\BlueprintTypeTests.cs" />
     <Compile Include="Baseline\ColonyActivityCollectorTests.cs" />
@@ -242,6 +243,7 @@
     <Compile Include="Data\WorkerTypeInfoTests.cs" />
     <Compile Include="Data\LockTrackingTests.cs" />
     <Compile Include="Controls\ValidatedTextBoxTests.cs" />
+    <Compile Include="Forms\MainMenuOverhaulTests.cs" />
     <None Include="app.config" />
     <None Include="packages.config" />
     <Content Include="TestData\ZehVazoranIIM2.html">
