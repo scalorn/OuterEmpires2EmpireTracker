@@ -515,7 +515,6 @@ namespace OE2EmpireTracker.Forms.Colony
             Log.Debug("PopulateForm called! selectedColony = " + (selectedColony != null ? selectedColony.PlanetName : "null"));
             using var guard = new ProgrammaticUpdateGuard(this);
             this.SuspendLayout();
-            tabDetailedData.Visible = false;
 
             if (selectedColony == null)
             {
@@ -575,8 +574,6 @@ namespace OE2EmpireTracker.Forms.Colony
             RtfBuilder builder = new RtfBuilder();
             ColonyStatusCalculator.PopulateStatus(builder, statusCalculator.finalActualStatus);
             rtbStatus.Rtf = builder.ToRtf();
-
-            tabDetailedData.Visible = true;
 
             // Defer item and commodity grids unless their tab is active
             if (tabDetailedData.SelectedTab == tabPWarehousing)
