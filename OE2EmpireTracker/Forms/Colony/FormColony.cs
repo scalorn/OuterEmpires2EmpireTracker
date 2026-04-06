@@ -901,25 +901,58 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void PopulateItemGrid()
         {
-            // Populate item grid colonies items.
             dgvItems.CellValidating -= dgvItems_CellValidating;
             try { dgvItems.EndEdit(); } catch { }
-            dgvItems.Rows.Clear();
-            dgvItems.CellValidating += dgvItems_CellValidating;
+
+            // Index existing rows by item UUID for in-place update
+            var existingRows = new Dictionary<string, DataGridViewRow>();
+            foreach (DataGridViewRow row in dgvItems.Rows)
+            {
+                var item = row.Tag as Item;
+                if (item != null && !string.IsNullOrEmpty(item.UUID))
+                    existingRows[item.UUID] = row;
+            }
+
+            var seen = new HashSet<string>();
             foreach (KeyValuePair<string, Item> itemEntry in colonyViewModel.GetItems())
             {
-                dgvItems.Rows.Add();
-                DataGridViewRow row = dgvItems.Rows[dgvItems.RowCount - 2];
-                row.Tag = itemEntry.Value;
-                row.Cells[0].Tag = itemEntry.Value;
-                row.Cells[0].Value = itemEntry.Value.ItemType.ToString();
-                row.Cells[1].Value = itemEntry.Value.ExtendedName;
+                var itemValue = itemEntry.Value;
+                seen.Add(itemValue.UUID);
+
+                DataGridViewRow row;
+                if (existingRows.TryGetValue(itemValue.UUID, out row))
+                {
+                    // Update in place
+                    row.Cells[0].Value = itemValue.ItemType.ToString();
+                    row.Cells[1].Value = itemValue.ExtendedName;
+                }
+                else
+                {
+                    // Add new row
+                    int idx = dgvItems.Rows.Add();
+                    row = dgvItems.Rows[idx];
+                    row.Tag = itemValue;
+                    row.Cells[0].Tag = itemValue;
+                    row.Cells[0].Value = itemValue.ItemType.ToString();
+                    row.Cells[1].Value = itemValue.ExtendedName;
+                }
+
                 int lockedQty = colonyViewModel.Data.Locks != null
-                    ? colonyViewModel.Data.Locks.GetLockedQuantity(itemEntry.Value.ItemType, itemEntry.Value.BaseItemTypeID)
+                    ? colonyViewModel.Data.Locks.GetLockedQuantity(itemValue.ItemType, itemValue.BaseItemTypeID)
                     : 0;
                 row.Cells[2].Value = lockedQty;
-                row.Cells[3].Value = itemEntry.Value.Quantity;
+                row.Cells[3].Value = itemValue.Quantity;
             }
+
+            // Remove rows for deleted items (iterate backwards)
+            for (int i = dgvItems.Rows.Count - 1; i >= 0; i--)
+            {
+                var item = dgvItems.Rows[i].Tag as Item;
+                if (item != null && !seen.Contains(item.UUID))
+                    dgvItems.Rows.RemoveAt(i);
+            }
+
+            dgvItems.CellValidating += dgvItems_CellValidating;
         }
 
         /// <summary>
@@ -1241,19 +1274,35 @@ namespace OE2EmpireTracker.Forms.Colony
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvCommodityRequests.CellValidating -= dgvCommodityRequests_CellValidating;
             try { dgvCommodityRequests.EndEdit(); } catch { }
-            dgvCommodityRequests.Rows.Clear();
-            dgvCommodityRequests.CellValidating += dgvCommodityRequests_CellValidating;
 
             // Auto-delete expired fulfilled requests
             int cleaned = colonyViewModel.CleanupExpiredCommodityRequests();
             if (cleaned > 0)
                 Log.Debug("Cleaned up {0} expired commodity requests", cleaned);
 
-            foreach (CommodityRequested request in colonyViewModel.GetCommodityRequests())
+            // Index existing rows by their CommodityRequested reference
+            var existingRows = new Dictionary<CommodityRequested, DataGridViewRow>();
+            foreach (DataGridViewRow row in dgvCommodityRequests.Rows)
             {
-                int idx = dgvCommodityRequests.Rows.Add();
-                DataGridViewRow row = dgvCommodityRequests.Rows[idx];
-                row.Tag = request;
+                var req = row.Tag as CommodityRequested;
+                if (req != null)
+                    existingRows[req] = row;
+            }
+
+            var seen = new HashSet<CommodityRequested>();
+            var requests = colonyViewModel.GetCommodityRequests();
+            foreach (CommodityRequested request in requests)
+            {
+                seen.Add(request);
+
+                DataGridViewRow row;
+                if (!existingRows.TryGetValue(request, out row))
+                {
+                    int idx = dgvCommodityRequests.Rows.Add();
+                    row = dgvCommodityRequests.Rows[idx];
+                    row.Tag = request;
+                }
+
                 row.Cells[0].Value = request.Name;
                 row.Cells[1].Value = request.Requested;
                 row.Cells[2].Value = request.Fulfilled;
@@ -1270,6 +1319,16 @@ namespace OE2EmpireTracker.Forms.Colony
                     row.DefaultCellStyle.ForeColor = dgvCommodityRequests.ForeColor;
                 }
             }
+
+            // Remove rows for deleted/cleaned requests (iterate backwards)
+            for (int i = dgvCommodityRequests.Rows.Count - 1; i >= 0; i--)
+            {
+                var req = dgvCommodityRequests.Rows[i].Tag as CommodityRequested;
+                if (req != null && !seen.Contains(req))
+                    dgvCommodityRequests.Rows.RemoveAt(i);
+            }
+
+            dgvCommodityRequests.CellValidating += dgvCommodityRequests_CellValidating;
 
             UpdateTabTitles();
         }
