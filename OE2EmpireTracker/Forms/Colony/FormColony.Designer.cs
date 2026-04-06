@@ -31,7 +31,7 @@ namespace OE2EmpireTracker.Forms.Colony
             this.flpSearchList = new System.Windows.Forms.FlowLayoutPanel();
             this.flpBlueprintSearch = new System.Windows.Forms.FlowLayoutPanel();
             this.lblBlueprintListFilter = new System.Windows.Forms.Label();
-            this.txtBlueprintListFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.txtColonyListFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.lvwColonies = new System.Windows.Forms.ListView();
             this.tlpBase = new System.Windows.Forms.TableLayoutPanel();
             this.flpColonyData = new System.Windows.Forms.FlowLayoutPanel();
@@ -156,7 +156,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // flpBlueprintSearch
             // 
             this.flpBlueprintSearch.Controls.Add(this.lblBlueprintListFilter);
-            this.flpBlueprintSearch.Controls.Add(this.txtBlueprintListFilter);
+            this.flpBlueprintSearch.Controls.Add(this.txtColonyListFilter);
             this.flpBlueprintSearch.Dock = System.Windows.Forms.DockStyle.Left;
             this.flpBlueprintSearch.Location = new System.Drawing.Point(2, 2);
             this.flpBlueprintSearch.Margin = new System.Windows.Forms.Padding(2);
@@ -175,12 +175,12 @@ namespace OE2EmpireTracker.Forms.Colony
             this.lblBlueprintListFilter.Text = "Name";
             this.lblBlueprintListFilter.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // txtBlueprintListFilter
+            // txtColonyListFilter
             // 
-            this.txtBlueprintListFilter.Location = new System.Drawing.Point(61, 3);
-            this.txtBlueprintListFilter.Name = "txtBlueprintListFilter";
-            this.txtBlueprintListFilter.Size = new System.Drawing.Size(100, 20);
-            this.txtBlueprintListFilter.TabIndex = 0;
+            this.txtColonyListFilter.Location = new System.Drawing.Point(61, 3);
+            this.txtColonyListFilter.Name = "txtColonyListFilter";
+            this.txtColonyListFilter.Size = new System.Drawing.Size(100, 20);
+            this.txtColonyListFilter.TabIndex = 0;
             // 
             // lvwColonies
             // 
@@ -1057,7 +1057,7 @@ namespace OE2EmpireTracker.Forms.Colony
         private System.Windows.Forms.FlowLayoutPanel flpSearchList;
         private System.Windows.Forms.FlowLayoutPanel flpBlueprintSearch;
         private System.Windows.Forms.Label lblBlueprintListFilter;
-        private OE2EmpireTracker.Controls.ValidatedTextBox txtBlueprintListFilter;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtColonyListFilter;
         private System.Windows.Forms.ListView lvwColonies;
         private System.Windows.Forms.DataGridViewTextBoxColumn Property;
         private System.Windows.Forms.DataGridViewTextBoxColumn BaseValue;

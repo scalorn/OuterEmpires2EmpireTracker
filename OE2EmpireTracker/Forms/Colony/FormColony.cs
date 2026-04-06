@@ -25,6 +25,10 @@ namespace OE2EmpireTracker.Forms.Colony
         private Baseline.Colony selectedColony;
         private ColonyViewModel colonyViewModel;
         private ColonyStatusCalculator statusCalculator => colonyViewModel?.Calculator;
+
+        // ListView sorting state
+        private int _sortColumn = 0;
+        private SortOrder _sortOrder = SortOrder.Ascending;
         public FormColony()
         {
             InitializeComponent();
@@ -48,9 +52,15 @@ namespace OE2EmpireTracker.Forms.Colony
             lvwColonies.View = View.Details;
             lvwColonies.Columns.Add("Planet", 50);
             lvwColonies.Columns.Add("Name", 100);
+            lvwColonies.ColumnClick += lvwColonies_ColumnClick;
+            lvwColonies.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
             PopulateListView(playerContext.GetCurrentPlayerColonies());
 
             UpdateCommodityRequestList();
+            UpdateTitle();
+
+            // Wire filter handler
+            txtColonyListFilter.TextChanged += txtColonyListFilter_TextChanged;
 
             // Wire write-through handlers
             txtPlanetName.TextChanged += txtPlanetName_TextChanged;
@@ -79,6 +89,7 @@ namespace OE2EmpireTracker.Forms.Colony
             txtPlanetName.Text = "";
             txtColonyName.Text = "";
             txtSystemName.Text = "";
+            UpdateTitle();
         }
 
         private void OnColonyDataChanged(object sender, ColonyDataChangedEventArgs e)
@@ -125,7 +136,8 @@ namespace OE2EmpireTracker.Forms.Colony
                 colonyViewModel.Data.OwnerUUID = playerContext.CurrentPlayerUUID;
             }
             colonyViewModel.Save();
-            PopulateListView(playerContext.GetCurrentPlayerColonies());
+            txtColonyListFilter_TextChanged(sender, e);
+            UpdateTitle();
         }
 
         private void cmdNew_Click(object sender, EventArgs e)
@@ -150,6 +162,7 @@ namespace OE2EmpireTracker.Forms.Colony
             ClearForm();
             lvwColonies.Items.Clear();
             PopulateListView(playerContext.GetCurrentPlayerColonies());
+            UpdateTitle();
         }
 
         private void ClearForm()
@@ -164,6 +177,7 @@ namespace OE2EmpireTracker.Forms.Colony
             dgvItems.Rows.Clear();
             dgvCommodityRequests.Rows.Clear();
             rtbStatus.Text = "";
+            UpdateTabTitles();
         }
 
         private void cmdOptimize_Click(object sender, EventArgs e)
@@ -302,6 +316,8 @@ namespace OE2EmpireTracker.Forms.Colony
             // Notify other forms (e.g. ColonyActivityForm) that colony data changed
             if (selectedColony != null)
                 playerContext.OnColonyDataChanged(selectedColony.UUID);
+
+            UpdateTabTitles();
         }
 
         private void txtFilterFlatpack_TextChanged(object sender, EventArgs e)
@@ -368,6 +384,22 @@ namespace OE2EmpireTracker.Forms.Colony
 
         }
 
+        private void txtColonyListFilter_TextChanged(object sender, EventArgs e)
+        {
+            string filter = txtColonyListFilter.Text;
+            var colonies = playerContext.GetCurrentPlayerColonies();
+            if (!string.IsNullOrEmpty(filter))
+            {
+                colonies = colonies
+                    .Where(c => (c.PlanetName ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
+                             || (c.ColonyName ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+            }
+            lvwColonies.Items.Clear();
+            PopulateListView(colonies);
+            lvwColonies.Sort();
+        }
+
         private void lvwColonies_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             Log.Debug("lvwBlueprints.SelectedItems.Count = " + lvwColonies.SelectedItems.Count);
@@ -402,11 +434,19 @@ namespace OE2EmpireTracker.Forms.Colony
                 bool found = viewableColonies.TryGetValue(colony.UUID, out item);
                 if (!found)
                 {
-                    item = new ListViewItem(colony.PlanetName); // Main item text (first column)
+                    item = new ListViewItem(colony.PlanetName);
+                    item.SubItems.Add(colony.ColonyName);
+                }
+                else
+                {
+                    item.SubItems[0].Text = colony.PlanetName;
+                    if (item.SubItems.Count > 1)
+                        item.SubItems[1].Text = colony.ColonyName;
+                    else
+                        item.SubItems.Add(colony.ColonyName);
                 }
                 item.Tag = colony;
                 item.SubItems[0].Tag = colony;
-                item.SubItems.Add(colony.ColonyName);
 
                 if (!found)
                 {
@@ -559,6 +599,42 @@ namespace OE2EmpireTracker.Forms.Colony
 
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        private void UpdateTitle()
+        {
+            var player = playerContext.CurrentPlayer;
+            string playerName = player != null ? player.Name : "No Player";
+            int colonyCount = playerContext.GetCurrentPlayerColonies()?.Count ?? 0;
+            Text = $"Manage Colonies - {playerName} : {colonyCount}";
+        }
+
+        private void UpdateTabTitles()
+        {
+            int structureCount = selectedColony?.Structures?.Count ?? 0;
+            tabPStructures.Text = $"Structures : {structureCount}";
+
+            int activeRequests = 0;
+            if (selectedColony?.Commodities != null)
+            {
+                var now = DateTime.Now;
+                activeRequests = selectedColony.Commodities.Count(r =>
+                    !r.Fulfilled && (r.NeedBy == DateTime.MinValue || r.NeedBy > now));
+            }
+            tabPWorkers.Text = $"Workers : {activeRequests}";
+        }
+
+        private void lvwColonies_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            if (e.Column == _sortColumn)
+                _sortOrder = _sortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
+            else
+            {
+                _sortColumn = e.Column;
+                _sortOrder = SortOrder.Ascending;
+            }
+            lvwColonies.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
+            lvwColonies.Sort();
+        }
 
         private void tabPStructures_Layout(object sender, LayoutEventArgs e)
         {
@@ -1124,6 +1200,8 @@ namespace OE2EmpireTracker.Forms.Colony
                     row.DefaultCellStyle.ForeColor = dgvCommodityRequests.ForeColor;
                 }
             }
+
+            UpdateTabTitles();
         }
 
         private void dgvCommodityRequests_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -1464,6 +1542,29 @@ namespace OE2EmpireTracker.Forms.Colony
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Compares ListView items by a specified column for sorting.
+    /// </summary>
+    internal class ListViewItemComparer : System.Collections.IComparer
+    {
+        private readonly int _column;
+        private readonly SortOrder _order;
+
+        public ListViewItemComparer(int column, SortOrder order)
+        {
+            _column = column;
+            _order = order;
+        }
+
+        public int Compare(object x, object y)
+        {
+            string textX = ((ListViewItem)x).SubItems[_column].Text;
+            string textY = ((ListViewItem)y).SubItems[_column].Text;
+            int result = string.Compare(textX, textY, StringComparison.OrdinalIgnoreCase);
+            return _order == SortOrder.Descending ? -result : result;
         }
     }
 }

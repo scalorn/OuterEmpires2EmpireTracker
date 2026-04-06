@@ -31,12 +31,14 @@ msbuild OE2EmpireTracker.sln /p:Configuration=Debug
 # Restore NuGet packages
 nuget restore OE2EmpireTracker.sln
 
-# Run tests (from solution root)
-dotnet test OE2EmpireTracker.Tests/OE2EmpireTracker.Tests.csproj
-
-# Or via vstest
+# Run tests via vstest (dotnet test does NOT work with old-style csproj + packages.config)
 vstest.console OE2EmpireTracker.Tests/bin/Debug/OE2EmpireTracker.Tests.dll
 ```
+
+## Important: Testing
+- Do NOT use `dotnet test` — it is incompatible with old-style csproj and packages.config
+- Use `vstest.console` against the built test DLL, or rely on `getDiagnostics` for compile checks
+- When the running app locks the exe, use `getDiagnostics` instead of building
 
 ## Conventions
 - Logging via `NLog.LogManager.GetCurrentClassLogger()` — use `Log.Info`, `Log.Debug`, `Log.Error`

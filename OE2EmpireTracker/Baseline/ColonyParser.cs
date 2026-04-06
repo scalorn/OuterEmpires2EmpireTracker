@@ -265,6 +265,15 @@ namespace OE2EmpireTracker.Baseline
             {
                 existing.ManufacturingQuantity = parsed.ManufacturingQuantity;
             }
+
+            // Update worker assignments from game
+            if (parsed.AssignedWorkers.Properties.Count > 0)
+            {
+                foreach (var kvp in parsed.AssignedWorkers.Properties)
+                {
+                    existing.AssignedWorkers.setProperty(kvp.Key, kvp.Value);
+                }
+            }
         }
 
         /// <summary>
@@ -367,21 +376,45 @@ namespace OE2EmpireTracker.Baseline
             }
 
             // Worker details → AssignedWorkers
+            // The UI expects keys like "BlueCollar1", "WhiteCollar1" with boolean values.
+            // The JSON provides detail names like "Blue Collar Detail(s)" with workerIDs.
             var details = building["detailsRequired"] as JArray;
             if (details != null)
             {
+                // Track how many of each worker type we've seen to build the index suffix
+                var workerCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
                 foreach (var detail in details)
                 {
                     string detailName = detail["name"]?.ToString();
                     int workerID = detail["workerID"]?.Value<int>() ?? 0;
-                    if (!string.IsNullOrEmpty(detailName) && workerID > 0)
+                    if (string.IsNullOrEmpty(detailName)) continue;
+
+                    // Map detail name to WorkerPrefix
+                    string prefix = MapDetailNameToWorkerPrefix(detailName);
+                    if (prefix != null)
                     {
-                        structure.AssignedWorkers.setProperty(detailName, workerID.ToString());
+                        if (!workerCounts.ContainsKey(prefix)) workerCounts[prefix] = 0;
+                        workerCounts[prefix]++;
+                        string key = prefix + workerCounts[prefix];
+                        structure.AssignedWorkers.setProperty(key, workerID > 0);
                     }
                 }
             }
 
             return structure;
+        }
+
+        /// <summary>
+        /// Maps a JSON detail name like "Blue Collar Detail(s)" to the WorkerPrefix
+        /// used by the UI (e.g. "BlueCollar"). Returns null if no match.
+        /// </summary>
+        internal static string MapDetailNameToWorkerPrefix(string detailName)
+        {
+            if (detailName.IndexOf("Blue Collar", StringComparison.OrdinalIgnoreCase) >= 0) return "BlueCollar";
+            if (detailName.IndexOf("White Collar", StringComparison.OrdinalIgnoreCase) >= 0) return "WhiteCollar";
+            if (detailName.IndexOf("Specialist", StringComparison.OrdinalIgnoreCase) >= 0) return "Specialist";
+            return null;
         }
 
         /// <summary>
