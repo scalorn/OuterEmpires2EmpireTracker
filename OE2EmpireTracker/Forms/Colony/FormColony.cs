@@ -30,8 +30,13 @@ namespace OE2EmpireTracker.Forms.Colony
         private int _sortColumn = 0;
         private SortOrder _sortOrder = SortOrder.Ascending;
 
-        // Deferred structure control update flag
+        // Deferred tab update flags
         private bool _structuresDirty = false;
+        private bool _warehouseDirty = false;
+        private bool _workersDirty = false;
+
+        // Structure control pool — reuse controls instead of creating/disposing
+        private readonly List<ColonyStructure> _structurePool = new List<ColonyStructure>();
         public FormColony()
         {
             InitializeComponent();
@@ -84,7 +89,19 @@ namespace OE2EmpireTracker.Forms.Colony
                 return;
             }
             lvwColonies.Items.Clear();
-            flpColonyStructure.Controls.Clear();
+            // Return structure controls to pool
+            while (flpColonyStructure.Controls.Count > 0)
+            {
+                var ctrl = flpColonyStructure.Controls[flpColonyStructure.Controls.Count - 1] as ColonyStructure;
+                flpColonyStructure.Controls.RemoveAt(flpColonyStructure.Controls.Count - 1);
+                if (ctrl != null)
+                {
+                    ctrl.Visible = false;
+                    ctrl.ColonyStructureDataChanged -= structures_ColonyStructureDataChanged;
+                    if (!_structurePool.Contains(ctrl))
+                        _structurePool.Add(ctrl);
+                }
+            }
             selectedColony = new Baseline.Colony();
             colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
             colonyViewModel.RecalculateStatus();
@@ -176,7 +193,21 @@ namespace OE2EmpireTracker.Forms.Colony
             txtPlanetName.Text = "";
             txtColonyName.Text = "";
             txtSystemName.Text = "";
-            flpColonyStructure.Controls.Clear();
+
+            // Return structure controls to pool
+            while (flpColonyStructure.Controls.Count > 0)
+            {
+                var ctrl = flpColonyStructure.Controls[flpColonyStructure.Controls.Count - 1] as ColonyStructure;
+                flpColonyStructure.Controls.RemoveAt(flpColonyStructure.Controls.Count - 1);
+                if (ctrl != null)
+                {
+                    ctrl.Visible = false;
+                    ctrl.ColonyStructureDataChanged -= structures_ColonyStructureDataChanged;
+                    if (!_structurePool.Contains(ctrl))
+                        _structurePool.Add(ctrl);
+                }
+            }
+
             dgvItems.Rows.Clear();
             dgvCommodityRequests.Rows.Clear();
             rtbStatus.Text = "";
@@ -222,7 +253,7 @@ namespace OE2EmpireTracker.Forms.Colony
             this.SuspendLayout();
 
             var structureViewModel = colonyViewModel.AddStructure(cmbFlatpacks.SelectedValue.ToString());
-            ColonyStructure colonyStructureControl = new ColonyStructure();
+            ColonyStructure colonyStructureControl = GetPooledStructureControl();
             colonyStructureControl.Visible = false;
             colonyStructureControl.ColonyStructureDataChanged -= structures_ColonyStructureDataChanged;
             colonyStructureControl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
@@ -266,14 +297,17 @@ namespace OE2EmpireTracker.Forms.Colony
                     }
                 }
 
-                // Remove controls whose structure was deleted
+                // Return orphaned controls to the pool instead of disposing
                 foreach (var orphan in controlMap
                     .Where(kv => !selectedColony.Structures.Contains(kv.Key))
                     .Select(kv => kv.Value)
                     .ToList())
                 {
                     flpColonyStructure.Controls.Remove(orphan);
-                    orphan.Dispose();
+                    orphan.Visible = false;
+                    orphan.ColonyStructureDataChanged -= structures_ColonyStructureDataChanged;
+                    if (!_structurePool.Contains(orphan))
+                        _structurePool.Add(orphan);
                 }
 
                 var controlIndexMap = new Dictionary<Control, int>();
@@ -290,12 +324,14 @@ namespace OE2EmpireTracker.Forms.Colony
                     ColonyStructure ctrl;
                     if (!controlMap.TryGetValue(structure, out ctrl))
                     {
-                        ctrl = new ColonyStructure();
+                        // Pull from pool or create new
+                        ctrl = GetPooledStructureControl();
                         ctrl.Colony = selectedColony;
                         ctrl.ColonyStructureData = structure;
                         ctrl.ColonyStructureDataChanged -= structures_ColonyStructureDataChanged;
                         ctrl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
                         flpColonyStructure.Controls.Add(ctrl);
+                        ctrl.Visible = true;
                         controlIndexMap[ctrl] = flpColonyStructure.Controls.Count - 1;
                     }
                     int currentIndex;
@@ -309,8 +345,15 @@ namespace OE2EmpireTracker.Forms.Colony
                 flpColonyStructure.ResumeLayout();
             }
 
-            // Always refresh the item grid — worker changes can create new lock entries
-            PopulateItemGrid();
+            // Defer item grid refresh if not on the Warehousing tab
+            if (tabDetailedData.SelectedTab == tabPWarehousing)
+            {
+                PopulateItemGrid();
+            }
+            else
+            {
+                _warehouseDirty = true;
+            }
 
             RtfBuilder builder = new RtfBuilder();
             ColonyStatusCalculator.PopulateStatus(builder, statusCalculator.finalActualStatus);
@@ -489,47 +532,30 @@ namespace OE2EmpireTracker.Forms.Colony
             txtColonyName.Text = colonyViewModel.ColonyName;
             txtSystemName.Text = colonyViewModel.Data.SystemName ?? "";
 
-
-
-            Log.Debug("populatForm: Hiding excess controls started");
-            int controlIndex = 0;
-            foreach (Control control in flpColonyStructure.Controls)
-            {
-                if (controlIndex < selectedColony.Structures.Count)
-                {
-                    control.Visible = true;
-                }
-                else
-                {
-                    control.Visible = false;
-                }
-                controlIndex++;
-            }
-            Log.Debug("populatForm: Hiding excess controls finished");
-
             colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
 
-            // Determine whether to do full UpdateData on structure controls now
-            // or defer until the Structures tab is selected (performance optimization).
+            // --- Structure control pool ---
+            // Return all current controls to the pool and detach from the panel.
+            flpColonyStructure.SuspendLayout();
+            while (flpColonyStructure.Controls.Count > 0)
+            {
+                var ctrl = flpColonyStructure.Controls[flpColonyStructure.Controls.Count - 1] as ColonyStructure;
+                flpColonyStructure.Controls.RemoveAt(flpColonyStructure.Controls.Count - 1);
+                if (ctrl != null)
+                {
+                    ctrl.Visible = false;
+                    ctrl.ColonyStructureDataChanged -= structures_ColonyStructureDataChanged;
+                    if (!_structurePool.Contains(ctrl))
+                        _structurePool.Add(ctrl);
+                }
+            }
+
             bool structuresTabActive = tabDetailedData.SelectedTab == tabPStructures;
 
-            this.DoubleBuffered = true;
-            List<ColonyStructure> structureControls = new List<ColonyStructure>();
-            controlIndex = 0;
             foreach (Baseline.ColonyStructure structure in selectedColony.Structures)
             {
-                Log.Debug("populatForm: processing structure started");
-                ColonyStructure colonyStructureControl = null;
-                bool addControl = false;
-                if (controlIndex < flpColonyStructure.Controls.Count)
-                {
-                    colonyStructureControl = flpColonyStructure.Controls[controlIndex] as ColonyStructure;
-                }
-                else
-                {
-                    colonyStructureControl = new ColonyStructure();
-                    addControl = true;
-                }
+                ColonyStructure colonyStructureControl = GetPooledStructureControl();
+
                 colonyStructureControl.ColonyStructureDataChanged -= structures_ColonyStructureDataChanged;
                 colonyStructureControl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
                 colonyStructureControl.Colony = selectedColony;
@@ -538,38 +564,42 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     colonyStructureControl.UpdateData();
                 }
-                if (addControl)
-                {
-                    structureControls.Add(colonyStructureControl);
-                }
-                controlIndex++;
-                Log.Debug("populatForm: processing structure finished");
+                flpColonyStructure.Controls.Add(colonyStructureControl);
+                colonyStructureControl.Visible = true;
             }
 
             _structuresDirty = !structuresTabActive;
-            Log.Debug("populatForm: Adding new controls started");
-            flpColonyStructure.Controls.AddRange(structureControls.ToArray());
-            Log.Debug("populatForm: Adding new controls finished");
-            Log.Debug("populatForm: Making new controls visible started");
-            foreach (ColonyStructure structureControl in structureControls)
-            {
-                structureControl.Visible = true;
-            }
-            Log.Debug("populatForm: Making new controls visible finished");
+            flpColonyStructure.ResumeLayout();
 
-            Log.Debug("PopulateForm: Calling CalculateBuilt started");
             colonyViewModel.RecalculateStatus();
-            Log.Debug("PopulateForm: Calling CalculateBuilt finished");
-            Log.Debug("PopulateForm: Calling PopulateStatus started");
             RtfBuilder builder = new RtfBuilder();
             ColonyStatusCalculator.PopulateStatus(builder, statusCalculator.finalActualStatus);
             rtbStatus.Rtf = builder.ToRtf();
-            Log.Debug("PopulateForm: Calling PopulateStatus finished");
 
             tabDetailedData.Visible = true;
 
-            PopulateItemGrid();
-            PopulateCommodityRequestGrid();
+            // Defer item and commodity grids unless their tab is active
+            if (tabDetailedData.SelectedTab == tabPWarehousing)
+            {
+                PopulateItemGrid();
+                _warehouseDirty = false;
+            }
+            else
+            {
+                _warehouseDirty = true;
+            }
+
+            if (tabDetailedData.SelectedTab == tabPWorkers)
+            {
+                PopulateCommodityRequestGrid();
+                _workersDirty = false;
+            }
+            else
+            {
+                _workersDirty = true;
+                // Still update tab title with active request count (cheap)
+                UpdateTabTitles();
+            }
 
             this.ResumeLayout();
             Log.Debug("PopulateForm completed!");
@@ -648,6 +678,23 @@ namespace OE2EmpireTracker.Forms.Colony
             lvwColonies.Sort();
         }
 
+        /// <summary>
+        /// Returns an unused control from the pool, or creates a new one if the pool
+        /// has no free controls. A "free" control is one not currently parented to
+        /// flpColonyStructure.
+        /// </summary>
+        private ColonyStructure GetPooledStructureControl()
+        {
+            foreach (var ctrl in _structurePool)
+            {
+                if (ctrl.Parent == null || ctrl.Parent != flpColonyStructure)
+                    return ctrl;
+            }
+            var newCtrl = new ColonyStructure();
+            _structurePool.Add(newCtrl);
+            return newCtrl;
+        }
+
         private void tabPStructures_Layout(object sender, LayoutEventArgs e)
         {
 
@@ -657,23 +704,28 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             if (_isProgrammaticUpdate > 0) return;
 
-            // When switching to the Structures tab, refresh structure controls
-            // if they were deferred during PopulateForm or need a warehouse refresh.
-            if (tabDetailedData.SelectedTab == tabPStructures)
+            if (tabDetailedData.SelectedTab == tabPStructures && _structuresDirty)
             {
-                if (_structuresDirty)
+                flpColonyStructure.SuspendLayout();
+                foreach (Control c in flpColonyStructure.Controls)
                 {
-                    flpColonyStructure.SuspendLayout();
-                    foreach (Control c in flpColonyStructure.Controls)
+                    if (c is ColonyStructure cs && cs.Visible)
                     {
-                        if (c is ColonyStructure cs && cs.Visible)
-                        {
-                            cs.UpdateData();
-                        }
+                        cs.UpdateData();
                     }
-                    flpColonyStructure.ResumeLayout();
-                    _structuresDirty = false;
                 }
+                flpColonyStructure.ResumeLayout();
+                _structuresDirty = false;
+            }
+            else if (tabDetailedData.SelectedTab == tabPWarehousing && _warehouseDirty)
+            {
+                PopulateItemGrid();
+                _warehouseDirty = false;
+            }
+            else if (tabDetailedData.SelectedTab == tabPWorkers && _workersDirty)
+            {
+                PopulateCommodityRequestGrid();
+                _workersDirty = false;
             }
         }
 
