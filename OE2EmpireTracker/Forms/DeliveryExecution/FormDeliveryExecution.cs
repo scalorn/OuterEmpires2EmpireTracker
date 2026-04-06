@@ -669,6 +669,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.DeliveryDataChanged -= OnDeliveryDataChanged;
             base.OnFormClosed(e);

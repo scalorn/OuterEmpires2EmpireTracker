@@ -215,6 +215,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.ColonyDataChanged -= OnColonyDataChanged;
             timerRefresh.Stop();
