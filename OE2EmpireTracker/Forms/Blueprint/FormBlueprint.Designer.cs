@@ -66,7 +66,6 @@ namespace OE2EmpireTracker
             this.cmdNew = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
             this.tabDetailedData = new System.Windows.Forms.TabControl();
             this.tabPStatistics = new System.Windows.Forms.TabPage();
             this.dgvStatistics = new DataEntryGridView();
@@ -444,7 +443,6 @@ namespace OE2EmpireTracker
             this.flpCommands.Controls.Add(this.cmdNew);
             this.flpCommands.Controls.Add(this.btnSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
-            this.flpCommands.Controls.Add(this.btnCancel);
             this.flpCommands.Controls.Add(this.cmdImport);
             this.flpCommands.Location = new System.Drawing.Point(2, 598);
             this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
@@ -492,16 +490,6 @@ namespace OE2EmpireTracker
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
             this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Location = new System.Drawing.Point(352, 3);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 10;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // tabDetailedData
             // 
@@ -755,7 +743,6 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
         private System.Windows.Forms.CheckBox chkGlobalBlueprint;
         private System.Windows.Forms.Button btnSave;
-        private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.DataGridView dgvResources;
         private DataEntryGridView dgvStatistics;
         private System.Windows.Forms.DataGridViewTextBoxColumn Property;

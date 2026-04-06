@@ -284,8 +284,6 @@ namespace OE2EmpireTracker.Forms.Survey
             viewModel.Save();
 
             PopulateListView(viewModel.GetFilteredSurveys(null));
-            viewModel.Reset();
-            ClearForm();
         }
 
         private void ClearForm()
@@ -312,18 +310,24 @@ namespace OE2EmpireTracker.Forms.Survey
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(viewModel.UUID))
-            {
-                viewModel.Delete();
-                viewModel.Reset();
-                PopulateListView(viewModel.GetFilteredSurveys(null));
-                lvwSurveys.SelectedItems.Clear();
-                ClearForm();
-            }
+            if (string.IsNullOrEmpty(viewModel.UUID)) return;
+            var result = MessageBox.Show(
+                $"Delete survey '{viewModel.Data.PlanetName}'?",
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+            if (result != DialogResult.Yes) return;
+            viewModel.Delete();
+            viewModel.Reset();
+            PopulateListView(viewModel.GetFilteredSurveys(null));
+            lvwSurveys.SelectedItems.Clear();
+            ClearForm();
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void cmdNew_Click(object sender, EventArgs e)
         {
+            ClearForm();
+            lvwSurveys.SelectedItems.Clear();
         }
 
         private void lvwSurveys_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)

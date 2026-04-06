@@ -728,16 +728,6 @@ namespace OE2EmpireTracker
         }
 
         /// <summary>
-        /// Handles the click event for the Cancel button.
-        /// </summary>
-        /// <param name="sender">The object that triggered the event.</param>
-        /// <param name="e">Event data containing event information.</param>
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        /// <summary>
         /// Handles text changes in the blueprint list filter text box.
         /// </summary>
         /// <param name="sender">The TextBox object that triggered the event.</param>
@@ -775,15 +765,18 @@ namespace OE2EmpireTracker
         /// </remarks>
         private void cmdDelete_Click(object sender, EventArgs e)
         {
-            if (viewModel.Data.UUID != null)
-            {
-                viewModel.Delete();
-                viewModel.Reset();
-                PopulateListView(viewModel.GetFilteredBlueprints(null));
-                lvwBlueprints.SelectedItems.Clear();
-
-                ClearForm();
-            }
+            if (viewModel.Data.UUID == null) return;
+            var result = MessageBox.Show(
+                $"Delete blueprint '{viewModel.Data.Name}'?",
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+            if (result != DialogResult.Yes) return;
+            viewModel.Delete();
+            viewModel.Reset();
+            PopulateListView(viewModel.GetFilteredBlueprints(null));
+            lvwBlueprints.SelectedItems.Clear();
+            ClearForm();
         }
 
         /// <summary>
@@ -798,6 +791,7 @@ namespace OE2EmpireTracker
         private void cmdNew_Click(object sender, EventArgs e)
         {
             ClearForm();
+            lvwBlueprints.SelectedItems.Clear();
         }
 
         /// <summary>
@@ -877,10 +871,6 @@ namespace OE2EmpireTracker
             
             // Refresh list view
             PopulateListView(viewModel.GetFilteredBlueprints(null));
-
-            // Reset viewModel and clear form for next entry
-            viewModel.Reset();
-            ClearForm();
             
             // Restore focus
             txtBlueprintListFilter.Focus();

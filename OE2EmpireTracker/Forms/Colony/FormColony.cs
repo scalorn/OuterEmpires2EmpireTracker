@@ -128,6 +128,44 @@ namespace OE2EmpireTracker.Forms.Colony
             PopulateListView(playerContext.GetCurrentPlayerColonies());
         }
 
+        private void cmdNew_Click(object sender, EventArgs e)
+        {
+            ClearForm();
+            lvwColonies.SelectedItems.Clear();
+        }
+
+        private void cmdDelete_Click(object sender, EventArgs e)
+        {
+            if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID)) return;
+
+            var result = MessageBox.Show(
+                $"Delete colony '{selectedColony.PlanetName}'?",
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+            if (result != DialogResult.Yes) return;
+
+            playerContext.colonyList.Remove(selectedColony);
+            playerContext.writeContext();
+            ClearForm();
+            lvwColonies.Items.Clear();
+            PopulateListView(playerContext.GetCurrentPlayerColonies());
+        }
+
+        private void ClearForm()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            selectedColony = new Baseline.Colony();
+            colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
+            txtPlanetName.Text = "";
+            txtColonyName.Text = "";
+            txtSystemName.Text = "";
+            flpColonyStructure.Controls.Clear();
+            dgvItems.Rows.Clear();
+            dgvCommodityRequests.Rows.Clear();
+            rtbStatus.Text = "";
+        }
+
         private void cmdOptimize_Click(object sender, EventArgs e)
         {
             if (selectedColony == null) return;

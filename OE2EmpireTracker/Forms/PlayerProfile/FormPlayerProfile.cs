@@ -447,16 +447,15 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             viewModel.Delete();
             viewModel.Reset();
             PopulateListView();
+            lvwPlayerProfiles.SelectedItems.Clear();
             PopulateForm();
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private void cmdNew_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(viewModel.Data.UUID))
-            {
-                viewModel.Reset();
-            }
+            viewModel.Reset();
             PopulateForm();
+            lvwPlayerProfiles.SelectedItems.Clear();
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)

@@ -75,9 +75,9 @@ namespace OE2EmpireTracker.Forms.Survey
             this.Purity = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.Amount = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdNew = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
             this.cmdImport = new System.Windows.Forms.Button();
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
@@ -656,9 +656,9 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             this.flpCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.flpCommands.AutoSize = true;
+            this.flpCommands.Controls.Add(this.cmdNew);
             this.flpCommands.Controls.Add(this.btnSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
-            this.flpCommands.Controls.Add(this.btnCancel);
             this.flpCommands.Controls.Add(this.cmdImport);
             this.flpCommands.Location = new System.Drawing.Point(2, 575);
             this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
@@ -666,9 +666,19 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpCommands.Size = new System.Drawing.Size(831, 29);
             this.flpCommands.TabIndex = 1;
             // 
+            // cmdNew
+            // 
+            this.cmdNew.Location = new System.Drawing.Point(3, 3);
+            this.cmdNew.Name = "cmdNew";
+            this.cmdNew.Size = new System.Drawing.Size(75, 23);
+            this.cmdNew.TabIndex = 4;
+            this.cmdNew.Text = "New";
+            this.cmdNew.UseVisualStyleBackColor = true;
+            this.cmdNew.Click += new System.EventHandler(this.cmdNew_Click);
+            // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(3, 3);
+            this.btnSave.Location = new System.Drawing.Point(84, 3);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 0;
@@ -678,23 +688,13 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             // cmdDelete
             // 
-            this.cmdDelete.Location = new System.Drawing.Point(84, 3);
+            this.cmdDelete.Location = new System.Drawing.Point(165, 3);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(75, 23);
             this.cmdDelete.TabIndex = 1;
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
             this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Location = new System.Drawing.Point(165, 3);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 2;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // cmdImport
             // 
@@ -786,9 +786,9 @@ namespace OE2EmpireTracker.Forms.Survey
         private OE2EmpireTracker.Controls.ValidatedTextBox txtScanLevel;
         private System.Windows.Forms.DataGridView dgvResources;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
+        private System.Windows.Forms.Button cmdNew;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button cmdDelete;
-        private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button cmdImport;
         private System.Windows.Forms.FlowLayoutPanel flpSurveyID;
         private System.Windows.Forms.Label lblSurveyID;

@@ -85,9 +85,9 @@ namespace OE2EmpireTracker.Forms.Colony
             this.cmdAdd = new System.Windows.Forms.Button();
             this.dgvItems = new System.Windows.Forms.DataGridView();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdNew = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
-            this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdImportColony = new System.Windows.Forms.Button();
             this.cmdImportClipboard = new System.Windows.Forms.Button();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -773,9 +773,9 @@ namespace OE2EmpireTracker.Forms.Colony
             // 
             // flpCommands
             // 
+            this.flpCommands.Controls.Add(this.cmdNew);
             this.flpCommands.Controls.Add(this.cmdSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
-            this.flpCommands.Controls.Add(this.cmdCancel);
             this.flpCommands.Controls.Add(this.cmdImportColony);
             this.flpCommands.Controls.Add(this.cmdImportClipboard);
             this.flpCommands.Location = new System.Drawing.Point(2, 270);
@@ -785,9 +785,19 @@ namespace OE2EmpireTracker.Forms.Colony
             this.flpCommands.TabIndex = 9;
             this.flpCommands.WrapContents = false;
             // 
+            // cmdNew
+            // 
+            this.cmdNew.Location = new System.Drawing.Point(3, 3);
+            this.cmdNew.Name = "cmdNew";
+            this.cmdNew.Size = new System.Drawing.Size(75, 23);
+            this.cmdNew.TabIndex = 14;
+            this.cmdNew.Text = "New";
+            this.cmdNew.UseVisualStyleBackColor = true;
+            this.cmdNew.Click += new System.EventHandler(this.cmdNew_Click);
+            // 
             // cmdSave
             // 
-            this.cmdSave.Location = new System.Drawing.Point(3, 3);
+            this.cmdSave.Location = new System.Drawing.Point(84, 3);
             this.cmdSave.Name = "cmdSave";
             this.cmdSave.Size = new System.Drawing.Size(75, 23);
             this.cmdSave.TabIndex = 9;
@@ -797,21 +807,13 @@ namespace OE2EmpireTracker.Forms.Colony
             // 
             // cmdDelete
             // 
-            this.cmdDelete.Location = new System.Drawing.Point(84, 3);
+            this.cmdDelete.Location = new System.Drawing.Point(165, 3);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(75, 23);
             this.cmdDelete.TabIndex = 11;
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
-            // 
-            // cmdCancel
-            // 
-            this.cmdCancel.Location = new System.Drawing.Point(165, 3);
-            this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(75, 23);
-            this.cmdCancel.TabIndex = 10;
-            this.cmdCancel.Text = "Cancel";
-            this.cmdCancel.UseVisualStyleBackColor = true;
+            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
             // cmdImportColony
             // 
@@ -1101,9 +1103,9 @@ namespace OE2EmpireTracker.Forms.Colony
         private System.Windows.Forms.DataGridViewTextBoxColumn LockedAmount;
         private OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn Amount;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
+        private System.Windows.Forms.Button cmdNew;
         private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Button cmdDelete;
-        private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdImportColony;
         private System.Windows.Forms.Button cmdImportClipboard;
         private System.Windows.Forms.ComboBox cmbPurity;
