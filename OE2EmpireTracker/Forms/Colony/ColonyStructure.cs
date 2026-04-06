@@ -242,6 +242,39 @@ namespace OE2EmpireTracker.Forms.Colony
             this.ResumeLayout();
         }
 
+        /// <summary>
+        /// Lightweight update that only recalculates the background color based on
+        /// current worker assignments and build/online state. Used by worker checkbox
+        /// handlers to avoid a full UpdateData repaint.
+        /// </summary>
+        private void UpdateBackgroundColor()
+        {
+            if (ColonyStructureData == null || ViewModel == null) return;
+
+            CheckBox[] checkControls = { chkWorkDetail1, chkWorkDetail2, chkWorkDetail3 };
+            bool hasAllWorkers = true;
+            foreach (var chk in checkControls)
+            {
+                if (chk.Visible && !chk.Checked)
+                {
+                    hasAllWorkers = false;
+                    break;
+                }
+            }
+
+            if (ViewModel.IsStaged)
+                flpColonyStructure.BackColor = Color.Yellow;
+            else if (ViewModel.IsBuilt)
+            {
+                if (!ViewModel.IsOnline)
+                    flpColonyStructure.BackColor = Color.PaleVioletRed;
+                else
+                    flpColonyStructure.BackColor = hasAllWorkers ? Color.Green : Color.LightGreen;
+            }
+            else
+                flpColonyStructure.BackColor = Color.White;
+        }
+
         private void handleMiningRigControls()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
@@ -1235,7 +1268,7 @@ namespace OE2EmpireTracker.Forms.Colony
             if (_isProgrammaticUpdate > 0) return;
             string prop = chkWorkDetail1.Tag as string;
             ViewModel.SetWorkerAssigned(prop, chkWorkDetail1.Checked);
-            UpdateData();
+            UpdateBackgroundColor();
             ColonyStructureDataChanged?.Invoke(this, e);
         }
 
@@ -1244,7 +1277,7 @@ namespace OE2EmpireTracker.Forms.Colony
             if (_isProgrammaticUpdate > 0) return;
             string prop = chkWorkDetail2.Tag as string;
             ViewModel.SetWorkerAssigned(prop, chkWorkDetail2.Checked);
-            UpdateData();
+            UpdateBackgroundColor();
             ColonyStructureDataChanged?.Invoke(this, e);
         }
 
@@ -1253,7 +1286,7 @@ namespace OE2EmpireTracker.Forms.Colony
             if (_isProgrammaticUpdate > 0) return;
             string prop = chkWorkDetail3.Tag as string;
             ViewModel.SetWorkerAssigned(prop, chkWorkDetail3.Checked);
-            UpdateData();
+            UpdateBackgroundColor();
             ColonyStructureDataChanged?.Invoke(this, e);
         }
 
@@ -1318,21 +1351,21 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             if (ViewModel == null || Colony == null) return;
             ViewModel.MoveUp(Colony);
-            ColonyStructureDataChanged?.Invoke(this, e);
+            ColonyStructureDataChanged?.Invoke(null, e);
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
             if (ViewModel == null || Colony == null) return;
             ViewModel.Delete(Colony);
-            ColonyStructureDataChanged?.Invoke(this, e);
+            ColonyStructureDataChanged?.Invoke(null, e);
         }
 
         private void cmdDown_Click(object sender, EventArgs e)
         {
             if (ViewModel == null || Colony == null) return;
             ViewModel.MoveDown(Colony);
-            ColonyStructureDataChanged?.Invoke(this, e);
+            ColonyStructureDataChanged?.Invoke(null, e);
         }
 
         private void txtSelectionFilter_TextChanged(object sender, EventArgs e)

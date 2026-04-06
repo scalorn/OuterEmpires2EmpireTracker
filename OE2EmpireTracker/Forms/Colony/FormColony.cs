@@ -90,6 +90,8 @@ namespace OE2EmpireTracker.Forms.Colony
                 catch (ObjectDisposedException) { }
                 return;
             }
+            // Skip if this form triggered the change (via structures_ColonyStructureDataChanged)
+            if (_isProgrammaticUpdate > 0) return;
             if (selectedColony != null && selectedColony.UUID == e.ColonyUUID)
             {
                 colonyViewModel.RecalculateStatus();
@@ -117,11 +119,13 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void cmdSave_Click(object sender, EventArgs e)
         {
+            using var guard = new ProgrammaticUpdateGuard(this);
             if (string.IsNullOrEmpty(colonyViewModel.Data.OwnerUUID))
             {
                 colonyViewModel.Data.OwnerUUID = playerContext.CurrentPlayerUUID;
             }
             colonyViewModel.Save();
+            PopulateListView(playerContext.GetCurrentPlayerColonies());
         }
 
         private void cmdOptimize_Click(object sender, EventArgs e)
@@ -186,74 +190,76 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             if (_isProgrammaticUpdate > 0) return;
             using var guard = new ProgrammaticUpdateGuard(this);
-            this.SuspendLayout();
 
             colonyViewModel.RecalculateStatus();
 
-            flpColonyStructure.SuspendLayout();
+            // If the sender is a ColonyStructure control, this is an in-place property change
+            // (worker toggle, built/online, etc.) — no need to rebuild all controls.
+            bool isStructuralChange = !(sender is ColonyStructure);
 
-            // Build a map of existing controls by their data reference
-            var controlMap = new Dictionary<Baseline.ColonyStructure, ColonyStructure>();
-            foreach (Control c in flpColonyStructure.Controls)
+            if (isStructuralChange)
             {
-                if (c is ColonyStructure cs && cs.ColonyStructureData != null)
+                flpColonyStructure.SuspendLayout();
+
+                // Build a map of existing controls by their data reference
+                var controlMap = new Dictionary<Baseline.ColonyStructure, ColonyStructure>();
+                foreach (Control c in flpColonyStructure.Controls)
                 {
-                    controlMap[cs.ColonyStructureData] = cs;
+                    if (c is ColonyStructure cs && cs.ColonyStructureData != null)
+                    {
+                        controlMap[cs.ColonyStructureData] = cs;
+                    }
                 }
-            }
 
-            // Remove controls whose structure was deleted
-            foreach (var orphan in controlMap
-                .Where(kv => !selectedColony.Structures.Contains(kv.Key))
-                .Select(kv => kv.Value)
-                .ToList())
-            {
-                flpColonyStructure.Controls.Remove(orphan);
-                orphan.Dispose();
-            }
-
-            var controlIndexMap = new Dictionary<Control, int>();
-            int index = 0;
-            foreach (Control c in flpColonyStructure.Controls)
-            {
-                controlIndexMap[c] = index++;
-            }
-
-            // Reorder and update existing controls to match selectedColony.Structures order
-            for (int i = 0; i < selectedColony.Structures.Count; i++)
-            {
-                Baseline.ColonyStructure structure = selectedColony.Structures[i];
-                ColonyStructure ctrl;
-                if (!controlMap.TryGetValue(structure, out ctrl))
+                // Remove controls whose structure was deleted
+                foreach (var orphan in controlMap
+                    .Where(kv => !selectedColony.Structures.Contains(kv.Key))
+                    .Select(kv => kv.Value)
+                    .ToList())
                 {
-                    // New structure ï¿½ create a control for it
-                    ctrl = new ColonyStructure();
-                    ctrl.Colony = selectedColony;
-                    ctrl.ColonyStructureData = structure;
-                    ctrl.ColonyStructureDataChanged -= structures_ColonyStructureDataChanged;
-                    ctrl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
-                    flpColonyStructure.Controls.Add(ctrl);
-                    // New control goes to end; SetChildIndex will move it into place
-                    controlIndexMap[ctrl] = flpColonyStructure.Controls.Count - 1;
+                    flpColonyStructure.Controls.Remove(orphan);
+                    orphan.Dispose();
                 }
-                // Move to correct position without removing/re-adding
-                int currentIndex;
-                if (controlIndexMap.TryGetValue(ctrl, out currentIndex) && currentIndex != i)
+
+                var controlIndexMap = new Dictionary<Control, int>();
+                int index = 0;
+                foreach (Control c in flpColonyStructure.Controls)
                 {
-                    flpColonyStructure.Controls.SetChildIndex(ctrl, i);
+                    controlIndexMap[c] = index++;
                 }
-                ctrl.UpdateData();
+
+                // Reorder and update existing controls to match selectedColony.Structures order
+                for (int i = 0; i < selectedColony.Structures.Count; i++)
+                {
+                    Baseline.ColonyStructure structure = selectedColony.Structures[i];
+                    ColonyStructure ctrl;
+                    if (!controlMap.TryGetValue(structure, out ctrl))
+                    {
+                        ctrl = new ColonyStructure();
+                        ctrl.Colony = selectedColony;
+                        ctrl.ColonyStructureData = structure;
+                        ctrl.ColonyStructureDataChanged -= structures_ColonyStructureDataChanged;
+                        ctrl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
+                        flpColonyStructure.Controls.Add(ctrl);
+                        controlIndexMap[ctrl] = flpColonyStructure.Controls.Count - 1;
+                    }
+                    int currentIndex;
+                    if (controlIndexMap.TryGetValue(ctrl, out currentIndex) && currentIndex != i)
+                    {
+                        flpColonyStructure.Controls.SetChildIndex(ctrl, i);
+                    }
+                    ctrl.UpdateData();
+                }
+
+                flpColonyStructure.ResumeLayout();
             }
 
-            flpColonyStructure.ResumeLayout();
+            // Always refresh the item grid — worker changes can create new lock entries
+            PopulateItemGrid();
 
             RtfBuilder builder = new RtfBuilder();
             ColonyStatusCalculator.PopulateStatus(builder, statusCalculator.finalActualStatus);
             rtbStatus.Rtf = builder.ToRtf();
-
-            PopulateItemGrid();
-
-            this.ResumeLayout();
 
             // Notify other forms (e.g. ColonyActivityForm) that colony data changed
             if (selectedColony != null)
@@ -348,7 +354,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // First index what is viewable.
             foreach (ListViewItem item in lvwColonies.Items)
             {
-                viewableColonies[(item.Tag as Data.Blueprint).UUID] = item;
+                viewableColonies[(item.Tag as Baseline.Colony).UUID] = item;
             }
 
             // Now add or update what is viewable.
@@ -729,6 +735,23 @@ namespace OE2EmpireTracker.Forms.Colony
                     : 0;
                 row.Cells[2].Value = lockedQty;
                 row.Cells[3].Value = itemEntry.Value.Quantity;
+            }
+        }
+
+        /// <summary>
+        /// Refreshes only the Locked column (index 2) in the item grid without
+        /// rebuilding the entire grid. Used after worker assignment changes.
+        /// </summary>
+        private void RefreshItemGridLocks()
+        {
+            foreach (DataGridViewRow row in dgvItems.Rows)
+            {
+                Item item = row.Tag as Item;
+                if (item == null) continue;
+                int lockedQty = colonyViewModel.Data.Locks != null
+                    ? colonyViewModel.Data.Locks.GetLockedQuantity(item.ItemType, item.BaseItemTypeID)
+                    : 0;
+                row.Cells[2].Value = lockedQty;
             }
         }
 
@@ -1274,8 +1297,11 @@ namespace OE2EmpireTracker.Forms.Colony
                 int.TryParse(row.Cells[3].Value?.ToString(), out qty);
                 item.Quantity = qty;
 
-                // Recalculate status so locks and unallocated workers update
-                structures_ColonyStructureDataChanged(sender, EventArgs.Empty);
+                // Recalculate status without rebuilding the entire form
+                colonyViewModel.RecalculateStatus();
+                RtfBuilder builder = new RtfBuilder();
+                ColonyStatusCalculator.PopulateStatus(builder, statusCalculator.finalActualStatus);
+                rtbStatus.Rtf = builder.ToRtf();
             }
         }
 
