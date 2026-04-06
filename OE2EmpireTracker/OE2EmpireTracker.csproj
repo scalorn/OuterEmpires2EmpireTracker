@@ -141,6 +141,7 @@
     <Compile Include="Baseline\IColonyStructureWorkers.cs" />
     <Compile Include="Baseline\PlayerContext.cs" />
     <Compile Include="Baseline\SafeFileWriter.cs" />
+    <Compile Include="Baseline\UIPreferences.cs" />
     <Compile Include="Baseline\TechLevel.cs" />
     <Compile Include="Baseline\EmpireContext.cs" />
     <Compile Include="Constants\BlueprintTypes.cs" />
