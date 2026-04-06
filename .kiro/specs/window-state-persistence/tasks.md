@@ -121,15 +121,15 @@ Implement UI state persistence for OE2EmpireTracker so that window positions, si
     - Insert `WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);` before existing cleanup in `OnFormClosed`
     - _Requirements: 4.1, 6.1, 7.1, 8.1, 9.2, 10.2, 12.1_
 
-- [ ] 9. Enable AllowUserToOrderColumns and sorting on all DataGridViews
-  - [-] 9.1 Set `AllowUserToOrderColumns = true` and enable sorting on all DataGridViews across all 8 MDI child forms
+- [x] 9. Enable AllowUserToOrderColumns and sorting on all DataGridViews
+  - [x] 9.1 Set `AllowUserToOrderColumns = true` and enable sorting on all DataGridViews across all 8 MDI child forms
     - Walk each form's Designer.cs or constructor code to find all DataGridView controls
     - Set `AllowUserToOrderColumns = true` on each
     - Set `SortMode = DataGridViewColumnSortMode.Automatic` on all sortable columns
     - Forms: FormColony, FormBlueprint, FormSurvey, FormPlayerProfile, FormDeliveryRoute, FormDeliveryExecution, FormColonyDailyBuild, FormColonyActivity
     - _Requirements: 9.1, 10.1, 14.3_
 
-- [ ] 10. Final checkpoint - Ensure all code compiles and tests pass
+- [x] 10. Final checkpoint - Ensure all code compiles and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
