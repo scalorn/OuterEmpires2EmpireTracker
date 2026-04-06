@@ -12,3 +12,5 @@
 - [x] 10. Deferred structure control UpdateData when Structures tab not active
 - [x] 11. Structure control pool — reuse controls instead of create/dispose
 - [x] 12. Deferred item grid (Warehousing tab) and commodity request grid (Workers tab)
+- [x] 13. In-place update for item grid (keyed by UUID) and commodity request grid (keyed by reference)
+- [x] 14. Remove tabDetailedData.Visible toggle that caused flicker on colony switch
