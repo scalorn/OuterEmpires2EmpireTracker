@@ -10,3 +10,5 @@
 - [x] 8. ColonyParser worker assignment key format fix (BlueCollar1 = true)
 - [x] 9. MergeStructure now merges AssignedWorkers on re-import
 - [x] 10. Deferred structure control UpdateData when Structures tab not active
+- [x] 11. Structure control pool — reuse controls instead of create/dispose
+- [x] 12. Deferred item grid (Warehousing tab) and commodity request grid (Workers tab)
