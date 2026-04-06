@@ -29,6 +29,9 @@ namespace OE2EmpireTracker.Forms.Colony
         // ListView sorting state
         private int _sortColumn = 0;
         private SortOrder _sortOrder = SortOrder.Ascending;
+
+        // Deferred structure control update flag
+        private bool _structuresDirty = false;
         public FormColony()
         {
             InitializeComponent();
@@ -506,6 +509,10 @@ namespace OE2EmpireTracker.Forms.Colony
 
             colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
 
+            // Determine whether to do full UpdateData on structure controls now
+            // or defer until the Structures tab is selected (performance optimization).
+            bool structuresTabActive = tabDetailedData.SelectedTab == tabPStructures;
+
             this.DoubleBuffered = true;
             List<ColonyStructure> structureControls = new List<ColonyStructure>();
             controlIndex = 0;
@@ -527,7 +534,10 @@ namespace OE2EmpireTracker.Forms.Colony
                 colonyStructureControl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
                 colonyStructureControl.Colony = selectedColony;
                 colonyStructureControl.ColonyStructureData = structure;
-                colonyStructureControl.UpdateData();
+                if (structuresTabActive)
+                {
+                    colonyStructureControl.UpdateData();
+                }
                 if (addControl)
                 {
                     structureControls.Add(colonyStructureControl);
@@ -535,6 +545,8 @@ namespace OE2EmpireTracker.Forms.Colony
                 controlIndex++;
                 Log.Debug("populatForm: processing structure finished");
             }
+
+            _structuresDirty = !structuresTabActive;
             Log.Debug("populatForm: Adding new controls started");
             flpColonyStructure.Controls.AddRange(structureControls.ToArray());
             Log.Debug("populatForm: Adding new controls finished");
@@ -645,16 +657,22 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             if (_isProgrammaticUpdate > 0) return;
 
-            // When switching to the Structures tab, refresh all structure controls
-            // so their selection combos reflect current warehouse state
+            // When switching to the Structures tab, refresh structure controls
+            // if they were deferred during PopulateForm or need a warehouse refresh.
             if (tabDetailedData.SelectedTab == tabPStructures)
             {
-                foreach (Control c in flpColonyStructure.Controls)
+                if (_structuresDirty)
                 {
-                    if (c is ColonyStructure cs && cs.Visible)
+                    flpColonyStructure.SuspendLayout();
+                    foreach (Control c in flpColonyStructure.Controls)
                     {
-                        cs.UpdateData();
+                        if (c is ColonyStructure cs && cs.Visible)
+                        {
+                            cs.UpdateData();
+                        }
                     }
+                    flpColonyStructure.ResumeLayout();
+                    _structuresDirty = false;
                 }
             }
         }
@@ -1418,6 +1436,8 @@ namespace OE2EmpireTracker.Forms.Colony
                 RtfBuilder builder = new RtfBuilder();
                 ColonyStatusCalculator.PopulateStatus(builder, statusCalculator.finalActualStatus);
                 rtbStatus.Rtf = builder.ToRtf();
+
+                _structuresDirty = true;
             }
         }
 
