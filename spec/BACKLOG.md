@@ -59,8 +59,9 @@ From Recommendations.md #14:
 ### Player Transfer UI
 From Recommendations.md #13: UI for transferring colonies/blueprints/surveys between player profiles.
 
-### Skill Multipliers — Timer Processing
-From Recommendations.md #13 Phase 4: ProductionFocus/Builder/ResearchFocus time reductions deferred until timer processing is fully implemented.
+### ~~Skill Multipliers — Timer Processing~~
+~~From Recommendations.md #13 Phase 4: ProductionFocus/Builder/ResearchFocus time reductions deferred until timer processing is fully implemented.~~
+**Status: Complete** — ProductionFocus applied to manufacturing and commodity factory cycle times. ResearchFocus applied to research times. Builder was already applied to build times.
 
 ---
 

@@ -1427,6 +1427,16 @@ namespace OE2EmpireTracker.Forms.Colony
                 long researchSeconds = ResearchTimeLookup.GetResearchTimeSeconds(bp.Evolution);
                 if (researchSeconds <= 0) return;
 
+                // Apply ResearchFocus skill multiplier
+                int researchFocusLevel = 0;
+                if (Colony != null && !string.IsNullOrEmpty(Colony.OwnerUUID))
+                {
+                    var owner = playerContext.playerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
+                    if (owner != null)
+                        researchFocusLevel = owner.GetSkill(SkillName.ResearchFocus).Level;
+                }
+                researchSeconds = Math.Max(1, (long)(researchSeconds * (1.0 - researchFocusLevel * 0.03)));
+
                 ColonyStructureData.ProcessCompletionTime = new CountDownTime();
                 ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.Now;
                 ColonyStructureData.ProcessCompletionTime.TimeRemaining = researchSeconds;
@@ -1456,6 +1466,16 @@ namespace OE2EmpireTracker.Forms.Colony
                 long mfgSeconds = tempTimer.TimeRemaining;
                 if (mfgSeconds <= 0) return;
 
+                // Apply ProductionFocus skill multiplier
+                int productionFocusLevel = 0;
+                if (Colony != null && !string.IsNullOrEmpty(Colony.OwnerUUID))
+                {
+                    var owner = playerContext.playerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
+                    if (owner != null)
+                        productionFocusLevel = owner.GetSkill(SkillName.ProductionFocus).Level;
+                }
+                mfgSeconds = Math.Max(1, (long)(mfgSeconds * (1.0 - productionFocusLevel * 0.03)));
+
                 // Parse quantity from txtQuantity
                 int qty = 1;
                 int.TryParse(txtQuantity.Text, out qty);
@@ -1484,7 +1504,19 @@ namespace OE2EmpireTracker.Forms.Colony
                 ColonyStructureData.ManufacturingCompleted = 0;
                 ColonyStructureData.ProcessCompletionTime = new CountDownTime();
                 ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.Now;
-                ColonyStructureData.ProcessCompletionTime.StartRepeating(GameConstants.CommodityCycleSeconds);
+
+                // Apply ProductionFocus skill multiplier to commodity cycle time
+                long commodityCycleSeconds = GameConstants.CommodityCycleSeconds;
+                int commProductionFocusLevel = 0;
+                if (Colony != null && !string.IsNullOrEmpty(Colony.OwnerUUID))
+                {
+                    var owner = playerContext.playerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
+                    if (owner != null)
+                        commProductionFocusLevel = owner.GetSkill(SkillName.ProductionFocus).Level;
+                }
+                commodityCycleSeconds = Math.Max(1, (long)(commodityCycleSeconds * (1.0 - commProductionFocusLevel * 0.03)));
+
+                ColonyStructureData.ProcessCompletionTime.StartRepeating(commodityCycleSeconds);
                 timerCountdown.Interval = 1000;
                 timerCountdown.Start();
                 handleCommodityFactoryControls();
