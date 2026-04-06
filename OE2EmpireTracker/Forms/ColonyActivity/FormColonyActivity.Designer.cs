@@ -160,6 +160,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             // 
             this.dgvActivities.AllowUserToAddRows = false;
             this.dgvActivities.AllowUserToDeleteRows = false;
+            this.dgvActivities.AllowUserToOrderColumns = true;
             this.dgvActivities.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvActivities.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colCountDown,

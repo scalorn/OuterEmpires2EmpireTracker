@@ -23,6 +23,11 @@
 - NuGet via `packages.config` (not PackageReference)
 - Packages restored to solution-level `packages/` folder
 
+## Visual Studio Installation
+- Visual Studio 2026 Community Edition (version 18)
+- Install path: `D:\Program Files\Microsoft Visual Studio\18\Community`
+- vstest.console path: `"D:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe"`
+
 ## Common Commands
 ```
 # Build the solution
@@ -32,7 +37,7 @@ msbuild OE2EmpireTracker.sln /p:Configuration=Debug
 nuget restore OE2EmpireTracker.sln
 
 # Run tests via vstest (dotnet test does NOT work with old-style csproj + packages.config)
-vstest.console OE2EmpireTracker.Tests/bin/Debug/OE2EmpireTracker.Tests.dll
+"D:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" OE2EmpireTracker.Tests/bin/Debug/OE2EmpireTracker.Tests.dll
 ```
 
 ## Important: Testing

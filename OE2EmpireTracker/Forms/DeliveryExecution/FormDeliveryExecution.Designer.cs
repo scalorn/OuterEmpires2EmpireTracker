@@ -156,6 +156,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             // 
             this.dgvLoadList.AllowUserToAddRows = false;
             this.dgvLoadList.AllowUserToDeleteRows = false;
+            this.dgvLoadList.AllowUserToOrderColumns = true;
             this.dgvLoadList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLoadList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colLoadType, this.colLoadName, this.colLoadExtName, this.colLoadQty});

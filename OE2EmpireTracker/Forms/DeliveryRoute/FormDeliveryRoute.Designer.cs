@@ -194,6 +194,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             // 
             this.dgvStops.AllowUserToAddRows = false;
             this.dgvStops.AllowUserToDeleteRows = false;
+            this.dgvStops.AllowUserToOrderColumns = true;
             this.dgvStops.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvStops.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colSequence,
@@ -403,6 +404,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             // 
             this.dgvDropOff.AllowUserToAddRows = false;
             this.dgvDropOff.AllowUserToDeleteRows = false;
+            this.dgvDropOff.AllowUserToOrderColumns = true;
             this.dgvDropOff.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvDropOff.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colDropType, this.colDropName, this.colDropQty});
@@ -514,6 +516,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             // 
             this.dgvPickUp.AllowUserToAddRows = false;
             this.dgvPickUp.AllowUserToDeleteRows = false;
+            this.dgvPickUp.AllowUserToOrderColumns = true;
             this.dgvPickUp.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvPickUp.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colPickType, this.colPickName, this.colPickQty});

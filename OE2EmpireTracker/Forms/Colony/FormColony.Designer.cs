@@ -609,6 +609,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // 
             this.dgvCommodityRequests.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvCommodityRequests.AllowUserToOrderColumns = true;
             this.dgvCommodityRequests.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvCommodityRequests.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.CommodityRequestedName,
@@ -756,6 +757,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // 
             this.dgvItems.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvItems.AllowUserToOrderColumns = true;
             this.dgvItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvItems.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ItemType,
@@ -841,7 +843,7 @@ namespace OE2EmpireTracker.Forms.Colony
             this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
             this.dataGridViewTextBoxColumn1.ReadOnly = true;
             this.dataGridViewTextBoxColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.dataGridViewTextBoxColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.dataGridViewTextBoxColumn1.Width = 300;
             // 
             // dataGridViewValidatedTextBoxColumn1
@@ -865,7 +867,7 @@ namespace OE2EmpireTracker.Forms.Colony
             this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
             this.dataGridViewTextBoxColumn3.ReadOnly = true;
             this.dataGridViewTextBoxColumn3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumn3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.dataGridViewTextBoxColumn3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.dataGridViewTextBoxColumn3.Width = 150;
             // 
             // dataGridViewTextBoxColumn4
@@ -889,7 +891,7 @@ namespace OE2EmpireTracker.Forms.Colony
             this.CommodityRequestedName.Name = "CommodityRequestedName";
             this.CommodityRequestedName.ReadOnly = true;
             this.CommodityRequestedName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.CommodityRequestedName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.CommodityRequestedName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.CommodityRequestedName.Width = 300;
             // 
             // CommodityRequestedAmount
@@ -925,7 +927,7 @@ namespace OE2EmpireTracker.Forms.Colony
             this.Item.Name = "Item";
             this.Item.ReadOnly = true;
             this.Item.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Item.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.Item.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.Item.Width = 150;
             // 
             // LockedAmount
@@ -948,20 +950,20 @@ namespace OE2EmpireTracker.Forms.Colony
             this.Property.HeaderText = "Property";
             this.Property.Name = "Property";
             this.Property.ReadOnly = true;
-            this.Property.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.Property.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // BaseValue
             // 
             this.BaseValue.HeaderText = "BaseValue";
             this.BaseValue.Name = "BaseValue";
             this.BaseValue.ReadOnly = true;
-            this.BaseValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.BaseValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // CurrentValue
             // 
             this.CurrentValue.HeaderText = "CurrentValue";
             this.CurrentValue.Name = "CurrentValue";
-            this.CurrentValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.CurrentValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // flowLayoutPanel3
             // 

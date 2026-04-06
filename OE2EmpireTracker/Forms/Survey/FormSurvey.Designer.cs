@@ -620,6 +620,7 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             // dgvResources
             // 
+            this.dgvResources.AllowUserToOrderColumns = true;
             this.dgvResources.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvResources.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Resource,

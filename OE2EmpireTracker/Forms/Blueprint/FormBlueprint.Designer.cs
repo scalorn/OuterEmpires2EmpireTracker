@@ -518,6 +518,7 @@ namespace OE2EmpireTracker
             // 
             this.dgvStatistics.AllowUserToAddRows = false;
             this.dgvStatistics.AllowUserToDeleteRows = false;
+            this.dgvStatistics.AllowUserToOrderColumns = true;
             this.dgvStatistics.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvStatistics.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Property,
@@ -536,20 +537,20 @@ namespace OE2EmpireTracker
             this.Property.HeaderText = "Property";
             this.Property.Name = "Property";
             this.Property.ReadOnly = true;
-            this.Property.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.Property.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // BaseValue
             // 
             this.BaseValue.HeaderText = "BaseValue";
             this.BaseValue.Name = "BaseValue";
             this.BaseValue.ReadOnly = true;
-            this.BaseValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.BaseValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // CurrentValue
             // 
             this.CurrentValue.HeaderText = "CurrentValue";
             this.CurrentValue.Name = "CurrentValue";
-            this.CurrentValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.CurrentValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // tabPResources
             // 
@@ -565,6 +566,7 @@ namespace OE2EmpireTracker
             // 
             // dgvResources
             // 
+            this.dgvResources.AllowUserToOrderColumns = true;
             this.dgvResources.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvResources.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Resource,
