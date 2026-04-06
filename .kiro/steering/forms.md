@@ -1,4 +1,5 @@
 ---
+description: WinForms UI patterns and conventions for building forms in this project
 inclusion: auto
 ---
 

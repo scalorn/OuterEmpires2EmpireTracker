@@ -1,11 +1,12 @@
 # Workflow Rules
 
 ## After Every Piece of Work
-1. **Commit** all changes with a detailed commit message describing what was done and why
-2. **Update or create a spec** under `.kiro/specs/` documenting the work if it relates to a feature or fix
+1. **Build and test** before committing — the solution must compile and all tests must pass
+2. **Commit** all changes with a detailed commit message describing what was done and why
+3. **Update or create a spec** under `.kiro/specs/` documenting the work if it relates to a feature or fix
    - If a spec already exists for the feature, update its tasks.md to reflect completed work
    - If no spec exists, create one with requirements.md, design.md, and tasks.md (tasks marked done)
-3. Do not leave uncommitted changes at the end of a task
+4. Do not leave uncommitted changes at the end of a task
 
 ## Commit Messages
 - First line: concise summary of the change
