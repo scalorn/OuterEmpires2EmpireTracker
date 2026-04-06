@@ -144,6 +144,7 @@
     <Compile Include="Baseline\BoundsValidator.cs" />
     <Compile Include="Baseline\PreferencesStore.cs" />
     <Compile Include="Baseline\UIPreferences.cs" />
+    <Compile Include="Baseline\WindowStateHelper.cs" />
     <Compile Include="Baseline\TechLevel.cs" />
     <Compile Include="Baseline\EmpireContext.cs" />
     <Compile Include="Constants\BlueprintTypes.cs" />
