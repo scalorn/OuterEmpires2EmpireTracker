@@ -220,6 +220,7 @@
     <Compile Include="Baseline\ColonyStatusCalculatorTests.cs" />
     <Compile Include="Baseline\DeliveryPlanTests.cs" />
     <Compile Include="Baseline\DeliveryPlanViewModelTests.cs" />
+    <Compile Include="Baseline\DeliveryFulfillmentTests.cs" />
     <Compile Include="Baseline\DeliveryRouteTests.cs" />
     <Compile Include="Baseline\DeliveryRouteViewModelTests.cs" />
     <Compile Include="Baseline\SafeFileWriterTests.cs" />

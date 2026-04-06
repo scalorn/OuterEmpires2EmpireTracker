@@ -411,26 +411,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 return;
             }
 
-            var cr = colony.Commodities.FirstOrDefault(c => c.Name == item.BaseItemTypeID);
-            if (cr == null)
-            {
-                Log.Warn("No matching CommodityRequested '{0}' on colony {1}", item.BaseItemTypeID, colony.ColonyName);
-                return;
-            }
-
-            if (delivered)
-            {
-                cr.Delivered = cr.Requested;
-                cr.Fulfilled = true;
-                Log.Info("Commodity '{0}' fulfilled on colony {1}", item.Name, colony.ColonyName);
-            }
-            else
-            {
-                cr.Delivered = 0;
-                cr.Fulfilled = false;
-                Log.Info("Commodity '{0}' unfulfilled on colony {1}", item.Name, colony.ColonyName);
-            }
-
+            DeliveryFulfillment.FulfillCommodity(colony, item.BaseItemTypeID, delivered);
             playerContext.OnColonyDataChanged(stop.ColonyUUID);
         }
 
@@ -447,26 +428,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 return;
             }
 
-            var structure = colony.Structures.FirstOrDefault(s =>
-                s.FlatpackBlueprintUUID == item.BaseItemTypeID);
-            if (structure == null)
-            {
-                Log.Warn("No matching ColonyStructure with FlatpackBlueprintUUID '{0}' on colony {1}",
-                    item.BaseItemTypeID, colony.ColonyName);
-                return;
-            }
-
-            if (delivered)
-            {
-                structure.Properties.setProperty("Staged", "True");
-                Log.Info("Flatpack '{0}' staged on colony {1}", item.Name, colony.ColonyName);
-            }
-            else
-            {
-                structure.Properties.setProperty("Staged", "False");
-                Log.Info("Flatpack '{0}' unstaged on colony {1}", item.Name, colony.ColonyName);
-            }
-
+            DeliveryFulfillment.StageFlatpack(colony, item.BaseItemTypeID, delivered);
             playerContext.OnColonyDataChanged(stop.ColonyUUID);
         }
 
@@ -483,34 +445,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 return;
             }
 
-            var existing = colony.Items.FindByType(ItemType.ItemTypeEnum.WorkDetail, item.BaseItemTypeID);
-            if (delivered)
-            {
-                if (existing.Count > 0)
-                {
-                    existing[0].Quantity += item.Quantity;
-                }
-                else
-                {
-                    var workerItem = new Item(ItemType.ItemTypeEnum.WorkDetail, item.BaseItemTypeID);
-                    workerItem.UUID = System.Guid.NewGuid().ToString();
-                    workerItem.BaseItemTypeID = item.BaseItemTypeID;
-                    workerItem.Name = item.Name;
-                    workerItem.Quantity = item.Quantity;
-                    workerItem.Volume = Constants.GameConstants.WorkerVolume;
-                    colony.Items.AddItem(workerItem);
-                }
-                Log.Info("Worker '{0}' x{1} delivered to colony {2}", item.Name, item.Quantity, colony.ColonyName);
-            }
-            else
-            {
-                if (existing.Count > 0)
-                {
-                    existing[0].Quantity = Math.Max(0, existing[0].Quantity - item.Quantity);
-                }
-                Log.Info("Worker '{0}' x{1} undelivered from colony {2}", item.Name, item.Quantity, colony.ColonyName);
-            }
-
+            DeliveryFulfillment.DeliverWorkers(colony, item.BaseItemTypeID, item.Name, item.Quantity, delivered);
             playerContext.OnColonyDataChanged(stop.ColonyUUID);
         }
 

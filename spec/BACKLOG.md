@@ -46,8 +46,9 @@ Space station hub modeling for delivery route optimization. Superseded by the br
 ### Delivery Auto-Fill — Time Horizon Parameter (REQ-DEL-061)
 Add a time horizon parameter to flatpack auto-fill so it only includes structures expected to be built within a configurable window.
 
-### Commodity Fulfillment Unit Tests
-Optional task from commodity-delivery-loop spec (task 5.2). Extract fulfillment logic from the Form handler into a testable static helper and add unit tests.
+### ~~Commodity Fulfillment Unit Tests~~
+~~Optional task from commodity-delivery-loop spec (task 5.2). Extract fulfillment logic from the Form handler into a testable static helper and add unit tests.~~
+**Status: Complete** — Extracted `DeliveryFulfillment` static helper with `FulfillCommodity`, `StageFlatpack`, `DeliverWorkers`. 17 unit tests covering all three operations.
 
 ### Global Blueprint Enhancements
 From Recommendations.md #14:
