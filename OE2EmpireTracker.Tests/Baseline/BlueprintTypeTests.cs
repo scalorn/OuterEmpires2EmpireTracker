@@ -14,28 +14,28 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void DefaultConstructor_IdIsNotNull()
         {
             var bt = new BlueprintType();
-            Assert.IsNull(bt.Id);
+            Assert.That(bt.Id, Is.Null);
         }
 
         [Test]
         public void DefaultConstructor_NameIsNotNull()
         {
             var bt = new BlueprintType();
-            Assert.IsNull(bt.Name);
+            Assert.That(bt.Name, Is.Null);
         }
 
         [Test]
         public void DefaultConstructor_PropertiesIsNotNull()
         {
             var bt = new BlueprintType();
-            Assert.IsNotNull(bt.Properties);
+            Assert.That(bt.Properties, Is.Not.Null);
         }
 
         [Test]
         public void DefaultConstructor_ResearchablePropertiesIsNotNull()
         {
             var bt = new BlueprintType();
-            Assert.IsNotNull(bt.ResearchableProperties);
+            Assert.That(bt.ResearchableProperties, Is.Not.Null);
         }
 
         // -----------------------------------------------------------------------
@@ -47,7 +47,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var bt = new BlueprintType();
             bt.Id = "Reactor";
-            Assert.AreEqual("Reactor", bt.Id);
+            Assert.That(bt.Id, Is.EqualTo("Reactor"));
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var bt = new BlueprintType();
             bt.Name = "Reactor";
-            Assert.AreEqual("Reactor", bt.Name);
+            Assert.That(bt.Name, Is.EqualTo("Reactor"));
         }
 
         [Test]
@@ -63,10 +63,10 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var bt = new BlueprintType();
             bt.Universal = true;
-            Assert.IsTrue(bt.Universal);
+            Assert.That(bt.Universal, Is.True);
 
             bt.Universal = false;
-            Assert.IsFalse(bt.Universal);
+            Assert.That(bt.Universal, Is.False);
         }
 
         // -----------------------------------------------------------------------
@@ -79,9 +79,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             var bt = new BlueprintType();
             bt.Properties = new string[] { "Mass", "Health" };
 
-            Assert.AreEqual(2, bt.Properties.Length);
-            Assert.AreEqual("Mass", bt.Properties[0]);
-            Assert.AreEqual("Health", bt.Properties[1]);
+            Assert.That(bt.Properties.Length, Is.EqualTo(2));
+            Assert.That(bt.Properties[0], Is.EqualTo("Mass"));
+            Assert.That(bt.Properties[1], Is.EqualTo("Health"));
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var bt = new BlueprintType();
             bt.Properties = new string[] { };
 
-            Assert.AreEqual(0, bt.Properties.Length);
+            Assert.That(bt.Properties.Length, Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -103,9 +103,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             var bt = new BlueprintType();
             bt.ResearchableProperties = new string[] { "Mass", "Health" };
 
-            Assert.AreEqual(2, bt.ResearchableProperties.Length);
-            Assert.AreEqual("Mass", bt.ResearchableProperties[0]);
-            Assert.AreEqual("Health", bt.ResearchableProperties[1]);
+            Assert.That(bt.ResearchableProperties.Length, Is.EqualTo(2));
+            Assert.That(bt.ResearchableProperties[0], Is.EqualTo("Mass"));
+            Assert.That(bt.ResearchableProperties[1], Is.EqualTo("Health"));
         }
 
         [Test]
@@ -114,7 +114,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var bt = new BlueprintType();
             bt.ResearchableProperties = new string[] { };
 
-            Assert.AreEqual(0, bt.ResearchableProperties.Length);
+            Assert.That(bt.ResearchableProperties.Length, Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -125,7 +125,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void Universal_DefaultIsFalse()
         {
             var bt = new BlueprintType();
-            Assert.IsFalse(bt.Universal);
+            Assert.That(bt.Universal, Is.False);
         }
 
         [Test]
@@ -133,7 +133,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var bt = new BlueprintType();
             bt.Universal = true;
-            Assert.IsTrue(bt.Universal);
+            Assert.That(bt.Universal, Is.True);
         }
 
         // -----------------------------------------------------------------------
@@ -155,11 +155,11 @@ namespace OE2EmpireTracker.Tests.Baseline
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(bt);
             var restored = Newtonsoft.Json.JsonConvert.DeserializeObject<BlueprintType>(json);
 
-            Assert.AreEqual(bt.Id, restored.Id);
-            Assert.AreEqual(bt.Name, restored.Name);
-            Assert.AreEqual(bt.Universal, restored.Universal);
-            Assert.AreEqual(bt.Properties.Length, restored.Properties.Length);
-            Assert.AreEqual(bt.ResearchableProperties.Length, restored.ResearchableProperties.Length);
+            Assert.That(restored.Id, Is.EqualTo(bt.Id));
+            Assert.That(restored.Name, Is.EqualTo(bt.Name));
+            Assert.That(restored.Universal, Is.EqualTo(bt.Universal));
+            Assert.That(restored.Properties.Length, Is.EqualTo(bt.Properties.Length));
+            Assert.That(restored.ResearchableProperties.Length, Is.EqualTo(bt.ResearchableProperties.Length));
         }
     }
 }

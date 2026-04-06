@@ -103,8 +103,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.ProcessColony();
 
             var commodities = colony.Items.FindByType(ItemType.ItemTypeEnum.Commodity, "Advanced Biolubricants");
-            Assert.AreEqual(1, commodities.Count);
-            Assert.AreEqual(GameConstants.CommoditiesPerCycle, commodities[0].Quantity);
+            Assert.That(commodities.Count, Is.EqualTo(1));
+            Assert.That(commodities[0].Quantity, Is.EqualTo(GameConstants.CommoditiesPerCycle));
         }
 
         // -----------------------------------------------------------------------
@@ -128,8 +128,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.ProcessColony();
 
             var commodities = colony.Items.FindByType(ItemType.ItemTypeEnum.Commodity, "Advanced Biolubricants");
-            Assert.AreEqual(1, commodities.Count);
-            Assert.AreEqual(3 * GameConstants.CommoditiesPerCycle, commodities[0].Quantity);
+            Assert.That(commodities.Count, Is.EqualTo(1));
+            Assert.That(commodities[0].Quantity, Is.EqualTo(3 * GameConstants.CommoditiesPerCycle));
         }
 
         // -----------------------------------------------------------------------
@@ -161,8 +161,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.ProcessColony();
 
             var commodities = colony.Items.FindByType(ItemType.ItemTypeEnum.Commodity, "Advanced Biolubricants");
-            Assert.AreEqual(1, commodities.Count);
-            Assert.AreEqual(5 + GameConstants.CommoditiesPerCycle, commodities[0].Quantity);
+            Assert.That(commodities.Count, Is.EqualTo(1));
+            Assert.That(commodities[0].Quantity, Is.EqualTo(5 + GameConstants.CommoditiesPerCycle));
         }
 
         // -----------------------------------------------------------------------
@@ -187,12 +187,12 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.ProcessColony();
 
             var alkali = colony.Items.FindResource("Alkali Organics", GameConstants.PurityRefined);
-            Assert.AreEqual(1, alkali.Count);
-            Assert.AreEqual(98, alkali[0].Quantity); // 100 - 2
+            Assert.That(alkali.Count, Is.EqualTo(1));
+            Assert.That(alkali[0].Quantity, Is.EqualTo(98)); // 100 - 2
 
             var acidic = colony.Items.FindResource("Strong Acidic Inorganics", GameConstants.PurityRefined);
-            Assert.AreEqual(1, acidic.Count);
-            Assert.AreEqual(98, acidic[0].Quantity); // 100 - 2
+            Assert.That(acidic.Count, Is.EqualTo(1));
+            Assert.That(acidic[0].Quantity, Is.EqualTo(98)); // 100 - 2
         }
 
         // -----------------------------------------------------------------------
@@ -217,10 +217,12 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.ProcessColony();
 
             var alkali = colony.Items.FindResource("Alkali Organics", GameConstants.PurityRefined);
-            Assert.AreEqual(0, alkali.Count, "Depleted resource should be removed from warehouse");
+            Assert.That(alkali.Count, Is.EqualTo(0),
+                    "Depleted resource should be removed from warehouse");
 
             var acidic = colony.Items.FindResource("Strong Acidic Inorganics", GameConstants.PurityRefined);
-            Assert.AreEqual(0, acidic.Count, "Depleted resource should be removed from warehouse");
+            Assert.That(acidic.Count, Is.EqualTo(0),
+                    "Depleted resource should be removed from warehouse");
         }
 
         // -----------------------------------------------------------------------
@@ -243,7 +245,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             colony.ProcessColony();
 
-            Assert.AreEqual(2, colony.Structures[0].ManufacturingCompleted);
+            Assert.That(colony.Structures[0].ManufacturingCompleted, Is.EqualTo(2));
         }
 
         // -----------------------------------------------------------------------
@@ -266,7 +268,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.ProcessColony();
 
             // No commodities should be produced
-            Assert.AreEqual(0, colony.Structures[0].ManufacturingCompleted);
+            Assert.That(colony.Structures[0].ManufacturingCompleted, Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -288,7 +290,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             colony.ProcessColony();
 
-            Assert.AreEqual(0, colony.Structures[0].ManufacturingCompleted);
+            Assert.That(colony.Structures[0].ManufacturingCompleted, Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -349,8 +351,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             int lockedAcidic = colony.Locks.GetLockedQuantity(
                 ItemType.ItemTypeEnum.Resource, "Strong Acidic Inorganics");
 
-            Assert.AreEqual(6, lockedAlkali);
-            Assert.AreEqual(6, lockedAcidic);
+            Assert.That(lockedAlkali, Is.EqualTo(6));
+            Assert.That(lockedAcidic, Is.EqualTo(6));
         }
 
         [Test]
@@ -385,8 +387,9 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             // Resources should be created with 0 quantity
             var alkali = colony.Items.FindResource("Alkali Organics", GameConstants.PurityRefined);
-            Assert.AreEqual(1, alkali.Count, "Resource item should be created");
-            Assert.AreEqual(0, alkali[0].Quantity);
+            Assert.That(alkali.Count, Is.EqualTo(1),
+                    "Resource item should be created");
+            Assert.That(alkali[0].Quantity, Is.EqualTo(0));
         }
 
         [Test]
@@ -419,7 +422,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             calc.CalculateBuilt();
 
             var locks = colony.Locks.GetLocksForProcess(structure.UUID);
-            Assert.AreEqual(0, locks.Count);
+            Assert.That(locks.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -453,7 +456,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             int lockedAlkali = colony.Locks.GetLockedQuantity(
                 ItemType.ItemTypeEnum.Resource, "Alkali Organics");
-            Assert.AreEqual(0, lockedAlkali);
+            Assert.That(lockedAlkali, Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -520,8 +523,8 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             // Base output = 100, with 10% bonus = 110
             var items = colony.Items.FindResource("TestOre", "Low");
-            Assert.AreEqual(1, items.Count);
-            Assert.AreEqual(110, items[0].Quantity);
+            Assert.That(items.Count, Is.EqualTo(1));
+            Assert.That(items[0].Quantity, Is.EqualTo(110));
         }
 
         // -----------------------------------------------------------------------
@@ -573,8 +576,8 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             // Base: consume 25, Low multiplier = 1, produce 25. With 10% bonus = (int)(25 * 1 * 1.10) = 27
             var refined = colony.Items.FindResource("TestMineral", GameConstants.PurityRefined);
-            Assert.AreEqual(1, refined.Count);
-            Assert.AreEqual(27, refined[0].Quantity);
+            Assert.That(refined.Count, Is.EqualTo(1));
+            Assert.That(refined[0].Quantity, Is.EqualTo(27));
         }
 
         // -----------------------------------------------------------------------
@@ -624,8 +627,8 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             // Base: consume 25, Low multiplier = 1, produce 25. Multiplier = 1.0 (0 skill)
             var refined = colony.Items.FindResource("TestMineral2", GameConstants.PurityRefined);
-            Assert.AreEqual(1, refined.Count);
-            Assert.AreEqual(25, refined[0].Quantity);
+            Assert.That(refined.Count, Is.EqualTo(1));
+            Assert.That(refined[0].Quantity, Is.EqualTo(25));
         }
 
         // -----------------------------------------------------------------------
@@ -670,8 +673,8 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             // No owner => skill level 0 => multiplier 1.0 => base output 25
             var refined = colony.Items.FindResource("TestMineral3", GameConstants.PurityRefined);
-            Assert.AreEqual(1, refined.Count);
-            Assert.AreEqual(25, refined[0].Quantity);
+            Assert.That(refined.Count, Is.EqualTo(1));
+            Assert.That(refined[0].Quantity, Is.EqualTo(25));
         }
     }
 }

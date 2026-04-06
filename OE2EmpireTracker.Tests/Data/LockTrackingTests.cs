@@ -29,7 +29,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var a = new ItemKey(IT.Resource, "Iron");
             var b = new ItemKey(IT.Resource, "Iron");
-            Assert.AreEqual(a, b);
+            Assert.That(b, Is.EqualTo(a));
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var a = new ItemKey(IT.Resource, "Iron");
             var b = new ItemKey(IT.Commodity, "Iron");
-            Assert.AreNotEqual(a, b);
+            Assert.That(b, Is.Not.EqualTo(a));
         }
 
         [Test]
@@ -45,14 +45,14 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var a = new ItemKey(IT.Resource, "Iron");
             var b = new ItemKey(IT.Resource, "Gold");
-            Assert.AreNotEqual(a, b);
+            Assert.That(b, Is.Not.EqualTo(a));
         }
 
         [Test]
         public void ItemKey_ToString_ProducesExpectedFormat()
         {
             var key = new ItemKey(IT.Resource, "Iron");
-            Assert.AreEqual("Resource:Iron", key.ToString());
+            Assert.That(key.ToString(), Is.EqualTo("Resource:Iron"));
         }
 
         [Test]
@@ -60,22 +60,22 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var original = new ItemKey(IT.Commodity, "Steel Beams");
             var parsed = ItemKey.Parse(original.ToString());
-            Assert.AreEqual(original, parsed);
+            Assert.That(parsed, Is.EqualTo(original));
         }
 
         [Test]
         public void ItemKey_Parse_NullOrEmpty_ReturnsNoneKey()
         {
             var key = ItemKey.Parse(null);
-            Assert.AreEqual(IT.None, key.ItemType);
+            Assert.That(key.ItemType, Is.EqualTo(IT.None));
         }
 
         [Test]
         public void ItemKey_Parse_NoSeparator_ReturnsNoneType()
         {
             var key = ItemKey.Parse("NoColonHere");
-            Assert.AreEqual(IT.None, key.ItemType);
-            Assert.AreEqual("NoColonHere", key.BaseItemTypeID);
+            Assert.That(key.ItemType, Is.EqualTo(IT.None));
+            Assert.That(key.BaseItemTypeID, Is.EqualTo("NoColonHere"));
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace OE2EmpireTracker.Tests.Data
             var dict = new Dictionary<ItemKey, int>();
             var key = new ItemKey(IT.Resource, "Iron");
             dict[key] = 10;
-            Assert.AreEqual(10, dict[new ItemKey(IT.Resource, "Iron")]);
+            Assert.That(dict[new ItemKey(IT.Resource, "Iron")], Is.EqualTo(10));
         }
 
         // -----------------------------------------------------------------------
@@ -95,7 +95,7 @@ namespace OE2EmpireTracker.Tests.Data
         public void LockItem_SingleItem_LockedQuantityReflected()
         {
             _tracking.LockItem(ProcessA, IT.Resource, "Iron", 50);
-            Assert.AreEqual(50, _tracking.GetLockedQuantity(IT.Resource, "Iron"));
+            Assert.That(_tracking.GetLockedQuantity(IT.Resource, "Iron"), Is.EqualTo(50));
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             _tracking.LockItem(ProcessA, IT.Resource, "Iron", 30);
             _tracking.LockItem(ProcessA, IT.Resource, "Iron", 20);
-            Assert.AreEqual(50, _tracking.GetLockedQuantity(IT.Resource, "Iron"));
+            Assert.That(_tracking.GetLockedQuantity(IT.Resource, "Iron"), Is.EqualTo(50));
         }
 
         [Test]
@@ -112,8 +112,8 @@ namespace OE2EmpireTracker.Tests.Data
             _tracking.LockItem(ProcessA, IT.Resource, "Iron", 10);
             _tracking.LockItem(ProcessA, IT.Commodity, "Steel Beams", 5);
 
-            Assert.AreEqual(10, _tracking.GetLockedQuantity(IT.Resource, "Iron"));
-            Assert.AreEqual(5, _tracking.GetLockedQuantity(IT.Commodity, "Steel Beams"));
+            Assert.That(_tracking.GetLockedQuantity(IT.Resource, "Iron"), Is.EqualTo(10));
+            Assert.That(_tracking.GetLockedQuantity(IT.Commodity, "Steel Beams"), Is.EqualTo(5));
         }
 
         [Test]
@@ -146,16 +146,16 @@ namespace OE2EmpireTracker.Tests.Data
 
             _tracking.LockItems(ProcessA, items);
 
-            Assert.AreEqual(100, _tracking.GetLockedQuantity(IT.Resource, "Iron"));
-            Assert.AreEqual(25, _tracking.GetLockedQuantity(IT.Resource, "Gold"));
-            Assert.AreEqual(10, _tracking.GetLockedQuantity(IT.Commodity, "Steel Beams"));
+            Assert.That(_tracking.GetLockedQuantity(IT.Resource, "Iron"), Is.EqualTo(100));
+            Assert.That(_tracking.GetLockedQuantity(IT.Resource, "Gold"), Is.EqualTo(25));
+            Assert.That(_tracking.GetLockedQuantity(IT.Commodity, "Steel Beams"), Is.EqualTo(10));
         }
 
         [Test]
         public void LockItems_EmptyList_NoLocksAdded()
         {
             _tracking.LockItems(ProcessA, new List<ItemLock>());
-            Assert.AreEqual(0, _tracking.GetLocksForProcess(ProcessA).Count);
+            Assert.That(_tracking.GetLocksForProcess(ProcessA).Count, Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -168,20 +168,20 @@ namespace OE2EmpireTracker.Tests.Data
             _tracking.LockItem(ProcessA, IT.Resource, "Iron", 30);
             _tracking.LockItem(ProcessB, IT.Resource, "Iron", 20);
 
-            Assert.AreEqual(50, _tracking.GetLockedQuantity(IT.Resource, "Iron"));
+            Assert.That(_tracking.GetLockedQuantity(IT.Resource, "Iron"), Is.EqualTo(50));
         }
 
         [Test]
         public void GetLockedQuantity_UnknownItem_ReturnsZero()
         {
             _tracking.LockItem(ProcessA, IT.Resource, "Iron", 10);
-            Assert.AreEqual(0, _tracking.GetLockedQuantity(IT.Resource, "Gold"));
+            Assert.That(_tracking.GetLockedQuantity(IT.Resource, "Gold"), Is.EqualTo(0));
         }
 
         [Test]
         public void GetLockedQuantity_NoLocks_ReturnsZero()
         {
-            Assert.AreEqual(0, _tracking.GetLockedQuantity(IT.Resource, "Iron"));
+            Assert.That(_tracking.GetLockedQuantity(IT.Resource, "Iron"), Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -196,17 +196,17 @@ namespace OE2EmpireTracker.Tests.Data
 
             var locks = _tracking.GetLocksForProcess(ProcessA);
 
-            Assert.AreEqual(1, locks.Count);
-            Assert.AreEqual(new ItemKey(IT.Resource, "Iron"), locks[0].Key);
-            Assert.AreEqual(10, locks[0].Quantity);
+            Assert.That(locks.Count, Is.EqualTo(1));
+            Assert.That(locks[0].Key, Is.EqualTo(new ItemKey(IT.Resource, "Iron")));
+            Assert.That(locks[0].Quantity, Is.EqualTo(10));
         }
 
         [Test]
         public void GetLocksForProcess_UnknownProcess_ReturnsEmptyList()
         {
             var locks = _tracking.GetLocksForProcess("no-such-process");
-            Assert.IsNotNull(locks);
-            Assert.AreEqual(0, locks.Count);
+            Assert.That(locks, Is.Not.Null);
+            Assert.That(locks.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -217,9 +217,9 @@ namespace OE2EmpireTracker.Tests.Data
 
             var locks = _tracking.GetLocksForProcess(ProcessA);
 
-            Assert.AreEqual(2, locks.Count);
-            Assert.IsTrue(locks.Any(l => l.Key.Equals(new ItemKey(IT.Resource, "Iron")) && l.Quantity == 10));
-            Assert.IsTrue(locks.Any(l => l.Key.Equals(new ItemKey(IT.Commodity, "Steel Beams")) && l.Quantity == 3));
+            Assert.That(locks.Count, Is.EqualTo(2));
+            Assert.That(locks.Any(l => l.Key.Equals(new ItemKey(IT.Resource, "Iron")) && l.Quantity == 10), Is.True);
+            Assert.That(locks.Any(l => l.Key.Equals(new ItemKey(IT.Commodity, "Steel Beams")) && l.Quantity == 3), Is.True);
         }
 
         // -----------------------------------------------------------------------
@@ -232,8 +232,8 @@ namespace OE2EmpireTracker.Tests.Data
             _tracking.LockItem(ProcessA, IT.Resource, "Iron", 50);
             _tracking.ClearLocksForProcess(ProcessA);
 
-            Assert.AreEqual(0, _tracking.GetLockedQuantity(IT.Resource, "Iron"));
-            Assert.AreEqual(0, _tracking.GetLocksForProcess(ProcessA).Count);
+            Assert.That(_tracking.GetLockedQuantity(IT.Resource, "Iron"), Is.EqualTo(0));
+            Assert.That(_tracking.GetLocksForProcess(ProcessA).Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -244,7 +244,7 @@ namespace OE2EmpireTracker.Tests.Data
 
             _tracking.ClearLocksForProcess(ProcessA);
 
-            Assert.AreEqual(20, _tracking.GetLockedQuantity(IT.Resource, "Iron"));
+            Assert.That(_tracking.GetLockedQuantity(IT.Resource, "Iron"), Is.EqualTo(20));
         }
 
         [Test]
@@ -265,7 +265,7 @@ namespace OE2EmpireTracker.Tests.Data
             string json = JsonConvert.SerializeObject(_tracking);
             var restored = JsonConvert.DeserializeObject<LockTracking>(json);
 
-            Assert.AreEqual(42, restored.GetLockedQuantity(IT.Resource, "Iron"));
+            Assert.That(restored.GetLockedQuantity(IT.Resource, "Iron"), Is.EqualTo(42));
         }
 
         [Test]
@@ -278,20 +278,20 @@ namespace OE2EmpireTracker.Tests.Data
             string json = JsonConvert.SerializeObject(_tracking);
             var restored = JsonConvert.DeserializeObject<LockTracking>(json);
 
-            Assert.AreEqual(10, restored.GetLockedQuantity(IT.Resource, "Iron"));
-            Assert.AreEqual(3, restored.GetLockedQuantity(IT.Commodity, "Steel Beams"));
-            Assert.AreEqual(7, restored.GetLockedQuantity(IT.Resource, "Gold"));
-            Assert.AreEqual(1, restored.GetLocksForProcess(ProcessA).Count(l => l.Key.BaseItemTypeID == "Iron"));
+            Assert.That(restored.GetLockedQuantity(IT.Resource, "Iron"), Is.EqualTo(10));
+            Assert.That(restored.GetLockedQuantity(IT.Commodity, "Steel Beams"), Is.EqualTo(3));
+            Assert.That(restored.GetLockedQuantity(IT.Resource, "Gold"), Is.EqualTo(7));
+            Assert.That(restored.GetLocksForProcess(ProcessA).Count(l => l.Key.BaseItemTypeID == "Iron"), Is.EqualTo(1));
         }
 
         [Test]
         public void JsonRoundTrip_EmptyTracking_ProducesEmptyObject()
         {
             string json = JsonConvert.SerializeObject(_tracking);
-            Assert.AreEqual("{}", json);
+            Assert.That(json, Is.EqualTo("{}"));
 
             var restored = JsonConvert.DeserializeObject<LockTracking>(json);
-            Assert.AreEqual(0, restored.GetLockedQuantity(IT.Resource, "Iron"));
+            Assert.That(restored.GetLockedQuantity(IT.Resource, "Iron"), Is.EqualTo(0));
         }
 
         [Test]
@@ -304,8 +304,8 @@ namespace OE2EmpireTracker.Tests.Data
             string json = JsonConvert.SerializeObject(_tracking);
             var restored = JsonConvert.DeserializeObject<LockTracking>(json);
 
-            Assert.AreEqual(0, restored.GetLockedQuantity(IT.Resource, "Iron"));
-            Assert.AreEqual(10, restored.GetLockedQuantity(IT.Resource, "Gold"));
+            Assert.That(restored.GetLockedQuantity(IT.Resource, "Iron"), Is.EqualTo(0));
+            Assert.That(restored.GetLockedQuantity(IT.Resource, "Gold"), Is.EqualTo(10));
         }
     }
 }

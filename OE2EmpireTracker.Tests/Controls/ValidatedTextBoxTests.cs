@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using OE2EmpireTracker.Controls;
 using System.Drawing;
 
@@ -16,12 +15,12 @@ namespace OE2EmpireTracker.Tests.Controls
         public void DefaultConstructor_InitializesDefaults()
         {
             var textBox = new ValidatedTextBox();
-            Assert.AreEqual(true, textBox.AllowSpaces);
-            Assert.AreEqual(true, textBox.AutoFormat);
-            Assert.AreEqual(Color.White, textBox.ValidColor);
-            Assert.AreEqual(Color.LightCoral, textBox.InvalidColor);
-            Assert.AreEqual("", textBox.ErrorMessage);
-            Assert.AreEqual(true, textBox.IsValid);
+            Assert.That(textBox.AllowSpaces, Is.EqualTo(true));
+            Assert.That(textBox.AutoFormat, Is.EqualTo(true));
+            Assert.That(textBox.ValidColor, Is.EqualTo(Color.White));
+            Assert.That(textBox.InvalidColor, Is.EqualTo(Color.LightCoral));
+            Assert.That(textBox.ErrorMessage, Is.EqualTo(""));
+            Assert.That(textBox.IsValid, Is.EqualTo(true));
         }
 
         // -----------------------------------------------------------------------
@@ -32,7 +31,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void AllowSpaces_TrueByDefault()
         {
             var textBox = new ValidatedTextBox();
-            Assert.IsTrue(textBox.AllowSpaces);
+            Assert.That(textBox.AllowSpaces, Is.True);
         }
 
         [Test]
@@ -40,7 +39,7 @@ namespace OE2EmpireTracker.Tests.Controls
         {
             var textBox = new ValidatedTextBox();
             textBox.AllowSpaces = false;
-            Assert.IsFalse(textBox.AllowSpaces);
+            Assert.That(textBox.AllowSpaces, Is.False);
         }
 
         // -----------------------------------------------------------------------
@@ -51,7 +50,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void AutoFormat_TrueByDefault()
         {
             var textBox = new ValidatedTextBox();
-            Assert.IsTrue(textBox.AutoFormat);
+            Assert.That(textBox.AutoFormat, Is.True);
         }
 
         [Test]
@@ -59,7 +58,7 @@ namespace OE2EmpireTracker.Tests.Controls
         {
             var textBox = new ValidatedTextBox();
             textBox.AutoFormat = false;
-            Assert.IsFalse(textBox.AutoFormat);
+            Assert.That(textBox.AutoFormat, Is.False);
         }
 
         // -----------------------------------------------------------------------
@@ -70,7 +69,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void InvalidColor_IsLightCoralByDefault()
         {
             var textBox = new ValidatedTextBox();
-            Assert.AreEqual(Color.LightCoral, textBox.InvalidColor);
+            Assert.That(textBox.InvalidColor, Is.EqualTo(Color.LightCoral));
         }
 
         [Test]
@@ -79,7 +78,7 @@ namespace OE2EmpireTracker.Tests.Controls
             var customColor = Color.Blue;
             var textBox = new ValidatedTextBox();
             textBox.InvalidColor = customColor;
-            Assert.AreEqual(customColor, textBox.InvalidColor);
+            Assert.That(textBox.InvalidColor, Is.EqualTo(customColor));
         }
 
         // -----------------------------------------------------------------------
@@ -90,7 +89,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void ValidColor_IsWhiteByDefault()
         {
             var textBox = new ValidatedTextBox();
-            Assert.AreEqual(Color.White, textBox.ValidColor);
+            Assert.That(textBox.ValidColor, Is.EqualTo(Color.White));
         }
 
         [Test]
@@ -99,7 +98,7 @@ namespace OE2EmpireTracker.Tests.Controls
             var customColor = Color.Green;
             var textBox = new ValidatedTextBox();
             textBox.ValidColor = customColor;
-            Assert.AreEqual(customColor, textBox.ValidColor);
+            Assert.That(textBox.ValidColor, Is.EqualTo(customColor));
         }
 
         // -----------------------------------------------------------------------
@@ -110,7 +109,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void ErrorMessage_EmptyByDefault()
         {
             var textBox = new ValidatedTextBox();
-            Assert.AreEqual("", textBox.ErrorMessage);
+            Assert.That(textBox.ErrorMessage, Is.EqualTo(""));
         }
 
         [Test]
@@ -118,7 +117,7 @@ namespace OE2EmpireTracker.Tests.Controls
         {
             var textBox = new ValidatedTextBox();
             textBox.ErrorMessage = "Invalid input";
-            Assert.AreEqual("Invalid input", textBox.ErrorMessage);
+            Assert.That(textBox.ErrorMessage, Is.EqualTo("Invalid input"));
         }
 
         // -----------------------------------------------------------------------
@@ -129,7 +128,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void IsValid_TrueByDefault()
         {
             var textBox = new ValidatedTextBox();
-            Assert.IsTrue(textBox.IsValid);
+            Assert.That(textBox.IsValid, Is.True);
         }
 
         [Test]
@@ -137,7 +136,7 @@ namespace OE2EmpireTracker.Tests.Controls
         {
             var textBox = new ValidatedTextBox();
             textBox.IsValid = false;
-            Assert.IsFalse(textBox.IsValid);
+            Assert.That(textBox.IsValid, Is.False);
         }
 
         // -----------------------------------------------------------------------
@@ -154,10 +153,10 @@ namespace OE2EmpireTracker.Tests.Controls
 
             textBox.Clear();
 
-            Assert.AreEqual("", textBox.Text);
-            Assert.AreEqual(true, textBox.IsValid);
-            Assert.AreEqual(Color.White, textBox.BackColor);
-            Assert.AreEqual("", textBox.ErrorMessage);
+            Assert.That(textBox.Text, Is.EqualTo(""));
+            Assert.That(textBox.IsValid, Is.EqualTo(true));
+            Assert.That(textBox.BackColor, Is.EqualTo(Color.White));
+            Assert.That(textBox.ErrorMessage, Is.EqualTo(""));
         }
 
         [Test]
@@ -166,7 +165,7 @@ namespace OE2EmpireTracker.Tests.Controls
             var textBox = new ValidatedTextBox();
             textBox.BackColor = Color.Red; // Manually set invalid color
             textBox.Clear();
-            Assert.AreEqual(Color.White, textBox.BackColor);
+            Assert.That(textBox.BackColor, Is.EqualTo(Color.White));
         }
 
         // -----------------------------------------------------------------------
@@ -180,9 +179,9 @@ namespace OE2EmpireTracker.Tests.Controls
             var textBox = new ValidatedTextBox();
             textBox.SetError("Custom error message");
 
-            Assert.AreEqual("Custom error message", textBox.ErrorMessage);
-            Assert.AreEqual(Color.LightCoral, textBox.InvalidColor);
-            Assert.AreEqual(false, textBox.IsValid);
+            Assert.That(textBox.ErrorMessage, Is.EqualTo("Custom error message"));
+            Assert.That(textBox.InvalidColor, Is.EqualTo(Color.LightCoral));
+            Assert.That(textBox.IsValid, Is.EqualTo(false));
         }
 
         [Test]
@@ -191,7 +190,7 @@ namespace OE2EmpireTracker.Tests.Controls
             var textBox = new ValidatedTextBox();
             textBox.SetError("Line 1\nLine 2\nLine 3");
 
-            Assert.AreEqual("Line 1\nLine 2\nLine 3", textBox.ErrorMessage);
+            Assert.That(textBox.ErrorMessage, Is.EqualTo("Line 1\nLine 2\nLine 3"));
         }
 
         // -----------------------------------------------------------------------
@@ -207,8 +206,8 @@ namespace OE2EmpireTracker.Tests.Controls
 
             textBox.ClearError();
 
-            Assert.AreEqual("", textBox.ErrorMessage);
-            Assert.AreEqual(Color.White, textBox.ValidColor);
+            Assert.That(textBox.ErrorMessage, Is.EqualTo(""));
+            Assert.That(textBox.ValidColor, Is.EqualTo(Color.White));
         }
 
         // -----------------------------------------------------------------------
@@ -221,7 +220,7 @@ namespace OE2EmpireTracker.Tests.Controls
             var textBox = new ValidatedTextBox();
             // By default, ValidationPattern is null
             bool result = textBox.ValidateInput();
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -232,9 +231,9 @@ namespace OE2EmpireTracker.Tests.Controls
             textBox.Text = "test@example.com";
 
             bool result = textBox.ValidateInput();
-            Assert.IsTrue(result);
-            Assert.AreEqual(Color.White, textBox.BackColor);
-            Assert.AreEqual("", textBox.ErrorMessage);
+            Assert.That(result, Is.True);
+            Assert.That(textBox.BackColor, Is.EqualTo(Color.White));
+            Assert.That(textBox.ErrorMessage, Is.EqualTo(""));
         }
 
         [Test]
@@ -245,10 +244,10 @@ namespace OE2EmpireTracker.Tests.Controls
             textBox.Text = "not-an-email";
 
             bool result = textBox.ValidateInput();
-            Assert.IsFalse(result);
-            Assert.AreEqual("Invalid pattern", textBox.ErrorMessage);
+            Assert.That(result, Is.False);
+            Assert.That(textBox.ErrorMessage, Is.EqualTo("Invalid pattern"));
             // BackColor should be the invalid color
-            Assert.AreNotEqual(Color.White, textBox.BackColor);
+            Assert.That(textBox.BackColor, Is.Not.EqualTo(Color.White));
         }
 
         [Test]
@@ -259,7 +258,7 @@ namespace OE2EmpireTracker.Tests.Controls
             textBox.Text = "12345";
 
             bool result = textBox.ValidateInput();
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -270,7 +269,7 @@ namespace OE2EmpireTracker.Tests.Controls
             textBox.Text = "abc";
 
             bool result = textBox.ValidateInput();
-            Assert.IsFalse(result);
+            Assert.That(result, Is.False);
         }
 
         // -----------------------------------------------------------------------
@@ -285,7 +284,7 @@ namespace OE2EmpireTracker.Tests.Controls
             textBox.Text = "user@domain.com";
 
             bool result = textBox.ValidateInput();
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -296,7 +295,7 @@ namespace OE2EmpireTracker.Tests.Controls
             textBox.Text = "USER@DOMAIN.COM";
 
             bool result = textBox.ValidateInput();
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -307,7 +306,7 @@ namespace OE2EmpireTracker.Tests.Controls
             textBox.Text = "1234567890";
 
             bool result = textBox.ValidateInput();
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -318,7 +317,7 @@ namespace OE2EmpireTracker.Tests.Controls
             textBox.Text = "invalid-email@";
 
             bool result = textBox.ValidateInput();
-            Assert.IsFalse(result);
+            Assert.That(result, Is.False);
         }
 
         [Test]
@@ -329,7 +328,7 @@ namespace OE2EmpireTracker.Tests.Controls
             textBox.Text = "abc123";
 
             bool result = textBox.ValidateInput();
-            Assert.IsFalse(result);
+            Assert.That(result, Is.False);
         }
 
         [Test]
@@ -339,7 +338,7 @@ namespace OE2EmpireTracker.Tests.Controls
             // When ValidationPattern is null, validation should always pass
             textBox.Text = "anything";
             bool result = textBox.ValidateInput();
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         // -----------------------------------------------------------------------
@@ -357,7 +356,7 @@ namespace OE2EmpireTracker.Tests.Controls
 
             bool result = textBox.ValidateInput();
             // If validation regex matches, spaces are allowed
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -368,7 +367,7 @@ namespace OE2EmpireTracker.Tests.Controls
             textBox.Text = "spaces are ok";
 
             bool result = textBox.ValidateInput();
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         // -----------------------------------------------------------------------
@@ -386,10 +385,10 @@ namespace OE2EmpireTracker.Tests.Controls
 
             textBox.Reset();
 
-            Assert.AreEqual("", textBox.Text);
-            Assert.AreEqual(true, textBox.IsValid);
-            Assert.AreEqual("", textBox.ErrorMessage);
-            Assert.AreEqual(Color.White, textBox.ValidColor);
+            Assert.That(textBox.Text, Is.EqualTo(""));
+            Assert.That(textBox.IsValid, Is.EqualTo(true));
+            Assert.That(textBox.ErrorMessage, Is.EqualTo(""));
+            Assert.That(textBox.ValidColor, Is.EqualTo(Color.White));
         }
 
         // -----------------------------------------------------------------------
@@ -403,7 +402,7 @@ namespace OE2EmpireTracker.Tests.Controls
             textBox.ValidationPattern = ValidatedTextBox.EMAIL_VALIDATION;
 
             bool hasSpace = textBox.HasInvalidCharacter(' ');
-            Assert.IsTrue(hasSpace); // Space is invalid for email pattern
+            Assert.That(hasSpace, Is.True); // Space is invalid for email pattern
         }
 
         [Test]
@@ -413,7 +412,7 @@ namespace OE2EmpireTracker.Tests.Controls
             textBox.ValidationPattern = ValidatedTextBox.NUMBER_VALIDATION;
 
             bool hasLetter = textBox.HasInvalidCharacter('a');
-            Assert.IsTrue(hasLetter); // Letters are invalid for number pattern
+            Assert.That(hasLetter, Is.True); // Letters are invalid for number pattern
         }
 
         [Test]
@@ -422,7 +421,7 @@ namespace OE2EmpireTracker.Tests.Controls
             var textBox = new ValidatedTextBox();
             // No validation pattern set
             bool hasAny = textBox.HasInvalidCharacter('!');
-            Assert.IsFalse(hasAny); // Without pattern, all chars allowed
+            Assert.That(hasAny, Is.False); // Without pattern, all chars allowed
         }
 
         [Test]
@@ -430,7 +429,7 @@ namespace OE2EmpireTracker.Tests.Controls
         {
             var textBox = new ValidatedTextBox();
             bool hasCR = textBox.HasInvalidCharacter('\r');
-            Assert.IsFalse(hasCR);
+            Assert.That(hasCR, Is.False);
         }
 
         // -----------------------------------------------------------------------
@@ -459,7 +458,7 @@ namespace OE2EmpireTracker.Tests.Controls
         {
             var textBox = new ValidatedTextBox();
             Color expected = Color.White;
-            Assert.AreEqual(expected, textBox.ValidColor);
+            Assert.That(textBox.ValidColor, Is.EqualTo(expected));
         }
 
         [Test]
@@ -467,7 +466,7 @@ namespace OE2EmpireTracker.Tests.Controls
         {
             var textBox = new ValidatedTextBox();
             Color expected = Color.LightCoral;
-            Assert.AreEqual(expected, textBox.InvalidColor);
+            Assert.That(textBox.InvalidColor, Is.EqualTo(expected));
         }
 
         // -----------------------------------------------------------------------
@@ -480,7 +479,7 @@ namespace OE2EmpireTracker.Tests.Controls
             var textBox = new ValidatedTextBox();
             textBox.Text = null; // Set to null
             bool result = textBox.ValidateInput();
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -491,7 +490,7 @@ namespace OE2EmpireTracker.Tests.Controls
             textBox.Text = new string('a', 1000); // Very long text
             bool result = textBox.ValidateInput();
             // Should validate without issues
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -499,7 +498,7 @@ namespace OE2EmpireTracker.Tests.Controls
         {
             var textBox = new ValidatedTextBox();
             textBox.SetError(""); // Empty string is treated as null effectively
-            Assert.AreEqual("", textBox.ErrorMessage);
+            Assert.That(textBox.ErrorMessage, Is.EqualTo(""));
         }
 
         [Test]
@@ -508,7 +507,7 @@ namespace OE2EmpireTracker.Tests.Controls
             var textBox = new ValidatedTextBox();
             textBox.BackColor = Color.LightCoral;
             textBox.ClearError();
-            Assert.AreEqual(Color.White, textBox.ValidColor);
+            Assert.That(textBox.ValidColor, Is.EqualTo(Color.White));
         }
 
         // -----------------------------------------------------------------------

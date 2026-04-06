@@ -133,6 +133,7 @@
     <Compile Include="Baseline\ColonyStatusCalculator.cs" />
     <Compile Include="Baseline\BuildOrderOptimizer.cs" />
     <Compile Include="Baseline\ColonyBootstrap.cs" />
+    <Compile Include="Baseline\ColonyParser.cs" />
     <Compile Include="Baseline\DeliveryRoute.cs" />
     <Compile Include="Baseline\DeliveryPlan.cs" />
     <Compile Include="Baseline\ColonyStructureStatus.cs" />

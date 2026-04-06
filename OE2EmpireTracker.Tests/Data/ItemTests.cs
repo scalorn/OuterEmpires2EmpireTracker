@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using OE2EmpireTracker.Data;
 using IT = OE2EmpireTracker.Data.ItemType.ItemTypeEnum;
 
@@ -16,27 +15,27 @@ namespace OE2EmpireTracker.Tests.Data
         public void DefaultConstructor_ItemTypeIsNone()
         {
             var item = new Item();
-            Assert.AreEqual(IT.None, item.ItemType);
+            Assert.That(item.ItemType, Is.EqualTo(IT.None));
         }
 
         [Test]
         public void DefaultConstructor_DefaultsAreEmpty()
         {
             var item = new Item();
-            Assert.AreEqual(string.Empty, item.Name);
-            Assert.AreEqual(string.Empty, item.BaseItemTypeID);
-            Assert.AreEqual(string.Empty, item.NickName);
-            Assert.AreEqual(string.Empty, item.Description);
-            Assert.AreEqual(string.Empty, item.ResourcePurity);
-            Assert.AreEqual(0, item.Quantity);
+            Assert.That(item.Name, Is.EqualTo(string.Empty));
+            Assert.That(item.BaseItemTypeID, Is.EqualTo(string.Empty));
+            Assert.That(item.NickName, Is.EqualTo(string.Empty));
+            Assert.That(item.Description, Is.EqualTo(string.Empty));
+            Assert.That(item.ResourcePurity, Is.EqualTo(string.Empty));
+            Assert.That(item.Quantity, Is.EqualTo(0));
         }
 
         [Test]
         public void TypedConstructor_SetsItemTypeAndName()
         {
             var item = new Item(IT.Resource, "Iron");
-            Assert.AreEqual(IT.Resource, item.ItemType);
-            Assert.AreEqual("Iron", item.Name);
+            Assert.That(item.ItemType, Is.EqualTo(IT.Resource));
+            Assert.That(item.Name, Is.EqualTo("Iron"));
         }
 
         // -----------------------------------------------------------------------
@@ -47,14 +46,14 @@ namespace OE2EmpireTracker.Tests.Data
         public void ExtendedName_NoSpecialType_ReturnsName()
         {
             var item = new Item { Name = "Widget", ItemType = IT.None };
-            Assert.AreEqual("Widget", item.ExtendedName);
+            Assert.That(item.ExtendedName, Is.EqualTo("Widget"));
         }
 
         [Test]
         public void ExtendedName_EmptyName_ReturnsEmpty()
         {
             var item = new Item { Name = string.Empty, ItemType = IT.None };
-            Assert.AreEqual(string.Empty, item.ExtendedName);
+            Assert.That(item.ExtendedName, Is.EqualTo(string.Empty));
         }
 
         // -----------------------------------------------------------------------
@@ -70,7 +69,7 @@ namespace OE2EmpireTracker.Tests.Data
                 Name = "Iron",
                 ResourcePurity = "Refined"
             };
-            Assert.AreEqual("Iron (Refined)", item.ExtendedName);
+            Assert.That(item.ExtendedName, Is.EqualTo("Iron (Refined)"));
         }
 
         [Test]
@@ -82,7 +81,7 @@ namespace OE2EmpireTracker.Tests.Data
                 Name = "Iron",
                 ResourcePurity = string.Empty
             };
-            Assert.AreEqual("Iron", item.ExtendedName);
+            Assert.That(item.ExtendedName, Is.EqualTo("Iron"));
         }
 
         [Test]
@@ -94,7 +93,7 @@ namespace OE2EmpireTracker.Tests.Data
                 Name = "Iron",
                 ResourcePurity = null
             };
-            Assert.AreEqual("Iron", item.ExtendedName);
+            Assert.That(item.ExtendedName, Is.EqualTo("Iron"));
         }
 
         // -----------------------------------------------------------------------
@@ -112,7 +111,7 @@ namespace OE2EmpireTracker.Tests.Data
                 Name = commodity.Name,
                 BaseItemTypeID = commodity.ID
             };
-            Assert.AreEqual(commodity.ExtendedName, item.ExtendedName);
+            Assert.That(item.ExtendedName, Is.EqualTo(commodity.ExtendedName));
         }
 
         [Test]
@@ -124,7 +123,7 @@ namespace OE2EmpireTracker.Tests.Data
                 Name = "Unknown Commodity",
                 BaseItemTypeID = "no-such-id"
             };
-            Assert.AreEqual("Unknown Commodity", item.ExtendedName);
+            Assert.That(item.ExtendedName, Is.EqualTo("Unknown Commodity"));
         }
 
         // -----------------------------------------------------------------------
@@ -141,7 +140,7 @@ namespace OE2EmpireTracker.Tests.Data
                 Name = "Survey Fallback",
                 BaseItemTypeID = "some-uuid"
             };
-            Assert.AreEqual("Survey Fallback", item.ExtendedName);
+            Assert.That(item.ExtendedName, Is.EqualTo("Survey Fallback"));
         }
 
         [Test]
@@ -153,7 +152,7 @@ namespace OE2EmpireTracker.Tests.Data
                 Name = "Blueprint Fallback",
                 BaseItemTypeID = "some-uuid"
             };
-            Assert.AreEqual("Blueprint Fallback", item.ExtendedName);
+            Assert.That(item.ExtendedName, Is.EqualTo("Blueprint Fallback"));
         }
 
         // -----------------------------------------------------------------------
@@ -164,14 +163,14 @@ namespace OE2EmpireTracker.Tests.Data
         public void Quantity_DefaultIsZero()
         {
             var item = new Item();
-            Assert.AreEqual(0, item.Quantity);
+            Assert.That(item.Quantity, Is.EqualTo(0));
         }
 
         [Test]
         public void UUID_CanBeSetAndRead()
         {
             var item = new Item { UUID = "test-uuid" };
-            Assert.AreEqual("test-uuid", item.UUID);
+            Assert.That(item.UUID, Is.EqualTo("test-uuid"));
         }
     }
 }

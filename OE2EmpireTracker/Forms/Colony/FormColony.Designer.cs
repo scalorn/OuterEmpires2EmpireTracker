@@ -88,6 +88,8 @@ namespace OE2EmpireTracker.Forms.Colony
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
+            this.cmdImportColony = new System.Windows.Forms.Button();
+            this.cmdImportClipboard = new System.Windows.Forms.Button();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewValidatedTextBoxColumn1 = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -774,6 +776,8 @@ namespace OE2EmpireTracker.Forms.Colony
             this.flpCommands.Controls.Add(this.cmdSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
             this.flpCommands.Controls.Add(this.cmdCancel);
+            this.flpCommands.Controls.Add(this.cmdImportColony);
+            this.flpCommands.Controls.Add(this.cmdImportClipboard);
             this.flpCommands.Location = new System.Drawing.Point(2, 270);
             this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
             this.flpCommands.Name = "flpCommands";
@@ -808,6 +812,26 @@ namespace OE2EmpireTracker.Forms.Colony
             this.cmdCancel.TabIndex = 10;
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
+            // 
+            // cmdImportColony
+            // 
+            this.cmdImportColony.Location = new System.Drawing.Point(246, 3);
+            this.cmdImportColony.Name = "cmdImportColony";
+            this.cmdImportColony.Size = new System.Drawing.Size(100, 23);
+            this.cmdImportColony.TabIndex = 13;
+            this.cmdImportColony.Text = "Import Colony";
+            this.cmdImportColony.UseVisualStyleBackColor = true;
+            this.cmdImportColony.Click += new System.EventHandler(this.cmdImportColony_Click);
+            // 
+            // cmdImportClipboard
+            // 
+            this.cmdImportClipboard.Location = new System.Drawing.Point(352, 3);
+            this.cmdImportClipboard.Name = "cmdImportClipboard";
+            this.cmdImportClipboard.Size = new System.Drawing.Size(110, 23);
+            this.cmdImportClipboard.TabIndex = 12;
+            this.cmdImportClipboard.Text = "Import Clipboard";
+            this.cmdImportClipboard.UseVisualStyleBackColor = true;
+            this.cmdImportClipboard.Click += new System.EventHandler(this.cmdImportClipboard_Click);
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -1080,6 +1104,8 @@ namespace OE2EmpireTracker.Forms.Colony
         private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Button cmdCancel;
+        private System.Windows.Forms.Button cmdImportColony;
+        private System.Windows.Forms.Button cmdImportClipboard;
         private System.Windows.Forms.ComboBox cmbPurity;
         private System.Windows.Forms.Label lblQuantity;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtQuantity;

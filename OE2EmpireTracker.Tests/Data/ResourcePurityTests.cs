@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using OE2EmpireTracker.Data;
 using System;
 using System.Linq;
@@ -17,22 +16,22 @@ namespace OE2EmpireTracker.Tests.Data
         [Test]
         public void Purities_ListIsNotEmpty()
         {
-            Assert.IsTrue(ResourcePurity.Purities.Count > 0);
+            Assert.That(ResourcePurity.Purities.Count > 0, Is.True);
         }
 
         [Test]
         public void Purities_FirstEntryIsNoneWithEmptyName()
         {
             var first = ResourcePurity.Purities[0];
-            Assert.AreEqual(PE.None, first.ID);
-            Assert.AreEqual(string.Empty, first.Name);
+            Assert.That(first.ID, Is.EqualTo(PE.None));
+            Assert.That(first.Name, Is.EqualTo(string.Empty));
         }
 
         [Test]
         public void Purities_AllNonNoneEntriesHaveNonEmptyName()
         {
             foreach (var p in ResourcePurity.Purities.Where(p => p.ID != PE.None))
-                Assert.IsFalse(string.IsNullOrEmpty(p.Name),
+                Assert.That(string.IsNullOrEmpty(p.Name), Is.False,
                     $"ResourcePurity with ID '{p.ID}' has empty Name");
         }
 
@@ -40,14 +39,16 @@ namespace OE2EmpireTracker.Tests.Data
         public void Purities_NoDuplicateIDs()
         {
             var ids = ResourcePurity.Purities.Select(p => p.ID).ToList();
-            Assert.AreEqual(ids.Distinct().Count(), ids.Count, "Duplicate purity IDs found");
+            Assert.That(ids.Count, Is.EqualTo(ids.Distinct().Count()),
+                    "Duplicate purity IDs found");
         }
 
         [Test]
         public void Purities_NoDuplicateNames()
         {
             var names = ResourcePurity.Purities.Select(p => p.Name).ToList();
-            Assert.AreEqual(names.Distinct().Count(), names.Count, "Duplicate purity Names found");
+            Assert.That(names.Count, Is.EqualTo(names.Distinct().Count()),
+                    "Duplicate purity Names found");
         }
 
         [Test]
@@ -56,7 +57,8 @@ namespace OE2EmpireTracker.Tests.Data
             var allEnums = Enum.GetValues(typeof(PE)).Cast<PE>();
             var listIDs = ResourcePurity.Purities.Select(p => p.ID).ToList();
             foreach (var e in allEnums)
-                Assert.IsTrue(listIDs.Contains(e), $"Purities list missing enum value {e}");
+                Assert.That(listIDs.Contains(e), Is.True,
+                    $"Purities list missing enum value {e}");
         }
 
         [Test]
@@ -64,9 +66,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var nonNone = ResourcePurity.Purities.Where(p => p.ID != PE.None).ToList();
             for (int i = 1; i < nonNone.Count; i++)
-                Assert.LessOrEqual(
-                    string.Compare(nonNone[i - 1].Name, nonNone[i].Name, StringComparison.Ordinal),
-                    0,
+                Assert.That(string.Compare(nonNone[i - 1].Name, nonNone[i].Name, StringComparison.Ordinal), Is.LessThanOrEqualTo(0),
                     $"Purities not sorted: '{nonNone[i - 1].Name}' before '{nonNone[i].Name}'");
         }
 
@@ -77,7 +77,7 @@ namespace OE2EmpireTracker.Tests.Data
         [Test]
         public void Purities_RefinedEntry_HasRefinedFlagTrue()
         {
-            Assert.IsTrue(ResourcePurity.ItemTypeMapByEnum[PE.Refined].Refined);
+            Assert.That(ResourcePurity.ItemTypeMapByEnum[PE.Refined].Refined, Is.True);
         }
 
         [Test]
@@ -86,7 +86,8 @@ namespace OE2EmpireTracker.Tests.Data
             var unrefined = ResourcePurity.Purities
                 .Where(p => p.ID != PE.None && p.ID != PE.Refined);
             foreach (var p in unrefined)
-                Assert.IsFalse(p.Refined, $"Purity '{p.Name}' should not have Refined = true");
+                Assert.That(p.Refined, Is.False,
+                    $"Purity '{p.Name}' should not have Refined = true");
         }
 
         // -----------------------------------------------------------------------
@@ -98,23 +99,23 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var allEnums = Enum.GetValues(typeof(PE)).Cast<PE>();
             foreach (var e in allEnums)
-                Assert.IsTrue(ResourcePurity.ItemTypeMapByEnum.ContainsKey(e),
+                Assert.That(ResourcePurity.ItemTypeMapByEnum.ContainsKey(e), Is.True,
                     $"ItemTypeMapByEnum missing key {e}");
         }
 
         [Test]
         public void ItemTypeMapByEnum_LookupReturnsCorrectName()
         {
-            Assert.AreEqual("Refined", ResourcePurity.ItemTypeMapByEnum[PE.Refined].Name);
-            Assert.AreEqual("High", ResourcePurity.ItemTypeMapByEnum[PE.UnrefinedHigh].Name);
-            Assert.AreEqual("Medium", ResourcePurity.ItemTypeMapByEnum[PE.UnrefinedMedium].Name);
-            Assert.AreEqual("Low", ResourcePurity.ItemTypeMapByEnum[PE.UnrefinedLow].Name);
+            Assert.That(ResourcePurity.ItemTypeMapByEnum[PE.Refined].Name, Is.EqualTo("Refined"));
+            Assert.That(ResourcePurity.ItemTypeMapByEnum[PE.UnrefinedHigh].Name, Is.EqualTo("High"));
+            Assert.That(ResourcePurity.ItemTypeMapByEnum[PE.UnrefinedMedium].Name, Is.EqualTo("Medium"));
+            Assert.That(ResourcePurity.ItemTypeMapByEnum[PE.UnrefinedLow].Name, Is.EqualTo("Low"));
         }
 
         [Test]
         public void ItemTypeMapByEnum_NoneEntryHasEmptyName()
         {
-            Assert.AreEqual(string.Empty, ResourcePurity.ItemTypeMapByEnum[PE.None].Name);
+            Assert.That(ResourcePurity.ItemTypeMapByEnum[PE.None].Name, Is.EqualTo(string.Empty));
         }
 
         // -----------------------------------------------------------------------
@@ -125,23 +126,23 @@ namespace OE2EmpireTracker.Tests.Data
         public void ItemTypeMapByString_ContainsAllPurityNames()
         {
             foreach (var p in ResourcePurity.Purities)
-                Assert.IsTrue(ResourcePurity.ItemTypeMapByString.ContainsKey(p.Name),
+                Assert.That(ResourcePurity.ItemTypeMapByString.ContainsKey(p.Name), Is.True,
                     $"ItemTypeMapByString missing key '{p.Name}'");
         }
 
         [Test]
         public void ItemTypeMapByString_LookupReturnsCorrectID()
         {
-            Assert.AreEqual(PE.Refined, ResourcePurity.ItemTypeMapByString["Refined"].ID);
-            Assert.AreEqual(PE.UnrefinedHigh, ResourcePurity.ItemTypeMapByString["High"].ID);
-            Assert.AreEqual(PE.UnrefinedMedium, ResourcePurity.ItemTypeMapByString["Medium"].ID);
-            Assert.AreEqual(PE.UnrefinedLow, ResourcePurity.ItemTypeMapByString["Low"].ID);
+            Assert.That(ResourcePurity.ItemTypeMapByString["Refined"].ID, Is.EqualTo(PE.Refined));
+            Assert.That(ResourcePurity.ItemTypeMapByString["High"].ID, Is.EqualTo(PE.UnrefinedHigh));
+            Assert.That(ResourcePurity.ItemTypeMapByString["Medium"].ID, Is.EqualTo(PE.UnrefinedMedium));
+            Assert.That(ResourcePurity.ItemTypeMapByString["Low"].ID, Is.EqualTo(PE.UnrefinedLow));
         }
 
         [Test]
         public void ItemTypeMapByString_EmptyKeyReturnsNone()
         {
-            Assert.AreEqual(PE.None, ResourcePurity.ItemTypeMapByString[string.Empty].ID);
+            Assert.That(ResourcePurity.ItemTypeMapByString[string.Empty].ID, Is.EqualTo(PE.None));
         }
 
         // -----------------------------------------------------------------------
@@ -156,7 +157,8 @@ namespace OE2EmpireTracker.Tests.Data
             {
                 string name = ResourcePurity.ItemTypeMapByEnum[e].Name;
                 PE roundTripped = ResourcePurity.ItemTypeMapByString[name].ID;
-                Assert.AreEqual(e, roundTripped, $"Round-trip failed for {e}");
+                Assert.That(roundTripped, Is.EqualTo(e),
+                    $"Round-trip failed for {e}");
             }
         }
     }

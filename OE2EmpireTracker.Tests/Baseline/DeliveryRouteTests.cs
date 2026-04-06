@@ -16,28 +16,28 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void DefaultConstructor_StopsIsNotNull()
         {
             var route = new DeliveryRoute();
-            Assert.IsNotNull(route.Stops);
+            Assert.That(route.Stops, Is.Not.Null);
         }
 
         [Test]
         public void DefaultConstructor_StopsIsEmpty()
         {
             var route = new DeliveryRoute();
-            Assert.AreEqual(0, route.Stops.Count);
+            Assert.That(route.Stops.Count, Is.EqualTo(0));
         }
 
         [Test]
         public void DefaultConstructor_NameIsEmpty()
         {
             var route = new DeliveryRoute();
-            Assert.AreEqual(string.Empty, route.Name);
+            Assert.That(route.Name, Is.EqualTo(string.Empty));
         }
 
         [Test]
         public void DefaultConstructor_OwnerUUIDIsEmpty()
         {
             var route = new DeliveryRoute();
-            Assert.AreEqual(string.Empty, route.OwnerUUID);
+            Assert.That(route.OwnerUUID, Is.EqualTo(string.Empty));
         }
 
         // -----------------------------------------------------------------------
@@ -53,9 +53,9 @@ namespace OE2EmpireTracker.Tests.Baseline
                 Name = "Main Route",
                 OwnerUUID = "player-1"
             };
-            Assert.AreEqual("route-1", route.UUID);
-            Assert.AreEqual("Main Route", route.Name);
-            Assert.AreEqual("player-1", route.OwnerUUID);
+            Assert.That(route.UUID, Is.EqualTo("route-1"));
+            Assert.That(route.Name, Is.EqualTo("Main Route"));
+            Assert.That(route.OwnerUUID, Is.EqualTo("player-1"));
         }
 
         // -----------------------------------------------------------------------
@@ -66,8 +66,8 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void RouteStop_PropertiesCanBeSetAndRead()
         {
             var stop = new RouteStop { ColonyUUID = "colony-1", Sequence = 3 };
-            Assert.AreEqual("colony-1", stop.ColonyUUID);
-            Assert.AreEqual(3, stop.Sequence);
+            Assert.That(stop.ColonyUUID, Is.EqualTo("colony-1"));
+            Assert.That(stop.Sequence, Is.EqualTo(3));
         }
 
         // -----------------------------------------------------------------------
@@ -80,10 +80,10 @@ namespace OE2EmpireTracker.Tests.Baseline
             var route = new DeliveryRoute { UUID = "r1", Name = "Test", OwnerUUID = "p1" };
             string json = JsonConvert.SerializeObject(route);
             var restored = JsonConvert.DeserializeObject<DeliveryRoute>(json);
-            Assert.AreEqual("r1", restored.UUID);
-            Assert.AreEqual("Test", restored.Name);
-            Assert.AreEqual("p1", restored.OwnerUUID);
-            Assert.AreEqual(0, restored.Stops.Count);
+            Assert.That(restored.UUID, Is.EqualTo("r1"));
+            Assert.That(restored.Name, Is.EqualTo("Test"));
+            Assert.That(restored.OwnerUUID, Is.EqualTo("p1"));
+            Assert.That(restored.Stops.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -102,11 +102,11 @@ namespace OE2EmpireTracker.Tests.Baseline
             };
             string json = JsonConvert.SerializeObject(route);
             var restored = JsonConvert.DeserializeObject<DeliveryRoute>(json);
-            Assert.AreEqual(2, restored.Stops.Count);
-            Assert.AreEqual("c1", restored.Stops[0].ColonyUUID);
-            Assert.AreEqual(0, restored.Stops[0].Sequence);
-            Assert.AreEqual("c2", restored.Stops[1].ColonyUUID);
-            Assert.AreEqual(1, restored.Stops[1].Sequence);
+            Assert.That(restored.Stops.Count, Is.EqualTo(2));
+            Assert.That(restored.Stops[0].ColonyUUID, Is.EqualTo("c1"));
+            Assert.That(restored.Stops[0].Sequence, Is.EqualTo(0));
+            Assert.That(restored.Stops[1].ColonyUUID, Is.EqualTo("c2"));
+            Assert.That(restored.Stops[1].Sequence, Is.EqualTo(1));
         }
     }
 }

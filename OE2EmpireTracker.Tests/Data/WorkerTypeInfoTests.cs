@@ -14,7 +14,7 @@ namespace OE2EmpireTracker.Tests.Data
         [Test]
         public void WorkerTypes_HasThreeEntries()
         {
-            Assert.AreEqual(3, WorkerDetail.WorkerTypes.Length);
+            Assert.That(WorkerDetail.WorkerTypes.Length, Is.EqualTo(3));
         }
 
         // -----------------------------------------------------------------------
@@ -25,27 +25,27 @@ namespace OE2EmpireTracker.Tests.Data
         public void WorkerTypes_FirstEntry_IsBlueCollar()
         {
             var entry = WorkerDetail.WorkerTypes[0];
-            Assert.AreEqual("BlueCollarDetail", entry.DetailKey);
-            Assert.AreEqual("BlueCollar", entry.WorkerPrefix);
-            Assert.AreEqual("Blue Collar", entry.DisplayName);
+            Assert.That(entry.DetailKey, Is.EqualTo("BlueCollarDetail"));
+            Assert.That(entry.WorkerPrefix, Is.EqualTo("BlueCollar"));
+            Assert.That(entry.DisplayName, Is.EqualTo("Blue Collar"));
         }
 
         [Test]
         public void WorkerTypes_SecondEntry_IsWhiteCollar()
         {
             var entry = WorkerDetail.WorkerTypes[1];
-            Assert.AreEqual("WhiteCollarDetail", entry.DetailKey);
-            Assert.AreEqual("WhiteCollar", entry.WorkerPrefix);
-            Assert.AreEqual("White Collar", entry.DisplayName);
+            Assert.That(entry.DetailKey, Is.EqualTo("WhiteCollarDetail"));
+            Assert.That(entry.WorkerPrefix, Is.EqualTo("WhiteCollar"));
+            Assert.That(entry.DisplayName, Is.EqualTo("White Collar"));
         }
 
         [Test]
         public void WorkerTypes_ThirdEntry_IsSpecialist()
         {
             var entry = WorkerDetail.WorkerTypes[2];
-            Assert.AreEqual("SpecialistDetail", entry.DetailKey);
-            Assert.AreEqual("Specialist", entry.WorkerPrefix);
-            Assert.AreEqual("Specialist", entry.DisplayName);
+            Assert.That(entry.DetailKey, Is.EqualTo("SpecialistDetail"));
+            Assert.That(entry.WorkerPrefix, Is.EqualTo("Specialist"));
+            Assert.That(entry.DisplayName, Is.EqualTo("Specialist"));
         }
 
         // -----------------------------------------------------------------------
@@ -57,7 +57,7 @@ namespace OE2EmpireTracker.Tests.Data
         [TestCase(2, "UnassignedSpecialistDetail")]
         public void WorkerTypes_UnassignedKey_IsUnassignedPlusDetailKey(int index, string expected)
         {
-            Assert.AreEqual(expected, WorkerDetail.WorkerTypes[index].UnassignedKey);
+            Assert.That(WorkerDetail.WorkerTypes[index].UnassignedKey, Is.EqualTo(expected));
         }
 
         // -----------------------------------------------------------------------
@@ -69,7 +69,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             foreach (var wt in WorkerDetail.WorkerTypes)
             {
-                Assert.IsTrue(WorkerDetail.WorkerDetailMapByID.ContainsKey(wt.DetailKey),
+                Assert.That(WorkerDetail.WorkerDetailMapByID.ContainsKey(wt.DetailKey), Is.True,
                     $"DetailKey '{wt.DetailKey}' not found in WorkerDetailMapByID");
             }
         }

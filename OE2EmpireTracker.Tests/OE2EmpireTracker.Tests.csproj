@@ -244,6 +244,7 @@
     <Compile Include="Data\LockTrackingTests.cs" />
     <Compile Include="Controls\ValidatedTextBoxTests.cs" />
     <Compile Include="Forms\MainMenuOverhaulTests.cs" />
+    <Compile Include="Baseline\ColonyParserTests.cs" />
     <None Include="app.config" />
     <None Include="packages.config" />
     <Content Include="TestData\ZehVazoranIIM2.html">
@@ -256,6 +257,21 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestData\BP_AMX_LL_Milspec_Page2.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\ClnyHexAdministrationTabZehVazoranIIM1.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\ClnyHexAdministrationTabZehVazoranIIM2.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\ClnyHexAdministrationTabZehVazoranIIM2-2.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\ClnyHexAdministrationTabZehVazoranIIM2-3.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\ClnyHexAdministrationTabZehVazoranVI-1.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

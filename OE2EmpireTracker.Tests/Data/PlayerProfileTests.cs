@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using OE2EmpireTracker.Data;
 
 namespace OE2EmpireTracker.Tests.Data
@@ -22,30 +21,30 @@ namespace OE2EmpireTracker.Tests.Data
         [Test]
         public void DefaultConstructor_StringPropertiesAreEmpty()
         {
-            Assert.AreEqual(string.Empty, _profile.UUID);
-            Assert.AreEqual(string.Empty, _profile.Name);
-            Assert.AreEqual(string.Empty, _profile.Faction);
+            Assert.That(_profile.UUID, Is.EqualTo(string.Empty));
+            Assert.That(_profile.Name, Is.EqualTo(string.Empty));
+            Assert.That(_profile.Faction, Is.EqualTo(string.Empty));
         }
 
         [Test]
         public void DefaultConstructor_NumericDefaultsAreZero()
         {
-            Assert.AreEqual(0m, _profile.TotalCredits);
-            Assert.AreEqual(0, _profile.SkillPoints);
+            Assert.That(_profile.TotalCredits, Is.EqualTo(0m));
+            Assert.That(_profile.SkillPoints, Is.EqualTo(0));
         }
 
         [Test]
         public void DefaultConstructor_RankObjectsAreInitialised()
         {
-            Assert.IsNotNull(_profile.Public);
-            Assert.IsNotNull(_profile.Private);
-            Assert.IsNotNull(_profile.Military);
+            Assert.That(_profile.Public, Is.Not.Null);
+            Assert.That(_profile.Private, Is.Not.Null);
+            Assert.That(_profile.Military, Is.Not.Null);
         }
 
         [Test]
         public void DefaultConstructor_SkillsDictionaryIsEmpty()
         {
-            Assert.AreEqual(0, _profile.Skills.Count);
+            Assert.That(_profile.Skills.Count, Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -56,14 +55,14 @@ namespace OE2EmpireTracker.Tests.Data
         public void GetSkill_UnknownSkill_CreatesAndReturnsNewSkill()
         {
             var skill = _profile.GetSkill("Foreman");
-            Assert.IsNotNull(skill);
+            Assert.That(skill, Is.Not.Null);
         }
 
         [Test]
         public void GetSkill_UnknownSkill_AddedToSkillsDictionary()
         {
             _profile.GetSkill("Foreman");
-            Assert.IsTrue(_profile.Skills.ContainsKey("Foreman"));
+            Assert.That(_profile.Skills.ContainsKey("Foreman"), Is.True);
         }
 
         [Test]
@@ -71,7 +70,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var first = _profile.GetSkill("Foreman");
             var second = _profile.GetSkill("Foreman");
-            Assert.AreSame(first, second);
+            Assert.That(second, Is.SameAs(first));
         }
 
         [Test]
@@ -80,7 +79,7 @@ namespace OE2EmpireTracker.Tests.Data
             var skill = new PlayerSkill { Level = 5 };
             _profile.Skills["Broker"] = skill;
             var result = _profile.GetSkill("Broker");
-            Assert.AreEqual(5, result.Level);
+            Assert.That(result.Level, Is.EqualTo(5));
         }
 
         // -----------------------------------------------------------------------
@@ -91,8 +90,8 @@ namespace OE2EmpireTracker.Tests.Data
         public void GetSkill_EnumOverload_UsesDisplayName()
         {
             var skill = _profile.GetSkill(SkillName.Foreman);
-            Assert.IsTrue(_profile.Skills.ContainsKey("Foreman"));
-            Assert.IsNotNull(skill);
+            Assert.That(_profile.Skills.ContainsKey("Foreman"), Is.True);
+            Assert.That(skill, Is.Not.Null);
         }
 
         [Test]
@@ -100,7 +99,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var byEnum = _profile.GetSkill(SkillName.Broker);
             var byString = _profile.GetSkill("Broker");
-            Assert.AreSame(byEnum, byString);
+            Assert.That(byString, Is.SameAs(byEnum));
         }
 
         // -----------------------------------------------------------------------
@@ -110,14 +109,14 @@ namespace OE2EmpireTracker.Tests.Data
         [Test]
         public void GetSkillGroup_UnknownGroup_ReturnsFalse()
         {
-            Assert.IsFalse(_profile.GetSkillGroup("Commander"));
+            Assert.That(_profile.GetSkillGroup("Commander"), Is.False);
         }
 
         [Test]
         public void SetSkillGroup_ThenGet_ReturnsSetValue()
         {
             _profile.SetSkillGroup("Commander", true);
-            Assert.IsTrue(_profile.GetSkillGroup("Commander"));
+            Assert.That(_profile.GetSkillGroup("Commander"), Is.True);
         }
 
         [Test]
@@ -125,7 +124,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             _profile.SetSkillGroup("Commander", true);
             _profile.SetSkillGroup("Commander", false);
-            Assert.IsFalse(_profile.GetSkillGroup("Commander"));
+            Assert.That(_profile.GetSkillGroup("Commander"), Is.False);
         }
 
         [Test]
@@ -133,8 +132,8 @@ namespace OE2EmpireTracker.Tests.Data
         {
             _profile.SetSkillGroup("Commander", true);
             _profile.SetSkillGroup("Engineer", false);
-            Assert.IsTrue(_profile.GetSkillGroup("Commander"));
-            Assert.IsFalse(_profile.GetSkillGroup("Engineer"));
+            Assert.That(_profile.GetSkillGroup("Commander"), Is.True);
+            Assert.That(_profile.GetSkillGroup("Engineer"), Is.False);
         }
 
         // -----------------------------------------------------------------------
@@ -145,21 +144,21 @@ namespace OE2EmpireTracker.Tests.Data
         public void SetSkillGroup_EnumOverload_UsesDisplayName()
         {
             _profile.SetSkillGroup(SkillGroupName.Commander, true);
-            Assert.IsTrue(_profile.GetSkillGroup("Commander"));
+            Assert.That(_profile.GetSkillGroup("Commander"), Is.True);
         }
 
         [Test]
         public void GetSkillGroup_EnumOverload_ReadsValueSetByStringOverload()
         {
             _profile.SetSkillGroup("Trader", true);
-            Assert.IsTrue(_profile.GetSkillGroup(SkillGroupName.Trader));
+            Assert.That(_profile.GetSkillGroup(SkillGroupName.Trader), Is.True);
         }
 
         [Test]
         public void SetAndGet_EnumOverload_RoundTrips()
         {
             _profile.SetSkillGroup(SkillGroupName.Researcher, true);
-            Assert.IsTrue(_profile.GetSkillGroup(SkillGroupName.Researcher));
+            Assert.That(_profile.GetSkillGroup(SkillGroupName.Researcher), Is.True);
         }
     }
 
@@ -174,18 +173,18 @@ namespace OE2EmpireTracker.Tests.Data
         public void DefaultConstructor_AllZero()
         {
             var rank = new PlayerRank();
-            Assert.AreEqual(0, rank.Rank);
-            Assert.AreEqual(0L, rank.CurrentXP);
-            Assert.AreEqual(0L, rank.NextXP);
+            Assert.That(rank.Rank, Is.EqualTo(0));
+            Assert.That(rank.CurrentXP, Is.EqualTo(0L));
+            Assert.That(rank.NextXP, Is.EqualTo(0L));
         }
 
         [Test]
         public void Properties_CanBeSetAndRead()
         {
             var rank = new PlayerRank { Rank = 5, CurrentXP = 1000, NextXP = 2000 };
-            Assert.AreEqual(5, rank.Rank);
-            Assert.AreEqual(1000L, rank.CurrentXP);
-            Assert.AreEqual(2000L, rank.NextXP);
+            Assert.That(rank.Rank, Is.EqualTo(5));
+            Assert.That(rank.CurrentXP, Is.EqualTo(1000L));
+            Assert.That(rank.NextXP, Is.EqualTo(2000L));
         }
     }
 
@@ -199,19 +198,19 @@ namespace OE2EmpireTracker.Tests.Data
         [Test]
         public void DefaultConstructor_LevelIsZero()
         {
-            Assert.AreEqual(0, new PlayerSkill().Level);
+            Assert.That(new PlayerSkill().Level, Is.EqualTo(0));
         }
 
         [Test]
         public void DefaultConstructor_TrainingStartedIsFalse()
         {
-            Assert.IsFalse(new PlayerSkill().TrainingStarted);
+            Assert.That(new PlayerSkill().TrainingStarted, Is.False);
         }
 
         [Test]
         public void DefaultConstructor_CompletionTimeIsNotNull()
         {
-            Assert.IsNotNull(new PlayerSkill().CompletionTime);
+            Assert.That(new PlayerSkill().CompletionTime, Is.Not.Null);
         }
     }
 
@@ -225,24 +224,24 @@ namespace OE2EmpireTracker.Tests.Data
         [Test]
         public void SkillName_ToDisplayName_ReturnsDescriptionAttribute()
         {
-            Assert.AreEqual("Human Resources", SkillName.HumanResources.ToDisplayName());
-            Assert.AreEqual("Sounds As A Pound", SkillName.SoundsAsAPound.ToDisplayName());
-            Assert.AreEqual("AAA Healthcare", SkillName.AAAHealthcare.ToDisplayName());
+            Assert.That(SkillName.HumanResources.ToDisplayName(), Is.EqualTo("Human Resources"));
+            Assert.That(SkillName.SoundsAsAPound.ToDisplayName(), Is.EqualTo("Sounds As A Pound"));
+            Assert.That(SkillName.AAAHealthcare.ToDisplayName(), Is.EqualTo("AAA Healthcare"));
         }
 
         [Test]
         public void SkillGroupName_ToDisplayName_ReturnsDescriptionAttribute()
         {
-            Assert.AreEqual("Colony Director", SkillGroupName.ColonyDirector.ToDisplayName());
-            Assert.AreEqual("Job Management", SkillGroupName.JobManagement.ToDisplayName());
-            Assert.AreEqual("Entrepeneur", SkillGroupName.Entrepeneur.ToDisplayName());
+            Assert.That(SkillGroupName.ColonyDirector.ToDisplayName(), Is.EqualTo("Colony Director"));
+            Assert.That(SkillGroupName.JobManagement.ToDisplayName(), Is.EqualTo("Job Management"));
+            Assert.That(SkillGroupName.Entrepeneur.ToDisplayName(), Is.EqualTo("Entrepeneur"));
         }
 
         [Test]
         public void SkillName_AllValues_HaveNonEmptyDisplayName()
         {
             foreach (SkillName s in System.Enum.GetValues(typeof(SkillName)))
-                Assert.IsFalse(string.IsNullOrEmpty(s.ToDisplayName()),
+                Assert.That(string.IsNullOrEmpty(s.ToDisplayName()), Is.False,
                     $"SkillName.{s} has empty display name");
         }
 
@@ -250,7 +249,7 @@ namespace OE2EmpireTracker.Tests.Data
         public void SkillGroupName_AllValues_HaveNonEmptyDisplayName()
         {
             foreach (SkillGroupName g in System.Enum.GetValues(typeof(SkillGroupName)))
-                Assert.IsFalse(string.IsNullOrEmpty(g.ToDisplayName()),
+                Assert.That(string.IsNullOrEmpty(g.ToDisplayName()), Is.False,
                     $"SkillGroupName.{g} has empty display name");
         }
     }

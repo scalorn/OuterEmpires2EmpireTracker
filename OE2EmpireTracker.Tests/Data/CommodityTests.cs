@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using OE2EmpireTracker.Data;
 using System.Linq;
 using CG = OE2EmpireTracker.Data.CommodityGroup;
@@ -17,28 +16,30 @@ namespace OE2EmpireTracker.Tests.Data
         [Test]
         public void Commodities_ListIsNotEmpty()
         {
-            Assert.IsTrue(Commodity.Commodities.Count > 0);
+            Assert.That(Commodity.Commodities.Count > 0, Is.True);
         }
 
         [Test]
         public void Commodities_AllEntriesHaveNonEmptyID()
         {
             foreach (var c in Commodity.Commodities)
-                Assert.IsFalse(string.IsNullOrEmpty(c.ID), $"Commodity with Name '{c.Name}' has empty ID");
+                Assert.That(string.IsNullOrEmpty(c.ID), Is.False,
+                    $"Commodity with Name '{c.Name}' has empty ID");
         }
 
         [Test]
         public void Commodities_AllEntriesHaveNonEmptyName()
         {
             foreach (var c in Commodity.Commodities)
-                Assert.IsFalse(string.IsNullOrEmpty(c.Name), $"Commodity with ID '{c.ID}' has empty Name");
+                Assert.That(string.IsNullOrEmpty(c.Name), Is.False,
+                    $"Commodity with ID '{c.ID}' has empty Name");
         }
 
         [Test]
         public void Commodities_AllEntriesHaveKnownIndustry()
         {
             foreach (var c in Commodity.Commodities)
-                Assert.AreNotEqual(CI.CommodityIndustryEnum.None, c.CommodityIndustry,
+                Assert.That(c.CommodityIndustry, Is.Not.EqualTo(CI.CommodityIndustryEnum.None),
                     $"Commodity '{c.Name}' has no industry assigned");
         }
 
@@ -46,7 +47,7 @@ namespace OE2EmpireTracker.Tests.Data
         public void Commodities_AllEntriesHaveKnownGroup()
         {
             foreach (var c in Commodity.Commodities)
-                Assert.AreNotEqual(CG.CommodityGroupEnum.None, c.CommodityGroup,
+                Assert.That(c.CommodityGroup, Is.Not.EqualTo(CG.CommodityGroupEnum.None),
                     $"Commodity '{c.Name}' has no group assigned");
         }
 
@@ -55,7 +56,8 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var ids = Commodity.Commodities.Select(c => c.ID).ToList();
             var distinct = ids.Distinct().ToList();
-            Assert.AreEqual(distinct.Count, ids.Count, "Duplicate commodity IDs found");
+            Assert.That(ids.Count, Is.EqualTo(distinct.Count),
+                    "Duplicate commodity IDs found");
         }
 
         // -----------------------------------------------------------------------
@@ -66,7 +68,7 @@ namespace OE2EmpireTracker.Tests.Data
         public void ExtendedName_ContainsCommodityName()
         {
             var commodity = Commodity.Commodities.First();
-            StringAssert.Contains(commodity.Name, commodity.ExtendedName);
+            Assert.That(commodity.ExtendedName, Does.Contain(commodity.Name));
         }
 
         [Test]
@@ -75,8 +77,8 @@ namespace OE2EmpireTracker.Tests.Data
             var commodity = Commodity.Commodities.First();
             CommodityIndustry industry;
             CI.CommodityIndustryMapByEnum.TryGetValue(commodity.CommodityIndustry, out industry);
-            Assert.IsNotNull(industry);
-            StringAssert.Contains(industry.Name, commodity.ExtendedName);
+            Assert.That(industry, Is.Not.Null);
+            Assert.That(commodity.ExtendedName, Does.Contain(industry.Name));
         }
 
         [Test]
@@ -85,29 +87,29 @@ namespace OE2EmpireTracker.Tests.Data
             var commodity = Commodity.Commodities.First();
             CommodityGroup group;
             CG.CommodityGroupMapByEnum.TryGetValue(commodity.CommodityGroup, out group);
-            Assert.IsNotNull(group);
-            StringAssert.Contains(group.Name, commodity.ExtendedName);
+            Assert.That(group, Is.Not.Null);
+            Assert.That(commodity.ExtendedName, Does.Contain(group.Name));
         }
 
         [Test]
         public void ExtendedName_EmptyNameReturnsEmpty()
         {
             var commodity = new Commodity();
-            Assert.AreEqual("", commodity.ExtendedName);
+            Assert.That(commodity.ExtendedName, Is.EqualTo(""));
         }
 
         [Test]
         public void ExtendedName_IndustryWrappedInParentheses()
         {
             var commodity = Commodity.Commodities.First();
-            StringAssert.IsMatch(@"\(.*\)", commodity.ExtendedName);
+            Assert.That(commodity.ExtendedName, Does.Match(@"\(.*\)"));
         }
 
         [Test]
         public void ExtendedName_GroupWrappedInSquareBrackets()
         {
             var commodity = Commodity.Commodities.First();
-            StringAssert.IsMatch(@"\[.*\]", commodity.ExtendedName);
+            Assert.That(commodity.ExtendedName, Does.Match(@"\[.*\]"));
         }
 
         // -----------------------------------------------------------------------
@@ -119,7 +121,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             foreach (var c in Commodity.Commodities)
             {
-                Assert.IsTrue(Commodity.ResourceMapByEnum.ContainsKey(c.ID),
+                Assert.That(Commodity.ResourceMapByEnum.ContainsKey(c.ID), Is.True,
                     $"ResourceMapByEnum missing key '{c.ID}'");
             }
         }
@@ -129,7 +131,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             foreach (var c in Commodity.Commodities)
             {
-                Assert.IsTrue(Commodity.ResourceMapByString.ContainsKey(c.Name),
+                Assert.That(Commodity.ResourceMapByString.ContainsKey(c.Name), Is.True,
                     $"ResourceMapByString missing key '{c.Name}'");
             }
         }
@@ -139,7 +141,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var expected = Commodity.Commodities.First();
             var result = Commodity.ResourceMapByEnum[expected.ID];
-            Assert.AreEqual(expected.Name, result.Name);
+            Assert.That(result.Name, Is.EqualTo(expected.Name));
         }
 
         [Test]
@@ -147,7 +149,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var expected = Commodity.Commodities.First();
             var result = Commodity.ResourceMapByString[expected.Name];
-            Assert.AreEqual(expected.ID, result.ID);
+            Assert.That(result.ID, Is.EqualTo(expected.ID));
         }
 
         // -----------------------------------------------------------------------
@@ -157,13 +159,13 @@ namespace OE2EmpireTracker.Tests.Data
         [Test]
         public void CommodityGroup_ListIsNotEmpty()
         {
-            Assert.IsTrue(CG.Groups.Count > 0);
+            Assert.That(CG.Groups.Count > 0, Is.True);
         }
 
         [Test]
         public void CommodityGroup_MapByEnum_ContainsNoneEntry()
         {
-            Assert.IsTrue(CG.CommodityGroupMapByEnum.ContainsKey(CG.CommodityGroupEnum.None));
+            Assert.That(CG.CommodityGroupMapByEnum.ContainsKey(CG.CommodityGroupEnum.None), Is.True);
         }
 
         [Test]
@@ -172,7 +174,7 @@ namespace OE2EmpireTracker.Tests.Data
             var allEnums = System.Enum.GetValues(typeof(CG.CommodityGroupEnum))
                 .Cast<CG.CommodityGroupEnum>();
             foreach (var e in allEnums)
-                Assert.IsTrue(CG.CommodityGroupMapByEnum.ContainsKey(e),
+                Assert.That(CG.CommodityGroupMapByEnum.ContainsKey(e), Is.True,
                     $"CommodityGroupMapByEnum missing {e}");
         }
 
@@ -181,7 +183,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var group = CG.Groups.First(g => g.ID != CG.CommodityGroupEnum.None);
             var result = CG.CommodityGroupMapByString[group.Name];
-            Assert.AreEqual(group.ID, result.ID);
+            Assert.That(result.ID, Is.EqualTo(group.ID));
         }
 
         // -----------------------------------------------------------------------
@@ -191,13 +193,13 @@ namespace OE2EmpireTracker.Tests.Data
         [Test]
         public void CommodityIndustry_ListIsNotEmpty()
         {
-            Assert.IsTrue(CI.Groups.Count > 0);
+            Assert.That(CI.Groups.Count > 0, Is.True);
         }
 
         [Test]
         public void CommodityIndustry_MapByEnum_ContainsNoneEntry()
         {
-            Assert.IsTrue(CI.CommodityIndustryMapByEnum.ContainsKey(CI.CommodityIndustryEnum.None));
+            Assert.That(CI.CommodityIndustryMapByEnum.ContainsKey(CI.CommodityIndustryEnum.None), Is.True);
         }
 
         [Test]
@@ -206,7 +208,7 @@ namespace OE2EmpireTracker.Tests.Data
             var allEnums = System.Enum.GetValues(typeof(CI.CommodityIndustryEnum))
                 .Cast<CI.CommodityIndustryEnum>();
             foreach (var e in allEnums)
-                Assert.IsTrue(CI.CommodityIndustryMapByEnum.ContainsKey(e),
+                Assert.That(CI.CommodityIndustryMapByEnum.ContainsKey(e), Is.True,
                     $"CommodityIndustryMapByEnum missing {e}");
         }
 
@@ -215,7 +217,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var industry = CI.Groups.First(i => i.ID != CI.CommodityIndustryEnum.None);
             var result = CI.CommodityIndustryMapByString[industry.Name];
-            Assert.AreEqual(industry.ID, result.ID);
+            Assert.That(result.ID, Is.EqualTo(industry.ID));
         }
     }
 }

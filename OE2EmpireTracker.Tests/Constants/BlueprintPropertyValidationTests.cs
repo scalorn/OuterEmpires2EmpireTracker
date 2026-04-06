@@ -15,8 +15,7 @@ namespace OE2EmpireTracker.Tests.Constants
         [Test]
         public void GetPropertyType_CommodityIndustry_ReturnsComboBox()
         {
-            Assert.AreEqual(PropertyValueType.ComboBox,
-                BlueprintPropertyValidation.GetPropertyType("CommodityIndustry"));
+            Assert.That(BlueprintPropertyValidation.GetPropertyType("CommodityIndustry"), Is.EqualTo(PropertyValueType.ComboBox));
         }
 
         // -----------------------------------------------------------------------
@@ -28,8 +27,7 @@ namespace OE2EmpireTracker.Tests.Constants
         [TestCase("Consumable")]
         public void GetPropertyType_CheckBoxProperties_ReturnsCheckBox(string propertyName)
         {
-            Assert.AreEqual(PropertyValueType.CheckBox,
-                BlueprintPropertyValidation.GetPropertyType(propertyName));
+            Assert.That(BlueprintPropertyValidation.GetPropertyType(propertyName), Is.EqualTo(PropertyValueType.CheckBox));
         }
 
         // -----------------------------------------------------------------------
@@ -41,8 +39,7 @@ namespace OE2EmpireTracker.Tests.Constants
         [TestCase("WarehouseCapacity")]
         public void GetPropertyType_IntegerProperties_ReturnsInteger(string propertyName)
         {
-            Assert.AreEqual(PropertyValueType.Integer,
-                BlueprintPropertyValidation.GetPropertyType(propertyName));
+            Assert.That(BlueprintPropertyValidation.GetPropertyType(propertyName), Is.EqualTo(PropertyValueType.Integer));
         }
 
         // -----------------------------------------------------------------------
@@ -53,8 +50,7 @@ namespace OE2EmpireTracker.Tests.Constants
         [TestCase("MaxJumpDistance")]
         public void GetPropertyType_DecimalProperties_ReturnsDecimal(string propertyName)
         {
-            Assert.AreEqual(PropertyValueType.Decimal,
-                BlueprintPropertyValidation.GetPropertyType(propertyName));
+            Assert.That(BlueprintPropertyValidation.GetPropertyType(propertyName), Is.EqualTo(PropertyValueType.Decimal));
         }
 
         // -----------------------------------------------------------------------
@@ -64,8 +60,7 @@ namespace OE2EmpireTracker.Tests.Constants
         [Test]
         public void GetPropertyType_ManufactureTime_ReturnsTime()
         {
-            Assert.AreEqual(PropertyValueType.Time,
-                BlueprintPropertyValidation.GetPropertyType("ManufactureTime"));
+            Assert.That(BlueprintPropertyValidation.GetPropertyType("ManufactureTime"), Is.EqualTo(PropertyValueType.Time));
         }
 
         // -----------------------------------------------------------------------
@@ -75,8 +70,7 @@ namespace OE2EmpireTracker.Tests.Constants
         [Test]
         public void GetPropertyType_UnknownProperty_ReturnsUnknown()
         {
-            Assert.AreEqual(PropertyValueType.Unknown,
-                BlueprintPropertyValidation.GetPropertyType("SomeRandomProperty"));
+            Assert.That(BlueprintPropertyValidation.GetPropertyType("SomeRandomProperty"), Is.EqualTo(PropertyValueType.Unknown));
         }
 
         // -----------------------------------------------------------------------
@@ -86,35 +80,32 @@ namespace OE2EmpireTracker.Tests.Constants
         [Test]
         public void GetValidationPattern_IntegerProperty_ReturnsIntegerPattern()
         {
-            Assert.AreEqual(BlueprintPropertyValidation.INTEGER_PATTERN,
-                BlueprintPropertyValidation.GetValidationPattern("BlueCollarDetail"));
+            Assert.That(BlueprintPropertyValidation.GetValidationPattern("BlueCollarDetail"), Is.EqualTo(BlueprintPropertyValidation.INTEGER_PATTERN));
         }
 
         [Test]
         public void GetValidationPattern_DecimalProperty_ReturnsDecimalPattern()
         {
-            Assert.AreEqual(BlueprintPropertyValidation.DECIMAL_PATTERN,
-                BlueprintPropertyValidation.GetValidationPattern("CooldownTime"));
+            Assert.That(BlueprintPropertyValidation.GetValidationPattern("CooldownTime"), Is.EqualTo(BlueprintPropertyValidation.DECIMAL_PATTERN));
         }
 
         [Test]
         public void GetValidationPattern_BooleanProperty_ReturnsNull()
         {
             // CheckBox properties use a different rendering — no regex pattern needed
-            Assert.IsNull(BlueprintPropertyValidation.GetValidationPattern("CanManufacture"));
+            Assert.That(BlueprintPropertyValidation.GetValidationPattern("CanManufacture"), Is.Null);
         }
 
         [Test]
         public void GetValidationPattern_TimeProperty_ReturnsTimePattern()
         {
-            Assert.AreEqual(BlueprintPropertyValidation.TIME_PATTERN,
-                BlueprintPropertyValidation.GetValidationPattern("ManufactureTime"));
+            Assert.That(BlueprintPropertyValidation.GetValidationPattern("ManufactureTime"), Is.EqualTo(BlueprintPropertyValidation.TIME_PATTERN));
         }
 
         [Test]
         public void GetValidationPattern_UnknownProperty_ReturnsNull()
         {
-            Assert.IsNull(BlueprintPropertyValidation.GetValidationPattern("UnknownProp"));
+            Assert.That(BlueprintPropertyValidation.GetValidationPattern("UnknownProp"), Is.Null);
         }
 
         // -----------------------------------------------------------------------
@@ -125,24 +116,24 @@ namespace OE2EmpireTracker.Tests.Constants
         public void GetComboBoxDataSource_CommodityIndustry_ReturnsNonNullList()
         {
             IList result = BlueprintPropertyValidation.GetComboBoxDataSource("CommodityIndustry");
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.Count > 0);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Count > 0, Is.True);
         }
 
         [Test]
         public void GetComboBoxDataSource_UnknownProperty_ReturnsNull()
         {
-            Assert.IsNull(BlueprintPropertyValidation.GetComboBoxDataSource("UnknownProp"));
+            Assert.That(BlueprintPropertyValidation.GetComboBoxDataSource("UnknownProp"), Is.Null);
         }
 
         [Test]
         public void GetComboBoxDataSource_CommodityIndustry_ContainsKnownIndustryNames()
         {
             var result = BlueprintPropertyValidation.GetComboBoxDataSource("CommodityIndustry") as List<string>;
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.Contains("Engineering Block"));
-            Assert.IsTrue(result.Contains("Agridome"));
-            Assert.IsTrue(result.Contains("Science Centre"));
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Contains("Engineering Block"), Is.True);
+            Assert.That(result.Contains("Agridome"), Is.True);
+            Assert.That(result.Contains("Science Centre"), Is.True);
         }
     }
 }

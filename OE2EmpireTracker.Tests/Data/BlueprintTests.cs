@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using OE2EmpireTracker.Data;
 
 namespace OE2EmpireTracker.Tests.Data
@@ -16,44 +15,44 @@ namespace OE2EmpireTracker.Tests.Data
         public void DefaultConstructor_ItemTypeIsBlueprint()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint();
-            Assert.AreEqual(ItemType.ItemTypeEnum.Blueprint, bp.ItemType);
+            Assert.That(bp.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Blueprint));
         }
 
         [Test]
         public void DefaultConstructor_NameIsEmpty()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint();
-            Assert.AreEqual(string.Empty, bp.Name);
+            Assert.That(bp.Name, Is.EqualTo(string.Empty));
         }
 
         [Test]
         public void DefaultConstructor_PropertiesIsNotNull()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint();
-            Assert.IsNotNull(bp.Properties);
+            Assert.That(bp.Properties, Is.Not.Null);
         }
 
         [Test]
         public void DefaultConstructor_ResourcesIsNotNull()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint();
-            Assert.IsNotNull(bp.Resources);
+            Assert.That(bp.Resources, Is.Not.Null);
         }
 
         [Test]
         public void DefaultConstructor_NumericDefaultsAreZero()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint();
-            Assert.AreEqual(0, bp.Evolution);
-            Assert.AreEqual(0, bp.Class);
-            Assert.AreEqual(0, bp.CopyCost);
+            Assert.That(bp.Evolution, Is.EqualTo(0));
+            Assert.That(bp.Class, Is.EqualTo(0));
+            Assert.That(bp.CopyCost, Is.EqualTo(0));
         }
 
         [Test]
         public void NamedConstructor_SetsName()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint("Pulse Cannon");
-            Assert.AreEqual("Pulse Cannon", bp.Name);
+            Assert.That(bp.Name, Is.EqualTo("Pulse Cannon"));
         }
 
         // -----------------------------------------------------------------------
@@ -64,7 +63,7 @@ namespace OE2EmpireTracker.Tests.Data
         public void ExtendedName_NullUUID_ReturnsEmpty()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint { UUID = null, Name = "Test" };
-            Assert.AreEqual(string.Empty, bp.ExtendedName);
+            Assert.That(bp.ExtendedName, Is.EqualTo(string.Empty));
         }
 
         // -----------------------------------------------------------------------
@@ -75,7 +74,7 @@ namespace OE2EmpireTracker.Tests.Data
         public void ExtendedName_NameOnly_ReturnsName()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint { UUID = "uuid-1", Name = "Pulse Cannon" };
-            Assert.AreEqual("Pulse Cannon", bp.ExtendedName);
+            Assert.That(bp.ExtendedName, Is.EqualTo("Pulse Cannon"));
         }
 
         // -----------------------------------------------------------------------
@@ -86,14 +85,14 @@ namespace OE2EmpireTracker.Tests.Data
         public void ExtendedName_WithClass_PrependsClassPrefix()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint { UUID = "uuid-1", Name = "Thruster", Class = 3 };
-            StringAssert.StartsWith("C3 ", bp.ExtendedName);
+            Assert.That(bp.ExtendedName, Does.StartWith("C3 "));
         }
 
         [Test]
         public void ExtendedName_ClassZero_NoClassPrefix()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint { UUID = "uuid-1", Name = "Thruster", Class = 0 };
-            StringAssert.DoesNotContain("C0", bp.ExtendedName);
+            Assert.That(bp.ExtendedName, Does.Not.Contain("C0"));
         }
 
         // -----------------------------------------------------------------------
@@ -104,14 +103,14 @@ namespace OE2EmpireTracker.Tests.Data
         public void ExtendedName_WithEvolution_ContainsEvSegment()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint { UUID = "uuid-1", Name = "Shield", Evolution = 2 };
-            StringAssert.Contains("Ev(2)", bp.ExtendedName);
+            Assert.That(bp.ExtendedName, Does.Contain("Ev(2)"));
         }
 
         [Test]
         public void ExtendedName_EvolutionZero_NoEvSegment()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint { UUID = "uuid-1", Name = "Shield", Evolution = 0 };
-            StringAssert.DoesNotContain("Ev(", bp.ExtendedName);
+            Assert.That(bp.ExtendedName, Does.Not.Contain("Ev("));
         }
 
         // -----------------------------------------------------------------------
@@ -122,14 +121,14 @@ namespace OE2EmpireTracker.Tests.Data
         public void ExtendedName_WithTechLevel_ContainsTechLevelInParentheses()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint { UUID = "uuid-1", Name = "Cannon", TechLevel = "MilSpec" };
-            StringAssert.Contains("(MilSpec)", bp.ExtendedName);
+            Assert.That(bp.ExtendedName, Does.Contain("(MilSpec)"));
         }
 
         [Test]
         public void ExtendedName_NullTechLevel_NoTechLevelSegment()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint { UUID = "uuid-1", Name = "Cannon", TechLevel = null };
-            StringAssert.DoesNotContain("(", bp.ExtendedName);
+            Assert.That(bp.ExtendedName, Does.Not.Contain("("));
         }
 
         // -----------------------------------------------------------------------
@@ -140,14 +139,14 @@ namespace OE2EmpireTracker.Tests.Data
         public void ExtendedName_WithNickName_ContainsNickNameInSquareBrackets()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint { UUID = "uuid-1", Name = "Drive", NickName = "Fast One" };
-            StringAssert.Contains("[Fast One]", bp.ExtendedName);
+            Assert.That(bp.ExtendedName, Does.Contain("[Fast One]"));
         }
 
         [Test]
         public void ExtendedName_EmptyNickName_NoSquareBrackets()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint { UUID = "uuid-1", Name = "Drive", NickName = string.Empty };
-            StringAssert.DoesNotContain("[", bp.ExtendedName);
+            Assert.That(bp.ExtendedName, Does.Not.Contain("["));
         }
 
         // -----------------------------------------------------------------------
@@ -168,17 +167,21 @@ namespace OE2EmpireTracker.Tests.Data
             };
             string name = bp.ExtendedName;
             // Order: C{Class} Ev({Evolution}) Name (TechLevel) [NickName]
-            Assert.IsTrue(name.IndexOf("C2") < name.IndexOf("Ev(3)"),   "Class before Evolution");
-            Assert.IsTrue(name.IndexOf("Ev(3)") < name.IndexOf("Cannon"), "Evolution before Name");
-            Assert.IsTrue(name.IndexOf("Cannon") < name.IndexOf("(MilSpec)"), "Name before TechLevel");
-            Assert.IsTrue(name.IndexOf("(MilSpec)") < name.IndexOf("[Big Gun]"), "TechLevel before NickName");
+            Assert.That(name.IndexOf("C2") < name.IndexOf("Ev(3)"), Is.True,
+                    "Class before Evolution");
+            Assert.That(name.IndexOf("Ev(3)") < name.IndexOf("Cannon"), Is.True,
+                    "Evolution before Name");
+            Assert.That(name.IndexOf("Cannon") < name.IndexOf("(MilSpec)"), Is.True,
+                    "Name before TechLevel");
+            Assert.That(name.IndexOf("(MilSpec)") < name.IndexOf("[Big Gun]"), Is.True,
+                    "TechLevel before NickName");
         }
 
         [Test]
         public void ExtendedName_IsTrimmed()
         {
             var bp = new OE2EmpireTracker.Data.Blueprint { UUID = "uuid-1", Name = "Drive" };
-            Assert.AreEqual(bp.ExtendedName, bp.ExtendedName.Trim());
+            Assert.That(bp.ExtendedName.Trim(), Is.EqualTo(bp.ExtendedName));
         }
 
         // -----------------------------------------------------------------------
@@ -190,7 +193,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var bp = new OE2EmpireTracker.Data.Blueprint { UUID = "uuid-1", Name = "Cannon", Evolution = 1 };
             string json = JsonConvert.SerializeObject(bp);
-            StringAssert.DoesNotContain("ExtendedName", json);
+            Assert.That(json, Does.Not.Contain("ExtendedName"));
         }
 
         [Test]
@@ -209,13 +212,13 @@ namespace OE2EmpireTracker.Tests.Data
             string json = JsonConvert.SerializeObject(bp);
             var restored = JsonConvert.DeserializeObject<OE2EmpireTracker.Data.Blueprint>(json);
 
-            Assert.AreEqual(bp.UUID, restored.UUID);
-            Assert.AreEqual(bp.Name, restored.Name);
-            Assert.AreEqual(bp.Evolution, restored.Evolution);
-            Assert.AreEqual(bp.Class, restored.Class);
-            Assert.AreEqual(bp.TechLevel, restored.TechLevel);
-            Assert.AreEqual(bp.NickName, restored.NickName);
-            Assert.AreEqual(bp.CopyCost, restored.CopyCost);
+            Assert.That(restored.UUID, Is.EqualTo(bp.UUID));
+            Assert.That(restored.Name, Is.EqualTo(bp.Name));
+            Assert.That(restored.Evolution, Is.EqualTo(bp.Evolution));
+            Assert.That(restored.Class, Is.EqualTo(bp.Class));
+            Assert.That(restored.TechLevel, Is.EqualTo(bp.TechLevel));
+            Assert.That(restored.NickName, Is.EqualTo(bp.NickName));
+            Assert.That(restored.CopyCost, Is.EqualTo(bp.CopyCost));
         }
     }
 }

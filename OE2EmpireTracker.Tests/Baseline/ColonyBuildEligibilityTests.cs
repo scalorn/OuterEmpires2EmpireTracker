@@ -77,19 +77,19 @@ namespace OE2EmpireTracker.Tests.Baseline
 
                         // IsStagedStructure: true iff IsStaged=true AND IsBuilt=false
                         bool expectedStaged = staged && !built;
-                        Assert.AreEqual(expectedStaged, isStaged,
-                            $"IsStagedStructure wrong for staged={staged}, built={built}, timer={TimerDesc(timer)}");
+                        Assert.That(isStaged, Is.EqualTo(expectedStaged),
+                    $"IsStagedStructure wrong for staged={staged}, built={built}, timer={TimerDesc(timer)}");
 
                         // IsBuildingStructure: true iff IsStaged=false AND IsBuilt=false
                         //   AND BuildCompletionTime != null AND TimeRemaining > 0
                         bool expectedBuilding = !staged && !built
                             && timer != null && timer.TimeRemaining > 0;
-                        Assert.AreEqual(expectedBuilding, isBuilding,
-                            $"IsBuildingStructure wrong for staged={staged}, built={built}, timer={TimerDesc(timer)}");
+                        Assert.That(isBuilding, Is.EqualTo(expectedBuilding),
+                    $"IsBuildingStructure wrong for staged={staged}, built={built}, timer={TimerDesc(timer)}");
 
                         // Never both true simultaneously
-                        Assert.IsFalse(isStaged && isBuilding,
-                            $"Structure cannot be both staged and building: staged={staged}, built={built}, timer={TimerDesc(timer)}");
+                        Assert.That(isStaged && isBuilding, Is.False,
+                    $"Structure cannot be both staged and building: staged={staged}, built={built}, timer={TimerDesc(timer)}");
                     }
                 }
             }
@@ -112,7 +112,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var colony = new Colony();
             colony.UUID = Guid.NewGuid().ToString();
-            Assert.IsFalse(ColonyBuildEligibility.IsEligible(colony, playerContext));
+            Assert.That(ColonyBuildEligibility.IsEligible(colony, playerContext), Is.False);
         }
 
         [Test]
@@ -122,7 +122,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.UUID = Guid.NewGuid().ToString();
             colony.Structures.Add(MakeStructure(false, true));
             colony.Structures.Add(MakeStructure(false, true));
-            Assert.IsFalse(ColonyBuildEligibility.IsEligible(colony, playerContext));
+            Assert.That(ColonyBuildEligibility.IsEligible(colony, playerContext), Is.False);
         }
 
         [Test]
@@ -132,7 +132,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.UUID = Guid.NewGuid().ToString();
             colony.Structures.Add(MakeStructure(true, false));
             colony.Structures.Add(MakeStructure(false, true));
-            Assert.IsTrue(ColonyBuildEligibility.IsEligible(colony, playerContext));
+            Assert.That(ColonyBuildEligibility.IsEligible(colony, playerContext), Is.True);
         }
 
         [Test]
@@ -142,7 +142,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.UUID = Guid.NewGuid().ToString();
             colony.Structures.Add(MakeStructure(true, false)); // staged
             colony.Structures.Add(MakeStructure(false, false, MakeActiveTimer())); // building
-            Assert.IsFalse(ColonyBuildEligibility.IsEligible(colony, playerContext));
+            Assert.That(ColonyBuildEligibility.IsEligible(colony, playerContext), Is.False);
         }
 
         [Test]
@@ -153,7 +153,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.Structures.Add(MakeStructure(true, false));
             colony.Structures.Add(MakeStructure(true, false));
             colony.Structures.Add(MakeStructure(false, true));
-            Assert.IsTrue(ColonyBuildEligibility.IsEligible(colony, playerContext));
+            Assert.That(ColonyBuildEligibility.IsEligible(colony, playerContext), Is.True);
         }
 
         [Test]
@@ -163,7 +163,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.UUID = Guid.NewGuid().ToString();
             colony.Structures.Add(MakeStructure(false, false, MakeActiveTimer())); // building
             colony.Structures.Add(MakeStructure(false, true)); // built
-            Assert.IsFalse(ColonyBuildEligibility.IsEligible(colony, playerContext));
+            Assert.That(ColonyBuildEligibility.IsEligible(colony, playerContext), Is.False);
         }
 
         [Test]
@@ -194,8 +194,8 @@ namespace OE2EmpireTracker.Tests.Baseline
                                     || (states[j].Timer != null && states[j].Timer.TimeRemaining > 0 && !states[j].Staged && !states[j].Built);
                     bool expected = hasStaged && !hasBuilding;
 
-                    Assert.AreEqual(expected, ColonyBuildEligibility.IsEligible(colony, playerContext),
-                        $"Eligibility wrong for states[{i}]+states[{j}]");
+                    Assert.That(ColonyBuildEligibility.IsEligible(colony, playerContext), Is.EqualTo(expected),
+                    $"Eligibility wrong for states[{i}]+states[{j}]");
                 }
             }
         }
@@ -223,7 +223,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.Structures.Add(built2);
 
             var result = ColonyBuildEligibility.GetFirstStagedStructure(colony, playerContext);
-            Assert.AreSame(staged1, result);
+            Assert.That(result, Is.SameAs(staged1));
         }
 
         [Test]
@@ -235,7 +235,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.Structures.Add(MakeStructure(false, true));
 
             var result = ColonyBuildEligibility.GetFirstStagedStructure(colony, playerContext);
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -245,7 +245,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.UUID = Guid.NewGuid().ToString();
 
             var result = ColonyBuildEligibility.GetFirstStagedStructure(colony, playerContext);
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -274,7 +274,7 @@ namespace OE2EmpireTracker.Tests.Baseline
                 }
 
                 var result = ColonyBuildEligibility.GetFirstStagedStructure(colony, playerContext);
-                Assert.AreSame(expectedFirst, result,
+                Assert.That(result, Is.SameAs(expectedFirst),
                     $"Expected first staged at position {stagedPos}");
             }
         }

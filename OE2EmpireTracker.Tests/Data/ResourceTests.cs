@@ -16,22 +16,22 @@ namespace OE2EmpireTracker.Tests.Data
         [Test]
         public void Resources_ListIsNotEmpty()
         {
-            Assert.IsTrue(Resource.Resources.Count > 0);
+            Assert.That(Resource.Resources.Count > 0, Is.True);
         }
 
         [Test]
         public void Resources_FirstEntryIsNoneWithEmptyName()
         {
             var first = Resource.Resources[0];
-            Assert.AreEqual(RE.None, first.ID);
-            Assert.AreEqual(string.Empty, first.Name);
+            Assert.That(first.ID, Is.EqualTo(RE.None));
+            Assert.That(first.Name, Is.EqualTo(string.Empty));
         }
 
         [Test]
         public void Resources_AllNonNoneEntriesHaveNonEmptyName()
         {
             foreach (var r in Resource.Resources.Where(r => r.ID != RE.None))
-                Assert.IsFalse(string.IsNullOrEmpty(r.Name),
+                Assert.That(string.IsNullOrEmpty(r.Name), Is.False,
                     $"Resource with ID '{r.ID}' has empty Name");
         }
 
@@ -39,14 +39,16 @@ namespace OE2EmpireTracker.Tests.Data
         public void Resources_NoDuplicateIDs()
         {
             var ids = Resource.Resources.Select(r => r.ID).ToList();
-            Assert.AreEqual(ids.Distinct().Count(), ids.Count, "Duplicate Resource IDs found");
+            Assert.That(ids.Count, Is.EqualTo(ids.Distinct().Count()),
+                    "Duplicate Resource IDs found");
         }
 
         [Test]
         public void Resources_NoDuplicateNames()
         {
             var names = Resource.Resources.Select(r => r.Name).ToList();
-            Assert.AreEqual(names.Distinct().Count(), names.Count, "Duplicate Resource Names found");
+            Assert.That(names.Count, Is.EqualTo(names.Distinct().Count()),
+                    "Duplicate Resource Names found");
         }
 
         [Test]
@@ -55,7 +57,8 @@ namespace OE2EmpireTracker.Tests.Data
             var allEnums = Enum.GetValues(typeof(RE)).Cast<RE>();
             var listIDs = Resource.Resources.Select(r => r.ID).ToList();
             foreach (var e in allEnums)
-                Assert.IsTrue(listIDs.Contains(e), $"Resources list missing enum value {e}");
+                Assert.That(listIDs.Contains(e), Is.True,
+                    $"Resources list missing enum value {e}");
         }
 
         [Test]
@@ -63,7 +66,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var nonNone = Resource.Resources.Where(r => r.ID != RE.None).ToList();
             for (int i = 1; i < nonNone.Count; i++)
-                Assert.IsTrue(string.Compare(nonNone[i - 1].Name, nonNone[i].Name, StringComparison.Ordinal) <= 0,
+                Assert.That(string.Compare(nonNone[i - 1].Name, nonNone[i].Name, StringComparison.Ordinal) <= 0, Is.True,
                     $"'{nonNone[i - 1].Name}' should come before '{nonNone[i].Name}'");
         }
 
@@ -76,19 +79,20 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var allEnums = Enum.GetValues(typeof(RE)).Cast<RE>();
             foreach (var e in allEnums)
-                Assert.IsTrue(Resource.ResourceMapByEnum.ContainsKey(e), $"Map missing enum {e}");
+                Assert.That(Resource.ResourceMapByEnum.ContainsKey(e), Is.True,
+                    $"Map missing enum {e}");
         }
 
         [Test]
         public void ResourceMapByEnum_LookupReturnsCorrectName()
         {
-            Assert.AreEqual("Halogens", Resource.ResourceMapByEnum[RE.Halogens].Name);
+            Assert.That(Resource.ResourceMapByEnum[RE.Halogens].Name, Is.EqualTo("Halogens"));
         }
 
         [Test]
         public void ResourceMapByEnum_NoneEntryHasEmptyName()
         {
-            Assert.AreEqual(string.Empty, Resource.ResourceMapByEnum[RE.None].Name);
+            Assert.That(Resource.ResourceMapByEnum[RE.None].Name, Is.EqualTo(string.Empty));
         }
 
         // -----------------------------------------------------------------------
@@ -99,20 +103,20 @@ namespace OE2EmpireTracker.Tests.Data
         public void ResourceMapByString_ContainsAllResourceNames()
         {
             foreach (var r in Resource.Resources)
-                Assert.IsTrue(Resource.ResourceMapByString.ContainsKey(r.Name),
+                Assert.That(Resource.ResourceMapByString.ContainsKey(r.Name), Is.True,
                     $"Map missing name '{r.Name}'");
         }
 
         [Test]
         public void ResourceMapByString_LookupReturnsCorrectID()
         {
-            Assert.AreEqual(RE.HeavyTransMetals, Resource.ResourceMapByString["Heavy Trans-Metals"].ID);
+            Assert.That(Resource.ResourceMapByString["Heavy Trans-Metals"].ID, Is.EqualTo(RE.HeavyTransMetals));
         }
 
         [Test]
         public void ResourceMapByString_EmptyKeyReturnsNone()
         {
-            Assert.AreEqual(RE.None, Resource.ResourceMapByString[""].ID);
+            Assert.That(Resource.ResourceMapByString[""].ID, Is.EqualTo(RE.None));
         }
 
         // -----------------------------------------------------------------------
@@ -126,7 +130,8 @@ namespace OE2EmpireTracker.Tests.Data
             {
                 var byEnum = Resource.ResourceMapByEnum[r.ID];
                 var byString = Resource.ResourceMapByString[byEnum.Name];
-                Assert.AreEqual(r.ID, byString.ID, $"Round-trip failed for {r.ID}");
+                Assert.That(byString.ID, Is.EqualTo(r.ID),
+                    $"Round-trip failed for {r.ID}");
             }
         }
 
@@ -138,7 +143,7 @@ namespace OE2EmpireTracker.Tests.Data
         public void Resources_AllNonNoneEntriesHaveValidResourceGroup()
         {
             foreach (var r in Resource.Resources.Where(r => r.ID != RE.None))
-                Assert.AreNotEqual(ResourceGroup.ResourceGroupEnum.None, r.ResourceGroup,
+                Assert.That(r.ResourceGroup, Is.Not.EqualTo(ResourceGroup.ResourceGroupEnum.None),
                     $"Resource '{r.Name}' has None ResourceGroup");
         }
 
@@ -146,7 +151,7 @@ namespace OE2EmpireTracker.Tests.Data
         public void Resources_AllNonNoneEntriesHaveValidResourceClass()
         {
             foreach (var r in Resource.Resources.Where(r => r.ID != RE.None))
-                Assert.AreNotEqual(ResourceClass.ResourceClassEnum.None, r.ResourceClass,
+                Assert.That(r.ResourceClass, Is.Not.EqualTo(ResourceClass.ResourceClassEnum.None),
                     $"Resource '{r.Name}' has None ResourceClass");
         }
 
@@ -154,9 +159,10 @@ namespace OE2EmpireTracker.Tests.Data
         public void Resources_SyntheticResources_HaveSyntheticGroup()
         {
             var synthetics = Resource.Resources.Where(r => r.Name.StartsWith("S1.") || r.Name.StartsWith("S2.")).ToList();
-            Assert.IsTrue(synthetics.Count > 0, "Expected at least one synthetic resource");
+            Assert.That(synthetics.Count > 0, Is.True,
+                    "Expected at least one synthetic resource");
             foreach (var r in synthetics)
-                Assert.AreEqual(ResourceGroup.ResourceGroupEnum.Synthetic, r.ResourceGroup,
+                Assert.That(r.ResourceGroup, Is.EqualTo(ResourceGroup.ResourceGroupEnum.Synthetic),
                     $"Resource '{r.Name}' should be Synthetic group");
         }
     }

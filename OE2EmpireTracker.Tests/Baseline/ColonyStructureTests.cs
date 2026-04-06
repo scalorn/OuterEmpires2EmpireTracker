@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Data;
 using OE2EmpireTracker.ViewModels;
@@ -20,17 +19,17 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void DefaultConstructor_AssignedPropertiesAreNotNull()
         {
             var structure = new ColonyStructure();
-            Assert.IsNotNull(structure.Properties);
-            Assert.IsNotNull(structure.AssignedWorkers);
+            Assert.That(structure.Properties, Is.Not.Null);
+            Assert.That(structure.AssignedWorkers, Is.Not.Null);
         }
 
         [Test]
         public void DefaultConstructor_InitializedCollectionsAreEmpty()
         {
             var structure = new ColonyStructure();
-            Assert.AreEqual(0, structure.Statuses.Count);
-            Assert.AreEqual(0, structure.Properties.Count);
-            Assert.AreEqual(0, structure.AssignedWorkers.Count);
+            Assert.That(structure.Statuses.Count, Is.EqualTo(0));
+            Assert.That(structure.Properties.Count, Is.EqualTo(0));
+            Assert.That(structure.AssignedWorkers.Count, Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -44,8 +43,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             structure.UUID = "test-uuid-123";
             structure.FlatpackBlueprintUUID = "blueprint-uuid-456";
 
-            Assert.AreEqual("test-uuid-123", structure.UUID);
-            Assert.AreEqual("blueprint-uuid-456", structure.FlatpackBlueprintUUID);
+            Assert.That(structure.UUID, Is.EqualTo("test-uuid-123"));
+            Assert.That(structure.FlatpackBlueprintUUID, Is.EqualTo("blueprint-uuid-456"));
         }
 
         // -----------------------------------------------------------------------
@@ -59,8 +58,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             structure.gameSequence = 5;
             structure.buildQueueSequence = 3;
 
-            Assert.AreEqual(5, structure.gameSequence);
-            Assert.AreEqual(3, structure.buildQueueSequence);
+            Assert.That(structure.gameSequence, Is.EqualTo(5));
+            Assert.That(structure.buildQueueSequence, Is.EqualTo(3));
         }
 
         // -----------------------------------------------------------------------
@@ -73,10 +72,10 @@ namespace OE2EmpireTracker.Tests.Baseline
             var structure = new ColonyStructure();
             structure.Properties.setProperty("CustomProp1", "Value1");
 
-            Assert.IsTrue(structure.Properties.ContainsKey("CustomProp1"));
+            Assert.That(structure.Properties.ContainsKey("CustomProp1"), Is.True);
 
             structure.Properties.getString("CustomProp1", null, out string value);
-            Assert.AreEqual("Value1", value);
+            Assert.That(value, Is.EqualTo("Value1"));
         }
 
         [Test]
@@ -85,10 +84,10 @@ namespace OE2EmpireTracker.Tests.Baseline
             var structure = new ColonyStructure();
             structure.Properties.setProperty("ToRemove", "OldValue");
 
-            Assert.IsTrue(structure.Properties.ContainsKey("ToRemove"));
+            Assert.That(structure.Properties.ContainsKey("ToRemove"), Is.True);
             bool result = structure.Properties.Remove("ToRemove");
-            Assert.IsTrue(result);
-            Assert.IsFalse(structure.Properties.ContainsKey("ToRemove"));
+            Assert.That(result, Is.True);
+            Assert.That(structure.Properties.ContainsKey("ToRemove"), Is.False);
         }
 
         [Test]
@@ -98,9 +97,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             structure.Properties.setProperty("Prop1", "Value1");
             structure.Properties.setProperty("Prop2", "Value2");
 
-            Assert.AreEqual(2, structure.Properties.Count);
+            Assert.That(structure.Properties.Count, Is.EqualTo(2));
             structure.Properties.Clear();
-            Assert.AreEqual(0, structure.Properties.Count);
+            Assert.That(structure.Properties.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -110,8 +109,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             structure.Properties.setProperty("Value", "123.45");
 
             bool success = structure.Properties.getDouble("Value", -1.0, out double result);
-            Assert.IsTrue(success);
-            Assert.AreEqual(123.45, result, 0.01);
+            Assert.That(success, Is.True);
+            Assert.That(result, Is.EqualTo(123.45).Within(0.01));
         }
 
         [Test]
@@ -121,8 +120,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             structure.Properties.setProperty("Value", "not-a-number");
 
             bool success = structure.Properties.getDouble("Value", -1.0, out double result);
-            Assert.IsFalse(success);
-            Assert.AreEqual(-1.0, result, 0.0);
+            Assert.That(success, Is.False);
+            Assert.That(result, Is.EqualTo(-1.0).Within(0.0));
         }
 
         [Test]
@@ -130,8 +129,8 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var structure = new ColonyStructure();
             bool success = structure.Properties.getDouble("Missing", -1.0, out double result);
-            Assert.IsFalse(success);
-            Assert.AreEqual(-1.0, result, 0.0);
+            Assert.That(success, Is.False);
+            Assert.That(result, Is.EqualTo(-1.0).Within(0.0));
         }
 
         [Test]
@@ -141,8 +140,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             structure.Properties.setProperty("Value", "999");
 
             bool success = structure.Properties.getLong("Value", -1, out long result);
-            Assert.IsTrue(success);
-            Assert.AreEqual(999, result);
+            Assert.That(success, Is.True);
+            Assert.That(result, Is.EqualTo(999));
         }
 
         [Test]
@@ -152,8 +151,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             structure.Properties.setProperty("Value", "true");
 
             bool success = structure.Properties.getBoolean("Value", false, out bool result);
-            Assert.IsTrue(success);
-            Assert.AreEqual(true, result);
+            Assert.That(success, Is.True);
+            Assert.That(result, Is.EqualTo(true));
         }
 
         [Test]
@@ -163,8 +162,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             structure.Properties.setProperty("Value", "not-a-boolean");
 
             bool success = structure.Properties.getBoolean("Value", false, out bool result);
-            Assert.IsFalse(success);
-            Assert.AreEqual(false, result);
+            Assert.That(success, Is.False);
+            Assert.That(result, Is.EqualTo(false));
         }
 
         [Test]
@@ -174,8 +173,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             structure.Properties.setProperty("Name", "MyValue");
 
             bool success = structure.Properties.getString("Name", "", out string result);
-            Assert.IsTrue(success);
-            Assert.AreEqual("MyValue", result);
+            Assert.That(success, Is.True);
+            Assert.That(result, Is.EqualTo("MyValue"));
         }
 
         [Test]
@@ -183,8 +182,8 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var structure = new ColonyStructure();
             bool success = structure.Properties.getString("Missing", "", out string result);
-            Assert.IsFalse(success);
-            Assert.AreEqual("", result);
+            Assert.That(success, Is.False);
+            Assert.That(result, Is.EqualTo(""));
         }
 
         // -----------------------------------------------------------------------
@@ -197,9 +196,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             var structure = new ColonyStructure();
             structure.AssignedWorkers.setProperty("Worker1", "Engineer");
 
-            Assert.IsTrue(structure.AssignedWorkers.ContainsKey("Worker1"));
+            Assert.That(structure.AssignedWorkers.ContainsKey("Worker1"), Is.True);
             structure.AssignedWorkers.getString("Worker1", null, out string value);
-            Assert.AreEqual("Engineer", value);
+            Assert.That(value, Is.EqualTo("Engineer"));
         }
 
         [Test]
@@ -209,9 +208,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             structure.AssignedWorkers.setProperty("W1", "A");
             structure.AssignedWorkers.setProperty("W2", "B");
 
-            Assert.AreEqual(2, structure.AssignedWorkers.Count);
+            Assert.That(structure.AssignedWorkers.Count, Is.EqualTo(2));
             structure.AssignedWorkers.Clear();
-            Assert.AreEqual(0, structure.AssignedWorkers.Count);
+            Assert.That(structure.AssignedWorkers.Count, Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -226,8 +225,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             status.PowerProvided = 100.0;
             structure.Statuses["Power"] = status;
 
-            Assert.IsTrue(structure.Statuses.ContainsKey("Power"));
-            Assert.AreEqual(100.0, structure.Statuses["Power"].PowerProvided);
+            Assert.That(structure.Statuses.ContainsKey("Power"), Is.True);
+            Assert.That(structure.Statuses["Power"].PowerProvided, Is.EqualTo(100.0));
         }
 
         [Test]
@@ -239,9 +238,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             structure.Statuses["Status1"] = status1;
             structure.Statuses["Status2"] = status2;
 
-            Assert.AreEqual(2, structure.Statuses.Count);
+            Assert.That(structure.Statuses.Count, Is.EqualTo(2));
             structure.Statuses.Clear();
-            Assert.AreEqual(0, structure.Statuses.Count);
+            Assert.That(structure.Statuses.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -256,10 +255,10 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             structure.Statuses["Power"] = status;
 
-            Assert.AreEqual(50.0, structure.Statuses["Power"].PowerProvided);
-            Assert.AreEqual(25.0, structure.Statuses["Power"].HabitationProvision);
-            Assert.AreEqual(75.0, structure.Statuses["Power"].FoodProvision);
-            Assert.AreEqual(30.0, structure.Statuses["Power"].EntertainmentProvided);
+            Assert.That(structure.Statuses["Power"].PowerProvided, Is.EqualTo(50.0));
+            Assert.That(structure.Statuses["Power"].HabitationProvision, Is.EqualTo(25.0));
+            Assert.That(structure.Statuses["Power"].FoodProvision, Is.EqualTo(75.0));
+            Assert.That(structure.Statuses["Power"].EntertainmentProvided, Is.EqualTo(30.0));
         }
 
         // -----------------------------------------------------------------------
@@ -276,7 +275,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var restored = Newtonsoft.Json.JsonConvert.DeserializeObject<ColonyStructure>(json);
 
             // Statuses are [JsonIgnore] so they should be empty after deserialization
-            Assert.AreEqual(0, restored.Statuses.Count);
+            Assert.That(restored.Statuses.Count, Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -300,13 +299,13 @@ namespace OE2EmpireTracker.Tests.Baseline
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(structure);
             var restored = Newtonsoft.Json.JsonConvert.DeserializeObject<ColonyStructure>(json);
 
-            Assert.AreEqual(structure.UUID, restored.UUID);
-            Assert.AreEqual(structure.FlatpackBlueprintUUID, restored.FlatpackBlueprintUUID);
-            Assert.AreEqual(structure.gameSequence, restored.gameSequence);
-            Assert.AreEqual(structure.buildQueueSequence, restored.buildQueueSequence);
-            Assert.AreEqual(structure.CurrentAttitude, restored.CurrentAttitude);
-            Assert.AreEqual(structure.ContentmentIndex, restored.ContentmentIndex);
-            Assert.AreEqual(structure.WageLevel, restored.WageLevel);
+            Assert.That(restored.UUID, Is.EqualTo(structure.UUID));
+            Assert.That(restored.FlatpackBlueprintUUID, Is.EqualTo(structure.FlatpackBlueprintUUID));
+            Assert.That(restored.gameSequence, Is.EqualTo(structure.gameSequence));
+            Assert.That(restored.buildQueueSequence, Is.EqualTo(structure.buildQueueSequence));
+            Assert.That(restored.CurrentAttitude, Is.EqualTo(structure.CurrentAttitude));
+            Assert.That(restored.ContentmentIndex, Is.EqualTo(structure.ContentmentIndex));
+            Assert.That(restored.WageLevel, Is.EqualTo(structure.WageLevel));
         }
 
         [Test]
@@ -319,12 +318,12 @@ namespace OE2EmpireTracker.Tests.Baseline
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(structure);
             var restored = Newtonsoft.Json.JsonConvert.DeserializeObject<ColonyStructure>(json);
 
-            Assert.IsTrue(restored.Properties.ContainsKey("CustomProp1"));
+            Assert.That(restored.Properties.ContainsKey("CustomProp1"), Is.True);
             restored.Properties.getString("CustomProp1", null, out string value1);
-            Assert.AreEqual("Value1", value1);
-            Assert.IsTrue(restored.Properties.ContainsKey("CustomProp2"));
+            Assert.That(value1, Is.EqualTo("Value1"));
+            Assert.That(restored.Properties.ContainsKey("CustomProp2"), Is.True);
             restored.Properties.getString("CustomProp2", null, out string value2);
-            Assert.AreEqual("Value2", value2);
+            Assert.That(value2, Is.EqualTo("Value2"));
         }
 
         [Test]
@@ -337,12 +336,12 @@ namespace OE2EmpireTracker.Tests.Baseline
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(structure);
             var restored = Newtonsoft.Json.JsonConvert.DeserializeObject<ColonyStructure>(json);
 
-            Assert.IsTrue(restored.AssignedWorkers.ContainsKey("Worker1"));
+            Assert.That(restored.AssignedWorkers.ContainsKey("Worker1"), Is.True);
             restored.AssignedWorkers.getString("Worker1", null, out string value1);
-            Assert.AreEqual("Engineer", value1);
-            Assert.IsTrue(restored.AssignedWorkers.ContainsKey("Worker2"));
+            Assert.That(value1, Is.EqualTo("Engineer"));
+            Assert.That(restored.AssignedWorkers.ContainsKey("Worker2"), Is.True);
             restored.AssignedWorkers.getString("Worker2", null, out string value2);
-            Assert.AreEqual("Scout", value2);
+            Assert.That(value2, Is.EqualTo("Scout"));
         }
 
         [Test]
@@ -365,16 +364,16 @@ namespace OE2EmpireTracker.Tests.Baseline
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(structure);
             var restored = Newtonsoft.Json.JsonConvert.DeserializeObject<ColonyStructure>(json);
 
-            Assert.AreEqual(structure.UUID, restored.UUID);
-            Assert.AreEqual(structure.FlatpackBlueprintUUID, restored.FlatpackBlueprintUUID);
-            Assert.AreEqual(structure.gameSequence, restored.gameSequence);
-            Assert.AreEqual(structure.buildQueueSequence, restored.buildQueueSequence);
-            Assert.AreEqual(structure.CurrentAttitude, restored.CurrentAttitude);
-            Assert.AreEqual(structure.ContentmentIndex, restored.ContentmentIndex);
-            Assert.AreEqual(structure.WageLevel, restored.WageLevel);
-            Assert.AreEqual(structure.MiningSurvey, restored.MiningSurvey);
-            Assert.AreEqual(structure.MiningSurveyResource, restored.MiningSurveyResource);
-            Assert.AreEqual(structure.MiningLeftOvers, restored.MiningLeftOvers);
+            Assert.That(restored.UUID, Is.EqualTo(structure.UUID));
+            Assert.That(restored.FlatpackBlueprintUUID, Is.EqualTo(structure.FlatpackBlueprintUUID));
+            Assert.That(restored.gameSequence, Is.EqualTo(structure.gameSequence));
+            Assert.That(restored.buildQueueSequence, Is.EqualTo(structure.buildQueueSequence));
+            Assert.That(restored.CurrentAttitude, Is.EqualTo(structure.CurrentAttitude));
+            Assert.That(restored.ContentmentIndex, Is.EqualTo(structure.ContentmentIndex));
+            Assert.That(restored.WageLevel, Is.EqualTo(structure.WageLevel));
+            Assert.That(restored.MiningSurvey, Is.EqualTo(structure.MiningSurvey));
+            Assert.That(restored.MiningSurveyResource, Is.EqualTo(structure.MiningSurveyResource));
+            Assert.That(restored.MiningLeftOvers, Is.EqualTo(structure.MiningLeftOvers));
         }
 
         // -----------------------------------------------------------------------
@@ -385,28 +384,28 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void NewStructure_HasEmptyStringForAttitude()
         {
             var structure = new ColonyStructure();
-            Assert.AreEqual("", structure.CurrentAttitude);
+            Assert.That(structure.CurrentAttitude, Is.EqualTo(""));
         }
 
         [Test]
         public void NewStructure_HasZeroContentmentIndex()
         {
             var structure = new ColonyStructure();
-            Assert.AreEqual(0, structure.ContentmentIndex);
+            Assert.That(structure.ContentmentIndex, Is.EqualTo(0));
         }
 
         [Test]
         public void NewStructure_HasZeroMiningLeftOvers()
         {
             var structure = new ColonyStructure();
-            Assert.AreEqual(Decimal.Zero, structure.MiningLeftOvers);
+            Assert.That(structure.MiningLeftOvers, Is.EqualTo(Decimal.Zero));
         }
 
         [Test]
         public void NewStructure_HasNullMiningSurvey()
         {
             var structure = new ColonyStructure();
-            Assert.IsNull(structure.MiningSurvey);
+            Assert.That(structure.MiningSurvey, Is.Null);
         }
 
         // -----------------------------------------------------------------------
@@ -417,9 +416,9 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void GetUnallocatedPresent_DefaultsToFalse()
         {
             var status = new ColonyStructureStatus();
-            Assert.IsFalse(status.GetUnallocatedPresent("BlueCollarDetail"));
-            Assert.IsFalse(status.GetUnallocatedPresent("WhiteCollarDetail"));
-            Assert.IsFalse(status.GetUnallocatedPresent("SpecialistDetail"));
+            Assert.That(status.GetUnallocatedPresent("BlueCollarDetail"), Is.False);
+            Assert.That(status.GetUnallocatedPresent("WhiteCollarDetail"), Is.False);
+            Assert.That(status.GetUnallocatedPresent("SpecialistDetail"), Is.False);
         }
 
         [TestCase("BlueCollarDetail")]
@@ -429,17 +428,17 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var status = new ColonyStructureStatus();
             status.SetUnallocatedPresent(detailKey, true);
-            Assert.IsTrue(status.GetUnallocatedPresent(detailKey));
+            Assert.That(status.GetUnallocatedPresent(detailKey), Is.True);
 
             status.SetUnallocatedPresent(detailKey, false);
-            Assert.IsFalse(status.GetUnallocatedPresent(detailKey));
+            Assert.That(status.GetUnallocatedPresent(detailKey), Is.False);
         }
 
         [Test]
         public void GetUnallocatedPresent_UnknownKey_ReturnsFalse()
         {
             var status = new ColonyStructureStatus();
-            Assert.IsFalse(status.GetUnallocatedPresent("UnknownWorkerDetail"));
+            Assert.That(status.GetUnallocatedPresent("UnknownWorkerDetail"), Is.False);
         }
 
         // -----------------------------------------------------------------------
@@ -451,7 +450,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void StagingResources_DefaultsToFalse()
         {
             var structure = new ColonyStructure();
-            Assert.IsFalse(structure.StagingResources);
+            Assert.That(structure.StagingResources, Is.False);
         }
 
         [Test]
@@ -466,8 +465,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             var vm = new ColonyStructureViewModel(structure, pc);
             vm.StagingResources = true;
 
-            Assert.IsTrue(vm.StagingResources);
-            Assert.IsTrue(structure.StagingResources);
+            Assert.That(vm.StagingResources, Is.True);
+            Assert.That(structure.StagingResources, Is.True);
         }
 
         [Test]
@@ -482,17 +481,17 @@ namespace OE2EmpireTracker.Tests.Baseline
             var vm = new ColonyStructureViewModel(structure, pc);
 
             // Default is false
-            Assert.IsFalse(vm.StagingResources);
+            Assert.That(vm.StagingResources, Is.False);
 
             // Set true via ViewModel, read back via ViewModel and underlying model
             vm.StagingResources = true;
-            Assert.IsTrue(vm.StagingResources);
-            Assert.IsTrue(structure.StagingResources);
+            Assert.That(vm.StagingResources, Is.True);
+            Assert.That(structure.StagingResources, Is.True);
 
             // Set false via ViewModel, read back
             vm.StagingResources = false;
-            Assert.IsFalse(vm.StagingResources);
-            Assert.IsFalse(structure.StagingResources);
+            Assert.That(vm.StagingResources, Is.False);
+            Assert.That(structure.StagingResources, Is.False);
         }
 
         [Test]
@@ -504,7 +503,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             string json = JsonConvert.SerializeObject(structure);
             var restored = JsonConvert.DeserializeObject<ColonyStructure>(json);
 
-            Assert.IsTrue(restored.StagingResources);
+            Assert.That(restored.StagingResources, Is.True);
         }
 
         [Test]
@@ -516,7 +515,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             string json = JsonConvert.SerializeObject(structure);
             var restored = JsonConvert.DeserializeObject<ColonyStructure>(json);
 
-            Assert.IsFalse(restored.StagingResources);
+            Assert.That(restored.StagingResources, Is.False);
         }
     }
 }

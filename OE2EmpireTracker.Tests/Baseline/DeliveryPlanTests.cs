@@ -18,23 +18,23 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void DefaultConstructor_StopsIsNotNull()
         {
             var plan = new DeliveryPlan();
-            Assert.IsNotNull(plan.Stops);
+            Assert.That(plan.Stops, Is.Not.Null);
         }
 
         [Test]
         public void DefaultConstructor_CompletedIsFalse()
         {
             var plan = new DeliveryPlan();
-            Assert.IsFalse(plan.Completed);
+            Assert.That(plan.Completed, Is.False);
         }
 
         [Test]
         public void DefaultConstructor_StringPropertiesAreEmpty()
         {
             var plan = new DeliveryPlan();
-            Assert.AreEqual(string.Empty, plan.Name);
-            Assert.AreEqual(string.Empty, plan.OwnerUUID);
-            Assert.AreEqual(string.Empty, plan.RouteUUID);
+            Assert.That(plan.Name, Is.EqualTo(string.Empty));
+            Assert.That(plan.OwnerUUID, Is.EqualTo(string.Empty));
+            Assert.That(plan.RouteUUID, Is.EqualTo(string.Empty));
         }
 
         // -----------------------------------------------------------------------
@@ -45,15 +45,15 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void PlanStop_DefaultConstructor_ListsAreNotNull()
         {
             var stop = new DeliveryPlanStop();
-            Assert.IsNotNull(stop.DropOff);
-            Assert.IsNotNull(stop.PickUp);
+            Assert.That(stop.DropOff, Is.Not.Null);
+            Assert.That(stop.PickUp, Is.Not.Null);
         }
 
         [Test]
         public void PlanStop_DefaultConstructor_StopCompletedIsFalse()
         {
             var stop = new DeliveryPlanStop();
-            Assert.IsFalse(stop.StopCompleted);
+            Assert.That(stop.StopCompleted, Is.False);
         }
 
         // -----------------------------------------------------------------------
@@ -64,33 +64,33 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void DeliveryItem_DefaultConstructor_AllDefaults()
         {
             var item = new DeliveryItem();
-            Assert.AreEqual(ItemType.ItemTypeEnum.None, item.ItemType);
-            Assert.AreEqual(string.Empty, item.BaseItemTypeID);
-            Assert.AreEqual(string.Empty, item.Name);
-            Assert.AreEqual(string.Empty, item.ResourcePurity);
-            Assert.AreEqual(0, item.Quantity);
-            Assert.IsFalse(item.Delivered);
+            Assert.That(item.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.None));
+            Assert.That(item.BaseItemTypeID, Is.EqualTo(string.Empty));
+            Assert.That(item.Name, Is.EqualTo(string.Empty));
+            Assert.That(item.ResourcePurity, Is.EqualTo(string.Empty));
+            Assert.That(item.Quantity, Is.EqualTo(0));
+            Assert.That(item.Delivered, Is.False);
         }
 
         [Test]
         public void DeliveryItem_ExtendedName_NoPurity_ReturnsName()
         {
             var item = new DeliveryItem { Name = "Iron" };
-            Assert.AreEqual("Iron", item.ExtendedName);
+            Assert.That(item.ExtendedName, Is.EqualTo("Iron"));
         }
 
         [Test]
         public void DeliveryItem_ExtendedName_EmptyPurity_ReturnsName()
         {
             var item = new DeliveryItem { Name = "Iron", ResourcePurity = "" };
-            Assert.AreEqual("Iron", item.ExtendedName);
+            Assert.That(item.ExtendedName, Is.EqualTo("Iron"));
         }
 
         [Test]
         public void DeliveryItem_ExtendedName_WithPurity_AppendsPurity()
         {
             var item = new DeliveryItem { Name = "Iron", ResourcePurity = "High" };
-            Assert.AreEqual("Iron (High)", item.ExtendedName);
+            Assert.That(item.ExtendedName, Is.EqualTo("Iron (High)"));
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace OE2EmpireTracker.Tests.Baseline
                 ItemType = ItemType.ItemTypeEnum.Commodity,
                 Name = "Steel Plates"
             };
-            Assert.AreEqual("Steel Plates", item.ExtendedName);
+            Assert.That(item.ExtendedName, Is.EqualTo("Steel Plates"));
         }
 
         // -----------------------------------------------------------------------
@@ -121,12 +121,12 @@ namespace OE2EmpireTracker.Tests.Baseline
             };
             string json = JsonConvert.SerializeObject(plan);
             var restored = JsonConvert.DeserializeObject<DeliveryPlan>(json);
-            Assert.AreEqual("plan-1", restored.UUID);
-            Assert.AreEqual("Test Plan", restored.Name);
-            Assert.AreEqual("p1", restored.OwnerUUID);
-            Assert.AreEqual("r1", restored.RouteUUID);
-            Assert.IsFalse(restored.Completed);
-            Assert.AreEqual(0, restored.Stops.Count);
+            Assert.That(restored.UUID, Is.EqualTo("plan-1"));
+            Assert.That(restored.Name, Is.EqualTo("Test Plan"));
+            Assert.That(restored.OwnerUUID, Is.EqualTo("p1"));
+            Assert.That(restored.RouteUUID, Is.EqualTo("r1"));
+            Assert.That(restored.Completed, Is.False);
+            Assert.That(restored.Stops.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -135,7 +135,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var plan = new DeliveryPlan { UUID = "plan-1", Completed = true };
             string json = JsonConvert.SerializeObject(plan);
             var restored = JsonConvert.DeserializeObject<DeliveryPlan>(json);
-            Assert.IsTrue(restored.Completed);
+            Assert.That(restored.Completed, Is.True);
         }
 
         [Test]
@@ -177,18 +177,18 @@ namespace OE2EmpireTracker.Tests.Baseline
             };
             string json = JsonConvert.SerializeObject(plan);
             var restored = JsonConvert.DeserializeObject<DeliveryPlan>(json);
-            Assert.AreEqual(1, restored.Stops.Count);
+            Assert.That(restored.Stops.Count, Is.EqualTo(1));
             var stop = restored.Stops[0];
-            Assert.AreEqual(1, stop.DropOff.Count);
-            Assert.AreEqual(1, stop.PickUp.Count);
-            Assert.AreEqual("Iron", stop.DropOff[0].BaseItemTypeID);
-            Assert.AreEqual("High", stop.DropOff[0].ResourcePurity);
-            Assert.AreEqual(100, stop.DropOff[0].Quantity);
-            Assert.IsTrue(stop.DropOff[0].Delivered);
-            Assert.AreEqual(ItemType.ItemTypeEnum.Resource, stop.DropOff[0].ItemType);
-            Assert.AreEqual("SteelPlates", stop.PickUp[0].BaseItemTypeID);
-            Assert.AreEqual(50, stop.PickUp[0].Quantity);
-            Assert.IsFalse(stop.PickUp[0].Delivered);
+            Assert.That(stop.DropOff.Count, Is.EqualTo(1));
+            Assert.That(stop.PickUp.Count, Is.EqualTo(1));
+            Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("Iron"));
+            Assert.That(stop.DropOff[0].ResourcePurity, Is.EqualTo("High"));
+            Assert.That(stop.DropOff[0].Quantity, Is.EqualTo(100));
+            Assert.That(stop.DropOff[0].Delivered, Is.True);
+            Assert.That(stop.DropOff[0].ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Resource));
+            Assert.That(stop.PickUp[0].BaseItemTypeID, Is.EqualTo("SteelPlates"));
+            Assert.That(stop.PickUp[0].Quantity, Is.EqualTo(50));
+            Assert.That(stop.PickUp[0].Delivered, Is.False);
         }
 
         [Test]
@@ -196,7 +196,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var item = new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Resource };
             string json = JsonConvert.SerializeObject(item);
-            Assert.IsTrue(json.Contains("\"Resource\""));
+            Assert.That(json.Contains("\"Resource\""), Is.True);
         }
 
         [Test]
@@ -204,7 +204,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var item = new DeliveryItem { Name = "Iron", ResourcePurity = "High" };
             string json = JsonConvert.SerializeObject(item);
-            Assert.IsFalse(json.Contains("ExtendedName"));
+            Assert.That(json.Contains("ExtendedName"), Is.False);
         }
 
         [Test]
@@ -213,7 +213,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var stop = new DeliveryPlanStop { ColonyUUID = "c1", StopCompleted = true };
             string json = JsonConvert.SerializeObject(stop);
             var restored = JsonConvert.DeserializeObject<DeliveryPlanStop>(json);
-            Assert.IsTrue(restored.StopCompleted);
+            Assert.That(restored.StopCompleted, Is.True);
         }
 
         // -----------------------------------------------------------------------
@@ -225,7 +225,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var plan = new DeliveryPlan();
             var result = plan.CalculateLoadList();
-            Assert.AreEqual(0, result.Count);
+            Assert.That(result.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -242,9 +242,9 @@ namespace OE2EmpireTracker.Tests.Baseline
                 }
             });
             var result = plan.CalculateLoadList();
-            Assert.AreEqual(1, result.Count);
-            Assert.AreEqual("Steel", result[0].BaseItemTypeID);
-            Assert.AreEqual(50, result[0].Quantity);
+            Assert.That(result.Count, Is.EqualTo(1));
+            Assert.That(result[0].BaseItemTypeID, Is.EqualTo("Steel"));
+            Assert.That(result[0].Quantity, Is.EqualTo(50));
         }
 
         [Test]
@@ -270,7 +270,7 @@ namespace OE2EmpireTracker.Tests.Baseline
                 }
             });
             var result = plan.CalculateLoadList();
-            Assert.AreEqual(0, result.Count);
+            Assert.That(result.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -296,8 +296,8 @@ namespace OE2EmpireTracker.Tests.Baseline
                 }
             });
             var result = plan.CalculateLoadList();
-            Assert.AreEqual(1, result.Count);
-            Assert.AreEqual(20, result[0].Quantity);
+            Assert.That(result.Count, Is.EqualTo(1));
+            Assert.That(result[0].Quantity, Is.EqualTo(20));
         }
 
         [Test]
@@ -323,8 +323,8 @@ namespace OE2EmpireTracker.Tests.Baseline
                 }
             });
             var result = plan.CalculateLoadList();
-            Assert.AreEqual(1, result.Count);
-            Assert.AreEqual(50, result[0].Quantity);
+            Assert.That(result.Count, Is.EqualTo(1));
+            Assert.That(result[0].Quantity, Is.EqualTo(50));
         }
 
         [Test]
@@ -342,13 +342,13 @@ namespace OE2EmpireTracker.Tests.Baseline
                 }
             });
             var result = plan.CalculateLoadList();
-            Assert.AreEqual(2, result.Count);
+            Assert.That(result.Count, Is.EqualTo(2));
             var high = result.FirstOrDefault(i => i.ResourcePurity == "High");
             var low = result.FirstOrDefault(i => i.ResourcePurity == "Low");
-            Assert.IsNotNull(high);
-            Assert.IsNotNull(low);
-            Assert.AreEqual(10, high.Quantity);
-            Assert.AreEqual(5, low.Quantity);
+            Assert.That(high, Is.Not.Null);
+            Assert.That(low, Is.Not.Null);
+            Assert.That(high.Quantity, Is.EqualTo(10));
+            Assert.That(low.Quantity, Is.EqualTo(5));
         }
 
         [Test]
@@ -365,9 +365,9 @@ namespace OE2EmpireTracker.Tests.Baseline
                 }
             });
             var result = plan.CalculateLoadList();
-            Assert.AreEqual(1, result.Count);
-            Assert.AreEqual("Medium", result[0].ResourcePurity);
-            Assert.AreEqual("Iron (Medium)", result[0].ExtendedName);
+            Assert.That(result.Count, Is.EqualTo(1));
+            Assert.That(result[0].ResourcePurity, Is.EqualTo("Medium"));
+            Assert.That(result[0].ExtendedName, Is.EqualTo("Iron (Medium)"));
         }
 
         [Test]
@@ -384,7 +384,7 @@ namespace OE2EmpireTracker.Tests.Baseline
                 }
             });
             var result = plan.CalculateLoadList();
-            Assert.AreEqual(0, result.Count);
+            Assert.That(result.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -410,8 +410,8 @@ namespace OE2EmpireTracker.Tests.Baseline
                 }
             });
             var result = plan.CalculateLoadList();
-            Assert.AreEqual(1, result.Count);
-            Assert.AreEqual(50, result[0].Quantity);
+            Assert.That(result.Count, Is.EqualTo(1));
+            Assert.That(result[0].Quantity, Is.EqualTo(50));
         }
 
         [Test]
@@ -439,7 +439,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             });
             // Even though stops are added out of order, sequence 0 (pick-up) should be processed first
             var result = plan.CalculateLoadList();
-            Assert.AreEqual(0, result.Count);
+            Assert.That(result.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -458,7 +458,7 @@ namespace OE2EmpireTracker.Tests.Baseline
                 }
             });
             var result = plan.CalculateLoadList();
-            Assert.AreEqual(3, result.Count);
+            Assert.That(result.Count, Is.EqualTo(3));
         }
 
         [Test]
@@ -477,9 +477,9 @@ namespace OE2EmpireTracker.Tests.Baseline
                 }
             });
             var result = plan.CalculateLoadList();
-            Assert.AreEqual("Alpha", result[0].Name);
-            Assert.AreEqual("Mid", result[1].Name);
-            Assert.AreEqual("Zinc", result[2].Name);
+            Assert.That(result[0].Name, Is.EqualTo("Alpha"));
+            Assert.That(result[1].Name, Is.EqualTo("Mid"));
+            Assert.That(result[2].Name, Is.EqualTo("Zinc"));
         }
     }
 }

@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using OE2EmpireTracker.Data;
 using System;
 
@@ -16,14 +15,14 @@ namespace OE2EmpireTracker.Tests.Data
         public void DefaultConstructor_StartTimeIsMinValue()
         {
             var cdt = new CountDownTime();
-            Assert.AreEqual(DateTime.MinValue, cdt.StartTime);
+            Assert.That(cdt.StartTime, Is.EqualTo(DateTime.MinValue));
         }
 
         [Test]
         public void DefaultConstructor_EndTimeEqualsStartTime()
         {
             var cdt = new CountDownTime();
-            Assert.AreEqual(cdt.StartTime, cdt.EndTime);
+            Assert.That(cdt.EndTime, Is.EqualTo(cdt.StartTime));
         }
 
         // -----------------------------------------------------------------------
@@ -35,7 +34,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var cdt = new CountDownTime();
             cdt.EndTime = DateTime.Now.AddSeconds(100);
-            Assert.Greater(cdt.TimeRemaining, 0);
+            Assert.That(cdt.TimeRemaining, Is.GreaterThan(0));
         }
 
         [Test]
@@ -43,7 +42,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var cdt = new CountDownTime();
             cdt.EndTime = DateTime.Now.AddSeconds(-100);
-            Assert.Less(cdt.TimeRemaining, 0);
+            Assert.That(cdt.TimeRemaining, Is.LessThan(0));
         }
 
         [Test]
@@ -92,7 +91,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var cdt = new CountDownTime();
             cdt.EndTime = DateTime.Now.AddDays(2).AddHours(3);
-            StringAssert.Contains("d", cdt.TimeRemainingString);
+            Assert.That(cdt.TimeRemainingString, Does.Contain("d"));
         }
 
         [Test]
@@ -100,7 +99,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var cdt = new CountDownTime();
             cdt.EndTime = DateTime.Now.AddHours(5);
-            StringAssert.DoesNotContain("d", cdt.TimeRemainingString);
+            Assert.That(cdt.TimeRemainingString, Does.Not.Contain("d"));
         }
 
         [Test]
@@ -109,9 +108,9 @@ namespace OE2EmpireTracker.Tests.Data
             var cdt = new CountDownTime();
             cdt.EndTime = DateTime.Now.AddHours(1).AddMinutes(30).AddSeconds(45);
             string s = cdt.TimeRemainingString;
-            StringAssert.Contains("h", s);
-            StringAssert.Contains("m", s);
-            StringAssert.Contains("s", s);
+            Assert.That(s, Does.Contain("h"));
+            Assert.That(s, Does.Contain("m"));
+            Assert.That(s, Does.Contain("s"));
         }
 
         [Test]
@@ -121,9 +120,9 @@ namespace OE2EmpireTracker.Tests.Data
             var cdt = new CountDownTime();
             cdt.EndTime = DateTime.Now.AddHours(1).AddSeconds(30);
             string s = cdt.TimeRemainingString;
-            StringAssert.Contains("1h", s);
-            StringAssert.Contains("0m", s);
-            StringAssert.Contains("s", s);
+            Assert.That(s, Does.Contain("1h"));
+            Assert.That(s, Does.Contain("0m"));
+            Assert.That(s, Does.Contain("s"));
         }
 
         [Test]
@@ -133,9 +132,9 @@ namespace OE2EmpireTracker.Tests.Data
             var cdt = new CountDownTime();
             cdt.EndTime = DateTime.Now.AddMinutes(30).AddSeconds(45);
             string s = cdt.TimeRemainingString;
-            StringAssert.DoesNotContain("h", s);
-            StringAssert.Contains("30m", s);
-            StringAssert.Contains("s", s);
+            Assert.That(s, Does.Not.Contain("h"));
+            Assert.That(s, Does.Contain("30m"));
+            Assert.That(s, Does.Contain("s"));
         }
 
         [Test]
@@ -143,7 +142,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var cdt = new CountDownTime();
             cdt.EndTime = DateTime.Now.AddSeconds(-10); // already expired
-            Assert.AreEqual("0s", cdt.TimeRemainingString);
+            Assert.That(cdt.TimeRemainingString, Is.EqualTo("0s"));
         }
 
         [Test]
@@ -152,10 +151,10 @@ namespace OE2EmpireTracker.Tests.Data
             var cdt = new CountDownTime();
             cdt.EndTime = DateTime.Now.AddSeconds(30);
             string s = cdt.TimeRemainingString;
-            StringAssert.Contains("s", s);
-            StringAssert.DoesNotContain("m", s);
-            StringAssert.DoesNotContain("h", s);
-            StringAssert.DoesNotContain("d", s);
+            Assert.That(s, Does.Contain("s"));
+            Assert.That(s, Does.Not.Contain("m"));
+            Assert.That(s, Does.Not.Contain("h"));
+            Assert.That(s, Does.Not.Contain("d"));
         }
 
         // -----------------------------------------------------------------------
@@ -201,9 +200,9 @@ namespace OE2EmpireTracker.Tests.Data
             var cdt = new CountDownTime();
             cdt.TimeRemainingString = "2d 4h 15m 10s";
             string result = cdt.TimeRemainingString;
-            StringAssert.Contains("2d", result);
-            StringAssert.Contains("4h", result);
-            StringAssert.Contains("15m", result);
+            Assert.That(result, Does.Contain("2d"));
+            Assert.That(result, Does.Contain("4h"));
+            Assert.That(result, Does.Contain("15m"));
         }
 
         [Test]
@@ -212,8 +211,8 @@ namespace OE2EmpireTracker.Tests.Data
             var cdt = new CountDownTime();
             cdt.StartRepeating(60);
 
-            Assert.IsTrue(cdt.IsRepeating);
-            Assert.AreEqual(60, cdt.RepeatIntervalSeconds);
+            Assert.That(cdt.IsRepeating, Is.True);
+            Assert.That(cdt.RepeatIntervalSeconds, Is.EqualTo(60));
             Assert.That(cdt.TimeRemaining, Is.InRange(58L, 60L));
         }
 
@@ -224,7 +223,7 @@ namespace OE2EmpireTracker.Tests.Data
             cdt.StartRepeating(60, 10);
 
             Assert.That(cdt.TimeRemaining, Is.InRange(8L, 10L));
-            Assert.AreEqual(60, cdt.RepeatIntervalSeconds);
+            Assert.That(cdt.RepeatIntervalSeconds, Is.EqualTo(60));
         }
 
         [Test]
@@ -234,7 +233,7 @@ namespace OE2EmpireTracker.Tests.Data
             cdt.StartRepeating(60);
             cdt.StartTime = DateTime.Now.AddSeconds(-300);
 
-            Assert.AreEqual(5, cdt.IntervalsPassed);
+            Assert.That(cdt.IntervalsPassed, Is.EqualTo(5));
         }
 
         [Test]
@@ -244,9 +243,9 @@ namespace OE2EmpireTracker.Tests.Data
             cdt.StartRepeating(60);
             cdt.StartTime = DateTime.Now.AddSeconds(-300);
 
-            Assert.AreEqual(5, cdt.IntervalsPassed);
+            Assert.That(cdt.IntervalsPassed, Is.EqualTo(5));
             cdt.ConsumeIntervals(2);
-            Assert.AreEqual(3, cdt.IntervalsPassed);
+            Assert.That(cdt.IntervalsPassed, Is.EqualTo(3));
         }
 
         [Test]
@@ -256,9 +255,9 @@ namespace OE2EmpireTracker.Tests.Data
             cdt.StartRepeating(60);
             cdt.StartTime = DateTime.Now.AddSeconds(-90);
 
-            Assert.AreEqual(1, cdt.IntervalsPassed);
+            Assert.That(cdt.IntervalsPassed, Is.EqualTo(1));
             cdt.ConsumeIntervals(5);
-            Assert.AreEqual(0, cdt.IntervalsPassed);
+            Assert.That(cdt.IntervalsPassed, Is.EqualTo(0));
         }
     }
 }

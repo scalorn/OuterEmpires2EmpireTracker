@@ -1331,5 +1331,75 @@ namespace OE2EmpireTracker.Forms.Colony
             playerContext.ColonyDataChanged -= OnColonyDataChanged;
             base.OnFormClosed(e);
         }
+
+        private void cmdImportColony_Click(object sender, EventArgs e)
+        {
+            if (!System.Windows.Forms.Clipboard.ContainsText(TextDataFormat.Html))
+            {
+                MessageBox.Show("No HTML content found on the clipboard.\n\nCopy colony data from the game browser first.",
+                    "No HTML", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            try
+            {
+                var parser = new ColonyParser();
+                parser.ProcessClipboard(selectedColony, empireContext);
+
+                if (string.IsNullOrEmpty(selectedColony.OwnerUUID))
+                {
+                    selectedColony.OwnerUUID = playerContext.CurrentPlayerUUID;
+                }
+
+                colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
+                PopulateForm();
+
+                Log.Info("Colony imported from clipboard: {0} ({1} structures, {2} commodity requests)",
+                    selectedColony.PlanetName, selectedColony.Structures.Count, selectedColony.Commodities.Count);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error importing colony from clipboard");
+                MessageBox.Show("Failed to import colony: " + ex.Message,
+                    "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void cmdImportClipboard_Click(object sender, EventArgs e)
+        {
+            if (!System.Windows.Forms.Clipboard.ContainsText(TextDataFormat.Html))
+            {
+                MessageBox.Show("No HTML content found on the clipboard.\n\nCopy colony data from the game browser first.",
+                    "No HTML", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            string clipboardData = System.Windows.Forms.Clipboard.GetText(TextDataFormat.Html);
+
+            using (var dlg = new SaveFileDialog())
+            {
+                dlg.Filter = "HTML files (*.html)|*.html|All files (*.*)|*.*";
+                dlg.DefaultExt = "html";
+                dlg.FileName = "ColonyCapture.html";
+                dlg.Title = "Save Clipboard HTML";
+
+                if (dlg.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                try
+                {
+                    System.IO.File.WriteAllText(dlg.FileName, clipboardData, System.Text.Encoding.UTF8);
+                    Log.Info("Clipboard HTML saved to {0} ({1} bytes)", dlg.FileName, clipboardData.Length);
+                    MessageBox.Show("Clipboard HTML saved to:\n" + dlg.FileName,
+                        "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error saving clipboard HTML to {0}", dlg.FileName);
+                    MessageBox.Show("Failed to save: " + ex.Message,
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
     }
 }

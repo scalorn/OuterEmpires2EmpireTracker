@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using OE2EmpireTracker.Data;
 using System;
 using System.Linq;
@@ -17,22 +16,22 @@ namespace OE2EmpireTracker.Tests.Data
         [Test]
         public void ItemTypes_ListIsNotEmpty()
         {
-            Assert.IsTrue(ItemType.ItemTypes.Count > 0);
+            Assert.That(ItemType.ItemTypes.Count > 0, Is.True);
         }
 
         [Test]
         public void ItemTypes_FirstEntryIsNoneWithEmptyName()
         {
             var first = ItemType.ItemTypes[0];
-            Assert.AreEqual(ITE.None, first.ID);
-            Assert.AreEqual(string.Empty, first.Name);
+            Assert.That(first.ID, Is.EqualTo(ITE.None));
+            Assert.That(first.Name, Is.EqualTo(string.Empty));
         }
 
         [Test]
         public void ItemTypes_AllNonNoneEntriesHaveNonEmptyName()
         {
             foreach (var it in ItemType.ItemTypes.Where(t => t.ID != ITE.None))
-                Assert.IsFalse(string.IsNullOrEmpty(it.Name),
+                Assert.That(string.IsNullOrEmpty(it.Name), Is.False,
                     $"ItemType with ID '{it.ID}' has empty Name");
         }
 
@@ -40,14 +39,16 @@ namespace OE2EmpireTracker.Tests.Data
         public void ItemTypes_NoDuplicateIDs()
         {
             var ids = ItemType.ItemTypes.Select(t => t.ID).ToList();
-            Assert.AreEqual(ids.Distinct().Count(), ids.Count, "Duplicate ItemType IDs found");
+            Assert.That(ids.Count, Is.EqualTo(ids.Distinct().Count()),
+                    "Duplicate ItemType IDs found");
         }
 
         [Test]
         public void ItemTypes_NoDuplicateNames()
         {
             var names = ItemType.ItemTypes.Select(t => t.Name).ToList();
-            Assert.AreEqual(names.Distinct().Count(), names.Count, "Duplicate ItemType Names found");
+            Assert.That(names.Count, Is.EqualTo(names.Distinct().Count()),
+                    "Duplicate ItemType Names found");
         }
 
         [Test]
@@ -56,7 +57,8 @@ namespace OE2EmpireTracker.Tests.Data
             var allEnums = Enum.GetValues(typeof(ITE)).Cast<ITE>();
             var listIDs = ItemType.ItemTypes.Select(t => t.ID).ToList();
             foreach (var e in allEnums)
-                Assert.IsTrue(listIDs.Contains(e), $"ItemTypes list missing enum value {e}");
+                Assert.That(listIDs.Contains(e), Is.True,
+                    $"ItemTypes list missing enum value {e}");
         }
 
         [Test]
@@ -64,9 +66,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var nonNone = ItemType.ItemTypes.Where(t => t.ID != ITE.None).ToList();
             for (int i = 1; i < nonNone.Count; i++)
-                Assert.LessOrEqual(
-                    string.Compare(nonNone[i - 1].Name, nonNone[i].Name, StringComparison.Ordinal),
-                    0,
+                Assert.That(string.Compare(nonNone[i - 1].Name, nonNone[i].Name, StringComparison.Ordinal), Is.LessThanOrEqualTo(0),
                     $"ItemTypes not sorted: '{nonNone[i - 1].Name}' should come before '{nonNone[i].Name}'");
         }
 
@@ -79,24 +79,24 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var allEnums = Enum.GetValues(typeof(ITE)).Cast<ITE>();
             foreach (var e in allEnums)
-                Assert.IsTrue(ItemType.ItemTypeMapByEnum.ContainsKey(e),
+                Assert.That(ItemType.ItemTypeMapByEnum.ContainsKey(e), Is.True,
                     $"ItemTypeMapByEnum missing key {e}");
         }
 
         [Test]
         public void ItemTypeMapByEnum_LookupReturnsCorrectName()
         {
-            Assert.AreEqual("Resource", ItemType.ItemTypeMapByEnum[ITE.Resource].Name);
-            Assert.AreEqual("Commodity", ItemType.ItemTypeMapByEnum[ITE.Commodity].Name);
-            Assert.AreEqual("Blueprint", ItemType.ItemTypeMapByEnum[ITE.Blueprint].Name);
-            Assert.AreEqual("Survey", ItemType.ItemTypeMapByEnum[ITE.Survey].Name);
-            Assert.AreEqual("Work Detail", ItemType.ItemTypeMapByEnum[ITE.WorkDetail].Name);
+            Assert.That(ItemType.ItemTypeMapByEnum[ITE.Resource].Name, Is.EqualTo("Resource"));
+            Assert.That(ItemType.ItemTypeMapByEnum[ITE.Commodity].Name, Is.EqualTo("Commodity"));
+            Assert.That(ItemType.ItemTypeMapByEnum[ITE.Blueprint].Name, Is.EqualTo("Blueprint"));
+            Assert.That(ItemType.ItemTypeMapByEnum[ITE.Survey].Name, Is.EqualTo("Survey"));
+            Assert.That(ItemType.ItemTypeMapByEnum[ITE.WorkDetail].Name, Is.EqualTo("Work Detail"));
         }
 
         [Test]
         public void ItemTypeMapByEnum_NoneEntryHasEmptyName()
         {
-            Assert.AreEqual(string.Empty, ItemType.ItemTypeMapByEnum[ITE.None].Name);
+            Assert.That(ItemType.ItemTypeMapByEnum[ITE.None].Name, Is.EqualTo(string.Empty));
         }
 
         // -----------------------------------------------------------------------
@@ -107,24 +107,24 @@ namespace OE2EmpireTracker.Tests.Data
         public void ItemTypeMapByString_ContainsAllItemTypeNames()
         {
             foreach (var it in ItemType.ItemTypes)
-                Assert.IsTrue(ItemType.ItemTypeMapByString.ContainsKey(it.Name),
+                Assert.That(ItemType.ItemTypeMapByString.ContainsKey(it.Name), Is.True,
                     $"ItemTypeMapByString missing key '{it.Name}'");
         }
 
         [Test]
         public void ItemTypeMapByString_LookupReturnsCorrectID()
         {
-            Assert.AreEqual(ITE.Resource, ItemType.ItemTypeMapByString["Resource"].ID);
-            Assert.AreEqual(ITE.Commodity, ItemType.ItemTypeMapByString["Commodity"].ID);
-            Assert.AreEqual(ITE.Blueprint, ItemType.ItemTypeMapByString["Blueprint"].ID);
-            Assert.AreEqual(ITE.Survey, ItemType.ItemTypeMapByString["Survey"].ID);
-            Assert.AreEqual(ITE.WorkDetail, ItemType.ItemTypeMapByString["Work Detail"].ID);
+            Assert.That(ItemType.ItemTypeMapByString["Resource"].ID, Is.EqualTo(ITE.Resource));
+            Assert.That(ItemType.ItemTypeMapByString["Commodity"].ID, Is.EqualTo(ITE.Commodity));
+            Assert.That(ItemType.ItemTypeMapByString["Blueprint"].ID, Is.EqualTo(ITE.Blueprint));
+            Assert.That(ItemType.ItemTypeMapByString["Survey"].ID, Is.EqualTo(ITE.Survey));
+            Assert.That(ItemType.ItemTypeMapByString["Work Detail"].ID, Is.EqualTo(ITE.WorkDetail));
         }
 
         [Test]
         public void ItemTypeMapByString_EmptyKeyReturnsNone()
         {
-            Assert.AreEqual(ITE.None, ItemType.ItemTypeMapByString[string.Empty].ID);
+            Assert.That(ItemType.ItemTypeMapByString[string.Empty].ID, Is.EqualTo(ITE.None));
         }
 
         // -----------------------------------------------------------------------
@@ -139,7 +139,8 @@ namespace OE2EmpireTracker.Tests.Data
             {
                 string name = ItemType.ItemTypeMapByEnum[e].Name;
                 ITE roundTripped = ItemType.ItemTypeMapByString[name].ID;
-                Assert.AreEqual(e, roundTripped, $"Round-trip failed for {e}");
+                Assert.That(roundTripped, Is.EqualTo(e),
+                    $"Round-trip failed for {e}");
             }
         }
     }

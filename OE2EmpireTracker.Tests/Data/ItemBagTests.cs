@@ -40,7 +40,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             var item = MakeItem(IT.Resource, "Iron", 10, "uuid-1");
             _bag.AddItem(item);
-            Assert.IsTrue(_bag.ContainsKey("uuid-1"));
+            Assert.That(_bag.ContainsKey("uuid-1"), Is.True);
         }
 
         [Test]
@@ -48,7 +48,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             _bag.AddItem(MakeItem(IT.Resource, "Iron", 10));
             _bag.AddItem(MakeItem(IT.Resource, "Iron", 20));
-            Assert.AreEqual(2, _bag.Count());
+            Assert.That(_bag.Count(), Is.EqualTo(2));
         }
 
         [Test]
@@ -69,15 +69,15 @@ namespace OE2EmpireTracker.Tests.Data
             var item = MakeItem(IT.Resource, "Iron", 10, "uuid-1");
             _bag.AddItem(item);
             bool result = _bag.Remove("uuid-1");
-            Assert.IsTrue(result);
-            Assert.IsFalse(_bag.ContainsKey("uuid-1"));
+            Assert.That(result, Is.True);
+            Assert.That(_bag.ContainsKey("uuid-1"), Is.False);
         }
 
         [Test]
         public void Remove_UnknownUUID_ReturnsFalse()
         {
             bool result = _bag.Remove("no-such-uuid");
-            Assert.IsFalse(result);
+            Assert.That(result, Is.False);
         }
 
         // -----------------------------------------------------------------------
@@ -90,7 +90,7 @@ namespace OE2EmpireTracker.Tests.Data
             _bag.AddItem(MakeItem(IT.Resource, "Iron", 10));
             _bag.AddItem(MakeItem(IT.Commodity, "Steel Beams", 5));
             _bag.Clear();
-            Assert.AreEqual(0, _bag.Count());
+            Assert.That(_bag.Count(), Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -101,7 +101,7 @@ namespace OE2EmpireTracker.Tests.Data
         public void CountByType_SingleStack_ReturnsQuantity()
         {
             _bag.AddItem(MakeItem(IT.Resource, "Iron", 50));
-            Assert.AreEqual(50, _bag.CountByType(IT.Resource, "Iron"));
+            Assert.That(_bag.CountByType(IT.Resource, "Iron"), Is.EqualTo(50));
         }
 
         [Test]
@@ -109,7 +109,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             _bag.AddItem(MakeItem(IT.Resource, "Iron", 30));
             _bag.AddItem(MakeItem(IT.Resource, "Iron", 20));
-            Assert.AreEqual(50, _bag.CountByType(IT.Resource, "Iron"));
+            Assert.That(_bag.CountByType(IT.Resource, "Iron"), Is.EqualTo(50));
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             _bag.AddItem(MakeItem(IT.Resource, "Iron", 30));
             _bag.AddItem(MakeItem(IT.Resource, "Gold", 10));
-            Assert.AreEqual(30, _bag.CountByType(IT.Resource, "Iron"));
+            Assert.That(_bag.CountByType(IT.Resource, "Iron"), Is.EqualTo(30));
         }
 
         [Test]
@@ -125,20 +125,20 @@ namespace OE2EmpireTracker.Tests.Data
         {
             _bag.AddItem(MakeItem(IT.Resource, "Iron", 30));
             _bag.AddItem(MakeItem(IT.Commodity, "Iron", 10));
-            Assert.AreEqual(30, _bag.CountByType(IT.Resource, "Iron"));
+            Assert.That(_bag.CountByType(IT.Resource, "Iron"), Is.EqualTo(30));
         }
 
         [Test]
         public void CountByType_NoMatchingItems_ReturnsZero()
         {
             _bag.AddItem(MakeItem(IT.Resource, "Gold", 10));
-            Assert.AreEqual(0, _bag.CountByType(IT.Resource, "Iron"));
+            Assert.That(_bag.CountByType(IT.Resource, "Iron"), Is.EqualTo(0));
         }
 
         [Test]
         public void CountByType_EmptyBag_ReturnsZero()
         {
-            Assert.AreEqual(0, _bag.CountByType(IT.Resource, "Iron"));
+            Assert.That(_bag.CountByType(IT.Resource, "Iron"), Is.EqualTo(0));
         }
 
         [Test]
@@ -146,7 +146,7 @@ namespace OE2EmpireTracker.Tests.Data
         {
             _bag.AddItem(MakeItem(IT.Resource, "Iron", 10));
             // "iron" (lowercase) should not match "Iron"
-            Assert.AreEqual(0, _bag.CountByType(IT.Resource, "iron"));
+            Assert.That(_bag.CountByType(IT.Resource, "iron"), Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -167,9 +167,9 @@ namespace OE2EmpireTracker.Tests.Data
             int locked = locks.GetLockedQuantity(IT.Resource, "Iron");   // 70
             int available = total - locked;                               // 80
 
-            Assert.AreEqual(150, total);
-            Assert.AreEqual(70, locked);
-            Assert.AreEqual(80, available);
+            Assert.That(total, Is.EqualTo(150));
+            Assert.That(locked, Is.EqualTo(70));
+            Assert.That(available, Is.EqualTo(80));
         }
 
         [Test]
@@ -184,7 +184,7 @@ namespace OE2EmpireTracker.Tests.Data
             int available = _bag.CountByType(IT.Resource, "Iron") -
                             locks.GetLockedQuantity(IT.Resource, "Iron");
 
-            Assert.AreEqual(100, available);
+            Assert.That(available, Is.EqualTo(100));
         }
     }
 }

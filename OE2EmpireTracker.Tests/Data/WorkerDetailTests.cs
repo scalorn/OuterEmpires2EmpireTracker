@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using OE2EmpireTracker.Data;
 using System.Linq;
 
@@ -15,7 +14,7 @@ namespace OE2EmpireTracker.Tests.Data
         [Test]
         public void WorkerDetails_ListIsNotEmpty()
         {
-            Assert.IsTrue(WorkerDetail.WorkerDetails.Count > 0);
+            Assert.That(WorkerDetail.WorkerDetails.Count > 0, Is.True);
         }
 
         [Test]
@@ -23,32 +22,32 @@ namespace OE2EmpireTracker.Tests.Data
         {
             // Blank entry + 3 named = 4 total
             var named = WorkerDetail.WorkerDetails.Where(w => !string.IsNullOrEmpty(w.ID)).ToList();
-            Assert.AreEqual(3, named.Count);
+            Assert.That(named.Count, Is.EqualTo(3));
         }
 
         [Test]
         public void WorkerDetails_ContainsBlueCollarDetail()
         {
-            Assert.IsTrue(WorkerDetail.WorkerDetails.Any(w => w.ID == "BlueCollarDetail"));
+            Assert.That(WorkerDetail.WorkerDetails.Any(w => w.ID == "BlueCollarDetail"), Is.True);
         }
 
         [Test]
         public void WorkerDetails_ContainsWhiteCollarDetail()
         {
-            Assert.IsTrue(WorkerDetail.WorkerDetails.Any(w => w.ID == "WhiteCollarDetail"));
+            Assert.That(WorkerDetail.WorkerDetails.Any(w => w.ID == "WhiteCollarDetail"), Is.True);
         }
 
         [Test]
         public void WorkerDetails_ContainsSpecialistDetail()
         {
-            Assert.IsTrue(WorkerDetail.WorkerDetails.Any(w => w.ID == "SpecialistDetail"));
+            Assert.That(WorkerDetail.WorkerDetails.Any(w => w.ID == "SpecialistDetail"), Is.True);
         }
 
         [Test]
         public void WorkerDetails_AllNamedEntriesHaveNonEmptyName()
         {
             foreach (var w in WorkerDetail.WorkerDetails.Where(w => !string.IsNullOrEmpty(w.ID)))
-                Assert.IsFalse(string.IsNullOrEmpty(w.Name),
+                Assert.That(string.IsNullOrEmpty(w.Name), Is.False,
                     $"WorkerDetail with ID '{w.ID}' has empty Name");
         }
 
@@ -56,14 +55,16 @@ namespace OE2EmpireTracker.Tests.Data
         public void WorkerDetails_NoDuplicateIDs()
         {
             var ids = WorkerDetail.WorkerDetails.Select(w => w.ID).ToList();
-            Assert.AreEqual(ids.Distinct().Count(), ids.Count, "Duplicate WorkerDetail IDs found");
+            Assert.That(ids.Count, Is.EqualTo(ids.Distinct().Count()),
+                    "Duplicate WorkerDetail IDs found");
         }
 
         [Test]
         public void WorkerDetails_NoDuplicateNames()
         {
             var names = WorkerDetail.WorkerDetails.Select(w => w.Name).ToList();
-            Assert.AreEqual(names.Distinct().Count(), names.Count, "Duplicate WorkerDetail Names found");
+            Assert.That(names.Count, Is.EqualTo(names.Distinct().Count()),
+                    "Duplicate WorkerDetail Names found");
         }
 
         // -----------------------------------------------------------------------
@@ -74,22 +75,22 @@ namespace OE2EmpireTracker.Tests.Data
         public void WorkerDetailMapByID_ContainsAllIDs()
         {
             foreach (var w in WorkerDetail.WorkerDetails)
-                Assert.IsTrue(WorkerDetail.WorkerDetailMapByID.ContainsKey(w.ID),
+                Assert.That(WorkerDetail.WorkerDetailMapByID.ContainsKey(w.ID), Is.True,
                     $"WorkerDetailMapByID missing key '{w.ID}'");
         }
 
         [Test]
         public void WorkerDetailMapByID_LookupReturnsCorrectName()
         {
-            Assert.AreEqual("Blue Collar Detail",  WorkerDetail.WorkerDetailMapByID["BlueCollarDetail"].Name);
-            Assert.AreEqual("White Collar Detail", WorkerDetail.WorkerDetailMapByID["WhiteCollarDetail"].Name);
-            Assert.AreEqual("Specialist Detail",   WorkerDetail.WorkerDetailMapByID["SpecialistDetail"].Name);
+            Assert.That(WorkerDetail.WorkerDetailMapByID["BlueCollarDetail"].Name, Is.EqualTo("Blue Collar Detail"));
+            Assert.That(WorkerDetail.WorkerDetailMapByID["WhiteCollarDetail"].Name, Is.EqualTo("White Collar Detail"));
+            Assert.That(WorkerDetail.WorkerDetailMapByID["SpecialistDetail"].Name, Is.EqualTo("Specialist Detail"));
         }
 
         [Test]
         public void WorkerDetailMapByID_EmptyKeyReturnsBlankEntry()
         {
-            Assert.AreEqual(string.Empty, WorkerDetail.WorkerDetailMapByID[string.Empty].Name);
+            Assert.That(WorkerDetail.WorkerDetailMapByID[string.Empty].Name, Is.EqualTo(string.Empty));
         }
 
         // -----------------------------------------------------------------------
@@ -100,22 +101,22 @@ namespace OE2EmpireTracker.Tests.Data
         public void WorkerDetailMapByName_ContainsAllNames()
         {
             foreach (var w in WorkerDetail.WorkerDetails)
-                Assert.IsTrue(WorkerDetail.WorkerDetailMapByName.ContainsKey(w.Name),
+                Assert.That(WorkerDetail.WorkerDetailMapByName.ContainsKey(w.Name), Is.True,
                     $"WorkerDetailMapByName missing key '{w.Name}'");
         }
 
         [Test]
         public void WorkerDetailMapByName_LookupReturnsCorrectID()
         {
-            Assert.AreEqual("BlueCollarDetail",  WorkerDetail.WorkerDetailMapByName["Blue Collar Detail"].ID);
-            Assert.AreEqual("WhiteCollarDetail", WorkerDetail.WorkerDetailMapByName["White Collar Detail"].ID);
-            Assert.AreEqual("SpecialistDetail",  WorkerDetail.WorkerDetailMapByName["Specialist Detail"].ID);
+            Assert.That(WorkerDetail.WorkerDetailMapByName["Blue Collar Detail"].ID, Is.EqualTo("BlueCollarDetail"));
+            Assert.That(WorkerDetail.WorkerDetailMapByName["White Collar Detail"].ID, Is.EqualTo("WhiteCollarDetail"));
+            Assert.That(WorkerDetail.WorkerDetailMapByName["Specialist Detail"].ID, Is.EqualTo("SpecialistDetail"));
         }
 
         [Test]
         public void WorkerDetailMapByName_EmptyKeyReturnsBlankEntry()
         {
-            Assert.AreEqual(string.Empty, WorkerDetail.WorkerDetailMapByName[string.Empty].ID);
+            Assert.That(WorkerDetail.WorkerDetailMapByName[string.Empty].ID, Is.EqualTo(string.Empty));
         }
 
         // -----------------------------------------------------------------------
@@ -129,7 +130,8 @@ namespace OE2EmpireTracker.Tests.Data
             {
                 string name = WorkerDetail.WorkerDetailMapByID[w.ID].Name;
                 string roundTrippedID = WorkerDetail.WorkerDetailMapByName[name].ID;
-                Assert.AreEqual(w.ID, roundTrippedID, $"Round-trip failed for ID '{w.ID}'");
+                Assert.That(roundTrippedID, Is.EqualTo(w.ID),
+                    $"Round-trip failed for ID '{w.ID}'");
             }
         }
 
@@ -142,9 +144,9 @@ namespace OE2EmpireTracker.Tests.Data
         {
             // These IDs are used as property bag keys in ColonyStatusCalculator
             // for worker slot parsing. Verify they haven't drifted.
-            Assert.IsTrue(WorkerDetail.WorkerDetailMapByID.ContainsKey("BlueCollarDetail"));
-            Assert.IsTrue(WorkerDetail.WorkerDetailMapByID.ContainsKey("WhiteCollarDetail"));
-            Assert.IsTrue(WorkerDetail.WorkerDetailMapByID.ContainsKey("SpecialistDetail"));
+            Assert.That(WorkerDetail.WorkerDetailMapByID.ContainsKey("BlueCollarDetail"), Is.True);
+            Assert.That(WorkerDetail.WorkerDetailMapByID.ContainsKey("WhiteCollarDetail"), Is.True);
+            Assert.That(WorkerDetail.WorkerDetailMapByID.ContainsKey("SpecialistDetail"), Is.True);
         }
     }
 }

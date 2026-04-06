@@ -36,9 +36,9 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var vm = CreateViewModel();
             vm.AddStop("colony-1");
-            Assert.AreEqual(1, vm.Stops.Count);
-            Assert.AreEqual("colony-1", vm.Stops[0].ColonyUUID);
-            Assert.AreEqual(0, vm.Stops[0].Sequence);
+            Assert.That(vm.Stops.Count, Is.EqualTo(1));
+            Assert.That(vm.Stops[0].ColonyUUID, Is.EqualTo("colony-1"));
+            Assert.That(vm.Stops[0].Sequence, Is.EqualTo(0));
         }
 
         [Test]
@@ -48,10 +48,10 @@ namespace OE2EmpireTracker.Tests.Baseline
             vm.AddStop("c1");
             vm.AddStop("c2");
             vm.AddStop("c3");
-            Assert.AreEqual(3, vm.Stops.Count);
-            Assert.AreEqual(0, vm.Stops[0].Sequence);
-            Assert.AreEqual(1, vm.Stops[1].Sequence);
-            Assert.AreEqual(2, vm.Stops[2].Sequence);
+            Assert.That(vm.Stops.Count, Is.EqualTo(3));
+            Assert.That(vm.Stops[0].Sequence, Is.EqualTo(0));
+            Assert.That(vm.Stops[1].Sequence, Is.EqualTo(1));
+            Assert.That(vm.Stops[2].Sequence, Is.EqualTo(2));
         }
 
         // -----------------------------------------------------------------------
@@ -66,11 +66,11 @@ namespace OE2EmpireTracker.Tests.Baseline
             vm.AddStop("c2");
             vm.AddStop("c3");
             vm.RemoveStop(1);
-            Assert.AreEqual(2, vm.Stops.Count);
-            Assert.AreEqual("c1", vm.Stops[0].ColonyUUID);
-            Assert.AreEqual("c3", vm.Stops[1].ColonyUUID);
-            Assert.AreEqual(0, vm.Stops[0].Sequence);
-            Assert.AreEqual(1, vm.Stops[1].Sequence);
+            Assert.That(vm.Stops.Count, Is.EqualTo(2));
+            Assert.That(vm.Stops[0].ColonyUUID, Is.EqualTo("c1"));
+            Assert.That(vm.Stops[1].ColonyUUID, Is.EqualTo("c3"));
+            Assert.That(vm.Stops[0].Sequence, Is.EqualTo(0));
+            Assert.That(vm.Stops[1].Sequence, Is.EqualTo(1));
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var vm = CreateViewModel();
             vm.AddStop("c1");
             vm.RemoveStop(5);
-            Assert.AreEqual(1, vm.Stops.Count);
+            Assert.That(vm.Stops.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var vm = CreateViewModel();
             vm.AddStop("c1");
             vm.RemoveStop(-1);
-            Assert.AreEqual(1, vm.Stops.Count);
+            Assert.That(vm.Stops.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -100,9 +100,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             vm.AddStop("c3");
             vm.AddStop("c4");
             vm.RemoveStops(new[] { 1, 3 });
-            Assert.AreEqual(2, vm.Stops.Count);
-            Assert.AreEqual("c1", vm.Stops[0].ColonyUUID);
-            Assert.AreEqual("c3", vm.Stops[1].ColonyUUID);
+            Assert.That(vm.Stops.Count, Is.EqualTo(2));
+            Assert.That(vm.Stops[0].ColonyUUID, Is.EqualTo("c1"));
+            Assert.That(vm.Stops[1].ColonyUUID, Is.EqualTo("c3"));
         }
 
         // -----------------------------------------------------------------------
@@ -117,9 +117,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             vm.AddStop("c2");
             vm.AddStop("c3");
             vm.MoveStopUp(2);
-            Assert.AreEqual("c1", vm.Stops[0].ColonyUUID);
-            Assert.AreEqual("c3", vm.Stops[1].ColonyUUID);
-            Assert.AreEqual("c2", vm.Stops[2].ColonyUUID);
+            Assert.That(vm.Stops[0].ColonyUUID, Is.EqualTo("c1"));
+            Assert.That(vm.Stops[1].ColonyUUID, Is.EqualTo("c3"));
+            Assert.That(vm.Stops[2].ColonyUUID, Is.EqualTo("c2"));
         }
 
         [Test]
@@ -129,8 +129,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             vm.AddStop("c1");
             vm.AddStop("c2");
             vm.MoveStopUp(0);
-            Assert.AreEqual("c1", vm.Stops[0].ColonyUUID);
-            Assert.AreEqual("c2", vm.Stops[1].ColonyUUID);
+            Assert.That(vm.Stops[0].ColonyUUID, Is.EqualTo("c1"));
+            Assert.That(vm.Stops[1].ColonyUUID, Is.EqualTo("c2"));
         }
 
         [Test]
@@ -141,9 +141,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             vm.AddStop("c2");
             vm.AddStop("c3");
             vm.MoveStopDown(0);
-            Assert.AreEqual("c2", vm.Stops[0].ColonyUUID);
-            Assert.AreEqual("c1", vm.Stops[1].ColonyUUID);
-            Assert.AreEqual("c3", vm.Stops[2].ColonyUUID);
+            Assert.That(vm.Stops[0].ColonyUUID, Is.EqualTo("c2"));
+            Assert.That(vm.Stops[1].ColonyUUID, Is.EqualTo("c1"));
+            Assert.That(vm.Stops[2].ColonyUUID, Is.EqualTo("c3"));
         }
 
         [Test]
@@ -153,8 +153,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             vm.AddStop("c1");
             vm.AddStop("c2");
             vm.MoveStopDown(1);
-            Assert.AreEqual("c1", vm.Stops[0].ColonyUUID);
-            Assert.AreEqual("c2", vm.Stops[1].ColonyUUID);
+            Assert.That(vm.Stops[0].ColonyUUID, Is.EqualTo("c1"));
+            Assert.That(vm.Stops[1].ColonyUUID, Is.EqualTo("c2"));
         }
 
         // -----------------------------------------------------------------------
@@ -170,12 +170,12 @@ namespace OE2EmpireTracker.Tests.Baseline
             vm.AddStop("c3");
             vm.AddStop("c4");
             var newIndices = vm.MoveStopsUp(new[] { 2, 3 });
-            Assert.AreEqual("c1", vm.Stops[0].ColonyUUID);
-            Assert.AreEqual("c3", vm.Stops[1].ColonyUUID);
-            Assert.AreEqual("c4", vm.Stops[2].ColonyUUID);
-            Assert.AreEqual("c2", vm.Stops[3].ColonyUUID);
-            Assert.Contains(1, newIndices);
-            Assert.Contains(2, newIndices);
+            Assert.That(vm.Stops[0].ColonyUUID, Is.EqualTo("c1"));
+            Assert.That(vm.Stops[1].ColonyUUID, Is.EqualTo("c3"));
+            Assert.That(vm.Stops[2].ColonyUUID, Is.EqualTo("c4"));
+            Assert.That(vm.Stops[3].ColonyUUID, Is.EqualTo("c2"));
+            Assert.That(newIndices, Does.Contain(1));
+            Assert.That(newIndices, Does.Contain(2));
         }
 
         [Test]
@@ -187,12 +187,12 @@ namespace OE2EmpireTracker.Tests.Baseline
             vm.AddStop("c3");
             vm.AddStop("c4");
             var newIndices = vm.MoveStopsDown(new[] { 0, 1 });
-            Assert.AreEqual("c3", vm.Stops[0].ColonyUUID);
-            Assert.AreEqual("c1", vm.Stops[1].ColonyUUID);
-            Assert.AreEqual("c2", vm.Stops[2].ColonyUUID);
-            Assert.AreEqual("c4", vm.Stops[3].ColonyUUID);
-            Assert.Contains(1, newIndices);
-            Assert.Contains(2, newIndices);
+            Assert.That(vm.Stops[0].ColonyUUID, Is.EqualTo("c3"));
+            Assert.That(vm.Stops[1].ColonyUUID, Is.EqualTo("c1"));
+            Assert.That(vm.Stops[2].ColonyUUID, Is.EqualTo("c2"));
+            Assert.That(vm.Stops[3].ColonyUUID, Is.EqualTo("c4"));
+            Assert.That(newIndices, Does.Contain(1));
+            Assert.That(newIndices, Does.Contain(2));
         }
 
         // -----------------------------------------------------------------------
@@ -205,8 +205,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             var vm = CreateViewModel();
             vm.AddStop("c1");
             vm.Reset();
-            Assert.AreEqual(0, vm.Stops.Count);
-            Assert.AreEqual(string.Empty, vm.Name);
+            Assert.That(vm.Stops.Count, Is.EqualTo(0));
+            Assert.That(vm.Name, Is.EqualTo(string.Empty));
         }
 
         [Test]
@@ -217,9 +217,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             var newRoute = new DeliveryRoute { UUID = "r2", Name = "New Route" };
             newRoute.Stops.Add(new RouteStop { ColonyUUID = "c9", Sequence = 0 });
             vm.SelectRoute(newRoute);
-            Assert.AreEqual("New Route", vm.Name);
-            Assert.AreEqual(1, vm.Stops.Count);
-            Assert.AreEqual("c9", vm.Stops[0].ColonyUUID);
+            Assert.That(vm.Name, Is.EqualTo("New Route"));
+            Assert.That(vm.Stops.Count, Is.EqualTo(1));
+            Assert.That(vm.Stops[0].ColonyUUID, Is.EqualTo("c9"));
         }
 
         [Test]
@@ -227,7 +227,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var vm = CreateViewModel();
             vm.SelectRoute(null);
-            Assert.AreEqual(0, vm.Stops.Count);
+            Assert.That(vm.Stops.Count, Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -245,7 +245,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             vm.MoveStopUp(3);
             vm.RemoveStop(0);
             for (int i = 0; i < vm.Stops.Count; i++)
-                Assert.AreEqual(i, vm.Stops[i].Sequence, $"Stop at index {i} has wrong sequence");
+                Assert.That(vm.Stops[i].Sequence, Is.EqualTo(i),
+                    $"Stop at index {i} has wrong sequence");
         }
     }
 }

@@ -83,8 +83,8 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             var status = Calculate(structure, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), bp);
 
-            Assert.AreEqual(100.0, status.PowerProvided, 0.01);
-            Assert.AreEqual(0.0, status.PowerRequired, 0.01);
+            Assert.That(status.PowerProvided, Is.EqualTo(100.0).Within(0.01));
+            Assert.That(status.PowerRequired, Is.EqualTo(0.0).Within(0.01));
         }
 
         [Test]
@@ -98,8 +98,8 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             var status = Calculate(structure, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), bp);
 
-            Assert.AreEqual(0.0, status.PowerProvided, 0.01);
-            Assert.AreEqual(50.0, status.PowerRequired, 0.01);
+            Assert.That(status.PowerProvided, Is.EqualTo(0.0).Within(0.01));
+            Assert.That(status.PowerRequired, Is.EqualTo(50.0).Within(0.01));
         }
 
         [Test]
@@ -114,8 +114,8 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             var status = Calculate(structure, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), bp);
 
-            Assert.AreEqual(0.0, status.PowerProvided, 0.01);
-            Assert.AreEqual(0.0, status.PowerRequired, 0.01);
+            Assert.That(status.PowerProvided, Is.EqualTo(0.0).Within(0.01));
+            Assert.That(status.PowerRequired, Is.EqualTo(0.0).Within(0.01));
         }
 
         // -----------------------------------------------------------------------
@@ -133,7 +133,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             var status = Calculate(structure, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), bp);
 
-            Assert.AreEqual(200.0, status.HabitationProvision, 0.01);
+            Assert.That(status.HabitationProvision, Is.EqualTo(200.0).Within(0.01));
         }
 
         [Test]
@@ -147,7 +147,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             var status = Calculate(structure, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), bp);
 
-            Assert.AreEqual(0.0, status.HabitationProvision, 0.01);
+            Assert.That(status.HabitationProvision, Is.EqualTo(0.0).Within(0.01));
         }
 
         // -----------------------------------------------------------------------
@@ -165,7 +165,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             var status = Calculate(structure, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), bp);
 
-            Assert.AreEqual(150.0, status.FoodProvision, 0.01);
+            Assert.That(status.FoodProvision, Is.EqualTo(150.0).Within(0.01));
         }
 
         // -----------------------------------------------------------------------
@@ -183,7 +183,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             var status = Calculate(structure, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), bp);
 
-            Assert.AreEqual(75.0, status.EntertainmentProvided, 0.01);
+            Assert.That(status.EntertainmentProvided, Is.EqualTo(75.0).Within(0.01));
         }
 
         [Test]
@@ -197,7 +197,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             var status = Calculate(structure, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), bp);
 
-            Assert.AreEqual(0.0, status.EntertainmentProvided, 0.01);
+            Assert.That(status.EntertainmentProvided, Is.EqualTo(0.0).Within(0.01));
         }
 
         // -----------------------------------------------------------------------
@@ -215,7 +215,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             var status = Calculate(structure, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), bp);
 
-            Assert.AreEqual(5000.0, status.WarehouseCapacity, 0.01);
+            Assert.That(status.WarehouseCapacity, Is.EqualTo(5000.0).Within(0.01));
         }
 
         [Test]
@@ -229,7 +229,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             var status = Calculate(structure, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), bp);
 
-            Assert.AreEqual(0.0, status.WarehouseCapacity, 0.01);
+            Assert.That(status.WarehouseCapacity, Is.EqualTo(0.0).Within(0.01));
         }
 
         // -----------------------------------------------------------------------
@@ -262,12 +262,12 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             var status = Calculate(structure, prev, new ActualColonyStructureWorkers(), bp);
 
-            Assert.AreEqual(150.0, status.PowerProvided, 0.01);
-            Assert.AreEqual(30.0, status.PowerRequired, 0.01);
-            Assert.AreEqual(75.0, status.HabitationProvision, 0.01);
-            Assert.AreEqual(45.0, status.FoodProvision, 0.01);
-            Assert.AreEqual(15.0, status.EntertainmentProvided, 0.01);
-            Assert.AreEqual(1500.0, status.WarehouseCapacity, 0.01);
+            Assert.That(status.PowerProvided, Is.EqualTo(150.0).Within(0.01));
+            Assert.That(status.PowerRequired, Is.EqualTo(30.0).Within(0.01));
+            Assert.That(status.HabitationProvision, Is.EqualTo(75.0).Within(0.01));
+            Assert.That(status.FoodProvision, Is.EqualTo(45.0).Within(0.01));
+            Assert.That(status.EntertainmentProvided, Is.EqualTo(15.0).Within(0.01));
+            Assert.That(status.WarehouseCapacity, Is.EqualTo(1500.0).Within(0.01));
         }
 
         // -----------------------------------------------------------------------
@@ -289,9 +289,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             var status = Calculate(structure, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), bp);
 
             // 1 assigned worker adds 1 to each required
-            Assert.AreEqual(1.0, status.HabitationRequired, 0.01);
-            Assert.AreEqual(1.0, status.FoodRequired, 0.01);
-            Assert.AreEqual(1.0, status.EntertainmentRequired, 0.01);
+            Assert.That(status.HabitationRequired, Is.EqualTo(1.0).Within(0.01));
+            Assert.That(status.FoodRequired, Is.EqualTo(1.0).Within(0.01));
+            Assert.That(status.EntertainmentRequired, Is.EqualTo(1.0).Within(0.01));
         }
 
         [Test]
@@ -306,9 +306,9 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             var status = Calculate(structure, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), bp);
 
-            Assert.AreEqual(0.0, status.HabitationRequired, 0.01);
-            Assert.AreEqual(0.0, status.FoodRequired, 0.01);
-            Assert.AreEqual(0.0, status.EntertainmentRequired, 0.01);
+            Assert.That(status.HabitationRequired, Is.EqualTo(0.0).Within(0.01));
+            Assert.That(status.FoodRequired, Is.EqualTo(0.0).Within(0.01));
+            Assert.That(status.EntertainmentRequired, Is.EqualTo(0.0).Within(0.01));
         }
 
         [Test]
@@ -327,9 +327,9 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             var status = Calculate(structure, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), bp);
 
-            Assert.AreEqual(3.0, status.HabitationRequired, 0.01);
-            Assert.AreEqual(3.0, status.FoodRequired, 0.01);
-            Assert.AreEqual(3.0, status.EntertainmentRequired, 0.01);
+            Assert.That(status.HabitationRequired, Is.EqualTo(3.0).Within(0.01));
+            Assert.That(status.FoodRequired, Is.EqualTo(3.0).Within(0.01));
+            Assert.That(status.EntertainmentRequired, Is.EqualTo(3.0).Within(0.01));
         }
 
         // -----------------------------------------------------------------------
@@ -349,9 +349,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             var status = Calculate(structure, new ColonyStructureStatus(), new IdealColonyStructureWorkers(), bp);
 
             // Ideal: all 3 workers assigned
-            Assert.AreEqual(3.0, status.HabitationRequired, 0.01);
-            Assert.AreEqual(3.0, status.FoodRequired, 0.01);
-            Assert.AreEqual(3.0, status.EntertainmentRequired, 0.01);
+            Assert.That(status.HabitationRequired, Is.EqualTo(3.0).Within(0.01));
+            Assert.That(status.FoodRequired, Is.EqualTo(3.0).Within(0.01));
+            Assert.That(status.EntertainmentRequired, Is.EqualTo(3.0).Within(0.01));
         }
 
         [Test]
@@ -367,8 +367,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             var status = Calculate(structure, new ColonyStructureStatus(), new IdealColonyStructureWorkers(), bp);
 
             // Ideal treats everything as online
-            Assert.AreEqual(100.0, status.PowerProvided, 0.01);
-            Assert.AreEqual(50.0, status.HabitationProvision, 0.01);
+            Assert.That(status.PowerProvided, Is.EqualTo(100.0).Within(0.01));
+            Assert.That(status.HabitationProvision, Is.EqualTo(50.0).Within(0.01));
         }
 
         // -----------------------------------------------------------------------
@@ -398,11 +398,11 @@ namespace OE2EmpireTracker.Tests.Baseline
             var status = new ColonyStructureStatus();
             calc.CalculateBuilt(structure, new ColonyStructureStatus(), status, workers, bp);
 
-            Assert.IsTrue(status.UnallocatedBlueCollarPresent);
+            Assert.That(status.UnallocatedBlueCollarPresent, Is.True);
             // 1 unallocated worker adds 1 to required
-            Assert.AreEqual(1.0, status.HabitationRequired, 0.01);
-            Assert.AreEqual(1.0, status.FoodRequired, 0.01);
-            Assert.AreEqual(1.0, status.EntertainmentRequired, 0.01);
+            Assert.That(status.HabitationRequired, Is.EqualTo(1.0).Within(0.01));
+            Assert.That(status.FoodRequired, Is.EqualTo(1.0).Within(0.01));
+            Assert.That(status.EntertainmentRequired, Is.EqualTo(1.0).Within(0.01));
         }
 
         [Test]
@@ -423,8 +423,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             var status = new ColonyStructureStatus();
             calc.CalculateBuilt(structure, new ColonyStructureStatus(), status, workers, bp);
 
-            Assert.IsFalse(status.UnallocatedBlueCollarPresent);
-            Assert.AreEqual(0.0, status.HabitationRequired, 0.01);
+            Assert.That(status.UnallocatedBlueCollarPresent, Is.False);
+            Assert.That(status.HabitationRequired, Is.EqualTo(0.0).Within(0.01));
         }
 
         [Test]
@@ -459,10 +459,10 @@ namespace OE2EmpireTracker.Tests.Baseline
             calc.CalculateBuilt(structure, prev, status, workers, bp);
 
             // Should NOT add another 1 — already present from previous
-            Assert.IsTrue(status.UnallocatedBlueCollarPresent);
-            Assert.AreEqual(1.0, status.HabitationRequired, 0.01);
-            Assert.AreEqual(1.0, status.FoodRequired, 0.01);
-            Assert.AreEqual(1.0, status.EntertainmentRequired, 0.01);
+            Assert.That(status.UnallocatedBlueCollarPresent, Is.True);
+            Assert.That(status.HabitationRequired, Is.EqualTo(1.0).Within(0.01));
+            Assert.That(status.FoodRequired, Is.EqualTo(1.0).Within(0.01));
+            Assert.That(status.EntertainmentRequired, Is.EqualTo(1.0).Within(0.01));
         }
 
         [Test]
@@ -491,8 +491,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             calc.CalculateBuilt(structure, new ColonyStructureStatus(), status, workers, bp);
 
             // Worker is locked — not available
-            Assert.IsFalse(status.UnallocatedBlueCollarPresent);
-            Assert.AreEqual(0.0, status.HabitationRequired, 0.01);
+            Assert.That(status.UnallocatedBlueCollarPresent, Is.False);
+            Assert.That(status.HabitationRequired, Is.EqualTo(0.0).Within(0.01));
         }
 
         // -----------------------------------------------------------------------
@@ -508,8 +508,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             var status = Calculate(structure, prev, new ActualColonyStructureWorkers(), null);
 
             // Should carry forward previous values without adding anything
-            Assert.AreEqual(50.0, status.PowerProvided, 0.01);
-            Assert.AreEqual(0.0, status.PowerRequired, 0.01);
+            Assert.That(status.PowerProvided, Is.EqualTo(50.0).Within(0.01));
+            Assert.That(status.PowerRequired, Is.EqualTo(0.0).Within(0.01));
         }
 
         // -----------------------------------------------------------------------
@@ -530,9 +530,9 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             var status1 = Calculate(reactor, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), reactorBp);
 
-            Assert.AreEqual(500.0, status1.PowerProvided, 0.01);
-            Assert.AreEqual(1.0, status1.HabitationRequired, 0.01);
-            Assert.AreEqual(1.0, status1.FoodRequired, 0.01);
+            Assert.That(status1.PowerProvided, Is.EqualTo(500.0).Within(0.01));
+            Assert.That(status1.HabitationRequired, Is.EqualTo(1.0).Within(0.01));
+            Assert.That(status1.FoodRequired, Is.EqualTo(1.0).Within(0.01));
 
             // Structure 2: Habitation — provides habitation, requires power, 1 white collar
             var hab = MakeStructure(built: true, online: true);
@@ -550,12 +550,12 @@ namespace OE2EmpireTracker.Tests.Baseline
             var status2 = new ColonyStructureStatus();
             calc.CalculateBuilt(hab, status1, status2, new ActualColonyStructureWorkers(), habBp);
 
-            Assert.AreEqual(500.0, status2.PowerProvided, 0.01);
-            Assert.AreEqual(50.0, status2.PowerRequired, 0.01);
-            Assert.AreEqual(100.0, status2.HabitationProvision, 0.01);
-            Assert.AreEqual(2.0, status2.HabitationRequired, 0.01); // 1 from reactor + 1 from hab
-            Assert.AreEqual(2.0, status2.FoodRequired, 0.01);
-            Assert.AreEqual(2.0, status2.EntertainmentRequired, 0.01);
+            Assert.That(status2.PowerProvided, Is.EqualTo(500.0).Within(0.01));
+            Assert.That(status2.PowerRequired, Is.EqualTo(50.0).Within(0.01));
+            Assert.That(status2.HabitationProvision, Is.EqualTo(100.0).Within(0.01));
+            Assert.That(status2.HabitationRequired, Is.EqualTo(2.0).Within(0.01)); // 1 from reactor + 1 from hab
+            Assert.That(status2.FoodRequired, Is.EqualTo(2.0).Within(0.01));
+            Assert.That(status2.EntertainmentRequired, Is.EqualTo(2.0).Within(0.01));
         }
 
         // -----------------------------------------------------------------------
@@ -569,8 +569,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             structure.AssignedWorkers.setProperty("BlueCollar1", true);
 
             var workers = new ActualColonyStructureWorkers();
-            Assert.IsTrue(workers.IsWorkerAssigned(structure, "BlueCollar1"));
-            Assert.IsFalse(workers.IsWorkerAssigned(structure, "BlueCollar2"));
+            Assert.That(workers.IsWorkerAssigned(structure, "BlueCollar1"), Is.True);
+            Assert.That(workers.IsWorkerAssigned(structure, "BlueCollar2"), Is.False);
         }
 
         [Test]
@@ -583,7 +583,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             bool value;
             structure.AssignedWorkers.getBoolean("WhiteCollar1", false, out value);
-            Assert.IsTrue(value);
+            Assert.That(value, Is.True);
         }
 
         [Test]
@@ -598,9 +598,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             bool built, staged, online;
             workers.GetStructureState(structure, out built, out staged, out online);
 
-            Assert.IsTrue(built);
-            Assert.IsFalse(staged);
-            Assert.IsTrue(online);
+            Assert.That(built, Is.True);
+            Assert.That(staged, Is.False);
+            Assert.That(online, Is.True);
         }
 
         [Test]
@@ -614,7 +614,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.Items.AddItem(item);
 
             var workers = new ActualColonyStructureWorkers(colony);
-            Assert.IsTrue(workers.IsUnassignedWorkerAvailable("BlueCollarDetail"));
+            Assert.That(workers.IsUnassignedWorkerAvailable("BlueCollarDetail"), Is.True);
         }
 
         [Test]
@@ -622,7 +622,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var colony = new Colony();
             var workers = new ActualColonyStructureWorkers(colony);
-            Assert.IsFalse(workers.IsUnassignedWorkerAvailable("BlueCollarDetail"));
+            Assert.That(workers.IsUnassignedWorkerAvailable("BlueCollarDetail"), Is.False);
         }
 
         [Test]
@@ -637,7 +637,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.Locks.LockItem("proc-1", ItemType.ItemTypeEnum.WorkDetail, "WhiteCollarDetail", 1);
 
             var workers = new ActualColonyStructureWorkers(colony);
-            Assert.IsFalse(workers.IsUnassignedWorkerAvailable("WhiteCollarDetail"));
+            Assert.That(workers.IsUnassignedWorkerAvailable("WhiteCollarDetail"), Is.False);
         }
 
         [Test]
@@ -652,14 +652,14 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.Locks.LockItem("proc-1", ItemType.ItemTypeEnum.WorkDetail, "SpecialistDetail", 2);
 
             var workers = new ActualColonyStructureWorkers(colony);
-            Assert.IsTrue(workers.IsUnassignedWorkerAvailable("SpecialistDetail"));
+            Assert.That(workers.IsUnassignedWorkerAvailable("SpecialistDetail"), Is.True);
         }
 
         [Test]
         public void ActualWorkers_NullColony_FallbackReturnsTrue()
         {
             var workers = new ActualColonyStructureWorkers(null);
-            Assert.IsTrue(workers.IsUnassignedWorkerAvailable("BlueCollarDetail"));
+            Assert.That(workers.IsUnassignedWorkerAvailable("BlueCollarDetail"), Is.True);
         }
 
         // -----------------------------------------------------------------------
@@ -670,8 +670,8 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void IdealWorkers_IsWorkerAssigned_AlwaysTrue()
         {
             var workers = new IdealColonyStructureWorkers();
-            Assert.IsTrue(workers.IsWorkerAssigned(new ColonyStructure(), "BlueCollar1"));
-            Assert.IsTrue(workers.IsWorkerAssigned(new ColonyStructure(), "Specialist99"));
+            Assert.That(workers.IsWorkerAssigned(new ColonyStructure(), "BlueCollar1"), Is.True);
+            Assert.That(workers.IsWorkerAssigned(new ColonyStructure(), "Specialist99"), Is.True);
         }
 
         [Test]
@@ -681,16 +681,16 @@ namespace OE2EmpireTracker.Tests.Baseline
             bool built, staged, online;
             workers.GetStructureState(new ColonyStructure(), out built, out staged, out online);
 
-            Assert.IsTrue(built);
-            Assert.IsFalse(staged);
-            Assert.IsTrue(online);
+            Assert.That(built, Is.True);
+            Assert.That(staged, Is.False);
+            Assert.That(online, Is.True);
         }
 
         [Test]
         public void IdealWorkers_IsUnassignedWorkerAvailable_AlwaysTrue()
         {
             var workers = new IdealColonyStructureWorkers();
-            Assert.IsTrue(workers.IsUnassignedWorkerAvailable("anything"));
+            Assert.That(workers.IsUnassignedWorkerAvailable("anything"), Is.True);
         }
 
         // -----------------------------------------------------------------------
@@ -728,7 +728,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             {
                 total += item.Quantity * item.Volume;
             }
-            Assert.AreEqual(150.0, total, 0.01);
+            Assert.That(total, Is.EqualTo(150.0).Within(0.01));
         }
     }
 }

@@ -99,9 +99,9 @@ namespace OE2EmpireTracker.Tests.Baseline
                     foreach (var s in expiredStructures)
                     {
                         var vm = new ColonyStructureViewModel(s, playerContext);
-                        Assert.IsTrue(vm.IsBuilt,
-                            $"Expired structure should be Built (expired={numExpired}, active={numActive})");
-                        Assert.IsNull(s.BuildCompletionTime,
+                        Assert.That(vm.IsBuilt, Is.True,
+                    $"Expired structure should be Built (expired={numExpired}, active={numActive})");
+                        Assert.That(s.BuildCompletionTime, Is.Null,
                             $"Expired structure BuildCompletionTime should be null");
                     }
 
@@ -109,12 +109,12 @@ namespace OE2EmpireTracker.Tests.Baseline
                     foreach (var s in activeStructures)
                     {
                         var vm = new ColonyStructureViewModel(s, playerContext);
-                        Assert.IsFalse(vm.IsBuilt,
-                            $"Active structure should NOT be Built");
-                        Assert.IsNotNull(s.BuildCompletionTime,
-                            $"Active structure BuildCompletionTime should remain");
-                        Assert.Greater(s.BuildCompletionTime.TimeRemaining, 0,
-                            $"Active structure should still have time remaining");
+                        Assert.That(vm.IsBuilt, Is.False,
+                    $"Active structure should NOT be Built");
+                        Assert.That(s.BuildCompletionTime, Is.Not.Null,
+                    $"Active structure BuildCompletionTime should remain");
+                        Assert.That(s.BuildCompletionTime.TimeRemaining, Is.GreaterThan(0),
+                    $"Active structure should still have time remaining");
                     }
                 }
             }
@@ -135,8 +135,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.ProcessColony();
 
             var vm = new ColonyStructureViewModel(structure, playerContext);
-            Assert.IsTrue(vm.IsBuilt);
-            Assert.IsNull(structure.BuildCompletionTime);
+            Assert.That(vm.IsBuilt, Is.True);
+            Assert.That(structure.BuildCompletionTime, Is.Null);
         }
 
         [Test]
@@ -150,8 +150,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.ProcessColony();
 
             var vm = new ColonyStructureViewModel(structure, playerContext);
-            Assert.IsFalse(vm.IsBuilt);
-            Assert.IsNotNull(structure.BuildCompletionTime);
+            Assert.That(vm.IsBuilt, Is.False);
+            Assert.That(structure.BuildCompletionTime, Is.Not.Null);
         }
 
         [Test]
@@ -210,13 +210,16 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             // Build completion should have run first, setting Built=true
             var vm = new ColonyStructureViewModel(structure, playerContext);
-            Assert.IsTrue(vm.IsBuilt, "Structure should be marked as built");
-            Assert.IsNull(structure.BuildCompletionTime, "BuildCompletionTime should be cleared");
+            Assert.That(vm.IsBuilt, Is.True,
+                    "Structure should be marked as built");
+            Assert.That(structure.BuildCompletionTime, Is.Null, "BuildCompletionTime should be cleared");
 
             // Mining should have processed (the structure is now built)
             var items = colony.Items.FindResource("TestOre", "Low");
-            Assert.AreEqual(1, items.Count, "Mining should have produced ore");
-            Assert.Greater(items[0].Quantity, 0, "Mined quantity should be > 0");
+            Assert.That(items.Count, Is.EqualTo(1),
+                    "Mining should have produced ore");
+            Assert.That(items[0].Quantity, Is.GreaterThan(0),
+                    "Mined quantity should be > 0");
         }
     }
 }

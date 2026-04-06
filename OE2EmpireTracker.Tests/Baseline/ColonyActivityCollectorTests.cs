@@ -173,25 +173,27 @@ namespace OE2EmpireTracker.Tests.Baseline
 
                 var rows = ColonyActivityCollector.CollectActivities(colonies, pc);
 
-                Assert.AreEqual(expectedStructureRows + expectedCommodityRows, rows.Count,
+                Assert.That(rows.Count, Is.EqualTo(expectedStructureRows + expectedCommodityRows),
                     $"Iteration {iteration}: row count mismatch");
 
                 // Verify types match
                 var actualTypes = rows.Select(r => r.Type).ToList();
-                Assert.AreEqual(expectedTypes.Count, actualTypes.Count,
+                Assert.That(actualTypes.Count, Is.EqualTo(expectedTypes.Count),
                     $"Iteration {iteration}: type count mismatch");
 
                 for (int i = 0; i < expectedTypes.Count; i++)
                 {
-                    Assert.AreEqual(expectedTypes[i], actualTypes[i],
-                        $"Iteration {iteration}, row {i}: type mismatch");
+                    Assert.That(actualTypes[i], Is.EqualTo(expectedTypes[i]),
+                    $"Iteration {iteration}, row {i}: type mismatch");
                 }
 
                 // Verify SystemName and ColonyName match owning colony
                 foreach (var row in rows)
                 {
-                    Assert.IsNotNull(row.SystemName, $"Iteration {iteration}: SystemName null");
-                    Assert.IsNotNull(row.ColonyName, $"Iteration {iteration}: ColonyName null");
+                    Assert.That(row.SystemName, Is.Not.Null,
+                    $"Iteration {iteration}: SystemName null");
+                    Assert.That(row.ColonyName, Is.Not.Null,
+                    $"Iteration {iteration}: ColonyName null");
                 }
             }
         }
@@ -223,10 +225,10 @@ namespace OE2EmpireTracker.Tests.Baseline
 
                 if (needBy <= DateTime.Now)
                 {
-                    Assert.AreEqual(0, actualSeconds,
-                        $"Iteration {iteration}: past NeedBy should return 0");
-                    Assert.AreEqual("0s", row.GetTimeRemainingString(),
-                        $"Iteration {iteration}: past NeedBy should display '0s'");
+                    Assert.That(actualSeconds, Is.EqualTo(0),
+                    $"Iteration {iteration}: past NeedBy should return 0");
+                    Assert.That(row.GetTimeRemainingString(), Is.EqualTo("0s"),
+                    $"Iteration {iteration}: past NeedBy should display '0s'");
                 }
                 else
                 {
@@ -321,10 +323,11 @@ namespace OE2EmpireTracker.Tests.Baseline
                     colony.Structures.Add(structure);
 
                     var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-                    Assert.AreEqual(1, rows.Count, $"Iteration {iteration}: expected 1 row");
-                    Assert.AreEqual(ActivityType.Building, rows[0].Type);
-                    Assert.AreEqual($"#{gameSeq} {bp.ExtendedName}", rows[0].SourceName);
-                    Assert.AreEqual("Building", rows[0].ProcessDetails);
+                    Assert.That(rows.Count, Is.EqualTo(1),
+                    $"Iteration {iteration}: expected 1 row");
+                    Assert.That(rows[0].Type, Is.EqualTo(ActivityType.Building));
+                    Assert.That(rows[0].SourceName, Is.EqualTo($"#{gameSeq} {bp.ExtendedName}"));
+                    Assert.That(rows[0].ProcessDetails, Is.EqualTo("Building"));
                     continue;
                 }
 
@@ -343,10 +346,10 @@ namespace OE2EmpireTracker.Tests.Baseline
 
                     colony.Structures.Add(structure);
                     var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-                    Assert.AreEqual(1, rows.Count);
-                    Assert.AreEqual(ActivityType.Mining, rows[0].Type);
-                    Assert.AreEqual($"#{gameSeq} {bp.ExtendedName}", rows[0].SourceName);
-                    Assert.AreEqual($"{amount}/h {resource} ({purity})", rows[0].ProcessDetails);
+                    Assert.That(rows.Count, Is.EqualTo(1));
+                    Assert.That(rows[0].Type, Is.EqualTo(ActivityType.Mining));
+                    Assert.That(rows[0].SourceName, Is.EqualTo($"#{gameSeq} {bp.ExtendedName}"));
+                    Assert.That(rows[0].ProcessDetails, Is.EqualTo($"{amount}/h {resource} ({purity})"));
                 }
                 else if (bpType == BlueprintTypes.Refinery)
                 {
@@ -360,8 +363,8 @@ namespace OE2EmpireTracker.Tests.Baseline
 
                         colony.Structures.Add(structure);
                         var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-                        Assert.AreEqual(1, rows.Count);
-                        Assert.AreEqual(ActivityType.Refining, rows[0].Type);
+                        Assert.That(rows.Count, Is.EqualTo(1));
+                        Assert.That(rows[0].Type, Is.EqualTo(ActivityType.Refining));
 
                         int baseRate = GameConstants.RefiningBaseRate;
                         int outputRate;
@@ -372,7 +375,7 @@ namespace OE2EmpireTracker.Tests.Baseline
                             case "High": outputRate = baseRate * 5; break;
                             default: outputRate = baseRate; break;
                         }
-                        Assert.AreEqual($"{baseRate}:{outputRate} {resource} ({purity})", rows[0].ProcessDetails);
+                        Assert.That(rows[0].ProcessDetails, Is.EqualTo($"{baseRate}:{outputRate} {resource} ({purity})"));
                     }
                     else
                     {
@@ -382,9 +385,9 @@ namespace OE2EmpireTracker.Tests.Baseline
 
                         colony.Structures.Add(structure);
                         var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-                        Assert.AreEqual(1, rows.Count);
-                        Assert.AreEqual(ActivityType.Refining, rows[0].Type);
-                        Assert.AreEqual("1250:25 S1. Translanthanic Exotics", rows[0].ProcessDetails);
+                        Assert.That(rows.Count, Is.EqualTo(1));
+                        Assert.That(rows[0].Type, Is.EqualTo(ActivityType.Refining));
+                        Assert.That(rows[0].ProcessDetails, Is.EqualTo("1250:25 S1. Translanthanic Exotics"));
                     }
                 }
                 else if (bpType == BlueprintTypes.ResearchLaboratory)
@@ -394,9 +397,9 @@ namespace OE2EmpireTracker.Tests.Baseline
 
                     colony.Structures.Add(structure);
                     var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-                    Assert.AreEqual(1, rows.Count);
-                    Assert.AreEqual(ActivityType.Research, rows[0].Type);
-                    Assert.AreEqual($"Evo {researchBp.Evolution}->{researchBp.Evolution + 1} {researchBp.Name}", rows[0].ProcessDetails);
+                    Assert.That(rows.Count, Is.EqualTo(1));
+                    Assert.That(rows[0].Type, Is.EqualTo(ActivityType.Research));
+                    Assert.That(rows[0].ProcessDetails, Is.EqualTo($"Evo {researchBp.Evolution}->{researchBp.Evolution + 1} {researchBp.Name}"));
                 }
                 else if (bpType == BlueprintTypes.Manufactory)
                 {
@@ -407,9 +410,9 @@ namespace OE2EmpireTracker.Tests.Baseline
 
                     colony.Structures.Add(structure);
                     var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-                    Assert.AreEqual(1, rows.Count);
-                    Assert.AreEqual(ActivityType.Manufacturing, rows[0].Type);
-                    Assert.AreEqual($"({structure.ManufacturingCompleted}/{structure.ManufacturingQuantity}) {mfgBp.ExtendedName}", rows[0].ProcessDetails);
+                    Assert.That(rows.Count, Is.EqualTo(1));
+                    Assert.That(rows[0].Type, Is.EqualTo(ActivityType.Manufacturing));
+                    Assert.That(rows[0].ProcessDetails, Is.EqualTo($"({structure.ManufacturingCompleted}/{structure.ManufacturingQuantity}) {mfgBp.ExtendedName}"));
                 }
                 else if (bpType == BlueprintTypes.CommodityFactory)
                 {
@@ -420,9 +423,9 @@ namespace OE2EmpireTracker.Tests.Baseline
 
                     colony.Structures.Add(structure);
                     var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-                    Assert.AreEqual(1, rows.Count);
-                    Assert.AreEqual(ActivityType.CommodityManufacturing, rows[0].Type);
-                    Assert.AreEqual($"({structure.ManufacturingCompleted}/{structure.ManufacturingQuantity}) {commodityName} x{GameConstants.CommoditiesPerCycle}", rows[0].ProcessDetails);
+                    Assert.That(rows.Count, Is.EqualTo(1));
+                    Assert.That(rows[0].Type, Is.EqualTo(ActivityType.CommodityManufacturing));
+                    Assert.That(rows[0].ProcessDetails, Is.EqualTo($"({structure.ManufacturingCompleted}/{structure.ManufacturingQuantity}) {commodityName} x{GameConstants.CommoditiesPerCycle}"));
                 }
 
                 // Also test CommodityRequest formatting every 5th iteration
@@ -444,10 +447,10 @@ namespace OE2EmpireTracker.Tests.Baseline
                     });
 
                     var crRows = ColonyActivityCollector.CollectActivities(new[] { colony2 }, pc);
-                    Assert.AreEqual(1, crRows.Count);
-                    Assert.AreEqual(ActivityType.CommodityRequest, crRows[0].Type);
-                    Assert.AreEqual("Commodity Request", crRows[0].SourceName);
-                    Assert.AreEqual($"{crName} x{crRequested}", crRows[0].ProcessDetails);
+                    Assert.That(crRows.Count, Is.EqualTo(1));
+                    Assert.That(crRows[0].Type, Is.EqualTo(ActivityType.CommodityRequest));
+                    Assert.That(crRows[0].SourceName, Is.EqualTo("Commodity Request"));
+                    Assert.That(crRows[0].ProcessDetails, Is.EqualTo($"{crName} x{crRequested}"));
                 }
             }
         }
@@ -462,7 +465,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var pc = PlayerContext.getInstance();
             var rows = ColonyActivityCollector.CollectActivities(new List<Colony>(), pc);
-            Assert.AreEqual(0, rows.Count);
+            Assert.That(rows.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -485,7 +488,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             });
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-            Assert.AreEqual(0, rows.Count);
+            Assert.That(rows.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -512,12 +515,12 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.Structures.Add(structure);
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-            Assert.AreEqual(1, rows.Count);
-            Assert.AreEqual(ActivityType.Mining, rows[0].Type);
-            Assert.AreEqual("MineSys", rows[0].SystemName);
-            Assert.AreEqual("MineCol", rows[0].ColonyName);
-            Assert.AreEqual($"#{3} {bp.ExtendedName}", rows[0].SourceName);
-            Assert.AreEqual("250/h Iron (High)", rows[0].ProcessDetails);
+            Assert.That(rows.Count, Is.EqualTo(1));
+            Assert.That(rows[0].Type, Is.EqualTo(ActivityType.Mining));
+            Assert.That(rows[0].SystemName, Is.EqualTo("MineSys"));
+            Assert.That(rows[0].ColonyName, Is.EqualTo("MineCol"));
+            Assert.That(rows[0].SourceName, Is.EqualTo($"#{3} {bp.ExtendedName}"));
+            Assert.That(rows[0].ProcessDetails, Is.EqualTo("250/h Iron (High)"));
         }
 
         [Test]
@@ -541,9 +544,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.Structures.Add(structure);
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-            Assert.AreEqual(1, rows.Count);
-            Assert.AreEqual(ActivityType.Building, rows[0].Type);
-            Assert.AreEqual("Building", rows[0].ProcessDetails);
+            Assert.That(rows.Count, Is.EqualTo(1));
+            Assert.That(rows[0].Type, Is.EqualTo(ActivityType.Building));
+            Assert.That(rows[0].ProcessDetails, Is.EqualTo("Building"));
         }
 
         [Test]
@@ -565,10 +568,10 @@ namespace OE2EmpireTracker.Tests.Baseline
             });
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-            Assert.AreEqual(1, rows.Count);
-            Assert.AreEqual(ActivityType.CommodityRequest, rows[0].Type);
-            Assert.AreEqual("Commodity Request", rows[0].SourceName);
-            Assert.AreEqual("Electronics x50", rows[0].ProcessDetails);
+            Assert.That(rows.Count, Is.EqualTo(1));
+            Assert.That(rows[0].Type, Is.EqualTo(ActivityType.CommodityRequest));
+            Assert.That(rows[0].SourceName, Is.EqualTo("Commodity Request"));
+            Assert.That(rows[0].ProcessDetails, Is.EqualTo("Electronics x50"));
         }
 
         [Test]
@@ -590,7 +593,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             });
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-            Assert.AreEqual(0, rows.Count);
+            Assert.That(rows.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -602,8 +605,8 @@ namespace OE2EmpireTracker.Tests.Baseline
                 CountDown = null,
                 NeedBy = DateTime.Now.AddDays(-2)
             };
-            Assert.AreEqual(0, row.GetSecondsRemaining());
-            Assert.AreEqual("0s", row.GetTimeRemainingString());
+            Assert.That(row.GetSecondsRemaining(), Is.EqualTo(0));
+            Assert.That(row.GetTimeRemainingString(), Is.EqualTo("0s"));
         }
 
         [Test]
@@ -628,9 +631,10 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.Structures.Add(structure);
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-            Assert.AreEqual(1, rows.Count, "Should produce exactly one row (Building takes priority)");
-            Assert.AreEqual(ActivityType.Building, rows[0].Type);
-            Assert.AreEqual("Building", rows[0].ProcessDetails);
+            Assert.That(rows.Count, Is.EqualTo(1),
+                    "Should produce exactly one row (Building takes priority)");
+            Assert.That(rows[0].Type, Is.EqualTo(ActivityType.Building));
+            Assert.That(rows[0].ProcessDetails, Is.EqualTo("Building"));
         }
 
         [Test]
@@ -656,9 +660,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.Structures.Add(structure);
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-            Assert.AreEqual(1, rows.Count);
-            Assert.AreEqual(ActivityType.Refining, rows[0].Type);
-            Assert.AreEqual("1250:25 S1. Translanthanic Exotics", rows[0].ProcessDetails);
+            Assert.That(rows.Count, Is.EqualTo(1));
+            Assert.That(rows[0].Type, Is.EqualTo(ActivityType.Refining));
+            Assert.That(rows[0].ProcessDetails, Is.EqualTo("1250:25 S1. Translanthanic Exotics"));
         }
 
         [Test]
@@ -684,10 +688,10 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.Structures.Add(structure);
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-            Assert.AreEqual(1, rows.Count);
-            Assert.AreEqual(ActivityType.Refining, rows[0].Type);
+            Assert.That(rows.Count, Is.EqualTo(1));
+            Assert.That(rows[0].Type, Is.EqualTo(ActivityType.Refining));
             int baseRate = GameConstants.RefiningBaseRate;
-            Assert.AreEqual($"{baseRate}:{baseRate * 3} Copper (Medium)", rows[0].ProcessDetails);
+            Assert.That(rows[0].ProcessDetails, Is.EqualTo($"{baseRate}:{baseRate * 3} Copper (Medium)"));
         }
     }
 }

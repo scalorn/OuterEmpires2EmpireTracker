@@ -31,8 +31,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             var path = TestFile();
             SafeFileWriter.WriteAllText(path, "{\"key\":\"value\"}");
 
-            Assert.IsTrue(File.Exists(path));
-            Assert.AreEqual("{\"key\":\"value\"}", File.ReadAllText(path));
+            Assert.That(File.Exists(path), Is.True);
+            Assert.That(File.ReadAllText(path), Is.EqualTo("{\"key\":\"value\"}"));
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var path = TestFile();
             SafeFileWriter.WriteAllText(path, "content");
 
-            Assert.IsFalse(File.Exists(path + ".bak"));
+            Assert.That(File.Exists(path + ".bak"), Is.False);
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var path = TestFile();
             SafeFileWriter.WriteAllText(path, "content");
 
-            Assert.IsFalse(File.Exists(path + ".tmp"));
+            Assert.That(File.Exists(path + ".tmp"), Is.False);
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             SafeFileWriter.WriteAllText(path, "new content");
 
-            Assert.AreEqual("new content", File.ReadAllText(path));
+            Assert.That(File.ReadAllText(path), Is.EqualTo("new content"));
         }
 
         [Test]
@@ -72,8 +72,8 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             SafeFileWriter.WriteAllText(path, "new content");
 
-            Assert.IsTrue(File.Exists(path + ".bak"));
-            Assert.AreEqual("old content", File.ReadAllText(path + ".bak"));
+            Assert.That(File.Exists(path + ".bak"), Is.True);
+            Assert.That(File.ReadAllText(path + ".bak"), Is.EqualTo("old content"));
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             SafeFileWriter.WriteAllText(path, "new content");
 
-            Assert.IsFalse(File.Exists(path + ".tmp"));
+            Assert.That(File.Exists(path + ".tmp"), Is.False);
         }
 
         [Test]
@@ -96,8 +96,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             SafeFileWriter.WriteAllText(path, "v2");
             SafeFileWriter.WriteAllText(path, "v3");
 
-            Assert.AreEqual("v3", File.ReadAllText(path));
-            Assert.AreEqual("v2", File.ReadAllText(path + ".bak"));
+            Assert.That(File.ReadAllText(path), Is.EqualTo("v3"));
+            Assert.That(File.ReadAllText(path + ".bak"), Is.EqualTo("v2"));
         }
 
         [Test]
@@ -106,7 +106,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var path = TestFile();
             SafeFileWriter.WriteAllText(path, "");
 
-            Assert.AreEqual("", File.ReadAllText(path));
+            Assert.That(File.ReadAllText(path), Is.EqualTo(""));
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             SafeFileWriter.WriteAllText(path, content);
 
-            Assert.AreEqual(content.Length, File.ReadAllText(path).Length);
+            Assert.That(File.ReadAllText(path).Length, Is.EqualTo(content.Length));
         }
     }
 }

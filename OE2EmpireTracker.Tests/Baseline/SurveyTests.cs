@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Data;
 
@@ -17,40 +16,40 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void DefaultConstructor_ItemTypeIsSurvey()
         {
             var survey = new Survey();
-            Assert.AreEqual(ItemType.ItemTypeEnum.Survey, survey.ItemType);
+            Assert.That(survey.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Survey));
         }
 
         [Test]
         public void DefaultConstructor_PropertiesIsNotNull()
         {
             var survey = new Survey();
-            Assert.IsNotNull(survey.Properties);
+            Assert.That(survey.Properties, Is.Not.Null);
         }
 
         [Test]
         public void DefaultConstructor_ResourcesIsNotNull()
         {
             var survey = new Survey();
-            Assert.IsNotNull(survey.Resources);
+            Assert.That(survey.Resources, Is.Not.Null);
         }
 
         [Test]
         public void DefaultConstructor_StringPropertiesAreNull()
         {
             var survey = new Survey();
-            Assert.IsNull(survey.PlanetName);
-            Assert.IsNull(survey.SurveyID);
-            Assert.IsNull(survey.ScannedBy);
-            Assert.IsNull(survey.DateTime);
-            Assert.IsNull(survey.ScannerBlueprintUUID);
+            Assert.That(survey.PlanetName, Is.Null);
+            Assert.That(survey.SurveyID, Is.Null);
+            Assert.That(survey.ScannedBy, Is.Null);
+            Assert.That(survey.DateTime, Is.Null);
+            Assert.That(survey.ScannerBlueprintUUID, Is.Null);
         }
 
         [Test]
         public void NamedConstructor_SetsNameAndItemType()
         {
             var survey = new Survey("Alpha Prime");
-            Assert.AreEqual("Alpha Prime", survey.Name);
-            Assert.AreEqual(ItemType.ItemTypeEnum.Survey, survey.ItemType);
+            Assert.That(survey.Name, Is.EqualTo("Alpha Prime"));
+            Assert.That(survey.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Survey));
         }
 
         // -----------------------------------------------------------------------
@@ -61,14 +60,14 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void ExtendedName_PlanetNameOnly_ReturnsPlanetName()
         {
             var survey = new Survey { PlanetName = "Alpha Prime" };
-            Assert.AreEqual("Alpha Prime", survey.ExtendedName);
+            Assert.That(survey.ExtendedName, Is.EqualTo("Alpha Prime"));
         }
 
         [Test]
         public void ExtendedName_NoPlanetName_ReturnsEmpty()
         {
             var survey = new Survey();
-            Assert.AreEqual(string.Empty, survey.ExtendedName);
+            Assert.That(survey.ExtendedName, Is.EqualTo(string.Empty));
         }
 
         // -----------------------------------------------------------------------
@@ -79,7 +78,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void ExtendedName_WithSurveyID_AppendsSurveyIDInParentheses()
         {
             var survey = new Survey { PlanetName = "Alpha Prime", SurveyID = "S-001" };
-            Assert.AreEqual("Alpha Prime (S-001)", survey.ExtendedName);
+            Assert.That(survey.ExtendedName, Is.EqualTo("Alpha Prime (S-001)"));
         }
 
         [Test]
@@ -88,14 +87,14 @@ namespace OE2EmpireTracker.Tests.Baseline
             // No PlanetName — SurveyID segment starts with a space, so result starts with " (S-001)"
             // This documents the current behaviour
             var survey = new Survey { SurveyID = "S-001" };
-            StringAssert.Contains("(S-001)", survey.ExtendedName);
+            Assert.That(survey.ExtendedName, Does.Contain("(S-001)"));
         }
 
         [Test]
         public void ExtendedName_EmptySurveyID_NoParentheses()
         {
             var survey = new Survey { PlanetName = "Alpha Prime", SurveyID = string.Empty };
-            StringAssert.DoesNotContain("(", survey.ExtendedName);
+            Assert.That(survey.ExtendedName, Does.Not.Contain("("));
         }
 
         // -----------------------------------------------------------------------
@@ -106,14 +105,14 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void ExtendedName_WithNickName_AppendsNickNameInSquareBrackets()
         {
             var survey = new Survey { PlanetName = "Alpha Prime", NickName = "Good One" };
-            StringAssert.Contains("[Good One]", survey.ExtendedName);
+            Assert.That(survey.ExtendedName, Does.Contain("[Good One]"));
         }
 
         [Test]
         public void ExtendedName_EmptyNickName_NoSquareBrackets()
         {
             var survey = new Survey { PlanetName = "Alpha Prime", NickName = string.Empty };
-            StringAssert.DoesNotContain("[", survey.ExtendedName);
+            Assert.That(survey.ExtendedName, Does.Not.Contain("["));
         }
 
         // -----------------------------------------------------------------------
@@ -129,7 +128,7 @@ namespace OE2EmpireTracker.Tests.Baseline
                 SurveyID = "S-001",
                 NickName = "Good One"
             };
-            Assert.AreEqual("Alpha Prime (S-001) [Good One]", survey.ExtendedName);
+            Assert.That(survey.ExtendedName, Is.EqualTo("Alpha Prime (S-001) [Good One]"));
         }
 
         [Test]
@@ -142,8 +141,10 @@ namespace OE2EmpireTracker.Tests.Baseline
                 NickName = "Good One"
             };
             string name = survey.ExtendedName;
-            Assert.IsTrue(name.IndexOf("Alpha Prime") < name.IndexOf("(S-001)"), "PlanetName before SurveyID");
-            Assert.IsTrue(name.IndexOf("(S-001)") < name.IndexOf("[Good One]"), "SurveyID before NickName");
+            Assert.That(name.IndexOf("Alpha Prime") < name.IndexOf("(S-001)"), Is.True,
+                    "PlanetName before SurveyID");
+            Assert.That(name.IndexOf("(S-001)") < name.IndexOf("[Good One]"), Is.True,
+                    "SurveyID before NickName");
         }
 
         // -----------------------------------------------------------------------
@@ -154,8 +155,8 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void SurveyResource_PropertiesCanBeSetAndRead()
         {
             var resource = new SurveyResource { Resource = "Resource", Purity = "Refined", Amount = "500" };
-            Assert.AreEqual("Refined", resource.Purity);
-            Assert.AreEqual("500", resource.Amount);
+            Assert.That(resource.Purity, Is.EqualTo("Refined"));
+            Assert.That(resource.Amount, Is.EqualTo("500"));
         }
 
         // -----------------------------------------------------------------------
@@ -177,11 +178,11 @@ namespace OE2EmpireTracker.Tests.Baseline
             string json = JsonConvert.SerializeObject(survey);
             var restored = JsonConvert.DeserializeObject<Survey>(json);
 
-            Assert.AreEqual(survey.UUID, restored.UUID);
-            Assert.AreEqual(survey.PlanetName, restored.PlanetName);
-            Assert.AreEqual(survey.SurveyID, restored.SurveyID);
-            Assert.AreEqual(survey.ScannedBy, restored.ScannedBy);
-            Assert.AreEqual(survey.NickName, restored.NickName);
+            Assert.That(restored.UUID, Is.EqualTo(survey.UUID));
+            Assert.That(restored.PlanetName, Is.EqualTo(survey.PlanetName));
+            Assert.That(restored.SurveyID, Is.EqualTo(survey.SurveyID));
+            Assert.That(restored.ScannedBy, Is.EqualTo(survey.ScannedBy));
+            Assert.That(restored.NickName, Is.EqualTo(survey.NickName));
         }
 
         [Test]
@@ -193,9 +194,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             string json = JsonConvert.SerializeObject(survey);
             var restored = JsonConvert.DeserializeObject<Survey>(json);
 
-            Assert.IsTrue(restored.Resources.ContainsKey("Iron"));
-            Assert.AreEqual("Refined", restored.Resources["Iron"].Purity);
-            Assert.AreEqual("500", restored.Resources["Iron"].Amount);
+            Assert.That(restored.Resources.ContainsKey("Iron"), Is.True);
+            Assert.That(restored.Resources["Iron"].Purity, Is.EqualTo("Refined"));
+            Assert.That(restored.Resources["Iron"].Amount, Is.EqualTo("500"));
         }
     }
 }

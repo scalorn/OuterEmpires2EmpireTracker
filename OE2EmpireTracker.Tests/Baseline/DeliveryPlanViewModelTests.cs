@@ -43,10 +43,10 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var vm = CreateViewModel();
             var stop = vm.GetOrCreateStop("c1", 0);
-            Assert.IsNotNull(stop);
-            Assert.AreEqual("c1", stop.ColonyUUID);
-            Assert.AreEqual(0, stop.Sequence);
-            Assert.AreEqual(1, vm.Data.Stops.Count);
+            Assert.That(stop, Is.Not.Null);
+            Assert.That(stop.ColonyUUID, Is.EqualTo("c1"));
+            Assert.That(stop.Sequence, Is.EqualTo(0));
+            Assert.That(vm.Data.Stops.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -55,8 +55,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             var vm = CreateViewModel();
             var stop1 = vm.GetOrCreateStop("c1", 0);
             var stop2 = vm.GetOrCreateStop("c1", 0);
-            Assert.AreSame(stop1, stop2);
-            Assert.AreEqual(1, vm.Data.Stops.Count);
+            Assert.That(stop2, Is.SameAs(stop1));
+            Assert.That(vm.Data.Stops.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var vm = CreateViewModel();
             vm.GetOrCreateStop("c1", 0);
             vm.GetOrCreateStop("c2", 1);
-            Assert.AreEqual(2, vm.Data.Stops.Count);
+            Assert.That(vm.Data.Stops.Count, Is.EqualTo(2));
         }
 
         // -----------------------------------------------------------------------
@@ -78,11 +78,11 @@ namespace OE2EmpireTracker.Tests.Baseline
             var vm = CreateViewModel();
             var stop = vm.GetOrCreateStop("c1", 0);
             vm.AddDropOffItem(stop, ItemType.ItemTypeEnum.Commodity, "Steel", "Steel Plates", 50);
-            Assert.AreEqual(1, stop.DropOff.Count);
-            Assert.AreEqual("Steel", stop.DropOff[0].BaseItemTypeID);
-            Assert.AreEqual("Steel Plates", stop.DropOff[0].Name);
-            Assert.AreEqual(50, stop.DropOff[0].Quantity);
-            Assert.AreEqual(ItemType.ItemTypeEnum.Commodity, stop.DropOff[0].ItemType);
+            Assert.That(stop.DropOff.Count, Is.EqualTo(1));
+            Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("Steel"));
+            Assert.That(stop.DropOff[0].Name, Is.EqualTo("Steel Plates"));
+            Assert.That(stop.DropOff[0].Quantity, Is.EqualTo(50));
+            Assert.That(stop.DropOff[0].ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Commodity));
         }
 
         [Test]
@@ -91,7 +91,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var vm = CreateViewModel();
             var stop = vm.GetOrCreateStop("c1", 0);
             vm.AddDropOffItem(stop, ItemType.ItemTypeEnum.Resource, "Iron", "Iron", 100, "High");
-            Assert.AreEqual("High", stop.DropOff[0].ResourcePurity);
+            Assert.That(stop.DropOff[0].ResourcePurity, Is.EqualTo("High"));
         }
 
         [Test]
@@ -100,7 +100,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var vm = CreateViewModel();
             var stop = vm.GetOrCreateStop("c1", 0);
             vm.AddDropOffItem(stop, ItemType.ItemTypeEnum.Commodity, "Steel", "Steel", 10);
-            Assert.AreEqual(string.Empty, stop.DropOff[0].ResourcePurity);
+            Assert.That(stop.DropOff[0].ResourcePurity, Is.EqualTo(string.Empty));
         }
 
         [Test]
@@ -109,10 +109,10 @@ namespace OE2EmpireTracker.Tests.Baseline
             var vm = CreateViewModel();
             var stop = vm.GetOrCreateStop("c1", 0);
             vm.AddPickUpItem(stop, ItemType.ItemTypeEnum.Resource, "Iron", "Iron", 200, "Low");
-            Assert.AreEqual(1, stop.PickUp.Count);
-            Assert.AreEqual("Iron", stop.PickUp[0].BaseItemTypeID);
-            Assert.AreEqual(200, stop.PickUp[0].Quantity);
-            Assert.AreEqual("Low", stop.PickUp[0].ResourcePurity);
+            Assert.That(stop.PickUp.Count, Is.EqualTo(1));
+            Assert.That(stop.PickUp[0].BaseItemTypeID, Is.EqualTo("Iron"));
+            Assert.That(stop.PickUp[0].Quantity, Is.EqualTo(200));
+            Assert.That(stop.PickUp[0].ResourcePurity, Is.EqualTo("Low"));
         }
 
         [Test]
@@ -123,8 +123,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             vm.AddDropOffItem(stop, ItemType.ItemTypeEnum.Commodity, "A", "A", 1);
             vm.AddDropOffItem(stop, ItemType.ItemTypeEnum.Commodity, "B", "B", 2);
             vm.AddPickUpItem(stop, ItemType.ItemTypeEnum.Resource, "C", "C", 3);
-            Assert.AreEqual(2, stop.DropOff.Count);
-            Assert.AreEqual(1, stop.PickUp.Count);
+            Assert.That(stop.DropOff.Count, Is.EqualTo(2));
+            Assert.That(stop.PickUp.Count, Is.EqualTo(1));
         }
 
         // -----------------------------------------------------------------------
@@ -139,8 +139,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             vm.AddDropOffItem(stop, ItemType.ItemTypeEnum.Commodity, "A", "A", 1);
             vm.AddDropOffItem(stop, ItemType.ItemTypeEnum.Commodity, "B", "B", 2);
             vm.RemoveDropOffItems(stop, new[] { 0 });
-            Assert.AreEqual(1, stop.DropOff.Count);
-            Assert.AreEqual("B", stop.DropOff[0].BaseItemTypeID);
+            Assert.That(stop.DropOff.Count, Is.EqualTo(1));
+            Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("B"));
         }
 
         [Test]
@@ -152,8 +152,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             vm.AddDropOffItem(stop, ItemType.ItemTypeEnum.Commodity, "B", "B", 2);
             vm.AddDropOffItem(stop, ItemType.ItemTypeEnum.Commodity, "C", "C", 3);
             vm.RemoveDropOffItems(stop, new[] { 0, 2 });
-            Assert.AreEqual(1, stop.DropOff.Count);
-            Assert.AreEqual("B", stop.DropOff[0].BaseItemTypeID);
+            Assert.That(stop.DropOff.Count, Is.EqualTo(1));
+            Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("B"));
         }
 
         [Test]
@@ -163,7 +163,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var stop = vm.GetOrCreateStop("c1", 0);
             vm.AddDropOffItem(stop, ItemType.ItemTypeEnum.Commodity, "A", "A", 1);
             vm.RemoveDropOffItems(stop, new[] { 5 });
-            Assert.AreEqual(1, stop.DropOff.Count);
+            Assert.That(stop.DropOff.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -174,8 +174,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             vm.AddPickUpItem(stop, ItemType.ItemTypeEnum.Resource, "A", "A", 1);
             vm.AddPickUpItem(stop, ItemType.ItemTypeEnum.Resource, "B", "B", 2);
             vm.RemovePickUpItems(stop, new[] { 1 });
-            Assert.AreEqual(1, stop.PickUp.Count);
-            Assert.AreEqual("A", stop.PickUp[0].BaseItemTypeID);
+            Assert.That(stop.PickUp.Count, Is.EqualTo(1));
+            Assert.That(stop.PickUp[0].BaseItemTypeID, Is.EqualTo("A"));
         }
 
         [Test]
@@ -185,7 +185,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var stop = vm.GetOrCreateStop("c1", 0);
             vm.AddPickUpItem(stop, ItemType.ItemTypeEnum.Resource, "A", "A", 1);
             vm.RemovePickUpItems(stop, new[] { -1 });
-            Assert.AreEqual(1, stop.PickUp.Count);
+            Assert.That(stop.PickUp.Count, Is.EqualTo(1));
         }
 
         // -----------------------------------------------------------------------
@@ -210,7 +210,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void UUID_ReturnsPlansUUID()
         {
             var vm = CreateViewModel();
-            Assert.AreEqual("plan-1", vm.UUID);
+            Assert.That(vm.UUID, Is.EqualTo("plan-1"));
         }
 
         // -----------------------------------------------------------------------
@@ -234,13 +234,13 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             int added = vm.AutoFillCommodities(stops, uuid => uuid == "c1" ? colony : null);
 
-            Assert.AreEqual(1, added);
+            Assert.That(added, Is.EqualTo(1));
             var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
-            Assert.AreEqual(1, stop.DropOff.Count);
-            Assert.AreEqual("Steel Plates", stop.DropOff[0].Name);
-            Assert.AreEqual("Steel Plates", stop.DropOff[0].BaseItemTypeID);
-            Assert.AreEqual(50, stop.DropOff[0].Quantity);
-            Assert.AreEqual(ItemType.ItemTypeEnum.Commodity, stop.DropOff[0].ItemType);
+            Assert.That(stop.DropOff.Count, Is.EqualTo(1));
+            Assert.That(stop.DropOff[0].Name, Is.EqualTo("Steel Plates"));
+            Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("Steel Plates"));
+            Assert.That(stop.DropOff[0].Quantity, Is.EqualTo(50));
+            Assert.That(stop.DropOff[0].ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Commodity));
         }
 
         [Test]
@@ -254,7 +254,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             vm.AutoFillCommodities(stops, uuid => uuid == "c1" ? colony : null);
 
             var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
-            Assert.AreEqual(70, stop.DropOff[0].Quantity);
+            Assert.That(stop.DropOff[0].Quantity, Is.EqualTo(70));
         }
 
         [Test]
@@ -267,7 +267,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             int added = vm.AutoFillCommodities(stops, uuid => uuid == "c1" ? colony : null);
 
-            Assert.AreEqual(0, added);
+            Assert.That(added, Is.EqualTo(0));
         }
 
         [Test]
@@ -280,7 +280,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             int added = vm.AutoFillCommodities(stops, uuid => uuid == "c1" ? colony : null);
 
-            Assert.AreEqual(0, added);
+            Assert.That(added, Is.EqualTo(0));
         }
 
         [Test]
@@ -297,8 +297,8 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             int added = vm.AutoFillCommodities(stops, uuid => uuid == "c2" ? colony : null);
 
-            Assert.AreEqual(1, added);
-            Assert.IsFalse(vm.Data.Stops.Any(s => s.ColonyUUID == "c1"));
+            Assert.That(added, Is.EqualTo(1));
+            Assert.That(vm.Data.Stops.Any(s => s.ColonyUUID == "c1"), Is.False);
         }
 
         [Test]
@@ -314,10 +314,10 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             vm.AutoFillCommodities(stops, uuid => uuid == "c1" ? colony : null);
 
-            Assert.AreEqual(2, stop.DropOff.Count);
-            Assert.AreEqual("Iron", stop.DropOff[0].BaseItemTypeID);
-            Assert.AreEqual("High", stop.DropOff[0].ResourcePurity);
-            Assert.AreEqual("Steel Plates", stop.DropOff[1].Name);
+            Assert.That(stop.DropOff.Count, Is.EqualTo(2));
+            Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("Iron"));
+            Assert.That(stop.DropOff[0].ResourcePurity, Is.EqualTo("High"));
+            Assert.That(stop.DropOff[1].Name, Is.EqualTo("Steel Plates"));
         }
 
         [Test]
@@ -333,8 +333,8 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             vm.AutoFillCommodities(stops, uuid => uuid == "c1" ? colony : null);
 
-            Assert.AreEqual(1, stop.PickUp.Count);
-            Assert.AreEqual("Iron", stop.PickUp[0].BaseItemTypeID);
+            Assert.That(stop.PickUp.Count, Is.EqualTo(1));
+            Assert.That(stop.PickUp[0].BaseItemTypeID, Is.EqualTo("Iron"));
         }
 
         [Test]
@@ -346,7 +346,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             int added = vm.AutoFillCommodities(stops, uuid => uuid == "c1" ? colony : null);
 
-            Assert.AreEqual(0, added);
+            Assert.That(added, Is.EqualTo(0));
         }
 
         [Test]
@@ -371,16 +371,16 @@ namespace OE2EmpireTracker.Tests.Baseline
                 return null;
             });
 
-            Assert.AreEqual(2, added);
+            Assert.That(added, Is.EqualTo(2));
             var stop1 = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
-            Assert.AreEqual(1, stop1.DropOff.Count);
-            Assert.AreEqual("Steel Plates", stop1.DropOff[0].Name);
-            Assert.AreEqual(50, stop1.DropOff[0].Quantity);
+            Assert.That(stop1.DropOff.Count, Is.EqualTo(1));
+            Assert.That(stop1.DropOff[0].Name, Is.EqualTo("Steel Plates"));
+            Assert.That(stop1.DropOff[0].Quantity, Is.EqualTo(50));
 
             var stop2 = vm.Data.Stops.First(s => s.ColonyUUID == "c2");
-            Assert.AreEqual(1, stop2.DropOff.Count);
-            Assert.AreEqual("Glass Panels", stop2.DropOff[0].Name);
-            Assert.AreEqual(15, stop2.DropOff[0].Quantity);
+            Assert.That(stop2.DropOff.Count, Is.EqualTo(1));
+            Assert.That(stop2.DropOff[0].Name, Is.EqualTo("Glass Panels"));
+            Assert.That(stop2.DropOff[0].Quantity, Is.EqualTo(15));
         }
 
         // -----------------------------------------------------------------------
@@ -419,7 +419,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
 
-            Assert.AreEqual(0, added);
+            Assert.That(added, Is.EqualTo(0));
         }
 
         [Test]
@@ -433,7 +433,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
 
-            Assert.AreEqual(0, added);
+            Assert.That(added, Is.EqualTo(0));
         }
 
         [Test]
@@ -447,7 +447,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
 
-            Assert.AreEqual(0, added);
+            Assert.That(added, Is.EqualTo(0));
         }
 
         [Test]
@@ -461,12 +461,12 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
 
-            Assert.AreEqual(1, added);
+            Assert.That(added, Is.EqualTo(1));
             var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
-            Assert.AreEqual(1, stop.DropOff.Count);
-            Assert.AreEqual(ItemType.ItemTypeEnum.Flatpack, stop.DropOff[0].ItemType);
-            Assert.AreEqual("bp-unbuilt", stop.DropOff[0].BaseItemTypeID);
-            Assert.AreEqual(1, stop.DropOff[0].Quantity);
+            Assert.That(stop.DropOff.Count, Is.EqualTo(1));
+            Assert.That(stop.DropOff[0].ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Flatpack));
+            Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("bp-unbuilt"));
+            Assert.That(stop.DropOff[0].Quantity, Is.EqualTo(1));
         }
 
         [Test]
@@ -482,11 +482,11 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
 
-            Assert.AreEqual(1, added); // 1 aggregated item, not 3
+            Assert.That(added, Is.EqualTo(1)); // 1 aggregated item, not 3
             var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
-            Assert.AreEqual(1, stop.DropOff.Count);
-            Assert.AreEqual("bp-stack", stop.DropOff[0].BaseItemTypeID);
-            Assert.AreEqual(3, stop.DropOff[0].Quantity);
+            Assert.That(stop.DropOff.Count, Is.EqualTo(1));
+            Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("bp-stack"));
+            Assert.That(stop.DropOff[0].Quantity, Is.EqualTo(3));
         }
 
         [Test]
@@ -504,12 +504,12 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
 
-            Assert.AreEqual(1, added);
+            Assert.That(added, Is.EqualTo(1));
             var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
-            Assert.AreEqual(1, stop.DropOff.Count);
-            Assert.AreEqual(ItemType.ItemTypeEnum.Flatpack, stop.DropOff[0].ItemType);
-            Assert.AreEqual("bp-c", stop.DropOff[0].BaseItemTypeID);
-            Assert.AreEqual(1, stop.DropOff[0].Quantity);
+            Assert.That(stop.DropOff.Count, Is.EqualTo(1));
+            Assert.That(stop.DropOff[0].ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Flatpack));
+            Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("bp-c"));
+            Assert.That(stop.DropOff[0].Quantity, Is.EqualTo(1));
         }
 
         [Test]
@@ -526,9 +526,9 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
 
-            Assert.AreEqual(2, stop.DropOff.Count);
-            Assert.AreEqual("Iron", stop.DropOff[0].BaseItemTypeID);
-            Assert.AreEqual(ItemType.ItemTypeEnum.Flatpack, stop.DropOff[1].ItemType);
+            Assert.That(stop.DropOff.Count, Is.EqualTo(2));
+            Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("Iron"));
+            Assert.That(stop.DropOff[1].ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Flatpack));
         }
 
         [Test]
@@ -539,7 +539,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             int added = vm.AutoFillFlatpacks(stops, uuid => null);
 
-            Assert.AreEqual(0, added);
+            Assert.That(added, Is.EqualTo(0));
         }
 
         [Test]
@@ -552,7 +552,7 @@ namespace OE2EmpireTracker.Tests.Baseline
 
             int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
 
-            Assert.AreEqual(0, added);
+            Assert.That(added, Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -610,7 +610,7 @@ namespace OE2EmpireTracker.Tests.Baseline
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
-            Assert.AreEqual(0, added);
+            Assert.That(added, Is.EqualTo(0));
         }
 
         [Test]
@@ -642,15 +642,15 @@ namespace OE2EmpireTracker.Tests.Baseline
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
-            Assert.AreEqual(2, added);
+            Assert.That(added, Is.EqualTo(2));
             var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
             var ironDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Iron");
             var copperDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Copper");
-            Assert.IsNotNull(ironDrop);
-            Assert.AreEqual(6, ironDrop.Quantity);
-            Assert.AreEqual(ItemType.ItemTypeEnum.Resource, ironDrop.ItemType);
-            Assert.IsNotNull(copperDrop);
-            Assert.AreEqual(6, copperDrop.Quantity);
+            Assert.That(ironDrop, Is.Not.Null);
+            Assert.That(ironDrop.Quantity, Is.EqualTo(6));
+            Assert.That(ironDrop.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Resource));
+            Assert.That(copperDrop, Is.Not.Null);
+            Assert.That(copperDrop.Quantity, Is.EqualTo(6));
         }
 
         [Test]
@@ -672,13 +672,13 @@ namespace OE2EmpireTracker.Tests.Baseline
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
-            Assert.AreEqual(2, added);
+            Assert.That(added, Is.EqualTo(2));
             var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
             foreach (var item in stop.DropOff)
             {
-                Assert.AreEqual("Refined", item.ResourcePurity,
+                Assert.That(item.ResourcePurity, Is.EqualTo("Refined"),
                     $"Resource '{item.BaseItemTypeID}' should have Refined purity");
-                Assert.AreEqual(ItemType.ItemTypeEnum.Resource, item.ItemType);
+                Assert.That(item.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Resource));
             }
         }
 
@@ -713,7 +713,7 @@ namespace OE2EmpireTracker.Tests.Baseline
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
-            Assert.AreEqual(0, added);
+            Assert.That(added, Is.EqualTo(0));
         }
 
         [Test]
@@ -745,16 +745,16 @@ namespace OE2EmpireTracker.Tests.Baseline
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
-            Assert.AreEqual(2, added);
+            Assert.That(added, Is.EqualTo(2));
             var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
             var ironDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Iron");
             var copperDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Copper");
-            Assert.IsNotNull(ironDrop);
-            Assert.AreEqual(6, ironDrop.Quantity);
-            Assert.AreEqual("Refined", ironDrop.ResourcePurity);
-            Assert.AreEqual(ItemType.ItemTypeEnum.Resource, ironDrop.ItemType);
-            Assert.IsNotNull(copperDrop);
-            Assert.AreEqual(6, copperDrop.Quantity);
+            Assert.That(ironDrop, Is.Not.Null);
+            Assert.That(ironDrop.Quantity, Is.EqualTo(6));
+            Assert.That(ironDrop.ResourcePurity, Is.EqualTo("Refined"));
+            Assert.That(ironDrop.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Resource));
+            Assert.That(copperDrop, Is.Not.Null);
+            Assert.That(copperDrop.Quantity, Is.EqualTo(6));
         }
 
         [Test]
@@ -777,9 +777,9 @@ namespace OE2EmpireTracker.Tests.Baseline
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
-            Assert.AreEqual(1, added);
+            Assert.That(added, Is.EqualTo(1));
             var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
-            Assert.AreEqual(10, stop.DropOff[0].Quantity);
+            Assert.That(stop.DropOff[0].Quantity, Is.EqualTo(10));
         }
 
         [Test]
@@ -799,14 +799,14 @@ namespace OE2EmpireTracker.Tests.Baseline
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
-            Assert.AreEqual(2, added); // 2 resource types
+            Assert.That(added, Is.EqualTo(2)); // 2 resource types
             var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
             var alkali = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Alkali Organics");
             var acidic = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Strong Acidic Inorganics");
-            Assert.IsNotNull(alkali);
-            Assert.AreEqual(6, alkali.Quantity); // 2 * 3
-            Assert.IsNotNull(acidic);
-            Assert.AreEqual(6, acidic.Quantity); // 2 * 3
+            Assert.That(alkali, Is.Not.Null);
+            Assert.That(alkali.Quantity, Is.EqualTo(6)); // 2 * 3
+            Assert.That(acidic, Is.Not.Null);
+            Assert.That(acidic.Quantity, Is.EqualTo(6)); // 2 * 3
         }
 
         [Test]
@@ -828,7 +828,7 @@ namespace OE2EmpireTracker.Tests.Baseline
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
-            Assert.AreEqual(0, added);
+            Assert.That(added, Is.EqualTo(0));
         }
 
         [Test]
@@ -853,8 +853,8 @@ namespace OE2EmpireTracker.Tests.Baseline
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
-            Assert.AreEqual(2, stop.DropOff.Count);
-            Assert.AreEqual("Steel", stop.DropOff[0].BaseItemTypeID);
+            Assert.That(stop.DropOff.Count, Is.EqualTo(2));
+            Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("Steel"));
         }
 
         // -----------------------------------------------------------------------
@@ -904,7 +904,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             int added = vm.AutoFillWorkers(stops,
                 uuid => uuid == "c1" ? colony : null, playerContext);
 
-            Assert.AreEqual(0, added);
+            Assert.That(added, Is.EqualTo(0));
         }
 
         [Test]
@@ -922,16 +922,16 @@ namespace OE2EmpireTracker.Tests.Baseline
             int added = vm.AutoFillWorkers(stops,
                 uuid => uuid == "c1" ? colony : null, playerContext);
 
-            Assert.AreEqual(2, added); // 1 BlueCollar gap + 1 WhiteCollar gap
+            Assert.That(added, Is.EqualTo(2)); // 1 BlueCollar gap + 1 WhiteCollar gap
             var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
             var blueDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "BlueCollarDetail");
             var whiteDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "WhiteCollarDetail");
-            Assert.IsNotNull(blueDrop);
-            Assert.AreEqual(1, blueDrop.Quantity);
-            Assert.AreEqual(ItemType.ItemTypeEnum.WorkDetail, blueDrop.ItemType);
-            Assert.AreEqual("Blue Collar Detail", blueDrop.Name);
-            Assert.IsNotNull(whiteDrop);
-            Assert.AreEqual(1, whiteDrop.Quantity);
+            Assert.That(blueDrop, Is.Not.Null);
+            Assert.That(blueDrop.Quantity, Is.EqualTo(1));
+            Assert.That(blueDrop.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.WorkDetail));
+            Assert.That(blueDrop.Name, Is.EqualTo("Blue Collar Detail"));
+            Assert.That(whiteDrop, Is.Not.Null);
+            Assert.That(whiteDrop.Quantity, Is.EqualTo(1));
         }
 
         [Test]
@@ -944,7 +944,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             int added = vm.AutoFillWorkers(stops,
                 uuid => uuid == "c1" ? colony : null, playerContext);
 
-            Assert.AreEqual(0, added);
+            Assert.That(added, Is.EqualTo(0));
         }
 
         [Test]
@@ -963,8 +963,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             vm.AutoFillWorkers(stops,
                 uuid => uuid == "c1" ? colony : null, playerContext);
 
-            Assert.AreEqual("Iron", stop.DropOff[0].BaseItemTypeID);
-            Assert.IsTrue(stop.DropOff.Count >= 2);
+            Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("Iron"));
+            Assert.That(stop.DropOff.Count >= 2, Is.True);
         }
     }
 }

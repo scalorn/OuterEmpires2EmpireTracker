@@ -43,8 +43,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             SurveyParser.ParseDescription(survey,
                 "A detailed survey report taken on 27JUL24-11:44p by Scalorn Scorpus");
 
-            Assert.AreEqual("27JUL24-11:44p", survey.DateTime);
-            Assert.AreEqual("Scalorn Scorpus", survey.ScannedBy);
+            Assert.That(survey.DateTime, Is.EqualTo("27JUL24-11:44p"));
+            Assert.That(survey.ScannedBy, Is.EqualTo("Scalorn Scorpus"));
         }
 
         [Test]
@@ -54,8 +54,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             SurveyParser.ParseDescription(survey,
                 "Survey report generated on 19FEB26-08:41p by Scalorn Scorpus");
 
-            Assert.AreEqual("19FEB26-08:41p", survey.DateTime);
-            Assert.AreEqual("Scalorn Scorpus", survey.ScannedBy);
+            Assert.That(survey.DateTime, Is.EqualTo("19FEB26-08:41p"));
+            Assert.That(survey.ScannedBy, Is.EqualTo("Scalorn Scorpus"));
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var survey = new Survey();
             SurveyParser.ParseDescription(survey, "Some unrelated text");
-            Assert.IsNull(survey.DateTime);
+            Assert.That(survey.DateTime, Is.Null);
         }
 
         [Test]
@@ -71,7 +71,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var survey = new Survey();
             SurveyParser.ParseDescription(survey, "");
-            Assert.IsNull(survey.DateTime);
+            Assert.That(survey.DateTime, Is.Null);
         }
 
         // -----------------------------------------------------------------------
@@ -84,8 +84,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             var survey = new Survey();
             SurveyParser.ParseTitle(survey, "Zeh Vazoran II M2, Zeh Vazoran (B465873)");
 
-            Assert.AreEqual("Zeh Vazoran II M2", survey.PlanetName);
-            Assert.AreEqual("B465873", survey.SurveyID);
+            Assert.That(survey.PlanetName, Is.EqualTo("Zeh Vazoran II M2"));
+            Assert.That(survey.SurveyID, Is.EqualTo("B465873"));
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var survey = new Survey();
             SurveyParser.ParseTitle(survey, "Some Planet");
-            Assert.AreEqual("Some Planet", survey.PlanetName);
+            Assert.That(survey.PlanetName, Is.EqualTo("Some Planet"));
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var survey = new Survey();
             SurveyParser.ParseTitle(survey, "");
-            Assert.IsNull(survey.PlanetName);
+            Assert.That(survey.PlanetName, Is.Null);
         }
 
         // -----------------------------------------------------------------------
@@ -115,9 +115,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             SurveyParser.ParseResource(survey, "Post-Trans Metals (Low Purity)", "41/hour");
 
             var r = survey.Resources["Post-Trans Metals"];
-            Assert.AreEqual("Post-Trans Metals", r.Resource);
-            Assert.AreEqual("Low", r.Purity);
-            Assert.AreEqual("41", r.Amount);
+            Assert.That(r.Resource, Is.EqualTo("Post-Trans Metals"));
+            Assert.That(r.Purity, Is.EqualTo("Low"));
+            Assert.That(r.Amount, Is.EqualTo("41"));
         }
 
         [Test]
@@ -127,8 +127,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             SurveyParser.ParseResource(survey, "Iron Ore", "100/hour");
 
             var r = survey.Resources["Iron Ore"];
-            Assert.AreEqual("", r.Purity);
-            Assert.AreEqual("100", r.Amount);
+            Assert.That(r.Purity, Is.EqualTo(""));
+            Assert.That(r.Amount, Is.EqualTo("100"));
         }
 
         [Test]
@@ -136,7 +136,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var survey = new Survey();
             SurveyParser.ParseResource(survey, "(Unknown Trace Elements)", "?/hour");
-            Assert.AreEqual(0, survey.Resources.Count);
+            Assert.That(survey.Resources.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -146,8 +146,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             SurveyParser.ParseResource(survey, "Heavy Trans-Metals (High Purity)", "20/hour");
             SurveyParser.ParseResource(survey, "Heavy Trans-Metals (High Purity)", "38/hour");
 
-            Assert.AreEqual(1, survey.Resources.Count);
-            Assert.AreEqual("38", survey.Resources["Heavy Trans-Metals"].Amount);
+            Assert.That(survey.Resources.Count, Is.EqualTo(1));
+            Assert.That(survey.Resources["Heavy Trans-Metals"].Amount, Is.EqualTo("38"));
         }
 
         [Test]
@@ -155,7 +155,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var survey = new Survey();
             SurveyParser.ParseResource(survey, "Heavy Trans-Metals (High Purity)", "36.3/hour");
-            Assert.AreEqual("36.3", survey.Resources["Heavy Trans-Metals"].Amount);
+            Assert.That(survey.Resources["Heavy Trans-Metals"].Amount, Is.EqualTo("36.3"));
         }
 
         // -----------------------------------------------------------------------
@@ -165,25 +165,25 @@ namespace OE2EmpireTracker.Tests.Baseline
         [Test]
         public void NormalizePurity_Med_ReturnsMedium()
         {
-            Assert.AreEqual("Medium", SurveyParser.NormalizePurity("Med"));
+            Assert.That(SurveyParser.NormalizePurity("Med"), Is.EqualTo("Medium"));
         }
 
         [Test]
         public void NormalizePurity_High_ReturnsHigh()
         {
-            Assert.AreEqual("High", SurveyParser.NormalizePurity("High"));
+            Assert.That(SurveyParser.NormalizePurity("High"), Is.EqualTo("High"));
         }
 
         [Test]
         public void NormalizePurity_Low_ReturnsLow()
         {
-            Assert.AreEqual("Low", SurveyParser.NormalizePurity("Low"));
+            Assert.That(SurveyParser.NormalizePurity("Low"), Is.EqualTo("Low"));
         }
 
         [Test]
         public void NormalizePurity_Empty_ReturnsEmpty()
         {
-            Assert.AreEqual("", SurveyParser.NormalizePurity(""));
+            Assert.That(SurveyParser.NormalizePurity(""), Is.EqualTo(""));
         }
 
         // -----------------------------------------------------------------------
@@ -195,7 +195,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var survey = new Survey();
             _parser.ProcessHtml(survey, SampleHtml);
-            Assert.AreEqual("27JUL24-11:44p", survey.DateTime);
+            Assert.That(survey.DateTime, Is.EqualTo("27JUL24-11:44p"));
         }
 
         [Test]
@@ -203,7 +203,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var survey = new Survey();
             _parser.ProcessHtml(survey, SampleHtml);
-            Assert.AreEqual("Scalorn Scorpus", survey.ScannedBy);
+            Assert.That(survey.ScannedBy, Is.EqualTo("Scalorn Scorpus"));
         }
 
         [Test]
@@ -212,9 +212,9 @@ namespace OE2EmpireTracker.Tests.Baseline
             var survey = new Survey();
             _parser.ProcessHtml(survey, SampleHtml);
 
-            Assert.IsTrue(survey.Resources.ContainsKey("Post-Trans Metals"));
-            Assert.IsTrue(survey.Resources.ContainsKey("Heavy Trans-Metals"));
-            Assert.IsTrue(survey.Resources.ContainsKey("Lanthanides"));
+            Assert.That(survey.Resources.ContainsKey("Post-Trans Metals"), Is.True);
+            Assert.That(survey.Resources.ContainsKey("Heavy Trans-Metals"), Is.True);
+            Assert.That(survey.Resources.ContainsKey("Lanthanides"), Is.True);
         }
 
         [Test]
@@ -222,7 +222,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var survey = new Survey();
             _parser.ProcessHtml(survey, SampleHtml);
-            Assert.IsFalse(survey.Resources.Keys.Any(k => k.Contains("Unknown")));
+            Assert.That(survey.Resources.Keys.Any(k => k.Contains("Unknown")), Is.False);
         }
 
         [Test]
@@ -232,8 +232,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             _parser.ProcessHtml(survey, SampleHtml);
 
             var r = survey.Resources["Post-Trans Metals"];
-            Assert.AreEqual("Low", r.Purity);
-            Assert.AreEqual("41", r.Amount);
+            Assert.That(r.Purity, Is.EqualTo("Low"));
+            Assert.That(r.Amount, Is.EqualTo("41"));
         }
 
         [Test]
@@ -243,8 +243,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             _parser.ProcessHtml(survey, SampleHtml);
 
             var r = survey.Resources["Lanthanides"];
-            Assert.AreEqual("High", r.Purity);
-            Assert.AreEqual("5", r.Amount);
+            Assert.That(r.Purity, Is.EqualTo("High"));
+            Assert.That(r.Amount, Is.EqualTo("5"));
         }
 
         [Test]
@@ -254,8 +254,8 @@ namespace OE2EmpireTracker.Tests.Baseline
             _parser.ProcessHtml(survey, SampleHtml);
 
             var r = survey.Resources["Heavy Trans-Metals"];
-            Assert.AreEqual("High", r.Purity);
-            Assert.AreEqual("38", r.Amount);
+            Assert.That(r.Purity, Is.EqualTo("High"));
+            Assert.That(r.Amount, Is.EqualTo("38"));
         }
 
         [Test]
@@ -263,7 +263,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var survey = new Survey();
             _parser.ProcessHtml(survey, "");
-            Assert.AreEqual(0, survey.Resources.Count);
+            Assert.That(survey.Resources.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -271,7 +271,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         {
             var survey = new Survey();
             _parser.ProcessHtml(survey, "<div>not a survey</div>");
-            Assert.AreEqual(0, survey.Resources.Count);
+            Assert.That(survey.Resources.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -297,61 +297,61 @@ namespace OE2EmpireTracker.Tests.Baseline
         [Test]
         public void ZehVazoran_ExtractsPlanetName()
         {
-            Assert.AreEqual("Zeh Vazoran II M2", ParseZehVazoran().PlanetName);
+            Assert.That(ParseZehVazoran().PlanetName, Is.EqualTo("Zeh Vazoran II M2"));
         }
 
         [Test]
         public void ZehVazoran_ExtractsSurveyID()
         {
-            Assert.AreEqual("B465873", ParseZehVazoran().SurveyID);
+            Assert.That(ParseZehVazoran().SurveyID, Is.EqualTo("B465873"));
         }
 
         [Test]
         public void ZehVazoran_ExtractsDateTime()
         {
-            Assert.AreEqual("19FEB26-08:41p", ParseZehVazoran().DateTime);
+            Assert.That(ParseZehVazoran().DateTime, Is.EqualTo("19FEB26-08:41p"));
         }
 
         [Test]
         public void ZehVazoran_ExtractsScannedBy()
         {
-            Assert.AreEqual("Scalorn Scorpus", ParseZehVazoran().ScannedBy);
+            Assert.That(ParseZehVazoran().ScannedBy, Is.EqualTo("Scalorn Scorpus"));
         }
 
         [Test]
         public void ZehVazoran_HasThreeResources()
         {
-            Assert.AreEqual(3, ParseZehVazoran().Resources.Count);
+            Assert.That(ParseZehVazoran().Resources.Count, Is.EqualTo(3));
         }
 
         [Test]
         public void ZehVazoran_HeavyTransMetals_CorrectValues()
         {
             var r = ParseZehVazoran().Resources["Heavy Trans-Metals"];
-            Assert.AreEqual("High", r.Purity);
-            Assert.AreEqual("36.3", r.Amount);
+            Assert.That(r.Purity, Is.EqualTo("High"));
+            Assert.That(r.Amount, Is.EqualTo("36.3"));
         }
 
         [Test]
         public void ZehVazoran_ComplexMetallics_CorrectValues()
         {
             var r = ParseZehVazoran().Resources["Complex Metallics"];
-            Assert.AreEqual("High", r.Purity);
-            Assert.AreEqual("23.1", r.Amount);
+            Assert.That(r.Purity, Is.EqualTo("High"));
+            Assert.That(r.Amount, Is.EqualTo("23.1"));
         }
 
         [Test]
         public void ZehVazoran_AlkaliOrganics_CorrectValues()
         {
             var r = ParseZehVazoran().Resources["Alkali Organics"];
-            Assert.AreEqual("Low", r.Purity);
-            Assert.AreEqual("3.3", r.Amount);
+            Assert.That(r.Purity, Is.EqualTo("Low"));
+            Assert.That(r.Amount, Is.EqualTo("3.3"));
         }
 
         [Test]
         public void ZehVazoran_SkipsUnknownTrace()
         {
-            Assert.IsFalse(ParseZehVazoran().Resources.Keys.Any(k => k.Contains("Unknown")));
+            Assert.That(ParseZehVazoran().Resources.Keys.Any(k => k.Contains("Unknown")), Is.False);
         }
 
         // -----------------------------------------------------------------------
@@ -370,61 +370,61 @@ namespace OE2EmpireTracker.Tests.Baseline
         [Test]
         public void Quogar_ExtractsPlanetName()
         {
-            Assert.AreEqual("Quogar V2249 II", ParseQuogar().PlanetName);
+            Assert.That(ParseQuogar().PlanetName, Is.EqualTo("Quogar V2249 II"));
         }
 
         [Test]
         public void Quogar_ExtractsSurveyID()
         {
-            Assert.AreEqual("FC2F6CC", ParseQuogar().SurveyID);
+            Assert.That(ParseQuogar().SurveyID, Is.EqualTo("FC2F6CC"));
         }
 
         [Test]
         public void Quogar_ExtractsDateTime()
         {
-            Assert.AreEqual("19FEB26-09:39p", ParseQuogar().DateTime);
+            Assert.That(ParseQuogar().DateTime, Is.EqualTo("19FEB26-09:39p"));
         }
 
         [Test]
         public void Quogar_ExtractsScannedBy()
         {
-            Assert.AreEqual("Scalorn Scorpus", ParseQuogar().ScannedBy);
+            Assert.That(ParseQuogar().ScannedBy, Is.EqualTo("Scalorn Scorpus"));
         }
 
         [Test]
         public void Quogar_HasElevenResources()
         {
-            Assert.AreEqual(11, ParseQuogar().Resources.Count);
+            Assert.That(ParseQuogar().Resources.Count, Is.EqualTo(11));
         }
 
         [Test]
         public void Quogar_PostTransMetals_CorrectValues()
         {
             var r = ParseQuogar().Resources["Post-Trans Metals"];
-            Assert.AreEqual("High", r.Purity);
-            Assert.AreEqual("112.2", r.Amount);
+            Assert.That(r.Purity, Is.EqualTo("High"));
+            Assert.That(r.Amount, Is.EqualTo("112.2"));
         }
 
         [Test]
         public void Quogar_Halogens_CorrectValues()
         {
             var r = ParseQuogar().Resources["Halogens"];
-            Assert.AreEqual("High", r.Purity);
-            Assert.AreEqual("9.9", r.Amount);
+            Assert.That(r.Purity, Is.EqualTo("High"));
+            Assert.That(r.Amount, Is.EqualTo("9.9"));
         }
 
         [Test]
         public void Quogar_AlkaliOrganics_MedPurity_NormalizedToMedium()
         {
             var r = ParseQuogar().Resources["Alkali Organics"];
-            Assert.AreEqual("Medium", r.Purity);
-            Assert.AreEqual("72.6", r.Amount);
+            Assert.That(r.Purity, Is.EqualTo("Medium"));
+            Assert.That(r.Amount, Is.EqualTo("72.6"));
         }
 
         [Test]
         public void Quogar_SkipsUnknownTrace()
         {
-            Assert.IsFalse(ParseQuogar().Resources.Keys.Any(k => k.Contains("Unknown")));
+            Assert.That(ParseQuogar().Resources.Keys.Any(k => k.Contains("Unknown")), Is.False);
         }
     }
 }

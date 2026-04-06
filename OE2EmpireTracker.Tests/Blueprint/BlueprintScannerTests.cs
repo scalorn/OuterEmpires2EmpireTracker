@@ -59,8 +59,8 @@ namespace OE2EmpireTracker.Tests.Blueprint
             var bp = new OE2EmpireTracker.Data.Blueprint();
             _scanner.ProcessHtml(bp, Html(TitleDiv("Pulse Cannon (MilSpec)")));
 
-            Assert.AreEqual("Pulse Cannon", bp.Name);
-            Assert.AreEqual("MilSpec", bp.TechLevel);
+            Assert.That(bp.Name, Is.EqualTo("Pulse Cannon"));
+            Assert.That(bp.TechLevel, Is.EqualTo("MilSpec"));
         }
 
         [Test]
@@ -69,8 +69,8 @@ namespace OE2EmpireTracker.Tests.Blueprint
             var bp = new OE2EmpireTracker.Data.Blueprint();
             _scanner.ProcessHtml(bp, Html(TitleDiv("Basic Thruster")));
 
-            Assert.AreEqual("Basic Thruster", bp.Name);
-            Assert.IsNull(bp.TechLevel);
+            Assert.That(bp.Name, Is.EqualTo("Basic Thruster"));
+            Assert.That(bp.TechLevel, Is.Null);
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
             var bp = new OE2EmpireTracker.Data.Blueprint();
             _scanner.ProcessHtml(bp, Html(TitleDiv("  Cargo Pod  ")));
 
-            Assert.AreEqual("Cargo Pod", bp.Name);
+            Assert.That(bp.Name, Is.EqualTo("Cargo Pod"));
         }
 
         // -----------------------------------------------------------------------
@@ -92,7 +92,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
             var bp = new OE2EmpireTracker.Data.Blueprint();
             _scanner.ProcessHtml(bp, Html(EvoDiv("3") + TitleDiv("Pulse Cannon3")));
 
-            Assert.AreEqual(3, bp.Evolution);
+            Assert.That(bp.Evolution, Is.EqualTo(3));
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
             var bp = new OE2EmpireTracker.Data.Blueprint();
             _scanner.ProcessHtml(bp, Html(EvoDiv("2") + TitleDiv("Jump Drive2")));
 
-            Assert.AreEqual("Jump Drive", bp.Name);
+            Assert.That(bp.Name, Is.EqualTo("Jump Drive"));
         }
 
         [Test]
@@ -110,7 +110,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
             var bp = new OE2EmpireTracker.Data.Blueprint();
             _scanner.ProcessHtml(bp, Html(TitleDiv("Shield Generator")));
 
-            Assert.AreEqual(0, bp.Evolution);
+            Assert.That(bp.Evolution, Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -123,7 +123,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
             var bp = new OE2EmpireTracker.Data.Blueprint();
             _scanner.ProcessHtml(bp, Html(DescDiv("A powerful weapon system.")));
 
-            Assert.AreEqual("A powerful weapon system.", bp.Description);
+            Assert.That(bp.Description, Is.EqualTo("A powerful weapon system."));
         }
 
         // -----------------------------------------------------------------------
@@ -136,8 +136,8 @@ namespace OE2EmpireTracker.Tests.Blueprint
             var bp = new OE2EmpireTracker.Data.Blueprint();
             _scanner.ProcessHtml(bp, Html(ResourceRow("Iron", "500")));
 
-            Assert.IsTrue(bp.Resources.ContainsKey("Iron"));
-            Assert.AreEqual("500", bp.Resources["Iron"]);
+            Assert.That(bp.Resources.ContainsKey("Iron"), Is.True);
+            Assert.That(bp.Resources["Iron"], Is.EqualTo("500"));
         }
 
         [Test]
@@ -149,9 +149,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
                 ResourceRow("Carbon", "250") +
                 ResourceRow("Titanium", "100")));
 
-            Assert.AreEqual("500", bp.Resources["Iron"]);
-            Assert.AreEqual("250", bp.Resources["Carbon"]);
-            Assert.AreEqual("100", bp.Resources["Titanium"]);
+            Assert.That(bp.Resources["Iron"], Is.EqualTo("500"));
+            Assert.That(bp.Resources["Carbon"], Is.EqualTo("250"));
+            Assert.That(bp.Resources["Titanium"], Is.EqualTo("100"));
         }
 
         [Test]
@@ -160,7 +160,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
             var bp = new OE2EmpireTracker.Data.Blueprint();
             _scanner.ProcessHtml(bp, Html(ResourceRow("Iron", "1,500")));
 
-            Assert.AreEqual("1500", bp.Resources["Iron"]);
+            Assert.That(bp.Resources["Iron"], Is.EqualTo("1500"));
         }
 
         [Test]
@@ -169,8 +169,8 @@ namespace OE2EmpireTracker.Tests.Blueprint
             var bp = new OE2EmpireTracker.Data.Blueprint();
             _scanner.ProcessHtml(bp, Html(TitleDiv("Empty Blueprint")));
 
-            Assert.IsNotNull(bp.Resources);
-            Assert.AreEqual(0, bp.Resources.Count);
+            Assert.That(bp.Resources, Is.Not.Null);
+            Assert.That(bp.Resources.Count, Is.EqualTo(0));
         }
 
         // -----------------------------------------------------------------------
@@ -185,7 +185,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
 
             string val;
             bp.Properties.getString("Mass", null, out val);
-            Assert.AreEqual("450", val);
+            Assert.That(val, Is.EqualTo("450"));
         }
 
         [Test]
@@ -196,7 +196,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
 
             string val;
             bp.Properties.getString("Power", null, out val);
-            Assert.AreEqual("1200", val);
+            Assert.That(val, Is.EqualTo("1200"));
         }
 
         [Test]
@@ -213,9 +213,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
             bp.Properties.getString("Health", null, out health);
             bp.Properties.getString("PowerRequired", null, out power);
 
-            Assert.AreEqual("450", mass);
-            Assert.AreEqual("2000", health);
-            Assert.AreEqual("150", power);
+            Assert.That(mass, Is.EqualTo("450"));
+            Assert.That(health, Is.EqualTo("2000"));
+            Assert.That(power, Is.EqualTo("150"));
         }
 
         // -----------------------------------------------------------------------
@@ -250,50 +250,50 @@ namespace OE2EmpireTracker.Tests.Blueprint
             _scanner.ProcessHtml(bp, page1);
             _scanner.ProcessHtml(bp, page2);
 
-            Assert.AreEqual("Reactor that generates power for the ship", bp.Description);
+            Assert.That(bp.Description, Is.EqualTo("Reactor that generates power for the ship"));
             string equipClass;
             bp.Properties.getString("Class", null, out equipClass);
-            Assert.AreEqual("6", equipClass);
-            Assert.AreEqual(6, bp.Class);
+            Assert.That(equipClass, Is.EqualTo("6"));
+            Assert.That(bp.Class, Is.EqualTo(6));
 
             string manuTime;
             bp.Properties.getString("ManufactureTime", null, out manuTime);
-            Assert.AreEqual("9h", manuTime);
+            Assert.That(manuTime, Is.EqualTo("9h"));
 
             string mass;
             bp.Properties.getString("Mass", null, out mass);
-            Assert.AreEqual("861", mass);
+            Assert.That(mass, Is.EqualTo("861"));
 
             string cargoVolumeSize;
             bp.Properties.getString("CargoVolumeSize", null, out cargoVolumeSize);
-            Assert.AreEqual("360", cargoVolumeSize);
+            Assert.That(cargoVolumeSize, Is.EqualTo("360"));
 
             string health;
             bp.Properties.getString("Health", null, out health);
-            Assert.AreEqual("4824", health);
+            Assert.That(health, Is.EqualTo("4824"));
 
             string engCap;
             bp.Properties.getString("EngCapacityRequired", null, out engCap);
-            Assert.AreEqual("1080", engCap);
+            Assert.That(engCap, Is.EqualTo("1080"));
 
             string powerRegenRate;
             bp.Properties.getString("PowerRegenerationRate", null, out powerRegenRate);
-            Assert.AreEqual("31.5", powerRegenRate);
+            Assert.That(powerRegenRate, Is.EqualTo("31.5"));
 
             string wearRate;
             bp.Properties.getString("WearAndTearRate", null, out wearRate);
-            Assert.AreEqual("2.959", wearRate);
+            Assert.That(wearRate, Is.EqualTo("2.959"));
 
             string dmgRate;
             bp.Properties.getString("MaximumDamageRepairRate", null, out dmgRate);
-            Assert.AreEqual("86.57", dmgRate);
+            Assert.That(dmgRate, Is.EqualTo("86.57"));
 
-            Assert.AreEqual("9366", bp.Resources["Alkaline Earth Metals"]);
-            Assert.AreEqual("1927", bp.Resources["Acidic Inorganics"]);
-            Assert.AreEqual("2121", bp.Resources["Heavy Trans-Metals"]);
-            Assert.AreEqual("2036", bp.Resources["Complex Non-Metallics"]);
-            Assert.AreEqual("2440", bp.Resources["Heavy Alkaline Earth Metals"]);
-            Assert.AreEqual("699",  bp.Resources["S1. Translivermoric Exotics"]);
+            Assert.That(bp.Resources["Alkaline Earth Metals"], Is.EqualTo("9366"));
+            Assert.That(bp.Resources["Acidic Inorganics"], Is.EqualTo("1927"));
+            Assert.That(bp.Resources["Heavy Trans-Metals"], Is.EqualTo("2121"));
+            Assert.That(bp.Resources["Complex Non-Metallics"], Is.EqualTo("2036"));
+            Assert.That(bp.Resources["Heavy Alkaline Earth Metals"], Is.EqualTo("2440"));
+            Assert.That(bp.Resources["S1. Translivermoric Exotics"], Is.EqualTo("699"));
         }
     }
 }
