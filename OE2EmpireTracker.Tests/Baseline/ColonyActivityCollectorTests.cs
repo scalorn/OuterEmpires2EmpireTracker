@@ -412,7 +412,7 @@ namespace OE2EmpireTracker.Tests.Baseline
                     var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
                     Assert.That(rows.Count, Is.EqualTo(1));
                     Assert.That(rows[0].Type, Is.EqualTo(ActivityType.Manufacturing));
-                    Assert.That(rows[0].ProcessDetails, Is.EqualTo($"({structure.ManufacturingCompleted}/{structure.ManufacturingQuantity}) {mfgBp.ExtendedName}"));
+                    Assert.That(rows[0].ProcessDetails, Is.EqualTo($"({structure.ManufacturingCompleted + 1}/{structure.ManufacturingQuantity}) {mfgBp.ExtendedName}"));
                 }
                 else if (bpType == BlueprintTypes.CommodityFactory)
                 {
@@ -425,7 +425,7 @@ namespace OE2EmpireTracker.Tests.Baseline
                     var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
                     Assert.That(rows.Count, Is.EqualTo(1));
                     Assert.That(rows[0].Type, Is.EqualTo(ActivityType.CommodityManufacturing));
-                    Assert.That(rows[0].ProcessDetails, Is.EqualTo($"({structure.ManufacturingCompleted}/{structure.ManufacturingQuantity}) {commodityName} x{GameConstants.CommoditiesPerCycle}"));
+                    Assert.That(rows[0].ProcessDetails, Is.EqualTo($"({structure.ManufacturingCompleted + 1}/{structure.ManufacturingQuantity}) {commodityName} x{GameConstants.CommoditiesPerCycle}"));
                 }
 
                 // Also test CommodityRequest formatting every 5th iteration
