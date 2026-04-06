@@ -316,3 +316,20 @@ Bug fixes during testing:
 - txtCompletionTime_Leave now fires ColonyStructureDataChanged so manual timer edits propagate
 
 14 new tests (4 property tests + 10 edge case tests). 662 tests passing.
+
+## 73. Window State Persistence
+Full UI state persistence across application restarts. Data models (UIPreferences, WindowPosition, WindowState, FormControlState, ComboState, GridState, GridColumnState), PreferencesStore singleton with JSON persistence to `%LOCALAPPDATA%\OE2EmpireTracker\UIPreferences.json`, BoundsValidator for multi-monitor support (min 320×200, 100px edge margin, off-screen reset), WindowStateHelper for automatic control tree walking (DataGridView columns/sort, TextBox text, ComboBox selection). MainWindow saves/restores position, assigns per-type window numbers (#N prefix). All 8 MDI child forms save state on close. AllowUserToOrderColumns and sorting enabled on all DataGridViews. 25 new tests (UIPreferences round-trip, BoundsValidator, PreferencesStore). 729 tests passing.
+
+## 74. Delivery Fulfillment Unit Tests
+Extracted commodity fulfillment, flatpack staging, and worker delivery logic from FormDeliveryExecution into static `DeliveryFulfillment` helper class. Three methods: `FulfillCommodity` (sets Delivered=Requested/Fulfilled=true or reverses), `StageFlatpack` (sets Staged property on matching structure), `DeliverWorkers` (adds/removes workers from colony warehouse). FormDeliveryExecution delegates to the helper. 17 new tests covering all three operations including null/edge cases. 746 tests passing.
+
+## 75. Pre-Existing Test Fixes
+Fixed 5 pre-existing test failures:
+- ColonyActivityCollectorTests.Property4: adjusted manufacturing assertions to expect 1-based display (ManufacturingCompleted + 1) matching intentional UI behavior
+- MainMenuOverhaulTests (4 tests): added EmpireContext.FilePath initialization pointing to actual BaselineData.json location using correct relative path from test bin directory
+
+## 76. Specification Documentation Gap Fill
+Created 9 new requirements documents for previously undocumented features: GameMechanics.md (mining, refining, synthetic recipes, manufacturing, research, build time), BackgroundProcessing.md (60s timer, error handling), ColonyImport.md (HTML parsing, merge semantics), BlueprintProperties.md (54 property validation rules, commodity industries), UIStatePersistence.md (window state summary), ColonyActivity.md (activity form, filtering), ColonyDailyBuild.md (build eligibility), DataChangeEvents.md (event types, write-through), SafeFileWriter.md (atomic writes). Updated requirements/README.md index.
+
+## 77. Project Documentation Consolidation
+Created spec/BACKLOG.md with 18 open features including dependency graph and suggested build order. Created spec/README.md linking project docs and .kiro specs. Merged old OE2EmpireTracker/specs/ folder content into spec/requirements/ (skill tree reference, colony processing order) and deleted the old folder. Updated steering files: workflow.md (build+test gate before commits), tech.md (VS 2026 path), forms.md (added missing description).
