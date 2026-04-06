@@ -49,6 +49,11 @@
             this.deliveryExecutionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colonyDailyBuildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colonyActivityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cascadeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tileHorizontalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tileVerticalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparatorWindowList = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripNextProcess = new System.Windows.Forms.ToolStripLabel();
             this.toolStripPlayerLabel = new System.Windows.Forms.ToolStripLabel();
             this.cmbCurrentPlayer = new System.Windows.Forms.ToolStripComboBox();
@@ -62,11 +67,13 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
+            this.windowToolStripMenuItem,
             this.helpToolStripMenuItem,
             this.cmbCurrentPlayer,
             this.toolStripPlayerLabel,
             this.toolStripNextProcess});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.MdiWindowListItem = this.windowToolStripMenuItem;
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
             this.menuStrip1.Size = new System.Drawing.Size(1064, 24);
@@ -240,6 +247,43 @@
             this.cmbCurrentPlayer.Size = new System.Drawing.Size(160, 22);
             this.cmbCurrentPlayer.SelectedIndexChanged += new System.EventHandler(this.cmbCurrentPlayer_SelectedIndexChanged);
             // 
+            // windowToolStripMenuItem
+            // 
+            this.windowToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cascadeToolStripMenuItem,
+            this.tileHorizontalToolStripMenuItem,
+            this.tileVerticalToolStripMenuItem,
+            this.toolStripSeparatorWindowList});
+            this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
+            this.windowToolStripMenuItem.Size = new System.Drawing.Size(63, 22);
+            this.windowToolStripMenuItem.Text = "&Window";
+            // 
+            // cascadeToolStripMenuItem
+            // 
+            this.cascadeToolStripMenuItem.Name = "cascadeToolStripMenuItem";
+            this.cascadeToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.cascadeToolStripMenuItem.Text = "&Cascade";
+            this.cascadeToolStripMenuItem.Click += new System.EventHandler(this.cascadeToolStripMenuItem_Click);
+            // 
+            // tileHorizontalToolStripMenuItem
+            // 
+            this.tileHorizontalToolStripMenuItem.Name = "tileHorizontalToolStripMenuItem";
+            this.tileHorizontalToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.tileHorizontalToolStripMenuItem.Text = "Tile &Horizontal";
+            this.tileHorizontalToolStripMenuItem.Click += new System.EventHandler(this.tileHorizontalToolStripMenuItem_Click);
+            // 
+            // tileVerticalToolStripMenuItem
+            // 
+            this.tileVerticalToolStripMenuItem.Name = "tileVerticalToolStripMenuItem";
+            this.tileVerticalToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.tileVerticalToolStripMenuItem.Text = "Tile &Vertical";
+            this.tileVerticalToolStripMenuItem.Click += new System.EventHandler(this.tileVerticalToolStripMenuItem_Click);
+            // 
+            // toolStripSeparatorWindowList
+            // 
+            this.toolStripSeparatorWindowList.Name = "toolStripSeparatorWindowList";
+            this.toolStripSeparatorWindowList.Size = new System.Drawing.Size(157, 6);
+            // 
             // timerNextProcess
             // 
             this.timerNextProcess.Interval = 1000;
@@ -284,6 +328,11 @@
         private System.Windows.Forms.ToolStripMenuItem deliveryExecutionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colonyDailyBuildToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colonyActivityToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem windowToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cascadeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tileHorizontalToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tileVerticalToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparatorWindowList;
         private System.Windows.Forms.ToolStripLabel toolStripPlayerLabel;
         private System.Windows.Forms.ToolStripComboBox cmbCurrentPlayer;
         private System.Windows.Forms.ToolStripLabel toolStripNextProcess;
