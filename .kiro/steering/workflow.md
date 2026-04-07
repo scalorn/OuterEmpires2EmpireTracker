@@ -7,7 +7,10 @@
    - Update **requirements.md**, **design.md**, and **tasks.md** to reflect any new or changed behavior
    - If no spec exists, create one with requirements.md, design.md, and tasks.md (tasks marked done)
    - Spec updates must be included in the same commit as the code changes, not in a separate commit
-4. Do not leave uncommitted changes at the end of a task
+4. **Update the spec** — if the work relates to a feature or fix with a spec under `spec`:
+   - Update any relevant spec files to reflect any new or changed behavior
+   - Spec updates must be included in the same commit as the code changes, not in a separate commit
+5. Do not leave uncommitted changes at the end of a task
 
 ## Commit Messages
 - First line: concise summary of the change
