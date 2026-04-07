@@ -5,6 +5,7 @@ using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Services
@@ -553,6 +554,363 @@ namespace OE2EmpireTracker.Tests.Services
                     $"Trial {trial}: created({result.CreatedCount}) + updated({result.UpdatedCount}) + skipped({result.SkippedCount}) = {total} != input count {blueprints.Count}");
                 Assert.That(result.Entries.Count, Is.EqualTo(blueprints.Count),
                     $"Trial {trial}: Entries count should match input count");
+            }
+        }
+
+        // -----------------------------------------------------------------------
+        // Integration Tests — Idempotency with real MarketSample HTML files
+        // -----------------------------------------------------------------------
+
+        private static string LoadTestData(string filename)
+        {
+            string baseDir = TestContext.CurrentContext.TestDirectory;
+            return File.ReadAllText(Path.Combine(baseDir, "TestData", filename));
+        }
+
+        private List<MarketBlueprint> ParseHtml(string html)
+        {
+            var scanner = new BlueprintScanner();
+            return scanner.ProcessMarketHtml(html);
+        }
+
+        /// <summary>
+        /// Validates: Requirements 5, 6
+        /// Import MarketSampleReactor.html once → verify blueprints created with correct count
+        /// </summary>
+        [Test]
+        public void Integration_ReactorImportOnce_CreatesExpectedBlueprints()
+        {
+            string html = LoadTestData("MarketSampleReactor.html");
+            var parsed = ParseHtml(html);
+
+            var result = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+
+            Assert.That(result.CreatedCount, Is.GreaterThan(0),
+                "Should create at least one blueprint from reactor sample");
+            // Created + Updated + Skipped should account for all entries
+            Assert.That(result.CreatedCount + result.UpdatedCount + result.SkippedCount,
+                Is.EqualTo(parsed.Count),
+                "Total result entries should match parsed count");
+            // Total blueprints across both storages should match created count
+            int totalStored = empireContext.globalBlueprintList.Count + playerContext.blueprintList.Count;
+            Assert.That(totalStored, Is.EqualTo(result.CreatedCount),
+                "Total stored blueprints should match created count (first import, no prior data)");
+
+            // Every stored blueprint should have properties and a name
+            foreach (var bp in empireContext.globalBlueprintList.Concat(playerContext.blueprintList))
+            {
+                Assert.That(bp.Name, Is.Not.Null.And.Not.Empty,
+                    "Each blueprint should have a name");
+                Assert.That(bp.Properties.Count, Is.GreaterThan(0),
+                    $"Blueprint '{bp.Name}' should have properties");
+            }
+        }
+
+        /// <summary>
+        /// Validates: Requirements 5, 6
+        /// Import same reactor file 3 times → verify no duplicate blueprints,
+        /// all "Updated" on 2nd/3rd import
+        /// </summary>
+        [Test]
+        public void Integration_ReactorImport3Times_NoDuplicates_AllUpdatedOnReimport()
+        {
+            string html = LoadTestData("MarketSampleReactor.html");
+            var parsed = ParseHtml(html);
+
+            // First import
+            var result1 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+            int countAfterFirst = empireContext.globalBlueprintList.Count;
+            int createdFirst = result1.CreatedCount;
+
+            Assert.That(createdFirst, Is.GreaterThan(0), "First import should create blueprints");
+
+            // Second import — re-parse to get fresh objects
+            parsed = ParseHtml(html);
+            var result2 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+
+            Assert.That(empireContext.globalBlueprintList.Count, Is.EqualTo(countAfterFirst),
+                "Blueprint count should not change after second import");
+            Assert.That(result2.CreatedCount, Is.EqualTo(0),
+                "Second import should create zero new blueprints");
+            Assert.That(result2.UpdatedCount + result2.SkippedCount, Is.EqualTo(parsed.Count),
+                "All entries on second import should be Updated or Skipped");
+            // All non-skipped entries should be Updated
+            foreach (var entry in result2.Entries.Where(e => e.Action != ImportAction.Skipped))
+            {
+                Assert.That(entry.Action, Is.EqualTo(ImportAction.Updated),
+                    $"Blueprint '{entry.Name}' should be Updated on second import, was {entry.Action}");
+            }
+
+            // Third import
+            parsed = ParseHtml(html);
+            var result3 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+
+            Assert.That(empireContext.globalBlueprintList.Count, Is.EqualTo(countAfterFirst),
+                "Blueprint count should not change after third import");
+            Assert.That(result3.CreatedCount, Is.EqualTo(0),
+                "Third import should create zero new blueprints");
+            foreach (var entry in result3.Entries.Where(e => e.Action != ImportAction.Skipped))
+            {
+                Assert.That(entry.Action, Is.EqualTo(ImportAction.Updated),
+                    $"Blueprint '{entry.Name}' should be Updated on third import, was {entry.Action}");
+            }
+        }
+
+        /// <summary>
+        /// Validates: Requirements 5, 6
+        /// After 3 imports, each blueprint's property count unchanged from first import
+        /// </summary>
+        [Test]
+        public void Integration_ReactorImport3Times_PropertyCountsStable()
+        {
+            string html = LoadTestData("MarketSampleReactor.html");
+
+            // First import
+            var parsed = ParseHtml(html);
+            MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+
+            // Snapshot property counts after first import
+            var propCountsAfterFirst = empireContext.globalBlueprintList
+                .ToDictionary(bp => bp.UUID, bp => bp.Properties.Count);
+
+            // Second import
+            parsed = ParseHtml(html);
+            MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+
+            // Third import
+            parsed = ParseHtml(html);
+            MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+
+            // Verify property counts unchanged
+            foreach (var bp in empireContext.globalBlueprintList)
+            {
+                Assert.That(propCountsAfterFirst.ContainsKey(bp.UUID), Is.True,
+                    $"Blueprint '{bp.Name}' UUID should be stable across imports");
+                Assert.That(bp.Properties.Count, Is.EqualTo(propCountsAfterFirst[bp.UUID]),
+                    $"Blueprint '{bp.Name}' property count changed from {propCountsAfterFirst[bp.UUID]} to {bp.Properties.Count} after 3 imports");
+            }
+        }
+
+        /// <summary>
+        /// Validates: Requirements 5, 6
+        /// After 3 imports, each blueprint's resource count unchanged from first import
+        /// </summary>
+        [Test]
+        public void Integration_ReactorImport3Times_ResourceCountsStable()
+        {
+            string html = LoadTestData("MarketSampleReactor.html");
+
+            // First import
+            var parsed = ParseHtml(html);
+            MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+
+            // Snapshot resource counts after first import
+            var resCountsAfterFirst = empireContext.globalBlueprintList
+                .ToDictionary(bp => bp.UUID, bp => bp.Resources.Count);
+
+            // Second import
+            parsed = ParseHtml(html);
+            MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+
+            // Third import
+            parsed = ParseHtml(html);
+            MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+
+            // Verify resource counts unchanged
+            foreach (var bp in empireContext.globalBlueprintList)
+            {
+                Assert.That(resCountsAfterFirst.ContainsKey(bp.UUID), Is.True,
+                    $"Blueprint '{bp.Name}' UUID should be stable across imports");
+                Assert.That(bp.Resources.Count, Is.EqualTo(resCountsAfterFirst[bp.UUID]),
+                    $"Blueprint '{bp.Name}' resource count changed from {resCountsAfterFirst[bp.UUID]} to {bp.Resources.Count} after 3 imports");
+            }
+        }
+
+        /// <summary>
+        /// Validates: Requirements 5, 6
+        /// Import MarketSampleAllWeaponTypes.html 2 times → verify weapon blueprints not duplicated
+        /// </summary>
+        [Test]
+        public void Integration_WeaponTypesImport2Times_NoDuplicates()
+        {
+            string html = LoadTestData("MarketSampleAllWeaponTypes.html");
+
+            // First import
+            var parsed = ParseHtml(html);
+            var result1 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+            int countAfterFirst = empireContext.globalBlueprintList.Count;
+
+            Assert.That(result1.CreatedCount, Is.GreaterThan(0),
+                "First weapon import should create blueprints");
+
+            // Second import
+            parsed = ParseHtml(html);
+            var result2 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+
+            Assert.That(empireContext.globalBlueprintList.Count, Is.EqualTo(countAfterFirst),
+                "Weapon blueprint count should not change after second import");
+            Assert.That(result2.CreatedCount, Is.EqualTo(0),
+                "Second weapon import should create zero new blueprints");
+            foreach (var entry in result2.Entries.Where(e => e.Action != ImportAction.Skipped))
+            {
+                Assert.That(entry.Action, Is.EqualTo(ImportAction.Updated),
+                    $"Weapon blueprint '{entry.Name}' should be Updated on second import, was {entry.Action}");
+            }
+
+            // Verify no duplicate dedup keys
+            var keys = empireContext.globalBlueprintList
+                .Select(bp => $"{bp.Name}|{bp.Evolution}|{bp.BluePrintType}|{bp.Class}|{bp.TechLevel}")
+                .ToList();
+            var distinct = keys.Distinct().ToList();
+            Assert.That(keys.Count, Is.EqualTo(distinct.Count),
+                "No duplicate dedup keys should exist after 2 weapon imports: " +
+                string.Join(", ", keys.GroupBy(k => k).Where(g => g.Count() > 1).Select(g => g.Key)));
+        }
+
+        /// <summary>
+        /// **Validates: Requirements 5**
+        /// Property 5: TechLevel extraction (verified via real HTML names)
+        /// For any blueprint name ending with a parenthesized known TechLevel value,
+        /// the TechLevel field must be set to that value and the parenthesized portion
+        /// must be stripped from the Name.
+        /// </summary>
+        [Test]
+        public void Property_TechLevelExtraction_RealHtml()
+        {
+            // Known TechLevel values
+            var knownTechLevels = new HashSet<string>
+                { "Hi-Tech", "Junker", "MilSpec", "Rugged", "Service", "Standard" };
+
+            // Parse all MarketSample files and verify TechLevel extraction
+            string baseDir = TestContext.CurrentContext.TestDirectory;
+            var sampleFiles = Directory.GetFiles(
+                Path.Combine(baseDir, "TestData"), "MarketSample*.html");
+
+            Assert.That(sampleFiles.Length, Is.GreaterThan(0), "No MarketSample files found");
+
+            int techLevelCount = 0;
+            int noTechLevelCount = 0;
+
+            foreach (var file in sampleFiles)
+            {
+                string html = File.ReadAllText(file);
+                var parsed = ParseHtml(html);
+
+                foreach (var mb in parsed)
+                {
+                    var bp = mb.Blueprint;
+
+                    if (bp.TechLevel != null)
+                    {
+                        // TechLevel should be a known value
+                        Assert.That(knownTechLevels.Contains(bp.TechLevel), Is.True,
+                            $"Blueprint '{bp.Name}' has unknown TechLevel '{bp.TechLevel}' in {Path.GetFileName(file)}");
+                        // Name should NOT contain the TechLevel in parentheses
+                        Assert.That(bp.Name, Does.Not.EndWith($"({bp.TechLevel})"),
+                            $"Blueprint name '{bp.Name}' should have TechLevel stripped in {Path.GetFileName(file)}");
+                        techLevelCount++;
+                    }
+                    else
+                    {
+                        // Name should not end with a known TechLevel in parentheses
+                        foreach (var tl in knownTechLevels)
+                        {
+                            Assert.That(bp.Name, Does.Not.EndWith($"({tl})"),
+                                $"Blueprint '{bp.Name}' should have TechLevel '{tl}' extracted in {Path.GetFileName(file)}");
+                        }
+                        noTechLevelCount++;
+                    }
+                }
+            }
+
+            // Sanity: we should find at least some blueprints with TechLevel
+            Assert.That(techLevelCount, Is.GreaterThan(0),
+                "Should find at least one blueprint with a known TechLevel across all sample files");
+            Assert.That(noTechLevelCount, Is.GreaterThan(0),
+                "Should find at least one blueprint without TechLevel across all sample files");
+
+            TestContext.WriteLine($"TechLevel extraction: {techLevelCount} with TechLevel, {noTechLevelCount} without");
+        }
+
+        /// <summary>
+        /// **Validates: Requirements 5, 6**
+        /// Property 6: Import idempotency
+        /// For any market HTML input, importing the same HTML N times (N >= 2) must produce
+        /// the same number of blueprint records in storage as importing it once.
+        /// No duplicate blueprints should be created. On the second and subsequent imports,
+        /// all entries should report as "Updated" (not "Created"), and the blueprint's
+        /// property count and resource count must remain unchanged.
+        /// </summary>
+        [Test]
+        public void Property_ImportIdempotency_AllSampleFiles()
+        {
+            string baseDir = TestContext.CurrentContext.TestDirectory;
+            var sampleFiles = Directory.GetFiles(
+                Path.Combine(baseDir, "TestData"), "MarketSample*.html");
+
+            Assert.That(sampleFiles.Length, Is.GreaterThan(0), "No MarketSample files found");
+
+            foreach (var file in sampleFiles)
+            {
+                // Reset state for each file
+                empireContext.globalBlueprintList.Clear();
+                playerContext.blueprintList.Clear();
+                playerContext.CurrentPlayerUUID = TestPlayerUUID;
+
+                string fileName = Path.GetFileName(file);
+                string html = File.ReadAllText(file);
+
+                // First import
+                var parsed1 = ParseHtml(html);
+                var result1 = MarketBlueprintImporter.Import(parsed1, playerContext, empireContext);
+                int countAfterFirst = empireContext.globalBlueprintList.Count + playerContext.blueprintList.Count;
+
+                // Snapshot property and resource counts
+                var propCounts = new Dictionary<string, int>();
+                var resCounts = new Dictionary<string, int>();
+                foreach (var bp in empireContext.globalBlueprintList)
+                {
+                    propCounts[bp.UUID] = bp.Properties.Count;
+                    resCounts[bp.UUID] = bp.Resources.Count;
+                }
+                foreach (var bp in playerContext.blueprintList)
+                {
+                    propCounts[bp.UUID] = bp.Properties.Count;
+                    resCounts[bp.UUID] = bp.Resources.Count;
+                }
+
+                // Second import
+                var parsed2 = ParseHtml(html);
+                var result2 = MarketBlueprintImporter.Import(parsed2, playerContext, empireContext);
+                int countAfterSecond = empireContext.globalBlueprintList.Count + playerContext.blueprintList.Count;
+
+                Assert.That(countAfterSecond, Is.EqualTo(countAfterFirst),
+                    $"[{fileName}] Blueprint count changed from {countAfterFirst} to {countAfterSecond} after second import");
+                Assert.That(result2.CreatedCount, Is.EqualTo(0),
+                    $"[{fileName}] Second import should create zero new blueprints, created {result2.CreatedCount}");
+
+                // All non-skipped entries should be Updated
+                foreach (var entry in result2.Entries.Where(e => e.Action != ImportAction.Skipped))
+                {
+                    Assert.That(entry.Action, Is.EqualTo(ImportAction.Updated),
+                        $"[{fileName}] Blueprint '{entry.Name}' should be Updated on second import, was {entry.Action}");
+                }
+
+                // Verify property and resource counts stable
+                foreach (var bp in empireContext.globalBlueprintList.Concat(playerContext.blueprintList))
+                {
+                    if (propCounts.ContainsKey(bp.UUID))
+                    {
+                        Assert.That(bp.Properties.Count, Is.EqualTo(propCounts[bp.UUID]),
+                            $"[{fileName}] Blueprint '{bp.Name}' property count changed after second import");
+                        Assert.That(bp.Resources.Count, Is.EqualTo(resCounts[bp.UUID]),
+                            $"[{fileName}] Blueprint '{bp.Name}' resource count changed after second import");
+                    }
+                }
+
+                // Verify no duplicate dedup keys in either storage
+                AssertNoDuplicateKeys(empireContext.globalBlueprintList, $"global ({fileName})", 0);
+                AssertNoDuplicateKeys(playerContext.blueprintList, $"player ({fileName})", 0);
             }
         }
     }
