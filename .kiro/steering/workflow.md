@@ -3,9 +3,10 @@
 ## After Every Piece of Work
 1. **Build and test** before committing — the solution must compile and all tests must pass
 2. **Commit** all changes with a detailed commit message describing what was done and why
-3. **Update or create a spec** under `.kiro/specs/` documenting the work if it relates to a feature or fix
-   - If a spec already exists for the feature, update its tasks.md to reflect completed work
+3. **Update the spec** — if the work relates to a feature or fix with a spec under `.kiro/specs/`:
+   - Update **requirements.md**, **design.md**, and **tasks.md** to reflect any new or changed behavior
    - If no spec exists, create one with requirements.md, design.md, and tasks.md (tasks marked done)
+   - Spec updates must be included in the same commit as the code changes, not in a separate commit
 4. Do not leave uncommitted changes at the end of a task
 
 ## Commit Messages
