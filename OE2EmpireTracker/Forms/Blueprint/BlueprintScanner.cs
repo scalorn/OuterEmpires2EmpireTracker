@@ -379,6 +379,22 @@ namespace OE2EmpireTracker.Forms.Blueprint
                             if (string.IsNullOrEmpty(qtyNormalized)) qtyNormalized = qtyText;
                             bp.Resources[resName] = qtyNormalized;
                         }
+
+                        // Extract blueprint type icon — sprite position from ui_icon_base background
+                        XmlNode iconNode = detailRow.SelectSingleNode(".//div[contains(@class,'MarketListingRowDetailIcon')]//div[contains(@class,'ui_icon_base')]");
+                        if (iconNode != null)
+                        {
+                            string style = iconNode.Attributes?["style"]?.Value ?? "";
+                            var bgMatch = Regex.Match(style, @"background:\s*url\([""']?([^""')]+)[""']?\)\s*(-?\d+px)\s*(-?\d+px)");
+                            if (bgMatch.Success)
+                            {
+                                string iconImage = bgMatch.Groups[1].Value;
+                                string iconPosition = bgMatch.Groups[2].Value + " " + bgMatch.Groups[3].Value;
+                                bp.Properties.setProperty("_IconImage", iconImage);
+                                bp.Properties.setProperty("_IconPosition", iconPosition);
+                                Log.Info($"  Icon: {iconImage} @ {iconPosition}");
+                            }
+                        }
                     }
 
                     blueprints.Add(bp);

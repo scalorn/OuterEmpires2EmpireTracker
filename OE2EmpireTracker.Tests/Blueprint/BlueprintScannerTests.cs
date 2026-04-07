@@ -612,6 +612,34 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         [Test]
+        public void ProcessMarketHtml_ExtractsBlueprintTypeIcon()
+        {
+            string html = LoadTestData("BlueprintMarketHulls.html");
+            var blueprints = _scanner.ProcessMarketHtml(html);
+
+            // All hull blueprints should have the same icon sprite position
+            foreach (var bp in blueprints)
+            {
+                string iconImage;
+                bp.Properties.getString("_IconImage", null, out iconImage);
+                string iconPosition;
+                bp.Properties.getString("_IconPosition", null, out iconPosition);
+
+                if (iconImage != null)
+                {
+                    TestContext.WriteLine($"{bp.Name}: icon={iconImage} @ {iconPosition}");
+                    Assert.That(iconPosition, Is.Not.Null,
+                        $"Blueprint '{bp.Name}' has icon image but no position");
+                }
+            }
+
+            // At least the first blueprint should have an icon
+            string firstIcon;
+            blueprints[0].Properties.getString("_IconPosition", null, out firstIcon);
+            Assert.That(firstIcon, Is.Not.Null, "First blueprint should have an icon sprite position");
+        }
+
+        [Test]
         public void ProcessMarketHtml_DumpAllData()
         {
             // Exploratory test — dumps all extracted data for review
