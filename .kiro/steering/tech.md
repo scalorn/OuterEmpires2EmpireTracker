@@ -26,12 +26,14 @@
 ## Visual Studio Installation
 - Visual Studio 2026 Community Edition (version 18)
 - Install path: `D:\Program Files\Microsoft Visual Studio\18\Community`
+- MSBuild path: `"D:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe"`
 - vstest.console path: `"D:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe"`
+- **Always use absolute paths** to VS tools — `msbuild` and `vstest.console` are not on PATH
 
 ## Common Commands
 ```
 # Build the solution
-msbuild OE2EmpireTracker.sln /p:Configuration=Debug
+"D:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe" OE2EmpireTracker.sln /p:Configuration=Debug
 
 # Restore NuGet packages
 nuget restore OE2EmpireTracker.sln
