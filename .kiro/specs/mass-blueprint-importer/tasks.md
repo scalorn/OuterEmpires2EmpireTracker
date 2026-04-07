@@ -61,8 +61,8 @@ Add a bulk market import capability to the Blueprint form. An "Import Market" bu
 
 - [x] 4. Checkpoint — Ensure importer service builds and tests pass
 
-- [ ] 5. Add idempotency integration tests
-  - [-] 5.1 Write idempotency tests using real MarketSample HTML files
+- [x] 5. Add idempotency integration tests
+  - [x] 5.1 Write idempotency tests using real MarketSample HTML files
     - Test: import MarketSampleReactor.html once → verify blueprints created with correct count
     - Test: import same file 3 times → verify no duplicate blueprints, all "Updated" on 2nd/3rd
     - Test: after 3 imports, each blueprint's property count unchanged from first import
@@ -72,16 +72,16 @@ Add a bulk market import capability to the Blueprint form. An "Import Market" bu
     - **Property 6: Import idempotency**
     - _Requirements: 5, 6_
 
-- [~] 6. Checkpoint — Ensure idempotency tests pass
+- [x] 6. Checkpoint — Ensure idempotency tests pass
 
 - [ ] 7. Add Import Market button to FormBlueprint UI
-  - [~] 7.1 Modify `FormBlueprint.Designer.cs` to add `cmdImportMarket` button
+  - [x] 7.1 Modify `FormBlueprint.Designer.cs` to add `cmdImportMarket` button
     - Declare `private System.Windows.Forms.Button cmdImportMarket;`
     - Add to `flpCommands.Controls` before `cmdImport`
     - Set `Text = "Import Market"`, appropriate size
     - _Requirements: 1_
 
-  - [~] 7.2 Modify `FormBlueprint.cs` to wire up Import Market click handler
+  - [-] 7.2 Modify `FormBlueprint.cs` to wire up Import Market click handler
     - Wire `cmdImportMarket.Click` handler
     - Read clipboard HTML, check for valid HTML content
     - Call `BlueprintScanner.ProcessMarketHtml()`

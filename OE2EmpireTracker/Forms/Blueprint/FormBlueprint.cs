@@ -1044,6 +1044,66 @@ namespace OE2EmpireTracker
             //lvwBlueprints.Height = flpSearchList.Height - flpBlueprintSearch.Height;
         }
 
+        private void cmdImportMarket_Click(object sender, EventArgs e)
+        {
+            // Read clipboard HTML
+            if (!Clipboard.ContainsText(TextDataFormat.Html))
+            {
+                MessageBox.Show("No market HTML found on clipboard.",
+                    "Import Market", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            string clipboardData = Clipboard.GetText(TextDataFormat.Html);
+            string html = ExtractHtmlFragmentFromClipboardData(clipboardData);
+            if (string.IsNullOrEmpty(html) || html.StartsWith("ERROR:"))
+            {
+                MessageBox.Show("No market HTML found on clipboard.",
+                    "Import Market", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Parse market HTML
+            var scanner = new BlueprintScanner();
+            var parsed = scanner.ProcessMarketHtml(html);
+            if (parsed == null || parsed.Count == 0)
+            {
+                MessageBox.Show("No blueprint listings found in clipboard data.",
+                    "Import Market", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Import
+            var result = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+
+            // Build summary
+            var sb = new StringBuilder();
+            sb.AppendLine($"Created: {result.CreatedCount}  Updated: {result.UpdatedCount}  Skipped: {result.SkippedCount}");
+            sb.AppendLine();
+            foreach (var entry in result.Entries)
+            {
+                string key = $"{entry.Name} Ev{entry.Evolution} {entry.BluePrintType} C{entry.Class}";
+                if (entry.Action == ImportAction.Skipped)
+                    sb.AppendLine($"  [{entry.Storage ?? "?"}] SKIP  {key} — {entry.SkipReason}");
+                else
+                    sb.AppendLine($"  [{entry.Storage}] {entry.Action}  {key}");
+            }
+
+            MessageBox.Show(sb.ToString(), "Import Market Results",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // Notify if player blueprints changed
+            bool playerChanged = result.Entries.Any(e2 =>
+                e2.Storage == "Player" && (e2.Action == ImportAction.Created || e2.Action == ImportAction.Updated));
+            if (playerChanged)
+            {
+                playerContext.OnBlueprintDataChanged(null);
+            }
+
+            // Refresh the blueprint list
+            PopulateListView(viewModel.GetFilteredBlueprints(txtBlueprintListFilter.Text));
+        }
+
         private void cmdImport_Click(object sender, EventArgs e)
         {
             BlueprintScanner scanner = new BlueprintScanner();

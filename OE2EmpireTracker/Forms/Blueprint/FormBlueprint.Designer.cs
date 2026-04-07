@@ -83,6 +83,7 @@ namespace OE2EmpireTracker
             this.txtBlueprintListFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.lvwBlueprints = new System.Windows.Forms.ListView();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdImportMarket = new System.Windows.Forms.Button();
             this.cmdImport = new System.Windows.Forms.Button();
             this.flpBlueprintType.SuspendLayout();
             this.flpTechLevel.SuspendLayout();
@@ -443,6 +444,7 @@ namespace OE2EmpireTracker
             this.flpCommands.Controls.Add(this.cmdNew);
             this.flpCommands.Controls.Add(this.btnSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
+            this.flpCommands.Controls.Add(this.cmdImportMarket);
             this.flpCommands.Controls.Add(this.cmdImport);
             this.flpCommands.Location = new System.Drawing.Point(2, 598);
             this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
@@ -662,9 +664,19 @@ namespace OE2EmpireTracker
             this.flowLayoutPanel1.Size = new System.Drawing.Size(661, 641);
             this.flowLayoutPanel1.TabIndex = 10;
             // 
+            // cmdImportMarket
+            // 
+            this.cmdImportMarket.Location = new System.Drawing.Point(352, 3);
+            this.cmdImportMarket.Name = "cmdImportMarket";
+            this.cmdImportMarket.Size = new System.Drawing.Size(95, 23);
+            this.cmdImportMarket.TabIndex = 14;
+            this.cmdImportMarket.Text = "Import Market";
+            this.cmdImportMarket.UseVisualStyleBackColor = true;
+            this.cmdImportMarket.Click += new System.EventHandler(this.cmdImportMarket_Click);
+            // 
             // cmdImport
             // 
-            this.cmdImport.Location = new System.Drawing.Point(433, 3);
+            this.cmdImport.Location = new System.Drawing.Point(453, 3);
             this.cmdImport.Name = "cmdImport";
             this.cmdImport.Size = new System.Drawing.Size(75, 23);
             this.cmdImport.TabIndex = 13;
@@ -770,6 +782,7 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.Label lblCopyCost;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtCopyCost;
         private System.Windows.Forms.Button cmdNew;
+        private System.Windows.Forms.Button cmdImportMarket;
         private System.Windows.Forms.Button cmdImport;
     }
 }
