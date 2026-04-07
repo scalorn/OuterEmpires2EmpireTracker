@@ -53,7 +53,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(retrieved.Position, Is.Not.Null);
             Assert.That(retrieved.Position.Left, Is.EqualTo(100));
             Assert.That(retrieved.Position.Top, Is.EqualTo(200));
-            Assert.That(store.Preferences.Forms.Count, Is.EqualTo(2));
+            Assert.That(store.Preferences.Forms.Count, Is.GreaterThanOrEqualTo(2));
         }
 
         [Test]

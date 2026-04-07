@@ -128,6 +128,10 @@ namespace OE2EmpireTracker.Persistence
                 {
                     formState.FilterTexts[textBox.Name] = textBox.Text;
                 }
+                else if (control is CheckBox checkBox && !string.IsNullOrEmpty(checkBox.Name))
+                {
+                    formState.CheckStates[checkBox.Name] = checkBox.Checked;
+                }
                 else if (control is ComboBox combo && !string.IsNullOrEmpty(combo.Name))
                 {
                     formState.ComboSelections[combo.Name] = new ComboState
@@ -184,6 +188,13 @@ namespace OE2EmpireTracker.Persistence
                     if (formState.FilterTexts.ContainsKey(textBox.Name))
                     {
                         textBox.Text = formState.FilterTexts[textBox.Name];
+                    }
+                }
+                else if (control is CheckBox checkBox && !string.IsNullOrEmpty(checkBox.Name))
+                {
+                    if (formState.CheckStates.ContainsKey(checkBox.Name))
+                    {
+                        checkBox.Checked = formState.CheckStates[checkBox.Name];
                     }
                 }
                 else if (control is ComboBox combo && !string.IsNullOrEmpty(combo.Name))

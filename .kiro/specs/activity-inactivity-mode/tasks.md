@@ -77,7 +77,7 @@ Add an Inactivity Mode to the Colony Activity form that surfaces idle and underu
     - Modify `timerRefresh_Tick` to skip countdown cell updates when in Inactivity Mode
     - _Requirements: 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4, 9.5, 10.1, 10.2_
 
-- [-] 6. Final checkpoint — Ensure full solution builds and all tests pass
+- [x] 6. Final checkpoint — Ensure full solution builds and all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

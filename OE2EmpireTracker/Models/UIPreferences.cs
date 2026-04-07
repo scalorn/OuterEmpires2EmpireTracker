@@ -29,6 +29,9 @@ namespace OE2EmpireTracker.Models
         public Dictionary<string, string> FilterTexts { get; set; }
             = new Dictionary<string, string>();
 
+        public Dictionary<string, bool> CheckStates { get; set; }
+            = new Dictionary<string, bool>();
+
         public Dictionary<string, ComboState> ComboSelections { get; set; }
             = new Dictionary<string, ComboState>();
 
