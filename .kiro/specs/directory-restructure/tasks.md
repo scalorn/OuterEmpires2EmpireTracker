@@ -91,7 +91,7 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
   - Ensure all tests pass, ask the user if questions arise.
   - At this point all 49 main project files have been moved. `Data/` is empty (since Batch 1a) and `Baseline/` is empty (since Batch 4). Verify no stale `using OE2EmpireTracker.Data;` or `using OE2EmpireTracker.Baseline;` remain in main project files.
 
-- [-] 7. Batch 5 — Test project restructure (mirror all moves)
+- [x] 7. Batch 5 — Test project restructure (mirror all moves)
   - [x] 7.1 Move 15 Data/ test files to Models/ in test project
     - Files: BlueprintTests, CommodityTests, CountDownTimeTests, ItemBagTests, ItemTests, ItemTypeTests, LockTrackingTests, PlayerProfileTests, PropertyBagTests, ResourceClassTests, ResourceGroupTests, ResourcePurityTests, ResourceTests, WorkerDetailTests, WorkerTypeInfoTests
     - For each file: `smartRelocate` from `OE2EmpireTracker.Tests/Data/{File}.cs` to `OE2EmpireTracker.Tests/Models/{File}.cs`
@@ -127,7 +127,7 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
     - After each move: update test csproj Compile Include from `Baseline\{File}.cs` to `Persistence\{File}.cs`
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 9.3, 9.4_
 
-  - [-] 7.6 Verify Batch 5 — build and test
+  - [x] 7.6 Verify Batch 5 — build and test
     - Run `getDiagnostics` on all moved test files
     - Build: `msbuild OE2EmpireTracker.sln /p:Configuration=Debug`
     - Test: `vstest.console` against test DLL
@@ -135,8 +135,8 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
     - Commit with descriptive message
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-- [ ] 8. Batch 6 — Cleanup
-  - [~] 8.1 Delete empty legacy directories
+- [-] 8. Batch 6 — Cleanup
+  - [x] 8.1 Delete empty legacy directories
     - Delete `OE2EmpireTracker/Baseline/` (should be empty after Batches 1b–4)
     - Delete `OE2EmpireTracker/Data/` (should be empty after Batch 1a)
     - Delete `OE2EmpireTracker.Tests/Baseline/` (should be empty after Batch 5)
@@ -144,11 +144,11 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
     - Verify no Compile Include entries reference `Baseline\` or `Data\` in either csproj
     - _Requirements: 5.1, 5.2, 5.3, 6.5, 6.6_
 
-  - [~] 8.2 Update steering docs to reflect new structure
+  - [x] 8.2 Update steering docs to reflect new structure
     - Update `.kiro/steering/structure.md` to replace `Baseline/` and `Data/` with `Models/`, `Services/`, `Parsers/`, `Persistence/`
     - _Requirements: 5.1, 5.2_
 
-  - [~] 8.3 Verify Batch 6 — final build and test
+  - [-] 8.3 Verify Batch 6 — final build and test
     - Build: `msbuild OE2EmpireTracker.sln /p:Configuration=Debug`
     - Test: `vstest.console` against test DLL
     - Verify 746 tests pass

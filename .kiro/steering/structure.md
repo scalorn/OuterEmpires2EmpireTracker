@@ -9,18 +9,7 @@ OE2EmpireTracker.sln              # Visual Studio solution (2 projects)
 │   ├── PlayerData.json           # Player-specific data (profiles, colonies, blueprints, surveys)
 │   ├── NLog.config               # Logging configuration
 │   │
-│   ├── Baseline/                 # Core domain logic and context singletons
-│   │   ├── EmpireContext.cs      # Singleton — loads/manages shared game data
-│   │   ├── PlayerContext.cs      # Singleton — loads/manages player data, persistence
-│   │   ├── Colony.cs             # Colony processing (mining, refining, research, manufacturing)
-│   │   ├── ColonyStructure.cs    # Individual structure within a colony
-│   │   ├── ColonyStatusCalculator.cs  # Computes built/ideal status for colony structures
-│   │   ├── DeliveryRoute.cs      # Delivery route definitions
-│   │   ├── DeliveryPlan.cs       # Delivery plan logic
-│   │   ├── Survey.cs / SurveyParser.cs  # Survey data and HTML parsing
-│   │   └── ...                   # ShipClass, TechLevel, BlueprintType, etc.
-│   │
-│   ├── Data/                     # Data model classes (POCOs)
+│   ├── Models/                   # All POCOs, data types, enums, interfaces (33 files)
 │   │   ├── Item.cs / ItemBag.cs  # Generic item and inventory container
 │   │   ├── Blueprint.cs          # Blueprint data (extends Item)
 │   │   ├── Commodity.cs          # Commodity definitions with construction recipes
@@ -28,7 +17,34 @@ OE2EmpireTracker.sln              # Visual Studio solution (2 projects)
 │   │   ├── PlayerProfile.cs      # Player profile with skills
 │   │   ├── CountDownTime.cs      # Timer/countdown tracking
 │   │   ├── PropertyBag.cs        # Key-value property storage
-│   │   └── ...                   # Supporting types (enums, sub-resources, etc.)
+│   │   ├── Colony.cs             # Colony data and processing logic
+│   │   ├── ColonyStructure.cs    # Individual structure within a colony
+│   │   ├── DeliveryRoute.cs      # Delivery route definitions
+│   │   ├── DeliveryPlan.cs       # Delivery plan data
+│   │   ├── Survey.cs             # Survey data
+│   │   └── ...                   # ShipClass, TechLevel, BlueprintType, enums, etc.
+│   │
+│   ├── Services/                 # Singletons, processing logic, business rules (11 files)
+│   │   ├── EmpireContext.cs      # Singleton — loads/manages shared game data
+│   │   ├── PlayerContext.cs      # Singleton — loads/manages player data, persistence
+│   │   ├── ColonyStatusCalculator.cs  # Computes built/ideal status for colony structures
+│   │   ├── ColonyActivityCollector.cs # Collects colony activity data
+│   │   ├── ColonyBuildEligibility.cs  # Build eligibility checks
+│   │   ├── ColonyBootstrap.cs    # Colony initialization
+│   │   ├── BuildOrderOptimizer.cs # Build order optimization
+│   │   ├── BuildTimeCalculator.cs # Build time calculations
+│   │   ├── BackgroundProcessor.cs # Background processing tasks
+│   │   ├── DeliveryFulfillment.cs # Delivery fulfillment logic
+│   │   └── PreferencesStore.cs   # User preferences persistence
+│   │
+│   ├── Parsers/                  # HTML and data import parsers (2 files)
+│   │   ├── ColonyParser.cs       # Colony HTML parsing
+│   │   └── SurveyParser.cs       # Survey HTML parsing
+│   │
+│   ├── Persistence/              # File I/O and window-state helpers (3 files)
+│   │   ├── SafeFileWriter.cs     # Safe atomic file writing
+│   │   ├── WindowStateHelper.cs  # Window position/size persistence
+│   │   └── BoundsValidator.cs    # Screen bounds validation
 │   │
 │   ├── Constants/                # Game constants and static lookup tables
 │   │   ├── GameConstants.cs      # Numeric/string constants (rates, keys, purities)
@@ -63,11 +79,14 @@ OE2EmpireTracker.sln              # Visual Studio solution (2 projects)
 │   └── specs/                    # In-project design notes (informal)
 │
 ├── OE2EmpireTracker.Tests/       # NUnit test project
-│   ├── Baseline/                 # Tests for colony processing, structures, surveys
+│   ├── Models/                   # Tests for data types, colony processing, structures, surveys
+│   ├── Services/                 # Tests for singletons, calculators, fulfillment, context
+│   ├── Parsers/                  # Tests for colony and survey HTML parsers
+│   ├── Persistence/              # Tests for safe file writing, bounds validation
 │   ├── Blueprint/                # Blueprint scanner tests
 │   ├── Constants/                # Constants validation tests
 │   ├── Controls/                 # Custom control tests
-│   ├── Data/                     # Data model tests
+│   ├── Forms/                    # Form tests
 │   └── TestData/                 # HTML fixtures for survey/blueprint parsing
 │
 └── spec/                         # External specification documents
@@ -76,7 +95,9 @@ OE2EmpireTracker.sln              # Visual Studio solution (2 projects)
 ```
 
 ## Architecture Pattern
-- Layered: Data → Baseline (domain logic) → ViewModels → Forms (UI)
+- Layered: Models (POCOs) → Services (domain logic) → ViewModels → Forms (UI)
+- Parsers handle data import (HTML scraping) into Models
+- Persistence handles file I/O and window-state management
 - Singletons (`EmpireContext`, `PlayerContext`) act as in-memory repositories
 - ViewModels wrap domain objects and expose typed operations for UI binding
 - Forms use WinForms Designer (`.Designer.cs` + `.resx` pairs) — do not hand-edit Designer files
