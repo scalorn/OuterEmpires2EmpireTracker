@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +40,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.UUID = Guid.NewGuid().ToString();
 
             // Create a CommodityFactory blueprint in the player context
-            var bp = new OE2EmpireTracker.Data.Blueprint("TestCommodityFactory");
+            var bp = new OE2EmpireTracker.Models.Blueprint("TestCommodityFactory");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.CommodityFactory;
             PlayerContext.getInstance().blueprintList.Add(bp);
@@ -305,7 +305,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var colony = new Colony();
             colony.UUID = Guid.NewGuid().ToString();
 
-            var bp = new OE2EmpireTracker.Data.Blueprint("TestCF");
+            var bp = new OE2EmpireTracker.Models.Blueprint("TestCF");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.CommodityFactory;
             PlayerContext.getInstance().blueprintList.Add(bp);
@@ -361,7 +361,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var colony = new Colony();
             colony.UUID = Guid.NewGuid().ToString();
 
-            var bp = new OE2EmpireTracker.Data.Blueprint("TestCF2");
+            var bp = new OE2EmpireTracker.Models.Blueprint("TestCF2");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.CommodityFactory;
             PlayerContext.getInstance().blueprintList.Add(bp);
@@ -398,7 +398,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var colony = new Colony();
             colony.UUID = Guid.NewGuid().ToString();
 
-            var bp = new OE2EmpireTracker.Data.Blueprint("TestCF3");
+            var bp = new OE2EmpireTracker.Models.Blueprint("TestCF3");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.CommodityFactory;
             PlayerContext.getInstance().blueprintList.Add(bp);
@@ -431,7 +431,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             var colony = new Colony();
             colony.UUID = Guid.NewGuid().ToString();
 
-            var bp = new OE2EmpireTracker.Data.Blueprint("TestCF4");
+            var bp = new OE2EmpireTracker.Models.Blueprint("TestCF4");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.CommodityFactory;
             PlayerContext.getInstance().blueprintList.Add(bp);
@@ -500,7 +500,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             PlayerContext.getInstance().surveyList.Add(survey);
 
             // Create a MiningRig blueprint
-            var bp = new OE2EmpireTracker.Data.Blueprint("TestMiningRig");
+            var bp = new OE2EmpireTracker.Models.Blueprint("TestMiningRig");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.MiningRig;
             PlayerContext.getInstance().blueprintList.Add(bp);
@@ -544,7 +544,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.OwnerUUID = profile.UUID;
 
             // Create a Refinery blueprint
-            var bp = new OE2EmpireTracker.Data.Blueprint("TestRefinery");
+            var bp = new OE2EmpireTracker.Models.Blueprint("TestRefinery");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.Refinery;
             PlayerContext.getInstance().blueprintList.Add(bp);
@@ -596,7 +596,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.UUID = Guid.NewGuid().ToString();
             colony.OwnerUUID = profile.UUID;
 
-            var bp = new OE2EmpireTracker.Data.Blueprint("TestRefinery0");
+            var bp = new OE2EmpireTracker.Models.Blueprint("TestRefinery0");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.Refinery;
             PlayerContext.getInstance().blueprintList.Add(bp);
@@ -642,7 +642,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.UUID = Guid.NewGuid().ToString();
             colony.OwnerUUID = ""; // No owner
 
-            var bp = new OE2EmpireTracker.Data.Blueprint("TestRefineryNoOwner");
+            var bp = new OE2EmpireTracker.Models.Blueprint("TestRefineryNoOwner");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.Refinery;
             PlayerContext.getInstance().blueprintList.Add(bp);

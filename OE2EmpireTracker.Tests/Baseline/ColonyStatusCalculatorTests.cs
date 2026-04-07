@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using OE2EmpireTracker.Baseline;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 
@@ -26,9 +26,9 @@ namespace OE2EmpireTracker.Tests.Baseline
         /// <summary>
         /// Creates a blueprint with the given properties set on its PropertyBag.
         /// </summary>
-        private static OE2EmpireTracker.Data.Blueprint MakeBlueprint(Dictionary<string, string> properties = null)
+        private static OE2EmpireTracker.Models.Blueprint MakeBlueprint(Dictionary<string, string> properties = null)
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint("TestBlueprint");
+            var bp = new OE2EmpireTracker.Models.Blueprint("TestBlueprint");
             bp.UUID = Guid.NewGuid().ToString();
             if (properties != null)
             {
@@ -58,7 +58,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             ColonyStructure structure,
             ColonyStructureStatus prevStatus,
             IColonyStructureWorkers workerSource,
-            OE2EmpireTracker.Data.Blueprint blueprint)
+            OE2EmpireTracker.Models.Blueprint blueprint)
         {
             var colony = new Colony();
             colony.Structures.Add(structure);

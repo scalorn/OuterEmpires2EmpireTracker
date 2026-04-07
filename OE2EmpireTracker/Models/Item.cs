@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OE2EmpireTracker.Baseline;
 
-namespace OE2EmpireTracker.Data
+namespace OE2EmpireTracker.Models
 {
     public class Item
     {
@@ -18,7 +18,7 @@ namespace OE2EmpireTracker.Data
 
         [Required]
         [JsonConverter(typeof(StringEnumConverter))]
-        public ItemType.ItemTypeEnum ItemType { get; set; } = Data.ItemType.ItemTypeEnum.None;
+        public Models.ItemType.ItemTypeEnum ItemType { get; set; } = Models.ItemType.ItemTypeEnum.None;
         public string BaseItemTypeID { get; set; } = string.Empty;
 
         [Required]
@@ -29,14 +29,14 @@ namespace OE2EmpireTracker.Data
             get 
             {
                 string extendedName = Name;
-                if (ItemType == Data.ItemType.ItemTypeEnum.Resource)
+                if (ItemType == Models.ItemType.ItemTypeEnum.Resource)
                 {
                     if (!string.IsNullOrEmpty(ResourcePurity))
                     {
                         extendedName += $" ({ResourcePurity})";
                     }
                 }
-                if (ItemType == Data.ItemType.ItemTypeEnum.Commodity)
+                if (ItemType == Models.ItemType.ItemTypeEnum.Commodity)
                 {
                     Commodity.ResourceMapByEnum.TryGetValue(BaseItemTypeID, out Commodity commodity);
                     if (commodity != null)
@@ -44,7 +44,7 @@ namespace OE2EmpireTracker.Data
                         extendedName = commodity.ExtendedName;
                     }
                 }
-                if (ItemType == Data.ItemType.ItemTypeEnum.Survey)
+                if (ItemType == Models.ItemType.ItemTypeEnum.Survey)
                 {
                     Survey survey = EmpireContext.PlayerContext?.FindSurvey(BaseItemTypeID);
                     if (survey != null)
@@ -56,7 +56,7 @@ namespace OE2EmpireTracker.Data
                         }
                     }
                 }
-                if (ItemType == Data.ItemType.ItemTypeEnum.Blueprint)
+                if (ItemType == Models.ItemType.ItemTypeEnum.Blueprint)
                 {
                     Blueprint blueprint = EmpireContext.PlayerContext?.FindBlueprint(BaseItemTypeID);
                     if (blueprint != null)
@@ -95,7 +95,7 @@ namespace OE2EmpireTracker.Data
         public string ResourcePurity { get; set; } = string.Empty;
         public double Volume { get; set; } = 0;
         
-        public Item(ItemType.ItemTypeEnum itemType, string name)
+        public Item(Models.ItemType.ItemTypeEnum itemType, string name)
         {
             this.ItemType = itemType;
             this.Name = name;

@@ -1,6 +1,6 @@
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Forms.Blueprint;
 using OE2EmpireTracker.ViewModels;
 using System;

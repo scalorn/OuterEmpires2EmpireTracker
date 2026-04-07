@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using OE2EmpireTracker.Baseline;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace OE2EmpireTracker.Data
+namespace OE2EmpireTracker.Models
 {
     public class Blueprint : Item
     {
@@ -70,13 +70,13 @@ namespace OE2EmpireTracker.Data
         }
 
 
-        public Blueprint(string name /*, int quantity*/) : base(Data.ItemType.ItemTypeEnum.Blueprint, name /* , quantity */)
+        public Blueprint(string name /*, int quantity*/) : base(Models.ItemType.ItemTypeEnum.Blueprint, name /* , quantity */)
         {
             Properties = new PropertyBag();
             Resources = new Dictionary<string, string>();
         }
 
-        public Blueprint() : base(Data.ItemType.ItemTypeEnum.Blueprint, "")
+        public Blueprint() : base(Models.ItemType.ItemTypeEnum.Blueprint, "")
         {
             Properties = new PropertyBag();
             Resources = new Dictionary<string, string>();

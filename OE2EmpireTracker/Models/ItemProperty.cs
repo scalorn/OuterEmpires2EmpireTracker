@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OE2EmpireTracker.Data
+namespace OE2EmpireTracker.Models
 {
     public class ItemProperty
     {

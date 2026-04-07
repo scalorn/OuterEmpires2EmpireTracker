@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,9 +35,9 @@ namespace OE2EmpireTracker.Tests.Baseline
         // Helpers
         // -----------------------------------------------------------------------
 
-        private OE2EmpireTracker.Data.Blueprint CreateBlueprint(string bpType, string name = null, int evolution = 0)
+        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string bpType, string name = null, int evolution = 0)
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint(name ?? "TestBP_" + Guid.NewGuid().ToString().Substring(0, 6));
+            var bp = new OE2EmpireTracker.Models.Blueprint(name ?? "TestBP_" + Guid.NewGuid().ToString().Substring(0, 6));
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = bpType;
             bp.Evolution = evolution;

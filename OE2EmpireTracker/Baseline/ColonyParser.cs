@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Baseline
 {

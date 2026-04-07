@@ -123,7 +123,7 @@ namespace OE2EmpireTracker.Constants
             {
                 case "CommodityIndustry":
                     return new List<string>(
-                        Data.CommodityIndustry.Groups
+                        Models.CommodityIndustry.Groups
                             .Select(ci => ci.Name));
                 default:
                     return null;

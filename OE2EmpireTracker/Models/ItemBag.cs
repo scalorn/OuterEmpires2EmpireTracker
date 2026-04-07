@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Sgml;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace OE2EmpireTracker.Data
+namespace OE2EmpireTracker.Models
 {
     [JsonConverter(typeof(ItemBagJSONConverter))]
     public class ItemBag
@@ -38,14 +38,14 @@ namespace OE2EmpireTracker.Data
         /// Returns the total quantity of all items in the bag that match
         /// the given ItemType and BaseItemTypeID. Sums across multiple stacks.
         /// </summary>
-        public int CountByType(ItemType.ItemTypeEnum itemType, string baseItemTypeID)
+        public int CountByType(Models.ItemType.ItemTypeEnum itemType, string baseItemTypeID)
         {
             return Items.Values
                 .Where(i => i.ItemType == itemType &&
                             string.Equals(i.BaseItemTypeID, baseItemTypeID, StringComparison.Ordinal))
                 .Sum(i => i.Quantity);
         }
-        public List<Item> FindByType(ItemType.ItemTypeEnum itemType, string baseItemTypeID)
+        public List<Item> FindByType(Models.ItemType.ItemTypeEnum itemType, string baseItemTypeID)
         {
             List<Item> results = new List<Item>();
             return Items.Values
@@ -58,7 +58,7 @@ namespace OE2EmpireTracker.Data
         {
             List<Item> results = new List<Item>();
             return Items.Values
-                .Where(i => i.ItemType == Data.ItemType.ItemTypeEnum.Resource &&
+                .Where(i => i.ItemType == Models.ItemType.ItemTypeEnum.Resource &&
                             string.Equals(i.BaseItemTypeID, resource, StringComparison.Ordinal) &&
                             string.Equals(i.ResourcePurity, purity, StringComparison.Ordinal))
                 .ToList<Item>();

@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 using NUnit.Framework;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Forms.Blueprint;
 using System.IO;
 
@@ -56,7 +56,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessHtml_NameWithTechLevel_ParsesBoth()
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, Html(TitleDiv("Pulse Cannon (MilSpec)")));
 
             Assert.That(bp.Name, Is.EqualTo("Pulse Cannon"));
@@ -66,7 +66,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessHtml_NameWithoutTechLevel_SetsNameOnly()
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, Html(TitleDiv("Basic Thruster")));
 
             Assert.That(bp.Name, Is.EqualTo("Basic Thruster"));
@@ -76,7 +76,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessHtml_NameWithLeadingTrailingWhitespace_IsTrimmed()
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, Html(TitleDiv("  Cargo Pod  ")));
 
             Assert.That(bp.Name, Is.EqualTo("Cargo Pod"));
@@ -89,7 +89,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessHtml_EvolutionNumber_ParsedAsInt()
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, Html(EvoDiv("3") + TitleDiv("Pulse Cannon3")));
 
             Assert.That(bp.Evolution, Is.EqualTo(3));
@@ -98,7 +98,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessHtml_EvolutionRemovedFromTitle()
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, Html(EvoDiv("2") + TitleDiv("Jump Drive2")));
 
             Assert.That(bp.Name, Is.EqualTo("Jump Drive"));
@@ -107,7 +107,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessHtml_NoEvolutionNode_EvolutionRemainsDefault()
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, Html(TitleDiv("Shield Generator")));
 
             Assert.That(bp.Evolution, Is.EqualTo(0));
@@ -120,7 +120,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessHtml_Description_IsPopulated()
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, Html(DescDiv("A powerful weapon system.")));
 
             Assert.That(bp.Description, Is.EqualTo("A powerful weapon system."));
@@ -133,7 +133,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessHtml_SingleResource_IsExtracted()
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, Html(ResourceRow("Iron", "500")));
 
             Assert.That(bp.Resources.ContainsKey("Iron"), Is.True);
@@ -143,7 +143,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessHtml_MultipleResources_AllExtracted()
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, Html(
                 ResourceRow("Iron", "500") +
                 ResourceRow("Carbon", "250") +
@@ -157,7 +157,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessHtml_ResourceQuantityWithCommas_StripsNonDigits()
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, Html(ResourceRow("Iron", "1,500")));
 
             Assert.That(bp.Resources["Iron"], Is.EqualTo("1500"));
@@ -166,7 +166,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessHtml_NoResources_ResourcesDictionaryIsEmpty()
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, Html(TitleDiv("Empty Blueprint")));
 
             Assert.That(bp.Resources, Is.Not.Null);
@@ -180,7 +180,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessHtml_SingleProperty_IsExtracted()
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, Html(PropRow("Mass", "450")));
 
             string val;
@@ -191,7 +191,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessHtml_PropertyWithDeltaText_DeltaIsStripped()
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, Html(PropRow("Power", "1200 (▲ 435)")));
 
             string val;
@@ -202,7 +202,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessHtml_MultipleProperties_AllExtracted()
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, Html(
                 PropRow("Mass", "450") +
                 PropRow("Health", "2000") +
@@ -225,14 +225,14 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessHtml_EmptyHtml_DoesNotThrow()
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             Assert.DoesNotThrow(() => _scanner.ProcessHtml(bp, Html("")));
         }
 
         [Test]
         public void ProcessHtml_MalformedHtml_DoesNotThrow()
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             Assert.DoesNotThrow(() => _scanner.ProcessHtml(bp, "<div unclosed"));
         }
 
@@ -246,7 +246,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
             string page1 = LoadTestData("BP_AMX_LL_Milspec_Page1.html");
             string page2 = LoadTestData("BP_AMX_LL_Milspec_Page2.html");
 
-            var bp = new OE2EmpireTracker.Data.Blueprint();
+            var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, page1);
             _scanner.ProcessHtml(bp, page2);
 

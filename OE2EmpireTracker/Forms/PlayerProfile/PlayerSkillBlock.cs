@@ -1,4 +1,4 @@
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,8 +23,8 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             set => lblSkillName.Text = value;
         }
 
-        private Data.PlayerSkill _playerSkill;
-        public Data.PlayerSkill PlayerSkill
+        private Models.PlayerSkill _playerSkill;
+        public Models.PlayerSkill PlayerSkill
         {
             get
             {

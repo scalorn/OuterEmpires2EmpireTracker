@@ -1,7 +1,7 @@
 using NLog;
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Controls;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

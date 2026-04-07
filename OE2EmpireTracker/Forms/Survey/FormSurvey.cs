@@ -1,5 +1,5 @@
 using OE2EmpireTracker.Baseline;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -257,7 +257,7 @@ namespace OE2EmpireTracker.Forms.Survey
         private void cmbScannerBlueprint_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            var bp = cmbScannerBlueprint.SelectedItem as Data.Blueprint;
+            var bp = cmbScannerBlueprint.SelectedItem as Models.Blueprint;
             viewModel.ScannerBlueprintUUID = bp?.UUID ?? "";
         }
 

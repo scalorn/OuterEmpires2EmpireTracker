@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace OE2EmpireTracker.Data
+namespace OE2EmpireTracker.Models
 {
     /// <summary>
     /// Represents a countdown timer that can be used as a one-shot expiration timer or as a repeating interval timer.

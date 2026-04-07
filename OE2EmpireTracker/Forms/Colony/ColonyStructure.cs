@@ -2,7 +2,7 @@ using NLog;
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -40,7 +40,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         public ColonyStructureViewModel ViewModel { get; private set; }
 
-        private Data.Blueprint FlatpackBlueprint { get; set; }
+        private Models.Blueprint FlatpackBlueprint { get; set; }
 
         public bool completionModification = false;
 
@@ -177,7 +177,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 chkOnline.Checked = ViewModel.IsOnline;
 
                 // --- Assigned Workers ---
-                foreach (var wt in Data.WorkerDetail.WorkerTypes)
+                foreach (var wt in Models.WorkerDetail.WorkerTypes)
                 {
                     int index = 1;
                     string key = wt.WorkerPrefix + index;
@@ -195,7 +195,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 }
 
                 // --- Unallocated Workers ---
-                foreach (var wt in Data.WorkerDetail.WorkerTypes)
+                foreach (var wt in Models.WorkerDetail.WorkerTypes)
                 {
                     if (FlatpackBlueprint.Properties.ContainsKey(wt.UnassignedKey))
                     {
@@ -495,7 +495,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // Add unrefined resources from warehouse
             foreach (var itemEntry in Colony.Items.Items.Values)
             {
-                if (itemEntry.ItemType == Data.ItemType.ItemTypeEnum.Resource &&
+                if (itemEntry.ItemType == Models.ItemType.ItemTypeEnum.Resource &&
                     !string.IsNullOrEmpty(itemEntry.ResourcePurity) &&
                     itemEntry.ResourcePurity != GameConstants.PurityRefined)
                 {
@@ -728,7 +728,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             var items = new List<ResearchSelectionItem>();
 
-            foreach (Data.Blueprint bp in playerContext.GetAllBlueprints())
+            foreach (Models.Blueprint bp in playerContext.GetAllBlueprints())
             {
                 if (bp.UUID == null) continue;
                 if (bp.Evolution >= 15) continue;
@@ -770,7 +770,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 return;
             }
 
-            Data.Blueprint bp = playerContext.FindBlueprint(ColonyStructureData.ResearchingBlueprintUUID);
+            Models.Blueprint bp = playerContext.FindBlueprint(ColonyStructureData.ResearchingBlueprintUUID);
             if (bp == null)
             {
                 rtbProgressStatus.Text = "";
@@ -891,7 +891,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             var items = new List<ResearchSelectionItem>();
 
-            foreach (Data.Blueprint bp in playerContext.GetAllBlueprints())
+            foreach (Models.Blueprint bp in playerContext.GetAllBlueprints())
             {
                 if (bp.UUID == null) continue;
 
@@ -936,7 +936,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 return;
             }
 
-            Data.Blueprint bp = playerContext.FindBlueprint(ColonyStructureData.ManufacturingBlueprintUUID);
+            Models.Blueprint bp = playerContext.FindBlueprint(ColonyStructureData.ManufacturingBlueprintUUID);
             if (bp == null)
             {
                 rtbProgressStatus.Text = "";
@@ -1057,15 +1057,15 @@ namespace OE2EmpireTracker.Forms.Colony
             }
 
             var items = new List<CommoditySelectionItem>();
-            foreach (var commodity in Data.Commodity.Commodities)
+            foreach (var commodity in Models.Commodity.Commodities)
             {
                 if (string.IsNullOrEmpty(commodity.Name)) continue;
 
                 // Filter by CommodityIndustry if set
                 if (!string.IsNullOrEmpty(industryFilter))
                 {
-                    var industry = Data.CommodityIndustry.CommodityIndustryMapByEnum.ContainsKey(commodity.CommodityIndustry)
-                        ? Data.CommodityIndustry.CommodityIndustryMapByEnum[commodity.CommodityIndustry]
+                    var industry = Models.CommodityIndustry.CommodityIndustryMapByEnum.ContainsKey(commodity.CommodityIndustry)
+                        ? Models.CommodityIndustry.CommodityIndustryMapByEnum[commodity.CommodityIndustry]
                         : null;
                     if (industry == null || industry.Name != industryFilter) continue;
                 }
@@ -1421,7 +1421,7 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 if (string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID)) return;
 
-                Data.Blueprint bp = playerContext.FindBlueprint(ColonyStructureData.ResearchingBlueprintUUID);
+                Models.Blueprint bp = playerContext.FindBlueprint(ColonyStructureData.ResearchingBlueprintUUID);
                 if (bp == null) return;
 
                 long researchSeconds = ResearchTimeLookup.GetResearchTimeSeconds(bp.Evolution);
@@ -1449,7 +1449,7 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 if (string.IsNullOrEmpty(ColonyStructureData.ManufacturingBlueprintUUID)) return;
 
-                Data.Blueprint bp = playerContext.FindBlueprint(ColonyStructureData.ManufacturingBlueprintUUID);
+                Models.Blueprint bp = playerContext.FindBlueprint(ColonyStructureData.ManufacturingBlueprintUUID);
                 if (bp == null) return;
 
                 // Parse manufacture time from blueprint properties

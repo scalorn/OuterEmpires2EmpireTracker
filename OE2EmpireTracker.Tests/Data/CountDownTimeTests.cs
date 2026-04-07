@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using System;
 
 namespace OE2EmpireTracker.Tests.Data

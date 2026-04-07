@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using System;
 using System.IO;
 using System.Linq;

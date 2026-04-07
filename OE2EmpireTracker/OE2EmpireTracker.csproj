@@ -156,17 +156,17 @@
     <Compile Include="Controls\DataGridViewValidatedTextBoxColumn.cs" />
     <Compile Include="Controls\RtfBuilder.cs" />
     <Compile Include="Controls\ProgrammaticUpdateGuard.cs" />
-    <Compile Include="Data\Commodity.cs" />
-    <Compile Include="Data\CommodityGroup.cs" />
-    <Compile Include="Data\CommodityIndustry.cs" />
-    <Compile Include="Data\CountDownTime.cs" />
-    <Compile Include="Data\ItemBag.cs" />
-    <Compile Include="Data\PlayerProfile.cs" />
-    <Compile Include="Data\PlayerRank.cs" />
-    <Compile Include="Data\PlayerSkill.cs" />
-    <Compile Include="Data\ResourceClass.cs" />
-    <Compile Include="Data\ResourceGroup.cs" />
-    <Compile Include="Data\ResourcePurity.cs" />
+    <Compile Include="Models\Commodity.cs" />
+    <Compile Include="Models\CommodityGroup.cs" />
+    <Compile Include="Models\CommodityIndustry.cs" />
+    <Compile Include="Models\CountDownTime.cs" />
+    <Compile Include="Models\ItemBag.cs" />
+    <Compile Include="Models\PlayerProfile.cs" />
+    <Compile Include="Models\PlayerRank.cs" />
+    <Compile Include="Models\PlayerSkill.cs" />
+    <Compile Include="Models\ResourceClass.cs" />
+    <Compile Include="Models\ResourceGroup.cs" />
+    <Compile Include="Models\ResourcePurity.cs" />
     <Compile Include="Baseline\ShipClass.cs" />
     <Compile Include="Baseline\SurveyParser.cs" />
     <Compile Include="Baseline\Survey.cs" />
@@ -191,8 +191,8 @@
     <Compile Include="Controls\ValidatedTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Data\LockTracking.cs" />
-    <Compile Include="Data\WorkerDetail.cs" />
+    <Compile Include="Models\LockTracking.cs" />
+    <Compile Include="Models\WorkerDetail.cs" />
     <Compile Include="ViewModels\ColonyStructureViewModel.cs" />
     <Compile Include="ViewModels\DeliveryRouteViewModel.cs" />
     <Compile Include="ViewModels\DeliveryPlanViewModel.cs" />
@@ -200,13 +200,13 @@
     <Compile Include="ViewModels\BlueprintViewModel.cs" />
     <Compile Include="ViewModels\PlayerProfileViewModel.cs" />
     <Compile Include="ViewModels\SurveyViewModel.cs" />
-    <Compile Include="Data\Blueprint.cs" />
-    <Compile Include="Data\ItemProperty.cs" />
-    <Compile Include="Data\ItemType.cs" />
-    <Compile Include="Data\PropertyBag.cs" />
-    <Compile Include="Data\SubResource.cs" />
-    <Compile Include="Data\Item.cs" />
-    <Compile Include="Data\Resource.cs" />
+    <Compile Include="Models\Blueprint.cs" />
+    <Compile Include="Models\ItemProperty.cs" />
+    <Compile Include="Models\ItemType.cs" />
+    <Compile Include="Models\PropertyBag.cs" />
+    <Compile Include="Models\SubResource.cs" />
+    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\Resource.cs" />
     <Compile Include="Forms\Blueprint\BlueprintScanner.cs" />
     <Compile Include="Forms\Blueprint\FormBlueprint.cs">
       <SubType>Form</SubType>

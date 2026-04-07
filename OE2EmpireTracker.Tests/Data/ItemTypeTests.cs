@@ -1,8 +1,8 @@
 using NUnit.Framework;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using System;
 using System.Linq;
-using ITE = OE2EmpireTracker.Data.ItemType.ItemTypeEnum;
+using ITE = OE2EmpireTracker.Models.ItemType.ItemTypeEnum;
 
 namespace OE2EmpireTracker.Tests.Data
 {

@@ -1,8 +1,8 @@
 using NUnit.Framework;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using System.Linq;
-using CG = OE2EmpireTracker.Data.CommodityGroup;
-using CI = OE2EmpireTracker.Data.CommodityIndustry;
+using CG = OE2EmpireTracker.Models.CommodityGroup;
+using CI = OE2EmpireTracker.Models.CommodityIndustry;
 
 namespace OE2EmpireTracker.Tests.Data
 {

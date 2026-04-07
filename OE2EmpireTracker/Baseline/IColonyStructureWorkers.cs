@@ -66,14 +66,14 @@ namespace OE2EmpireTracker.Baseline
             if (_colony == null) return true; // fallback when no colony context
 
             int total = _colony.Items.CountByType(
-                OE2EmpireTracker.Data.ItemType.ItemTypeEnum.WorkDetail, workerKey);
+                OE2EmpireTracker.Models.ItemType.ItemTypeEnum.WorkDetail, workerKey);
 
             // Subtract locked quantity if LockTracking is available
             int locked = 0;
             if (_colony.Locks != null)
             {
                 locked = _colony.Locks.GetLockedQuantity(
-                    OE2EmpireTracker.Data.ItemType.ItemTypeEnum.WorkDetail, workerKey);
+                    OE2EmpireTracker.Models.ItemType.ItemTypeEnum.WorkDetail, workerKey);
             }
 
             return (total - locked) > 0;

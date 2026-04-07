@@ -1,5 +1,5 @@
 using Newtonsoft.Json;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 

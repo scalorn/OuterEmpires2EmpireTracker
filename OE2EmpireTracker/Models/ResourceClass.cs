@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static OE2EmpireTracker.Data.ResourcePurity;
+using static OE2EmpireTracker.Models.ResourcePurity;
 
-namespace OE2EmpireTracker.Data
+namespace OE2EmpireTracker.Models
 {
     public class ResourceClass
     {

@@ -1,5 +1,5 @@
 using OE2EmpireTracker.Baseline;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using OE2EmpireTracker.Baseline;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.ViewModels;
 using System.Collections.Generic;
 using System.IO;
@@ -388,9 +388,9 @@ namespace OE2EmpireTracker.Tests.Baseline
         // Validates: Requirements 2.1, 2.2, 2.3
         // -----------------------------------------------------------------------
 
-        private OE2EmpireTracker.Data.Blueprint CreateTestBlueprint(string uuid, string name, string bpType = "Flatpacks/Habitat")
+        private OE2EmpireTracker.Models.Blueprint CreateTestBlueprint(string uuid, string name, string bpType = "Flatpacks/Habitat")
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint(name) { UUID = uuid, BluePrintType = bpType };
+            var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, BluePrintType = bpType };
             playerContext.blueprintList.Add(bp);
             return bp;
         }
@@ -560,9 +560,9 @@ namespace OE2EmpireTracker.Tests.Baseline
         // Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5, 8.1, 8.2, 8.3, 8.4
         // -----------------------------------------------------------------------
 
-        private OE2EmpireTracker.Data.Blueprint CreateManufactoryBlueprint(string uuid, string name, Dictionary<string, string> resources)
+        private OE2EmpireTracker.Models.Blueprint CreateManufactoryBlueprint(string uuid, string name, Dictionary<string, string> resources)
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint(name) { UUID = uuid, BluePrintType = "Flatpacks/Manufactory", Resources = resources };
+            var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, BluePrintType = "Flatpacks/Manufactory", Resources = resources };
             bp.Properties.setProperty("ManufactureTime", "1h");
             bp.Properties.setProperty("CanManufacture", true);
             playerContext.blueprintList.Add(bp);
@@ -616,7 +616,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         [Test]
         public void AutoFillManufacturingResources_StagingManufactory_AddsResourceShortfall()
         {
-            var flatpackBp = new OE2EmpireTracker.Data.Blueprint("Manufactory") { UUID = "fp-mfg-shortfall", BluePrintType = "Flatpacks/Manufactory" };
+            var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg-shortfall", BluePrintType = "Flatpacks/Manufactory" };
             playerContext.blueprintList.Add(flatpackBp);
 
             CreateManufactoryBlueprint("mfg-bp-shortfall", "Widget",
@@ -656,7 +656,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         [Test]
         public void AutoFillManufacturingResources_ResourcePurityIsRefined()
         {
-            var flatpackBp = new OE2EmpireTracker.Data.Blueprint("Manufactory") { UUID = "fp-mfg-purity", BluePrintType = "Flatpacks/Manufactory" };
+            var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg-purity", BluePrintType = "Flatpacks/Manufactory" };
             playerContext.blueprintList.Add(flatpackBp);
 
             CreateManufactoryBlueprint("mfg-bp-purity", "Gadget",
@@ -686,7 +686,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         public void AutoFillManufacturingResources_WarehouseFullyStocked_ReturnsZero()
         {
             // Create flatpack blueprint for the manufactory structure
-            var flatpackBp = new OE2EmpireTracker.Data.Blueprint("Manufactory") { UUID = "fp-mfg1", BluePrintType = "Flatpacks/Manufactory" };
+            var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg1", BluePrintType = "Flatpacks/Manufactory" };
             playerContext.blueprintList.Add(flatpackBp);
 
             // Create the manufacturing target blueprint with resources
@@ -719,7 +719,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         [Test]
         public void AutoFillManufacturingResources_PartialWarehouse_CorrectShortfall()
         {
-            var flatpackBp = new OE2EmpireTracker.Data.Blueprint("Manufactory") { UUID = "fp-mfg2", BluePrintType = "Flatpacks/Manufactory" };
+            var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg2", BluePrintType = "Flatpacks/Manufactory" };
             playerContext.blueprintList.Add(flatpackBp);
 
             CreateManufactoryBlueprint("mfg-bp2", "Gadget",
@@ -760,7 +760,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         [Test]
         public void AutoFillManufacturingResources_MultipleStagingStructures_AggregatesNeeds()
         {
-            var flatpackBp = new OE2EmpireTracker.Data.Blueprint("Manufactory") { UUID = "fp-mfg3", BluePrintType = "Flatpacks/Manufactory" };
+            var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg3", BluePrintType = "Flatpacks/Manufactory" };
             playerContext.blueprintList.Add(flatpackBp);
 
             CreateManufactoryBlueprint("mfg-bp3", "Part",
@@ -785,7 +785,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         [Test]
         public void AutoFillManufacturingResources_CommodityFactory_CorrectShortfall()
         {
-            var flatpackBp = new OE2EmpireTracker.Data.Blueprint("CommodityFactory") { UUID = "fp-cf1", BluePrintType = "Flatpacks/CommodityFactory" };
+            var flatpackBp = new OE2EmpireTracker.Models.Blueprint("CommodityFactory") { UUID = "fp-cf1", BluePrintType = "Flatpacks/CommodityFactory" };
             playerContext.blueprintList.Add(flatpackBp);
 
             // Use a real commodity — "Advanced Biolubricants" needs Alkali Organics (2) and Strong Acidic Inorganics (2)
@@ -812,7 +812,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         [Test]
         public void AutoFillManufacturingResources_ZeroQuantity_Skipped()
         {
-            var flatpackBp = new OE2EmpireTracker.Data.Blueprint("Manufactory") { UUID = "fp-mfg4", BluePrintType = "Flatpacks/Manufactory" };
+            var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg4", BluePrintType = "Flatpacks/Manufactory" };
             playerContext.blueprintList.Add(flatpackBp);
 
             CreateManufactoryBlueprint("mfg-bp4", "Thing",
@@ -834,7 +834,7 @@ namespace OE2EmpireTracker.Tests.Baseline
         [Test]
         public void AutoFillManufacturingResources_PreservesExistingItems()
         {
-            var flatpackBp = new OE2EmpireTracker.Data.Blueprint("Manufactory") { UUID = "fp-mfg5", BluePrintType = "Flatpacks/Manufactory" };
+            var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg5", BluePrintType = "Flatpacks/Manufactory" };
             playerContext.blueprintList.Add(flatpackBp);
 
             CreateManufactoryBlueprint("mfg-bp5", "Gizmo",
@@ -862,10 +862,10 @@ namespace OE2EmpireTracker.Tests.Baseline
         // Validates: Requirements 10.1, 10.2, 10.3, 10.4
         // -----------------------------------------------------------------------
 
-        private OE2EmpireTracker.Data.Blueprint CreateBlueprintWithWorkers(string uuid, string name, string bpType,
+        private OE2EmpireTracker.Models.Blueprint CreateBlueprintWithWorkers(string uuid, string name, string bpType,
             int blueCollar = 0, int whiteCollar = 0, int specialist = 0)
         {
-            var bp = new OE2EmpireTracker.Data.Blueprint(name) { UUID = uuid, BluePrintType = bpType };
+            var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, BluePrintType = bpType };
             if (blueCollar > 0) bp.Properties.setProperty("BlueCollarDetail", blueCollar.ToString());
             if (whiteCollar > 0) bp.Properties.setProperty("WhiteCollarDetail", whiteCollar.ToString());
             if (specialist > 0) bp.Properties.setProperty("SpecialistDetail", specialist.ToString());

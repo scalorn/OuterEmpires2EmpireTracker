@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace OE2EmpireTracker.Baseline
         public List<ColonyStructure> Structures { get; set; }
 
         public List<CommodityRequested> Commodities { get; set; }
-        public OE2EmpireTracker.Data.LockTracking Locks { get; set; }
+        public OE2EmpireTracker.Models.LockTracking Locks { get; set; }
 
         [JsonIgnore]
         public object ProcessingLock { get; } = new object();
@@ -50,7 +50,7 @@ namespace OE2EmpireTracker.Baseline
             Items = new ItemBag();
             Structures = new List<ColonyStructure>();
             Commodities = new List<CommodityRequested>();
-            Locks = new OE2EmpireTracker.Data.LockTracking();
+            Locks = new OE2EmpireTracker.Models.LockTracking();
         }
 
         /// <summary>

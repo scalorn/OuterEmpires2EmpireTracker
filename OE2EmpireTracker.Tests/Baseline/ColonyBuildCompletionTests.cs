@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -173,7 +173,7 @@ namespace OE2EmpireTracker.Tests.Baseline
             colony.UUID = Guid.NewGuid().ToString();
 
             // Create a mining rig blueprint
-            var bp = new OE2EmpireTracker.Data.Blueprint("TestMiningRig");
+            var bp = new OE2EmpireTracker.Models.Blueprint("TestMiningRig");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.MiningRig;
             playerContext.blueprintList.Add(bp);

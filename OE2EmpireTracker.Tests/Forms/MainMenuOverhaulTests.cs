@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using OE2EmpireTracker.Baseline;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -92,9 +92,9 @@ namespace OE2EmpireTracker.Tests.Forms
             };
         }
 
-        private static OE2EmpireTracker.Data.Blueprint RandomBlueprint(Random rng, string ownerUUID)
+        private static OE2EmpireTracker.Models.Blueprint RandomBlueprint(Random rng, string ownerUUID)
         {
-            return new OE2EmpireTracker.Data.Blueprint(RandomString(rng))
+            return new OE2EmpireTracker.Models.Blueprint(RandomString(rng))
             {
                 UUID = RandomUUID(rng),
                 OwnerUUID = ownerUUID,
@@ -159,7 +159,7 @@ namespace OE2EmpireTracker.Tests.Forms
             var root = new PlayerRoot();
             int profileCount = rng.Next(1, 6);
             var profiles = new List<PlayerProfile>();
-            var blueprints = new List<OE2EmpireTracker.Data.Blueprint>();
+            var blueprints = new List<OE2EmpireTracker.Models.Blueprint>();
             var surveys = new List<Survey>();
             var colonies = new List<Colony>();
             var routes = new List<DeliveryRoute>();

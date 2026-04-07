@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Baseline;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.ViewModels;
 using System;
 using System.IO;

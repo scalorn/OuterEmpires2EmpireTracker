@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace OE2EmpireTracker.Data
+namespace OE2EmpireTracker.Models
 {
     public class PlayerProfile
     {

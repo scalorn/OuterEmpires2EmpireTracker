@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Baseline
 {
@@ -43,7 +43,7 @@ namespace OE2EmpireTracker.Baseline
         }
 
 
-        public Survey(string name /*, int quantity*/) : base(Data.ItemType.ItemTypeEnum.Survey, name /* , quantity */)
+        public Survey(string name /*, int quantity*/) : base(Models.ItemType.ItemTypeEnum.Survey, name /* , quantity */)
         {
             Properties = new Dictionary<string, string>();
             Resources = new Dictionary<string, SurveyResource>();
@@ -51,7 +51,7 @@ namespace OE2EmpireTracker.Baseline
 
         public Survey() : base()
         {
-            ItemType = Data.ItemType.ItemTypeEnum.Survey;
+            ItemType = Models.ItemType.ItemTypeEnum.Survey;
             Properties = new Dictionary<string, string>();
             Resources = new Dictionary<string, SurveyResource>();
         }

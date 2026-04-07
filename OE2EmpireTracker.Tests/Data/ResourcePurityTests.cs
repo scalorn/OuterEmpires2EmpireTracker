@@ -1,8 +1,8 @@
 using NUnit.Framework;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using System;
 using System.Linq;
-using PE = OE2EmpireTracker.Data.ResourcePurity.PurityEnum;
+using PE = OE2EmpireTracker.Models.ResourcePurity.PurityEnum;
 
 namespace OE2EmpireTracker.Tests.Data
 {

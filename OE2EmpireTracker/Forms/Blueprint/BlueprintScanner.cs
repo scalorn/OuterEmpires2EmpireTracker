@@ -47,7 +47,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
         /// The HTML fragment is extracted from clipboard data which typically includes
             // start/end fragment markers. Currently commented out - can be re-enabled when needed.
             /// </remarks>
-        public void processClipboard(Data.Blueprint blueprint)
+        public void processClipboard(Models.Blueprint blueprint)
         {
             String returnHtmlText = null;
             if (Clipboard.ContainsText(TextDataFormat.Html))
@@ -62,7 +62,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
             }
         }
 
-        public void ProcessHtml(Data.Blueprint blueprint, string htmlFragment)
+        public void ProcessHtml(Models.Blueprint blueprint, string htmlFragment)
         {
             // Convert html fragment into Resources on the blueprint.
             try
@@ -174,7 +174,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                     {
                         if (blueprint.Properties == null)
                         {
-                            blueprint.Properties = new Data.PropertyBag();
+                            blueprint.Properties = new Models.PropertyBag();
                         }
                         else
                         {

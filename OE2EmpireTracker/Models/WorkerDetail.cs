@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace OE2EmpireTracker.Data
+namespace OE2EmpireTracker.Models
 {
     public class WorkerDetail
     {

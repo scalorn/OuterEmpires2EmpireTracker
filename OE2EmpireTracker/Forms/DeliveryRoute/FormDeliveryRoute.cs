@@ -1,7 +1,7 @@
 using NLog;
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Controls;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -662,7 +662,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void PopulateItemTypeCombos()
         {
-            IReadOnlyList<ItemType> itemTypes = Data.ItemType.ItemTypes;
+            IReadOnlyList<ItemType> itemTypes = Models.ItemType.ItemTypes;
             cmbDropItemType.DataSource = new List<ItemType>(itemTypes);
             cmbDropItemType.DisplayMember = "Name";
             cmbDropItemType.ValueMember = "ID";
@@ -673,11 +673,11 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void PopulatePurityCombos()
         {
-            var purities = new List<Data.ResourcePurity>(Data.ResourcePurity.Purities);
-            cmbDropPurity.DataSource = new List<Data.ResourcePurity>(purities);
+            var purities = new List<Models.ResourcePurity>(Models.ResourcePurity.Purities);
+            cmbDropPurity.DataSource = new List<Models.ResourcePurity>(purities);
             cmbDropPurity.DisplayMember = "Name";
             cmbDropPurity.ValueMember = "Name";
-            cmbPickPurity.DataSource = new List<Data.ResourcePurity>(purities);
+            cmbPickPurity.DataSource = new List<Models.ResourcePurity>(purities);
             cmbPickPurity.DisplayMember = "Name";
             cmbPickPurity.ValueMember = "Name";
         }
@@ -715,17 +715,17 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             switch (typeEnum)
             {
                 case ItemType.ItemTypeEnum.Resource:
-                    foreach (var r in Data.Resource.Resources)
+                    foreach (var r in Models.Resource.Resources)
                         if (!string.IsNullOrEmpty(r.Name))
                             result.Add(new ItemPickerEntry { ID = r.Name, Display = r.Name });
                     break;
                 case ItemType.ItemTypeEnum.Commodity:
-                    foreach (var c in Data.Commodity.Commodities)
+                    foreach (var c in Models.Commodity.Commodities)
                         if (!string.IsNullOrEmpty(c.Name))
                             result.Add(new ItemPickerEntry { ID = c.Name, Display = c.ExtendedName });
                     break;
                 case ItemType.ItemTypeEnum.WorkDetail:
-                    foreach (var w in Data.WorkerDetail.WorkerDetails)
+                    foreach (var w in Models.WorkerDetail.WorkerDetails)
                         if (!string.IsNullOrEmpty(w.ID))
                             result.Add(new ItemPickerEntry { ID = w.ID, Display = w.Name });
                     break;
@@ -781,7 +781,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             if (qty <= 0) qty = 1;
 
             planViewModel.AddDropOffItem(selectedPlanStop, itemType.ID, entry.ID, entry.Display, qty,
-                itemType.ID == ItemType.ItemTypeEnum.Resource ? (cmbDropPurity.SelectedItem as Data.ResourcePurity)?.Name ?? "" : "");
+                itemType.ID == ItemType.ItemTypeEnum.Resource ? (cmbDropPurity.SelectedItem as Models.ResourcePurity)?.Name ?? "" : "");
             PopulatePlanGrids();
         }
 
@@ -801,7 +801,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             if (qty <= 0) qty = 1;
 
             planViewModel.AddPickUpItem(selectedPlanStop, itemType.ID, entry.ID, entry.Display, qty,
-                itemType.ID == ItemType.ItemTypeEnum.Resource ? (cmbPickPurity.SelectedItem as Data.ResourcePurity)?.Name ?? "" : "");
+                itemType.ID == ItemType.ItemTypeEnum.Resource ? (cmbPickPurity.SelectedItem as Models.ResourcePurity)?.Name ?? "" : "");
             PopulatePlanGrids();
         }
 

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OE2EmpireTracker.Data
+namespace OE2EmpireTracker.Models
 {
     /// <summary>
     /// Identifies a specific item type/base combination as a lock key.
@@ -11,10 +11,10 @@ namespace OE2EmpireTracker.Data
     /// </summary>
     public struct ItemKey : IEquatable<ItemKey>
     {
-        public ItemType.ItemTypeEnum ItemType { get; set; }
+        public Models.ItemType.ItemTypeEnum ItemType { get; set; }
         public string BaseItemTypeID { get; set; }
 
-        public ItemKey(ItemType.ItemTypeEnum itemType, string baseItemTypeID)
+        public ItemKey(Models.ItemType.ItemTypeEnum itemType, string baseItemTypeID)
         {
             ItemType = itemType;
             BaseItemTypeID = baseItemTypeID ?? string.Empty;
@@ -31,16 +31,16 @@ namespace OE2EmpireTracker.Data
         public static ItemKey Parse(string key)
         {
             if (string.IsNullOrEmpty(key))
-                return new ItemKey(Data.ItemType.ItemTypeEnum.None, string.Empty);
+                return new ItemKey(Models.ItemType.ItemTypeEnum.None, string.Empty);
 
             int sep = key.IndexOf(':');
             if (sep < 0)
-                return new ItemKey(Data.ItemType.ItemTypeEnum.None, key);
+                return new ItemKey(Models.ItemType.ItemTypeEnum.None, key);
 
             string typePart = key.Substring(0, sep);
             string idPart = key.Substring(sep + 1);
 
-            ItemType.ItemTypeEnum itemType;
+            Models.ItemType.ItemTypeEnum itemType;
             Enum.TryParse(typePart, out itemType);
             return new ItemKey(itemType, idPart);
         }
@@ -90,7 +90,7 @@ namespace OE2EmpireTracker.Data
         /// Locks a quantity of a single item for the given process.
         /// Adds to any existing lock for the same process and item.
         /// </summary>
-        public void LockItem(string processUUID, ItemType.ItemTypeEnum itemType, string baseItemTypeID, int quantity)
+        public void LockItem(string processUUID, Models.ItemType.ItemTypeEnum itemType, string baseItemTypeID, int quantity)
         {
             if (string.IsNullOrEmpty(processUUID)) throw new ArgumentNullException(nameof(processUUID));
 
@@ -119,7 +119,7 @@ namespace OE2EmpireTracker.Data
         /// <summary>
         /// Returns the total quantity locked across all processes for the given item.
         /// </summary>
-        public int GetLockedQuantity(ItemType.ItemTypeEnum itemType, string baseItemTypeID)
+        public int GetLockedQuantity(Models.ItemType.ItemTypeEnum itemType, string baseItemTypeID)
         {
             var key = new ItemKey(itemType, baseItemTypeID);
             return _locks.Values.Sum(processLocks =>

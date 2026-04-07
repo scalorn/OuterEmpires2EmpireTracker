@@ -93,7 +93,7 @@ namespace OE2EmpireTracker.Baseline
 
             foreach (ColonyStructure structure in colony.Structures)
             {
-                Data.Blueprint FlatpackBlueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                Models.Blueprint FlatpackBlueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (FlatpackBlueprint != null)
                 {
                     int count = 0;
@@ -134,7 +134,7 @@ namespace OE2EmpireTracker.Baseline
 
             foreach (ColonyStructure structure in colony.Structures)
             {
-                Data.Blueprint FlatpackBlueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                Models.Blueprint FlatpackBlueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 ColonyStructureStatus currentStatus = new ColonyStructureStatus();
                 CalculateBuilt(structure, previousStatus, currentStatus, workers, FlatpackBlueprint);
                 structure.Statuses[GameConstants.StatusIdeal] = currentStatus;
@@ -173,7 +173,7 @@ namespace OE2EmpireTracker.Baseline
                 colony.Locks.ClearLocksForProcess(colony.UUID);
         }
 
-        private void LockAssignedWorkers(ColonyStructure structure, Data.Blueprint flatpackBlueprint)
+        private void LockAssignedWorkers(ColonyStructure structure, Models.Blueprint flatpackBlueprint)
         {
             if (colony.Locks == null || string.IsNullOrEmpty(structure.UUID)) return;
 
@@ -182,7 +182,7 @@ namespace OE2EmpireTracker.Baseline
             LockWorkerType(structure, flatpackBlueprint, "SpecialistDetail", "Specialist");
         }
 
-        private void LockWorkerType(ColonyStructure structure, Data.Blueprint flatpackBlueprint,
+        private void LockWorkerType(ColonyStructure structure, Models.Blueprint flatpackBlueprint,
             string detailKey, string workerPrefix)
         {
             if (!flatpackBlueprint.Properties.ContainsKey(detailKey)) return;
@@ -199,7 +199,7 @@ namespace OE2EmpireTracker.Baseline
                 {
                     EnsureWorkerItemExists(detailKey);
                     colony.Locks.LockItem(structure.UUID,
-                        Data.ItemType.ItemTypeEnum.WorkDetail, detailKey, 1);
+                        Models.ItemType.ItemTypeEnum.WorkDetail, detailKey, 1);
                 }
             }
         }
@@ -212,28 +212,28 @@ namespace OE2EmpireTracker.Baseline
             {
                 EnsureWorkerItemExists("BlueCollarDetail");
                 colony.Locks.LockItem(colony.UUID,
-                    Data.ItemType.ItemTypeEnum.WorkDetail, "BlueCollarDetail", 1);
+                    Models.ItemType.ItemTypeEnum.WorkDetail, "BlueCollarDetail", 1);
             }
             if (finalStatus.UnallocatedWhiteCollarPresent)
             {
                 EnsureWorkerItemExists("WhiteCollarDetail");
                 colony.Locks.LockItem(colony.UUID,
-                    Data.ItemType.ItemTypeEnum.WorkDetail, "WhiteCollarDetail", 1);
+                    Models.ItemType.ItemTypeEnum.WorkDetail, "WhiteCollarDetail", 1);
             }
             if (finalStatus.UnallocatedSpecialistPresent)
             {
                 EnsureWorkerItemExists("SpecialistDetail");
                 colony.Locks.LockItem(colony.UUID,
-                    Data.ItemType.ItemTypeEnum.WorkDetail, "SpecialistDetail", 1);
+                    Models.ItemType.ItemTypeEnum.WorkDetail, "SpecialistDetail", 1);
             }
         }
 
         private void EnsureWorkerItemExists(string workerDetailID)
         {
-            var existing = colony.Items.FindByType(Data.ItemType.ItemTypeEnum.WorkDetail, workerDetailID);
+            var existing = colony.Items.FindByType(Models.ItemType.ItemTypeEnum.WorkDetail, workerDetailID);
             if (existing.Count == 0)
             {
-                var workerItem = new Data.Item(Data.ItemType.ItemTypeEnum.WorkDetail, workerDetailID);
+                var workerItem = new Models.Item(Models.ItemType.ItemTypeEnum.WorkDetail, workerDetailID);
                 workerItem.UUID = System.Guid.NewGuid().ToString();
                 workerItem.BaseItemTypeID = workerDetailID;
                 workerItem.Quantity = 0;
@@ -246,13 +246,13 @@ namespace OE2EmpireTracker.Baseline
         // Manufacturing Resource Lock Management
         // -----------------------------------------------------------------------
 
-        private void LockManufacturingResources(ColonyStructure structure, Data.Blueprint flatpackBlueprint)
+        private void LockManufacturingResources(ColonyStructure structure, Models.Blueprint flatpackBlueprint)
         {
             if (colony.Locks == null || string.IsNullOrEmpty(structure.UUID)) return;
             if (string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID)) return;
             if (structure.ProcessCompletionTime == null) return;
 
-            Data.Blueprint mfgBlueprint = playerContext.FindBlueprint(structure.ManufacturingBlueprintUUID);
+            Models.Blueprint mfgBlueprint = playerContext.FindBlueprint(structure.ManufacturingBlueprintUUID);
             if (mfgBlueprint == null || mfgBlueprint.Resources == null) return;
 
             int remaining = structure.ManufacturingQuantity - structure.ManufacturingCompleted;
@@ -271,7 +271,7 @@ namespace OE2EmpireTracker.Baseline
                 var existing = colony.Items.FindResource(resourceName, GameConstants.PurityRefined);
                 if (existing.Count == 0)
                 {
-                    var resourceItem = new Data.Item(Data.ItemType.ItemTypeEnum.Resource, resourceName);
+                    var resourceItem = new Models.Item(Models.ItemType.ItemTypeEnum.Resource, resourceName);
                     resourceItem.UUID = System.Guid.NewGuid().ToString();
                     resourceItem.BaseItemTypeID = resourceName;
                     resourceItem.ResourcePurity = GameConstants.PurityRefined;
@@ -281,7 +281,7 @@ namespace OE2EmpireTracker.Baseline
                 }
 
                 colony.Locks.LockItem(structure.UUID,
-                    Data.ItemType.ItemTypeEnum.Resource, resourceName, totalToLock);
+                    Models.ItemType.ItemTypeEnum.Resource, resourceName, totalToLock);
             }
         }
 
@@ -291,8 +291,8 @@ namespace OE2EmpireTracker.Baseline
             if (string.IsNullOrEmpty(structure.ManufacturingCommodityName)) return;
             if (structure.ProcessCompletionTime == null) return;
 
-            Data.Commodity commodity;
-            if (!Data.Commodity.ResourceMapByString.TryGetValue(structure.ManufacturingCommodityName, out commodity))
+            Models.Commodity commodity;
+            if (!Models.Commodity.ResourceMapByString.TryGetValue(structure.ManufacturingCommodityName, out commodity))
                 return;
 
             int remaining = structure.ManufacturingQuantity - structure.ManufacturingCompleted;
@@ -310,7 +310,7 @@ namespace OE2EmpireTracker.Baseline
                 var existing = colony.Items.FindResource(resourceName, GameConstants.PurityRefined);
                 if (existing.Count == 0)
                 {
-                    var resourceItem = new Data.Item(Data.ItemType.ItemTypeEnum.Resource, resourceName);
+                    var resourceItem = new Models.Item(Models.ItemType.ItemTypeEnum.Resource, resourceName);
                     resourceItem.UUID = System.Guid.NewGuid().ToString();
                     resourceItem.BaseItemTypeID = resourceName;
                     resourceItem.ResourcePurity = GameConstants.PurityRefined;
@@ -320,7 +320,7 @@ namespace OE2EmpireTracker.Baseline
                 }
 
                 colony.Locks.LockItem(structure.UUID,
-                    Data.ItemType.ItemTypeEnum.Resource, resourceName, totalToLock);
+                    Models.ItemType.ItemTypeEnum.Resource, resourceName, totalToLock);
             }
         }
 
@@ -334,11 +334,11 @@ namespace OE2EmpireTracker.Baseline
             if (!isStaged) return;
 
             // Ensure a flatpack item exists in the warehouse
-            var existing = colony.Items.FindByType(Data.ItemType.ItemTypeEnum.Flatpack, structure.FlatpackBlueprintUUID);
+            var existing = colony.Items.FindByType(Models.ItemType.ItemTypeEnum.Flatpack, structure.FlatpackBlueprintUUID);
             if (existing.Count == 0)
             {
                 var blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
-                var flatpackItem = new Data.Item(Data.ItemType.ItemTypeEnum.Flatpack, blueprint?.ExtendedName ?? "Flatpack");
+                var flatpackItem = new Models.Item(Models.ItemType.ItemTypeEnum.Flatpack, blueprint?.ExtendedName ?? "Flatpack");
                 flatpackItem.UUID = System.Guid.NewGuid().ToString();
                 flatpackItem.BaseItemTypeID = structure.FlatpackBlueprintUUID;
                 flatpackItem.Quantity = 0;
@@ -347,10 +347,10 @@ namespace OE2EmpireTracker.Baseline
             }
 
             colony.Locks.LockItem(structure.UUID,
-                Data.ItemType.ItemTypeEnum.Flatpack, structure.FlatpackBlueprintUUID, 1);
+                Models.ItemType.ItemTypeEnum.Flatpack, structure.FlatpackBlueprintUUID, 1);
         }
 
-        public void CalculateBuilt(ColonyStructure structure, ColonyStructureStatus prevStatus, ColonyStructureStatus status, IColonyStructureWorkers workerSource, Data.Blueprint flatpackBlueprint)
+        public void CalculateBuilt(ColonyStructure structure, ColonyStructureStatus prevStatus, ColonyStructureStatus status, IColonyStructureWorkers workerSource, Models.Blueprint flatpackBlueprint)
         {
             // Aggregators for resource stats
             double builtPowerProvided = prevStatus.PowerProvided;
@@ -365,7 +365,7 @@ namespace OE2EmpireTracker.Baseline
             double builtWarehouseRequired = prevStatus.WarehouseRequired;
             List <ColonyWorker> ColonyWorkers = new List<ColonyWorker>();
             var needUnallocated = new Dictionary<string, bool>();
-            foreach (var wt in Data.WorkerDetail.WorkerTypes)
+            foreach (var wt in Models.WorkerDetail.WorkerTypes)
                 needUnallocated[wt.DetailKey] = false;
 
             // Ensure the structure has a unique identifier for lookups
@@ -394,7 +394,7 @@ namespace OE2EmpireTracker.Baseline
                 builtFoodProvision += GetBlueprintDouble(flatpackBlueprint, "FoodProvision");
 
                 // --- Worker Assignment Parsing ---
-                foreach (var wt in Data.WorkerDetail.WorkerTypes)
+                foreach (var wt in Models.WorkerDetail.WorkerTypes)
                 {
                     if (flatpackBlueprint.Properties.ContainsKey(wt.DetailKey))
                     {
@@ -422,7 +422,7 @@ namespace OE2EmpireTracker.Baseline
 
 
             int unallocatedWorkersAdded = 0;
-            foreach (var wt in Data.WorkerDetail.WorkerTypes)
+            foreach (var wt in Models.WorkerDetail.WorkerTypes)
             {
                 bool need = needUnallocated[wt.DetailKey];
                 bool alreadyPresent = prevStatus.GetUnallocatedPresent(wt.DetailKey);
@@ -458,7 +458,7 @@ namespace OE2EmpireTracker.Baseline
             status.WarehouseRequired = builtWarehouseRequired;
         }
 
-        private static double GetBlueprintDouble(Data.Blueprint blueprint, string propertyName)
+        private static double GetBlueprintDouble(Models.Blueprint blueprint, string propertyName)
         {
             double value = 0;
             blueprint.Properties.getDouble(propertyName, 0, out value);

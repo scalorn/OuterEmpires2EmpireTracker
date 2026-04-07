@@ -1,5 +1,5 @@
 using OE2EmpireTracker.Baseline;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
             empireContext = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
-            viewModel = new PlayerProfileViewModel(new Data.PlayerProfile(), playerContext);
+            viewModel = new PlayerProfileViewModel(new Models.PlayerProfile(), playerContext);
 
             SkillGroups[SkillGroupName.ColonyDirector]   = chkColonyDirector;
             SkillGroups[SkillGroupName.ColonyFounder]    = chkColonyFounder;
@@ -289,7 +289,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             PopulateForm();
         }
 
-        private void PopulateListView(Data.PlayerProfile profileToSelect = null)
+        private void PopulateListView(Models.PlayerProfile profileToSelect = null)
         {
             var profiles = viewModel.GetFilteredProfiles(txtNameFilter.Text);
 
@@ -318,7 +318,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         {
             if (e.IsSelected && lvwPlayerProfiles.SelectedItems.Count == 1)
             {
-                viewModel.SelectProfile(lvwPlayerProfiles.SelectedItems[0].Tag as Data.PlayerProfile);
+                viewModel.SelectProfile(lvwPlayerProfiles.SelectedItems[0].Tag as Models.PlayerProfile);
                 PopulateForm();
             }
         }

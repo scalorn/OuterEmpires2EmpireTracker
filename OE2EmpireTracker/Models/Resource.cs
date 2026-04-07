@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using static OE2EmpireTracker.Data.ResourcePurity;
+using static OE2EmpireTracker.Models.ResourcePurity;
 
-namespace OE2EmpireTracker.Data
+namespace OE2EmpireTracker.Models
 {
     public class Resource
     {
@@ -53,8 +53,8 @@ namespace OE2EmpireTracker.Data
         }
 
         [Required]
-        public ResourceGroup.ResourceGroupEnum ResourceGroup { get; set; }
-        public ResourceClass.ResourceClassEnum ResourceClass { get; set; }
+        public Models.ResourceGroup.ResourceGroupEnum ResourceGroup { get; set; }
+        public Models.ResourceClass.ResourceClassEnum ResourceClass { get; set; }
 
         [Required]
         public ResourceEnum ID { get; set; }
@@ -76,245 +76,245 @@ namespace OE2EmpireTracker.Data
             {
                 ID = ResourceEnum.AcidicInorganics,
                 Name = "Acidic Inorganics",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.NonCarbon,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.CommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.NonCarbon,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.CommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.AcidicOrganics,
                 Name = "Acidic Organics",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Organic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.UncommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Organic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.UncommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.AlkaliInorganics,
                 Name = "Alkali Inorganics",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.NonCarbon,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.CommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.NonCarbon,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.CommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.AlkaliMetals,
                 Name = "Alkali Metals",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Metallic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.CommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Metallic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.CommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.AlkaliOrganics,
                 Name = "Alkali Organics",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Organic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.UncommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Organic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.UncommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.AlkalineEarthMetals,
                 Name = "Alkaline Earth Metals",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Metallic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.CommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Metallic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.CommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.ComplexMetallics,
                 Name = "Complex Metallics",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Crystalline,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.UncommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Crystalline,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.UncommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.ComplexNonMetallics,
                 Name = "Complex Non-Metallics",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Crystalline,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.UncommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Crystalline,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.UncommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.Halogens,
                 Name = "Halogens",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Reactive,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.CommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Reactive,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.CommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.HeavyAlkaliMetals,
                 Name = "Heavy Alkali Metals",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Metallic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.RareElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Metallic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.RareElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.HeavyAlkalineEarthMetals,
                 Name = "Heavy Alkaline Earth Metals",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Metallic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.RareElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Metallic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.RareElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.HeavyNobleGases,
                 Name = "Heavy Noble Gases",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Inert,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.CommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Inert,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.CommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.HeavyPostTransMetals,
                 Name = "Heavy Post-Trans Metals",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Metallic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.UncommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Metallic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.UncommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.HeavyTransMetals,
                 Name = "Heavy Trans-Metals",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Metallic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.UncommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Metallic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.UncommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.LanthanideVolatiles,
                 Name = "Lanthanide Volatiles",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Volatile,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.VeryRareElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Volatile,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.VeryRareElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.Lanthanides,
                 Name = "Lanthanides",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Volatile,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.RareElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Volatile,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.RareElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.LightHalogens,
                 Name = "Light Halogens",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Reactive,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.CommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Reactive,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.CommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.Metallics,
                 Name = "Metallics",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Crystalline,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.CommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Crystalline,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.CommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.Metaloids,
                 Name = "Metaloids",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Metallic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.UncommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Metallic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.UncommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.NobleGases,
                 Name = "Noble Gases",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Inert,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.CommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Inert,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.CommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.NonMetallics,
                 Name = "Non-Metallics",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Crystalline,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.CommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Crystalline,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.CommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.PostTransMetals,
                 Name = "Post-Trans Metals",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Metallic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.CommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Metallic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.CommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.S1TranslanthanicExotics,
                 Name = "S1. Translanthanic Exotics",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Synthetic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.VeryRareElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Synthetic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.VeryRareElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.S1TranslivermoricExotics,
                 Name = "S1. Translivermoric Exotics",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Synthetic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.VeryRareElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Synthetic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.VeryRareElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.S1TransuranicExotics,
                 Name = "S1. Transuranic Exotics",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Synthetic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.VeryRareElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Synthetic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.VeryRareElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.S2Element126,
                 Name = "S2. Element 126",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Synthetic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.VeryRareElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Synthetic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.VeryRareElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.S2Element127,
                 Name = "S2. Element 127",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Synthetic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.VeryRareElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Synthetic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.VeryRareElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.S2Superactinides,
                 Name = "S2. Superactinides",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Synthetic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.VeryRareElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Synthetic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.VeryRareElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.StrongAcidicInorganics,
                 Name = "Strong Acidic Inorganics",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.NonCarbon,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.UncommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.NonCarbon,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.UncommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.StrongAlkaliInorganics,
                 Name = "Strong Alkali Inorganics",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.NonCarbon,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.UncommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.NonCarbon,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.UncommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.StrongAlkaliOrganics,
                 Name = "Strong Alkali Organics",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Organic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.RareElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Organic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.RareElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.SuperheavyExotics,
                 Name = "Superheavy Exotics",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Exotic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.VeryRareElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Exotic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.VeryRareElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.TransMetals,
                 Name = "Trans-Metals",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Metallic,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.CommonElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Metallic,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.CommonElements
             });
             instance.Add(new Resource()
             {
                 ID = ResourceEnum.TransuranicVolatiles,
                 Name = "Transuranic Volatiles",
-                ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.Volatile,
-                ResourceClass = Data.ResourceClass.ResourceClassEnum.RareElements
+                ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.Volatile,
+                ResourceClass = Models.ResourceClass.ResourceClassEnum.RareElements
             });
 
             instance.Sort((x, y) => x.Name.CompareTo(y.Name));
 
             // Make sure the blank none entry is first.
-            instance.Insert(0, new Resource() { ID = ResourceEnum.None, Name = "", ResourceGroup = Data.ResourceGroup.ResourceGroupEnum.None });
+            instance.Insert(0, new Resource() { ID = ResourceEnum.None, Name = "", ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.None });
 
             _resourceMapByEnum = new Dictionary<ResourceEnum, Resource>();
             _resourceMapByString = new Dictionary<string, Resource>();

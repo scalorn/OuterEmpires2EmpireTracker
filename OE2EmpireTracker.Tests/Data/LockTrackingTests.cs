@@ -1,9 +1,9 @@
 using Newtonsoft.Json;
 using NUnit.Framework;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using System.Collections.Generic;
 using System.Linq;
-using IT = OE2EmpireTracker.Data.ItemType.ItemTypeEnum;
+using IT = OE2EmpireTracker.Models.ItemType.ItemTypeEnum;
 
 namespace OE2EmpireTracker.Tests.Data
 {

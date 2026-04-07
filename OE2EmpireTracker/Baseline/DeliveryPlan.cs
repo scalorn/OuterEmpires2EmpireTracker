@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -107,7 +107,7 @@ namespace OE2EmpireTracker.Baseline
     public class DeliveryItem
     {
         [JsonConverter(typeof(StringEnumConverter))]
-        public ItemType.ItemTypeEnum ItemType { get; set; } = Data.ItemType.ItemTypeEnum.None;
+        public ItemType.ItemTypeEnum ItemType { get; set; } = Models.ItemType.ItemTypeEnum.None;
         public string BaseItemTypeID { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string ResourcePurity { get; set; } = string.Empty;

@@ -1,7 +1,7 @@
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
-using OE2EmpireTracker.Data;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -375,7 +375,7 @@ namespace OE2EmpireTracker.Forms.Colony
         public void UpdateFlatpackListBase()
         {
             string searchText = txtFilterFlatpack.Text;
-            var filteredList = new List<Data.Blueprint>(playerContext.GetAllBlueprints());
+            var filteredList = new List<Models.Blueprint>(playerContext.GetAllBlueprints());
 
             filteredList = filteredList
                 .Where(item => item.BluePrintType.IsFlatpack())
@@ -390,7 +390,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             filteredList = filteredList.OrderBy(p => p.Name).ToList();
 
-            filteredList.Insert(0, new Data.Blueprint());
+            filteredList.Insert(0, new Models.Blueprint());
             var filteredItemsBindingList = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
             filteredItemsBindingList.DataSource = filteredList;
@@ -400,7 +400,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         public void UpdatePurityList()
         {
-            IReadOnlyList<ResourcePurity> purities = Data.ResourcePurity.Purities;
+            IReadOnlyList<ResourcePurity> purities = Models.ResourcePurity.Purities;
 
             var filteredPurityBindingList = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -411,7 +411,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         public void UpdateItemTypeList()
         {
-            IReadOnlyList<ItemType> itemTypes = Data.ItemType.ItemTypes;
+            IReadOnlyList<ItemType> itemTypes = Models.ItemType.ItemTypes;
 
             var filteredItemsBindingList = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -524,7 +524,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // Force creation of an item.
             if (selectedColony.Items.Count() == 0)
             {
-                selectedColony.Items.AddItem(new Data.Item() { UUID = Guid.NewGuid().ToString() });
+                selectedColony.Items.AddItem(new Models.Item() { UUID = Guid.NewGuid().ToString() });
             }
 
             txtPlanetName.Text = colonyViewModel.PlanetName;
@@ -728,39 +728,39 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void cmbItemType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Data.ItemType itemType = cmbItemType.SelectedItem as Data.ItemType;
+            Models.ItemType itemType = cmbItemType.SelectedItem as Models.ItemType;
             cmbPurity.Visible = false;
             if (itemType != null)
             {
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.Resource)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.Resource)
                 {
                     PopulateItemWithResources();
                     cmbPurity.Visible = true;
                 }
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.Commodity)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.Commodity)
                 {
                     PopulateItemWithCommodities();
                 }
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.WorkDetail)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.WorkDetail)
                 {
                     PopulateItemWithWorkerDetails();
                 }
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.Survey)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.Survey)
                 {
                     PopulateItemWithSurveys();
                 }
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.Blueprint)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.Blueprint)
                 {
                     PopulateItemWithBlueprints();
                 }
 
                 // Blueprint-based item types: populate from blueprints whose BlueprintType.OutputItemType matches
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.ShipPart ||
-                    itemType.ID == Data.ItemType.ItemTypeEnum.ShipHull ||
-                    itemType.ID == Data.ItemType.ItemTypeEnum.Munition ||
-                    itemType.ID == Data.ItemType.ItemTypeEnum.Flatpack ||
-                    itemType.ID == Data.ItemType.ItemTypeEnum.SpaceBuildPackage ||
-                    itemType.ID == Data.ItemType.ItemTypeEnum.Share)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.ShipPart ||
+                    itemType.ID == Models.ItemType.ItemTypeEnum.ShipHull ||
+                    itemType.ID == Models.ItemType.ItemTypeEnum.Munition ||
+                    itemType.ID == Models.ItemType.ItemTypeEnum.Flatpack ||
+                    itemType.ID == Models.ItemType.ItemTypeEnum.SpaceBuildPackage ||
+                    itemType.ID == Models.ItemType.ItemTypeEnum.Share)
                 {
                     PopulateItemWithBlueprintsByOutputType(itemType.ID);
                 }
@@ -774,49 +774,49 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void cmdAdd_Click(object sender, EventArgs e)
         {
-            Data.Item item = new Data.Item() { UUID = Guid.NewGuid().ToString() };
-            Data.ItemType itemType = cmbItemType.SelectedItem as Data.ItemType;
+            Models.Item item = new Models.Item() { UUID = Guid.NewGuid().ToString() };
+            Models.ItemType itemType = cmbItemType.SelectedItem as Models.ItemType;
             if (itemType != null)
             {
                 item.ItemType = itemType.ID;
 
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.Resource)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.Resource)
                 {
-                    Data.Resource resource = cmbItem.SelectedItem as Data.Resource;
+                    Models.Resource resource = cmbItem.SelectedItem as Models.Resource;
                     if (resource != null)
                     {
                         item.BaseItemTypeID = resource.Name;
                         item.Name = resource.Name;
                     }
-                    Data.ResourcePurity purity = cmbPurity.SelectedItem as Data.ResourcePurity;
+                    Models.ResourcePurity purity = cmbPurity.SelectedItem as Models.ResourcePurity;
                     if (purity != null)
                     {
                         item.ResourcePurity = purity.Name;
                     }
                     else
                     {
-                        item.ResourcePurity = Data.ResourcePurity.ItemTypeMapByEnum[Data.ResourcePurity.PurityEnum.Refined].Name;
+                        item.ResourcePurity = Models.ResourcePurity.ItemTypeMapByEnum[Models.ResourcePurity.PurityEnum.Refined].Name;
                     }
                 }
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.Commodity)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.Commodity)
                 {
-                    Data.Commodity commodity = cmbItem.SelectedItem as Data.Commodity;
+                    Models.Commodity commodity = cmbItem.SelectedItem as Models.Commodity;
                     if (commodity != null)
                     {
                         item.BaseItemTypeID = commodity.Name;
                         item.Name = commodity.Name;
                     }
                 }
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.WorkDetail)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.WorkDetail)
                 {
-                    Data.WorkerDetail workerDetail = cmbItem.SelectedItem as Data.WorkerDetail;
+                    Models.WorkerDetail workerDetail = cmbItem.SelectedItem as Models.WorkerDetail;
                     if (workerDetail != null)
                     {
                         item.BaseItemTypeID = workerDetail.ID;
                         item.Name = workerDetail.Name;
                     }
                 }
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.Survey)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.Survey)
                 {
                     Baseline.Survey survey = cmbItem.SelectedItem as Baseline.Survey;
                     if (survey != null)
@@ -825,9 +825,9 @@ namespace OE2EmpireTracker.Forms.Colony
                         item.Name = survey.Name;
                     }
                 }
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.Blueprint)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.Blueprint)
                 {
-                    Data.Blueprint blueprint = cmbItem.SelectedItem as Data.Blueprint;
+                    Models.Blueprint blueprint = cmbItem.SelectedItem as Models.Blueprint;
                     if (blueprint != null)
                     {
                         item.BaseItemTypeID = blueprint.UUID;
@@ -836,14 +836,14 @@ namespace OE2EmpireTracker.Forms.Colony
                 }
 
                 // Blueprint-based item types (ShipPart, ShipHull, Munition, Flatpack, etc.)
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.ShipPart ||
-                    itemType.ID == Data.ItemType.ItemTypeEnum.ShipHull ||
-                    itemType.ID == Data.ItemType.ItemTypeEnum.Munition ||
-                    itemType.ID == Data.ItemType.ItemTypeEnum.Flatpack ||
-                    itemType.ID == Data.ItemType.ItemTypeEnum.SpaceBuildPackage ||
-                    itemType.ID == Data.ItemType.ItemTypeEnum.Share)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.ShipPart ||
+                    itemType.ID == Models.ItemType.ItemTypeEnum.ShipHull ||
+                    itemType.ID == Models.ItemType.ItemTypeEnum.Munition ||
+                    itemType.ID == Models.ItemType.ItemTypeEnum.Flatpack ||
+                    itemType.ID == Models.ItemType.ItemTypeEnum.SpaceBuildPackage ||
+                    itemType.ID == Models.ItemType.ItemTypeEnum.Share)
                 {
-                    Data.Blueprint blueprint = cmbItem.SelectedItem as Data.Blueprint;
+                    Models.Blueprint blueprint = cmbItem.SelectedItem as Models.Blueprint;
                     if (blueprint != null)
                     {
                         item.BaseItemTypeID = blueprint.UUID;
@@ -867,24 +867,24 @@ namespace OE2EmpireTracker.Forms.Colony
             }
         }
 
-        private static double GetItemVolume(Data.Item item, PlayerContext playerContext)
+        private static double GetItemVolume(Models.Item item, PlayerContext playerContext)
         {
             switch (item.ItemType)
             {
-                case Data.ItemType.ItemTypeEnum.Resource:
+                case Models.ItemType.ItemTypeEnum.Resource:
                     return 1.0;
-                case Data.ItemType.ItemTypeEnum.Commodity:
+                case Models.ItemType.ItemTypeEnum.Commodity:
                     return 10.0;
-                case Data.ItemType.ItemTypeEnum.WorkDetail:
+                case Models.ItemType.ItemTypeEnum.WorkDetail:
                     return 50.0;
-                case Data.ItemType.ItemTypeEnum.Blueprint:
-                case Data.ItemType.ItemTypeEnum.Survey:
+                case Models.ItemType.ItemTypeEnum.Blueprint:
+                case Models.ItemType.ItemTypeEnum.Survey:
                     return 0.0;
                 default:
                     // Manufactured items: read CargoVolumeSize from blueprint
                     if (!string.IsNullOrEmpty(item.BaseItemTypeID) && playerContext != null)
                     {
-                        Data.Blueprint bp = playerContext.FindBlueprint(item.BaseItemTypeID);
+                        Models.Blueprint bp = playerContext.FindBlueprint(item.BaseItemTypeID);
                         if (bp != null)
                         {
                             double vol = 0;
@@ -971,11 +971,11 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void cmbItem_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Data.ItemType itemType = cmbItemType.SelectedItem as Data.ItemType;
+            Models.ItemType itemType = cmbItemType.SelectedItem as Models.ItemType;
             cmbPurity.Visible = false;
             if (itemType != null)
             {
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.Resource)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.Resource)
                 {
                     Resource resource = cmbItem.SelectedItem as Resource;
                     if (resource != null)
@@ -996,35 +996,35 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void txtItemFilter_TextChanged(object sender, EventArgs e)
         {
-            Data.ItemType itemType = cmbItemType.SelectedItem as Data.ItemType;
+            Models.ItemType itemType = cmbItemType.SelectedItem as Models.ItemType;
             if (itemType != null)
             {
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.Resource)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.Resource)
                 {
                     PopulateItemWithResources();
                 }
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.Commodity)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.Commodity)
                 {
                     PopulateItemWithCommodities();
                 }
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.WorkDetail)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.WorkDetail)
                 {
                     PopulateItemWithWorkerDetails();
                 }
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.Survey)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.Survey)
                 {
                     PopulateItemWithSurveys();
                 }
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.Blueprint)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.Blueprint)
                 {
                     PopulateItemWithBlueprints();
                 }
-                if (itemType.ID == Data.ItemType.ItemTypeEnum.ShipPart ||
-                    itemType.ID == Data.ItemType.ItemTypeEnum.ShipHull ||
-                    itemType.ID == Data.ItemType.ItemTypeEnum.Munition ||
-                    itemType.ID == Data.ItemType.ItemTypeEnum.Flatpack ||
-                    itemType.ID == Data.ItemType.ItemTypeEnum.SpaceBuildPackage ||
-                    itemType.ID == Data.ItemType.ItemTypeEnum.Share)
+                if (itemType.ID == Models.ItemType.ItemTypeEnum.ShipPart ||
+                    itemType.ID == Models.ItemType.ItemTypeEnum.ShipHull ||
+                    itemType.ID == Models.ItemType.ItemTypeEnum.Munition ||
+                    itemType.ID == Models.ItemType.ItemTypeEnum.Flatpack ||
+                    itemType.ID == Models.ItemType.ItemTypeEnum.SpaceBuildPackage ||
+                    itemType.ID == Models.ItemType.ItemTypeEnum.Share)
                 {
                     PopulateItemWithBlueprintsByOutputType(itemType.ID);
                 }
@@ -1036,7 +1036,7 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             string searchText = txtItemFilter.Text;
 
-            List<Data.Blueprint> filteredList = new List<Data.Blueprint>(playerContext.GetAllBlueprints());
+            List<Models.Blueprint> filteredList = new List<Models.Blueprint>(playerContext.GetAllBlueprints());
             if (!string.IsNullOrEmpty(searchText))
             {
                 filteredList = filteredList
@@ -1045,7 +1045,7 @@ namespace OE2EmpireTracker.Forms.Colony
                     .ToList();
             }
             filteredList.Sort((x, y) => x.ExtendedName.CompareTo(y.ExtendedName));
-            filteredList.Insert(0, new Data.Blueprint());
+            filteredList.Insert(0, new Models.Blueprint());
 
             var bindingList = new BindingSource();
             bindingList.DataSource = filteredList;
@@ -1055,13 +1055,13 @@ namespace OE2EmpireTracker.Forms.Colony
             cmbItem.DisplayMember = "ExtendedName";
         }
 
-        public void PopulateItemWithBlueprintsByOutputType(Data.ItemType.ItemTypeEnum outputType)
+        public void PopulateItemWithBlueprintsByOutputType(Models.ItemType.ItemTypeEnum outputType)
         {
             string searchText = txtItemFilter.Text;
             string outputTypeName = outputType.ToString();
 
-            List<Data.Blueprint> filteredList = new List<Data.Blueprint>();
-            foreach (Data.Blueprint bp in playerContext.GetAllBlueprints())
+            List<Models.Blueprint> filteredList = new List<Models.Blueprint>();
+            foreach (Models.Blueprint bp in playerContext.GetAllBlueprints())
             {
                 if (bp.UUID == null) continue;
                 BlueprintType bpType = empireContext.FindBlueprintType(bp.BluePrintType);
@@ -1076,7 +1076,7 @@ namespace OE2EmpireTracker.Forms.Colony
                     .ToList();
             }
             filteredList.Sort((x, y) => x.ExtendedName.CompareTo(y.ExtendedName));
-            filteredList.Insert(0, new Data.Blueprint());
+            filteredList.Insert(0, new Models.Blueprint());
 
             var bindingList = new BindingSource();
             bindingList.DataSource = filteredList;
@@ -1113,7 +1113,7 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             string searchText = txtItemFilter.Text;
 
-            List<WorkerDetail> filteredList = new List<WorkerDetail>(Data.WorkerDetail.WorkerDetails);
+            List<WorkerDetail> filteredList = new List<WorkerDetail>(Models.WorkerDetail.WorkerDetails);
             if (!string.IsNullOrEmpty(searchText))
             {
                 filteredList = filteredList
@@ -1140,7 +1140,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // Filter the complete commodity collection to only include items 
             // whose extended names contain that text (case-insensitive matching)
             bool addEmpty = false;
-            List<Commodity> filteredList = new List<Commodity>(Data.Commodity.Commodities);
+            List<Commodity> filteredList = new List<Commodity>(Models.Commodity.Commodities);
             if (!string.IsNullOrEmpty(searchText))
             {
                 filteredList = filteredList
@@ -1173,7 +1173,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // Filter the complete commodity collection to only include items 
             // whose extended names contain that text (case-insensitive matching)
             bool addEmpty = false;
-            List<Resource> filteredList = new List<Resource>(Data.Resource.Resources);
+            List<Resource> filteredList = new List<Resource>(Models.Resource.Resources);
             if (!string.IsNullOrEmpty(searchText))
             {
                 filteredList = filteredList
@@ -1221,7 +1221,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void cmdAddCommodityRequest_Click(object sender, EventArgs e)
         {
-            Data.Commodity commodity = cmbCommodityRequest.SelectedItem as Data.Commodity;
+            Models.Commodity commodity = cmbCommodityRequest.SelectedItem as Models.Commodity;
             if (commodity == null || string.IsNullOrEmpty(commodity.ID)) return;
 
             int qty;
@@ -1248,14 +1248,14 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             string searchText = txtCommodityRequestFilter.Text;
 
-            List<Data.Commodity> filteredList = new List<Data.Commodity>(Data.Commodity.Commodities);
+            List<Models.Commodity> filteredList = new List<Models.Commodity>(Models.Commodity.Commodities);
             if (!string.IsNullOrEmpty(searchText))
             {
                 filteredList = filteredList
                     .Where(c => c.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                     .OrderBy(c => c.ExtendedName)
                     .ToList();
-                filteredList.Insert(0, new Data.Commodity());
+                filteredList.Insert(0, new Models.Commodity());
             }
 
             var bindingList = new BindingSource();
