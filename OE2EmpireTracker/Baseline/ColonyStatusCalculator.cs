@@ -2,6 +2,7 @@ using NLog;
 using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -35,7 +36,7 @@ namespace OE2EmpireTracker.Baseline
         /// <summary>
         /// The current colony instance being calculated.
         /// </summary>
-        private Baseline.Colony colony;
+        private Colony colony;
 
         public ColonyStructureStatus finalActualStatus;
         public ColonyStructureStatus finalIdealStatus;
@@ -50,8 +51,8 @@ namespace OE2EmpireTracker.Baseline
         /// Initializes a new instance of the <see cref="ColonyStatusCalculator"/> class for a specific colony.
         /// Sets up references to global contexts and initializes the worker list.
         /// </summary>
-        /// <param name="colony">The Baseline.Colony instance to calculate status for.</param>
-        public ColonyStatusCalculator(Baseline.Colony colony)
+        /// <param name="colony">The Colony instance to calculate status for.</param>
+        public ColonyStatusCalculator(Colony colony)
         {
             this.colony = colony;
             // Uses Singleton pattern access to retrieve contexts from the global state.

@@ -29,7 +29,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             InitializeComponent();
             empireContext = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
-            viewModel = new DeliveryRouteViewModel(new Baseline.DeliveryRoute(), playerContext);
+            viewModel = new DeliveryRouteViewModel(new Models.DeliveryRoute(), playerContext);
 
             lvwRoutes.View = View.Details;
             lvwRoutes.Columns.Add("Name", 200);
@@ -177,7 +177,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         {
             if (lvwRoutes.SelectedItems.Count == 1)
             {
-                var route = lvwRoutes.SelectedItems[0].Tag as Baseline.DeliveryRoute;
+                var route = lvwRoutes.SelectedItems[0].Tag as Models.DeliveryRoute;
                 viewModel.SelectRoute(route);
                 PopulateForm();
 
@@ -521,7 +521,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 if (dlg.ShowDialog(this) != DialogResult.OK) return;
 
                 int added = 0;
-                Func<string, Baseline.Colony> colonyFinder = uuid => playerContext.FindColony(uuid);
+                Func<string, Models.Colony> colonyFinder = uuid => playerContext.FindColony(uuid);
 
                 if (dlg.IncludeCommodities)
                     added += planViewModel.AutoFillCommodities(viewModel.Stops, colonyFinder);

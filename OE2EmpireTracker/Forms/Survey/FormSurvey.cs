@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Forms.Survey
             InitializeComponent();
             empireContext = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
-            viewModel = new SurveyViewModel(new OE2EmpireTracker.Baseline.Survey(), playerContext, empireContext);
+            viewModel = new SurveyViewModel(new OE2EmpireTracker.Models.Survey(), playerContext, empireContext);
 
             // Configure scanner blueprint combo box
             cmbScannerBlueprint.DisplayMember = "ExtendedName";
@@ -160,17 +160,17 @@ namespace OE2EmpireTracker.Forms.Survey
             cmbScannerBlueprint.DataSource = filteredItemsBindingList;
         }
 
-        void PopulateListView(IReadOnlyList<OE2EmpireTracker.Baseline.Survey> surveys)
+        void PopulateListView(IReadOnlyList<OE2EmpireTracker.Models.Survey> surveys)
         {
             if (surveys == null) return;
 
             Dictionary<string, ListViewItem> viewableSurveys = new Dictionary<string, ListViewItem>();
             foreach (ListViewItem item in lvwSurveys.Items)
             {
-                viewableSurveys[(item.Tag as OE2EmpireTracker.Baseline.Survey).UUID] = item;
+                viewableSurveys[(item.Tag as OE2EmpireTracker.Models.Survey).UUID] = item;
             }
 
-            foreach (OE2EmpireTracker.Baseline.Survey survey in surveys)
+            foreach (OE2EmpireTracker.Models.Survey survey in surveys)
             {
                 ListViewItem item;
                 bool found = viewableSurveys.TryGetValue(survey.UUID, out item);
@@ -337,7 +337,7 @@ namespace OE2EmpireTracker.Forms.Survey
             if (lvwSurveys.SelectedItems.Count == 1)
             {
                 Log.Debug("Selected item = " + lvwSurveys.SelectedItems[0].SubItems[0].Text);
-                viewModel.SelectSurvey(lvwSurveys.SelectedItems[0].SubItems[0].Tag as OE2EmpireTracker.Baseline.Survey);
+                viewModel.SelectSurvey(lvwSurveys.SelectedItems[0].SubItems[0].Tag as OE2EmpireTracker.Models.Survey);
                 PopulateForm();
             }
         }

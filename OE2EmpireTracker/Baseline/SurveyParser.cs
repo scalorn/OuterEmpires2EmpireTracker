@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using NLog;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Baseline
 {

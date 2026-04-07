@@ -1,11 +1,10 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Models
 {
     /// <summary>
     /// A persisted delivery plan tied to a route, containing per-stop

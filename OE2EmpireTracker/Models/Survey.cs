@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OE2EmpireTracker.Models;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Models
 {
     public class Survey : Item
     {

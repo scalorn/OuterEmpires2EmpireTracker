@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Models
 {
     /// <summary>
     /// An ordered sequence of colony stops for planning deliveries.

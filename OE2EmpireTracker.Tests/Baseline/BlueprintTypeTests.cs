@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Tests.Baseline
 {

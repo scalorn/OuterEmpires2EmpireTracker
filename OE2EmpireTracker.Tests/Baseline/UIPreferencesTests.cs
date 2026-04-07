@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Models;
 using System.Collections.Generic;
 
 namespace OE2EmpireTracker.Tests.Baseline

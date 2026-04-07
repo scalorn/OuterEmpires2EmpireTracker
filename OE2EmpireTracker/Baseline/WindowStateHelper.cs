@@ -1,4 +1,5 @@
 using NLog;
+using OE2EmpireTracker.Models;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;

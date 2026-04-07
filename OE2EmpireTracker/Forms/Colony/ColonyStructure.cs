@@ -23,10 +23,10 @@ namespace OE2EmpireTracker.Forms.Colony
         private EmpireContext empireContext;
         private PlayerContext playerContext;
         private int _isProgrammaticUpdate = 0;
-        public Baseline.Colony Colony { get; set; }
+        public Models.Colony Colony { get; set; }
 
-        private Baseline.ColonyStructure _colonyStructureData;
-        public Baseline.ColonyStructure ColonyStructureData
+        private Models.ColonyStructure _colonyStructureData;
+        public Models.ColonyStructure ColonyStructureData
         {
             get => _colonyStructureData;
             set
@@ -399,7 +399,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 return;
             }
 
-            Baseline.Survey survey = playerContext.FindSurvey(ColonyStructureData.MiningSurvey);
+            Models.Survey survey = playerContext.FindSurvey(ColonyStructureData.MiningSurvey);
             if (survey == null || !survey.Resources.ContainsKey(ColonyStructureData.MiningSurveyResource))
             {
                 rtbProgressStatus.Text = "";
@@ -522,7 +522,7 @@ namespace OE2EmpireTracker.Forms.Colony
                         !string.IsNullOrEmpty(structure.MiningSurvey) &&
                         !string.IsNullOrEmpty(structure.MiningSurveyResource))
                     {
-                        Baseline.Survey survey = playerContext.FindSurvey(structure.MiningSurvey);
+                        Models.Survey survey = playerContext.FindSurvey(structure.MiningSurvey);
                         if (survey != null && survey.Resources.ContainsKey(structure.MiningSurveyResource))
                         {
                             SurveyResource sr = survey.Resources[structure.MiningSurveyResource];
@@ -1121,7 +1121,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 searchText = ""; 
             }
 
-            List<Baseline.Survey> filteredList = new List<Baseline.Survey>(playerContext.surveyList);
+            List<Models.Survey> filteredList = new List<Models.Survey>(playerContext.surveyList);
 
             filteredList = filteredList
                 .Where(item => string.Equals(item.PlanetName, Colony.PlanetName, StringComparison.OrdinalIgnoreCase))
@@ -1131,7 +1131,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                 .ToList();
 
-            filteredList.Insert(0, new Baseline.Survey());
+            filteredList.Insert(0, new Models.Survey());
 
             cmbSelection.DataSource = null;
 
@@ -1150,7 +1150,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 searchText = "";
             }
 
-            Baseline.Survey survey = cmbSelection.SelectedItem as Baseline.Survey; 
+            Models.Survey survey = cmbSelection.SelectedItem as Models.Survey; 
             if (survey == null)
             {
                 return;

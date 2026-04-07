@@ -1,4 +1,4 @@
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Models
 {
     /// <summary>
     /// Represents a single worker unit assigned to a colony structure.

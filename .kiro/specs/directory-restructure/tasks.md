@@ -6,7 +6,7 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
 
 ## Tasks
 
-- [-] 1. Batch 1a — Move Data/ → Models/ (20 files, main project)
+- [x] 1. Batch 1a — Move Data/ → Models/ (20 files, main project)
   - [x] 1.1 Move all 20 Data/ files to Models/ using smartRelocate
     - Files: Blueprint, Commodity, CommodityGroup, CommodityIndustry, CountDownTime, Item, ItemBag, ItemProperty, ItemType, LockTracking, PlayerProfile, PlayerRank, PlayerSkill, PropertyBag, Resource, ResourceClass, ResourceGroup, ResourcePurity, SubResource, WorkerDetail
     - For each file: `smartRelocate` from `OE2EmpireTracker/Data/{File}.cs` to `OE2EmpireTracker/Models/{File}.cs`
@@ -14,7 +14,7 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
     - After each move: update csproj Compile Include from `Data\{File}.cs` to `Models\{File}.cs`
     - _Requirements: 1.1, 1.3, 1.4, 1.5, 9.1, 9.2_
 
-  - [-] 1.2 Verify Batch 1a — build and test
+  - [x] 1.2 Verify Batch 1a — build and test
     - Run `getDiagnostics` on all moved files and files with updated usings
     - Build: `msbuild OE2EmpireTracker.sln /p:Configuration=Debug`
     - Test: `"D:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" OE2EmpireTracker.Tests/bin/Debug/OE2EmpireTracker.Tests.dll`
@@ -22,15 +22,15 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
     - Commit with descriptive message
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-- [ ] 2. Batch 1b — Move Baseline/ data types → Models/ (13 files, main project)
-  - [~] 2.1 Move 13 Baseline/ data-type files to Models/ using smartRelocate
+- [-] 2. Batch 1b — Move Baseline/ data types → Models/ (13 files, main project)
+  - [x] 2.1 Move 13 Baseline/ data-type files to Models/ using smartRelocate
     - Files: Colony, ColonyStructure, ColonyStructureStatus, ColonyWorker, CommodityRequested, DeliveryRoute, DeliveryPlan, Survey, ShipClass, TechLevel, BlueprintType, UIPreferences, IColonyStructureWorkers
     - For each file: `smartRelocate` from `OE2EmpireTracker/Baseline/{File}.cs` to `OE2EmpireTracker/Models/{File}.cs`
     - After each move: update namespace from `OE2EmpireTracker.Baseline` to `OE2EmpireTracker.Models`
     - After each move: update csproj Compile Include from `Baseline\{File}.cs` to `Models\{File}.cs`
     - _Requirements: 1.2, 1.3, 1.4, 1.5, 9.1, 9.2_
 
-  - [~] 2.2 Verify Batch 1b — build and test
+  - [-] 2.2 Verify Batch 1b — build and test
     - Run `getDiagnostics` on all moved files and files with updated usings
     - Build: `msbuild OE2EmpireTracker.sln /p:Configuration=Debug`
     - Test: `vstest.console` against test DLL

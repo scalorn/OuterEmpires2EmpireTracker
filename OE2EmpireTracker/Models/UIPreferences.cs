@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Models
 {
     public class UIPreferences
     {

@@ -22,7 +22,7 @@ namespace OE2EmpireTracker.Forms.Colony
         private PlayerContext playerContext;
         private int _isProgrammaticUpdate = 0;
 
-        private Baseline.Colony selectedColony;
+        private Models.Colony selectedColony;
         private ColonyViewModel colonyViewModel;
         private ColonyStatusCalculator statusCalculator => colonyViewModel?.Calculator;
 
@@ -53,7 +53,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             flpColonyStructure.Controls.Clear();
 
-            selectedColony = new Baseline.Colony();
+            selectedColony = new Models.Colony();
             colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
             colonyViewModel.RecalculateStatus();
 
@@ -102,7 +102,7 @@ namespace OE2EmpireTracker.Forms.Colony
                         _structurePool.Add(ctrl);
                 }
             }
-            selectedColony = new Baseline.Colony();
+            selectedColony = new Models.Colony();
             colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
             colonyViewModel.RecalculateStatus();
             PopulateListView(playerContext.GetCurrentPlayerColonies());
@@ -188,7 +188,7 @@ namespace OE2EmpireTracker.Forms.Colony
         private void ClearForm()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
-            selectedColony = new Baseline.Colony();
+            selectedColony = new Models.Colony();
             colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
             txtPlanetName.Text = "";
             txtColonyName.Text = "";
@@ -288,7 +288,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 flpColonyStructure.SuspendLayout();
 
                 // Build a map of existing controls by their data reference
-                var controlMap = new Dictionary<Baseline.ColonyStructure, ColonyStructure>();
+                var controlMap = new Dictionary<Models.ColonyStructure, ColonyStructure>();
                 foreach (Control c in flpColonyStructure.Controls)
                 {
                     if (c is ColonyStructure cs && cs.ColonyStructureData != null)
@@ -320,7 +320,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 // Reorder and update existing controls to match selectedColony.Structures order
                 for (int i = 0; i < selectedColony.Structures.Count; i++)
                 {
-                    Baseline.ColonyStructure structure = selectedColony.Structures[i];
+                    Models.ColonyStructure structure = selectedColony.Structures[i];
                     ColonyStructure ctrl;
                     if (!controlMap.TryGetValue(structure, out ctrl))
                     {
@@ -453,12 +453,12 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 Log.Debug("Selected item = " + lvwColonies.SelectedItems[0].SubItems[0].Text);
                 Log.Debug("Selected item = " + lvwColonies.SelectedItems[0].SubItems[0].Tag);
-                selectedColony = lvwColonies.SelectedItems[0].SubItems[0].Tag as Baseline.Colony;
+                selectedColony = lvwColonies.SelectedItems[0].SubItems[0].Tag as Models.Colony;
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
                 PopulateForm();
             }
         }
-        void PopulateListView(List<Baseline.Colony> colonies)
+        void PopulateListView(List<Models.Colony> colonies)
         {
             if (colonies == null)
             {
@@ -470,11 +470,11 @@ namespace OE2EmpireTracker.Forms.Colony
             // First index what is viewable.
             foreach (ListViewItem item in lvwColonies.Items)
             {
-                viewableColonies[(item.Tag as Baseline.Colony).UUID] = item;
+                viewableColonies[(item.Tag as Models.Colony).UUID] = item;
             }
 
             // Now add or update what is viewable.
-            foreach (Baseline.Colony colony in colonies)
+            foreach (Models.Colony colony in colonies)
             {
                 ListViewItem item;
                 bool found = viewableColonies.TryGetValue(colony.UUID, out item);
@@ -551,7 +551,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             bool structuresTabActive = tabDetailedData.SelectedTab == tabPStructures;
 
-            foreach (Baseline.ColonyStructure structure in selectedColony.Structures)
+            foreach (Models.ColonyStructure structure in selectedColony.Structures)
             {
                 ColonyStructure colonyStructureControl = GetPooledStructureControl();
 
@@ -818,7 +818,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 }
                 if (itemType.ID == Models.ItemType.ItemTypeEnum.Survey)
                 {
-                    Baseline.Survey survey = cmbItem.SelectedItem as Baseline.Survey;
+                    Models.Survey survey = cmbItem.SelectedItem as Models.Survey;
                     if (survey != null)
                     {
                         item.BaseItemTypeID = survey.UUID;
@@ -1090,7 +1090,7 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             string searchText = txtItemFilter.Text;
 
-            List<Baseline.Survey> filteredList = new List<Baseline.Survey>(playerContext.surveyList);
+            List<Models.Survey> filteredList = new List<Models.Survey>(playerContext.surveyList);
             if (!string.IsNullOrEmpty(searchText))
             {
                 filteredList = filteredList
@@ -1099,7 +1099,7 @@ namespace OE2EmpireTracker.Forms.Colony
                     .OrderBy(s => s.PlanetName)
                     .ToList();
             }
-            filteredList.Insert(0, new Baseline.Survey());
+            filteredList.Insert(0, new Models.Survey());
 
             var bindingList = new BindingSource();
             bindingList.DataSource = filteredList;

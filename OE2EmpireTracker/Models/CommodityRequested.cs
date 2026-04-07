@@ -1,6 +1,6 @@
 using System;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Models
 {
     public class CommodityRequested
     {

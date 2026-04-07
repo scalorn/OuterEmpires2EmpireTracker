@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using NLog;
+using OE2EmpireTracker.Models;
 using System;
 using System.IO;
 

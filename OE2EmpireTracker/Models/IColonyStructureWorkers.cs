@@ -1,7 +1,7 @@
 using OE2EmpireTracker.Constants;
 using System;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Models
 {
     /// <summary>
     /// Abstracts access to worker assignment state for a colony structure.

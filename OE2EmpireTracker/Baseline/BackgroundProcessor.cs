@@ -1,4 +1,5 @@
 using NLog;
+using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading;

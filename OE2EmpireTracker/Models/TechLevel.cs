@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Models
 {
-    public class ShipClass
+    public class TechLevel
     {
-        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

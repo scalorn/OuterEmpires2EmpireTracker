@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.ViewModels;
 using System.Collections.Generic;
 using System.IO;

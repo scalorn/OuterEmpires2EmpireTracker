@@ -1,9 +1,8 @@
 using Newtonsoft.Json;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Models
 {
     public class ColonyStructure
     {
