@@ -239,6 +239,12 @@ Maintained in `BlueprintScanner.PropertyRemap`. Only meaningful remaps are kept 
 
 **Validates: Requirement 4 (indirectly), Requirement 5**
 
+### Property 6: Import idempotency
+
+*For any* market HTML input, importing the same HTML N times (N >= 2) must produce the same number of blueprint records in storage as importing it once. No duplicate blueprints or duplicate properties on a blueprint should be created. On the second and subsequent imports, all entries should report as "Updated" (not "Created"), and the blueprint's property count and resource count must remain unchanged.
+
+**Validates: Requirements 5, 6**
+
 ## Testing Strategy
 
 ### Unit Tests
@@ -250,7 +256,7 @@ Maintained in `BlueprintScanner.PropertyRemap`. Only meaningful remaps are kept 
 ### Integration Tests
 
 - **Full pipeline**: Load MarketSample HTML files, parse with `ProcessMarketHtml`, run through `MarketBlueprintImporter.Import`, verify correct blueprints created/updated in the right storage.
-- **Deduplication**: Import the same HTML twice, verify no duplicates created on second import and all entries show as "Updated".
+- **Deduplication / Idempotency**: Import the same HTML file 3 times. After first import, verify blueprints created. After second and third imports, verify: no new blueprints created (all "Updated"), total blueprint count unchanged, each blueprint's property count and resource count unchanged, no duplicate properties within any blueprint's PropertyBag.
 
 ### Test Configuration
 
