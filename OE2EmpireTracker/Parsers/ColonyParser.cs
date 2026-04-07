@@ -12,7 +12,7 @@ using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Parsers
 {
     public class ColonyParser
     {

@@ -38,7 +38,7 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
     - Commit with descriptive message
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-- [-] 3. Batch 2 — Move Baseline/ services → Services/ (11 files, main project)
+- [x] 3. Batch 2 — Move Baseline/ services → Services/ (11 files, main project)
   - [x] 3.1 Move 11 Baseline/ service files to Services/ using smartRelocate
     - Files: EmpireContext, PlayerContext, BackgroundProcessor, ColonyStatusCalculator, ColonyActivityCollector, ColonyBuildEligibility, ColonyBootstrap, BuildOrderOptimizer, BuildTimeCalculator, DeliveryFulfillment, PreferencesStore
     - For each file: `smartRelocate` from `OE2EmpireTracker/Baseline/{File}.cs` to `OE2EmpireTracker/Services/{File}.cs`
@@ -46,7 +46,7 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
     - After each move: update csproj Compile Include from `Baseline\{File}.cs` to `Services\{File}.cs`
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 9.1, 9.2_
 
-  - [-] 3.2 Verify Batch 2 — build and test
+  - [x] 3.2 Verify Batch 2 — build and test
     - Run `getDiagnostics` on all moved files and files with updated usings
     - Build: `msbuild OE2EmpireTracker.sln /p:Configuration=Debug`
     - Test: `vstest.console` against test DLL
@@ -54,15 +54,15 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
     - Commit with descriptive message
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-- [ ] 4. Batch 3 — Move Baseline/ parsers → Parsers/ (2 files, main project)
-  - [~] 4.1 Move 2 Baseline/ parser files to Parsers/ using smartRelocate
+- [-] 4. Batch 3 — Move Baseline/ parsers → Parsers/ (2 files, main project)
+  - [x] 4.1 Move 2 Baseline/ parser files to Parsers/ using smartRelocate
     - Files: ColonyParser, SurveyParser
     - For each file: `smartRelocate` from `OE2EmpireTracker/Baseline/{File}.cs` to `OE2EmpireTracker/Parsers/{File}.cs`
     - After each move: update namespace from `OE2EmpireTracker.Baseline` to `OE2EmpireTracker.Parsers`
     - After each move: update csproj Compile Include from `Baseline\{File}.cs` to `Parsers\{File}.cs`
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 9.1, 9.2_
 
-  - [~] 4.2 Verify Batch 3 — build and test
+  - [-] 4.2 Verify Batch 3 — build and test
     - Run `getDiagnostics` on all moved files and files with updated usings
     - Build: `msbuild OE2EmpireTracker.sln /p:Configuration=Debug`
     - Test: `vstest.console` against test DLL
