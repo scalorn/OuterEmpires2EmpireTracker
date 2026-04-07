@@ -7,7 +7,7 @@ Add a bulk market import capability to the Blueprint form. An "Import Market" bu
 ## Tasks
 
 - [ ] 1. Extend BlueprintScanner.ProcessMarketHtml with seller name and TechLevel extraction
-  - [-] 1.1 Add `MarketBlueprint` wrapper class to `BlueprintScanner.cs`
+  - [x] 1.1 Add `MarketBlueprint` wrapper class to `BlueprintScanner.cs`
     - Add `MarketBlueprint` class with `Blueprint` and `SellerName` properties
     - Change `ProcessMarketHtml` return type from `List<Blueprint>` to `List<MarketBlueprint>`
     - Extract seller name from `<span class="ui_text_light_grey">` inside the name div
@@ -16,7 +16,7 @@ Add a bulk market import capability to the Blueprint form. An "Import Market" bu
     - Update existing tests to use `MarketBlueprint` wrapper
     - _Requirements: 4_
 
-  - [~] 1.2 Write tests for seller name and TechLevel extraction
+  - [x] 1.2 Write tests for seller name and TechLevel extraction
     - Test: blueprint with "(MilSpec)" in name → TechLevel = "MilSpec", name stripped
     - Test: blueprint with "(Rugged)" → TechLevel = "Rugged"
     - Test: blueprint without parentheses → TechLevel = null, name unchanged

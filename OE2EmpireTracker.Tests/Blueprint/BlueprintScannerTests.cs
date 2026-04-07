@@ -776,5 +776,117 @@ namespace OE2EmpireTracker.Tests.Blueprint
                 }
             }
         }
+
+        // -----------------------------------------------------------------------
+        // Market HTML helpers for seller name / TechLevel tests
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Builds a minimal market HTML snippet with a listing row + detail row.
+        /// </summary>
+        private static string MarketHtml(string bpName, string sellerSpan, string evoNumber = "0")
+        {
+            // Seller span is optional — pass empty string for no seller
+            string descContent = bpName + sellerSpan;
+            return "<html><body><table><tbody>"
+                + $"<tr class='MarketListingRow'>"
+                + $"<td><div class='EvolutionNumber'>{evoNumber}</div></td>"
+                + $"<td><div class='div_block MarketListingRowDetailDescription'>{descContent}</div></td>"
+                + "</tr>"
+                + "<tr class='MarketListingRowDetail'><td colspan='6'>"
+                + "<div class='Market_ShipComponentProperty'>"
+                + "<div class='Market_ShipComponentProperty_Label'>Class</div>"
+                + "<div class='ui_text_blue_light'>1</div>"
+                + "</div>"
+                + "</td></tr>"
+                + "</tbody></table></body></html>";
+        }
+
+        private static string SellerSpan(string seller) =>
+            $"<span class='ui_text_light_grey'><br/>{seller}</span>";
+
+        // -----------------------------------------------------------------------
+        // ProcessMarketHtml — TechLevel extraction
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void ProcessMarketHtml_NameWithMilSpec_TechLevelExtracted()
+        {
+            string html = MarketHtml("AMX-SS Reactor Core (MilSpec)", SellerSpan("Government"));
+            var results = _scanner.ProcessMarketHtml(html);
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].Blueprint.Name, Is.EqualTo("AMX-SS Reactor Core"));
+            Assert.That(results[0].Blueprint.TechLevel, Is.EqualTo("MilSpec"));
+        }
+
+        [Test]
+        public void ProcessMarketHtml_NameWithRugged_TechLevelExtracted()
+        {
+            string html = MarketHtml("Navi-Comp v1.0 (Rugged)", SellerSpan("Government"));
+            var results = _scanner.ProcessMarketHtml(html);
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].Blueprint.Name, Is.EqualTo("Navi-Comp v1.0"));
+            Assert.That(results[0].Blueprint.TechLevel, Is.EqualTo("Rugged"));
+        }
+
+        [Test]
+        public void ProcessMarketHtml_NameWithoutParentheses_TechLevelIsNull()
+        {
+            string html = MarketHtml("Fighter Bomber", SellerSpan("Government"));
+            var results = _scanner.ProcessMarketHtml(html);
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].Blueprint.Name, Is.EqualTo("Fighter Bomber"));
+            Assert.That(results[0].Blueprint.TechLevel, Is.Null);
+        }
+
+        [Test]
+        public void ProcessMarketHtml_NameWithNonTechLevelParentheses_TechLevelIsNull()
+        {
+            string html = MarketHtml("Some Widget (Ev0)", SellerSpan("Government"));
+            var results = _scanner.ProcessMarketHtml(html);
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].Blueprint.Name, Is.EqualTo("Some Widget (Ev0)"));
+            Assert.That(results[0].Blueprint.TechLevel, Is.Null);
+        }
+
+        // -----------------------------------------------------------------------
+        // ProcessMarketHtml — seller name extraction
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void ProcessMarketHtml_GovernmentSeller_ExtractedCorrectly()
+        {
+            string html = MarketHtml("Scout", SellerSpan("Government"));
+            var results = _scanner.ProcessMarketHtml(html);
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].SellerName, Is.EqualTo("Government"));
+        }
+
+        [Test]
+        public void ProcessMarketHtml_PlayerSeller_ExtractedCorrectly()
+        {
+            string html = MarketHtml("Pulse Cannon (MilSpec)", SellerSpan("Scalorn Scorpus"));
+            var results = _scanner.ProcessMarketHtml(html);
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].SellerName, Is.EqualTo("Scalorn Scorpus"));
+            Assert.That(results[0].Blueprint.Name, Is.EqualTo("Pulse Cannon"));
+            Assert.That(results[0].Blueprint.TechLevel, Is.EqualTo("MilSpec"));
+        }
+
+        [Test]
+        public void ProcessMarketHtml_NoSellerSpan_SellerNameIsEmpty()
+        {
+            string html = MarketHtml("Basic Thruster", "");
+            var results = _scanner.ProcessMarketHtml(html);
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].SellerName, Is.EqualTo(""));
+        }
     }
 }
