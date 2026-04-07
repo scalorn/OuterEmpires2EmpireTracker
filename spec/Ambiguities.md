@@ -240,3 +240,24 @@ Volume SHALL be set when an item is added to the warehouse.
 2. Once tests confirm it works, it SHALL be wired into the SurveyForm (similar to how BlueprintScanner is wired into FormBlueprint for clipboard HTML processing).
 
 **Action:** MainWindow.cs fixed — parseIt() call removed. SurveyParser testing and SurveyForm integration tracked as future work in Recommendations.md.
+
+---
+
+### AMB-032 — RESOLVED
+**Issue:** Colony import duplicates manually-added structures. When a user manually builds out a colony in the app, structures have `gameSequence = 0`. When the importer runs, it indexes existing structures by `gameSequence` to find merge candidates. Manually-added structures (gameSequence=0) never match parsed buildings (which have real buildingIDs), so every parsed building is added as a new entry, duplicating the manual ones.
+
+**Resolution:**
+
+1. **Rename `gameSequence` to `displaySequence`** — this field stores the per-type UI sequence number (e.g. Reactor Core #1, #2). The form code SHALL calculate this the same way the game UI does: per flatpack type, numbered sequentially (first Habitat is 1, second Habitat is 2, etc.).
+
+2. **Add new `buildingID` field to ColonyStructure** — stores the game's unique building identifier from the JSON `buildingID` property. This value may be important for future features. The parser SHALL store the parsed buildingID in this new field instead of overwriting `displaySequence`/`gameSequence`.
+
+3. **Merge detection SHALL use FlatpackBlueprintUUID + displaySequence** — when importing, match parsed buildings to existing structures by their flatpack blueprint UUID and their per-type display sequence number. The display sequence is derived from the UI name pattern `#<num> - <name>`.
+
+4. **CommodityManufactory special case** — all commodity manufactory types (Agridome, Administration Block, etc.) are sequenced together by the game, and the sequence is not stable when new ones are built. For these, use best-guess matching: sort existing commodity manufactories by build order (list position), sort parsed ones by UI order, and match 1:1 by position within each commodity manufactory sub-type. The first Agridome in the UI matches the first Agridome the user built, the second matches the second, etc.
+
+5. **REQ-CI-020 update** — replace the current text with: "When importing into an existing colony, structures SHALL be merged by FlatpackBlueprintUUID + per-type display sequence. The parser SHALL store the game's buildingID in a separate `buildingID` field on ColonyStructure. For CommodityManufactory types, matching SHALL use build order vs UI order within each sub-type."
+
+6. **REQ-CI-024 (new)** — "When a structure is added manually via the colony form, the form SHALL calculate and assign a `displaySequence` matching the game UI convention: per flatpack type, numbered sequentially starting at 1."
+
+**Action:** Requires implementation. New field `buildingID` on ColonyStructure, rename `gameSequence` to `displaySequence`, update merge logic in ColonyParser, update form code to calculate display sequence on manual add.
