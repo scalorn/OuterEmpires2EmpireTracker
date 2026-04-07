@@ -94,6 +94,7 @@ Changes to the existing form:
 - Modify `RefreshData()` to branch on `chkShowInactive.Checked`:
   - Unchecked: call `ColonyActivityCollector.CollectActivities()` (existing)
   - Checked: call `ColonyInactivityCollector.CollectInactivities()`
+- Modify `RefreshData()` to update form title: "Colony Inactivity" when checked, "Colony Activity" when unchecked (preserving `#N - ` window number prefix)
 - Modify `ApplyFiltersAndPopulate()` to:
   - Hide `chkCommodityRequest` and `colCountDown` when in Inactivity Mode
   - Show them when in Activity Mode

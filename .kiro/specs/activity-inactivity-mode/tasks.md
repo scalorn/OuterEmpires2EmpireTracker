@@ -72,6 +72,7 @@ Add an Inactivity Mode to the Colony Activity form that surfaces idle and underu
   - [x] 5.2 Modify `FormColonyActivity.cs` to wire up Inactivity Mode toggle
     - Wire `chkShowInactive.CheckedChanged` handler in constructor
     - Modify `RefreshData()` to branch: unchecked calls `ColonyActivityCollector.CollectActivities()`, checked calls `ColonyInactivityCollector.CollectInactivities()`
+    - Modify `RefreshData()` to update form title: "Colony Inactivity" when checked, "Colony Activity" when unchecked
     - Modify `ApplyFiltersAndPopulate()` to hide `chkCommodityRequest` and `colCountDown` when in Inactivity Mode, show them when in Activity Mode
     - Modify `GetSelectedActivityTypes()` to exclude `CommodityRequest` when in Inactivity Mode
     - Modify `timerRefresh_Tick` to skip countdown cell updates when in Inactivity Mode

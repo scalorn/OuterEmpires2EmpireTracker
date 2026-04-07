@@ -31,6 +31,8 @@ The Colony Activity form currently displays active structures with running timer
 2. WHEN the "Show Inactive" checkbox is unchecked, THE Activity_Form SHALL display Activity_Mode data using the existing behavior.
 3. WHEN the "Show Inactive" checkbox is checked, THE Activity_Form SHALL display Inactivity_Mode data by querying the Inactivity_Collector.
 4. WHEN the "Show Inactive" checkbox state changes, THE Activity_Form SHALL clear and repopulate the grid with the appropriate mode's data.
+5. WHEN the "Show Inactive" checkbox is checked, THE Activity_Form SHALL change the form title to "Colony Inactivity".
+6. WHEN the "Show Inactive" checkbox is unchecked, THE Activity_Form SHALL change the form title back to "Colony Activity".
 
 ### Requirement 2: Inactivity Mode UI Adjustments
 
