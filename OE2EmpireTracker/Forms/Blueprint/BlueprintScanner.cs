@@ -17,8 +17,18 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace OE2EmpireTracker.Forms.Blueprint
 {
+    public class MarketBlueprint
+    {
+        public Models.Blueprint Blueprint { get; set; }
+        public string SellerName { get; set; }
+    }
+
     public class BlueprintScanner
     {
+        private static readonly HashSet<string> KnownTechLevels = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "Hi-Tech", "Junker", "MilSpec", "Rugged", "Service", "Standard"
+        };
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private static Dictionary<string, string> PropertyRemap = new Dictionary<string, string>()
@@ -272,9 +282,9 @@ namespace OE2EmpireTracker.Forms.Blueprint
         /// Market HTML uses different CSS classes than the individual blueprint page.
         /// Each expanded listing contains stats and resources for one blueprint.
         /// </summary>
-        public List<Models.Blueprint> ProcessMarketHtml(string htmlFragment)
+        public List<MarketBlueprint> ProcessMarketHtml(string htmlFragment)
         {
-            var blueprints = new List<Models.Blueprint>();
+            var results = new List<MarketBlueprint>();
 
             try
             {
@@ -295,7 +305,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                 // They are siblings in the table, not nested.
 
                 XmlNodeList allRows = doc.SelectNodes("//tr");
-                if (allRows == null) return blueprints;
+                if (allRows == null) return results;
 
                 for (int i = 0; i < allRows.Count; i++)
                 {
@@ -322,8 +332,30 @@ namespace OE2EmpireTracker.Forms.Blueprint
                         name = nameNode.InnerText.Trim(); // fallback
                     if (string.IsNullOrEmpty(name)) continue;
 
+                    // Extract seller name from <span class="ui_text_light_grey"> inside the name div
+                    string sellerName = "";
+                    XmlNode sellerSpan = nameNode.SelectSingleNode(".//span[contains(@class,'ui_text_light_grey')]");
+                    if (sellerSpan != null)
+                    {
+                        sellerName = sellerSpan.InnerText.Trim();
+                    }
+
+                    // Extract TechLevel from name parentheses if matching a known value
+                    string techLevel = null;
+                    var techMatch = Regex.Match(name, @"^(.*)\((.*)\)$");
+                    if (techMatch.Success)
+                    {
+                        string candidateTech = techMatch.Groups[2].Value.Trim();
+                        if (KnownTechLevels.Contains(candidateTech))
+                        {
+                            techLevel = candidateTech;
+                            name = techMatch.Groups[1].Value.Trim();
+                        }
+                    }
+
                     var bp = new Models.Blueprint(name);
                     bp.UUID = System.Guid.NewGuid().ToString();
+                    bp.TechLevel = techLevel;
 
                     XmlNode evoNode = row.SelectSingleNode(".//div[contains(@class,'EvolutionNumber')]");
                     if (evoNode != null && int.TryParse(evoNode.InnerText.Trim(), out int evo))
@@ -408,8 +440,8 @@ namespace OE2EmpireTracker.Forms.Blueprint
                         }
                     }
 
-                    blueprints.Add(bp);
-                    Log.Info($"Market import: {bp.Name} (Ev{bp.Evolution}) — {bp.Properties.Count} properties, {bp.Resources.Count} resources");
+                    results.Add(new MarketBlueprint { Blueprint = bp, SellerName = sellerName });
+                    Log.Info($"Market import: {bp.Name} (Ev{bp.Evolution}, TechLevel={bp.TechLevel ?? "null"}, Seller={sellerName}) — {bp.Properties.Count} properties, {bp.Resources.Count} resources");
                 }
             }
             catch (Exception ex)
@@ -417,7 +449,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                 Log.Error("Error parsing market HTML: " + ex.Message);
             }
 
-            return blueprints;
+            return results;
         }
 
         /// <summary>

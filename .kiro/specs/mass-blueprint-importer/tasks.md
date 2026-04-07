@@ -7,7 +7,7 @@ Add a bulk market import capability to the Blueprint form. An "Import Market" bu
 ## Tasks
 
 - [ ] 1. Extend BlueprintScanner.ProcessMarketHtml with seller name and TechLevel extraction
-  - [ ] 1.1 Add `MarketBlueprint` wrapper class to `BlueprintScanner.cs`
+  - [-] 1.1 Add `MarketBlueprint` wrapper class to `BlueprintScanner.cs`
     - Add `MarketBlueprint` class with `Blueprint` and `SellerName` properties
     - Change `ProcessMarketHtml` return type from `List<Blueprint>` to `List<MarketBlueprint>`
     - Extract seller name from `<span class="ui_text_light_grey">` inside the name div
@@ -16,7 +16,7 @@ Add a bulk market import capability to the Blueprint form. An "Import Market" bu
     - Update existing tests to use `MarketBlueprint` wrapper
     - _Requirements: 4_
 
-  - [ ] 1.2 Write tests for seller name and TechLevel extraction
+  - [~] 1.2 Write tests for seller name and TechLevel extraction
     - Test: blueprint with "(MilSpec)" in name → TechLevel = "MilSpec", name stripped
     - Test: blueprint with "(Rugged)" → TechLevel = "Rugged"
     - Test: blueprint without parentheses → TechLevel = null, name unchanged
@@ -26,10 +26,10 @@ Add a bulk market import capability to the Blueprint form. An "Import Market" bu
     - Test: no seller span → empty seller name
     - _Requirements: 4, 5_
 
-- [ ] 2. Checkpoint — Ensure parser changes build and all tests pass
+- [~] 2. Checkpoint — Ensure parser changes build and all tests pass
 
 - [ ] 3. Create MarketBlueprintImporter service with import logic
-  - [ ] 3.1 Create `OE2EmpireTracker/Services/MarketBlueprintImporter.cs`
+  - [~] 3.1 Create `OE2EmpireTracker/Services/MarketBlueprintImporter.cs`
     - Add `ImportResult`, `ImportResultEntry`, `ImportAction` classes/enum
     - Implement `Import(List<MarketBlueprint>, PlayerContext, EmpireContext)` method
     - Skip unexpanded listings (zero properties, no BluePrintType)
@@ -44,7 +44,7 @@ Add a bulk market import capability to the Blueprint form. An "Import Market" bu
     - Add `<Compile Include>` to csproj
     - _Requirements: 2, 3, 5, 6, 7, 8, 9_
 
-  - [ ] 3.2 Write tests for MarketBlueprintImporter
+  - [~] 3.2 Write tests for MarketBlueprintImporter
     - Test: create new global blueprint (Government seller)
     - Test: create new player blueprint (non-Government seller)
     - Test: skip unexpanded listing (zero properties)
@@ -59,10 +59,10 @@ Add a bulk market import capability to the Blueprint form. An "Import Market" bu
     - **Property 4: Import result completeness**
     - _Requirements: 2, 3, 5, 6, 7, 8_
 
-- [ ] 4. Checkpoint — Ensure importer service builds and tests pass
+- [~] 4. Checkpoint — Ensure importer service builds and tests pass
 
 - [ ] 5. Add idempotency integration tests
-  - [ ] 5.1 Write idempotency tests using real MarketSample HTML files
+  - [~] 5.1 Write idempotency tests using real MarketSample HTML files
     - Test: import MarketSampleReactor.html once → verify blueprints created with correct count
     - Test: import same file 3 times → verify no duplicate blueprints, all "Updated" on 2nd/3rd
     - Test: after 3 imports, each blueprint's property count unchanged from first import
@@ -72,16 +72,16 @@ Add a bulk market import capability to the Blueprint form. An "Import Market" bu
     - **Property 6: Import idempotency**
     - _Requirements: 5, 6_
 
-- [ ] 6. Checkpoint — Ensure idempotency tests pass
+- [~] 6. Checkpoint — Ensure idempotency tests pass
 
 - [ ] 7. Add Import Market button to FormBlueprint UI
-  - [ ] 7.1 Modify `FormBlueprint.Designer.cs` to add `cmdImportMarket` button
+  - [~] 7.1 Modify `FormBlueprint.Designer.cs` to add `cmdImportMarket` button
     - Declare `private System.Windows.Forms.Button cmdImportMarket;`
     - Add to `flpCommands.Controls` before `cmdImport`
     - Set `Text = "Import Market"`, appropriate size
     - _Requirements: 1_
 
-  - [ ] 7.2 Modify `FormBlueprint.cs` to wire up Import Market click handler
+  - [~] 7.2 Modify `FormBlueprint.cs` to wire up Import Market click handler
     - Wire `cmdImportMarket.Click` handler
     - Read clipboard HTML, check for valid HTML content
     - Call `BlueprintScanner.ProcessMarketHtml()`
@@ -91,7 +91,7 @@ Add a bulk market import capability to the Blueprint form. An "Import Market" bu
     - Refresh form after import
     - _Requirements: 1, 10, 11_
 
-- [ ] 8. Final checkpoint — Ensure full solution builds and all tests pass
+- [~] 8. Final checkpoint — Ensure full solution builds and all tests pass
 
 ## Notes
 

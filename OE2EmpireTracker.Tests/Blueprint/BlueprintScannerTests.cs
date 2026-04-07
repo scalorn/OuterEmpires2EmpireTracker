@@ -537,16 +537,17 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void ProcessMarketHtml_ExtractsMultipleBlueprints()
         {
             string html = LoadTestData("BlueprintMarketHulls.html");
-            var blueprints = _scanner.ProcessMarketHtml(html);
+            var results = _scanner.ProcessMarketHtml(html);
 
-            Assert.That(blueprints.Count, Is.GreaterThanOrEqualTo(4),
+            Assert.That(results.Count, Is.GreaterThanOrEqualTo(4),
                 "Should extract at least 4 blueprints from market listing");
 
             // Log what we got for exploration
-            foreach (var bp in blueprints)
+            foreach (var mb in results)
             {
+                var bp = mb.Blueprint;
                 TestContext.WriteLine($"Name: {bp.Name}, Evo: {bp.Evolution}, Class: {bp.Class}, " +
-                    $"Props: {bp.Properties.Count}, Resources: {bp.Resources.Count}");
+                    $"Props: {bp.Properties.Count}, Resources: {bp.Resources.Count}, Seller: {mb.SellerName}");
             }
         }
 
@@ -554,10 +555,10 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void ProcessMarketHtml_FirstBlueprint_HasNameAndEvolution()
         {
             string html = LoadTestData("BlueprintMarketHulls.html");
-            var blueprints = _scanner.ProcessMarketHtml(html);
+            var results = _scanner.ProcessMarketHtml(html);
 
-            Assert.That(blueprints.Count, Is.GreaterThan(0));
-            var first = blueprints[0];
+            Assert.That(results.Count, Is.GreaterThan(0));
+            var first = results[0].Blueprint;
             Assert.That(first.Name, Is.Not.Null.And.Not.Empty);
             Assert.That(first.Evolution, Is.GreaterThanOrEqualTo(0));
         }
@@ -566,10 +567,11 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void ProcessMarketHtml_Blueprints_HaveProperties()
         {
             string html = LoadTestData("BlueprintMarketHulls.html");
-            var blueprints = _scanner.ProcessMarketHtml(html);
+            var results = _scanner.ProcessMarketHtml(html);
 
-            foreach (var bp in blueprints)
+            foreach (var mb in results)
             {
+                var bp = mb.Blueprint;
                 Assert.That(bp.Properties.Count, Is.GreaterThan(0),
                     $"Blueprint '{bp.Name}' should have properties");
 
@@ -585,10 +587,11 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void ProcessMarketHtml_Blueprints_HaveResources()
         {
             string html = LoadTestData("BlueprintMarketHulls.html");
-            var blueprints = _scanner.ProcessMarketHtml(html);
+            var results = _scanner.ProcessMarketHtml(html);
 
-            foreach (var bp in blueprints)
+            foreach (var mb in results)
             {
+                var bp = mb.Blueprint;
                 Assert.That(bp.Resources.Count, Is.GreaterThan(0),
                     $"Blueprint '{bp.Name}' should have resources");
 
@@ -605,9 +608,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void ProcessMarketHtml_PropertyValuesAreNormalized()
         {
             string html = LoadTestData("BlueprintMarketHulls.html");
-            var blueprints = _scanner.ProcessMarketHtml(html);
+            var results = _scanner.ProcessMarketHtml(html);
 
-            var first = blueprints[0];
+            var first = results[0].Blueprint;
 
             // Wear and Tear Rate should be stripped of % (decimal normalization)
             string wearRate;
@@ -626,11 +629,12 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void ProcessMarketHtml_ExtractsBlueprintTypeIcon()
         {
             string html = LoadTestData("BlueprintMarketHulls.html");
-            var blueprints = _scanner.ProcessMarketHtml(html);
+            var results = _scanner.ProcessMarketHtml(html);
 
             // All hull blueprints should resolve to BluePrintType "Hull"
-            foreach (var bp in blueprints)
+            foreach (var mb in results)
             {
+                var bp = mb.Blueprint;
                 if (bp.Properties.Count > 0) // skip unexpanded listings
                 {
                     Assert.That(bp.BluePrintType, Is.EqualTo("Hull"),
@@ -644,14 +648,14 @@ namespace OE2EmpireTracker.Tests.Blueprint
         {
             // Exploratory test — dumps all extracted data for review
             string html = LoadTestData("BlueprintMarketHulls.html");
-            var blueprints = _scanner.ProcessMarketHtml(html);
+            var results = _scanner.ProcessMarketHtml(html);
 
-            for (int i = 0; i < blueprints.Count; i++)
+            for (int i = 0; i < results.Count; i++)
             {
-                var bp = blueprints[i];
+                var bp = results[i].Blueprint;
                 string iconPos;
                 bp.Properties.getString("_IconPosition", null, out iconPos);
-                TestContext.WriteLine($"\n=== Blueprint {i + 1}: {bp.Name} (Ev{bp.Evolution}, Class {bp.Class}, Icon: {iconPos ?? "none"}) ===");
+                TestContext.WriteLine($"\n=== Blueprint {i + 1}: {bp.Name} (Ev{bp.Evolution}, Class {bp.Class}, Icon: {iconPos ?? "none"}, TechLevel: {bp.TechLevel ?? "null"}, Seller: {results[i].SellerName}) ===");
 
                 TestContext.WriteLine("Properties:");
                 string[] knownProps = { "Class", "Mass", "Cargo Volume Size", "License Level",
@@ -683,14 +687,15 @@ namespace OE2EmpireTracker.Tests.Blueprint
         {
             // Exploratory test — dumps mixed blueprint types with resolved types
             string html = LoadTestData("BlueprintMarketMixed.html");
-            var blueprints = _scanner.ProcessMarketHtml(html);
+            var results = _scanner.ProcessMarketHtml(html);
 
-            TestContext.WriteLine($"Total blueprints: {blueprints.Count}");
+            TestContext.WriteLine($"Total blueprints: {results.Count}");
 
             // Group by resolved BluePrintType
             var typeGroups = new Dictionary<string, List<string>>();
-            foreach (var bp in blueprints)
+            foreach (var mb in results)
             {
+                var bp = mb.Blueprint;
                 string key = bp.BluePrintType ?? "UNKNOWN";
                 if (!typeGroups.ContainsKey(key))
                     typeGroups[key] = new List<string>();
@@ -723,10 +728,10 @@ namespace OE2EmpireTracker.Tests.Blueprint
             foreach (var file in sampleFiles.OrderBy(f => f))
             {
                 string html = System.IO.File.ReadAllText(file);
-                var bps = _scanner.ProcessMarketHtml(html);
+                var results = _scanner.ProcessMarketHtml(html);
                 string fileName = System.IO.Path.GetFileName(file);
-                TestContext.WriteLine($"{fileName}: {bps.Count} blueprints");
-                allBlueprints.AddRange(bps);
+                TestContext.WriteLine($"{fileName}: {results.Count} blueprints");
+                allBlueprints.AddRange(results.Select(mb => mb.Blueprint));
             }
 
             TestContext.WriteLine($"\nTotal blueprints across all files: {allBlueprints.Count}");
