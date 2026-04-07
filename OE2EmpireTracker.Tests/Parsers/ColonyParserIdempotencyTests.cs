@@ -50,15 +50,6 @@ namespace OE2EmpireTracker.Tests.Parsers
                 .ExtractHtmlFragmentFromClipboardData(clipboardData);
         }
 
-        private Colony ParseColonyFromFile(string filename)
-        {
-            string clipboardData = LoadTestData(filename);
-            string html = ExtractFragment(clipboardData);
-            var colony = new Colony();
-            _parser.ProcessHtml(colony, html, _empireContext);
-            return colony;
-        }
-
         // -------------------------------------------------------------------
         // M1 structure idempotency tests (Requirements 2.1, 2.2, 2.3)
         // -------------------------------------------------------------------
@@ -210,8 +201,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void AllColonyFiles_ParseTwice_StructureCountUnchanged()
         {
             // Feature: parser-idempotency-tests, Property 3: Colony structure count idempotency
-            // Feature: parser-idempotency-tests, Property 4: Colony structure values stability
-            // Validates: Requirements 2.1, 2.2, 2.3, 2.4
+            // Validates: Requirements 2.1, 2.2, 2.4
             foreach (string filename in ColonyFiles)
             {
                 string clipboardData = LoadTestData(filename);
@@ -221,8 +211,24 @@ namespace OE2EmpireTracker.Tests.Parsers
                 _parser.ProcessHtml(colony, html, _empireContext);
                 int countAfterFirst = colony.Structures.Count;
 
-                // Some colony files may legitimately have 0 structures;
-                // idempotency still holds (0 == 0), but skip value checks.
+                _parser.ProcessHtml(colony, html, _empireContext);
+                Assert.That(colony.Structures.Count, Is.EqualTo(countAfterFirst),
+                    $"Structure count changed after second parse of {filename}");
+            }
+        }
+
+        [Test]
+        public void AllColonyFiles_ParseTwice_StructureValuesPreserved()
+        {
+            // Feature: parser-idempotency-tests, Property 4: Colony structure values stability
+            // Validates: Requirements 2.3
+            foreach (string filename in ColonyFiles)
+            {
+                string clipboardData = LoadTestData(filename);
+                string html = ExtractFragment(clipboardData);
+                var colony = new Colony();
+
+                _parser.ProcessHtml(colony, html, _empireContext);
 
                 // Snapshot structure values after first parse
                 var snapshot = colony.Structures
@@ -231,14 +237,14 @@ namespace OE2EmpireTracker.Tests.Parsers
                     .ToList();
 
                 _parser.ProcessHtml(colony, html, _empireContext);
-                Assert.That(colony.Structures.Count, Is.EqualTo(countAfterFirst),
-                    $"Structure count changed after second parse of {filename}");
 
-                // Verify structure values unchanged (Property 4)
                 var afterSecond = colony.Structures
                     .Select(s => new { s.FlatpackBlueprintUUID, s.gameSequence })
                     .OrderBy(s => s.gameSequence)
                     .ToList();
+
+                Assert.That(afterSecond.Count, Is.EqualTo(snapshot.Count),
+                    $"Structure count changed after second parse of {filename}");
 
                 for (int i = 0; i < snapshot.Count; i++)
                 {
@@ -254,8 +260,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void AllColonyFiles_ParseTwice_CommodityCountUnchanged()
         {
             // Feature: parser-idempotency-tests, Property 5: Colony commodity count idempotency
-            // Feature: parser-idempotency-tests, Property 6: Colony commodity values stability
-            // Validates: Requirements 3.1, 3.2, 3.3, 3.4
+            // Validates: Requirements 3.1, 3.2, 3.4
             int filesWithCommodities = 0;
 
             foreach (string filename in ColonyFiles)
@@ -272,6 +277,35 @@ namespace OE2EmpireTracker.Tests.Parsers
                 filesWithCommodities++;
                 int countAfterFirst = colony.Commodities.Count;
 
+                _parser.ProcessHtml(colony, html, _empireContext);
+                Assert.That(colony.Commodities.Count, Is.EqualTo(countAfterFirst),
+                    $"Commodity count changed after second parse of {filename}");
+            }
+
+            Assert.That(filesWithCommodities, Is.GreaterThan(0),
+                "At least one colony file should have commodity demands");
+        }
+
+        [Test]
+        public void AllColonyFiles_ParseTwice_CommodityValuesPreserved()
+        {
+            // Feature: parser-idempotency-tests, Property 6: Colony commodity values stability
+            // Validates: Requirements 3.3
+            int filesWithCommodities = 0;
+
+            foreach (string filename in ColonyFiles)
+            {
+                string clipboardData = LoadTestData(filename);
+                string html = ExtractFragment(clipboardData);
+                var colony = new Colony();
+
+                _parser.ProcessHtml(colony, html, _empireContext);
+
+                if (colony.Commodities.Count == 0)
+                    continue;
+
+                filesWithCommodities++;
+
                 // Snapshot commodity values after first parse
                 var snapshot = colony.Commodities
                     .Select(c => new { c.Name, c.Requested, c.Fulfilled })
@@ -279,14 +313,14 @@ namespace OE2EmpireTracker.Tests.Parsers
                     .ToList();
 
                 _parser.ProcessHtml(colony, html, _empireContext);
-                Assert.That(colony.Commodities.Count, Is.EqualTo(countAfterFirst),
-                    $"Commodity count changed after second parse of {filename}");
 
-                // Verify commodity values unchanged (Property 6)
                 var afterSecond = colony.Commodities
                     .Select(c => new { c.Name, c.Requested, c.Fulfilled })
                     .OrderBy(c => c.Name)
                     .ToList();
+
+                Assert.That(afterSecond.Count, Is.EqualTo(snapshot.Count),
+                    $"Commodity count changed after second parse of {filename}");
 
                 for (int i = 0; i < snapshot.Count; i++)
                 {

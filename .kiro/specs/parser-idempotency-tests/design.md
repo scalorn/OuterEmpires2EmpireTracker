@@ -48,7 +48,8 @@ For each parser, a "sweep" test iterates over all available test data HTML files
 | `ZehVazoran_ParseTwice_ResourceCountUnchanged` | Parse ZehVazoranIIM2.html twice into same Survey, verify `Resources.Count` stable |
 | `ZehVazoran_ParseThreeTimes_ResourceCountUnchanged` | Same but 3 passes |
 | `ZehVazoran_ParseTwice_ResourceValuesPreserved` | Verify resource name/purity/amount unchanged after 2nd parse |
-| `AllSurveyFiles_ParseTwice_ResourceCountUnchanged` | Sweep all survey HTML files, verify idempotency for each |
+| `AllSurveyFiles_ParseTwice_ResourceCountUnchanged` | Sweep all survey HTML files, verify resource count idempotency for each |
+| `AllSurveyFiles_ParseTwice_ResourceValuesPreserved` | Sweep all survey HTML files, verify resource values stability for each |
 
 ### ColonyParserIdempotencyTests
 
@@ -60,8 +61,10 @@ For each parser, a "sweep" test iterates over all available test data HTML files
 | `M2_2_ParseTwice_CommodityCountUnchanged` | Parse M2-2 HTML twice, verify `Commodities.Count` stable |
 | `M2_2_ParseThreeTimes_CommodityCountUnchanged` | Same but 3 passes |
 | `M2_2_ParseTwice_CommodityValuesPreserved` | Verify commodity name/requested/fulfilled unchanged |
-| `AllColonyFiles_ParseTwice_StructureCountUnchanged` | Sweep all colony HTML files for structure idempotency |
-| `AllColonyFiles_ParseTwice_CommodityCountUnchanged` | Sweep colony files with commodities for commodity idempotency |
+| `AllColonyFiles_ParseTwice_StructureCountUnchanged` | Sweep all colony HTML files for structure count idempotency |
+| `AllColonyFiles_ParseTwice_StructureValuesPreserved` | Sweep all colony HTML files for structure values stability |
+| `AllColonyFiles_ParseTwice_CommodityCountUnchanged` | Sweep colony files with commodities for commodity count idempotency |
+| `AllColonyFiles_ParseTwice_CommodityValuesPreserved` | Sweep colony files with commodities for commodity values stability |
 
 ### Test Infrastructure
 

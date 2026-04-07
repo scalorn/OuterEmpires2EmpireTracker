@@ -20,11 +20,12 @@ Add idempotency verification tests for `SurveyParser` and `ColonyParser` to conf
     - `ZehVazoran_ParseTwice_ResourceValuesPreserved` — snapshot resource name/purity/amount after first parse, verify unchanged after second parse
     - _Requirements: 1.1, 1.2, 1.3_
 
-  - [x] 1.3 Implement AllSurveyFiles sweep property test
+  - [x] 1.3 Implement AllSurveyFiles sweep property tests
     - **Property 1: Survey resource count idempotency**
     - **Property 2: Survey resource values stability**
-    - `AllSurveyFiles_ParseTwice_ResourceCountUnchanged` — iterate over `ZehVazoranIIM2.html` and `QuogarV2249II.html`, verify idempotency for each
-    - Include comment: `// Feature: parser-idempotency-tests, Property 1 & 2`
+    - `AllSurveyFiles_ParseTwice_ResourceCountUnchanged` — iterate over `ZehVazoranIIM2.html` and `QuogarV2249II.html`, verify resource count idempotency for each
+    - `AllSurveyFiles_ParseTwice_ResourceValuesPreserved` — iterate over `ZehVazoranIIM2.html` and `QuogarV2249II.html`, verify resource values stability for each
+    - Include comments: `// Feature: parser-idempotency-tests, Property 1: Survey resource count idempotency` and `// Feature: parser-idempotency-tests, Property 2: Survey resource values stability`
     - **Validates: Requirements 1.1, 1.2, 1.3, 1.4**
 
 - [x] 2. Create ColonyParserIdempotencyTests.cs
@@ -51,8 +52,10 @@ Add idempotency verification tests for `SurveyParser` and `ColonyParser` to conf
     - **Property 4: Colony structure values stability**
     - **Property 5: Colony commodity count idempotency**
     - **Property 6: Colony commodity values stability**
-    - `AllColonyFiles_ParseTwice_StructureCountUnchanged` — iterate over all `ClnyHex*.html` files, verify structure idempotency for each
-    - `AllColonyFiles_ParseTwice_CommodityCountUnchanged` — iterate over colony files that produce `Commodities.Count > 0`, verify commodity idempotency for each
+    - `AllColonyFiles_ParseTwice_StructureCountUnchanged` — iterate over all `ClnyHex*.html` files, verify structure count idempotency for each
+    - `AllColonyFiles_ParseTwice_StructureValuesPreserved` — iterate over all `ClnyHex*.html` files, verify structure values stability for each
+    - `AllColonyFiles_ParseTwice_CommodityCountUnchanged` — iterate over colony files that produce `Commodities.Count > 0`, verify commodity count idempotency for each
+    - `AllColonyFiles_ParseTwice_CommodityValuesPreserved` — iterate over colony files that produce `Commodities.Count > 0`, verify commodity values stability for each
     - Include comments referencing design properties
     - **Validates: Requirements 2.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4**
 
