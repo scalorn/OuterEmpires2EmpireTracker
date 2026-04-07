@@ -228,6 +228,7 @@
     <Compile Include="Persistence\SafeFileWriterTests.cs" />
     <Compile Include="Persistence\BoundsValidatorTests.cs" />
     <Compile Include="Services\PreferencesStoreTests.cs" />
+    <Compile Include="Services\MarketBlueprintImporterTests.cs" />
     <Compile Include="Models\UIPreferencesTests.cs" />
     <Compile Include="Parsers\SurveyParserTests.cs" />
     <Compile Include="Constants\BlueprintPropertyValidationTests.cs" />
