@@ -222,6 +222,7 @@
                               "Id":  "FuelTank",
                               "Name":  "Fuel Tank",
                               "Universal":  false,
+                              "IconPosition":  "-138px -442px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -293,6 +294,7 @@
                               "Id":  "Hull",
                               "Name":  "Hull",
                               "Universal":  false,
+                              "IconPosition":  "-328px -62px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -330,6 +332,7 @@
                               "Id":  "HullSealantInjectionUnit",
                               "Name":  "Hull Sealant Injection Unit",
                               "Universal":  false,
+                              "IconPosition":  "-214px -480px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -357,6 +360,7 @@
                               "Id":  "HullReinforcement",
                               "Name":  "HullReinforcement",
                               "Universal":  false,
+                              "IconPosition":  "-480px -62px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -404,6 +408,7 @@
                               "Id":  "JumpDrive",
                               "Name":  "Jump Drive",
                               "Universal":  false,
+                              "IconPosition":  "-24px -442px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -434,6 +439,7 @@
                               "Id":  "MainDrive",
                               "Name":  "Main Drive",
                               "Universal":  false,
+                              "IconPosition":  "-252px -62px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -557,6 +563,7 @@
                               "Id":  "NavComp",
                               "Name":  "Nav Comp",
                               "Universal":  false,
+                              "IconPosition":  "-480px -480px",
                               "Properties":  [
 
                                              ],
@@ -617,6 +624,7 @@
                               "Id":  "Reactor",
                               "Name":  "Reactor",
                               "Universal":  false,
+                              "IconPosition":  "-62px -62px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -741,6 +749,7 @@
                               "Id":  "SystemObjectScanner",
                               "Name":  "System Object Scanner",
                               "Universal":  false,
+                              "IconPosition":  "-100px -252px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -773,6 +782,7 @@
                               "Id":  "Thruster",
                               "Name":  "Thruster",
                               "Universal":  false,
+                              "IconPosition":  "-290px -62px",
                               "Properties":  [
 
                                              ],
@@ -833,6 +843,7 @@
                               "Id":  "UniversalCoupler",
                               "Name":  "Universal Coupler",
                               "Universal":  false,
+                              "IconPosition":  "-480px -442px",
                               "Properties":  [
 
                                              ],

@@ -13,6 +13,15 @@ namespace OE2EmpireTracker.Tests.Blueprint
     {
         private BlueprintScanner _scanner;
 
+        [OneTimeSetUp]
+        public void FixtureSetUp()
+        {
+            string baseDir = System.AppDomain.CurrentDomain.BaseDirectory;
+            string baselineDataPath = System.IO.Path.Combine(baseDir, @"..\..\..\OE2EmpireTracker\BaselineData.json");
+            OE2EmpireTracker.Services.EmpireContext.FilePath = System.IO.Path.GetFullPath(baselineDataPath);
+            OE2EmpireTracker.Services.EmpireContext.Reset();
+        }
+
         [SetUp]
         public void SetUp()
         {
@@ -619,26 +628,15 @@ namespace OE2EmpireTracker.Tests.Blueprint
             string html = LoadTestData("BlueprintMarketHulls.html");
             var blueprints = _scanner.ProcessMarketHtml(html);
 
-            // All hull blueprints should have the same icon sprite position
+            // All hull blueprints should resolve to BluePrintType "Hull"
             foreach (var bp in blueprints)
             {
-                string iconImage;
-                bp.Properties.getString("_IconImage", null, out iconImage);
-                string iconPosition;
-                bp.Properties.getString("_IconPosition", null, out iconPosition);
-
-                if (iconImage != null)
+                if (bp.Properties.Count > 0) // skip unexpanded listings
                 {
-                    TestContext.WriteLine($"{bp.Name}: icon={iconImage} @ {iconPosition}");
-                    Assert.That(iconPosition, Is.Not.Null,
-                        $"Blueprint '{bp.Name}' has icon image but no position");
+                    Assert.That(bp.BluePrintType, Is.EqualTo("Hull"),
+                        $"Blueprint '{bp.Name}' should be type Hull");
                 }
             }
-
-            // At least the first blueprint should have an icon
-            string firstIcon;
-            blueprints[0].Properties.getString("_IconPosition", null, out firstIcon);
-            Assert.That(firstIcon, Is.Not.Null, "First blueprint should have an icon sprite position");
         }
 
         [Test]
@@ -683,28 +681,26 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessMarketHtml_Mixed_DumpAllData()
         {
-            // Exploratory test — dumps mixed blueprint types with icon positions
+            // Exploratory test — dumps mixed blueprint types with resolved types
             string html = LoadTestData("BlueprintMarketMixed.html");
             var blueprints = _scanner.ProcessMarketHtml(html);
 
             TestContext.WriteLine($"Total blueprints: {blueprints.Count}");
 
-            // Group by icon position to identify blueprint types
-            var iconGroups = new Dictionary<string, List<string>>();
+            // Group by resolved BluePrintType
+            var typeGroups = new Dictionary<string, List<string>>();
             foreach (var bp in blueprints)
             {
-                string iconPos;
-                bp.Properties.getString("_IconPosition", null, out iconPos);
-                string key = iconPos ?? "no-icon";
-                if (!iconGroups.ContainsKey(key))
-                    iconGroups[key] = new List<string>();
-                iconGroups[key].Add($"{bp.Name} (Ev{bp.Evolution}, Class {bp.Class}, Props: {bp.Properties.Count}, Res: {bp.Resources.Count})");
+                string key = bp.BluePrintType ?? "UNKNOWN";
+                if (!typeGroups.ContainsKey(key))
+                    typeGroups[key] = new List<string>();
+                typeGroups[key].Add($"{bp.Name} (Ev{bp.Evolution}, Class {bp.Class}, Props: {bp.Properties.Count}, Res: {bp.Resources.Count})");
             }
 
-            TestContext.WriteLine("\n=== Blueprints grouped by icon sprite position ===");
-            foreach (var group in iconGroups.OrderBy(g => g.Key))
+            TestContext.WriteLine("\n=== Blueprints grouped by resolved BluePrintType ===");
+            foreach (var group in typeGroups.OrderBy(g => g.Key))
             {
-                TestContext.WriteLine($"\nIcon: {group.Key} ({group.Value.Count} blueprints):");
+                TestContext.WriteLine($"\n{group.Key} ({group.Value.Count} blueprints):");
                 foreach (var name in group.Value)
                 {
                     TestContext.WriteLine($"  {name}");

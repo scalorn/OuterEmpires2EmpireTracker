@@ -114,6 +114,17 @@ namespace OE2EmpireTracker.Services
             return null;
         }
 
+        /// <summary>
+        /// Finds a BlueprintType by its icon sprite position (e.g. "-328px -62px").
+        /// Returns null if no type matches.
+        /// </summary>
+        public BlueprintType FindBlueprintTypeByIcon(string iconPosition)
+        {
+            if (string.IsNullOrEmpty(iconPosition)) return null;
+            return blueprintTypeList.FirstOrDefault(bt =>
+                string.Equals(bt.IconPosition, iconPosition, StringComparison.Ordinal));
+        }
+
         public void initShipClasses(BaselineRoot baselineRoot)
         {
             shipClassList = new BindingList<ShipClass>(baselineRoot.ShipClass);

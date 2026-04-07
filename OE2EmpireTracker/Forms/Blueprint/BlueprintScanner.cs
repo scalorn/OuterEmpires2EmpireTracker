@@ -1,5 +1,6 @@
 using Amazon.Runtime.Internal.Transform;
 using NLog;
+using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -388,11 +389,21 @@ namespace OE2EmpireTracker.Forms.Blueprint
                             var bgMatch = Regex.Match(style, @"background:\s*url\([""']?([^""')]+)[""']?\)\s*(-?\d+px)\s*(-?\d+px)");
                             if (bgMatch.Success)
                             {
-                                string iconImage = bgMatch.Groups[1].Value;
                                 string iconPosition = bgMatch.Groups[2].Value + " " + bgMatch.Groups[3].Value;
-                                bp.Properties.setProperty("_IconImage", iconImage);
                                 bp.Properties.setProperty("_IconPosition", iconPosition);
-                                Log.Info($"  Icon: {iconImage} @ {iconPosition}");
+
+                                // Resolve icon to BlueprintType via BaselineData
+                                var ec = EmpireContext.getInstance();
+                                var bpType = ec?.FindBlueprintTypeByIcon(iconPosition);
+                                if (bpType != null)
+                                {
+                                    bp.BluePrintType = bpType.Id;
+                                    Log.Info($"  Icon {iconPosition} -> {bpType.Id}");
+                                }
+                                else
+                                {
+                                    Log.Warn($"  Unknown icon position: {iconPosition} for '{bp.Name}'");
+                                }
                             }
                         }
                     }
