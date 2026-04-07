@@ -735,7 +735,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 if (!ResearchTimeLookup.CanResearchEvolution(bp.Evolution)) continue;
 
                 bool canResearch = true;
-                bp.Properties.getBoolean("CanResearch", true, out canResearch);
+                bp.Properties.getBoolean("Can Research", true, out canResearch);
                 if (!canResearch) continue;
 
                 string display = bp.ExtendedName;
@@ -896,12 +896,12 @@ namespace OE2EmpireTracker.Forms.Colony
                 if (bp.UUID == null) continue;
 
                 bool canManufacture = true;
-                bp.Properties.getBoolean("CanManufacture", true, out canManufacture);
+                bp.Properties.getBoolean("Can Manufacture", true, out canManufacture);
                 if (!canManufacture) continue;
 
                 // Must have a ManufactureTime
                 string mfgTime;
-                bp.Properties.getString("ManufactureTime", null, out mfgTime);
+                bp.Properties.getString("Manufacture Run Time", null, out mfgTime);
                 if (string.IsNullOrEmpty(mfgTime)) continue;
 
                 string display = bp.ExtendedName;
@@ -1053,7 +1053,7 @@ namespace OE2EmpireTracker.Forms.Colony
             string industryFilter = "";
             if (FlatpackBlueprint != null)
             {
-                FlatpackBlueprint.Properties.getString("CommodityIndustry", "", out industryFilter);
+                FlatpackBlueprint.Properties.getString("Commodity Industry", "", out industryFilter);
             }
 
             var items = new List<CommoditySelectionItem>();
@@ -1454,7 +1454,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
                 // Parse manufacture time from blueprint properties
                 string mfgTimeStr;
-                bp.Properties.getString("ManufactureTime", null, out mfgTimeStr);
+                bp.Properties.getString("Manufacture Run Time", null, out mfgTimeStr);
                 if (string.IsNullOrEmpty(mfgTimeStr)) return;
 
                 // Normalize time format: "9 hours" -> "9h", "30 minutes" -> "30m", etc.

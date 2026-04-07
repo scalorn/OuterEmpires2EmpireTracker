@@ -394,7 +394,7 @@ namespace OE2EmpireTracker.Models
                     mfgItem.Quantity = 1;
 
                     double vol = 0;
-                    sourceBp.Properties.getDouble("CargoVolumeSize", 0, out vol);
+                    sourceBp.Properties.getDouble("Cargo Volume Size", 0, out vol);
                     mfgItem.Volume = vol;
 
                     Items.AddItem(mfgItem);

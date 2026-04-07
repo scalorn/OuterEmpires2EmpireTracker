@@ -575,8 +575,8 @@ namespace OE2EmpireTracker.Tests.Services
         private OE2EmpireTracker.Models.Blueprint CreateManufactoryBlueprint(string uuid, string name, Dictionary<string, string> resources)
         {
             var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, BluePrintType = "Flatpacks/Manufactory", Resources = resources };
-            bp.Properties.setProperty("ManufactureTime", "1h");
-            bp.Properties.setProperty("CanManufacture", true);
+            bp.Properties.setProperty("Manufacture Run Time", "1h");
+            bp.Properties.setProperty("Can Manufacture", true);
             playerContext.blueprintList.Add(bp);
             return bp;
         }

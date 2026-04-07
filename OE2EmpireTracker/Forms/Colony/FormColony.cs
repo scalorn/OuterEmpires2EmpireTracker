@@ -890,7 +890,7 @@ namespace OE2EmpireTracker.Forms.Colony
                         if (bp != null)
                         {
                             double vol = 0;
-                            bp.Properties.getDouble("CargoVolumeSize", 0, out vol);
+                            bp.Properties.getDouble("Cargo Volume Size", 0, out vol);
                             return vol;
                         }
                     }

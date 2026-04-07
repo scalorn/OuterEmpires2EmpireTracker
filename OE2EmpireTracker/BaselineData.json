@@ -1,4 +1,4 @@
-﻿{
+{
     "ShipClass":  [
                       {
                           "Id":  0,
@@ -79,24 +79,24 @@
                               "Name":  "Cargo Pod",
                               "Universal":  false,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "MaxAllowedOnShip",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
                                                  "Health",
-                                                 "EngCapacityRequired",
-                                                 "CargoCapacity",
-                                                 "WearAndTearRate",
-                                                 "MaximumDamageRepairRate"
+                                                 "Eng Capacity Required",
+                                                 "Cargo Capacity",
+                                                 "Wear and Tear Rate",
+                                                 "Maximum Damage Repair"
                                              ],
                               "ResearchableProperties":  [
                                                              "Mass",
-                                                             "CargoVolumeSize",
+                                                             "Cargo Volume Size",
                                                              "Health",
-                                                             "EngCapacityRequired",
-                                                             "CargoCapacity",
-                                                             "WearAndTearRate",
-                                                             "MaximumDamageRepairRate"
+                                                             "Eng Capacity Required",
+                                                             "Cargo Capacity",
+                                                             "Wear and Tear Rate",
+                                                             "Maximum Damage Repair"
                                                          ],
                               "OutputItemType":  "ShipPart"
                           },
@@ -153,22 +153,22 @@
                               "Name":  "Colony Command Centre Flatpack",
                               "Universal":  true,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "StructuralIntegrity",
-                                                 "HullManufactureTimeModification",
-                                                 "CanResearch",
-                                                 "UnassignedSpecialistDetail",
-                                                 "MaxPerColony",
-                                                 "WhiteCollarDetail",
-                                                 "ManufactureTimeReduction",
-                                                 "WarehouseCapacity",
-                                                 "MiningYieldModification",
-                                                 "HabitationProvision",
-                                                 "RefiningTimeModification",
-                                                 "ResearchTimeModification",
-                                                 "FoodProvision"
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Hull Manufacture Time Modification",
+                                                 "Can Research",
+                                                 "Unassigned Specialist Detail",
+                                                 "Max Per Colony",
+                                                 "White Collar Detail",
+                                                 "Manufacture Time Reduction",
+                                                 "Warehouse Capacity",
+                                                 "Mining Yield Modification",
+                                                 "Habitation Provision",
+                                                 "Refining Time Modification",
+                                                 "Research Time Modification",
+                                                 "Food Provision"
                                              ],
                               "ResearchableProperties":  [
 
@@ -180,17 +180,17 @@
                               "Name":  "Commodity Factory Flatpack",
                               "Universal":  true,
                               "Properties":  [
-                                                 "CommodityIndustry",
-                                                 "ManufactureTime",
+                                                 "Commodity Industry",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "StructuralIntegrity",
-                                                 "PowerRequired",
-                                                 "CanResearch",
-                                                 "CanManufacture",
-                                                 "MaxPerColony",
-                                                 "BlueCollarDetail",
-                                                 "UnassignedWhiteCollarDetail"
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Can Manufacture",
+                                                 "Max Per Colony",
+                                                 "Blue Collar Detail",
+                                                 "Unassigned White Collar Detail"
                                              ],
                               "ResearchableProperties":  [
 
@@ -202,16 +202,16 @@
                               "Name":  "Entertainment Centre Flatpack",
                               "Universal":  true,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "EntertainmentProvided",
-                                                 "StructuralIntegrity",
-                                                 "PowerRequired",
-                                                 "CanResearch",
-                                                 "UnassignedSpecialistDetail",
-                                                 "MaxPerColony",
-                                                 "BlueCollarDetail"
+                                                 "Cargo Volume Size",
+                                                 "Entertainment Provided",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Unassigned Specialist Detail",
+                                                 "Max Per Colony",
+                                                 "Blue Collar Detail"
                                              ],
                               "ResearchableProperties":  [
 
@@ -223,23 +223,23 @@
                               "Name":  "Fuel Tank",
                               "Universal":  false,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "MaxAllowedOnShip",
-                                                 "PowerRequired",
-                                                 "EngCapacityRequired",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
+                                                 "Power Required",
+                                                 "Eng Capacity Required",
                                                  "Consumable",
-                                                 "MaximumDamageRepairRate",
-                                                 "HPPercentRestored"
+                                                 "Maximum Damage Repair",
+                                                 "HP Percent Restored"
                                              ],
                               "ResearchableProperties":  [
                                                              "Mass",
-                                                             "CargoVolumeSize",
-                                                             "PowerRequired",
-                                                             "EngCapacityRequired",
-                                                             "MaximumDamageRepairRate",
-                                                             "HPPercentRestored"
+                                                             "Cargo Volume Size",
+                                                             "Power Required",
+                                                             "Eng Capacity Required",
+                                                             "Maximum Damage Repair",
+                                                             "HP Percent Restored"
                                                          ],
                               "OutputItemType":  "ShipPart"
                           },
@@ -248,24 +248,24 @@
                               "Name":  "GERTY Drone Rack",
                               "Universal":  false,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "MaxAllowedOnShip",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
                                                  "Health",
-                                                 "EngCapacityRequired",
-                                                 "FuelCapacity",
-                                                 "WearAndTearRate",
-                                                 "MaximumDamageRepairRate"
+                                                 "Eng Capacity Required",
+                                                 "Fuel Capacity",
+                                                 "Wear and Tear Rate",
+                                                 "Maximum Damage Repair"
                                              ],
                               "ResearchableProperties":  [
                                                              "Mass",
-                                                             "CargoVolumeSize",
+                                                             "Cargo Volume Size",
                                                              "Health",
-                                                             "EngCapacityRequired",
-                                                             "FuelCapacity",
-                                                             "WearAndTearRate",
-                                                             "MaximumDamageRepairRate"
+                                                             "Eng Capacity Required",
+                                                             "Fuel Capacity",
+                                                             "Wear and Tear Rate",
+                                                             "Maximum Damage Repair"
                                                          ],
                               "OutputItemType":  "ShipPart"
                           },
@@ -274,15 +274,15 @@
                               "Name":  "Habitation Block Flatpack",
                               "Universal":  true,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "StructuralIntegrity",
-                                                 "PowerRequired",
-                                                 "CanResearch",
-                                                 "UnassignedSpecialistDetail",
-                                                 "MaxPerColony",
-                                                 "HabitationProvision"
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Unassigned Specialist Detail",
+                                                 "Max Per Colony",
+                                                 "Habitation Provision"
                                              ],
                               "ResearchableProperties":  [
 
@@ -294,35 +294,35 @@
                               "Name":  "Hull",
                               "Universal":  false,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
+                                                 "Cargo Volume Size",
                                                  "Health",
-                                                 "EngCapacityRequired",
-                                                 "CargoCapacity",
-                                                 "FuelCapacity",
-                                                 "LargeWeaponMounts",
-                                                 "MediumWeaponMounts",
-                                                 "SmallWeaponMounts",
-                                                 "WearAndTearRate",
-                                                 "MaximumDamageRepairRate",
-                                                 "EnergyDefence",
-                                                 "KineticDamageDefence",
-                                                 "MissileDamageDefence",
-                                                 "CrewSupported"
+                                                 "Eng Capacity Required",
+                                                 "Cargo Capacity",
+                                                 "Fuel Capacity",
+                                                 "Large Weapon Mounts",
+                                                 "Medium Weapon Mounts",
+                                                 "Small Weapon Mounts",
+                                                 "Wear and Tear Rate",
+                                                 "Maximum Damage Repair",
+                                                 "Energy Defence",
+                                                 "Kinetic Damage Defence",
+                                                 "Missile Damage Defence",
+                                                 "Crew Supported"
                                              ],
                               "ResearchableProperties":  [
                                                              "Mass",
-                                                             "CargoVolumeSize",
+                                                             "Cargo Volume Size",
                                                              "Health",
-                                                             "EngCapacityRequired",
-                                                             "CargoCapacity",
-                                                             "FuelCapacity",
-                                                             "WearAndTearRate",
-                                                             "MaximumDamageRepairRate",
-                                                             "EnergyDefence",
-                                                             "KineticDamageDefence",
-                                                             "MissileDamageDefence"
+                                                             "Eng Capacity Required",
+                                                             "Cargo Capacity",
+                                                             "Fuel Capacity",
+                                                             "Wear and Tear Rate",
+                                                             "Maximum Damage Repair",
+                                                             "Energy Defence",
+                                                             "Kinetic Damage Defence",
+                                                             "Missile Damage Defence"
                                                          ],
                               "OutputItemType":  "ShipHull"
                           },
@@ -331,25 +331,25 @@
                               "Name":  "Hull Sealant Injection Unit",
                               "Universal":  false,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "MaxAllowedOnShip",
-                                                 "PowerRequired",
-                                                 "EngCapacityRequired",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
+                                                 "Power Required",
+                                                 "Eng Capacity Required",
                                                  "Consumable",
-                                                 "MaximumDamageRepairRate",
-                                                 "HullHPPercentRestored",
-                                                 "CooldownTime"
+                                                 "Maximum Damage Repair",
+                                                 "Hull HP Percent Restored",
+                                                 "Cooldown Time"
                                              ],
                               "ResearchableProperties":  [
                                                              "Mass",
-                                                             "CargoVolumeSize",
-                                                             "PowerRequired",
-                                                             "EngCapacityRequired",
-                                                             "MaximumDamageRepairRate",
-                                                             "HullHPPercentRestored",
-                                                             "CooldownTime"
+                                                             "Cargo Volume Size",
+                                                             "Power Required",
+                                                             "Eng Capacity Required",
+                                                             "Maximum Damage Repair",
+                                                             "Hull HP Percent Restored",
+                                                             "Cooldown Time"
                                                          ],
                               "OutputItemType":  "ShipPart"
                           },
@@ -358,24 +358,24 @@
                               "Name":  "HullReinforcement",
                               "Universal":  false,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "MaxAllowedOnShip",
-                                                 "PowerRequired",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
+                                                 "Power Required",
                                                  "Health",
-                                                 "EngCapacityRequired",
-                                                 "WearAndTearRate",
-                                                 "MaximumDamageRepairRate"
+                                                 "Eng Capacity Required",
+                                                 "Wear and Tear Rate",
+                                                 "Maximum Damage Repair"
                                              ],
                               "ResearchableProperties":  [
                                                              "Mass",
-                                                             "CargoVolumeSize",
+                                                             "Cargo Volume Size",
                                                              "Health",
-                                                             "EngCapacityRequired",
-                                                             "CargoCapacity",
-                                                             "WearAndTearRate",
-                                                             "MaximumDamageRepairRate"
+                                                             "Eng Capacity Required",
+                                                             "Cargo Capacity",
+                                                             "Wear and Tear Rate",
+                                                             "Maximum Damage Repair"
                                                          ],
                               "OutputItemType":  "ShipPart"
                           },
@@ -384,16 +384,16 @@
                               "Name":  "Hydroponics Bay Flatpack",
                               "Universal":  true,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "StructuralIntegrity",
-                                                 "PowerRequired",
-                                                 "CanResearch",
-                                                 "UnassignedSpecialistDetail",
-                                                 "MaxPerColony",
-                                                 "BlueCollarDetail",
-                                                 "FoodProvision"
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Unassigned Specialist Detail",
+                                                 "Max Per Colony",
+                                                 "Blue Collar Detail",
+                                                 "Food Provision"
                                              ],
                               "ResearchableProperties":  [
 
@@ -405,28 +405,28 @@
                               "Name":  "Jump Drive",
                               "Universal":  false,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "MaxAllowedOnShip",
-                                                 "PowerRequired",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
+                                                 "Power Required",
                                                  "Health",
-                                                 "EngCapacityRequired",
-                                                 "WearAndTearRate",
-                                                 "MaximumDamageRepairRate",
-                                                 "FuelUsed",
-                                                 "MaxJumpDistance"
+                                                 "Eng Capacity Required",
+                                                 "Wear and Tear Rate",
+                                                 "Maximum Damage Repair",
+                                                 "Fuel Used",
+                                                 "Max Jump Distance"
                                              ],
                               "ResearchableProperties":  [
                                                              "Mass",
-                                                             "CargoVolumeSize",
-                                                             "PowerRequired",
+                                                             "Cargo Volume Size",
+                                                             "Power Required",
                                                              "Health",
-                                                             "EngCapacityRequired",
-                                                             "WearAndTearRate",
-                                                             "MaximumDamageRepairRate",
-                                                             "FuelUsed",
-                                                             "MaxJumpDistance"
+                                                             "Eng Capacity Required",
+                                                             "Wear and Tear Rate",
+                                                             "Maximum Damage Repair",
+                                                             "Fuel Used",
+                                                             "Max Jump Distance"
                                                          ],
                               "OutputItemType":  "ShipPart"
                           },
@@ -435,28 +435,28 @@
                               "Name":  "Main Drive",
                               "Universal":  false,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "MaxAllowedOnShip",
-                                                 "PowerRequired",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
+                                                 "Power Required",
                                                  "Health",
-                                                 "EngCapacityRequired",
-                                                 "WearAndTearRate",
-                                                 "MaximumDamageRepairRate",
-                                                 "FuelUsed",
-                                                 "MaxJumpDistance"
+                                                 "Eng Capacity Required",
+                                                 "Wear and Tear Rate",
+                                                 "Maximum Damage Repair",
+                                                 "Fuel Used",
+                                                 "Max Jump Distance"
                                              ],
                               "ResearchableProperties":  [
                                                              "Mass",
-                                                             "CargoVolumeSize",
-                                                             "PowerRequired",
+                                                             "Cargo Volume Size",
+                                                             "Power Required",
                                                              "Health",
-                                                             "EngCapacityRequired",
-                                                             "WearAndTearRate",
-                                                             "MaximumDamageRepairRate",
-                                                             "FuelUsed",
-                                                             "MaxJumpDistance"
+                                                             "Eng Capacity Required",
+                                                             "Wear and Tear Rate",
+                                                             "Maximum Damage Repair",
+                                                             "Fuel Used",
+                                                             "Max Jump Distance"
                                                          ],
                               "OutputItemType":  "ShipPart"
                           },
@@ -465,17 +465,17 @@
                               "Name":  "Manufactory Flatpack",
                               "Universal":  true,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "StructuralIntegrity",
-                                                 "PowerRequired",
-                                                 "CanResearch",
-                                                 "UnassignedSpecialistDetail",
-                                                 "MaxPerColony",
-                                                 "BlueCollarDetail",
-                                                 "UnassignedWhiteCollarDetail",
-                                                 "ManufactureSlot"
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Unassigned Specialist Detail",
+                                                 "Max Per Colony",
+                                                 "Blue Collar Detail",
+                                                 "Unassigned White Collar Detail",
+                                                 "Manufacture Slot"
                                              ],
                               "ResearchableProperties":  [
 
@@ -487,18 +487,18 @@
                               "Name":  "Mining Rig Flatpack",
                               "Universal":  true,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "StructuralIntegrity",
-                                                 "PowerRequired",
-                                                 "CanResearch",
-                                                 "ExtractionEfficiency",
-                                                 "UnassignedSpecialistDetail",
-                                                 "MaxPerColony",
-                                                 "BlueCollarDetail",
-                                                 "UnassignedWhiteCollarDetail",
-                                                 "MiningSlot"
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Extraction Efficiency",
+                                                 "Unassigned Specialist Detail",
+                                                 "Max Per Colony",
+                                                 "Blue Collar Detail",
+                                                 "Unassigned White Collar Detail",
+                                                 "Mining Slot"
                                              ],
                               "ResearchableProperties":  [
 
@@ -618,26 +618,26 @@
                               "Name":  "Reactor",
                               "Universal":  false,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "MaxAllowedOnShip",
-                                                 "PowerGenerated",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
+                                                 "Power Generated",
                                                  "Health",
-                                                 "EngCapacityRequired",
-                                                 "WearAndTearRate",
-                                                 "MaximumDamageRepairRate",
-                                                 "PowerRegenerationRate"
+                                                 "Eng Capacity Required",
+                                                 "Wear and Tear Rate",
+                                                 "Maximum Damage Repair",
+                                                 "Power Regeneration Rate"
                                              ],
                               "ResearchableProperties":  [
                                                              "Mass",
-                                                             "CargoVolumeSize",
-                                                             "PowerGenerated",
+                                                             "Cargo Volume Size",
+                                                             "Power Generated",
                                                              "Health",
-                                                             "EngCapacityRequired",
-                                                             "WearAndTearRate",
-                                                             "MaximumDamageRepairRate",
-                                                             "PowerRegenerationRate"
+                                                             "Eng Capacity Required",
+                                                             "Wear and Tear Rate",
+                                                             "Maximum Damage Repair",
+                                                             "Power Regeneration Rate"
                                                          ],
                               "OutputItemType":  "ShipPart"
                           },
@@ -646,14 +646,14 @@
                               "Name":  "Reactor Core Flatpack",
                               "Universal":  true,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "StructuralIntegrity",
-                                                 "PowerProvided",
-                                                 "CanResearch",
-                                                 "UnassignedSpecialistDetail",
-                                                 "MaxPerColony"
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Provided",
+                                                 "Can Research",
+                                                 "Unassigned Specialist Detail",
+                                                 "Max Per Colony"
                                              ],
                               "ResearchableProperties":  [
 
@@ -665,18 +665,18 @@
                               "Name":  "Refinery Flatpack",
                               "Universal":  true,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "StructuralIntegrity",
-                                                 "PowerRequired",
-                                                 "CanResearch",
-                                                 "UnassignedSpecialistDetail",
-                                                 "MaxPerColony",
-                                                 "RefiningRate",
-                                                 "BlueCollarDetail",
-                                                 "UnassignedWhiteCollarDetail",
-                                                 "RefiningSlot"
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Unassigned Specialist Detail",
+                                                 "Max Per Colony",
+                                                 "Refining Rate",
+                                                 "Blue Collar Detail",
+                                                 "Unassigned White Collar Detail",
+                                                 "Refining Slot"
                                              ],
                               "ResearchableProperties":  [
 
@@ -688,16 +688,16 @@
                               "Name":  "Remote Operations Array Flatpack",
                               "Universal":  true,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "StructuralIntegrity",
-                                                 "PowerRequired",
-                                                 "RemoteOperations",
-                                                 "CanResearch",
-                                                 "MaxPerColony",
-                                                 "SpecialistDetail",
-                                                 "UnassignedWhiteCollarDetail"
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Remote Operations",
+                                                 "Can Research",
+                                                 "Max Per Colony",
+                                                 "Specialist Detail",
+                                                 "Unassigned White Collar Detail"
                                              ],
                               "ResearchableProperties":  [
 
@@ -709,16 +709,16 @@
                               "Name":  "Research Laboratory Flatpack",
                               "Universal":  true,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "StructuralIntegrity",
-                                                 "PowerRequired",
-                                                 "CanResearch",
-                                                 "MaxPerColony",
-                                                 "ResearchTimeModification",
-                                                 "SpecialistDetail",
-                                                 "ResearchSlot"
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Max Per Colony",
+                                                 "Research Time Modification",
+                                                 "Specialist Detail",
+                                                 "Research Slot"
                                              ],
                               "ResearchableProperties":  [
 
@@ -742,30 +742,30 @@
                               "Name":  "System Object Scanner",
                               "Universal":  false,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "MaxAllowedOnShip",
-                                                 "PowerRequired",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
+                                                 "Power Required",
                                                  "Health",
-                                                 "EngCapacityRequired",
-                                                 "WearAndTearRate",
-                                                 "MaximumDamageRepairRate",
-                                                 "SensorAbundanceFactor",
-                                                 "PurityModifier",
-                                                 "ScanLevel"
+                                                 "Eng Capacity Required",
+                                                 "Wear and Tear Rate",
+                                                 "Maximum Damage Repair",
+                                                 "Sensor Abundance Factor",
+                                                 "Purity Modifier",
+                                                 "Scan Level"
                                              ],
                               "ResearchableProperties":  [
                                                              "Mass",
-                                                             "CargoVolumeSize",
-                                                             "PowerRequired",
+                                                             "Cargo Volume Size",
+                                                             "Power Required",
                                                              "Health",
-                                                             "EngCapacityRequired",
-                                                             "WearAndTearRate",
-                                                             "MaximumDamageRepairRate",
-                                                             "SensorAbundanceFactor",
-                                                             "PurityModifier",
-                                                             "ScanLevel"
+                                                             "Eng Capacity Required",
+                                                             "Wear and Tear Rate",
+                                                             "Maximum Damage Repair",
+                                                             "Sensor Abundance Factor",
+                                                             "Purity Modifier",
+                                                             "Scan Level"
                                                          ],
                               "OutputItemType":  "ShipPart"
                           },
@@ -846,16 +846,16 @@
                               "Name":  "Warehouse Flatpack",
                               "Universal":  true,
                               "Properties":  [
-                                                 "ManufactureTime",
+                                                 "Manufacture Run Time",
                                                  "Mass",
-                                                 "CargoVolumeSize",
-                                                 "StructuralIntegrity",
-                                                 "PowerRequired",
-                                                 "CanResearch",
-                                                 "MaxPerColony",
-                                                 "WarehouseCapacity",
-                                                 "BlueCollarDetail",
-                                                 "UnassignedWhiteCollarDetail"
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Max Per Colony",
+                                                 "Warehouse Capacity",
+                                                 "Blue Collar Detail",
+                                                 "Unassigned White Collar Detail"
                                              ],
                               "ResearchableProperties":  [
 
@@ -873,22 +873,22 @@
                           "Class":  0,
                           "CopyCost":  2590,
                           "Properties":  {
-                                             "ManufactureTime":  "1h 0m",
+                                             "Manufacture Run Time":  "1h 0m",
                                              "Mass":  "4000",
-                                             "CargoVolumeSize":  "1000",
-                                             "StructuralIntegrity":  "2500",
-                                             "HullManufactureTimeModification":  "0",
-                                             "CanResearch":  "false",
-                                             "UnassignedSpecialistDetail":  "1",
-                                             "MaxPerColony":  "1",
-                                             "WhiteCollarDetail":  "1",
-                                             "ManufactureTimeReduction":  "0",
-                                             "WarehouseCapacity":  "10000",
-                                             "MiningYieldModification":  "0",
-                                             "HabitationProvision":  "2",
-                                             "RefiningTimeModification":  "0",
-                                             "ResearchTimeModification":  "0",
-                                             "FoodProvision":  "2"
+                                             "Cargo Volume Size":  "1000",
+                                             "Structural Integrity":  "2500",
+                                             "Hull Manufacture Time Modification":  "0",
+                                             "Can Research":  "false",
+                                             "Unassigned Specialist Detail":  "1",
+                                             "Max Per Colony":  "1",
+                                             "White Collar Detail":  "1",
+                                             "Manufacture Time Reduction":  "0",
+                                             "Warehouse Capacity":  "10000",
+                                             "Mining Yield Modification":  "0",
+                                             "Habitation Provision":  "2",
+                                             "Refining Time Modification":  "0",
+                                             "Research Time Modification":  "0",
+                                             "Food Provision":  "2"
                                          },
                           "Resources":  {
                                             "Alkali Metals":  "691",
@@ -915,17 +915,17 @@
                           "Class":  0,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "CommodityIndustry":  "Administration Block",
-                                             "ManufactureTime":  "0",
+                                             "Commodity Industry":  "Administration Block",
+                                             "Manufacture Run Time":  "0",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1",
-                                             "StructuralIntegrity":  "1",
-                                             "PowerRequired":  "1",
-                                             "CanResearch":  "False",
-                                             "CanManufacture":  "False",
-                                             "MaxPerColony":  "1",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
                                          },
                           "Resources":  {
 
@@ -949,22 +949,22 @@
                           "Class":  3,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "ManufactureTime":  "13h",
+                                             "Manufacture Run Time":  "13h",
                                              "Mass":  "3200",
-                                             "CargoVolumeSize":  "2000",
+                                             "Cargo Volume Size":  "2000",
                                              "Health":  "",
-                                             "EngCapacityRequired":  "",
-                                             "CargoCapacity":  "1100",
-                                             "FuelCapacity":  "",
-                                             "LargeWeaponMounts":  "1%",
-                                             "MediumWeaponMounts":  "80%",
-                                             "SmallWeaponMounts":  "",
-                                             "WearAndTearRate":  "",
-                                             "MaximumDamageRepairRate":  "",
-                                             "EnergyDefence":  "",
-                                             "KineticDamageDefence":  "",
-                                             "MissileDamageDefence":  "",
-                                             "CrewSupported":  ""
+                                             "Eng Capacity Required":  "",
+                                             "Cargo Capacity":  "1100",
+                                             "Fuel Capacity":  "",
+                                             "Large Weapon Mounts":  "1%",
+                                             "Medium Weapon Mounts":  "80%",
+                                             "Small Weapon Mounts":  "",
+                                             "Wear and Tear Rate":  "",
+                                             "Maximum Damage Repair":  "",
+                                             "Energy Defence":  "",
+                                             "Kinetic Damage Defence":  "",
+                                             "Missile Damage Defence":  "",
+                                             "Crew Supported":  ""
                                          },
                           "Resources":  {
                                             "Halogens":  "630",
@@ -990,16 +990,16 @@
                           "Class":  0,
                           "CopyCost":  2613,
                           "Properties":  {
-                                             "ManufactureTime":  "1h 0m",
+                                             "Manufacture Run Time":  "1h 0m",
                                              "Mass":  "1000",
-                                             "CargoVolumeSize":  "1000",
-                                             "EntertainmentProvided":  "10",
-                                             "StructuralIntegrity":  "75",
-                                             "PowerRequired":  "2",
-                                             "CanResearch":  "false",
-                                             "UnassignedSpecialistDetail":  "1",
-                                             "MaxPerColony":  "999",
-                                             "BlueCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1000",
+                                             "Entertainment Provided":  "10",
+                                             "Structural Integrity":  "75",
+                                             "Power Required":  "2",
+                                             "Can Research":  "false",
+                                             "Unassigned Specialist Detail":  "1",
+                                             "Max Per Colony":  "999",
+                                             "Blue Collar Detail":  "1"
                                          },
                           "Resources":  {
                                             "Heavy Noble Gases":  "647",
@@ -1027,15 +1027,15 @@
                           "Class":  0,
                           "CopyCost":  1564,
                           "Properties":  {
-                                             "ManufactureTime":  "1h 0m",
+                                             "Manufacture Run Time":  "1h 0m",
                                              "Mass":  "5000",
-                                             "CargoVolumeSize":  "1000",
-                                             "StructuralIntegrity":  "100",
-                                             "PowerRequired":  "1",
-                                             "CanResearch":  "false",
-                                             "UnassignedSpecialistDetail":  "1",
-                                             "MaxPerColony":  "999",
-                                             "HabitationProvision":  "4"
+                                             "Cargo Volume Size":  "1000",
+                                             "Structural Integrity":  "100",
+                                             "Power Required":  "1",
+                                             "Can Research":  "false",
+                                             "Unassigned Specialist Detail":  "1",
+                                             "Max Per Colony":  "999",
+                                             "Habitation Provision":  "4"
                                          },
                           "Resources":  {
                                             "Alkali Metals":  "581",
@@ -1061,16 +1061,16 @@
                           "Class":  0,
                           "CopyCost":  1854,
                           "Properties":  {
-                                             "ManufactureTime":  "1h 0m",
+                                             "Manufacture Run Time":  "1h 0m",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "800",
-                                             "StructuralIntegrity":  "100",
-                                             "PowerRequired":  "1",
-                                             "CanResearch":  "false",
-                                             "UnassignedSpecialistDetail":  "1",
-                                             "MaxPerColony":  "999",
-                                             "BlueCollarDetail":  "1",
-                                             "FoodProvision":  "4"
+                                             "Cargo Volume Size":  "800",
+                                             "Structural Integrity":  "100",
+                                             "Power Required":  "1",
+                                             "Can Research":  "false",
+                                             "Unassigned Specialist Detail":  "1",
+                                             "Max Per Colony":  "999",
+                                             "Blue Collar Detail":  "1",
+                                             "Food Provision":  "4"
                                          },
                           "Resources":  {
                                             "Post-Trans Metals":  "497",
@@ -1098,17 +1098,17 @@
                           "Class":  0,
                           "CopyCost":  2128,
                           "Properties":  {
-                                             "ManufactureTime":  "1h 0m",
+                                             "Manufacture Run Time":  "1h 0m",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1500",
-                                             "StructuralIntegrity":  "250",
-                                             "PowerRequired":  "5",
-                                             "CanResearch":  "false",
-                                             "UnassignedSpecialistDetail":  "1",
-                                             "MaxPerColony":  "999",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1",
-                                             "ManufactureSlot":  "1"
+                                             "Cargo Volume Size":  "1500",
+                                             "Structural Integrity":  "250",
+                                             "Power Required":  "5",
+                                             "Can Research":  "false",
+                                             "Unassigned Specialist Detail":  "1",
+                                             "Max Per Colony":  "999",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1",
+                                             "Manufacture Slot":  "1"
                                          },
                           "Resources":  {
                                             "Trans-Metals":  "567",
@@ -1136,18 +1136,18 @@
                           "Class":  0,
                           "CopyCost":  1768,
                           "Properties":  {
-                                             "ManufactureTime":  "1h 0m",
+                                             "Manufacture Run Time":  "1h 0m",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1200",
-                                             "StructuralIntegrity":  "150",
-                                             "PowerRequired":  "2",
-                                             "CanResearch":  "false",
-                                             "ExtractionEfficiency":  "100",
-                                             "UnassignedSpecialistDetail":  "1",
-                                             "MaxPerColony":  "999",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1",
-                                             "MiningSlot":  "1"
+                                             "Cargo Volume Size":  "1200",
+                                             "Structural Integrity":  "150",
+                                             "Power Required":  "2",
+                                             "Can Research":  "false",
+                                             "Extraction Efficiency":  "100",
+                                             "Unassigned Specialist Detail":  "1",
+                                             "Max Per Colony":  "999",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1",
+                                             "Mining Slot":  "1"
                                          },
                           "Resources":  {
                                             "Halogens":  "451",
@@ -1175,18 +1175,18 @@
                           "Class":  7,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "ManufactureTime":  "4h 0m",
+                                             "Manufacture Run Time":  "4h 0m",
                                              "Mass":  "130",
-                                             "CargoVolumeSize":  "165",
-                                             "MaxAllowedOnShip":  "1",
-                                             "PowerRequired":  "319",
+                                             "Cargo Volume Size":  "165",
+                                             "Max Allowed On Ship":  "1",
+                                             "Power Required":  "319",
                                              "Health":  "910",
-                                             "EngCapacityRequired":  "490",
-                                             "WearAndTearRate":  "3",
-                                             "MaximumDamageRepairRate":  "80",
-                                             "SensorAbundanceFactor":  "3.375",
-                                             "PurityModifier":  "30",
-                                             "ScanLevel":  "90"
+                                             "Eng Capacity Required":  "490",
+                                             "Wear and Tear Rate":  "3",
+                                             "Maximum Damage Repair":  "80",
+                                             "Sensor Abundance Factor":  "3.375",
+                                             "Purity Modifier":  "30",
+                                             "Scan Level":  "90"
                                          },
                           "Resources":  {
                                             "Alkaline Earth Metals":  "2151",
@@ -1213,18 +1213,18 @@
                           "Class":  6,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "ManufactureTime":  "4h 0m",
+                                             "Manufacture Run Time":  "4h 0m",
                                              "Mass":  "110",
-                                             "CargoVolumeSize":  "145",
-                                             "MaxAllowedOnShip":  "1",
-                                             "PowerRequired":  "182",
+                                             "Cargo Volume Size":  "145",
+                                             "Max Allowed On Ship":  "1",
+                                             "Power Required":  "182",
                                              "Health":  "660",
-                                             "EngCapacityRequired":  "430",
-                                             "WearAndTearRate":  "3",
-                                             "MaximumDamageRepairRate":  "80",
-                                             "SensorAbundanceFactor":  "3",
-                                             "PurityModifier":  "22.5",
-                                             "ScanLevel":  "75"
+                                             "Eng Capacity Required":  "430",
+                                             "Wear and Tear Rate":  "3",
+                                             "Maximum Damage Repair":  "80",
+                                             "Sensor Abundance Factor":  "3",
+                                             "Purity Modifier":  "22.5",
+                                             "Scan Level":  "75"
                                          },
                           "Resources":  {
                                             "Post-Trans Metals":  "1622",
@@ -1251,14 +1251,14 @@
                           "Class":  0,
                           "CopyCost":  2944,
                           "Properties":  {
-                                             "ManufactureTime":  "1h 0m",
+                                             "Manufacture Run Time":  "1h 0m",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1800",
-                                             "StructuralIntegrity":  "250",
-                                             "PowerProvided":  "6",
-                                             "CanResearch":  "false",
-                                             "UnassignedSpecialistDetail":  "1",
-                                             "MaxPerColony":  "999"
+                                             "Cargo Volume Size":  "1800",
+                                             "Structural Integrity":  "250",
+                                             "Power Provided":  "6",
+                                             "Can Research":  "false",
+                                             "Unassigned Specialist Detail":  "1",
+                                             "Max Per Colony":  "999"
                                          },
                           "Resources":  {
                                             "Alkaline Earth Metals":  "703",
@@ -1286,18 +1286,18 @@
                           "Class":  0,
                           "CopyCost":  2347,
                           "Properties":  {
-                                             "ManufactureTime":  "1h 0m",
+                                             "Manufacture Run Time":  "1h 0m",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "2000",
-                                             "StructuralIntegrity":  "150",
-                                             "PowerRequired":  "5",
-                                             "CanResearch":  "false",
-                                             "UnassignedSpecialistDetail":  "1",
-                                             "MaxPerColony":  "999",
-                                             "RefiningRate":  "25",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1",
-                                             "RefiningSlot":  "1"
+                                             "Cargo Volume Size":  "2000",
+                                             "Structural Integrity":  "150",
+                                             "Power Required":  "5",
+                                             "Can Research":  "false",
+                                             "Unassigned Specialist Detail":  "1",
+                                             "Max Per Colony":  "999",
+                                             "Refining Rate":  "25",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1",
+                                             "Refining Slot":  "1"
                                          },
                           "Resources":  {
                                             "Halogens":  "550",
@@ -1325,16 +1325,16 @@
                           "Class":  0,
                           "CopyCost":  2350,
                           "Properties":  {
-                                             "ManufactureTime":  "1h 0m",
+                                             "Manufacture Run Time":  "1h 0m",
                                              "Mass":  "5000",
-                                             "CargoVolumeSize":  "1200",
-                                             "StructuralIntegrity":  "50",
-                                             "PowerRequired":  "2",
-                                             "RemoteOperations":  "1",
-                                             "CanResearch":  "false",
-                                             "MaxPerColony":  "1",
-                                             "SpecialistDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1200",
+                                             "Structural Integrity":  "50",
+                                             "Power Required":  "2",
+                                             "Remote Operations":  "1",
+                                             "Can Research":  "false",
+                                             "Max Per Colony":  "1",
+                                             "Specialist Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
                                          },
                           "Resources":  {
                                             "Noble Gases":  "890",
@@ -1360,16 +1360,16 @@
                           "Class":  0,
                           "CopyCost":  1628,
                           "Properties":  {
-                                             "ManufactureTime":  "1h 0m",
+                                             "Manufacture Run Time":  "1h 0m",
                                              "Mass":  "5000",
-                                             "CargoVolumeSize":  "1200",
-                                             "StructuralIntegrity":  "150",
-                                             "PowerRequired":  "4",
-                                             "CanResearch":  "false",
-                                             "MaxPerColony":  "999",
-                                             "ResearchTimeModification":  "100",
-                                             "SpecialistDetail":  "1",
-                                             "ResearchSlot":  "1"
+                                             "Cargo Volume Size":  "1200",
+                                             "Structural Integrity":  "150",
+                                             "Power Required":  "4",
+                                             "Can Research":  "false",
+                                             "Max Per Colony":  "999",
+                                             "Research Time Modification":  "100",
+                                             "Specialist Detail":  "1",
+                                             "Research Slot":  "1"
                                          },
                           "Resources":  {
                                             "Alkali Metals":  "485",
@@ -1396,16 +1396,16 @@
                           "Class":  0,
                           "CopyCost":  1745,
                           "Properties":  {
-                                             "ManufactureTime":  "1h 0m",
+                                             "Manufacture Run Time":  "1h 0m",
                                              "Mass":  "2500",
-                                             "CargoVolumeSize":  "1000",
-                                             "StructuralIntegrity":  "100",
-                                             "PowerRequired":  "2",
-                                             "CanResearch":  "false",
-                                             "MaxPerColony":  "999",
-                                             "WarehouseCapacity":  "250000",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1000",
+                                             "Structural Integrity":  "100",
+                                             "Power Required":  "2",
+                                             "Can Research":  "false",
+                                             "Max Per Colony":  "999",
+                                             "Warehouse Capacity":  "250000",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
                                          },
                           "Resources":  {
                                             "Halogens":  "558",
@@ -1431,17 +1431,17 @@
                           "Class":  0,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "CommodityIndustry":  "Agridome",
-                                             "ManufactureTime":  "0",
+                                             "Commodity Industry":  "Agridome",
+                                             "Manufacture Run Time":  "0",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1",
-                                             "StructuralIntegrity":  "1",
-                                             "PowerRequired":  "1",
-                                             "CanResearch":  "False",
-                                             "CanManufacture":  "False",
-                                             "MaxPerColony":  "1",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
                                          },
                           "Resources":  {
 
@@ -1465,17 +1465,17 @@
                           "Class":  0,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "CommodityIndustry":  "Centre of Economics",
-                                             "ManufactureTime":  "0",
+                                             "Commodity Industry":  "Centre of Economics",
+                                             "Manufacture Run Time":  "0",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1",
-                                             "StructuralIntegrity":  "1",
-                                             "PowerRequired":  "1",
-                                             "CanResearch":  "False",
-                                             "CanManufacture":  "False",
-                                             "MaxPerColony":  "1",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
                                          },
                           "Resources":  {
 
@@ -1499,17 +1499,17 @@
                           "Class":  0,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "CommodityIndustry":  "Engineering Block",
-                                             "ManufactureTime":  "0",
+                                             "Commodity Industry":  "Engineering Block",
+                                             "Manufacture Run Time":  "0",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1",
-                                             "StructuralIntegrity":  "1",
-                                             "PowerRequired":  "1",
-                                             "CanResearch":  "False",
-                                             "CanManufacture":  "False",
-                                             "MaxPerColony":  "1",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
                                          },
                           "Resources":  {
 
@@ -1533,17 +1533,17 @@
                           "Class":  0,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "CommodityIndustry":  "Healthcare Institute",
-                                             "ManufactureTime":  "0",
+                                             "Commodity Industry":  "Healthcare Institute",
+                                             "Manufacture Run Time":  "0",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1",
-                                             "StructuralIntegrity":  "1",
-                                             "PowerRequired":  "1",
-                                             "CanResearch":  "False",
-                                             "CanManufacture":  "False",
-                                             "MaxPerColony":  "1",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
                                          },
                           "Resources":  {
 
@@ -1567,17 +1567,17 @@
                           "Class":  0,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "CommodityIndustry":  "Institute of Defence",
-                                             "ManufactureTime":  "0",
+                                             "Commodity Industry":  "Institute of Defence",
+                                             "Manufacture Run Time":  "0",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1",
-                                             "StructuralIntegrity":  "1",
-                                             "PowerRequired":  "1",
-                                             "CanResearch":  "False",
-                                             "CanManufacture":  "False",
-                                             "MaxPerColony":  "1",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
                                          },
                           "Resources":  {
 
@@ -1601,17 +1601,17 @@
                           "Class":  0,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "CommodityIndustry":  "Leisure Industry Centre",
-                                             "ManufactureTime":  "0",
+                                             "Commodity Industry":  "Leisure Industry Centre",
+                                             "Manufacture Run Time":  "0",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1",
-                                             "StructuralIntegrity":  "1",
-                                             "PowerRequired":  "1",
-                                             "CanResearch":  "False",
-                                             "CanManufacture":  "False",
-                                             "MaxPerColony":  "1",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
                                          },
                           "Resources":  {
 
@@ -1635,17 +1635,17 @@
                           "Class":  0,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "CommodityIndustry":  "Logistics Centre",
-                                             "ManufactureTime":  "0",
+                                             "Commodity Industry":  "Logistics Centre",
+                                             "Manufacture Run Time":  "0",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1",
-                                             "StructuralIntegrity":  "1",
-                                             "PowerRequired":  "1",
-                                             "CanResearch":  "False",
-                                             "CanManufacture":  "False",
-                                             "MaxPerColony":  "1",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
                                          },
                           "Resources":  {
 
@@ -1669,17 +1669,17 @@
                           "Class":  0,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "CommodityIndustry":  "Manufacturing Industry Centre",
-                                             "ManufactureTime":  "0",
+                                             "Commodity Industry":  "Manufacturing Industry Centre",
+                                             "Manufacture Run Time":  "0",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1",
-                                             "StructuralIntegrity":  "1",
-                                             "PowerRequired":  "1",
-                                             "CanResearch":  "False",
-                                             "CanManufacture":  "False",
-                                             "MaxPerColony":  "1",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
                                          },
                           "Resources":  {
 
@@ -1703,17 +1703,17 @@
                           "Class":  0,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "CommodityIndustry":  "Mining Industry Centre",
-                                             "ManufactureTime":  "0",
+                                             "Commodity Industry":  "Mining Industry Centre",
+                                             "Manufacture Run Time":  "0",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1",
-                                             "StructuralIntegrity":  "1",
-                                             "PowerRequired":  "1",
-                                             "CanResearch":  "False",
-                                             "CanManufacture":  "False",
-                                             "MaxPerColony":  "1",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
                                          },
                           "Resources":  {
 
@@ -1737,17 +1737,17 @@
                           "Class":  0,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "CommodityIndustry":  "Off-World Living Institute",
-                                             "ManufactureTime":  "0",
+                                             "Commodity Industry":  "Off-World Living Institute",
+                                             "Manufacture Run Time":  "0",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1",
-                                             "StructuralIntegrity":  "1",
-                                             "PowerRequired":  "1",
-                                             "CanResearch":  "False",
-                                             "CanManufacture":  "False",
-                                             "MaxPerColony":  "1",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
                                          },
                           "Resources":  {
 
@@ -1771,17 +1771,17 @@
                           "Class":  0,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "CommodityIndustry":  "Refining Industry Centre",
-                                             "ManufactureTime":  "0",
+                                             "Commodity Industry":  "Refining Industry Centre",
+                                             "Manufacture Run Time":  "0",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1",
-                                             "StructuralIntegrity":  "1",
-                                             "PowerRequired":  "1",
-                                             "CanResearch":  "False",
-                                             "CanManufacture":  "False",
-                                             "MaxPerColony":  "1",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
                                          },
                           "Resources":  {
 
@@ -1805,17 +1805,17 @@
                           "Class":  0,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "CommodityIndustry":  "Science Centre",
-                                             "ManufactureTime":  "0",
+                                             "Commodity Industry":  "Science Centre",
+                                             "Manufacture Run Time":  "0",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1",
-                                             "StructuralIntegrity":  "1",
-                                             "PowerRequired":  "1",
-                                             "CanResearch":  "False",
-                                             "CanManufacture":  "False",
-                                             "MaxPerColony":  "1",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
                                          },
                           "Resources":  {
 
@@ -1839,17 +1839,17 @@
                           "Class":  0,
                           "CopyCost":  0,
                           "Properties":  {
-                                             "CommodityIndustry":  "Technology Institute",
-                                             "ManufactureTime":  "0",
+                                             "Commodity Industry":  "Technology Institute",
+                                             "Manufacture Run Time":  "0",
                                              "Mass":  "1",
-                                             "CargoVolumeSize":  "1",
-                                             "StructuralIntegrity":  "1",
-                                             "PowerRequired":  "1",
-                                             "CanResearch":  "False",
-                                             "CanManufacture":  "False",
-                                             "MaxPerColony":  "1",
-                                             "BlueCollarDetail":  "1",
-                                             "UnassignedWhiteCollarDetail":  "1"
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
                                          },
                           "Resources":  {
 

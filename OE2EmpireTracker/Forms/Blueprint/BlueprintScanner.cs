@@ -22,41 +22,13 @@ namespace OE2EmpireTracker.Forms.Blueprint
 
         private static Dictionary<string, string> PropertyRemap = new Dictionary<string, string>()
         {
-            { "Manufacture Run Time", "ManufactureTime" },
-            { "Cargo Volume Size", "CargoVolumeSize" },
-            { "Power Generated", "PowerGenerated" },
+            // Meaningful remaps — clean up game labels
             { "Health (Hitpoints)", "Health" },
-            { "Eng. Capacity Required", "EngCapacityRequired" },
-            { "Power regeneration rate", "PowerRegenerationRate" },
-            { "Wear and Tear Rate", "WearAndTearRate" },
-            { "Maximum Damage Repair %", "MaximumDamageRepairRate" },
-            // Ship hull properties
-            { "License Level", "LicenseLevel" },
-            { "License Career", "LicenseCareer" },
-            { "Eng. Capacity Available", "EngCapacityAvailable" },
-            { "Max Hull Plating", "MaxHullPlating" },
-            { "Max Hull Reinforcement", "MaxHullReinforcement" },
-            { "Max Hull Sealant Units", "MaxHullSealantUnits" },
-            { "The number of crew supported", "CrewSupported" },
-            { "Cargo Capacity", "CargoCapacity" },
-            { "Fuel Capacity", "FuelCapacity" },
-            { "Power Required", "PowerRequired" },
-            { "Large Weapon Mounts", "LargeWeaponMounts" },
-            { "Medium Weapon Mounts", "MediumWeaponMounts" },
-            { "Small Weapon Mounts", "SmallWeaponMounts" },
-            { "Kinetic Damage Defence", "KineticDamageDefence" },
-            { "Missile Damage Defence", "MissileDamageDefence" },
-            { "Reactor Slots", "ReactorSlots" },
-            { "Main Drive Slots", "MainDriveSlots" },
-            { "Thruster Slots", "ThrusterSlots" },
-            { "Jump Drive Slots", "JumpDriveSlots" },
-            { "Nav Comp Slots", "NavCompSlots" },
-            { "Scanner Slots", "ScannerSlots" },
-            { "Shield Slots", "ShieldSlots" },
-            { "Cargo Pod Slots", "CargoPodSlots" },
-            { "Fuel Tank Slots", "FuelTankSlots" },
-            { "Coupler Slots", "CouplerSlots" },
-            { "GERTY Slots", "GERTYSlots" },
+            { "Maximum Damage Repair %", "Maximum Damage Repair" },
+            { "The number of crew supported", "Crew Supported" },
+            { "Eng. Capacity Required", "Eng Capacity Required" },
+            { "Eng. Capacity Available", "Eng Capacity Available" },
+            { "Power regeneration rate", "Power Regeneration Rate" },
         };
 
         private static Dictionary<string, string> BPTypeImageRemap = new Dictionary<string, string>()
