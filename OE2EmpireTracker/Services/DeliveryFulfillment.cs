@@ -3,7 +3,7 @@ using OE2EmpireTracker.Models;
 using System;
 using System.Linq;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Services
 {
     /// <summary>
     /// Static helper for delivery fulfillment operations.

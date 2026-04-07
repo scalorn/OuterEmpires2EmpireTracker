@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Services
 {
     public class BackgroundProcessor : IDisposable
     {

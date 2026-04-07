@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Services
 {
     /// <summary>
     /// Generates a foundation set of planned structures for a colony based on

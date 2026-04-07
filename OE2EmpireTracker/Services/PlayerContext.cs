@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using NLog;
+using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Services
 {
     public class PlayerContext
     {

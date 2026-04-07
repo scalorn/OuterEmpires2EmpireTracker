@@ -3,7 +3,7 @@ using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Services
 {
     public enum ActivityType
     {

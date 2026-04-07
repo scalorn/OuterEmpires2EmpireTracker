@@ -22,7 +22,7 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
     - Commit with descriptive message
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-- [-] 2. Batch 1b — Move Baseline/ data types → Models/ (13 files, main project)
+- [x] 2. Batch 1b — Move Baseline/ data types → Models/ (13 files, main project)
   - [x] 2.1 Move 13 Baseline/ data-type files to Models/ using smartRelocate
     - Files: Colony, ColonyStructure, ColonyStructureStatus, ColonyWorker, CommodityRequested, DeliveryRoute, DeliveryPlan, Survey, ShipClass, TechLevel, BlueprintType, UIPreferences, IColonyStructureWorkers
     - For each file: `smartRelocate` from `OE2EmpireTracker/Baseline/{File}.cs` to `OE2EmpireTracker/Models/{File}.cs`
@@ -30,7 +30,7 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
     - After each move: update csproj Compile Include from `Baseline\{File}.cs` to `Models\{File}.cs`
     - _Requirements: 1.2, 1.3, 1.4, 1.5, 9.1, 9.2_
 
-  - [-] 2.2 Verify Batch 1b — build and test
+  - [x] 2.2 Verify Batch 1b — build and test
     - Run `getDiagnostics` on all moved files and files with updated usings
     - Build: `msbuild OE2EmpireTracker.sln /p:Configuration=Debug`
     - Test: `vstest.console` against test DLL
@@ -38,15 +38,15 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
     - Commit with descriptive message
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-- [ ] 3. Batch 2 — Move Baseline/ services → Services/ (11 files, main project)
-  - [~] 3.1 Move 11 Baseline/ service files to Services/ using smartRelocate
+- [-] 3. Batch 2 — Move Baseline/ services → Services/ (11 files, main project)
+  - [x] 3.1 Move 11 Baseline/ service files to Services/ using smartRelocate
     - Files: EmpireContext, PlayerContext, BackgroundProcessor, ColonyStatusCalculator, ColonyActivityCollector, ColonyBuildEligibility, ColonyBootstrap, BuildOrderOptimizer, BuildTimeCalculator, DeliveryFulfillment, PreferencesStore
     - For each file: `smartRelocate` from `OE2EmpireTracker/Baseline/{File}.cs` to `OE2EmpireTracker/Services/{File}.cs`
     - After each move: update namespace from `OE2EmpireTracker.Baseline` to `OE2EmpireTracker.Services`
     - After each move: update csproj Compile Include from `Baseline\{File}.cs` to `Services\{File}.cs`
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 9.1, 9.2_
 
-  - [~] 3.2 Verify Batch 2 — build and test
+  - [-] 3.2 Verify Batch 2 — build and test
     - Run `getDiagnostics` on all moved files and files with updated usings
     - Build: `msbuild OE2EmpireTracker.sln /p:Configuration=Debug`
     - Test: `vstest.console` against test DLL

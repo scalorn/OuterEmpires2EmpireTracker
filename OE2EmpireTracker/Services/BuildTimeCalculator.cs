@@ -1,6 +1,6 @@
 using System;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Services
 {
     /// <summary>
     /// Calculates structure build time based on the Builder skill level.

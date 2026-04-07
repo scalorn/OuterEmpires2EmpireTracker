@@ -1,10 +1,11 @@
 using Newtonsoft.Json;
 using NLog;
+using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Models;
 using System;
 using System.IO;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Services
 {
     public class PreferencesStore
     {

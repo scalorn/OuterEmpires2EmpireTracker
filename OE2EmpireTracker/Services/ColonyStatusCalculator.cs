@@ -1,5 +1,4 @@
 using NLog;
-using OE2EmpireTracker.Baseline;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
@@ -8,7 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Services
 {
     /// <summary>
     /// Calculates the resource status (Power, Habitation, Food, Entertainment, Warehouse) 

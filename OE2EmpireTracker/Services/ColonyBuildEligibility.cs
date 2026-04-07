@@ -2,7 +2,7 @@ using OE2EmpireTracker.Models;
 using OE2EmpireTracker.ViewModels;
 using System.Linq;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Services
 {
     /// <summary>
     /// Static helper methods for determining colony build eligibility.

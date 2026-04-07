@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Services
 {
     public class EmpireContext
     {
@@ -57,7 +57,7 @@ namespace OE2EmpireTracker.Baseline
         {
             Instance = null;
             PlayerContext = null;
-            OE2EmpireTracker.Baseline.PlayerContext.Reset();
+            OE2EmpireTracker.Services.PlayerContext.Reset();
         }
 
         private EmpireContext() : base()
