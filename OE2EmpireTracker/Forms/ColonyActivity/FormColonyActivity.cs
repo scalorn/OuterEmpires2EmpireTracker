@@ -85,6 +85,10 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             else
                 allRows = ColonyActivityCollector.CollectActivities(colonies, playerContext);
 
+            // Update form title to reflect current mode
+            string prefix = Tag != null ? "#" + Tag + " - " : "";
+            Text = prefix + (chkShowInactive.Checked ? "Colony Inactivity" : "Colony Activity");
+
             ApplyFiltersAndPopulate();
         }
 
