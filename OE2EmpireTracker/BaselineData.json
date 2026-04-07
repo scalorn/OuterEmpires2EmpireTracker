@@ -42,8 +42,22 @@
                               "Id":  "Beamer/Large",
                               "Name":  "Beamer Large",
                               "Universal":  false,
+                              "IconPosition":  "-100px -822px",
                               "Properties":  [
-
+                                                 "Accuracy",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Energy Damage Rating",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Mass",
+                                                 "Max Effective Range",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Power Draw Per Second",
+                                                 "Rate of Fire",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
                                              ],
                               "ResearchableProperties":  [
 
@@ -54,8 +68,22 @@
                               "Id":  "Beamer/Medium",
                               "Name":  "Beamer Medium",
                               "Universal":  false,
+                              "IconPosition":  "-62px -822px",
                               "Properties":  [
-
+                                                 "Accuracy",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Energy Damage Rating",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Mass",
+                                                 "Max Effective Range",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Power Draw Per Second",
+                                                 "Rate of Fire",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
                                              ],
                               "ResearchableProperties":  [
 
@@ -66,8 +94,45 @@
                               "Id":  "Beamer/Small",
                               "Name":  "Beamer Small",
                               "Universal":  false,
+                              "IconPosition":  "-24px -822px",
                               "Properties":  [
+                                                 "Accuracy",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Energy Damage Rating",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Mass",
+                                                 "Max Effective Range",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Power Draw Per Second",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
 
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "AsteroidGrapple",
+                              "Name":  "Asteroid Grapple",
+                              "Universal":  false,
+                              "IconPosition":  "-214px -442px",
+                              "Properties":  [
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Mass",
+                                                 "Maximum Damage Repair",
+                                                 "Mining Cycle Time",
+                                                 "Mining Yield Increase",
+                                                 "Power Required",
+                                                 "Wear and Tear Rate"
                                              ],
                               "ResearchableProperties":  [
 
@@ -78,6 +143,7 @@
                               "Id":  "CargoPod",
                               "Name":  "Cargo Pod",
                               "Universal":  false,
+                              "IconPosition":  "-100px -442px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -104,8 +170,26 @@
                               "Id":  "CoilGun/Large",
                               "Name":  "Coil Gun Large",
                               "Universal":  false,
+                              "IconPosition":  "-100px -746px",
                               "Properties":  [
-
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "PDT Capable",
+                                                 "Power Draw Per Second",
+                                                 "Power Draw Per Shot",
+                                                 "Power Required",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
                                              ],
                               "ResearchableProperties":  [
 
@@ -116,8 +200,26 @@
                               "Id":  "CoilGun/Medium",
                               "Name":  "Coil Gun Medium",
                               "Universal":  false,
+                              "IconPosition":  "-62px -746px",
                               "Properties":  [
-
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "PDT Capable",
+                                                 "Power Draw Per Second",
+                                                 "Power Draw Per Shot",
+                                                 "Power Required",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
                                              ],
                               "ResearchableProperties":  [
 
@@ -128,8 +230,26 @@
                               "Id":  "CoilGun/Small",
                               "Name":  "Coil Gun Small",
                               "Universal":  false,
+                              "IconPosition":  "-24px -746px",
                               "Properties":  [
-
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "PDT Capable",
+                                                 "Power Draw Per Second",
+                                                 "Power Draw Per Shot",
+                                                 "Power Required",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
                                              ],
                               "ResearchableProperties":  [
 
@@ -140,8 +260,13 @@
                               "Id":  "Munitions/CoilgunMunitions",
                               "Name":  "Coilgun Munitions",
                               "Universal":  true,
+                              "IconPosition":  "-176px -746px",
                               "Properties":  [
-
+                                                 "Ammo Type",
+                                                 "Amount Manufactured",
+                                                 "Cargo Volume Size",
+                                                 "Kinetic Damage Rating",
+                                                 "Mass"
                                              ],
                               "ResearchableProperties":  [
 
@@ -152,6 +277,7 @@
                               "Id":  "Flatpacks/ColonyCommandCentre",
                               "Name":  "Colony Command Centre Flatpack",
                               "Universal":  true,
+                              "IconPosition":  "-24px -594px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -201,6 +327,7 @@
                               "Id":  "Flatpacks/EntertainmentCentreFlatpack",
                               "Name":  "Entertainment Centre Flatpack",
                               "Universal":  true,
+                              "IconPosition":  "-480px -594px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -248,6 +375,7 @@
                               "Id":  "GERTYDroneRack",
                               "Name":  "GERTY Drone Rack",
                               "Universal":  false,
+                              "IconPosition":  "-366px -480px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -274,6 +402,7 @@
                               "Id":  "Flatpacks/HabitationBlock",
                               "Name":  "Habitation Block Flatpack",
                               "Universal":  true,
+                              "IconPosition":  "-100px -594px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -384,9 +513,33 @@
                               "OutputItemType":  "ShipPart"
                           },
                           {
+                              "Id":  "HullPlating",
+                              "Name":  "Hull Plating",
+                              "Universal":  false,
+                              "IconPosition":  "-518px -62px",
+                              "Properties":  [
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Energy Defence Rating",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Kinetic Defence Rating",
+                                                 "Mass",
+                                                 "Maximum Damage Repair",
+                                                 "Missile Defence Rating",
+                                                 "Power Required",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
                               "Id":  "Flatpacks/HydroponicsBay",
                               "Name":  "Hydroponics Bay Flatpack",
                               "Universal":  true,
+                              "IconPosition":  "-138px -594px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -470,6 +623,7 @@
                               "Id":  "Flatpacks/Manufactory",
                               "Name":  "Manufactory Flatpack",
                               "Universal":  true,
+                              "IconPosition":  "-366px -594px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -492,6 +646,7 @@
                               "Id":  "Flatpacks/MiningRig",
                               "Name":  "Mining Rig Flatpack",
                               "Universal":  true,
+                              "IconPosition":  "-290px -594px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -512,11 +667,51 @@
                               "OutputItemType":  "Flatpack"
                           },
                           {
+                              "Id":  "MiningLaser",
+                              "Name":  "Mining Laser",
+                              "Universal":  false,
+                              "IconPosition":  "-252px -442px",
+                              "Properties":  [
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Mass",
+                                                 "Maximum Damage Repair",
+                                                 "Mining Capable",
+                                                 "Mining Cycle Time",
+                                                 "Mining Yield",
+                                                 "Power Draw Per Second",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
                               "Id":  "MissileLauncherLarge",
                               "Name":  "Missile Launcher Large",
                               "Universal":  false,
+                              "IconPosition":  "-100px -860px",
                               "Properties":  [
-
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Launch Velocity",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Min Range",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
                                              ],
                               "ResearchableProperties":  [
 
@@ -527,8 +722,25 @@
                               "Id":  "MissileLauncher/Medium",
                               "Name":  "Missile Launcher Medium",
                               "Universal":  false,
+                              "IconPosition":  "-62px -860px",
                               "Properties":  [
-
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Launch Velocity",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Min Range",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
                                              ],
                               "ResearchableProperties":  [
 
@@ -540,7 +752,23 @@
                               "Name":  "Missile Launcher Small",
                               "Universal":  false,
                               "Properties":  [
-
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Launch Velocity",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Min Range",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
                                              ],
                               "ResearchableProperties":  [
 
@@ -551,8 +779,16 @@
                               "Id":  "Munitions/MissileMunitions",
                               "Name":  "Missile Munitions",
                               "Universal":  true,
+                              "IconPosition":  "-252px -860px",
                               "Properties":  [
-
+                                                 "Acceleration Rate",
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Amount Manufactured",
+                                                 "Cargo Volume Size",
+                                                 "Energy Damage Rating",
+                                                 "Mass",
+                                                 "Missile Damage Rating"
                                              ],
                               "ResearchableProperties":  [
 
@@ -576,8 +812,23 @@
                               "Id":  "Railgun/Large",
                               "Name":  "Railgun Large",
                               "Universal":  false,
+                              "IconPosition":  "-100px -784px",
                               "Properties":  [
-
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
                                              ],
                               "ResearchableProperties":  [
 
@@ -588,8 +839,23 @@
                               "Id":  "Railgun/Medium",
                               "Name":  "Railgun Medium",
                               "Universal":  false,
+                              "IconPosition":  "-62px -784px",
                               "Properties":  [
-
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
                                              ],
                               "ResearchableProperties":  [
 
@@ -600,8 +866,14 @@
                               "Id":  "Munitions/RailgunMunitions",
                               "Name":  "Railgun Munitions",
                               "Universal":  true,
+                              "IconPosition":  "-252px -784px",
                               "Properties":  [
-
+                                                 "Ammo Type",
+                                                 "Amount Manufactured",
+                                                 "Cargo Volume Size",
+                                                 "Energy Damage Rating",
+                                                 "Kinetic Damage Rating",
+                                                 "Mass"
                                              ],
                               "ResearchableProperties":  [
 
@@ -612,8 +884,23 @@
                               "Id":  "Railgun/Small",
                               "Name":  "Railgun Small",
                               "Universal":  false,
+                              "IconPosition":  "-24px -784px",
                               "Properties":  [
-
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
                                              ],
                               "ResearchableProperties":  [
 
@@ -653,6 +940,7 @@
                               "Id":  "Flatpacks/ReactorCore",
                               "Name":  "Reactor Core Flatpack",
                               "Universal":  true,
+                              "IconPosition":  "-62px -594px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -672,6 +960,7 @@
                               "Id":  "Flatpacks/Refinery",
                               "Name":  "Refinery Flatpack",
                               "Universal":  true,
+                              "IconPosition":  "-328px -594px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -695,6 +984,7 @@
                               "Id":  "Flatpacks/RemoteOperationsArray",
                               "Name":  "Remote Operations Array Flatpack",
                               "Universal":  true,
+                              "IconPosition":  "-252px -594px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -716,6 +1006,7 @@
                               "Id":  "Flatpacks/ResearchLaboratory",
                               "Name":  "Research Laboratory Flatpack",
                               "Universal":  true,
+                              "IconPosition":  "-442px -594px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
@@ -737,6 +1028,7 @@
                               "Id":  "Shield",
                               "Name":  "Shield",
                               "Universal":  false,
+                              "IconPosition":  "-214px -252px",
                               "Properties":  [
 
                                              ],
@@ -795,8 +1087,25 @@
                               "Id":  "TorpedoLauncher/Large",
                               "Name":  "Torpedo Launcher Large",
                               "Universal":  false,
+                              "IconPosition":  "-100px -898px",
                               "Properties":  [
-
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Launch Velocity",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Min Range",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
                                              ],
                               "ResearchableProperties":  [
 
@@ -807,8 +1116,25 @@
                               "Id":  "TorpedoLauncher/Medium",
                               "Name":  "Torpedo Launcher Medium",
                               "Universal":  false,
+                              "IconPosition":  "-24px -898px",
                               "Properties":  [
-
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Launch Velocity",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Min Range",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
                                              ],
                               "ResearchableProperties":  [
 
@@ -819,8 +1145,25 @@
                               "Id":  "TorpedoLauncher/Small",
                               "Name":  "Torpedo Launcher Small",
                               "Universal":  false,
+                              "IconPosition":  "-62px -898px",
                               "Properties":  [
-
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Launch Velocity",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Min Range",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
                                              ],
                               "ResearchableProperties":  [
 
@@ -831,8 +1174,15 @@
                               "Id":  "Munitions/TorpedoMunitions",
                               "Name":  "Torpedo Munitions",
                               "Universal":  true,
+                              "IconPosition":  "-252px -898px",
                               "Properties":  [
-
+                                                 "Acceleration Rate",
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Amount Manufactured",
+                                                 "Cargo Volume Size",
+                                                 "Mass",
+                                                 "Missile Damage Rating"
                                              ],
                               "ResearchableProperties":  [
 
@@ -856,6 +1206,7 @@
                               "Id":  "Flatpacks/Warehouse",
                               "Name":  "Warehouse Flatpack",
                               "Universal":  true,
+                              "IconPosition":  "-404px -594px",
                               "Properties":  [
                                                  "Manufacture Run Time",
                                                  "Mass",
