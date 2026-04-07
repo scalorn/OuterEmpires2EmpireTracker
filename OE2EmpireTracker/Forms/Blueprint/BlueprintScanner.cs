@@ -267,6 +267,133 @@ namespace OE2EmpireTracker.Forms.Blueprint
         }
 
         /// <summary>
+        /// Parses market listing HTML and extracts multiple blueprints.
+        /// Market HTML uses different CSS classes than the individual blueprint page.
+        /// Each expanded listing contains stats and resources for one blueprint.
+        /// </summary>
+        public List<Models.Blueprint> ProcessMarketHtml(string htmlFragment)
+        {
+            var blueprints = new List<Models.Blueprint>();
+
+            try
+            {
+                StringReader reader = new StringReader(htmlFragment);
+                Sgml.SgmlReader sgmlReader = new Sgml.SgmlReader()
+                {
+                    DocType = "HTML",
+                    WhitespaceHandling = WhitespaceHandling.All,
+                    CaseFolding = Sgml.CaseFolding.ToLower,
+                    InputStream = reader
+                };
+                XmlDocument doc = new XmlDocument() { PreserveWhitespace = true, XmlResolver = null };
+                doc.Load(sgmlReader);
+
+                // Market HTML has pairs of <tr> rows:
+                // 1. MarketListingRow — contains name, evolution, price
+                // 2. MarketListingRowDetail — contains expanded stats and resources
+                // They are siblings in the table, not nested.
+
+                XmlNodeList allRows = doc.SelectNodes("//tr");
+                if (allRows == null) return blueprints;
+
+                for (int i = 0; i < allRows.Count; i++)
+                {
+                    XmlNode row = allRows[i];
+                    string rowClass = row.Attributes?["class"]?.Value ?? "";
+                    if (!rowClass.Contains("MarketListingRow") || rowClass.Contains("MarketListingRowDetail"))
+                        continue;
+
+                    // This is a listing row — extract name and evolution
+                    XmlNode nameNode = row.SelectSingleNode(".//div[contains(@class,'MarketListingRowDetailDescription')]");
+                    if (nameNode == null) continue;
+
+                    // Name is the direct text of the div, not including nested spans (which contain seller info like "Government")
+                    string name = "";
+                    foreach (XmlNode child in nameNode.ChildNodes)
+                    {
+                        if (child.NodeType == XmlNodeType.Text)
+                        {
+                            name = child.InnerText.Trim();
+                            break;
+                        }
+                    }
+                    if (string.IsNullOrEmpty(name))
+                        name = nameNode.InnerText.Trim(); // fallback
+                    if (string.IsNullOrEmpty(name)) continue;
+
+                    var bp = new Models.Blueprint(name);
+                    bp.UUID = System.Guid.NewGuid().ToString();
+
+                    XmlNode evoNode = row.SelectSingleNode(".//div[contains(@class,'EvolutionNumber')]");
+                    if (evoNode != null && int.TryParse(evoNode.InnerText.Trim(), out int evo))
+                    {
+                        bp.Evolution = evo;
+                    }
+
+                    // Look for the next sibling row which should be MarketListingRowDetail
+                    XmlNode detailRow = (i + 1 < allRows.Count) ? allRows[i + 1] : null;
+                    string detailClass = detailRow?.Attributes?["class"]?.Value ?? "";
+                    if (detailRow != null && detailClass.Contains("MarketListingRowDetail"))
+                    {
+                        // Extract properties from Market_ShipComponentProperty divs
+                        XmlNodeList propNodes = detailRow.SelectNodes(".//div[contains(@class,'Market_ShipComponentProperty')]");
+                        if (propNodes != null)
+                        {
+                            foreach (XmlNode prop in propNodes)
+                            {
+                                XmlNode labelNode = prop.SelectSingleNode(".//div[contains(@class,'Market_ShipComponentProperty_Label')]");
+                                XmlNode valueNode = prop.SelectSingleNode(".//div[contains(@class,'ui_text_blue_light')]");
+                                if (labelNode == null || valueNode == null) continue;
+
+                                string key = labelNode.InnerText.Trim();
+                                string rawValue = valueNode.InnerText.Trim();
+                                rawValue = Regex.Replace(rawValue, "\\s+", " ").Trim();
+                                rawValue = Regex.Replace(rawValue, "\\(.*?\\)", "").Trim();
+
+                                string remapKey;
+                                if (!PropertyRemap.TryGetValue(key, out remapKey))
+                                {
+                                    remapKey = key;
+                                }
+
+                                bp.Properties.setProperty(remapKey, NormalizePropertyValue(remapKey, rawValue));
+                            }
+
+                            string equipClass;
+                            bp.Properties.getString("Class", null, out equipClass);
+                            if (equipClass != null && int.TryParse(equipClass, out int cls))
+                            {
+                                bp.Class = cls;
+                            }
+                        }
+
+                        // Extract resources
+                        XmlNodeList resNameNodes = detailRow.SelectNodes(".//div[contains(@class,'ScanDetailOutputResourceName_MarketListing')]");
+                        XmlNodeList resDetailNodes = detailRow.SelectNodes(".//div[contains(@class,'ScanDetailOutputResourceDetail')]");
+                        int resCount = Math.Min(resNameNodes?.Count ?? 0, resDetailNodes?.Count ?? 0);
+                        for (int r = 0; r < resCount; r++)
+                        {
+                            string resName = resNameNodes[r].InnerText.Trim();
+                            string qtyText = resDetailNodes[r].InnerText.Trim();
+                            string qtyNormalized = new string(qtyText.Where(c => char.IsDigit(c)).ToArray());
+                            if (string.IsNullOrEmpty(qtyNormalized)) qtyNormalized = qtyText;
+                            bp.Resources[resName] = qtyNormalized;
+                        }
+                    }
+
+                    blueprints.Add(bp);
+                    Log.Info($"Market import: {bp.Name} (Ev{bp.Evolution}) — {bp.Properties.Count} properties, {bp.Resources.Count} resources");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error parsing market HTML: " + ex.Message);
+            }
+
+            return blueprints;
+        }
+
+        /// <summary>
         /// Extracts selected HTML fragment string from clipboard data by parsing header information.
         /// </summary>
         /// <param name="htmlDataString">String representing HTML clipboard data. This includes HTML header.</param>

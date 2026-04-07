@@ -517,5 +517,136 @@ namespace OE2EmpireTracker.Tests.Blueprint
             Assert.That(bp.Resources["Non-Metallics"], Is.EqualTo("63"));
             Assert.That(bp.Resources["Heavy Post-Trans Metals"], Is.EqualTo("161"));
         }
+
+        // -----------------------------------------------------------------------
+        // Market HTML — bulk import exploration
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void ProcessMarketHtml_ExtractsMultipleBlueprints()
+        {
+            string html = LoadTestData("BlueprintMarketHulls.html");
+            var blueprints = _scanner.ProcessMarketHtml(html);
+
+            Assert.That(blueprints.Count, Is.GreaterThanOrEqualTo(4),
+                "Should extract at least 4 blueprints from market listing");
+
+            // Log what we got for exploration
+            foreach (var bp in blueprints)
+            {
+                TestContext.WriteLine($"Name: {bp.Name}, Evo: {bp.Evolution}, Class: {bp.Class}, " +
+                    $"Props: {bp.Properties.Count}, Resources: {bp.Resources.Count}");
+            }
+        }
+
+        [Test]
+        public void ProcessMarketHtml_FirstBlueprint_HasNameAndEvolution()
+        {
+            string html = LoadTestData("BlueprintMarketHulls.html");
+            var blueprints = _scanner.ProcessMarketHtml(html);
+
+            Assert.That(blueprints.Count, Is.GreaterThan(0));
+            var first = blueprints[0];
+            Assert.That(first.Name, Is.Not.Null.And.Not.Empty);
+            Assert.That(first.Evolution, Is.GreaterThanOrEqualTo(0));
+        }
+
+        [Test]
+        public void ProcessMarketHtml_Blueprints_HaveProperties()
+        {
+            string html = LoadTestData("BlueprintMarketHulls.html");
+            var blueprints = _scanner.ProcessMarketHtml(html);
+
+            foreach (var bp in blueprints)
+            {
+                Assert.That(bp.Properties.Count, Is.GreaterThan(0),
+                    $"Blueprint '{bp.Name}' should have properties");
+
+                // All hull blueprints should have Class
+                string cls;
+                bp.Properties.getString("Class", null, out cls);
+                Assert.That(cls, Is.Not.Null,
+                    $"Blueprint '{bp.Name}' should have Class property");
+            }
+        }
+
+        [Test]
+        public void ProcessMarketHtml_Blueprints_HaveResources()
+        {
+            string html = LoadTestData("BlueprintMarketHulls.html");
+            var blueprints = _scanner.ProcessMarketHtml(html);
+
+            foreach (var bp in blueprints)
+            {
+                Assert.That(bp.Resources.Count, Is.GreaterThan(0),
+                    $"Blueprint '{bp.Name}' should have resources");
+
+                // All resource quantities should be numeric
+                foreach (var kvp in bp.Resources)
+                {
+                    Assert.That(int.TryParse(kvp.Value, out _), Is.True,
+                        $"Resource '{kvp.Key}' on '{bp.Name}' should have numeric quantity, got '{kvp.Value}'");
+                }
+            }
+        }
+
+        [Test]
+        public void ProcessMarketHtml_PropertyValuesAreNormalized()
+        {
+            string html = LoadTestData("BlueprintMarketHulls.html");
+            var blueprints = _scanner.ProcessMarketHtml(html);
+
+            var first = blueprints[0];
+
+            // Wear and Tear Rate should be stripped of % (decimal normalization)
+            string wearRate;
+            first.Properties.getString("Wear and Tear Rate", null, out wearRate);
+            Assert.That(wearRate, Does.Not.Contain("%"),
+                "Wear and Tear Rate should have % stripped by decimal normalization");
+
+            // Maximum Damage Repair should be stripped of %
+            string dmgRepair;
+            first.Properties.getString("Maximum Damage Repair", null, out dmgRepair);
+            Assert.That(dmgRepair, Does.Not.Contain("%"),
+                "Maximum Damage Repair should have % stripped by decimal normalization");
+        }
+
+        [Test]
+        public void ProcessMarketHtml_DumpAllData()
+        {
+            // Exploratory test — dumps all extracted data for review
+            string html = LoadTestData("BlueprintMarketHulls.html");
+            var blueprints = _scanner.ProcessMarketHtml(html);
+
+            for (int i = 0; i < blueprints.Count; i++)
+            {
+                var bp = blueprints[i];
+                TestContext.WriteLine($"\n=== Blueprint {i + 1}: {bp.Name} (Ev{bp.Evolution}, Class {bp.Class}) ===");
+
+                TestContext.WriteLine("Properties:");
+                // Can't iterate PropertyBag directly, but we can check known properties
+                string[] knownProps = { "Class", "Mass", "Cargo Volume Size", "License Level",
+                    "License Career", "Health", "Eng Capacity Required", "Max Hull Plating",
+                    "Max Hull Reinforcement", "Max Hull Sealant Units", "Cargo Capacity",
+                    "Fuel Capacity", "Large Weapon Mounts", "Medium Weapon Mounts",
+                    "Small Weapon Mounts", "Wear and Tear Rate", "Maximum Damage Repair",
+                    "Energy Defence", "Kinetic Damage Defence", "Missile Damage Defence",
+                    "Crew Supported", "Reactor Slots", "Main Drive Slots", "Thruster Slots",
+                    "Jump Drive Slots", "Nav Comp Slots", "Scanner Slots", "Shield Slots",
+                    "Cargo Pod Slots", "Fuel Tank Slots", "Coupler Slots", "GERTY Slots" };
+                foreach (var prop in knownProps)
+                {
+                    string val;
+                    bp.Properties.getString(prop, null, out val);
+                    if (val != null) TestContext.WriteLine($"  {prop} = {val}");
+                }
+
+                TestContext.WriteLine("Resources:");
+                foreach (var kvp in bp.Resources)
+                {
+                    TestContext.WriteLine($"  {kvp.Key} = {kvp.Value}");
+                }
+            }
+        }
     }
 }
