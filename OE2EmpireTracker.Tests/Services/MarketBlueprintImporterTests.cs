@@ -18,15 +18,46 @@ namespace OE2EmpireTracker.Tests.Services
         private EmpireContext empireContext;
         private static readonly string TestPlayerUUID = "test-player-uuid-001";
 
+        private string _originalEmpireFilePath;
+        private string _originalPlayerFilePath;
+        private string _tempBaselineDataPath;
+        private string _tempPlayerDataPath;
+
         [OneTimeSetUp]
         public void FixtureSetUp()
         {
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            string baselineDataPath = System.IO.Path.Combine(baseDir, @"..\..\..\OE2EmpireTracker\BaselineData.json");
-            EmpireContext.FilePath = System.IO.Path.GetFullPath(baselineDataPath);
+            string baselineDataPath = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\OE2EmpireTracker\BaselineData.json"));
+            string playerDataPath = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\OE2EmpireTracker\PlayerData.json"));
 
-            string playerDataPath = System.IO.Path.Combine(baseDir, @"..\..\..\OE2EmpireTracker\PlayerData.json");
-            PlayerContext.FilePath = System.IO.Path.GetFullPath(playerDataPath);
+            // Save original paths so we can restore them
+            _originalEmpireFilePath = EmpireContext.FilePath;
+            _originalPlayerFilePath = PlayerContext.FilePath;
+
+            // Create temp copies so writeContext() never corrupts the real data files
+            _tempBaselineDataPath = Path.Combine(Path.GetTempPath(), "MarketImporterTest_BaselineData.json");
+            _tempPlayerDataPath = Path.Combine(Path.GetTempPath(), "MarketImporterTest_PlayerData.json");
+            File.Copy(baselineDataPath, _tempBaselineDataPath, true);
+            File.Copy(playerDataPath, _tempPlayerDataPath, true);
+
+            EmpireContext.FilePath = _tempBaselineDataPath;
+            PlayerContext.FilePath = _tempPlayerDataPath;
+        }
+
+        [OneTimeTearDown]
+        public void FixtureTearDown()
+        {
+            // Restore original file paths and reset singletons
+            EmpireContext.Reset();
+            EmpireContext.FilePath = _originalEmpireFilePath;
+            PlayerContext.FilePath = _originalPlayerFilePath;
+
+            // Clean up temp files
+            if (File.Exists(_tempBaselineDataPath)) File.Delete(_tempBaselineDataPath);
+            if (File.Exists(_tempPlayerDataPath)) File.Delete(_tempPlayerDataPath);
+            // SafeFileWriter also creates .bak files
+            if (File.Exists(_tempBaselineDataPath + ".bak")) File.Delete(_tempBaselineDataPath + ".bak");
+            if (File.Exists(_tempPlayerDataPath + ".bak")) File.Delete(_tempPlayerDataPath + ".bak");
         }
 
         [SetUp]
