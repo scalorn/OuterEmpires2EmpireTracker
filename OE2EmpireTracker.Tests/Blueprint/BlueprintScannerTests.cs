@@ -2,7 +2,9 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Forms.Blueprint;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Blueprint
 {
@@ -649,10 +651,11 @@ namespace OE2EmpireTracker.Tests.Blueprint
             for (int i = 0; i < blueprints.Count; i++)
             {
                 var bp = blueprints[i];
-                TestContext.WriteLine($"\n=== Blueprint {i + 1}: {bp.Name} (Ev{bp.Evolution}, Class {bp.Class}) ===");
+                string iconPos;
+                bp.Properties.getString("_IconPosition", null, out iconPos);
+                TestContext.WriteLine($"\n=== Blueprint {i + 1}: {bp.Name} (Ev{bp.Evolution}, Class {bp.Class}, Icon: {iconPos ?? "none"}) ===");
 
                 TestContext.WriteLine("Properties:");
-                // Can't iterate PropertyBag directly, but we can check known properties
                 string[] knownProps = { "Class", "Mass", "Cargo Volume Size", "License Level",
                     "License Career", "Health", "Eng Capacity Required", "Max Hull Plating",
                     "Max Hull Reinforcement", "Max Hull Sealant Units", "Cargo Capacity",
@@ -673,6 +676,38 @@ namespace OE2EmpireTracker.Tests.Blueprint
                 foreach (var kvp in bp.Resources)
                 {
                     TestContext.WriteLine($"  {kvp.Key} = {kvp.Value}");
+                }
+            }
+        }
+
+        [Test]
+        public void ProcessMarketHtml_Mixed_DumpAllData()
+        {
+            // Exploratory test — dumps mixed blueprint types with icon positions
+            string html = LoadTestData("BlueprintMarketMixed.html");
+            var blueprints = _scanner.ProcessMarketHtml(html);
+
+            TestContext.WriteLine($"Total blueprints: {blueprints.Count}");
+
+            // Group by icon position to identify blueprint types
+            var iconGroups = new Dictionary<string, List<string>>();
+            foreach (var bp in blueprints)
+            {
+                string iconPos;
+                bp.Properties.getString("_IconPosition", null, out iconPos);
+                string key = iconPos ?? "no-icon";
+                if (!iconGroups.ContainsKey(key))
+                    iconGroups[key] = new List<string>();
+                iconGroups[key].Add($"{bp.Name} (Ev{bp.Evolution}, Class {bp.Class}, Props: {bp.Properties.Count}, Res: {bp.Resources.Count})");
+            }
+
+            TestContext.WriteLine("\n=== Blueprints grouped by icon sprite position ===");
+            foreach (var group in iconGroups.OrderBy(g => g.Key))
+            {
+                TestContext.WriteLine($"\nIcon: {group.Key} ({group.Value.Count} blueprints):");
+                foreach (var name in group.Value)
+                {
+                    TestContext.WriteLine($"  {name}");
                 }
             }
         }
