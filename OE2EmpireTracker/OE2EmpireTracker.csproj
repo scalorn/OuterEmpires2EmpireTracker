@@ -141,11 +141,11 @@
     <Compile Include="Models\ColonyWorker.cs" />
     <Compile Include="Models\IColonyStructureWorkers.cs" />
     <Compile Include="Services\PlayerContext.cs" />
-    <Compile Include="Baseline\SafeFileWriter.cs" />
-    <Compile Include="Baseline\BoundsValidator.cs" />
+    <Compile Include="Persistence\SafeFileWriter.cs" />
+    <Compile Include="Persistence\BoundsValidator.cs" />
     <Compile Include="Services\PreferencesStore.cs" />
     <Compile Include="Models\UIPreferences.cs" />
-    <Compile Include="Baseline\WindowStateHelper.cs" />
+    <Compile Include="Persistence\WindowStateHelper.cs" />
     <Compile Include="Models\TechLevel.cs" />
     <Compile Include="Services\EmpireContext.cs" />
     <Compile Include="Constants\BlueprintTypes.cs" />

@@ -2,7 +2,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Persistence
 {
     /// <summary>
     /// Pure-function bounds validation for restored window positions.

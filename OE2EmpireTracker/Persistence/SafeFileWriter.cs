@@ -1,7 +1,7 @@
 using NLog;
 using System.IO;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Persistence
 {
     /// <summary>
     /// Writes files using a temp-then-replace strategy to prevent data loss

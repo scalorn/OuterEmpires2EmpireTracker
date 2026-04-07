@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace OE2EmpireTracker.Baseline
+namespace OE2EmpireTracker.Persistence
 {
     /// <summary>
     /// Static helper that saves and restores UI state for forms.

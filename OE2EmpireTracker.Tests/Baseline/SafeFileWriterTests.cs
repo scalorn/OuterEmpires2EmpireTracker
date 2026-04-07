@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using OE2EmpireTracker.Baseline;
+using OE2EmpireTracker.Persistence;
 using System.IO;
 
 namespace OE2EmpireTracker.Tests.Baseline

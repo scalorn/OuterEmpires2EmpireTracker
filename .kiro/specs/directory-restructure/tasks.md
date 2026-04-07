@@ -54,7 +54,7 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
     - Commit with descriptive message
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-- [-] 4. Batch 3 — Move Baseline/ parsers → Parsers/ (2 files, main project)
+- [x] 4. Batch 3 — Move Baseline/ parsers → Parsers/ (2 files, main project)
   - [x] 4.1 Move 2 Baseline/ parser files to Parsers/ using smartRelocate
     - Files: ColonyParser, SurveyParser
     - For each file: `smartRelocate` from `OE2EmpireTracker/Baseline/{File}.cs` to `OE2EmpireTracker/Parsers/{File}.cs`
@@ -62,7 +62,7 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
     - After each move: update csproj Compile Include from `Baseline\{File}.cs` to `Parsers\{File}.cs`
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 9.1, 9.2_
 
-  - [-] 4.2 Verify Batch 3 — build and test
+  - [x] 4.2 Verify Batch 3 — build and test
     - Run `getDiagnostics` on all moved files and files with updated usings
     - Build: `msbuild OE2EmpireTracker.sln /p:Configuration=Debug`
     - Test: `vstest.console` against test DLL
@@ -70,15 +70,15 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
     - Commit with descriptive message
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-- [ ] 5. Batch 4 — Move Baseline/ persistence → Persistence/ (3 files, main project)
-  - [~] 5.1 Move 3 Baseline/ persistence files to Persistence/ using smartRelocate
+- [-] 5. Batch 4 — Move Baseline/ persistence → Persistence/ (3 files, main project)
+  - [x] 5.1 Move 3 Baseline/ persistence files to Persistence/ using smartRelocate
     - Files: SafeFileWriter, WindowStateHelper, BoundsValidator
     - For each file: `smartRelocate` from `OE2EmpireTracker/Baseline/{File}.cs` to `OE2EmpireTracker/Persistence/{File}.cs`
     - After each move: update namespace from `OE2EmpireTracker.Baseline` to `OE2EmpireTracker.Persistence`
     - After each move: update csproj Compile Include from `Baseline\{File}.cs` to `Persistence\{File}.cs`
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 9.1, 9.2_
 
-  - [~] 5.2 Verify Batch 4 — build and test
+  - [-] 5.2 Verify Batch 4 — build and test
     - Run `getDiagnostics` on all moved files and files with updated usings
     - Build: `msbuild OE2EmpireTracker.sln /p:Configuration=Debug`
     - Test: `vstest.console` against test DLL
