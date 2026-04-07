@@ -213,6 +213,7 @@
     <Compile Include="Services\BuildTimeCalculatorTests.cs" />
     <Compile Include="Models\BlueprintTypeTests.cs" />
     <Compile Include="Services\ColonyActivityCollectorTests.cs" />
+    <Compile Include="Services\ColonyInactivityCollectorTests.cs" />
     <Compile Include="Services\ColonyBuildEligibilityTests.cs" />
     <Compile Include="Models\ColonyBuildCompletionTests.cs" />
     <Compile Include="Models\ColonyProcessingTests.cs" />
