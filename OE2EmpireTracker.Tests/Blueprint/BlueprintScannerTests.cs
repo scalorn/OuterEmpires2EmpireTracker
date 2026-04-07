@@ -707,5 +707,69 @@ namespace OE2EmpireTracker.Tests.Blueprint
                 }
             }
         }
+
+        [Test]
+        public void ProcessAllMarketSamples_DiscoverIconsAndProperties()
+        {
+            // Parse every MarketSample file and collect icon positions + property sets per type
+            string baseDir = TestContext.CurrentContext.TestDirectory;
+            var sampleFiles = System.IO.Directory.GetFiles(
+                System.IO.Path.Combine(baseDir, "TestData"), "MarketSample*.html");
+
+            Assert.That(sampleFiles.Length, Is.GreaterThan(0), "No MarketSample files found");
+
+            // Collect all blueprints across all files
+            var allBlueprints = new List<OE2EmpireTracker.Models.Blueprint>();
+            foreach (var file in sampleFiles.OrderBy(f => f))
+            {
+                string html = System.IO.File.ReadAllText(file);
+                var bps = _scanner.ProcessMarketHtml(html);
+                string fileName = System.IO.Path.GetFileName(file);
+                TestContext.WriteLine($"{fileName}: {bps.Count} blueprints");
+                allBlueprints.AddRange(bps);
+            }
+
+            TestContext.WriteLine($"\nTotal blueprints across all files: {allBlueprints.Count}");
+
+            // Group by icon position to discover new types
+            var iconGroups = new Dictionary<string, List<OE2EmpireTracker.Models.Blueprint>>();
+            foreach (var bp in allBlueprints)
+            {
+                string iconPos;
+                bp.Properties.getString("_IconPosition", null, out iconPos);
+                string key = iconPos ?? "no-icon";
+                if (!iconGroups.ContainsKey(key))
+                    iconGroups[key] = new List<OE2EmpireTracker.Models.Blueprint>();
+                iconGroups[key].Add(bp);
+            }
+
+            TestContext.WriteLine("\n=== Icon positions and resolved types ===");
+            foreach (var group in iconGroups.OrderBy(g => g.Key))
+            {
+                var first = group.Value[0];
+                string resolvedType = first.BluePrintType ?? "UNMAPPED";
+                TestContext.WriteLine($"\nIcon: {group.Key} -> {resolvedType} ({group.Value.Count} blueprints)");
+                foreach (var bp in group.Value.Take(3))
+                {
+                    TestContext.WriteLine($"  {bp.Name} (Ev{bp.Evolution}, Class {bp.Class})");
+                }
+                if (group.Value.Count > 3)
+                    TestContext.WriteLine($"  ... and {group.Value.Count - 3} more");
+
+                // Dump all unique property keys for this icon group
+                var allProps = new SortedSet<string>();
+                foreach (var bp in group.Value)
+                {
+                    foreach (var key in bp.Properties.Properties.Keys)
+                    {
+                        if (!key.StartsWith("_")) allProps.Add(key);
+                    }
+                }
+                if (allProps.Count > 0)
+                {
+                    TestContext.WriteLine($"  Properties ({allProps.Count}): {string.Join(", ", allProps)}");
+                }
+            }
+        }
     }
 }
