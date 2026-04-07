@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using OE2EmpireTracker.Tests;
 
 namespace OE2EmpireTracker.Tests.Forms
 {
@@ -29,7 +30,7 @@ namespace OE2EmpireTracker.Tests.Forms
 
             EmpireContext.Reset();
             PlayerContext.Reset();
-            EmpireContext.FilePath = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\OE2EmpireTracker\BaselineData.json"));
+            TestHelper.SetEmpireFilePath();
         }
 
         [TearDown]
@@ -212,7 +213,7 @@ namespace OE2EmpireTracker.Tests.Forms
             string json = JsonConvert.SerializeObject(root, Formatting.Indented);
             File.WriteAllText(filePath, json);
             PlayerContext.FilePath = filePath;
-            EmpireContext.FilePath = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\OE2EmpireTracker\BaselineData.json"));
+            TestHelper.SetEmpireFilePath();
             // EmpireContext.getInstance() also creates PlayerContext
             EmpireContext.getInstance();
             return filePath;
@@ -446,7 +447,7 @@ namespace OE2EmpireTracker.Tests.Forms
                 // Act: simulate auto-open logic — set FilePath and load
                 EmpireContext.Reset();
                 PlayerContext.FilePath = filePath;
-                EmpireContext.FilePath = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\OE2EmpireTracker\BaselineData.json"));
+                TestHelper.SetEmpireFilePath();
                 EmpireContext.getInstance();
                 var pc = PlayerContext.getInstance();
 

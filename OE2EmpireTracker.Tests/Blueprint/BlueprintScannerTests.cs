@@ -5,6 +5,7 @@ using OE2EmpireTracker.Forms.Blueprint;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using OE2EmpireTracker.Tests;
 
 namespace OE2EmpireTracker.Tests.Blueprint
 {
@@ -16,9 +17,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [OneTimeSetUp]
         public void FixtureSetUp()
         {
-            string baseDir = System.AppDomain.CurrentDomain.BaseDirectory;
-            string baselineDataPath = System.IO.Path.Combine(baseDir, @"..\..\..\OE2EmpireTracker\BaselineData.json");
-            OE2EmpireTracker.Services.EmpireContext.FilePath = System.IO.Path.GetFullPath(baselineDataPath);
+            TestHelper.SetEmpireFilePath();
             OE2EmpireTracker.Services.EmpireContext.Reset();
         }
 

@@ -252,8 +252,15 @@
     <Compile Include="Controls\ValidatedTextBoxTests.cs" />
     <Compile Include="Forms\MainMenuOverhaulTests.cs" />
     <Compile Include="Parsers\ColonyParserTests.cs" />
+    <Compile Include="TestHelper.cs" />
     <None Include="app.config" />
     <None Include="packages.config" />
+    <Content Include="TestData\BaselineData.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\PlayerData.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="TestData\ZehVazoranIIM2.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -5,6 +5,7 @@ using OE2EmpireTracker.ViewModels;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using OE2EmpireTracker.Tests;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -12,12 +13,16 @@ namespace OE2EmpireTracker.Tests.Services
     public class DeliveryPlanViewModelTests
     {
         private PlayerContext playerContext;
+        private string _originalEmpireFilePath;
+        private string _originalPlayerFilePath;
 
         [SetUp]
         public void SetUp()
         {
+            _originalEmpireFilePath = EmpireContext.FilePath;
+            _originalPlayerFilePath = PlayerContext.FilePath;
             // Set file paths before any initialization
-            EmpireContext.FilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\OE2EmpireTracker\BaselineData.json");
+            TestHelper.SetEmpireFilePath();
             PlayerContext.FilePath = "nonexistent_player_data.json";
             // Reset singletons so they pick up the new file paths
             EmpireContext.Reset();
@@ -35,9 +40,9 @@ namespace OE2EmpireTracker.Tests.Services
         {
             PlayerContext.Reset();
             EmpireContext.Reset();
-            // Restore default file paths so other test fixtures aren't affected
-            EmpireContext.FilePath = @"..\..\BaselineData.json";
-            PlayerContext.FilePath = @"..\..\PlayerData.json";
+            // Restore original file paths so other test fixtures aren't affected
+            EmpireContext.FilePath = _originalEmpireFilePath;
+            PlayerContext.FilePath = _originalPlayerFilePath;
         }
 
         private DeliveryPlanViewModel CreateViewModel()

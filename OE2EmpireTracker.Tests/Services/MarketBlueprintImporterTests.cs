@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using OE2EmpireTracker.Tests;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -26,10 +27,6 @@ namespace OE2EmpireTracker.Tests.Services
         [OneTimeSetUp]
         public void FixtureSetUp()
         {
-            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            string baselineDataPath = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\OE2EmpireTracker\BaselineData.json"));
-            string playerDataPath = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\OE2EmpireTracker\PlayerData.json"));
-
             // Save original paths so we can restore them
             _originalEmpireFilePath = EmpireContext.FilePath;
             _originalPlayerFilePath = PlayerContext.FilePath;
@@ -37,8 +34,8 @@ namespace OE2EmpireTracker.Tests.Services
             // Create temp copies so writeContext() never corrupts the real data files
             _tempBaselineDataPath = Path.Combine(Path.GetTempPath(), "MarketImporterTest_BaselineData.json");
             _tempPlayerDataPath = Path.Combine(Path.GetTempPath(), "MarketImporterTest_PlayerData.json");
-            File.Copy(baselineDataPath, _tempBaselineDataPath, true);
-            File.Copy(playerDataPath, _tempPlayerDataPath, true);
+            File.Copy(TestHelper.TestDataPath("BaselineData.json"), _tempBaselineDataPath, true);
+            File.Copy(TestHelper.TestDataPath("PlayerData.json"), _tempPlayerDataPath, true);
 
             EmpireContext.FilePath = _tempBaselineDataPath;
             PlayerContext.FilePath = _tempPlayerDataPath;

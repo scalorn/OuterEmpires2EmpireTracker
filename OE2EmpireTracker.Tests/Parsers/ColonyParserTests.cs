@@ -6,6 +6,7 @@ using OE2EmpireTracker.Models;
 using System;
 using System.IO;
 using System.Linq;
+using OE2EmpireTracker.Tests;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {
@@ -25,9 +26,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             _originalPlayerFilePath = PlayerContext.FilePath;
 
             EmpireContext.Reset();
-            EmpireContext.FilePath = Path.GetFullPath(Path.Combine(
-                TestContext.CurrentContext.TestDirectory,
-                @"..\..\..\OE2EmpireTracker\BaselineData.json"));
+            TestHelper.SetEmpireFilePath();
             PlayerContext.FilePath = "nonexistent_player_data.json";
             _empireContext = EmpireContext.getInstance();
         }

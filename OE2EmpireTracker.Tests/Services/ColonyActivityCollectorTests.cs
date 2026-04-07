@@ -5,6 +5,7 @@ using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OE2EmpireTracker.Tests;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -25,9 +26,7 @@ namespace OE2EmpireTracker.Tests.Services
         [OneTimeSetUp]
         public void FixtureSetUp()
         {
-            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            string baselineDataPath = System.IO.Path.Combine(baseDir, @"..\..\..\OE2EmpireTracker\BaselineData.json");
-            EmpireContext.FilePath = System.IO.Path.GetFullPath(baselineDataPath);
+            TestHelper.SetEmpireFilePath();
             EmpireContext.Reset();
         }
 

@@ -5,6 +5,7 @@ using OE2EmpireTracker.Models;
 using OE2EmpireTracker.ViewModels;
 using System;
 using System.IO;
+using OE2EmpireTracker.Tests;
 
 namespace OE2EmpireTracker.Tests.Models
 {
@@ -457,7 +458,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void StagingResources_SetTrueViaViewModel_ReadBackTrue()
         {
             PlayerContext.Reset();
-            EmpireContext.FilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\..\OE2EmpireTracker\BaselineData.json");
+            TestHelper.SetEmpireFilePath();
             PlayerContext.FilePath = "nonexistent_player_data.json";
             var pc = PlayerContext.getInstance();
 
@@ -473,7 +474,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void StagingResources_ViewModelPassThrough()
         {
             PlayerContext.Reset();
-            EmpireContext.FilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\..\OE2EmpireTracker\BaselineData.json");
+            TestHelper.SetEmpireFilePath();
             PlayerContext.FilePath = "nonexistent_player_data.json";
             var pc = PlayerContext.getInstance();
 

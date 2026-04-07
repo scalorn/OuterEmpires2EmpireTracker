@@ -1,0 +1,2250 @@
+{
+    "ShipClass":  [
+                      {
+                          "Id":  0,
+                          "Name":  "None"
+                      },
+                      {
+                          "Id":  1,
+                          "Name":  "1"
+                      },
+                      {
+                          "Id":  2,
+                          "Name":  "2"
+                      },
+                      {
+                          "Id":  3,
+                          "Name":  "3"
+                      },
+                      {
+                          "Id":  4,
+                          "Name":  "4"
+                      },
+                      {
+                          "Id":  5,
+                          "Name":  "5"
+                      },
+                      {
+                          "Id":  6,
+                          "Name":  "6"
+                      },
+                      {
+                          "Id":  7,
+                          "Name":  "7"
+                      },
+                      {
+                          "Id":  8,
+                          "Name":  "8"
+                      }
+                  ],
+    "BlueprintType":  [
+                          {
+                              "Id":  "Beamer/Large",
+                              "Name":  "Beamer Large",
+                              "Universal":  false,
+                              "IconPosition":  "-100px -822px",
+                              "Properties":  [
+                                                 "Accuracy",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Energy Damage Rating",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Mass",
+                                                 "Max Effective Range",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Power Draw Per Second",
+                                                 "Rate of Fire",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "Beamer/Medium",
+                              "Name":  "Beamer Medium",
+                              "Universal":  false,
+                              "IconPosition":  "-62px -822px",
+                              "Properties":  [
+                                                 "Accuracy",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Energy Damage Rating",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Mass",
+                                                 "Max Effective Range",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Power Draw Per Second",
+                                                 "Rate of Fire",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "Beamer/Small",
+                              "Name":  "Beamer Small",
+                              "Universal":  false,
+                              "IconPosition":  "-24px -822px",
+                              "Properties":  [
+                                                 "Accuracy",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Energy Damage Rating",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Mass",
+                                                 "Max Effective Range",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Power Draw Per Second",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "AsteroidGrapple",
+                              "Name":  "Asteroid Grapple",
+                              "Universal":  false,
+                              "IconPosition":  "-214px -442px",
+                              "Properties":  [
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Mass",
+                                                 "Maximum Damage Repair",
+                                                 "Mining Cycle Time",
+                                                 "Mining Yield Increase",
+                                                 "Power Required",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "CargoPod",
+                              "Name":  "Cargo Pod",
+                              "Universal":  false,
+                              "IconPosition":  "-100px -442px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
+                                                 "Health",
+                                                 "Eng Capacity Required",
+                                                 "Cargo Capacity",
+                                                 "Wear and Tear Rate",
+                                                 "Maximum Damage Repair"
+                                             ],
+                              "ResearchableProperties":  [
+                                                             "Mass",
+                                                             "Cargo Volume Size",
+                                                             "Health",
+                                                             "Eng Capacity Required",
+                                                             "Cargo Capacity",
+                                                             "Wear and Tear Rate",
+                                                             "Maximum Damage Repair"
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "CoilGun/Large",
+                              "Name":  "Coil Gun Large",
+                              "Universal":  false,
+                              "IconPosition":  "-100px -746px",
+                              "Properties":  [
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "PDT Capable",
+                                                 "Power Draw Per Second",
+                                                 "Power Draw Per Shot",
+                                                 "Power Required",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "CoilGun/Medium",
+                              "Name":  "Coil Gun Medium",
+                              "Universal":  false,
+                              "IconPosition":  "-62px -746px",
+                              "Properties":  [
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "PDT Capable",
+                                                 "Power Draw Per Second",
+                                                 "Power Draw Per Shot",
+                                                 "Power Required",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "CoilGun/Small",
+                              "Name":  "Coil Gun Small",
+                              "Universal":  false,
+                              "IconPosition":  "-24px -746px",
+                              "Properties":  [
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "PDT Capable",
+                                                 "Power Draw Per Second",
+                                                 "Power Draw Per Shot",
+                                                 "Power Required",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "Munitions/CoilgunMunitions",
+                              "Name":  "Coilgun Munitions",
+                              "Universal":  true,
+                              "IconPosition":  "-176px -746px",
+                              "Properties":  [
+                                                 "Ammo Type",
+                                                 "Amount Manufactured",
+                                                 "Cargo Volume Size",
+                                                 "Kinetic Damage Rating",
+                                                 "Mass"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "Munition"
+                          },
+                          {
+                              "Id":  "Flatpacks/ColonyCommandCentre",
+                              "Name":  "Colony Command Centre Flatpack",
+                              "Universal":  true,
+                              "IconPosition":  "-24px -594px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Hull Manufacture Time Modification",
+                                                 "Can Research",
+                                                 "Unassigned Specialist Detail",
+                                                 "Max Per Colony",
+                                                 "White Collar Detail",
+                                                 "Manufacture Time Reduction",
+                                                 "Warehouse Capacity",
+                                                 "Mining Yield Modification",
+                                                 "Habitation Provision",
+                                                 "Refining Time Modification",
+                                                 "Research Time Modification",
+                                                 "Food Provision"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "Flatpack"
+                          },
+                          {
+                              "Id":  "Flatpacks/CommodityFactory",
+                              "Name":  "Commodity Factory Flatpack",
+                              "Universal":  true,
+                              "Properties":  [
+                                                 "Commodity Industry",
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Can Manufacture",
+                                                 "Max Per Colony",
+                                                 "Blue Collar Detail",
+                                                 "Unassigned White Collar Detail"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "Flatpack"
+                          },
+                          {
+                              "Id":  "Flatpacks/EntertainmentCentreFlatpack",
+                              "Name":  "Entertainment Centre Flatpack",
+                              "Universal":  true,
+                              "IconPosition":  "-480px -594px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Entertainment Provided",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Unassigned Specialist Detail",
+                                                 "Max Per Colony",
+                                                 "Blue Collar Detail"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "Flatpack"
+                          },
+                          {
+                              "Id":  "FuelTank",
+                              "Name":  "Fuel Tank",
+                              "Universal":  false,
+                              "IconPosition":  "-138px -442px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
+                                                 "Power Required",
+                                                 "Eng Capacity Required",
+                                                 "Consumable",
+                                                 "Maximum Damage Repair",
+                                                 "HP Percent Restored"
+                                             ],
+                              "ResearchableProperties":  [
+                                                             "Mass",
+                                                             "Cargo Volume Size",
+                                                             "Power Required",
+                                                             "Eng Capacity Required",
+                                                             "Maximum Damage Repair",
+                                                             "HP Percent Restored"
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "GERTYDroneRack",
+                              "Name":  "GERTY Drone Rack",
+                              "Universal":  false,
+                              "IconPosition":  "-366px -480px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
+                                                 "Health",
+                                                 "Eng Capacity Required",
+                                                 "Fuel Capacity",
+                                                 "Wear and Tear Rate",
+                                                 "Maximum Damage Repair"
+                                             ],
+                              "ResearchableProperties":  [
+                                                             "Mass",
+                                                             "Cargo Volume Size",
+                                                             "Health",
+                                                             "Eng Capacity Required",
+                                                             "Fuel Capacity",
+                                                             "Wear and Tear Rate",
+                                                             "Maximum Damage Repair"
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "Flatpacks/HabitationBlock",
+                              "Name":  "Habitation Block Flatpack",
+                              "Universal":  true,
+                              "IconPosition":  "-100px -594px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Unassigned Specialist Detail",
+                                                 "Max Per Colony",
+                                                 "Habitation Provision"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "Flatpack"
+                          },
+                          {
+                              "Id":  "Hull",
+                              "Name":  "Hull",
+                              "Universal":  false,
+                              "IconPosition":  "-328px -62px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Health",
+                                                 "Eng Capacity Required",
+                                                 "Cargo Capacity",
+                                                 "Fuel Capacity",
+                                                 "Large Weapon Mounts",
+                                                 "Medium Weapon Mounts",
+                                                 "Small Weapon Mounts",
+                                                 "Wear and Tear Rate",
+                                                 "Maximum Damage Repair",
+                                                 "Energy Defence",
+                                                 "Kinetic Damage Defence",
+                                                 "Missile Damage Defence",
+                                                 "Crew Supported"
+                                             ],
+                              "ResearchableProperties":  [
+                                                             "Mass",
+                                                             "Cargo Volume Size",
+                                                             "Health",
+                                                             "Eng Capacity Required",
+                                                             "Cargo Capacity",
+                                                             "Fuel Capacity",
+                                                             "Wear and Tear Rate",
+                                                             "Maximum Damage Repair",
+                                                             "Energy Defence",
+                                                             "Kinetic Damage Defence",
+                                                             "Missile Damage Defence"
+                                                         ],
+                              "OutputItemType":  "ShipHull"
+                          },
+                          {
+                              "Id":  "HullSealantInjectionUnit",
+                              "Name":  "Hull Sealant Injection Unit",
+                              "Universal":  false,
+                              "IconPosition":  "-214px -480px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
+                                                 "Power Required",
+                                                 "Eng Capacity Required",
+                                                 "Consumable",
+                                                 "Maximum Damage Repair",
+                                                 "Hull HP Percent Restored",
+                                                 "Cooldown Time"
+                                             ],
+                              "ResearchableProperties":  [
+                                                             "Mass",
+                                                             "Cargo Volume Size",
+                                                             "Power Required",
+                                                             "Eng Capacity Required",
+                                                             "Maximum Damage Repair",
+                                                             "Hull HP Percent Restored",
+                                                             "Cooldown Time"
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "HullReinforcement",
+                              "Name":  "HullReinforcement",
+                              "Universal":  false,
+                              "IconPosition":  "-480px -62px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
+                                                 "Power Required",
+                                                 "Health",
+                                                 "Eng Capacity Required",
+                                                 "Wear and Tear Rate",
+                                                 "Maximum Damage Repair"
+                                             ],
+                              "ResearchableProperties":  [
+                                                             "Mass",
+                                                             "Cargo Volume Size",
+                                                             "Health",
+                                                             "Eng Capacity Required",
+                                                             "Cargo Capacity",
+                                                             "Wear and Tear Rate",
+                                                             "Maximum Damage Repair"
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "HullPlating",
+                              "Name":  "Hull Plating",
+                              "Universal":  false,
+                              "IconPosition":  "-518px -62px",
+                              "Properties":  [
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Energy Defence Rating",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Kinetic Defence Rating",
+                                                 "Mass",
+                                                 "Maximum Damage Repair",
+                                                 "Missile Defence Rating",
+                                                 "Power Required",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "Flatpacks/HydroponicsBay",
+                              "Name":  "Hydroponics Bay Flatpack",
+                              "Universal":  true,
+                              "IconPosition":  "-138px -594px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Unassigned Specialist Detail",
+                                                 "Max Per Colony",
+                                                 "Blue Collar Detail",
+                                                 "Food Provision"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "Flatpack"
+                          },
+                          {
+                              "Id":  "JumpDrive",
+                              "Name":  "Jump Drive",
+                              "Universal":  false,
+                              "IconPosition":  "-24px -442px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
+                                                 "Power Required",
+                                                 "Health",
+                                                 "Eng Capacity Required",
+                                                 "Wear and Tear Rate",
+                                                 "Maximum Damage Repair",
+                                                 "Fuel Used",
+                                                 "Max Jump Distance"
+                                             ],
+                              "ResearchableProperties":  [
+                                                             "Mass",
+                                                             "Cargo Volume Size",
+                                                             "Power Required",
+                                                             "Health",
+                                                             "Eng Capacity Required",
+                                                             "Wear and Tear Rate",
+                                                             "Maximum Damage Repair",
+                                                             "Fuel Used",
+                                                             "Max Jump Distance"
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "MainDrive",
+                              "Name":  "Main Drive",
+                              "Universal":  false,
+                              "IconPosition":  "-252px -62px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
+                                                 "Power Required",
+                                                 "Health",
+                                                 "Eng Capacity Required",
+                                                 "Wear and Tear Rate",
+                                                 "Maximum Damage Repair",
+                                                 "Fuel Used",
+                                                 "Max Jump Distance"
+                                             ],
+                              "ResearchableProperties":  [
+                                                             "Mass",
+                                                             "Cargo Volume Size",
+                                                             "Power Required",
+                                                             "Health",
+                                                             "Eng Capacity Required",
+                                                             "Wear and Tear Rate",
+                                                             "Maximum Damage Repair",
+                                                             "Fuel Used",
+                                                             "Max Jump Distance"
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "Flatpacks/Manufactory",
+                              "Name":  "Manufactory Flatpack",
+                              "Universal":  true,
+                              "IconPosition":  "-366px -594px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Unassigned Specialist Detail",
+                                                 "Max Per Colony",
+                                                 "Blue Collar Detail",
+                                                 "Unassigned White Collar Detail",
+                                                 "Manufacture Slot"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "Flatpack"
+                          },
+                          {
+                              "Id":  "Flatpacks/MiningRig",
+                              "Name":  "Mining Rig Flatpack",
+                              "Universal":  true,
+                              "IconPosition":  "-290px -594px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Extraction Efficiency",
+                                                 "Unassigned Specialist Detail",
+                                                 "Max Per Colony",
+                                                 "Blue Collar Detail",
+                                                 "Unassigned White Collar Detail",
+                                                 "Mining Slot"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "Flatpack"
+                          },
+                          {
+                              "Id":  "MiningLaser",
+                              "Name":  "Mining Laser",
+                              "Universal":  false,
+                              "IconPosition":  "-252px -442px",
+                              "Properties":  [
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Mass",
+                                                 "Maximum Damage Repair",
+                                                 "Mining Capable",
+                                                 "Mining Cycle Time",
+                                                 "Mining Yield",
+                                                 "Power Draw Per Second",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "MissileLauncherLarge",
+                              "Name":  "Missile Launcher Large",
+                              "Universal":  false,
+                              "IconPosition":  "-100px -860px",
+                              "Properties":  [
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Launch Velocity",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Min Range",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "MissileLauncher/Medium",
+                              "Name":  "Missile Launcher Medium",
+                              "Universal":  false,
+                              "IconPosition":  "-62px -860px",
+                              "Properties":  [
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Launch Velocity",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Min Range",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "MissileLauncher/Small",
+                              "Name":  "Missile Launcher Small",
+                              "Universal":  false,
+                              "Properties":  [
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Launch Velocity",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Min Range",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "Munitions/MissileMunitions",
+                              "Name":  "Missile Munitions",
+                              "Universal":  true,
+                              "IconPosition":  "-252px -860px",
+                              "Properties":  [
+                                                 "Acceleration Rate",
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Amount Manufactured",
+                                                 "Cargo Volume Size",
+                                                 "Energy Damage Rating",
+                                                 "Mass",
+                                                 "Missile Damage Rating"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "Munition"
+                          },
+                          {
+                              "Id":  "NavComp",
+                              "Name":  "Nav Comp",
+                              "Universal":  false,
+                              "IconPosition":  "-480px -480px",
+                              "Properties":  [
+
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "Railgun/Large",
+                              "Name":  "Railgun Large",
+                              "Universal":  false,
+                              "IconPosition":  "-100px -784px",
+                              "Properties":  [
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "Railgun/Medium",
+                              "Name":  "Railgun Medium",
+                              "Universal":  false,
+                              "IconPosition":  "-62px -784px",
+                              "Properties":  [
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "Munitions/RailgunMunitions",
+                              "Name":  "Railgun Munitions",
+                              "Universal":  true,
+                              "IconPosition":  "-252px -784px",
+                              "Properties":  [
+                                                 "Ammo Type",
+                                                 "Amount Manufactured",
+                                                 "Cargo Volume Size",
+                                                 "Energy Damage Rating",
+                                                 "Kinetic Damage Rating",
+                                                 "Mass"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "Munition"
+                          },
+                          {
+                              "Id":  "Railgun/Small",
+                              "Name":  "Railgun Small",
+                              "Universal":  false,
+                              "IconPosition":  "-24px -784px",
+                              "Properties":  [
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "Reactor",
+                              "Name":  "Reactor",
+                              "Universal":  false,
+                              "IconPosition":  "-62px -62px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
+                                                 "Power Generated",
+                                                 "Health",
+                                                 "Eng Capacity Required",
+                                                 "Wear and Tear Rate",
+                                                 "Maximum Damage Repair",
+                                                 "Power Regeneration Rate"
+                                             ],
+                              "ResearchableProperties":  [
+                                                             "Mass",
+                                                             "Cargo Volume Size",
+                                                             "Power Generated",
+                                                             "Health",
+                                                             "Eng Capacity Required",
+                                                             "Wear and Tear Rate",
+                                                             "Maximum Damage Repair",
+                                                             "Power Regeneration Rate"
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "Flatpacks/ReactorCore",
+                              "Name":  "Reactor Core Flatpack",
+                              "Universal":  true,
+                              "IconPosition":  "-62px -594px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Provided",
+                                                 "Can Research",
+                                                 "Unassigned Specialist Detail",
+                                                 "Max Per Colony"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "Flatpack"
+                          },
+                          {
+                              "Id":  "Flatpacks/Refinery",
+                              "Name":  "Refinery Flatpack",
+                              "Universal":  true,
+                              "IconPosition":  "-328px -594px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Unassigned Specialist Detail",
+                                                 "Max Per Colony",
+                                                 "Refining Rate",
+                                                 "Blue Collar Detail",
+                                                 "Unassigned White Collar Detail",
+                                                 "Refining Slot"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "Flatpack"
+                          },
+                          {
+                              "Id":  "Flatpacks/RemoteOperationsArray",
+                              "Name":  "Remote Operations Array Flatpack",
+                              "Universal":  true,
+                              "IconPosition":  "-252px -594px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Remote Operations",
+                                                 "Can Research",
+                                                 "Max Per Colony",
+                                                 "Specialist Detail",
+                                                 "Unassigned White Collar Detail"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "Flatpack"
+                          },
+                          {
+                              "Id":  "Flatpacks/ResearchLaboratory",
+                              "Name":  "Research Laboratory Flatpack",
+                              "Universal":  true,
+                              "IconPosition":  "-442px -594px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Max Per Colony",
+                                                 "Research Time Modification",
+                                                 "Specialist Detail",
+                                                 "Research Slot"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "Flatpack"
+                          },
+                          {
+                              "Id":  "Shield",
+                              "Name":  "Shield",
+                              "Universal":  false,
+                              "IconPosition":  "-214px -252px",
+                              "Properties":  [
+
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "SystemObjectScanner",
+                              "Name":  "System Object Scanner",
+                              "Universal":  false,
+                              "IconPosition":  "-100px -252px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Max Allowed On Ship",
+                                                 "Power Required",
+                                                 "Health",
+                                                 "Eng Capacity Required",
+                                                 "Wear and Tear Rate",
+                                                 "Maximum Damage Repair",
+                                                 "Sensor Abundance Factor",
+                                                 "Purity Modifier",
+                                                 "Scan Level"
+                                             ],
+                              "ResearchableProperties":  [
+                                                             "Mass",
+                                                             "Cargo Volume Size",
+                                                             "Power Required",
+                                                             "Health",
+                                                             "Eng Capacity Required",
+                                                             "Wear and Tear Rate",
+                                                             "Maximum Damage Repair",
+                                                             "Sensor Abundance Factor",
+                                                             "Purity Modifier",
+                                                             "Scan Level"
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "Thruster",
+                              "Name":  "Thruster",
+                              "Universal":  false,
+                              "IconPosition":  "-290px -62px",
+                              "Properties":  [
+
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "TorpedoLauncher/Large",
+                              "Name":  "Torpedo Launcher Large",
+                              "Universal":  false,
+                              "IconPosition":  "-100px -898px",
+                              "Properties":  [
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Launch Velocity",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Min Range",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "TorpedoLauncher/Medium",
+                              "Name":  "Torpedo Launcher Medium",
+                              "Universal":  false,
+                              "IconPosition":  "-24px -898px",
+                              "Properties":  [
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Launch Velocity",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Min Range",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "TorpedoLauncher/Small",
+                              "Name":  "Torpedo Launcher Small",
+                              "Universal":  false,
+                              "IconPosition":  "-62px -898px",
+                              "Properties":  [
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Cargo Volume Size",
+                                                 "Class",
+                                                 "Eng Capacity Required",
+                                                 "Health",
+                                                 "Launch Velocity",
+                                                 "Magazine Size",
+                                                 "Mass",
+                                                 "Max Range",
+                                                 "Maximum Damage Repair",
+                                                 "Min Range",
+                                                 "Power Draw Per Shot",
+                                                 "Rate of Fire",
+                                                 "Reload Time",
+                                                 "Weapon Slot Size",
+                                                 "Wear and Tear Rate"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "Munitions/TorpedoMunitions",
+                              "Name":  "Torpedo Munitions",
+                              "Universal":  true,
+                              "IconPosition":  "-252px -898px",
+                              "Properties":  [
+                                                 "Acceleration Rate",
+                                                 "Accuracy",
+                                                 "Ammo Type",
+                                                 "Amount Manufactured",
+                                                 "Cargo Volume Size",
+                                                 "Mass",
+                                                 "Missile Damage Rating"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "Munition"
+                          },
+                          {
+                              "Id":  "UniversalCoupler",
+                              "Name":  "Universal Coupler",
+                              "Universal":  false,
+                              "IconPosition":  "-480px -442px",
+                              "Properties":  [
+
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "ShipPart"
+                          },
+                          {
+                              "Id":  "Flatpacks/Warehouse",
+                              "Name":  "Warehouse Flatpack",
+                              "Universal":  true,
+                              "IconPosition":  "-404px -594px",
+                              "Properties":  [
+                                                 "Manufacture Run Time",
+                                                 "Mass",
+                                                 "Cargo Volume Size",
+                                                 "Structural Integrity",
+                                                 "Power Required",
+                                                 "Can Research",
+                                                 "Max Per Colony",
+                                                 "Warehouse Capacity",
+                                                 "Blue Collar Detail",
+                                                 "Unassigned White Collar Detail"
+                                             ],
+                              "ResearchableProperties":  [
+
+                                                         ],
+                              "OutputItemType":  "Flatpack"
+                          }
+                      ],
+    "Blueprint":  [
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/ColonyCommandCentre",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  2590,
+                          "Properties":  {
+                                             "Manufacture Run Time":  "1h 0m",
+                                             "Mass":  "4000",
+                                             "Cargo Volume Size":  "1000",
+                                             "Structural Integrity":  "2500",
+                                             "Hull Manufacture Time Modification":  "0",
+                                             "Can Research":  "false",
+                                             "Unassigned Specialist Detail":  "1",
+                                             "Max Per Colony":  "1",
+                                             "White Collar Detail":  "1",
+                                             "Manufacture Time Reduction":  "0",
+                                             "Warehouse Capacity":  "10000",
+                                             "Mining Yield Modification":  "0",
+                                             "Habitation Provision":  "2",
+                                             "Refining Time Modification":  "0",
+                                             "Research Time Modification":  "0",
+                                             "Food Provision":  "2"
+                                         },
+                          "Resources":  {
+                                            "Alkali Metals":  "691",
+                                            "Acidic Inorganics":  "107",
+                                            "Heavy Post-Trans Metals":  "253",
+                                            "Strong Alkali Organics":  "142"
+                                        },
+                          "UUID":  "49f3198c-292f-4dd0-ab72-9c873b97f8a2",
+                          "ItemType":  "Survey",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Colony Command Centre",
+                          "NickName":  "",
+                          "Description":  "The heart of the colony and the absolute minimum structure needed to secure the claim on a colony site.",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0.0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/CommodityFactory",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Commodity Industry":  "Administration Block",
+                                             "Manufacture Run Time":  "0",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+
+                                        },
+                          "UUID":  "2bd75065-cbdf-4cc0-82d6-e7b9e2b3c201",
+                          "ItemType":  "Blueprint",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Administration Block",
+                          "NickName":  "",
+                          "Description":  "",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0.0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Hull",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  3,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Manufacture Run Time":  "13h",
+                                             "Mass":  "3200",
+                                             "Cargo Volume Size":  "2000",
+                                             "Health":  "",
+                                             "Eng Capacity Required":  "",
+                                             "Cargo Capacity":  "1100",
+                                             "Fuel Capacity":  "",
+                                             "Large Weapon Mounts":  "1%",
+                                             "Medium Weapon Mounts":  "80%",
+                                             "Small Weapon Mounts":  "",
+                                             "Wear and Tear Rate":  "",
+                                             "Maximum Damage Repair":  "",
+                                             "Energy Defence":  "",
+                                             "Kinetic Damage Defence":  "",
+                                             "Missile Damage Defence":  "",
+                                             "Crew Supported":  ""
+                                         },
+                          "Resources":  {
+                                            "Halogens":  "630",
+                                            "Non-Metallics":  "63",
+                                            "Heavy Post-Trans Metals":  "161"
+                                        },
+                          "UUID":  "5221424f-ed0b-4ce0-8c86-c64b597fc7b2",
+                          "ItemType":  "Blueprint",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Corvette",
+                          "NickName":  "",
+                          "Description":  "Ship Hull",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0.0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/EntertainmentCentreFlatpack",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  2613,
+                          "Properties":  {
+                                             "Manufacture Run Time":  "1h 0m",
+                                             "Mass":  "1000",
+                                             "Cargo Volume Size":  "1000",
+                                             "Entertainment Provided":  "10",
+                                             "Structural Integrity":  "75",
+                                             "Power Required":  "2",
+                                             "Can Research":  "false",
+                                             "Unassigned Specialist Detail":  "1",
+                                             "Max Per Colony":  "999",
+                                             "Blue Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+                                            "Heavy Noble Gases":  "647",
+                                            "Acidic Inorganics":  "123",
+                                            "Heavy Trans-Metals":  "95",
+                                            "Complex Non-Metallics":  "128",
+                                            "Heavy Alkali Metals":  "125"
+                                        },
+                          "UUID":  "2f15fe77-217e-47b4-8846-128d6e32f6a1",
+                          "ItemType":  "Survey",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Entertainment Centre",
+                          "NickName":  "",
+                          "Description":  "Where colonist go to relax and blow off some steam.",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0.0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/HabitationBlock",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  1564,
+                          "Properties":  {
+                                             "Manufacture Run Time":  "1h 0m",
+                                             "Mass":  "5000",
+                                             "Cargo Volume Size":  "1000",
+                                             "Structural Integrity":  "100",
+                                             "Power Required":  "1",
+                                             "Can Research":  "false",
+                                             "Unassigned Specialist Detail":  "1",
+                                             "Max Per Colony":  "999",
+                                             "Habitation Provision":  "4"
+                                         },
+                          "Resources":  {
+                                            "Alkali Metals":  "581",
+                                            "Alkali Inorganics":  "63",
+                                            "Heavy Post-Trans Metals":  "156"
+                                        },
+                          "UUID":  "d5ace54b-b731-4220-923f-076cdd6e9f65",
+                          "ItemType":  "Survey",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Habitation Block",
+                          "NickName":  "",
+                          "Description":  "Life support and habitation functions enough for 4 Details.",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0.0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/HydroponicsBay",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  1854,
+                          "Properties":  {
+                                             "Manufacture Run Time":  "1h 0m",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "800",
+                                             "Structural Integrity":  "100",
+                                             "Power Required":  "1",
+                                             "Can Research":  "false",
+                                             "Unassigned Specialist Detail":  "1",
+                                             "Max Per Colony":  "999",
+                                             "Blue Collar Detail":  "1",
+                                             "Food Provision":  "4"
+                                         },
+                          "Resources":  {
+                                            "Post-Trans Metals":  "497",
+                                            "Metallics":  "81",
+                                            "Heavy Trans-Metals":  "84",
+                                            "Complex Non-Metallics":  "82",
+                                            "Heavy Alkali Metals":  "60"
+                                        },
+                          "UUID":  "8e1740f0-1553-495d-b459-15fc5dbd2135",
+                          "ItemType":  "Survey",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Hydroponics Bay",
+                          "NickName":  "",
+                          "Description":  "Provide food enough for 4 Details.",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0.0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/Manufactory",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  2128,
+                          "Properties":  {
+                                             "Manufacture Run Time":  "1h 0m",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1500",
+                                             "Structural Integrity":  "250",
+                                             "Power Required":  "5",
+                                             "Can Research":  "false",
+                                             "Unassigned Specialist Detail":  "1",
+                                             "Max Per Colony":  "999",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1",
+                                             "Manufacture Slot":  "1"
+                                         },
+                          "Resources":  {
+                                            "Trans-Metals":  "567",
+                                            "Metallics":  "114",
+                                            "Heavy Post-Trans Metals":  "110",
+                                            "Strong Alkali Inorganics":  "104",
+                                            "Lanthanides":  "100"
+                                        },
+                          "UUID":  "ebbf669a-3987-4e4f-87db-a3236e6dd4ea",
+                          "ItemType":  "Survey",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Manufactory",
+                          "NickName":  "",
+                          "Description":  "Manufacturing plant.",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0.0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/MiningRig",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  1768,
+                          "Properties":  {
+                                             "Manufacture Run Time":  "1h 0m",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1200",
+                                             "Structural Integrity":  "150",
+                                             "Power Required":  "2",
+                                             "Can Research":  "false",
+                                             "Extraction Efficiency":  "100",
+                                             "Unassigned Specialist Detail":  "1",
+                                             "Max Per Colony":  "999",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1",
+                                             "Mining Slot":  "1"
+                                         },
+                          "Resources":  {
+                                            "Halogens":  "451",
+                                            "Alkali Inorganics":  "90",
+                                            "Heavy Post-Trans Metals":  "68",
+                                            "Strong Alkali Inorganics":  "72",
+                                            "Heavy Alkali Metals":  "90"
+                                        },
+                          "UUID":  "584616b3-b8c0-4ca5-98d2-66e39587ae57",
+                          "ItemType":  "Survey",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Mining Rig",
+                          "NickName":  "",
+                          "Description":  "Can mine one surveyed resource vein.",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0.0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "SystemObjectScanner",
+                          "Evolution":  0,
+                          "TechLevel":  "MilSpec",
+                          "Class":  7,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Manufacture Run Time":  "4h 0m",
+                                             "Mass":  "130",
+                                             "Cargo Volume Size":  "165",
+                                             "Max Allowed On Ship":  "1",
+                                             "Power Required":  "319",
+                                             "Health":  "910",
+                                             "Eng Capacity Required":  "490",
+                                             "Wear and Tear Rate":  "3",
+                                             "Maximum Damage Repair":  "80",
+                                             "Sensor Abundance Factor":  "3.375",
+                                             "Purity Modifier":  "30",
+                                             "Scan Level":  "90"
+                                         },
+                          "Resources":  {
+                                            "Alkaline Earth Metals":  "2151",
+                                            "Non-Metallics":  "424",
+                                            "Heavy Post-Trans Metals":  "711",
+                                            "Strong Alkali Organics":  "352"
+                                        },
+                          "UUID":  "b0633002-68ea-4c02-83cf-10292a9a420c",
+                          "ItemType":  "Survey",
+                          "BaseItemTypeID":  "",
+                          "Name":  "RAK-L MatScan",
+                          "NickName":  "",
+                          "Description":  "",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0.0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "SystemObjectScanner",
+                          "Evolution":  0,
+                          "TechLevel":  "MilSpec",
+                          "Class":  6,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Manufacture Run Time":  "4h 0m",
+                                             "Mass":  "110",
+                                             "Cargo Volume Size":  "145",
+                                             "Max Allowed On Ship":  "1",
+                                             "Power Required":  "182",
+                                             "Health":  "660",
+                                             "Eng Capacity Required":  "430",
+                                             "Wear and Tear Rate":  "3",
+                                             "Maximum Damage Repair":  "80",
+                                             "Sensor Abundance Factor":  "3",
+                                             "Purity Modifier":  "22.5",
+                                             "Scan Level":  "75"
+                                         },
+                          "Resources":  {
+                                            "Post-Trans Metals":  "1622",
+                                            "Non-Metallics":  "285",
+                                            "Heavy Post-Trans Metals":  "558",
+                                            "Strong Alkali Organics":  "284"
+                                        },
+                          "UUID":  "af056e10-ebbb-42b9-a49d-d567c938e525",
+                          "ItemType":  "Survey",
+                          "BaseItemTypeID":  "",
+                          "Name":  "RAK-LL MatScan",
+                          "NickName":  "",
+                          "Description":  "",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0.0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/ReactorCore",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  2944,
+                          "Properties":  {
+                                             "Manufacture Run Time":  "1h 0m",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1800",
+                                             "Structural Integrity":  "250",
+                                             "Power Provided":  "6",
+                                             "Can Research":  "false",
+                                             "Unassigned Specialist Detail":  "1",
+                                             "Max Per Colony":  "999"
+                                         },
+                          "Resources":  {
+                                            "Alkaline Earth Metals":  "703",
+                                            "Metallics":  "122",
+                                            "Heavy Trans-Metals":  "142",
+                                            "Complex Non-Metallics":  "136",
+                                            "Heavy Alkali Metals":  "145"
+                                        },
+                          "UUID":  "598818bd-bfed-40ce-a511-9d18d38ee650",
+                          "ItemType":  "Survey",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Reactor Core",
+                          "NickName":  "",
+                          "Description":  "Provides 6Mw of power per core.",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0.0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/Refinery",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  2347,
+                          "Properties":  {
+                                             "Manufacture Run Time":  "1h 0m",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "2000",
+                                             "Structural Integrity":  "150",
+                                             "Power Required":  "5",
+                                             "Can Research":  "false",
+                                             "Unassigned Specialist Detail":  "1",
+                                             "Max Per Colony":  "999",
+                                             "Refining Rate":  "25",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1",
+                                             "Refining Slot":  "1"
+                                         },
+                          "Resources":  {
+                                            "Halogens":  "550",
+                                            "Metallics":  "131",
+                                            "Heavy Trans-Metals":  "104",
+                                            "Alkali Organics":  "97",
+                                            "Heavy Alkali Metals":  "123"
+                                        },
+                          "UUID":  "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+                          "ItemType":  "Survey",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Refinery",
+                          "NickName":  "",
+                          "Description":  "Process raw materials into refined materials.",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0.0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/RemoteOperationsArray",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  2350,
+                          "Properties":  {
+                                             "Manufacture Run Time":  "1h 0m",
+                                             "Mass":  "5000",
+                                             "Cargo Volume Size":  "1200",
+                                             "Structural Integrity":  "50",
+                                             "Power Required":  "2",
+                                             "Remote Operations":  "1",
+                                             "Can Research":  "false",
+                                             "Max Per Colony":  "1",
+                                             "Specialist Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+                                            "Noble Gases":  "890",
+                                            "Non-Metallics":  "115",
+                                            "Metaloids":  "241"
+                                        },
+                          "UUID":  "ebaa1a5d-1b2a-49f4-ac46-639ffbde7511",
+                          "ItemType":  "Survey",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Remote Operations Array",
+                          "NickName":  "",
+                          "Description":  "Colony owner can control all colony operations remotely within a set range.",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0.0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/ResearchLaboratory",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  1628,
+                          "Properties":  {
+                                             "Manufacture Run Time":  "1h 0m",
+                                             "Mass":  "5000",
+                                             "Cargo Volume Size":  "1200",
+                                             "Structural Integrity":  "150",
+                                             "Power Required":  "4",
+                                             "Can Research":  "false",
+                                             "Max Per Colony":  "999",
+                                             "Research Time Modification":  "100",
+                                             "Specialist Detail":  "1",
+                                             "Research Slot":  "1"
+                                         },
+                          "Resources":  {
+                                            "Alkali Metals":  "485",
+                                            "Non-Metallics":  "65",
+                                            "Heavy Post-Trans Metals":  "152",
+                                            "Strong Alkali Organics":  "76"
+                                        },
+                          "UUID":  "a86cc2fa-478a-498c-8c17-166f9fa5c9d7",
+                          "ItemType":  "Survey",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Research Laboratory",
+                          "NickName":  "",
+                          "Description":  "Research \u0026 Development facility.",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0.0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/Warehouse",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  1745,
+                          "Properties":  {
+                                             "Manufacture Run Time":  "1h 0m",
+                                             "Mass":  "2500",
+                                             "Cargo Volume Size":  "1000",
+                                             "Structural Integrity":  "100",
+                                             "Power Required":  "2",
+                                             "Can Research":  "false",
+                                             "Max Per Colony":  "999",
+                                             "Warehouse Capacity":  "250000",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+                                            "Halogens":  "558",
+                                            "Non-Metallics":  "78",
+                                            "Metaloids":  "178"
+                                        },
+                          "UUID":  "513b5bc8-db3d-4808-8cc4-a93bc9f65354",
+                          "ItemType":  "Survey",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Warehouse",
+                          "NickName":  "",
+                          "Description":  "Colony mass storage facility.",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0.0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/CommodityFactory",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Commodity Industry":  "Agridome",
+                                             "Manufacture Run Time":  "0",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+
+                                        },
+                          "UUID":  "702e04fa-3512-4a52-ba87-fcb122781aea",
+                          "ItemType":  "Blueprint",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Agridome",
+                          "NickName":  "",
+                          "Description":  "",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/CommodityFactory",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Commodity Industry":  "Centre of Economics",
+                                             "Manufacture Run Time":  "0",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+
+                                        },
+                          "UUID":  "4683d750-80e3-4d67-b99a-83bc8b5b9724",
+                          "ItemType":  "Blueprint",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Centre of Economics",
+                          "NickName":  "",
+                          "Description":  "",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/CommodityFactory",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Commodity Industry":  "Engineering Block",
+                                             "Manufacture Run Time":  "0",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+
+                                        },
+                          "UUID":  "3e97f3fb-467d-4934-84e0-6862685e96cd",
+                          "ItemType":  "Blueprint",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Engineering Block",
+                          "NickName":  "",
+                          "Description":  "",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/CommodityFactory",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Commodity Industry":  "Healthcare Institute",
+                                             "Manufacture Run Time":  "0",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+
+                                        },
+                          "UUID":  "d3b0f50f-4414-454f-8b58-a32fefb32368",
+                          "ItemType":  "Blueprint",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Healthcare Institute",
+                          "NickName":  "",
+                          "Description":  "",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/CommodityFactory",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Commodity Industry":  "Institute of Defence",
+                                             "Manufacture Run Time":  "0",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+
+                                        },
+                          "UUID":  "d92342af-933c-4e9a-b833-4223ef82d458",
+                          "ItemType":  "Blueprint",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Institute of Defence",
+                          "NickName":  "",
+                          "Description":  "",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/CommodityFactory",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Commodity Industry":  "Leisure Industry Centre",
+                                             "Manufacture Run Time":  "0",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+
+                                        },
+                          "UUID":  "a7f288aa-e158-4423-b6af-7d46cc649d53",
+                          "ItemType":  "Blueprint",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Leisure Industry Centre",
+                          "NickName":  "",
+                          "Description":  "",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/CommodityFactory",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Commodity Industry":  "Logistics Centre",
+                                             "Manufacture Run Time":  "0",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+
+                                        },
+                          "UUID":  "0438fd51-73d0-41f7-8d51-6445219741e4",
+                          "ItemType":  "Blueprint",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Logistics Centre",
+                          "NickName":  "",
+                          "Description":  "",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/CommodityFactory",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Commodity Industry":  "Manufacturing Industry Centre",
+                                             "Manufacture Run Time":  "0",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+
+                                        },
+                          "UUID":  "65ea6374-e1bf-495a-b6d7-3114eac5fd8f",
+                          "ItemType":  "Blueprint",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Manufacturing Industry Centre",
+                          "NickName":  "",
+                          "Description":  "",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/CommodityFactory",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Commodity Industry":  "Mining Industry Centre",
+                                             "Manufacture Run Time":  "0",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+
+                                        },
+                          "UUID":  "365339ae-e024-419d-8f7c-f0943e8d9059",
+                          "ItemType":  "Blueprint",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Mining Industry Centre",
+                          "NickName":  "",
+                          "Description":  "",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/CommodityFactory",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Commodity Industry":  "Off-World Living Institute",
+                                             "Manufacture Run Time":  "0",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+
+                                        },
+                          "UUID":  "5fba9b4e-6cd9-400d-a723-c4df4bf35cc2",
+                          "ItemType":  "Blueprint",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Off-World Living Institute",
+                          "NickName":  "",
+                          "Description":  "",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/CommodityFactory",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Commodity Industry":  "Refining Industry Centre",
+                                             "Manufacture Run Time":  "0",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+
+                                        },
+                          "UUID":  "aee31143-b3a5-4a43-83c7-f4a050004ede",
+                          "ItemType":  "Blueprint",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Refining Industry Centre",
+                          "NickName":  "",
+                          "Description":  "",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/CommodityFactory",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Commodity Industry":  "Science Centre",
+                                             "Manufacture Run Time":  "0",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+
+                                        },
+                          "UUID":  "6a36906f-b87d-437c-8fc9-551c968764b6",
+                          "ItemType":  "Blueprint",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Science Centre",
+                          "NickName":  "",
+                          "Description":  "",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0
+                      },
+                      {
+                          "OwnerUUID":  "",
+                          "baseBlueprintUUID":  "",
+                          "BluePrintType":  "Flatpacks/CommodityFactory",
+                          "Evolution":  0,
+                          "TechLevel":  null,
+                          "Class":  0,
+                          "CopyCost":  0,
+                          "Properties":  {
+                                             "Commodity Industry":  "Technology Institute",
+                                             "Manufacture Run Time":  "0",
+                                             "Mass":  "1",
+                                             "Cargo Volume Size":  "1",
+                                             "Structural Integrity":  "1",
+                                             "Power Required":  "1",
+                                             "Can Research":  "False",
+                                             "Can Manufacture":  "False",
+                                             "Max Per Colony":  "1",
+                                             "Blue Collar Detail":  "1",
+                                             "Unassigned White Collar Detail":  "1"
+                                         },
+                          "Resources":  {
+
+                                        },
+                          "UUID":  "7475f2cc-36ed-4ff8-983f-0ae4c2311e46",
+                          "ItemType":  "Blueprint",
+                          "BaseItemTypeID":  "",
+                          "Name":  "Technology Institute",
+                          "NickName":  "",
+                          "Description":  "",
+                          "Quantity":  0,
+                          "ResourcePurity":  "",
+                          "Volume":  0
+                      }
+                  ],
+    "TechLevel":  [
+                      {
+                          "Name":  "Hi-Tech"
+                      },
+                      {
+                          "Name":  "Junker"
+                      },
+                      {
+                          "Name":  "MilSpec"
+                      },
+                      {
+                          "Name":  "Rugged"
+                      },
+                      {
+                          "Name":  "Service"
+                      },
+                      {
+                          "Name":  "Standard"
+                      }
+                  ]
+}

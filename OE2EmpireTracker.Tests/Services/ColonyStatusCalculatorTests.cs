@@ -3,6 +3,7 @@ using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
+using OE2EmpireTracker.Tests;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -12,11 +13,7 @@ namespace OE2EmpireTracker.Tests.Services
         [OneTimeSetUp]
         public void FixtureSetUp()
         {
-            // Point EmpireContext at the real BaselineData.json so the singleton can initialize.
-            // The test bin is at OE2EmpireTracker.Tests\bin\Debug, BaselineData.json is at OE2EmpireTracker\BaselineData.json
-            string baseDir = AppDomain.CurrentDomain.BaseDirectory; // ...\Tests\bin\Debug\
-            string baselineDataPath = System.IO.Path.Combine(baseDir, @"..\..\..\OE2EmpireTracker\BaselineData.json");
-            EmpireContext.FilePath = System.IO.Path.GetFullPath(baselineDataPath);
+            TestHelper.SetEmpireFilePath();
             EmpireContext.Reset();
         }
         // -----------------------------------------------------------------------
