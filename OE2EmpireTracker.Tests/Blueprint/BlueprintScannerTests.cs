@@ -295,5 +295,227 @@ namespace OE2EmpireTracker.Tests.Blueprint
             Assert.That(bp.Resources["Heavy Alkaline Earth Metals"], Is.EqualTo("2440"));
             Assert.That(bp.Resources["S1. Translivermoric Exotics"], Is.EqualTo("699"));
         }
+
+        // -----------------------------------------------------------------------
+        // Corvette Ship Hull — statistics page
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void ProcessHtml_Corvette_Statistics_ParsesNameAndMetadata()
+        {
+            string html = LoadTestData("BlueprintCorvetteStatistics.html");
+            var bp = new OE2EmpireTracker.Models.Blueprint();
+            _scanner.ProcessHtml(bp, html);
+
+            Assert.That(bp.Name, Is.EqualTo("Corvette"));
+            Assert.That(bp.Evolution, Is.EqualTo(0));
+            Assert.That(bp.Description, Is.EqualTo("Ship Hull"));
+        }
+
+        [Test]
+        public void ProcessHtml_Corvette_Statistics_ParsesClassAndManufactureTime()
+        {
+            string html = LoadTestData("BlueprintCorvetteStatistics.html");
+            var bp = new OE2EmpireTracker.Models.Blueprint();
+            _scanner.ProcessHtml(bp, html);
+
+            Assert.That(bp.Class, Is.EqualTo(3));
+
+            string manuTime;
+            bp.Properties.getString("ManufactureTime", null, out manuTime);
+            Assert.That(manuTime, Is.EqualTo("13h"));
+        }
+
+        [Test]
+        public void ProcessHtml_Corvette_Statistics_ParsesCoreProperties()
+        {
+            string html = LoadTestData("BlueprintCorvetteStatistics.html");
+            var bp = new OE2EmpireTracker.Models.Blueprint();
+            _scanner.ProcessHtml(bp, html);
+
+            string val;
+            bp.Properties.getString("Mass", null, out val);
+            Assert.That(val, Is.EqualTo("3200"));
+
+            bp.Properties.getString("CargoVolumeSize", null, out val);
+            Assert.That(val, Is.EqualTo("2000"));
+
+            bp.Properties.getString("Health", null, out val);
+            Assert.That(val, Is.EqualTo("1100"));
+
+            bp.Properties.getString("PowerRequired", null, out val);
+            Assert.That(val, Is.EqualTo("0"));
+
+            bp.Properties.getString("CargoCapacity", null, out val);
+            Assert.That(val, Is.EqualTo("450"));
+
+            bp.Properties.getString("FuelCapacity", null, out val);
+            Assert.That(val, Is.EqualTo("850"));
+        }
+
+        [Test]
+        public void ProcessHtml_Corvette_Statistics_ParsesShipHullProperties()
+        {
+            string html = LoadTestData("BlueprintCorvetteStatistics.html");
+            var bp = new OE2EmpireTracker.Models.Blueprint();
+            _scanner.ProcessHtml(bp, html);
+
+            string val;
+            bp.Properties.getString("LicenseLevel", null, out val);
+            Assert.That(val, Is.EqualTo("8"));
+
+            bp.Properties.getString("LicenseCareer", null, out val);
+            Assert.That(val, Is.EqualTo("Military"));
+
+            bp.Properties.getString("EngCapacityAvailable", null, out val);
+            Assert.That(val, Is.EqualTo("3000"));
+
+            bp.Properties.getString("MaxHullPlating", null, out val);
+            Assert.That(val, Is.EqualTo("1"));
+
+            bp.Properties.getString("MaxHullReinforcement", null, out val);
+            Assert.That(val, Is.EqualTo("1"));
+
+            bp.Properties.getString("MaxHullSealantUnits", null, out val);
+            Assert.That(val, Is.EqualTo("2"));
+
+            bp.Properties.getString("CrewSupported", null, out val);
+            Assert.That(val, Is.EqualTo("2"));
+        }
+
+        [Test]
+        public void ProcessHtml_Corvette_Statistics_ParsesWeaponMounts()
+        {
+            string html = LoadTestData("BlueprintCorvetteStatistics.html");
+            var bp = new OE2EmpireTracker.Models.Blueprint();
+            _scanner.ProcessHtml(bp, html);
+
+            string val;
+            bp.Properties.getString("LargeWeaponMounts", null, out val);
+            Assert.That(val, Is.EqualTo("1"));
+
+            bp.Properties.getString("MediumWeaponMounts", null, out val);
+            Assert.That(val, Is.EqualTo("1"));
+
+            bp.Properties.getString("SmallWeaponMounts", null, out val);
+            Assert.That(val, Is.EqualTo("0"));
+        }
+
+        [Test]
+        public void ProcessHtml_Corvette_Statistics_ParsesDefenceAndRepair()
+        {
+            string html = LoadTestData("BlueprintCorvetteStatistics.html");
+            var bp = new OE2EmpireTracker.Models.Blueprint();
+            _scanner.ProcessHtml(bp, html);
+
+            string val;
+            bp.Properties.getString("WearAndTearRate", null, out val);
+            Assert.That(val, Is.EqualTo("1"));
+
+            bp.Properties.getString("MaximumDamageRepairRate", null, out val);
+            Assert.That(val, Is.EqualTo("80"));
+
+            bp.Properties.getString("KineticDamageDefence", null, out val);
+            Assert.That(val, Is.EqualTo("16"));
+
+            bp.Properties.getString("MissileDamageDefence", null, out val);
+            Assert.That(val, Is.EqualTo("33"));
+        }
+
+        [Test]
+        public void ProcessHtml_Corvette_Statistics_ParsesComponentSlots()
+        {
+            string html = LoadTestData("BlueprintCorvetteStatistics.html");
+            var bp = new OE2EmpireTracker.Models.Blueprint();
+            _scanner.ProcessHtml(bp, html);
+
+            string val;
+            bp.Properties.getString("ReactorSlots", null, out val);
+            Assert.That(val, Is.EqualTo("1"));
+
+            bp.Properties.getString("MainDriveSlots", null, out val);
+            Assert.That(val, Is.EqualTo("1"));
+
+            bp.Properties.getString("ThrusterSlots", null, out val);
+            Assert.That(val, Is.EqualTo("1"));
+
+            bp.Properties.getString("JumpDriveSlots", null, out val);
+            Assert.That(val, Is.EqualTo("1"));
+
+            bp.Properties.getString("NavCompSlots", null, out val);
+            Assert.That(val, Is.EqualTo("1"));
+
+            bp.Properties.getString("ScannerSlots", null, out val);
+            Assert.That(val, Is.EqualTo("1"));
+
+            bp.Properties.getString("ShieldSlots", null, out val);
+            Assert.That(val, Is.EqualTo("1"));
+
+            bp.Properties.getString("CargoPodSlots", null, out val);
+            Assert.That(val, Is.EqualTo("3"));
+
+            bp.Properties.getString("FuelTankSlots", null, out val);
+            Assert.That(val, Is.EqualTo("1"));
+
+            bp.Properties.getString("CouplerSlots", null, out val);
+            Assert.That(val, Is.EqualTo("1"));
+
+            bp.Properties.getString("GERTYSlots", null, out val);
+            Assert.That(val, Is.EqualTo("3"));
+        }
+
+        [Test]
+        public void ProcessHtml_Corvette_Statistics_NoResources()
+        {
+            string html = LoadTestData("BlueprintCorvetteStatistics.html");
+            var bp = new OE2EmpireTracker.Models.Blueprint();
+            _scanner.ProcessHtml(bp, html);
+
+            Assert.That(bp.Resources.Count, Is.EqualTo(0),
+                "Statistics page should not contain resources");
+        }
+
+        // -----------------------------------------------------------------------
+        // Corvette Ship Hull — resources page
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void ProcessHtml_Corvette_Resources_ParsesResources()
+        {
+            string html = LoadTestData("BlueprintCorvetteResources.html");
+            var bp = new OE2EmpireTracker.Models.Blueprint();
+            _scanner.ProcessHtml(bp, html);
+
+            Assert.That(bp.Resources["Halogens"], Is.EqualTo("630"));
+            Assert.That(bp.Resources["Non-Metallics"], Is.EqualTo("63"));
+            Assert.That(bp.Resources["Heavy Post-Trans Metals"], Is.EqualTo("161"));
+        }
+
+        [Test]
+        public void ProcessHtml_Corvette_FullImport_BothPages()
+        {
+            string statsHtml = LoadTestData("BlueprintCorvetteStatistics.html");
+            string resourcesHtml = LoadTestData("BlueprintCorvetteResources.html");
+
+            var bp = new OE2EmpireTracker.Models.Blueprint();
+            _scanner.ProcessHtml(bp, statsHtml);
+            _scanner.ProcessHtml(bp, resourcesHtml);
+
+            // Metadata from statistics page
+            Assert.That(bp.Name, Is.EqualTo("Corvette"));
+            Assert.That(bp.Class, Is.EqualTo(3));
+            Assert.That(bp.Description, Is.EqualTo("Ship Hull"));
+
+            // Properties from statistics page
+            string manuTime;
+            bp.Properties.getString("ManufactureTime", null, out manuTime);
+            Assert.That(manuTime, Is.EqualTo("13h"));
+
+            // Resources from resources page
+            Assert.That(bp.Resources.Count, Is.EqualTo(3));
+            Assert.That(bp.Resources["Halogens"], Is.EqualTo("630"));
+            Assert.That(bp.Resources["Non-Metallics"], Is.EqualTo("63"));
+            Assert.That(bp.Resources["Heavy Post-Trans Metals"], Is.EqualTo("161"));
+        }
     }
 }

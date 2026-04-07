@@ -56,6 +56,24 @@ namespace OE2EmpireTracker.Constants
             { "UnassignedWhiteCollarDetail", PropertyValueType.Integer },
             { "WarehouseCapacity", PropertyValueType.Integer },
 
+            // Ship hull properties
+            { "EngCapacityAvailable", PropertyValueType.Integer },
+            { "LicenseLevel", PropertyValueType.Integer },
+            { "MaxHullPlating", PropertyValueType.Integer },
+            { "MaxHullReinforcement", PropertyValueType.Integer },
+            { "MaxHullSealantUnits", PropertyValueType.Integer },
+            { "ReactorSlots", PropertyValueType.Integer },
+            { "MainDriveSlots", PropertyValueType.Integer },
+            { "ThrusterSlots", PropertyValueType.Integer },
+            { "JumpDriveSlots", PropertyValueType.Integer },
+            { "NavCompSlots", PropertyValueType.Integer },
+            { "ScannerSlots", PropertyValueType.Integer },
+            { "ShieldSlots", PropertyValueType.Integer },
+            { "CargoPodSlots", PropertyValueType.Integer },
+            { "FuelTankSlots", PropertyValueType.Integer },
+            { "CouplerSlots", PropertyValueType.Integer },
+            { "GERTYSlots", PropertyValueType.Integer },
+
             // Boolean properties (rendered as CheckBox in grid)
             { "CanManufacture", PropertyValueType.CheckBox },
             { "CanResearch", PropertyValueType.CheckBox },
