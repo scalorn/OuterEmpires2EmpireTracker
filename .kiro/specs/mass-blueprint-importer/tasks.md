@@ -74,14 +74,14 @@ Add a bulk market import capability to the Blueprint form. An "Import Market" bu
 
 - [x] 6. Checkpoint — Ensure idempotency tests pass
 
-- [ ] 7. Add Import Market button to FormBlueprint UI
+- [x] 7. Add Import Market button to FormBlueprint UI
   - [x] 7.1 Modify `FormBlueprint.Designer.cs` to add `cmdImportMarket` button
     - Declare `private System.Windows.Forms.Button cmdImportMarket;`
     - Add to `flpCommands.Controls` before `cmdImport`
     - Set `Text = "Import Market"`, appropriate size
     - _Requirements: 1_
 
-  - [-] 7.2 Modify `FormBlueprint.cs` to wire up Import Market click handler
+  - [x] 7.2 Modify `FormBlueprint.cs` to wire up Import Market click handler
     - Wire `cmdImportMarket.Click` handler
     - Read clipboard HTML, check for valid HTML content
     - Call `BlueprintScanner.ProcessMarketHtml()`
@@ -91,7 +91,7 @@ Add a bulk market import capability to the Blueprint form. An "Import Market" bu
     - Refresh form after import
     - _Requirements: 1, 10, 11_
 
-- [~] 8. Final checkpoint — Ensure full solution builds and all tests pass
+- [x] 8. Final checkpoint — Ensure full solution builds and all tests pass
 
 ## Notes
 
