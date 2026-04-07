@@ -34,6 +34,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             chkResearch.CheckedChanged += chkFilter_CheckedChanged;
             chkMining.CheckedChanged += chkFilter_CheckedChanged;
             chkRefining.CheckedChanged += chkFilter_CheckedChanged;
+            chkShowInactive.CheckedChanged += chkShowInactive_CheckedChanged;
 
             // Wire text filter
             txtFilter.TextChanged += txtFilter_TextChanged;
@@ -77,8 +78,13 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
 
         private void RefreshData()
         {
-            allRows = ColonyActivityCollector.CollectActivities(
-                playerContext.GetCurrentPlayerColonies(), playerContext);
+            var colonies = playerContext.GetCurrentPlayerColonies();
+
+            if (chkShowInactive.Checked)
+                allRows = ColonyInactivityCollector.CollectInactivities(colonies, playerContext);
+            else
+                allRows = ColonyActivityCollector.CollectActivities(colonies, playerContext);
+
             ApplyFiltersAndPopulate();
         }
 
@@ -92,7 +98,8 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             if (chkBuilding.Checked) types.Add(ActivityType.Building);
             if (chkManufacturing.Checked) types.Add(ActivityType.Manufacturing);
             if (chkCommodityManufacturing.Checked) types.Add(ActivityType.CommodityManufacturing);
-            if (chkCommodityRequest.Checked) types.Add(ActivityType.CommodityRequest);
+            if (!chkShowInactive.Checked && chkCommodityRequest.Checked)
+                types.Add(ActivityType.CommodityRequest);
             if (chkResearch.Checked) types.Add(ActivityType.Research);
             if (chkMining.Checked) types.Add(ActivityType.Mining);
             if (chkRefining.Checked) types.Add(ActivityType.Refining);
@@ -103,6 +110,12 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
         {
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvActivities.Rows.Clear();
+
+            bool inactivityMode = chkShowInactive.Checked;
+
+            // Hide CommodityRequest checkbox and CountDown column in Inactivity Mode
+            chkCommodityRequest.Visible = !inactivityMode;
+            colCountDown.Visible = !inactivityMode;
 
             var selectedTypes = GetSelectedActivityTypes();
             string textFilter = txtFilter.Text ?? "";
@@ -150,6 +163,12 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             ApplyFiltersAndPopulate();
         }
 
+        private void chkShowInactive_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            RefreshData();
+        }
+
         private void txtFilter_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
@@ -158,6 +177,8 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
 
         private void timerRefresh_Tick(object sender, EventArgs e)
         {
+            if (chkShowInactive.Checked) return;
+
             using var guard = new ProgrammaticUpdateGuard(this);
             foreach (DataGridViewRow gridRow in dgvActivities.Rows)
             {

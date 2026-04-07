@@ -606,5 +606,388 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(rows.Any(r => r.SystemName == "Sys1"), Is.True);
             Assert.That(rows.Any(r => r.SystemName == "Sys2"), Is.True);
         }
+
+        // -----------------------------------------------------------------------
+        // Helpers for underutilized refiner tests
+        // -----------------------------------------------------------------------
+
+        private PlayerProfile CreateOwnerProfile(string ownerUUID, int extractionFocusLevel = 0)
+        {
+            var pc = PlayerContext.getInstance();
+            var profile = new PlayerProfile
+            {
+                UUID = ownerUUID,
+                Name = "TestOwner_" + ownerUUID.Substring(0, 6)
+            };
+            if (extractionFocusLevel > 0)
+            {
+                profile.GetSkill(SkillName.ExtractionFocus).Level = extractionFocusLevel;
+            }
+            pc.playerProfileList.Add(profile);
+            return profile;
+        }
+
+        private Survey CreateSurvey(string resource, string purity, string amount)
+        {
+            var pc = PlayerContext.getInstance();
+            var survey = new Survey("TestSurvey_" + Guid.NewGuid().ToString().Substring(0, 6));
+            survey.UUID = Guid.NewGuid().ToString();
+            survey.Resources[resource] = new SurveyResource(resource, purity, amount);
+            pc.surveyList.Add(survey);
+            return survey;
+        }
+
+        private ColonyStructure MakeActiveMiner(string blueprintUUID, int gameSeq,
+            string surveyUUID, string surveyResource)
+        {
+            var structure = MakeStructure(blueprintUUID, gameSeq);
+            structure.ProcessCompletionTime = MakeActiveRepeatingTimer(3600);
+            structure.MiningSurvey = surveyUUID;
+            structure.MiningSurveyResource = surveyResource;
+            return structure;
+        }
+
+        private ColonyStructure MakeActiveRefiner(string blueprintUUID, int gameSeq,
+            string resource, string purity)
+        {
+            var structure = MakeStructure(blueprintUUID, gameSeq);
+            structure.ProcessCompletionTime = MakeActiveRepeatingTimer(3600);
+            structure.RefiningResource = resource;
+            structure.RefiningResourcePurity = purity;
+            return structure;
+        }
+
+        private static void AddWarehouseResource(Colony colony, string resource, string purity, int quantity)
+        {
+            var item = new Item(ItemType.ItemTypeEnum.Resource, resource);
+            item.UUID = Guid.NewGuid().ToString();
+            item.BaseItemTypeID = resource;
+            item.ResourcePurity = purity;
+            item.Quantity = quantity;
+            colony.Items.AddItem(item);
+        }
+
+        // -----------------------------------------------------------------------
+        // Property 4: Underutilized refiner detection
+        // Feature: activity-inactivity-mode, Property 4: Underutilized refiner detection
+        // **Validates: Requirements 5.1, 5.2, 5.3, 5.5**
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void Property4_UnderutilizedRefinerDetection()
+        {
+            // 1 miner (10/h Low) + 2 refiners (25/cycle each)
+            // Total consumption (50) > mining output (10), so second refiner (highest gameSeq) flagged
+            var pc = PlayerContext.getInstance();
+            string ownerUUID = Guid.NewGuid().ToString();
+            CreateOwnerProfile(ownerUUID);
+
+            var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "Miner");
+            var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "Refiner");
+
+            var survey = CreateSurvey("Iron", "Low", "10");
+
+            var colony = MakeColony("Sys", "Col");
+            colony.OwnerUUID = ownerUUID;
+
+            // Active miner mining Iron (Low) at 10/h
+            var miner = MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Iron");
+            colony.Structures.Add(miner);
+
+            // Two active refiners refining Iron (Low) at 25/cycle each
+            var refiner1 = MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low");
+            colony.Structures.Add(refiner1);
+            var refiner2 = MakeActiveRefiner(refinerBp.UUID, 3, "Iron", "Low");
+            colony.Structures.Add(refiner2);
+
+            var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+
+            // Only underutilized rows (idle structures are not expected since all are active)
+            var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
+            Assert.That(underutilized.Count, Is.EqualTo(2), "Expected 2 underutilized refiners");
+
+            // Refiner #2 (gameSeq=2, lowest priority after #1 doesn't exist) gets 10/25
+            // Refiner #3 (gameSeq=3, highest) gets 0/25
+            var refiner2Row = underutilized.FirstOrDefault(r => r.SourceName.Contains("#2"));
+            var refiner3Row = underutilized.FirstOrDefault(r => r.SourceName.Contains("#3"));
+
+            Assert.That(refiner3Row, Is.Not.Null, "Refiner #3 should be underutilized");
+            Assert.That(refiner3Row.ProcessDetails, Is.EqualTo("Underutilized: 0/25 per cycle"));
+            Assert.That(refiner3Row.Type, Is.EqualTo(ActivityType.Refining));
+
+            Assert.That(refiner2Row, Is.Not.Null, "Refiner #2 should be underutilized");
+            Assert.That(refiner2Row.ProcessDetails, Is.EqualTo("Underutilized: 10/25 per cycle"));
+        }
+
+        [Test]
+        public void UnderutilizedRefiner_FirstRefinerGetsPartialSupply()
+        {
+            // 1 miner (10/h Low) + 2 refiners (25/cycle each)
+            // Refiner #2 (gameSeq=2) gets 10, refiner #3 (gameSeq=3) gets 0
+            var pc = PlayerContext.getInstance();
+            string ownerUUID = Guid.NewGuid().ToString();
+            CreateOwnerProfile(ownerUUID);
+
+            var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "Miner");
+            var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "Refiner");
+            var survey = CreateSurvey("Iron", "Low", "10");
+
+            var colony = MakeColony();
+            colony.OwnerUUID = ownerUUID;
+
+            colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Iron"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 3, "Iron", "Low"));
+
+            var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+            var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
+
+            // Both refiners are underutilized: #2 gets 10/25, #3 gets 0/25
+            Assert.That(underutilized.Count, Is.EqualTo(2));
+
+            var refiner2Row = underutilized.FirstOrDefault(r => r.SourceName.Contains("#2"));
+            var refiner3Row = underutilized.FirstOrDefault(r => r.SourceName.Contains("#3"));
+
+            Assert.That(refiner2Row, Is.Not.Null, "Refiner #2 should be underutilized");
+            Assert.That(refiner3Row, Is.Not.Null, "Refiner #3 should be underutilized");
+            Assert.That(refiner2Row.ProcessDetails, Is.EqualTo("Underutilized: 10/25 per cycle"));
+            Assert.That(refiner3Row.ProcessDetails, Is.EqualTo("Underutilized: 0/25 per cycle"));
+        }
+
+        [Test]
+        public void UnderutilizedRefiner_SufficientMiningSupply_NoneFlag()
+        {
+            // 1 miner (60/h Low) + 2 refiners (25/cycle each) = 50 total consumption <= 60 output
+            var pc = PlayerContext.getInstance();
+            string ownerUUID = Guid.NewGuid().ToString();
+            CreateOwnerProfile(ownerUUID);
+
+            var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "Miner");
+            var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "Refiner");
+            var survey = CreateSurvey("Iron", "Low", "60");
+
+            var colony = MakeColony();
+            colony.OwnerUUID = ownerUUID;
+
+            colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Iron"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 3, "Iron", "Low"));
+
+            var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+            var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
+
+            Assert.That(underutilized.Count, Is.EqualTo(0), "No refiners should be underutilized");
+        }
+
+        [Test]
+        public void UnderutilizedRefiner_SyntheticRecipe_UsesRecipeConsumeRate()
+        {
+            // Synthetic refiner consuming Lanthanides (Refined) at 1250/cycle
+            var pc = PlayerContext.getInstance();
+            string ownerUUID = Guid.NewGuid().ToString();
+            CreateOwnerProfile(ownerUUID);
+
+            var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "Miner");
+            var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "SyntheticRefiner");
+
+            // Miner producing 100/h of Lanthanides (Refined) — way less than 1250
+            var survey = CreateSurvey("Lanthanides", GameConstants.PurityRefined, "100");
+
+            var colony = MakeColony();
+            colony.OwnerUUID = ownerUUID;
+
+            colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Lanthanides"));
+
+            // Synthetic refiner: Lanthanides + Refined triggers RefiningRecipes.FindByInput
+            var synRefiner = MakeActiveRefiner(refinerBp.UUID, 2, "Lanthanides", GameConstants.PurityRefined);
+            colony.Structures.Add(synRefiner);
+
+            var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+            var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
+
+            Assert.That(underutilized.Count, Is.EqualTo(1));
+            Assert.That(underutilized[0].ProcessDetails, Is.EqualTo("Underutilized: 100/1250 per cycle"));
+        }
+
+        [Test]
+        public void UnderutilizedRefiner_ExtractionFocusBonus_AppliedToMiningRate()
+        {
+            // Miner at 10/h with ExtractionFocus level 5 => 10 * 1.05 = 10.5
+            // 1 refiner at 25/cycle => underutilized with 10/25 (floor of 10.5)
+            var pc = PlayerContext.getInstance();
+            string ownerUUID = Guid.NewGuid().ToString();
+            CreateOwnerProfile(ownerUUID, extractionFocusLevel: 5);
+
+            var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "Miner");
+            var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "Refiner");
+            var survey = CreateSurvey("Iron", "Low", "10");
+
+            var colony = MakeColony();
+            colony.OwnerUUID = ownerUUID;
+
+            colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Iron"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
+
+            var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+            var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
+
+            // 10 * 1.05 = 10.5, floor = 10
+            Assert.That(underutilized.Count, Is.EqualTo(1));
+            Assert.That(underutilized[0].ProcessDetails, Is.EqualTo("Underutilized: 10/25 per cycle"));
+        }
+
+        [Test]
+        public void UnderutilizedRefiner_MultipleResources_HandledIndependently()
+        {
+            // Two resources: Iron (Low) and Copper (Low), each with 1 miner + 1 refiner
+            // Iron miner at 30/h, Copper miner at 10/h
+            // Iron refiner at 25/cycle (sufficient), Copper refiner at 25/cycle (underutilized)
+            var pc = PlayerContext.getInstance();
+            string ownerUUID = Guid.NewGuid().ToString();
+            CreateOwnerProfile(ownerUUID);
+
+            var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "Miner");
+            var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "Refiner");
+
+            var ironSurvey = CreateSurvey("Iron", "Low", "30");
+            var copperSurvey = CreateSurvey("Copper", "Low", "10");
+
+            var colony = MakeColony();
+            colony.OwnerUUID = ownerUUID;
+
+            // Iron: sufficient
+            colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, ironSurvey.UUID, "Iron"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
+
+            // Copper: underutilized
+            colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 3, copperSurvey.UUID, "Copper"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 4, "Copper", "Low"));
+
+            var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+            var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
+
+            Assert.That(underutilized.Count, Is.EqualTo(1), "Only Copper refiner should be underutilized");
+            Assert.That(underutilized[0].SourceName, Does.Contain("#4"));
+            Assert.That(underutilized[0].ProcessDetails, Is.EqualTo("Underutilized: 10/25 per cycle"));
+        }
+
+        // -----------------------------------------------------------------------
+        // Property 5: Warehouse stockpile exemption
+        // Feature: activity-inactivity-mode, Property 5: Warehouse stockpile exemption
+        // **Validates: Requirements 5.4**
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void Property5_WarehouseStockpileExemption()
+        {
+            // Same as Property4 test but with 25+ units in warehouse — no underutilized flag
+            var pc = PlayerContext.getInstance();
+            string ownerUUID = Guid.NewGuid().ToString();
+            CreateOwnerProfile(ownerUUID);
+
+            var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "Miner");
+            var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "Refiner");
+            var survey = CreateSurvey("Iron", "Low", "10");
+
+            var colony = MakeColony();
+            colony.OwnerUUID = ownerUUID;
+
+            colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Iron"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 3, "Iron", "Low"));
+
+            // Add 25 units of Iron (Low) to warehouse — enough for one cycle
+            AddWarehouseResource(colony, "Iron", "Low", 25);
+
+            var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+            var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
+
+            Assert.That(underutilized.Count, Is.EqualTo(0),
+                "No refiners should be underutilized when warehouse has sufficient stockpile");
+        }
+
+        [Test]
+        public void WarehouseExemption_InsufficientStockpile_StillFlagged()
+        {
+            // Warehouse has 24 units (less than 25 per cycle) — refiner still flagged
+            var pc = PlayerContext.getInstance();
+            string ownerUUID = Guid.NewGuid().ToString();
+            CreateOwnerProfile(ownerUUID);
+
+            var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "Miner");
+            var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "Refiner");
+            var survey = CreateSurvey("Iron", "Low", "10");
+
+            var colony = MakeColony();
+            colony.OwnerUUID = ownerUUID;
+
+            colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Iron"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 3, "Iron", "Low"));
+
+            // Only 24 units — not enough
+            AddWarehouseResource(colony, "Iron", "Low", 24);
+
+            var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+            var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
+
+            Assert.That(underutilized.Count, Is.GreaterThan(0),
+                "Refiners should still be flagged when warehouse has insufficient stockpile");
+        }
+
+        [Test]
+        public void WarehouseExemption_SyntheticRefiner_NeedsRecipeConsumeRate()
+        {
+            // Synthetic refiner needs 1250 units in warehouse to be exempt
+            var pc = PlayerContext.getInstance();
+            string ownerUUID = Guid.NewGuid().ToString();
+            CreateOwnerProfile(ownerUUID);
+
+            var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "Miner");
+            var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "SynRefiner");
+            var survey = CreateSurvey("Lanthanides", GameConstants.PurityRefined, "100");
+
+            var colony = MakeColony();
+            colony.OwnerUUID = ownerUUID;
+
+            colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Lanthanides"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Lanthanides", GameConstants.PurityRefined));
+
+            // Add 1250 units — exactly enough for synthetic recipe
+            AddWarehouseResource(colony, "Lanthanides", GameConstants.PurityRefined, 1250);
+
+            var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+            var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
+
+            Assert.That(underutilized.Count, Is.EqualTo(0),
+                "Synthetic refiner should be exempt with 1250 units in warehouse");
+        }
+
+        [Test]
+        public void WarehouseExemption_SyntheticRefiner_InsufficientStockpile()
+        {
+            // Synthetic refiner with only 1249 units — still flagged
+            var pc = PlayerContext.getInstance();
+            string ownerUUID = Guid.NewGuid().ToString();
+            CreateOwnerProfile(ownerUUID);
+
+            var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "Miner");
+            var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "SynRefiner");
+            var survey = CreateSurvey("Lanthanides", GameConstants.PurityRefined, "100");
+
+            var colony = MakeColony();
+            colony.OwnerUUID = ownerUUID;
+
+            colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Lanthanides"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Lanthanides", GameConstants.PurityRefined));
+
+            AddWarehouseResource(colony, "Lanthanides", GameConstants.PurityRefined, 1249);
+
+            var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+            var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
+
+            Assert.That(underutilized.Count, Is.EqualTo(1),
+                "Synthetic refiner should still be flagged with insufficient warehouse stockpile");
+        }
     }
 }
