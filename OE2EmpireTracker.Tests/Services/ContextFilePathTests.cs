@@ -7,6 +7,16 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class ContextFilePathTests
     {
+        [SetUp]
+        public void SetUp()
+        {
+            // Reset to defaults before each test so we're not affected by other fixtures
+            PlayerContext.Reset();
+            EmpireContext.Reset();
+            PlayerContext.FilePath = @"..\..\PlayerData.json";
+            EmpireContext.FilePath = @"..\..\BaselineData.json";
+        }
+
         [TearDown]
         public void TearDown()
         {

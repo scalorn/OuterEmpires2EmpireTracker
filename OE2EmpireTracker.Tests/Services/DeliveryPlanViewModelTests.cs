@@ -17,8 +17,10 @@ namespace OE2EmpireTracker.Tests.Services
         public void SetUp()
         {
             // Set file paths before any initialization
-            EmpireContext.FilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\..\OE2EmpireTracker\BaselineData.json");
+            EmpireContext.FilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\OE2EmpireTracker\BaselineData.json");
             PlayerContext.FilePath = "nonexistent_player_data.json";
+            // Reset singletons so they pick up the new file paths
+            EmpireContext.Reset();
             // Ensure EmpireContext singleton exists (ColonyStatusCalculator depends on it)
             // Must be done before PlayerContext.Reset() to avoid stale references
             var ec = EmpireContext.getInstance();
@@ -26,6 +28,16 @@ namespace OE2EmpireTracker.Tests.Services
             playerContext = PlayerContext.getInstance();
             // Update EmpireContext's PlayerContext reference
             EmpireContext.PlayerContext = playerContext;
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            PlayerContext.Reset();
+            EmpireContext.Reset();
+            // Restore default file paths so other test fixtures aren't affected
+            EmpireContext.FilePath = @"..\..\BaselineData.json";
+            PlayerContext.FilePath = @"..\..\PlayerData.json";
         }
 
         private DeliveryPlanViewModel CreateViewModel()

@@ -135,7 +135,7 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
     - Commit with descriptive message
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-- [-] 8. Batch 6 — Cleanup
+- [x] 8. Batch 6 — Cleanup
   - [x] 8.1 Delete empty legacy directories
     - Delete `OE2EmpireTracker/Baseline/` (should be empty after Batches 1b–4)
     - Delete `OE2EmpireTracker/Data/` (should be empty after Batch 1a)
@@ -148,14 +148,14 @@ Reorganize `Baseline/` and `Data/` into `Models/`, `Services/`, `Parsers/`, and 
     - Update `.kiro/steering/structure.md` to replace `Baseline/` and `Data/` with `Models/`, `Services/`, `Parsers/`, `Persistence/`
     - _Requirements: 5.1, 5.2_
 
-  - [-] 8.3 Verify Batch 6 — final build and test
+  - [x] 8.3 Verify Batch 6 — final build and test
     - Build: `msbuild OE2EmpireTracker.sln /p:Configuration=Debug`
     - Test: `vstest.console` against test DLL
     - Verify 746 tests pass
     - Commit with descriptive message
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-- [~] 9. Final checkpoint — Restructure complete
+- [x] 9. Final checkpoint — Restructure complete
   - Ensure all tests pass, ask the user if questions arise.
   - Verify: no `Baseline/` or `Data/` directories remain, no stale csproj paths, no stale using statements, all 746 tests pass.
   - _Requirements: 5.3, 7.1, 7.2, 7.3, 7.4, 7.5_

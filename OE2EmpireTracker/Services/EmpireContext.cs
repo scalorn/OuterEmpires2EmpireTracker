@@ -225,7 +225,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public Blueprint FindGlobalBlueprint(string id)
         {
-            return globalBlueprintList.FirstOrDefault(b => b.UUID == id);
+            return globalBlueprintList?.FirstOrDefault(b => b.UUID == id);
         }
 
     }

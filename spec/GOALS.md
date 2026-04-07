@@ -10,7 +10,7 @@
 
 ## Current Status
 
-729 total tests, all passing. All original Recommendations (1-18) resolved. MVVM complete across all forms. NLog logging throughout. 72 features completed.
+750 total tests, all passing. All original Recommendations (1-18) resolved. MVVM complete across all forms. NLog logging throughout. 78 features completed. Directory restructured: `Baseline/` and `Data/` replaced by `Models/`, `Services/`, `Parsers/`, `Persistence/`.
 
 ## Open Work
 
@@ -33,4 +33,3 @@ See [BACKLOG.md](BACKLOG.md) for the full list of open features with dependency 
 - Delivery Auto-Fill time horizon parameter (REQ-DEL-061)
 - Global Blueprint enhancements (visual indicator, permissions, separate file)
 - Player Transfer UI
-- Skill multipliers for timer processing (ProductionFocus, Builder, ResearchFocus)
