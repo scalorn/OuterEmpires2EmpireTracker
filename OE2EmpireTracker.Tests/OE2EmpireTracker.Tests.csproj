@@ -231,6 +231,7 @@
     <Compile Include="Services\MarketBlueprintImporterTests.cs" />
     <Compile Include="Models\UIPreferencesTests.cs" />
     <Compile Include="Parsers\SurveyParserTests.cs" />
+    <Compile Include="Parsers\SurveyParserIdempotencyTests.cs" />
     <Compile Include="Constants\BlueprintPropertyValidationTests.cs" />
     <Compile Include="Blueprint\BlueprintScannerTests.cs" />
     <Compile Include="Models\SurveyTests.cs" />
@@ -252,6 +253,7 @@
     <Compile Include="Controls\ValidatedTextBoxTests.cs" />
     <Compile Include="Forms\MainMenuOverhaulTests.cs" />
     <Compile Include="Parsers\ColonyParserTests.cs" />
+    <Compile Include="Parsers\ColonyParserIdempotencyTests.cs" />
     <Compile Include="TestHelper.cs" />
     <None Include="app.config" />
     <None Include="packages.config" />
