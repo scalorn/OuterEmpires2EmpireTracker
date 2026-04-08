@@ -941,5 +941,187 @@ namespace OE2EmpireTracker.Tests.Services
                 AssertNoDuplicateKeys(playerContext.blueprintList, $"player ({fileName})", 0);
             }
         }
+
+        // -----------------------------------------------------------------------
+        // Integration Tests — OreHopper and AllFlatpacks
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Validates: Requirements 7.1, 7.2
+        /// Parse MarketSampleOreHopper.html, verify at least one blueprint whose name
+        /// contains "Ore Hopper" and has populated properties.
+        /// Note: OreHopper shares the CargoPod icon position, so the scanner resolves
+        /// BluePrintType as "CargoPod". We verify by name rather than BluePrintType.
+        /// </summary>
+        [Test]
+        public void Integration_OreHopperParse_HasOreHopperBlueprintsWithProperties()
+        {
+            string html = LoadTestData("MarketSampleOreHopper.html");
+            var parsed = ParseHtml(html);
+
+            Assert.That(parsed.Count, Is.GreaterThan(0),
+                "Should parse at least one blueprint from OreHopper sample");
+
+            var oreHoppers = parsed
+                .Where(mb => mb.Blueprint.Name.IndexOf("Ore Hopper", StringComparison.OrdinalIgnoreCase) >= 0)
+                .ToList();
+
+            Assert.That(oreHoppers.Count, Is.GreaterThan(0),
+                "Should find at least one blueprint with 'Ore Hopper' in the name");
+
+            foreach (var mb in oreHoppers)
+            {
+                var bp = mb.Blueprint;
+                Assert.That(bp.Name, Is.Not.Null.And.Not.Empty,
+                    "OreHopper blueprint should have a name");
+                Assert.That(bp.Properties.Count, Is.GreaterThan(0),
+                    $"OreHopper blueprint '{bp.Name}' should have populated properties");
+
+                TestContext.WriteLine($"OreHopper: '{bp.Name}' — BluePrintType={bp.BluePrintType}, " +
+                    $"Props={bp.Properties.Count}, Resources={bp.Resources.Count}");
+            }
+        }
+
+        /// <summary>
+        /// Validates: Requirement 7.4
+        /// Import OreHopper blueprints twice, verify the second import updates
+        /// existing records without creating duplicates.
+        /// </summary>
+        [Test]
+        public void Integration_OreHopperImport2Times_NoDuplicates()
+        {
+            string html = LoadTestData("MarketSampleOreHopper.html");
+
+            // First import
+            var parsed = ParseHtml(html);
+            var result1 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+            int countAfterFirst = empireContext.globalBlueprintList.Count + playerContext.blueprintList.Count;
+
+            Assert.That(result1.CreatedCount, Is.GreaterThan(0),
+                "First OreHopper import should create blueprints");
+
+            // Second import — re-parse to get fresh objects
+            parsed = ParseHtml(html);
+            var result2 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+            int countAfterSecond = empireContext.globalBlueprintList.Count + playerContext.blueprintList.Count;
+
+            Assert.That(countAfterSecond, Is.EqualTo(countAfterFirst),
+                "OreHopper blueprint count should not change after second import");
+            Assert.That(result2.CreatedCount, Is.EqualTo(0),
+                "Second OreHopper import should create zero new blueprints");
+
+            // All non-skipped entries should be Updated
+            foreach (var entry in result2.Entries.Where(e => e.Action != ImportAction.Skipped))
+            {
+                Assert.That(entry.Action, Is.EqualTo(ImportAction.Updated),
+                    $"OreHopper blueprint '{entry.Name}' should be Updated on second import, was {entry.Action}");
+            }
+
+            // Verify no duplicate dedup keys
+            AssertNoDuplicateKeys(empireContext.globalBlueprintList, "global (OreHopper)", 0);
+            AssertNoDuplicateKeys(playerContext.blueprintList, "player (OreHopper)", 0);
+        }
+
+        /// <summary>
+        /// Validates: Requirement 7.3
+        /// Parse MarketSampleAllFlatpacks.html, verify commodity industry listings
+        /// resolve to per-industry BlueprintType entries (e.g. "Flatpacks/CommodityFactory/Agridome").
+        /// </summary>
+        [Test]
+        public void Integration_AllFlatpacksParse_CommodityIndustryResolvesToPerIndustryType()
+        {
+            string html = LoadTestData("MarketSampleAllFlatpacks.html");
+            var parsed = ParseHtml(html);
+
+            Assert.That(parsed.Count, Is.GreaterThan(0),
+                "Should parse at least one blueprint from AllFlatpacks sample");
+
+            // Known commodity industry display names that should appear as flatpack names
+            var knownIndustryNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "Administration Block Flatpack",
+                "Agridome Flatpack",
+                "Centre of Economics Flatpack",
+                "Engineering Block Flatpack",
+                "Healthcare Institute Flatpack",
+                "Institute of Defence Flatpack",
+                "Leisure Industry Centre Flatpack",
+                "Logistics Centre Flatpack",
+                "Manufacturing Industry Centre Flatpack",
+                "Mining Industry Centre Flatpack",
+                "Off-World Living Institute Flatpack",
+                "Refining Industry Centre Flatpack",
+                "Science Centre Flatpack",
+                "Technology Institute Flatpack"
+            };
+
+            // Find parsed blueprints whose name matches a commodity industry flatpack
+            var commodityIndustryBlueprints = parsed
+                .Where(mb => knownIndustryNames.Contains(mb.Blueprint.Name))
+                .ToList();
+
+            Assert.That(commodityIndustryBlueprints.Count, Is.GreaterThan(0),
+                "Should find at least one commodity industry flatpack in AllFlatpacks sample");
+
+            // Each commodity industry blueprint should have a per-industry BlueprintType
+            var foundTypes = new HashSet<string>();
+            foreach (var mb in commodityIndustryBlueprints)
+            {
+                var bp = mb.Blueprint;
+                Assert.That(bp.BluePrintType, Is.Not.Null.And.Not.Empty,
+                    $"Commodity industry blueprint '{bp.Name}' should have a resolved BluePrintType");
+                Assert.That(bp.BluePrintType, Does.StartWith("Flatpacks/CommodityFactory/"),
+                    $"Commodity industry blueprint '{bp.Name}' should have per-industry BluePrintType, got '{bp.BluePrintType}'");
+
+                foundTypes.Add(bp.BluePrintType);
+                TestContext.WriteLine($"Flatpack: '{bp.Name}' -> {bp.BluePrintType}");
+            }
+
+            // Should have resolved multiple distinct per-industry types
+            Assert.That(foundTypes.Count, Is.GreaterThan(1),
+                "Should resolve multiple distinct per-industry CommodityFactory types");
+
+            TestContext.WriteLine($"Found {foundTypes.Count} distinct per-industry CommodityFactory types");
+        }
+
+        /// <summary>
+        /// Validates: Requirement 7.4
+        /// Import AllFlatpacks blueprints twice, verify the second import updates
+        /// existing records without creating duplicates.
+        /// </summary>
+        [Test]
+        public void Integration_AllFlatpacksImport2Times_NoDuplicates()
+        {
+            string html = LoadTestData("MarketSampleAllFlatpacks.html");
+
+            // First import
+            var parsed = ParseHtml(html);
+            var result1 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+            int countAfterFirst = empireContext.globalBlueprintList.Count + playerContext.blueprintList.Count;
+
+            Assert.That(result1.CreatedCount, Is.GreaterThan(0),
+                "First AllFlatpacks import should create blueprints");
+
+            // Second import — re-parse to get fresh objects
+            parsed = ParseHtml(html);
+            var result2 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+            int countAfterSecond = empireContext.globalBlueprintList.Count + playerContext.blueprintList.Count;
+
+            Assert.That(countAfterSecond, Is.EqualTo(countAfterFirst),
+                "AllFlatpacks blueprint count should not change after second import");
+            Assert.That(result2.CreatedCount, Is.EqualTo(0),
+                "Second AllFlatpacks import should create zero new blueprints");
+
+            // All non-skipped entries should be Updated
+            foreach (var entry in result2.Entries.Where(e => e.Action != ImportAction.Skipped))
+            {
+                Assert.That(entry.Action, Is.EqualTo(ImportAction.Updated),
+                    $"AllFlatpacks blueprint '{entry.Name}' should be Updated on second import, was {entry.Action}");
+            }
+
+            // Verify no duplicate dedup keys
+            AssertNoDuplicateKeys(empireContext.globalBlueprintList, "global (AllFlatpacks)", 0);
+            AssertNoDuplicateKeys(playerContext.blueprintList, "player (AllFlatpacks)", 0);
+        }
     }
 }

@@ -75,27 +75,27 @@ Update the blueprint market import system to handle game sprite sheet changes. B
   - [x] 7.6 Wire up the main `ExtractAndUpdateIconPositions()` test method that calls all helpers in sequence: extract → ensure commodity entries → compare & update → write files → produce gap report.
     - _Requirements: 1.5, 8.1, 8.3_
 
-- [ ] 8. Run the IconPositionExtractor to populate BaselineData
-  - [-] 8.1 Execute the `ExtractAndUpdateIconPositions` test to populate all icon positions from the refreshed MarketSample HTML files. Verify the OreHopper entry is created with correct icon position and properties. Verify per-industry CommodityFactory entries get their icon positions filled in where samples exist.
+- [x] 8. Run the IconPositionExtractor to populate BaselineData
+  - [x] 8.1 Execute the `ExtractAndUpdateIconPositions` test to populate all icon positions from the refreshed MarketSample HTML files. Verify the OreHopper entry is created with correct icon position and properties. Verify per-industry CommodityFactory entries get their icon positions filled in where samples exist.
     - _Requirements: 1.6, 2.2, 2.3, 3.5, 4.1, 4.2, 4.3_
 
-- [~] 9. Checkpoint — build and run all tests
+- [x] 9. Checkpoint — build and run all tests
   - Ensure all tests pass after the extractor has updated BaselineData. Ask the user if questions arise.
 
 - [ ] 10. Add OreHopper constant and integration tests
-  - [~] 10.1 Verify `BlueprintTypes.OreHopper` constant matches the Id created by the extractor. Update if needed.
+  - [x] 10.1 Verify `BlueprintTypes.OreHopper` constant matches the Id created by the extractor. Update if needed.
     - _Requirements: 4.5_
 
-  - [~] 10.2 Add integration test: parse `MarketSampleOreHopper.html`, verify at least one blueprint with BluePrintType "OreHopper" and populated properties.
+  - [x] 10.2 Add integration test: parse `MarketSampleOreHopper.html`, verify at least one blueprint with BluePrintType "OreHopper" and populated properties.
     - _Requirements: 7.1, 7.2_
 
-  - [~] 10.3 Add integration test: import OreHopper twice, verify idempotency (second import updates, no duplicates).
+  - [x] 10.3 Add integration test: import OreHopper twice, verify idempotency (second import updates, no duplicates).
     - _Requirements: 7.4_
 
-  - [~] 10.4 Add integration test: parse `MarketSampleAllFlatpacks.html`, verify commodity industry listings resolve to per-industry BlueprintType entries.
+  - [x] 10.4 Add integration test: parse `MarketSampleAllFlatpacks.html`, verify commodity industry listings resolve to per-industry BlueprintType entries.
     - _Requirements: 7.3_
 
-  - [~] 10.5 Add integration test: import AllFlatpacks twice, verify idempotency.
+  - [x] 10.5 Add integration test: import AllFlatpacks twice, verify idempotency.
     - _Requirements: 7.4_
 
 - [ ] 11. Coverage gap report and backlog integration
