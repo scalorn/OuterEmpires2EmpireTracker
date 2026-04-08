@@ -867,9 +867,18 @@ namespace OE2EmpireTracker
 
             // Persist via viewModel
             viewModel.Save(chkGlobalBlueprint.Checked);
-            
+
+            // Preserve the blueprint type filter across the list refresh —
+            // PopulateForm (triggered by selection change) clears it otherwise.
+            string savedTypeFilter = txtFilterBlueprintType.Text;
+
             // Refresh list view
             PopulateListView(viewModel.GetFilteredBlueprints(txtBlueprintListFilter.Text));
+
+            // Restore the blueprint type filter
+            txtFilterBlueprintType.Text = savedTypeFilter;
+            UpdateBlueprintTypeListBase();
+            cmbBlueprintType.SelectedItem = empireContext.FindBlueprintType(viewModel.Data.BluePrintType);
             
             // Restore focus
             txtBlueprintListFilter.Focus();
