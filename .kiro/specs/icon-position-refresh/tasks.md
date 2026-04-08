@@ -42,14 +42,14 @@ Update the blueprint market import system to handle game sprite sheet changes. B
 - [x] 3. Checkpoint — build and run all existing tests
   - Ensure all existing tests pass after the CommodityFactory refactor. Ask the user if questions arise.
 
-- [ ] 4. Split CommodityFactory BaselineData entries
+- [x] 4. Split CommodityFactory BaselineData entries
   - [x] 4.1 In both `OE2EmpireTracker/BaselineData.json` and `OE2EmpireTracker.Tests/TestData/BaselineData.json`, replace the single `Flatpacks/CommodityFactory` BlueprintType entry with 14 per-industry entries using the `CommodityIndustryEnum` as the master list. Id pattern: `Flatpacks/CommodityFactory/{IndustryName}`. Each entry gets `Universal: true`, `OutputItemType: "Flatpack"`, and the Properties array from the old single entry as defaults. Set `IconPosition: null` for all (the extractor will fill these in later).
     - _Requirements: 5.2, 5.3, 5.4_
 
   - [x] 4.2 In both BaselineData.json files, update existing global blueprint records that have `BluePrintType: "Flatpacks/CommodityFactory"` to reference their per-industry type based on their `Commodity Industry` property value.
     - _Requirements: 5.4, 5.8_
 
-- [~] 5. Checkpoint — build and run all existing tests
+- [x] 5. Checkpoint — build and run all existing tests
   - Ensure all existing tests pass after the BaselineData split. Ask the user if questions arise.
 
 - [ ] 6. Add MarketSampleOreHopper.html to test csproj
