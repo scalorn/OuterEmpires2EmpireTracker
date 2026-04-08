@@ -1,4 +1,4 @@
-{
+﻿{
   "ShipClass": [
     {
       "Name": "None"
@@ -1386,7 +1386,7 @@
     {
       "OwnerUUID": "",
       "baseBlueprintUUID": "",
-      "BluePrintType": "Flatpacks/CommodityFactory",
+      "BluePrintType": "Flatpacks/CommodityFactory/AdministrationBlock",
       "Properties": {
         "Commodity Industry": "Administration Block",
         "Manufacture Run Time": null,
@@ -1408,7 +1408,7 @@
     {
       "OwnerUUID": "",
       "baseBlueprintUUID": "",
-      "BluePrintType": "Flatpacks/CommodityFactory",
+      "BluePrintType": "Flatpacks/CommodityFactory/Agridome",
       "Properties": {
         "Commodity Industry": "Agridome",
         "Manufacture Run Time": null,
@@ -1484,7 +1484,8 @@
       },
       "UUID": "4683d750-80e3-4d67-b99a-83bc8b5b9724",
       "ItemType": "Blueprint",
-      "Name": "Centre of Economics"
+      "Name": "Centre of Economics",
+      "BluePrintType": "Flatpacks/CommodityFactory/CentreOfEconomics"
     },
     {
       "OwnerUUID": "",
@@ -1556,7 +1557,7 @@
     {
       "OwnerUUID": "",
       "baseBlueprintUUID": "",
-      "BluePrintType": "Flatpacks/CommodityFactory",
+      "BluePrintType": "Flatpacks/CommodityFactory/EngineeringBlock",
       "Properties": {
         "Commodity Industry": "Engineering Block",
         "Manufacture Run Time": "0",
@@ -1677,7 +1678,7 @@
     {
       "OwnerUUID": "",
       "baseBlueprintUUID": "",
-      "BluePrintType": "Flatpacks/CommodityFactory",
+      "BluePrintType": "Flatpacks/CommodityFactory/HealthcareInstitute",
       "Properties": {
         "Commodity Industry": "Healthcare Institute",
         "Manufacture Run Time": "0",
@@ -1728,7 +1729,7 @@
     {
       "OwnerUUID": "",
       "baseBlueprintUUID": "",
-      "BluePrintType": "Flatpacks/CommodityFactory",
+      "BluePrintType": "Flatpacks/CommodityFactory/InstituteOfDefence",
       "Properties": {
         "Commodity Industry": "Institute of Defence",
         "Manufacture Run Time": "0",
@@ -1766,12 +1767,13 @@
       "Resources": {},
       "UUID": "a7f288aa-e158-4423-b6af-7d46cc649d53",
       "ItemType": "Blueprint",
-      "Name": "Leisure Industry Centre"
+      "Name": "Leisure Industry Centre",
+      "BluePrintType": "Flatpacks/CommodityFactory/LeisureIndustryCentre"
     },
     {
       "OwnerUUID": "",
       "baseBlueprintUUID": "",
-      "BluePrintType": "Flatpacks/CommodityFactory",
+      "BluePrintType": "Flatpacks/CommodityFactory/LogisticsCentre",
       "Properties": {
         "Commodity Industry": "Logistics Centre",
         "Manufacture Run Time": "0",
@@ -1847,7 +1849,7 @@
     {
       "OwnerUUID": "",
       "baseBlueprintUUID": "",
-      "BluePrintType": "Flatpacks/CommodityFactory",
+      "BluePrintType": "Flatpacks/CommodityFactory/ManufacturingIndustryCentre",
       "Properties": {
         "Commodity Industry": "Manufacturing Industry Centre",
         "Manufacture Run Time": "0",
@@ -1908,7 +1910,7 @@
     {
       "OwnerUUID": "",
       "baseBlueprintUUID": "",
-      "BluePrintType": "Flatpacks/CommodityFactory",
+      "BluePrintType": "Flatpacks/CommodityFactory/OffWorldLivingInstitute",
       "Properties": {
         "Commodity Industry": "Off-World Living Institute",
         "Manufacture Run Time": "0",
@@ -2094,7 +2096,7 @@
     {
       "OwnerUUID": "",
       "baseBlueprintUUID": "",
-      "BluePrintType": "Flatpacks/CommodityFactory",
+      "BluePrintType": "Flatpacks/CommodityFactory/RefiningIndustryCentre",
       "Properties": {
         "Commodity Industry": "Refining Industry Centre",
         "Manufacture Run Time": "0",
@@ -2208,7 +2210,8 @@
       "Resources": {},
       "UUID": "6a36906f-b87d-437c-8fc9-551c968764b6",
       "ItemType": "Blueprint",
-      "Name": "Science Centre"
+      "Name": "Science Centre",
+      "BluePrintType": "Flatpacks/CommodityFactory/ScienceCentre"
     },
     {
       "OwnerUUID": "",
@@ -2229,7 +2232,8 @@
       "Resources": {},
       "UUID": "7475f2cc-36ed-4ff8-983f-0ae4c2311e46",
       "ItemType": "Blueprint",
-      "Name": "Technology Institute"
+      "Name": "Technology Institute",
+      "BluePrintType": "Flatpacks/CommodityFactory/TechnologyInstitute"
     },
     {
       "OwnerUUID": "",
