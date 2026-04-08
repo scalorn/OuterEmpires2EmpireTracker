@@ -7,10 +7,10 @@ Items in the "New" section have dependency annotations. Work them in an order th
 ## Dependency Graph
 
 ```
-Activity Inactivity Mode ──── (standalone)
+Activity Inactivity Mode ──── (complete)
 Manufacturing Queue ────────── (standalone)
 Pricing Plans ──────────────── (standalone)
-Mass Blueprint Importer ────── (standalone)
+Mass Blueprint Importer ────── (complete)
 Systems & Planets Model ────── (standalone)
 
 Ships ─────────────────┬──── Ship-Aware Delivery Execution
@@ -25,7 +25,7 @@ Systems & Planets Model ───── Route Auto-Sequencing (depends on coordi
 ```
 
 Suggested build order:
-1. Activity Inactivity Mode, Manufacturing Queue, Pricing Plans, Mass Blueprint Importer, Systems & Planets Model (independent, any order)
+1. Manufacturing Queue, Pricing Plans, Systems & Planets Model (independent, any order)
 2. Ships (enables ship-aware delivery and station components)
 3. Ship-Aware Delivery Execution (depends on Ships)
 4. Stations (depends on Ships for player-owned station features)
@@ -58,11 +58,6 @@ From Recommendations.md #13: UI for transferring colonies/blueprints/surveys bet
 ---
 
 ## New
-
-### BL-010: Activity Inactivity Mode
-**Dependencies:** None
-
-Add an inactivity/idle highlighting mode to the Colony Activity window. Surfaces colonies or structures that are idle or underutilized — e.g., manufactories with no active job, mining rigs with no survey assigned, research labs not researching. Helps the player spot where capacity is being wasted.
 
 ### BL-011: Manufacturing Queue
 **Dependencies:** None

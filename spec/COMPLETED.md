@@ -23,3 +23,7 @@ The game limits colonies to 65 structures. Change the Structures tab selector ba
 ### BL-031: Colony Tab — Worker Request Due Date Warning Colors
 Change the Worker tab selector background to yellow when any worker request is due within 2 days, red when due within 1 day.
 **Status: Complete** — TabWarningService evaluates unfulfilled commodity request due windows (Yellow ≤2 days, Red ≤1 day/overdue). Fulfilled requests and DateTime.MinValue sentinels excluded. Implemented alongside BL-030.
+
+### BL-010: Activity Inactivity Mode
+Add an inactivity/idle highlighting mode to the Colony Activity window. Surfaces idle and underutilized production structures — miners with no survey, refiners with no resource, labs not researching, plus underutilized refiners consuming faster than mining output.
+**Status: Complete** — ColonyInactivityCollector detects idle structures across all 5 production types plus underutilized refiners with warehouse stockpile exemption. "Show Inactive" checkbox toggles the Colony Activity form between activity and inactivity modes.
