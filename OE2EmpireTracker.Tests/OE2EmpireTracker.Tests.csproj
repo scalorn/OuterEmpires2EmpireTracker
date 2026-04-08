@@ -274,6 +274,7 @@
     <Compile Include="Services\BughuntDiagnosticTest.cs" />
     <Compile Include="Services\BlueprintReferenceCounterTests.cs" />
     <Compile Include="Services\BlueprintReferenceCounterPropertyTests.cs" />
+    <Compile Include="Services\IconPositionExtractorTests.cs" />
     <Compile Include="TestHelper.cs" />
     <None Include="app.config" />
     <None Include="packages.config" />
