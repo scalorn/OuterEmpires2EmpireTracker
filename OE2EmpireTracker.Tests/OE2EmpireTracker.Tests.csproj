@@ -244,6 +244,7 @@
     <Compile Include="Parsers\SurveyParserIdempotencyTests.cs" />
     <Compile Include="Constants\BlueprintPropertyValidationTests.cs" />
     <Compile Include="Constants\BlueprintTypeExtensionTests.cs" />
+    <Compile Include="Constants\BlueprintTypeExtensionPropertyTests.cs" />
     <Compile Include="Blueprint\BlueprintScannerTests.cs" />
     <Compile Include="Blueprint\FragmentExtractionTests.cs" />
     <Compile Include="Models\SurveyTests.cs" />
