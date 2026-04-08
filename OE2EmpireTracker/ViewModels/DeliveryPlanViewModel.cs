@@ -232,7 +232,7 @@ namespace OE2EmpireTracker.ViewModels
                             resourceNeeds[resource.Key] = current + total;
                         }
                     }
-                    else if (flatpackBp.BluePrintType == BlueprintTypes.CommodityFactory)
+                    else if (flatpackBp.BluePrintType.IsCommodityFactory())
                     {
                         if (string.IsNullOrEmpty(structure.ManufacturingCommodityName)) continue;
                         Commodity commodity;
