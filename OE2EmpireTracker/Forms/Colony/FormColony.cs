@@ -72,6 +72,10 @@ namespace OE2EmpireTracker.Forms.Colony
             // Wire filter handler
             txtColonyListFilter.TextChanged += txtColonyListFilter_TextChanged;
 
+            // Enable owner-draw so tab BackColor renders with visual styles
+            tabDetailedData.DrawMode = TabDrawMode.OwnerDrawFixed;
+            tabDetailedData.DrawItem += tabDetailedData_DrawItem;
+
             // Wire write-through handlers
             txtPlanetName.TextChanged += txtPlanetName_TextChanged;
             txtColonyName.TextChanged += txtColonyName_TextChanged;
@@ -1704,6 +1708,22 @@ namespace OE2EmpireTracker.Forms.Colony
                     tab.BackColor = SystemColors.Control;
                     break;
             }
+            tabDetailedData.Invalidate();
+        }
+
+        private void tabDetailedData_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            TabPage page = tabDetailedData.TabPages[e.Index];
+            Color backColor = page.UseVisualStyleBackColor ? SystemColors.Control : page.BackColor;
+
+            using (var brush = new SolidBrush(backColor))
+            {
+                e.Graphics.FillRectangle(brush, e.Bounds);
+            }
+
+            string title = page.Text;
+            var flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
+            TextRenderer.DrawText(e.Graphics, title, e.Font, e.Bounds, page.ForeColor, flags);
         }
 
         private void UpdateTabWarnings()
