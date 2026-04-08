@@ -71,7 +71,8 @@ namespace OE2EmpireTracker.Constants
         public static bool IsCommodityFactory(this string blueprintType)
         {
             return !string.IsNullOrEmpty(blueprintType) &&
-                   blueprintType.StartsWith(BlueprintTypes.CommodityFactoryPrefix, StringComparison.OrdinalIgnoreCase);
+                   blueprintType.StartsWith(BlueprintTypes.CommodityFactoryPrefix, StringComparison.OrdinalIgnoreCase) &&
+                   blueprintType.Length > BlueprintTypes.CommodityFactoryPrefix.Length;
         }
     }
 }
