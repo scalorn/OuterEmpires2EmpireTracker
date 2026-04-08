@@ -802,7 +802,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void AutoFillManufacturingResources_CommodityFactory_CorrectShortfall()
         {
-            var flatpackBp = new OE2EmpireTracker.Models.Blueprint("CommodityFactory") { UUID = "fp-cf1", BluePrintType = "Flatpacks/CommodityFactory" };
+            var flatpackBp = new OE2EmpireTracker.Models.Blueprint("CommodityFactory") { UUID = "fp-cf1", BluePrintType = "Flatpacks/CommodityFactory/Agridome" };
             playerContext.blueprintList.Add(flatpackBp);
 
             // Use a real commodity — "Advanced Biolubricants" needs Alkali Organics (2) and Strong Acidic Inorganics (2)

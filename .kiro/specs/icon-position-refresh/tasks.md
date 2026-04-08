@@ -17,7 +17,7 @@ Update the blueprint market import system to handle game sprite sheet changes. B
     - _Property 2: IsCommodityFactory consistency_
     - _Requirements: 5.6_
 
-- [ ] 2. Update all CommodityFactory references across the codebase
+- [x] 2. Update all CommodityFactory references across the codebase
   - [x] 2.1 Update `ColonyParser.cs` — replace all `== BlueprintTypes.CommodityFactory` checks with `.IsCommodityFactory()`. Verify with getDiagnostics.
     - _Requirements: 5.7_
 
@@ -30,16 +30,16 @@ Update the blueprint market import system to handle game sprite sheet changes. B
   - [x] 2.4 Update `ColonyStructure.cs` (form) — replace CommodityFactory checks with `.IsCommodityFactory()`.
     - _Requirements: 5.7_
 
-  - [-] 2.5 Update `ColonyActivityCollector.cs` and `ColonyInactivityCollector.cs` — replace CommodityFactory checks with `.IsCommodityFactory()`.
+  - [x] 2.5 Update `ColonyActivityCollector.cs` and `ColonyInactivityCollector.cs` — replace CommodityFactory checks with `.IsCommodityFactory()`.
     - _Requirements: 5.7_
 
-  - [~] 2.6 Update `DeliveryPlanViewModel.cs` — replace CommodityFactory checks with `.IsCommodityFactory()`.
+  - [x] 2.6 Update `DeliveryPlanViewModel.cs` — replace CommodityFactory checks with `.IsCommodityFactory()`.
     - _Requirements: 5.7_
 
-  - [~] 2.7 Remove the `[Obsolete]` `CommodityFactory` constant once all references are updated. Verify no remaining references with grep.
+  - [x] 2.7 Remove the `[Obsolete]` `CommodityFactory` constant once all references are updated. Verify no remaining references with grep.
     - _Requirements: 5.6_
 
-- [~] 3. Checkpoint — build and run all existing tests
+- [-] 3. Checkpoint — build and run all existing tests
   - Ensure all existing tests pass after the CommodityFactory refactor. Ask the user if questions arise.
 
 - [ ] 4. Split CommodityFactory BaselineData entries
