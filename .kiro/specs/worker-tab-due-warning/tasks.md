@@ -20,7 +20,7 @@ Add background color warnings to the Structures and Worker tab selectors in `For
     - Add the new file to `OE2EmpireTracker.csproj` `<Compile>` ItemGroup
     - _Requirements: 7.1, 7.2, 8.1, 8.2, 9.1, 1.1, 1.2, 1.3, 2.1, 2.2, 3.1, 4.1, 4.2, 6.1_
 
-  - [-] 1.3 Write property test: Structure warning level is determined by count thresholds
+  - [x] 1.3 Write property test: Structure warning level is determined by count thresholds
     - **Property 1: Structure warning level is determined by count thresholds**
     - **Validates: Requirements 7.1, 7.2, 8.1, 8.2, 9.1**
     - Add FsCheck 2.16.6 and FsCheck.NUnit NuGet packages to `OE2EmpireTracker.Tests/packages.config`
@@ -29,17 +29,17 @@ Add background color warnings to the Structures and Worker tab selectors in `For
     - Add the test file to `OE2EmpireTracker.Tests.csproj` `<Compile>` ItemGroup
     - Implement `[FsCheck.NUnit.Property]` test generating random non-negative ints (0–200), asserting return matches threshold logic
 
-  - [~] 1.4 Write property test: Worker warning level is the most urgent unfulfilled due window
+  - [x] 1.4 Write property test: Worker warning level is the most urgent unfulfilled due window
     - **Property 2: Worker warning level is the most urgent unfulfilled due window**
     - **Validates: Requirements 1.1, 1.2, 2.1, 2.2, 3.1, 4.1, 6.1**
     - Implement `[FsCheck.NUnit.Property]` test generating random lists of `CommodityRequested` with random `Fulfilled` flags, random `NeedBy` dates (including `DateTime.MinValue`, past, near-future, far-future), and a random `now`. Compute expected result from minimum due window among unfulfilled non-MinValue requests, assert match.
 
-  - [~] 1.5 Write property test: Fulfilled requests are excluded from worker warning evaluation
+  - [x] 1.5 Write property test: Fulfilled requests are excluded from worker warning evaluation
     - **Property 3: Fulfilled requests are excluded from worker warning evaluation**
     - **Validates: Requirements 1.3**
     - Implement `[FsCheck.NUnit.Property]` test generating random lists where every `CommodityRequested` has `Fulfilled = true` with arbitrary `NeedBy` dates. Assert service always returns `None`.
 
-  - [~] 1.6 Write unit tests for TabWarningService edge cases
+  - [x] 1.6 Write unit tests for TabWarningService edge cases
     - Add NUnit `[Test]` methods to `TabWarningServiceTests.cs` covering:
       - 0 structures → `None`, 59 → `None`, 60 → `Yellow`, 65 → `Yellow`, 66 → `Red`
       - No commodity requests → `None`
