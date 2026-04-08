@@ -69,10 +69,10 @@ Update the blueprint market import system to handle game sprite sheet changes. B
   - [x] 7.4 Add `WriteBothBaselineFiles()` helper that writes the updated JObject to both `OE2EmpireTracker/BaselineData.json` and `OE2EmpireTracker.Tests/TestData/BaselineData.json`.
     - _Requirements: 3.1, 3.2, 3.3_
 
-  - [~] 7.5 Add `ProduceCoverageGapReport()` helper that compares all BlueprintType Ids in BaselineData against extracted icons and logs uncovered types. Distinguish between types with stale IconPosition vs types with null IconPosition.
+  - [x] 7.5 Add `ProduceCoverageGapReport()` helper that compares all BlueprintType Ids in BaselineData against extracted icons and logs uncovered types. Distinguish between types with stale IconPosition vs types with null IconPosition.
     - _Requirements: 9.1, 9.2, 9.3, 9.5_
 
-  - [~] 7.6 Wire up the main `ExtractAndUpdateIconPositions()` test method that calls all helpers in sequence: extract → ensure commodity entries → compare & update → write files → produce gap report.
+  - [-] 7.6 Wire up the main `ExtractAndUpdateIconPositions()` test method that calls all helpers in sequence: extract → ensure commodity entries → compare & update → write files → produce gap report.
     - _Requirements: 1.5, 8.1, 8.3_
 
 - [ ] 8. Run the IconPositionExtractor to populate BaselineData

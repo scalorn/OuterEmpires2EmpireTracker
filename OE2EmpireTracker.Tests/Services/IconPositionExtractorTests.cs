@@ -265,6 +265,118 @@ namespace OE2EmpireTracker.Tests.Services
             TestContext.WriteLine($"Wrote BaselineData to: {testPath}");
         }
 
+        /// <summary>
+        /// Compares all BlueprintType Ids in BaselineData against extracted icons
+        /// and logs a dedicated "Coverage Gap Report" identifying uncovered types.
+        /// Distinguishes between types with stale IconPosition (has a value but no
+        /// HTML coverage to verify it) vs types with null IconPosition (never characterized).
+        /// CommodityFactory variants are listed in a separate section.
+        /// </summary>
+        private void ProduceCoverageGapReport(JObject baselineRoot, List<ExtractedIcon> extracted)
+        {
+            JArray blueprintTypes = (JArray)baselineRoot["BlueprintType"];
+
+            // 1. Collect all BlueprintType Ids from BaselineData
+            var allTypeIds = blueprintTypes
+                .Select(bt => (string)bt["Id"])
+                .Where(id => !string.IsNullOrEmpty(id))
+                .ToList();
+
+            // 2. Collect all unique ResolvedTypeIds from extracted icons
+            var coveredTypeIds = new HashSet<string>(
+                extracted
+                    .Where(e => !string.IsNullOrEmpty(e.ResolvedTypeId))
+                    .Select(e => e.ResolvedTypeId),
+                StringComparer.Ordinal);
+
+            // 3. Find uncovered types (in BaselineData but not in extracted set)
+            var uncoveredTypes = allTypeIds
+                .Where(id => !coveredTypeIds.Contains(id))
+                .ToList();
+
+            // 4. Classify each uncovered type and separate CommodityFactory variants
+            var staleTypes = new List<string>();
+            var missingTypes = new List<string>();
+            var staleCommodityVariants = new List<string>();
+            var missingCommodityVariants = new List<string>();
+
+            foreach (string typeId in uncoveredTypes)
+            {
+                JToken entry = blueprintTypes
+                    .FirstOrDefault(bt => string.Equals(
+                        (string)bt["Id"], typeId, StringComparison.Ordinal));
+
+                if (entry == null)
+                    continue;
+
+                string iconPosition = (string)entry["IconPosition"];
+                bool hasIconPosition = !string.IsNullOrEmpty(iconPosition);
+                bool isCommodityFactory = typeId.IsCommodityFactory();
+
+                if (isCommodityFactory)
+                {
+                    if (hasIconPosition)
+                        staleCommodityVariants.Add(typeId);
+                    else
+                        missingCommodityVariants.Add(typeId);
+                }
+                else
+                {
+                    if (hasIconPosition)
+                        staleTypes.Add(typeId);
+                    else
+                        missingTypes.Add(typeId);
+                }
+            }
+
+            // 5. Log the Coverage Gap Report
+            TestContext.WriteLine("");
+            TestContext.WriteLine("========================================");
+            TestContext.WriteLine("       COVERAGE GAP REPORT");
+            TestContext.WriteLine("========================================");
+            TestContext.WriteLine($"Total BlueprintTypes in BaselineData: {allTypeIds.Count}");
+            TestContext.WriteLine($"Types with HTML coverage: {coveredTypeIds.Count}");
+            TestContext.WriteLine($"Types without HTML coverage: {uncoveredTypes.Count}");
+            TestContext.WriteLine("");
+
+            // 6. List non-CommodityFactory uncovered types
+            if (staleTypes.Count > 0 || missingTypes.Count > 0)
+            {
+                TestContext.WriteLine("--- Uncovered BlueprintTypes ---");
+                foreach (string typeId in staleTypes)
+                {
+                    TestContext.WriteLine($"  STALE:   {typeId}  (has IconPosition but no HTML coverage)");
+                }
+                foreach (string typeId in missingTypes)
+                {
+                    TestContext.WriteLine($"  MISSING: {typeId}  (null IconPosition — never characterized)");
+                }
+                TestContext.WriteLine("");
+            }
+
+            // 7. Separately list CommodityFactory variants
+            if (staleCommodityVariants.Count > 0 || missingCommodityVariants.Count > 0)
+            {
+                TestContext.WriteLine("--- Uncovered CommodityFactory Variants ---");
+                foreach (string typeId in staleCommodityVariants)
+                {
+                    TestContext.WriteLine($"  STALE:   {typeId}  (has IconPosition but no HTML coverage)");
+                }
+                foreach (string typeId in missingCommodityVariants)
+                {
+                    TestContext.WriteLine($"  MISSING: {typeId}  (null IconPosition — never characterized)");
+                }
+                TestContext.WriteLine("");
+            }
+
+            if (uncoveredTypes.Count == 0)
+            {
+                TestContext.WriteLine("All BlueprintTypes have HTML coverage. No gaps detected.");
+            }
+
+            TestContext.WriteLine("========================================");
+        }
+
         [Test]
         public void ExtractIconsFromAllSamples_FindsIcons()
         {
@@ -280,6 +392,34 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(icons, Is.Not.Empty,
                 "Expected at least one icon extracted from MarketSample HTML files");
+        }
+
+        /// <summary>
+        /// Main "run on demand" test that the developer executes whenever the game
+        /// updates its sprite sheet. Calls all helpers in sequence:
+        /// extract → compare &amp; update → ensure commodity entries → write files → produce gap report.
+        /// </summary>
+        [Test]
+        public void ExtractAndUpdateIconPositions()
+        {
+            // 1. Extract all icons from every MarketSample*.html file
+            var extracted = ExtractIconsFromAllSamples();
+            Assert.That(extracted, Is.Not.Empty,
+                "Expected at least one icon extracted from MarketSample HTML files");
+
+            // 2. Compare extracted positions against BaselineData and apply updates
+            var baselineRoot = CompareAndUpdateBaselineData(extracted);
+            Assert.That(baselineRoot, Is.Not.Null,
+                "CompareAndUpdateBaselineData should return a non-null JObject");
+
+            // 3. Ensure all 14 per-industry CommodityFactory entries exist
+            EnsureCommodityFactoryEntries(baselineRoot);
+
+            // 4. Write updated BaselineData to both main and test directories
+            WriteBothBaselineFiles(baselineRoot);
+
+            // 5. Produce the coverage gap report
+            ProduceCoverageGapReport(baselineRoot, extracted);
         }
     }
 }
