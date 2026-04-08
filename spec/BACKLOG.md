@@ -166,8 +166,7 @@ Explore whether AI can read the Discord channels for the game. Discord is often 
 
 ### BL-028: Organize Completed Specs into Subdirectories
 **Dependencies:** None
-
-The `.kiro/specs/` folder is accumulating completed and in-design specs. Organize them into subdirectories like `completed/` and `in-progress/` (or similar) to keep the folder manageable. Need to check if Kiro's spec tooling has any path assumptions that would break.
+**Status: Deprioritized** — Kiro's spec tooling references specs by path under `.kiro/specs/{feature_name}/`. Moving into subdirectories (`completed/`, `in-progress/`) would change paths and likely break `.config.kiro` references, task status tracking, and subagent delegation. Currently 16 spec folders — manageable. Revisit if count exceeds 30+ or Kiro adds explicit subdirectory support. The backlog already tracks completion status; no need to duplicate that via folder structure.
 
 ### BL-029: BaselineData.json — Separate User File with Merge Strategy
 **Dependencies:** None
