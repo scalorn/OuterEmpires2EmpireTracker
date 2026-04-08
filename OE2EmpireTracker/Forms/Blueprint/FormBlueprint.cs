@@ -54,6 +54,10 @@ namespace OE2EmpireTracker
         /// </summary>
         private BlueprintViewModel viewModel;
 
+        // ListView sorting state
+        private int _sortColumn = 0;
+        private SortOrder _sortOrder = SortOrder.Ascending;
+
         /// <summary>
         /// Initializes a new instance of the FormBlueprint class.
         /// </summary>
@@ -123,6 +127,8 @@ namespace OE2EmpireTracker
             lvwBlueprints.Columns.Add("Tech Level", 60);
             lvwBlueprints.Columns.Add("Evolution", 30);
             lvwBlueprints.Columns.Add("Nick Name", 100);
+            lvwBlueprints.ColumnClick += lvwBlueprints_ColumnClick;
+            lvwBlueprints.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
             PopulateListView(viewModel.GetFilteredBlueprints(null));
 
             // Wire write-through handlers
@@ -1183,6 +1189,50 @@ namespace OE2EmpireTracker
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.BlueprintDataChanged -= OnBlueprintDataChanged;
             base.OnFormClosed(e);
+        }
+
+        private void lvwBlueprints_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            if (e.Column == _sortColumn)
+                _sortOrder = _sortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
+            else
+            {
+                _sortColumn = e.Column;
+                _sortOrder = SortOrder.Ascending;
+            }
+            lvwBlueprints.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
+            lvwBlueprints.Sort();
+        }
+    }
+
+    /// <summary>
+    /// Compares ListView items by a specified column. Attempts numeric comparison
+    /// first so columns like Evolution sort as numbers (2 before 10) rather than
+    /// lexicographically.
+    /// </summary>
+    internal class ListViewItemComparer : System.Collections.IComparer
+    {
+        private readonly int _column;
+        private readonly SortOrder _order;
+
+        public ListViewItemComparer(int column, SortOrder order)
+        {
+            _column = column;
+            _order = order;
+        }
+
+        public int Compare(object x, object y)
+        {
+            string textX = ((ListViewItem)x).SubItems[_column].Text;
+            string textY = ((ListViewItem)y).SubItems[_column].Text;
+
+            int result;
+            if (int.TryParse(textX, out int numX) && int.TryParse(textY, out int numY))
+                result = numX.CompareTo(numY);
+            else
+                result = string.Compare(textX, textY, StringComparison.OrdinalIgnoreCase);
+
+            return _order == SortOrder.Descending ? -result : result;
         }
     }
 }
