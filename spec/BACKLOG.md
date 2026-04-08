@@ -113,10 +113,11 @@ Define pricing models for resources and items. Should be able to calculate the p
 
 Track in-game market activity: what was bought/sold, the price, and who the counterparty was. Provides a transaction history for the player's market dealings. Pricing Plans feed into understanding whether a trade was profitable.
 
-### BL-018: Mass Blueprint Importer
-**Dependencies:** None
+### ~~BL-018: Mass Blueprint Importer~~
+~~**Dependencies:** None~~
 
-Import blueprints in bulk from the in-game market HTML. The market sells global base blueprints — this tool would parse that HTML and automatically create blueprint entries. Key challenge: deduplication. Blueprints with the same name + type + evolution can have different properties (since you can research the same blueprint multiple times). Need to compare property values to detect true duplicates vs distinct evolutions. There may or may not be a unique game ID hidden in the HTML data.
+~~Import blueprints in bulk from the in-game market HTML. The market sells global base blueprints — this tool would parse that HTML and automatically create blueprint entries. Key challenge: deduplication. Blueprints with the same name + type + evolution can have different properties (since you can research the same blueprint multiple times). Need to compare property values to detect true duplicates vs distinct evolutions. There may or may not be a unique game ID hidden in the HTML data.~~
+**Status: Complete** — Import Market button on Blueprint form. Parses market HTML, extracts seller/TechLevel, deduplicates by Name+Evolution+Type+Class+TechLevel, routes Government→global vs player storage. Idempotency tests confirm no duplicates on re-import.
 
 ### BL-019: Systems & Planets Model
 **Dependencies:** None (but enables Route Auto-Sequencing)
@@ -173,12 +174,14 @@ The `.kiro/specs/` folder is accumulating completed and in-design specs. Organiz
 
 Investigate the consequences of splitting BaselineData.json into a read-only application-installed file and a user-editable copy. The user file starts as a copy of the application file. Key question: how to handle merging when the application adds a global blueprint that the player has also added manually — they'd have different UUIDs but matching data. How complicated would deduplication and merge logic get? Consider upgrade scenarios, conflict resolution, and whether a three-way merge is feasible.
 
-### BL-030: Colony Tab — Structure Count Warning Colors
-**Dependencies:** None
+### ~~BL-030: Colony Tab — Structure Count Warning Colors~~
+~~**Dependencies:** None~~
 
-The game limits colonies to 65 structures. In the colony form, change the Structures tab selector background to yellow when the colony has 60+ structures, and red at 66+. Gives the player a visual heads-up as they approach the cap.
+~~The game limits colonies to 65 structures. In the colony form, change the Structures tab selector background to yellow when the colony has 60+ structures, and red at 66+. Gives the player a visual heads-up as they approach the cap.~~
+**Status: Complete** — TabWarningService evaluates structure count thresholds (Yellow ≥60, Red ≥66). FormColony applies tab background colors on all data-change events. FsCheck property tests + unit tests validate logic.
 
-### BL-031: Colony Tab — Worker Request Due Date Warning Colors
-**Dependencies:** None
+### ~~BL-031: Colony Tab — Worker Request Due Date Warning Colors~~
+~~**Dependencies:** None~~
 
-In the colony form, change the Worker tab selector background to yellow when any worker request is due within 2 days, and red when due within 1 day. Helps the player notice expiring worker contracts before they lapse.
+~~In the colony form, change the Worker tab selector background to yellow when any worker request is due within 2 days, and red when due within 1 day. Helps the player notice expiring worker contracts before they lapse.~~
+**Status: Complete** — TabWarningService evaluates unfulfilled commodity request due windows (Yellow ≤2 days, Red ≤1 day/overdue). Fulfilled requests and DateTime.MinValue sentinels excluded. Implemented alongside BL-030.
