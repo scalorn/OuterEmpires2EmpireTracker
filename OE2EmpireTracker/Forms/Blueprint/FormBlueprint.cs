@@ -174,7 +174,7 @@ namespace OE2EmpireTracker
             lvwBlueprints.Items.Clear();
             viewModel.Reset();
             ClearForm();
-            PopulateListView(viewModel.GetFilteredBlueprints(null));
+            PopulateListView(viewModel.GetFilteredBlueprints(txtBlueprintListFilter.Text));
         }
 
         /// <summary>
@@ -735,7 +735,7 @@ namespace OE2EmpireTracker
             if (result != DialogResult.Yes) return;
             viewModel.Delete();
             viewModel.Reset();
-            PopulateListView(viewModel.GetFilteredBlueprints(null));
+            PopulateListView(viewModel.GetFilteredBlueprints(txtBlueprintListFilter.Text));
             lvwBlueprints.SelectedItems.Clear();
             ClearForm();
         }
@@ -831,7 +831,7 @@ namespace OE2EmpireTracker
             viewModel.Save(chkGlobalBlueprint.Checked);
             
             // Refresh list view
-            PopulateListView(viewModel.GetFilteredBlueprints(null));
+            PopulateListView(viewModel.GetFilteredBlueprints(txtBlueprintListFilter.Text));
             
             // Restore focus
             txtBlueprintListFilter.Focus();
