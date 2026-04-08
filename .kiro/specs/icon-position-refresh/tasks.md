@@ -82,7 +82,7 @@ Update the blueprint market import system to handle game sprite sheet changes. B
 - [x] 9. Checkpoint — build and run all tests
   - Ensure all tests pass after the extractor has updated BaselineData. Ask the user if questions arise.
 
-- [ ] 10. Add OreHopper constant and integration tests
+- [x] 10. Add OreHopper constant and integration tests
   - [x] 10.1 Verify `BlueprintTypes.OreHopper` constant matches the Id created by the extractor. Update if needed.
     - _Requirements: 4.5_
 
@@ -99,7 +99,7 @@ Update the blueprint market import system to handle game sprite sheet changes. B
     - _Requirements: 7.4_
 
 - [ ] 11. Coverage gap report and backlog integration
-  - [~] 11.1 Review the coverage gap report output from the extractor run. For any BlueprintTypes with no HTML coverage, add backlog items to `spec/BACKLOG.md` following the `BL-NNN` format under a "MarketSample Coverage Gaps" section.
+  - [-] 11.1 Review the coverage gap report output from the extractor run. For any BlueprintTypes with no HTML coverage, add backlog items to `spec/BACKLOG.md` following the `BL-NNN` format under a "MarketSample Coverage Gaps" section.
     - _Requirements: 10.1, 10.2, 10.5_
 
   - [~] 11.2 For any CommodityIndustry variants missing from MarketSample coverage, add a grouped backlog item listing the missing variants.

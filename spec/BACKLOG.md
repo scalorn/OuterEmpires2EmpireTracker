@@ -195,3 +195,20 @@ Add a chart to the Colony form showing mining and refining production over time.
 **Dependencies:** None
 
 Build a migration utility to import colony data from an existing OpenOffice Calc (.ods) spreadsheet (~80 tabs) into the application's PlayerData.json format. Use ExcelDataReader (NuGet) to read the .ods file programmatically — it supports .ods natively and returns a DataSet with one DataTable per sheet. The tool needs to map each tab's layout to the app's data model (Colony, ColonyStructure, Blueprint, Survey, etc.) and produce valid PlayerData.json output. This is likely a one-time or infrequent migration, so a simple console app or a dedicated form with a file picker would work. The main complexity is mapping the spreadsheet's ad-hoc layout to the structured data model — will need the actual spreadsheet to design the column mappings.
+
+
+---
+
+## MarketSample Coverage Gaps
+
+Uncovered BlueprintTypes identified by the IconPositionExtractor's coverage gap report. These types exist in BaselineData.json but have no MarketSample HTML file to verify or populate their icon positions. Capture a MarketSample page for each type next time it appears in the in-game market.
+
+### BL-038: MarketSample needed for CoilGun/Small (stale icon position)
+**Dependencies:** None
+
+CoilGun/Small has an IconPosition in BaselineData but no MarketSample HTML coverage to verify it. The position may be stale after a sprite sheet update. Capture a MarketSample page from the in-game market showing Small Coil Gun listings and save it as `MarketSampleCoilGunSmall.html` in `OE2EmpireTracker.Tests/TestData/`. Then re-run the `ExtractAndUpdateIconPositions` test to refresh the icon position.
+
+### BL-039: MarketSample needed for MissileLauncher/Small (never characterized)
+**Dependencies:** None
+
+MissileLauncher/Small has a null IconPosition in BaselineData — it has never been characterized from a MarketSample HTML file. Capture a MarketSample page from the in-game market showing Small Missile Launcher listings and save it as `MarketSampleMissileLauncherSmall.html` in `OE2EmpireTracker.Tests/TestData/`. Then re-run the `ExtractAndUpdateIconPositions` test to populate the icon position and verify properties.
