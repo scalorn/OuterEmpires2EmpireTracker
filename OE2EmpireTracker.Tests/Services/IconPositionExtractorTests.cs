@@ -1,6 +1,8 @@
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Forms.Blueprint;
 using OE2EmpireTracker.Services;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -77,6 +79,95 @@ namespace OE2EmpireTracker.Tests.Services
             }
 
             return results;
+        }
+
+        /// <summary>
+        /// Loads BaselineData.json from the source tree as a JObject, compares
+        /// extracted icon positions against BlueprintType entries, updates changed
+        /// positions, and adds new BlueprintType entries for unknown icons.
+        /// All changes are logged via TestContext.WriteLine.
+        /// </summary>
+        private JObject CompareAndUpdateBaselineData(List<ExtractedIcon> extracted)
+        {
+            // Compute path to source-tree BaselineData.json:
+            // TestDirectory is bin/Debug, go up to project root, then up to solution root
+            string testDir = TestContext.CurrentContext.TestDirectory;
+            string solutionRoot = Path.GetFullPath(Path.Combine(testDir, "..", "..", ".."));
+            string baselinePath = Path.Combine(solutionRoot, "OE2EmpireTracker", "BaselineData.json");
+
+            string json = File.ReadAllText(baselinePath);
+            JObject root = JObject.Parse(json);
+            JArray blueprintTypes = (JArray)root["BlueprintType"];
+
+            int updatedCount = 0;
+            int addedCount = 0;
+
+            // Group extracted icons by ResolvedTypeId to handle duplicates
+            // (same type may appear in multiple sample files)
+            var resolvedIcons = extracted
+                .Where(e => !string.IsNullOrEmpty(e.ResolvedTypeId))
+                .GroupBy(e => e.ResolvedTypeId)
+                .ToDictionary(g => g.Key, g => g.First());
+
+            // Compare and update existing BlueprintType entries
+            foreach (var kvp in resolvedIcons)
+            {
+                string typeId = kvp.Key;
+                ExtractedIcon icon = kvp.Value;
+
+                JToken entry = blueprintTypes
+                    .FirstOrDefault(bt => string.Equals(
+                        (string)bt["Id"], typeId, StringComparison.Ordinal));
+
+                if (entry == null)
+                    continue;
+
+                string oldPos = (string)entry["IconPosition"];
+                if (!string.Equals(oldPos, icon.IconPosition, StringComparison.Ordinal))
+                {
+                    TestContext.WriteLine(
+                        $"UPDATED: {typeId} IconPosition changed from \"{oldPos}\" to \"{icon.IconPosition}\"");
+                    entry["IconPosition"] = icon.IconPosition;
+                    updatedCount++;
+                }
+            }
+
+            // Add new BlueprintType entries for unknown icons (no ResolvedTypeId)
+            var unknownIcons = extracted
+                .Where(e => string.IsNullOrEmpty(e.ResolvedTypeId))
+                .GroupBy(e => e.IconPosition)
+                .Select(g => g.First())
+                .ToList();
+
+            foreach (var icon in unknownIcons)
+            {
+                // Check if an entry with this icon position already exists
+                bool alreadyExists = blueprintTypes.Any(bt =>
+                    string.Equals((string)bt["IconPosition"], icon.IconPosition, StringComparison.Ordinal));
+
+                if (alreadyExists)
+                    continue;
+
+                var newEntry = new JObject
+                {
+                    ["Id"] = icon.BlueprintName,
+                    ["Name"] = icon.BlueprintName,
+                    ["Properties"] = new JArray(),
+                    ["ResearchableProperties"] = new JArray(),
+                    ["IconPosition"] = icon.IconPosition,
+                    ["OutputItemType"] = ""
+                };
+
+                blueprintTypes.Add(newEntry);
+                addedCount++;
+                TestContext.WriteLine(
+                    $"ADDED: New BlueprintType \"{icon.BlueprintName}\" with IconPosition \"{icon.IconPosition}\" from [{icon.SourceFile}]");
+            }
+
+            TestContext.WriteLine(
+                $"CompareAndUpdateBaselineData summary: {updatedCount} updated, {addedCount} added");
+
+            return root;
         }
 
         [Test]
