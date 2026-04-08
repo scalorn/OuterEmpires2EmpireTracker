@@ -105,7 +105,7 @@ namespace OE2EmpireTracker.Models
                     {
                         ProcessManufactory(structure);
                     }
-                    else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.CommodityFactory)
+                    else if (FlatpackBlueprint.BluePrintType.IsCommodityFactory())
                     {
                         ProcessCommodityFactory(structure);
                     }
