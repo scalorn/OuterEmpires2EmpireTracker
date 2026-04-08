@@ -115,7 +115,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     handleManufactoryControls();
                 }
-                else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.CommodityFactory)
+                else if (FlatpackBlueprint.BluePrintType.IsCommodityFactory())
                 {
                     handleCommodityFactoryControls();
                 }
@@ -1491,7 +1491,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 handleManufactoryControls();
                 ColonyStructureDataChanged?.Invoke(this, e);
             }
-            else if (FlatpackBlueprint != null && FlatpackBlueprint.BluePrintType == BlueprintTypes.CommodityFactory)
+            else if (FlatpackBlueprint != null && FlatpackBlueprint.BluePrintType.IsCommodityFactory())
             {
                 if (string.IsNullOrEmpty(ColonyStructureData.ManufacturingCommodityName)) return;
 
@@ -1626,7 +1626,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 keepTimer = true;
             }
             if (FlatpackBlueprint != null &&
-                FlatpackBlueprint.BluePrintType == BlueprintTypes.CommodityFactory &&
+                FlatpackBlueprint.BluePrintType.IsCommodityFactory() &&
                 ColonyStructureData.ManufacturingCompleted < ColonyStructureData.ManufacturingQuantity)
             {
                 keepTimer = true;
@@ -1650,7 +1650,7 @@ namespace OE2EmpireTracker.Forms.Colony
                     handleResearchLabControls();
                 else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Manufactory)
                     handleManufactoryControls();
-                else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.CommodityFactory)
+                else if (FlatpackBlueprint.BluePrintType.IsCommodityFactory())
                     handleCommodityFactoryControls();
             }
 
@@ -1703,7 +1703,7 @@ namespace OE2EmpireTracker.Forms.Colony
                     ColonyStructureData.ManufacturingCompleted = 0;
                     handleManufactoryControls();
                 }
-                else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.CommodityFactory)
+                else if (FlatpackBlueprint.BluePrintType.IsCommodityFactory())
                 {
                     string name = cmbSelection.SelectedValue as string;
                     ColonyStructureData.ManufacturingCommodityName = string.IsNullOrEmpty(name) ? null : name;
