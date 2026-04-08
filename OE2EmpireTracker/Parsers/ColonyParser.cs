@@ -395,12 +395,8 @@ namespace OE2EmpireTracker.Parsers
             {
                 if (bp.BluePrintType != null && bp.BluePrintType.IsFlatpack())
                 {
-                    // Standard flatpacks: "Mining Rig Flatpack" → "Mining Rig"
-                    string designName = bp.Name;
-                    if (designName.EndsWith(" Flatpack", StringComparison.OrdinalIgnoreCase))
-                    {
-                        designName = designName.Substring(0, designName.Length - " Flatpack".Length);
-                    }
+                    // Use OutputItemName: "Mining Rig Flatpack" → "Mining Rig"
+                    string designName = bp.OutputItemName;
 
                     // Commodity factory flatpacks use the building name directly
                     // (e.g. "Administration Block" → "Administration Block")

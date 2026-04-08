@@ -266,6 +266,7 @@
     <Compile Include="Parsers\ColonyParserTests.cs" />
     <Compile Include="Parsers\ColonyParserDedupeTests.cs" />
     <Compile Include="Parsers\ColonyParserIdempotencyTests.cs" />
+    <Compile Include="Models\BlueprintOutputNameTests.cs" />
     <Compile Include="Services\JsonDefaultSkipTests.cs" />
     <Compile Include="Services\BughuntDiagnosticTest.cs" />
     <Compile Include="TestHelper.cs" />

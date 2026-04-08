@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
@@ -41,6 +42,25 @@ namespace OE2EmpireTracker.Models
         public Dictionary<string, string> Resources { get; set; }
 
         [JsonIgnore]
+        public string OutputItemName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Name))
+                    return string.Empty;
+
+                if (!string.IsNullOrEmpty(BluePrintType) &&
+                    BluePrintType.IsFlatpack() &&
+                    Name.EndsWith(" Flatpack", StringComparison.OrdinalIgnoreCase))
+                {
+                    return Name.Substring(0, Name.Length - " Flatpack".Length);
+                }
+
+                return Name;
+            }
+        }
+
+        [JsonIgnore]
         public override string ExtendedName {
             get {
                 if (UUID == null)
@@ -55,7 +75,7 @@ namespace OE2EmpireTracker.Models
                 if (Evolution > 0) {
                     extendedName += "Ev(" + Evolution + ") ";
                 }
-                extendedName += Name + " ";
+                extendedName += OutputItemName + " ";
                 if (TechLevel != null)
                 {
                     extendedName += "(" + TechLevel + ") ";
