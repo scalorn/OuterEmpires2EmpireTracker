@@ -36,13 +36,15 @@ namespace OE2EmpireTracker.Constants
         /// <summary>Manufactory structure type</summary>
         public const string Manufactory = "Flatpacks/Manufactory";
 
-        /// <summary>Commodity factory structure type</summary>
+        /// <summary>Prefix for all commodity factory per-industry types (e.g. Flatpacks/CommodityFactory/Agridome)</summary>
+        public const string CommodityFactoryPrefix = "Flatpacks/CommodityFactory/";
+
+        /// <summary>Commodity factory structure type — use IsCommodityFactory() instead for per-industry matching</summary>
+        [Obsolete("Use CommodityFactoryPrefix and IsCommodityFactory() extension method instead. Will be removed once all references are updated.")]
         public const string CommodityFactory = "Flatpacks/CommodityFactory";
 
-        // Add more blueprint types as discovered in the codebase
-        // Example:
-        // public const string Agridome = "Flatpacks/Agridome";
-        // public const string CommandCenter = "Flatpacks/CommandCenter";
+        /// <summary>Ore hopper ship component type</summary>
+        public const string OreHopper = "OreHopper";
     }
 
     /// <summary>
@@ -59,6 +61,17 @@ namespace OE2EmpireTracker.Constants
         {
             return !string.IsNullOrEmpty(blueprintType) && 
                    blueprintType.StartsWith(BlueprintTypePrefixes.Flatpacks, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Determines if a blueprint type is any commodity factory variant.
+        /// </summary>
+        /// <param name="blueprintType">The blueprint type string to check.</param>
+        /// <returns>True if the type starts with "Flatpacks/CommodityFactory/", otherwise false.</returns>
+        public static bool IsCommodityFactory(this string blueprintType)
+        {
+            return !string.IsNullOrEmpty(blueprintType) &&
+                   blueprintType.StartsWith(BlueprintTypes.CommodityFactoryPrefix, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
