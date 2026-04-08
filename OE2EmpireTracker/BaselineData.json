@@ -275,8 +275,8 @@
       "OutputItemType": "Flatpack"
     },
     {
-      "Id": "Flatpacks/CommodityFactory",
-      "Name": "Commodity Factory Flatpack",
+      "Id": "Flatpacks/CommodityFactory/AdministrationBlock",
+      "Name": "Administration Block Flatpack",
       "Universal": true,
       "Properties": [
         "Commodity Industry",
@@ -292,6 +292,280 @@
         "Unassigned White Collar Detail"
       ],
       "ResearchableProperties": [],
+      "IconPosition": null,
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/CommodityFactory/Agridome",
+      "Name": "Agridome Flatpack",
+      "Universal": true,
+      "Properties": [
+        "Commodity Industry",
+        "Manufacture Run Time",
+        "Mass",
+        "Cargo Volume Size",
+        "Structural Integrity",
+        "Power Required",
+        "Can Research",
+        "Can Manufacture",
+        "Max Per Colony",
+        "Blue Collar Detail",
+        "Unassigned White Collar Detail"
+      ],
+      "ResearchableProperties": [],
+      "IconPosition": null,
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/CommodityFactory/CentreOfEconomics",
+      "Name": "Centre of Economics Flatpack",
+      "Universal": true,
+      "Properties": [
+        "Commodity Industry",
+        "Manufacture Run Time",
+        "Mass",
+        "Cargo Volume Size",
+        "Structural Integrity",
+        "Power Required",
+        "Can Research",
+        "Can Manufacture",
+        "Max Per Colony",
+        "Blue Collar Detail",
+        "Unassigned White Collar Detail"
+      ],
+      "ResearchableProperties": [],
+      "IconPosition": null,
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/CommodityFactory/EngineeringBlock",
+      "Name": "Engineering Block Flatpack",
+      "Universal": true,
+      "Properties": [
+        "Commodity Industry",
+        "Manufacture Run Time",
+        "Mass",
+        "Cargo Volume Size",
+        "Structural Integrity",
+        "Power Required",
+        "Can Research",
+        "Can Manufacture",
+        "Max Per Colony",
+        "Blue Collar Detail",
+        "Unassigned White Collar Detail"
+      ],
+      "ResearchableProperties": [],
+      "IconPosition": null,
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/CommodityFactory/HealthcareInstitute",
+      "Name": "Healthcare Institute Flatpack",
+      "Universal": true,
+      "Properties": [
+        "Commodity Industry",
+        "Manufacture Run Time",
+        "Mass",
+        "Cargo Volume Size",
+        "Structural Integrity",
+        "Power Required",
+        "Can Research",
+        "Can Manufacture",
+        "Max Per Colony",
+        "Blue Collar Detail",
+        "Unassigned White Collar Detail"
+      ],
+      "ResearchableProperties": [],
+      "IconPosition": null,
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/CommodityFactory/InstituteOfDefence",
+      "Name": "Institute of Defence Flatpack",
+      "Universal": true,
+      "Properties": [
+        "Commodity Industry",
+        "Manufacture Run Time",
+        "Mass",
+        "Cargo Volume Size",
+        "Structural Integrity",
+        "Power Required",
+        "Can Research",
+        "Can Manufacture",
+        "Max Per Colony",
+        "Blue Collar Detail",
+        "Unassigned White Collar Detail"
+      ],
+      "ResearchableProperties": [],
+      "IconPosition": null,
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/CommodityFactory/LeisureIndustryCentre",
+      "Name": "Leisure Industry Centre Flatpack",
+      "Universal": true,
+      "Properties": [
+        "Commodity Industry",
+        "Manufacture Run Time",
+        "Mass",
+        "Cargo Volume Size",
+        "Structural Integrity",
+        "Power Required",
+        "Can Research",
+        "Can Manufacture",
+        "Max Per Colony",
+        "Blue Collar Detail",
+        "Unassigned White Collar Detail"
+      ],
+      "ResearchableProperties": [],
+      "IconPosition": null,
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/CommodityFactory/LogisticsCentre",
+      "Name": "Logistics Centre Flatpack",
+      "Universal": true,
+      "Properties": [
+        "Commodity Industry",
+        "Manufacture Run Time",
+        "Mass",
+        "Cargo Volume Size",
+        "Structural Integrity",
+        "Power Required",
+        "Can Research",
+        "Can Manufacture",
+        "Max Per Colony",
+        "Blue Collar Detail",
+        "Unassigned White Collar Detail"
+      ],
+      "ResearchableProperties": [],
+      "IconPosition": null,
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/CommodityFactory/ManufacturingIndustryCentre",
+      "Name": "Manufacturing Industry Centre Flatpack",
+      "Universal": true,
+      "Properties": [
+        "Commodity Industry",
+        "Manufacture Run Time",
+        "Mass",
+        "Cargo Volume Size",
+        "Structural Integrity",
+        "Power Required",
+        "Can Research",
+        "Can Manufacture",
+        "Max Per Colony",
+        "Blue Collar Detail",
+        "Unassigned White Collar Detail"
+      ],
+      "ResearchableProperties": [],
+      "IconPosition": null,
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/CommodityFactory/MiningIndustryCentre",
+      "Name": "Mining Industry Centre Flatpack",
+      "Universal": true,
+      "Properties": [
+        "Commodity Industry",
+        "Manufacture Run Time",
+        "Mass",
+        "Cargo Volume Size",
+        "Structural Integrity",
+        "Power Required",
+        "Can Research",
+        "Can Manufacture",
+        "Max Per Colony",
+        "Blue Collar Detail",
+        "Unassigned White Collar Detail"
+      ],
+      "ResearchableProperties": [],
+      "IconPosition": null,
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/CommodityFactory/OffWorldLivingInstitute",
+      "Name": "OffWorld Living Institute Flatpack",
+      "Universal": true,
+      "Properties": [
+        "Commodity Industry",
+        "Manufacture Run Time",
+        "Mass",
+        "Cargo Volume Size",
+        "Structural Integrity",
+        "Power Required",
+        "Can Research",
+        "Can Manufacture",
+        "Max Per Colony",
+        "Blue Collar Detail",
+        "Unassigned White Collar Detail"
+      ],
+      "ResearchableProperties": [],
+      "IconPosition": null,
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/CommodityFactory/RefiningIndustryCentre",
+      "Name": "Refining Industry Centre Flatpack",
+      "Universal": true,
+      "Properties": [
+        "Commodity Industry",
+        "Manufacture Run Time",
+        "Mass",
+        "Cargo Volume Size",
+        "Structural Integrity",
+        "Power Required",
+        "Can Research",
+        "Can Manufacture",
+        "Max Per Colony",
+        "Blue Collar Detail",
+        "Unassigned White Collar Detail"
+      ],
+      "ResearchableProperties": [],
+      "IconPosition": null,
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/CommodityFactory/ScienceCentre",
+      "Name": "Science Centre Flatpack",
+      "Universal": true,
+      "Properties": [
+        "Commodity Industry",
+        "Manufacture Run Time",
+        "Mass",
+        "Cargo Volume Size",
+        "Structural Integrity",
+        "Power Required",
+        "Can Research",
+        "Can Manufacture",
+        "Max Per Colony",
+        "Blue Collar Detail",
+        "Unassigned White Collar Detail"
+      ],
+      "ResearchableProperties": [],
+      "IconPosition": null,
+      "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "Flatpacks/CommodityFactory/TechnologyInstitute",
+      "Name": "Technology Institute Flatpack",
+      "Universal": true,
+      "Properties": [
+        "Commodity Industry",
+        "Manufacture Run Time",
+        "Mass",
+        "Cargo Volume Size",
+        "Structural Integrity",
+        "Power Required",
+        "Can Research",
+        "Can Manufacture",
+        "Max Per Colony",
+        "Blue Collar Detail",
+        "Unassigned White Collar Detail"
+      ],
+      "ResearchableProperties": [],
+      "IconPosition": null,
       "OutputItemType": "Flatpack"
     },
     {
