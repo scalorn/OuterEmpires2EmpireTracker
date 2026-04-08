@@ -606,14 +606,12 @@ namespace OE2EmpireTracker
         /// After processing all items, removes any remaining ListView items whose 
         /// corresponding blueprints were deleted or filtered out.
         /// </remarks>
-        void PopulateListView(IReadOnlyList<Blueprint> blueprints)
+        /// <summary>
+        /// Creates a <see cref="BlueprintReferenceCounter"/> from the current
+        /// <see cref="PlayerContext"/> and <see cref="EmpireContext"/> data.
+        /// </summary>
+        private static BlueprintReferenceCounter CreateReferenceCounter()
         {
-            if (blueprints == null)
-            {
-                return;
-            }
-
-            // Build a reference counter from current context data
             var pc = PlayerContext.getInstance();
             var ec = EmpireContext.getInstance();
 
@@ -623,7 +621,17 @@ namespace OE2EmpireTracker
             if (ec?.globalBlueprintList != null) allBlueprints.AddRange(ec.globalBlueprintList);
             var surveys = pc?.surveyList as IEnumerable<Survey> ?? Enumerable.Empty<Survey>();
 
-            var counter = new BlueprintReferenceCounter(colonies, allBlueprints, surveys);
+            return new BlueprintReferenceCounter(colonies, allBlueprints, surveys);
+        }
+
+        void PopulateListView(IReadOnlyList<Blueprint> blueprints)
+        {
+            if (blueprints == null)
+            {
+                return;
+            }
+
+            var counter = CreateReferenceCounter();
 
             // Clear and rebuild the list view
             lvwBlueprints.Items.Clear();
@@ -695,10 +703,25 @@ namespace OE2EmpireTracker
                 Log.Debug("Selected item = " + lvwBlueprints.SelectedItems[0].SubItems[0].Tag);
 
                 // Get the Blueprint object from the ListView item tag
-                viewModel.SelectBlueprint(lvwBlueprints.SelectedItems[0].SubItems[0].Tag as Blueprint);
+                var blueprint = lvwBlueprints.SelectedItems[0].SubItems[0].Tag as Blueprint;
+                viewModel.SelectBlueprint(blueprint);
+
+                // Compute reference report and update delete button state
+                var counter = CreateReferenceCounter();
+                var report = counter.CountReferences(blueprint?.UUID);
+                var (enabled, text) = GetDeleteButtonState(report);
+                cmdDelete.Enabled = enabled;
+                cmdDelete.Text = text;
 
                 // Populate form fields with selected blueprint data
                 PopulateForm();
+            }
+            else
+            {
+                // No blueprint selected — disable delete button
+                var (enabled, text) = GetDeleteButtonState(null);
+                cmdDelete.Enabled = enabled;
+                cmdDelete.Text = text;
             }
         }
 
@@ -740,6 +763,7 @@ namespace OE2EmpireTracker
         /// </remarks>
         private void cmdDelete_Click(object sender, EventArgs e)
         {
+            if (!cmdDelete.Enabled) return;
             if (viewModel.Data.UUID == null) return;
             var result = MessageBox.Show(
                 $"Delete blueprint '{viewModel.Data.Name}'?",

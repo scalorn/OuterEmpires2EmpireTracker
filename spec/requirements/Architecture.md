@@ -95,3 +95,32 @@
 **REQ-ARCH-074a** Survey transfer: a survey can be transferred to another player by changing its OwnerUUID. Surveys cannot be copied — each scan produces a unique survey.  
 **REQ-ARCH-074b** Transfer UI is deferred to a later phase. The data model (OwnerUUID) SHALL support transfers, but no transfer UI is required in the initial implementation.  
 **REQ-ARCH-075** When a user creates a new Colony, Blueprint, or Survey, it SHALL automatically be assigned to the currently selected player (CurrentPlayerUUID).
+
+## Blueprint Reference Counting
+
+**REQ-ARCH-090** BlueprintReferenceCounter SHALL be a stateless service class in `OE2EmpireTracker.Services`.  
+**REQ-ARCH-091** BlueprintReferenceCounter SHALL accept `IEnumerable<Colony>`, `IEnumerable<Blueprint>`, and `IEnumerable<Survey>` as constructor parameters for testability. Null collections SHALL be treated as empty.  
+**REQ-ARCH-092** BlueprintReferenceCounter SHALL expose a single method `CountReferences(string blueprintUUID)` that scans five reference source fields and returns a ReferenceReport:
+- ColonyStructure.FlatpackBlueprintUUID (across all colonies, all players)
+- ColonyStructure.ResearchingBlueprintUUID (across all colonies, all players)
+- ColonyStructure.ManufacturingBlueprintUUID (across all colonies, all players)
+- Blueprint.baseBlueprintUUID (player and global blueprint lists)
+- Survey.ScannerBlueprintUUID (all player surveys)
+
+**REQ-ARCH-093** CountReferences SHALL exclude self-references: if the blueprint being checked has its own UUID as baseBlueprintUUID, that match SHALL NOT be counted in BaseBlueprintCount.  
+**REQ-ARCH-094** CountReferences SHALL return ReferenceReport.Empty when the provided blueprintUUID is null or empty.  
+**REQ-ARCH-095** CountReferences SHALL handle colonies with null Structures lists gracefully by skipping them.
+
+## FormBlueprint Delete Button State
+
+**REQ-ARCH-096** FormBlueprint SHALL compute the ReferenceReport for the selected blueprint when the selection changes in the Blueprint_List_View.  
+**REQ-ARCH-097** WHEN the ReferenceReport total count is greater than zero, the Delete button SHALL be disabled and its text SHALL be set to `"In Use ({count})"`.  
+**REQ-ARCH-098** WHEN the ReferenceReport total count is zero, the Delete button SHALL be enabled and its text SHALL be set to `"Delete"`.  
+**REQ-ARCH-099** WHEN no blueprint is selected, the Delete button SHALL be disabled and its text SHALL be set to `"Delete"`.  
+**REQ-ARCH-100** The delete button state logic SHALL be extracted into a testable static method `GetDeleteButtonState(ReferenceReport)` returning `(bool enabled, string text)`.  
+**REQ-ARCH-101** The existing `cmdDelete_Click` handler SHALL include a defense-in-depth guard that returns early if the Delete button is disabled.
+
+## FormBlueprint Refs Column
+
+**REQ-ARCH-102** The Blueprint_List_View SHALL include a "Refs" column displaying the TotalCount from the ReferenceReport for each blueprint.  
+**REQ-ARCH-103** The Refs column SHALL be populated during `PopulateListView` by instantiating a BlueprintReferenceCounter from the current PlayerContext and EmpireContext data and calling CountReferences for each blueprint.

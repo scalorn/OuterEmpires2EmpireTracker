@@ -36,7 +36,7 @@ Add a `BlueprintReferenceCounter` service and `ReferenceReport` model to count h
 - [x] 3. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Integrate reference counting into FormBlueprint UI
+- [x] 4. Integrate reference counting into FormBlueprint UI
   - [x] 4.1 Extract a static method `GetDeleteButtonState(ReferenceReport report)` returning `(bool enabled, string text)` — either on `FormBlueprint` or a small helper class. If `report` is null or `TotalCount == 0`: enabled=true, text="Delete". If `TotalCount > 0`: enabled=false, text="In Use ({TotalCount})". When no blueprint is selected (null report): enabled=false, text="Delete".
     - _Requirements: 2.2, 2.3, 2.4_
 
@@ -49,20 +49,20 @@ Add a `BlueprintReferenceCounter` service and `ReferenceReport` model to count h
   - [x] 4.4 Guard the existing `cmdDelete_Click` handler — if `cmdDelete.Enabled` is false, return early (defense in depth). The existing confirmation dialog remains unchanged.
     - _Requirements: 2.5_
 
-  - [-] 4.5 Write NUnit unit tests for `GetDeleteButtonState` — test zero-count report returns enabled/"Delete", positive-count report returns disabled/"In Use (N)", null report returns disabled/"Delete".
+  - [x] 4.5 Write NUnit unit tests for `GetDeleteButtonState` — test zero-count report returns enabled/"Delete", positive-count report returns disabled/"In Use (N)", null report returns disabled/"Delete".
     - _Requirements: 2.2, 2.3, 2.4_
 
-- [~] 5. Checkpoint — Ensure all tests pass
+- [x] 5. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Update spec/ requirements documentation
-  - [~] 6.1 Update `spec/requirements/DataModel.md` — add a new "ReferenceReport" section documenting the ReferenceReport model (immutable value object, per-source counts, TotalCount computed property, ReferenceReport.Empty static field).
+- [x] 6. Update spec/ requirements documentation
+  - [x] 6.1 Update `spec/requirements/DataModel.md` — add a new "ReferenceReport" section documenting the ReferenceReport model (immutable value object, per-source counts, TotalCount computed property, ReferenceReport.Empty static field).
     - _Requirements: 1.4, 1.5_
 
-  - [~] 6.2 Update `spec/requirements/Architecture.md` — add a new requirement documenting the `BlueprintReferenceCounter` service (stateless, constructor-injected data collections, scans five reference source fields, excludes self-references, returns ReferenceReport). Also document the delete button state logic and Refs column in FormBlueprint.
+  - [x] 6.2 Update `spec/requirements/Architecture.md` — add a new requirement documenting the `BlueprintReferenceCounter` service (stateless, constructor-injected data collections, scans five reference source fields, excludes self-references, returns ReferenceReport). Also document the delete button state logic and Refs column in FormBlueprint.
     - _Requirements: 1.1, 1.2, 1.3, 1.6, 2.1, 2.2, 2.3, 2.4, 3.1, 3.2_
 
-- [~] 7. Final checkpoint — Ensure all tests pass
+- [-] 7. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
