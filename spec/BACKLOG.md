@@ -154,3 +154,28 @@ Explore whether AI can read the Discord channels for the game. Discord is often 
 
 Investigate the consequences of splitting BaselineData.json into a read-only application-installed file and a user-editable copy. The user file starts as a copy of the application file. Key question: how to handle merging when the application adds a global blueprint that the player has also added manually — they'd have different UUIDs but matching data. How complicated would deduplication and merge logic get? Consider upgrade scenarios, conflict resolution, and whether a three-way merge is feasible.
 
+
+### BL-030: Colony Administration Summary Report
+**Dependencies:** None
+
+The colony form's Administration tab should become a per-colony summary report. We already gather activity and inactivity data across all colonies — show the same data scoped to the individual colony on its Administration tab.
+
+### BL-031: Colony Import Timestamp Tracking
+**Dependencies:** None
+
+When we import a colony, record the import timestamp inside the Colony data structure. Display this on the inactivity form as "you have not imported this colony for <countdown format> time." Notify if it has been more than a day, since stale imports miss commodity requests. This information also feeds into the colony Administration report.
+
+### BL-032: Manufacturing Build Queue Calculator
+**Dependencies:** None
+
+Add a form/feature to calculate how many items to queue that would keep a manufactory busy for at least <countdown format> time.
+
+### BL-033: RtfBuilder Font Style Support
+**Dependencies:** None
+
+Add support for font styles to RtfBuilder — bold, italics, strikethrough, etc.
+
+### BL-034: Codebase Duplication Scan & Cleanup
+**Dependencies:** None
+
+We recently had a bug caused by duplicated blocks of code (e.g. `ExtractHtmlFragmentFromClipboardData` existed in both `FormBlueprint` and `BlueprintScanner`). Do a complete scan of the codebase looking for other instances of code duplication. Also look for code cleanliness opportunities, refactoring candidates, and general best-practices improvements.
