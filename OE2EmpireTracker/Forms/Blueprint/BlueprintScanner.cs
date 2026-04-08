@@ -478,7 +478,19 @@ namespace OE2EmpireTracker.Forms.Blueprint
             // - End tags that match included opening tags
             // - Wrapped with <!--StartFragment--> and <!--EndFragment--> markers
 
-            // Byte count from beginning of clipboard to start of fragment
+            // Prefer marker-based extraction — encoding-safe and avoids byte-offset mismatch
+            const string startMarker = "<!--StartFragment-->";
+            const string endMarker = "<!--EndFragment-->";
+            int startPos = htmlDataString.IndexOf(startMarker);
+            if (startPos >= 0)
+            {
+                startPos += startMarker.Length;
+                int endPos = htmlDataString.IndexOf(endMarker, startPos);
+                if (endPos >= 0)
+                    return htmlDataString.Substring(startPos, endPos - startPos);
+            }
+
+            // Fallback: byte-offset extraction for non-standard clipboard sources
             int startFragmentIndex = htmlDataString.IndexOf("StartFragment:");
             if (startFragmentIndex < 0)
             {

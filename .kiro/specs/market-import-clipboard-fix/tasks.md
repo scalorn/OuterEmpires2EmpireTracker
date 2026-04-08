@@ -20,6 +20,6 @@
   - Test: clipboard with no markers and no header returns error
   - _Bugfix: 3.3_
 
-- [~] 4. Verify all existing tests pass
+- [x] 4. Verify all existing tests pass
   - Build solution, run all tests via vstest.console
   - _Bugfix: 3.1, 3.2_
