@@ -906,6 +906,8 @@ namespace OE2EmpireTracker
                 return;
             }
 
+            using var guard = new ProgrammaticUpdateGuard(this);
+
             // Clear and regenerate blueprint type list
             txtFilterBlueprintType.Text = "";
             UpdateBlueprintTypeListBase();
