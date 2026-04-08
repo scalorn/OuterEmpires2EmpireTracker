@@ -182,8 +182,7 @@ namespace OE2EmpireTracker.Forms.Colony
             playerContext.colonyList.Remove(selectedColony);
             playerContext.writeContext();
             ClearForm();
-            lvwColonies.Items.Clear();
-            PopulateListView(playerContext.GetCurrentPlayerColonies());
+            txtColonyListFilter_TextChanged(sender, e);
             UpdateTitle();
         }
 
@@ -214,6 +213,7 @@ namespace OE2EmpireTracker.Forms.Colony
             dgvCommodityRequests.Rows.Clear();
             rtbStatus.Text = "";
             UpdateTabTitles();
+            UpdateTabWarnings();
         }
 
         private void cmdOptimize_Click(object sender, EventArgs e)
