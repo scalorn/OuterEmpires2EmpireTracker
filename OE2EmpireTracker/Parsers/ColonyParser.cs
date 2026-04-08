@@ -219,7 +219,7 @@ namespace OE2EmpireTracker.Parsers
                     if (string.IsNullOrEmpty(s.FlatpackBlueprintUUID)) continue;
                     if (commodityFactoryUUIDs.Contains(s.FlatpackBlueprintUUID)) continue;
                     var bp = empireContext?.FindGlobalBlueprint(s.FlatpackBlueprintUUID);
-                    if (bp != null && bp.BluePrintType == BlueprintTypes.CommodityFactory)
+                    if (bp != null && bp.BluePrintType.IsCommodityFactory())
                         commodityFactoryUUIDs.Add(s.FlatpackBlueprintUUID);
                 }
                 // Also check parsed buildings for commodity factory types
@@ -228,7 +228,7 @@ namespace OE2EmpireTracker.Parsers
                     if (string.IsNullOrEmpty(p.FlatpackBlueprintUUID)) continue;
                     if (commodityFactoryUUIDs.Contains(p.FlatpackBlueprintUUID)) continue;
                     var bp = empireContext?.FindGlobalBlueprint(p.FlatpackBlueprintUUID);
-                    if (bp != null && bp.BluePrintType == BlueprintTypes.CommodityFactory)
+                    if (bp != null && bp.BluePrintType.IsCommodityFactory())
                         commodityFactoryUUIDs.Add(p.FlatpackBlueprintUUID);
                 }
 
