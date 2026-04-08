@@ -40,16 +40,16 @@ Add a `BlueprintReferenceCounter` service and `ReferenceReport` model to count h
   - [x] 4.1 Extract a static method `GetDeleteButtonState(ReferenceReport report)` returning `(bool enabled, string text)` — either on `FormBlueprint` or a small helper class. If `report` is null or `TotalCount == 0`: enabled=true, text="Delete". If `TotalCount > 0`: enabled=false, text="In Use ({TotalCount})". When no blueprint is selected (null report): enabled=false, text="Delete".
     - _Requirements: 2.2, 2.3, 2.4_
 
-  - [-] 4.2 Add a "Refs" column to the ListView in `FormBlueprint.Designer.cs`. Update `PopulateListView` in `FormBlueprint.cs` to instantiate a `BlueprintReferenceCounter` (from current `PlayerContext`/`EmpireContext` data) and populate the Refs column with each blueprint's `TotalCount`.
+  - [x] 4.2 Add a "Refs" column to the ListView in `FormBlueprint.Designer.cs`. Update `PopulateListView` in `FormBlueprint.cs` to instantiate a `BlueprintReferenceCounter` (from current `PlayerContext`/`EmpireContext` data) and populate the Refs column with each blueprint's `TotalCount`.
     - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
-  - [~] 4.3 Update `lvwBlueprints_ItemSelectionChanged` in `FormBlueprint.cs` to compute the `ReferenceReport` for the selected blueprint and call `GetDeleteButtonState` to set `cmdDelete.Enabled` and `cmdDelete.Text`. When no item is selected, disable the button with text "Delete".
+  - [x] 4.3 Update `lvwBlueprints_ItemSelectionChanged` in `FormBlueprint.cs` to compute the `ReferenceReport` for the selected blueprint and call `GetDeleteButtonState` to set `cmdDelete.Enabled` and `cmdDelete.Text`. When no item is selected, disable the button with text "Delete".
     - _Requirements: 2.1, 2.2, 2.3, 2.4_
 
-  - [~] 4.4 Guard the existing `cmdDelete_Click` handler — if `cmdDelete.Enabled` is false, return early (defense in depth). The existing confirmation dialog remains unchanged.
+  - [x] 4.4 Guard the existing `cmdDelete_Click` handler — if `cmdDelete.Enabled` is false, return early (defense in depth). The existing confirmation dialog remains unchanged.
     - _Requirements: 2.5_
 
-  - [~] 4.5 Write NUnit unit tests for `GetDeleteButtonState` — test zero-count report returns enabled/"Delete", positive-count report returns disabled/"In Use (N)", null report returns disabled/"Delete".
+  - [-] 4.5 Write NUnit unit tests for `GetDeleteButtonState` — test zero-count report returns enabled/"Delete", positive-count report returns disabled/"In Use (N)", null report returns disabled/"Delete".
     - _Requirements: 2.2, 2.3, 2.4_
 
 - [~] 5. Checkpoint — Ensure all tests pass

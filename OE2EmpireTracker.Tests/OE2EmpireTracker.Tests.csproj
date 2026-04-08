@@ -263,6 +263,7 @@
     <Compile Include="Models\LockTrackingTests.cs" />
     <Compile Include="Controls\ValidatedTextBoxTests.cs" />
     <Compile Include="Forms\MainMenuOverhaulTests.cs" />
+    <Compile Include="Forms\GetDeleteButtonStateTests.cs" />
     <Compile Include="Parsers\ColonyParserTests.cs" />
     <Compile Include="Parsers\ColonyParserDedupeTests.cs" />
     <Compile Include="Parsers\ColonyParserIdempotencyTests.cs" />
