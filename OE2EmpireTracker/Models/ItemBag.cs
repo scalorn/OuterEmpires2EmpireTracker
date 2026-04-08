@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using OE2EmpireTracker.Services;
 using Sgml;
 using System;
 using System.Collections.Generic;
@@ -89,7 +90,7 @@ namespace OE2EmpireTracker.Models
             foreach (KeyValuePair<string, Item> entry in value.Items)
             {
                 writer.WritePropertyName(entry.Key);
-                String text = JsonConvert.SerializeObject(entry.Value,Formatting.Indented);
+                String text = JsonConvert.SerializeObject(entry.Value, JsonSettings.SerializerSettings);
                 writer.WriteRawValue(text);
             }
             writer.WriteEndObject();

@@ -151,6 +151,7 @@
     <Compile Include="Persistence\WindowStateHelper.cs" />
     <Compile Include="Models\TechLevel.cs" />
     <Compile Include="Services\EmpireContext.cs" />
+    <Compile Include="Services\JsonSettings.cs" />
     <Compile Include="Constants\BlueprintTypes.cs" />
     <Compile Include="Constants\ResearchTimeLookup.cs" />
     <Compile Include="Constants\RefiningRecipes.cs" />

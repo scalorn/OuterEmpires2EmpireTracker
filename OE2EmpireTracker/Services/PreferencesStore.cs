@@ -80,7 +80,7 @@ namespace OE2EmpireTracker.Services
                     Log.Info("Created preferences directory {0}", directory);
                 }
 
-                string json = JsonConvert.SerializeObject(_preferences, Formatting.Indented);
+                string json = JsonConvert.SerializeObject(_preferences, JsonSettings.SerializerSettings);
                 SafeFileWriter.WriteAllText(_filePath, json);
                 Log.Debug("Saved UI preferences to {0}", _filePath);
             }

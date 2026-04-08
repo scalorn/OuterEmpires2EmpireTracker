@@ -3,6 +3,7 @@ using Newtonsoft.Json.Converters;
 using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -19,9 +20,11 @@ namespace OE2EmpireTracker.Models
         [Required]
         [JsonConverter(typeof(StringEnumConverter))]
         public Models.ItemType.ItemTypeEnum ItemType { get; set; } = Models.ItemType.ItemTypeEnum.None;
+        [DefaultValue("")]
         public string BaseItemTypeID { get; set; } = string.Empty;
 
         [Required]
+        [DefaultValue("")]
         public virtual string Name { get; set; }= string.Empty;
 
         [JsonIgnore]
@@ -87,11 +90,14 @@ namespace OE2EmpireTracker.Models
         }
 
         [Required]
+        [DefaultValue("")]
         public virtual string NickName { get; set; }= string.Empty;
         [Required]
+        [DefaultValue("")]
         public virtual string Description { get; set; } = string.Empty;
         //[Required]
         public int Quantity { get; set; } = 0;
+        [DefaultValue("")]
         public string ResourcePurity { get; set; } = string.Empty;
         public double Volume { get; set; } = 0;
         

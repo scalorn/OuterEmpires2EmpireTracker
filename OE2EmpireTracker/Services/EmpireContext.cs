@@ -87,7 +87,7 @@ namespace OE2EmpireTracker.Services
             baselineRoot.BlueprintType = blueprintTypeList.ToArray();
             baselineRoot.Blueprint = globalBlueprintList.ToArray();
             baselineRoot.TechLevel = techLevelList.ToArray();
-            string jsonContent = JsonConvert.SerializeObject(baselineRoot, Formatting.Indented);
+            string jsonContent = JsonConvert.SerializeObject(baselineRoot, JsonSettings.SerializerSettings);
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
             Log.Info("Baseline data saved to {0}", FilePath);
         }

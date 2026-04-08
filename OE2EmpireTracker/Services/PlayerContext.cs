@@ -207,7 +207,7 @@ namespace OE2EmpireTracker.Services
             playerRoot.DeliveryRoute = deliveryRouteList.ToArray();
             playerRoot.DeliveryPlan = deliveryPlanList.ToArray();
 
-            string jsonContent = JsonConvert.SerializeObject(playerRoot, Formatting.Indented);
+            string jsonContent = JsonConvert.SerializeObject(playerRoot, JsonSettings.SerializerSettings);
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
             Log.Info("Player data saved to {0}", FilePath);
         }
