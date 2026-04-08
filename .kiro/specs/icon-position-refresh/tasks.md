@@ -6,31 +6,31 @@ Update the blueprint market import system to handle game sprite sheet changes. B
 
 ## Tasks
 
-- [ ] 1. Update BlueprintTypes constants and add IsCommodityFactory helper
+- [x] 1. Update BlueprintTypes constants and add IsCommodityFactory helper
   - [x] 1.1 In `BlueprintTypes.cs`, replace `CommodityFactory` constant with `CommodityFactoryPrefix = "Flatpacks/CommodityFactory/"` and add `OreHopper = "OreHopper"` constant. Add `IsCommodityFactory()` extension method to `BlueprintTypeExtensions` that checks `StartsWith(CommodityFactoryPrefix)`. Keep the old `CommodityFactory` constant temporarily marked `[Obsolete]` to find all references.
     - _Requirements: 4.5, 5.6_
 
   - [x] 1.2 Write unit tests for `IsCommodityFactory()` in `OE2EmpireTracker.Tests/Constants/BlueprintTypeExtensionTests.cs` — null returns false, empty returns false, exact prefix without trailing content returns false, valid variants return true, other Flatpacks/ types return false, case insensitive. Add `<Compile Include>` to test csproj.
     - _Requirements: 5.6_
 
-  - [-] 1.3 Write FsCheck property test for `IsCommodityFactory()` consistency (Property 2 from design). Add to `OE2EmpireTracker.Tests/Constants/BlueprintTypeExtensionPropertyTests.cs`.
+  - [x] 1.3 Write FsCheck property test for `IsCommodityFactory()` consistency (Property 2 from design). Add to `OE2EmpireTracker.Tests/Constants/BlueprintTypeExtensionPropertyTests.cs`.
     - _Property 2: IsCommodityFactory consistency_
     - _Requirements: 5.6_
 
 - [ ] 2. Update all CommodityFactory references across the codebase
-  - [~] 2.1 Update `ColonyParser.cs` — replace all `== BlueprintTypes.CommodityFactory` checks with `.IsCommodityFactory()`. Verify with getDiagnostics.
+  - [x] 2.1 Update `ColonyParser.cs` — replace all `== BlueprintTypes.CommodityFactory` checks with `.IsCommodityFactory()`. Verify with getDiagnostics.
     - _Requirements: 5.7_
 
-  - [~] 2.2 Update `Colony.cs` (ProcessCommodityFactory and LockCommodityFactoryResources) — replace CommodityFactory checks with `.IsCommodityFactory()`.
+  - [x] 2.2 Update `Colony.cs` (ProcessCommodityFactory and LockCommodityFactoryResources) — replace CommodityFactory checks with `.IsCommodityFactory()`.
     - _Requirements: 5.7_
 
-  - [~] 2.3 Update `ColonyStatusCalculator.cs` — replace CommodityFactory checks with `.IsCommodityFactory()`.
+  - [x] 2.3 Update `ColonyStatusCalculator.cs` — replace CommodityFactory checks with `.IsCommodityFactory()`.
     - _Requirements: 5.7_
 
-  - [~] 2.4 Update `ColonyStructure.cs` (form) — replace CommodityFactory checks with `.IsCommodityFactory()`.
+  - [x] 2.4 Update `ColonyStructure.cs` (form) — replace CommodityFactory checks with `.IsCommodityFactory()`.
     - _Requirements: 5.7_
 
-  - [~] 2.5 Update `ColonyActivityCollector.cs` and `ColonyInactivityCollector.cs` — replace CommodityFactory checks with `.IsCommodityFactory()`.
+  - [-] 2.5 Update `ColonyActivityCollector.cs` and `ColonyInactivityCollector.cs` — replace CommodityFactory checks with `.IsCommodityFactory()`.
     - _Requirements: 5.7_
 
   - [~] 2.6 Update `DeliveryPlanViewModel.cs` — replace CommodityFactory checks with `.IsCommodityFactory()`.

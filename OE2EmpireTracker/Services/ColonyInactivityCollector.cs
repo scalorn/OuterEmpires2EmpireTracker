@@ -111,7 +111,7 @@ namespace OE2EmpireTracker.Services
                         ? "No blueprint assigned"
                         : "Idle";
                 }
-                else if (blueprint.BluePrintType == BlueprintTypes.CommodityFactory)
+                else if (blueprint.BluePrintType.IsCommodityFactory())
                 {
                     type = ActivityType.CommodityManufacturing;
                     processDetails = string.IsNullOrEmpty(structure.ManufacturingCommodityName)

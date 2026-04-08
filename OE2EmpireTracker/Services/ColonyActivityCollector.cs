@@ -184,7 +184,7 @@ namespace OE2EmpireTracker.Services
                         type = ActivityType.Manufacturing;
                         details = GetManufacturingDetails(structure, playerContext);
                     }
-                    else if (blueprint.BluePrintType == BlueprintTypes.CommodityFactory)
+                    else if (blueprint.BluePrintType.IsCommodityFactory())
                     {
                         type = ActivityType.CommodityManufacturing;
                         details = GetCommodityManufacturingDetails(structure);
