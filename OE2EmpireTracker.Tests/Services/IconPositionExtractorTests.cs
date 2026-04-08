@@ -1,11 +1,14 @@
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Forms.Blueprint;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static OE2EmpireTracker.Models.CommodityIndustry;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -168,6 +171,76 @@ namespace OE2EmpireTracker.Tests.Services
                 $"CompareAndUpdateBaselineData summary: {updatedCount} updated, {addedCount} added");
 
             return root;
+        }
+
+        /// <summary>
+        /// Default Properties array for commodity factory BlueprintType entries.
+        /// Matches the properties defined in Task 4.1 for per-industry entries.
+        /// </summary>
+        private static readonly string[] DefaultCommodityFactoryProperties = new[]
+        {
+            "Commodity Industry",
+            "Manufacture Run Time",
+            "Mass",
+            "Cargo Volume Size",
+            "Structural Integrity",
+            "Power Required",
+            "Can Research",
+            "Can Manufacture",
+            "Max Per Colony",
+            "Blue Collar Detail",
+            "Unassigned White Collar Detail"
+        };
+
+        /// <summary>
+        /// Ensures all 14 per-industry CommodityFactory BlueprintType entries exist
+        /// in the BaselineData JObject. Iterates over all CommodityIndustryEnum values
+        /// (excluding None), checks for existing entries by Id, and creates missing
+        /// entries with null IconPosition and default properties.
+        /// </summary>
+        private void EnsureCommodityFactoryEntries(JObject baselineRoot)
+        {
+            JArray blueprintTypes = (JArray)baselineRoot["BlueprintType"];
+            int addedCount = 0;
+
+            foreach (CommodityIndustryEnum industry in Enum.GetValues(typeof(CommodityIndustryEnum)))
+            {
+                if (industry == CommodityIndustryEnum.None)
+                    continue;
+
+                string industryName = industry.ToString();
+                string expectedId = BlueprintTypes.CommodityFactoryPrefix + industryName;
+
+                bool exists = blueprintTypes.Any(bt =>
+                    string.Equals((string)bt["Id"], expectedId, StringComparison.Ordinal));
+
+                if (exists)
+                    continue;
+
+                // Get the display name from the CommodityIndustry model
+                string displayName = CommodityIndustryMapByEnum.ContainsKey(industry)
+                    ? CommodityIndustryMapByEnum[industry].Name
+                    : industryName;
+
+                var newEntry = new JObject
+                {
+                    ["Id"] = expectedId,
+                    ["Name"] = displayName + " Flatpack",
+                    ["Universal"] = true,
+                    ["Properties"] = new JArray(DefaultCommodityFactoryProperties),
+                    ["ResearchableProperties"] = new JArray(),
+                    ["IconPosition"] = null,
+                    ["OutputItemType"] = "Flatpack"
+                };
+
+                blueprintTypes.Add(newEntry);
+                addedCount++;
+                TestContext.WriteLine(
+                    $"ENSURED: Added missing CommodityFactory entry \"{expectedId}\" ({displayName} Flatpack)");
+            }
+
+            TestContext.WriteLine(
+                $"EnsureCommodityFactoryEntries summary: {addedCount} entries added");
         }
 
         [Test]
