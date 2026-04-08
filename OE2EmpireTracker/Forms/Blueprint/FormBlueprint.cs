@@ -127,6 +127,7 @@ namespace OE2EmpireTracker
             lvwBlueprints.Columns.Add("Tech Level", 60);
             lvwBlueprints.Columns.Add("Evolution", 30);
             lvwBlueprints.Columns.Add("Nick Name", 100);
+            lvwBlueprints.Columns.Add("Refs", 40);
             lvwBlueprints.ColumnClick += lvwBlueprints_ColumnClick;
             lvwBlueprints.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
             PopulateListView(viewModel.GetFilteredBlueprints(null));
@@ -612,6 +613,18 @@ namespace OE2EmpireTracker
                 return;
             }
 
+            // Build a reference counter from current context data
+            var pc = PlayerContext.getInstance();
+            var ec = EmpireContext.getInstance();
+
+            var colonies = pc?.colonyList as IEnumerable<Colony> ?? Enumerable.Empty<Colony>();
+            var allBlueprints = new List<Blueprint>();
+            if (pc?.blueprintList != null) allBlueprints.AddRange(pc.blueprintList);
+            if (ec?.globalBlueprintList != null) allBlueprints.AddRange(ec.globalBlueprintList);
+            var surveys = pc?.surveyList as IEnumerable<Survey> ?? Enumerable.Empty<Survey>();
+
+            var counter = new BlueprintReferenceCounter(colonies, allBlueprints, surveys);
+
             // Clear and rebuild the list view
             lvwBlueprints.Items.Clear();
 
@@ -640,6 +653,7 @@ namespace OE2EmpireTracker
                 item.SubItems.Add(blueprint.TechLevel); // Tech Level
                 item.SubItems.Add("" + blueprint.Evolution); // Evolution
                 item.SubItems.Add(blueprint.NickName); // Nick Name
+                item.SubItems.Add(counter.CountReferences(blueprint.UUID).TotalCount.ToString()); // Refs
 
                 if (!found)
                 {
@@ -1158,6 +1172,29 @@ namespace OE2EmpireTracker
             }
             lvwBlueprints.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
             lvwBlueprints.Sort();
+        }
+
+        /// <summary>
+        /// Determines the Delete button enabled state and display text based on a
+        /// <see cref="ReferenceReport"/>. Pure logic extracted for testability.
+        /// </summary>
+        /// <param name="report">
+        /// The reference report for the selected blueprint, or <c>null</c> when no
+        /// blueprint is selected.
+        /// </param>
+        /// <returns>
+        /// A tuple where <c>enabled</c> indicates whether the button should be
+        /// clickable and <c>text</c> is the label to display on the button.
+        /// </returns>
+        internal static (bool enabled, string text) GetDeleteButtonState(ReferenceReport report)
+        {
+            if (report == null)
+                return (false, "Delete");
+
+            if (report.TotalCount > 0)
+                return (false, $"In Use ({report.TotalCount})");
+
+            return (true, "Delete");
         }
     }
 
