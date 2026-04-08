@@ -1887,6 +1887,7 @@
     {
       "OwnerUUID": "",
       "baseBlueprintUUID": "",
+      "BluePrintType": "Flatpacks/CommodityFactory/MiningIndustryCentre",
       "Properties": {},
       "Resources": {},
       "UUID": "365339ae-e024-419d-8f7c-f0943e8d9059",
@@ -1896,6 +1897,7 @@
     {
       "OwnerUUID": "",
       "baseBlueprintUUID": "",
+      "BluePrintType": "Flatpacks/MiningRig",
       "CopyCost": 1768,
       "Properties": {
         "Manufacture Run Time": "1h 0m",
@@ -2008,6 +2010,7 @@
     {
       "OwnerUUID": "",
       "baseBlueprintUUID": "",
+      "BluePrintType": "Flatpacks/ReactorCore",
       "CopyCost": 2944,
       "Properties": {
         "Manufacture Run Time": "1h 0m",
@@ -2161,6 +2164,7 @@
     {
       "OwnerUUID": "",
       "baseBlueprintUUID": "",
+      "BluePrintType": "Flatpacks/ResearchLaboratory",
       "CopyCost": 1628,
       "Properties": {
         "Manufacture Run Time": "1h 0m",
@@ -2254,6 +2258,7 @@
     {
       "OwnerUUID": "",
       "baseBlueprintUUID": "",
+      "BluePrintType": "Flatpacks/Warehouse",
       "CopyCost": 1745,
       "Properties": {
         "Manufacture Run Time": "1h 0m",

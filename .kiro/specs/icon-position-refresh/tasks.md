@@ -98,14 +98,14 @@ Update the blueprint market import system to handle game sprite sheet changes. B
   - [x] 10.5 Add integration test: import AllFlatpacks twice, verify idempotency.
     - _Requirements: 7.4_
 
-- [ ] 11. Coverage gap report and backlog integration
-  - [-] 11.1 Review the coverage gap report output from the extractor run. For any BlueprintTypes with no HTML coverage, add backlog items to `spec/BACKLOG.md` following the `BL-NNN` format under a "MarketSample Coverage Gaps" section.
+- [x] 11. Coverage gap report and backlog integration
+  - [x] 11.1 Review the coverage gap report output from the extractor run. For any BlueprintTypes with no HTML coverage, add backlog items to `spec/BACKLOG.md` following the `BL-NNN` format under a "MarketSample Coverage Gaps" section.
     - _Requirements: 10.1, 10.2, 10.5_
 
-  - [~] 11.2 For any CommodityIndustry variants missing from MarketSample coverage, add a grouped backlog item listing the missing variants.
+  - [x] 11.2 For any CommodityIndustry variants missing from MarketSample coverage, add a grouped backlog item listing the missing variants.
     - _Requirements: 10.4_
 
-- [~] 12. Final checkpoint — build and run all tests
+- [x] 12. Final checkpoint — build and run all tests
   - Ensure all tests pass. Ask the user if questions arise.
 
 ## Notes
