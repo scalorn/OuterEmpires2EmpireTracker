@@ -211,61 +211,12 @@ namespace OE2EmpireTracker
 
         /// <summary>
         /// Extracts selected HTML fragment string from clipboard data by parsing header information.
+        /// Delegates to BlueprintScanner.ExtractHtmlFragmentFromClipboardData which uses
+        /// marker-based extraction (encoding-safe) with byte-offset fallback.
         /// </summary>
-        /// <param name="htmlDataString">String representing HTML clipboard data. This includes HTML header.</param>
-        /// <returns>String containing only the HTML selection part of htmlDataString, without header. Returns error message if parsing fails.</returns>
-        /// <remarks>
-        /// Uses Microsoft's standard clipboard HTML format which wraps fragments with:
-        /// - <!--StartFragment--> marker followed by byte count to fragment start
-        /// - <!--EndFragment--> marker followed by byte count to fragment end
-        /// 
-        /// The method extracts the content between these markers to isolate just the selected fragment.
-        /// 
-        /// Reference: https://msdn.microsoft.com/en-us/library/aa767917(v=vs.85).aspx
-        /// 
-        /// TODO: Current implementation assumes 10-digit indices which may be brittle for non-standard cases.
-        /// More flexible parsing should be implemented to handle edge cases.
-        /// </remarks>
         internal static string ExtractHtmlFragmentFromClipboardData(string htmlDataString)
         {
-            // HTML Clipboard Format:
-            // (https://msdn.microsoft.com/en-us/library/aa767917(v=vs.85).aspx)
-            // - Fragment contains valid HTML representing the selected area
-            // - Includes opening tags and attributes for elements with end tags within selection
-            // - End tags that match included opening tags
-            // - Wrapped with <!--StartFragment--> and <!--EndFragment--> markers
-
-            // Byte count from beginning of clipboard to start of fragment
-            int startFragmentIndex = htmlDataString.IndexOf("StartFragment:");
-            if (startFragmentIndex < 0)
-            {
-                return "ERROR: Unrecognized html header";
-            }
-            
-            // Parse the byte offset for fragment start
-            startFragmentIndex = Int32.Parse(htmlDataString.Substring(startFragmentIndex + "StartFragment:".Length, 10));
-            if (startFragmentIndex < 0 || startFragmentIndex > htmlDataString.Length)
-            {
-                return "ERROR: Unrecognized html header";
-            }
-
-            // Byte count from beginning of clipboard to end of fragment
-            int endFragmentIndex = htmlDataString.IndexOf("EndFragment:");
-            if (endFragmentIndex < 0)
-            {
-                return "ERROR: Unrecognized html header";
-            }
-
-            // Parse the byte offset for fragment end
-            endFragmentIndex = Int32.Parse(htmlDataString.Substring(endFragmentIndex + "EndFragment:".Length, 10));
-            if (endFragmentIndex > htmlDataString.Length)
-            {
-                endFragmentIndex = htmlDataString.Length;
-            }
-
-            // Convert bytes to string using UTF-8 encoding
-            byte[] bytes = Encoding.UTF8.GetBytes(htmlDataString);
-            return Encoding.UTF8.GetString(bytes, startFragmentIndex, endFragmentIndex - startFragmentIndex);
+            return BlueprintScanner.ExtractHtmlFragmentFromClipboardData(htmlDataString);
         }
 
         /// <summary>
