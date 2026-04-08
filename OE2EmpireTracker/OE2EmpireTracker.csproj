@@ -127,6 +127,7 @@
     <Compile Include="Services\BuildTimeCalculator.cs" />
     <Compile Include="Services\ColonyActivityCollector.cs" />
     <Compile Include="Services\MarketBlueprintImporter.cs" />
+    <Compile Include="Services\TabWarningService.cs" />
     <Compile Include="Services\ColonyInactivityCollector.cs" />
     <Compile Include="Models\Colony.cs" />
     <Compile Include="Services\ColonyBuildEligibility.cs" />

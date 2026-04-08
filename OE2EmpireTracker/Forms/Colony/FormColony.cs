@@ -272,6 +272,7 @@ namespace OE2EmpireTracker.Forms.Colony
             rtbStatus.Rtf = builder.ToRtf();
 
             colonyStructureControl.Visible = true;
+            UpdateTabWarnings();
             this.ResumeLayout();
         }
         private void structures_ColonyStructureDataChanged(object sender, EventArgs e)
@@ -366,6 +367,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 playerContext.OnColonyDataChanged(selectedColony.UUID);
 
             UpdateTabTitles();
+            UpdateTabWarnings();
         }
 
         private void txtFilterFlatpack_TextChanged(object sender, EventArgs e)
@@ -599,6 +601,8 @@ namespace OE2EmpireTracker.Forms.Colony
                 // Still update tab title with active request count (cheap)
                 UpdateTabTitles();
             }
+
+            UpdateTabWarnings();
 
             this.ResumeLayout();
             Log.Debug("PopulateForm completed!");
@@ -1238,6 +1242,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             colonyViewModel.AddCommodityRequest(commodity.Name, qty, needBy);
             PopulateCommodityRequestGrid();
+            UpdateTabWarnings();
         }
 
         private void txtCommodityRequestFilter_TextChanged(object sender, EventArgs e)
@@ -1381,6 +1386,8 @@ namespace OE2EmpireTracker.Forms.Colony
                     playerContext.writeContext();
                 }
             }
+
+            UpdateTabWarnings();
         }
 
         private void dgvCommodityRequests_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
@@ -1446,6 +1453,7 @@ namespace OE2EmpireTracker.Forms.Colony
                     colonyViewModel.RemoveCommodityRequest(request);
             }
             PopulateCommodityRequestGrid();
+            UpdateTabWarnings();
             e.Handled = true;
         }
 
@@ -1673,6 +1681,41 @@ namespace OE2EmpireTracker.Forms.Colony
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        // -----------------------------------------------------------------------
+        // Tab Warning Helpers
+        // -----------------------------------------------------------------------
+
+        private void ApplyTabWarning(TabPage tab, TabWarningLevel level)
+        {
+            switch (level)
+            {
+                case TabWarningLevel.Red:
+                    tab.UseVisualStyleBackColor = false;
+                    tab.BackColor = Color.LightCoral;
+                    break;
+                case TabWarningLevel.Yellow:
+                    tab.UseVisualStyleBackColor = false;
+                    tab.BackColor = Color.Yellow;
+                    break;
+                default:
+                    tab.UseVisualStyleBackColor = true;
+                    tab.BackColor = SystemColors.Control;
+                    break;
+            }
+        }
+
+        private void UpdateTabWarnings()
+        {
+            int structureCount = selectedColony?.Structures?.Count ?? 0;
+            ApplyTabWarning(tabPStructures,
+                TabWarningService.EvaluateStructureWarning(structureCount));
+
+            var commodities = selectedColony?.Commodities;
+            ApplyTabWarning(tabPWorkers,
+                TabWarningService.EvaluateWorkerWarning(
+                    commodities ?? Enumerable.Empty<CommodityRequested>(), DateTime.Now));
         }
     }
 

@@ -6,7 +6,7 @@ Add background color warnings to the Structures and Worker tab selectors in `For
 
 ## Tasks
 
-- [ ] 1. Add StructureCap constant and create TabWarningService
+- [x] 1. Add StructureCap constant and create TabWarningService
   - [x] 1.1 Add `StructureCap = 65` constant to `GameConstants.cs`
     - Add `public const int StructureCap = 65;` with XML doc comment to the Structure section
     - _Requirements: 7, 8 (informational constant for the game's structure cap)_
@@ -52,17 +52,17 @@ Add background color warnings to the Structures and Worker tab selectors in `For
       - Mix of red and yellow conditions → `Red` wins
     - _Requirements: 1.1, 1.2, 1.3, 2.1, 2.2, 3.1, 4.1, 4.2, 6.1, 7.1, 7.2, 8.1, 8.2, 9.1_
 
-- [~] 2. Checkpoint - Verify TabWarningService compiles and tests pass
+- [x] 2. Checkpoint - Verify TabWarningService compiles and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 3. Integrate TabWarningService into FormColony
-  - [~] 3.1 Add `ApplyTabWarning` and `UpdateTabWarnings` private helpers to `FormColony.cs`
+- [x] 3. Integrate TabWarningService into FormColony
+  - [x] 3.1 Add `ApplyTabWarning` and `UpdateTabWarnings` private helpers to `FormColony.cs`
     - Add `using OE2EmpireTracker.Services;` if not already present
     - Add `ApplyTabWarning(TabPage tab, TabWarningLevel level)` — sets `BackColor` / `UseVisualStyleBackColor` per the design (`LightCoral` for Red, `Yellow` for Yellow, `SystemColors.Control` + `UseVisualStyleBackColor = true` for None)
     - Add `UpdateTabWarnings()` — calls both `EvaluateStructureWarning` and `EvaluateWorkerWarning`, applies results to `tabPStructures` and `tabPWorkers`
     - _Requirements: 7.1, 7.2, 8.1, 8.2, 9.1, 1.1, 2.1, 3.1, 4.1_
 
-  - [~] 3.2 Call `UpdateTabWarnings()` from existing event handlers in FormColony
+  - [x] 3.2 Call `UpdateTabWarnings()` from existing event handlers in FormColony
     - Add `UpdateTabWarnings()` call at end of `PopulateForm()` (after structures and commodities are populated) — covers colony selection and import
     - Add `UpdateTabWarnings()` call at end of `cmdAddFlatpack_Click()` (after adding structure)
     - Add `UpdateTabWarnings()` call in `structures_ColonyStructureDataChanged()` (after recalculating status)
@@ -71,7 +71,7 @@ Add background color warnings to the Structures and Worker tab selectors in `For
     - Add `UpdateTabWarnings()` call at end of `dgvCommodityRequests_KeyDown()` (after removing request)
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 10.1, 10.2, 10.3_
 
-- [~] 4. Final checkpoint - Ensure all tests pass
+- [x] 4. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

@@ -28,6 +28,11 @@ namespace OE2EmpireTracker.Constants
         /// <summary>Commodity manufacturing cycle time in seconds (10 minutes).</summary>
         public const long CommodityCycleSeconds = 600;
 
+        // --- Structures ---
+
+        /// <summary>Maximum structures per colony (game cap).</summary>
+        public const int StructureCap = 65;
+
         // --- Structure Property Keys ---
 
         /// <summary>Property key indicating a structure has been built.</summary>

@@ -1,0 +1,79 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using OE2EmpireTracker.Models;
+
+namespace OE2EmpireTracker.Services
+{
+    /// <summary>Warning level for colony tab background colors.</summary>
+    public enum TabWarningLevel
+    {
+        None,
+        Yellow,
+        Red
+    }
+
+    /// <summary>
+    /// Pure static service that evaluates colony state and returns a warning level
+    /// for the Structures and Worker tab selectors.
+    /// </summary>
+    public static class TabWarningService
+    {
+        /// <summary>Structure count at or above which the yellow warning activates.</summary>
+        public const int StructureYellowThreshold = 60;
+
+        /// <summary>Structure count at or above which the red warning activates.</summary>
+        public const int StructureRedThreshold = 66;
+
+        /// <summary>Due window at or below which the yellow warning activates for worker requests.</summary>
+        public static readonly TimeSpan WorkerYellowWindow = TimeSpan.FromDays(2);
+
+        /// <summary>Due window at or below which the red warning activates for worker requests.</summary>
+        public static readonly TimeSpan WorkerRedWindow = TimeSpan.FromDays(1);
+
+        /// <summary>
+        /// Returns the warning level for the Structures tab based on the colony's structure count.
+        /// Red if >= 66, Yellow if >= 60, None otherwise.
+        /// </summary>
+        public static TabWarningLevel EvaluateStructureWarning(int structureCount)
+        {
+            if (structureCount >= StructureRedThreshold)
+                return TabWarningLevel.Red;
+            if (structureCount >= StructureYellowThreshold)
+                return TabWarningLevel.Yellow;
+            return TabWarningLevel.None;
+        }
+
+        /// <summary>
+        /// Returns the warning level for the Worker tab based on unfulfilled commodity requests.
+        /// Filters to unfulfilled requests with NeedBy != DateTime.MinValue.
+        /// Red if any due &lt;= 1 day or overdue, Yellow if any due &lt;= 2 days, None otherwise.
+        /// </summary>
+        public static TabWarningLevel EvaluateWorkerWarning(
+            IEnumerable<CommodityRequested> commodities, DateTime now)
+        {
+            if (commodities == null)
+                return TabWarningLevel.None;
+
+            var level = TabWarningLevel.None;
+
+            foreach (var req in commodities)
+            {
+                if (req.Fulfilled)
+                    continue;
+                if (req.NeedBy == DateTime.MinValue)
+                    continue;
+
+                TimeSpan dueWindow = req.NeedBy - now;
+
+                if (dueWindow <= WorkerRedWindow)
+                    return TabWarningLevel.Red; // Can't get worse — short-circuit
+
+                if (dueWindow <= WorkerYellowWindow)
+                    level = TabWarningLevel.Yellow;
+            }
+
+            return level;
+        }
+    }
+}
