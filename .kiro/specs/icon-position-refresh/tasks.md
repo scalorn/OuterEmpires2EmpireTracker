@@ -52,21 +52,21 @@ Update the blueprint market import system to handle game sprite sheet changes. B
 - [x] 5. Checkpoint — build and run all existing tests
   - Ensure all existing tests pass after the BaselineData split. Ask the user if questions arise.
 
-- [ ] 6. Add MarketSampleOreHopper.html to test csproj
-  - [~] 6.1 Add `<Content Include="TestData\MarketSampleOreHopper.html"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>` to `OE2EmpireTracker.Tests.csproj`.
+- [x] 6. Add MarketSampleOreHopper.html to test csproj
+  - [x] 6.1 Add `<Content Include="TestData\MarketSampleOreHopper.html"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>` to `OE2EmpireTracker.Tests.csproj`.
     - _Requirements: 7.5_
 
 - [ ] 7. Build the IconPositionExtractor test utility
-  - [~] 7.1 Create `OE2EmpireTracker.Tests/Services/IconPositionExtractorTests.cs` with the `ExtractedIcon` DTO class and `ExtractIconsFromAllSamples()` helper that parses every `MarketSample*.html` file using `BlueprintScanner.ProcessMarketHtml()` and extracts `_IconPosition` from each parsed blueprint. Add `<Compile Include>` to test csproj.
+  - [x] 7.1 Create `OE2EmpireTracker.Tests/Services/IconPositionExtractorTests.cs` with the `ExtractedIcon` DTO class and `ExtractIconsFromAllSamples()` helper that parses every `MarketSample*.html` file using `BlueprintScanner.ProcessMarketHtml()` and extracts `_IconPosition` from each parsed blueprint. Add `<Compile Include>` to test csproj.
     - _Requirements: 1.1, 1.2, 1.5_
 
-  - [~] 7.2 Add `CompareAndUpdateBaselineData()` helper that loads BaselineData.json as JObject, compares extracted icon positions against BlueprintType entries, updates changed positions, and adds new BlueprintType entries for unknown icons. Log all changes via TestContext.WriteLine.
+  - [x] 7.2 Add `CompareAndUpdateBaselineData()` helper that loads BaselineData.json as JObject, compares extracted icon positions against BlueprintType entries, updates changed positions, and adds new BlueprintType entries for unknown icons. Log all changes via TestContext.WriteLine.
     - _Requirements: 2.1, 2.2, 2.3_
 
-  - [~] 7.3 Add `EnsureCommodityFactoryEntries()` helper that ensures all 14 per-industry entries exist in BaselineData by checking against `CommodityIndustryEnum`. Creates missing entries with null IconPosition and default properties.
+  - [x] 7.3 Add `EnsureCommodityFactoryEntries()` helper that ensures all 14 per-industry entries exist in BaselineData by checking against `CommodityIndustryEnum`. Creates missing entries with null IconPosition and default properties.
     - _Requirements: 5.2, 5.9_
 
-  - [~] 7.4 Add `WriteBothBaselineFiles()` helper that writes the updated JObject to both `OE2EmpireTracker/BaselineData.json` and `OE2EmpireTracker.Tests/TestData/BaselineData.json`.
+  - [x] 7.4 Add `WriteBothBaselineFiles()` helper that writes the updated JObject to both `OE2EmpireTracker/BaselineData.json` and `OE2EmpireTracker.Tests/TestData/BaselineData.json`.
     - _Requirements: 3.1, 3.2, 3.3_
 
   - [~] 7.5 Add `ProduceCoverageGapReport()` helper that compares all BlueprintType Ids in BaselineData against extracted icons and logs uncovered types. Distinguish between types with stale IconPosition vs types with null IconPosition.

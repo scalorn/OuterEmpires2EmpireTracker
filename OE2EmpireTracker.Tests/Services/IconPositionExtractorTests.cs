@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Constants;
@@ -241,6 +242,27 @@ namespace OE2EmpireTracker.Tests.Services
 
             TestContext.WriteLine(
                 $"EnsureCommodityFactoryEntries summary: {addedCount} entries added");
+        }
+
+        /// <summary>
+        /// Writes the updated BaselineData JObject to both the main application
+        /// directory and the test project TestData directory, keeping them in sync.
+        /// </summary>
+        private void WriteBothBaselineFiles(JObject baselineRoot)
+        {
+            string testDir = TestContext.CurrentContext.TestDirectory;
+            string solutionRoot = Path.GetFullPath(Path.Combine(testDir, "..", "..", ".."));
+
+            string mainPath = Path.Combine(solutionRoot, "OE2EmpireTracker", "BaselineData.json");
+            string testPath = Path.Combine(solutionRoot, "OE2EmpireTracker.Tests", "TestData", "BaselineData.json");
+
+            string json = baselineRoot.ToString(Formatting.Indented);
+
+            File.WriteAllText(mainPath, json);
+            TestContext.WriteLine($"Wrote BaselineData to: {mainPath}");
+
+            File.WriteAllText(testPath, json);
+            TestContext.WriteLine($"Wrote BaselineData to: {testPath}");
         }
 
         [Test]
