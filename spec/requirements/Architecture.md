@@ -38,7 +38,9 @@
 **REQ-ARCH-040** Newtonsoft.Json SHALL be used for all JSON serialization.  
 **REQ-ARCH-041** Computed properties SHALL be decorated with [JsonIgnore] and not appear in serialized JSON. ExtendedName is a computed UI display property present on Item, Blueprint, Survey, Commodity, and SurveyResource — all SHALL be [JsonIgnore]. ExtendedName concatenates identifying fields (e.g. Class, Evolution, Name, TechLevel, NickName for Blueprint) into a human-readable string for display in combo boxes and grids.  
 **REQ-ARCH-042** Custom JsonConverters SHALL be used for PropertyBag, ItemBag, and LockTracking to control the exact JSON format.  
-**REQ-ARCH-043** JSON files SHALL be written with Formatting.Indented for human readability.
+**REQ-ARCH-043** JSON files SHALL be written with Formatting.Indented for human readability.  
+**REQ-ARCH-044** JSON serialization SHALL use `DefaultValueHandling.Ignore` to skip fields with default values (null strings, empty strings, false booleans, zero integers/decimals). This reduces file size without data loss — deserialization initializes these fields to their defaults.  
+**REQ-ARCH-045** Custom JsonConverters for PropertyBag and ItemBag SHALL also apply default-value skipping to nested items.
 
 ## Correctness Invariants
 
@@ -71,7 +73,7 @@
 6. Manufacturing
 7. Research
 
-**REQ-ARCH-081** Only Mining (step 2) is currently implemented. Steps 1, 3–7 are planned features.  
+**REQ-ARCH-081** Steps 1 (Structure Building) and 2 (Mining) are implemented. Steps 3–7 are planned features.  
 **REQ-ARCH-082** Structure Building (step 1): when BuildCompletionTime.IntervalsPassed > 0, the structure SHALL be marked Built=true and BuildCompletionTime SHALL be cleared.  
 **REQ-ARCH-083** Refining, Manufacturing, and Research processing types require blueprint definitions that specify inputs, outputs, and cycle times. These SHALL be designed before implementation.
 

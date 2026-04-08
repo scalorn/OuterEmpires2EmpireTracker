@@ -46,7 +46,10 @@
 **REQ-DM-033** Blueprint.ExtendedName SHALL include `(TechLevel)` only when TechLevel is non-null and non-empty.  
 **REQ-DM-034** Blueprint.ExtendedName SHALL include `[NickName]` only when NickName is non-empty.  
 **REQ-DM-035** Blueprint.ExtendedName SHALL be trimmed — no leading or trailing whitespace.  
-**REQ-DM-036** Blueprint.ExtendedName SHALL be decorated with [JsonIgnore].
+**REQ-DM-036** Blueprint.ExtendedName SHALL be decorated with [JsonIgnore].  
+**REQ-DM-037** Blueprint SHALL expose an `OutputItemName` computed property. For flatpack blueprints (BluePrintType.IsFlatpack() is true) whose Name ends with " Flatpack" (case-insensitive), OutputItemName SHALL return the Name with the " Flatpack" suffix removed. For all other blueprints, OutputItemName SHALL return Name unchanged. For null or empty Name, OutputItemName SHALL return empty string.  
+**REQ-DM-038** Blueprint.OutputItemName SHALL be decorated with [JsonIgnore] and SHALL NOT appear in serialized JSON.  
+**REQ-DM-039** Blueprint.ExtendedName SHALL use OutputItemName (not Name) when building the display string. This means flatpack blueprints display their structure name (e.g. "Mining Rig") rather than their market name (e.g. "Mining Rig Flatpack") in all UI locations that use ExtendedName.
 
 ## Survey and SurveyResource
 

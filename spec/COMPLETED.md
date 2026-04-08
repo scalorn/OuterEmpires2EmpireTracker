@@ -27,3 +27,7 @@ Change the Worker tab selector background to yellow when any worker request is d
 ### BL-010: Activity Inactivity Mode
 Add an inactivity/idle highlighting mode to the Colony Activity window. Surfaces idle and underutilized production structures — miners with no survey, refiners with no resource, labs not researching, plus underutilized refiners consuming faster than mining output.
 **Status: Complete** — ColonyInactivityCollector detects idle structures across all 5 production types plus underutilized refiners with warehouse stockpile exemption. "Show Inactive" checkbox toggles the Colony Activity form between activity and inactivity modes.
+
+### BL-022: JSON Serialization — Skip Default Values
+Configure Newtonsoft.Json serialization to skip fields with default values (null/empty strings, false booleans, zero integers/decimals) to reduce JSON file size.
+**Status: Complete** — JsonSettings static class with DefaultValueHandling.Ignore and NullValueHandling.Ignore. All serialization call sites updated. ItemBagJSONConverter applies defaults to nested items. FsCheck property tests + unit tests validate round-trip and size reduction.
