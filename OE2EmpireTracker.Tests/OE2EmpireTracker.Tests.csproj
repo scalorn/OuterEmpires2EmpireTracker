@@ -244,6 +244,7 @@
     <Compile Include="Parsers\SurveyParserIdempotencyTests.cs" />
     <Compile Include="Constants\BlueprintPropertyValidationTests.cs" />
     <Compile Include="Blueprint\BlueprintScannerTests.cs" />
+    <Compile Include="Blueprint\FragmentExtractionTests.cs" />
     <Compile Include="Models\SurveyTests.cs" />
     <Compile Include="Models\BlueprintTests.cs" />
     <Compile Include="Models\CommodityTests.cs" />
@@ -266,6 +267,7 @@
     <Compile Include="Parsers\ColonyParserDedupeTests.cs" />
     <Compile Include="Parsers\ColonyParserIdempotencyTests.cs" />
     <Compile Include="Services\JsonDefaultSkipTests.cs" />
+    <Compile Include="Services\BughuntDiagnosticTest.cs" />
     <Compile Include="TestHelper.cs" />
     <None Include="app.config" />
     <None Include="packages.config" />
@@ -273,6 +275,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestData\PlayerData.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\BUGHUNT.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestData\ZehVazoranIIM2.html">
