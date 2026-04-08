@@ -20,7 +20,7 @@ namespace OE2EmpireTracker.Tests.Services
             BlueprintTypes.Refinery,
             BlueprintTypes.ResearchLaboratory,
             BlueprintTypes.Manufactory,
-            BlueprintTypes.CommodityFactory
+            BlueprintTypes.CommodityFactoryPrefix + "Agridome"
         };
 
         [OneTimeSetUp]
@@ -413,7 +413,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Assert.That(rows[0].Type, Is.EqualTo(ActivityType.Manufacturing));
                     Assert.That(rows[0].ProcessDetails, Is.EqualTo($"({structure.ManufacturingCompleted + 1}/{structure.ManufacturingQuantity}) {mfgBp.ExtendedName}"));
                 }
-                else if (bpType == BlueprintTypes.CommodityFactory)
+                else if (bpType.IsCommodityFactory())
                 {
                     string commodityName = "TestCommodity_" + iteration;
                     structure.ManufacturingCommodityName = commodityName;

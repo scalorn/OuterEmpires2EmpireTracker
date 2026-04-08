@@ -39,10 +39,6 @@ namespace OE2EmpireTracker.Constants
         /// <summary>Prefix for all commodity factory per-industry types (e.g. Flatpacks/CommodityFactory/Agridome)</summary>
         public const string CommodityFactoryPrefix = "Flatpacks/CommodityFactory/";
 
-        /// <summary>Commodity factory structure type — use IsCommodityFactory() instead for per-industry matching</summary>
-        [Obsolete("Use CommodityFactoryPrefix and IsCommodityFactory() extension method instead. Will be removed once all references are updated.")]
-        public const string CommodityFactory = "Flatpacks/CommodityFactory";
-
         /// <summary>Ore hopper ship component type</summary>
         public const string OreHopper = "OreHopper";
     }

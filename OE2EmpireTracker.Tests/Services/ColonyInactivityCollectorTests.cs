@@ -20,7 +20,7 @@ namespace OE2EmpireTracker.Tests.Services
             BlueprintTypes.Refinery,
             BlueprintTypes.ResearchLaboratory,
             BlueprintTypes.Manufactory,
-            BlueprintTypes.CommodityFactory
+            BlueprintTypes.CommodityFactoryPrefix + "Agridome"
         };
 
         [OneTimeSetUp]
@@ -171,7 +171,7 @@ namespace OE2EmpireTracker.Tests.Services
                 structure.ResearchingBlueprintUUID = Guid.NewGuid().ToString();
             else if (bpType == BlueprintTypes.Manufactory)
                 structure.ManufacturingBlueprintUUID = Guid.NewGuid().ToString();
-            else if (bpType == BlueprintTypes.CommodityFactory)
+            else if (bpType.IsCommodityFactory())
                 structure.ManufacturingCommodityName = "TestCommodity";
         }
 
@@ -193,7 +193,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new { BpType = BlueprintTypes.Refinery, NoWorkDetails = "No resource assigned", IdleDetails = "Idle" },
                 new { BpType = BlueprintTypes.ResearchLaboratory, NoWorkDetails = "No blueprint assigned", IdleDetails = "Idle" },
                 new { BpType = BlueprintTypes.Manufactory, NoWorkDetails = "No blueprint assigned", IdleDetails = "Idle" },
-                new { BpType = BlueprintTypes.CommodityFactory, NoWorkDetails = "No commodity assigned", IdleDetails = "Idle" }
+                new { BpType = BlueprintTypes.CommodityFactoryPrefix + "Agridome", NoWorkDetails = "No commodity assigned", IdleDetails = "Idle" }
             };
 
             for (int iteration = 0; iteration < 100; iteration++)
@@ -242,7 +242,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { BlueprintTypes.Refinery, ActivityType.Refining },
                 { BlueprintTypes.ResearchLaboratory, ActivityType.Research },
                 { BlueprintTypes.Manufactory, ActivityType.Manufacturing },
-                { BlueprintTypes.CommodityFactory, ActivityType.CommodityManufacturing }
+                { BlueprintTypes.CommodityFactoryPrefix + "Agridome", ActivityType.CommodityManufacturing }
             };
 
             for (int iteration = 0; iteration < 100; iteration++)
@@ -528,7 +528,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void IdleCommodityFactory_NoCommodity_ReturnsNoCommodityAssigned()
         {
             var pc = PlayerContext.getInstance();
-            var bp = CreateBlueprint(BlueprintTypes.CommodityFactory, "IdleCommodity");
+            var bp = CreateBlueprint(BlueprintTypes.CommodityFactoryPrefix + "Agridome", "IdleCommodity");
             var colony = MakeColony();
             var structure = MakeStructure(bp.UUID, 1);
             colony.Structures.Add(structure);
@@ -544,7 +544,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void IdleCommodityFactory_CommodityAssignedNoTimer_ReturnsIdle()
         {
             var pc = PlayerContext.getInstance();
-            var bp = CreateBlueprint(BlueprintTypes.CommodityFactory, "IdleCommodityWithWork");
+            var bp = CreateBlueprint(BlueprintTypes.CommodityFactoryPrefix + "Agridome", "IdleCommodityWithWork");
             var colony = MakeColony();
             var structure = MakeStructure(bp.UUID, 1);
             structure.ManufacturingCommodityName = "Electronics";

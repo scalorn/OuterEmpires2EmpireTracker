@@ -41,7 +41,7 @@ namespace OE2EmpireTracker.Tests.Models
             // Create a CommodityFactory blueprint in the player context
             var bp = new OE2EmpireTracker.Models.Blueprint("TestCommodityFactory");
             bp.UUID = Guid.NewGuid().ToString();
-            bp.BluePrintType = BlueprintTypes.CommodityFactory;
+            bp.BluePrintType = BlueprintTypes.CommodityFactoryPrefix + "Agridome";
             PlayerContext.getInstance().blueprintList.Add(bp);
 
             var structure = new ColonyStructure();
@@ -306,7 +306,7 @@ namespace OE2EmpireTracker.Tests.Models
 
             var bp = new OE2EmpireTracker.Models.Blueprint("TestCF");
             bp.UUID = Guid.NewGuid().ToString();
-            bp.BluePrintType = BlueprintTypes.CommodityFactory;
+            bp.BluePrintType = BlueprintTypes.CommodityFactoryPrefix + "Agridome";
             PlayerContext.getInstance().blueprintList.Add(bp);
 
             var structure = new ColonyStructure();
@@ -362,7 +362,7 @@ namespace OE2EmpireTracker.Tests.Models
 
             var bp = new OE2EmpireTracker.Models.Blueprint("TestCF2");
             bp.UUID = Guid.NewGuid().ToString();
-            bp.BluePrintType = BlueprintTypes.CommodityFactory;
+            bp.BluePrintType = BlueprintTypes.CommodityFactoryPrefix + "Agridome";
             PlayerContext.getInstance().blueprintList.Add(bp);
 
             var structure = new ColonyStructure();
@@ -399,7 +399,7 @@ namespace OE2EmpireTracker.Tests.Models
 
             var bp = new OE2EmpireTracker.Models.Blueprint("TestCF3");
             bp.UUID = Guid.NewGuid().ToString();
-            bp.BluePrintType = BlueprintTypes.CommodityFactory;
+            bp.BluePrintType = BlueprintTypes.CommodityFactoryPrefix + "Agridome";
             PlayerContext.getInstance().blueprintList.Add(bp);
 
             var structure = new ColonyStructure();
@@ -432,7 +432,7 @@ namespace OE2EmpireTracker.Tests.Models
 
             var bp = new OE2EmpireTracker.Models.Blueprint("TestCF4");
             bp.UUID = Guid.NewGuid().ToString();
-            bp.BluePrintType = BlueprintTypes.CommodityFactory;
+            bp.BluePrintType = BlueprintTypes.CommodityFactoryPrefix + "Agridome";
             PlayerContext.getInstance().blueprintList.Add(bp);
 
             var structure = new ColonyStructure();
