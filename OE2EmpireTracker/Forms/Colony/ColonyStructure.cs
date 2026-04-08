@@ -1198,7 +1198,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             if (ColonyStructureData != null)
             {
-                builder.Append("#" + ColonyStructureData.gameSequence + " ", Color.Black);
+                builder.Append("#" + ColonyStructureData.displaySequence + " ", Color.Black);
             }
             if (FlatpackBlueprint != null)
             {

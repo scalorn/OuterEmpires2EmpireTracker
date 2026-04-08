@@ -106,7 +106,7 @@ namespace OE2EmpireTracker.ViewModels
 
         public string BlueprintType => Blueprint?.BluePrintType ?? string.Empty;
 
-        public int GameSequence => _structure.gameSequence;
+        public int GameSequence => _structure.displaySequence;
 
         // -----------------------------------------------------------------------
         // Structure list commands — operate on the parent colony's list

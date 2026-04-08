@@ -100,7 +100,7 @@ namespace OE2EmpireTracker.Services
                     StructureCounts.TryGetValue(FlatpackBlueprint.BluePrintType, out count);
                     count++;
                     StructureCounts[FlatpackBlueprint.BluePrintType] = count;
-                    structure.gameSequence = count;
+                    structure.displaySequence = count;
 
                     // Lock assigned workers for this structure
                     LockAssignedWorkers(structure, FlatpackBlueprint);

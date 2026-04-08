@@ -139,7 +139,7 @@ namespace OE2EmpireTracker.Services
                 Blueprint blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (blueprint == null) continue;
 
-                string sourceName = $"#{structure.gameSequence} {blueprint.ExtendedName}";
+                string sourceName = $"#{structure.displaySequence} {blueprint.ExtendedName}";
 
                 // BuildCompletionTime takes priority over ProcessCompletionTime
                 if (structure.BuildCompletionTime != null &&

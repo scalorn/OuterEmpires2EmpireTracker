@@ -56,10 +56,10 @@ namespace OE2EmpireTracker.Tests.Models
         public void Set_GameSequenceAndBuildQueueSequence_CanBeSetAndRead()
         {
             var structure = new ColonyStructure();
-            structure.gameSequence = 5;
+            structure.displaySequence = 5;
             structure.buildQueueSequence = 3;
 
-            Assert.That(structure.gameSequence, Is.EqualTo(5));
+            Assert.That(structure.displaySequence, Is.EqualTo(5));
             Assert.That(structure.buildQueueSequence, Is.EqualTo(3));
         }
 
@@ -290,7 +290,7 @@ namespace OE2EmpireTracker.Tests.Models
             {
                 UUID = "test-uuid",
                 FlatpackBlueprintUUID = "blueprint-uuid",
-                gameSequence = 5,
+                displaySequence = 5,
                 buildQueueSequence = 3,
                 CurrentAttitude = "Happy",
                 ContentmentIndex = 80,
@@ -302,7 +302,7 @@ namespace OE2EmpireTracker.Tests.Models
 
             Assert.That(restored.UUID, Is.EqualTo(structure.UUID));
             Assert.That(restored.FlatpackBlueprintUUID, Is.EqualTo(structure.FlatpackBlueprintUUID));
-            Assert.That(restored.gameSequence, Is.EqualTo(structure.gameSequence));
+            Assert.That(restored.displaySequence, Is.EqualTo(structure.displaySequence));
             Assert.That(restored.buildQueueSequence, Is.EqualTo(structure.buildQueueSequence));
             Assert.That(restored.CurrentAttitude, Is.EqualTo(structure.CurrentAttitude));
             Assert.That(restored.ContentmentIndex, Is.EqualTo(structure.ContentmentIndex));
@@ -352,7 +352,7 @@ namespace OE2EmpireTracker.Tests.Models
             {
                 UUID = "full-uuid-test",
                 FlatpackBlueprintUUID = "bp-full-test",
-                gameSequence = 10,
+                displaySequence = 10,
                 buildQueueSequence = 2,
                 CurrentAttitude = "Satisfied",
                 ContentmentIndex = 75,
@@ -367,7 +367,7 @@ namespace OE2EmpireTracker.Tests.Models
 
             Assert.That(restored.UUID, Is.EqualTo(structure.UUID));
             Assert.That(restored.FlatpackBlueprintUUID, Is.EqualTo(structure.FlatpackBlueprintUUID));
-            Assert.That(restored.gameSequence, Is.EqualTo(structure.gameSequence));
+            Assert.That(restored.displaySequence, Is.EqualTo(structure.displaySequence));
             Assert.That(restored.buildQueueSequence, Is.EqualTo(structure.buildQueueSequence));
             Assert.That(restored.CurrentAttitude, Is.EqualTo(structure.CurrentAttitude));
             Assert.That(restored.ContentmentIndex, Is.EqualTo(structure.ContentmentIndex));

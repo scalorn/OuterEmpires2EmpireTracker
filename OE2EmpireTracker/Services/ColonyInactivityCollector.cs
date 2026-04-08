@@ -50,7 +50,7 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Formats the source name as "#{gameSequence} {blueprint.ExtendedName}".
+        /// Formats the source name as "#{displaySequence} {blueprint.ExtendedName}".
         /// Returns null if the blueprint cannot be found.
         /// </summary>
         private static string BuildSourceName(ColonyStructure structure, PlayerContext playerContext)
@@ -58,7 +58,7 @@ namespace OE2EmpireTracker.Services
             Blueprint blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
             if (blueprint == null) return null;
 
-            return $"#{structure.gameSequence} {blueprint.ExtendedName}";
+            return $"#{structure.displaySequence} {blueprint.ExtendedName}";
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace OE2EmpireTracker.Services
                 Blueprint blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (blueprint == null) continue;
 
-                string sourceName = $"#{structure.gameSequence} {blueprint.ExtendedName}";
+                string sourceName = $"#{structure.displaySequence} {blueprint.ExtendedName}";
 
                 ActivityType? type = null;
                 string processDetails = null;
@@ -200,7 +200,7 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Detects active refiners whose total consumption exceeds mining supply
         /// for their resource+purity combination. Flags excess refiners starting
-        /// from highest gameSequence, with warehouse stockpile exemption.
+        /// from highest displaySequence, with warehouse stockpile exemption.
         /// </summary>
         private static void CollectUnderutilizedRefiners(
             Colony colony, PlayerContext playerContext, List<ActivityRow> rows)
@@ -268,8 +268,8 @@ namespace OE2EmpireTracker.Services
                 // If consumption doesn't exceed mining output, no underutilization
                 if (totalConsumption <= totalMiningOutput) continue;
 
-                // Calculate how much supply each refiner gets, in priority order (lowest gameSequence first)
-                var priorityOrder = refinersInGroup.OrderBy(r => r.gameSequence).ToList();
+                // Calculate how much supply each refiner gets, in priority order (lowest displaySequence first)
+                var priorityOrder = refinersInGroup.OrderBy(r => r.displaySequence).ToList();
                 var refinerAvailable = new Dictionary<string, double>();
 
                 double supply = totalMiningOutput;
@@ -281,8 +281,8 @@ namespace OE2EmpireTracker.Services
                     supply = Math.Max(0, supply - consumeRate);
                 }
 
-                // Flag refiners where available < consumeRate, starting from highest gameSequence
-                var sortedRefiners = refinersInGroup.OrderByDescending(r => r.gameSequence).ToList();
+                // Flag refiners where available < consumeRate, starting from highest displaySequence
+                var sortedRefiners = refinersInGroup.OrderByDescending(r => r.displaySequence).ToList();
                 foreach (var refiner in sortedRefiners)
                 {
                     int consumeRate = GetRefiningConsumptionRate(refiner);

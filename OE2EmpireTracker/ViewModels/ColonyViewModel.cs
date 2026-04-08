@@ -57,10 +57,14 @@ namespace OE2EmpireTracker.ViewModels
 
         public ColonyStructureViewModel AddStructure(string flatpackBlueprintUUID)
         {
+            int existingCount = _colony.Structures
+                .Count(s => s.FlatpackBlueprintUUID == flatpackBlueprintUUID);
+
             var structure = new ColonyStructure
             {
                 UUID = Guid.NewGuid().ToString(),
-                FlatpackBlueprintUUID = flatpackBlueprintUUID
+                FlatpackBlueprintUUID = flatpackBlueprintUUID,
+                displaySequence = existingCount + 1
             };
             _colony.Structures.Add(structure);
             return new ColonyStructureViewModel(structure, _playerContext);

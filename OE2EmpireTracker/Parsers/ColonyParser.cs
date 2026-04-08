@@ -169,6 +169,10 @@ namespace OE2EmpireTracker.Parsers
 
         /// <summary>
         /// Parses the full colony-buildings JSON into structures.
+        /// Uses a two-pass approach: first parse all buildings and assign displaySequence
+        /// per type, then merge into existing structures using compound key
+        /// FlatpackBlueprintUUID + displaySequence. Commodity factory types use positional
+        /// matching within each sub-type instead of displaySequence.
         /// </summary>
         internal static void ParseColonyBuildingsFromJson(Colony colony, string jsonEncoded, EmpireContext empireContext)
         {
@@ -185,23 +189,123 @@ namespace OE2EmpireTracker.Parsers
 
                 var flatpackLookup = BuildFlatpackLookup(empireContext);
 
-                // Index existing structures by gameSequence for merge
-                var existingByGameSeq = new Dictionary<int, ColonyStructure>();
-                foreach (var s in colony.Structures)
-                {
-                    if (s.gameSequence > 0 && !existingByGameSeq.ContainsKey(s.gameSequence))
-                        existingByGameSeq[s.gameSequence] = s;
-                }
-
-                int added = 0, updated = 0;
+                // === First pass: parse all buildings into a list ===
+                var parsedBuildings = new List<ColonyStructure>();
                 foreach (var building in buildings)
                 {
                     var parsed = ParseBuilding(building, flatpackLookup);
-                    if (parsed == null) continue;
+                    if (parsed != null)
+                        parsedBuildings.Add(parsed);
+                }
 
-                    if (existingByGameSeq.TryGetValue(parsed.gameSequence, out var existing))
+                // Assign displaySequence per FlatpackBlueprintUUID type
+                // (first Mining Rig = 1, second Mining Rig = 2, etc.)
+                var typeCounters = new Dictionary<string, int>(StringComparer.Ordinal);
+                foreach (var parsed in parsedBuildings)
+                {
+                    string key = parsed.FlatpackBlueprintUUID ?? "";
+                    if (!typeCounters.ContainsKey(key))
+                        typeCounters[key] = 0;
+                    typeCounters[key]++;
+                    parsed.displaySequence = typeCounters[key];
+                }
+
+                // === Build merge lookups from existing colony structures ===
+
+                // Determine which FlatpackBlueprintUUIDs are commodity factory types
+                var commodityFactoryUUIDs = new HashSet<string>(StringComparer.Ordinal);
+                foreach (var s in colony.Structures)
+                {
+                    if (string.IsNullOrEmpty(s.FlatpackBlueprintUUID)) continue;
+                    if (commodityFactoryUUIDs.Contains(s.FlatpackBlueprintUUID)) continue;
+                    var bp = empireContext?.FindGlobalBlueprint(s.FlatpackBlueprintUUID);
+                    if (bp != null && bp.BluePrintType == BlueprintTypes.CommodityFactory)
+                        commodityFactoryUUIDs.Add(s.FlatpackBlueprintUUID);
+                }
+                // Also check parsed buildings for commodity factory types
+                foreach (var p in parsedBuildings)
+                {
+                    if (string.IsNullOrEmpty(p.FlatpackBlueprintUUID)) continue;
+                    if (commodityFactoryUUIDs.Contains(p.FlatpackBlueprintUUID)) continue;
+                    var bp = empireContext?.FindGlobalBlueprint(p.FlatpackBlueprintUUID);
+                    if (bp != null && bp.BluePrintType == BlueprintTypes.CommodityFactory)
+                        commodityFactoryUUIDs.Add(p.FlatpackBlueprintUUID);
+                }
+
+                // Assign displaySequence to existing structures that have displaySequence=0
+                // (manually-added structures). This ensures they get a meaningful compound key
+                // that can match parsed buildings.
+                var existingTypeCounters = new Dictionary<string, int>(StringComparer.Ordinal);
+                foreach (var s in colony.Structures)
+                {
+                    string bpUUID = s.FlatpackBlueprintUUID ?? "";
+                    if (!existingTypeCounters.ContainsKey(bpUUID))
+                        existingTypeCounters[bpUUID] = 0;
+                    existingTypeCounters[bpUUID]++;
+
+                    if (s.displaySequence == 0)
+                        s.displaySequence = existingTypeCounters[bpUUID];
+                }
+
+                // For non-commodity-factory types: compound key lookup
+                var existingByCompoundKey = new Dictionary<string, ColonyStructure>(StringComparer.Ordinal);
+                // For commodity factory types: positional lookup per sub-type (FlatpackBlueprintUUID)
+                var existingCommodityByType = new Dictionary<string, List<ColonyStructure>>(StringComparer.Ordinal);
+
+                foreach (var s in colony.Structures)
+                {
+                    if (string.IsNullOrEmpty(s.FlatpackBlueprintUUID)) continue;
+
+                    if (commodityFactoryUUIDs.Contains(s.FlatpackBlueprintUUID))
                     {
-                        // Merge into existing: update fields from HTML but preserve UUID and local state
+                        // Commodity factory: add to positional list (preserving list order)
+                        if (!existingCommodityByType.ContainsKey(s.FlatpackBlueprintUUID))
+                            existingCommodityByType[s.FlatpackBlueprintUUID] = new List<ColonyStructure>();
+                        existingCommodityByType[s.FlatpackBlueprintUUID].Add(s);
+                    }
+                    else
+                    {
+                        // Non-commodity: compound key = FlatpackBlueprintUUID + ":" + displaySequence
+                        string compoundKey = s.FlatpackBlueprintUUID + ":" + s.displaySequence;
+                        if (!existingByCompoundKey.ContainsKey(compoundKey))
+                            existingByCompoundKey[compoundKey] = s;
+                    }
+                }
+
+                // Track positional index per commodity factory sub-type during merge
+                var commodityPositionCounters = new Dictionary<string, int>(StringComparer.Ordinal);
+
+                // === Second pass: merge parsed buildings into existing structures ===
+                int added = 0, updated = 0;
+                foreach (var parsed in parsedBuildings)
+                {
+                    ColonyStructure existing = null;
+
+                    if (!string.IsNullOrEmpty(parsed.FlatpackBlueprintUUID) &&
+                        commodityFactoryUUIDs.Contains(parsed.FlatpackBlueprintUUID))
+                    {
+                        // Commodity factory: positional matching within sub-type
+                        if (!commodityPositionCounters.ContainsKey(parsed.FlatpackBlueprintUUID))
+                            commodityPositionCounters[parsed.FlatpackBlueprintUUID] = 0;
+
+                        int pos = commodityPositionCounters[parsed.FlatpackBlueprintUUID];
+                        commodityPositionCounters[parsed.FlatpackBlueprintUUID]++;
+
+                        if (existingCommodityByType.TryGetValue(parsed.FlatpackBlueprintUUID, out var list) &&
+                            pos < list.Count)
+                        {
+                            existing = list[pos];
+                        }
+                    }
+                    else
+                    {
+                        // Non-commodity: compound key lookup
+                        string compoundKey = (parsed.FlatpackBlueprintUUID ?? "") + ":" + parsed.displaySequence;
+                        existingByCompoundKey.TryGetValue(compoundKey, out existing);
+                    }
+
+                    if (existing != null)
+                    {
                         MergeStructure(existing, parsed);
                         updated++;
                     }
@@ -228,7 +332,8 @@ namespace OE2EmpireTracker.Parsers
         internal static void MergeStructure(ColonyStructure existing, ColonyStructure parsed)
         {
             existing.FlatpackBlueprintUUID = parsed.FlatpackBlueprintUUID ?? existing.FlatpackBlueprintUUID;
-            existing.gameSequence = parsed.gameSequence;
+            existing.buildingID = parsed.buildingID;
+            existing.displaySequence = parsed.displaySequence;
 
             // Update online/built status from game
             if (parsed.Properties.ContainsKey(GameConstants.PropBuilt))
@@ -337,9 +442,11 @@ namespace OE2EmpireTracker.Parsers
                 Log.Warn("No flatpack blueprint found for building design: {0}", designName);
             }
 
-            // Game sequence from buildingID
+            // Store the game's unique building identifier
             int buildingID = building["buildingID"]?.Value<int>() ?? 0;
-            structure.gameSequence = buildingID;
+            structure.buildingID = buildingID;
+            // displaySequence is NOT set here — it will be calculated per-type
+            // in ParseColonyBuildingsFromJson after all buildings are parsed
 
             // Online/Built status
             bool online = building["buildingOnline"]?.Value<bool>() ?? false;
@@ -469,7 +576,7 @@ namespace OE2EmpireTracker.Parsers
                 var flatpackLookup = BuildFlatpackLookup(empireContext);
 
                 // Index existing structures by FlatpackBlueprintUUID for merge
-                // Workers fallback doesn't have gameSequence, so we match by blueprint
+                // Workers fallback doesn't have displaySequence, so we match by blueprint
                 var existingByBlueprint = new Dictionary<string, List<ColonyStructure>>();
                 foreach (var s in colony.Structures)
                 {

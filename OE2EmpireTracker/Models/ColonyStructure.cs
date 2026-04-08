@@ -8,7 +8,9 @@ namespace OE2EmpireTracker.Models
     {
         public string UUID { get; set; } = null;
         public string FlatpackBlueprintUUID { get; set; } = null;
-        public int gameSequence { get; set; } = 0;
+        [JsonProperty("gameSequence")]
+        public int displaySequence { get; set; } = 0;
+        public int buildingID { get; set; } = 0;
         public int buildQueueSequence { get; set; } = 0;
         public PropertyBag Properties { get; set; }
         public PropertyBag AssignedWorkers { get; set; }

@@ -115,7 +115,7 @@ namespace OE2EmpireTracker.Tests.Services
                         var structure = new ColonyStructure();
                         structure.UUID = Guid.NewGuid().ToString();
                         structure.FlatpackBlueprintUUID = bp.UUID;
-                        structure.gameSequence = s + 1;
+                        structure.displaySequence = s + 1;
 
                         // Random timer state: 0=none, 1=active build, 2=active process, 3=expired
                         int timerState = Rng.Next(4);
@@ -311,7 +311,7 @@ namespace OE2EmpireTracker.Tests.Services
                 var structure = new ColonyStructure();
                 structure.UUID = Guid.NewGuid().ToString();
                 structure.FlatpackBlueprintUUID = bp.UUID;
-                structure.gameSequence = gameSeq;
+                structure.displaySequence = gameSeq;
 
                 bool isBuildingTest = iteration % 6 == 0;
 
@@ -483,7 +483,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 UUID = Guid.NewGuid().ToString(),
                 FlatpackBlueprintUUID = bp.UUID,
-                gameSequence = 1
+                displaySequence = 1
             });
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
@@ -506,7 +506,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 UUID = Guid.NewGuid().ToString(),
                 FlatpackBlueprintUUID = bp.UUID,
-                gameSequence = 3,
+                displaySequence = 3,
                 ProcessCompletionTime = MakeActiveRepeatingTimer(3600),
                 MiningSurvey = survey.UUID,
                 MiningSurveyResource = "Iron"
@@ -537,7 +537,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 UUID = Guid.NewGuid().ToString(),
                 FlatpackBlueprintUUID = bp.UUID,
-                gameSequence = 1,
+                displaySequence = 1,
                 BuildCompletionTime = MakeActiveTimer(7200)
             };
             colony.Structures.Add(structure);
@@ -623,7 +623,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 UUID = Guid.NewGuid().ToString(),
                 FlatpackBlueprintUUID = bp.UUID,
-                gameSequence = 1,
+                displaySequence = 1,
                 BuildCompletionTime = MakeActiveTimer(3600),
                 ProcessCompletionTime = MakeActiveRepeatingTimer(7200)
             };
@@ -651,7 +651,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 UUID = Guid.NewGuid().ToString(),
                 FlatpackBlueprintUUID = bp.UUID,
-                gameSequence = 2,
+                displaySequence = 2,
                 ProcessCompletionTime = MakeActiveRepeatingTimer(3600),
                 RefiningResource = "Lanthanides",
                 RefiningResourcePurity = GameConstants.PurityRefined
@@ -679,7 +679,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 UUID = Guid.NewGuid().ToString(),
                 FlatpackBlueprintUUID = bp.UUID,
-                gameSequence = 4,
+                displaySequence = 4,
                 ProcessCompletionTime = MakeActiveRepeatingTimer(3600),
                 RefiningResource = "Copper",
                 RefiningResourcePurity = "Medium"

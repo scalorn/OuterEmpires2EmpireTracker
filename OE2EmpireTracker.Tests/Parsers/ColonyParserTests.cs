@@ -157,7 +157,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             var colony = ParseM1();
             foreach (var s in colony.Structures)
             {
-                Assert.That(s.gameSequence, Is.GreaterThan(0),
+                Assert.That(s.displaySequence, Is.GreaterThan(0),
                     "Each structure should have a non-zero game sequence (buildingID)");
             }
         }
