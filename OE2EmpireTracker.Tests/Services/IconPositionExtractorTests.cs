@@ -106,6 +106,19 @@ namespace OE2EmpireTracker.Tests.Services
             int updatedCount = 0;
             int addedCount = 0;
 
+            // --- Pre-process: Reclassify Ore Hopper blueprints ---
+            // Ore Hoppers share the CargoPod icon, so the scanner resolves them as CargoPod.
+            // Reclassify any blueprint with "Ore Hopper" in the name to have null ResolvedTypeId
+            // so they get handled in the unknown-icons section with special OreHopper logic.
+            foreach (var icon in extracted)
+            {
+                if (icon.BlueprintName != null &&
+                    icon.BlueprintName.IndexOf("Ore Hopper", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    icon.ResolvedTypeId = null;
+                }
+            }
+
             // Group extracted icons by ResolvedTypeId to handle duplicates
             // (same type may appear in multiple sample files)
             var resolvedIcons = extracted
@@ -136,9 +149,112 @@ namespace OE2EmpireTracker.Tests.Services
                 }
             }
 
-            // Add new BlueprintType entries for unknown icons (no ResolvedTypeId)
-            var unknownIcons = extracted
+            // --- Match commodity factory flatpacks by name to per-industry entries ---
+            // The scanner can't resolve these by icon (per-industry entries have null IconPosition),
+            // so they come through as unknown. Match by stripping " Flatpack" suffix and looking up
+            // the commodity industry name.
+            var unknownAll = extracted
                 .Where(e => string.IsNullOrEmpty(e.ResolvedTypeId))
+                .ToList();
+
+            // Build a lookup from commodity industry display name to per-industry BlueprintType Id
+            var industryNameToTypeId = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (CommodityIndustryEnum industry in Enum.GetValues(typeof(CommodityIndustryEnum)))
+            {
+                if (industry == CommodityIndustryEnum.None) continue;
+                string displayName = CommodityIndustryMapByEnum.ContainsKey(industry)
+                    ? CommodityIndustryMapByEnum[industry].Name
+                    : industry.ToString();
+                string typeId = BlueprintTypes.CommodityFactoryPrefix + industry.ToString();
+                industryNameToTypeId[displayName] = typeId;
+                // Also map with " Flatpack" suffix for direct matching
+                industryNameToTypeId[displayName + " Flatpack"] = typeId;
+            }
+
+            // Also build a lookup for "Off-World" vs "OffWorld" variant
+            // The game HTML uses "Off-World Living Institute" but the model uses "OffWorld Living Institute"
+            if (!industryNameToTypeId.ContainsKey("Off-World Living Institute Flatpack"))
+            {
+                string offWorldTypeId = BlueprintTypes.CommodityFactoryPrefix + CommodityIndustryEnum.OffWorldLivingInstitute.ToString();
+                industryNameToTypeId["Off-World Living Institute Flatpack"] = offWorldTypeId;
+                industryNameToTypeId["Off-World Living Institute"] = offWorldTypeId;
+            }
+
+            var remainingUnknowns = new List<ExtractedIcon>();
+
+            foreach (var icon in unknownAll)
+            {
+                string matchedTypeId;
+                if (industryNameToTypeId.TryGetValue(icon.BlueprintName, out matchedTypeId))
+                {
+                    // Found a commodity factory match — update the per-industry entry's IconPosition
+                    icon.ResolvedTypeId = matchedTypeId; // Mark as resolved for coverage gap report
+                    JToken entry = blueprintTypes
+                        .FirstOrDefault(bt => string.Equals(
+                            (string)bt["Id"], matchedTypeId, StringComparison.Ordinal));
+
+                    if (entry != null)
+                    {
+                        string oldPos = (string)entry["IconPosition"];
+                        if (!string.Equals(oldPos, icon.IconPosition, StringComparison.Ordinal))
+                        {
+                            TestContext.WriteLine(
+                                $"UPDATED (commodity factory): {matchedTypeId} IconPosition set to \"{icon.IconPosition}\" (was \"{oldPos}\") from [{icon.SourceFile}]");
+                            entry["IconPosition"] = icon.IconPosition;
+                            updatedCount++;
+                        }
+                    }
+                    else
+                    {
+                        TestContext.WriteLine(
+                            $"WARNING: Matched commodity factory \"{icon.BlueprintName}\" to {matchedTypeId} but entry not found in BaselineData");
+                    }
+                }
+                else if (icon.BlueprintName.IndexOf("Ore Hopper", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    // OreHopper blueprint — update or create the OreHopper entry
+                    icon.ResolvedTypeId = BlueprintTypes.OreHopper; // Mark as resolved for coverage gap report
+                    JToken oreHopperEntry = blueprintTypes
+                        .FirstOrDefault(bt => string.Equals(
+                            (string)bt["Id"], BlueprintTypes.OreHopper, StringComparison.Ordinal));
+
+                    if (oreHopperEntry != null)
+                    {
+                        string oldPos = (string)oreHopperEntry["IconPosition"];
+                        if (!string.Equals(oldPos, icon.IconPosition, StringComparison.Ordinal))
+                        {
+                            TestContext.WriteLine(
+                                $"UPDATED (OreHopper): {BlueprintTypes.OreHopper} IconPosition set to \"{icon.IconPosition}\" (was \"{oldPos}\") from [{icon.SourceFile}]");
+                            oreHopperEntry["IconPosition"] = icon.IconPosition;
+                            updatedCount++;
+                        }
+                    }
+                    else
+                    {
+                        // Create new OreHopper entry
+                        var newEntry = new JObject
+                        {
+                            ["Id"] = BlueprintTypes.OreHopper,
+                            ["Name"] = "Ore Hopper",
+                            ["Properties"] = new JArray(),
+                            ["ResearchableProperties"] = new JArray(),
+                            ["IconPosition"] = icon.IconPosition,
+                            ["OutputItemType"] = "ShipPart"
+                        };
+                        blueprintTypes.Add(newEntry);
+                        addedCount++;
+                        TestContext.WriteLine(
+                            $"ADDED: New BlueprintType \"{BlueprintTypes.OreHopper}\" with IconPosition \"{icon.IconPosition}\" from [{icon.SourceFile}]");
+                    }
+                }
+                else
+                {
+                    remainingUnknowns.Add(icon);
+                }
+            }
+
+            // Add new BlueprintType entries for truly unknown icons
+            var unknownIcons = remainingUnknowns
                 .GroupBy(e => e.IconPosition)
                 .Select(g => g.First())
                 .ToList();
@@ -256,7 +372,7 @@ namespace OE2EmpireTracker.Tests.Services
             string mainPath = Path.Combine(solutionRoot, "OE2EmpireTracker", "BaselineData.json");
             string testPath = Path.Combine(solutionRoot, "OE2EmpireTracker.Tests", "TestData", "BaselineData.json");
 
-            string json = baselineRoot.ToString(Formatting.Indented);
+            string json = JsonConvert.SerializeObject(baselineRoot, Formatting.Indented);
 
             File.WriteAllText(mainPath, json);
             TestContext.WriteLine($"Wrote BaselineData to: {mainPath}");

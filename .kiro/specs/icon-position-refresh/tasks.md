@@ -56,7 +56,7 @@ Update the blueprint market import system to handle game sprite sheet changes. B
   - [x] 6.1 Add `<Content Include="TestData\MarketSampleOreHopper.html"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>` to `OE2EmpireTracker.Tests.csproj`.
     - _Requirements: 7.5_
 
-- [ ] 7. Build the IconPositionExtractor test utility
+- [x] 7. Build the IconPositionExtractor test utility
   - [x] 7.1 Create `OE2EmpireTracker.Tests/Services/IconPositionExtractorTests.cs` with the `ExtractedIcon` DTO class and `ExtractIconsFromAllSamples()` helper that parses every `MarketSample*.html` file using `BlueprintScanner.ProcessMarketHtml()` and extracts `_IconPosition` from each parsed blueprint. Add `<Compile Include>` to test csproj.
     - _Requirements: 1.1, 1.2, 1.5_
 
@@ -72,11 +72,11 @@ Update the blueprint market import system to handle game sprite sheet changes. B
   - [x] 7.5 Add `ProduceCoverageGapReport()` helper that compares all BlueprintType Ids in BaselineData against extracted icons and logs uncovered types. Distinguish between types with stale IconPosition vs types with null IconPosition.
     - _Requirements: 9.1, 9.2, 9.3, 9.5_
 
-  - [-] 7.6 Wire up the main `ExtractAndUpdateIconPositions()` test method that calls all helpers in sequence: extract → ensure commodity entries → compare & update → write files → produce gap report.
+  - [x] 7.6 Wire up the main `ExtractAndUpdateIconPositions()` test method that calls all helpers in sequence: extract → ensure commodity entries → compare & update → write files → produce gap report.
     - _Requirements: 1.5, 8.1, 8.3_
 
 - [ ] 8. Run the IconPositionExtractor to populate BaselineData
-  - [~] 8.1 Execute the `ExtractAndUpdateIconPositions` test to populate all icon positions from the refreshed MarketSample HTML files. Verify the OreHopper entry is created with correct icon position and properties. Verify per-industry CommodityFactory entries get their icon positions filled in where samples exist.
+  - [-] 8.1 Execute the `ExtractAndUpdateIconPositions` test to populate all icon positions from the refreshed MarketSample HTML files. Verify the OreHopper entry is created with correct icon position and properties. Verify per-industry CommodityFactory entries get their icon positions filled in where samples exist.
     - _Requirements: 1.6, 2.2, 2.3, 3.5, 4.1, 4.2, 4.3_
 
 - [~] 9. Checkpoint — build and run all tests

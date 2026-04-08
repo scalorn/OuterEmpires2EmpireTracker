@@ -1,4 +1,4 @@
-﻿{
+{
   "ShipClass": [
     {
       "Name": "None"
@@ -292,7 +292,7 @@
         "Unassigned White Collar Detail"
       ],
       "ResearchableProperties": [],
-      "IconPosition": null,
+      "IconPosition": "-214px -670px",
       "OutputItemType": "Flatpack"
     },
     {
@@ -313,7 +313,7 @@
         "Unassigned White Collar Detail"
       ],
       "ResearchableProperties": [],
-      "IconPosition": null,
+      "IconPosition": "-24px -670px",
       "OutputItemType": "Flatpack"
     },
     {
@@ -334,7 +334,7 @@
         "Unassigned White Collar Detail"
       ],
       "ResearchableProperties": [],
-      "IconPosition": null,
+      "IconPosition": "-138px -670px",
       "OutputItemType": "Flatpack"
     },
     {
@@ -355,7 +355,7 @@
         "Unassigned White Collar Detail"
       ],
       "ResearchableProperties": [],
-      "IconPosition": null,
+      "IconPosition": "-328px -670px",
       "OutputItemType": "Flatpack"
     },
     {
@@ -376,7 +376,7 @@
         "Unassigned White Collar Detail"
       ],
       "ResearchableProperties": [],
-      "IconPosition": null,
+      "IconPosition": "-518px -670px",
       "OutputItemType": "Flatpack"
     },
     {
@@ -397,7 +397,7 @@
         "Unassigned White Collar Detail"
       ],
       "ResearchableProperties": [],
-      "IconPosition": null,
+      "IconPosition": "-480px -670px",
       "OutputItemType": "Flatpack"
     },
     {
@@ -418,7 +418,7 @@
         "Unassigned White Collar Detail"
       ],
       "ResearchableProperties": [],
-      "IconPosition": null,
+      "IconPosition": "-290px -670px",
       "OutputItemType": "Flatpack"
     },
     {
@@ -439,7 +439,7 @@
         "Unassigned White Collar Detail"
       ],
       "ResearchableProperties": [],
-      "IconPosition": null,
+      "IconPosition": "-62px -670px",
       "OutputItemType": "Flatpack"
     },
     {
@@ -460,7 +460,7 @@
         "Unassigned White Collar Detail"
       ],
       "ResearchableProperties": [],
-      "IconPosition": null,
+      "IconPosition": "-404px -670px",
       "OutputItemType": "Flatpack"
     },
     {
@@ -481,7 +481,7 @@
         "Unassigned White Collar Detail"
       ],
       "ResearchableProperties": [],
-      "IconPosition": null,
+      "IconPosition": "-366px -670px",
       "OutputItemType": "Flatpack"
     },
     {
@@ -502,7 +502,7 @@
         "Unassigned White Collar Detail"
       ],
       "ResearchableProperties": [],
-      "IconPosition": null,
+      "IconPosition": "-252px -670px",
       "OutputItemType": "Flatpack"
     },
     {
@@ -523,7 +523,7 @@
         "Unassigned White Collar Detail"
       ],
       "ResearchableProperties": [],
-      "IconPosition": null,
+      "IconPosition": "-442px -670px",
       "OutputItemType": "Flatpack"
     },
     {
@@ -544,7 +544,7 @@
         "Unassigned White Collar Detail"
       ],
       "ResearchableProperties": [],
-      "IconPosition": null,
+      "IconPosition": "-176px -670px",
       "OutputItemType": "Flatpack"
     },
     {
@@ -565,7 +565,7 @@
         "Unassigned White Collar Detail"
       ],
       "ResearchableProperties": [],
-      "IconPosition": null,
+      "IconPosition": "-100px -670px",
       "OutputItemType": "Flatpack"
     },
     {
@@ -1380,6 +1380,22 @@
       "ResearchableProperties": [],
       "IconPosition": "-404px -594px",
       "OutputItemType": "Flatpack"
+    },
+    {
+      "Id": "OreHopper",
+      "Name": "Ore Hopper",
+      "Properties": [],
+      "ResearchableProperties": [],
+      "IconPosition": "-100px -442px",
+      "OutputItemType": "ShipPart"
+    },
+    {
+      "Id": "ASM-7S Missile Launcher",
+      "Name": "ASM-7S Missile Launcher",
+      "Properties": [],
+      "ResearchableProperties": [],
+      "IconPosition": "-24px -860px",
+      "OutputItemType": ""
     }
   ],
   "Blueprint": [
