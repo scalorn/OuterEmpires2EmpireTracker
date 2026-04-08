@@ -430,8 +430,17 @@ namespace OE2EmpireTracker
                 flpTechLevel.Visible = true;
             }
 
+            // Clear grid when no blueprint type is selected
+            if (bt == null || bt.Properties == null || bt.Properties.Length == 0)
+            {
+                dgvStatistics.CellValidating -= dgvStatistics_CellValidating;
+                try { dgvStatistics.EndEdit(); } catch { }
+                dgvStatistics.Rows.Clear();
+                dgvStatistics.CellValidating += dgvStatistics_CellValidating;
+                return;
+            }
+
             // Populate property grid rows
-            if (bt != null && bt.Properties != null)
             {
                 int row = 0;
                 foreach (string property in bt.Properties)
@@ -459,6 +468,7 @@ namespace OE2EmpireTracker
                     else if (propType == PropertyValueType.CheckBox)
                     {
                         var checkCell = new DataGridViewCheckBoxCell();
+                        checkCell.Value = false;
                         newRow.Cells["CurrentValue"] = checkCell;
                     }
                     else
@@ -474,14 +484,7 @@ namespace OE2EmpireTracker
                 }
 
                 // Remove excess rows if there are more than defined properties
-                if (bt.Properties.Length == 0)
-                {
-                    dgvStatistics.CellValidating -= dgvStatistics_CellValidating;
-                    try { dgvStatistics.EndEdit(); } catch { }
-                    dgvStatistics.Rows.Clear();
-                    dgvStatistics.CellValidating += dgvStatistics_CellValidating;
-                }
-                else while (dgvStatistics.Rows.Count > bt.Properties.Length)
+                while (dgvStatistics.Rows.Count > bt.Properties.Length)
                 {
                     dgvStatistics.Rows.RemoveAt(dgvStatistics.Rows.Count - 1);
                 }
