@@ -68,8 +68,8 @@ namespace OE2EmpireTracker.Forms.Blueprint
                 //output = $@"@""{output.Replace("\n", "\"\n")}""";
                 //output = $@"@""{output.Replace("\r", "\"\r")}""";
                 Log.Info(output);
-                //string html = ExtractHtmlFragmentFromClipboardData(returnHtmlText);
-                ProcessHtml(blueprint, returnHtmlText);
+                string html = ExtractHtmlFragmentFromClipboardData(returnHtmlText);
+                ProcessHtml(blueprint, html);
             }
         }
 

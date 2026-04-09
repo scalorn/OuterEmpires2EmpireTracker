@@ -44,7 +44,7 @@ AVAILABILITY
 
 PUBLIC SHOWCASE
 
-The lead vessel, NEC Frontier Anvil, will be available for guided tours at Alef Hestrixia Station in the Ahurani Void on April 11th and 12th. Captains and faction representatives are welcome to inspect the ship and discuss procurement terms with NEC manufacturing staff on site.
+The lead vessel, Frontier Anvil, will be available for guided tours at Alef Hestrixia Station in the Ahurani Void on April 11th and 12th. Captains and faction representatives are welcome to inspect the ship and discuss procurement terms with NEC manufacturing staff on site.
 
 ---
 
