@@ -29,14 +29,14 @@ Add a dynamic title bar with global/player blueprint counts and a structured fil
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 3. Add title bar counts and filter panel UI to FormBlueprint
-  - [-] 3.1 Add `UpdateTitleBarCounts()` method to `FormBlueprint`
+  - [x] 3.1 Add `UpdateTitleBarCounts()` method to `FormBlueprint`
     - Format: `"Blueprints - Global: {globalCount} Player: {playerCount}"`
     - Use `EmpireContext.globalBlueprintList?.Count ?? 0` for global count
     - Use `PlayerContext.GetCurrentPlayerBlueprints().Count` for player count (0 when no player selected)
     - Call from constructor, `OnBlueprintDataChanged`, and `OnCurrentPlayerChanged`
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-  - [~] 3.2 Write property test for title bar format correctness
+  - [-] 3.2 Write property test for title bar format correctness
     - **Property 1: Title bar format correctness**
     - Generate random non-negative integer pairs, call the title-bar formatting logic, assert output matches expected format
     - Test file: `OE2EmpireTracker.Tests/ViewModels/BlueprintFilterPropertyTests.cs` (same file as Property 2)

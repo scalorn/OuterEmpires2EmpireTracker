@@ -7,6 +7,7 @@ using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.ViewModels;
+using FormBP = OE2EmpireTracker.FormBlueprint;
 using BP = OE2EmpireTracker.Models.Blueprint;
 
 namespace OE2EmpireTracker.Tests.ViewModels
@@ -89,6 +90,36 @@ namespace OE2EmpireTracker.Tests.ViewModels
             }
 
             return true;
+        }
+
+        #endregion
+
+        #region Property 1: Title bar format correctness
+
+        /// <summary>
+        /// Feature: blueprint-form-filters, Property 1: Title bar format correctness
+        ///
+        /// For any pair of non-negative integers (globalCount, playerCount),
+        /// FormatTitleBar returns "Blueprints - Global: {globalCount} Player: {playerCount}".
+        ///
+        /// **Validates: Requirements 1.1, 1.4**
+        /// </summary>
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property TitleBar_Format_Correctness()
+        {
+            var nonNegInt = Gen.Choose(0, int.MaxValue);
+
+            var inputGen = from g in nonNegInt
+                           from p in nonNegInt
+                           select new { Global = g, Player = p };
+
+            return Prop.ForAll(inputGen.ToArbitrary(), data =>
+            {
+                var result = FormBP.FormatTitleBar(data.Global, data.Player);
+                var expected = $"Blueprints - Global: {data.Global} Player: {data.Player}";
+                return (result == expected)
+                    .Label($"Expected: \"{expected}\" but got: \"{result}\"");
+            });
         }
 
         #endregion
