@@ -66,6 +66,14 @@ namespace OE2EmpireTracker
         private FlowLayoutPanel pnlPropertyCheckboxes;
         private Label lblNoChanges;
 
+        // Filter panel controls (created in code-behind)
+        private FlowLayoutPanel flpFilterPanel;
+        private ComboBox cmbFilterType;
+        private ComboBox cmbFilterClass;
+        private ComboBox cmbFilterTechLevel;
+        private ComboBox cmbFilterEvolution;
+        private Button btnClearFilters;
+
         /// <summary>
         /// Extended 16-color Wong palette (8 base + 8 lighter tints) for colorblind-friendly chart lines.
         /// </summary>
@@ -109,6 +117,7 @@ namespace OE2EmpireTracker
         public FormBlueprint()
         {
             InitializeComponent();
+            InitFilterPanel();
             empireContext = EmpireContext.getInstance();
             playerContext = EmpireContext.PlayerContext;
             viewModel = new BlueprintViewModel(new Blueprint(), playerContext);
@@ -181,6 +190,118 @@ namespace OE2EmpireTracker
 
             InitEvolutionGraphTab();
             UpdateTitleBarCounts();
+        }
+
+        /// <summary>
+        /// Creates the filter panel with four labeled ComboBoxes and a Clear Filters button.
+        /// Inserts the panel into flpSearchList between the text filter and the ListView.
+        /// Called from the constructor after InitializeComponent().
+        /// </summary>
+        private void InitFilterPanel()
+        {
+            empireContext = EmpireContext.getInstance();
+
+            // Create the filter panel container
+            flpFilterPanel = new FlowLayoutPanel
+            {
+                AutoSize = true,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = true,
+                Margin = new Padding(2)
+            };
+
+            // Blueprint Type filter
+            var lblType = new Label
+            {
+                Text = "Type:",
+                Size = new Size(40, 17),
+                TextAlign = ContentAlignment.MiddleRight,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right
+            };
+            cmbFilterType = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Size = new Size(150, 21),
+                DisplayMember = "Name",
+                ValueMember = "Id"
+            };
+            cmbFilterType.DataSource = empireContext.bindingSourceBlueprintType;
+            cmbFilterType.SelectedIndex = -1;
+
+            // Class filter
+            var lblClass = new Label
+            {
+                Text = "Class:",
+                Size = new Size(40, 17),
+                TextAlign = ContentAlignment.MiddleRight,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right
+            };
+            cmbFilterClass = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Size = new Size(150, 21),
+                DisplayMember = "Name",
+                ValueMember = "Id"
+            };
+            cmbFilterClass.DataSource = empireContext.bindingSourceShipClass;
+            cmbFilterClass.SelectedIndex = -1;
+
+            // Tech Level filter
+            var lblTech = new Label
+            {
+                Text = "Tech Level:",
+                Size = new Size(65, 17),
+                TextAlign = ContentAlignment.MiddleRight,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right
+            };
+            cmbFilterTechLevel = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Size = new Size(150, 21),
+                DisplayMember = "Name",
+                ValueMember = "Name"
+            };
+            cmbFilterTechLevel.DataSource = empireContext.bindingSourceTechLevel;
+            cmbFilterTechLevel.SelectedIndex = -1;
+
+            // Evolution filter
+            var lblEvo = new Label
+            {
+                Text = "Evolution:",
+                Size = new Size(60, 17),
+                TextAlign = ContentAlignment.MiddleRight,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right
+            };
+            cmbFilterEvolution = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Size = new Size(60, 21)
+            };
+            cmbFilterEvolution.DataSource = empireContext.bindingSourceEvolution;
+            cmbFilterEvolution.SelectedIndex = -1;
+
+            // Clear Filters button
+            btnClearFilters = new Button
+            {
+                Text = "Clear Filters",
+                Size = new Size(85, 23),
+                UseVisualStyleBackColor = true
+            };
+
+            // Add controls to the filter panel
+            flpFilterPanel.Controls.Add(lblType);
+            flpFilterPanel.Controls.Add(cmbFilterType);
+            flpFilterPanel.Controls.Add(lblClass);
+            flpFilterPanel.Controls.Add(cmbFilterClass);
+            flpFilterPanel.Controls.Add(lblTech);
+            flpFilterPanel.Controls.Add(cmbFilterTechLevel);
+            flpFilterPanel.Controls.Add(lblEvo);
+            flpFilterPanel.Controls.Add(cmbFilterEvolution);
+            flpFilterPanel.Controls.Add(btnClearFilters);
+
+            // Insert filter panel into flpSearchList between the text filter (index 0) and ListView (index 1)
+            flpSearchList.Controls.Add(flpFilterPanel);
+            flpSearchList.Controls.SetChildIndex(flpFilterPanel, 1);
         }
 
         /// <summary>
@@ -1166,10 +1287,15 @@ namespace OE2EmpireTracker
 
         private void flpSearchList_Layout(object sender, LayoutEventArgs e)
         {
-            // ListView fills remaining height after the search bar
+            // ListView fills remaining height after the search bar and filter panel
+            int usedHeight = flpBlueprintSearch.Height + flpBlueprintSearch.Margin.Top + flpBlueprintSearch.Margin.Bottom;
+            if (flpFilterPanel != null)
+            {
+                usedHeight += flpFilterPanel.Height + flpFilterPanel.Margin.Top + flpFilterPanel.Margin.Bottom;
+            }
             lvwBlueprints.Size = new System.Drawing.Size(
                 flpSearchList.ClientSize.Width - lvwBlueprints.Margin.Left - lvwBlueprints.Margin.Right,
-                flpSearchList.ClientSize.Height - flpBlueprintSearch.Height - flpBlueprintSearch.Margin.Top - flpBlueprintSearch.Margin.Bottom - lvwBlueprints.Margin.Top - lvwBlueprints.Margin.Bottom);
+                flpSearchList.ClientSize.Height - usedHeight - lvwBlueprints.Margin.Top - lvwBlueprints.Margin.Bottom);
         }
 
         private void flowLayoutPanel1_Layout(object sender, LayoutEventArgs e)

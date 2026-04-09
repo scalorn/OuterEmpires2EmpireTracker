@@ -36,13 +36,13 @@ Add a dynamic title bar with global/player blueprint counts and a structured fil
     - Call from constructor, `OnBlueprintDataChanged`, and `OnCurrentPlayerChanged`
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-  - [-] 3.2 Write property test for title bar format correctness
+  - [x] 3.2 Write property test for title bar format correctness
     - **Property 1: Title bar format correctness**
     - Generate random non-negative integer pairs, call the title-bar formatting logic, assert output matches expected format
     - Test file: `OE2EmpireTracker.Tests/ViewModels/BlueprintFilterPropertyTests.cs` (same file as Property 2)
     - **Validates: Requirements 1.1, 1.4**
 
-  - [~] 3.3 Add `InitFilterPanel()` method to `FormBlueprint` creating filter controls in code-behind
+  - [-] 3.3 Add `InitFilterPanel()` method to `FormBlueprint` creating filter controls in code-behind
     - Create `FlowLayoutPanel` with four labeled ComboBoxes (Blueprint Type, Class, Tech Level, Evolution) and a Clear Filters button
     - Bind each ComboBox to its respective `EmpireContext` binding source (`bindingSourceBlueprintType`, `bindingSourceShipClass`, `bindingSourceTechLevel`, `bindingSourceEvolution`)
     - Insert the filter panel into `flpSearchList` between the text filter and the ListView
