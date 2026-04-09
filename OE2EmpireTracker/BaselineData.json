@@ -1439,32 +1439,6 @@
       "ResearchableProperties": [],
       "IconPosition": "-100px -442px",
       "OutputItemType": "ShipPart"
-    },
-    {
-      "Id": "ASM-7S Missile Launcher",
-      "Name": "ASM-7S Missile Launcher",
-      "Properties": [
-        "Class",
-        "Mass",
-        "Cargo Volume Size",
-        "Health",
-        "Eng Capacity Required",
-        "Weapon Slot Size",
-        "Wear and Tear Rate",
-        "Maximum Damage Repair",
-        "Accuracy",
-        "Launch Velocity",
-        "Magazine Size",
-        "Max Range",
-        "Min Range",
-        "Power Draw Per Shot",
-        "Rate of Fire",
-        "Reload Time",
-        "Ammo Type"
-      ],
-      "ResearchableProperties": [],
-      "IconPosition": "-24px -860px",
-      "OutputItemType": ""
     }
   ],
   "Blueprint": [

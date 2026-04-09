@@ -129,6 +129,21 @@ namespace OE2EmpireTracker.Tests.Services
                 }
             }
 
+            // --- Pre-process: Reclassify small missile launcher variants ---
+            // ASM-7S, ASM-8S, etc. are class variants of MissileLauncher/Small.
+            // Different classes may have different icons, so icon-based resolution may
+            // create spurious entries. Null out ResolvedTypeId so they get handled in
+            // the unknown-icons section with special MissileLauncher/Small logic.
+            foreach (var icon in extracted)
+            {
+                if (icon.BlueprintName != null &&
+                    icon.BlueprintName.StartsWith("ASM-", StringComparison.OrdinalIgnoreCase) &&
+                    icon.BlueprintName.IndexOf("Missile Launcher", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    icon.ResolvedTypeId = null;
+                }
+            }
+
             // Group extracted icons by ResolvedTypeId to handle duplicates
             // (same type may appear in multiple sample files)
             var resolvedIcons = extracted
@@ -276,6 +291,34 @@ namespace OE2EmpireTracker.Tests.Services
                         addedCount++;
                         TestContext.WriteLine(
                             $"ADDED: New BlueprintType \"{BlueprintTypes.OreHopper}\" with IconPosition \"{icon.IconPosition}\" from [{icon.SourceFile}]");
+                    }
+                }
+                else if (icon.BlueprintName.StartsWith("ASM-", StringComparison.OrdinalIgnoreCase) &&
+                         icon.BlueprintName.IndexOf("Missile Launcher", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    // Small missile launcher class variant (ASM-7S, ASM-8S, etc.) — map to MissileLauncher/Small
+                    const string missileLauncherSmall = "MissileLauncher/Small";
+                    icon.ResolvedTypeId = missileLauncherSmall; // Mark as resolved for coverage gap report
+                    JToken mlEntry = blueprintTypes
+                        .FirstOrDefault(bt => string.Equals(
+                            (string)bt["Id"], missileLauncherSmall, StringComparison.Ordinal));
+
+                    if (mlEntry != null)
+                    {
+                        // Fill in empty Properties arrays from extracted property names
+                        JArray existingProps = mlEntry["Properties"] as JArray;
+                        if (existingProps != null && existingProps.Count == 0 && icon.PropertyNames.Count > 0)
+                        {
+                            mlEntry["Properties"] = new JArray(icon.PropertyNames.ToArray());
+                            TestContext.WriteLine(
+                                $"UPDATED (MissileLauncher/Small): {missileLauncherSmall} Properties populated with {icon.PropertyNames.Count} entries from [{icon.SourceFile}]");
+                            updatedCount++;
+                        }
+                    }
+                    else
+                    {
+                        TestContext.WriteLine(
+                            $"WARNING: Matched missile launcher \"{icon.BlueprintName}\" to {missileLauncherSmall} but entry not found in BaselineData");
                     }
                 }
                 else
