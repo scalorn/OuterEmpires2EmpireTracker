@@ -949,9 +949,8 @@ namespace OE2EmpireTracker.Tests.Services
         /// <summary>
         /// Validates: Requirements 7.1, 7.2
         /// Parse MarketSampleOreHopper.html, verify at least one blueprint whose name
-        /// contains "Ore Hopper" and has populated properties.
-        /// Note: OreHopper shares the CargoPod icon position, so the scanner resolves
-        /// BluePrintType as "CargoPod". We verify by name rather than BluePrintType.
+        /// contains "Ore Hopper", has populated properties, and is reclassified to
+        /// BluePrintType "OreHopper" (not CargoPod, which shares the same icon position).
         /// </summary>
         [Test]
         public void Integration_OreHopperParse_HasOreHopperBlueprintsWithProperties()
@@ -974,6 +973,8 @@ namespace OE2EmpireTracker.Tests.Services
                 var bp = mb.Blueprint;
                 Assert.That(bp.Name, Is.Not.Null.And.Not.Empty,
                     "OreHopper blueprint should have a name");
+                Assert.That(bp.BluePrintType, Is.EqualTo("OreHopper"),
+                    $"OreHopper blueprint '{bp.Name}' should be reclassified to BluePrintType 'OreHopper'");
                 Assert.That(bp.Properties.Count, Is.GreaterThan(0),
                     $"OreHopper blueprint '{bp.Name}' should have populated properties");
 

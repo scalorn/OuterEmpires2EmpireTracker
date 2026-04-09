@@ -1,5 +1,6 @@
 using Amazon.Runtime.Internal.Transform;
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
@@ -430,11 +431,20 @@ namespace OE2EmpireTracker.Forms.Blueprint
                                 if (bpType != null)
                                 {
                                     bp.BluePrintType = bpType.Id;
-                                    Log.Info($"  Icon {iconPosition} -> {bpType.Id}");
+                                    bp.BluePrintType = ReclassifyByName(bp.BluePrintType, bp.Name);
+                                    Log.Info($"  Icon {iconPosition} -> {bp.BluePrintType}");
                                 }
                                 else
                                 {
-                                    Log.Warn($"  Unknown icon position: {iconPosition} for '{bp.Name}'");
+                                    bp.BluePrintType = ReclassifyByName(bp.BluePrintType, bp.Name);
+                                    if (bp.BluePrintType != null)
+                                    {
+                                        Log.Info($"  Name-based classification for '{bp.Name}' -> {bp.BluePrintType}");
+                                    }
+                                    else
+                                    {
+                                        Log.Warn($"  Unknown icon position: {iconPosition} for '{bp.Name}'");
+                                    }
                                 }
                             }
                         }
@@ -521,6 +531,26 @@ namespace OE2EmpireTracker.Forms.Blueprint
             // Convert bytes to string using UTF-8 encoding
             byte[] bytes = Encoding.UTF8.GetBytes(htmlDataString);
             return Encoding.UTF8.GetString(bytes, startFragmentIndex, endFragmentIndex - startFragmentIndex);
+        }
+
+        /// <summary>
+        /// Reclassifies a blueprint type based on the blueprint name.
+        /// Used when multiple types share the same icon position and icon-based
+        /// resolution picks the wrong one.
+        /// </summary>
+        private static string ReclassifyByName(string resolvedType, string blueprintName)
+        {
+            if (!string.IsNullOrEmpty(blueprintName) &&
+                blueprintName.IndexOf("Ore Hopper", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                if (resolvedType != BlueprintTypes.OreHopper)
+                {
+                    Log.Info($"  Reclassified '{blueprintName}' from '{resolvedType}' to '{BlueprintTypes.OreHopper}' by name");
+                }
+                return BlueprintTypes.OreHopper;
+            }
+
+            return resolvedType;
         }
 
         /// <summary>

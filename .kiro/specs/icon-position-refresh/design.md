@@ -165,6 +165,17 @@ The Properties array for each variant is derived from the HTML samples where ava
 
 Properties array is automatically populated from `MarketSampleOreHopper.html` extraction. The extractor collects property keys from parsed blueprints (excluding internal `_`-prefixed keys) and fills them into the BlueprintType entry. OreHopper shares the CargoPod icon position, so the extractor uses name-based matching to identify OreHopper blueprints.
 
+### BlueprintScanner Name-Based Reclassification
+
+**Location:** `OE2EmpireTracker/Forms/Blueprint/BlueprintScanner.cs`
+
+OreHopper and CargoPod share the same icon position (`-100px -442px`). The icon-based resolution in `ProcessMarketHtml()` always picks CargoPod (it appears first in BaselineData). To fix this, a `ReclassifyByName()` method is called after icon resolution to override the type based on the blueprint name:
+
+- If the blueprint name contains "Ore Hopper" (case-insensitive), the type is overridden to `BlueprintTypes.OreHopper`
+- Otherwise the icon-resolved type is kept as-is
+- The method is called in both the resolved and unresolved branches, so even blueprints with unknown icons get a chance at name-based classification
+- The pattern is extensible: additional name-based rules can be added to `ReclassifyByName()` if other types share icons in the future
+
 **Global blueprint records:** The existing global blueprints with `BluePrintType: "Flatpacks/CommodityFactory"` are updated to reference their per-industry type (e.g. `"Flatpacks/CommodityFactory/Agridome"`). The `Commodity Industry` property is retained for backward compatibility but becomes redundant.
 
 ## Data Models
