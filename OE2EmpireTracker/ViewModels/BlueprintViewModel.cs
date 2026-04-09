@@ -145,7 +145,8 @@ namespace OE2EmpireTracker.ViewModels
             if (!string.IsNullOrEmpty(nameFilter))
             {
                 list = list
-                    .Where(b => b.ExtendedName.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Where(b => b.ExtendedName.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0
+                             || (!string.IsNullOrEmpty(b.BluePrintType) && b.BluePrintType.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0))
                     .ToList();
             }
             list.Sort((a, b) => string.Compare(a.ExtendedName, b.ExtendedName, StringComparison.OrdinalIgnoreCase));

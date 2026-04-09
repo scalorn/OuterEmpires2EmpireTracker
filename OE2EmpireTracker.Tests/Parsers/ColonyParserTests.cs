@@ -123,17 +123,17 @@ namespace OE2EmpireTracker.Tests.Parsers
                 .OrderBy(n => n)
                 .ToList();
 
-            Assert.That(names, Does.Contain("Colony Command Centre"));
-            Assert.That(names, Does.Contain("Reactor Core"));
-            Assert.That(names, Does.Contain("Mining Rig"));
-            Assert.That(names, Does.Contain("Refinery"));
-            Assert.That(names, Does.Contain("Manufactory"));
-            Assert.That(names, Does.Contain("Warehouse"));
-            Assert.That(names, Does.Contain("Habitation Block"));
-            Assert.That(names, Does.Contain("Hydroponics Bay"));
-            Assert.That(names, Does.Contain("Entertainment Centre"));
-            Assert.That(names, Does.Contain("Research Laboratory"));
-            Assert.That(names, Does.Contain("Remote Operations Array"));
+            Assert.That(names, Does.Contain("Colony Command Centre Flatpack"));
+            Assert.That(names, Does.Contain("Reactor Core Flatpack"));
+            Assert.That(names, Does.Contain("Mining Rig Flatpack"));
+            Assert.That(names, Does.Contain("Refinery Flatpack"));
+            Assert.That(names, Does.Contain("Manufactory Flatpack"));
+            Assert.That(names, Does.Contain("Warehouse Flatpack"));
+            Assert.That(names, Does.Contain("Habitation Block Flatpack"));
+            Assert.That(names, Does.Contain("Hydroponics Bay Flatpack"));
+            Assert.That(names, Does.Contain("Entertainment Centre Flatpack"));
+            Assert.That(names, Does.Contain("Research Laboratory Flatpack"));
+            Assert.That(names, Does.Contain("Remote Operations Array Flatpack"));
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             var miningRig = colony.Structures.FirstOrDefault(s =>
             {
                 var bp = _empireContext.FindGlobalBlueprint(s.FlatpackBlueprintUUID);
-                return bp?.Name == "Mining Rig";
+                return bp?.Name == "Mining Rig Flatpack";
             });
 
             Assert.That(miningRig, Is.Not.Null, "Should have a Mining Rig");
@@ -262,10 +262,10 @@ namespace OE2EmpireTracker.Tests.Parsers
                 .OrderBy(n => n)
                 .ToList();
 
-            Assert.That(names, Does.Contain("Administration Block"));
-            Assert.That(names, Does.Contain("Agridome"));
-            Assert.That(names, Does.Contain("Logistics Centre"));
-            Assert.That(names, Does.Contain("Engineering Block"));
+            Assert.That(names, Does.Contain("Administration Block Flatpack"));
+            Assert.That(names, Does.Contain("Agridome Flatpack"));
+            Assert.That(names, Does.Contain("Logistics Centre Flatpack"));
+            Assert.That(names, Does.Contain("Engineering Block Flatpack"));
         }
 
         [Test]

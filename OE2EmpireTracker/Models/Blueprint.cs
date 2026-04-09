@@ -75,7 +75,7 @@ namespace OE2EmpireTracker.Models
                 if (Evolution > 0) {
                     extendedName += "Ev(" + Evolution + ") ";
                 }
-                extendedName += OutputItemName + " ";
+                extendedName += Name + " ";
                 if (TechLevel != null)
                 {
                     extendedName += "(" + TechLevel + ") ";

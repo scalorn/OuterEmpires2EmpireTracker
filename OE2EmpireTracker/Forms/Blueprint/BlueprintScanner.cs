@@ -182,6 +182,16 @@ namespace OE2EmpireTracker.Forms.Blueprint
                     {
                         blueprint.Description = descNode.InnerText.Trim();
                     }
+
+                    // Individual blueprint pages don't include " Flatpack" in the title,
+                    // but the canonical name should include it for flatpack types
+                    if (!string.IsNullOrEmpty(blueprint.BluePrintType) &&
+                        blueprint.BluePrintType.IsFlatpack() &&
+                        !string.IsNullOrEmpty(blueprint.Name) &&
+                        !blueprint.Name.EndsWith(" Flatpack", StringComparison.OrdinalIgnoreCase))
+                    {
+                        blueprint.Name += " Flatpack";
+                    }
                 }
                 catch (Exception ex)
                 {

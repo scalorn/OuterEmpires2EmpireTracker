@@ -1455,7 +1455,7 @@
       "Resources": {},
       "UUID": "2bd75065-cbdf-4cc0-82d6-e7b9e2b3c201",
       "ItemType": "Blueprint",
-      "Name": "Administration Block"
+      "Name": "Administration Block Flatpack"
     },
     {
       "OwnerUUID": "",
@@ -1469,7 +1469,7 @@
       "Resources": {},
       "UUID": "702e04fa-3512-4a52-ba87-fcb122781aea",
       "ItemType": "Blueprint",
-      "Name": "Agridome"
+      "Name": "Agridome Flatpack"
     },
     {
       "OwnerUUID": "",
@@ -1529,7 +1529,7 @@
       },
       "UUID": "4683d750-80e3-4d67-b99a-83bc8b5b9724",
       "ItemType": "Blueprint",
-      "Name": "Centre of Economics"
+      "Name": "Centre of Economics Flatpack"
     },
     {
       "OwnerUUID": "",
@@ -1562,7 +1562,7 @@
       },
       "UUID": "49f3198c-292f-4dd0-ab72-9c873b97f8a2",
       "ItemType": "Survey",
-      "Name": "Colony Command Centre",
+      "Name": "Colony Command Centre Flatpack",
       "Description": "The heart of the colony and the absolute minimum structure needed to secure the claim on a colony site."
     },
     {
@@ -1618,7 +1618,7 @@
       "Resources": {},
       "UUID": "3e97f3fb-467d-4934-84e0-6862685e96cd",
       "ItemType": "Blueprint",
-      "Name": "Engineering Block"
+      "Name": "Engineering Block Flatpack"
     },
     {
       "OwnerUUID": "",
@@ -1646,7 +1646,7 @@
       },
       "UUID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
       "ItemType": "Survey",
-      "Name": "Entertainment Centre",
+      "Name": "Entertainment Centre Flatpack",
       "Description": "Where colonist go to relax and blow off some steam."
     },
     {
@@ -1672,7 +1672,7 @@
       },
       "UUID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
       "ItemType": "Survey",
-      "Name": "Habitation Block",
+      "Name": "Habitation Block Flatpack",
       "Description": "Life support and habitation functions enough for 4 Details."
     },
     {
@@ -1695,7 +1695,7 @@
       "Resources": {},
       "UUID": "d3b0f50f-4414-454f-8b58-a32fefb32368",
       "ItemType": "Blueprint",
-      "Name": "Healthcare Institute"
+      "Name": "Healthcare Institute Flatpack"
     },
     {
       "OwnerUUID": "",
@@ -1723,7 +1723,7 @@
       },
       "UUID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
       "ItemType": "Survey",
-      "Name": "Hydroponics Bay",
+      "Name": "Hydroponics Bay Flatpack",
       "Description": "Provide food enough for 4 Details."
     },
     {
@@ -1746,7 +1746,7 @@
       "Resources": {},
       "UUID": "d92342af-933c-4e9a-b833-4223ef82d458",
       "ItemType": "Blueprint",
-      "Name": "Institute of Defence"
+      "Name": "Institute of Defence Flatpack"
     },
     {
       "OwnerUUID": "",
@@ -1768,7 +1768,7 @@
       "Resources": {},
       "UUID": "a7f288aa-e158-4423-b6af-7d46cc649d53",
       "ItemType": "Blueprint",
-      "Name": "Leisure Industry Centre"
+      "Name": "Leisure Industry Centre Flatpack"
     },
     {
       "OwnerUUID": "",
@@ -1790,7 +1790,7 @@
       "Resources": {},
       "UUID": "0438fd51-73d0-41f7-8d51-6445219741e4",
       "ItemType": "Blueprint",
-      "Name": "Logistics Centre"
+      "Name": "Logistics Centre Flatpack"
     },
     {
       "OwnerUUID": "",
@@ -1809,7 +1809,7 @@
       },
       "UUID": "ebbf669a-3987-4e4f-87db-a3236e6dd4ea",
       "ItemType": "Survey",
-      "Name": "Manufactory",
+      "Name": "Manufactory Flatpack",
       "Description": "Manufacturing plant."
     },
     {
@@ -1832,7 +1832,7 @@
       "Resources": {},
       "UUID": "65ea6374-e1bf-495a-b6d7-3114eac5fd8f",
       "ItemType": "Blueprint",
-      "Name": "Manufacturing Industry Centre"
+      "Name": "Manufacturing Industry Centre Flatpack"
     },
     {
       "OwnerUUID": "",
@@ -1842,7 +1842,7 @@
       "Resources": {},
       "UUID": "365339ae-e024-419d-8f7c-f0943e8d9059",
       "ItemType": "Blueprint",
-      "Name": "Mining Industry Centre"
+      "Name": "Mining Industry Centre Flatpack"
     },
     {
       "OwnerUUID": "",
@@ -1872,7 +1872,7 @@
       },
       "UUID": "584616b3-b8c0-4ca5-98d2-66e39587ae57",
       "ItemType": "Survey",
-      "Name": "Mining Rig",
+      "Name": "Mining Rig Flatpack",
       "Description": "Can mine one surveyed resource vein."
     },
     {
@@ -1895,7 +1895,7 @@
       "Resources": {},
       "UUID": "5fba9b4e-6cd9-400d-a723-c4df4bf35cc2",
       "ItemType": "Blueprint",
-      "Name": "Off-World Living Institute"
+      "Name": "Off-World Living Institute Flatpack"
     },
     {
       "OwnerUUID": "",
@@ -1981,7 +1981,7 @@
       },
       "UUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
       "ItemType": "Survey",
-      "Name": "Reactor Core",
+      "Name": "Reactor Core Flatpack",
       "Description": "Provides 6Mw of power per core."
     },
     {
@@ -2012,7 +2012,7 @@
       },
       "UUID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
       "ItemType": "Survey",
-      "Name": "Refinery",
+      "Name": "Refinery Flatpack",
       "Description": "Process raw materials into refined materials."
     },
     {
@@ -2035,7 +2035,7 @@
       "Resources": {},
       "UUID": "aee31143-b3a5-4a43-83c7-f4a050004ede",
       "ItemType": "Blueprint",
-      "Name": "Refining Industry Centre"
+      "Name": "Refining Industry Centre Flatpack"
     },
     {
       "OwnerUUID": "",
@@ -2061,7 +2061,7 @@
       },
       "UUID": "ebaa1a5d-1b2a-49f4-ac46-639ffbde7511",
       "ItemType": "Survey",
-      "Name": "Remote Operations Array",
+      "Name": "Remote Operations Array Flatpack",
       "Description": "Colony owner can control all colony operations remotely within a set range."
     },
     {
@@ -2089,7 +2089,7 @@
       },
       "UUID": "a86cc2fa-478a-498c-8c17-166f9fa5c9d7",
       "ItemType": "Survey",
-      "Name": "Research Laboratory",
+      "Name": "Research Laboratory Flatpack",
       "Description": "Research & Development facility."
     },
     {
@@ -2112,7 +2112,7 @@
       "Resources": {},
       "UUID": "6a36906f-b87d-437c-8fc9-551c968764b6",
       "ItemType": "Blueprint",
-      "Name": "Science Centre"
+      "Name": "Science Centre Flatpack"
     },
     {
       "OwnerUUID": "",
@@ -2134,7 +2134,7 @@
       "Resources": {},
       "UUID": "7475f2cc-36ed-4ff8-983f-0ae4c2311e46",
       "ItemType": "Blueprint",
-      "Name": "Technology Institute"
+      "Name": "Technology Institute Flatpack"
     },
     {
       "OwnerUUID": "",
@@ -2160,7 +2160,7 @@
       },
       "UUID": "513b5bc8-db3d-4808-8cc4-a93bc9f65354",
       "ItemType": "Survey",
-      "Name": "Warehouse",
+      "Name": "Warehouse Flatpack",
       "Description": "Colony mass storage facility."
     }
   ],

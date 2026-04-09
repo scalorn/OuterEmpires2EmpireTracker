@@ -149,7 +149,7 @@ namespace OE2EmpireTracker.Tests.Models
         /// **Validates: Requirements 2.1**
         /// </summary>
         [FsCheck.NUnit.Property(MaxTest = 100)]
-        public Property ExtendedName_UsesFlatpackOutputItemName()
+        public Property ExtendedName_UsesFlatpackFullName()
         {
             var gen = GenFlatpackWithSuffix()
                 .Where(bp => bp.UUID != null);
@@ -159,10 +159,9 @@ namespace OE2EmpireTracker.Tests.Models
                 bp =>
                 {
                     var extended = bp.ExtendedName;
-                    bool containsStripped = extended.Contains(bp.OutputItemName);
-                    bool doesNotContainFull = !extended.Contains(bp.Name);
-                    return (containsStripped && doesNotContainFull)
-                        .Label($"Name='{bp.Name}', OutputItemName='{bp.OutputItemName}', ExtendedName='{extended}'");
+                    bool containsFullName = extended.Contains(bp.Name);
+                    return containsFullName
+                        .Label($"Name='{bp.Name}', ExtendedName='{extended}'");
                 });
         }
 
@@ -364,15 +363,14 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         [Test]
-        public void ExtendedName_FlatpackBlueprint_ContainsStrippedName()
+        public void ExtendedName_FlatpackBlueprint_ContainsFullName()
         {
             var bp = new OE2EmpireTracker.Models.Blueprint("Mining Rig Flatpack")
             {
                 BluePrintType = "Flatpacks/MiningRig",
                 UUID = Guid.NewGuid().ToString()
             };
-            Assert.That(bp.ExtendedName, Does.Contain("Mining Rig"));
-            Assert.That(bp.ExtendedName, Does.Not.Contain("Mining Rig Flatpack"));
+            Assert.That(bp.ExtendedName, Does.Contain("Mining Rig Flatpack"));
         }
     }
 }

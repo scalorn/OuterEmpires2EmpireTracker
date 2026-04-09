@@ -132,7 +132,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             var miningRigUUID = reference.Structures
                 .Where(s => !string.IsNullOrEmpty(s.FlatpackBlueprintUUID))
                 .Select(s => new { s.FlatpackBlueprintUUID, Name = _empireContext.FindGlobalBlueprint(s.FlatpackBlueprintUUID)?.Name })
-                .FirstOrDefault(x => x.Name == "Mining Rig")?.FlatpackBlueprintUUID;
+                .FirstOrDefault(x => x.Name == "Mining Rig Flatpack")?.FlatpackBlueprintUUID;
 
             Assert.That(miningRigUUID, Is.Not.Null, "M1 should contain Mining Rig structures");
 
