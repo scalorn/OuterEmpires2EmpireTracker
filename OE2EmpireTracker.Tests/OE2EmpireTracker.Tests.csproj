@@ -248,6 +248,7 @@
     <Compile Include="Blueprint\BlueprintScannerTests.cs" />
     <Compile Include="Blueprint\FragmentExtractionTests.cs" />
     <Compile Include="Blueprint\IndividualBlueprintImportTests.cs" />
+    <Compile Include="Blueprint\AssetTabBlueprintImportTests.cs" />
     <Compile Include="Models\SurveyTests.cs" />
     <Compile Include="Models\BlueprintTests.cs" />
     <Compile Include="Models\CommodityTests.cs" />
@@ -395,6 +396,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestData\IndivudalBPWSMS-LL9Resources.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\IndivudalBPAssetTabWSMS-LL6Stats.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\IndivudalBPAssetTabWSMS-LL6Resources.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -98,7 +98,11 @@ namespace OE2EmpireTracker.Forms.Blueprint
                 // Extract title / evolution / tech level / description
                 XmlNode iconBaseNode = doc.SelectSingleNode("//div[contains(@class,'ui_icon_base')]");
                 XmlNode titleNode = doc.SelectSingleNode("//div[contains(@class,'SmallSlideOut_Form_Row_Text_Bold')]");
-                XmlNode evoNode = doc.SelectSingleNode("//div[contains(@class,'EvolutionNumber')]");
+                // Scope EvolutionNumber search to inside the title node so we don't
+                // accidentally pick an empty evolution div from the asset-tab blueprint
+                // list that appears earlier in the DOM.
+                XmlNode evoNode = titleNode?.SelectSingleNode(".//div[contains(@class,'EvolutionNumber')]")
+                                  ?? doc.SelectSingleNode("//div[contains(@class,'EvolutionNumber')]");
                 XmlNode descNode = doc.SelectSingleNode("//div[contains(@class,'SmallSlideOut_Form_Row_Description')]");
 
                 XmlNodeList nameNodes = doc.SelectNodes("//div[contains(@class,'ScanDetailOutputResourceName')]");
@@ -153,8 +157,8 @@ namespace OE2EmpireTracker.Forms.Blueprint
                     if (titleNode != null)
                     {
                         string titleFull = titleNode.InnerText.Trim();
-                        // Remove evolution number text if present
-                        if (evoNode != null)
+                        // Remove evolution number text if present (guard against empty string)
+                        if (evoNode != null && !string.IsNullOrEmpty(evoNode.InnerText))
                         {
                             titleFull = titleFull.Replace(evoNode.InnerText, "").Trim();
                         }
