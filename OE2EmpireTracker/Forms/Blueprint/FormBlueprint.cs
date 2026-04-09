@@ -1115,8 +1115,22 @@ namespace OE2EmpireTracker
 
         private void cmdImport_Click(object sender, EventArgs e)
         {
+            if (!Clipboard.ContainsText(TextDataFormat.Html))
+            {
+                MessageBox.Show("No HTML found on clipboard. Copy the blueprint page from the game first.",
+                    "Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             BlueprintScanner scanner = new BlueprintScanner();
             scanner.processClipboard(viewModel.Data);
+
+            // Ensure the blueprint has a UUID so PopulateForm doesn't bail out
+            if (string.IsNullOrEmpty(viewModel.Data.UUID))
+            {
+                viewModel.Data.UUID = System.Guid.NewGuid().ToString();
+            }
+
             PopulateForm();
         }
 
