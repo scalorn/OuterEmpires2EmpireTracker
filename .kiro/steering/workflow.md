@@ -17,6 +17,7 @@
 - First line: concise summary of the change
 - Body: list the specific changes grouped by area (UI, parser, tests, etc.)
 - Reference the spec if one exists
+- Include a `Prompt:` footer with the user's original request that triggered the change (quote it verbatim, trimmed to one or two sentences if long)
 
 ## Testing
 - Use `getDiagnostics` to verify code compiles cleanly after changes
