@@ -526,58 +526,26 @@ namespace OE2EmpireTracker
         }
 
         /// <summary>
-        /// Updates the base blueprint list with filtered results based on current selection state.
+        /// Updates the base blueprint list with filtered results based on current blueprint data.
         /// </summary>
         /// <remarks>
-        /// Applies multiple filter conditions:
-        /// - Filters by blueprint type if a type is selected in cmbBlueprintType
-        /// - Applies text filter from txtFilterBaseBlueprint for extended name search
-        /// - Filters by ship class if a class is selected (for non-universal types)
-        /// - Excludes the currently selected blueprint UUID to allow selecting different base blueprints
-        /// 
+        /// Delegates filtering to BlueprintViewModel.GetBaseBlueprintCandidates which matches on:
+        /// - Same BluePrintType, Name, Class, TechLevel as the current blueprint
+        /// - Only lower evolutions (0 to current-1)
+        /// - Excludes the current blueprint itself
+        /// - Applies text filter from txtFilterBaseBlueprint
+        /// Results are ordered by Evolution descending (best match first).
         /// An empty Blueprint entry is inserted at the beginning to allow deselecting a base blueprint.
         /// </remarks>
         private void UpdateBaseBlueprintList()
         {
+            using var guard = new ProgrammaticUpdateGuard(this);
             string searchText = txtFilterBaseBlueprint.Text;
-            List<Blueprint> filteredList = new List<Blueprint>(playerContext.GetAllBlueprints());
+            List<Blueprint> filteredList = new List<Blueprint>(viewModel.GetBaseBlueprintCandidates(searchText));
 
-            // Filter by blueprint type if selected
-            if (cmbBlueprintType.SelectedItem != null)
-            {
-                filteredList = filteredList
-                    .Where(item => item.BluePrintType == (cmbBlueprintType.SelectedItem as BlueprintType).Id)
-                    .ToList();
-            }
-
-            // Apply text filter for extended name search
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                filteredList = filteredList
-                    .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
-            }
-
-            // Filter by ship class if selected (for non-universal blueprints)
-            if (cmbShipClass.SelectedItem != null)
-            {
-                int shipClass = (cmbShipClass.SelectedItem as ShipClass).Id;
-                filteredList = filteredList
-                    .Where(item => item.Class == shipClass)
-                    .ToList();
-            }
-
-            // Exclude currently selected blueprint to allow selecting a different base blueprint
-            if (viewModel.Data.UUID != null)
-            {
-                filteredList = filteredList
-                    .Where(item => item.UUID != viewModel.UUID)
-                    .ToList();
-            }
-
-            // Add an empty entry to allow selecting no base blueprint.
+            // Add empty entry at top to allow selecting no base blueprint
             filteredList.Insert(0, new Blueprint());
-            
+
             BindingSource filteredItemsBindingList = new BindingSource();
             filteredItemsBindingList.DataSource = filteredList;
 
@@ -1166,6 +1134,17 @@ namespace OE2EmpireTracker
             }
 
             PopulateForm();
+
+            // Auto-select best base blueprint match (first non-empty entry = highest evolution)
+            using (var guard = new ProgrammaticUpdateGuard(this))
+            {
+                if (string.IsNullOrEmpty(viewModel.Data.baseBlueprintUUID) && cmbBaseBlueprint.Items.Count > 1)
+                {
+                    cmbBaseBlueprint.SelectedIndex = 1; // Skip the empty entry at index 0
+                    var bp = cmbBaseBlueprint.SelectedItem as Blueprint;
+                    viewModel.BaseBlueprintUUID = bp?.UUID ?? "";
+                }
+            }
         }
 
         private void dgvResources_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)

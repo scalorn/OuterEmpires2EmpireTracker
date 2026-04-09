@@ -72,6 +72,64 @@ namespace OE2EmpireTracker.ViewModels
         public IEnumerable<KeyValuePair<string, string>> GetResources() => _blueprint.Resources;
 
         // -----------------------------------------------------------------------
+        // Base blueprint candidates
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Returns blueprints that could be the evolution predecessor of the current blueprint.
+        /// Matches on BluePrintType, Name, Class, TechLevel, and only includes lower evolutions.
+        /// Results are ordered by Evolution descending so the best match (N-1) is first.
+        /// The current blueprint is excluded.
+        /// </summary>
+        public IReadOnlyList<Blueprint> GetBaseBlueprintCandidates(string nameFilter = null)
+        {
+            var current = _blueprint;
+            var all = new List<Blueprint>(_playerContext.GetAllBlueprints());
+
+            // Filter by matching BluePrintType
+            if (!string.IsNullOrEmpty(current.BluePrintType))
+            {
+                all = all.Where(b => b.BluePrintType == current.BluePrintType).ToList();
+            }
+
+            // Filter by matching Name (exact, case-insensitive)
+            if (!string.IsNullOrEmpty(current.Name))
+            {
+                all = all.Where(b => string.Equals(b.Name, current.Name, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            // Filter by matching Class
+            if (current.Class > 0)
+            {
+                all = all.Where(b => b.Class == current.Class).ToList();
+            }
+
+            // Filter by matching TechLevel
+            if (!string.IsNullOrEmpty(current.TechLevel))
+            {
+                all = all.Where(b => string.Equals(b.TechLevel, current.TechLevel, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            // Only show lower evolutions (0 to current-1)
+            all = all.Where(b => b.Evolution < current.Evolution).ToList();
+
+            // Exclude current blueprint
+            if (current.UUID != null)
+            {
+                all = all.Where(b => b.UUID != current.UUID).ToList();
+            }
+
+            // Apply text filter on ExtendedName
+            if (!string.IsNullOrEmpty(nameFilter))
+            {
+                all = all.Where(b => b.ExtendedName.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            }
+
+            // Order by evolution descending (best match first)
+            return all.OrderByDescending(b => b.Evolution).ToList().AsReadOnly();
+        }
+
+        // -----------------------------------------------------------------------
         // List filtering
         // -----------------------------------------------------------------------
 
