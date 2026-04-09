@@ -526,6 +526,7 @@ namespace OE2EmpireTracker
             this.Property,
             this.BaseValue,
             this.CurrentValue});
+            this.dgvStatistics.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvStatistics.Location = new System.Drawing.Point(-2, 0);
             this.dgvStatistics.Name = "dgvStatistics";
             this.dgvStatistics.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvStatistics_CellValidating);
@@ -573,6 +574,7 @@ namespace OE2EmpireTracker
             this.dgvResources.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Resource,
             this.Amount});
+            this.dgvResources.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvResources.Location = new System.Drawing.Point(1, 0);
             this.dgvResources.Name = "dgvResources";
             this.dgvResources.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvResources_CellValidating);
@@ -593,13 +595,13 @@ namespace OE2EmpireTracker
             // 
             // flpBase
             // 
-            this.flpBase.AutoSize = true;
             this.flpBase.Controls.Add(this.flpSearchList);
             this.flpBase.Controls.Add(this.flowLayoutPanel1);
+            this.flpBase.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBase.Location = new System.Drawing.Point(0, 0);
             this.flpBase.Name = "flpBase";
-            this.flpBase.Size = new System.Drawing.Size(1100, 647);
             this.flpBase.TabIndex = 9;
+            this.flpBase.Layout += new System.Windows.Forms.LayoutEventHandler(this.flpBase_Layout);
             // 
             // flpSearchList
             // 
@@ -607,9 +609,8 @@ namespace OE2EmpireTracker
             this.flpSearchList.Controls.Add(this.lvwBlueprints);
             this.flpSearchList.Location = new System.Drawing.Point(3, 3);
             this.flpSearchList.Name = "flpSearchList";
-            this.flpSearchList.Size = new System.Drawing.Size(427, 641);
             this.flpSearchList.TabIndex = 10;
-            this.flpSearchList.SizeChanged += new System.EventHandler(this.flpSearchList_SizeChanged);
+            this.flpSearchList.Layout += new System.Windows.Forms.LayoutEventHandler(this.flpSearchList_Layout);
             // 
             // flpBlueprintSearch
             // 
@@ -661,8 +662,8 @@ namespace OE2EmpireTracker
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(436, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(661, 641);
             this.flowLayoutPanel1.TabIndex = 10;
+            this.flowLayoutPanel1.Layout += new System.Windows.Forms.LayoutEventHandler(this.flowLayoutPanel1_Layout);
             // 
             // cmdImportMarket
             // 

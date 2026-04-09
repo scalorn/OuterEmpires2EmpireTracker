@@ -1051,9 +1051,35 @@ namespace OE2EmpireTracker
         /// Previously used to adjust ListView height based on parent panel size.
         /// Commented out - may be re-enabled when needed.
         /// </remarks>
-        private void flpSearchList_SizeChanged(object sender, EventArgs e)
+        private void flpBase_Layout(object sender, LayoutEventArgs e)
         {
-            //lvwBlueprints.Height = flpSearchList.Height - flpBlueprintSearch.Height;
+            // Split the available width: ~38% for search list, ~60% for detail panel
+            int searchWidth = (int)(flpBase.ClientSize.Width * 0.38);
+            int detailWidth = flpBase.ClientSize.Width - searchWidth - 10; // margin
+            int height = flpBase.ClientSize.Height - 6; // margin
+
+            flpSearchList.Size = new System.Drawing.Size(searchWidth, height);
+            flowLayoutPanel1.Size = new System.Drawing.Size(detailWidth, height);
+        }
+
+        private void flpSearchList_Layout(object sender, LayoutEventArgs e)
+        {
+            // ListView fills remaining height after the search bar
+            lvwBlueprints.Size = new System.Drawing.Size(
+                flpSearchList.ClientSize.Width - lvwBlueprints.Margin.Left - lvwBlueprints.Margin.Right,
+                flpSearchList.ClientSize.Height - flpBlueprintSearch.Height - flpBlueprintSearch.Margin.Top - flpBlueprintSearch.Margin.Bottom - lvwBlueprints.Margin.Top - lvwBlueprints.Margin.Bottom);
+        }
+
+        private void flowLayoutPanel1_Layout(object sender, LayoutEventArgs e)
+        {
+            // TabControl fills remaining height after base details and commands
+            int tabHeight = flowLayoutPanel1.ClientSize.Height
+                - flpBaseDetails.Height - flpBaseDetails.Margin.Top - flpBaseDetails.Margin.Bottom
+                - flpCommands.Height - flpCommands.Margin.Top - flpCommands.Margin.Bottom
+                - tabDetailedData.Margin.Top - tabDetailedData.Margin.Bottom;
+            int tabWidth = flowLayoutPanel1.ClientSize.Width - tabDetailedData.Margin.Left - tabDetailedData.Margin.Right;
+
+            tabDetailedData.Size = new System.Drawing.Size(tabWidth, Math.Max(100, tabHeight));
         }
 
         private void cmdImportMarket_Click(object sender, EventArgs e)
