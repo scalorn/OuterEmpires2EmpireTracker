@@ -1009,7 +1009,17 @@
     {
       "Id": "NavComp",
       "Name": "Nav Comp",
-      "Properties": [],
+      "Properties": [
+        "Class",
+        "Mass",
+        "Cargo Volume Size",
+        "Power Required",
+        "Health",
+        "Eng Capacity Required",
+        "Wear and Tear Rate",
+        "Maximum Damage Repair",
+        "Jump Charge Time"
+      ],
       "ResearchableProperties": [],
       "IconPosition": "-480px -480px",
       "OutputItemType": "ShipPart"
@@ -1213,7 +1223,19 @@
     {
       "Id": "Shield",
       "Name": "Shield",
-      "Properties": [],
+      "Properties": [
+        "Class",
+        "Mass",
+        "Cargo Volume Size",
+        "Health",
+        "Eng Capacity Required",
+        "Power Draw Per Second",
+        "Wear and Tear Rate",
+        "Maximum Damage Repair",
+        "Energy Defence",
+        "Shield Hitpoints",
+        "Shield regen"
+      ],
       "ResearchableProperties": [],
       "IconPosition": "-214px -252px",
       "OutputItemType": "ShipPart"
@@ -1253,7 +1275,17 @@
     {
       "Id": "Thruster",
       "Name": "Thruster",
-      "Properties": [],
+      "Properties": [
+        "Class",
+        "Mass",
+        "Cargo Volume Size",
+        "Power Required",
+        "Health",
+        "Eng Capacity Required",
+        "Wear and Tear Rate",
+        "Maximum Damage Repair",
+        "Rotational Thrust"
+      ],
       "ResearchableProperties": [],
       "IconPosition": "-290px -62px",
       "OutputItemType": "ShipPart"
@@ -1356,7 +1388,17 @@
     {
       "Id": "UniversalCoupler",
       "Name": "Universal Coupler",
-      "Properties": [],
+      "Properties": [
+        "Class",
+        "Mass",
+        "Cargo Volume Size",
+        "Power Required",
+        "Health",
+        "Eng Capacity Required",
+        "Wear and Tear Rate",
+        "Maximum Damage Repair",
+        "Fuel Transfer Rate"
+      ],
       "ResearchableProperties": [],
       "IconPosition": "-480px -442px",
       "OutputItemType": "ShipPart"
@@ -1384,7 +1426,16 @@
     {
       "Id": "OreHopper",
       "Name": "Ore Hopper",
-      "Properties": [],
+      "Properties": [
+        "Class",
+        "Mass",
+        "Cargo Volume Size",
+        "Health",
+        "Eng Capacity Required",
+        "Raw Material Capacity",
+        "Wear and Tear Rate",
+        "Maximum Damage Repair"
+      ],
       "ResearchableProperties": [],
       "IconPosition": "-100px -442px",
       "OutputItemType": "ShipPart"
@@ -1392,7 +1443,25 @@
     {
       "Id": "ASM-7S Missile Launcher",
       "Name": "ASM-7S Missile Launcher",
-      "Properties": [],
+      "Properties": [
+        "Class",
+        "Mass",
+        "Cargo Volume Size",
+        "Health",
+        "Eng Capacity Required",
+        "Weapon Slot Size",
+        "Wear and Tear Rate",
+        "Maximum Damage Repair",
+        "Accuracy",
+        "Launch Velocity",
+        "Magazine Size",
+        "Max Range",
+        "Min Range",
+        "Power Draw Per Shot",
+        "Rate of Fire",
+        "Reload Time",
+        "Ammo Type"
+      ],
       "ResearchableProperties": [],
       "IconPosition": "-24px -860px",
       "OutputItemType": ""

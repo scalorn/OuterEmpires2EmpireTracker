@@ -32,6 +32,13 @@ namespace OE2EmpireTracker.Tests.Services
         /// or null if no matching BlueprintType exists.
         /// </summary>
         public string ResolvedTypeId { get; set; }
+
+        /// <summary>
+        /// The user-visible property keys found on this blueprint (excluding internal
+        /// properties that start with '_'). Used to populate BlueprintType.Properties
+        /// for new or empty entries.
+        /// </summary>
+        public List<string> PropertyNames { get; set; } = new List<string>();
     }
 
     [TestFixture]
@@ -77,7 +84,10 @@ namespace OE2EmpireTracker.Tests.Services
                         BlueprintName = mb.Blueprint.Name,
                         IconPosition = iconPos,
                         SourceFile = fileName,
-                        ResolvedTypeId = mb.Blueprint.BluePrintType
+                        ResolvedTypeId = mb.Blueprint.BluePrintType,
+                        PropertyNames = mb.Blueprint.Properties.Properties.Keys
+                            .Where(k => !k.StartsWith("_"))
+                            .ToList()
                     });
                 }
             }
@@ -147,12 +157,23 @@ namespace OE2EmpireTracker.Tests.Services
                     entry["IconPosition"] = icon.IconPosition;
                     updatedCount++;
                 }
+
+                // Fill in empty Properties arrays from extracted property names
+                JArray existingProps = entry["Properties"] as JArray;
+                if (existingProps != null && existingProps.Count == 0 && icon.PropertyNames.Count > 0)
+                {
+                    entry["Properties"] = new JArray(icon.PropertyNames.ToArray());
+                    TestContext.WriteLine(
+                        $"UPDATED: {typeId} Properties populated with {icon.PropertyNames.Count} entries from [{icon.SourceFile}]");
+                    updatedCount++;
+                }
             }
 
             // --- Match commodity factory flatpacks by name to per-industry entries ---
-            // The scanner can't resolve these by icon (per-industry entries have null IconPosition),
-            // so they come through as unknown. Match by stripping " Flatpack" suffix and looking up
-            // the commodity industry name.
+            // Name-based matching is a fallback for entries that don't yet have an IconPosition.
+            // On the first run, per-industry entries have null IconPosition so the scanner can't
+            // resolve them by icon. After the extractor populates IconPositions, subsequent runs
+            // will resolve them by icon and they won't appear as unknowns here.
             var unknownAll = extracted
                 .Where(e => string.IsNullOrEmpty(e.ResolvedTypeId))
                 .ToList();
@@ -228,15 +249,25 @@ namespace OE2EmpireTracker.Tests.Services
                             oreHopperEntry["IconPosition"] = icon.IconPosition;
                             updatedCount++;
                         }
+
+                        // Fill in empty Properties arrays from extracted property names
+                        JArray existingProps = oreHopperEntry["Properties"] as JArray;
+                        if (existingProps != null && existingProps.Count == 0 && icon.PropertyNames.Count > 0)
+                        {
+                            oreHopperEntry["Properties"] = new JArray(icon.PropertyNames.ToArray());
+                            TestContext.WriteLine(
+                                $"UPDATED (OreHopper): {BlueprintTypes.OreHopper} Properties populated with {icon.PropertyNames.Count} entries from [{icon.SourceFile}]");
+                            updatedCount++;
+                        }
                     }
                     else
                     {
-                        // Create new OreHopper entry
+                        // Create new OreHopper entry with properties from the first extracted blueprint
                         var newEntry = new JObject
                         {
                             ["Id"] = BlueprintTypes.OreHopper,
                             ["Name"] = "Ore Hopper",
-                            ["Properties"] = new JArray(),
+                            ["Properties"] = new JArray(icon.PropertyNames.ToArray()),
                             ["ResearchableProperties"] = new JArray(),
                             ["IconPosition"] = icon.IconPosition,
                             ["OutputItemType"] = "ShipPart"
@@ -272,7 +303,7 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     ["Id"] = icon.BlueprintName,
                     ["Name"] = icon.BlueprintName,
-                    ["Properties"] = new JArray(),
+                    ["Properties"] = new JArray(icon.PropertyNames.ToArray()),
                     ["ResearchableProperties"] = new JArray(),
                     ["IconPosition"] = icon.IconPosition,
                     ["OutputItemType"] = ""
