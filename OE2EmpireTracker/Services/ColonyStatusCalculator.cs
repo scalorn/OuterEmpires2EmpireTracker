@@ -384,14 +384,14 @@ namespace OE2EmpireTracker.Services
                 // --- Resource Accumulation ---
                 if (online)
                 {
-                    builtPowerProvided += GetBlueprintDouble(flatpackBlueprint, "PowerProvided");
-                    builtPowerRequired += GetBlueprintDouble(flatpackBlueprint, "PowerRequired");
-                    builtHabitationProvision += GetBlueprintDouble(flatpackBlueprint, "HabitationProvision");
-                    builtEntertainmentProvided += GetBlueprintDouble(flatpackBlueprint, "EntertainmentProvided");
-                    builtWarehouseCapacity += GetBlueprintDouble(flatpackBlueprint, "WarehouseCapacity");
+                    builtPowerProvided += GetBlueprintDouble(flatpackBlueprint, "Power Provided");
+                    builtPowerRequired += GetBlueprintDouble(flatpackBlueprint, "Power Required");
+                    builtHabitationProvision += GetBlueprintDouble(flatpackBlueprint, "Habitation Provision");
+                    builtEntertainmentProvided += GetBlueprintDouble(flatpackBlueprint, "Entertainment Provided");
+                    builtWarehouseCapacity += GetBlueprintDouble(flatpackBlueprint, "Warehouse Capacity");
                 }
                 // Food accumulates regardless of online state
-                builtFoodProvision += GetBlueprintDouble(flatpackBlueprint, "FoodProvision");
+                builtFoodProvision += GetBlueprintDouble(flatpackBlueprint, "Food Provision");
 
                 // --- Worker Assignment Parsing ---
                 foreach (var wt in Models.WorkerDetail.WorkerTypes)
