@@ -1053,10 +1053,15 @@ namespace OE2EmpireTracker
         /// </remarks>
         private void flpBase_Layout(object sender, LayoutEventArgs e)
         {
-            // Split the available width: ~38% for search list, ~60% for detail panel
-            int searchWidth = (int)(flpBase.ClientSize.Width * 0.38);
-            int detailWidth = flpBase.ClientSize.Width - searchWidth - 10; // margin
-            int height = flpBase.ClientSize.Height - 6; // margin
+            // Account for child margins in the FlowLayoutPanel
+            int totalMarginH = flpSearchList.Margin.Horizontal + flowLayoutPanel1.Margin.Horizontal;
+            int totalMarginV = flpSearchList.Margin.Vertical;
+            int availableWidth = flpBase.ClientSize.Width - totalMarginH;
+            int height = flpBase.ClientSize.Height - totalMarginV;
+
+            // Split: ~38% for search list, remainder for detail panel
+            int searchWidth = (int)(availableWidth * 0.38);
+            int detailWidth = availableWidth - searchWidth;
 
             flpSearchList.Size = new System.Drawing.Size(searchWidth, height);
             flowLayoutPanel1.Size = new System.Drawing.Size(detailWidth, height);

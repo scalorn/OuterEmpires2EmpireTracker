@@ -598,6 +598,7 @@ namespace OE2EmpireTracker
             this.flpBase.Controls.Add(this.flpSearchList);
             this.flpBase.Controls.Add(this.flowLayoutPanel1);
             this.flpBase.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpBase.WrapContents = false;
             this.flpBase.Location = new System.Drawing.Point(0, 0);
             this.flpBase.Name = "flpBase";
             this.flpBase.TabIndex = 9;
