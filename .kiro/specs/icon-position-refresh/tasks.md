@@ -108,6 +108,18 @@ Update the blueprint market import system to handle game sprite sheet changes. B
 - [x] 12. Final checkpoint — build and run all tests
   - Ensure all tests pass. Ask the user if questions arise.
 
+- [x] 13. Add FsCheck property tests for Properties 3 and 4
+  - [x] 13.1 Create `OE2EmpireTracker.Tests/Services/IconPositionExtractorPropertyTests.cs` with FsCheck property tests for Property 3 (FindBlueprintTypeByIcon uniqueness) and Property 4 (Coverage gap detection completeness). Add `<Compile Include>` to test csproj.
+    - _Property 3: FindBlueprintTypeByIcon uniqueness_
+    - _Property 4: Coverage gap detection completeness_
+    - _Requirements: 3.4, 9.1, 9.2_
+
+  - [x] 13.2 Property 3 tests: `FindBlueprintTypeByIcon_ReturnsCorrectTypeForKnownPositions` (positive), `FindBlueprintTypeByIcon_ReturnsNullForUnknownPositions` (negative), `FindBlueprintTypeByIcon_ReturnsNullForNullAndEmpty` (edge case). Uses real BaselineData via EmpireContext.
+    - _Requirements: 3.4_
+
+  - [x] 13.3 Property 4 tests: `CoverageGapDetection_EqualsSetDifference` (set difference equivalence), `CoverageGapDetection_GapIdsAreInBaselineNotExtracted` (membership invariant). Uses generated type Id sets.
+    - _Requirements: 9.1, 9.2_
+
 ## Notes
 
 - Tasks marked with `*` are optional and can be skipped for faster MVP
