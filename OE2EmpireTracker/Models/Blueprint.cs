@@ -19,7 +19,21 @@ namespace OE2EmpireTracker.Models
         //[NotMapped]
         public string baseBlueprintUUID { get; set; }
 
-        public string BluePrintType { get; set; }
+        private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
+
+        private string _bluePrintType;
+        public string BluePrintType
+        {
+            get => _bluePrintType;
+            set
+            {
+                if (_bluePrintType != value)
+                {
+                    Log.Info($"BluePrintType changing from \"{_bluePrintType}\" to \"{value}\" on \"{Name}\" (UUID={UUID})\n{System.Environment.StackTrace}");
+                }
+                _bluePrintType = value;
+            }
+        }
 
         //[NotMapped]
         public int Evolution { get; set; }

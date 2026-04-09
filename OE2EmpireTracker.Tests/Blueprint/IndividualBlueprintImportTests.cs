@@ -168,6 +168,36 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -------------------------------------------------------------------
+        // Combined import: Stats then Resources (mimics user workflow)
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void IndividualBlueprintImport_StatsThenResources_BlueprintTypePreserved()
+        {
+            var bp = new OE2EmpireTracker.Models.Blueprint();
+
+            // First import: Stats page (sets name, properties, type)
+            string rawStats = LoadTestData("IndivudalBPWSMS-LL9Stats.html");
+            string htmlStats = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(rawStats);
+            _scanner.ProcessHtml(bp, htmlStats);
+
+            Assert.That(bp.BluePrintType, Is.EqualTo("JumpDrive"),
+                "After Stats import, BlueprintType should be JumpDrive");
+
+            // Second import: Resources page (adds resources, should NOT clear type)
+            string rawRes = LoadTestData("IndivudalBPWSMS-LL9Resources.html");
+            string htmlRes = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(rawRes);
+            _scanner.ProcessHtml(bp, htmlRes);
+
+            Assert.That(bp.BluePrintType, Is.EqualTo("JumpDrive"),
+                "After Resources import, BlueprintType should still be JumpDrive");
+            Assert.That(bp.Resources.Count, Is.GreaterThan(0),
+                "Resources should be populated after second import");
+            Assert.That(bp.Properties.Count, Is.GreaterThan(0),
+                "Properties from Stats import should still be present");
+        }
+
+        // -------------------------------------------------------------------
         // Regression: raw clipboard data (without extraction) should fail
         // This documents the bug that was fixed.
         // -------------------------------------------------------------------

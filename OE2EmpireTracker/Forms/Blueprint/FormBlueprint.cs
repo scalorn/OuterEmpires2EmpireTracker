@@ -877,8 +877,11 @@ namespace OE2EmpireTracker
 
             // Restore the blueprint type filter
             txtFilterBlueprintType.Text = savedTypeFilter;
-            UpdateBlueprintTypeListBase();
-            cmbBlueprintType.SelectedItem = empireContext.FindBlueprintType(viewModel.Data.BluePrintType);
+            using (new ProgrammaticUpdateGuard(this))
+            {
+                UpdateBlueprintTypeListBase();
+                cmbBlueprintType.SelectedItem = empireContext.FindBlueprintType(viewModel.Data.BluePrintType);
+            }
             
             // Restore focus
             txtBlueprintListFilter.Focus();
