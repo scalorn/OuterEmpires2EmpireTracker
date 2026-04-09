@@ -123,7 +123,7 @@ Add an "Evolution Graph" tab to FormBlueprint that visualizes how blueprint nume
       - All properties unchanged — `NoChanges` is true, `Series` is empty
     - _Requirements: 1.3, 1.4, 1.5, 2.4, 2.5, 3.2_
 
-- [-] 6. Final checkpoint — Ensure all tests pass
+- [x] 6. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
