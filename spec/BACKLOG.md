@@ -203,11 +203,6 @@ Build a migration utility to import colony data from an existing OpenOffice Calc
 
 Uncovered BlueprintTypes identified by the IconPositionExtractor's coverage gap report. These types exist in BaselineData.json but have no MarketSample HTML file to verify or populate their icon positions. Capture a MarketSample page for each type next time it appears in the in-game market.
 
-### BL-038: MarketSample needed for CoilGun/Small (stale icon position)
-**Dependencies:** None
-
-CoilGun/Small has an IconPosition in BaselineData but no MarketSample HTML coverage to verify it. The position may be stale after a sprite sheet update. Capture a MarketSample page from the in-game market showing Small Coil Gun listings and save it as `MarketSampleCoilGunSmall.html` in `OE2EmpireTracker.Tests/TestData/`. Then re-run the `ExtractAndUpdateIconPositions` test to refresh the icon position.
-
 ### BL-039: MarketSample needed for MissileLauncher/Small (never characterized)
 **Dependencies:** None
 
