@@ -110,32 +110,38 @@ namespace OE2EmpireTracker.Forms.Blueprint
                 // Populate blueprint name, evolution, techlevel and description if available
                 try
                 {
-                    /*
-                    if (evoLeftNode != null)
+                    // Resolve blueprint type from icon sprite position
+                    if (iconBaseNode != null)
                     {
-                        string bpTypeImage = "";
-                        foreach (XmlAttribute attr in evoLeftNode.Attributes)
+                        string style = iconBaseNode.Attributes?["style"]?.Value ?? "";
+                        var bgMatch = Regex.Match(style, @"background:\s*url\([""']?([^""')]+)[""']?\)\s*(-?\d+px)\s*(-?\d+px)");
+                        if (bgMatch.Success)
                         {
-                            //Log.Info("attr.innerText = " + attr.InnerText);
-                            //Log.Info("attr.innerXml = " + attr.InnerXml);
-                            string innerXml = attr.InnerXml;
-                            Log.Info("Background Inner XML = " + innerXml);
-                            var match = Regex.Match(innerXml, @"background:\s*url\([""']?([^""')]+)[""']?\)");
-                            if (match.Success)
+                            string iconPosition = bgMatch.Groups[2].Value + " " + bgMatch.Groups[3].Value;
+                            blueprint.Properties.setProperty("_IconPosition", iconPosition);
+
+                            var ec = Services.EmpireContext.getInstance();
+                            var bpType = ec?.FindBlueprintTypeByIcon(iconPosition);
+                            if (bpType != null)
                             {
-                                bpTypeImage = match.Groups[1].Value;
+                                blueprint.BluePrintType = bpType.Id;
+                                blueprint.BluePrintType = ReclassifyByName(blueprint.BluePrintType, blueprint.Name);
+                                Log.Info($"  Individual import icon {iconPosition} -> {blueprint.BluePrintType}");
+                            }
+                            else
+                            {
+                                blueprint.BluePrintType = ReclassifyByName(null, blueprint.Name);
+                                if (blueprint.BluePrintType != null)
+                                {
+                                    Log.Info($"  Individual import name-based classification for '{blueprint.Name}' -> {blueprint.BluePrintType}");
+                                }
+                                else
+                                {
+                                    Log.Warn($"  Individual import unknown icon position: {iconPosition} for '{blueprint.Name}'");
+                                }
                             }
                         }
-                        string bpType;
-                        if(BPTypeImageRemap.TryGetValue(bpTypeImage, out bpType))
-                        {
-                            blueprint.BluePrintType = bpType;
-                        } else
-                        {
-                            Log.Info("Unknown Background Type Image = " + bpTypeImage);
-                        }
                     }
-                    */
 
                     // Evolution
                     if (evoNode != null && int.TryParse(evoNode.InnerText.Trim(), out int evo))

@@ -51,6 +51,19 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         [Test]
+        public void IndividualBlueprintImport_StatsHtml_ExtractsBlueprintType()
+        {
+            string raw = LoadTestData("IndivudalBPWSMS-LL9Stats.html");
+            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
+            var bp = new OE2EmpireTracker.Models.Blueprint();
+
+            _scanner.ProcessHtml(bp, html);
+
+            Assert.That(bp.BluePrintType, Is.EqualTo("JumpDrive"),
+                "Should resolve BlueprintType from icon position in the HTML");
+        }
+
+        [Test]
         public void IndividualBlueprintImport_StatsHtml_ExtractsTechLevel()
         {
             string raw = LoadTestData("IndivudalBPWSMS-LL9Stats.html");
