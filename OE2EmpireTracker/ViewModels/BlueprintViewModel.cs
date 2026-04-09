@@ -135,6 +135,11 @@ namespace OE2EmpireTracker.ViewModels
 
         public IReadOnlyList<Blueprint> GetFilteredBlueprints(string nameFilter)
         {
+            return GetFilteredBlueprints(nameFilter, null);
+        }
+
+        public IReadOnlyList<Blueprint> GetFilteredBlueprints(string nameFilter, BlueprintFilterCriteria criteria)
+        {
             // Merge global + current player blueprints
             var list = new List<Blueprint>(_playerContext.GetCurrentPlayerBlueprints());
             var ec = EmpireContext.getInstance();
@@ -142,6 +147,8 @@ namespace OE2EmpireTracker.ViewModels
             {
                 list.AddRange(ec.globalBlueprintList);
             }
+
+            // Text filter
             if (!string.IsNullOrEmpty(nameFilter))
             {
                 list = list
@@ -149,6 +156,28 @@ namespace OE2EmpireTracker.ViewModels
                              || (!string.IsNullOrEmpty(b.BluePrintType) && b.BluePrintType.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0))
                     .ToList();
             }
+
+            // Structured filter criteria
+            if (criteria != null)
+            {
+                if (criteria.BlueprintTypeId != null)
+                {
+                    list = list.Where(b => b.BluePrintType == criteria.BlueprintTypeId).ToList();
+                }
+                if (criteria.ShipClassId.HasValue)
+                {
+                    list = list.Where(b => b.Class == criteria.ShipClassId.Value).ToList();
+                }
+                if (criteria.TechLevelName != null)
+                {
+                    list = list.Where(b => b.TechLevel == criteria.TechLevelName).ToList();
+                }
+                if (criteria.Evolution.HasValue)
+                {
+                    list = list.Where(b => b.Evolution == criteria.Evolution.Value).ToList();
+                }
+            }
+
             list.Sort((a, b) => string.Compare(a.ExtendedName, b.ExtendedName, StringComparison.OrdinalIgnoreCase));
             return list.AsReadOnly();
         }
