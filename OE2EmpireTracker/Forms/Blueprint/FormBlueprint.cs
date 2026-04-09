@@ -302,6 +302,20 @@ namespace OE2EmpireTracker
             // Insert filter panel into flpSearchList between the text filter (index 0) and ListView (index 1)
             flpSearchList.Controls.Add(flpFilterPanel);
             flpSearchList.Controls.SetChildIndex(flpFilterPanel, 1);
+
+            // Wire filter events
+            cmbFilterType.SelectedIndexChanged += (s, e) => RefreshBlueprintList();
+            cmbFilterClass.SelectedIndexChanged += (s, e) => RefreshBlueprintList();
+            cmbFilterTechLevel.SelectedIndexChanged += (s, e) => RefreshBlueprintList();
+            cmbFilterEvolution.SelectedIndexChanged += (s, e) => RefreshBlueprintList();
+            btnClearFilters.Click += (s, e) =>
+            {
+                cmbFilterType.SelectedIndex = -1;
+                cmbFilterClass.SelectedIndex = -1;
+                cmbFilterTechLevel.SelectedIndex = -1;
+                cmbFilterEvolution.SelectedIndex = -1;
+                RefreshBlueprintList();
+            };
         }
 
         /// <summary>
@@ -404,7 +418,7 @@ namespace OE2EmpireTracker
                 PopulateForm();
             }
             RefreshEvolutionGraph();
-            PopulateListView(viewModel.GetFilteredBlueprints(txtBlueprintListFilter.Text));
+            RefreshBlueprintList();
             UpdateTitleBarCounts();
         }
 
@@ -420,7 +434,7 @@ namespace OE2EmpireTracker
             lvwBlueprints.Items.Clear();
             viewModel.Reset();
             ClearForm();
-            PopulateListView(viewModel.GetFilteredBlueprints(txtBlueprintListFilter.Text));
+            RefreshBlueprintList();
             UpdateTitleBarCounts();
         }
 
@@ -761,14 +775,39 @@ namespace OE2EmpireTracker
         }
 
         /// <summary>
+        /// Reads all filter controls, builds a BlueprintFilterCriteria, calls GetFilteredBlueprints,
+        /// and populates the list view with the results.
+        /// </summary>
+        private void RefreshBlueprintList()
+        {
+            string nameFilter = txtBlueprintListFilter.Text;
+
+            var criteria = new BlueprintFilterCriteria();
+
+            if (cmbFilterType != null && cmbFilterType.SelectedIndex >= 0)
+                criteria.BlueprintTypeId = (string)cmbFilterType.SelectedValue;
+
+            if (cmbFilterClass != null && cmbFilterClass.SelectedIndex >= 0)
+                criteria.ShipClassId = (int)cmbFilterClass.SelectedValue;
+
+            if (cmbFilterTechLevel != null && cmbFilterTechLevel.SelectedIndex >= 0)
+                criteria.TechLevelName = (string)cmbFilterTechLevel.SelectedValue;
+
+            if (cmbFilterEvolution != null && cmbFilterEvolution.SelectedIndex >= 0)
+                criteria.Evolution = int.Parse((string)cmbFilterEvolution.SelectedItem);
+
+            var results = viewModel.GetFilteredBlueprints(nameFilter, criteria);
+            PopulateListView(results);
+        }
+
+        /// <summary>
         /// Updates the blueprint list view with filtered blueprints based on current search filters.
         /// </summary>
         /// <param name="sender">The TextBox object that triggered the event.</param>
         /// <param name="e">Event data containing event information.</param>
         private void txtBlueprintListFilter_TextChanged(object sender, EventArgs e)
         {
-            string searchText = txtBlueprintListFilter.Text;
-            PopulateListView(viewModel.GetFilteredBlueprints(searchText));
+            RefreshBlueprintList();
         }
 
         /// <summary>
@@ -989,7 +1028,7 @@ namespace OE2EmpireTracker
             if (result != DialogResult.Yes) return;
             viewModel.Delete();
             viewModel.Reset();
-            PopulateListView(viewModel.GetFilteredBlueprints(txtBlueprintListFilter.Text));
+            RefreshBlueprintList();
             lvwBlueprints.SelectedItems.Clear();
             ClearForm();
         }
@@ -1089,7 +1128,7 @@ namespace OE2EmpireTracker
             string savedTypeFilter = txtFilterBlueprintType.Text;
 
             // Refresh list view
-            PopulateListView(viewModel.GetFilteredBlueprints(txtBlueprintListFilter.Text));
+            RefreshBlueprintList();
 
             // Restore the blueprint type filter
             txtFilterBlueprintType.Text = savedTypeFilter;
@@ -1367,7 +1406,7 @@ namespace OE2EmpireTracker
             }
 
             // Refresh the blueprint list
-            PopulateListView(viewModel.GetFilteredBlueprints(txtBlueprintListFilter.Text));
+            RefreshBlueprintList();
         }
 
         private void cmdImport_Click(object sender, EventArgs e)
