@@ -60,7 +60,7 @@ Add an "Evolution Graph" tab to FormBlueprint that visualizes how blueprint nume
     - Add `using System.Windows.Forms.DataVisualization.Charting;` to FormBlueprint
     - Create `InitEvolutionGraphTab()` called from the constructor (after `InitializeComponent()` and existing setup):
       - Create `tabPEvolutionGraph` with `Text = "Evolution Graph"` and add it to `tabDetailedData.TabPages` (after existing tabs)
-      - Create `chartEvolution` with `Dock = DockStyle.Fill`; configure chart area: X-axis range 0–15, title "Evolution Level", interval 1; Y-axis title "% Change from Evolution 0 Value", gridline interval 10%
+      - Create `chartEvolution` with `Dock = DockStyle.Fill`; configure chart area: X-axis range 0–15, title "Evolution Level", interval 1; Y-axis range 50–150, title "% Change from Evolution 0 Value", gridline interval 10%
       - Create `pnlPropertyCheckboxes` as a `FlowLayoutPanel` with `Dock = DockStyle.Right`, `AutoScroll = true`, `FlowDirection = TopDown`, `WrapContents = false`
       - Create `lblNoChanges` with centered text "No property changes found across the evolution chain.", initially hidden
       - Add controls to `tabPEvolutionGraph`: checkbox panel, chart, label

@@ -209,8 +209,10 @@ namespace OE2EmpireTracker
             chartArea.AxisX.Interval = 1;
             chartArea.AxisX.Title = "Evolution Level";
 
-            // Y-axis: percentage change, gridline interval 10%
+            // Y-axis: percentage change, range 50–150 with 100% baseline center, gridline interval 10%
             chartArea.AxisY.Title = "% Change from Evolution 0 Value";
+            chartArea.AxisY.Minimum = 50;
+            chartArea.AxisY.Maximum = 150;
             chartArea.AxisY.MajorGrid.Interval = 10;
 
             chartEvolution.ChartAreas.Add(chartArea);

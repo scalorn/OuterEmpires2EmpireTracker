@@ -61,7 +61,7 @@ The Evolution Graph feature adds a new tab to the Blueprint form (FormBlueprint)
 1. THE Chart_Control SHALL display the X-axis with a range from 0 to 15, representing Evolution levels 0 through 15.
 2. THE Chart_Control SHALL display the X-axis range of 0 to 15 regardless of how many data points exist in the Evolution_Chain.
 3. THE Chart_Control SHALL label the X-axis as "Evolution Level".
-4. THE Chart_Control SHALL display the Y-axis as percentage values with the Ev0 baseline at 100%.
+4. THE Chart_Control SHALL display the Y-axis with a range from 50% to 150%, with the Ev0 baseline at 100% centered.
 5. THE Chart_Control SHALL display Y-axis gridlines at every 10% interval.
 6. THE Chart_Control SHALL label the Y-axis as "% Change from Evolution 0 Value".
 
