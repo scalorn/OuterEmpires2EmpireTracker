@@ -51,9 +51,10 @@ public class IconPositionExtractorTests
 
     // Helpers
     private List<ExtractedIcon> ExtractIconsFromAllSamples()
-    private void CompareAndUpdateBaselineData(List<ExtractedIcon> extracted)
+    private JObject CompareAndUpdateBaselineData(List<ExtractedIcon> extracted)
+    private void EnsureCommodityFactoryEntries(JObject baselineRoot)
     private void WriteBothBaselineFiles(JObject baselineRoot)
-    private void ProduceCoverageGapReport(List<ExtractedIcon> extracted)
+    private void ProduceCoverageGapReport(JObject baselineRoot, List<ExtractedIcon> extracted)
 }
 
 public class ExtractedIcon
@@ -62,6 +63,7 @@ public class ExtractedIcon
     public string IconPosition { get; set; }
     public string SourceFile { get; set; }
     public string ResolvedTypeId { get; set; } // null if unknown
+    public List<string> PropertyNames { get; set; } // user-visible property keys from HTML
 }
 ```
 
@@ -103,14 +105,15 @@ public static class BlueprintTypeExtensions
     {
         return !string.IsNullOrEmpty(blueprintType) &&
                blueprintType.StartsWith(BlueprintTypes.CommodityFactoryPrefix,
-                   StringComparison.OrdinalIgnoreCase);
+                   StringComparison.OrdinalIgnoreCase) &&
+               blueprintType.Length > BlueprintTypes.CommodityFactoryPrefix.Length;
     }
 }
 ```
 
 Design decisions:
 - `CommodityFactoryPrefix` replaces the old `CommodityFactory` constant
-- `IsCommodityFactory()` extension method mirrors the existing `IsFlatpack()` pattern
+- `IsCommodityFactory()` extension method mirrors the existing `IsFlatpack()` pattern, with an additional length check to reject the bare prefix (must have content after the trailing slash)
 - All code that did `== BlueprintTypes.CommodityFactory` switches to `.IsCommodityFactory()`
 
 ### Code Locations Requiring CommodityFactory Update
@@ -152,14 +155,15 @@ The Properties array for each variant is derived from the HTML samples where ava
     "Id": "OreHopper",
     "Name": "Ore Hopper",
     "Universal": false,
-    "Properties": [],
+    "Properties": ["Class", "Mass", "Cargo Volume Size", "Health", "Eng Capacity Required",
+                    "Raw Material Capacity", "Wear and Tear Rate", "Maximum Damage Repair"],
     "ResearchableProperties": [],
-    "IconPosition": "-Xpx -Ypx",
+    "IconPosition": "-100px -442px",
     "OutputItemType": "ShipPart"
 }
 ```
 
-Properties array populated from `MarketSampleOreHopper.html` extraction.
+Properties array is automatically populated from `MarketSampleOreHopper.html` extraction. The extractor collects property keys from parsed blueprints (excluding internal `_`-prefixed keys) and fills them into the BlueprintType entry. OreHopper shares the CargoPod icon position, so the extractor uses name-based matching to identify OreHopper blueprints.
 
 **Global blueprint records:** The existing global blueprints with `BluePrintType: "Flatpacks/CommodityFactory"` are updated to reference their per-industry type (e.g. `"Flatpacks/CommodityFactory/Agridome"`). The `Commodity Industry` property is retained for backward compatibility but becomes redundant.
 
@@ -177,7 +181,7 @@ No new data models are introduced. The existing `BlueprintType` model already ha
 
 ### Property 2: IsCommodityFactory consistency
 
-*For any* string that starts with `"Flatpacks/CommodityFactory/"`, `IsCommodityFactory()` should return true. For any string that does not start with that prefix (including null, empty, and other Flatpacks/ types), it should return false.
+*For any* string that starts with `"Flatpacks/CommodityFactory/"` and has content after the prefix, `IsCommodityFactory()` should return true. For any string that does not start with that prefix (including null, empty, the bare prefix itself, and other Flatpacks/ types), it should return false.
 
 **Validates: Requirement 5.6**
 
@@ -207,13 +211,11 @@ No new data models are introduced. The existing `BlueprintType` model already ha
 
 ### Property-Based Tests (FsCheck + NUnit)
 
-**Test file:** `OE2EmpireTracker.Tests/Services/IconPositionExtractorPropertyTests.cs`
-
-| Property | Test Description | Generator Strategy |
-|----------|-----------------|-------------------|
-| Property 2 | IsCommodityFactory consistency | Generate random strings, some with prefix, some without. Verify extension method. |
-| Property 3 | FindBlueprintTypeByIcon uniqueness | Generate BlueprintType lists with distinct IconPositions. Verify lookup returns correct type. |
-| Property 4 | Coverage gap detection | Generate BaselineData type sets and extracted icon sets. Verify gap = difference. |
+| Property | Test File | Test Description | Generator Strategy |
+|----------|-----------|-----------------|-------------------|
+| Property 2 | `Constants/BlueprintTypeExtensionPropertyTests.cs` | IsCommodityFactory consistency | Generate random strings, some with prefix + trailing content, some without. Verify extension method. |
+| Property 3 | `Services/IconPositionExtractorPropertyTests.cs` | FindBlueprintTypeByIcon uniqueness | Use real BaselineData, pick random entries with distinct IconPositions. Verify lookup returns correct type. Generate random positions for null checks. |
+| Property 4 | `Services/IconPositionExtractorPropertyTests.cs` | Coverage gap detection | Generate two sets of type Id strings. Verify gap equals set difference. |
 
 ### Unit Tests (NUnit)
 
