@@ -986,6 +986,7 @@
         "Wear and Tear Rate"
       ],
       "ResearchableProperties": [],
+      "IconPosition": "-24px -860px",
       "OutputItemType": "ShipPart"
     },
     {

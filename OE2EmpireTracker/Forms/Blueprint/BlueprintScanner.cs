@@ -550,19 +550,6 @@ namespace OE2EmpireTracker.Forms.Blueprint
                 return BlueprintTypes.OreHopper;
             }
 
-            // ASM-7S, ASM-8S, etc. are all small missile launcher class variants — map to MissileLauncher/Small
-            if (!string.IsNullOrEmpty(blueprintName) &&
-                blueprintName.StartsWith("ASM-", StringComparison.OrdinalIgnoreCase) &&
-                blueprintName.IndexOf("Missile Launcher", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                const string missileLauncherSmall = "MissileLauncher/Small";
-                if (resolvedType != missileLauncherSmall)
-                {
-                    Log.Info($"  Reclassified '{blueprintName}' from '{resolvedType}' to '{missileLauncherSmall}' by name");
-                }
-                return missileLauncherSmall;
-            }
-
             return resolvedType;
         }
 

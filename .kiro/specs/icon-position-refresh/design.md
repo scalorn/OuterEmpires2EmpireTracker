@@ -172,10 +172,11 @@ Properties array is automatically populated from `MarketSampleOreHopper.html` ex
 OreHopper and CargoPod share the same icon position (`-100px -442px`). The icon-based resolution in `ProcessMarketHtml()` always picks CargoPod (it appears first in BaselineData). To fix this, a `ReclassifyByName()` method is called after icon resolution to override the type based on the blueprint name:
 
 - If the blueprint name contains "Ore Hopper" (case-insensitive), the type is overridden to `BlueprintTypes.OreHopper`
-- If the blueprint name starts with "ASM-" and contains "Missile Launcher" (case-insensitive), the type is overridden to `"MissileLauncher/Small"`. Small missile launchers come in multiple class variants (ASM-7S, ASM-8S, etc.) that may have different icons, so name-based reclassification is the reliable approach.
 - Otherwise the icon-resolved type is kept as-is
 - The method is called in both the resolved and unresolved branches, so even blueprints with unknown icons get a chance at name-based classification
 - The pattern is extensible: additional name-based rules can be added to `ReclassifyByName()` if other types share icons in the future
+
+Note: `MissileLauncher/Small` now uses icon-based resolution like other weapon types. All small missile launcher variants (ASM-3S, ASM-4S, ASM-6S, ASM-7S, ASM-8S) share the same icon position (`-24px -860px`), so no name-based reclassification is needed for them.
 
 **Global blueprint records:** The existing global blueprints with `BluePrintType: "Flatpacks/CommodityFactory"` are updated to reference their per-industry type (e.g. `"Flatpacks/CommodityFactory/Agridome"`). The `Commodity Industry` property is retained for backward compatibility but becomes redundant.
 
