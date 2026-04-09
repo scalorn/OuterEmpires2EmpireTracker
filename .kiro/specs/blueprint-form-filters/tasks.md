@@ -6,7 +6,7 @@ Add a dynamic title bar with global/player blueprint counts and a structured fil
 
 ## Tasks
 
-- [ ] 1. Create BlueprintFilterCriteria class and extend BlueprintViewModel
+- [x] 1. Create BlueprintFilterCriteria class and extend BlueprintViewModel
   - [x] 1.1 Create `BlueprintFilterCriteria` class in `OE2EmpireTracker/ViewModels/BlueprintFilterCriteria.cs`
     - Define class with nullable fields: `BlueprintTypeId` (string), `ShipClassId` (int?), `TechLevelName` (string), `Evolution` (int?)
     - Add `Compile Include` entry to `OE2EmpireTracker.csproj`
@@ -17,7 +17,7 @@ Add a dynamic title bar with global/player blueprint counts and a structured fil
     - Delegate existing single-parameter `GetFilteredBlueprints(string)` to the new overload with `criteria: null`
     - _Requirements: 3.2, 4.2, 5.2, 6.2, 7.1_
 
-  - [-] 1.3 Write property test for combined filter AND semantics
+  - [x] 1.3 Write property test for combined filter AND semantics
     - **Property 2: Combined filter AND semantics**
     - Generate random blueprint lists, random text filters, and random `BlueprintFilterCriteria` (each field independently null or set)
     - Verify every result satisfies all active constraints AND every input blueprint satisfying all constraints appears in the result
@@ -25,11 +25,11 @@ Add a dynamic title bar with global/player blueprint counts and a structured fil
     - Add `Compile Include` entry to `OE2EmpireTracker.Tests.csproj`
     - **Validates: Requirements 3.2, 4.2, 5.2, 6.2, 7.1**
 
-- [~] 2. Checkpoint - Ensure all tests pass
+- [x] 2. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 3. Add title bar counts and filter panel UI to FormBlueprint
-  - [~] 3.1 Add `UpdateTitleBarCounts()` method to `FormBlueprint`
+  - [-] 3.1 Add `UpdateTitleBarCounts()` method to `FormBlueprint`
     - Format: `"Blueprints - Global: {globalCount} Player: {playerCount}"`
     - Use `EmpireContext.globalBlueprintList?.Count ?? 0` for global count
     - Use `PlayerContext.GetCurrentPlayerBlueprints().Count` for player count (0 when no player selected)

@@ -180,6 +180,30 @@ namespace OE2EmpireTracker
             playerContext.BlueprintDataChanged += OnBlueprintDataChanged;
 
             InitEvolutionGraphTab();
+            UpdateTitleBarCounts();
+        }
+
+        /// <summary>
+        /// Formats the title bar text with global and player blueprint counts.
+        /// Extracted as a public static method for independent testability.
+        /// </summary>
+        public static string FormatTitleBar(int globalCount, int playerCount)
+        {
+            return $"Blueprints - Global: {globalCount} Player: {playerCount}";
+        }
+
+        /// <summary>
+        /// Updates the form's title bar with current global and player blueprint counts.
+        /// </summary>
+        private void UpdateTitleBarCounts()
+        {
+            int globalCount = empireContext.globalBlueprintList?.Count ?? 0;
+            int playerCount = 0;
+            if (!string.IsNullOrEmpty(playerContext.CurrentPlayerUUID))
+            {
+                playerCount = playerContext.GetCurrentPlayerBlueprints().Count;
+            }
+            this.Text = FormatTitleBar(globalCount, playerCount);
         }
 
         /// <summary>
@@ -260,6 +284,7 @@ namespace OE2EmpireTracker
             }
             RefreshEvolutionGraph();
             PopulateListView(viewModel.GetFilteredBlueprints(txtBlueprintListFilter.Text));
+            UpdateTitleBarCounts();
         }
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
@@ -275,6 +300,7 @@ namespace OE2EmpireTracker
             viewModel.Reset();
             ClearForm();
             PopulateListView(viewModel.GetFilteredBlueprints(txtBlueprintListFilter.Text));
+            UpdateTitleBarCounts();
         }
 
         /// <summary>
