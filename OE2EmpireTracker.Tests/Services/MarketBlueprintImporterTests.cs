@@ -144,7 +144,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var list = new List<MarketBlueprint>
             {
-                MakeMarketBlueprint("Fighter Bomber", "SomePlayer")
+                MakeMarketBlueprint("Fighter Bomber", "SomePlayer", "Hull", 1)
             };
 
             var result = MarketBlueprintImporter.Import(list, playerContext, empireContext);
@@ -154,6 +154,25 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(playerContext.blueprintList[0].Name, Is.EqualTo("Fighter Bomber"));
             Assert.That(playerContext.blueprintList[0].OwnerUUID, Is.EqualTo(TestPlayerUUID));
             Assert.That(result.Entries[0].Storage, Is.EqualTo("Player"));
+        }
+
+        /// <summary>
+        /// Evo 0 blueprints always route to global regardless of seller.
+        /// </summary>
+        [Test]
+        public void Import_Evo0_AlwaysRoutesToGlobal_RegardlessOfSeller()
+        {
+            var list = new List<MarketBlueprint>
+            {
+                MakeMarketBlueprint("Reactor Core Flatpack", "TraderJoe", "Flatpacks/ReactorCore", 0)
+            };
+
+            var result = MarketBlueprintImporter.Import(list, playerContext, empireContext);
+
+            Assert.That(result.CreatedCount, Is.EqualTo(1));
+            Assert.That(empireContext.globalBlueprintList.Count, Is.EqualTo(1));
+            Assert.That(playerContext.blueprintList.Count, Is.EqualTo(0));
+            Assert.That(result.Entries[0].Storage, Is.EqualTo("Global"));
         }
 
         /// <summary>
@@ -187,7 +206,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             var list = new List<MarketBlueprint>
             {
-                MakeMarketBlueprint("Fighter Bomber", "SomePlayer")
+                MakeMarketBlueprint("Fighter Bomber", "SomePlayer", "Hull", 1)
             };
 
             var result = MarketBlueprintImporter.Import(list, playerContext, empireContext);
@@ -330,7 +349,7 @@ namespace OE2EmpireTracker.Tests.Services
             var list = new List<MarketBlueprint>
             {
                 MakeMarketBlueprint("Gov Reactor", "Government", "Reactor"),
-                MakeMarketBlueprint("Player Reactor", "TraderJoe", "Reactor", 0, 2),
+                MakeMarketBlueprint("Player Reactor", "TraderJoe", "Reactor", 2, 2),
             };
 
             var result = MarketBlueprintImporter.Import(list, playerContext, empireContext);
@@ -456,19 +475,21 @@ namespace OE2EmpireTracker.Tests.Services
                     if (entry.Action == ImportAction.Skipped) continue;
 
                     bool isGov = string.Equals(entry.SellerName, "Government", StringComparison.OrdinalIgnoreCase);
+                    bool isEvo0 = entry.Evolution == 0;
+                    bool expectGlobal = isGov || isEvo0;
 
-                    if (isGov)
+                    if (expectGlobal)
                     {
                         Assert.That(entry.Storage, Is.EqualTo("Global"),
-                            $"Trial {trial}: Government seller '{entry.Name}' should route to Global");
+                            $"Trial {trial}: '{entry.Name}' Ev{entry.Evolution} seller='{entry.SellerName}' should route to Global");
                         var found = empireContext.globalBlueprintList.FirstOrDefault(b => b.UUID == entry.UUID);
                         Assert.That(found, Is.Not.Null,
-                            $"Trial {trial}: Government blueprint '{entry.Name}' not found in globalBlueprintList");
+                            $"Trial {trial}: Global blueprint '{entry.Name}' not found in globalBlueprintList");
                     }
                     else
                     {
                         Assert.That(entry.Storage, Is.EqualTo("Player"),
-                            $"Trial {trial}: Non-Government seller '{entry.Name}' should route to Player");
+                            $"Trial {trial}: Non-Government seller '{entry.Name}' Ev{entry.Evolution} should route to Player");
                         var found = playerContext.blueprintList.FirstOrDefault(b => b.UUID == entry.UUID);
                         Assert.That(found, Is.Not.Null,
                             $"Trial {trial}: Player blueprint '{entry.Name}' not found in blueprintList");

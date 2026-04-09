@@ -77,8 +77,9 @@ namespace OE2EmpireTracker.Services
                     continue;
                 }
 
-                // Route by seller
-                bool isGlobal = string.Equals(mb.SellerName, "Government", StringComparison.OrdinalIgnoreCase);
+                // Route: Evo 0 blueprints are always global regardless of seller
+                bool isGlobal = bp.Evolution == 0
+                    || string.Equals(mb.SellerName, "Government", StringComparison.OrdinalIgnoreCase);
                 entry.Storage = isGlobal ? "Global" : "Player";
 
                 if (!isGlobal && string.IsNullOrEmpty(playerContext.CurrentPlayerUUID))
