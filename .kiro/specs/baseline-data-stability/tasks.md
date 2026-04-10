@@ -92,23 +92,23 @@ Stabilize BaselineData.json for multi-user distribution: deterministic UUIDs for
   - [x] 5.3 Update `FormBlueprint.btnSave_Click` / `BlueprintViewModel.Save` to use `DeterministicUUID.Generate` for global blueprints
     - _Requirements: 1.1, 1.2, 12.1, 12.2_
 
-- [~] 6. Checkpoint — Ensure all tests pass
+- [x] 6. Checkpoint — Ensure all tests pass
 
-- [ ] 7. Externalize GameConstants to BaselineData.json
-  - [~] 7.1 Create `OE2EmpireTracker/Models/BaselineGameConstants.cs` with 5 fields
+- [-] 7. Externalize GameConstants to BaselineData.json
+  - [x] 7.1 Create `OE2EmpireTracker/Models/BaselineGameConstants.cs` with 5 fields
     - RefiningBaseRate (int, default 25), CommoditiesPerCycle (int, default 10), CommodityCycleSeconds (long, default 600), StructureCap (int, default 65), WorkerVolume (decimal, default 50)
     - Add `<Compile Include>` to csproj
     - _Requirements: 7.1_
 
-  - [~] 7.2 Add `GameConstants` property to `BaselineRoot` and `EmpireContext`
+  - [x] 7.2 Add `GameConstants` property to `BaselineRoot` and `EmpireContext`
     - Load from JSON with fallback to defaults if missing
     - _Requirements: 7.1, 7.2, 7.3_
 
-  - [~] 7.3 Refactor `GameConstants.cs` — change 5 game-derived `const` fields to `static` properties reading from `EmpireContext.getInstance().GameConstants`
+  - [x] 7.3 Refactor `GameConstants.cs` — change 5 game-derived `const` fields to `static` properties reading from `EmpireContext.getInstanceIfLoaded().GameConstants`
     - Keep internal constants (SecondsPerHour, PropBuilt, etc.) as `const`
     - _Requirements: 7.2, 7.3, 7.4_
 
-  - [~] 7.4 Add `GameConstants` section to BaselineData.json (main + test)
+  - [x] 7.4 Add `GameConstants` section to BaselineData.json (main + test)
     - _Requirements: 7.1_
 
 - [ ] 8. Externalize Commodities to BaselineData.json

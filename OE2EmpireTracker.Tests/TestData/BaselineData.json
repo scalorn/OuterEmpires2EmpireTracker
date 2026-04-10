@@ -12662,5 +12662,12 @@
     {
       "Name": "Standard"
     }
-  ]
+  ],
+  "GameConstants": {
+    "RefiningBaseRate": 25,
+    "CommoditiesPerCycle": 10,
+    "CommodityCycleSeconds": 600,
+    "StructureCap": 65,
+    "WorkerVolume": 50
+  }
 }

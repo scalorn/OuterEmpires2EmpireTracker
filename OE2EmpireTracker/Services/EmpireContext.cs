@@ -44,6 +44,7 @@ namespace OE2EmpireTracker.Services
         public BindingList<ResourcePurity> resourcePurityList;
         public BindingSource bindingSourceResourcePurity;
         public int DataVersion { get; set; } = 0;
+        public BaselineGameConstants GameConstants { get; set; }
         public BindingList<Blueprint> globalBlueprintList;
 
         public static EmpireContext getInstance()
@@ -52,6 +53,15 @@ namespace OE2EmpireTracker.Services
             {
                 Instance = new EmpireContext();
             }
+            return Instance;
+        }
+
+        /// <summary>
+        /// Returns the current instance without creating one if it doesn't exist.
+        /// Used by GameConstants to avoid triggering file I/O during early access.
+        /// </summary>
+        public static EmpireContext getInstanceIfLoaded()
+        {
             return Instance;
         }
 
@@ -74,6 +84,7 @@ namespace OE2EmpireTracker.Services
                 baselineRoot.BlueprintType?.Length ?? 0, baselineRoot.ShipClass?.Length ?? 0, baselineRoot.TechLevel?.Length ?? 0);
 
             DataVersion = baselineRoot.DataVersion;
+            GameConstants = baselineRoot.GameConstants ?? new BaselineGameConstants();
 
             initBlueprintTypes(baselineRoot);
             initShipClasses(baselineRoot);
@@ -101,6 +112,7 @@ namespace OE2EmpireTracker.Services
         {
             BaselineRoot baselineRoot = new BaselineRoot();
             baselineRoot.DataVersion = DataVersion;
+            baselineRoot.GameConstants = GameConstants;
             baselineRoot.ShipClass = shipClassList.ToArray();
             baselineRoot.BlueprintType = blueprintTypeList.ToArray();
             baselineRoot.Blueprint = globalBlueprintList.ToArray();
@@ -261,6 +273,7 @@ namespace OE2EmpireTracker.Services
     public class BaselineRoot
     {
         public int DataVersion;
+        public BaselineGameConstants GameConstants;
         public ShipClass[] ShipClass;
         public BlueprintType[] BlueprintType;
         public Blueprint[] Blueprint;

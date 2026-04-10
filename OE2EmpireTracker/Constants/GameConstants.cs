@@ -1,19 +1,25 @@
+using OE2EmpireTracker.Services;
+
 namespace OE2EmpireTracker.Constants
 {
     /// <summary>
     /// Game-wide numeric and string constants used across the codebase.
+    /// The five game-derived values read from EmpireContext.GameConstants
+    /// (externalized to BaselineData.json) with hardcoded fallback defaults.
     /// </summary>
     public static class GameConstants
     {
         // --- Refining ---
 
         /// <summary>Base refining rate per cycle (units consumed from source).</summary>
-        public const int RefiningBaseRate = 25;
+        public static int RefiningBaseRate =>
+            EmpireContext.getInstanceIfLoaded()?.GameConstants?.RefiningBaseRate ?? 25;
 
         // --- Workers ---
 
         /// <summary>Cargo volume per worker detail item.</summary>
-        public const double WorkerVolume = 50;
+        public static double WorkerVolume =>
+            (double)(EmpireContext.getInstanceIfLoaded()?.GameConstants?.WorkerVolume ?? 50m);
 
         // --- Timers ---
 
@@ -23,15 +29,18 @@ namespace OE2EmpireTracker.Constants
         // --- Commodity Manufacturing ---
 
         /// <summary>Number of commodities produced per cycle.</summary>
-        public const int CommoditiesPerCycle = 10;
+        public static int CommoditiesPerCycle =>
+            EmpireContext.getInstanceIfLoaded()?.GameConstants?.CommoditiesPerCycle ?? 10;
 
         /// <summary>Commodity manufacturing cycle time in seconds (10 minutes).</summary>
-        public const long CommodityCycleSeconds = 600;
+        public static long CommodityCycleSeconds =>
+            EmpireContext.getInstanceIfLoaded()?.GameConstants?.CommodityCycleSeconds ?? 600;
 
         // --- Structures ---
 
         /// <summary>Maximum structures per colony (game cap).</summary>
-        public const int StructureCap = 65;
+        public static int StructureCap =>
+            EmpireContext.getInstanceIfLoaded()?.GameConstants?.StructureCap ?? 65;
 
         // --- Structure Property Keys ---
 
