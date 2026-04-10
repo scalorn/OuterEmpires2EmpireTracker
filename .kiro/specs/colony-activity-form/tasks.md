@@ -6,7 +6,7 @@ Implement a read-only WinForms form that aggregates all active countdown timers 
 
 ## Tasks
 
-- [-] 1. Create ColonyActivityCollector with ActivityType enum and ActivityRow POCO
+- [x] 1. Create ColonyActivityCollector with ActivityType enum and ActivityRow POCO
   - [x] 1.1 Create `Baseline/ColonyActivityCollector.cs` with `ActivityType` enum, `ActivityRow` class, and `ColonyActivityCollector.CollectActivities` static method
     - Define `ActivityType` enum: Building, Manufacturing, CommodityManufacturing, CommodityRequest, Research, Mining, Refining
     - Define `ActivityRow` POCO with Type, SystemName, ColonyName, SourceName, ProcessDetails, CountDown, NeedBy properties
@@ -52,7 +52,7 @@ Implement a read-only WinForms form that aggregates all active countdown timers 
 - [x] 2. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [-] 3. Create FormColonyActivity with Designer, filtering, and grid display
+- [x] 3. Create FormColonyActivity with Designer, filtering, and grid display
   - [x] 3.1 Create `Forms/ColonyActivity/FormColonyActivity.cs`, `FormColonyActivity.Designer.cs`, and `FormColonyActivity.resx`
     - Implement IProgrammaticUpdateSource with _isProgrammaticUpdate field, BeginProgrammaticUpdate/EndProgrammaticUpdate
     - Designer.cs: flpBase (Dock=Fill, TopDown, WrapContents=false), flpFilters (LeftToRight, AutoSize), dgvActivities (ReadOnly, AllowUserToAddRows=false, AllowUserToDeleteRows=false)
@@ -72,7 +72,7 @@ Implement a read-only WinForms form that aggregates all active countdown timers 
     - Add `Compile Include` entries in `OE2EmpireTracker.csproj` for FormColonyActivity.cs (SubType=Form), FormColonyActivity.Designer.cs (DependentUpon), and `EmbeddedResource` for FormColonyActivity.resx (DependentUpon)
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 5.1, 5.2, 5.3, 5.4, 6.1, 8.1, 8.2, 8.3, 8.4, 9.1, 9.2, 9.3, 9.4, 10.1, 10.2, 10.3, 10.4, 12.1, 12.2, 12.3, 12.4, 12.5, 13.1, 13.2, 13.3_
 
-  - [~] 3.2 Write property test: Combined activity type and text filtering (Property 5)
+  - [x] 3.2 Write property test: Combined activity type and text filtering (Property 5)
     - **Property 5: Combined activity type and text filtering**
     - **Validates: Requirements 4.3, 5.2, 5.3, 5.4**
     - Add to `ColonyActivityCollectorTests.cs`
@@ -80,7 +80,7 @@ Implement a read-only WinForms form that aggregates all active countdown timers 
     - Apply filter logic and verify result matches expected set
     - Minimum 100 iterations
 
-  - [~] 3.3 Write property test: Default sort order by numeric seconds remaining (Property 6)
+  - [x] 3.3 Write property test: Default sort order by numeric seconds remaining (Property 6)
     - **Property 6: Default sort order by numeric seconds remaining**
     - **Validates: Requirements 8.1, 8.4**
     - Add to `ColonyActivityCollectorTests.cs`

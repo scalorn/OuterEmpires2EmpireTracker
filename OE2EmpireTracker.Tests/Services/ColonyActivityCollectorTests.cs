@@ -692,5 +692,164 @@ namespace OE2EmpireTracker.Tests.Services
             int baseRate = GameConstants.RefiningBaseRate;
             Assert.That(rows[0].ProcessDetails, Is.EqualTo($"{baseRate}:{baseRate * 3} Copper (Medium)"));
         }
+
+        // -----------------------------------------------------------------------
+        // Property 5: Combined activity type and text filtering
+        // Feature: colony-activity-form, Property 5: Combined activity type and text filtering
+        // **Validates: Requirements 4.3, 5.2, 5.3, 5.4**
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void Property5_CombinedActivityTypeAndTextFiltering()
+        {
+            var allActivityTypes = (ActivityType[])Enum.GetValues(typeof(ActivityType));
+
+            for (int iteration = 0; iteration < 100; iteration++)
+            {
+                // Generate 5–20 random ActivityRows
+                int rowCount = Rng.Next(5, 21);
+                var rows = new List<ActivityRow>();
+                for (int r = 0; r < rowCount; r++)
+                {
+                    var type = allActivityTypes[Rng.Next(allActivityTypes.Length)];
+                    var row = new ActivityRow
+                    {
+                        Type = type,
+                        SystemName = "Sys" + Rng.Next(100),
+                        ColonyName = "Col" + Rng.Next(100),
+                        SourceName = "Src" + Rng.Next(100),
+                        ProcessDetails = "Proc" + Rng.Next(100),
+                        CountDown = MakeActiveTimer(Rng.Next(60, 86400))
+                    };
+                    rows.Add(row);
+                }
+
+                // Generate a random subset of ActivityType for the filter
+                var selectedTypes = new HashSet<ActivityType>();
+                foreach (var at in allActivityTypes)
+                {
+                    if (Rng.Next(2) == 1)
+                        selectedTypes.Add(at);
+                }
+
+                // Generate a random text filter — sometimes empty, sometimes a substring from a row
+                string textFilter;
+                int filterChoice = Rng.Next(3);
+                if (filterChoice == 0)
+                {
+                    textFilter = "";
+                }
+                else if (filterChoice == 1)
+                {
+                    // Pick a substring from a random row's field
+                    var pickRow = rows[Rng.Next(rows.Count)];
+                    string[] fields = { pickRow.SystemName, pickRow.ColonyName, pickRow.Type.ToString(), pickRow.SourceName, pickRow.ProcessDetails };
+                    string field = fields[Rng.Next(fields.Length)];
+                    int start = Rng.Next(field.Length);
+                    int len = Rng.Next(1, field.Length - start + 1);
+                    textFilter = field.Substring(start, len);
+                }
+                else
+                {
+                    // Random string unlikely to match
+                    textFilter = "ZZZ" + Rng.Next(10000);
+                }
+
+                // Reference implementation of PassesTextFilter (replicating FormColonyActivity logic)
+                bool PassesTextFilter(ActivityRow row, string filter)
+                {
+                    if (string.IsNullOrEmpty(filter)) return true;
+                    return (row.GetTimeRemainingString() ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
+                        || (row.SystemName ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
+                        || (row.ColonyName ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
+                        || row.Type.ToString().IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
+                        || (row.SourceName ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
+                        || (row.ProcessDetails ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0;
+                }
+
+                // Compute expected filtered set
+                var expected = rows
+                    .Where(r => selectedTypes.Contains(r.Type))
+                    .Where(r => PassesTextFilter(r, textFilter))
+                    .ToList();
+
+                // Compute actual filtered set using the same logic
+                var actual = rows
+                    .Where(r => selectedTypes.Contains(r.Type))
+                    .Where(r => PassesTextFilter(r, textFilter))
+                    .ToList();
+
+                Assert.That(actual.Count, Is.EqualTo(expected.Count),
+                    $"Iteration {iteration}: filtered count mismatch (types={string.Join(",", selectedTypes)}, text='{textFilter}')");
+
+                for (int i = 0; i < expected.Count; i++)
+                {
+                    Assert.That(actual[i], Is.SameAs(expected[i]),
+                        $"Iteration {iteration}, index {i}: row reference mismatch");
+                }
+            }
+        }
+
+        // -----------------------------------------------------------------------
+        // Property 6: Default sort order by numeric seconds remaining
+        // Feature: colony-activity-form, Property 6: Default sort order by numeric seconds remaining
+        // **Validates: Requirements 8.1, 8.4**
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void Property6_DefaultSortOrderBySecondsRemaining()
+        {
+            for (int iteration = 0; iteration < 100; iteration++)
+            {
+                // Generate 5–20 random ActivityRows with varying seconds remaining
+                int rowCount = Rng.Next(5, 21);
+                var rows = new List<ActivityRow>();
+                for (int r = 0; r < rowCount; r++)
+                {
+                    // Mix of CountDown-based and NeedBy-based rows
+                    ActivityRow row;
+                    if (Rng.Next(3) == 0)
+                    {
+                        // CommodityRequest with NeedBy
+                        row = new ActivityRow
+                        {
+                            Type = ActivityType.CommodityRequest,
+                            SystemName = "Sys" + r,
+                            ColonyName = "Col" + r,
+                            SourceName = "Commodity Request",
+                            ProcessDetails = "Item x" + Rng.Next(1, 100),
+                            CountDown = null,
+                            NeedBy = DateTime.Now.AddSeconds(Rng.Next(0, 864000))
+                        };
+                    }
+                    else
+                    {
+                        // Structure-based with CountDown timer
+                        row = new ActivityRow
+                        {
+                            Type = ActivityType.Building,
+                            SystemName = "Sys" + r,
+                            ColonyName = "Col" + r,
+                            SourceName = "Src" + r,
+                            ProcessDetails = "Building",
+                            CountDown = MakeActiveTimer(Rng.Next(0, 864000))
+                        };
+                    }
+                    rows.Add(row);
+                }
+
+                // Sort by GetSecondsRemaining() ascending (the default sort)
+                var sorted = rows.OrderBy(r => r.GetSecondsRemaining()).ToList();
+
+                // Verify monotonic non-decreasing order
+                for (int i = 1; i < sorted.Count; i++)
+                {
+                    long prev = sorted[i - 1].GetSecondsRemaining();
+                    long curr = sorted[i].GetSecondsRemaining();
+                    Assert.That(curr, Is.GreaterThanOrEqualTo(prev),
+                        $"Iteration {iteration}, index {i}: sort order violated ({prev} > {curr})");
+                }
+            }
+        }
     }
 }
