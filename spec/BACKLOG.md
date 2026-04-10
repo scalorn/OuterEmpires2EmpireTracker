@@ -123,7 +123,14 @@ Explore whether AI can read the OE2 wiki at https://atlasgamingcorp.com/outer-em
 ### BL-024: AI-Generated User Help Documentation
 **Dependencies:** None
 
-Investigate whether AI can write user-facing help documentation for the tool based on the available spec files and codebase. Would generate how-to guides, feature descriptions, and workflow explanations from existing code and design docs.
+Generate end-user documentation covering the full application, derived from spec files and codebase. Two output formats:
+
+1. **Windows Help** — integrated help accessible from the app's Help menu. HTML-based help pages covering each form, import workflow, and feature area.
+2. **GitHub Wiki pages** — markdown pages published to the repository wiki. Same content, formatted for web browsing.
+
+Scope: end users only. No contributor/developer documentation — the project is developed and maintained by AI, and contributor docs would attract bad PRs that pollute the codebase.
+
+Coverage areas: colonies (import, structures, commodities, daily build), blueprints (import, market import, evolution, filters), surveys (import, resources), delivery routes (planning, auto-fill, execution), player profiles (skills, ranks), background processing, window state persistence, and general getting-started workflow.
 
 ### BL-025: Read Game Status Updates
 **Dependencies:** None
