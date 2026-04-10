@@ -69,7 +69,7 @@ Implement the commodity delivery loop in two parts: (A) auto-fill commodity drop
     - `playerContext.writeContext()` is already called by existing handler
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 7.1, 7.2, 8.1, 8.2, 8.3, 8.4_
 
-  - [ ]* 5.2 Write unit tests for commodity fulfillment logic
+  - [x]* 5.2 Write unit tests for commodity fulfillment logic
     - Since fulfillment logic is in the Form handler, extract a static helper method or test via integration pattern
     - Test: checking commodity item sets CommodityRequested.Delivered = Requested and Fulfilled = true
     - Test: unchecking commodity item sets CommodityRequested.Delivered = 0 and Fulfilled = false

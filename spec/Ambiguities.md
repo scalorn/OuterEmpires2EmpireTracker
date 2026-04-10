@@ -267,49 +267,59 @@ Volume SHALL be set when an item is added to the warehouse.
 
 ## Code Quality Review (April 2026)
 
-### AMB-033 — OPEN: Double clipboard read in colony import handler
+### AMB-033 — RESOLVED: Double clipboard read in colony import handler
 **Issue:** `FormColony.cmdImportColony_Click` reads the clipboard twice when updating an existing colony. First via `parser.ParseClipboardToTemp(empireContext)` (which reads clipboard internally), then again explicitly with `Clipboard.GetText(TextDataFormat.Html)` + `ExtractHtmlFragmentFromClipboardData` to get the HTML for `parser.ProcessHtml(existingColony, html, empireContext)`. This is wasteful and fragile — if the clipboard changes between the two reads, the merge would use different data.
 
-**Recommendation:** `ParseClipboardToTemp` should also return the extracted HTML string (via an `out` parameter or a result tuple), so the caller can reuse it for the merge path without re-reading the clipboard.
+**Resolution:** `ParseClipboardToTemp` now returns the extracted HTML via an `out string extractedHtml` parameter. `FormColony.cmdImportColony_Click` uses the out parameter to reuse the HTML for the merge path, eliminating the second clipboard read.
+
+**Action:** ColonyParser.ParseClipboardToTemp updated with out parameter. FormColony.cmdImportColony_Click updated to use it.
 
 ---
 
-### AMB-034 — OPEN: `processClipboard` still camelCase on BlueprintScanner and SurveyParser
-**Issue:** Recommendations.md item 12d (method naming PascalCase) was marked complete, but two parser methods remain camelCase:
+### AMB-034 — RESOLVED: `processClipboard` renamed to PascalCase on BlueprintScanner and SurveyParser
+**Issue:** Recommendations.md item 12d (method naming PascalCase) was marked complete, but two parser methods remained camelCase:
 - `BlueprintScanner.processClipboard(Blueprint)` — called from `FormBlueprint.cmdImport_Click` fallback path
 - `SurveyParser.processClipboard(Survey)` — called from `FormSurvey.cmdImport_Click`
 
 `ColonyParser.ProcessClipboard` is already PascalCase.
 
-**Recommendation:** Rename both to `ProcessClipboard` and update all callers.
+**Resolution:** Both methods renamed to `ProcessClipboard` and all callers updated.
+
+**Action:** BlueprintScanner.cs, SurveyParser.cs, FormBlueprint.cs, FormSurvey.cs updated.
 
 ---
 
-### AMB-035 — OPEN: `ExtractHtmlFragmentFromClipboardData` lives in `BlueprintScanner` but is used by all parsers
+### AMB-035 — RESOLVED: `ExtractHtmlFragmentFromClipboardData` extracted into shared utility
 **Issue:** `BlueprintScanner.ExtractHtmlFragmentFromClipboardData` is a general-purpose clipboard HTML extraction utility, but it lives inside `Forms/Blueprint/BlueprintScanner.cs`. Both `ColonyParser` and `SurveyParser` reference it via the fully-qualified path `Forms.Blueprint.BlueprintScanner.ExtractHtmlFragmentFromClipboardData(...)`. Additionally, `FormBlueprint` has a redundant wrapper method `ExtractHtmlFragmentFromClipboardData` that just delegates to `BlueprintScanner`.
 
 Test files also reference it via the long path (6 test files).
 
-**Recommendation:** Extract `ExtractHtmlFragmentFromClipboardData` into a shared utility class (e.g. `Parsers/ClipboardHelper.cs` or `Services/ClipboardHelper.cs`). Remove the `FormBlueprint` wrapper. Update all callers.
+**Resolution:** Created `Parsers/ClipboardHelper.cs` as a facade that delegates to `BlueprintScanner.ExtractHtmlFragmentFromClipboardData`. Updated `ColonyParser` (2 places), `SurveyParser` (1 place), and `FormColony` to use `ClipboardHelper.ExtractHtmlFragment(...)`. Removed the redundant wrapper from `FormBlueprint.cs`. Updated `cmdImportMarket_Click` to call `BlueprintScanner.ExtractHtmlFragmentFromClipboardData` directly. Test files keep their current references.
+
+**Action:** ClipboardHelper.cs created. ColonyParser.cs, SurveyParser.cs, FormBlueprint.cs, FormColony.cs updated. csproj updated with Compile Include.
 
 ---
 
-### AMB-036 — OPEN: Commented-out `[NotMapped]` attributes and dead properties in Blueprint.cs
+### AMB-036 — RESOLVED: Commented-out `[NotMapped]` attributes and dead properties removed from Blueprint.cs
 **Issue:** `Blueprint.cs` has 5 commented-out `//[NotMapped]` attributes on active properties and 2 fully commented-out properties (`ManufactureRunTime`, `MaxAllowedOnShip`). These are remnants from an Entity Framework era that no longer applies (the project uses Newtonsoft.Json for persistence). Recommendations.md 12a (dead code removal) was marked complete but these remain.
 
-**Recommendation:** Remove all `//[NotMapped]` comments and the two dead property definitions.
+**Resolution:** All `//[NotMapped]` comment lines and the two dead property definitions removed.
+
+**Action:** Blueprint.cs cleaned up.
 
 ---
 
-### AMB-037 — OPEN: Commented-out code in BlueprintScanner.processClipboard
-**Issue:** `BlueprintScanner.processClipboard` contains two commented-out string replacement lines (lines 68-69) that appear to be debug artifacts:
+### AMB-037 — RESOLVED: Commented-out debug code removed from BlueprintScanner.ProcessClipboard
+**Issue:** `BlueprintScanner.ProcessClipboard` contained two commented-out string replacement lines that were debug artifacts:
 ```csharp
 //output = $@"@""{output.Replace("\n", "\"\n")}""";
 //output = $@"@""{output.Replace("\r", "\"\r")}""";
 ```
-Also, `FormBlueprint.btnImport_Click` (a different, unused import handler) has commented-out lines referencing `rtbCopyTarget` and `ProcessHTML`.
+Also, `FormBlueprint.btnImport_Click` (a different, unused import handler) had commented-out lines referencing `rtbCopyTarget` and `ProcessHTML`.
 
-**Recommendation:** Remove all commented-out debug code. Use version control history for reference.
+**Resolution:** Commented-out debug lines removed from BlueprintScanner. Dead `btnImport_Click` handler removed (see AMB-039).
+
+**Action:** BlueprintScanner.cs cleaned up.
 
 ---
 
@@ -318,14 +328,16 @@ Also, `FormBlueprint.btnImport_Click` (a different, unused import handler) has c
 
 Surveys are identified by PlanetName + SurveyID. Importing the same survey twice into the selected survey object works (overwrites), but importing a survey for a different planet into the wrong selected survey silently corrupts data.
 
-**Recommendation:** Add survey import dedup following the same pattern as colony-import-dedupe: parse into temp, search by PlanetName+SurveyID, merge or create. Add a clipboard HTML guard and error handling. Track as a new backlog item.
+**Recommendation:** Add survey import dedup following the same pattern as colony-import-dedupe: parse into temp, search by PlanetName+SurveyID, merge or create. Add a clipboard HTML guard and error handling. Tracked as BL-038 in BACKLOG.md.
 
 ---
 
-### AMB-039 — OPEN: `FormBlueprint.btnImport_Click` is dead code
+### AMB-039 — RESOLVED: `FormBlueprint.btnImport_Click` dead code removed
 **Issue:** `FormBlueprint` has two import click handlers: `cmdImport_Click` (the real one, wired to the Import button) and `btnImport_Click` (line ~490, reads clipboard but does nothing useful — the processing lines are commented out). This appears to be an old debug handler that was never removed.
 
-**Recommendation:** Remove `btnImport_Click` entirely.
+**Resolution:** `btnImport_Click` removed entirely. It was not wired in the Designer.cs.
+
+**Action:** FormBlueprint.cs cleaned up.
 
 ---
 

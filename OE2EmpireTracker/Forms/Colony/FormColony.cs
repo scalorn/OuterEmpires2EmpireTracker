@@ -1651,7 +1651,7 @@ namespace OE2EmpireTracker.Forms.Colony
             try
             {
                 var parser = new ColonyParser();
-                var tempColony = parser.ParseClipboardToTemp(empireContext);
+                var tempColony = parser.ParseClipboardToTemp(empireContext, out string extractedHtml);
 
                 if (tempColony == null)
                     return;
@@ -1681,9 +1681,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     ColonyImportHelper.MergeIdentity(existingColony, tempColony);
 
-                    string clipboardData = Clipboard.GetText(TextDataFormat.Html);
-                    string html = Forms.Blueprint.BlueprintScanner.ExtractHtmlFragmentFromClipboardData(clipboardData);
-                    parser.ProcessHtml(existingColony, html, empireContext);
+                    parser.ProcessHtml(existingColony, extractedHtml, empireContext);
 
                     selectedColony = existingColony;
 

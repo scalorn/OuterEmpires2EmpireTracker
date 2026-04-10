@@ -478,38 +478,6 @@ namespace OE2EmpireTracker
         }
 
         /// <summary>
-        /// Handles the click event for the Import button.
-        /// </summary>
-        /// <param name="sender">The object that triggered the event.</param>
-        /// <param name="e">Event data containing event information.</param>
-        /// <remarks>
-        /// Checks if clipboard contains HTML text and retrieves it for import operations.
-        /// The HTML fragment is extracted from clipboard data which typically includes
-        // start/end fragment markers. Currently commented out - can be re-enabled when needed.
-        /// </remarks>
-        private void btnImport_Click(object sender, EventArgs e)
-        {
-            String returnHtmlText = null;
-            if (Clipboard.ContainsText(TextDataFormat.Html))
-            {
-                returnHtmlText = Clipboard.GetText(TextDataFormat.Html);
-                string html = ExtractHtmlFragmentFromClipboardData(returnHtmlText);
-                //rtbCopyTarget.Text = html;
-                //ProcessHTML(html);
-            }
-        }
-
-        /// <summary>
-        /// Extracts selected HTML fragment string from clipboard data by parsing header information.
-        /// Delegates to BlueprintScanner.ExtractHtmlFragmentFromClipboardData which uses
-        /// marker-based extraction (encoding-safe) with byte-offset fallback.
-        /// </summary>
-        internal static string ExtractHtmlFragmentFromClipboardData(string htmlDataString)
-        {
-            return BlueprintScanner.ExtractHtmlFragmentFromClipboardData(htmlDataString);
-        }
-
-        /// <summary>
         /// Processes HTML content by parsing with SgmlReader and debugging child nodes.
         /// </summary>
         /// <param name="inputText">The HTML string to parse.</param>
@@ -1408,7 +1376,7 @@ namespace OE2EmpireTracker
             }
 
             string clipboardData = Clipboard.GetText(TextDataFormat.Html);
-            string html = ExtractHtmlFragmentFromClipboardData(clipboardData);
+            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(clipboardData);
             if (string.IsNullOrEmpty(html) || html.StartsWith("ERROR:"))
             {
                 MessageBox.Show("No market HTML found on clipboard.",
@@ -1477,7 +1445,7 @@ namespace OE2EmpireTracker
                 // Fallback: if no name was parsed, use current behavior
                 if (string.IsNullOrEmpty(tempBP.Name))
                 {
-                    scanner.processClipboard(viewModel.Data);
+                    scanner.ProcessClipboard(viewModel.Data);
                     if (string.IsNullOrEmpty(viewModel.Data.UUID))
                         viewModel.Data.UUID = Guid.NewGuid().ToString();
                     PopulateForm();

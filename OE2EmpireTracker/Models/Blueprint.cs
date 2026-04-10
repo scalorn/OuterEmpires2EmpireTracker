@@ -16,27 +16,17 @@ namespace OE2EmpireTracker.Models
     {
         public string OwnerUUID { get; set; } = string.Empty;
 
-        //[NotMapped]
         public string baseBlueprintUUID { get; set; }
 
         public string BluePrintType { get; set; }
 
-        //[NotMapped]
         public int Evolution { get; set; }
 
-        //[NotMapped]
         public string TechLevel { get; set; }
 
-        //[NotMapped]
-        //public int ManufactureRunTime { get; set; }
-
-        //[NotMapped]
         public int Class { get; set; }
 
         public int CopyCost { get; set; }
-
-        //[NotMapped]
-        //public int MaxAllowedOnShip { get; set; }
 
         public PropertyBag Properties { get; set; }
         public Dictionary<string, string> Resources { get; set; }

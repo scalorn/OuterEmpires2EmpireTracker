@@ -170,15 +170,14 @@ namespace OE2EmpireTracker.Parsers
         /// <summary>
         /// Reads HTML from the clipboard and processes it into the given survey.
         /// </summary>
-        public void processClipboard(Survey survey)
+        public void ProcessClipboard(Survey survey)
         {
             if (Clipboard.ContainsText(TextDataFormat.Html))
             {
                 string clipboardData = Clipboard.GetText(TextDataFormat.Html);
                 string output = $@"@""{clipboardData.Replace("\"", "\"\"")}""";
                 Log.Info(output);
-                string html = OE2EmpireTracker.Forms.Blueprint.BlueprintScanner
-                    .ExtractHtmlFragmentFromClipboardData(clipboardData);
+                string html = ClipboardHelper.ExtractHtmlFragment(clipboardData);
                 ProcessHtml(survey, html);
             }
         }

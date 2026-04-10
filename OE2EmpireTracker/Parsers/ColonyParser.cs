@@ -48,8 +48,7 @@ namespace OE2EmpireTracker.Parsers
             {
                 string clipboardData = Clipboard.GetText(TextDataFormat.Html);
                 Log.Info("Colony clipboard data length: {0}", clipboardData.Length);
-                string html = Forms.Blueprint.BlueprintScanner
-                    .ExtractHtmlFragmentFromClipboardData(clipboardData);
+                string html = ClipboardHelper.ExtractHtmlFragment(clipboardData);
                 ProcessHtml(colony, html, empireContext);
             }
         }
@@ -58,18 +57,18 @@ namespace OE2EmpireTracker.Parsers
         /// Parses clipboard HTML into a new temporary Colony object without mutating any existing colony.
         /// Returns null if the clipboard does not contain HTML.
         /// </summary>
-        public Colony ParseClipboardToTemp(EmpireContext empireContext)
+        public Colony ParseClipboardToTemp(EmpireContext empireContext, out string extractedHtml)
         {
+            extractedHtml = null;
             if (!Clipboard.ContainsText(TextDataFormat.Html))
                 return null;
 
             string clipboardData = Clipboard.GetText(TextDataFormat.Html);
             Log.Info("Colony clipboard data length (temp parse): {0}", clipboardData.Length);
-            string html = Forms.Blueprint.BlueprintScanner
-                .ExtractHtmlFragmentFromClipboardData(clipboardData);
+            extractedHtml = ClipboardHelper.ExtractHtmlFragment(clipboardData);
 
             var tempColony = new Colony();
-            ProcessHtml(tempColony, html, empireContext);
+            ProcessHtml(tempColony, extractedHtml, empireContext);
             return tempColony;
         }
 

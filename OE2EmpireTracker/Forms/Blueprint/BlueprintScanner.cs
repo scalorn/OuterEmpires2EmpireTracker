@@ -58,15 +58,13 @@ namespace OE2EmpireTracker.Forms.Blueprint
         /// The HTML fragment is extracted from clipboard data which typically includes
             // start/end fragment markers. Currently commented out - can be re-enabled when needed.
             /// </remarks>
-        public void processClipboard(Models.Blueprint blueprint)
+        public void ProcessClipboard(Models.Blueprint blueprint)
         {
             String returnHtmlText = null;
             if (Clipboard.ContainsText(TextDataFormat.Html))
             {
                 returnHtmlText = Clipboard.GetText(TextDataFormat.Html);
                 string output = $@"@""{returnHtmlText.Replace("\"", "\"\"")}""";
-                //output = $@"@""{output.Replace("\n", "\"\n")}""";
-                //output = $@"@""{output.Replace("\r", "\"\r")}""";
                 Log.Info(output);
                 string html = ExtractHtmlFragmentFromClipboardData(returnHtmlText);
                 ProcessHtml(blueprint, html);
