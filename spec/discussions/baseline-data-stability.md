@@ -265,8 +265,24 @@ With versioned migrations:
 
 ## Open Questions
 
-1. Should the split be BaselineData.json + UserBaseline.json, or should global blueprints move entirely to a separate file (e.g. GlobalBlueprints.json)?
+1. Should the split be BaselineData.json + UserBaseline.json, or should global blueprints move entirely to a separate file (e.g. GlobalBlueprints.json)? **RESOLVED — single file, no split.**
 2. For the deterministic UUID scheme, what namespace UUID should be used for the v5 generation?
-3. How should the migration framework handle the first migration for existing users who already have random UUIDs?
+3. How should the migration framework handle the first migration for existing users who already have random UUIDs? **RESOLVED — see below.**
 4. Should BlueprintTypes also get deterministic IDs, or are their string IDs (e.g. "Flatpacks/MiningRig") already stable enough?
-5. What's the priority ordering — should identity stabilization happen before or after the file split?
+5. What's the priority ordering — should identity stabilization happen before or after the file split? **RESOLVED — no file split, identity stabilization is the main work.**
+
+### Resolved: Initial Migration for Existing Random UUIDs
+
+The first migration is straightforward:
+
+1. Scan all existing global blueprints
+2. For each: compute the deterministic UUID from its dedup fields (Name, Evolution, BluePrintType, Class, TechLevel)
+3. If the current UUID doesn't match the deterministic UUID: call `RemapUUID(oldUUID, newUUID)` across all references
+4. Store the old UUID in a new `LegacyUUID` field on the Blueprint before overwriting
+
+The `LegacyUUID` field is write-once during migration and read-only after. It serves as a safety net for:
+- Users with multiple PlayerData files that reference the old UUIDs
+- External tools or exports that used the old UUIDs
+- Debugging migration issues ("what was this blueprint's old identity?")
+
+This migration is gated by `DataVersion` (runs once, v0 → v1). After migration, all global blueprints have deterministic UUIDs and all references are updated. The `LegacyUUID` field persists in the JSON but is never used for lookups — it's purely historical.
