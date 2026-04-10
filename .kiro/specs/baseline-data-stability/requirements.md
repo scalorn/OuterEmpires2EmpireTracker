@@ -108,7 +108,7 @@ BaselineData.json ships with the application and is modified by user imports, bu
 
 #### Acceptance Criteria
 
-1. THE BaselineRoot SHALL include a GameConstants_Section JSON object containing integer fields RefiningBaseRate, CommoditiesPerCycle, StructureCap, and CommodityCycleSeconds, and a double field WorkerVolume.
+1. THE BaselineRoot SHALL include a GameConstants_Section JSON object containing integer fields RefiningBaseRate, CommoditiesPerCycle, StructureCap, and CommodityCycleSeconds, and a decimal field WorkerVolume.
 2. WHEN the Tracker loads BaselineData.json, THE Tracker SHALL read the GameConstants_Section and make the values available to all code that currently references the hardcoded GameConstants fields.
 3. WHEN the GameConstants_Section is missing from BaselineData.json, THE Tracker SHALL use the current hardcoded default values (RefiningBaseRate=25, CommoditiesPerCycle=10, CommodityCycleSeconds=600, StructureCap=65, WorkerVolume=50).
 4. THE Tracker SHALL continue to define internal constants (SecondsPerHour, PropBuilt, PropStaged, PropOnline, StatusActual, StatusIdeal, PurityRefined) in code, not in BaselineData.json.
@@ -167,3 +167,20 @@ BaselineData.json ships with the application and is modified by user imports, bu
 1. WHEN a Blueprint has a non-empty OwnerUUID (player-owned), THE Tracker SHALL retain the Blueprint's existing random UUID and SHALL NOT replace the UUID with a Deterministic_UUID.
 2. WHEN a Blueprint has Evolution greater than 0 and is stored in PlayerData.json, THE Tracker SHALL assign a random UUID on creation.
 3. THE Tracker SHALL NOT apply the idempotent rename table to Player_Blueprints (rename entries target Global_Blueprints by computing Deterministic_UUIDs from Dedup_Keys, which are non-unique for player blueprints).
+
+
+### Requirement 13: Replace double with decimal for Game Data Numeric Types
+
+**User Story:** As a developer, I want all game-derived numeric values to use `decimal` instead of `double`, so that base-10 game values (volumes, power, habitation, food, entertainment, warehouse capacity, mining rates, refining rates) are represented exactly without binary floating-point precision errors.
+
+#### Acceptance Criteria
+
+1. THE Tracker SHALL use `decimal` for all numeric fields on ColonyStructureStatus (PowerProvided, PowerRequired, HabitationProvision, HabitationRequired, FoodProvision, FoodRequired, EntertainmentProvided, EntertainmentRequired, WarehouseCapacity, WarehouseRequired).
+2. THE Tracker SHALL use `decimal` for Item.Volume.
+3. THE Tracker SHALL use `decimal` for ItemProperty.BaseValue and ItemProperty.AdjustedValue.
+4. THE Tracker SHALL use `decimal` for PropertyBag.getDouble (renamed to getDecimal) and the corresponding setProperty overload.
+5. THE Tracker SHALL use `decimal` for all game-data calculation variables in ColonyStatusCalculator, Colony.ProcessColony, ColonyBootstrap, ColonyInactivityCollector, and EvolutionChainService.
+6. THE Tracker SHALL use `decimal` for all GameConstants_Section numeric fields in BaselineData.json (RefiningBaseRate, CommoditiesPerCycle, CommodityCycleSeconds, StructureCap, WorkerVolume).
+7. THE Tracker SHALL continue to use `double` for system performance metrics (memory usage, CPU percentage) in MainWindow, as these are system measurements where binary floating-point is appropriate.
+8. THE Tracker SHALL NOT use `float` anywhere in the codebase for game data.
+9. WHEN existing JSON files contain double-serialized values, THE Tracker SHALL deserialize them correctly into `decimal` fields (Newtonsoft.Json handles this automatically).
