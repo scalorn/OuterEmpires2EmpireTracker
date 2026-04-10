@@ -157,17 +157,96 @@ Instead of versioning individual records in a single file, split into two files:
 
 ---
 
-## Recommendation
+## Versioned Migration Framework
 
-A combination approach:
+Adding a `DataVersion` integer to PlayerData.json (and BaselineData.json) fundamentally changes the cost analysis for all options above. Migrations become a one-time cost per file, not a recurring cost.
 
-1. **Deterministic UUIDs (Option 4)** for global blueprint identity — simplest, no schema change, no canonical file to maintain
-2. **Split file** for upgrade safety — BaselineData.json is read-only app data, UserBaseline.json holds user overrides
-3. **Version number on BaselineData.json** (file-level, not per-record) — triggers migration on upgrade
-4. **Declarative migration framework** — rename tables, UUID remapping, applied sequentially by version
-5. **Move code-embedded data to BaselineData.json** — commodity recipes, refining recipes, game constants
+### How It Works
 
-This gives you: stable identity across machines, safe upgrades that don't destroy user data, a path for the developer to push changes, and data-driven configuration that users can fix without code changes.
+1. App starts, loads PlayerData.json, reads `"DataVersion": 5`
+2. App knows the current version is 8
+3. Runs migrations 6, 7, 8 in sequence — each does its remap/rename work
+4. Sets `"DataVersion": 8`, saves
+5. Next launch: version matches, no migrations run
+
+Each migration runs exactly once per file. A user upgrading from v3 to v8 runs migrations 4→5→6→7→8 on first launch. A user already on v7 only runs 8. A user on v8 skips everything.
+
+### Impact on the Hash vs Canonical UUID Decision
+
+With versioned migrations, the "rename is expensive with hashes" argument is neutralized. A rename migration (compute old hash → compute new hash → remap all references) runs once and is done. The code to walk references and remap UUIDs is the same generic utility regardless of whether you're remapping hash→hash (rename) or random-UUID→hash (initial migration).
+
+This tips the balance back toward **deterministic hashes (Option 4)** because hashes have a key advantage that canonical UUIDs don't: **when a user imports a blueprint the developer hasn't catalogued yet, it automatically gets a stable identity.** Every user who imports that same blueprint gets the same hash. No need to wait for the developer to assign a canonical UUID in the next release.
+
+With canonical UUIDs, any blueprint the developer hasn't explicitly assigned an ID to gets a random UUID — and it's back to the original cross-machine inconsistency problem until the next release includes it.
+
+### Generic UUID Remap Utility
+
+A single reusable method handles all migration scenarios:
+
+```csharp
+static void RemapUUID(PlayerContext pc, EmpireContext ec, string oldUUID, string newUUID)
+{
+    // Global blueprints
+    var bp = ec.globalBlueprintList.FirstOrDefault(b => b.UUID == oldUUID);
+    if (bp != null) bp.UUID = newUUID;
+
+    // Player blueprints
+    var pbp = pc.blueprintList.FirstOrDefault(b => b.UUID == oldUUID);
+    if (pbp != null) pbp.UUID = newUUID;
+
+    // Evolution chains
+    foreach (var b in ec.globalBlueprintList.Concat(pc.blueprintList))
+        if (b.BaseBlueprintUUID == oldUUID) b.BaseBlueprintUUID = newUUID;
+
+    // Colony structure references
+    foreach (var colony in pc.colonyList)
+        foreach (var s in colony.Structures)
+        {
+            if (s.FlatpackBlueprintUUID == oldUUID) s.FlatpackBlueprintUUID = newUUID;
+            if (s.ResearchingBlueprintUUID == oldUUID) s.ResearchingBlueprintUUID = newUUID;
+            if (s.ManufacturingBlueprintUUID == oldUUID) s.ManufacturingBlueprintUUID = newUUID;
+        }
+}
+```
+
+Each migration step just provides the old/new pairs:
+
+```csharp
+// Migration v1→v2: initial hash migration + renames
+static void MigrateV1ToV2(PlayerContext pc, EmpireContext ec)
+{
+    // Remap all random UUIDs to deterministic hashes
+    foreach (var bp in ec.globalBlueprintList.ToList())
+    {
+        string hashUUID = ComputeDeterministicUUID(bp);
+        if (bp.UUID != hashUUID)
+            RemapUUID(pc, ec, bp.UUID, hashUUID);
+    }
+
+    // Handle renames: compute old hash, compute new hash, remap
+    var renames = new[] { ("Mining Rig", "Mining Rig Flatpack") };
+    foreach (var (oldName, newName) in renames)
+    {
+        string oldHash = ComputeDeterministicUUID(oldName, ...);
+        string newHash = ComputeDeterministicUUID(newName, ...);
+        RemapUUID(pc, ec, oldHash, newHash);
+        // Also update the Name field on the blueprint itself
+        var bp = ec.globalBlueprintList.FirstOrDefault(b => b.UUID == newHash);
+        if (bp != null) bp.Name = newName;
+    }
+}
+```
+
+### Revised Recommendation
+
+With versioned migrations:
+
+1. **Deterministic UUIDs (Option 4)** — best fit. Self-describing identity, no canonical file to maintain, new blueprints automatically stable across machines
+2. **DataVersion on both PlayerData.json and BaselineData.json** — triggers sequential migrations on load
+3. **Generic RemapUUID utility** — one implementation, reused by all migration steps
+4. **Declarative migration registry** — each version bump declares its renames and data changes
+5. **Split file (BaselineData.json + UserBaseline.json)** — still valuable for separating app data from user overrides, but less critical now that migrations handle the merge
+6. **Move code-embedded data to BaselineData.json** — commodity recipes, refining recipes, game constants
 
 ---
 
