@@ -6,8 +6,8 @@ Stabilize BaselineData.json for multi-user distribution: deterministic UUIDs for
 
 ## Tasks
 
-- [-] 1. Create DeterministicUUID and RemapUUID utilities
-  - [-] 1.1 Create `OE2EmpireTracker/Services/Migration/DeterministicUUID.cs` with UUID v5 generation
+- [x] 1. Create DeterministicUUID and RemapUUID utilities
+  - [x] 1.1 Create `OE2EmpireTracker/Services/Migration/DeterministicUUID.cs` with UUID v5 generation
     - Namespace UUID: `e0058083-0f64-b398-ed53-762f7d8b8eb2`
     - `Generate(string name, int evolution, string blueprintType, int cls, string techLevel)` → string UUID
     - `Generate(Blueprint bp)` → string UUID (convenience overload)
@@ -15,72 +15,72 @@ Stabilize BaselineData.json for multi-user distribution: deterministic UUIDs for
     - Add `<Compile Include="Services\Migration\DeterministicUUID.cs" />` to csproj
     - _Requirements: 1.1, 1.3, 1.4_
 
-  - [~] 1.2 Create `OE2EmpireTracker/Services/Migration/RemapUUID.cs` with generic reference walker
+  - [x] 1.2 Create `OE2EmpireTracker/Services/Migration/RemapUUID.cs` with generic reference walker
     - `Remap(EmpireContext ec, PlayerContext pc, string oldUUID, string newUUID)` — walks all 5 reference fields
     - Add `<Compile Include="Services\Migration\RemapUUID.cs" />` to csproj
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6_
 
-  - [~] 1.3 Write property test: UUID v5 determinism (Property 1)
+  - [x] 1.3 Write property test: UUID v5 determinism (Property 1)
     - Create `OE2EmpireTracker.Tests/Services/Migration/DeterministicUUIDPropertyTests.cs`
     - Generate random dedup key fields, verify same inputs produce same UUID, different inputs produce different UUIDs
     - Add `<Compile Include>` to test csproj
     - _Requirements: 1.1, 1.3, 1.4_
 
-  - [~] 1.4 Write property test: RemapUUID completeness (Property 2)
+  - [x] 1.4 Write property test: RemapUUID completeness (Property 2)
     - Create `OE2EmpireTracker.Tests/Services/Migration/RemapUUIDPropertyTests.cs`
     - Generate random data model state with UUID references, call Remap, verify no old UUID remains
     - Add `<Compile Include>` to test csproj
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6_
 
-- [~] 2. Checkpoint — Ensure all tests pass
+- [x] 2. Checkpoint — Ensure all tests pass
 
-- [ ] 3. Create migration framework
-  - [~] 3.1 Add `DataVersion` field to `BaselineRoot` and `PlayerRoot`
+- [x] 3. Create migration framework
+  - [x] 3.1 Add `DataVersion` field to `BaselineRoot` and `PlayerRoot`
     - Default value 0, serialized to JSON
     - Add `DataVersion` property to `EmpireContext` and `PlayerContext`
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-  - [~] 3.2 Create `OE2EmpireTracker/Services/Migration/RenameTable.cs` with idempotent rename entries
+  - [x] 3.2 Create `OE2EmpireTracker/Services/Migration/RenameTable.cs` with idempotent rename entries
     - `RenameEntry` class with OldName, NewName, Evolution, BluePrintType, Class, TechLevel
     - `Apply(EmpireContext, PlayerContext)` — processes all entries, computes old/new hashes, remaps
     - Empty initial list (no renames yet)
     - Add `<Compile Include>` to csproj
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6_
 
-  - [~] 3.3 Create `OE2EmpireTracker/Services/Migration/MigrationRunner.cs` with sequential executor
+  - [x] 3.3 Create `OE2EmpireTracker/Services/Migration/MigrationRunner.cs` with sequential executor
     - `CurrentVersion` constant
     - `Run(EmpireContext, PlayerContext)` — applies renames, runs versioned migrations, applies renames again
     - Dictionary of version → migration action
     - Add `<Compile Include>` to csproj
     - _Requirements: 3.1, 3.2, 3.3, 3.6_
 
-  - [~] 3.4 Create `OE2EmpireTracker/Services/Migration/Migrations/Migration001_DeterministicUUIDs.cs`
+  - [x] 3.4 Create `OE2EmpireTracker/Services/Migration/Migrations/Migration001_DeterministicUUIDs.cs`
     - Scans global blueprints, computes deterministic UUID, stores LegacyUUID, calls RemapUUID
     - Add `<Compile Include>` to csproj
     - _Requirements: 3.4, 3.5, 6.1, 6.2_
 
-  - [~] 3.5 Add `LegacyUUID` field to `Blueprint` model
+  - [x] 3.5 Add `LegacyUUID` field to `Blueprint` model
     - Nullable string, default null, serialized to JSON
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-  - [~] 3.6 Wire `MigrationRunner.Run` into app startup (after loading both contexts)
+  - [x] 3.6 Wire `MigrationRunner.Run` into app startup (after loading both contexts)
     - Call in `EmpireContext.loadContext` or `MainWindow` after both contexts are loaded
     - Persist both contexts if any changes were made
     - _Requirements: 3.6, 11.1, 11.2, 11.3, 11.4_
 
-  - [~] 3.7 Write property test: Rename idempotency (Property 3)
+  - [x] 3.7 Write property test: Rename idempotency (Property 3)
     - Generate random rename entries and data model state, apply twice, verify same result
     - _Requirements: 5.6_
 
-  - [~] 3.8 Write property test: Migration version gating (Property 4)
+  - [x] 3.8 Write property test: Migration version gating (Property 4)
     - Generate random DataVersion values, verify correct migrations run
     - _Requirements: 3.1, 3.2, 3.3_
 
-  - [~] 3.9 Write property test: LegacyUUID preservation (Property 5)
+  - [x] 3.9 Write property test: LegacyUUID preservation (Property 5)
     - Generate random blueprints, run migration, verify LegacyUUID equals original UUID and doesn't change on re-save
     - _Requirements: 6.2, 6.3_
 
-- [~] 4. Checkpoint — Ensure all tests pass
+- [x] 4. Checkpoint — Ensure all tests pass
 
 - [ ] 5. Update blueprint creation to use deterministic UUIDs
   - [~] 5.1 Update `MarketBlueprintImporter.Import` to use `DeterministicUUID.Generate` for global blueprints (Evo 0)

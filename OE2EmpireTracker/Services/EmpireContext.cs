@@ -1,4 +1,5 @@
 using Amazon;
+using OE2EmpireTracker.Services.Migration;
 using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Persistence;
@@ -42,6 +43,7 @@ namespace OE2EmpireTracker.Services
         public BindingSource bindingSourceResourceGroup;
         public BindingList<ResourcePurity> resourcePurityList;
         public BindingSource bindingSourceResourcePurity;
+        public int DataVersion { get; set; } = 0;
         public BindingList<Blueprint> globalBlueprintList;
 
         public static EmpireContext getInstance()
@@ -71,6 +73,8 @@ namespace OE2EmpireTracker.Services
             Log.Info("Baseline data loaded: {0} blueprint types, {1} ship classes, {2} tech levels",
                 baselineRoot.BlueprintType?.Length ?? 0, baselineRoot.ShipClass?.Length ?? 0, baselineRoot.TechLevel?.Length ?? 0);
 
+            DataVersion = baselineRoot.DataVersion;
+
             initBlueprintTypes(baselineRoot);
             initShipClasses(baselineRoot);
             initTechLevels(baselineRoot);
@@ -79,10 +83,24 @@ namespace OE2EmpireTracker.Services
             initResourceGroups(baselineRoot);
             initResourcePurities(baselineRoot);
             InitGlobalBlueprints(baselineRoot);
+
+            // Run migrations after both contexts are loaded
+            int prevBaselineVersion = DataVersion;
+            int prevPlayerVersion = PlayerContext.DataVersion;
+            MigrationRunner.Run(this, PlayerContext);
+            if (DataVersion != prevBaselineVersion)
+            {
+                writeContext();
+            }
+            if (PlayerContext.DataVersion != prevPlayerVersion)
+            {
+                PlayerContext.writeContext();
+            }
         }
         public void writeContext()
         {
             BaselineRoot baselineRoot = new BaselineRoot();
+            baselineRoot.DataVersion = DataVersion;
             baselineRoot.ShipClass = shipClassList.ToArray();
             baselineRoot.BlueprintType = blueprintTypeList.ToArray();
             baselineRoot.Blueprint = globalBlueprintList.ToArray();
@@ -242,6 +260,7 @@ namespace OE2EmpireTracker.Services
     }
     public class BaselineRoot
     {
+        public int DataVersion;
         public ShipClass[] ShipClass;
         public BlueprintType[] BlueprintType;
         public Blueprint[] Blueprint;

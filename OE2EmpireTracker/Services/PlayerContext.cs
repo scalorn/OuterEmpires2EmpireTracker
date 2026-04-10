@@ -135,6 +135,7 @@ namespace OE2EmpireTracker.Services
             }
         }
 
+        public int DataVersion { get; set; } = 0;
         public BindingList<PlayerProfile> playerProfileList;
         public BindingSource bindingSourcePlayerProfile;
         public BindingList<Blueprint> blueprintList;
@@ -189,6 +190,7 @@ namespace OE2EmpireTracker.Services
             initColonies(playerRoot);
             InitDeliveryRoutes(playerRoot);
             InitDeliveryPlans(playerRoot);
+            DataVersion = playerRoot.DataVersion;
 
             // Migrate and restore current player
             MigrateOwnerUUIDs();
@@ -199,6 +201,7 @@ namespace OE2EmpireTracker.Services
         public void writeContext()
         {
             PlayerRoot playerRoot = new PlayerRoot();
+            playerRoot.DataVersion = DataVersion;
             playerRoot.CurrentPlayerUUID = _currentPlayerUUID;
             playerRoot.PlayerProfile = playerProfileList.ToArray();
             playerRoot.Blueprint = blueprintList.ToArray();
@@ -516,6 +519,7 @@ namespace OE2EmpireTracker.Services
 
     public class PlayerRoot
     {
+        public int DataVersion;
         public string CurrentPlayerUUID;
         public PlayerProfile[] PlayerProfile;
         public Blueprint[] Blueprint;
@@ -525,6 +529,7 @@ namespace OE2EmpireTracker.Services
         public DeliveryPlan[] DeliveryPlan;
         public PlayerRoot()
         {
+            DataVersion = 0;
             CurrentPlayerUUID = string.Empty;
             PlayerProfile = new PlayerProfile[0];
             Blueprint = new Blueprint[0];
