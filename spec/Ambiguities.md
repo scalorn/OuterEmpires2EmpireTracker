@@ -362,3 +362,86 @@ These differences are partly justified by domain differences, but the structural
 Renaming it would require a JSON migration strategy since it's serialized to PlayerData.json and BaselineData.json. Newtonsoft.Json serializes using the property name by default.
 
 **Resolution:** Renamed to `BaseBlueprintUUID`. Updated all code references across 10+ files. Migrated all JSON data files (Alpha3.json, BaselineData.json main+test, PlayerData.json test) to use the new key name. No `[JsonProperty]` attribute needed since both code and data are aligned on the new name.
+
+
+---
+
+## Code Quality Review — Baseline Data Stability (April 2026)
+
+### AMB-042 — OPEN: DeterministicUUID.Generate does not handle null fields
+**Issue:** The design doc error handling section states: "UUID v5 generation with null/empty fields — Use empty string for null fields in the input." However, `DeterministicUUID.Generate(string name, int evolution, string blueprintType, int cls, string techLevel)` does no null checking. If `name`, `blueprintType`, or `techLevel` is null, the string interpolation `$"{name}|{evolution}|..."` will produce `"|0|..."` which works by accident (C# interpolates null as empty string), but the `Generate(Blueprint bp)` overload passes `bp.Name`, `bp.BluePrintType`, `bp.TechLevel` directly — if any are null, the behavior is correct by coincidence, not by design.
+
+**Recommendation:** Either add explicit null-to-empty coalescing (`name ?? ""`) in the Generate method for clarity, or document that C# string interpolation handles this implicitly and it's intentional. Low risk but worth a decision.
+
+---
+
+### AMB-043 — OPEN: MigrationRunner has no error handling or logging
+**Issue:** The design doc error handling section states: "Migration fails mid-execution — Log error, do not increment DataVersion (migration will retry on next load)." However, `MigrationRunner.Run` has no try/catch around individual migration execution and no NLog logging at all. If a migration throws, the exception propagates up to the EmpireContext constructor, which would crash the app on startup with no recovery path. DataVersion would not be incremented (correct), but the user gets no diagnostic information.
+
+**Recommendation:** Add try/catch around each migration invocation with `Log.Error`. Consider whether the app should continue loading with partial migration state or show an error dialog. This is important for production resilience.
+
+---
+
+### AMB-044 — OPEN: ColonyBootstrap.BestResourceEntry.RawAmount is still `double`
+**Issue:** Requirement 13.5 states all game-data calculation variables should use `decimal`. `ColonyBootstrap.BestResourceEntry.RawAmount` is still `double`, and `SelectBestResources` uses `double.TryParse` to parse survey resource amounts. The value is then cast to `decimal` for calculations. This is a minor inconsistency — the `SurveyResource.Amount` field is a string, so parsing to `decimal` directly would be cleaner and avoid the double→decimal cast.
+
+**Recommendation:** Change `RawAmount` to `decimal` and use `decimal.TryParse` instead of `double.TryParse`. Low priority but aligns with the spec.
+
+---
+
+### AMB-045 — OPEN: EmpireContext has mixed camelCase/PascalCase public members
+**Issue:** `EmpireContext` has several camelCase public methods and fields that violate C# naming conventions:
+- Methods: `getInstance()`, `getInstanceIfLoaded()`, `writeContext()`, `initBlueprintTypes()`, `initShipClasses()`, `initTechLevels()`, `initEvolutions()`, `initResourceGroups()`, `initResourcePurities()`
+- Fields: `blueprintTypeList`, `bindingSourceBlueprintType`, `shipClassList`, `bindingSourceShipClass`, `techLevelList`, `bindingSourceTechLevel`, `evolutionList`, `bindingSourceEvolution`, `resourceList`, `bindingSourceResource`, `resourceGroupList`, `bindingSourceResourceGroup`, `resourcePurityList`, `bindingSourceResourcePurity`, `globalBlueprintList`, `commodityList`
+
+The newer methods added by the baseline-data-stability spec (`InitCommodities`, `InitRefiningRecipes`, `InitResearchTimes`, `InitGlobalBlueprints`) correctly use PascalCase, creating an inconsistency within the same class.
+
+`PlayerContext` has the same issue with `getInstance()`, `writeContext()`, `blueprintList`, `colonyList`, `surveyList`, etc.
+
+**Recommendation:** Rename all public members to PascalCase. This is a large mechanical change that touches many files (every caller of `getInstance()`, `writeContext()`, etc.). Should be done as a dedicated cleanup task using semantic rename to update all references. Add to backlog.
+
+---
+
+### AMB-046 — OPEN: PropertyBagTests comment says "double overload" but tests decimal
+**Issue:** `PropertyBagTests.cs` line 76 has the comment `// setProperty — double overload` but the test actually tests the `decimal` overload (passes `42.5m`). This is a stale comment from before the double→decimal conversion.
+
+**Recommendation:** Update comment to `// setProperty — decimal overload`. Trivial fix.
+
+---
+
+### AMB-047 — OPEN: RefiningRecipe model class lives in Constants namespace
+**Issue:** `RefiningRecipe` (the data model class) is defined in `OE2EmpireTracker/Constants/RefiningRecipes.cs` under the `OE2EmpireTracker.Constants` namespace. All other data model classes live in `OE2EmpireTracker/Models/` under `OE2EmpireTracker.Models`. The `RefiningRecipes` static helper class belongs in Constants, but the `RefiningRecipe` POCO model should be in Models for consistency with `Commodity`, `ResearchTimeEntry`, `BaselineGameConstants`, etc.
+
+**Recommendation:** Move `RefiningRecipe` class to `OE2EmpireTracker/Models/RefiningRecipe.cs`. Keep `RefiningRecipes` static class in Constants. Low priority.
+
+---
+
+### AMB-048 — OPEN: BaselineRoot uses public fields instead of properties
+**Issue:** `BaselineRoot` (in EmpireContext.cs) uses public fields (`public int DataVersion;`, `public ShipClass[] ShipClass;`, etc.) instead of auto-properties. `PlayerRoot` (in PlayerContext.cs) does the same. All other model classes in the project use auto-properties with `{ get; set; }`. Newtonsoft.Json serializes both fields and properties, so this works, but it's inconsistent with the rest of the codebase.
+
+**Recommendation:** Change to auto-properties for consistency. Low priority — purely cosmetic.
+
+---
+
+### AMB-049 — OPEN: Externalized data (Commodity, RefiningRecipe, ResearchTime) uses mutable static state
+**Issue:** `Commodity.SetCommodities()`, `RefiningRecipes.SetRecipes()`, and `ResearchTimeLookup.SetResearchTimes()` replace static mutable lists. This pattern works for a single-instance desktop app but has subtle issues:
+1. Test isolation — if a test calls `SetCommodities()` with test data, subsequent tests in the same run see the modified state unless they also call `SetCommodities()` or reset the singleton.
+2. Thread safety — `BackgroundProcessor` runs on a separate thread. If it accesses `Commodity.Commodities` while `EmpireContext` is being reconstructed (e.g., File → New), there's a potential race condition.
+
+The current code works because `EmpireContext.Reset()` triggers a full reload which calls `SetCommodities()` etc. again, and `BackgroundProcessor` is stopped before reset. But the pattern is fragile.
+
+**Recommendation:** No immediate action needed — the current guards are sufficient. Document the threading assumption (BackgroundProcessor must be stopped before EmpireContext.Reset). If the app ever moves to multi-threaded data access, this pattern will need revisiting.
+
+---
+
+### AMB-050 — OPEN: Spec says Requirement 13.7 excludes MainWindow performance metrics from decimal conversion, but BuildTimeCalculator also uses double
+**Issue:** Requirement 13.7 states: "THE Tracker SHALL continue to use `double` for system performance metrics (memory usage, CPU percentage) in MainWindow." `BuildTimeCalculator.Calculate()` also uses `double` for its internal calculation (`double seconds = 86400.0 * (1.0 - builderSkillLevel * 0.02)`). This is a time calculation, not a game data value — it computes seconds from a skill level. The result is cast to `long` immediately. Using decimal here would be unnecessary overhead for a simple multiplication that produces an integer result.
+
+**Recommendation:** No change needed. `BuildTimeCalculator` is correctly using `double` for a transient calculation that produces a `long`. The spec's decimal requirement targets persisted game data values, not ephemeral arithmetic. Document this as an intentional exclusion alongside MainWindow metrics.
+
+---
+
+### AMB-051 — OPEN: Baseline-data-stability spec COMPLETED.md entry missing
+**Issue:** The baseline-data-stability spec has been fully implemented (all 14 tasks complete, all tests passing), but there is no entry in `spec/COMPLETED.md` documenting its completion.
+
+**Recommendation:** Add a completion entry to COMPLETED.md.

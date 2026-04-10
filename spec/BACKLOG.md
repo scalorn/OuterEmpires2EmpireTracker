@@ -230,6 +230,11 @@ Bug: After creating a new delivery plan, the delivery execution form doesn't see
 
 With the dedup key changed from ColonyName to PlanetName+SystemName, the duplicate-name validation on the colony name text field (SetError/ClearError) is no longer relevant — duplicate colony names don't break dedup anymore. The validation should either be removed entirely or changed to warn on duplicate PlanetName+SystemName combinations instead. Currently the colony name validation has been removed; consider whether planet+system validation is needed on manual edit.
 
+### BL-044: EmpireContext/PlayerContext PascalCase Naming Cleanup
+**Dependencies:** None
+
+EmpireContext and PlayerContext have many camelCase public methods and fields that predate the project's PascalCase convention. Methods: `getInstance()`, `getInstanceIfLoaded()`, `writeContext()`, `initBlueprintTypes()`, `initShipClasses()`, `initTechLevels()`, `initEvolutions()`, `initResourceGroups()`, `initResourcePurities()`. Fields: `blueprintTypeList`, `bindingSourceBlueprintType`, `shipClassList`, `globalBlueprintList`, `commodityList`, etc. Newer methods (`InitCommodities`, `InitRefiningRecipes`, etc.) already use PascalCase, creating inconsistency within the same class. Use semantic rename to update all references. See AMB-045.
+
 
 ---
 

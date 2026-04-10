@@ -127,3 +127,8 @@ Individual blueprint clipboard import dedup — parse complete blueprint identit
 ### BL-038: Survey Import Dedup
 Survey clipboard import dedup — parse into a temporary survey first, search by PlanetName+SurveyID (case-insensitive), then merge into existing or create new. Falls back to current behavior when SurveyID is not parsed. Adds clipboard HTML guard and error handling.
 **Status: Complete** — SurveyImportHelper static class with FindByKey, CreateFromTemp, MergeData. SurveyParser.ParseClipboardToTemp for non-mutating parse. FormSurvey.cmdImport_Click rewritten with parse→search→merge-or-create flow. 3 FsCheck property tests.
+
+
+### Baseline Data Stability
+Deterministic UUIDs for global blueprints, versioned migration framework with DataVersion gating, idempotent rename table, LegacyUUID preservation, externalization of GameConstants/Commodities/RefiningRecipes/ResearchTimeLookup from code to BaselineData.json, and double→decimal conversion for all game data numeric types.
+**Status: Complete** — DeterministicUUID (UUID v5), RemapUUID reference walker, MigrationRunner with Migration001, RenameTable, BaselineGameConstants model, ResearchTimeEntry model. All blueprint creation paths updated. 6 FsCheck property tests (UUID determinism, RemapUUID completeness, rename idempotency, migration version gating, LegacyUUID preservation, decimal round-trip). Spec: `.kiro/specs/baseline-data-stability/`.
