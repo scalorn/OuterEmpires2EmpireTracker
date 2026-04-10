@@ -115,12 +115,6 @@ With coordinate data for systems and planets, automatically sequence delivery ro
 
 Import player profile data from game HTML. Parse the in-game profile page to extract player name, faction, ranks, skill levels, credits, and other profile fields. Update existing profiles or create new ones. Follows the same HTML parsing pattern used by SurveyParser and the colony importer.
 
-### BL-022: JSON Serialization — Skip Default Values
-**Dependencies:** None
-**Status: Complete** — see `.kiro/specs/json-default-skip/`
-
-JSON files (PlayerData.json, BaselineData.json) are growing large. As a space-saving measure, configure Newtonsoft.Json serialization to skip fields that have default values: null or empty strings, false booleans, and zero-value integers or decimals. This reduces file size without losing any data — deserialization already initializes these fields to their defaults.
-
 ### BL-023: Explore OE2 Wiki as Data Source
 **Dependencies:** None
 
