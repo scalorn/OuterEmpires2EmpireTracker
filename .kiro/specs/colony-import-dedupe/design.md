@@ -2,7 +2,7 @@
 
 ## Overview
 
-The colony clipboard import currently writes parsed HTML directly into whichever colony the user has selected in the list view. This is error-prone — the clipboard data may belong to a different colony entirely. This design introduces a dedup layer that mirrors the existing `MarketBlueprintImporter` pattern: parse into a temporary object first, search for a match by colony name (case-insensitive), then either update the matched colony or create a new one.
+The colony clipboard import currently writes parsed HTML directly into whichever colony the user has selected in the list view. This is error-prone — the clipboard data may belong to a different colony entirely. This design introduces a dedup layer that mirrors the existing `MarketBlueprintImporter` pattern: parse into a temporary object first, search for a match by planet name and system name (case-insensitive), then either update the matched colony or create a new one. The dedup key is PlanetName+SystemName (unique per player) rather than ColonyName, because the game truncates colony names making them unreliable for matching.
 
 The change is scoped to three areas:
 1. **ColonyParser** — add a new method that parses into a fresh temporary `Colony` instead of mutating an existing one.
@@ -31,7 +31,7 @@ sequenceDiagram
         Note right of FormColony: Fallback to current behavior
     else ColonyName is non-empty
         FormColony->>PlayerContext: GetCurrentPlayerColonies()
-        FormColony->>FormColony: Search by ColonyName (case-insensitive)
+        FormColony->>FormColony: Search by PlanetName+SystemName (case-insensitive)
         alt Match found
             FormColony->>FormColony: MergeIntoExisting(existingColony, tempColony)
             Note right of FormColony: Copy PlanetName, SystemName; merge structures & commodities
@@ -93,10 +93,10 @@ This method:
 1. Guard: no HTML → show message, return.
 2. Guard: no current player → show message, return.
 3. Call `parser.ParseClipboardToTemp(empireContext)` → `tempColony`.
-4. If `tempColony.ColonyName` is empty → fall back to current behavior (parse into `selectedColony`).
-5. Search `playerContext.GetCurrentPlayerColonies()` for a colony where `ColonyName` matches `tempColony.ColonyName` (case-insensitive via `StringComparison.OrdinalIgnoreCase`).
+4. If `tempColony.PlanetName` is empty → fall back to current behavior (parse into `selectedColony`).
+5. Search `playerContext.GetCurrentPlayerColonies()` for a colony where `PlanetName` and `SystemName` match `tempColony.PlanetName` and `tempColony.SystemName` (case-insensitive via `StringComparison.OrdinalIgnoreCase`).
 6. If match found → merge `tempColony` data into the existing colony:
-   - Update `PlanetName` and `SystemName` from `tempColony`.
+   - Update `PlanetName` and `SystemName` from `tempColony`. Preserve existing `ColonyName` if already set (protects user-corrected names from game truncation bugs).
    - Re-run `ColonyParser.ProcessHtml(existingColony, html, empireContext)` to use the existing structure/commodity merge logic.
 7. If no match → assign UUID, set `OwnerUUID` to current player, add to `colonyList`.
 8. Persist via `playerContext.writeContext()`.
@@ -125,12 +125,21 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Searches colonies for a case-insensitive ColonyName match.
         /// Returns the matching colony, or null if none found.
+        /// Still used for duplicate name validation on manual edit.
         /// </summary>
         public static Colony FindByName(IEnumerable<Colony> colonies, string colonyName);
 
         /// <summary>
+        /// Searches colonies for a case-insensitive PlanetName + SystemName match.
+        /// Returns the matching colony, or null if none found.
+        /// This is the primary dedup key — one colony per planet per player.
+        /// </summary>
+        public static Colony FindByPlanet(IEnumerable<Colony> colonies, string planetName, string systemName);
+
+        /// <summary>
         /// Merges identity fields (PlanetName, SystemName) from source into target.
         /// Does NOT merge structures or commodities — that is handled by ColonyParser.ProcessHtml.
+        /// Preserves existing ColonyName if target already has one (protects user-corrected names).
         /// </summary>
         public static void MergeIdentity(Colony target, Colony source);
 
@@ -178,7 +187,7 @@ The temporary colony created during import is a standard `Colony` instance with 
 
 ### Property 3: MergeIdentity updates identity while preserving local state
 
-*For any* existing colony and *for any* temporary colony, after calling `MergeIdentity(existing, temp)`, the existing colony's `PlanetName` and `SystemName` shall equal the temp colony's values, while the existing colony's `UUID`, `OwnerUUID`, `Items`, and `Structures` references shall remain unchanged (same object references, same counts).
+*For any* existing colony and *for any* temporary colony, after calling `MergeIdentity(existing, temp)`, the existing colony's `PlanetName` and `SystemName` shall equal the temp colony's values, the existing colony's `ColonyName` shall be preserved (not overwritten), and the existing colony's `UUID`, `OwnerUUID`, `Items`, and `Structures` references shall remain unchanged (same object references, same counts).
 
 **Validates: Requirements 3.3, 3.4**
 
@@ -193,6 +202,12 @@ The temporary colony created during import is a standard `Colony` instance with 
 *For any* list of colonies, *for any* colony name, and *for any* exclude UUID, `IsDuplicateName` shall return true if and only if there exists a colony in the list whose `ColonyName` matches the given name (case-insensitive) AND whose `UUID` is not equal to the exclude UUID.
 
 **Validates: Requirements 8.1**
+
+### Property 6: Case-insensitive planet+system search
+
+*For any* list of colonies and *for any* `PlanetName` + `SystemName` that exists in the list (under any case variation), `FindByPlanet` shall return a colony whose `PlanetName` and `SystemName` match case-insensitively. *For any* planet+system combination not in the list, it shall return null.
+
+**Validates: Requirements 2.1**
 
 ## Error Handling
 
@@ -240,6 +255,9 @@ Each correctness property is implemented as a single property-based test with mi
 
 - **Property 5 test**: Generate random colony lists, random names, and random exclude UUIDs. Assert `IsDuplicateName` returns true iff a non-excluded colony has a case-insensitive name match.
   - Tag: `Feature: colony-import-dedupe, Property 5: Duplicate name detection is case-insensitive and excludes self`
+
+- **Property 6 test**: Generate random colony lists and random search strings (including case-shuffled versions of existing planet+system pairs). Assert `FindByPlanet` returns the correct result for both match and no-match cases.
+  - Tag: `Feature: colony-import-dedupe, Property 6: Case-insensitive planet+system search`
 
 ### Test Configuration
 

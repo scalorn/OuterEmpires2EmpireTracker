@@ -165,6 +165,7 @@ namespace OE2EmpireTracker.Tests.Services
                 // Capture references before merge
                 var originalUuid = data.Existing.UUID;
                 var originalOwnerUuid = data.Existing.OwnerUUID;
+                var originalColonyName = data.Existing.ColonyName;
                 var originalItems = data.Existing.Items;
                 var originalStructures = data.Existing.Structures;
                 int originalStructCount = data.Existing.Structures.Count;
@@ -176,6 +177,10 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"PlanetName: expected '{data.Temp.PlanetName}', got '{data.Existing.PlanetName}'");
                 var systemMatch = (data.Existing.SystemName == data.Temp.SystemName)
                     .Label($"SystemName: expected '{data.Temp.SystemName}', got '{data.Existing.SystemName}'");
+
+                // ColonyName should be preserved when target already has one
+                var colonyNamePreserved = (data.Existing.ColonyName == originalColonyName)
+                    .Label($"ColonyName changed from '{originalColonyName}' to '{data.Existing.ColonyName}' — should be preserved when target already has one");
 
                 // Local state should be preserved (same object references)
                 var uuidPreserved = (data.Existing.UUID == originalUuid)
@@ -191,6 +196,7 @@ namespace OE2EmpireTracker.Tests.Services
 
                 return planetMatch
                     .And(systemMatch)
+                    .And(colonyNamePreserved)
                     .And(uuidPreserved)
                     .And(ownerPreserved)
                     .And(itemsPreserved)
@@ -310,6 +316,52 @@ namespace OE2EmpireTracker.Tests.Services
 
                 return (actual == expected)
                     .Label($"expected={expected}, actual={actual} for name='{data.SearchName}'");
+            });
+        }
+
+        #endregion
+
+        #region Property 6: Case-insensitive planet+system search
+
+        /// <summary>
+        /// Property 6: Case-insensitive planet+system search.
+        /// For any list of colonies and for any PlanetName+SystemName that exists in the list
+        /// (under any case variation), FindByPlanet shall return a colony whose PlanetName and
+        /// SystemName match case-insensitively. For any planet+system not in the list, it shall return null.
+        /// **Validates: Requirements 2.1**
+        /// </summary>
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property CaseInsensitivePlanetSystemSearch()
+        {
+            var gen = from colonies in Gen.ListOf(ColonyGen())
+                      from seed in Gen.Choose(0, 10000)
+                      from extraPlanet in NonEmptyStringGen()
+                      from extraSystem in NonEmptyStringGen()
+                      select new { Colonies = colonies.ToList(), Seed = seed, ExtraPlanet = extraPlanet, ExtraSystem = extraSystem };
+
+            return Prop.ForAll(gen.ToArbitrary(), data =>
+            {
+                // Test match case: pick an existing colony and shuffle case of its planet+system
+                if (data.Colonies.Count > 0)
+                {
+                    var target = data.Colonies[data.Seed % data.Colonies.Count];
+                    var shuffledPlanet = ShuffleCase(target.PlanetName, data.Seed);
+                    var shuffledSystem = ShuffleCase(target.SystemName, data.Seed + 1);
+                    var found = ColonyImportHelper.FindByPlanet(data.Colonies, shuffledPlanet, shuffledSystem);
+
+                    if (found == null)
+                        return false.Label($"Expected to find colony for planet '{target.PlanetName}' system '{target.SystemName}' but got null");
+
+                    if (!string.Equals(found.PlanetName, shuffledPlanet, StringComparison.OrdinalIgnoreCase))
+                        return false.Label($"Found PlanetName '{found.PlanetName}' does not match search '{shuffledPlanet}'");
+                }
+
+                // Test no-match case
+                var uniquePlanet = data.ExtraPlanet + "_NOTINLIST_" + Guid.NewGuid().ToString("N");
+                var noMatch = ColonyImportHelper.FindByPlanet(data.Colonies, uniquePlanet, data.ExtraSystem);
+
+                return (noMatch == null)
+                    .Label($"Expected null for non-existent planet '{uniquePlanet}' but got colony");
             });
         }
 

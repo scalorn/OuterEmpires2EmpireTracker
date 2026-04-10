@@ -1656,9 +1656,9 @@ namespace OE2EmpireTracker.Forms.Colony
                 if (tempColony == null)
                     return;
 
-                if (string.IsNullOrEmpty(tempColony.ColonyName))
+                if (string.IsNullOrEmpty(tempColony.PlanetName))
                 {
-                    // Fall back to current behavior when no colony name is parsed
+                    // Fall back to current behavior when no planet name is parsed
                     parser.ProcessClipboard(selectedColony, empireContext);
 
                     if (string.IsNullOrEmpty(selectedColony.OwnerUUID))
@@ -1674,8 +1674,8 @@ namespace OE2EmpireTracker.Forms.Colony
                     return;
                 }
 
-                var existingColony = ColonyImportHelper.FindByName(
-                    playerContext.GetCurrentPlayerColonies(), tempColony.ColonyName);
+                var existingColony = ColonyImportHelper.FindByPlanet(
+                    playerContext.GetCurrentPlayerColonies(), tempColony.PlanetName, tempColony.SystemName);
 
                 if (existingColony != null)
                 {

@@ -8,7 +8,7 @@ The colony clipboard import (`cmdImportColony_Click` in `FormColony`) currently 
 
 - **Import_Handler**: The `cmdImportColony_Click` method in `FormColony.cs` that handles colony clipboard import.
 - **Colony_Parser**: The `ColonyParser` class that parses clipboard HTML into colony data (planet name, colony name, system name, structures, commodity demands).
-- **Dedup_Key**: The colony name (`ColonyName`) used to match imported data against existing colonies. Matching is case-insensitive within the current player's colonies.
+- **Dedup_Key**: The planet name and system name (`PlanetName` + `SystemName`) used to match imported data against existing colonies. Matching is case-insensitive within the current player's colonies. This combination is unique per player and avoids issues with truncated colony names in the game.
 - **Selected_Colony**: The colony currently selected in the FormColony list view, represented by `selectedColony`.
 - **Colony_List**: The `BindingList<Colony>` in `PlayerContext` (`colonyList`) where colonies are stored.
 - **Current_Player_Colonies**: The subset of Colony_List owned by the current player, returned by `PlayerContext.GetCurrentPlayerColonies()`.
@@ -31,7 +31,7 @@ The colony clipboard import (`cmdImportColony_Click` in `FormColony`) currently 
 
 #### Acceptance Criteria
 
-1. WHEN the temporary Colony has a non-empty ColonyName, THE Import_Handler SHALL search the Current_Player_Colonies for a colony whose ColonyName matches the temporary Colony's ColonyName using case-insensitive comparison.
+1. WHEN the temporary Colony has a non-empty PlanetName, THE Import_Handler SHALL search the Current_Player_Colonies for a colony whose PlanetName and SystemName match the temporary Colony's PlanetName and SystemName using case-insensitive comparison.
 2. WHEN a matching colony is found in Current_Player_Colonies, THE Import_Handler SHALL use that existing colony as the merge target.
 3. WHEN no matching colony is found in Current_Player_Colonies, THE Import_Handler SHALL create a new Colony with a generated UUID and add it to the Colony_List.
 
@@ -43,7 +43,7 @@ The colony clipboard import (`cmdImportColony_Click` in `FormColony`) currently 
 
 1. WHEN the Import_Handler finds a matching colony, THE Colony_Parser SHALL merge the parsed structures into the existing colony's structure list using the existing merge logic (compound key matching by FlatpackBlueprintUUID and displaySequence).
 2. WHEN the Import_Handler finds a matching colony, THE Colony_Parser SHALL merge the parsed commodity demands into the existing colony's commodity list using the existing merge logic (match by commodity name).
-3. WHEN the Import_Handler finds a matching colony, THE Import_Handler SHALL update the existing colony's PlanetName and SystemName with the parsed values.
+3. WHEN the Import_Handler finds a matching colony, THE Import_Handler SHALL update the existing colony's PlanetName and SystemName with the parsed values, but SHALL preserve the existing colony's ColonyName if it already has one (to protect user-corrected names from game truncation bugs).
 4. WHEN the Import_Handler finds a matching colony, THE Import_Handler SHALL preserve the existing colony's UUID, OwnerUUID, Items, and any locally-configured structure state (mining survey assignments, refining assignments, manufacturing assignments).
 
 ### Requirement 4: Create New Colony When No Match Found
