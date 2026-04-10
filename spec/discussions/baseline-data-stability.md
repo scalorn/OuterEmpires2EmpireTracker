@@ -8,7 +8,14 @@ BaselineData.json is currently a mutable file that ships with the app, gets modi
 
 ### 1. Global Blueprint Identity
 
-Global blueprints currently get random UUIDs assigned on import. Each user's machine has different UUIDs for the same blueprint. If the developer ships a new BaselineData.json, all UUID references (colony structures pointing to FlatpackBlueprintUUID, evolution chains via BaseBlueprintUUID, surveys via ScannerBlueprintUUID) break.
+Global blueprints currently get random UUIDs assigned on import. Each user's machine has different UUIDs for the same blueprint. If the developer ships a new BaselineData.json, all UUID references (colony structures pointing to FlatpackBlueprintUUID, evolution chains via BaseBlueprintUUID) break.
+
+Note: Only the Blueprint array in BaselineData.json uses UUIDs. The other data types are already stable:
+- **ShipClass** — integer Id (1-8)
+- **BlueprintType** — human-readable string Id (e.g. "Flatpacks/MiningRig", "Hull")
+- **TechLevel** — Name only, no Id
+
+So the UUID stability problem is scoped entirely to global blueprints. There are no global surveys.
 
 ### 2. Blueprint Renames
 
@@ -56,7 +63,7 @@ Replace the UUID for global blueprints with a leading identifier like `G:<compou
 
 ### Option 3: Canonical UUIDs Shipped with the App
 
-The developer assigns UUIDs to global blueprints and those UUIDs are the "official" canonical ones. The app ships with a canonical baseline. On first run or upgrade, the app merges the canonical data into the user's file, matching by dedup key. If a user imported the same blueprint with a different UUID, the migration remaps all references (colony structures, evolution chains, surveys) from the user's UUID to the canonical one.
+The developer assigns UUIDs to global blueprints and those UUIDs are the "official" canonical ones. The app ships with a canonical baseline. On first run or upgrade, the app merges the canonical data into the user's file, matching by dedup key. If a user imported the same blueprint with a different UUID, the migration remaps all references (colony structures, evolution chains) from the user's UUID to the canonical one.
 
 **Pros:**
 - UUIDs stay as UUIDs — no format changes, no compound key threading
@@ -64,7 +71,7 @@ The developer assigns UUIDs to global blueprints and those UUIDs are the "offici
 - One-time migration per version bump
 
 **Cons:**
-- Migration code that walks all references (colony structures, evolution chains, surveys) to remap UUIDs
+- Migration code that walks all references (colony structures, evolution chains) to remap UUIDs
 - The developer must maintain a stable set of canonical UUIDs (never reuse or reassign)
 - First migration for existing users is the biggest — remapping all their imported UUIDs to canonical ones
 
