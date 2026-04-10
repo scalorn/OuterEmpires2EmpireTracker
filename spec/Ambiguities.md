@@ -341,7 +341,7 @@ Surveys are identified by PlanetName + SurveyID. Importing the same survey twice
 
 ---
 
-### AMB-040 — OPEN: Colony and Blueprint import dedup helpers use divergent patterns
+### AMB-040 — RESOLVED: Colony and Blueprint import dedup helpers use divergent patterns
 **Issue:** Colony import uses `ColonyImportHelper` (a dedicated static helper in Services/) with `FindByName`, `MergeIdentity`, `CreateFromTemp`, `IsDuplicateName`. Blueprint import reuses `MarketBlueprintImporter` methods (`FindByDedupKey`, `UpdateExisting`, `IsGlobalRoute`) that were made `internal`.
 
 The patterns diverge in several ways:
@@ -352,7 +352,7 @@ The patterns diverge in several ways:
 
 These differences are partly justified by domain differences, but the structural inconsistency makes the codebase harder to reason about.
 
-**Recommendation:** Document the rationale for the different patterns. Consider whether a shared `ImportResult` return type would be useful for colony imports (currently returns void). The blueprint pattern of mutating the temp object directly is simpler than colony's pattern of creating a new object — consider aligning.
+**Resolution:** The divergence is justified by domain differences and does not warrant refactoring to a shared abstraction. Colonies match by a single field (name) because that's how the game identifies them; blueprints use a 5-field composite key because multiple blueprints share names. Colony merge re-parses full HTML to leverage existing structure/commodity merge logic in `ColonyParser.ProcessHtml`; blueprint merge selectively overwrites properties while preserving protected fields — genuinely different strategies. Colony `CreateFromTemp` copies into a new object because child collections (Structures, Commodities) need clean ownership transfer; blueprint create mutates the temp directly because Blueprint has no such child collections. Forcing these into a shared abstraction would add complexity without real benefit. No code change needed.
 
 ---
 
