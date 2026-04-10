@@ -1717,6 +1717,12 @@ namespace OE2EmpireTracker.Forms.Colony
 
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
                 PopulateForm();
+                UpdateTitle();
+
+                // Ensure save is enabled after a successful import — the imported
+                // colony name is valid by definition, so clear any stale validation state.
+                txtColonyName.ClearError();
+                cmdSave.Enabled = true;
             }
             catch (Exception ex)
             {
