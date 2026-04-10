@@ -75,7 +75,11 @@ The developer assigns UUIDs to global blueprints and those UUIDs are the "offici
 - The developer must maintain a stable set of canonical UUIDs (never reuse or reassign)
 - First migration for existing users is the biggest — remapping all their imported UUIDs to canonical ones
 
-### Option 4: Deterministic UUID Generation
+### Scope: Global Blueprints Only
+
+Deterministic UUIDs apply only to global blueprints (Evolution 0, no research branching). Player blueprints keep random UUIDs because the dedup key (Name+Evolution+Type+Class+TechLevel) is not truly unique for player blueprints — a player can research the same Evo 0 blueprint twice with different property outcomes (e.g. one optimized for Max Jump Distance, another for Power Draw), producing two blueprints with identical dedup keys but different property values. Random UUIDs are the correct identity scheme for player blueprints.
+
+### Option 4: Deterministic UUID Generation (Global Blueprints Only)
 
 Generate UUIDs deterministically from the dedup key using a UUID v5 (name-based, SHA-1) or similar scheme. `UUID = UUIDv5(namespace, Name + "|" + Evolution + "|" + BluePrintType + "|" + Class + "|" + TechLevel)`. Every machine that imports the same blueprint gets the same UUID.
 
