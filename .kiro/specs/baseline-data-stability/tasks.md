@@ -196,7 +196,7 @@ Stabilize BaselineData.json for multi-user distribution: deterministic UUIDs for
 
 - [x] 13. Checkpoint — Ensure all tests pass
 
-- [~] 14. Final checkpoint — Full build, all tests pass, verify migration on test data
+- [-] 14. Final checkpoint — Full build, all tests pass, verify migration on test data
   - Build and run all tests
   - Verify BaselineData.json test data loads and migrates correctly
   - Verify PlayerData.json test data loads and migrates correctly
