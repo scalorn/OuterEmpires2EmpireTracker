@@ -21,6 +21,7 @@ namespace OE2EmpireTracker.Constants
 
         /// <summary>
         /// Replaces the research time data with externally-loaded entries (e.g. from BaselineData.json).
+        /// THREADING: BackgroundProcessor must be stopped before calling this method.
         /// </summary>
         public static void SetResearchTimes(List<ResearchTimeEntry> entries)
         {

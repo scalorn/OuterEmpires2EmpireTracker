@@ -75,6 +75,9 @@ namespace OE2EmpireTracker.Models
         /// <summary>
         /// Replaces the commodity list with externally-loaded data (e.g. from BaselineData.json).
         /// Rebuilds lookup maps and validates the data.
+        /// THREADING: BackgroundProcessor must be stopped before calling this method.
+        /// The static lists are not thread-safe; concurrent reads during replacement
+        /// can produce inconsistent results.
         /// </summary>
         public static void SetCommodities(List<Commodity> commodities)
         {
