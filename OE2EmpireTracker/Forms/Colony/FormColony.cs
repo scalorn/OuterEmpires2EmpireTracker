@@ -37,12 +37,12 @@ namespace OE2EmpireTracker.Forms.Colony
         private bool _warehouseDirty = false;
         private bool _workersDirty = false;
 
-        // Structure control pool — reuse controls instead of creating/disposing
+        // Structure control pool â€” reuse controls instead of creating/disposing
         private readonly List<ColonyStructure> _structurePool = new List<ColonyStructure>();
         public FormColony()
         {
             InitializeComponent();
-            empireContext = EmpireContext.getInstance();
+            empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
 
             UpdateItemTypeList();
@@ -183,8 +183,8 @@ namespace OE2EmpireTracker.Forms.Colony
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            playerContext.colonyList.Remove(selectedColony);
-            playerContext.writeContext();
+            playerContext.ColonyList.Remove(selectedColony);
+            playerContext.WriteContext();
             ClearForm();
             txtColonyListFilter_TextChanged(sender, e);
             UpdateTitle();
@@ -287,7 +287,7 @@ namespace OE2EmpireTracker.Forms.Colony
             colonyViewModel.RecalculateStatus();
 
             // If the sender is a ColonyStructure control, this is an in-place property change
-            // (worker toggle, built/online, etc.) — no need to rebuild all controls.
+            // (worker toggle, built/online, etc.) â€” no need to rebuild all controls.
             bool isStructuralChange = !(sender is ColonyStructure);
 
             if (isStructuralChange)
@@ -1100,7 +1100,7 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             string searchText = txtItemFilter.Text;
 
-            List<Models.Survey> filteredList = new List<Models.Survey>(playerContext.surveyList);
+            List<Models.Survey> filteredList = new List<Models.Survey>(playerContext.SurveyList);
             if (!string.IsNullOrEmpty(searchText))
             {
                 filteredList = filteredList
@@ -1364,7 +1364,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 int value;
                 if (int.TryParse(row.Cells[1].Value?.ToString(), out value))
                     request.Requested = value;
-                playerContext.writeContext();
+                playerContext.WriteContext();
             }
             // Column 2 = Fulfilled (checkbox)
             else if (e.ColumnIndex == 2)
@@ -1375,7 +1375,7 @@ namespace OE2EmpireTracker.Forms.Colony
                     request.Delivered = request.Requested;
                 else
                     request.Delivered = 0;
-                playerContext.writeContext();
+                playerContext.WriteContext();
                 // Refresh to update strikethrough
                 PopulateCommodityRequestGrid();
             }
@@ -1387,7 +1387,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 if (parsed.HasValue)
                 {
                     request.NeedBy = parsed.Value;
-                    playerContext.writeContext();
+                    playerContext.WriteContext();
                 }
             }
 
@@ -1524,7 +1524,7 @@ namespace OE2EmpireTracker.Forms.Colony
                     if (locked > 0)
                     {
                         System.Windows.Forms.MessageBox.Show(
-                            $"Cannot delete '{item.ExtendedName}' â€” {locked} locked by structures.",
+                            $"Cannot delete '{item.ExtendedName}' Ã¢â‚¬â€ {locked} locked by structures.",
                             "Item Locked",
                             System.Windows.Forms.MessageBoxButtons.OK,
                             System.Windows.Forms.MessageBoxIcon.Warning);
@@ -1666,7 +1666,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     ColonyImportHelper.MergeIdentity(existingColony, tempColony);
 
-                    // Save ColonyName before ProcessHtml — the parser's ParsePlanetOverview
+                    // Save ColonyName before ProcessHtml â€” the parser's ParsePlanetOverview
                     // overwrites ColonyName with the game's (potentially truncated) value.
                     string preservedColonyName = existingColony.ColonyName;
                     parser.ProcessHtml(existingColony, extractedHtml, empireContext);
@@ -1680,14 +1680,14 @@ namespace OE2EmpireTracker.Forms.Colony
                 else
                 {
                     var newColony = ColonyImportHelper.CreateFromTemp(tempColony, playerContext.CurrentPlayerUUID);
-                    playerContext.colonyList.Add(newColony);
+                    playerContext.ColonyList.Add(newColony);
                     selectedColony = newColony;
 
                     Log.Info("New colony created via dedup: {0} ({1} structures, {2} commodity requests)",
                         newColony.ColonyName, newColony.Structures.Count, newColony.Commodities.Count);
                 }
 
-                playerContext.writeContext();
+                playerContext.WriteContext();
                 playerContext.OnColonyDataChanged(selectedColony.UUID);
 
                 // Refresh list view
@@ -1708,7 +1708,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 PopulateForm();
                 UpdateTitle();
 
-                // Ensure save is enabled after a successful import — the imported
+                // Ensure save is enabled after a successful import â€” the imported
                 // colony name is valid by definition, so clear any stale validation state.
                 txtColonyName.ClearError();
                 cmdSave.Enabled = true;

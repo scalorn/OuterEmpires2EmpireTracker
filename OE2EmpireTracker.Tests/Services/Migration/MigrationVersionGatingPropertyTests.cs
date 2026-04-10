@@ -45,8 +45,8 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             {
                 EmpireContext.Reset();
                 TestHelper.SetAllFilePaths();
-                var ec = EmpireContext.getInstance();
-                var pc = PlayerContext.getInstance();
+                var ec = EmpireContext.GetInstance();
+                var pc = PlayerContext.GetInstance();
 
                 // Override DataVersion to test value
                 ec.DataVersion = data.BaselineVersion;
@@ -75,8 +75,8 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             {
                 EmpireContext.Reset();
                 TestHelper.SetAllFilePaths();
-                var ec = EmpireContext.getInstance();
-                var pc = PlayerContext.getInstance();
+                var ec = EmpireContext.GetInstance();
+                var pc = PlayerContext.GetInstance();
 
                 // Set both to current version
                 ec.DataVersion = MigrationRunner.CurrentVersion;
@@ -84,14 +84,14 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
                 // Snapshot UUIDs before
                 var uuidsBefore = new List<string>();
-                foreach (var bp in ec.globalBlueprintList)
+                foreach (var bp in ec.GlobalBlueprintList)
                     uuidsBefore.Add(bp.UUID);
 
                 MigrationRunner.Run(ec, pc);
 
                 // Snapshot UUIDs after
                 var uuidsAfter = new List<string>();
-                foreach (var bp in ec.globalBlueprintList)
+                foreach (var bp in ec.GlobalBlueprintList)
                     uuidsAfter.Add(bp.UUID);
 
                 bool unchanged = uuidsBefore.Count == uuidsAfter.Count;

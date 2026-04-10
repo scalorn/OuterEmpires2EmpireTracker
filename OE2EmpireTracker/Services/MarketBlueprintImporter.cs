@@ -93,8 +93,8 @@ namespace OE2EmpireTracker.Services
                 }
 
                 var targetList = isGlobal
-                    ? empireContext.globalBlueprintList
-                    : playerContext.blueprintList;
+                    ? empireContext.GlobalBlueprintList
+                    : playerContext.BlueprintList;
 
                 // Dedup by Name + Evolution + BluePrintType + Class + TechLevel
                 var existing = FindByDedupKey(targetList, bp);
@@ -135,12 +135,12 @@ namespace OE2EmpireTracker.Services
             // Persist once at end
             if (globalChanged)
             {
-                empireContext.writeContext();
+                empireContext.WriteContext();
                 Log.Info("Persisted global blueprint changes");
             }
             if (playerChanged)
             {
-                playerContext.writeContext();
+                playerContext.WriteContext();
                 Log.Info("Persisted player blueprint changes");
             }
 

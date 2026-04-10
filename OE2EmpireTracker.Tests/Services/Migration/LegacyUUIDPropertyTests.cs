@@ -46,8 +46,8 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             {
                 EmpireContext.Reset();
                 TestHelper.SetAllFilePaths();
-                var ec = EmpireContext.getInstance();
-                var pc = PlayerContext.getInstance();
+                var ec = EmpireContext.GetInstance();
+                var pc = PlayerContext.GetInstance();
 
                 var rng = new System.Random(data.Seed);
                 var originalUUIDs = new Dictionary<string, string>(); // name -> original UUID
@@ -64,7 +64,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     bp.TechLevel = "LL";
                     bp.LegacyUUID = null;
                     originalUUIDs[name] = bp.UUID;
-                    ec.globalBlueprintList.Add(bp);
+                    ec.GlobalBlueprintList.Add(bp);
                 }
 
                 // Set DataVersion to 0 so migration runs
@@ -79,7 +79,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 foreach (var kvp in originalUUIDs)
                 {
                     string deterministicUUID = DeterministicUUID.Generate(kvp.Key, 0, "Hull", 1, "LL");
-                    var bp = ec.globalBlueprintList.FirstOrDefault(b => b.UUID == deterministicUUID);
+                    var bp = ec.GlobalBlueprintList.FirstOrDefault(b => b.UUID == deterministicUUID);
                     if (bp == null) continue;
 
                     if (bp.LegacyUUID != kvp.Value)
@@ -90,17 +90,17 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 }
 
                 // Snapshot LegacyUUIDs
-                var legacySnapshot = ec.globalBlueprintList
+                var legacySnapshot = ec.GlobalBlueprintList
                     .Where(b => b.LegacyUUID != null)
                     .ToDictionary(b => b.UUID, b => b.LegacyUUID);
 
-                // Run migration again — LegacyUUID should not change
+                // Run migration again â€” LegacyUUID should not change
                 Migration001_DeterministicUUIDs.Run(ec, pc);
 
                 bool preservedAfterRerun = true;
                 foreach (var kvp in legacySnapshot)
                 {
-                    var bp = ec.globalBlueprintList.FirstOrDefault(b => b.UUID == kvp.Key);
+                    var bp = ec.GlobalBlueprintList.FirstOrDefault(b => b.UUID == kvp.Key);
                     if (bp == null || bp.LegacyUUID != kvp.Value)
                     {
                         preservedAfterRerun = false;

@@ -86,7 +86,7 @@ namespace OE2EmpireTracker.ViewModels
         /// </summary>
         public static DeliveryPlanViewModel FindOrCreateForRoute(string routeUUID, PlayerContext playerContext)
         {
-            var existing = playerContext.deliveryPlanList
+            var existing = playerContext.DeliveryPlanList
                 .FirstOrDefault(p => p.RouteUUID == routeUUID && p.OwnerUUID == playerContext.CurrentPlayerUUID);
             if (existing != null)
                 return new DeliveryPlanViewModel(existing, playerContext);
@@ -102,11 +102,11 @@ namespace OE2EmpireTracker.ViewModels
 
         public void Save()
         {
-            if (!_playerContext.deliveryPlanList.Contains(_plan))
+            if (!_playerContext.DeliveryPlanList.Contains(_plan))
             {
-                _playerContext.deliveryPlanList.Add(_plan);
+                _playerContext.DeliveryPlanList.Add(_plan);
             }
-            _playerContext.writeContext();
+            _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
         }
 

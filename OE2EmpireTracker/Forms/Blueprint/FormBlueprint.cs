@@ -120,26 +120,26 @@ namespace OE2EmpireTracker
         {
             InitializeComponent();
             InitFilterPanel();
-            empireContext = EmpireContext.getInstance();
+            empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
             viewModel = new BlueprintViewModel(new Blueprint(), playerContext);
 
             // Configure blueprint type combo box
             cmbBlueprintType.DisplayMember = "Name";
             cmbBlueprintType.ValueMember = "Id";
-            cmbBlueprintType.DataSource = empireContext.bindingSourceBlueprintType;
+            cmbBlueprintType.DataSource = empireContext.BindingSourceBlueprintType;
             cmbBlueprintType.SelectedIndex = -1;
 
             // Configure ship class combo box (used for non-universal blueprints)
             cmbShipClass.DisplayMember = "Name";
             cmbShipClass.ValueMember = "Id";
-            cmbShipClass.DataSource = empireContext.bindingSourceShipClass;
+            cmbShipClass.DataSource = empireContext.BindingSourceShipClass;
             cmbShipClass.SelectedIndex = -1;
 
             // Configure tech level combo box
             cmbTechLevel.DisplayMember = "Name";
             cmbTechLevel.ValueMember = "Name";
-            cmbTechLevel.DataSource = empireContext.bindingSourceTechLevel;
+            cmbTechLevel.DataSource = empireContext.BindingSourceTechLevel;
             cmbTechLevel.SelectedIndex = -1;
 
             // Set focus for statistics grid to previous control (tab navigation)
@@ -148,19 +148,19 @@ namespace OE2EmpireTracker
             // Configure evolution dropdown with default value
             cmbEvolution.DisplayMember = "Name";
             cmbEvolution.ValueMember = "Name";
-            cmbEvolution.DataSource = empireContext.bindingSourceEvolution;
+            cmbEvolution.DataSource = empireContext.BindingSourceEvolution;
             cmbEvolution.SelectedIndex = 0;
 
             // Configure resource data grid
             DataGridViewComboBoxColumn cmbResource = (DataGridViewComboBoxColumn)dgvResources.Columns["Resource"];
             cmbResource.DisplayMember = "Name";
             cmbResource.ValueMember = "Name";
-            cmbResource.DataSource = empireContext.bindingSourceResource;
+            cmbResource.DataSource = empireContext.BindingSourceResource;
 
             // Configure base blueprint combo box
             cmbBaseBlueprint.DisplayMember = "ExtendedName";
             cmbBaseBlueprint.ValueMember = "UUID";
-            cmbBaseBlueprint.DataSource = playerContext.bindingSourceBlueprint;
+            cmbBaseBlueprint.DataSource = playerContext.BindingSourceBlueprint;
             cmbBaseBlueprint.SelectedIndex = -1;
 
             // Set up blueprint list view with columns
@@ -203,7 +203,7 @@ namespace OE2EmpireTracker
         /// </summary>
         private void InitFilterPanel()
         {
-            empireContext = EmpireContext.getInstance();
+            empireContext = EmpireContext.GetInstance();
 
             // Create the outer container (vertical stack of rows)
             flpFilterPanel = new FlowLayoutPanel
@@ -234,9 +234,9 @@ namespace OE2EmpireTracker
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Size = new Size(150, 21)
             };
-            // Local copy with blank first entry — avoids cross-talk with detail panel
+            // Local copy with blank first entry â€” avoids cross-talk with detail panel
             cmbFilterType.Items.Add("");
-            foreach (BlueprintType bt in empireContext.blueprintTypeList)
+            foreach (BlueprintType bt in empireContext.BlueprintTypeList)
                 cmbFilterType.Items.Add(bt.Name);
             cmbFilterType.SelectedIndex = 0;
 
@@ -252,7 +252,7 @@ namespace OE2EmpireTracker
                 Size = new Size(150, 21)
             };
             cmbFilterClass.Items.Add("");
-            foreach (ShipClass sc in empireContext.shipClassList)
+            foreach (ShipClass sc in empireContext.ShipClassList)
                 cmbFilterClass.Items.Add(sc.Name);
             cmbFilterClass.SelectedIndex = 0;
 
@@ -279,7 +279,7 @@ namespace OE2EmpireTracker
                 Size = new Size(125, 21)
             };
             cmbFilterTechLevel.Items.Add("");
-            foreach (TechLevel tl in empireContext.techLevelList)
+            foreach (TechLevel tl in empireContext.TechLevelList)
                 cmbFilterTechLevel.Items.Add(tl.Name);
             cmbFilterTechLevel.SelectedIndex = 0;
 
@@ -295,7 +295,7 @@ namespace OE2EmpireTracker
                 Size = new Size(60, 21)
             };
             cmbFilterEvolution.Items.Add("");
-            foreach (string evo in empireContext.evolutionList)
+            foreach (string evo in empireContext.EvolutionList)
                 cmbFilterEvolution.Items.Add(evo);
             cmbFilterEvolution.SelectedIndex = 0;
 
@@ -362,7 +362,7 @@ namespace OE2EmpireTracker
         /// </summary>
         private void UpdateTitleBarCounts()
         {
-            int globalCount = empireContext.globalBlueprintList?.Count ?? 0;
+            int globalCount = empireContext.GlobalBlueprintList?.Count ?? 0;
             int playerCount = 0;
             if (!string.IsNullOrEmpty(playerContext.CurrentPlayerUUID))
             {
@@ -398,7 +398,7 @@ namespace OE2EmpireTracker
             chartArea.AxisX.Interval = 1;
             chartArea.AxisX.Title = "Evolution Level";
 
-            // Y-axis: percentage change, range 50–150 with 100% baseline center, gridline interval 10%
+            // Y-axis: percentage change, range 50â€“150 with 100% baseline center, gridline interval 10%
             chartArea.AxisY.Title = "% Change from Evolution 0 Value";
             chartArea.AxisY.Minimum = 50;
             chartArea.AxisY.Maximum = 150;
@@ -614,7 +614,7 @@ namespace OE2EmpireTracker
         private void chkGlobalBlueprint_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            // Global flag is read at save time — no viewModel field to write.
+            // Global flag is read at save time â€” no viewModel field to write.
         }
 
         /// <summary>
@@ -632,7 +632,7 @@ namespace OE2EmpireTracker
         public void UpdateBlueprintTypeListBase()
         {
             string searchText = txtFilterBlueprintType.Text;
-            List<BlueprintType> filteredList = new List<BlueprintType>(empireContext.blueprintTypeList);
+            List<BlueprintType> filteredList = new List<BlueprintType>(empireContext.BlueprintTypeList);
 
             // Apply text filter if specified
             if (!string.IsNullOrEmpty(searchText))
@@ -788,14 +788,14 @@ namespace OE2EmpireTracker
             if (cmbFilterType != null && cmbFilterType.SelectedIndex > 0)
             {
                 string typeName = (string)cmbFilterType.SelectedItem;
-                var bt = empireContext.blueprintTypeList.FirstOrDefault(b => b.Name == typeName);
+                var bt = empireContext.BlueprintTypeList.FirstOrDefault(b => b.Name == typeName);
                 if (bt != null) criteria.BlueprintTypeId = bt.Id;
             }
 
             if (cmbFilterClass != null && cmbFilterClass.SelectedIndex > 0)
             {
                 string className = (string)cmbFilterClass.SelectedItem;
-                var sc = empireContext.shipClassList.FirstOrDefault(s => s.Name == className);
+                var sc = empireContext.ShipClassList.FirstOrDefault(s => s.Name == className);
                 if (sc != null) criteria.ShipClassId = sc.Id;
             }
 
@@ -882,14 +882,14 @@ namespace OE2EmpireTracker
         /// </summary>
         private static BlueprintReferenceCounter CreateReferenceCounter()
         {
-            var pc = PlayerContext.getInstance();
-            var ec = EmpireContext.getInstance();
+            var pc = PlayerContext.GetInstance();
+            var ec = EmpireContext.GetInstance();
 
-            var colonies = pc?.colonyList as IEnumerable<Colony> ?? Enumerable.Empty<Colony>();
+            var colonies = pc?.ColonyList as IEnumerable<Colony> ?? Enumerable.Empty<Colony>();
             var allBlueprints = new List<Blueprint>();
-            if (pc?.blueprintList != null) allBlueprints.AddRange(pc.blueprintList);
-            if (ec?.globalBlueprintList != null) allBlueprints.AddRange(ec.globalBlueprintList);
-            var surveys = pc?.surveyList as IEnumerable<Survey> ?? Enumerable.Empty<Survey>();
+            if (pc?.BlueprintList != null) allBlueprints.AddRange(pc.BlueprintList);
+            if (ec?.GlobalBlueprintList != null) allBlueprints.AddRange(ec.GlobalBlueprintList);
+            var surveys = pc?.SurveyList as IEnumerable<Survey> ?? Enumerable.Empty<Survey>();
 
             return new BlueprintReferenceCounter(colonies, allBlueprints, surveys);
         }
@@ -989,7 +989,7 @@ namespace OE2EmpireTracker
             }
             else
             {
-                // No blueprint selected — disable delete button
+                // No blueprint selected â€” disable delete button
                 var (enabled, text) = GetDeleteButtonState(null);
                 cmdDelete.Enabled = enabled;
                 cmdDelete.Text = text;
@@ -1093,7 +1093,7 @@ namespace OE2EmpireTracker
         /// 
         /// After saving:
         /// - Adds to player context or updates existing blueprint
-        /// - Persists changes via writeContext()
+        /// - Persists changes via WriteContext()
         /// - Refreshes list view with updated data
         /// - Clears form controls
         /// - Restores focus to blueprint list filter
@@ -1112,7 +1112,7 @@ namespace OE2EmpireTracker
             dgvStatistics.CellValidating += dgvStatistics_CellValidating;
             dgvResources.CellValidating += dgvResources_CellValidating;
 
-            empireContext = EmpireContext.getInstance();
+            empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
 
             // Map properties from grid via viewModel
@@ -1140,7 +1140,7 @@ namespace OE2EmpireTracker
             // Persist via viewModel
             viewModel.Save(chkGlobalBlueprint.Checked);
 
-            // Preserve the blueprint type filter across the list refresh —
+            // Preserve the blueprint type filter across the list refresh â€”
             // PopulateForm (triggered by selection change) clears it otherwise.
             string savedTypeFilter = txtFilterBlueprintType.Text;
 
@@ -1409,7 +1409,7 @@ namespace OE2EmpireTracker
             {
                 string key = $"{entry.Name} Ev{entry.Evolution} {entry.BluePrintType} C{entry.Class}";
                 if (entry.Action == ImportAction.Skipped)
-                    sb.AppendLine($"  [{entry.Storage ?? "?"}] SKIP  {key} — {entry.SkipReason}");
+                    sb.AppendLine($"  [{entry.Storage ?? "?"}] SKIP  {key} â€” {entry.SkipReason}");
                 else
                     sb.AppendLine($"  [{entry.Storage}] {entry.Action}  {key}");
             }
@@ -1473,12 +1473,12 @@ namespace OE2EmpireTracker
                         new BindingList<Blueprint>(new[] { viewModel.Data }),
                         tempBP) != null)
                 {
-                    // Selected blueprint matches — update in place
+                    // Selected blueprint matches â€” update in place
                     MarketBlueprintImporter.UpdateExisting(viewModel.Data, tempBP);
                     importedBP = viewModel.Data;
 
                     // Determine which list it belongs to for persistence
-                    if (empireContext.globalBlueprintList.Any(b => b.UUID == importedBP.UUID))
+                    if (empireContext.GlobalBlueprintList.Any(b => b.UUID == importedBP.UUID))
                         globalChanged = true;
                     else
                         playerChanged = true;
@@ -1488,13 +1488,13 @@ namespace OE2EmpireTracker
                 }
                 else
                 {
-                    // No match with selected — route via market logic
+                    // No match with selected â€” route via market logic
                     bool hasCurrentPlayer = !string.IsNullOrEmpty(playerContext.CurrentPlayerUUID);
                     bool isGlobal = MarketBlueprintImporter.IsGlobalRoute(tempBP.Evolution, hasCurrentPlayer);
 
                     var targetList = isGlobal
-                        ? empireContext.globalBlueprintList
-                        : playerContext.blueprintList;
+                        ? empireContext.GlobalBlueprintList
+                        : playerContext.BlueprintList;
 
                     var existing = MarketBlueprintImporter.FindByDedupKey(targetList, tempBP);
 
@@ -1514,7 +1514,7 @@ namespace OE2EmpireTracker
                             tempBP.OwnerUUID = playerContext.CurrentPlayerUUID;
                         targetList.Add(tempBP);
                         importedBP = tempBP;
-                        Log.Info("New blueprint created via dedup: {0} Ev{1} {2} → {3}",
+                        Log.Info("New blueprint created via dedup: {0} Ev{1} {2} â†’ {3}",
                             importedBP.Name, importedBP.Evolution, importedBP.BluePrintType,
                             isGlobal ? "Global" : "Player");
                     }
@@ -1524,8 +1524,8 @@ namespace OE2EmpireTracker
                 }
 
                 // Persist
-                if (globalChanged) empireContext.writeContext();
-                if (playerChanged) playerContext.writeContext();
+                if (globalChanged) empireContext.WriteContext();
+                if (playerChanged) playerContext.WriteContext();
 
                 // Notify
                 playerContext.OnBlueprintDataChanged(importedBP.UUID);
@@ -1612,7 +1612,7 @@ namespace OE2EmpireTracker
             string pattern = Constants.BlueprintPropertyValidation.GetValidationPattern(propertyName);
             if (pattern == null)
             {
-                // Unknown property Ã¢â‚¬â€ log and allow free-form
+                // Unknown property ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â log and allow free-form
                 Log.Warn("Unknown blueprint property for validation: {0}", propertyName);
                 return;
             }
@@ -1674,10 +1674,10 @@ namespace OE2EmpireTracker
             // Resolve the evolution chain
             var chain = EvolutionChainService.ResolveChain(
                 blueprint,
-                uuid => playerContext.FindBlueprint(uuid) ?? EmpireContext.getInstance()?.FindGlobalBlueprint(uuid));
+                uuid => playerContext.FindBlueprint(uuid) ?? EmpireContext.GetInstance()?.FindGlobalBlueprint(uuid));
 
             // Look up BlueprintType to get Properties array
-            var blueprintType = empireContext.blueprintTypeList?
+            var blueprintType = empireContext.BlueprintTypeList?
                 .FirstOrDefault(bt => bt.Id == blueprint.BluePrintType);
             string[] blueprintTypeProperties = blueprintType?.Properties ?? new string[0];
 
@@ -1717,7 +1717,7 @@ namespace OE2EmpireTracker
                 {
                     if (i == 0 && points.Count == 1)
                     {
-                        // Single point — create a series with just one data point
+                        // Single point â€” create a series with just one data point
                         var singleSeries = new Series($"{propertyName}_{segmentIndex}")
                         {
                             ChartType = SeriesChartType.Line,

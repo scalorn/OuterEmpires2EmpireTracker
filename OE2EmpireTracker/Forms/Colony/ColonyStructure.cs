@@ -51,7 +51,7 @@ namespace OE2EmpireTracker.Forms.Colony
         public ColonyStructure()
         {
             InitializeComponent();
-            empireContext = EmpireContext.getInstance();
+            empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
 
             this.SuspendLayout();
@@ -67,7 +67,7 @@ namespace OE2EmpireTracker.Forms.Colony
             FlatpackBlueprint = playerContext.FindBlueprint(ColonyStructureData.FlatpackBlueprintUUID);
             chkStageResources.Visible = false;
 
-            // Building state — structure is transitioning from staged to built
+            // Building state â€” structure is transitioning from staged to built
             if (ColonyStructureData.BuildCompletionTime != null &&
                 ColonyStructureData.BuildCompletionTime.TimeRemaining > 0)
             {
@@ -835,7 +835,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // Sub-selection: not used for manufactory
             flpSubSelection.Visible = false;
 
-            // Quantity input — only visible when a blueprint is selected
+            // Quantity input â€” only visible when a blueprint is selected
             txtQuantity.Visible = showCmdStart;
             txtQuantity.Enabled = !showCompletionTime;
             if (ColonyStructureData.ManufacturingQuantity > 0)
@@ -1121,7 +1121,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 searchText = ""; 
             }
 
-            List<Models.Survey> filteredList = new List<Models.Survey>(playerContext.surveyList);
+            List<Models.Survey> filteredList = new List<Models.Survey>(playerContext.SurveyList);
 
             filteredList = filteredList
                 .Where(item => string.Equals(item.PlanetName, Colony.PlanetName, StringComparison.OrdinalIgnoreCase))
@@ -1174,7 +1174,7 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             if (ColonyStructureData == null) return false;
 
-            // Check this structure's actual status — the calculator determined availability
+            // Check this structure's actual status â€” the calculator determined availability
             // during its pass with locks cleared, so it's the authoritative answer
             ColonyStructureStatus status;
             if (ColonyStructureData.Statuses.TryGetValue(GameConstants.StatusActual, out status))
@@ -1389,7 +1389,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 int builderLevel = 0;
                 if (Colony != null && !string.IsNullOrEmpty(Colony.OwnerUUID))
                 {
-                    var owner = playerContext.playerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
+                    var owner = playerContext.PlayerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
                     if (owner != null)
                         builderLevel = owner.GetSkill(SkillName.Builder).Level;
                 }
@@ -1431,7 +1431,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 int researchFocusLevel = 0;
                 if (Colony != null && !string.IsNullOrEmpty(Colony.OwnerUUID))
                 {
-                    var owner = playerContext.playerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
+                    var owner = playerContext.PlayerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
                     if (owner != null)
                         researchFocusLevel = owner.GetSkill(SkillName.ResearchFocus).Level;
                 }
@@ -1470,7 +1470,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 int productionFocusLevel = 0;
                 if (Colony != null && !string.IsNullOrEmpty(Colony.OwnerUUID))
                 {
-                    var owner = playerContext.playerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
+                    var owner = playerContext.PlayerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
                     if (owner != null)
                         productionFocusLevel = owner.GetSkill(SkillName.ProductionFocus).Level;
                 }
@@ -1510,7 +1510,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 int commProductionFocusLevel = 0;
                 if (Colony != null && !string.IsNullOrEmpty(Colony.OwnerUUID))
                 {
-                    var owner = playerContext.playerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
+                    var owner = playerContext.PlayerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
                     if (owner != null)
                         commProductionFocusLevel = owner.GetSkill(SkillName.ProductionFocus).Level;
                 }

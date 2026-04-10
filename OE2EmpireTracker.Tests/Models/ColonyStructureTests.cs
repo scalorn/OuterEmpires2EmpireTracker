@@ -460,7 +460,7 @@ namespace OE2EmpireTracker.Tests.Models
             PlayerContext.Reset();
             TestHelper.SetEmpireFilePath();
             PlayerContext.FilePath = "nonexistent_player_data.json";
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
 
             var structure = new ColonyStructure();
             var vm = new ColonyStructureViewModel(structure, pc);
@@ -476,7 +476,7 @@ namespace OE2EmpireTracker.Tests.Models
             PlayerContext.Reset();
             TestHelper.SetEmpireFilePath();
             PlayerContext.FilePath = "nonexistent_player_data.json";
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
 
             var structure = new ColonyStructure();
             var vm = new ColonyStructureViewModel(structure, pc);

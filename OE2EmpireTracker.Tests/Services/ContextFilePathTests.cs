@@ -47,7 +47,7 @@ namespace OE2EmpireTracker.Tests.Services
             PlayerContext.FilePath = tempPath;
             PlayerContext.Reset();
 
-            var instance = PlayerContext.getInstance();
+            var instance = PlayerContext.GetInstance();
 
             Assert.IsNotNull(instance);
             Assert.AreEqual(tempPath, PlayerContext.FilePath);
@@ -62,7 +62,7 @@ namespace OE2EmpireTracker.Tests.Services
             EmpireContext.FilePath = tempPath;
             EmpireContext.Reset();
 
-            var instance = EmpireContext.getInstance();
+            var instance = EmpireContext.GetInstance();
 
             Assert.IsNotNull(instance);
             Assert.AreEqual(tempPath, EmpireContext.FilePath);

@@ -40,17 +40,17 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         {
             var uuids = new List<string>();
 
-            foreach (var bp in ec.globalBlueprintList)
+            foreach (var bp in ec.GlobalBlueprintList)
             {
                 if (bp.UUID != null) uuids.Add(bp.UUID);
                 if (bp.BaseBlueprintUUID != null) uuids.Add(bp.BaseBlueprintUUID);
             }
-            foreach (var bp in pc.blueprintList)
+            foreach (var bp in pc.BlueprintList)
             {
                 if (bp.UUID != null) uuids.Add(bp.UUID);
                 if (bp.BaseBlueprintUUID != null) uuids.Add(bp.BaseBlueprintUUID);
             }
-            foreach (var colony in pc.colonyList)
+            foreach (var colony in pc.ColonyList)
             {
                 foreach (var s in colony.Structures)
                 {
@@ -100,8 +100,8 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 // Load real contexts from test data
                 EmpireContext.Reset();
                 TestHelper.SetAllFilePaths();
-                var ec = EmpireContext.getInstance();
-                var pc = PlayerContext.getInstance();
+                var ec = EmpireContext.GetInstance();
+                var pc = PlayerContext.GetInstance();
 
                 // Add synthetic global blueprints
                 int bitIndex = 0;
@@ -112,7 +112,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                         ? data.OldUuid : Guid.NewGuid().ToString();
                     bp.BaseBlueprintUUID = ((data.PlantMask >> (bitIndex++ % 7)) & 1) == 1
                         ? data.OldUuid : null;
-                    ec.globalBlueprintList.Add(bp);
+                    ec.GlobalBlueprintList.Add(bp);
                 }
 
                 // Add synthetic player blueprints
@@ -123,7 +123,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                         ? data.OldUuid : Guid.NewGuid().ToString();
                     bp.BaseBlueprintUUID = ((data.PlantMask >> (bitIndex++ % 7)) & 1) == 1
                         ? data.OldUuid : null;
-                    pc.blueprintList.Add(bp);
+                    pc.BlueprintList.Add(bp);
                 }
 
                 // Add synthetic colonies with structures
@@ -147,7 +147,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                         colony.Structures.Add(cs);
                     }
 
-                    pc.colonyList.Add(colony);
+                    pc.ColonyList.Add(colony);
                 }
 
                 // Act

@@ -42,7 +42,7 @@ namespace OE2EmpireTracker
 
         public MainWindow()
         {
-            context = EmpireContext.getInstance();
+            context = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
             InitializeComponent();
             WindowStateHelper.RestoreMainWindowState(this);
@@ -64,7 +64,7 @@ namespace OE2EmpireTracker
         private void PopulatePlayerDropdown()
         {
             cmbCurrentPlayer.Items.Clear();
-            foreach (var profile in playerContext.playerProfileList)
+            foreach (var profile in playerContext.PlayerProfileList)
             {
                 cmbCurrentPlayer.Items.Add(profile.Name);
             }
@@ -73,7 +73,7 @@ namespace OE2EmpireTracker
             var current = playerContext.CurrentPlayer;
             if (current != null)
             {
-                int idx = playerContext.playerProfileList.IndexOf(current);
+                int idx = playerContext.PlayerProfileList.IndexOf(current);
                 if (idx >= 0) cmbCurrentPlayer.SelectedIndex = idx;
             }
             else if (cmbCurrentPlayer.Items.Count > 0)
@@ -85,9 +85,9 @@ namespace OE2EmpireTracker
         private void cmbCurrentPlayer_SelectedIndexChanged(object sender, EventArgs e)
         {
             int idx = cmbCurrentPlayer.SelectedIndex;
-            if (idx >= 0 && idx < playerContext.playerProfileList.Count)
+            if (idx >= 0 && idx < playerContext.PlayerProfileList.Count)
             {
-                var selected = playerContext.playerProfileList[idx];
+                var selected = playerContext.PlayerProfileList[idx];
                 if (selected.UUID != playerContext.CurrentPlayerUUID)
                 {
                     playerContext.CurrentPlayerUUID = selected.UUID;
@@ -247,7 +247,7 @@ namespace OE2EmpireTracker
 
                 EmpireContext.Reset();
                 PlayerContext.FilePath = @"..\..\PlayerData.json";
-                context = EmpireContext.getInstance();
+                context = EmpireContext.GetInstance();
                 playerContext = EmpireContext.PlayerContext;
 
                 _backgroundProcessor = new BackgroundProcessor(playerContext);
@@ -256,11 +256,11 @@ namespace OE2EmpireTracker
                 PopulatePlayerDropdown();
                 SetLastOpenedPath(string.Empty);
 
-                Log.Info("File → New completed");
+                Log.Info("File â†’ New completed");
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error during File → New");
+                Log.Error(ex, "Error during File â†’ New");
                 MessageBox.Show("An error occurred while creating a new file: " + ex.Message,
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -280,7 +280,7 @@ namespace OE2EmpireTracker
                 {
                     ReloadContextFromFile(dlg.FileName);
                     SetLastOpenedPath(dlg.FileName);
-                    Log.Info("File → Open completed: {0}", dlg.FileName);
+                    Log.Info("File â†’ Open completed: {0}", dlg.FileName);
                 }
                 catch (Exception ex)
                 {
@@ -298,8 +298,8 @@ namespace OE2EmpireTracker
                 try
                 {
                     PlayerContext.FilePath = _lastOpenedPath;
-                    playerContext.writeContext();
-                    Log.Info("File → Save completed: {0}", _lastOpenedPath);
+                    playerContext.WriteContext();
+                    Log.Info("File â†’ Save completed: {0}", _lastOpenedPath);
                 }
                 catch (Exception ex)
                 {
@@ -394,7 +394,7 @@ namespace OE2EmpireTracker
 
             EmpireContext.Reset();
             PlayerContext.FilePath = filePath;
-            context = EmpireContext.getInstance();
+            context = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
 
             _backgroundProcessor = new BackgroundProcessor(playerContext);
@@ -416,9 +416,9 @@ namespace OE2EmpireTracker
                 try
                 {
                     PlayerContext.FilePath = dlg.FileName;
-                    playerContext.writeContext();
+                    playerContext.WriteContext();
                     SetLastOpenedPath(dlg.FileName);
-                    Log.Info("File → Save As completed: {0}", dlg.FileName);
+                    Log.Info("File â†’ Save As completed: {0}", dlg.FileName);
                     return true;
                 }
                 catch (Exception ex)

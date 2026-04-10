@@ -132,7 +132,7 @@ namespace OE2EmpireTracker.Services
                 int processedCount = 0;
 
                 // Snapshot the colony list to avoid modification during iteration
-                var colonies = new List<Colony>(_playerContext.colonyList);
+                var colonies = new List<Colony>(_playerContext.ColonyList);
 
                 foreach (var colony in colonies)
                 {
@@ -171,7 +171,7 @@ namespace OE2EmpireTracker.Services
                 {
                     try
                     {
-                        _playerContext.writeContext();
+                        _playerContext.WriteContext();
                     }
                     catch (Exception ex)
                     {

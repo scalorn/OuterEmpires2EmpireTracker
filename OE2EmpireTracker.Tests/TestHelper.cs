@@ -21,7 +21,7 @@ namespace OE2EmpireTracker.Tests
 
         /// <summary>
         /// Points EmpireContext.FilePath at the test copy of BaselineData.json.
-        /// Call this before EmpireContext.getInstance().
+        /// Call this before EmpireContext.GetInstance().
         /// </summary>
         public static void SetEmpireFilePath()
         {
@@ -30,7 +30,7 @@ namespace OE2EmpireTracker.Tests
 
         /// <summary>
         /// Points PlayerContext.FilePath at the test copy of PlayerData.json.
-        /// Call this before PlayerContext.getInstance().
+        /// Call this before PlayerContext.GetInstance().
         /// </summary>
         public static void SetPlayerFilePath()
         {

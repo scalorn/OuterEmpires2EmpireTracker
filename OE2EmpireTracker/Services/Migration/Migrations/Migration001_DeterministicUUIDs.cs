@@ -6,7 +6,7 @@ namespace OE2EmpireTracker.Services.Migration
     {
         public static void Run(EmpireContext ec, PlayerContext pc)
         {
-            foreach (var bp in ec.globalBlueprintList.ToList())
+            foreach (var bp in ec.GlobalBlueprintList.ToList())
             {
                 string deterministicUUID = DeterministicUUID.Generate(bp);
                 if (bp.UUID == deterministicUUID) continue;

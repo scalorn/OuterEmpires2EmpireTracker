@@ -28,7 +28,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         public FormDeliveryRoute()
         {
             InitializeComponent();
-            empireContext = EmpireContext.getInstance();
+            empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
             viewModel = new DeliveryRouteViewModel(new Models.DeliveryRoute(), playerContext);
 
@@ -456,7 +456,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 return;
             }
 
-            var plan = playerContext.deliveryPlanList.FirstOrDefault(p => p.UUID == planUUID);
+            var plan = playerContext.DeliveryPlanList.FirstOrDefault(p => p.UUID == planUUID);
             if (plan != null)
             {
                 planViewModel = new DeliveryPlanViewModel(plan, playerContext);
@@ -567,8 +567,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 OwnerUUID = playerContext.CurrentPlayerUUID,
                 RouteUUID = viewModel.UUID
             };
-            playerContext.deliveryPlanList.Add(plan);
-            playerContext.writeContext();
+            playerContext.DeliveryPlanList.Add(plan);
+            playerContext.WriteContext();
 
             PopulatePlanDropdown();
             cmbPlan.SelectedValue = plan.UUID;
@@ -585,8 +585,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            playerContext.deliveryPlanList.Remove(planViewModel.Data);
-            playerContext.writeContext();
+            playerContext.DeliveryPlanList.Remove(planViewModel.Data);
+            playerContext.WriteContext();
             planViewModel = null;
             selectedPlanStop = null;
             txtPlanName.Text = "";
@@ -629,7 +629,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         }
 
         // -----------------------------------------------------------------------
-        // Plan Tab — Stop Items
+        // Plan Tab â€” Stop Items
         // -----------------------------------------------------------------------
 
         private void dgvStops_SelectionChanged(object sender, EventArgs e)

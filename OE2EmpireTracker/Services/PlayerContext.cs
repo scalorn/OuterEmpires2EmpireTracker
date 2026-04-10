@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Persistence;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services.Migration;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -131,27 +132,27 @@ namespace OE2EmpireTracker.Services
             get
             {
                 if (string.IsNullOrEmpty(_currentPlayerUUID)) return null;
-                return playerProfileList.FirstOrDefault(p => p.UUID == _currentPlayerUUID);
+                return PlayerProfileList.FirstOrDefault(p => p.UUID == _currentPlayerUUID);
             }
         }
 
         public int DataVersion { get; set; } = 0;
-        public BindingList<PlayerProfile> playerProfileList;
-        public BindingSource bindingSourcePlayerProfile;
-        public BindingList<Blueprint> blueprintList;
-        public BindingSource bindingSourceBlueprint;
-        public BindingList<Survey> surveyList;
-        public BindingSource bindingSourceSurvey;
-        public BindingList<Colony> colonyList;
-        public BindingSource bindingSourceColony;
-        public BindingList<DeliveryRoute> deliveryRouteList;
-        public BindingList<DeliveryPlan> deliveryPlanList;
+        public BindingList<PlayerProfile> PlayerProfileList;
+        public BindingSource BindingSourcePlayerProfile;
+        public BindingList<Blueprint> BlueprintList;
+        public BindingSource BindingSourceBlueprint;
+        public BindingList<Survey> SurveyList;
+        public BindingSource BindingSourceSurvey;
+        public BindingList<Colony> ColonyList;
+        public BindingSource BindingSourceColony;
+        public BindingList<DeliveryRoute> DeliveryRouteList;
+        public BindingList<DeliveryPlan> DeliveryPlanList;
 
         public IEnumerable<CountDownTimeReference> ActiveCountdowns => AllCountdownSources()
             .Where(c => c.countDownTime.TimeRemaining > 0)
             .OrderBy(c => c.countDownTime.TimeRemaining);
 
-        public static PlayerContext getInstance()
+        public static PlayerContext GetInstance()
         {
             if (Instance == null)
             {
@@ -198,17 +199,22 @@ namespace OE2EmpireTracker.Services
             RestoreCurrentPlayer(playerRoot.CurrentPlayerUUID);
         }
 
-        public void writeContext()
+        public void WriteContext()
         {
+            if (MigrationRunner.MigrationFailed)
+            {
+                Log.Warn("WriteContext blocked â€” migration failed, saving disabled");
+                return;
+            }
             PlayerRoot playerRoot = new PlayerRoot();
             playerRoot.DataVersion = DataVersion;
             playerRoot.CurrentPlayerUUID = _currentPlayerUUID;
-            playerRoot.PlayerProfile = playerProfileList.ToArray();
-            playerRoot.Blueprint = blueprintList.ToArray();
-            playerRoot.Survey = surveyList.ToArray();
-            playerRoot.Colony = colonyList.ToArray();
-            playerRoot.DeliveryRoute = deliveryRouteList.ToArray();
-            playerRoot.DeliveryPlan = deliveryPlanList.ToArray();
+            playerRoot.PlayerProfile = PlayerProfileList.ToArray();
+            playerRoot.Blueprint = BlueprintList.ToArray();
+            playerRoot.Survey = SurveyList.ToArray();
+            playerRoot.Colony = ColonyList.ToArray();
+            playerRoot.DeliveryRoute = DeliveryRouteList.ToArray();
+            playerRoot.DeliveryPlan = DeliveryPlanList.ToArray();
 
             string jsonContent = JsonConvert.SerializeObject(playerRoot, JsonSettings.SerializerSettings);
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
@@ -218,29 +224,29 @@ namespace OE2EmpireTracker.Services
         {
             List<PlayerProfile> list = new List<PlayerProfile>(playerRoot.PlayerProfile);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            playerProfileList = new BindingList<PlayerProfile>(list);
+            PlayerProfileList = new BindingList<PlayerProfile>(list);
             // Initialize the BindingSource component
-            bindingSourcePlayerProfile = new BindingSource();
+            BindingSourcePlayerProfile = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            bindingSourcePlayerProfile.DataSource = playerProfileList;
+            BindingSourcePlayerProfile.DataSource = PlayerProfileList;
         }
         public void InitBlueprints(PlayerRoot playerRoot)
         {
             List<Blueprint> list = new List<Blueprint>(playerRoot.Blueprint);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            blueprintList = new BindingList<Blueprint>(list);
+            BlueprintList = new BindingList<Blueprint>(list);
             // Initialize the BindingSource component
-            bindingSourceBlueprint = new BindingSource();
+            BindingSourceBlueprint = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            bindingSourceBlueprint.DataSource = blueprintList;
+            BindingSourceBlueprint.DataSource = BlueprintList;
         }
         public Blueprint FindBlueprint(string id)
         {
-            var match = blueprintList.FirstOrDefault(item => item.UUID == id);
+            var match = BlueprintList.FirstOrDefault(item => item.UUID == id);
             if (match != null) return match;
 
             // Fall back to global blueprints
-            var ec = EmpireContext.getInstance();
+            var ec = EmpireContext.GetInstance();
             return ec?.FindGlobalBlueprint(id);
         }
 
@@ -249,15 +255,15 @@ namespace OE2EmpireTracker.Services
             List<Survey> list = new List<Survey>(playerRoot.Survey);
             list = list.OrderBy(p => p.PlanetName).ThenBy(p => p.DateTime).ToList();
 
-            surveyList = new BindingList<Survey>(list);
+            SurveyList = new BindingList<Survey>(list);
             // Initialize the BindingSource component
-            bindingSourceSurvey = new BindingSource();
+            BindingSourceSurvey = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            bindingSourceSurvey.DataSource = surveyList;
+            BindingSourceSurvey.DataSource = SurveyList;
         }
         public Survey FindSurvey(string id)
         {
-            var filteredList = surveyList
+            var filteredList = SurveyList
                 .Where(item => item.UUID == id)
                 .ToList();
             if (filteredList.Count == 1)
@@ -272,30 +278,30 @@ namespace OE2EmpireTracker.Services
             List<Colony> list = new List<Colony>(playerRoot.Colony);
             list = list.OrderBy(p => p.PlanetName).ToList();
 
-            colonyList = new BindingList<Colony>(list);
+            ColonyList = new BindingList<Colony>(list);
             // Initialize the BindingSource component
-            bindingSourceColony = new BindingSource();
+            BindingSourceColony = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            bindingSourceColony.DataSource = colonyList;
+            BindingSourceColony.DataSource = ColonyList;
         }
 
         public void InitDeliveryRoutes(PlayerRoot playerRoot)
         {
             var list = new List<DeliveryRoute>(playerRoot.DeliveryRoute ?? new DeliveryRoute[0]);
             list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
-            deliveryRouteList = new BindingList<DeliveryRoute>(list);
+            DeliveryRouteList = new BindingList<DeliveryRoute>(list);
         }
 
         public void InitDeliveryPlans(PlayerRoot playerRoot)
         {
             var list = new List<DeliveryPlan>(playerRoot.DeliveryPlan ?? new DeliveryPlan[0]);
             list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
-            deliveryPlanList = new BindingList<DeliveryPlan>(list);
+            DeliveryPlanList = new BindingList<DeliveryPlan>(list);
         }
 
         public Colony FindColony(string id)
         {
-            var filteredList = colonyList
+            var filteredList = ColonyList
                 .Where(item => item.UUID == id)
                 .ToList();
             if (filteredList.Count == 1)
@@ -316,13 +322,13 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private void MigrateOwnerUUIDs()
         {
-            if (playerProfileList.Count == 0) return;
+            if (PlayerProfileList.Count == 0) return;
 
-            string firstPlayerUUID = playerProfileList[0].UUID;
+            string firstPlayerUUID = PlayerProfileList[0].UUID;
             if (string.IsNullOrEmpty(firstPlayerUUID)) return;
 
             int migrated = 0;
-            foreach (var colony in colonyList)
+            foreach (var colony in ColonyList)
             {
                 if (string.IsNullOrEmpty(colony.OwnerUUID))
                 {
@@ -330,7 +336,7 @@ namespace OE2EmpireTracker.Services
                     migrated++;
                 }
             }
-            foreach (var blueprint in blueprintList)
+            foreach (var blueprint in BlueprintList)
             {
                 if (string.IsNullOrEmpty(blueprint.OwnerUUID))
                 {
@@ -338,7 +344,7 @@ namespace OE2EmpireTracker.Services
                     migrated++;
                 }
             }
-            foreach (var survey in surveyList)
+            foreach (var survey in SurveyList)
             {
                 if (string.IsNullOrEmpty(survey.OwnerUUID))
                 {
@@ -349,7 +355,7 @@ namespace OE2EmpireTracker.Services
 
             if (migrated > 0)
             {
-                Log.Info("Migrated {0} items to player {1}", migrated, playerProfileList[0].Name);
+                Log.Info("Migrated {0} items to player {1}", migrated, PlayerProfileList[0].Name);
             }
         }
 
@@ -362,16 +368,16 @@ namespace OE2EmpireTracker.Services
             if (string.IsNullOrEmpty(playerUUID)) return;
 
             int removed = 0;
-            foreach (var colony in colonyList.Where(c => c.OwnerUUID == playerUUID).ToList())
-            { colonyList.Remove(colony); removed++; }
-            foreach (var bp in blueprintList.Where(b => b.OwnerUUID == playerUUID).ToList())
-            { blueprintList.Remove(bp); removed++; }
-            foreach (var survey in surveyList.Where(s => s.OwnerUUID == playerUUID).ToList())
-            { surveyList.Remove(survey); removed++; }
-            foreach (var route in deliveryRouteList.Where(r => r.OwnerUUID == playerUUID).ToList())
-            { deliveryRouteList.Remove(route); removed++; }
-            foreach (var plan in deliveryPlanList.Where(p => p.OwnerUUID == playerUUID).ToList())
-            { deliveryPlanList.Remove(plan); removed++; }
+            foreach (var colony in ColonyList.Where(c => c.OwnerUUID == playerUUID).ToList())
+            { ColonyList.Remove(colony); removed++; }
+            foreach (var bp in BlueprintList.Where(b => b.OwnerUUID == playerUUID).ToList())
+            { BlueprintList.Remove(bp); removed++; }
+            foreach (var survey in SurveyList.Where(s => s.OwnerUUID == playerUUID).ToList())
+            { SurveyList.Remove(survey); removed++; }
+            foreach (var route in DeliveryRouteList.Where(r => r.OwnerUUID == playerUUID).ToList())
+            { DeliveryRouteList.Remove(route); removed++; }
+            foreach (var plan in DeliveryPlanList.Where(p => p.OwnerUUID == playerUUID).ToList())
+            { DeliveryPlanList.Remove(plan); removed++; }
 
             if (removed > 0)
                 Log.Info("Cascade deleted {0} items for player {1}", removed, playerUUID);
@@ -383,19 +389,19 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private void CleanupOrphanedData()
         {
-            var validUUIDs = new HashSet<string>(playerProfileList.Select(p => p.UUID));
+            var validUUIDs = new HashSet<string>(PlayerProfileList.Select(p => p.UUID));
             int removed = 0;
 
-            foreach (var colony in colonyList.Where(c => !string.IsNullOrEmpty(c.OwnerUUID) && !validUUIDs.Contains(c.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned colony: {0} ({1}) owner={2}", colony.PlanetName, colony.ColonyName, colony.OwnerUUID); colonyList.Remove(colony); removed++; }
-            foreach (var bp in blueprintList.Where(b => !string.IsNullOrEmpty(b.OwnerUUID) && !validUUIDs.Contains(b.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned blueprint: {0} owner={1}", bp.ExtendedName, bp.OwnerUUID); blueprintList.Remove(bp); removed++; }
-            foreach (var survey in surveyList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned survey: {0} owner={1}", survey.ExtendedName, survey.OwnerUUID); surveyList.Remove(survey); removed++; }
-            foreach (var route in deliveryRouteList.Where(r => !string.IsNullOrEmpty(r.OwnerUUID) && !validUUIDs.Contains(r.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned route: {0} owner={1}", route.Name, route.OwnerUUID); deliveryRouteList.Remove(route); removed++; }
-            foreach (var plan in deliveryPlanList.Where(p => !string.IsNullOrEmpty(p.OwnerUUID) && !validUUIDs.Contains(p.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned delivery plan: {0} owner={1}", plan.Name, plan.OwnerUUID); deliveryPlanList.Remove(plan); removed++; }
+            foreach (var colony in ColonyList.Where(c => !string.IsNullOrEmpty(c.OwnerUUID) && !validUUIDs.Contains(c.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned colony: {0} ({1}) owner={2}", colony.PlanetName, colony.ColonyName, colony.OwnerUUID); ColonyList.Remove(colony); removed++; }
+            foreach (var bp in BlueprintList.Where(b => !string.IsNullOrEmpty(b.OwnerUUID) && !validUUIDs.Contains(b.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned blueprint: {0} owner={1}", bp.ExtendedName, bp.OwnerUUID); BlueprintList.Remove(bp); removed++; }
+            foreach (var survey in SurveyList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned survey: {0} owner={1}", survey.ExtendedName, survey.OwnerUUID); SurveyList.Remove(survey); removed++; }
+            foreach (var route in DeliveryRouteList.Where(r => !string.IsNullOrEmpty(r.OwnerUUID) && !validUUIDs.Contains(r.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned route: {0} owner={1}", route.Name, route.OwnerUUID); DeliveryRouteList.Remove(route); removed++; }
+            foreach (var plan in DeliveryPlanList.Where(p => !string.IsNullOrEmpty(p.OwnerUUID) && !validUUIDs.Contains(p.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned delivery plan: {0} owner={1}", plan.Name, plan.OwnerUUID); DeliveryPlanList.Remove(plan); removed++; }
 
             if (removed > 0)
                 Log.Info("Cleaned up {0} orphaned items on load", removed);
@@ -409,13 +415,13 @@ namespace OE2EmpireTracker.Services
         private void RestoreCurrentPlayer(string savedUUID)
         {
             if (!string.IsNullOrEmpty(savedUUID) &&
-                playerProfileList.Any(p => p.UUID == savedUUID))
+                PlayerProfileList.Any(p => p.UUID == savedUUID))
             {
                 _currentPlayerUUID = savedUUID;
             }
-            else if (playerProfileList.Count > 0)
+            else if (PlayerProfileList.Count > 0)
             {
-                _currentPlayerUUID = playerProfileList[0].UUID ?? string.Empty;
+                _currentPlayerUUID = PlayerProfileList[0].UUID ?? string.Empty;
             }
             Log.Info("Current player restored: {0}", _currentPlayerUUID);
         }
@@ -425,7 +431,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<Colony> GetCurrentPlayerColonies()
         {
-            return colonyList.Where(c => c.OwnerUUID == _currentPlayerUUID).ToList();
+            return ColonyList.Where(c => c.OwnerUUID == _currentPlayerUUID).ToList();
         }
 
         /// <summary>
@@ -433,19 +439,19 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<Blueprint> GetCurrentPlayerBlueprints()
         {
-            return blueprintList.Where(b => b.OwnerUUID == _currentPlayerUUID).ToList();
+            return BlueprintList.Where(b => b.OwnerUUID == _currentPlayerUUID).ToList();
         }
 
         /// <summary>
         /// Returns all blueprints: current player's + global.
-        /// Use this instead of accessing blueprintList directly.
+        /// Use this instead of accessing BlueprintList directly.
         /// </summary>
         public List<Blueprint> GetAllBlueprints()
         {
-            var all = new List<Blueprint>(blueprintList);
-            var ec = EmpireContext.getInstance();
-            if (ec?.globalBlueprintList != null)
-                all.AddRange(ec.globalBlueprintList);
+            var all = new List<Blueprint>(BlueprintList);
+            var ec = EmpireContext.GetInstance();
+            if (ec?.GlobalBlueprintList != null)
+                all.AddRange(ec.GlobalBlueprintList);
             return all;
         }
 
@@ -454,7 +460,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<Survey> GetCurrentPlayerSurveys()
         {
-            return surveyList.Where(s => s.OwnerUUID == _currentPlayerUUID).ToList();
+            return SurveyList.Where(s => s.OwnerUUID == _currentPlayerUUID).ToList();
         }
 
         /// <summary>
@@ -462,7 +468,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<DeliveryRoute> GetCurrentPlayerRoutes()
         {
-            return deliveryRouteList.Where(r => r.OwnerUUID == _currentPlayerUUID).ToList();
+            return DeliveryRouteList.Where(r => r.OwnerUUID == _currentPlayerUUID).ToList();
         }
 
         /// <summary>
@@ -470,14 +476,14 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<DeliveryPlan> GetCurrentPlayerPlans()
         {
-            return deliveryPlanList.Where(p => p.OwnerUUID == _currentPlayerUUID).ToList();
+            return DeliveryPlanList.Where(p => p.OwnerUUID == _currentPlayerUUID).ToList();
         }
 
 
         public List<CountDownTimeReference> AllCountdownSources()
         {
             List<CountDownTimeReference> countdowns = new List<CountDownTimeReference>();
-            foreach (var player in playerProfileList)
+            foreach (var player in PlayerProfileList)
             {
                 if (player.Skills != null)
                 {
@@ -495,7 +501,7 @@ namespace OE2EmpireTracker.Services
                     }
                 }
             }
-            foreach (var colony in colonyList)
+            foreach (var colony in ColonyList)
             {
                 if (colony.Structures != null)
                 {
@@ -519,14 +525,14 @@ namespace OE2EmpireTracker.Services
 
     public class PlayerRoot
     {
-        public int DataVersion;
-        public string CurrentPlayerUUID;
-        public PlayerProfile[] PlayerProfile;
-        public Blueprint[] Blueprint;
-        public Survey[] Survey;
-        public Colony[] Colony;
-        public DeliveryRoute[] DeliveryRoute;
-        public DeliveryPlan[] DeliveryPlan;
+        public int DataVersion { get; set; }
+        public string CurrentPlayerUUID { get; set; }
+        public PlayerProfile[] PlayerProfile { get; set; }
+        public Blueprint[] Blueprint { get; set; }
+        public Survey[] Survey { get; set; }
+        public Colony[] Colony { get; set; }
+        public DeliveryRoute[] DeliveryRoute { get; set; }
+        public DeliveryPlan[] DeliveryPlan { get; set; }
         public PlayerRoot()
         {
             DataVersion = 0;

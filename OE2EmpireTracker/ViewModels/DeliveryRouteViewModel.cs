@@ -155,21 +155,21 @@ namespace OE2EmpireTracker.ViewModels
             if (string.IsNullOrEmpty(_route.UUID))
             {
                 _route.UUID = Guid.NewGuid().ToString();
-                _playerContext.deliveryRouteList.Add(_route);
+                _playerContext.DeliveryRouteList.Add(_route);
             }
             if (string.IsNullOrEmpty(_route.OwnerUUID))
             {
                 _route.OwnerUUID = _playerContext.CurrentPlayerUUID;
             }
-            _playerContext.writeContext();
+            _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
         }
 
         public void Delete()
         {
             if (string.IsNullOrEmpty(_route.UUID)) return;
-            _playerContext.deliveryRouteList.Remove(_route);
-            _playerContext.writeContext();
+            _playerContext.DeliveryRouteList.Remove(_route);
+            _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
         }
 

@@ -40,7 +40,7 @@ namespace OE2EmpireTracker.Tests.Services
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = bpType;
             bp.Evolution = evolution;
-            PlayerContext.getInstance().blueprintList.Add(bp);
+            PlayerContext.GetInstance().BlueprintList.Add(bp);
             return bp;
         }
 
@@ -54,7 +54,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 { resource, new SurveyResource(resource, purity, amount) }
             };
-            PlayerContext.getInstance().surveyList.Add(survey);
+            PlayerContext.GetInstance().SurveyList.Add(survey);
             return survey;
         }
 
@@ -89,7 +89,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void Property1_ActivityCollectionCompletenessAndClassification()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
 
             for (int iteration = 0; iteration < 100; iteration++)
             {
@@ -142,7 +142,7 @@ namespace OE2EmpireTracker.Tests.Services
                         else if (timerState == 3)
                         {
                             structure.ProcessCompletionTime = MakeExpiredTimer();
-                            // Expired — should NOT produce a row
+                            // Expired â€” should NOT produce a row
                         }
                         // timerState == 0: no timers
 
@@ -257,7 +257,7 @@ namespace OE2EmpireTracker.Tests.Services
                 cdt.TimeRemaining = seconds;
                 string cdtString = cdt.TimeRemainingString;
 
-                // Allow ±1s tolerance due to clock drift between set and read
+                // Allow Â±1s tolerance due to clock drift between set and read
                 // Parse both strings back to seconds for comparison
                 long formattedSeconds = ParseTimeString(formatted);
                 long cdtSeconds = ParseTimeString(cdtString);
@@ -294,7 +294,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void Property4_SourceNameAndProcessDetailsFormatting()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
 
             for (int iteration = 0; iteration < 100; iteration++)
             {
@@ -462,7 +462,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void EdgeCase_EmptyColonyList_ReturnsZeroRows()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var rows = ColonyActivityCollector.CollectActivities(new List<Colony>(), pc);
             Assert.That(rows.Count, Is.EqualTo(0));
         }
@@ -470,7 +470,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void EdgeCase_ColonyWithNoActiveTimers_ReturnsZeroRows()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var colony = new Colony
             {
                 UUID = Guid.NewGuid().ToString(),
@@ -493,7 +493,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void EdgeCase_OneMiningRig_ReturnsMiningRow()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var colony = new Colony
             {
                 UUID = Guid.NewGuid().ToString(),
@@ -525,7 +525,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void EdgeCase_BuildingStructure_ReturnsBuildingRow()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var colony = new Colony
             {
                 UUID = Guid.NewGuid().ToString(),
@@ -551,7 +551,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void EdgeCase_UnfulfilledCommodityRequest_ReturnsCommodityRequestRow()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var colony = new Colony
             {
                 UUID = Guid.NewGuid().ToString(),
@@ -576,7 +576,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void EdgeCase_FulfilledCommodityRequest_Skipped()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var colony = new Colony
             {
                 UUID = Guid.NewGuid().ToString(),
@@ -611,7 +611,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void EdgeCase_BuildCompletionTimePriorityOverProcessCompletionTime()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var colony = new Colony
             {
                 UUID = Guid.NewGuid().ToString(),
@@ -639,7 +639,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void EdgeCase_RefiningSyntheticRecipe_CorrectFormat()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var colony = new Colony
             {
                 UUID = Guid.NewGuid().ToString(),
@@ -667,7 +667,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void EdgeCase_RefiningNormalResource_CorrectFormat()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var colony = new Colony
             {
                 UUID = Guid.NewGuid().ToString(),
@@ -706,7 +706,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             for (int iteration = 0; iteration < 100; iteration++)
             {
-                // Generate 5–20 random ActivityRows
+                // Generate 5â€“20 random ActivityRows
                 int rowCount = Rng.Next(5, 21);
                 var rows = new List<ActivityRow>();
                 for (int r = 0; r < rowCount; r++)
@@ -732,7 +732,7 @@ namespace OE2EmpireTracker.Tests.Services
                         selectedTypes.Add(at);
                 }
 
-                // Generate a random text filter — sometimes empty, sometimes a substring from a row
+                // Generate a random text filter â€” sometimes empty, sometimes a substring from a row
                 string textFilter;
                 int filterChoice = Rng.Next(3);
                 if (filterChoice == 0)
@@ -801,7 +801,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             for (int iteration = 0; iteration < 100; iteration++)
             {
-                // Generate 5–20 random ActivityRows with varying seconds remaining
+                // Generate 5â€“20 random ActivityRows with varying seconds remaining
                 int rowCount = Rng.Next(5, 21);
                 var rows = new List<ActivityRow>();
                 for (int r = 0; r < rowCount; r++)

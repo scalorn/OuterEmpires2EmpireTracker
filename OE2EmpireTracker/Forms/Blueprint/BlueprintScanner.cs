@@ -140,7 +140,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                             string iconPosition = bgMatch.Groups[2].Value + " " + bgMatch.Groups[3].Value;
                             blueprint.Properties.setProperty("_IconPosition", iconPosition);
 
-                            var ec = Services.EmpireContext.getInstance();
+                            var ec = Services.EmpireContext.GetInstance();
                             var bpType = ec?.FindBlueprintTypeByIcon(iconPosition);
                             if (bpType != null)
                             {
@@ -462,7 +462,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                                 bp.Properties.setProperty("_IconPosition", iconPosition);
 
                                 // Resolve icon to BlueprintType via BaselineData
-                                var ec = EmpireContext.getInstance();
+                                var ec = EmpireContext.GetInstance();
                                 var bpType = ec?.FindBlueprintTypeByIcon(iconPosition);
                                 if (bpType != null)
                                 {

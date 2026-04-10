@@ -47,7 +47,7 @@ namespace OE2EmpireTracker.Tests.Services
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = bpType;
             bp.Evolution = evolution;
-            PlayerContext.getInstance().blueprintList.Add(bp);
+            PlayerContext.GetInstance().BlueprintList.Add(bp);
             return bp;
         }
 
@@ -98,12 +98,12 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void Property1_IdleStructureDetection()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
 
             for (int iteration = 0; iteration < 100; iteration++)
             {
                 // Reset blueprints each iteration to avoid accumulation
-                pc.blueprintList.Clear();
+                pc.BlueprintList.Clear();
 
                 var colony = MakeColony("Sys_" + iteration, "Col_" + iteration);
                 int expectedIdleCount = 0;
@@ -124,7 +124,7 @@ namespace OE2EmpireTracker.Tests.Services
 
                     if (state == 1)
                     {
-                        // Active — has a running process timer
+                        // Active â€” has a running process timer
                         structure.ProcessCompletionTime = MakeActiveRepeatingTimer(3600);
                         // Also assign a work item so it's truly active
                         AssignWorkItem(structure, bpType);
@@ -134,9 +134,9 @@ namespace OE2EmpireTracker.Tests.Services
                         // Idle with work item assigned but no timer
                         AssignWorkItem(structure, bpType);
                     }
-                    // state 0: no work item, no timer — idle
-                    // state 2: not built — should not appear
-                    // state 3: not online — should not appear
+                    // state 0: no work item, no timer â€” idle
+                    // state 2: not built â€” should not appear
+                    // state 3: not online â€” should not appear
 
                     colony.Structures.Add(structure);
 
@@ -184,7 +184,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void Property2_IdleStructureProcessDetailsCorrectness()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
 
             // Test each structure type with both "no work item" and "work item but no timer"
             var testCases = new[]
@@ -198,7 +198,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             for (int iteration = 0; iteration < 100; iteration++)
             {
-                pc.blueprintList.Clear();
+                pc.BlueprintList.Clear();
 
                 var testCase = testCases[iteration % testCases.Length];
                 bool hasWorkItem = iteration % 2 == 0;
@@ -234,7 +234,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void Property3_InactivityRowMetadataFormat()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
 
             var typeMap = new Dictionary<string, ActivityType>
             {
@@ -247,7 +247,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             for (int iteration = 0; iteration < 100; iteration++)
             {
-                pc.blueprintList.Clear();
+                pc.BlueprintList.Clear();
 
                 string bpType = ProductionBlueprintTypes[iteration % ProductionBlueprintTypes.Length];
                 int gameSeq = Rng.Next(1, 50);
@@ -289,14 +289,14 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Unit Tests — Edge Cases
-        // **Validates: Requirements 3.1–3.4, 4.1–4.4, 6.1–6.4, 7.1–7.4, 8.1–8.4, 9.1–9.4**
+        // Unit Tests â€” Edge Cases
+        // **Validates: Requirements 3.1â€“3.4, 4.1â€“4.4, 6.1â€“6.4, 7.1â€“7.4, 8.1â€“8.4, 9.1â€“9.4**
         // -----------------------------------------------------------------------
 
         [Test]
         public void EmptyColony_ReturnsEmptyList()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var colony = MakeColony();
             // Colony has no structures
 
@@ -308,7 +308,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void EmptyColonyList_ReturnsEmptyList()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
 
             var rows = ColonyInactivityCollector.CollectInactivities(new List<Colony>(), pc);
 
@@ -318,7 +318,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void NullBlueprint_SkipsStructureSilently()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var colony = MakeColony();
 
             // Structure with a UUID that doesn't match any blueprint
@@ -333,7 +333,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void NonProductionStructureType_IsIgnored()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             // Use a non-production blueprint type (e.g., "Flatpacks/Agridome")
             var bp = CreateBlueprint("Flatpacks/Agridome", "TestAgridome");
             var colony = MakeColony();
@@ -348,7 +348,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void NotBuiltStructure_DoesNotAppear()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var bp = CreateBlueprint(BlueprintTypes.MiningRig, "UnbuiltMiner");
             var colony = MakeColony();
             var structure = MakeStructure(bp.UUID, 1, built: false, online: true);
@@ -362,7 +362,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void NotOnlineStructure_DoesNotAppear()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var bp = CreateBlueprint(BlueprintTypes.Refinery, "OfflineRefinery");
             var colony = MakeColony();
             var structure = MakeStructure(bp.UUID, 1, built: true, online: false);
@@ -376,7 +376,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ActiveStructure_DoesNotAppear()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var bp = CreateBlueprint(BlueprintTypes.MiningRig, "ActiveMiner");
             var colony = MakeColony();
             var structure = MakeStructure(bp.UUID, 1);
@@ -396,7 +396,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void IdleMiner_NoSurvey_ReturnsNoSurveyAssigned()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var bp = CreateBlueprint(BlueprintTypes.MiningRig, "IdleMiner");
             var colony = MakeColony("MineSys", "MineCol");
             var structure = MakeStructure(bp.UUID, 3);
@@ -415,7 +415,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void IdleMiner_SurveyAssignedNoTimer_ReturnsIdle()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var bp = CreateBlueprint(BlueprintTypes.MiningRig, "IdleMinerWithSurvey");
             var colony = MakeColony();
             var structure = MakeStructure(bp.UUID, 2);
@@ -431,7 +431,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void IdleRefiner_NoResource_ReturnsNoResourceAssigned()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var bp = CreateBlueprint(BlueprintTypes.Refinery, "IdleRefiner");
             var colony = MakeColony();
             var structure = MakeStructure(bp.UUID, 1);
@@ -447,7 +447,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void IdleRefiner_ResourceAssignedNoTimer_ReturnsIdle()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var bp = CreateBlueprint(BlueprintTypes.Refinery, "IdleRefinerWithResource");
             var colony = MakeColony();
             var structure = MakeStructure(bp.UUID, 1);
@@ -463,7 +463,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void IdleResearchLab_NoBlueprint_ReturnsNoBlueprintAssigned()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var bp = CreateBlueprint(BlueprintTypes.ResearchLaboratory, "IdleLab");
             var colony = MakeColony();
             var structure = MakeStructure(bp.UUID, 1);
@@ -479,7 +479,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void IdleResearchLab_BlueprintAssignedNoTimer_ReturnsIdle()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var bp = CreateBlueprint(BlueprintTypes.ResearchLaboratory, "IdleLabWithBP");
             var colony = MakeColony();
             var structure = MakeStructure(bp.UUID, 1);
@@ -495,7 +495,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void IdleManufactory_NoBlueprint_ReturnsNoBlueprintAssigned()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var bp = CreateBlueprint(BlueprintTypes.Manufactory, "IdleFactory");
             var colony = MakeColony();
             var structure = MakeStructure(bp.UUID, 1);
@@ -511,7 +511,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void IdleManufactory_BlueprintAssignedNoTimer_ReturnsIdle()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var bp = CreateBlueprint(BlueprintTypes.Manufactory, "IdleFactoryWithBP");
             var colony = MakeColony();
             var structure = MakeStructure(bp.UUID, 1);
@@ -527,7 +527,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void IdleCommodityFactory_NoCommodity_ReturnsNoCommodityAssigned()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var bp = CreateBlueprint(BlueprintTypes.CommodityFactoryPrefix + "Agridome", "IdleCommodity");
             var colony = MakeColony();
             var structure = MakeStructure(bp.UUID, 1);
@@ -543,7 +543,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void IdleCommodityFactory_CommodityAssignedNoTimer_ReturnsIdle()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var bp = CreateBlueprint(BlueprintTypes.CommodityFactoryPrefix + "Agridome", "IdleCommodityWithWork");
             var colony = MakeColony();
             var structure = MakeStructure(bp.UUID, 1);
@@ -559,7 +559,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void MixedActiveAndIdle_OnlyIdleAppear()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var colony = MakeColony();
 
             // Active miner (should NOT appear)
@@ -589,7 +589,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void MultipleColonies_CollectsFromAll()
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
 
             var colony1 = MakeColony("Sys1", "Col1");
             var bp1 = CreateBlueprint(BlueprintTypes.MiningRig, "Miner1");
@@ -612,7 +612,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         private PlayerProfile CreateOwnerProfile(string ownerUUID, int extractionFocusLevel = 0)
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var profile = new PlayerProfile
             {
                 UUID = ownerUUID,
@@ -622,17 +622,17 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 profile.GetSkill(SkillName.ExtractionFocus).Level = extractionFocusLevel;
             }
-            pc.playerProfileList.Add(profile);
+            pc.PlayerProfileList.Add(profile);
             return profile;
         }
 
         private Survey CreateSurvey(string resource, string purity, string amount)
         {
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             var survey = new Survey("TestSurvey_" + Guid.NewGuid().ToString().Substring(0, 6));
             survey.UUID = Guid.NewGuid().ToString();
             survey.Resources[resource] = new SurveyResource(resource, purity, amount);
-            pc.surveyList.Add(survey);
+            pc.SurveyList.Add(survey);
             return survey;
         }
 
@@ -677,7 +677,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             // 1 miner (10/h Low) + 2 refiners (25/cycle each)
             // Total consumption (50) > mining output (10), so second refiner (highest gameSeq) flagged
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);
 
@@ -723,7 +723,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             // 1 miner (10/h Low) + 2 refiners (25/cycle each)
             // Refiner #2 (gameSeq=2) gets 10, refiner #3 (gameSeq=3) gets 0
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);
 
@@ -757,7 +757,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void UnderutilizedRefiner_SufficientMiningSupply_NoneFlag()
         {
             // 1 miner (60/h Low) + 2 refiners (25/cycle each) = 50 total consumption <= 60 output
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);
 
@@ -782,14 +782,14 @@ namespace OE2EmpireTracker.Tests.Services
         public void UnderutilizedRefiner_SyntheticRecipe_UsesRecipeConsumeRate()
         {
             // Synthetic refiner consuming Lanthanides (Refined) at 1250/cycle
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);
 
             var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "Miner");
             var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "SyntheticRefiner");
 
-            // Miner producing 100/h of Lanthanides (Refined) — way less than 1250
+            // Miner producing 100/h of Lanthanides (Refined) â€” way less than 1250
             var survey = CreateSurvey("Lanthanides", GameConstants.PurityRefined, "100");
 
             var colony = MakeColony();
@@ -813,7 +813,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             // Miner at 10/h with ExtractionFocus level 5 => 10 * 1.05 = 10.5
             // 1 refiner at 25/cycle => underutilized with 10/25 (floor of 10.5)
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID, extractionFocusLevel: 5);
 
@@ -841,7 +841,7 @@ namespace OE2EmpireTracker.Tests.Services
             // Two resources: Iron (Low) and Copper (Low), each with 1 miner + 1 refiner
             // Iron miner at 30/h, Copper miner at 10/h
             // Iron refiner at 25/cycle (sufficient), Copper refiner at 25/cycle (underutilized)
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);
 
@@ -879,8 +879,8 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void Property5_WarehouseStockpileExemption()
         {
-            // Same as Property4 test but with 25+ units in warehouse — no underutilized flag
-            var pc = PlayerContext.getInstance();
+            // Same as Property4 test but with 25+ units in warehouse â€” no underutilized flag
+            var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);
 
@@ -895,7 +895,7 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 3, "Iron", "Low"));
 
-            // Add 25 units of Iron (Low) to warehouse — enough for one cycle
+            // Add 25 units of Iron (Low) to warehouse â€” enough for one cycle
             AddWarehouseResource(colony, "Iron", "Low", 25);
 
             var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
@@ -908,8 +908,8 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void WarehouseExemption_InsufficientStockpile_StillFlagged()
         {
-            // Warehouse has 24 units (less than 25 per cycle) — refiner still flagged
-            var pc = PlayerContext.getInstance();
+            // Warehouse has 24 units (less than 25 per cycle) â€” refiner still flagged
+            var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);
 
@@ -924,7 +924,7 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 3, "Iron", "Low"));
 
-            // Only 24 units — not enough
+            // Only 24 units â€” not enough
             AddWarehouseResource(colony, "Iron", "Low", 24);
 
             var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
@@ -938,7 +938,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void WarehouseExemption_SyntheticRefiner_NeedsRecipeConsumeRate()
         {
             // Synthetic refiner needs 1250 units in warehouse to be exempt
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);
 
@@ -952,7 +952,7 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Lanthanides"));
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Lanthanides", GameConstants.PurityRefined));
 
-            // Add 1250 units — exactly enough for synthetic recipe
+            // Add 1250 units â€” exactly enough for synthetic recipe
             AddWarehouseResource(colony, "Lanthanides", GameConstants.PurityRefined, 1250);
 
             var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
@@ -965,8 +965,8 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void WarehouseExemption_SyntheticRefiner_InsufficientStockpile()
         {
-            // Synthetic refiner with only 1249 units — still flagged
-            var pc = PlayerContext.getInstance();
+            // Synthetic refiner with only 1249 units â€” still flagged
+            var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);
 

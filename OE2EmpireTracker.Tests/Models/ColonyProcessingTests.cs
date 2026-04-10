@@ -42,7 +42,7 @@ namespace OE2EmpireTracker.Tests.Models
             var bp = new OE2EmpireTracker.Models.Blueprint("TestCommodityFactory");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.CommodityFactoryPrefix + "Agridome";
-            PlayerContext.getInstance().blueprintList.Add(bp);
+            PlayerContext.GetInstance().BlueprintList.Add(bp);
 
             var structure = new ColonyStructure();
             structure.UUID = Guid.NewGuid().ToString();
@@ -81,7 +81,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ProcessCommodityFactory — single cycle produces 10 commodities
+        // ProcessCommodityFactory â€” single cycle produces 10 commodities
         // -----------------------------------------------------------------------
 
         [Test]
@@ -107,7 +107,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ProcessCommodityFactory — multi-cycle produces correct total
+        // ProcessCommodityFactory â€” multi-cycle produces correct total
         // -----------------------------------------------------------------------
 
         [Test]
@@ -132,7 +132,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ProcessCommodityFactory — commodities stack with existing items
+        // ProcessCommodityFactory â€” commodities stack with existing items
         // -----------------------------------------------------------------------
 
         [Test]
@@ -165,7 +165,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ProcessCommodityFactory — construction resources consumed per cycle
+        // ProcessCommodityFactory â€” construction resources consumed per cycle
         // -----------------------------------------------------------------------
 
         [Test]
@@ -195,13 +195,13 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ProcessCommodityFactory — resources depleted to 0 are removed
+        // ProcessCommodityFactory â€” resources depleted to 0 are removed
         // -----------------------------------------------------------------------
 
         [Test]
         public void ProcessCommodityFactory_DepletedResources_RemovedFromWarehouse()
         {
-            // Give exactly 2 of each resource — one cycle will deplete them to 0
+            // Give exactly 2 of each resource â€” one cycle will deplete them to 0
             var colony = MakeCommodityFactoryColony(
                 "Advanced Biolubricants",
                 manufacturingQuantity: 5,
@@ -225,7 +225,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ProcessCommodityFactory — ManufacturingCompleted increments per cycle
+        // ProcessCommodityFactory â€” ManufacturingCompleted increments per cycle
         // -----------------------------------------------------------------------
 
         [Test]
@@ -248,7 +248,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ProcessCommodityFactory — does nothing when ManufacturingCommodityName is empty
+        // ProcessCommodityFactory â€” does nothing when ManufacturingCommodityName is empty
         // -----------------------------------------------------------------------
 
         [Test]
@@ -271,7 +271,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ProcessCommodityFactory — does nothing when commodity not found
+        // ProcessCommodityFactory â€” does nothing when commodity not found
         // -----------------------------------------------------------------------
 
         [Test]
@@ -307,7 +307,7 @@ namespace OE2EmpireTracker.Tests.Models
             var bp = new OE2EmpireTracker.Models.Blueprint("TestCF");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.CommodityFactoryPrefix + "Agridome";
-            PlayerContext.getInstance().blueprintList.Add(bp);
+            PlayerContext.GetInstance().BlueprintList.Add(bp);
 
             var structure = new ColonyStructure();
             structure.UUID = Guid.NewGuid().ToString();
@@ -363,7 +363,7 @@ namespace OE2EmpireTracker.Tests.Models
             var bp = new OE2EmpireTracker.Models.Blueprint("TestCF2");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.CommodityFactoryPrefix + "Agridome";
-            PlayerContext.getInstance().blueprintList.Add(bp);
+            PlayerContext.GetInstance().BlueprintList.Add(bp);
 
             var structure = new ColonyStructure();
             structure.UUID = Guid.NewGuid().ToString();
@@ -400,7 +400,7 @@ namespace OE2EmpireTracker.Tests.Models
             var bp = new OE2EmpireTracker.Models.Blueprint("TestCF3");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.CommodityFactoryPrefix + "Agridome";
-            PlayerContext.getInstance().blueprintList.Add(bp);
+            PlayerContext.GetInstance().BlueprintList.Add(bp);
 
             var structure = new ColonyStructure();
             structure.UUID = Guid.NewGuid().ToString();
@@ -433,7 +433,7 @@ namespace OE2EmpireTracker.Tests.Models
             var bp = new OE2EmpireTracker.Models.Blueprint("TestCF4");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.CommodityFactoryPrefix + "Agridome";
-            PlayerContext.getInstance().blueprintList.Add(bp);
+            PlayerContext.GetInstance().BlueprintList.Add(bp);
 
             var structure = new ColonyStructure();
             structure.UUID = Guid.NewGuid().ToString();
@@ -459,7 +459,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // Skill multiplier tests — ExtractionFocus (mining)
+        // Skill multiplier tests â€” ExtractionFocus (mining)
         // -----------------------------------------------------------------------
 
         private PlayerProfile CreatePlayerWithSkills(Dictionary<SkillName, int> skills)
@@ -471,7 +471,7 @@ namespace OE2EmpireTracker.Tests.Models
             {
                 profile.GetSkill(kvp.Key).Level = kvp.Value;
             }
-            PlayerContext.getInstance().playerProfileList.Add(profile);
+            PlayerContext.GetInstance().PlayerProfileList.Add(profile);
             return profile;
         }
 
@@ -496,13 +496,13 @@ namespace OE2EmpireTracker.Tests.Models
             {
                 { "TestOre", new SurveyResource { Resource = "TestOre", Purity = "Low", Amount = "100" } }
             };
-            PlayerContext.getInstance().surveyList.Add(survey);
+            PlayerContext.GetInstance().SurveyList.Add(survey);
 
             // Create a MiningRig blueprint
             var bp = new OE2EmpireTracker.Models.Blueprint("TestMiningRig");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.MiningRig;
-            PlayerContext.getInstance().blueprintList.Add(bp);
+            PlayerContext.GetInstance().BlueprintList.Add(bp);
 
             var structure = new ColonyStructure();
             structure.UUID = Guid.NewGuid().ToString();
@@ -527,7 +527,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // Skill multiplier tests — RefiningFocus
+        // Skill multiplier tests â€” RefiningFocus
         // -----------------------------------------------------------------------
 
         [Test]
@@ -546,7 +546,7 @@ namespace OE2EmpireTracker.Tests.Models
             var bp = new OE2EmpireTracker.Models.Blueprint("TestRefinery");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.Refinery;
-            PlayerContext.getInstance().blueprintList.Add(bp);
+            PlayerContext.GetInstance().BlueprintList.Add(bp);
 
             // Add source resource (Low purity, multiplier = 1)
             var sourceItem = new Item(ItemType.ItemTypeEnum.Resource, "TestMineral");
@@ -580,7 +580,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // Skill multiplier tests — zero skill level produces base output
+        // Skill multiplier tests â€” zero skill level produces base output
         // -----------------------------------------------------------------------
 
         [Test]
@@ -598,7 +598,7 @@ namespace OE2EmpireTracker.Tests.Models
             var bp = new OE2EmpireTracker.Models.Blueprint("TestRefinery0");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.Refinery;
-            PlayerContext.getInstance().blueprintList.Add(bp);
+            PlayerContext.GetInstance().BlueprintList.Add(bp);
 
             var sourceItem = new Item(ItemType.ItemTypeEnum.Resource, "TestMineral2");
             sourceItem.UUID = Guid.NewGuid().ToString();
@@ -631,7 +631,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // Skill multiplier tests — colony with no OwnerUUID uses base rates
+        // Skill multiplier tests â€” colony with no OwnerUUID uses base rates
         // -----------------------------------------------------------------------
 
         [Test]
@@ -644,7 +644,7 @@ namespace OE2EmpireTracker.Tests.Models
             var bp = new OE2EmpireTracker.Models.Blueprint("TestRefineryNoOwner");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.Refinery;
-            PlayerContext.getInstance().blueprintList.Add(bp);
+            PlayerContext.GetInstance().BlueprintList.Add(bp);
 
             var sourceItem = new Item(ItemType.ItemTypeEnum.Resource, "TestMineral3");
             sourceItem.UUID = Guid.NewGuid().ToString();

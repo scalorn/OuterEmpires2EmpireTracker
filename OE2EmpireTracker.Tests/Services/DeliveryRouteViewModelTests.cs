@@ -20,7 +20,7 @@ namespace OE2EmpireTracker.Tests.Services
             PlayerContext.Reset();
             TestHelper.SetEmpireFilePath();
             PlayerContext.FilePath = "nonexistent_player_data.json";
-            playerContext = PlayerContext.getInstance();
+            playerContext = PlayerContext.GetInstance();
         }
 
         private DeliveryRouteViewModel CreateViewModel()

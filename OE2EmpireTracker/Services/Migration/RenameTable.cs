@@ -21,7 +21,7 @@ namespace OE2EmpireTracker.Services.Migration
                     entry.NewName, entry.Evolution,
                     entry.BluePrintType, entry.Class, entry.TechLevel);
 
-                var bp = ec.globalBlueprintList
+                var bp = ec.GlobalBlueprintList
                     .FirstOrDefault(b => b.UUID == oldUUID);
                 if (bp == null) continue;
 

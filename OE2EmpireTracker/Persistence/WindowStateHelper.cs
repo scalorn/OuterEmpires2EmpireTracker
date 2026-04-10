@@ -20,7 +20,7 @@ namespace OE2EmpireTracker.Persistence
         /// </summary>
         public static void SaveState(Form form, string formTypeKey, int windowNumber)
         {
-            var store = PreferencesStore.getInstance();
+            var store = PreferencesStore.GetInstance();
             var windowState = store.GetWindowState(formTypeKey, windowNumber);
 
             // Save position/size
@@ -49,7 +49,7 @@ namespace OE2EmpireTracker.Persistence
         /// </summary>
         public static void RestoreState(Form form, string formTypeKey, int windowNumber)
         {
-            var store = PreferencesStore.getInstance();
+            var store = PreferencesStore.GetInstance();
             var windowState = store.GetWindowState(formTypeKey, windowNumber);
 
             // Restore position/size if saved
@@ -85,7 +85,7 @@ namespace OE2EmpireTracker.Persistence
         /// </summary>
         public static void SaveMainWindowState(Form mainWindow)
         {
-            var store = PreferencesStore.getInstance();
+            var store = PreferencesStore.GetInstance();
             store.Preferences.MainWindow = new WindowPosition
             {
                 Left = mainWindow.Left,
@@ -101,7 +101,7 @@ namespace OE2EmpireTracker.Persistence
         /// </summary>
         public static void RestoreMainWindowState(Form mainWindow)
         {
-            var store = PreferencesStore.getInstance();
+            var store = PreferencesStore.GetInstance();
             var saved = store.Preferences.MainWindow;
             if (saved == null) return;
 

@@ -48,8 +48,8 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             {
                 EmpireContext.Reset();
                 TestHelper.SetAllFilePaths();
-                var ec = EmpireContext.getInstance();
-                var pc = PlayerContext.getInstance();
+                var ec = EmpireContext.GetInstance();
+                var pc = PlayerContext.GetInstance();
 
                 var rng = new System.Random(data.Seed);
                 var entries = new List<RenameEntry>();
@@ -66,7 +66,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     bp.Class = 1;
                     bp.TechLevel = "LL";
                     bp.UUID = DeterministicUUID.Generate(name, 0, "Hull", 1, "LL");
-                    ec.globalBlueprintList.Add(bp);
+                    ec.GlobalBlueprintList.Add(bp);
                 }
 
                 // Create rename entries that rename existing blueprints
@@ -105,7 +105,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     entry.NewName, entry.Evolution,
                     entry.BluePrintType, entry.Class, entry.TechLevel);
 
-                var bp = ec.globalBlueprintList.FirstOrDefault(b => b.UUID == oldUUID);
+                var bp = ec.GlobalBlueprintList.FirstOrDefault(b => b.UUID == oldUUID);
                 if (bp == null) continue;
 
                 bp.Name = entry.NewName;
@@ -118,9 +118,9 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         {
             var state = new
             {
-                GlobalBPs = ec.globalBlueprintList.Select(b => new { b.UUID, b.Name, b.BaseBlueprintUUID }).ToList(),
-                PlayerBPs = pc.blueprintList.Select(b => new { b.UUID, b.Name, b.BaseBlueprintUUID }).ToList(),
-                Colonies = pc.colonyList.Select(c => new
+                GlobalBPs = ec.GlobalBlueprintList.Select(b => new { b.UUID, b.Name, b.BaseBlueprintUUID }).ToList(),
+                PlayerBPs = pc.BlueprintList.Select(b => new { b.UUID, b.Name, b.BaseBlueprintUUID }).ToList(),
+                Colonies = pc.ColonyList.Select(c => new
                 {
                     c.UUID,
                     Structures = c.Structures.Select(s => new

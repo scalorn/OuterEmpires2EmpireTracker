@@ -78,7 +78,7 @@ namespace OE2EmpireTracker.Tests.Services
         ///
         /// Property 2: All-player colony scanning
         ///
-        /// For any colonyList containing colonies with mixed OwnerUUID values
+        /// For any ColonyList containing colonies with mixed OwnerUUID values
         /// and any value of CurrentPlayerUUID, the set of colonies identified
         /// as needing processing (those with HasExpiredTimers() == true) should
         /// be identical regardless of which player is currently selected.
@@ -93,7 +93,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             // Set up PlayerContext with empty data
             PlayerContext.FilePath = "nonexistent_player_data.json";
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
 
             // Create a set of distinct player UUIDs to use across iterations
             string playerA = Guid.NewGuid().ToString();
@@ -104,7 +104,7 @@ namespace OE2EmpireTracker.Tests.Services
             for (int i = 0; i < iterations; i++)
             {
                 // Clear colony list for this iteration
-                pc.colonyList.Clear();
+                pc.ColonyList.Clear();
 
                 // Generate 2-8 colonies with mixed owners
                 int colonyCount = rng.Next(2, 9);
@@ -124,7 +124,7 @@ namespace OE2EmpireTracker.Tests.Services
                         colony.Structures.Add(structure);
                     }
 
-                    pc.colonyList.Add(colony);
+                    pc.ColonyList.Add(colony);
                 }
 
                 // Collect the set of expired colony UUIDs for each player selection
@@ -135,7 +135,7 @@ namespace OE2EmpireTracker.Tests.Services
                     pc.CurrentPlayerUUID = playerUUID;
 
                     var expiredUUIDs = new HashSet<string>();
-                    foreach (var colony in pc.colonyList)
+                    foreach (var colony in pc.ColonyList)
                     {
                         if (colony.HasExpiredTimers())
                         {
@@ -148,7 +148,7 @@ namespace OE2EmpireTracker.Tests.Services
                 // Also test with an unrelated UUID (no colonies owned)
                 pc.CurrentPlayerUUID = Guid.NewGuid().ToString();
                 var expiredForUnknownPlayer = new HashSet<string>();
-                foreach (var colony in pc.colonyList)
+                foreach (var colony in pc.ColonyList)
                 {
                     if (colony.HasExpiredTimers())
                     {
@@ -175,7 +175,7 @@ namespace OE2EmpireTracker.Tests.Services
         ///
         /// Property 3: Exact-match processing set
         ///
-        /// For any colonyList where each colony has a random set of structures
+        /// For any ColonyList where each colony has a random set of structures
         /// with random timer states, the set of colonies on which ProcessColony()
         /// is called during a processing cycle should equal exactly the set of
         /// colonies where HasExpiredTimers() returns true.
@@ -188,30 +188,30 @@ namespace OE2EmpireTracker.Tests.Services
             var rng = new Random(seed);
             const int iterations = 100;
 
-            // Set up PlayerContext with a temp file path so writeContext() doesn't fail
+            // Set up PlayerContext with a temp file path so WriteContext() doesn't fail
             string tempPath = System.IO.Path.Combine(
                 System.IO.Path.GetTempPath(),
                 "BackgroundProcessorTest_Property3_" + Guid.NewGuid().ToString("N") + ".json");
             PlayerContext.FilePath = tempPath;
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
 
             try
             {
                 for (int i = 0; i < iterations; i++)
                 {
-                    pc.colonyList.Clear();
+                    pc.ColonyList.Clear();
 
                     // Generate 1-8 colonies with random build-only timer states
                     int colonyCount = rng.Next(1, 9);
                     for (int c = 0; c < colonyCount; c++)
                     {
                         var colony = GenerateColonyWithBuildTimersOnly(rng);
-                        pc.colonyList.Add(colony);
+                        pc.ColonyList.Add(colony);
                     }
 
                     // Record which colonies have expired timers BEFORE the cycle
                     var expectedProcessed = new HashSet<string>();
-                    foreach (var colony in pc.colonyList)
+                    foreach (var colony in pc.ColonyList)
                     {
                         if (colony.HasExpiredTimers())
                         {
@@ -275,30 +275,30 @@ namespace OE2EmpireTracker.Tests.Services
             var rng = new Random(seed);
             const int iterations = 100;
 
-            // Set up PlayerContext with a temp file path so writeContext() doesn't fail
+            // Set up PlayerContext with a temp file path so WriteContext() doesn't fail
             string tempPath = System.IO.Path.Combine(
                 System.IO.Path.GetTempPath(),
                 "BackgroundProcessorTest_Property4_" + Guid.NewGuid().ToString("N") + ".json");
             PlayerContext.FilePath = tempPath;
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
 
             try
             {
                 for (int i = 0; i < iterations; i++)
                 {
-                    pc.colonyList.Clear();
+                    pc.ColonyList.Clear();
 
                     // Generate 1-8 colonies with random build-only timer states
                     int colonyCount = rng.Next(1, 9);
                     for (int c = 0; c < colonyCount; c++)
                     {
                         var colony = GenerateColonyWithBuildTimersOnly(rng);
-                        pc.colonyList.Add(colony);
+                        pc.ColonyList.Add(colony);
                     }
 
                     // Determine expected: colonies with expired timers, preserving order
                     var expectedUUIDs = new List<string>();
-                    foreach (var colony in pc.colonyList)
+                    foreach (var colony in pc.ColonyList)
                     {
                         if (colony.HasExpiredTimers())
                         {
@@ -353,14 +353,14 @@ namespace OE2EmpireTracker.Tests.Services
         /// <summary>
         /// **Validates: Requirements 5.1, 5.2, 5.3**
         ///
-        /// Property 5: Conditional persistence — exactly once or zero
+        /// Property 5: Conditional persistence â€” exactly once or zero
         ///
-        /// For any processing cycle, writeContext() should be called exactly
+        /// For any processing cycle, WriteContext() should be called exactly
         /// once if at least one colony was processed, and exactly zero times
         /// if no colonies were processed. Verified by monitoring the temp
         /// file's last write time before and after each cycle.
         /// </summary>
-        // Feature: background-processing, Property 5: Conditional persistence — exactly once or zero
+        // Feature: background-processing, Property 5: Conditional persistence â€” exactly once or zero
         [Test]
         public void RunCycleOnce_WritesContextExactlyOnceIfProcessed_ZeroOtherwise()
         {
@@ -372,24 +372,24 @@ namespace OE2EmpireTracker.Tests.Services
                 System.IO.Path.GetTempPath(),
                 "BackgroundProcessorTest_Property5_" + Guid.NewGuid().ToString("N") + ".json");
             PlayerContext.FilePath = tempPath;
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
 
             try
             {
                 for (int i = 0; i < iterations; i++)
                 {
-                    pc.colonyList.Clear();
+                    pc.ColonyList.Clear();
 
                     // Generate 0-8 colonies with random build-only timer states
                     int colonyCount = rng.Next(0, 9);
                     for (int c = 0; c < colonyCount; c++)
                     {
                         var colony = GenerateColonyWithBuildTimersOnly(rng);
-                        pc.colonyList.Add(colony);
+                        pc.ColonyList.Add(colony);
                     }
 
                     // Determine if any colonies have expired timers
-                    bool anyExpired = pc.colonyList.Any(col => col.HasExpiredTimers());
+                    bool anyExpired = pc.ColonyList.Any(col => col.HasExpiredTimers());
 
                     // Delete the temp file before the cycle so we can detect a fresh write
                     CleanupTempFiles(tempPath);
@@ -404,14 +404,14 @@ namespace OE2EmpireTracker.Tests.Services
                     {
                         Assert.That(fileWritten, Is.True,
                             $"Iteration {i} (seed={seed}): colonies had expired timers but " +
-                            $"writeContext() was not called (file not written). " +
+                            $"WriteContext() was not called (file not written). " +
                             $"ColonyCount={colonyCount}");
                     }
                     else
                     {
                         Assert.That(fileWritten, Is.False,
                             $"Iteration {i} (seed={seed}): no colonies had expired timers but " +
-                            $"writeContext() was called (file was written). " +
+                            $"WriteContext() was called (file was written). " +
                             $"ColonyCount={colonyCount}");
                     }
                 }
@@ -444,7 +444,7 @@ namespace OE2EmpireTracker.Tests.Services
                 System.IO.Path.GetTempPath(),
                 "BackgroundProcessorTest_Property6_" + Guid.NewGuid().ToString("N") + ".json");
             PlayerContext.FilePath = tempPath;
-            var pc = PlayerContext.getInstance();
+            var pc = PlayerContext.GetInstance();
 
             try
             {
@@ -462,12 +462,12 @@ namespace OE2EmpireTracker.Tests.Services
 
                     for (int c = 0; c < cycleCount; c++)
                     {
-                        pc.colonyList.Clear();
+                        pc.ColonyList.Clear();
 
                         if (shouldError[c])
                         {
                             // Error cycle: add a colony with an expired ProcessCompletionTime
-                            // but no valid FlatpackBlueprintUUID — ProcessColony() will throw
+                            // but no valid FlatpackBlueprintUUID â€” ProcessColony() will throw
                             // NullReferenceException when accessing FlatpackBlueprint.BluePrintType
                             var errorColony = new Colony();
                             errorColony.UUID = Guid.NewGuid().ToString();
@@ -481,7 +481,7 @@ namespace OE2EmpireTracker.Tests.Services
                             errorStructure.ProcessCompletionTime = CreateExpiredOneShot();
                             errorColony.Structures.Add(errorStructure);
 
-                            pc.colonyList.Add(errorColony);
+                            pc.ColonyList.Add(errorColony);
                         }
                         else
                         {
@@ -490,7 +490,7 @@ namespace OE2EmpireTracker.Tests.Services
                             int successType = rng.Next(0, 3);
                             if (successType == 0)
                             {
-                                // Empty colony list — no processing, no error
+                                // Empty colony list â€” no processing, no error
                             }
                             else if (successType == 1)
                             {
@@ -499,7 +499,7 @@ namespace OE2EmpireTracker.Tests.Services
                                 safeColony.UUID = Guid.NewGuid().ToString();
                                 safeColony.ColonyName = "SafeColony";
                                 safeColony.PlanetName = "SafePlanet";
-                                pc.colonyList.Add(safeColony);
+                                pc.ColonyList.Add(safeColony);
                             }
                             else
                             {
@@ -515,7 +515,7 @@ namespace OE2EmpireTracker.Tests.Services
                                 buildStructure.ProcessCompletionTime = null;
                                 buildColony.Structures.Add(buildStructure);
 
-                                pc.colonyList.Add(buildColony);
+                                pc.ColonyList.Add(buildColony);
                             }
                         }
 

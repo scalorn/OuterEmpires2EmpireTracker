@@ -27,7 +27,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         public FormDeliveryExecution()
         {
             InitializeComponent();
-            empireContext = EmpireContext.getInstance();
+            empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
 
             cmbRoute.DisplayMember = "Display";
@@ -208,7 +208,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 return;
             }
 
-            selectedPlan = playerContext.deliveryPlanList.FirstOrDefault(p => p.UUID == planUUID);
+            selectedPlan = playerContext.DeliveryPlanList.FirstOrDefault(p => p.UUID == planUUID);
             if (selectedPlan != null)
             {
                 cmdCompletePlan.Visible = true;
@@ -383,7 +383,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 UpdateWorkerDelivery(item, chk.Checked);
             }
 
-            playerContext.writeContext();
+            playerContext.WriteContext();
 
             // Incrementally update the Complete Stop button for the affected stop
             var affectedStop = selectedPlan?.Stops.FirstOrDefault(s =>
@@ -393,7 +393,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             if (selectedPlan != null && IsAllDelivered(selectedPlan))
             {
                 selectedPlan.Completed = true;
-                playerContext.writeContext();
+                playerContext.WriteContext();
                 Log.Info("Delivery plan '{0}' marked as completed", selectedPlan.Name);
             }
         }
@@ -519,13 +519,13 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             if (stop == null) return;
 
             stop.StopCompleted = true;
-            playerContext.writeContext();
+            playerContext.WriteContext();
             BuildExecution();
 
             if (selectedPlan != null && IsAllDelivered(selectedPlan))
             {
                 selectedPlan.Completed = true;
-                playerContext.writeContext();
+                playerContext.WriteContext();
                 Log.Info("Delivery plan '{0}' marked as completed", selectedPlan.Name);
             }
         }
@@ -535,7 +535,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             if (selectedPlan == null) return;
 
             selectedPlan.Completed = true;
-            playerContext.writeContext();
+            playerContext.WriteContext();
             Log.Info("Delivery plan '{0}' manually marked as completed", selectedPlan.Name);
 
             ClearExecution();
@@ -555,8 +555,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            playerContext.deliveryPlanList.Remove(selectedPlan);
-            playerContext.writeContext();
+            playerContext.DeliveryPlanList.Remove(selectedPlan);
+            playerContext.WriteContext();
             Log.Info("Delivery plan '{0}' deleted", selectedPlan.Name);
 
             ClearExecution();

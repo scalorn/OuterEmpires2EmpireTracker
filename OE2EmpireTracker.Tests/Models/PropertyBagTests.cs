@@ -72,7 +72,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // setProperty — double overload
+        // setProperty — decimal overload
         // -----------------------------------------------------------------------
 
         [Test]

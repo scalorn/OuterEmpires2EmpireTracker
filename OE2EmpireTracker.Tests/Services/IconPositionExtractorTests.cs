@@ -49,7 +49,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             EmpireContext.Reset();
             TestHelper.SetEmpireFilePath();
-            EmpireContext.getInstance();
+            EmpireContext.GetInstance();
         }
 
         /// <summary>

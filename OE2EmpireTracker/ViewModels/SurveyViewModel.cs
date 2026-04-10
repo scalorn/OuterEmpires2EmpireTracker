@@ -126,13 +126,13 @@ namespace OE2EmpireTracker.ViewModels
             if (string.IsNullOrEmpty(_survey.UUID))
             {
                 _survey.UUID = Guid.NewGuid().ToString();
-                _playerContext.surveyList.Add(_survey);
+                _playerContext.SurveyList.Add(_survey);
             }
             if (string.IsNullOrEmpty(_survey.OwnerUUID))
             {
                 _survey.OwnerUUID = _playerContext.CurrentPlayerUUID;
             }
-            _playerContext.writeContext();
+            _playerContext.WriteContext();
             _playerContext.OnSurveyDataChanged(_survey.UUID);
         }
 
@@ -140,8 +140,8 @@ namespace OE2EmpireTracker.ViewModels
         {
             if (string.IsNullOrEmpty(_survey.UUID)) return;
             string deletedUUID = _survey.UUID;
-            _playerContext.surveyList.Remove(_survey);
-            _playerContext.writeContext();
+            _playerContext.SurveyList.Remove(_survey);
+            _playerContext.WriteContext();
             _playerContext.OnSurveyDataChanged(deletedUUID);
         }
 

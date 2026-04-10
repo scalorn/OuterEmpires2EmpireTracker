@@ -15,7 +15,7 @@ namespace OE2EmpireTracker.Services
         private UIPreferences _preferences;
         private readonly string _filePath;
 
-        public static PreferencesStore getInstance()
+        public static PreferencesStore GetInstance()
         {
             if (Instance == null)
             {

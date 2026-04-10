@@ -159,7 +159,7 @@ namespace OE2EmpireTracker.Services
             int extractionFocusLevel = 0;
             if (!string.IsNullOrEmpty(colony.OwnerUUID))
             {
-                var owner = playerContext.playerProfileList.FirstOrDefault(p => p.UUID == colony.OwnerUUID);
+                var owner = playerContext.PlayerProfileList.FirstOrDefault(p => p.UUID == colony.OwnerUUID);
                 if (owner != null)
                 {
                     extractionFocusLevel = owner.GetSkill(SkillName.ExtractionFocus).Level;

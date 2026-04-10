@@ -25,7 +25,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
         public FormColonyDailyBuild()
         {
             InitializeComponent();
-            empireContext = EmpireContext.getInstance();
+            empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
 
             cmbRoute.DisplayMember = "Display";
@@ -146,7 +146,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
             pnlContent.SuspendLayout();
             pnlContent.Controls.Clear();
 
-            var route = playerContext.deliveryRouteList.FirstOrDefault(r => r.UUID == routeUUID);
+            var route = playerContext.DeliveryRouteList.FirstOrDefault(r => r.UUID == routeUUID);
             if (route == null)
             {
                 pnlContent.ResumeLayout();
@@ -251,7 +251,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
             int builderLevel = 0;
             if (!string.IsNullOrEmpty(colony.OwnerUUID))
             {
-                var owner = playerContext.playerProfileList.FirstOrDefault(p => p.UUID == colony.OwnerUUID);
+                var owner = playerContext.PlayerProfileList.FirstOrDefault(p => p.UUID == colony.OwnerUUID);
                 if (owner != null)
                     builderLevel = owner.GetSkill(SkillName.Builder).Level;
             }
@@ -265,7 +265,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
             structure.BuildCompletionTime = new CountDownTime();
             structure.BuildCompletionTime.TimeRemaining = buildSeconds;
 
-            playerContext.writeContext();
+            playerContext.WriteContext();
             playerContext.OnColonyDataChanged(colony.UUID);
 
             Log.Info("Build started on {0} - {1}, structure {2}, {3}s",

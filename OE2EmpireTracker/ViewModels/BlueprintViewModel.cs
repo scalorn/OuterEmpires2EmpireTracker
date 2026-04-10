@@ -46,8 +46,8 @@ namespace OE2EmpireTracker.ViewModels
         {
             get
             {
-                var ec = EmpireContext.getInstance();
-                return ec?.globalBlueprintList?.Contains(_blueprint) == true;
+                var ec = EmpireContext.GetInstance();
+                return ec?.GlobalBlueprintList?.Contains(_blueprint) == true;
             }
         }
 
@@ -143,10 +143,10 @@ namespace OE2EmpireTracker.ViewModels
         {
             // Merge global + current player blueprints
             var list = new List<Blueprint>(_playerContext.GetCurrentPlayerBlueprints());
-            var ec = EmpireContext.getInstance();
-            if (ec?.globalBlueprintList != null)
+            var ec = EmpireContext.GetInstance();
+            if (ec?.GlobalBlueprintList != null)
             {
-                list.AddRange(ec.globalBlueprintList);
+                list.AddRange(ec.GlobalBlueprintList);
             }
 
             // Text filter
@@ -208,17 +208,17 @@ namespace OE2EmpireTracker.ViewModels
                     : Guid.NewGuid().ToString();
             }
 
-            var ec = EmpireContext.getInstance();
-            bool wasGlobal = ec.globalBlueprintList.Contains(_blueprint);
-            bool wasPlayer = _playerContext.blueprintList.Contains(_blueprint);
+            var ec = EmpireContext.GetInstance();
+            bool wasGlobal = ec.GlobalBlueprintList.Contains(_blueprint);
+            bool wasPlayer = _playerContext.BlueprintList.Contains(_blueprint);
 
             if (isGlobal)
             {
                 _blueprint.OwnerUUID = string.Empty;
-                if (wasPlayer) _playerContext.blueprintList.Remove(_blueprint);
-                if (!wasGlobal) ec.globalBlueprintList.Add(_blueprint);
-                ec.writeContext();
-                if (wasPlayer) _playerContext.writeContext();
+                if (wasPlayer) _playerContext.BlueprintList.Remove(_blueprint);
+                if (!wasGlobal) ec.GlobalBlueprintList.Add(_blueprint);
+                ec.WriteContext();
+                if (wasPlayer) _playerContext.WriteContext();
             }
             else
             {
@@ -226,10 +226,10 @@ namespace OE2EmpireTracker.ViewModels
                 {
                     _blueprint.OwnerUUID = _playerContext.CurrentPlayerUUID;
                 }
-                if (wasGlobal) ec.globalBlueprintList.Remove(_blueprint);
-                if (!wasPlayer) _playerContext.blueprintList.Add(_blueprint);
-                _playerContext.writeContext();
-                if (wasGlobal) ec.writeContext();
+                if (wasGlobal) ec.GlobalBlueprintList.Remove(_blueprint);
+                if (!wasPlayer) _playerContext.BlueprintList.Add(_blueprint);
+                _playerContext.WriteContext();
+                if (wasGlobal) ec.WriteContext();
             }
 
             _playerContext.OnBlueprintDataChanged(_blueprint.UUID);
@@ -239,16 +239,16 @@ namespace OE2EmpireTracker.ViewModels
         {
             if (_blueprint.UUID == null) return;
             string deletedUUID = _blueprint.UUID;
-            if (_playerContext.blueprintList.Remove(_blueprint))
+            if (_playerContext.BlueprintList.Remove(_blueprint))
             {
-                _playerContext.writeContext();
+                _playerContext.WriteContext();
             }
             else
             {
-                var ec = EmpireContext.getInstance();
-                if (ec.globalBlueprintList.Remove(_blueprint))
+                var ec = EmpireContext.GetInstance();
+                if (ec.GlobalBlueprintList.Remove(_blueprint))
                 {
-                    ec.writeContext();
+                    ec.WriteContext();
                 }
             }
             _playerContext.OnBlueprintDataChanged(deletedUUID);

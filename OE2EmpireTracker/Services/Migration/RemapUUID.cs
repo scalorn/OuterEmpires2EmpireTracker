@@ -12,18 +12,18 @@ namespace OE2EmpireTracker.Services.Migration
             string oldUUID, string newUUID)
         {
             // Blueprint.UUID (global + player)
-            foreach (var bp in ec.globalBlueprintList)
+            foreach (var bp in ec.GlobalBlueprintList)
                 if (bp.UUID == oldUUID) bp.UUID = newUUID;
-            foreach (var bp in pc.blueprintList)
+            foreach (var bp in pc.BlueprintList)
                 if (bp.UUID == oldUUID) bp.UUID = newUUID;
 
             // Blueprint.BaseBlueprintUUID (evolution chains)
-            foreach (var bp in ec.globalBlueprintList.Concat(pc.blueprintList))
+            foreach (var bp in ec.GlobalBlueprintList.Concat(pc.BlueprintList))
                 if (bp.BaseBlueprintUUID == oldUUID)
                     bp.BaseBlueprintUUID = newUUID;
 
             // ColonyStructure references (3 fields)
-            foreach (var colony in pc.colonyList)
+            foreach (var colony in pc.ColonyList)
                 foreach (var s in colony.Structures)
                 {
                     if (s.FlatpackBlueprintUUID == oldUUID)

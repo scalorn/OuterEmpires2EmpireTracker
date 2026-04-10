@@ -16,7 +16,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void GetWindowState_CreatesNewEntry_WhenNoneExists()
         {
-            var store = PreferencesStore.getInstance();
+            var store = PreferencesStore.GetInstance();
 
             var state = store.GetWindowState("FormColony", 1);
 
@@ -29,7 +29,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void GetWindowState_ReturnsSameInstance_WhenCalledAgainWithSameKey()
         {
-            var store = PreferencesStore.getInstance();
+            var store = PreferencesStore.GetInstance();
 
             var first = store.GetWindowState("FormBlueprint", 2);
             var second = store.GetWindowState("FormBlueprint", 2);
@@ -40,7 +40,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void GetWindowState_PreservesExistingEntries_WhenAddingNewFormType()
         {
-            var store = PreferencesStore.getInstance();
+            var store = PreferencesStore.GetInstance();
 
             var colonyState = store.GetWindowState("FormColony", 1);
             colonyState.Position = new WindowPosition { Left = 100, Top = 200, Width = 800, Height = 600 };
@@ -59,7 +59,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void GetWindowState_PreservesExistingEntries_WhenAddingNewWindowNumber()
         {
-            var store = PreferencesStore.getInstance();
+            var store = PreferencesStore.GetInstance();
 
             var state1 = store.GetWindowState("FormSurvey", 1);
             state1.Position = new WindowPosition { Left = 50, Top = 50, Width = 400, Height = 300 };
@@ -76,12 +76,12 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void Reset_CausesGetInstance_ToCreateFreshInstance()
         {
-            var store1 = PreferencesStore.getInstance();
+            var store1 = PreferencesStore.GetInstance();
             store1.GetWindowState("FormColony", 1);
 
             PreferencesStore.Reset();
 
-            var store2 = PreferencesStore.getInstance();
+            var store2 = PreferencesStore.GetInstance();
             Assert.That(store2, Is.Not.SameAs(store1));
         }
     }

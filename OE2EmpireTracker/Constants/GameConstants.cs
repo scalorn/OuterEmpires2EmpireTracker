@@ -13,13 +13,13 @@ namespace OE2EmpireTracker.Constants
 
         /// <summary>Base refining rate per cycle (units consumed from source).</summary>
         public static int RefiningBaseRate =>
-            EmpireContext.getInstanceIfLoaded()?.GameConstants?.RefiningBaseRate ?? 25;
+            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.RefiningBaseRate ?? 25;
 
         // --- Workers ---
 
         /// <summary>Cargo volume per worker detail item.</summary>
         public static decimal WorkerVolume =>
-            EmpireContext.getInstanceIfLoaded()?.GameConstants?.WorkerVolume ?? 50m;
+            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.WorkerVolume ?? 50m;
 
         // --- Timers ---
 
@@ -30,17 +30,17 @@ namespace OE2EmpireTracker.Constants
 
         /// <summary>Number of commodities produced per cycle.</summary>
         public static int CommoditiesPerCycle =>
-            EmpireContext.getInstanceIfLoaded()?.GameConstants?.CommoditiesPerCycle ?? 10;
+            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.CommoditiesPerCycle ?? 10;
 
         /// <summary>Commodity manufacturing cycle time in seconds (10 minutes).</summary>
         public static long CommodityCycleSeconds =>
-            EmpireContext.getInstanceIfLoaded()?.GameConstants?.CommodityCycleSeconds ?? 600;
+            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.CommodityCycleSeconds ?? 600;
 
         // --- Structures ---
 
         /// <summary>Maximum structures per colony (game cap).</summary>
         public static int StructureCap =>
-            EmpireContext.getInstanceIfLoaded()?.GameConstants?.StructureCap ?? 65;
+            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.StructureCap ?? 65;
 
         // --- Structure Property Keys ---
 

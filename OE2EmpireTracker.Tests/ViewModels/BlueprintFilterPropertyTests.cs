@@ -27,9 +27,9 @@ namespace OE2EmpireTracker.Tests.ViewModels
             TestHelper.SetEmpireFilePath();
             PlayerContext.FilePath = "nonexistent_player_data.json";
             EmpireContext.Reset();
-            var ec = EmpireContext.getInstance();
+            var ec = EmpireContext.GetInstance();
             PlayerContext.Reset();
-            _playerContext = PlayerContext.getInstance();
+            _playerContext = PlayerContext.GetInstance();
             EmpireContext.PlayerContext = _playerContext;
         }
 
@@ -62,7 +62,7 @@ namespace OE2EmpireTracker.Tests.ViewModels
 
         /// <summary>
         /// Determines whether a blueprint satisfies all active filter constraints.
-        /// This is the oracle — a simple, independent re-implementation of the expected logic.
+        /// This is the oracle â€” a simple, independent re-implementation of the expected logic.
         /// </summary>
         private static bool SatisfiesAll(BP bp, string nameFilter, BlueprintFilterCriteria criteria)
         {
@@ -212,21 +212,21 @@ namespace OE2EmpireTracker.Tests.ViewModels
             return Prop.ForAll(inputGen.ToArbitrary(), data =>
             {
                 // Clear and populate context lists
-                _playerContext.blueprintList.Clear();
-                var ec = EmpireContext.getInstance();
-                ec.globalBlueprintList.Clear();
+                _playerContext.BlueprintList.Clear();
+                var ec = EmpireContext.GetInstance();
+                ec.GlobalBlueprintList.Clear();
 
                 foreach (var bp in data.Blueprints)
                 {
                     if (bp.OwnerUUID == "global")
                     {
                         bp.OwnerUUID = string.Empty;
-                        ec.globalBlueprintList.Add(bp);
+                        ec.GlobalBlueprintList.Add(bp);
                     }
                     else
                     {
                         _playerContext.CurrentPlayerUUID = "player-1";
-                        _playerContext.blueprintList.Add(bp);
+                        _playerContext.BlueprintList.Add(bp);
                     }
                 }
 
@@ -236,8 +236,8 @@ namespace OE2EmpireTracker.Tests.ViewModels
                 // Build the expected set: all blueprints that would be in the merged list
                 // and satisfy all constraints
                 var merged = new List<BP>(_playerContext.GetCurrentPlayerBlueprints());
-                if (ec.globalBlueprintList != null)
-                    merged.AddRange(ec.globalBlueprintList);
+                if (ec.GlobalBlueprintList != null)
+                    merged.AddRange(ec.GlobalBlueprintList);
 
                 var expectedUUIDs = new HashSet<string>(
                     merged.Where(b => SatisfiesAll(b, data.TextFilter, data.Criteria))

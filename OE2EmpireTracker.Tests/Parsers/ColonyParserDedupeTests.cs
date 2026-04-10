@@ -36,7 +36,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             EmpireContext.Reset();
             TestHelper.SetEmpireFilePath();
             PlayerContext.FilePath = "nonexistent_player_data.json";
-            _empireContext = EmpireContext.getInstance();
+            _empireContext = EmpireContext.GetInstance();
         }
 
         [TearDown]

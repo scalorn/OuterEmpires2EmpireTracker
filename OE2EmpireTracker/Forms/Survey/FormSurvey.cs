@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Forms.Survey
         public FormSurvey()
         {
             InitializeComponent();
-            empireContext = EmpireContext.getInstance();
+            empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
             viewModel = new SurveyViewModel(new OE2EmpireTracker.Models.Survey(), playerContext, empireContext);
 
@@ -55,12 +55,12 @@ namespace OE2EmpireTracker.Forms.Survey
             DataGridViewComboBoxColumn cmbResource = (DataGridViewComboBoxColumn)dgvResources.Columns["Resource"];
             cmbResource.DisplayMember = "Name";
             cmbResource.ValueMember = "Name";
-            cmbResource.DataSource = empireContext.bindingSourceResource;
+            cmbResource.DataSource = empireContext.BindingSourceResource;
 
             DataGridViewComboBoxColumn cmbPurity = (DataGridViewComboBoxColumn)dgvResources.Columns["Purity"];
             cmbPurity.DisplayMember = "Name";
             cmbPurity.ValueMember = "Name";
-            cmbPurity.DataSource = empireContext.bindingSourceResourcePurity;
+            cmbPurity.DataSource = empireContext.BindingSourceResourcePurity;
 
             // Wire write-through handlers
             txtPlanetName.TextChanged += txtPlanetName_TextChanged;
@@ -434,12 +434,12 @@ namespace OE2EmpireTracker.Forms.Survey
                 else
                 {
                     var newSurvey = SurveyImportHelper.CreateFromTemp(tempSurvey, playerContext.CurrentPlayerUUID);
-                    playerContext.surveyList.Add(newSurvey);
+                    playerContext.SurveyList.Add(newSurvey);
                     importedSurvey = newSurvey;
                     Log.Info("New survey created via dedup: {0} ({1})", newSurvey.PlanetName, newSurvey.SurveyID);
                 }
 
-                playerContext.writeContext();
+                playerContext.WriteContext();
                 playerContext.OnSurveyDataChanged(importedSurvey.UUID);
 
                 // Refresh list view

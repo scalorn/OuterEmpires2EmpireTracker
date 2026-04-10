@@ -30,26 +30,26 @@ namespace OE2EmpireTracker.Services
         public static string FilePath { get; set; } = @"..\..\BaselineData.json";
 
         public static PlayerContext PlayerContext;
-        public BindingList<BlueprintType> blueprintTypeList;
-        public BindingSource bindingSourceBlueprintType;
-        public BindingList<ShipClass> shipClassList;
-        public BindingSource bindingSourceShipClass;
-        public BindingList<TechLevel> techLevelList;
-        public BindingSource bindingSourceTechLevel;
-        public BindingList<string> evolutionList;
-        public BindingSource bindingSourceEvolution;
-        public BindingList<Resource> resourceList;
-        public BindingSource bindingSourceResource;
-        public BindingList<ResourceGroup> resourceGroupList;
-        public BindingSource bindingSourceResourceGroup;
-        public BindingList<ResourcePurity> resourcePurityList;
-        public BindingSource bindingSourceResourcePurity;
+        public BindingList<BlueprintType> BlueprintTypeList;
+        public BindingSource BindingSourceBlueprintType;
+        public BindingList<ShipClass> ShipClassList;
+        public BindingSource BindingSourceShipClass;
+        public BindingList<TechLevel> TechLevelList;
+        public BindingSource BindingSourceTechLevel;
+        public BindingList<string> EvolutionList;
+        public BindingSource BindingSourceEvolution;
+        public BindingList<Resource> ResourceList;
+        public BindingSource BindingSourceResource;
+        public BindingList<ResourceGroup> ResourceGroupList;
+        public BindingSource BindingSourceResourceGroup;
+        public BindingList<ResourcePurity> ResourcePurityList;
+        public BindingSource BindingSourceResourcePurity;
         public int DataVersion { get; set; } = 0;
         public BaselineGameConstants GameConstants { get; set; }
-        public BindingList<Blueprint> globalBlueprintList;
-        public List<Commodity> commodityList;
+        public BindingList<Blueprint> GlobalBlueprintList;
+        public List<Commodity> CommodityList;
 
-        public static EmpireContext getInstance()
+        public static EmpireContext GetInstance()
         {
             if (Instance == null)
             {
@@ -62,7 +62,7 @@ namespace OE2EmpireTracker.Services
         /// Returns the current instance without creating one if it doesn't exist.
         /// Used by GameConstants to avoid triggering file I/O during early access.
         /// </summary>
-        public static EmpireContext getInstanceIfLoaded()
+        public static EmpireContext GetInstanceIfLoaded()
         {
             return Instance;
         }
@@ -77,7 +77,7 @@ namespace OE2EmpireTracker.Services
         private EmpireContext() : base()
         {
             Instance = this;
-            PlayerContext = PlayerContext.getInstance();
+            PlayerContext = PlayerContext.GetInstance();
 
             Log.Info("Loading baseline data from {0}", FilePath);
             string jsonContent = File.ReadAllText(FilePath);
@@ -88,13 +88,13 @@ namespace OE2EmpireTracker.Services
             DataVersion = baselineRoot.DataVersion;
             GameConstants = baselineRoot.GameConstants ?? new BaselineGameConstants();
 
-            initBlueprintTypes(baselineRoot);
-            initShipClasses(baselineRoot);
-            initTechLevels(baselineRoot);
-            initEvolutions(baselineRoot);
+            InitBlueprintTypes(baselineRoot);
+            InitShipClasses(baselineRoot);
+            InitTechLevels(baselineRoot);
+            InitEvolutions(baselineRoot);
             InitResources(baselineRoot);
-            initResourceGroups(baselineRoot);
-            initResourcePurities(baselineRoot);
+            InitResourceGroups(baselineRoot);
+            InitResourcePurities(baselineRoot);
             InitCommodities(baselineRoot);
             InitRefiningRecipes(baselineRoot);
             InitResearchTimes(baselineRoot);
@@ -106,43 +106,48 @@ namespace OE2EmpireTracker.Services
             MigrationRunner.Run(this, PlayerContext);
             if (DataVersion != prevBaselineVersion)
             {
-                writeContext();
+                WriteContext();
             }
             if (PlayerContext.DataVersion != prevPlayerVersion)
             {
-                PlayerContext.writeContext();
+                PlayerContext.WriteContext();
             }
         }
-        public void writeContext()
+        public void WriteContext()
         {
+            if (MigrationRunner.MigrationFailed)
+            {
+                Log.Warn("WriteContext blocked â€” migration failed, saving disabled");
+                return;
+            }
             BaselineRoot baselineRoot = new BaselineRoot();
             baselineRoot.DataVersion = DataVersion;
             baselineRoot.GameConstants = GameConstants;
-            baselineRoot.ShipClass = shipClassList.ToArray();
-            baselineRoot.BlueprintType = blueprintTypeList.ToArray();
-            baselineRoot.Blueprint = globalBlueprintList.ToArray();
-            baselineRoot.TechLevel = techLevelList.ToArray();
-            baselineRoot.Commodity = commodityList?.ToArray();
+            baselineRoot.ShipClass = ShipClassList.ToArray();
+            baselineRoot.BlueprintType = BlueprintTypeList.ToArray();
+            baselineRoot.Blueprint = GlobalBlueprintList.ToArray();
+            baselineRoot.TechLevel = TechLevelList.ToArray();
+            baselineRoot.Commodity = CommodityList?.ToArray();
             baselineRoot.RefiningRecipe = new List<RefiningRecipe>(RefiningRecipes.Recipes).ToArray();
             baselineRoot.ResearchTime = new List<ResearchTimeEntry>(ResearchTimeLookup.ResearchTimes).ToArray();
             string jsonContent = JsonConvert.SerializeObject(baselineRoot, JsonSettings.SerializerSettings);
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
             Log.Info("Baseline data saved to {0}", FilePath);
         }
-        public void initBlueprintTypes(BaselineRoot baselineRoot)
+        public void InitBlueprintTypes(BaselineRoot baselineRoot)
         {
             List<BlueprintType> list = new List<BlueprintType>(baselineRoot.BlueprintType);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            blueprintTypeList = new BindingList<BlueprintType>(list);
+            BlueprintTypeList = new BindingList<BlueprintType>(list);
             // Initialize the BindingSource component
-            bindingSourceBlueprintType = new BindingSource();
+            BindingSourceBlueprintType = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            bindingSourceBlueprintType.DataSource = blueprintTypeList;
+            BindingSourceBlueprintType.DataSource = BlueprintTypeList;
         }
 
         public BlueprintType FindBlueprintType(string id)
         {
-            var filteredList = blueprintTypeList
+            var filteredList = BlueprintTypeList
                 .Where(item => item.Id == id)
                 .ToList();
             if (filteredList.Count == 1)
@@ -159,23 +164,23 @@ namespace OE2EmpireTracker.Services
         public BlueprintType FindBlueprintTypeByIcon(string iconPosition)
         {
             if (string.IsNullOrEmpty(iconPosition)) return null;
-            return blueprintTypeList.FirstOrDefault(bt =>
+            return BlueprintTypeList.FirstOrDefault(bt =>
                 string.Equals(bt.IconPosition, iconPosition, StringComparison.Ordinal));
         }
 
-        public void initShipClasses(BaselineRoot baselineRoot)
+        public void InitShipClasses(BaselineRoot baselineRoot)
         {
-            shipClassList = new BindingList<ShipClass>(baselineRoot.ShipClass);
+            ShipClassList = new BindingList<ShipClass>(baselineRoot.ShipClass);
 
             // Initialize the BindingSource component
-            bindingSourceShipClass = new BindingSource();
+            BindingSourceShipClass = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            bindingSourceShipClass.DataSource = shipClassList;
+            BindingSourceShipClass.DataSource = ShipClassList;
         }
 
         public ShipClass FindShipClass(int id)
         {
-            var filteredList = shipClassList
+            var filteredList = ShipClassList
                 .Where(item => item.Id == id)
                 .ToList();
             if (filteredList.Count == 1)
@@ -185,19 +190,19 @@ namespace OE2EmpireTracker.Services
             return null;
         }
 
-        public void initTechLevels(BaselineRoot baselineRoot)
+        public void InitTechLevels(BaselineRoot baselineRoot)
         {
             List<TechLevel> list = new List<TechLevel>(baselineRoot.TechLevel);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            techLevelList = new BindingList<TechLevel>(list);
+            TechLevelList = new BindingList<TechLevel>(list);
             // Initialize the BindingSource component
-            bindingSourceTechLevel = new BindingSource();
+            BindingSourceTechLevel = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            bindingSourceTechLevel.DataSource = techLevelList;
+            BindingSourceTechLevel.DataSource = TechLevelList;
         }
         public TechLevel FindTechLevel(string id)
         {
-            var filteredList = techLevelList
+            var filteredList = TechLevelList
                 .Where(item => item.Name == id)
                 .ToList();
             if (filteredList.Count == 1)
@@ -207,23 +212,23 @@ namespace OE2EmpireTracker.Services
             return null;
         }
 
-        public void initEvolutions(BaselineRoot baselineRoot)
+        public void InitEvolutions(BaselineRoot baselineRoot)
         {
             List<string> list = new List<string>();
             for(int evo = 0; evo <= 15; evo++)
             {
                 list.Add(evo.ToString());
             }
-            evolutionList = new BindingList<string>(list);
+            EvolutionList = new BindingList<string>(list);
             // Initialize the BindingSource component
-            bindingSourceEvolution = new BindingSource();
+            BindingSourceEvolution = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            bindingSourceEvolution.DataSource = evolutionList;
+            BindingSourceEvolution.DataSource = EvolutionList;
         }
         public string FindEvolution(int id)
         {
             string key = "" + id;
-            var filteredList = evolutionList
+            var filteredList = EvolutionList
                 .Where(item => item == key)
                 .ToList();
             if (filteredList.Count == 1)
@@ -236,43 +241,43 @@ namespace OE2EmpireTracker.Services
         {
             List<Resource> list = new List<Resource>(Resource.Resources);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            resourceList = new BindingList<Resource>(list);
+            ResourceList = new BindingList<Resource>(list);
             // Initialize the BindingSource component
-            bindingSourceResource = new BindingSource();
+            BindingSourceResource = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            bindingSourceResource.DataSource = resourceList;
+            BindingSourceResource.DataSource = ResourceList;
         }
-        public void initResourceGroups(BaselineRoot baselineRoot)
+        public void InitResourceGroups(BaselineRoot baselineRoot)
         {
             List<ResourceGroup> list = new List<ResourceGroup>(ResourceGroup.Groups);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            resourceGroupList = new BindingList<ResourceGroup>(list);
+            ResourceGroupList = new BindingList<ResourceGroup>(list);
             // Initialize the BindingSource component
-            bindingSourceResourceGroup = new BindingSource();
+            BindingSourceResourceGroup = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            bindingSourceResourceGroup.DataSource = resourceGroupList;
+            BindingSourceResourceGroup.DataSource = ResourceGroupList;
         }
-        public void initResourcePurities(BaselineRoot baselineRoot)
+        public void InitResourcePurities(BaselineRoot baselineRoot)
         {
             List<ResourcePurity> list = new List<ResourcePurity>(ResourcePurity.Purities);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            resourcePurityList = new BindingList<ResourcePurity>(list);
-            bindingSourceResourcePurity = new BindingSource();
-            bindingSourceResourcePurity.DataSource = resourcePurityList;
+            ResourcePurityList = new BindingList<ResourcePurity>(list);
+            BindingSourceResourcePurity = new BindingSource();
+            BindingSourceResourcePurity.DataSource = ResourcePurityList;
         }
 
         public void InitCommodities(BaselineRoot baselineRoot)
         {
             if (baselineRoot.Commodity != null && baselineRoot.Commodity.Length > 0)
             {
-                commodityList = new List<Commodity>(baselineRoot.Commodity);
-                Commodity.SetCommodities(commodityList);
-                Log.Info("Loaded {0} commodities from baseline data", commodityList.Count);
+                CommodityList = new List<Commodity>(baselineRoot.Commodity);
+                Commodity.SetCommodities(CommodityList);
+                Log.Info("Loaded {0} commodities from baseline data", CommodityList.Count);
             }
             else
             {
-                commodityList = new List<Commodity>(Commodity.Commodities);
-                Log.Info("Using hardcoded commodity list ({0} commodities)", commodityList.Count);
+                CommodityList = new List<Commodity>(Commodity.Commodities);
+                Log.Info("Using hardcoded commodity list ({0} commodities)", CommodityList.Count);
             }
         }
 
@@ -308,8 +313,8 @@ namespace OE2EmpireTracker.Services
         {
             var list = new List<Blueprint>(baselineRoot.Blueprint ?? new Blueprint[0]);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            globalBlueprintList = new BindingList<Blueprint>(list);
-            Log.Info("Loaded {0} global blueprints", globalBlueprintList.Count);
+            GlobalBlueprintList = new BindingList<Blueprint>(list);
+            Log.Info("Loaded {0} global blueprints", GlobalBlueprintList.Count);
         }
 
         /// <summary>
@@ -317,20 +322,20 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public Blueprint FindGlobalBlueprint(string id)
         {
-            return globalBlueprintList?.FirstOrDefault(b => b.UUID == id);
+            return GlobalBlueprintList?.FirstOrDefault(b => b.UUID == id);
         }
 
     }
     public class BaselineRoot
     {
-        public int DataVersion;
-        public BaselineGameConstants GameConstants;
-        public ShipClass[] ShipClass;
-        public BlueprintType[] BlueprintType;
-        public Blueprint[] Blueprint;
-        public TechLevel[] TechLevel;
-        public Commodity[] Commodity;
-        public RefiningRecipe[] RefiningRecipe;
-        public ResearchTimeEntry[] ResearchTime;
+        public int DataVersion { get; set; }
+        public BaselineGameConstants GameConstants { get; set; }
+        public ShipClass[] ShipClass { get; set; }
+        public BlueprintType[] BlueprintType { get; set; }
+        public Blueprint[] Blueprint { get; set; }
+        public TechLevel[] TechLevel { get; set; }
+        public Commodity[] Commodity { get; set; }
+        public RefiningRecipe[] RefiningRecipe { get; set; }
+        public ResearchTimeEntry[] ResearchTime { get; set; }
     }
 }

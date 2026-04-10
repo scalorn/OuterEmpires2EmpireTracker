@@ -22,7 +22,7 @@ namespace OE2EmpireTracker.Tests.Models
             PlayerContext.Reset();
             TestHelper.SetEmpireFilePath();
             PlayerContext.FilePath = "nonexistent_player_data.json";
-            playerContext = PlayerContext.getInstance();
+            playerContext = PlayerContext.GetInstance();
         }
 
         // -----------------------------------------------------------------------
@@ -121,7 +121,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // Unit tests — edge cases (Task 2.3)
+        // Unit tests â€” edge cases (Task 2.3)
         // -----------------------------------------------------------------------
 
         [Test]
@@ -176,7 +176,7 @@ namespace OE2EmpireTracker.Tests.Models
             var bp = new OE2EmpireTracker.Models.Blueprint("TestMiningRig");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.MiningRig;
-            playerContext.blueprintList.Add(bp);
+            playerContext.BlueprintList.Add(bp);
 
             // Create a survey
             var survey = new Survey();
@@ -187,7 +187,7 @@ namespace OE2EmpireTracker.Tests.Models
             {
                 { "TestOre", new SurveyResource { Resource = "TestOre", Purity = "Low", Amount = "50" } }
             };
-            playerContext.surveyList.Add(survey);
+            playerContext.SurveyList.Add(survey);
 
             var structure = new ColonyStructure();
             structure.UUID = Guid.NewGuid().ToString();

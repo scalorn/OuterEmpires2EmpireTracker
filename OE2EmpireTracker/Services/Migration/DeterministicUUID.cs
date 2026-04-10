@@ -17,7 +17,7 @@ namespace OE2EmpireTracker.Services.Migration
         public static string Generate(string name, int evolution,
             string blueprintType, int cls, string techLevel)
         {
-            string input = $"{name}|{evolution}|{blueprintType}|{cls}|{techLevel}";
+            string input = $"{name ?? ""}|{evolution}|{blueprintType ?? ""}|{cls}|{techLevel ?? ""}";
             return GenerateV5(Namespace, input).ToString();
         }
 

@@ -36,7 +36,7 @@ namespace OE2EmpireTracker.Services
             }
 
             // Find all surveys for this planet
-            var surveys = _playerContext.surveyList
+            var surveys = _playerContext.SurveyList
                 .Where(s => string.Equals(s.PlanetName, colony.PlanetName, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
@@ -51,7 +51,7 @@ namespace OE2EmpireTracker.Services
 
             var newStructures = new List<ColonyStructure>();
 
-            // REQ-COL-096d: Fixed sequence — Command Centre first
+            // REQ-COL-096d: Fixed sequence â€” Command Centre first
             var commandCentre = FindPlayerBlueprint("Flatpacks/ColonyCommandCentre");
             if (commandCentre != null)
             {
@@ -82,7 +82,7 @@ namespace OE2EmpireTracker.Services
             var refineryBp = FindPlayerBlueprint(BlueprintTypes.Refinery);
             foreach (var entry in bestResources.OrderBy(r => r.ResourceName))
             {
-                decimal miningRate = (decimal)entry.RawAmount * (1.0m + _extractionFocusLevel * 0.01m);
+                decimal miningRate = entry.RawAmount * (1.0m + _extractionFocusLevel * 0.01m);
                 int refinersNeeded = (int)Math.Ceiling((double)miningRate / GameConstants.RefiningBaseRate);
 
                 for (int i = 0; i < refinersNeeded; i++)
@@ -125,10 +125,10 @@ namespace OE2EmpireTracker.Services
                     if (string.IsNullOrEmpty(resource.Resource)) continue;
                     if (resource.Purity == GameConstants.PurityRefined) continue; // Skip already-refined
 
-                    double amount;
-                    if (!double.TryParse(resource.Amount, out amount)) continue;
+                    decimal amount;
+                    if (!decimal.TryParse(resource.Amount, out amount)) continue;
 
-                    decimal adjustedRate = (decimal)amount * (1.0m + _extractionFocusLevel * 0.01m);
+                    decimal adjustedRate = amount * (1.0m + _extractionFocusLevel * 0.01m);
                     int refiningMultiplier = GetRefiningMultiplier(resource.Purity);
                     decimal refinedOutput = adjustedRate * refiningMultiplier;
 
@@ -181,7 +181,7 @@ namespace OE2EmpireTracker.Services
         {
             public string ResourceName { get; set; }
             public string Purity { get; set; }
-            public double RawAmount { get; set; }
+            public decimal RawAmount { get; set; }
             public decimal RefinedOutputRate { get; set; }
             public string SurveyUUID { get; set; }
         }

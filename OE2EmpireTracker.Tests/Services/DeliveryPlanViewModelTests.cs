@@ -28,9 +28,9 @@ namespace OE2EmpireTracker.Tests.Services
             EmpireContext.Reset();
             // Ensure EmpireContext singleton exists (ColonyStatusCalculator depends on it)
             // Must be done before PlayerContext.Reset() to avoid stale references
-            var ec = EmpireContext.getInstance();
+            var ec = EmpireContext.GetInstance();
             PlayerContext.Reset();
-            playerContext = PlayerContext.getInstance();
+            playerContext = PlayerContext.GetInstance();
             // Update EmpireContext's PlayerContext reference
             EmpireContext.PlayerContext = playerContext;
         }
@@ -401,14 +401,14 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // AutoFillFlatpacks — Property 1
+        // AutoFillFlatpacks â€” Property 1
         // Validates: Requirements 2.1, 2.2, 2.3
         // -----------------------------------------------------------------------
 
         private OE2EmpireTracker.Models.Blueprint CreateTestBlueprint(string uuid, string name, string bpType = "Flatpacks/Habitat")
         {
             var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, BluePrintType = bpType };
-            playerContext.blueprintList.Add(bp);
+            playerContext.BlueprintList.Add(bp);
             return bp;
         }
 
@@ -514,9 +514,9 @@ namespace OE2EmpireTracker.Tests.Services
             CreateTestBlueprint("bp-c", "Habitat");
             var vm = CreateViewModel();
             var colony = CreateColonyWithStructures("c1",
-                MakeStructure("bp-a", built: true, staged: false),   // built — skip
-                MakeStructure("bp-b", built: false, staged: true),   // staged — skip
-                MakeStructure("bp-c", built: false, staged: false)); // unbuilt+unstaged — add
+                MakeStructure("bp-a", built: true, staged: false),   // built â€” skip
+                MakeStructure("bp-b", built: false, staged: true),   // staged â€” skip
+                MakeStructure("bp-c", built: false, staged: false)); // unbuilt+unstaged â€” add
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
             int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
@@ -573,7 +573,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // AutoFillManufacturingResources — Property 3
+        // AutoFillManufacturingResources â€” Property 3
         // Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5, 8.1, 8.2, 8.3, 8.4
         // -----------------------------------------------------------------------
 
@@ -582,7 +582,7 @@ namespace OE2EmpireTracker.Tests.Services
             var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, BluePrintType = "Flatpacks/Manufactory", Resources = resources };
             bp.Properties.setProperty("Manufacture Run Time", "1h");
             bp.Properties.setProperty("Can Manufacture", true);
-            playerContext.blueprintList.Add(bp);
+            playerContext.BlueprintList.Add(bp);
             return bp;
         }
 
@@ -634,7 +634,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void AutoFillManufacturingResources_StagingManufactory_AddsResourceShortfall()
         {
             var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg-shortfall", BluePrintType = "Flatpacks/Manufactory" };
-            playerContext.blueprintList.Add(flatpackBp);
+            playerContext.BlueprintList.Add(flatpackBp);
 
             CreateManufactoryBlueprint("mfg-bp-shortfall", "Widget",
                 new Dictionary<string, string> { { "Iron", "5" }, { "Copper", "3" } });
@@ -674,7 +674,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void AutoFillManufacturingResources_ResourcePurityIsRefined()
         {
             var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg-purity", BluePrintType = "Flatpacks/Manufactory" };
-            playerContext.blueprintList.Add(flatpackBp);
+            playerContext.BlueprintList.Add(flatpackBp);
 
             CreateManufactoryBlueprint("mfg-bp-purity", "Gadget",
                 new Dictionary<string, string> { { "Iron", "3" }, { "Copper", "2" } });
@@ -704,7 +704,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             // Create flatpack blueprint for the manufactory structure
             var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg1", BluePrintType = "Flatpacks/Manufactory" };
-            playerContext.blueprintList.Add(flatpackBp);
+            playerContext.BlueprintList.Add(flatpackBp);
 
             // Create the manufacturing target blueprint with resources
             var mfgBp = CreateManufactoryBlueprint("mfg-bp1", "Widget",
@@ -737,7 +737,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void AutoFillManufacturingResources_PartialWarehouse_CorrectShortfall()
         {
             var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg2", BluePrintType = "Flatpacks/Manufactory" };
-            playerContext.blueprintList.Add(flatpackBp);
+            playerContext.BlueprintList.Add(flatpackBp);
 
             CreateManufactoryBlueprint("mfg-bp2", "Gadget",
                 new Dictionary<string, string> { { "Iron", "5" }, { "Copper", "3" } });
@@ -778,7 +778,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void AutoFillManufacturingResources_MultipleStagingStructures_AggregatesNeeds()
         {
             var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg3", BluePrintType = "Flatpacks/Manufactory" };
-            playerContext.blueprintList.Add(flatpackBp);
+            playerContext.BlueprintList.Add(flatpackBp);
 
             CreateManufactoryBlueprint("mfg-bp3", "Part",
                 new Dictionary<string, string> { { "Iron", "2" } });
@@ -803,9 +803,9 @@ namespace OE2EmpireTracker.Tests.Services
         public void AutoFillManufacturingResources_CommodityFactory_CorrectShortfall()
         {
             var flatpackBp = new OE2EmpireTracker.Models.Blueprint("CommodityFactory") { UUID = "fp-cf1", BluePrintType = "Flatpacks/CommodityFactory/Agridome" };
-            playerContext.blueprintList.Add(flatpackBp);
+            playerContext.BlueprintList.Add(flatpackBp);
 
-            // Use a real commodity — "Advanced Biolubricants" needs Alkali Organics (2) and Strong Acidic Inorganics (2)
+            // Use a real commodity â€” "Advanced Biolubricants" needs Alkali Organics (2) and Strong Acidic Inorganics (2)
             var vm = CreateViewModel();
             var structure = MakeStagingCommodityFactory("fp-cf1", "Advanced Biolubricants", 3);
             var colony = CreateColonyWithStructures("c1", structure);
@@ -830,7 +830,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void AutoFillManufacturingResources_ZeroQuantity_Skipped()
         {
             var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg4", BluePrintType = "Flatpacks/Manufactory" };
-            playerContext.blueprintList.Add(flatpackBp);
+            playerContext.BlueprintList.Add(flatpackBp);
 
             CreateManufactoryBlueprint("mfg-bp4", "Thing",
                 new Dictionary<string, string> { { "Iron", "5" } });
@@ -852,7 +852,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void AutoFillManufacturingResources_PreservesExistingItems()
         {
             var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg5", BluePrintType = "Flatpacks/Manufactory" };
-            playerContext.blueprintList.Add(flatpackBp);
+            playerContext.BlueprintList.Add(flatpackBp);
 
             CreateManufactoryBlueprint("mfg-bp5", "Gizmo",
                 new Dictionary<string, string> { { "Iron", "1" } });
@@ -875,7 +875,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // AutoFillWorkers — Property 4
+        // AutoFillWorkers â€” Property 4
         // Validates: Requirements 10.1, 10.2, 10.3, 10.4
         // -----------------------------------------------------------------------
 
@@ -886,7 +886,7 @@ namespace OE2EmpireTracker.Tests.Services
             if (blueCollar > 0) bp.Properties.setProperty("BlueCollarDetail", blueCollar.ToString());
             if (whiteCollar > 0) bp.Properties.setProperty("WhiteCollarDetail", whiteCollar.ToString());
             if (specialist > 0) bp.Properties.setProperty("SpecialistDetail", specialist.ToString());
-            playerContext.blueprintList.Add(bp);
+            playerContext.BlueprintList.Add(bp);
             return bp;
         }
 

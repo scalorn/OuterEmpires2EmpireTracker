@@ -53,3 +53,6 @@ nuget restore OE2EmpireTracker.sln
 - Singletons for context objects (`PlayerContext.getInstance()`, `EmpireContext.getInstance()`)
 - Call `Reset()` on context singletons in test setup to ensure clean state
 - WinForms data binding via `BindingList<T>` and `BindingSource`
+
+## Tool Limitations
+- **Do NOT use `semanticRename`** — it does not work with old-style csproj / .NET Framework 4.8.1. The language server cannot resolve symbols for rename. Use manual find-and-replace (`strReplace` or `executePwsh` with grep/sed) instead.

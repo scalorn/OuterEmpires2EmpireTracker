@@ -31,7 +31,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         {
             InitializeComponent();
 
-            empireContext = EmpireContext.getInstance();
+            empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
             viewModel = new PlayerProfileViewModel(new Models.PlayerProfile(), playerContext);
 
@@ -333,7 +333,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 return;
             }
 
-            bool duplicate = playerContext.playerProfileList
+            bool duplicate = playerContext.PlayerProfileList
                 .Any(p => p.UUID != viewModel.Data.UUID &&
                      string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
             if (duplicate)

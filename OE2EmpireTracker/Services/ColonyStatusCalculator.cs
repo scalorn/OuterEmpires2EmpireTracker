@@ -55,7 +55,7 @@ namespace OE2EmpireTracker.Services
         {
             this.colony = colony;
             // Uses Singleton pattern access to retrieve contexts from the global state.
-            empireContext = EmpireContext.getInstance();
+            empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
             //ColonyWorkers = new List<ColonyWorker>();
         }

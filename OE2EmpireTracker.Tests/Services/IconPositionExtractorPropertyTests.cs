@@ -31,16 +31,16 @@ namespace OE2EmpireTracker.Tests.Services
         {
             EmpireContext.Reset();
             TestHelper.SetEmpireFilePath();
-            EmpireContext.getInstance();
+            EmpireContext.GetInstance();
         }
 
         [FsCheck.NUnit.Property(MaxTest = 200)]
         public Property FindBlueprintTypeByIcon_ReturnsCorrectTypeForKnownPositions()
         {
-            var ctx = EmpireContext.getInstance();
+            var ctx = EmpireContext.GetInstance();
 
             // Collect all BlueprintType entries with non-null, non-empty, distinct IconPositions
-            var typesWithIcons = ctx.blueprintTypeList
+            var typesWithIcons = ctx.BlueprintTypeList
                 .Where(bt => !string.IsNullOrEmpty(bt.IconPosition))
                 .GroupBy(bt => bt.IconPosition, StringComparer.Ordinal)
                 .Where(g => g.Count() == 1)   // only truly distinct positions
@@ -48,7 +48,7 @@ namespace OE2EmpireTracker.Tests.Services
                 .ToList();
 
             if (typesWithIcons.Count == 0)
-                return true.ToProperty().Label("No distinct icon positions in BaselineData — vacuously true");
+                return true.ToProperty().Label("No distinct icon positions in BaselineData â€” vacuously true");
 
             // Generator picks a random entry from the distinct set
             var knownGen = Gen.Elements(typesWithIcons.ToArray());
@@ -65,11 +65,11 @@ namespace OE2EmpireTracker.Tests.Services
         [FsCheck.NUnit.Property(MaxTest = 200)]
         public Property FindBlueprintTypeByIcon_ReturnsNullForUnknownPositions()
         {
-            var ctx = EmpireContext.getInstance();
+            var ctx = EmpireContext.GetInstance();
 
             // Collect all known icon positions for exclusion
             var knownPositions = new HashSet<string>(
-                ctx.blueprintTypeList
+                ctx.BlueprintTypeList
                     .Where(bt => !string.IsNullOrEmpty(bt.IconPosition))
                     .Select(bt => bt.IconPosition),
                 StringComparer.Ordinal);
@@ -92,7 +92,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void FindBlueprintTypeByIcon_ReturnsNullForNullAndEmpty()
         {
-            var ctx = EmpireContext.getInstance();
+            var ctx = EmpireContext.GetInstance();
             Assert.That(ctx.FindBlueprintTypeByIcon(null), Is.Null, "null input should return null");
             Assert.That(ctx.FindBlueprintTypeByIcon(""), Is.Null, "empty input should return null");
         }
