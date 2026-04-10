@@ -389,9 +389,82 @@ namespace OE2EmpireTracker.Forms.Survey
 
         private void cmdImport_Click(object sender, EventArgs e)
         {
-            SurveyParser parser = new SurveyParser();
-            parser.ProcessClipboard(viewModel.Data);
-            PopulateFormFromViewModel();
+            if (!Clipboard.ContainsText(TextDataFormat.Html))
+            {
+                MessageBox.Show("No HTML content found on the clipboard.\n\nCopy survey data from the game browser first.",
+                    "No HTML", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(playerContext.CurrentPlayerUUID))
+            {
+                MessageBox.Show("No player selected. Select a player profile first.",
+                    "No Player", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            try
+            {
+                var parser = new SurveyParser();
+                var tempSurvey = parser.ParseClipboardToTemp(out string extractedHtml);
+
+                if (tempSurvey == null)
+                    return;
+
+                // Fallback: if no PlanetName or no SurveyID parsed, use current behavior
+                if (string.IsNullOrEmpty(tempSurvey.PlanetName) || string.IsNullOrEmpty(tempSurvey.SurveyID))
+                {
+                    parser.ProcessClipboard(viewModel.Data);
+                    PopulateFormFromViewModel();
+                    Log.Info("Survey imported from clipboard (fallback): {0}", viewModel.Data.PlanetName);
+                    return;
+                }
+
+                var existingSurvey = SurveyImportHelper.FindByKey(
+                    playerContext.GetCurrentPlayerSurveys(), tempSurvey.PlanetName, tempSurvey.SurveyID);
+
+                OE2EmpireTracker.Models.Survey importedSurvey;
+
+                if (existingSurvey != null)
+                {
+                    SurveyImportHelper.MergeData(existingSurvey, tempSurvey);
+                    importedSurvey = existingSurvey;
+                    Log.Info("Survey updated via dedup: {0} ({1})", existingSurvey.PlanetName, existingSurvey.SurveyID);
+                }
+                else
+                {
+                    var newSurvey = SurveyImportHelper.CreateFromTemp(tempSurvey, playerContext.CurrentPlayerUUID);
+                    playerContext.surveyList.Add(newSurvey);
+                    importedSurvey = newSurvey;
+                    Log.Info("New survey created via dedup: {0} ({1})", newSurvey.PlanetName, newSurvey.SurveyID);
+                }
+
+                playerContext.writeContext();
+                playerContext.OnSurveyDataChanged(importedSurvey.UUID);
+
+                // Refresh list view
+                PopulateListView(viewModel.GetFilteredSurveys(null));
+
+                // Select the imported survey in the list view
+                foreach (ListViewItem item in lvwSurveys.Items)
+                {
+                    if ((item.Tag as OE2EmpireTracker.Models.Survey)?.UUID == importedSurvey.UUID)
+                    {
+                        item.Selected = true;
+                        item.EnsureVisible();
+                        break;
+                    }
+                }
+
+                viewModel.SelectSurvey(importedSurvey);
+                PopulateFormFromViewModel();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error importing survey from clipboard");
+                MessageBox.Show("Failed to import survey: " + ex.Message,
+                    "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>

@@ -168,6 +168,26 @@ namespace OE2EmpireTracker.Parsers
         }
 
         /// <summary>
+        /// Parses clipboard HTML into a new temporary Survey object without mutating any existing survey.
+        /// Returns null if the clipboard does not contain HTML.
+        /// Also returns the extracted HTML via the out parameter for reuse.
+        /// </summary>
+        public Survey ParseClipboardToTemp(out string extractedHtml)
+        {
+            extractedHtml = null;
+            if (!Clipboard.ContainsText(TextDataFormat.Html))
+                return null;
+
+            string clipboardData = Clipboard.GetText(TextDataFormat.Html);
+            Log.Info("Survey clipboard data length (temp parse): {0}", clipboardData.Length);
+            extractedHtml = ClipboardHelper.ExtractHtmlFragment(clipboardData);
+
+            var tempSurvey = new Survey();
+            ProcessHtml(tempSurvey, extractedHtml);
+            return tempSurvey;
+        }
+
+        /// <summary>
         /// Reads HTML from the clipboard and processes it into the given survey.
         /// </summary>
         public void ProcessClipboard(Survey survey)

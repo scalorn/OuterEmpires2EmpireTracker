@@ -123,3 +123,7 @@ Auto-fill commodity drop-offs from colony requests on the route builder plan tab
 ### Individual Import Dedup
 Individual blueprint clipboard import dedup — parse complete blueprint identity from clipboard HTML, use dedup-key matching to route to correct blueprint (update existing or create new), reusing MarketBlueprintImporter routing logic.
 **Status: Complete** — FindByDedupKey/UpdateExisting made internal on MarketBlueprintImporter. IsGlobalRoute pure routing function. BlueprintScanner.ParseClipboardToTemp for non-mutating parse. FormBlueprint.cmdImport_Click rewritten with parse→check selected→route→persist flow. 4 FsCheck property tests. Spec: `.kiro/specs/individual-import-dedup/`.
+
+### BL-038: Survey Import Dedup
+Survey clipboard import dedup — parse into a temporary survey first, search by PlanetName+SurveyID (case-insensitive), then merge into existing or create new. Falls back to current behavior when SurveyID is not parsed. Adds clipboard HTML guard and error handling.
+**Status: Complete** — SurveyImportHelper static class with FindByKey, CreateFromTemp, MergeData. SurveyParser.ParseClipboardToTemp for non-mutating parse. FormSurvey.cmdImport_Click rewritten with parse→search→merge-or-create flow. 3 FsCheck property tests.

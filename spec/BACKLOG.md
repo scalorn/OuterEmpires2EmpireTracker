@@ -195,6 +195,7 @@ Build a migration utility to import colony data from an existing OpenOffice Calc
 
 ### BL-038: Survey Import Dedup
 **Dependencies:** None
+**Status: Complete** — see `.kiro/specs/` (no separate spec; implemented directly from AMB-038)
 
 The survey clipboard import (`FormSurvey.cmdImport_Click`) currently writes parsed HTML directly into the selected survey with no dedup, no clipboard guard, and no error handling. Colony and Blueprint imports both have dedup logic; Survey is the outlier. Importing a survey for a different planet into the wrong selected survey silently corrupts data. Add survey import dedup following the same pattern as colony-import-dedupe: parse into temp, search by PlanetName+SurveyID, merge or create. Add a clipboard HTML guard and error handling. See AMB-038.
 
