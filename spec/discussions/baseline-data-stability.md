@@ -146,7 +146,7 @@ All data that is currently hardcoded in C# and could change if the game updates.
 
 | File | Data | Risk of Change | Migration Concern |
 |---|---|---|---|
-| `Commodity.cs` | ~80 commodities with Name, CommodityGroup, CommodityIndustry, and ConstructionResources (resource→quantity dictionaries) | High — game adds commodities, could change recipes | Largest hardcoded dataset. Resource names are strings. |
+| `Commodity.cs` | ~209 commodities with Name, CommodityGroup, CommodityIndustry, and ConstructionResources (resource→quantity dictionaries) | High — game adds commodities, could change recipes | Largest hardcoded dataset. Resource names are strings. |
 | `CommodityGroup.cs` | ~10 commodity groups (enum + Name) | Low — groups are broad categories | Simple list |
 | `CommodityIndustry.cs` | ~15 commodity industries (enum + Name) | Low-Medium — game could add industries | Simple list |
 | `Resource.cs` | ~30 resources with enum, Name, ResourceClass, ResourceGroup | Low — resource list is fairly stable | Enum-based, would need careful migration if moved to JSON |
@@ -169,7 +169,7 @@ This is handled by the same idempotent rename table — scan blueprints, find ol
 
 ### Priority for Moving to Data-Driven
 
-1. **Commodity.cs** (highest priority) — 80 commodities with construction recipes. Largest dataset, most likely to change, users can't fix without code changes.
+1. **Commodity.cs** (highest priority) — 209 commodities with construction recipes. Largest dataset, most likely to change, users can't fix without code changes.
 2. **RefiningRecipes.cs** — 6 recipes, game could add tiers or change rates.
 3. **ResearchTimeLookup.cs** — 15 entries, game could rebalance.
 4. **GameConstants.cs** — simple scalars, easy to move.
