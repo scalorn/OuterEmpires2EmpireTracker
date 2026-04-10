@@ -111,7 +111,7 @@ Stabilize BaselineData.json for multi-user distribution: deterministic UUIDs for
   - [x] 7.4 Add `GameConstants` section to BaselineData.json (main + test)
     - _Requirements: 7.1_
 
-- [-] 8. Externalize Commodities to BaselineData.json
+- [x] 8. Externalize Commodities to BaselineData.json
   - [x] 8.1 Add `Commodity[]` array to `BaselineRoot`
     - _Requirements: 8.1_
 
@@ -124,17 +124,17 @@ Stabilize BaselineData.json for multi-user distribution: deterministic UUIDs for
   - [x] 8.4 Update `Commodity.cs` — keep model class, change static initializer to fallback only
     - _Requirements: 8.2, 8.4_
 
-- [ ] 9. Externalize RefiningRecipes to BaselineData.json
-  - [~] 9.1 Add `RefiningRecipe[]` array to `BaselineRoot`
+- [x] 9. Externalize RefiningRecipes to BaselineData.json
+  - [x] 9.1 Add `RefiningRecipe[]` array to `BaselineRoot`
     - _Requirements: 9.1_
 
-  - [~] 9.2 Update `EmpireContext` to load recipes from BaselineRoot with fallback to hardcoded list
+  - [x] 9.2 Update `EmpireContext` to load recipes from BaselineRoot with fallback to hardcoded list
     - _Requirements: 9.2, 9.3, 9.4_
 
-  - [~] 9.3 Serialize all 6 recipes into BaselineData.json (main + test)
+  - [x] 9.3 Serialize all 6 recipes into BaselineData.json (main + test)
     - _Requirements: 9.3_
 
-  - [~] 9.4 Update `RefiningRecipes.cs` — change static list to load from EmpireContext with fallback
+  - [x] 9.4 Update `RefiningRecipes.cs` — change static list to load from EmpireContext with fallback
     - _Requirements: 9.2, 9.4_
 
 - [ ] 10. Externalize ResearchTimeLookup to BaselineData.json

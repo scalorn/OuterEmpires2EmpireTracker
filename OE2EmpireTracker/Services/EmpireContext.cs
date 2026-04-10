@@ -1,4 +1,5 @@
 using Amazon;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Services.Migration;
 using Newtonsoft.Json;
 using NLog;
@@ -95,6 +96,7 @@ namespace OE2EmpireTracker.Services
             initResourceGroups(baselineRoot);
             initResourcePurities(baselineRoot);
             InitCommodities(baselineRoot);
+            InitRefiningRecipes(baselineRoot);
             InitGlobalBlueprints(baselineRoot);
 
             // Run migrations after both contexts are loaded
@@ -120,6 +122,7 @@ namespace OE2EmpireTracker.Services
             baselineRoot.Blueprint = globalBlueprintList.ToArray();
             baselineRoot.TechLevel = techLevelList.ToArray();
             baselineRoot.Commodity = commodityList?.ToArray();
+            baselineRoot.RefiningRecipe = new List<RefiningRecipe>(RefiningRecipes.Recipes).ToArray();
             string jsonContent = JsonConvert.SerializeObject(baselineRoot, JsonSettings.SerializerSettings);
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
             Log.Info("Baseline data saved to {0}", FilePath);
@@ -271,6 +274,20 @@ namespace OE2EmpireTracker.Services
             }
         }
 
+        public void InitRefiningRecipes(BaselineRoot baselineRoot)
+        {
+            if (baselineRoot.RefiningRecipe != null && baselineRoot.RefiningRecipe.Length > 0)
+            {
+                var recipes = new List<RefiningRecipe>(baselineRoot.RefiningRecipe);
+                RefiningRecipes.SetRecipes(recipes);
+                Log.Info("Loaded {0} refining recipes from baseline data", recipes.Count);
+            }
+            else
+            {
+                Log.Info("Using hardcoded refining recipe list ({0} recipes)", RefiningRecipes.Recipes.Count);
+            }
+        }
+
         public void InitGlobalBlueprints(BaselineRoot baselineRoot)
         {
             var list = new List<Blueprint>(baselineRoot.Blueprint ?? new Blueprint[0]);
@@ -297,5 +314,6 @@ namespace OE2EmpireTracker.Services
         public Blueprint[] Blueprint;
         public TechLevel[] TechLevel;
         public Commodity[] Commodity;
+        public RefiningRecipe[] RefiningRecipe;
     }
 }

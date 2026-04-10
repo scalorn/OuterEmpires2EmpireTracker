@@ -14761,5 +14761,55 @@
         "Acidic Inorganics": "2"
       }
     }
+  ],
+  "RefiningRecipe": [
+    {
+      "InputResource": "Lanthanides",
+      "InputPurity": "Refined",
+      "OutputResource": "S1. Translanthanic Exotics",
+      "ConsumeRate": 1250,
+      "ProduceRate": 25,
+      "Tier": 1
+    },
+    {
+      "InputResource": "Superheavy Exotics",
+      "InputPurity": "Refined",
+      "OutputResource": "S1. Translivermoric Exotics",
+      "ConsumeRate": 1250,
+      "ProduceRate": 25,
+      "Tier": 1
+    },
+    {
+      "InputResource": "Transuranic Volatiles",
+      "InputPurity": "Refined",
+      "OutputResource": "S1. Transuranic Exotics",
+      "ConsumeRate": 1250,
+      "ProduceRate": 25,
+      "Tier": 1
+    },
+    {
+      "InputResource": "S1. Translanthanic Exotics",
+      "InputPurity": "Refined",
+      "OutputResource": "S2. Element 126",
+      "ConsumeRate": 500,
+      "ProduceRate": 25,
+      "Tier": 2
+    },
+    {
+      "InputResource": "S1. Translivermoric Exotics",
+      "InputPurity": "Refined",
+      "OutputResource": "S2. Element 127",
+      "ConsumeRate": 500,
+      "ProduceRate": 25,
+      "Tier": 2
+    },
+    {
+      "InputResource": "S1. Transuranic Exotics",
+      "InputPurity": "Refined",
+      "OutputResource": "S2. Superactinides",
+      "ConsumeRate": 500,
+      "ProduceRate": 25,
+      "Tier": 2
+    }
   ]
 }
