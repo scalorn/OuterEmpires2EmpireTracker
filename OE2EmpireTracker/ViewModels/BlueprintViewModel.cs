@@ -1,4 +1,5 @@
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.Services.Migration;
 using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
@@ -202,7 +203,9 @@ namespace OE2EmpireTracker.ViewModels
         {
             if (string.IsNullOrEmpty(_blueprint.UUID))
             {
-                _blueprint.UUID = Guid.NewGuid().ToString();
+                _blueprint.UUID = isGlobal
+                    ? DeterministicUUID.Generate(_blueprint)
+                    : Guid.NewGuid().ToString();
             }
 
             var ec = EmpireContext.getInstance();

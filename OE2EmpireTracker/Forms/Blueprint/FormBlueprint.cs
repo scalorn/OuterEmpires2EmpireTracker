@@ -1,5 +1,6 @@
 using OE2EmpireTracker.Persistence;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.Services.Migration;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Forms.Blueprint;
@@ -1447,7 +1448,13 @@ namespace OE2EmpireTracker
                 {
                     scanner.ProcessClipboard(viewModel.Data);
                     if (string.IsNullOrEmpty(viewModel.Data.UUID))
-                        viewModel.Data.UUID = Guid.NewGuid().ToString();
+                    {
+                        bool fallbackGlobal = viewModel.Data.Evolution == 0
+                            && string.IsNullOrEmpty(viewModel.Data.OwnerUUID);
+                        viewModel.Data.UUID = fallbackGlobal
+                            ? DeterministicUUID.Generate(viewModel.Data)
+                            : Guid.NewGuid().ToString();
+                    }
                     PopulateForm();
                     Log.Info("Blueprint imported from clipboard (fallback, no name parsed)");
                     return;
@@ -1497,7 +1504,9 @@ namespace OE2EmpireTracker
                     }
                     else
                     {
-                        tempBP.UUID = Guid.NewGuid().ToString();
+                        tempBP.UUID = isGlobal
+                            ? DeterministicUUID.Generate(tempBP)
+                            : Guid.NewGuid().ToString();
                         if (!isGlobal)
                             tempBP.OwnerUUID = playerContext.CurrentPlayerUUID;
                         targetList.Add(tempBP);

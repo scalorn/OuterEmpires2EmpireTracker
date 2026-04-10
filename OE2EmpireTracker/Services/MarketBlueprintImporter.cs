@@ -1,6 +1,7 @@
 using NLog;
 using OE2EmpireTracker.Forms.Blueprint;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services.Migration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,7 +112,9 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    bp.UUID = Guid.NewGuid().ToString();
+                    bp.UUID = isGlobal
+                        ? DeterministicUUID.Generate(bp)
+                        : Guid.NewGuid().ToString();
                     if (!isGlobal)
                     {
                         bp.OwnerUUID = playerContext.CurrentPlayerUUID;

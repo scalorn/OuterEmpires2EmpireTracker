@@ -82,14 +82,14 @@ Stabilize BaselineData.json for multi-user distribution: deterministic UUIDs for
 
 - [x] 4. Checkpoint — Ensure all tests pass
 
-- [ ] 5. Update blueprint creation to use deterministic UUIDs
-  - [~] 5.1 Update `MarketBlueprintImporter.Import` to use `DeterministicUUID.Generate` for global blueprints (Evo 0)
+- [x] 5. Update blueprint creation to use deterministic UUIDs
+  - [x] 5.1 Update `MarketBlueprintImporter.Import` to use `DeterministicUUID.Generate` for global blueprints (Evo 0)
     - _Requirements: 1.1, 1.2, 12.1, 12.2_
 
-  - [~] 5.2 Update `FormBlueprint.cmdImport_Click` to use `DeterministicUUID.Generate` for global blueprints
+  - [x] 5.2 Update `FormBlueprint.cmdImport_Click` to use `DeterministicUUID.Generate` for global blueprints
     - _Requirements: 1.1, 1.2, 12.1, 12.2_
 
-  - [~] 5.3 Update `FormBlueprint.btnSave_Click` / `BlueprintViewModel.Save` to use `DeterministicUUID.Generate` for global blueprints
+  - [x] 5.3 Update `FormBlueprint.btnSave_Click` / `BlueprintViewModel.Save` to use `DeterministicUUID.Generate` for global blueprints
     - _Requirements: 1.1, 1.2, 12.1, 12.2_
 
 - [~] 6. Checkpoint — Ensure all tests pass
