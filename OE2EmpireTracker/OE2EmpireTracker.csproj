@@ -123,6 +123,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Services\Migration\DeterministicUUID.cs" />
+    <Compile Include="Services\Migration\RemapUUID.cs" />
     <Compile Include="Services\ColonyImportHelper.cs" />
     <Compile Include="Services\SurveyImportHelper.cs" />
     <Compile Include="Services\BlueprintReferenceCounter.cs" />
