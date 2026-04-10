@@ -122,15 +122,59 @@ This is essentially a three-way merge: previous release baseline, current releas
 
 ---
 
-## Code-Embedded Data
+## Code-Embedded Data — Full Audit
 
-Anything that might change should be data-driven, not code-embedded. Candidates:
+All data that is currently hardcoded in C# and could change if the game updates. Each item needs to move to BaselineData.json (or a versioned data section) so users can fix it without code changes and the developer can push updates via the migration framework.
 
-- `RefiningRecipes.cs` — synthetic refining recipes and rates
-- `Commodity.ConstructionResources` — resources needed to construct each commodity
-- `GameConstants.cs` — some values here are game-derived and could change (RefiningBaseRate, CommoditiesPerCycle, etc.)
+### Already in BaselineData.json (stable)
+- **ShipClass** — integer Id, Name. Stable.
+- **BlueprintType** — string Id (e.g. "Flatpacks/MiningRig"), Name, Properties array, IconPosition, OutputItemType. Stable human-readable Ids.
+- **TechLevel** — Name only. Stable.
+- **Blueprint** — UUID (to become deterministic), all blueprint data. Migration target.
 
-These should move into BaselineData.json (or a separate data file) and participate in the same versioning scheme.
+### Hardcoded in Constants/ — Candidates for Data-Driven
+
+| File | Data | Risk of Change | Migration Concern |
+|---|---|---|---|
+| `RefiningRecipes.cs` | 6 synthetic refining recipes (S1/S2 tiers) with input/output resources, consume/produce rates | Medium — game could add S3 tier or change rates | Resource names are strings; if game renames a resource, recipe breaks |
+| `ResearchTimeLookup.cs` | Research time by evolution level (15 entries, 2-30 days) | Medium — game could rebalance | Simple key-value, easy to move to JSON |
+| `GameConstants.cs` | RefiningBaseRate (25), CommoditiesPerCycle (10), CommodityCycleSeconds (600), StructureCap (65), WorkerVolume (50) | Low-Medium — game could rebalance any of these | Simple scalars |
+| `BlueprintPropertyValidation.cs` | ~130 property names with types (Integer/Decimal/Boolean/Time/ComboBox) and validation patterns | Medium — game adds new properties regularly | Append-only in practice, but type changes would need migration |
+| `BlueprintTypes.cs` | 6 type constants + prefix strings + extension methods (IsFlatpack, IsCommodityFactory) | Low — we control these names | Extension methods would stay in code; constants could reference JSON data |
+
+### Hardcoded in Models/ — Candidates for Data-Driven
+
+| File | Data | Risk of Change | Migration Concern |
+|---|---|---|---|
+| `Commodity.cs` | ~80 commodities with Name, CommodityGroup, CommodityIndustry, and ConstructionResources (resource→quantity dictionaries) | High — game adds commodities, could change recipes | Largest hardcoded dataset. Resource names are strings. |
+| `CommodityGroup.cs` | ~10 commodity groups (enum + Name) | Low — groups are broad categories | Simple list |
+| `CommodityIndustry.cs` | ~15 commodity industries (enum + Name) | Low-Medium — game could add industries | Simple list |
+| `Resource.cs` | ~30 resources with enum, Name, ResourceClass, ResourceGroup | Low — resource list is fairly stable | Enum-based, would need careful migration if moved to JSON |
+| `ResourcePurity.cs` | 5 purity levels (Low/Medium/High/Refined + enum) | Very Low | Unlikely to change |
+| `ResourceClass.cs` / `ResourceGroup.cs` | Classification enums | Very Low | Unlikely to change |
+
+### BlueprintType String Ids — Rename Concerns
+
+BlueprintType Ids are developer-controlled strings, not game-derived. The game doesn't name its types "Flatpacks/MiningRig" — we chose those. Renames should be rare and intentional.
+
+If a BlueprintType Id is renamed (e.g. "Flatpacks/MiningRig" → "Flatpacks/MiningRigV2"), the migration needs to:
+1. Update the BlueprintType record's Id in BaselineData.json
+2. Update every Blueprint's `BluePrintType` field that references the old Id
+3. Update the `BlueprintTypes` constants class
+4. Recalculate deterministic UUIDs for affected blueprints (BluePrintType is part of the hash input) and remap references
+
+This is handled by the same idempotent rename table — scan blueprints, find old type, update, recalculate hashes. The blast radius is larger than a blueprint name rename but the mechanism is identical.
+
+**Decision: Keep BlueprintType string Ids as-is.** They're human-readable, stable, and developer-controlled. No need for deterministic hashes on types.
+
+### Priority for Moving to Data-Driven
+
+1. **Commodity.cs** (highest priority) — 80 commodities with construction recipes. Largest dataset, most likely to change, users can't fix without code changes.
+2. **RefiningRecipes.cs** — 6 recipes, game could add tiers or change rates.
+3. **ResearchTimeLookup.cs** — 15 entries, game could rebalance.
+4. **GameConstants.cs** — simple scalars, easy to move.
+5. **BlueprintPropertyValidation.cs** — large but append-only in practice. Lower priority.
+6. **Resource.cs / CommodityGroup.cs / CommodityIndustry.cs** — stable, low priority. Enum-based design makes migration harder.
 
 ---
 
@@ -268,7 +312,7 @@ With versioned migrations:
 1. Should the split be BaselineData.json + UserBaseline.json, or should global blueprints move entirely to a separate file (e.g. GlobalBlueprints.json)? **RESOLVED — single file, no split.**
 2. For the deterministic UUID scheme, what namespace UUID should be used for the v5 generation?
 3. How should the migration framework handle the first migration for existing users who already have random UUIDs? **RESOLVED — see below.**
-4. Should BlueprintTypes also get deterministic IDs, or are their string IDs (e.g. "Flatpacks/MiningRig") already stable enough?
+4. Should BlueprintTypes also get deterministic IDs, or are their string IDs (e.g. "Flatpacks/MiningRig") already stable enough? **RESOLVED — keep string Ids. They're human-readable, developer-controlled, and stable. Renames handled by the same idempotent rename table.**
 5. What's the priority ordering — should identity stabilization happen before or after the file split? **RESOLVED — no file split, identity stabilization is the main work.**
 
 ### Resolved: Initial Migration for Existing Random UUIDs
