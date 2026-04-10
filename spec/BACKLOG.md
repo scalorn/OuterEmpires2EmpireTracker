@@ -227,6 +227,6 @@ With the dedup key changed from ColonyName to PlanetName+SystemName, the duplica
 
 ---
 
-## MarketSample Coverage Gaps
+## ~~MarketSample Coverage Gaps~~ — RESOLVED
 
-Uncovered BlueprintTypes identified by the IconPositionExtractor's coverage gap report. These types exist in BaselineData.json but have no MarketSample HTML file to verify or populate their icon positions. Capture a MarketSample page for each type next time it appears in the in-game market.
+All BlueprintTypes now have HTML coverage. No gaps detected (confirmed by IconPositionExtractor coverage gap report in test output).
