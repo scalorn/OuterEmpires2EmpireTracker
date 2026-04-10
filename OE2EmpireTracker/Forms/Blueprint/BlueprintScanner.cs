@@ -73,6 +73,24 @@ namespace OE2EmpireTracker.Forms.Blueprint
             }
         }
 
+        /// <summary>
+        /// Parses clipboard HTML into a new temporary Blueprint object without mutating any existing blueprint.
+        /// Returns null if the clipboard does not contain HTML.
+        /// </summary>
+        public Models.Blueprint ParseClipboardToTemp()
+        {
+            if (!Clipboard.ContainsText(TextDataFormat.Html))
+                return null;
+
+            string clipboardData = Clipboard.GetText(TextDataFormat.Html);
+            Log.Info("Blueprint clipboard data length (temp parse): {0}", clipboardData.Length);
+            string html = ExtractHtmlFragmentFromClipboardData(clipboardData);
+
+            var tempBlueprint = new Models.Blueprint();
+            ProcessHtml(tempBlueprint, html);
+            return tempBlueprint;
+        }
+
         public void ProcessHtml(Models.Blueprint blueprint, string htmlFragment)
         {
             // Convert html fragment into Resources on the blueprint.

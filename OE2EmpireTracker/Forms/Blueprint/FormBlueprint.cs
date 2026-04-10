@@ -1466,26 +1466,122 @@ namespace OE2EmpireTracker
                 return;
             }
 
-            BlueprintScanner scanner = new BlueprintScanner();
-            scanner.processClipboard(viewModel.Data);
-
-            // Ensure the blueprint has a UUID so PopulateForm doesn't bail out
-            if (string.IsNullOrEmpty(viewModel.Data.UUID))
+            try
             {
-                viewModel.Data.UUID = System.Guid.NewGuid().ToString();
-            }
+                var scanner = new BlueprintScanner();
+                var tempBP = scanner.ParseClipboardToTemp();
 
-            PopulateForm();
+                if (tempBP == null)
+                    return;
 
-            // Auto-select best base blueprint match (first non-empty entry = highest evolution)
-            using (var guard = new ProgrammaticUpdateGuard(this))
-            {
-                if (string.IsNullOrEmpty(viewModel.Data.baseBlueprintUUID) && cmbBaseBlueprint.Items.Count > 1)
+                // Fallback: if no name was parsed, use current behavior
+                if (string.IsNullOrEmpty(tempBP.Name))
                 {
-                    cmbBaseBlueprint.SelectedIndex = 1; // Skip the empty entry at index 0
-                    var bp = cmbBaseBlueprint.SelectedItem as Blueprint;
-                    viewModel.BaseBlueprintUUID = bp?.UUID ?? "";
+                    scanner.processClipboard(viewModel.Data);
+                    if (string.IsNullOrEmpty(viewModel.Data.UUID))
+                        viewModel.Data.UUID = Guid.NewGuid().ToString();
+                    PopulateForm();
+                    Log.Info("Blueprint imported from clipboard (fallback, no name parsed)");
+                    return;
                 }
+
+                Blueprint importedBP;
+                bool globalChanged = false;
+                bool playerChanged = false;
+
+                // Check if the selected blueprint matches the dedup key
+                if (!string.IsNullOrEmpty(viewModel.Data.UUID) &&
+                    MarketBlueprintImporter.FindByDedupKey(
+                        new BindingList<Blueprint>(new[] { viewModel.Data }),
+                        tempBP) != null)
+                {
+                    // Selected blueprint matches — update in place
+                    MarketBlueprintImporter.UpdateExisting(viewModel.Data, tempBP);
+                    importedBP = viewModel.Data;
+
+                    // Determine which list it belongs to for persistence
+                    if (empireContext.globalBlueprintList.Any(b => b.UUID == importedBP.UUID))
+                        globalChanged = true;
+                    else
+                        playerChanged = true;
+
+                    Log.Info("Blueprint updated via dedup (selected match): {0} Ev{1} {2}",
+                        importedBP.Name, importedBP.Evolution, importedBP.BluePrintType);
+                }
+                else
+                {
+                    // No match with selected — route via market logic
+                    bool hasCurrentPlayer = !string.IsNullOrEmpty(playerContext.CurrentPlayerUUID);
+                    bool isGlobal = MarketBlueprintImporter.IsGlobalRoute(tempBP.Evolution, hasCurrentPlayer);
+
+                    var targetList = isGlobal
+                        ? empireContext.globalBlueprintList
+                        : playerContext.blueprintList;
+
+                    var existing = MarketBlueprintImporter.FindByDedupKey(targetList, tempBP);
+
+                    if (existing != null)
+                    {
+                        MarketBlueprintImporter.UpdateExisting(existing, tempBP);
+                        importedBP = existing;
+                        Log.Info("Blueprint updated via dedup (list match): {0} Ev{1} {2}",
+                            importedBP.Name, importedBP.Evolution, importedBP.BluePrintType);
+                    }
+                    else
+                    {
+                        tempBP.UUID = Guid.NewGuid().ToString();
+                        if (!isGlobal)
+                            tempBP.OwnerUUID = playerContext.CurrentPlayerUUID;
+                        targetList.Add(tempBP);
+                        importedBP = tempBP;
+                        Log.Info("New blueprint created via dedup: {0} Ev{1} {2} → {3}",
+                            importedBP.Name, importedBP.Evolution, importedBP.BluePrintType,
+                            isGlobal ? "Global" : "Player");
+                    }
+
+                    if (isGlobal) globalChanged = true;
+                    else playerChanged = true;
+                }
+
+                // Persist
+                if (globalChanged) empireContext.writeContext();
+                if (playerChanged) playerContext.writeContext();
+
+                // Notify
+                playerContext.OnBlueprintDataChanged(importedBP.UUID);
+
+                // Refresh UI, select imported blueprint
+                RefreshBlueprintList();
+
+                foreach (ListViewItem item in lvwBlueprints.Items)
+                {
+                    if ((item.Tag as Blueprint)?.UUID == importedBP.UUID)
+                    {
+                        item.Selected = true;
+                        item.EnsureVisible();
+                        break;
+                    }
+                }
+
+                viewModel.SelectBlueprint(importedBP);
+                PopulateForm();
+
+                // Auto-select best base blueprint match
+                using (var guard = new ProgrammaticUpdateGuard(this))
+                {
+                    if (string.IsNullOrEmpty(importedBP.baseBlueprintUUID) && cmbBaseBlueprint.Items.Count > 1)
+                    {
+                        cmbBaseBlueprint.SelectedIndex = 1;
+                        var bp = cmbBaseBlueprint.SelectedItem as Blueprint;
+                        viewModel.BaseBlueprintUUID = bp?.UUID ?? "";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error importing blueprint from clipboard");
+                MessageBox.Show("Failed to import blueprint: " + ex.Message,
+                    "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

@@ -111,3 +111,15 @@ Centralized name normalization so flatpack blueprints expose structure-oriented 
 ### Window State Persistence
 Remembers window positions, sizes, and form control state across application restarts. Covers MDI container, all child forms, per-type window numbering, filters, combo selections, grid columns, and sorting.
 **Status: Complete** — PreferencesStore with UIPreferences.json in %LOCALAPPDATA%. WindowStateHelper for save/restore. BoundsValidator for multi-monitor safety. Spec: `.kiro/specs/window-state-persistence/`.
+
+### Colony Activity Form
+Read-only form aggregating all active countdown timers and unfulfilled commodity requests across all colonies. Sortable, filterable DataGridView with live countdown refresh.
+**Status: Complete** — ColonyActivityCollector static helper, FormColonyActivity with activity type checkboxes, text filter, 1-second timer refresh. 6 property tests + unit tests. Spec: `.kiro/specs/colony-activity-form/`.
+
+### Commodity Delivery Loop
+Auto-fill commodity drop-offs from colony requests on the route builder plan tab, plus commodity fulfillment/unfulfillment on delivery execution.
+**Status: Complete** — AutoFillCommodities on DeliveryPlanViewModel, FormAutoFill modal dialog, commodity fulfillment in FormDeliveryExecution, DeliveryFulfillment static helper with unit tests. Spec: `.kiro/specs/commodity-delivery-loop/`.
+
+### Individual Import Dedup
+Individual blueprint clipboard import dedup — parse complete blueprint identity from clipboard HTML, use dedup-key matching to route to correct blueprint (update existing or create new), reusing MarketBlueprintImporter routing logic.
+**Status: Complete** — FindByDedupKey/UpdateExisting made internal on MarketBlueprintImporter. IsGlobalRoute pure routing function. BlueprintScanner.ParseClipboardToTemp for non-mutating parse. FormBlueprint.cmdImport_Click rewritten with parse→check selected→route→persist flow. 4 FsCheck property tests. Spec: `.kiro/specs/individual-import-dedup/`.

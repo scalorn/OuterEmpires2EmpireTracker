@@ -147,7 +147,7 @@ namespace OE2EmpireTracker.Services
             return result;
         }
 
-        private static Models.Blueprint FindByDedupKey(
+        internal static Models.Blueprint FindByDedupKey(
             System.ComponentModel.BindingList<Models.Blueprint> list,
             Models.Blueprint bp)
         {
@@ -161,7 +161,16 @@ namespace OE2EmpireTracker.Services
                 && string.Equals(existing.TechLevel, bp.TechLevel, StringComparison.Ordinal));
         }
 
-        private static void UpdateExisting(Models.Blueprint existing, Models.Blueprint incoming)
+        /// <summary>
+        /// Determines whether a blueprint should be stored in the global or player list.
+        /// Returns true for global, false for player.
+        /// </summary>
+        internal static bool IsGlobalRoute(int evolution, bool hasCurrentPlayer)
+        {
+            return evolution == 0 || !hasCurrentPlayer;
+        }
+
+        internal static void UpdateExisting(Models.Blueprint existing, Models.Blueprint incoming)
         {
             // Preserve protected scalar fields: UUID, OwnerUUID, NickName, CopyCost, TechLevel, Description
             // (we simply don't overwrite them)
