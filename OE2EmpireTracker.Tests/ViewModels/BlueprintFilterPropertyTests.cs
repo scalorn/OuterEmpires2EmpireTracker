@@ -85,8 +85,19 @@ namespace OE2EmpireTracker.Tests.ViewModels
                     return false;
                 if (criteria.TechLevelName != null && bp.TechLevel != criteria.TechLevelName)
                     return false;
-                if (criteria.Evolution.HasValue && bp.Evolution != criteria.Evolution.Value)
-                    return false;
+                if (criteria.Evolution.HasValue)
+                {
+                    if (criteria.EvolutionAndAbove)
+                    {
+                        if (bp.Evolution < criteria.Evolution.Value)
+                            return false;
+                    }
+                    else
+                    {
+                        if (bp.Evolution != criteria.Evolution.Value)
+                            return false;
+                    }
+                }
             }
 
             return true;
@@ -183,12 +194,14 @@ namespace OE2EmpireTracker.Tests.ViewModels
                                 from shipClass in nullableClassGen
                                 from tech in nullableTechGen
                                 from evo in nullableEvoGen
+                                from evoAndAbove in Gen.Elements(true, false)
                                 select new BlueprintFilterCriteria
                                 {
                                     BlueprintTypeId = bpType,
                                     ShipClassId = shipClass,
                                     TechLevelName = tech,
-                                    Evolution = evo
+                                    Evolution = evo,
+                                    EvolutionAndAbove = evo.HasValue && evoAndAbove
                                 }));
 
             var inputGen = from bps in bpListGen

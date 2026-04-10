@@ -174,7 +174,10 @@ namespace OE2EmpireTracker.ViewModels
                 }
                 if (criteria.Evolution.HasValue)
                 {
-                    list = list.Where(b => b.Evolution == criteria.Evolution.Value).ToList();
+                    if (criteria.EvolutionAndAbove)
+                        list = list.Where(b => b.Evolution >= criteria.Evolution.Value).ToList();
+                    else
+                        list = list.Where(b => b.Evolution == criteria.Evolution.Value).ToList();
                 }
             }
 

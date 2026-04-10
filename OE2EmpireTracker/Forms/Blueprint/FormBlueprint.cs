@@ -72,6 +72,7 @@ namespace OE2EmpireTracker
         private ComboBox cmbFilterClass;
         private ComboBox cmbFilterTechLevel;
         private ComboBox cmbFilterEvolution;
+        private CheckBox chkEvolutionAndAbove;
         private Button btnClearFilters;
 
         /// <summary>
@@ -297,7 +298,14 @@ namespace OE2EmpireTracker
                 cmbFilterEvolution.Items.Add(evo);
             cmbFilterEvolution.SelectedIndex = 0;
 
-            row2.Controls.AddRange(new Control[] { lblTech, cmbFilterTechLevel, lblEvo, cmbFilterEvolution });
+            chkEvolutionAndAbove = new CheckBox
+            {
+                Text = "And Above",
+                Size = new Size(80, 21),
+                Checked = false
+            };
+
+            row2.Controls.AddRange(new Control[] { lblTech, cmbFilterTechLevel, lblEvo, cmbFilterEvolution, chkEvolutionAndAbove });
 
             // --- Row 3: Clear Filters ---
             var row3 = new FlowLayoutPanel
@@ -327,12 +335,14 @@ namespace OE2EmpireTracker
             cmbFilterClass.SelectedIndexChanged += (s, e) => RefreshBlueprintList();
             cmbFilterTechLevel.SelectedIndexChanged += (s, e) => RefreshBlueprintList();
             cmbFilterEvolution.SelectedIndexChanged += (s, e) => RefreshBlueprintList();
+            chkEvolutionAndAbove.CheckedChanged += (s, e) => RefreshBlueprintList();
             btnClearFilters.Click += (s, e) =>
             {
                 cmbFilterType.SelectedIndex = 0;
                 cmbFilterClass.SelectedIndex = 0;
                 cmbFilterTechLevel.SelectedIndex = 0;
                 cmbFilterEvolution.SelectedIndex = 0;
+                chkEvolutionAndAbove.Checked = false;
                 RefreshBlueprintList();
             };
         }
@@ -830,6 +840,8 @@ namespace OE2EmpireTracker
                 string evoStr = (string)cmbFilterEvolution.SelectedItem;
                 if (int.TryParse(evoStr, out int evo))
                     criteria.Evolution = evo;
+                if (chkEvolutionAndAbove != null && chkEvolutionAndAbove.Checked)
+                    criteria.EvolutionAndAbove = true;
             }
 
             var results = viewModel.GetFilteredBlueprints(nameFilter, criteria);

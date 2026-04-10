@@ -10,5 +10,6 @@ namespace OE2EmpireTracker.ViewModels
         public int? ShipClassId { get; set; }          // null = no filter
         public string TechLevelName { get; set; }      // null = no filter
         public int? Evolution { get; set; }            // null = no filter
+        public bool EvolutionAndAbove { get; set; }    // when true, filter Evolution >= value
     }
 }
