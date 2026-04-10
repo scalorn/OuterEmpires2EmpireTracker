@@ -195,17 +195,20 @@ namespace OE2EmpireTracker.Forms.Colony
                 }
 
                 // --- Unallocated Workers ---
-                foreach (var wt in Models.WorkerDetail.WorkerTypes)
+                if (FlatpackBlueprint != null)
                 {
-                    if (FlatpackBlueprint.Properties.ContainsKey(wt.UnassignedKey))
+                    foreach (var wt in Models.WorkerDetail.WorkerTypes)
                     {
-                        bool available = IsUnallocatedWorkerAvailable(wt.DetailKey);
-                        checkControls[controlIndex].Visible = true;
-                        checkControls[controlIndex].Enabled = false;
-                        checkControls[controlIndex].Text = "Support - " + wt.DisplayName;
-                        checkControls[controlIndex].Tag = wt.UnassignedKey;
-                        checkControls[controlIndex].Checked = available;
-                        controlIndex++;
+                        if (FlatpackBlueprint.Properties.ContainsKey(wt.UnassignedKey))
+                        {
+                            bool available = IsUnallocatedWorkerAvailable(wt.DetailKey);
+                            checkControls[controlIndex].Visible = true;
+                            checkControls[controlIndex].Enabled = false;
+                            checkControls[controlIndex].Text = "Support - " + wt.DisplayName;
+                            checkControls[controlIndex].Tag = wt.UnassignedKey;
+                            checkControls[controlIndex].Checked = available;
+                            controlIndex++;
+                        }
                     }
                 }
 
