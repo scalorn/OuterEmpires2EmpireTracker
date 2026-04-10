@@ -323,7 +323,7 @@ Also, `FormBlueprint.btnImport_Click` (a different, unused import handler) had c
 
 ---
 
-### AMB-038 — OPEN: Survey import has no dedup logic
+### AMB-038 — RESOLVED: Survey import has no dedup logic
 **Issue:** `FormSurvey.cmdImport_Click` is a 3-line method that calls `parser.processClipboard(viewModel.Data)` directly — no clipboard guard, no temporary object, no dedup, no error handling. Colony and Blueprint imports both now have dedup logic; Survey is the outlier.
 
 Surveys are identified by PlanetName + SurveyID. Importing the same survey twice into the selected survey object works (overwrites), but importing a survey for a different planet into the wrong selected survey silently corrupts data.
