@@ -31,3 +31,7 @@ Add an inactivity/idle highlighting mode to the Colony Activity window. Surfaces
 ### BL-022: JSON Serialization — Skip Default Values
 Configure Newtonsoft.Json serialization to skip fields with default values (null/empty strings, false booleans, zero integers/decimals) to reduce JSON file size.
 **Status: Complete** — JsonSettings static class with DefaultValueHandling.Ignore and NullValueHandling.Ignore. All serialization call sites updated. ItemBagJSONConverter applies defaults to nested items. FsCheck property tests + unit tests validate round-trip and size reduction.
+
+### Colony Import Dedup
+Colony clipboard import dedup — parse into a temporary colony first, search by name (case-insensitive), then merge into existing or create new. Prevents duplicate colonies on import. Also adds duplicate-name validation on the colony name text field.
+**Status: Complete** — `ColonyImportHelper` static class with `FindByName`, `MergeIdentity`, `CreateFromTemp`, `IsDuplicateName`. `ColonyParser.ParseClipboardToTemp` for non-mutating clipboard parse. `FormColony.cmdImportColony_Click` rewritten with parse→search→merge-or-create flow. Duplicate name validation on manual edit via `ValidatedTextBox.SetError`/`ClearError`. 5 FsCheck property tests. Spec: `.kiro/specs/colony-import-dedupe/`.
