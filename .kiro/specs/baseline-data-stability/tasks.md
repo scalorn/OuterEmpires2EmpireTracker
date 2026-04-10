@@ -137,7 +137,7 @@ Stabilize BaselineData.json for multi-user distribution: deterministic UUIDs for
   - [x] 9.4 Update `RefiningRecipes.cs` — change static list to load from EmpireContext with fallback
     - _Requirements: 9.2, 9.4_
 
-- [-] 10. Externalize ResearchTimeLookup to BaselineData.json
+- [x] 10. Externalize ResearchTimeLookup to BaselineData.json
   - [x] 10.1 Create `OE2EmpireTracker/Models/ResearchTimeEntry.cs` with Evolution and ResearchTimeSeconds
     - Add `<Compile Include>` to csproj
     - _Requirements: 10.1_
@@ -154,47 +154,47 @@ Stabilize BaselineData.json for multi-user distribution: deterministic UUIDs for
   - [x] 10.5 Update `ResearchTimeLookup.cs` — change static dictionary to load from EmpireContext with fallback
     - _Requirements: 10.2, 10.4_
 
-- [~] 11. Checkpoint — Ensure all tests pass
+- [x] 11. Checkpoint — Ensure all tests pass
 
-- [ ] 12. Replace double with decimal for game data numeric types
-  - [~] 12.1 Update `ColonyStructureStatus` — change all 10 numeric fields from double to decimal
+- [x] 12. Replace double with decimal for game data numeric types
+  - [x] 12.1 Update `ColonyStructureStatus` — change all 10 numeric fields from double to decimal
     - _Requirements: 13.1_
 
-  - [~] 12.2 Update `Item.Volume` from double to decimal
+  - [x] 12.2 Update `Item.Volume` from double to decimal
     - _Requirements: 13.2_
 
-  - [~] 12.3 Update `ItemProperty.BaseValue` and `AdjustedValue` from double to decimal
+  - [x] 12.3 Update `ItemProperty.BaseValue` and `AdjustedValue` from double to decimal
     - _Requirements: 13.3_
 
-  - [~] 12.4 Update `PropertyBag` — rename `getDouble` to `getDecimal`, update `setProperty(double)` to `setProperty(decimal)`
+  - [x] 12.4 Update `PropertyBag` — rename `getDouble` to `getDecimal`, update `setProperty(double)` to `setProperty(decimal)`
     - _Requirements: 13.4_
 
-  - [~] 12.5 Update `ColonyStatusCalculator` — all accumulator variables, `GetBlueprintDouble` → `GetBlueprintDecimal`, `AppendStatus` parameters
+  - [x] 12.5 Update `ColonyStatusCalculator` — all accumulator variables, `GetBlueprintDouble` → `GetBlueprintDecimal`, `AppendStatus` parameters
     - _Requirements: 13.5_
 
-  - [~] 12.6 Update `Colony.ProcessColony` — extractionMultiplier, refiningMultiplier, quantity calculations
+  - [x] 12.6 Update `Colony.ProcessColony` — extractionMultiplier, refiningMultiplier, quantity calculations
     - _Requirements: 13.5_
 
-  - [~] 12.7 Update `ColonyBootstrap` — miningRate, adjustedRate, refinedOutput, BestResourceEntry fields
+  - [x] 12.7 Update `ColonyBootstrap` — miningRate, adjustedRate, refinedOutput, BestResourceEntry fields
     - _Requirements: 13.5_
 
-  - [~] 12.8 Update `ColonyInactivityCollector` — GetMiningOutputRate, totalMiningOutput, totalConsumption, supply, available
+  - [x] 12.8 Update `ColonyInactivityCollector` — GetMiningOutputRate, totalMiningOutput, totalConsumption, supply, available
     - _Requirements: 13.5_
 
-  - [~] 12.9 Update `EvolutionChainService` — percentage calculations, SegmentInfo, EvolutionGraphData series
+  - [x] 12.9 Update `EvolutionChainService` — percentage calculations, SegmentInfo, EvolutionGraphData series
     - _Requirements: 13.5_
 
-  - [~] 12.10 Update `FormColony.GetItemVolume` and `ColonyStructure` power display
+  - [x] 12.10 Update `FormColony.GetItemVolume` and `ColonyStructure` power display
     - _Requirements: 13.5_
 
-  - [~] 12.11 Update all callers of `PropertyBag.getDouble` → `getDecimal` across the codebase
+  - [x] 12.11 Update all callers of `PropertyBag.getDouble` → `getDecimal` across the codebase
     - _Requirements: 13.4, 13.5_
 
-  - [~] 12.12 Write property test: decimal round-trip (Property 6)
+  - [x] 12.12 Write property test: decimal round-trip (Property 6)
     - Serialize decimal values to JSON and back, verify exact equality
     - _Requirements: 13.6, 13.9_
 
-- [~] 13. Checkpoint — Ensure all tests pass
+- [x] 13. Checkpoint — Ensure all tests pass
 
 - [~] 14. Final checkpoint — Full build, all tests pass, verify migration on test data
   - Build and run all tests

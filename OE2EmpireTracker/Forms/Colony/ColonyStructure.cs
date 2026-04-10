@@ -93,10 +93,10 @@ namespace OE2EmpireTracker.Forms.Colony
 
             if (FlatpackBlueprint != null)
             {
-                double powerProvided = 0;
-                FlatpackBlueprint.Properties.getDouble("PowerProvided", 0, out powerProvided);
-                double powerRequired = 0;
-                FlatpackBlueprint.Properties.getDouble("PowerRequired", 0, out powerRequired);
+                decimal powerProvided = 0;
+                FlatpackBlueprint.Properties.getDecimal("PowerProvided", 0, out powerProvided);
+                decimal powerRequired = 0;
+                FlatpackBlueprint.Properties.getDecimal("PowerRequired", 0, out powerRequired);
 
                 Log.Info("FlatpackBlueprint.BluePrintType = " + FlatpackBlueprint.BluePrintType);
                 if (FlatpackBlueprint.BluePrintType == BlueprintTypes.MiningRig)

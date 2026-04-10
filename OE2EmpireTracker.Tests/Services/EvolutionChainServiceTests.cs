@@ -180,7 +180,7 @@ namespace OE2EmpireTracker.Tests.Services
                                     propType == PropertyValueType.Decimal)
                                 {
                                     // Use different values per evolution to ensure change
-                                    bp.Properties.setProperty(propName, (double)(values[i].Value + i * 10));
+                                    bp.Properties.setProperty(propName, (decimal)(values[i].Value + i * 10));
                                 }
                                 else if (propType == PropertyValueType.Time)
                                 {
@@ -303,7 +303,7 @@ namespace OE2EmpireTracker.Tests.Services
                                             if (propType == PropertyValueType.Time)
                                                 bp.Properties.setProperty(propName, $"{baseVal}s");
                                             else
-                                                bp.Properties.setProperty(propName, (double)baseVal);
+                                                bp.Properties.setProperty(propName, (decimal)baseVal);
                                         }
 
                                         foreach (var propName in changedProps)
@@ -314,7 +314,7 @@ namespace OE2EmpireTracker.Tests.Services
                                             if (propType == PropertyValueType.Time)
                                                 bp.Properties.setProperty(propName, $"{val}s");
                                             else
-                                                bp.Properties.setProperty(propName, (double)val);
+                                                bp.Properties.setProperty(propName, (decimal)val);
                                         }
 
                                         chain.Add(bp);
@@ -395,11 +395,11 @@ namespace OE2EmpireTracker.Tests.Services
                     {
                         var chain = new List<Bp>();
                         // Track the raw values per property per blueprint for verification
-                        var rawValues = new Dictionary<string, double[]>();
+                        var rawValues = new Dictionary<string, decimal[]>();
 
                         foreach (var propName in numericProps)
                         {
-                            rawValues[propName] = new double[chainLen];
+                            rawValues[propName] = new decimal[chainLen];
                         }
 
                         for (int i = 0; i < chainLen; i++)
@@ -410,7 +410,7 @@ namespace OE2EmpireTracker.Tests.Services
                             {
                                 // Ev0 gets ev0Val, subsequent evolutions get ev0Val + delta * i
                                 // This ensures non-zero Ev0 and values that change
-                                double val = ev0Val + delta * i;
+                                decimal val = ev0Val + delta * i;
                                 bp.Properties.setProperty(propName, val);
                                 rawValues[propName][i] = val;
                             }
@@ -446,7 +446,7 @@ namespace OE2EmpireTracker.Tests.Services
                         continue;
 
                     var points = result.Series[propName];
-                    double ev0Value = testData.RawValues[propName][0];
+                    decimal ev0Value = testData.RawValues[propName][0];
 
                     foreach (var point in points)
                     {
@@ -459,10 +459,10 @@ namespace OE2EmpireTracker.Tests.Services
                             break;
                         }
 
-                        double rawVal = testData.RawValues[propName][idx];
-                        double expectedPercent = (rawVal / ev0Value) * 100.0;
+                        decimal rawVal = testData.RawValues[propName][idx];
+                        decimal expectedPercent = (rawVal / ev0Value) * 100.0m;
 
-                        if (Math.Abs(expectedPercent - point.Percent) > 0.0001)
+                        if (Math.Abs(expectedPercent - point.Percent) > 0.0001m)
                         {
                             formulaCorrect = false;
                             formulaError = $"Property '{propName}' at Ev{idx}: expected {expectedPercent:F4}%, got {point.Percent:F4}%";
@@ -485,7 +485,7 @@ namespace OE2EmpireTracker.Tests.Services
                     var points = result.Series[propName];
                     var ev0Point = points.FirstOrDefault(p => p.Evolution == 0);
 
-                    if (Math.Abs(ev0Point.Percent - 100.0) > 0.0001)
+                    if (Math.Abs(ev0Point.Percent - 100.0m) > 0.0001m)
                     {
                         ev0Is100 = false;
                         ev0Error = $"Property '{propName}' Ev0 percent: expected 100%, got {ev0Point.Percent:F4}%";
@@ -583,10 +583,10 @@ namespace OE2EmpireTracker.Tests.Services
         public void BuildGraphData_ZeroEv0Value_ExcludesProperty()
         {
             var ev0 = MakeBlueprint("bp-0", null, 0);
-            ev0.Properties.setProperty("Accuracy", 0.0);
+            ev0.Properties.setProperty("Accuracy", 0.0m);
 
             var ev1 = MakeBlueprint("bp-1", "bp-0", 1);
-            ev1.Properties.setProperty("Accuracy", 100.0);
+            ev1.Properties.setProperty("Accuracy", 100.0m);
 
             var chain = new List<Bp> { ev0, ev1 };
             var props = new[] { "Accuracy" };
@@ -605,7 +605,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var result = EvolutionChainService.ParseTimeToSeconds("1d 2h 30m 15s");
 
-            Assert.That(result, Is.EqualTo(95415.0));
+            Assert.That(result, Is.EqualTo(95415.0m));
         }
 
         /// <summary>
@@ -616,13 +616,13 @@ namespace OE2EmpireTracker.Tests.Services
         public void BuildGraphData_AllUnchanged_NoChangesTrue_SeriesEmpty()
         {
             var ev0 = MakeBlueprint("bp-0", null, 0);
-            ev0.Properties.setProperty("Accuracy", 50.0);
+            ev0.Properties.setProperty("Accuracy", 50.0m);
 
             var ev1 = MakeBlueprint("bp-1", "bp-0", 1);
-            ev1.Properties.setProperty("Accuracy", 50.0);
+            ev1.Properties.setProperty("Accuracy", 50.0m);
 
             var ev2 = MakeBlueprint("bp-2", "bp-1", 2);
-            ev2.Properties.setProperty("Accuracy", 50.0);
+            ev2.Properties.setProperty("Accuracy", 50.0m);
 
             var chain = new List<Bp> { ev0, ev1, ev2 };
             var props = new[] { "Accuracy" };

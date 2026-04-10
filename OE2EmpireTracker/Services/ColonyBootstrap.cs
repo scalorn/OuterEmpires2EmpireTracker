@@ -82,8 +82,8 @@ namespace OE2EmpireTracker.Services
             var refineryBp = FindPlayerBlueprint(BlueprintTypes.Refinery);
             foreach (var entry in bestResources.OrderBy(r => r.ResourceName))
             {
-                double miningRate = entry.RawAmount * (1.0 + _extractionFocusLevel * 0.01);
-                int refinersNeeded = (int)Math.Ceiling(miningRate / GameConstants.RefiningBaseRate);
+                decimal miningRate = (decimal)entry.RawAmount * (1.0m + _extractionFocusLevel * 0.01m);
+                int refinersNeeded = (int)Math.Ceiling((double)miningRate / GameConstants.RefiningBaseRate);
 
                 for (int i = 0; i < refinersNeeded; i++)
                 {
@@ -128,9 +128,9 @@ namespace OE2EmpireTracker.Services
                     double amount;
                     if (!double.TryParse(resource.Amount, out amount)) continue;
 
-                    double adjustedRate = amount * (1.0 + _extractionFocusLevel * 0.01);
+                    decimal adjustedRate = (decimal)amount * (1.0m + _extractionFocusLevel * 0.01m);
                     int refiningMultiplier = GetRefiningMultiplier(resource.Purity);
-                    double refinedOutput = adjustedRate * refiningMultiplier;
+                    decimal refinedOutput = adjustedRate * refiningMultiplier;
 
                     BestResourceEntry existing;
                     if (!candidates.TryGetValue(resource.Resource, out existing) ||
@@ -182,7 +182,7 @@ namespace OE2EmpireTracker.Services
             public string ResourceName { get; set; }
             public string Purity { get; set; }
             public double RawAmount { get; set; }
-            public double RefinedOutputRate { get; set; }
+            public decimal RefinedOutputRate { get; set; }
             public string SurveyUUID { get; set; }
         }
     }

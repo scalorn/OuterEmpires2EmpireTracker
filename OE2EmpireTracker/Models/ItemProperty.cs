@@ -25,10 +25,10 @@ namespace OE2EmpireTracker.Models
         public int ParentID { get; set; }
         public virtual Item Parent { get; set; }
 
-        public double BaseValue { get; set; }
-        public double AdjustedValue { get; set; }
+        public decimal BaseValue { get; set; }
+        public decimal AdjustedValue { get; set; }
 
-        public ItemProperty(ItemPropertyTypeEnum itemPropertyType, double baseValue, double adjustedValue = 0.0f)
+        public ItemProperty(ItemPropertyTypeEnum itemPropertyType, decimal baseValue, decimal adjustedValue = 0.0m)
         {
             this.ItemPropertyType = itemPropertyType;
             this.BaseValue = baseValue;

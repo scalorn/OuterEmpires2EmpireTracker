@@ -78,11 +78,11 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void SetProperty_Double_StoresAndRetrievesValue()
         {
-            _bag.setProperty("Power", 42.5);
-            double val;
-            bool found = _bag.getDouble("Power", 0, out val);
+            _bag.setProperty("Power", 42.5m);
+            decimal val;
+            bool found = _bag.getDecimal("Power", 0, out val);
             Assert.That(found, Is.True);
-            Assert.That(val, Is.EqualTo(42.5).Within(0.0001));
+            Assert.That(val, Is.EqualTo(42.5m));
         }
 
         // -----------------------------------------------------------------------
@@ -109,24 +109,24 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // getDouble
+        // getDecimal
         // -----------------------------------------------------------------------
 
         [Test]
-        public void GetDouble_MissingKey_ReturnsFalseAndDefault()
+        public void GetDecimal_MissingKey_ReturnsFalseAndDefault()
         {
-            double val;
-            bool found = _bag.getDouble("Missing", 99.0, out val);
+            decimal val;
+            bool found = _bag.getDecimal("Missing", 99.0m, out val);
             Assert.That(found, Is.False);
-            Assert.That(val, Is.EqualTo(99.0).Within(0.0001));
+            Assert.That(val, Is.EqualTo(99.0m));
         }
 
         [Test]
-        public void GetDouble_NonNumericValue_ReturnsFalse()
+        public void GetDecimal_NonNumericValue_ReturnsFalse()
         {
             _bag.setProperty("Bad", "notanumber");
-            double val;
-            bool found = _bag.getDouble("Bad", 0, out val);
+            decimal val;
+            bool found = _bag.getDecimal("Bad", 0, out val);
             Assert.That(found, Is.False);
         }
 
@@ -263,17 +263,17 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void JsonRoundTrip_NumericAndBoolValues_Preserved()
         {
-            _bag.setProperty("Power", 100.5);
+            _bag.setProperty("Power", 100.5m);
             _bag.setProperty("Online", true);
 
             string json = JsonConvert.SerializeObject(_bag);
             var restored = JsonConvert.DeserializeObject<PropertyBag>(json);
 
-            double power;
+            decimal power;
             bool online;
-            restored.getDouble("Power", 0, out power);
+            restored.getDecimal("Power", 0, out power);
             restored.getBoolean("Online", false, out online);
-            Assert.That(power, Is.EqualTo(100.5).Within(0.0001));
+            Assert.That(power, Is.EqualTo(100.5m));
             Assert.That(online, Is.True);
         }
 

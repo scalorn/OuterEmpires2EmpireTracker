@@ -21,14 +21,14 @@ namespace OE2EmpireTracker.Models
         {
             return Properties.ContainsKey(name);
         }
-        public bool getDouble(string name, double defaultValue, out double value)
+        public bool getDecimal(string name, decimal defaultValue, out decimal value)
         {
             value = defaultValue;
             string valueStr = "";
             bool ret = Properties.TryGetValue(name, out valueStr);
             if (ret)
             {
-                ret = Double.TryParse(valueStr, out value);
+                ret = Decimal.TryParse(valueStr, out value);
             }
             if (!ret)
             {
@@ -70,7 +70,7 @@ namespace OE2EmpireTracker.Models
             return ret;
         }
 
-        public bool setProperty(string name, double value)
+        public bool setProperty(string name, decimal value)
         {
             return setProperty(name, "" + value);
         }

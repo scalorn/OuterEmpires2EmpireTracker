@@ -34,13 +34,13 @@ namespace OE2EmpireTracker.Tests.Forms
             {
                 // For each evolution level, generate a random percent value (1.0–500.0)
                 var percentsGen = Gen.Sequence(
-                    evLevels.Select(_ => Gen.Choose(1, 500).Select(v => (double)v))
+                    evLevels.Select(_ => Gen.Choose(1, 500).Select(v => (decimal)v))
                 );
 
                 return percentsGen.Select(percents =>
                 {
                     var pArr = percents.ToArray();
-                    var points = new List<(int Evolution, double Percent)>();
+                    var points = new List<(int Evolution, decimal Percent)>();
                     for (int i = 0; i < evLevels.Length; i++)
                     {
                         points.Add((evLevels[i], pArr[i]));

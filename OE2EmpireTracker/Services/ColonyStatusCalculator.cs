@@ -144,9 +144,9 @@ namespace OE2EmpireTracker.Services
             finalIdealStatus.WarehouseRequired = CalculateWarehouseRequired();
         }
 
-        private double CalculateWarehouseRequired()
+        private decimal CalculateWarehouseRequired()
         {
-            double total = 0;
+            decimal total = 0m;
             foreach (var item in colony.Items.Items.Values)
             {
                 total += item.Quantity * item.Volume;
@@ -353,16 +353,16 @@ namespace OE2EmpireTracker.Services
         public void CalculateBuilt(ColonyStructure structure, ColonyStructureStatus prevStatus, ColonyStructureStatus status, IColonyStructureWorkers workerSource, Models.Blueprint flatpackBlueprint)
         {
             // Aggregators for resource stats
-            double builtPowerProvided = prevStatus.PowerProvided;
-            double builtPowerRequired = prevStatus.PowerRequired;
-            double builtHabitationProvision = prevStatus.HabitationProvision;
-            double builtHabitationRequired = prevStatus.HabitationRequired;
-            double builtFoodProvision = prevStatus.FoodProvision;
-            double builtFoodRequired = prevStatus.FoodRequired;
-            double builtEntertainmentProvided = prevStatus.EntertainmentProvided;
-            double builtEntertainmentRequired = prevStatus.EntertainmentRequired;
-            double builtWarehouseCapacity = prevStatus.WarehouseCapacity;
-            double builtWarehouseRequired = prevStatus.WarehouseRequired;
+            decimal builtPowerProvided = prevStatus.PowerProvided;
+            decimal builtPowerRequired = prevStatus.PowerRequired;
+            decimal builtHabitationProvision = prevStatus.HabitationProvision;
+            decimal builtHabitationRequired = prevStatus.HabitationRequired;
+            decimal builtFoodProvision = prevStatus.FoodProvision;
+            decimal builtFoodRequired = prevStatus.FoodRequired;
+            decimal builtEntertainmentProvided = prevStatus.EntertainmentProvided;
+            decimal builtEntertainmentRequired = prevStatus.EntertainmentRequired;
+            decimal builtWarehouseCapacity = prevStatus.WarehouseCapacity;
+            decimal builtWarehouseRequired = prevStatus.WarehouseRequired;
             List <ColonyWorker> ColonyWorkers = new List<ColonyWorker>();
             var needUnallocated = new Dictionary<string, bool>();
             foreach (var wt in Models.WorkerDetail.WorkerTypes)
@@ -384,14 +384,14 @@ namespace OE2EmpireTracker.Services
                 // --- Resource Accumulation ---
                 if (online)
                 {
-                    builtPowerProvided += GetBlueprintDouble(flatpackBlueprint, "Power Provided");
-                    builtPowerRequired += GetBlueprintDouble(flatpackBlueprint, "Power Required");
-                    builtHabitationProvision += GetBlueprintDouble(flatpackBlueprint, "Habitation Provision");
-                    builtEntertainmentProvided += GetBlueprintDouble(flatpackBlueprint, "Entertainment Provided");
-                    builtWarehouseCapacity += GetBlueprintDouble(flatpackBlueprint, "Warehouse Capacity");
+                    builtPowerProvided += GetBlueprintDecimal(flatpackBlueprint, "Power Provided");
+                    builtPowerRequired += GetBlueprintDecimal(flatpackBlueprint, "Power Required");
+                    builtHabitationProvision += GetBlueprintDecimal(flatpackBlueprint, "Habitation Provision");
+                    builtEntertainmentProvided += GetBlueprintDecimal(flatpackBlueprint, "Entertainment Provided");
+                    builtWarehouseCapacity += GetBlueprintDecimal(flatpackBlueprint, "Warehouse Capacity");
                 }
                 // Food accumulates regardless of online state
-                builtFoodProvision += GetBlueprintDouble(flatpackBlueprint, "Food Provision");
+                builtFoodProvision += GetBlueprintDecimal(flatpackBlueprint, "Food Provision");
 
                 // --- Worker Assignment Parsing ---
                 foreach (var wt in Models.WorkerDetail.WorkerTypes)
@@ -458,10 +458,10 @@ namespace OE2EmpireTracker.Services
             status.WarehouseRequired = builtWarehouseRequired;
         }
 
-        private static double GetBlueprintDouble(Models.Blueprint blueprint, string propertyName)
+        private static decimal GetBlueprintDecimal(Models.Blueprint blueprint, string propertyName)
         {
-            double value = 0;
-            blueprint.Properties.getDouble(propertyName, 0, out value);
+            decimal value = 0m;
+            blueprint.Properties.getDecimal(propertyName, 0m, out value);
             return value;
         }
 
@@ -487,7 +487,7 @@ namespace OE2EmpireTracker.Services
                 status.WarehouseRequired, status.WarehouseCapacity);
         }
 
-        private static void AppendStatus(RtfBuilder builder, string name, Color color, double required, double provided)
+        private static void AppendStatus(RtfBuilder builder, string name, Color color, decimal required, decimal provided)
         {
             builder.Append(name, Color.Black);
             builder.Append("" + required, required > provided ? Color.Red : Color.Green);

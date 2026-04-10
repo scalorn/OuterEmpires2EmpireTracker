@@ -109,9 +109,9 @@ namespace OE2EmpireTracker.Tests.Models
             var structure = new ColonyStructure();
             structure.Properties.setProperty("Value", "123.45");
 
-            bool success = structure.Properties.getDouble("Value", -1.0, out double result);
+            bool success = structure.Properties.getDecimal("Value", -1.0m, out decimal result);
             Assert.That(success, Is.True);
-            Assert.That(result, Is.EqualTo(123.45).Within(0.01));
+            Assert.That(result, Is.EqualTo(123.45m));
         }
 
         [Test]
@@ -120,18 +120,18 @@ namespace OE2EmpireTracker.Tests.Models
             var structure = new ColonyStructure();
             structure.Properties.setProperty("Value", "not-a-number");
 
-            bool success = structure.Properties.getDouble("Value", -1.0, out double result);
+            bool success = structure.Properties.getDecimal("Value", -1.0m, out decimal result);
             Assert.That(success, Is.False);
-            Assert.That(result, Is.EqualTo(-1.0).Within(0.0));
+            Assert.That(result, Is.EqualTo(-1.0m));
         }
 
         [Test]
         public void Properties_gdoubleMethod_ReturnsDefaultValueOnMissingKey()
         {
             var structure = new ColonyStructure();
-            bool success = structure.Properties.getDouble("Missing", -1.0, out double result);
+            bool success = structure.Properties.getDecimal("Missing", -1.0m, out decimal result);
             Assert.That(success, Is.False);
-            Assert.That(result, Is.EqualTo(-1.0).Within(0.0));
+            Assert.That(result, Is.EqualTo(-1.0m));
         }
 
         [Test]

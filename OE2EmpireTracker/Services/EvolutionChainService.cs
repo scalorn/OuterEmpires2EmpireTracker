@@ -12,8 +12,8 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public class SegmentInfo
     {
-        public (int Evolution, double Percent) From { get; set; }
-        public (int Evolution, double Percent) To { get; set; }
+        public (int Evolution, decimal Percent) From { get; set; }
+        public (int Evolution, decimal Percent) To { get; set; }
 
         /// <summary>
         /// True when the evolution levels differ by more than 1 (gap → dashed line).
@@ -25,8 +25,8 @@ namespace OE2EmpireTracker.Services
     public class EvolutionGraphData
     {
         /// <summary>Property name → list of (evolutionLevel, percentageValue) points.</summary>
-        public Dictionary<string, List<(int Evolution, double Percent)>> Series { get; set; }
-            = new Dictionary<string, List<(int Evolution, double Percent)>>();
+        public Dictionary<string, List<(int Evolution, decimal Percent)>> Series { get; set; }
+            = new Dictionary<string, List<(int Evolution, decimal Percent)>>();
 
         /// <summary>True when no numeric properties changed across the chain.</summary>
         public bool NoChanges { get; set; }
@@ -100,17 +100,17 @@ namespace OE2EmpireTracker.Services
                     continue;
                 }
 
-                double ev0Value = GetNumericValue(ev0, propName, propType);
-                if (ev0Value == 0.0)
+                decimal ev0Value = GetNumericValue(ev0, propName, propType);
+                if (ev0Value == 0.0m)
                     continue; // exclude zero Ev0 value (avoid division by zero)
 
-                var points = new List<(int Evolution, double Percent)>();
+                var points = new List<(int Evolution, decimal Percent)>();
                 bool hasChange = false;
 
                 foreach (var bp in chain)
                 {
-                    double val = GetNumericValue(bp, propName, propType);
-                    double percent = (val / ev0Value) * 100.0;
+                    decimal val = GetNumericValue(bp, propName, propType);
+                    decimal percent = (val / ev0Value) * 100.0m;
                     points.Add((bp.Evolution, percent));
 
                     if (val != ev0Value)
@@ -133,14 +133,14 @@ namespace OE2EmpireTracker.Services
         /// evolution level before classification.
         /// </summary>
         public static List<SegmentInfo> ClassifySegments(
-            List<(int Evolution, double Percent)> points)
+            List<(int Evolution, decimal Percent)> points)
         {
             var segments = new List<SegmentInfo>();
             if (points == null || points.Count < 2)
                 return segments;
 
             // Sort by evolution level ascending
-            var sorted = new List<(int Evolution, double Percent)>(points);
+            var sorted = new List<(int Evolution, decimal Percent)>(points);
             sorted.Sort((a, b) => a.Evolution.CompareTo(b.Evolution));
 
             for (int i = 1; i < sorted.Count; i++)
@@ -157,10 +157,10 @@ namespace OE2EmpireTracker.Services
             return segments;
         }
 
-        private static double GetNumericValue(Blueprint bp, string propName, PropertyValueType propType)
+        private static decimal GetNumericValue(Blueprint bp, string propName, PropertyValueType propType)
         {
             if (bp.Properties == null)
-                return 0.0;
+                return 0.0m;
 
             if (propType == PropertyValueType.Time)
             {
@@ -170,8 +170,8 @@ namespace OE2EmpireTracker.Services
             }
             else
             {
-                double val;
-                bp.Properties.getDouble(propName, 0.0, out val);
+                decimal val;
+                bp.Properties.getDecimal(propName, 0.0m, out val);
                 return val;
             }
         }
@@ -180,28 +180,28 @@ namespace OE2EmpireTracker.Services
         /// Parses time strings like "1d 2h 30m 15s" to total seconds.
         /// Handles any combination of d/h/m/s components.
         /// </summary>
-        internal static double ParseTimeToSeconds(string timeStr)
+        internal static decimal ParseTimeToSeconds(string timeStr)
         {
             if (string.IsNullOrWhiteSpace(timeStr))
-                return 0.0;
+                return 0.0m;
 
-            double total = 0.0;
+            decimal total = 0.0m;
 
             var match = Regex.Match(timeStr, @"(\d+)d");
             if (match.Success)
-                total += double.Parse(match.Groups[1].Value) * 86400;
+                total += decimal.Parse(match.Groups[1].Value) * 86400;
 
             match = Regex.Match(timeStr, @"(\d+)h");
             if (match.Success)
-                total += double.Parse(match.Groups[1].Value) * 3600;
+                total += decimal.Parse(match.Groups[1].Value) * 3600;
 
             match = Regex.Match(timeStr, @"(\d+)m");
             if (match.Success)
-                total += double.Parse(match.Groups[1].Value) * 60;
+                total += decimal.Parse(match.Groups[1].Value) * 60;
 
             match = Regex.Match(timeStr, @"(\d+)s");
             if (match.Success)
-                total += double.Parse(match.Groups[1].Value);
+                total += decimal.Parse(match.Groups[1].Value);
 
             return total;
         }

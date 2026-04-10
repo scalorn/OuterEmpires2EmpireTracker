@@ -877,19 +877,19 @@ namespace OE2EmpireTracker.Forms.Colony
             }
         }
 
-        private static double GetItemVolume(Models.Item item, PlayerContext playerContext)
+        private static decimal GetItemVolume(Models.Item item, PlayerContext playerContext)
         {
             switch (item.ItemType)
             {
                 case Models.ItemType.ItemTypeEnum.Resource:
-                    return 1.0;
+                    return 1.0m;
                 case Models.ItemType.ItemTypeEnum.Commodity:
-                    return 10.0;
+                    return 10.0m;
                 case Models.ItemType.ItemTypeEnum.WorkDetail:
-                    return 50.0;
+                    return 50.0m;
                 case Models.ItemType.ItemTypeEnum.Blueprint:
                 case Models.ItemType.ItemTypeEnum.Survey:
-                    return 0.0;
+                    return 0.0m;
                 default:
                     // Manufactured items: read CargoVolumeSize from blueprint
                     if (!string.IsNullOrEmpty(item.BaseItemTypeID) && playerContext != null)
@@ -897,12 +897,12 @@ namespace OE2EmpireTracker.Forms.Colony
                         Models.Blueprint bp = playerContext.FindBlueprint(item.BaseItemTypeID);
                         if (bp != null)
                         {
-                            double vol = 0;
-                            bp.Properties.getDouble("Cargo Volume Size", 0, out vol);
+                            decimal vol = 0;
+                            bp.Properties.getDecimal("Cargo Volume Size", 0, out vol);
                             return vol;
                         }
                     }
-                    return 0.0;
+                    return 0.0m;
             }
         }
 

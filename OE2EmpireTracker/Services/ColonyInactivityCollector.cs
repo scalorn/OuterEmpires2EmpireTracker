@@ -139,21 +139,21 @@ namespace OE2EmpireTracker.Services
         /// and applying the ExtractionFocus skill bonus (1.0 + level * 0.01).
         /// Returns 0 if the survey or resource cannot be found.
         /// </summary>
-        private static double GetMiningOutputRate(ColonyStructure miner, PlayerContext playerContext, Colony colony)
+        private static decimal GetMiningOutputRate(ColonyStructure miner, PlayerContext playerContext, Colony colony)
         {
             if (string.IsNullOrEmpty(miner.MiningSurvey) ||
                 string.IsNullOrEmpty(miner.MiningSurveyResource))
-                return 0;
+                return 0m;
 
             Survey survey = playerContext.FindSurvey(miner.MiningSurvey);
             if (survey == null || !survey.Resources.ContainsKey(miner.MiningSurveyResource))
-                return 0;
+                return 0m;
 
             SurveyResource resource = survey.Resources[miner.MiningSurveyResource];
 
-            double amount;
-            if (!double.TryParse(resource.Amount, out amount))
-                return 0;
+            decimal amount;
+            if (!decimal.TryParse(resource.Amount, out amount))
+                return 0m;
 
             // Get ExtractionFocus skill level from colony owner
             int extractionFocusLevel = 0;
@@ -166,7 +166,7 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
-            return amount * (1.0 + extractionFocusLevel * 0.01);
+            return amount * (1.0m + extractionFocusLevel * 0.01m);
         }
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace OE2EmpireTracker.Services
                 string purity = refinersInGroup[0].RefiningResourcePurity;
 
                 // Sum mining output rate for this resource+purity across all active miners
-                double totalMiningOutput = 0;
+                decimal totalMiningOutput = 0m;
                 foreach (var miner in activeMiners)
                 {
                     if (string.IsNullOrEmpty(miner.MiningSurvey) ||
@@ -259,7 +259,7 @@ namespace OE2EmpireTracker.Services
                 }
 
                 // Sum refining consumption rate for this resource+purity
-                double totalConsumption = 0;
+                decimal totalConsumption = 0m;
                 foreach (var refiner in refinersInGroup)
                 {
                     totalConsumption += GetRefiningConsumptionRate(refiner);
@@ -270,15 +270,15 @@ namespace OE2EmpireTracker.Services
 
                 // Calculate how much supply each refiner gets, in priority order (lowest displaySequence first)
                 var priorityOrder = refinersInGroup.OrderBy(r => r.displaySequence).ToList();
-                var refinerAvailable = new Dictionary<string, double>();
+                var refinerAvailable = new Dictionary<string, decimal>();
 
-                double supply = totalMiningOutput;
+                decimal supply = totalMiningOutput;
                 foreach (var refiner in priorityOrder)
                 {
                     int consumeRate = GetRefiningConsumptionRate(refiner);
-                    double available = Math.Min(supply, consumeRate);
+                    decimal available = Math.Min(supply, consumeRate);
                     refinerAvailable[refiner.UUID] = available;
-                    supply = Math.Max(0, supply - consumeRate);
+                    supply = Math.Max(0m, supply - consumeRate);
                 }
 
                 // Flag refiners where available < consumeRate, starting from highest displaySequence
@@ -286,7 +286,7 @@ namespace OE2EmpireTracker.Services
                 foreach (var refiner in sortedRefiners)
                 {
                     int consumeRate = GetRefiningConsumptionRate(refiner);
-                    double available = refinerAvailable[refiner.UUID];
+                    decimal available = refinerAvailable[refiner.UUID];
 
                     if (available >= consumeRate) continue; // Fully supplied
 
@@ -298,7 +298,7 @@ namespace OE2EmpireTracker.Services
                     string sourceName = BuildSourceName(refiner, playerContext);
                     if (sourceName == null) continue;
 
-                    int availableInt = (int)Math.Floor(available);
+                    int availableInt = (int)Math.Floor((double)available);
                     rows.Add(new ActivityRow
                     {
                         Type = ActivityType.Refining,

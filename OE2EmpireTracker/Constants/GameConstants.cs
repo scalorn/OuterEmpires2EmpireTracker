@@ -18,8 +18,8 @@ namespace OE2EmpireTracker.Constants
         // --- Workers ---
 
         /// <summary>Cargo volume per worker detail item.</summary>
-        public static double WorkerVolume =>
-            (double)(EmpireContext.getInstanceIfLoaded()?.GameConstants?.WorkerVolume ?? 50m);
+        public static decimal WorkerVolume =>
+            EmpireContext.getInstanceIfLoaded()?.GameConstants?.WorkerVolume ?? 50m;
 
         // --- Timers ---
 

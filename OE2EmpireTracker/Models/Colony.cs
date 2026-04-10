@@ -145,11 +145,11 @@ namespace OE2EmpireTracker.Models
             }
 
             // ExtractionFocus: +1% per level
-            double extractionMultiplier = 1.0 + GetOwnerSkillLevel(SkillName.ExtractionFocus) * 0.01;
+            decimal extractionMultiplier = 1.0m + GetOwnerSkillLevel(SkillName.ExtractionFocus) * 0.01m;
 
             while (structure.ProcessCompletionTime.IntervalsPassed > 0)
             {
-                Decimal quantity = (Decimal)(double.Parse(surveyResource.Amount) * extractionMultiplier) + leftOver;
+                Decimal quantity = (Decimal.Parse(surveyResource.Amount) * extractionMultiplier) + leftOver;
 
                 quantityInt += (int)quantity;
 
@@ -183,7 +183,7 @@ namespace OE2EmpireTracker.Models
         {
             int baseRate = GameConstants.RefiningBaseRate;
             // RefiningFocus: +2% per level
-            double refiningMultiplier = 1.0 + GetOwnerSkillLevel(SkillName.RefiningFocus) * 0.02;
+            decimal refiningMultiplier = 1.0m + GetOwnerSkillLevel(SkillName.RefiningFocus) * 0.02m;
             int outputMultiplier;
             switch (structure.RefiningResourcePurity)
             {
@@ -251,7 +251,7 @@ namespace OE2EmpireTracker.Models
             // Per-unit cost: how many input resources per 1 output unit
             int perUnitCost = recipe.ConsumeRate / recipe.ProduceRate;
             // RefiningFocus: +2% per level
-            double refiningMultiplier = 1.0 + GetOwnerSkillLevel(SkillName.RefiningFocus) * 0.02;
+            decimal refiningMultiplier = 1.0m + GetOwnerSkillLevel(SkillName.RefiningFocus) * 0.02m;
 
             while (structure.ProcessCompletionTime.IntervalsPassed > 0)
             {
@@ -393,8 +393,8 @@ namespace OE2EmpireTracker.Models
                     mfgItem.BaseItemTypeID = sourceBp.UUID;
                     mfgItem.Quantity = 1;
 
-                    double vol = 0;
-                    sourceBp.Properties.getDouble("Cargo Volume Size", 0, out vol);
+                    decimal vol = 0m;
+                    sourceBp.Properties.getDecimal("Cargo Volume Size", 0m, out vol);
                     mfgItem.Volume = vol;
 
                     Items.AddItem(mfgItem);

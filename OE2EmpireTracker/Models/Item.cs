@@ -99,7 +99,7 @@ namespace OE2EmpireTracker.Models
         public int Quantity { get; set; } = 0;
         [DefaultValue("")]
         public string ResourcePurity { get; set; } = string.Empty;
-        public double Volume { get; set; } = 0;
+        public decimal Volume { get; set; } = 0m;
         
         public Item(Models.ItemType.ItemTypeEnum itemType, string name)
         {

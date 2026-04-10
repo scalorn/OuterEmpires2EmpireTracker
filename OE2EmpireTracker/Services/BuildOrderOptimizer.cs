@@ -30,11 +30,11 @@ namespace OE2EmpireTracker.Services
         {
             if (blueprint == null) return false;
 
-            double val;
-            if (blueprint.Properties.getDouble("PowerProvided", 0, out val) && val > 0) return true;
-            if (blueprint.Properties.getDouble("HabitationProvision", 0, out val) && val > 0) return true;
-            if (blueprint.Properties.getDouble("FoodProvision", 0, out val) && val > 0) return true;
-            if (blueprint.Properties.getDouble("EntertainmentProvided", 0, out val) && val > 0) return true;
+            decimal val;
+            if (blueprint.Properties.getDecimal("PowerProvided", 0, out val) && val > 0) return true;
+            if (blueprint.Properties.getDecimal("HabitationProvision", 0, out val) && val > 0) return true;
+            if (blueprint.Properties.getDecimal("FoodProvision", 0, out val) && val > 0) return true;
+            if (blueprint.Properties.getDecimal("EntertainmentProvided", 0, out val) && val > 0) return true;
             return false;
         }
 
@@ -204,23 +204,23 @@ namespace OE2EmpireTracker.Services
                 if (bp == null) continue;
 
                 int score = 0;
-                double val;
+                decimal val;
 
                 // Score based on which deficits this support addresses
                 if (afterPrimary.PowerRequired > afterPrimary.PowerProvided &&
-                    bp.Properties.getDouble("PowerProvided", 0, out val) && val > 0)
+                    bp.Properties.getDecimal("PowerProvided", 0, out val) && val > 0)
                     score += 4;
 
                 if (afterPrimary.HabitationRequired > afterPrimary.HabitationProvision &&
-                    bp.Properties.getDouble("HabitationProvision", 0, out val) && val > 0)
+                    bp.Properties.getDecimal("HabitationProvision", 0, out val) && val > 0)
                     score += 3;
 
                 if (afterPrimary.FoodRequired > afterPrimary.FoodProvision &&
-                    bp.Properties.getDouble("FoodProvision", 0, out val) && val > 0)
+                    bp.Properties.getDecimal("FoodProvision", 0, out val) && val > 0)
                     score += 2;
 
                 if (afterPrimary.EntertainmentRequired > afterPrimary.EntertainmentProvided &&
-                    bp.Properties.getDouble("EntertainmentProvided", 0, out val) && val > 0)
+                    bp.Properties.getDecimal("EntertainmentProvided", 0, out val) && val > 0)
                     score += 1;
 
                 if (score > bestScore)
@@ -267,10 +267,10 @@ namespace OE2EmpireTracker.Services
                     if (currentCount >= maxPerColony) continue;
                 }
 
-                double val;
+                decimal val;
                 foreach (string prop in deficitProperties)
                 {
-                    if (bp.Properties.getDouble(prop, 0, out val) && val > 0)
+                    if (bp.Properties.getDecimal(prop, 0, out val) && val > 0)
                     {
                         Log.Info("Auto-creating support structure: {0} (provides {1})", bp.ExtendedName, prop);
                         return new ColonyStructure
