@@ -239,7 +239,7 @@ namespace OE2EmpireTracker.Forms.Colony
             this.flpBaseDetails.Location = new System.Drawing.Point(2, 2);
             this.flpBaseDetails.Margin = new System.Windows.Forms.Padding(2);
             this.flpBaseDetails.Name = "flpBaseDetails";
-            this.flpBaseDetails.Size = new System.Drawing.Size(800, 60);
+            this.flpBaseDetails.Size = new System.Drawing.Size(800, 92);
             this.flpBaseDetails.TabIndex = 6;
             this.flpBaseDetails.WrapContents = false;
             // 
