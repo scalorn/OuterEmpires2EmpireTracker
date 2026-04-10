@@ -261,3 +261,92 @@ Volume SHALL be set when an item is added to the warehouse.
 6. **REQ-CI-024 (new)** — "When a structure is added manually via the colony form, the form SHALL calculate and assign a `displaySequence` matching the game UI convention: per flatpack type, numbered sequentially starting at 1."
 
 **Action:** Requires implementation. New field `buildingID` on ColonyStructure, rename `gameSequence` to `displaySequence`, update merge logic in ColonyParser, update form code to calculate display sequence on manual add.
+
+
+---
+
+## Code Quality Review (April 2026)
+
+### AMB-033 — OPEN: Double clipboard read in colony import handler
+**Issue:** `FormColony.cmdImportColony_Click` reads the clipboard twice when updating an existing colony. First via `parser.ParseClipboardToTemp(empireContext)` (which reads clipboard internally), then again explicitly with `Clipboard.GetText(TextDataFormat.Html)` + `ExtractHtmlFragmentFromClipboardData` to get the HTML for `parser.ProcessHtml(existingColony, html, empireContext)`. This is wasteful and fragile — if the clipboard changes between the two reads, the merge would use different data.
+
+**Recommendation:** `ParseClipboardToTemp` should also return the extracted HTML string (via an `out` parameter or a result tuple), so the caller can reuse it for the merge path without re-reading the clipboard.
+
+---
+
+### AMB-034 — OPEN: `processClipboard` still camelCase on BlueprintScanner and SurveyParser
+**Issue:** Recommendations.md item 12d (method naming PascalCase) was marked complete, but two parser methods remain camelCase:
+- `BlueprintScanner.processClipboard(Blueprint)` — called from `FormBlueprint.cmdImport_Click` fallback path
+- `SurveyParser.processClipboard(Survey)` — called from `FormSurvey.cmdImport_Click`
+
+`ColonyParser.ProcessClipboard` is already PascalCase.
+
+**Recommendation:** Rename both to `ProcessClipboard` and update all callers.
+
+---
+
+### AMB-035 — OPEN: `ExtractHtmlFragmentFromClipboardData` lives in `BlueprintScanner` but is used by all parsers
+**Issue:** `BlueprintScanner.ExtractHtmlFragmentFromClipboardData` is a general-purpose clipboard HTML extraction utility, but it lives inside `Forms/Blueprint/BlueprintScanner.cs`. Both `ColonyParser` and `SurveyParser` reference it via the fully-qualified path `Forms.Blueprint.BlueprintScanner.ExtractHtmlFragmentFromClipboardData(...)`. Additionally, `FormBlueprint` has a redundant wrapper method `ExtractHtmlFragmentFromClipboardData` that just delegates to `BlueprintScanner`.
+
+Test files also reference it via the long path (6 test files).
+
+**Recommendation:** Extract `ExtractHtmlFragmentFromClipboardData` into a shared utility class (e.g. `Parsers/ClipboardHelper.cs` or `Services/ClipboardHelper.cs`). Remove the `FormBlueprint` wrapper. Update all callers.
+
+---
+
+### AMB-036 — OPEN: Commented-out `[NotMapped]` attributes and dead properties in Blueprint.cs
+**Issue:** `Blueprint.cs` has 5 commented-out `//[NotMapped]` attributes on active properties and 2 fully commented-out properties (`ManufactureRunTime`, `MaxAllowedOnShip`). These are remnants from an Entity Framework era that no longer applies (the project uses Newtonsoft.Json for persistence). Recommendations.md 12a (dead code removal) was marked complete but these remain.
+
+**Recommendation:** Remove all `//[NotMapped]` comments and the two dead property definitions.
+
+---
+
+### AMB-037 — OPEN: Commented-out code in BlueprintScanner.processClipboard
+**Issue:** `BlueprintScanner.processClipboard` contains two commented-out string replacement lines (lines 68-69) that appear to be debug artifacts:
+```csharp
+//output = $@"@""{output.Replace("\n", "\"\n")}""";
+//output = $@"@""{output.Replace("\r", "\"\r")}""";
+```
+Also, `FormBlueprint.btnImport_Click` (a different, unused import handler) has commented-out lines referencing `rtbCopyTarget` and `ProcessHTML`.
+
+**Recommendation:** Remove all commented-out debug code. Use version control history for reference.
+
+---
+
+### AMB-038 — OPEN: Survey import has no dedup logic
+**Issue:** `FormSurvey.cmdImport_Click` is a 3-line method that calls `parser.processClipboard(viewModel.Data)` directly — no clipboard guard, no temporary object, no dedup, no error handling. Colony and Blueprint imports both now have dedup logic; Survey is the outlier.
+
+Surveys are identified by PlanetName + SurveyID. Importing the same survey twice into the selected survey object works (overwrites), but importing a survey for a different planet into the wrong selected survey silently corrupts data.
+
+**Recommendation:** Add survey import dedup following the same pattern as colony-import-dedupe: parse into temp, search by PlanetName+SurveyID, merge or create. Add a clipboard HTML guard and error handling. Track as a new backlog item.
+
+---
+
+### AMB-039 — OPEN: `FormBlueprint.btnImport_Click` is dead code
+**Issue:** `FormBlueprint` has two import click handlers: `cmdImport_Click` (the real one, wired to the Import button) and `btnImport_Click` (line ~490, reads clipboard but does nothing useful — the processing lines are commented out). This appears to be an old debug handler that was never removed.
+
+**Recommendation:** Remove `btnImport_Click` entirely.
+
+---
+
+### AMB-040 — OPEN: Colony and Blueprint import dedup helpers use divergent patterns
+**Issue:** Colony import uses `ColonyImportHelper` (a dedicated static helper in Services/) with `FindByName`, `MergeIdentity`, `CreateFromTemp`, `IsDuplicateName`. Blueprint import reuses `MarketBlueprintImporter` methods (`FindByDedupKey`, `UpdateExisting`, `IsGlobalRoute`) that were made `internal`.
+
+The patterns diverge in several ways:
+- Colony dedup key is a single field (ColonyName, case-insensitive). Blueprint dedup key is a 5-field composite (case-sensitive).
+- Colony merge only copies identity fields (PlanetName, SystemName), then re-parses HTML into the existing colony for structure/commodity merge. Blueprint merge uses `UpdateExisting` which handles property preservation.
+- Colony `CreateFromTemp` copies data into a new object. Blueprint create path mutates the temp object directly (assigns UUID, adds to list).
+- Colony import has `IsDuplicateName` for manual edit validation. Blueprint import has no equivalent.
+
+These differences are partly justified by domain differences, but the structural inconsistency makes the codebase harder to reason about.
+
+**Recommendation:** Document the rationale for the different patterns. Consider whether a shared `ImportResult` return type would be useful for colony imports (currently returns void). The blueprint pattern of mutating the temp object directly is simpler than colony's pattern of creating a new object — consider aligning.
+
+---
+
+### AMB-041 — OPEN: `baseBlueprintUUID` is camelCase on Blueprint model
+**Issue:** `Blueprint.baseBlueprintUUID` is the only camelCase public property on any model class. All other properties use PascalCase (`OwnerUUID`, `BluePrintType`, `ColonyName`, etc.). This is likely a legacy naming from an earlier version.
+
+Renaming it would require a JSON migration strategy since it's serialized to PlayerData.json and BaselineData.json. Newtonsoft.Json serializes using the property name by default.
+
+**Recommendation:** Either rename to `BaseBlueprintUUID` with a `[JsonProperty("baseBlueprintUUID")]` attribute to preserve backward compatibility, or leave as-is and document the exception. Low priority.
