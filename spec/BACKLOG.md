@@ -199,6 +199,31 @@ Build a migration utility to import colony data from an existing OpenOffice Calc
 
 The survey clipboard import (`FormSurvey.cmdImport_Click`) currently writes parsed HTML directly into the selected survey with no dedup, no clipboard guard, and no error handling. Colony and Blueprint imports both have dedup logic; Survey is the outlier. Importing a survey for a different planet into the wrong selected survey silently corrupts data. Add survey import dedup following the same pattern as colony-import-dedupe: parse into temp, search by PlanetName+SurveyID, merge or create. Add a clipboard HTML guard and error handling. See AMB-038.
 
+### BL-039: Colony Administration Tab — Activity/Inactivity Status Area
+**Dependencies:** None
+
+The colony Administration tab should have a status area showing all the items from the activity and inactivity reports, scoped to the individual colony. We already gather this data across all colonies — show the same data for the selected colony on its Administration tab.
+
+### BL-040: Delivery Execution — Load Item Count and Volume
+**Dependencies:** None
+
+The delivery execution form should display a count of the number of items and a calculated total volume to the right of the "Load Before Departure" header. Helps the player know at a glance how much cargo space is needed.
+
+### BL-041: Delivery Execution — Stale Plan After Delete
+**Dependencies:** None
+
+Bug: After deleting a delivery plan, the delivery execution form keeps displaying the deleted plan. The form should detect the deletion (via DeliveryDataChanged event) and clear the execution view when the currently displayed plan no longer exists.
+
+### BL-042: Delivery Execution — New Plan Not Visible Until Reopen
+**Dependencies:** None
+
+Bug: After creating a new delivery plan, the delivery execution form doesn't see the new plan until the form is closed and reopened. The form should refresh its plan dropdown when it receives a DeliveryDataChanged event.
+
+### BL-043: Colony Duplicate Validation — Planet+System Instead of Colony Name
+**Dependencies:** None
+
+With the dedup key changed from ColonyName to PlanetName+SystemName, the duplicate-name validation on the colony name text field (SetError/ClearError) is no longer relevant — duplicate colony names don't break dedup anymore. The validation should either be removed entirely or changed to warn on duplicate PlanetName+SystemName combinations instead. Currently the colony name validation has been removed; consider whether planet+system validation is needed on manual edit.
+
 
 ---
 

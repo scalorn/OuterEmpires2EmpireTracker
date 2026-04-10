@@ -146,21 +146,6 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             if (_isProgrammaticUpdate > 0) return;
             colonyViewModel.ColonyName = txtColonyName.Text;
-
-            if (selectedColony != null &&
-                ColonyImportHelper.IsDuplicateName(
-                    playerContext.GetCurrentPlayerColonies(),
-                    txtColonyName.Text,
-                    selectedColony.UUID))
-            {
-                txtColonyName.SetError("Colony name already in use");
-                cmdSave.Enabled = false;
-            }
-            else
-            {
-                txtColonyName.ClearError();
-                cmdSave.Enabled = true;
-            }
         }
 
         private void txtSystemName_TextChanged(object sender, EventArgs e)
@@ -1681,7 +1666,11 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     ColonyImportHelper.MergeIdentity(existingColony, tempColony);
 
+                    // Save ColonyName before ProcessHtml — the parser's ParsePlanetOverview
+                    // overwrites ColonyName with the game's (potentially truncated) value.
+                    string preservedColonyName = existingColony.ColonyName;
                     parser.ProcessHtml(existingColony, extractedHtml, empireContext);
+                    existingColony.ColonyName = preservedColonyName;
 
                     selectedColony = existingColony;
 
