@@ -209,32 +209,44 @@ static void RemapUUID(PlayerContext pc, EmpireContext ec, string oldUUID, string
 }
 ```
 
-Each migration step just provides the old/new pairs:
+### Renames Are Idempotent — No Version Gating Needed
+
+Blueprint renames don't need to be separated into per-version migration steps. The rename table is a flat list that grows over time and always runs safely on every load:
 
 ```csharp
-// Migration v1→v2: initial hash migration + renames
-static void MigrateV1ToV2(PlayerContext pc, EmpireContext ec)
+static readonly List<(string OldName, string NewName, int Evolution, string BluePrintType, int Class, string TechLevel)> Renames = new()
 {
-    // Remap all random UUIDs to deterministic hashes
-    foreach (var bp in ec.globalBlueprintList.ToList())
-    {
-        string hashUUID = ComputeDeterministicUUID(bp);
-        if (bp.UUID != hashUUID)
-            RemapUUID(pc, ec, bp.UUID, hashUUID);
-    }
+    ("Mining Rig", "Mining Rig Flatpack", 0, "Flatpacks/MiningRig", 0, null),
+    ("Habitat", "Habitation Block Flatpack", 0, "Flatpacks/HabitationBlock", 0, null),
+    ("Entertainment Centre", "Entertainment Centre Flatpack", 0, "Flatpacks/EntertainmentCentreFlatpack", 0, null),
+};
+```
 
-    // Handle renames: compute old hash, compute new hash, remap
-    var renames = new[] { ("Mining Rig", "Mining Rig Flatpack") };
-    foreach (var (oldName, newName) in renames)
-    {
-        string oldHash = ComputeDeterministicUUID(oldName, ...);
-        string newHash = ComputeDeterministicUUID(newName, ...);
-        RemapUUID(pc, ec, oldHash, newHash);
-        // Also update the Name field on the blueprint itself
-        var bp = ec.globalBlueprintList.FirstOrDefault(b => b.UUID == newHash);
-        if (bp != null) bp.Name = newName;
-    }
-}
+For each entry: compute old hash from old name + other fields, compute new hash from new name + other fields, call `RemapUUID(oldHash, newHash)`. If the old hash isn't found (already migrated, or user never had that blueprint), it's a no-op. No harm done.
+
+This means:
+- Renames run on every load, outside the version-gated migration framework
+- The rename table is append-only — new renames are added, old ones are never removed
+- No need to track which renames have been applied — the hash lookup handles it
+- A user upgrading from any version to any version gets all renames applied correctly
+
+The `DataVersion` field is still needed for non-idempotent migrations (adding new fields with defaults, restructuring data, initial random-UUID→hash migration). But renames are the most common maintenance task and they're free of version complexity.
+
+### Revised Migration Architecture
+
+Two separate mechanisms:
+
+1. **Rename table** (idempotent, runs every load) — flat list of old name → new name entries. Computes old/new hashes, remaps if found. Append-only, no version tracking.
+
+2. **Versioned migrations** (non-idempotent, runs once per version bump) — sequential steps gated by `DataVersion`. Used for:
+   - Initial migration: random UUIDs → deterministic hashes (v0 → v1)
+   - Schema changes: adding new fields, restructuring data
+   - Data changes that aren't renames (e.g. correcting a property value that was wrong)
+
+```csharp
+// On load:
+ApplyRenames(pc, ec);           // Always runs, idempotent
+ApplyVersionedMigrations(pc);   // Runs pending migrations based on DataVersion
 ```
 
 ### Revised Recommendation
