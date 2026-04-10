@@ -146,6 +146,21 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             if (_isProgrammaticUpdate > 0) return;
             colonyViewModel.ColonyName = txtColonyName.Text;
+
+            if (selectedColony != null &&
+                ColonyImportHelper.IsDuplicateName(
+                    playerContext.GetCurrentPlayerColonies(),
+                    txtColonyName.Text,
+                    selectedColony.UUID))
+            {
+                txtColonyName.SetError("Colony name already in use");
+                cmdSave.Enabled = false;
+            }
+            else
+            {
+                txtColonyName.ClearError();
+                cmdSave.Enabled = true;
+            }
         }
 
         private void txtSystemName_TextChanged(object sender, EventArgs e)
@@ -1626,21 +1641,84 @@ namespace OE2EmpireTracker.Forms.Colony
                 return;
             }
 
+            if (string.IsNullOrEmpty(playerContext.CurrentPlayerUUID))
+            {
+                MessageBox.Show("No player selected. Select a player profile first.",
+                    "No Player", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             try
             {
                 var parser = new ColonyParser();
-                parser.ProcessClipboard(selectedColony, empireContext);
+                var tempColony = parser.ParseClipboardToTemp(empireContext);
 
-                if (string.IsNullOrEmpty(selectedColony.OwnerUUID))
+                if (tempColony == null)
+                    return;
+
+                if (string.IsNullOrEmpty(tempColony.ColonyName))
                 {
-                    selectedColony.OwnerUUID = playerContext.CurrentPlayerUUID;
+                    // Fall back to current behavior when no colony name is parsed
+                    parser.ProcessClipboard(selectedColony, empireContext);
+
+                    if (string.IsNullOrEmpty(selectedColony.OwnerUUID))
+                    {
+                        selectedColony.OwnerUUID = playerContext.CurrentPlayerUUID;
+                    }
+
+                    colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
+                    PopulateForm();
+
+                    Log.Info("Colony imported from clipboard (fallback): {0} ({1} structures, {2} commodity requests)",
+                        selectedColony.PlanetName, selectedColony.Structures.Count, selectedColony.Commodities.Count);
+                    return;
+                }
+
+                var existingColony = ColonyImportHelper.FindByName(
+                    playerContext.GetCurrentPlayerColonies(), tempColony.ColonyName);
+
+                if (existingColony != null)
+                {
+                    ColonyImportHelper.MergeIdentity(existingColony, tempColony);
+
+                    string clipboardData = Clipboard.GetText(TextDataFormat.Html);
+                    string html = Forms.Blueprint.BlueprintScanner.ExtractHtmlFragmentFromClipboardData(clipboardData);
+                    parser.ProcessHtml(existingColony, html, empireContext);
+
+                    selectedColony = existingColony;
+
+                    Log.Info("Colony updated via dedup: {0} ({1} structures, {2} commodity requests)",
+                        existingColony.ColonyName, existingColony.Structures.Count, existingColony.Commodities.Count);
+                }
+                else
+                {
+                    var newColony = ColonyImportHelper.CreateFromTemp(tempColony, playerContext.CurrentPlayerUUID);
+                    playerContext.colonyList.Add(newColony);
+                    selectedColony = newColony;
+
+                    Log.Info("New colony created via dedup: {0} ({1} structures, {2} commodity requests)",
+                        newColony.ColonyName, newColony.Structures.Count, newColony.Commodities.Count);
+                }
+
+                playerContext.writeContext();
+                playerContext.OnColonyDataChanged(selectedColony.UUID);
+
+                // Refresh list view
+                txtColonyListFilter_TextChanged(sender, e);
+
+                // Select the imported colony in the list view
+                foreach (ListViewItem item in lvwColonies.Items)
+                {
+                    if ((item.Tag as Models.Colony)?.UUID == selectedColony.UUID)
+                    {
+                        item.Selected = true;
+                        item.EnsureVisible();
+                        break;
+                    }
                 }
 
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
                 PopulateForm();
-
-                Log.Info("Colony imported from clipboard: {0} ({1} structures, {2} commodity requests)",
-                    selectedColony.PlanetName, selectedColony.Structures.Count, selectedColony.Commodities.Count);
             }
             catch (Exception ex)
             {
