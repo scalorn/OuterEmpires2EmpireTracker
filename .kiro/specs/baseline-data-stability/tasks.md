@@ -94,7 +94,7 @@ Stabilize BaselineData.json for multi-user distribution: deterministic UUIDs for
 
 - [x] 6. Checkpoint — Ensure all tests pass
 
-- [-] 7. Externalize GameConstants to BaselineData.json
+- [x] 7. Externalize GameConstants to BaselineData.json
   - [x] 7.1 Create `OE2EmpireTracker/Models/BaselineGameConstants.cs` with 5 fields
     - RefiningBaseRate (int, default 25), CommoditiesPerCycle (int, default 10), CommodityCycleSeconds (long, default 600), StructureCap (int, default 65), WorkerVolume (decimal, default 50)
     - Add `<Compile Include>` to csproj
@@ -111,17 +111,17 @@ Stabilize BaselineData.json for multi-user distribution: deterministic UUIDs for
   - [x] 7.4 Add `GameConstants` section to BaselineData.json (main + test)
     - _Requirements: 7.1_
 
-- [ ] 8. Externalize Commodities to BaselineData.json
-  - [~] 8.1 Add `Commodity[]` array to `BaselineRoot`
+- [-] 8. Externalize Commodities to BaselineData.json
+  - [x] 8.1 Add `Commodity[]` array to `BaselineRoot`
     - _Requirements: 8.1_
 
-  - [~] 8.2 Update `EmpireContext` to load commodities from BaselineRoot with fallback to hardcoded list
+  - [x] 8.2 Update `EmpireContext` to load commodities from BaselineRoot with fallback to hardcoded list
     - _Requirements: 8.2, 8.3, 8.4_
 
-  - [~] 8.3 Serialize all 209 commodities into BaselineData.json (main + test)
+  - [x] 8.3 Serialize all 209 commodities into BaselineData.json (main + test)
     - _Requirements: 8.3_
 
-  - [~] 8.4 Update `Commodity.cs` — keep model class, change static initializer to fallback only
+  - [x] 8.4 Update `Commodity.cs` — keep model class, change static initializer to fallback only
     - _Requirements: 8.2, 8.4_
 
 - [ ] 9. Externalize RefiningRecipes to BaselineData.json

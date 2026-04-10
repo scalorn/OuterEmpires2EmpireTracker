@@ -12669,5 +12669,2097 @@
     "CommodityCycleSeconds": 600,
     "StructureCap": 65,
     "WorkerVolume": 50
-  }
+  },
+  "Commodity": [
+    {
+      "CommodityIndustry": 4,
+      "CommodityGroup": 2,
+      "ID": "Advanced Biolubricants",
+      "Name": "Advanced Biolubricants",
+      "ConstructionResources": {
+        "Alkali Organics": "2",
+        "Strong Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 4,
+      "CommodityGroup": 12,
+      "ID": "Advanced Materials Simulators",
+      "Name": "Advanced Materials Simulators",
+      "ConstructionResources": {
+        "Strong Acidic Inorganics": "2",
+        "Heavy Alkaline Earth Metals": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 14,
+      "CommodityGroup": 13,
+      "ID": "AGI Archives",
+      "Name": "AGI Archives",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 9,
+      "CommodityGroup": 8,
+      "ID": "AGI Manu-Augments",
+      "Name": "AGI Manu-Augments",
+      "ConstructionResources": {
+        "Metaloids": "2",
+        "Complex Non-Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 2,
+      "CommodityGroup": 1,
+      "ID": "Agridome Ops Units",
+      "Name": "Agridome Ops Units",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 5,
+      "CommodityGroup": 3,
+      "ID": "AI Finance Cubes",
+      "Name": "AI Finance Cubes",
+      "ConstructionResources": {
+        "Strong Alkali Inorganics": "2",
+        "Heavy Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 8,
+      "CommodityGroup": 1,
+      "ID": "AI Inventory Systems",
+      "Name": "AI Inventory Systems",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 6,
+      "CommodityGroup": 9,
+      "ID": "AmmoMate Munitions Printer",
+      "Name": "AmmoMate Munitions Printer",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 2,
+      "CommodityGroup": 9,
+      "ID": "Aquacore Pumps",
+      "Name": "Aquacore Pumps",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 9,
+      "CommodityGroup": 4,
+      "ID": "Assemblatrons",
+      "Name": "Assemblatrons",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 9,
+      "CommodityGroup": 12,
+      "ID": "AssembleMate Crucibles",
+      "Name": "AssembleMate Crucibles",
+      "ConstructionResources": {
+        "Strong Acidic Inorganics": "2",
+        "Heavy Alkaline Earth Metals": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 12,
+      "CommodityGroup": 4,
+      "ID": "Atomsmasher Crucibles",
+      "Name": "Atomsmasher Crucibles",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 3,
+      "CommodityGroup": 14,
+      "ID": "Autonomous Trader Bots",
+      "Name": "Autonomous Trader Bots",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 6,
+      "CommodityGroup": 4,
+      "ID": "BattleCom Interconnects",
+      "Name": "BattleCom Interconnects",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 10,
+      "CommodityGroup": 7,
+      "ID": "Biochem Delivery Systems",
+      "Name": "Biochem Delivery Systems",
+      "ConstructionResources": {
+        "Heavy Trans-Metals": "2",
+        "Complex Metallics": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 5,
+      "CommodityGroup": 13,
+      "ID": "Biochip Arrays",
+      "Name": "Biochip Arrays",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 2,
+      "CommodityGroup": 8,
+      "ID": "Biomass Harvester Controllers",
+      "Name": "Biomass Harvester Controllers",
+      "ConstructionResources": {
+        "Metaloids": "2",
+        "Complex Non-Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 5,
+      "CommodityGroup": 2,
+      "ID": "Biosuspension Fluids",
+      "Name": "Biosuspension Fluids",
+      "ConstructionResources": {
+        "Alkali Organics": "2",
+        "Acidic Organics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 13,
+      "CommodityGroup": 2,
+      "ID": "Biotech Vision Systems",
+      "Name": "Biotech Vision Systems",
+      "ConstructionResources": {
+        "Alkali Organics": "2",
+        "Acidic Organics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 13,
+      "CommodityGroup": 7,
+      "ID": "Brainwave Scintillators",
+      "Name": "Brainwave Scintillators",
+      "ConstructionResources": {
+        "Heavy Trans-Metals": "2",
+        "Complex Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 11,
+      "CommodityGroup": 11,
+      "ID": "Branding Systems",
+      "Name": "Branding Systems",
+      "ConstructionResources": {
+        "Strong Alkali Inorganics": "2",
+        "Heavy Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 12,
+      "CommodityGroup": 4,
+      "ID": "Calalyst Reaction Simulators",
+      "Name": "Calalyst Reaction Simulators",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 8,
+      "CommodityGroup": 9,
+      "ID": "Cargo Drones",
+      "Name": "Cargo Drones",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 12,
+      "CommodityGroup": 2,
+      "ID": "Caustic Fluids",
+      "Name": "Caustic Fluids",
+      "ConstructionResources": {
+        "Alkali Organics": "2",
+        "Acidic Organics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 2,
+      "CommodityGroup": 12,
+      "ID": "ChemLab Units",
+      "Name": "ChemLab Units",
+      "ConstructionResources": {
+        "Strong Acidic Inorganics": "2",
+        "Heavy Alkaline Earth Metals": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 11,
+      "CommodityGroup": 2,
+      "ID": "Clean Air Units",
+      "Name": "Clean Air Units",
+      "ConstructionResources": {
+        "Alkali Organics": "2",
+        "Acidic Organics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 11,
+      "CommodityGroup": 2,
+      "ID": "Climate Hubs",
+      "Name": "Climate Hubs",
+      "ConstructionResources": {
+        "Alkali Organics": "2",
+        "Acidic Organics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 7,
+      "CommodityGroup": 11,
+      "ID": "Clothing Printers",
+      "Name": "Clothing Printers",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 11,
+      "CommodityGroup": 3,
+      "ID": "Comfortcore Arrays",
+      "Name": "Comfortcore Arrays",
+      "ConstructionResources": {
+        "Strong Alkali Inorganics": "2",
+        "Heavy Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 12,
+      "CommodityGroup": 5,
+      "ID": "Concentrax Containment Units",
+      "Name": "Concentrax Containment Units",
+      "ConstructionResources": {
+        "Heavy Alkali Metals": "2",
+        "Lanthanides": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 13,
+      "CommodityGroup": 1,
+      "ID": "Conceptcore Drivers",
+      "Name": "Conceptcore Drivers",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 7,
+      "CommodityGroup": 2,
+      "ID": "Confectionery",
+      "Name": "Confectionery",
+      "ConstructionResources": {
+        "Alkali Organics": "2",
+        "Acidic Organics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 4,
+      "CommodityGroup": 10,
+      "ID": "Constructex Waldos",
+      "Name": "Constructex Waldos",
+      "ConstructionResources": {
+        "Strong Alkali Organics": "2",
+        "Lanthanide Volatiles": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 6,
+      "CommodityGroup": 4,
+      "ID": "Containment Units",
+      "Name": "Containment Units",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 4,
+      "CommodityGroup": 5,
+      "ID": "Core Dyagnostic Component",
+      "Name": "Core Dyagnostic Component",
+      "ConstructionResources": {
+        "Heavy Alkali Metals": "2",
+        "Lanthanides": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 10,
+      "CommodityGroup": 4,
+      "ID": "Coreseeker Guidance Bits",
+      "Name": "Coreseeker Guidance Bits",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 1,
+      "CommodityGroup": 14,
+      "ID": "CRM Units",
+      "Name": "CRM Units",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 6,
+      "CommodityGroup": 4,
+      "ID": "Cryogenic Coolant Tanks",
+      "Name": "Cryogenic Coolant Tanks",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 13,
+      "CommodityGroup": 3,
+      "ID": "Cryptochips",
+      "Name": "Cryptochips",
+      "ConstructionResources": {
+        "Strong Alkali Inorganics": "2",
+        "Heavy Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 14,
+      "CommodityGroup": 1,
+      "ID": "Data Accumulation Systems",
+      "Name": "Data Accumulation Systems",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 13,
+      "CommodityGroup": 1,
+      "ID": "DataScope Assemblies",
+      "Name": "DataScope Assemblies",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 3,
+      "CommodityGroup": 9,
+      "ID": "Datasphere Frames",
+      "Name": "Datasphere Frames",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 9,
+      "CommodityGroup": 12,
+      "ID": "DegasTech Reforgers",
+      "Name": "DegasTech Reforgers",
+      "ConstructionResources": {
+        "Strong Acidic Inorganics": "2",
+        "Heavy Alkaline Earth Metals": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 8,
+      "CommodityGroup": 1,
+      "ID": "Delivery Systems",
+      "Name": "Delivery Systems",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 9,
+      "CommodityGroup": 3,
+      "ID": "Demand Drivers",
+      "Name": "Demand Drivers",
+      "ConstructionResources": {
+        "Strong Alkali Inorganics": "2",
+        "Heavy Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 11,
+      "CommodityGroup": 7,
+      "ID": "Design AGI Chassis",
+      "Name": "Design AGI Chassis",
+      "ConstructionResources": {
+        "Heavy Trans-Metals": "2",
+        "Complex Metallics": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 11,
+      "CommodityGroup": 5,
+      "ID": "Diagnocores",
+      "Name": "Diagnocores",
+      "ConstructionResources": {
+        "Heavy Alkali Metals": "2",
+        "Lanthanides": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 8,
+      "CommodityGroup": 9,
+      "ID": "Dockmaster Drones",
+      "Name": "Dockmaster Drones",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 1,
+      "CommodityGroup": 8,
+      "ID": "Document Calibrators",
+      "Name": "Document Calibrators",
+      "ConstructionResources": {
+        "Metaloids": "2",
+        "Complex Non-Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 10,
+      "CommodityGroup": 9,
+      "ID": "Drillcore Chassis",
+      "Name": "Drillcore Chassis",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 10,
+      "CommodityGroup": 4,
+      "ID": "Earthmover Fabricators",
+      "Name": "Earthmover Fabricators",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 3,
+      "CommodityGroup": 8,
+      "ID": "EconoSim Units",
+      "Name": "EconoSim Units",
+      "ConstructionResources": {
+        "Metaloids": "2",
+        "Complex Non-Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 9,
+      "CommodityGroup": 1,
+      "ID": "Efficiency Systems",
+      "Name": "Efficiency Systems",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 11,
+      "CommodityGroup": 4,
+      "ID": "Energy Storage systems",
+      "Name": "Energy Storage systems",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 13,
+      "CommodityGroup": 2,
+      "ID": "Enriched Agar Gels",
+      "Name": "Enriched Agar Gels",
+      "ConstructionResources": {
+        "Alkali Organics": "2",
+        "Acidic Organics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 7,
+      "CommodityGroup": 14,
+      "ID": "Entertainmate Interconnects",
+      "Name": "Entertainmate Interconnects",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 3,
+      "CommodityGroup": 13,
+      "ID": "Equity Analyzers",
+      "Name": "Equity Analyzers",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 7,
+      "CommodityGroup": 3,
+      "ID": "Events AGI Chassis",
+      "Name": "Events AGI Chassis",
+      "ConstructionResources": {
+        "Strong Alkali Organics": "2",
+        "Heavy Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 9,
+      "CommodityGroup": 8,
+      "ID": "Exoskeleton Waldos",
+      "Name": "Exoskeleton Waldos",
+      "ConstructionResources": {
+        "Metaloids": "2",
+        "Complex Non-Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 7,
+      "CommodityGroup": 2,
+      "ID": "Fermented Beverages",
+      "Name": "Fermented Beverages",
+      "ConstructionResources": {
+        "Alkali Organics": "2",
+        "Acidic Organics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 12,
+      "CommodityGroup": 4,
+      "ID": "Filterator Chassis",
+      "Name": "Filterator Chassis",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 9,
+      "CommodityGroup": 3,
+      "ID": "Finance AutoMods",
+      "Name": "Finance AutoMods",
+      "ConstructionResources": {
+        "Strong Alkali Inorganics": "2",
+        "Heavy Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 14,
+      "CommodityGroup": 13,
+      "ID": "Fold Containers",
+      "Name": "Fold Containers",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 5,
+      "CommodityGroup": 3,
+      "ID": "Funding Systems",
+      "Name": "Funding Systems",
+      "ConstructionResources": {
+        "Strong Alkali Inorganics": "2",
+        "Heavy Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 7,
+      "CommodityGroup": 11,
+      "ID": "G-Suites",
+      "Name": "G-Suites",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 7,
+      "CommodityGroup": 13,
+      "ID": "Gameonix Simulators",
+      "Name": "Gameonix Simulators",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 2,
+      "CommodityGroup": 13,
+      "ID": "Gene-Seed Packets",
+      "Name": "Gene-Seed Packets",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 5,
+      "CommodityGroup": 14,
+      "ID": "Genecore Processors",
+      "Name": "Genecore Processors",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 4,
+      "CommodityGroup": 6,
+      "ID": "General Control Systems",
+      "Name": "General Control Systems",
+      "ConstructionResources": {
+        "Transuranic Volatiles": "2",
+        "Superheavy Exotics": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 10,
+      "CommodityGroup": 2,
+      "ID": "Geoengineering Slurry",
+      "Name": "Geoengineering Slurry",
+      "ConstructionResources": {
+        "Alkali Organics": "2",
+        "Acidic Organics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 2,
+      "CommodityGroup": 13,
+      "ID": "Gigagro Fertilizers",
+      "Name": "Gigagro Fertilizers",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 13,
+      "CommodityGroup": 4,
+      "ID": "Gravimeters",
+      "Name": "Gravimeters",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 12,
+      "CommodityGroup": 3,
+      "ID": "Handheld Infrartek Units",
+      "Name": "Handheld Infrartek Units",
+      "ConstructionResources": {
+        "Strong Alkali Inorganics": "2",
+        "Heavy Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 3,
+      "CommodityGroup": 9,
+      "ID": "Haptic Equipment",
+      "Name": "Haptic Equipment",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 12,
+      "CommodityGroup": 11,
+      "ID": "Hazard Bunkers",
+      "Name": "Hazard Bunkers",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 12,
+      "CommodityGroup": 5,
+      "ID": "Hazard Disposal Systems",
+      "Name": "Hazard Disposal Systems",
+      "ConstructionResources": {
+        "Heavy Alkali Metals": "2",
+        "Lanthanides": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 12,
+      "CommodityGroup": 10,
+      "ID": "Hazard Gear",
+      "Name": "Hazard Gear",
+      "ConstructionResources": {
+        "Strong Alkali Organics": "2",
+        "Lanthanide Volatiles": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 5,
+      "CommodityGroup": 14,
+      "ID": "Health Scanners",
+      "Name": "Health Scanners",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 9,
+      "CommodityGroup": 4,
+      "ID": "Heavy Alloy Printers",
+      "Name": "Heavy Alloy Printers",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 2,
+      "CommodityGroup": 9,
+      "ID": "Heavy Harvesters",
+      "Name": "Heavy Harvesters",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 10,
+      "CommodityGroup": 6,
+      "ID": "Heavy Laser Drill Parts",
+      "Name": "Heavy Laser Drill Parts",
+      "ConstructionResources": {
+        "Transuranic Volatiles": "2",
+        "Superheavy Exotics": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 10,
+      "CommodityGroup": 6,
+      "ID": "Heavy Mover Kits",
+      "Name": "Heavy Mover Kits",
+      "ConstructionResources": {
+        "Transuranic Volatiles": "2",
+        "Superheavy Exotics": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 4,
+      "CommodityGroup": 10,
+      "ID": "Heavy Robot Bays",
+      "Name": "Heavy Robot Bays",
+      "ConstructionResources": {
+        "Strong Alkali Organics": "2",
+        "Lanthanide Volatiles": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 9,
+      "CommodityGroup": 6,
+      "ID": "Heavy Unit Manipulators",
+      "Name": "Heavy Unit Manipulators",
+      "ConstructionResources": {
+        "Transuranic Volatiles": "2",
+        "Superheavy Exotics": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 10,
+      "CommodityGroup": 9,
+      "ID": "HEV Duty Exosuits",
+      "Name": "HEV Duty Exosuits",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 6,
+      "CommodityGroup": 9,
+      "ID": "HEV-Battledress",
+      "Name": "HEV-Battledress",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 11,
+      "CommodityGroup": 5,
+      "ID": "Hibernation Pods",
+      "Name": "Hibernation Pods",
+      "ConstructionResources": {
+        "Heavy Alkali Metals": "2",
+        "Lanthanides": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 1,
+      "CommodityGroup": 14,
+      "ID": "HoloDesks",
+      "Name": "HoloDesks",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 8,
+      "CommodityGroup": 14,
+      "ID": "Holomap Units",
+      "Name": "Holomap Units",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 11,
+      "CommodityGroup": 9,
+      "ID": "Hometech Supplies",
+      "Name": "Hometech Supplies",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 13,
+      "CommodityGroup": 11,
+      "ID": "Human Facilities",
+      "Name": "Human Facilities",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 11,
+      "CommodityGroup": 2,
+      "ID": "Hydrobots",
+      "Name": "Hydrobots",
+      "ConstructionResources": {
+        "Alkali Organics": "2",
+        "Acidic Organics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 2,
+      "CommodityGroup": 11,
+      "ID": "Hydroponics Quarters",
+      "Name": "Hydroponics Quarters",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 12,
+      "CommodityGroup": 4,
+      "ID": "Hyper-Alloy Pliers",
+      "Name": "Hyper-Alloy Pliers",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 13,
+      "CommodityGroup": 1,
+      "ID": "Ideaforge Interconnects",
+      "Name": "Ideaforge Interconnects",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 3,
+      "CommodityGroup": 1,
+      "ID": "Impact Analysis Archivers",
+      "Name": "Impact Analysis Archivers",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 3,
+      "CommodityGroup": 8,
+      "ID": "Infonomicon Clusters",
+      "Name": "Infonomicon Clusters",
+      "ConstructionResources": {
+        "Metaloids": "2",
+        "Complex Non-Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 4,
+      "CommodityGroup": 14,
+      "ID": "Instrument Calibrators",
+      "Name": "Instrument Calibrators",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 7,
+      "CommodityGroup": 14,
+      "ID": "Joybot Parts",
+      "Name": "Joybot Parts",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 13,
+      "CommodityGroup": 3,
+      "ID": "Labtrackers",
+      "Name": "Labtrackers",
+      "ConstructionResources": {
+        "Strong Alkali Inorganics": "2",
+        "Heavy Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 2,
+      "CommodityGroup": 8,
+      "ID": "Livestock Links",
+      "Name": "Livestock Links",
+      "ConstructionResources": {
+        "Metaloids": "2",
+        "Complex Non-Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 8,
+      "CommodityGroup": 14,
+      "ID": "Loader Smartlinks",
+      "Name": "Loader Smartlinks",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 14,
+      "CommodityGroup": 13,
+      "ID": "Logicon Units",
+      "Name": "Logicon Units",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 3,
+      "CommodityGroup": 8,
+      "ID": "Macroscope Chassis",
+      "Name": "Macroscope Chassis",
+      "ConstructionResources": {
+        "Metaloids": "2",
+        "Complex Non-Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 8,
+      "CommodityGroup": 3,
+      "ID": "Marketlink Systems",
+      "Name": "Marketlink Systems",
+      "ConstructionResources": {
+        "Strong Alkali Inorganics": "2",
+        "Heavy Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 3,
+      "CommodityGroup": 14,
+      "ID": "Marketpulse Readers",
+      "Name": "Marketpulse Readers",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 10,
+      "CommodityGroup": 9,
+      "ID": "Mass Manipulators",
+      "Name": "Mass Manipulators",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 8,
+      "CommodityGroup": 1,
+      "ID": "Material Handling Plotters",
+      "Name": "Material Handling Plotters",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 14,
+      "CommodityGroup": 12,
+      "ID": "Material Lances",
+      "Name": "Material Lances",
+      "ConstructionResources": {
+        "Strong Acidic Inorganics": "2",
+        "Heavy Alkaline Earth Metals": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 14,
+      "CommodityGroup": 13,
+      "ID": "Matter Simulators",
+      "Name": "Matter Simulators",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 5,
+      "CommodityGroup": 4,
+      "ID": "Medicbot Operations Ports",
+      "Name": "Medicbot Operations Ports",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 1,
+      "CommodityGroup": 14,
+      "ID": "Memochips",
+      "Name": "Memochips",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 6,
+      "CommodityGroup": 7,
+      "ID": "Mess Hall Kits",
+      "Name": "Mess Hall Kits",
+      "ConstructionResources": {
+        "Heavy Trans-Metals": "2",
+        "Complex Metallics": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 3,
+      "CommodityGroup": 12,
+      "ID": "Metallics Market Analyzers",
+      "Name": "Metallics Market Analyzers",
+      "ConstructionResources": {
+        "Strong Acidic Inorganics": "2",
+        "Heavy Alkaline Earth Metals": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 13,
+      "CommodityGroup": 9,
+      "ID": "Microarray Printers",
+      "Name": "Microarray Printers",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 14,
+      "CommodityGroup": 12,
+      "ID": "Mineral Processors",
+      "Name": "Mineral Processors",
+      "ConstructionResources": {
+        "Strong Acidic Inorganics": "2",
+        "Heavy Alkaline Earth Metals": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 11,
+      "CommodityGroup": 9,
+      "ID": "Modular Building Units",
+      "Name": "Modular Building Units",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 2,
+      "CommodityGroup": 8,
+      "ID": "Modular Cargo Kits",
+      "Name": "Modular Cargo Kits",
+      "ConstructionResources": {
+        "Metaloids": "2",
+        "Complex Non-Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 9,
+      "CommodityGroup": 11,
+      "ID": "Modular Control Centres",
+      "Name": "Modular Control Centres",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 14,
+      "CommodityGroup": 9,
+      "ID": "Modular Storage Kits",
+      "Name": "Modular Storage Kits",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 5,
+      "CommodityGroup": 4,
+      "ID": "Molecular Printer",
+      "Name": "Molecular Printer",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 4,
+      "CommodityGroup": 13,
+      "ID": "Molecule Assemblers",
+      "Name": "Molecule Assemblers",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 12,
+      "CommodityGroup": 10,
+      "ID": "Monobonding Shields",
+      "Name": "Monobonding Shields",
+      "ConstructionResources": {
+        "Strong Alkali Organics": "2",
+        "Lanthanide Volatiles": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 6,
+      "CommodityGroup": 4,
+      "ID": "Nano-Welding Tools",
+      "Name": "Nano-Welding Tools",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 4,
+      "CommodityGroup": 13,
+      "ID": "Nanobot Reservoirs",
+      "Name": "Nanobot Reservoirs",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 11,
+      "CommodityGroup": 5,
+      "ID": "Nanocure Supplies",
+      "Name": "Nanocure Supplies",
+      "ConstructionResources": {
+        "Heavy Alkali Metals": "2",
+        "Lanthanides": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 13,
+      "CommodityGroup": 9,
+      "ID": "NanoLab Units",
+      "Name": "NanoLab Units",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 14,
+      "CommodityGroup": 13,
+      "ID": "Nanomachine Swarmers",
+      "Name": "Nanomachine Swarmers",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 7,
+      "CommodityGroup": 5,
+      "ID": "Narcotics",
+      "Name": "Narcotics",
+      "ConstructionResources": {
+        "Heavy Alkali Metals": "2",
+        "Lanthanides": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 14,
+      "CommodityGroup": 13,
+      "ID": "Nervegear",
+      "Name": "Nervegear",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 14,
+      "CommodityGroup": 13,
+      "ID": "Netboost Nodes",
+      "Name": "Netboost Nodes",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 14,
+      "CommodityGroup": 13,
+      "ID": "Neural Interfaces",
+      "Name": "Neural Interfaces",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 9,
+      "CommodityGroup": 5,
+      "ID": "Neural Scanners",
+      "Name": "Neural Scanners",
+      "ConstructionResources": {
+        "Heavy Alkali Metals": "2",
+        "Lanthanides": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 4,
+      "CommodityGroup": 7,
+      "ID": "NeuroInterfaze Units",
+      "Name": "NeuroInterfaze Units",
+      "ConstructionResources": {
+        "Heavy Trans-Metals": "2",
+        "Complex Metallics": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 8,
+      "CommodityGroup": 1,
+      "ID": "Next-Gen Logibots",
+      "Name": "Next-Gen Logibots",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 2,
+      "CommodityGroup": 1,
+      "ID": "Next-Gen Management Units",
+      "Name": "Next-Gen Management Units",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 7,
+      "CommodityGroup": 14,
+      "ID": "Next-Gen Sound Systems",
+      "Name": "Next-Gen Sound Systems",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 1,
+      "CommodityGroup": 7,
+      "ID": "Noise Jammers",
+      "Name": "Noise Jammers",
+      "ConstructionResources": {
+        "Heavy Trans-Metals": "2",
+        "Complex Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 1,
+      "CommodityGroup": 14,
+      "ID": "Note Beamers",
+      "Name": "Note Beamers",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 1,
+      "CommodityGroup": 7,
+      "ID": "Oasis Control Bots",
+      "Name": "Oasis Control Bots",
+      "ConstructionResources": {
+        "Heavy Trans-Metals": "2",
+        "Complex Metallics": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 10,
+      "CommodityGroup": 14,
+      "ID": "Ore Analyzers",
+      "Name": "Ore Analyzers",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 12,
+      "CommodityGroup": 10,
+      "ID": "Oretech Systems",
+      "Name": "Oretech Systems",
+      "ConstructionResources": {
+        "Strong Alkali Organics": "2",
+        "Lanthanide Volatiles": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 1,
+      "CommodityGroup": 11,
+      "ID": "Organibots",
+      "Name": "Organibots",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 13,
+      "CommodityGroup": 14,
+      "ID": "Particle Scanners",
+      "Name": "Particle Scanners",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 5,
+      "CommodityGroup": 14,
+      "ID": "Pathology Simulators",
+      "Name": "Pathology Simulators",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 5,
+      "CommodityGroup": 13,
+      "ID": "Pharmaceuticals Synthesizer",
+      "Name": "Pharmaceuticals Synthesizer",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 4,
+      "CommodityGroup": 10,
+      "ID": "Plasma Cutters",
+      "Name": "Plasma Cutters",
+      "ConstructionResources": {
+        "Strong Alkali Organics": "2",
+        "Lanthanide Volatiles": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 7,
+      "CommodityGroup": 14,
+      "ID": "Playport Displays",
+      "Name": "Playport Displays",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 3,
+      "CommodityGroup": 1,
+      "ID": "Policy Governance Systems",
+      "Name": "Policy Governance Systems",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 6,
+      "CommodityGroup": 9,
+      "ID": "Power Cell Casemates",
+      "Name": "Power Cell Casemates",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 12,
+      "CommodityGroup": 8,
+      "ID": "Processing Control Systems",
+      "Name": "Processing Control Systems",
+      "ConstructionResources": {
+        "Metaloids": "2",
+        "Complex Non-Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 7,
+      "CommodityGroup": 11,
+      "ID": "Projectors",
+      "Name": "Projectors",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 14,
+      "CommodityGroup": 12,
+      "ID": "Proto-Alloys",
+      "Name": "Proto-Alloys",
+      "ConstructionResources": {
+        "Strong Acidic Inorganics": "2",
+        "Heavy Alkaline Earth Metals": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 4,
+      "CommodityGroup": 9,
+      "ID": "Prototyper Systems",
+      "Name": "Prototyper Systems",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 6,
+      "CommodityGroup": 10,
+      "ID": "Reactant Calibrators",
+      "Name": "Reactant Calibrators",
+      "ConstructionResources": {
+        "Strong Alkali Organics": "2",
+        "Lanthanide Volatiles": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 5,
+      "CommodityGroup": 14,
+      "ID": "Regenerative Nanobot Hives",
+      "Name": "Regenerative Nanobot Hives",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 1,
+      "CommodityGroup": 11,
+      "ID": "Resource Allocators",
+      "Name": "Resource Allocators",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 10,
+      "CommodityGroup": 11,
+      "ID": "Rig Living Space Kits",
+      "Name": "Rig Living Space Kits",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 3,
+      "CommodityGroup": 1,
+      "ID": "RiskMinder Bots",
+      "Name": "RiskMinder Bots",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 10,
+      "CommodityGroup": 4,
+      "ID": "Rockminer Drones",
+      "Name": "Rockminer Drones",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 12,
+      "CommodityGroup": 10,
+      "ID": "Safety Equipment",
+      "Name": "Safety Equipment",
+      "ConstructionResources": {
+        "Strong Alkali Organics": "2",
+        "Lanthanide Volatiles": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 10,
+      "CommodityGroup": 6,
+      "ID": "Scanner Chassis",
+      "Name": "Scanner Chassis",
+      "ConstructionResources": {
+        "Transuranic Volatiles": "2",
+        "Superheavy Exotics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 13,
+      "CommodityGroup": 9,
+      "ID": "Sciencelink Housings",
+      "Name": "Sciencelink Housings",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 7,
+      "CommodityGroup": 14,
+      "ID": "Security Systems",
+      "Name": "Security Systems",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 11,
+      "CommodityGroup": 13,
+      "ID": "Self-healing Materials",
+      "Name": "Self-healing Materials",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 4,
+      "CommodityGroup": 14,
+      "ID": "Self-Replicating Jigs",
+      "Name": "Self-Replicating Jigs",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 8,
+      "CommodityGroup": 11,
+      "ID": "Shift Hab Units",
+      "Name": "Shift Hab Units",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 6,
+      "CommodityGroup": 8,
+      "ID": "Silo Control Systems",
+      "Name": "Silo Control Systems",
+      "ConstructionResources": {
+        "Metaloids": "2",
+        "Complex Non-Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 3,
+      "CommodityGroup": 2,
+      "ID": "Sim-Meat Consignments",
+      "Name": "Sim-Meat Consignments",
+      "ConstructionResources": {
+        "Alkali Organics": "2",
+        "Acidic Organics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 6,
+      "CommodityGroup": 9,
+      "ID": "Small Arms",
+      "Name": "Small Arms",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 12,
+      "CommodityGroup": 10,
+      "ID": "Smart Conveyors",
+      "Name": "Smart Conveyors",
+      "ConstructionResources": {
+        "Strong Alkali Organics": "2",
+        "Lanthanide Volatiles": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 1,
+      "CommodityGroup": 8,
+      "ID": "Smart Systems",
+      "Name": "Smart Systems",
+      "ConstructionResources": {
+        "Metaloids": "2",
+        "Complex Non-Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 9,
+      "CommodityGroup": 4,
+      "ID": "Smart Toolsets",
+      "Name": "Smart Toolsets",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 2,
+      "CommodityGroup": 9,
+      "ID": "SolarScythe Trimmers",
+      "Name": "SolarScythe Trimmers",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 2,
+      "CommodityGroup": 11,
+      "ID": "Starshield Clothing",
+      "Name": "Starshield Clothing",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 14,
+      "CommodityGroup": 12,
+      "ID": "Stress Analyzers",
+      "Name": "Stress Analyzers",
+      "ConstructionResources": {
+        "Strong Acidic Inorganics": "2",
+        "Heavy Alkaline Earth Metals": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 8,
+      "CommodityGroup": 1,
+      "ID": "Supply Chain AGI Chassis",
+      "Name": "Supply Chain AGI Chassis",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 1,
+      "CommodityGroup": 7,
+      "ID": "Supply Keylocks",
+      "Name": "Supply Keylocks",
+      "ConstructionResources": {
+        "Heavy Trans-Metals": "2",
+        "Complex Metallics": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 10,
+      "CommodityGroup": 11,
+      "ID": "Survival Pods",
+      "Name": "Survival Pods",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 9,
+      "CommodityGroup": 2,
+      "ID": "Suspension Fluids",
+      "Name": "Suspension Fluids",
+      "ConstructionResources": {
+        "Alkali Organics": "2",
+        "Acidic Organics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 6,
+      "CommodityGroup": 14,
+      "ID": "TacticalNet C3 Systems",
+      "Name": "TacticalNet C3 Systems",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 6,
+      "CommodityGroup": 14,
+      "ID": "Target Lock Relays",
+      "Name": "Target Lock Relays",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 1,
+      "CommodityGroup": 8,
+      "ID": "Tasklinks",
+      "Name": "Tasklinks",
+      "ConstructionResources": {
+        "Metaloids": "2",
+        "Complex Non-Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 5,
+      "CommodityGroup": 13,
+      "ID": "Telemedicine Consoles",
+      "Name": "Telemedicine Consoles",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 3,
+      "CommodityGroup": 11,
+      "ID": "Teleoffice Suites",
+      "Name": "Teleoffice Suites",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 10,
+      "CommodityGroup": 14,
+      "ID": "Telepresence Equipment",
+      "Name": "Telepresence Equipment",
+      "ConstructionResources": {
+        "Alkali Metals": "2",
+        "Heavy Noble Gases": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 9,
+      "CommodityGroup": 13,
+      "ID": "Testing Simulators",
+      "Name": "Testing Simulators",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 8,
+      "CommodityGroup": 13,
+      "ID": "Theoretical Freightlink Systems",
+      "Name": "Theoretical Freightlink Systems",
+      "ConstructionResources": {
+        "Noble Gases": "2",
+        "Halogens": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 7,
+      "CommodityGroup": 5,
+      "ID": "Thrilltech Suites",
+      "Name": "Thrilltech Suites",
+      "ConstructionResources": {
+        "Heavy Alkali Metals": "2",
+        "Lanthanides": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 5,
+      "CommodityGroup": 4,
+      "ID": "Tissue Printers",
+      "Name": "Tissue Printers",
+      "ConstructionResources": {
+        "Non-Metallics": "2",
+        "Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 4,
+      "CommodityGroup": 9,
+      "ID": "Tooltech Printers",
+      "Name": "Tooltech Printers",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 6,
+      "CommodityGroup": 5,
+      "ID": "Trauma Systems",
+      "Name": "Trauma Systems",
+      "ConstructionResources": {
+        "Heavy Alkali Metals": "2",
+        "Lanthanides": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 3,
+      "CommodityGroup": 7,
+      "ID": "Trend AGI Projectors",
+      "Name": "Trend AGI Projectors",
+      "ConstructionResources": {
+        "Heavy Trans-Metals": "2",
+        "Complex Metallics": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 5,
+      "CommodityGroup": 11,
+      "ID": "Triarge Facilities",
+      "Name": "Triarge Facilities",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 11,
+      "CommodityGroup": 3,
+      "ID": "Valuation Vaults",
+      "Name": "Valuation Vaults",
+      "ConstructionResources": {
+        "Strong Alkali Inorganics": "2",
+        "Heavy Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 13,
+      "CommodityGroup": 1,
+      "ID": "VAST Arrays",
+      "Name": "VAST Arrays",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 4,
+      "CommodityGroup": 8,
+      "ID": "Vehicle Bolts",
+      "Name": "Vehicle Bolts",
+      "ConstructionResources": {
+        "Metaloids": "2",
+        "Complex Non-Metallics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 1,
+      "CommodityGroup": 11,
+      "ID": "Virtual Assistants",
+      "Name": "Virtual Assistants",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 7,
+      "CommodityGroup": 3,
+      "ID": "Vrtrek Units",
+      "Name": "Vrtrek Units",
+      "ConstructionResources": {
+        "Strong Alkali Inorganics": "2",
+        "Heavy Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 14,
+      "CommodityGroup": 12,
+      "ID": "Waffers",
+      "Name": "Waffers",
+      "ConstructionResources": {
+        "Strong Acidic Inorganics": "2",
+        "Heavy Alkaline Earth Metals": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 8,
+      "CommodityGroup": 1,
+      "ID": "Warehouse AutoMods",
+      "Name": "Warehouse AutoMods",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 8,
+      "CommodityGroup": 11,
+      "ID": "Warehouse Control Cabins",
+      "Name": "Warehouse Control Cabins",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 6,
+      "CommodityGroup": 9,
+      "ID": "WarTech Housings",
+      "Name": "WarTech Housings",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 11,
+      "CommodityGroup": 2,
+      "ID": "Waste Management Fluids",
+      "Name": "Waste Management Fluids",
+      "ConstructionResources": {
+        "Alkali Organics": "2",
+        "Acidic Organics": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 2,
+      "CommodityGroup": 9,
+      "ID": "Water-Hive Irrigators",
+      "Name": "Water-Hive Irrigators",
+      "ConstructionResources": {
+        "Light Halogens": "2",
+        "Alkaline Earth Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 8,
+      "CommodityGroup": 1,
+      "ID": "Waypointers",
+      "Name": "Waypointers",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 2,
+      "CommodityGroup": 1,
+      "ID": "Weathermate Interconnects",
+      "Name": "Weathermate Interconnects",
+      "ConstructionResources": {
+        "Trans-Metals": "2",
+        "Post-Trans Metals": "2"
+      }
+    },
+    {
+      "CommodityIndustry": 1,
+      "CommodityGroup": 7,
+      "ID": "Welfare Risk Assessors",
+      "Name": "Welfare Risk Assessors",
+      "ConstructionResources": {
+        "Heavy Trans-Metals": "2",
+        "Complex Metallics": "1"
+      }
+    },
+    {
+      "CommodityIndustry": 1,
+      "CommodityGroup": 11,
+      "ID": "Workflow Automaters",
+      "Name": "Workflow Automaters",
+      "ConstructionResources": {
+        "Alkali Inorganics": "2",
+        "Acidic Inorganics": "2"
+      }
+    }
+  ]
 }

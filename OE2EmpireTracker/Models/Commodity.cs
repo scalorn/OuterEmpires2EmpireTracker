@@ -72,6 +72,27 @@ namespace OE2EmpireTracker.Models
         {
         }
 
+        /// <summary>
+        /// Replaces the commodity list with externally-loaded data (e.g. from BaselineData.json).
+        /// Rebuilds lookup maps and validates the data.
+        /// </summary>
+        public static void SetCommodities(List<Commodity> commodities)
+        {
+            var sorted = new List<Commodity>(commodities);
+            sorted.Sort((x, y) => x.Name.CompareTo(y.Name));
+            _commodities = sorted;
+            RebuildMaps(_commodities);
+        }
+
+        /// <summary>
+        /// Returns the hardcoded fallback commodity list. Used when BaselineData.json
+        /// does not contain a Commodity array.
+        /// </summary>
+        public static List<Commodity> GetFallbackCommodities()
+        {
+            return getCommodities();
+        }
+
         private static List<Commodity> getCommodities()
         {
             List<Commodity> instance = new List<Commodity>();
@@ -2589,10 +2610,17 @@ namespace OE2EmpireTracker.Models
             // Make sure the blank none entry is first.
             //instance.Insert(0, new Commodity() { CommodityIndustry = Models.CommodityIndustry.CommodityIndustryEnum.None,  ID = "", Name = ""});
 
+            RebuildMaps(instance);
+
+            return instance;
+        }
+
+        private static void RebuildMaps(List<Commodity> commodities)
+        {
             _commodityMapByEnum = new Dictionary<string, Commodity>();
             _commodityMapByString = new Dictionary<string, Commodity>();
 
-            foreach (Commodity commodity in instance)
+            foreach (Commodity commodity in commodities)
             {
                 if (commodity.CommodityIndustry == Models.CommodityIndustry.CommodityIndustryEnum.None)
                 {
@@ -2627,8 +2655,6 @@ namespace OE2EmpireTracker.Models
                 _commodityMapByEnum[commodity.ID] = commodity;
                 _commodityMapByString[commodity.Name] = commodity;
             }
-
-            return instance;
         }
     }
 }

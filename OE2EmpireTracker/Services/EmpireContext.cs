@@ -46,6 +46,7 @@ namespace OE2EmpireTracker.Services
         public int DataVersion { get; set; } = 0;
         public BaselineGameConstants GameConstants { get; set; }
         public BindingList<Blueprint> globalBlueprintList;
+        public List<Commodity> commodityList;
 
         public static EmpireContext getInstance()
         {
@@ -93,6 +94,7 @@ namespace OE2EmpireTracker.Services
             InitResources(baselineRoot);
             initResourceGroups(baselineRoot);
             initResourcePurities(baselineRoot);
+            InitCommodities(baselineRoot);
             InitGlobalBlueprints(baselineRoot);
 
             // Run migrations after both contexts are loaded
@@ -117,6 +119,7 @@ namespace OE2EmpireTracker.Services
             baselineRoot.BlueprintType = blueprintTypeList.ToArray();
             baselineRoot.Blueprint = globalBlueprintList.ToArray();
             baselineRoot.TechLevel = techLevelList.ToArray();
+            baselineRoot.Commodity = commodityList?.ToArray();
             string jsonContent = JsonConvert.SerializeObject(baselineRoot, JsonSettings.SerializerSettings);
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
             Log.Info("Baseline data saved to {0}", FilePath);
@@ -253,6 +256,21 @@ namespace OE2EmpireTracker.Services
             bindingSourceResourcePurity.DataSource = resourcePurityList;
         }
 
+        public void InitCommodities(BaselineRoot baselineRoot)
+        {
+            if (baselineRoot.Commodity != null && baselineRoot.Commodity.Length > 0)
+            {
+                commodityList = new List<Commodity>(baselineRoot.Commodity);
+                Commodity.SetCommodities(commodityList);
+                Log.Info("Loaded {0} commodities from baseline data", commodityList.Count);
+            }
+            else
+            {
+                commodityList = new List<Commodity>(Commodity.Commodities);
+                Log.Info("Using hardcoded commodity list ({0} commodities)", commodityList.Count);
+            }
+        }
+
         public void InitGlobalBlueprints(BaselineRoot baselineRoot)
         {
             var list = new List<Blueprint>(baselineRoot.Blueprint ?? new Blueprint[0]);
@@ -278,5 +296,6 @@ namespace OE2EmpireTracker.Services
         public BlueprintType[] BlueprintType;
         public Blueprint[] Blueprint;
         public TechLevel[] TechLevel;
+        public Commodity[] Commodity;
     }
 }
