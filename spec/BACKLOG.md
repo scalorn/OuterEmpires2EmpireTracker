@@ -153,8 +153,7 @@ Explore whether AI can read the Discord channels for the game. Discord is often 
 
 ### BL-029: BaselineData.json — Separate User File with Merge Strategy
 **Dependencies:** None
-
-Investigate the consequences of splitting BaselineData.json into a read-only application-installed file and a user-editable copy. The user file starts as a copy of the application file. Key question: how to handle merging when the application adds a global blueprint that the player has also added manually — they'd have different UUIDs but matching data. How complicated would deduplication and merge logic get? Consider upgrade scenarios, conflict resolution, and whether a three-way merge is feasible.
+**Status: Rejected** — The split-file approach adds merge-on-load complexity, "which file wins" ambiguity, and user confusion. With deterministic UUIDs + versioned migrations + idempotent renames (see `spec/discussions/baseline-data-stability.md`), a single BaselineData.json handles upgrades cleanly without a separate user file.
 
 
 ### BL-030: Colony Administration Summary Report

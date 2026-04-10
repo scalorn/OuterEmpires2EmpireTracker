@@ -256,9 +256,10 @@ With versioned migrations:
 1. **Deterministic UUIDs (Option 4)** — best fit. Self-describing identity, no canonical file to maintain, new blueprints automatically stable across machines
 2. **DataVersion on both PlayerData.json and BaselineData.json** — triggers sequential migrations on load
 3. **Generic RemapUUID utility** — one implementation, reused by all migration steps
-4. **Declarative migration registry** — each version bump declares its renames and data changes
-5. **Split file (BaselineData.json + UserBaseline.json)** — still valuable for separating app data from user overrides, but less critical now that migrations handle the merge
-6. **Move code-embedded data to BaselineData.json** — commodity recipes, refining recipes, game constants
+4. **Idempotent rename table** — flat append-only list, runs every load, no version gating
+5. **Versioned migration registry** — for non-idempotent changes (initial UUID→hash, schema changes)
+6. **Single BaselineData.json** — no file split. The split-file approach (BL-029) adds merge-on-load complexity, "which file wins" ambiguity, and user confusion about where data lives. With deterministic UUIDs and versioned migrations, a single file handles upgrades cleanly.
+7. **Move code-embedded data to BaselineData.json** — commodity recipes, refining recipes, game constants
 
 ---
 
