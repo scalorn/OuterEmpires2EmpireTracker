@@ -95,7 +95,7 @@ namespace OE2EmpireTracker.Tests.Services
             from desc in GenShortString()
             from qty in Gen.Choose(0, 100)
             from purity in Gen.Elements("", "Low", "Medium", "High")
-            from vol in Gen.Elements(0.0, 1.0, 5.5)
+            from vol in Gen.Elements(0.0m, 1.0m, 5.5m)
             from baseId in GenShortString()
             select new Item(itemType, name)
             {
@@ -966,7 +966,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 UUID = "test-uuid-1234",
                 Quantity = 0,
-                Volume = 0.0,
+                Volume = 0.0m,
                 NickName = "",
                 Description = "",
                 ResourcePurity = "",

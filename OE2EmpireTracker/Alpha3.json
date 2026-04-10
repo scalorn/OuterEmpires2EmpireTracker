@@ -1,4 +1,5 @@
 {
+  "DataVersion": 1,
   "CurrentPlayerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
   "PlayerProfile": [
     {
@@ -11,155 +12,155 @@
       "Skills": {
         "Human Resources": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1253441-07:00",
-            "EndTime": "2026-04-09T19:56:56.1253441-07:00",
+            "StartTime": "2026-04-10T03:51:32.6564878-07:00",
+            "EndTime": "2026-04-10T03:51:32.6564878-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Foreman": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1253441-07:00",
-            "EndTime": "2026-04-09T19:56:56.1253441-07:00",
+            "StartTime": "2026-04-10T03:51:32.6564878-07:00",
+            "EndTime": "2026-04-10T03:51:32.6564878-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Founder": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1253441-07:00",
-            "EndTime": "2026-04-09T19:56:56.1253441-07:00",
+            "StartTime": "2026-04-10T03:51:32.6564878-07:00",
+            "EndTime": "2026-04-10T03:51:32.6564878-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Energy Efficiency": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1253441-07:00",
-            "EndTime": "2026-04-09T19:56:56.1253441-07:00",
+            "StartTime": "2026-04-10T03:51:32.6564878-07:00",
+            "EndTime": "2026-04-10T03:51:32.6564878-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Builder": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1253441-07:00",
-            "EndTime": "2026-04-09T19:56:56.1253441-07:00",
+            "StartTime": "2026-04-10T03:51:32.6564878-07:00",
+            "EndTime": "2026-04-10T03:51:32.6564878-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Refining Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1253441-07:00",
-            "EndTime": "2026-04-09T19:56:56.1253441-07:00",
+            "StartTime": "2026-04-10T03:51:32.6564878-07:00",
+            "EndTime": "2026-04-10T03:51:32.6564878-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Production Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1253441-07:00",
-            "EndTime": "2026-04-09T19:56:56.1253441-07:00",
+            "StartTime": "2026-04-10T03:51:32.6564878-07:00",
+            "EndTime": "2026-04-10T03:51:32.6564878-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Extraction Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1253441-07:00",
-            "EndTime": "2026-04-09T19:56:56.1253441-07:00",
+            "StartTime": "2026-04-10T03:51:32.6564878-07:00",
+            "EndTime": "2026-04-10T03:51:32.6564878-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Damage Control": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1253441-07:00",
-            "EndTime": "2026-04-09T19:56:56.1253441-07:00",
+            "StartTime": "2026-04-10T03:51:32.6564878-07:00",
+            "EndTime": "2026-04-10T03:51:32.6564878-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Engineering Capacity": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1253441-07:00",
-            "EndTime": "2026-04-09T19:56:56.1253441-07:00",
+            "StartTime": "2026-04-10T03:51:32.6574866-07:00",
+            "EndTime": "2026-04-10T03:51:32.6574866-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Sounds As A Pound": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1253441-07:00",
-            "EndTime": "2026-04-09T19:56:56.1253441-07:00",
+            "StartTime": "2026-04-10T03:51:32.6574866-07:00",
+            "EndTime": "2026-04-10T03:51:32.6574866-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Self Made Millionaire": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1253441-07:00",
-            "EndTime": "2026-04-09T19:56:56.1253441-07:00",
+            "StartTime": "2026-04-10T03:51:32.6574866-07:00",
+            "EndTime": "2026-04-10T03:51:32.6574866-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "AAA Healthcare": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1253441-07:00",
-            "EndTime": "2026-04-09T19:56:56.1253441-07:00",
+            "StartTime": "2026-04-10T03:51:32.6574866-07:00",
+            "EndTime": "2026-04-10T03:51:32.6574866-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Job Opportunities": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1263448-07:00",
-            "EndTime": "2026-04-09T19:56:56.1263448-07:00",
+            "StartTime": "2026-04-10T03:51:32.6574866-07:00",
+            "EndTime": "2026-04-10T03:51:32.6574866-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Contract Management": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1263448-07:00",
-            "EndTime": "2026-04-09T19:56:56.1263448-07:00",
+            "StartTime": "2026-04-10T03:51:32.6574866-07:00",
+            "EndTime": "2026-04-10T03:51:32.6574866-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Research Review": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1263448-07:00",
-            "EndTime": "2026-04-09T19:56:56.1263448-07:00",
+            "StartTime": "2026-04-10T03:51:32.6574866-07:00",
+            "EndTime": "2026-04-10T03:51:32.6574866-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Research Methods": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1263448-07:00",
-            "EndTime": "2026-04-09T19:56:56.1263448-07:00",
+            "StartTime": "2026-04-10T03:51:32.6574866-07:00",
+            "EndTime": "2026-04-10T03:51:32.6574866-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Research Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1263448-07:00",
-            "EndTime": "2026-04-09T19:56:56.1263448-07:00",
+            "StartTime": "2026-04-10T03:51:32.6574866-07:00",
+            "EndTime": "2026-04-10T03:51:32.6574866-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Surveying Methods": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1263448-07:00",
-            "EndTime": "2026-04-09T19:56:56.1263448-07:00",
+            "StartTime": "2026-04-10T03:51:32.6574866-07:00",
+            "EndTime": "2026-04-10T03:51:32.6574866-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Scanning Methods": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1263448-07:00",
-            "EndTime": "2026-04-09T19:56:56.1263448-07:00",
+            "StartTime": "2026-04-10T03:51:32.6574866-07:00",
+            "EndTime": "2026-04-10T03:51:32.6574866-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Quartermaster": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1263448-07:00",
-            "EndTime": "2026-04-09T19:56:56.1263448-07:00",
+            "StartTime": "2026-04-10T03:51:32.6574866-07:00",
+            "EndTime": "2026-04-10T03:51:32.6574866-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Broker": {
           "CompletionTime": {
-            "StartTime": "2026-04-09T19:56:56.1263448-07:00",
-            "EndTime": "2026-04-09T19:56:56.1263448-07:00",
+            "StartTime": "2026-04-10T03:51:32.6574866-07:00",
+            "EndTime": "2026-04-10T03:51:32.6574866-07:00",
             "TimeRemainingString": "0s"
           }
         }
@@ -16801,6 +16802,707 @@
           "Name": "Survival Pods",
           "Requested": 36,
           "NeedBy": "2026-04-13T12:01:05"
+        }
+      ],
+      "Locks": {}
+    },
+    {
+      "UUID": "e72a1ed5-4b7f-4a0e-a752-dca19deebf02",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
+      "PlanetName": "Ghain Braelon VIII M1",
+      "SystemName": "Ghain Braelon",
+      "ColonyName": "Ghain Braelon VIII M1",
+      "Items": {
+        "e81c2650-2641-4a00-b44d-c5cc6a908253": {
+  "UUID": "e81c2650-2641-4a00-b44d-c5cc6a908253"
+}
+      },
+      "Structures": [
+        {
+          "UUID": "0a3a62e3-69c0-41bf-9705-4d98acc34fc6",
+          "FlatpackBlueprintUUID": "49f3198c-292f-4dd0-ab72-9c873b97f8a2",
+          "gameSequence": 1,
+          "buildingID": 10117,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Structural Integrity": "2500",
+            "Max Per Colony": "1",
+            "Unassigned Specialist Detail(s)": "1",
+            "White Collar Detail(s)": "1",
+            "Warehousing Capacity": "10000",
+            "Manufacturing Time Reduction": "0",
+            "Mining Yield Modification ": "0",
+            "Refining Time Modification": "0",
+            "Research Time Modification": "0",
+            "Hull Manufacture Time Modification": "0",
+            "Food Provision": "2",
+            "Habitation Provision": "2"
+          },
+          "AssignedWorkers": {
+            "WhiteCollar1": "True"
+          },
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "5cd3a090-26f3-4714-a292-06b22c65812d",
+          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+          "gameSequence": 1,
+          "buildingID": 10312,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "6",
+            "Structural Integrity": "250",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1"
+          },
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "913af734-e7b9-4513-af51-280dff3d0cc7",
+          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+          "gameSequence": 2,
+          "buildingID": 10934,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "6",
+            "Structural Integrity": "250",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1"
+          },
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "fbf3895c-11d7-459c-b384-6eb0dc7bbaae",
+          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+          "gameSequence": 3,
+          "buildingID": 11102,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "6",
+            "Structural Integrity": "250",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1"
+          },
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "100c6bfc-4f93-4330-a2d0-3515b8d9e4bd",
+          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+          "gameSequence": 4,
+          "buildingID": 11262,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "6",
+            "Structural Integrity": "250",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1"
+          },
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "12cd8e1a-4a50-480f-9685-9361bfa49f7f",
+          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+          "gameSequence": 5,
+          "buildingID": 11510,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "6",
+            "Structural Integrity": "250",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1"
+          },
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "41b13bca-ce91-4837-8a0c-38e13a0c5ef7",
+          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+          "gameSequence": 6,
+          "buildingID": 11618,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "6",
+            "Structural Integrity": "250",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1"
+          },
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "65ccdcb8-bf9e-4727-93c7-b3bbfbeaf659",
+          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+          "gameSequence": 7,
+          "buildingID": 11906,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "6",
+            "Structural Integrity": "250",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1"
+          },
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "18c05cab-08c0-4339-b3b3-c264b015e7ca",
+          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+          "gameSequence": 8,
+          "buildingID": 12004,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "6",
+            "Structural Integrity": "250",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1"
+          },
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "66a5e762-4622-4682-aeac-95675f983c76",
+          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
+          "gameSequence": 9,
+          "buildingID": 12235,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "6",
+            "Structural Integrity": "250",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1"
+          },
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "31dc884c-7601-4499-aaec-1a0f7edd04fd",
+          "FlatpackBlueprintUUID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+          "gameSequence": 1,
+          "buildingID": 11000,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-1",
+            "Structural Integrity": "100",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1",
+            "Habitation Provision": "4"
+          },
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "3e77f380-9068-49bd-8b63-aff068d20177",
+          "FlatpackBlueprintUUID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+          "gameSequence": 2,
+          "buildingID": 11132,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-1",
+            "Structural Integrity": "100",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1",
+            "Habitation Provision": "4"
+          },
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "f4438d92-65a2-4230-86ef-4fa97dd30cda",
+          "FlatpackBlueprintUUID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+          "gameSequence": 3,
+          "buildingID": 11290,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-1",
+            "Structural Integrity": "100",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1",
+            "Habitation Provision": "4"
+          },
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "4a402b8d-068e-4c51-9766-849834232a20",
+          "FlatpackBlueprintUUID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+          "gameSequence": 4,
+          "buildingID": 11684,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-1",
+            "Structural Integrity": "100",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1",
+            "Habitation Provision": "4"
+          },
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "66965d50-8522-4300-a0da-2f43d229475f",
+          "FlatpackBlueprintUUID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
+          "gameSequence": 5,
+          "buildingID": 12052,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-1",
+            "Structural Integrity": "100",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1",
+            "Habitation Provision": "4"
+          },
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "f4e87ff9-f73b-445a-ba98-c18fc1cdb50f",
+          "FlatpackBlueprintUUID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+          "gameSequence": 1,
+          "buildingID": 11033,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-1",
+            "Structural Integrity": "100",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1",
+            "Blue Collar Detail(s)": "1",
+            "Food Provision": "4"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "8f91a18d-455d-40ef-8ba4-4c61714ac45a",
+          "FlatpackBlueprintUUID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+          "gameSequence": 2,
+          "buildingID": 11164,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-1",
+            "Structural Integrity": "100",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1",
+            "Blue Collar Detail(s)": "1",
+            "Food Provision": "4"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "7734902a-498a-48f2-a9d1-af80291d5a9e",
+          "FlatpackBlueprintUUID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+          "gameSequence": 3,
+          "buildingID": 11323,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-1",
+            "Structural Integrity": "100",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1",
+            "Blue Collar Detail(s)": "1",
+            "Food Provision": "4"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "8d0244f0-068b-4351-b17c-56f567b47b26",
+          "FlatpackBlueprintUUID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+          "gameSequence": 4,
+          "buildingID": 11731,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-1",
+            "Structural Integrity": "100",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1",
+            "Blue Collar Detail(s)": "1",
+            "Food Provision": "4"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "44ae278f-54d5-4caf-99de-e5752504bdaa",
+          "FlatpackBlueprintUUID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
+          "gameSequence": 5,
+          "buildingID": 12100,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-1",
+            "Structural Integrity": "100",
+            "Max Per Colony": "999",
+            "Unassigned Specialist Detail(s)": "1",
+            "Blue Collar Detail(s)": "1",
+            "Food Provision": "4"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "226c80cc-fe8d-43bf-8bb7-6682da2fc400",
+          "FlatpackBlueprintUUID": "ebaa1a5d-1b2a-49f4-ac46-639ffbde7511",
+          "gameSequence": 1,
+          "buildingID": 10343,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-2",
+            "Structural Integrity": "50",
+            "Max Per Colony": "1",
+            "Remote Operations": "1",
+            "Specialist Detail(s)": "1",
+            "Unassigned White Collar Detail(s)": "1"
+          },
+          "AssignedWorkers": {
+            "Specialist1": "True"
+          },
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "2bb20246-81c3-4ce6-87a2-7195e10337eb",
+          "FlatpackBlueprintUUID": "584616b3-b8c0-4ca5-98d2-66e39587ae57",
+          "gameSequence": 1,
+          "buildingID": 11225,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Max Per Colony": "999",
+            "Power": "-2",
+            "Structural Integrity": "150",
+            "Unassigned White Collar Detail(s)": "1",
+            "Unassigned Specialist Detail(s)": "1",
+            "Blue Collar Detail(s)": "1",
+            "Extraction Efficiency": "100"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "MiningSurveyResource": "Alkali Metals",
+          "RefiningResourcePurity": "Medium",
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "66edea48-a3a5-4c46-8ef0-c8819eb1f2b8",
+          "FlatpackBlueprintUUID": "584616b3-b8c0-4ca5-98d2-66e39587ae57",
+          "gameSequence": 2,
+          "buildingID": 11443,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Max Per Colony": "999",
+            "Power": "-2",
+            "Structural Integrity": "150",
+            "Unassigned White Collar Detail(s)": "1",
+            "Unassigned Specialist Detail(s)": "1",
+            "Blue Collar Detail(s)": "1",
+            "Extraction Efficiency": "100"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "MiningSurveyResource": "Acidic Organics",
+          "RefiningResourcePurity": "Medium",
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "636f8be0-cf3b-497b-9272-fe553ca807c6",
+          "FlatpackBlueprintUUID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+          "gameSequence": 1,
+          "buildingID": 11556,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Max Per Colony": "999",
+            "Power": "-5",
+            "Structural Integrity": "150",
+            "Unassigned White Collar Detail(s)": "1",
+            "Unassigned Specialist Detail(s)": "1",
+            "Blue Collar Detail(s)": "1",
+            "Refining Rate": "25"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "MiningSurveyResource": "Alkali Metals",
+          "RefiningResourcePurity": "Medium",
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "eb2198e3-af80-4347-9fa7-9c74265254e8",
+          "FlatpackBlueprintUUID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+          "gameSequence": 2,
+          "buildingID": 11853,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Max Per Colony": "999",
+            "Power": "-5",
+            "Structural Integrity": "150",
+            "Unassigned White Collar Detail(s)": "1",
+            "Unassigned Specialist Detail(s)": "1",
+            "Blue Collar Detail(s)": "1",
+            "Refining Rate": "25"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "MiningSurveyResource": "Acidic Organics",
+          "RefiningResourcePurity": "Medium",
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "6fcbb7ba-b88d-4d5a-8259-251c29b7a69f",
+          "FlatpackBlueprintUUID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
+          "gameSequence": 3,
+          "buildingID": 11959,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Max Per Colony": "999",
+            "Power": "-5",
+            "Structural Integrity": "150",
+            "Unassigned White Collar Detail(s)": "1",
+            "Unassigned Specialist Detail(s)": "1",
+            "Blue Collar Detail(s)": "1",
+            "Refining Rate": "25"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "MiningSurveyResource": "Alkali Metals",
+          "RefiningResourcePurity": "Medium",
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "1e29a818-4ed9-47a8-b9a3-31aae3b3afdd",
+          "FlatpackBlueprintUUID": "ebbf669a-3987-4e4f-87db-a3236e6dd4ea",
+          "gameSequence": 1,
+          "buildingID": 12281,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Max Per Colony": "999",
+            "Power": "-5",
+            "Structural Integrity": "250",
+            "Unassigned Specialist Detail(s)": "1",
+            "Unassigned White Collar Detail(s)": "1",
+            "Blue Collar Detail(s)": "1"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "22607c35-faf1-4226-872c-f057129250a1",
+          "FlatpackBlueprintUUID": "513b5bc8-db3d-4808-8cc4-a93bc9f65354",
+          "gameSequence": 1,
+          "buildingID": 10370,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Max Per Colony": "999",
+            "Power": "-2",
+            "Structural Integrity": "100",
+            "Unassigned White Collar Detail(s)": "1",
+            "Blue Collar Detail(s)": "1",
+            "Warehousing Capacity": "250000"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "ba15f98f-9698-4561-89e4-e98c114ad2e6",
+          "FlatpackBlueprintUUID": "a86cc2fa-478a-498c-8c17-166f9fa5c9d7",
+          "gameSequence": 1,
+          "buildingID": 12189,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-4",
+            "Structural Integrity": "150",
+            "Specialist Detail(s)": "1",
+            "Max Per Colony": "999",
+            "Research Time Modification": "100"
+          },
+          "AssignedWorkers": {
+            "Specialist1": "True"
+          },
+          "ManufacturingQuantity": 46,
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "1c107e4f-523f-47aa-a993-4c9ecc31d0bb",
+          "FlatpackBlueprintUUID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
+          "gameSequence": 1,
+          "buildingID": 11068,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-2",
+            "Structural Integrity": "75",
+            "Blue Collar Detail(s)": "1",
+            "Entertainment Provided": "10",
+            "Unassigned Specialist Detail(s)": "1"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "8433e43a-8a71-42f0-83ba-000139006440",
+          "FlatpackBlueprintUUID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
+          "gameSequence": 2,
+          "buildingID": 11197,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-2",
+            "Structural Integrity": "75",
+            "Blue Collar Detail(s)": "1",
+            "Entertainment Provided": "10",
+            "Unassigned Specialist Detail(s)": "1"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "86504dae-cfa1-4ab1-8194-6a068c2d1135",
+          "FlatpackBlueprintUUID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
+          "gameSequence": 3,
+          "buildingID": 11389,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-2",
+            "Structural Integrity": "75",
+            "Blue Collar Detail(s)": "1",
+            "Entertainment Provided": "10",
+            "Unassigned Specialist Detail(s)": "1"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "1f259c8d-f396-471b-9d88-ac265a9ed864",
+          "FlatpackBlueprintUUID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
+          "gameSequence": 4,
+          "buildingID": 11796,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-2",
+            "Structural Integrity": "75",
+            "Blue Collar Detail(s)": "1",
+            "Entertainment Provided": "10",
+            "Unassigned Specialist Detail(s)": "1"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "fefdfc31-7b71-4be8-929d-540d0c3e86ea",
+          "FlatpackBlueprintUUID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
+          "gameSequence": 5,
+          "buildingID": 12146,
+          "Properties": {
+            "Built": "True",
+            "Online": "True",
+            "Can Research": "0",
+            "Power": "-2",
+            "Structural Integrity": "75",
+            "Blue Collar Detail(s)": "1",
+            "Entertainment Provided": "10",
+            "Unassigned Specialist Detail(s)": "1"
+          },
+          "AssignedWorkers": {
+            "BlueCollar1": "True"
+          },
+          "CurrentAttitude": ""
+        }
+      ],
+      "Commodities": [
+        {
+          "Name": "Health Scanners",
+          "Requested": 44,
+          "NeedBy": "2026-04-12T11:52:11"
         }
       ],
       "Locks": {}
@@ -55243,11 +55945,11 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-04-09T18:20:28.1683724-07:00",
-            "EndTime": "2026-04-10T07:20:28.1683724-07:00",
+            "StartTime": "2026-04-10T02:06:51.7064992-07:00",
+            "EndTime": "2026-04-10T15:06:51.7064992-07:00",
             "RepeatIntervalSeconds": 46800,
             "IsRepeating": true,
-            "TimeRemainingString": "11h 15m 19s"
+            "TimeRemainingString": "11h 15m 18s"
           },
           "MiningSurveyResource": "Strategic Mover",
           "ManufacturingBlueprintUUID": "5221424f-ed0b-4ce0-8c86-c64b597fc7b2",
@@ -62879,707 +63581,6 @@
           "Name": "Funding Systems",
           "Requested": 25,
           "NeedBy": "2026-04-12T11:52:08"
-        }
-      ],
-      "Locks": {}
-    },
-    {
-      "UUID": "e72a1ed5-4b7f-4a0e-a752-dca19deebf02",
-      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
-      "PlanetName": "Ghain Braelon VIII M1",
-      "SystemName": "Ghain Braelon",
-      "ColonyName": "Ghain Braelon VIII M1",
-      "Items": {
-        "e81c2650-2641-4a00-b44d-c5cc6a908253": {
-  "UUID": "e81c2650-2641-4a00-b44d-c5cc6a908253"
-}
-      },
-      "Structures": [
-        {
-          "UUID": "0a3a62e3-69c0-41bf-9705-4d98acc34fc6",
-          "FlatpackBlueprintUUID": "49f3198c-292f-4dd0-ab72-9c873b97f8a2",
-          "gameSequence": 1,
-          "buildingID": 10117,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Structural Integrity": "2500",
-            "Max Per Colony": "1",
-            "Unassigned Specialist Detail(s)": "1",
-            "White Collar Detail(s)": "1",
-            "Warehousing Capacity": "10000",
-            "Manufacturing Time Reduction": "0",
-            "Mining Yield Modification ": "0",
-            "Refining Time Modification": "0",
-            "Research Time Modification": "0",
-            "Hull Manufacture Time Modification": "0",
-            "Food Provision": "2",
-            "Habitation Provision": "2"
-          },
-          "AssignedWorkers": {
-            "WhiteCollar1": "True"
-          },
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "5cd3a090-26f3-4714-a292-06b22c65812d",
-          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
-          "gameSequence": 1,
-          "buildingID": 10312,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "6",
-            "Structural Integrity": "250",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1"
-          },
-          "AssignedWorkers": {},
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "913af734-e7b9-4513-af51-280dff3d0cc7",
-          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
-          "gameSequence": 2,
-          "buildingID": 10934,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "6",
-            "Structural Integrity": "250",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1"
-          },
-          "AssignedWorkers": {},
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "fbf3895c-11d7-459c-b384-6eb0dc7bbaae",
-          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
-          "gameSequence": 3,
-          "buildingID": 11102,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "6",
-            "Structural Integrity": "250",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1"
-          },
-          "AssignedWorkers": {},
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "100c6bfc-4f93-4330-a2d0-3515b8d9e4bd",
-          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
-          "gameSequence": 4,
-          "buildingID": 11262,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "6",
-            "Structural Integrity": "250",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1"
-          },
-          "AssignedWorkers": {},
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "12cd8e1a-4a50-480f-9685-9361bfa49f7f",
-          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
-          "gameSequence": 5,
-          "buildingID": 11510,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "6",
-            "Structural Integrity": "250",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1"
-          },
-          "AssignedWorkers": {},
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "41b13bca-ce91-4837-8a0c-38e13a0c5ef7",
-          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
-          "gameSequence": 6,
-          "buildingID": 11618,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "6",
-            "Structural Integrity": "250",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1"
-          },
-          "AssignedWorkers": {},
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "65ccdcb8-bf9e-4727-93c7-b3bbfbeaf659",
-          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
-          "gameSequence": 7,
-          "buildingID": 11906,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "6",
-            "Structural Integrity": "250",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1"
-          },
-          "AssignedWorkers": {},
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "18c05cab-08c0-4339-b3b3-c264b015e7ca",
-          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
-          "gameSequence": 8,
-          "buildingID": 12004,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "6",
-            "Structural Integrity": "250",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1"
-          },
-          "AssignedWorkers": {},
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "66a5e762-4622-4682-aeac-95675f983c76",
-          "FlatpackBlueprintUUID": "598818bd-bfed-40ce-a511-9d18d38ee650",
-          "gameSequence": 9,
-          "buildingID": 12235,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "6",
-            "Structural Integrity": "250",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1"
-          },
-          "AssignedWorkers": {},
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "31dc884c-7601-4499-aaec-1a0f7edd04fd",
-          "FlatpackBlueprintUUID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
-          "gameSequence": 1,
-          "buildingID": 11000,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-1",
-            "Structural Integrity": "100",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1",
-            "Habitation Provision": "4"
-          },
-          "AssignedWorkers": {},
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "3e77f380-9068-49bd-8b63-aff068d20177",
-          "FlatpackBlueprintUUID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
-          "gameSequence": 2,
-          "buildingID": 11132,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-1",
-            "Structural Integrity": "100",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1",
-            "Habitation Provision": "4"
-          },
-          "AssignedWorkers": {},
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "f4438d92-65a2-4230-86ef-4fa97dd30cda",
-          "FlatpackBlueprintUUID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
-          "gameSequence": 3,
-          "buildingID": 11290,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-1",
-            "Structural Integrity": "100",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1",
-            "Habitation Provision": "4"
-          },
-          "AssignedWorkers": {},
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "4a402b8d-068e-4c51-9766-849834232a20",
-          "FlatpackBlueprintUUID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
-          "gameSequence": 4,
-          "buildingID": 11684,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-1",
-            "Structural Integrity": "100",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1",
-            "Habitation Provision": "4"
-          },
-          "AssignedWorkers": {},
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "66965d50-8522-4300-a0da-2f43d229475f",
-          "FlatpackBlueprintUUID": "d5ace54b-b731-4220-923f-076cdd6e9f65",
-          "gameSequence": 5,
-          "buildingID": 12052,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-1",
-            "Structural Integrity": "100",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1",
-            "Habitation Provision": "4"
-          },
-          "AssignedWorkers": {},
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "f4e87ff9-f73b-445a-ba98-c18fc1cdb50f",
-          "FlatpackBlueprintUUID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
-          "gameSequence": 1,
-          "buildingID": 11033,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-1",
-            "Structural Integrity": "100",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1",
-            "Blue Collar Detail(s)": "1",
-            "Food Provision": "4"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "8f91a18d-455d-40ef-8ba4-4c61714ac45a",
-          "FlatpackBlueprintUUID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
-          "gameSequence": 2,
-          "buildingID": 11164,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-1",
-            "Structural Integrity": "100",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1",
-            "Blue Collar Detail(s)": "1",
-            "Food Provision": "4"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "7734902a-498a-48f2-a9d1-af80291d5a9e",
-          "FlatpackBlueprintUUID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
-          "gameSequence": 3,
-          "buildingID": 11323,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-1",
-            "Structural Integrity": "100",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1",
-            "Blue Collar Detail(s)": "1",
-            "Food Provision": "4"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "8d0244f0-068b-4351-b17c-56f567b47b26",
-          "FlatpackBlueprintUUID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
-          "gameSequence": 4,
-          "buildingID": 11731,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-1",
-            "Structural Integrity": "100",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1",
-            "Blue Collar Detail(s)": "1",
-            "Food Provision": "4"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "44ae278f-54d5-4caf-99de-e5752504bdaa",
-          "FlatpackBlueprintUUID": "8e1740f0-1553-495d-b459-15fc5dbd2135",
-          "gameSequence": 5,
-          "buildingID": 12100,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-1",
-            "Structural Integrity": "100",
-            "Max Per Colony": "999",
-            "Unassigned Specialist Detail(s)": "1",
-            "Blue Collar Detail(s)": "1",
-            "Food Provision": "4"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "226c80cc-fe8d-43bf-8bb7-6682da2fc400",
-          "FlatpackBlueprintUUID": "ebaa1a5d-1b2a-49f4-ac46-639ffbde7511",
-          "gameSequence": 1,
-          "buildingID": 10343,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-2",
-            "Structural Integrity": "50",
-            "Max Per Colony": "1",
-            "Remote Operations": "1",
-            "Specialist Detail(s)": "1",
-            "Unassigned White Collar Detail(s)": "1"
-          },
-          "AssignedWorkers": {
-            "Specialist1": "True"
-          },
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "2bb20246-81c3-4ce6-87a2-7195e10337eb",
-          "FlatpackBlueprintUUID": "584616b3-b8c0-4ca5-98d2-66e39587ae57",
-          "gameSequence": 1,
-          "buildingID": 11225,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Max Per Colony": "999",
-            "Power": "-2",
-            "Structural Integrity": "150",
-            "Unassigned White Collar Detail(s)": "1",
-            "Unassigned Specialist Detail(s)": "1",
-            "Blue Collar Detail(s)": "1",
-            "Extraction Efficiency": "100"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "MiningSurveyResource": "Alkali Metals",
-          "RefiningResourcePurity": "Medium",
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "66edea48-a3a5-4c46-8ef0-c8819eb1f2b8",
-          "FlatpackBlueprintUUID": "584616b3-b8c0-4ca5-98d2-66e39587ae57",
-          "gameSequence": 2,
-          "buildingID": 11443,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Max Per Colony": "999",
-            "Power": "-2",
-            "Structural Integrity": "150",
-            "Unassigned White Collar Detail(s)": "1",
-            "Unassigned Specialist Detail(s)": "1",
-            "Blue Collar Detail(s)": "1",
-            "Extraction Efficiency": "100"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "MiningSurveyResource": "Acidic Organics",
-          "RefiningResourcePurity": "Medium",
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "636f8be0-cf3b-497b-9272-fe553ca807c6",
-          "FlatpackBlueprintUUID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
-          "gameSequence": 1,
-          "buildingID": 11556,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Max Per Colony": "999",
-            "Power": "-5",
-            "Structural Integrity": "150",
-            "Unassigned White Collar Detail(s)": "1",
-            "Unassigned Specialist Detail(s)": "1",
-            "Blue Collar Detail(s)": "1",
-            "Refining Rate": "25"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "MiningSurveyResource": "Alkali Metals",
-          "RefiningResourcePurity": "Medium",
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "eb2198e3-af80-4347-9fa7-9c74265254e8",
-          "FlatpackBlueprintUUID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
-          "gameSequence": 2,
-          "buildingID": 11853,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Max Per Colony": "999",
-            "Power": "-5",
-            "Structural Integrity": "150",
-            "Unassigned White Collar Detail(s)": "1",
-            "Unassigned Specialist Detail(s)": "1",
-            "Blue Collar Detail(s)": "1",
-            "Refining Rate": "25"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "MiningSurveyResource": "Acidic Organics",
-          "RefiningResourcePurity": "Medium",
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "6fcbb7ba-b88d-4d5a-8259-251c29b7a69f",
-          "FlatpackBlueprintUUID": "673c79b2-0d5a-4be4-afbc-df32b19d847f",
-          "gameSequence": 3,
-          "buildingID": 11959,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Max Per Colony": "999",
-            "Power": "-5",
-            "Structural Integrity": "150",
-            "Unassigned White Collar Detail(s)": "1",
-            "Unassigned Specialist Detail(s)": "1",
-            "Blue Collar Detail(s)": "1",
-            "Refining Rate": "25"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "MiningSurveyResource": "Alkali Metals",
-          "RefiningResourcePurity": "Medium",
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "1e29a818-4ed9-47a8-b9a3-31aae3b3afdd",
-          "FlatpackBlueprintUUID": "ebbf669a-3987-4e4f-87db-a3236e6dd4ea",
-          "gameSequence": 1,
-          "buildingID": 12281,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Max Per Colony": "999",
-            "Power": "-5",
-            "Structural Integrity": "250",
-            "Unassigned Specialist Detail(s)": "1",
-            "Unassigned White Collar Detail(s)": "1",
-            "Blue Collar Detail(s)": "1"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "22607c35-faf1-4226-872c-f057129250a1",
-          "FlatpackBlueprintUUID": "513b5bc8-db3d-4808-8cc4-a93bc9f65354",
-          "gameSequence": 1,
-          "buildingID": 10370,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Max Per Colony": "999",
-            "Power": "-2",
-            "Structural Integrity": "100",
-            "Unassigned White Collar Detail(s)": "1",
-            "Blue Collar Detail(s)": "1",
-            "Warehousing Capacity": "250000"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "ba15f98f-9698-4561-89e4-e98c114ad2e6",
-          "FlatpackBlueprintUUID": "a86cc2fa-478a-498c-8c17-166f9fa5c9d7",
-          "gameSequence": 1,
-          "buildingID": 12189,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-4",
-            "Structural Integrity": "150",
-            "Specialist Detail(s)": "1",
-            "Max Per Colony": "999",
-            "Research Time Modification": "100"
-          },
-          "AssignedWorkers": {
-            "Specialist1": "True"
-          },
-          "ManufacturingQuantity": 46,
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "1c107e4f-523f-47aa-a993-4c9ecc31d0bb",
-          "FlatpackBlueprintUUID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
-          "gameSequence": 1,
-          "buildingID": 11068,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-2",
-            "Structural Integrity": "75",
-            "Blue Collar Detail(s)": "1",
-            "Entertainment Provided": "10",
-            "Unassigned Specialist Detail(s)": "1"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "8433e43a-8a71-42f0-83ba-000139006440",
-          "FlatpackBlueprintUUID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
-          "gameSequence": 2,
-          "buildingID": 11197,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-2",
-            "Structural Integrity": "75",
-            "Blue Collar Detail(s)": "1",
-            "Entertainment Provided": "10",
-            "Unassigned Specialist Detail(s)": "1"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "86504dae-cfa1-4ab1-8194-6a068c2d1135",
-          "FlatpackBlueprintUUID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
-          "gameSequence": 3,
-          "buildingID": 11389,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-2",
-            "Structural Integrity": "75",
-            "Blue Collar Detail(s)": "1",
-            "Entertainment Provided": "10",
-            "Unassigned Specialist Detail(s)": "1"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "1f259c8d-f396-471b-9d88-ac265a9ed864",
-          "FlatpackBlueprintUUID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
-          "gameSequence": 4,
-          "buildingID": 11796,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-2",
-            "Structural Integrity": "75",
-            "Blue Collar Detail(s)": "1",
-            "Entertainment Provided": "10",
-            "Unassigned Specialist Detail(s)": "1"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "CurrentAttitude": ""
-        },
-        {
-          "UUID": "fefdfc31-7b71-4be8-929d-540d0c3e86ea",
-          "FlatpackBlueprintUUID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
-          "gameSequence": 5,
-          "buildingID": 12146,
-          "Properties": {
-            "Built": "True",
-            "Online": "True",
-            "Can Research": "0",
-            "Power": "-2",
-            "Structural Integrity": "75",
-            "Blue Collar Detail(s)": "1",
-            "Entertainment Provided": "10",
-            "Unassigned Specialist Detail(s)": "1"
-          },
-          "AssignedWorkers": {
-            "BlueCollar1": "True"
-          },
-          "CurrentAttitude": ""
-        }
-      ],
-      "Commodities": [
-        {
-          "Name": "Health Scanners",
-          "Requested": 44,
-          "NeedBy": "2026-04-12T11:52:11"
         }
       ],
       "Locks": {}

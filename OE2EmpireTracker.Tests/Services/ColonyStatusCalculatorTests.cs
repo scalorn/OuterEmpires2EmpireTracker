@@ -720,12 +720,12 @@ namespace OE2EmpireTracker.Tests.Services
             // and verify the warehouse required is carried through.
 
             // For this test, verify the formula directly:
-            double total = 0;
+            decimal total = 0m;
             foreach (var item in colony.Items.Items.Values)
             {
                 total += item.Quantity * item.Volume;
             }
-            Assert.That(total, Is.EqualTo(150.0).Within(0.01));
+            Assert.That(total, Is.EqualTo(150.0m));
         }
     }
 }

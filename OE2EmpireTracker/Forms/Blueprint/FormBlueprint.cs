@@ -1204,7 +1204,10 @@ namespace OE2EmpireTracker
             UpdateBaseBlueprintList();
 
             // Load base blueprint selection (if this is not the base blueprint)
-            cmbBaseBlueprint.SelectedItem = playerContext.FindBlueprint(viewModel.Data.BaseBlueprintUUID);
+            if (!string.IsNullOrEmpty(viewModel.Data.BaseBlueprintUUID))
+                cmbBaseBlueprint.SelectedValue = viewModel.Data.BaseBlueprintUUID;
+            else
+                cmbBaseBlueprint.SelectedIndex = 0;
 
             // Populate text input fields
             txtName.Text = viewModel.Data.Name;

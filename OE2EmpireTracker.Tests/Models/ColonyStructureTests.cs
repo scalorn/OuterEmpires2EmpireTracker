@@ -223,11 +223,11 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var structure = new ColonyStructure();
             var status = new ColonyStructureStatus();
-            status.PowerProvided = 100.0;
+            status.PowerProvided = 100.0m;
             structure.Statuses["Power"] = status;
 
             Assert.That(structure.Statuses.ContainsKey("Power"), Is.True);
-            Assert.That(structure.Statuses["Power"].PowerProvided, Is.EqualTo(100.0));
+            Assert.That(structure.Statuses["Power"].PowerProvided, Is.EqualTo(100.0m));
         }
 
         [Test]
@@ -249,17 +249,17 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var structure = new ColonyStructure();
             var status = new ColonyStructureStatus();
-            status.PowerProvided = 50.0;
-            status.HabitationProvision = 25.0;
-            status.FoodProvision = 75.0;
-            status.EntertainmentProvided = 30.0;
+            status.PowerProvided = 50.0m;
+            status.HabitationProvision = 25.0m;
+            status.FoodProvision = 75.0m;
+            status.EntertainmentProvided = 30.0m;
 
             structure.Statuses["Power"] = status;
 
-            Assert.That(structure.Statuses["Power"].PowerProvided, Is.EqualTo(50.0));
-            Assert.That(structure.Statuses["Power"].HabitationProvision, Is.EqualTo(25.0));
-            Assert.That(structure.Statuses["Power"].FoodProvision, Is.EqualTo(75.0));
-            Assert.That(structure.Statuses["Power"].EntertainmentProvided, Is.EqualTo(30.0));
+            Assert.That(structure.Statuses["Power"].PowerProvided, Is.EqualTo(50.0m));
+            Assert.That(structure.Statuses["Power"].HabitationProvision, Is.EqualTo(25.0m));
+            Assert.That(structure.Statuses["Power"].FoodProvision, Is.EqualTo(75.0m));
+            Assert.That(structure.Statuses["Power"].EntertainmentProvided, Is.EqualTo(30.0m));
         }
 
         // -----------------------------------------------------------------------
@@ -270,7 +270,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void JsonRoundTrip_Statuses_AreNotSerialized()
         {
             var structure = new ColonyStructure();
-            structure.Statuses["Actual"] = new ColonyStructureStatus { PowerProvided = 100.0 };
+            structure.Statuses["Actual"] = new ColonyStructureStatus { PowerProvided = 100.0m };
 
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(structure);
             var restored = Newtonsoft.Json.JsonConvert.DeserializeObject<ColonyStructure>(json);
