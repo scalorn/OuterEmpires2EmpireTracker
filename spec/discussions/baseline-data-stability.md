@@ -310,7 +310,7 @@ With versioned migrations:
 ## Open Questions
 
 1. Should the split be BaselineData.json + UserBaseline.json, or should global blueprints move entirely to a separate file (e.g. GlobalBlueprints.json)? **RESOLVED — single file, no split.**
-2. For the deterministic UUID scheme, what namespace UUID should be used for the v5 generation?
+2. For the deterministic UUID scheme, what namespace UUID should be used for the v5 generation? **RESOLVED — `e0058083-0f64-b398-ed53-762f7d8b8eb2` (SHA256 of "Scalorn Scorpus", truncated to 128 bits).**
 3. How should the migration framework handle the first migration for existing users who already have random UUIDs? **RESOLVED — see below.**
 4. Should BlueprintTypes also get deterministic IDs, or are their string IDs (e.g. "Flatpacks/MiningRig") already stable enough? **RESOLVED — keep string Ids. They're human-readable, developer-controlled, and stable. Renames handled by the same idempotent rename table.**
 5. What's the priority ordering — should identity stabilization happen before or after the file split? **RESOLVED — no file split, identity stabilization is the main work.**
