@@ -87,7 +87,7 @@ BaselineData.json ships with the application and is modified by user imports, bu
 2. WHEN the Tracker loads data, THE Tracker SHALL process every Rename_Entry by computing the Deterministic_UUID from the old Dedup_Key and the Deterministic_UUID from the new Dedup_Key.
 3. WHEN a Blueprint with the old Deterministic_UUID exists, THE Tracker SHALL update the Blueprint's Name to NewName, update the Blueprint's UUID to the new Deterministic_UUID, and call RemapUUID to update all references.
 4. WHEN a Blueprint with the old Deterministic_UUID does not exist, THE Tracker SHALL skip that Rename_Entry without error (no-op).
-5. THE Tracker SHALL execute the rename table on every load, before versioned Migrations.
+5. THE Tracker SHALL execute the rename table twice during load: once before versioned Migrations and once after versioned Migrations. This ensures renames are applied regardless of whether the data has been through the initial UUID migration yet.
 6. WHEN the same Rename_Entry is processed on consecutive loads, THE Tracker SHALL produce no changes on the second and subsequent loads (idempotent behavior).
 
 ### Requirement 6: LegacyUUID Field

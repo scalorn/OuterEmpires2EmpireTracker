@@ -293,8 +293,9 @@ Two separate mechanisms:
 
 ```csharp
 // On load:
-ApplyRenames(pc, ec);           // Always runs, idempotent
+ApplyRenames(pc, ec);           // Before migrations — catches pre-migration renames
 ApplyVersionedMigrations(pc);   // Runs pending migrations based on DataVersion
+ApplyRenames(pc, ec);           // After migrations — catches post-migration renames
 ```
 
 ### Revised Recommendation
