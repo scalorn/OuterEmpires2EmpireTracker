@@ -134,6 +134,7 @@
     <Compile Include="Services\EvolutionChainService.cs" />
     <Compile Include="Services\BackgroundProcessor.cs" />
     <Compile Include="Models\BaselineGameConstants.cs" />
+    <Compile Include="Models\ResearchTimeEntry.cs" />
     <Compile Include="Models\BlueprintType.cs" />
     <Compile Include="Services\BuildTimeCalculator.cs" />
     <Compile Include="Services\ColonyActivityCollector.cs" />

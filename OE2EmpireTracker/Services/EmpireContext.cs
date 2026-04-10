@@ -97,6 +97,7 @@ namespace OE2EmpireTracker.Services
             initResourcePurities(baselineRoot);
             InitCommodities(baselineRoot);
             InitRefiningRecipes(baselineRoot);
+            InitResearchTimes(baselineRoot);
             InitGlobalBlueprints(baselineRoot);
 
             // Run migrations after both contexts are loaded
@@ -123,6 +124,7 @@ namespace OE2EmpireTracker.Services
             baselineRoot.TechLevel = techLevelList.ToArray();
             baselineRoot.Commodity = commodityList?.ToArray();
             baselineRoot.RefiningRecipe = new List<RefiningRecipe>(RefiningRecipes.Recipes).ToArray();
+            baselineRoot.ResearchTime = new List<ResearchTimeEntry>(ResearchTimeLookup.ResearchTimes).ToArray();
             string jsonContent = JsonConvert.SerializeObject(baselineRoot, JsonSettings.SerializerSettings);
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
             Log.Info("Baseline data saved to {0}", FilePath);
@@ -288,6 +290,20 @@ namespace OE2EmpireTracker.Services
             }
         }
 
+        public void InitResearchTimes(BaselineRoot baselineRoot)
+        {
+            if (baselineRoot.ResearchTime != null && baselineRoot.ResearchTime.Length > 0)
+            {
+                var entries = new List<ResearchTimeEntry>(baselineRoot.ResearchTime);
+                ResearchTimeLookup.SetResearchTimes(entries);
+                Log.Info("Loaded {0} research time entries from baseline data", entries.Count);
+            }
+            else
+            {
+                Log.Info("Using hardcoded research time lookup ({0} entries)", ResearchTimeLookup.GetFallbackResearchTimes().Count);
+            }
+        }
+
         public void InitGlobalBlueprints(BaselineRoot baselineRoot)
         {
             var list = new List<Blueprint>(baselineRoot.Blueprint ?? new Blueprint[0]);
@@ -315,5 +331,6 @@ namespace OE2EmpireTracker.Services
         public TechLevel[] TechLevel;
         public Commodity[] Commodity;
         public RefiningRecipe[] RefiningRecipe;
+        public ResearchTimeEntry[] ResearchTime;
     }
 }

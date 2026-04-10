@@ -14811,5 +14811,67 @@
       "ProduceRate": 25,
       "Tier": 2
     }
+  ],
+  "ResearchTime": [
+    {
+      "Evolution": 0,
+      "ResearchTimeSeconds": 172800
+    },
+    {
+      "Evolution": 1,
+      "ResearchTimeSeconds": 345600
+    },
+    {
+      "Evolution": 2,
+      "ResearchTimeSeconds": 518400
+    },
+    {
+      "Evolution": 3,
+      "ResearchTimeSeconds": 691200
+    },
+    {
+      "Evolution": 4,
+      "ResearchTimeSeconds": 864000
+    },
+    {
+      "Evolution": 5,
+      "ResearchTimeSeconds": 1036800
+    },
+    {
+      "Evolution": 6,
+      "ResearchTimeSeconds": 1209600
+    },
+    {
+      "Evolution": 7,
+      "ResearchTimeSeconds": 1382400
+    },
+    {
+      "Evolution": 8,
+      "ResearchTimeSeconds": 1555200
+    },
+    {
+      "Evolution": 9,
+      "ResearchTimeSeconds": 1728000
+    },
+    {
+      "Evolution": 10,
+      "ResearchTimeSeconds": 1900800
+    },
+    {
+      "Evolution": 11,
+      "ResearchTimeSeconds": 2073600
+    },
+    {
+      "Evolution": 12,
+      "ResearchTimeSeconds": 2246400
+    },
+    {
+      "Evolution": 13,
+      "ResearchTimeSeconds": 2419200
+    },
+    {
+      "Evolution": 14,
+      "ResearchTimeSeconds": 2592000
+    }
   ]
 }

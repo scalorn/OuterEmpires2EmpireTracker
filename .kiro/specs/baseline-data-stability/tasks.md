@@ -137,21 +137,21 @@ Stabilize BaselineData.json for multi-user distribution: deterministic UUIDs for
   - [x] 9.4 Update `RefiningRecipes.cs` — change static list to load from EmpireContext with fallback
     - _Requirements: 9.2, 9.4_
 
-- [ ] 10. Externalize ResearchTimeLookup to BaselineData.json
-  - [~] 10.1 Create `OE2EmpireTracker/Models/ResearchTimeEntry.cs` with Evolution and ResearchTimeSeconds
+- [-] 10. Externalize ResearchTimeLookup to BaselineData.json
+  - [x] 10.1 Create `OE2EmpireTracker/Models/ResearchTimeEntry.cs` with Evolution and ResearchTimeSeconds
     - Add `<Compile Include>` to csproj
     - _Requirements: 10.1_
 
-  - [~] 10.2 Add `ResearchTime[]` array to `BaselineRoot`
+  - [x] 10.2 Add `ResearchTime[]` array to `BaselineRoot`
     - _Requirements: 10.1_
 
-  - [~] 10.3 Update `EmpireContext` to load research times from BaselineRoot with fallback
+  - [x] 10.3 Update `EmpireContext` to load research times from BaselineRoot with fallback
     - _Requirements: 10.2, 10.3, 10.4_
 
-  - [~] 10.4 Serialize all 15 entries into BaselineData.json (main + test)
+  - [x] 10.4 Serialize all 15 entries into BaselineData.json (main + test)
     - _Requirements: 10.3_
 
-  - [~] 10.5 Update `ResearchTimeLookup.cs` — change static dictionary to load from EmpireContext with fallback
+  - [x] 10.5 Update `ResearchTimeLookup.cs` — change static dictionary to load from EmpireContext with fallback
     - _Requirements: 10.2, 10.4_
 
 - [~] 11. Checkpoint — Ensure all tests pass
