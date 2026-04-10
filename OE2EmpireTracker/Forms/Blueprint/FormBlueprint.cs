@@ -194,110 +194,129 @@ namespace OE2EmpireTracker
 
         /// <summary>
         /// Creates the filter panel with four labeled ComboBoxes and a Clear Filters button.
-        /// Inserts the panel into flpSearchList between the text filter and the ListView.
-        /// Called from the constructor after InitializeComponent().
+        /// Uses local data copies (not shared BindingSources) so filter selections don't
+        /// affect the detail-panel ComboBoxes. Each ComboBox has a blank first entry
+        /// representing "no filter". Layout uses three rows: Type+Class, TechLevel+Evolution,
+        /// and Clear Filters.
         /// </summary>
         private void InitFilterPanel()
         {
             empireContext = EmpireContext.getInstance();
 
-            // Create the filter panel container
+            // Create the outer container (vertical stack of rows)
             flpFilterPanel = new FlowLayoutPanel
             {
                 AutoSize = true,
-                FlowDirection = FlowDirection.LeftToRight,
-                WrapContents = true,
+                FlowDirection = FlowDirection.TopDown,
+                WrapContents = false,
                 Margin = new Padding(2)
             };
 
-            // Blueprint Type filter
+            // --- Row 1: Type + Class ---
+            var row1 = new FlowLayoutPanel
+            {
+                AutoSize = true,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false,
+                Margin = new Padding(0)
+            };
+
             var lblType = new Label
             {
                 Text = "Type:",
-                Size = new Size(40, 17),
-                TextAlign = ContentAlignment.MiddleRight,
-                Anchor = AnchorStyles.Left | AnchorStyles.Right
+                Size = new Size(40, 21),
+                TextAlign = ContentAlignment.MiddleRight
             };
             cmbFilterType = new ComboBox
             {
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                Size = new Size(150, 21),
-                DisplayMember = "Name",
-                ValueMember = "Id"
+                Size = new Size(150, 21)
             };
-            cmbFilterType.DataSource = empireContext.bindingSourceBlueprintType;
-            cmbFilterType.SelectedIndex = -1;
+            // Local copy with blank first entry — avoids cross-talk with detail panel
+            cmbFilterType.Items.Add("");
+            foreach (BlueprintType bt in empireContext.blueprintTypeList)
+                cmbFilterType.Items.Add(bt.Name);
+            cmbFilterType.SelectedIndex = 0;
 
-            // Class filter
             var lblClass = new Label
             {
                 Text = "Class:",
-                Size = new Size(40, 17),
-                TextAlign = ContentAlignment.MiddleRight,
-                Anchor = AnchorStyles.Left | AnchorStyles.Right
+                Size = new Size(40, 21),
+                TextAlign = ContentAlignment.MiddleRight
             };
             cmbFilterClass = new ComboBox
             {
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                Size = new Size(150, 21),
-                DisplayMember = "Name",
-                ValueMember = "Id"
+                Size = new Size(150, 21)
             };
-            cmbFilterClass.DataSource = empireContext.bindingSourceShipClass;
-            cmbFilterClass.SelectedIndex = -1;
+            cmbFilterClass.Items.Add("");
+            foreach (ShipClass sc in empireContext.shipClassList)
+                cmbFilterClass.Items.Add(sc.Name);
+            cmbFilterClass.SelectedIndex = 0;
 
-            // Tech Level filter
+            row1.Controls.AddRange(new Control[] { lblType, cmbFilterType, lblClass, cmbFilterClass });
+
+            // --- Row 2: Tech Level + Evolution ---
+            var row2 = new FlowLayoutPanel
+            {
+                AutoSize = true,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false,
+                Margin = new Padding(0)
+            };
+
             var lblTech = new Label
             {
                 Text = "Tech Level:",
-                Size = new Size(65, 17),
-                TextAlign = ContentAlignment.MiddleRight,
-                Anchor = AnchorStyles.Left | AnchorStyles.Right
+                Size = new Size(65, 21),
+                TextAlign = ContentAlignment.MiddleRight
             };
             cmbFilterTechLevel = new ComboBox
             {
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                Size = new Size(150, 21),
-                DisplayMember = "Name",
-                ValueMember = "Name"
+                Size = new Size(125, 21)
             };
-            cmbFilterTechLevel.DataSource = empireContext.bindingSourceTechLevel;
-            cmbFilterTechLevel.SelectedIndex = -1;
+            cmbFilterTechLevel.Items.Add("");
+            foreach (TechLevel tl in empireContext.techLevelList)
+                cmbFilterTechLevel.Items.Add(tl.Name);
+            cmbFilterTechLevel.SelectedIndex = 0;
 
-            // Evolution filter
             var lblEvo = new Label
             {
                 Text = "Evolution:",
-                Size = new Size(60, 17),
-                TextAlign = ContentAlignment.MiddleRight,
-                Anchor = AnchorStyles.Left | AnchorStyles.Right
+                Size = new Size(60, 21),
+                TextAlign = ContentAlignment.MiddleRight
             };
             cmbFilterEvolution = new ComboBox
             {
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Size = new Size(60, 21)
             };
-            cmbFilterEvolution.DataSource = empireContext.bindingSourceEvolution;
-            cmbFilterEvolution.SelectedIndex = -1;
+            cmbFilterEvolution.Items.Add("");
+            foreach (string evo in empireContext.evolutionList)
+                cmbFilterEvolution.Items.Add(evo);
+            cmbFilterEvolution.SelectedIndex = 0;
 
-            // Clear Filters button
+            row2.Controls.AddRange(new Control[] { lblTech, cmbFilterTechLevel, lblEvo, cmbFilterEvolution });
+
+            // --- Row 3: Clear Filters ---
+            var row3 = new FlowLayoutPanel
+            {
+                AutoSize = true,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false,
+                Margin = new Padding(0)
+            };
+
             btnClearFilters = new Button
             {
                 Text = "Clear Filters",
                 Size = new Size(85, 23),
                 UseVisualStyleBackColor = true
             };
+            row3.Controls.Add(btnClearFilters);
 
-            // Add controls to the filter panel
-            flpFilterPanel.Controls.Add(lblType);
-            flpFilterPanel.Controls.Add(cmbFilterType);
-            flpFilterPanel.Controls.Add(lblClass);
-            flpFilterPanel.Controls.Add(cmbFilterClass);
-            flpFilterPanel.Controls.Add(lblTech);
-            flpFilterPanel.Controls.Add(cmbFilterTechLevel);
-            flpFilterPanel.Controls.Add(lblEvo);
-            flpFilterPanel.Controls.Add(cmbFilterEvolution);
-            flpFilterPanel.Controls.Add(btnClearFilters);
+            flpFilterPanel.Controls.AddRange(new Control[] { row1, row2, row3 });
 
             // Insert filter panel into flpSearchList between the text filter (index 0) and ListView (index 1)
             flpSearchList.Controls.Add(flpFilterPanel);
@@ -310,10 +329,10 @@ namespace OE2EmpireTracker
             cmbFilterEvolution.SelectedIndexChanged += (s, e) => RefreshBlueprintList();
             btnClearFilters.Click += (s, e) =>
             {
-                cmbFilterType.SelectedIndex = -1;
-                cmbFilterClass.SelectedIndex = -1;
-                cmbFilterTechLevel.SelectedIndex = -1;
-                cmbFilterEvolution.SelectedIndex = -1;
+                cmbFilterType.SelectedIndex = 0;
+                cmbFilterClass.SelectedIndex = 0;
+                cmbFilterTechLevel.SelectedIndex = 0;
+                cmbFilterEvolution.SelectedIndex = 0;
                 RefreshBlueprintList();
             };
         }
@@ -784,17 +803,34 @@ namespace OE2EmpireTracker
 
             var criteria = new BlueprintFilterCriteria();
 
-            if (cmbFilterType != null && cmbFilterType.SelectedIndex >= 0)
-                criteria.BlueprintTypeId = (string)cmbFilterType.SelectedValue;
+            // Filter ComboBoxes use local string items with blank at index 0.
+            // Index 0 (blank) means no filter; any other selection is a display name
+            // that we map back to the actual filter value.
+            if (cmbFilterType != null && cmbFilterType.SelectedIndex > 0)
+            {
+                string typeName = (string)cmbFilterType.SelectedItem;
+                var bt = empireContext.blueprintTypeList.FirstOrDefault(b => b.Name == typeName);
+                if (bt != null) criteria.BlueprintTypeId = bt.Id;
+            }
 
-            if (cmbFilterClass != null && cmbFilterClass.SelectedIndex >= 0)
-                criteria.ShipClassId = (int)cmbFilterClass.SelectedValue;
+            if (cmbFilterClass != null && cmbFilterClass.SelectedIndex > 0)
+            {
+                string className = (string)cmbFilterClass.SelectedItem;
+                var sc = empireContext.shipClassList.FirstOrDefault(s => s.Name == className);
+                if (sc != null) criteria.ShipClassId = sc.Id;
+            }
 
-            if (cmbFilterTechLevel != null && cmbFilterTechLevel.SelectedIndex >= 0)
-                criteria.TechLevelName = (string)cmbFilterTechLevel.SelectedValue;
+            if (cmbFilterTechLevel != null && cmbFilterTechLevel.SelectedIndex > 0)
+            {
+                criteria.TechLevelName = (string)cmbFilterTechLevel.SelectedItem;
+            }
 
-            if (cmbFilterEvolution != null && cmbFilterEvolution.SelectedIndex >= 0)
-                criteria.Evolution = int.Parse((string)cmbFilterEvolution.SelectedItem);
+            if (cmbFilterEvolution != null && cmbFilterEvolution.SelectedIndex > 0)
+            {
+                string evoStr = (string)cmbFilterEvolution.SelectedItem;
+                if (int.TryParse(evoStr, out int evo))
+                    criteria.Evolution = evo;
+            }
 
             var results = viewModel.GetFilteredBlueprints(nameFilter, criteria);
             PopulateListView(results);

@@ -28,7 +28,7 @@ Add a dynamic title bar with global/player blueprint counts and a structured fil
 - [x] 2. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 3. Add title bar counts and filter panel UI to FormBlueprint
+- [x] 3. Add title bar counts and filter panel UI to FormBlueprint
   - [x] 3.1 Add `UpdateTitleBarCounts()` method to `FormBlueprint`
     - Format: `"Blueprints - Global: {globalCount} Player: {playerCount}"`
     - Use `EmpireContext.globalBlueprintList?.Count ?? 0` for global count
@@ -42,7 +42,7 @@ Add a dynamic title bar with global/player blueprint counts and a structured fil
     - Test file: `OE2EmpireTracker.Tests/ViewModels/BlueprintFilterPropertyTests.cs` (same file as Property 2)
     - **Validates: Requirements 1.1, 1.4**
 
-  - [-] 3.3 Add `InitFilterPanel()` method to `FormBlueprint` creating filter controls in code-behind
+  - [x] 3.3 Add `InitFilterPanel()` method to `FormBlueprint` creating filter controls in code-behind
     - Create `FlowLayoutPanel` with four labeled ComboBoxes (Blueprint Type, Class, Tech Level, Evolution) and a Clear Filters button
     - Bind each ComboBox to its respective `EmpireContext` binding source (`bindingSourceBlueprintType`, `bindingSourceShipClass`, `bindingSourceTechLevel`, `bindingSourceEvolution`)
     - Insert the filter panel into `flpSearchList` between the text filter and the ListView
@@ -50,7 +50,7 @@ Add a dynamic title bar with global/player blueprint counts and a structured fil
     - Call `InitFilterPanel()` from the constructor after `InitializeComponent()`
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 3.1, 4.1, 5.1, 6.1_
 
-  - [~] 3.4 Add `RefreshBlueprintList()` method and wire all filter events
+  - [x] 3.4 Add `RefreshBlueprintList()` method and wire all filter events
     - Read filter state from all ComboBoxes, build `BlueprintFilterCriteria`, call `GetFilteredBlueprints(nameFilter, criteria)`, call `PopulateListView`
     - Wire each filter ComboBox `SelectedIndexChanged` → `RefreshBlueprintList()`
     - Wire `btnClearFilters.Click` → reset all four ComboBoxes to `SelectedIndex = -1`, then `RefreshBlueprintList()`
@@ -58,7 +58,7 @@ Add a dynamic title bar with global/player blueprint counts and a structured fil
     - Update `OnBlueprintDataChanged` and `OnCurrentPlayerChanged` to call `RefreshBlueprintList()` and `UpdateTitleBarCounts()`
     - _Requirements: 7.1, 7.2, 7.3, 7.4_
 
-- [~] 4. Final checkpoint - Ensure all tests pass
+- [x] 4. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
