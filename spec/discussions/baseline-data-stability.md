@@ -138,7 +138,7 @@ All data that is currently hardcoded in C# and could change if the game updates.
 |---|---|---|---|
 | `RefiningRecipes.cs` | 6 synthetic refining recipes (S1/S2 tiers) with input/output resources, consume/produce rates | Medium — game could add S3 tier or change rates | Resource names are strings; if game renames a resource, recipe breaks |
 | `ResearchTimeLookup.cs` | Research time by evolution level (15 entries, 2-30 days) | Medium — game could rebalance | Simple key-value, easy to move to JSON |
-| `GameConstants.cs` | RefiningBaseRate (25), CommoditiesPerCycle (10), CommodityCycleSeconds (600), StructureCap (65), WorkerVolume (50) | Low-Medium — game could rebalance any of these | Simple scalars |
+| `GameConstants.cs` | 5 game-derived values: RefiningBaseRate (25), CommoditiesPerCycle (10), CommodityCycleSeconds (600), StructureCap (65), WorkerVolume (50). Other constants in this file are math (`SecondsPerHour`) or internal naming conventions we control (`PropBuilt`, `PropStaged`, `PropOnline`, `StatusActual`, `StatusIdeal`, `PurityRefined`) — those stay in code. | Low-Medium — game could rebalance any of the 5 | Move the 5 game-derived values to a `GameConstants` section in BaselineData.json. Internal constants stay in code. |
 | `BlueprintPropertyValidation.cs` | ~130 property names with types (Integer/Decimal/Boolean/Time/ComboBox) and validation patterns | Medium — game adds new properties regularly | Append-only in practice, but type changes would need migration |
 | `BlueprintTypes.cs` | 6 type constants + prefix strings + extension methods (IsFlatpack, IsCommodityFactory) | Low — we control these names | Extension methods would stay in code; constants could reference JSON data |
 
@@ -172,7 +172,7 @@ This is handled by the same idempotent rename table — scan blueprints, find ol
 1. **Commodity.cs** (highest priority) — 209 commodities with construction recipes. Largest dataset, most likely to change, users can't fix without code changes.
 2. **RefiningRecipes.cs** — 6 recipes, game could add tiers or change rates.
 3. **ResearchTimeLookup.cs** — 15 entries, game could rebalance.
-4. **GameConstants.cs** — simple scalars, easy to move.
+4. **GameConstants.cs** — 5 game-derived scalars move to a `GameConstants` section in BaselineData.json. Internal constants (SecondsPerHour, property key strings, status keys) stay in code.
 5. **BlueprintPropertyValidation.cs** — large but append-only in practice. Lower priority.
 6. **Resource.cs / CommodityGroup.cs / CommodityIndustry.cs** — stable, low priority. Enum-based design makes migration harder.
 
