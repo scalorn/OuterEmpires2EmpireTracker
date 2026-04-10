@@ -1,4 +1,4 @@
-{
+﻿{
   "CurrentPlayerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
   "PlayerProfile": [
     {
@@ -537,7 +537,7 @@
   "Blueprint": [
     {
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Reactor",
       "Evolution": 5,
       "TechLevel": "MilSpec",
@@ -575,7 +575,7 @@
     },
     {
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
-      "baseBlueprintUUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
+      "BaseBlueprintUUID": "f2d0d87f-bdfd-4846-8f9b-f578a67985c6",
       "BluePrintType": "SystemObjectScanner",
       "Evolution": 3,
       "TechLevel": "MilSpec",
@@ -616,7 +616,7 @@
     },
     {
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
-      "baseBlueprintUUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
+      "BaseBlueprintUUID": "92212ea7-317b-4761-bc7a-67aafa26e2ea",
       "BluePrintType": "SystemObjectScanner",
       "Evolution": 4,
       "TechLevel": "MilSpec",
@@ -658,7 +658,7 @@
     },
     {
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
-      "baseBlueprintUUID": "82609bb4-32e5-42f4-aee8-244181501ace",
+      "BaseBlueprintUUID": "82609bb4-32e5-42f4-aee8-244181501ace",
       "BluePrintType": "SystemObjectScanner",
       "Evolution": 5,
       "TechLevel": "MilSpec",
@@ -700,7 +700,7 @@
     },
     {
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
-      "baseBlueprintUUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
+      "BaseBlueprintUUID": "af056e10-ebbb-42b9-a49d-d567c938e525",
       "BluePrintType": "SystemObjectScanner",
       "Evolution": 2,
       "TechLevel": "MilSpec",
@@ -738,7 +738,7 @@
     },
     {
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "JumpDrive",
       "Evolution": 1,
       "TechLevel": "MilSpec",

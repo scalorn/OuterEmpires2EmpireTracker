@@ -1445,7 +1445,7 @@
   "Blueprint": [
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/CommodityFactory/AdministrationBlock",
       "Properties": {
         "Power Required": "1",
@@ -1465,7 +1465,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/CommodityFactory/Agridome",
       "Properties": {
         "Power Required": "1",
@@ -1485,7 +1485,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/CommodityFactory/CentreOfEconomics",
       "Properties": {
         "Power Required": "1",
@@ -1506,7 +1506,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/ColonyCommandCentre",
       "CopyCost": 2590,
       "Properties": {
@@ -1539,7 +1539,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Hull",
       "Class": 3,
       "Properties": {
@@ -1590,7 +1590,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/CommodityFactory/EngineeringBlock",
       "Properties": {
         "Power Required": "1",
@@ -1611,7 +1611,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/EntertainmentCentreFlatpack",
       "CopyCost": 2613,
       "Properties": {
@@ -1638,7 +1638,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/HabitationBlock",
       "CopyCost": 1564,
       "Properties": {
@@ -1663,7 +1663,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/CommodityFactory/HealthcareInstitute",
       "Properties": {
         "Power Required": "1",
@@ -1684,7 +1684,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/HydroponicsBay",
       "CopyCost": 1854,
       "Properties": {
@@ -1712,7 +1712,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/CommodityFactory/InstituteOfDefence",
       "Properties": {
         "Power Required": "1",
@@ -1733,7 +1733,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/CommodityFactory/LeisureIndustryCentre",
       "Properties": {
         "Power Required": "1",
@@ -1754,7 +1754,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/CommodityFactory/LogisticsCentre",
       "Properties": {
         "Power Required": "1",
@@ -1775,7 +1775,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/Manufactory",
       "CopyCost": 2128,
       "Properties": {
@@ -1802,7 +1802,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/CommodityFactory/ManufacturingIndustryCentre",
       "Properties": {
         "Power Required": "1",
@@ -1823,7 +1823,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/CommodityFactory/MiningIndustryCentre",
       "Properties": {
         "Power Required": "1",
@@ -1843,7 +1843,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/MiningRig",
       "CopyCost": 1768,
       "Properties": {
@@ -1872,7 +1872,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/CommodityFactory/OffWorldLivingInstitute",
       "Properties": {
         "Power Required": "1",
@@ -1893,7 +1893,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "SystemObjectScanner",
       "TechLevel": "MilSpec",
       "Class": 7,
@@ -1923,7 +1923,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "SystemObjectScanner",
       "TechLevel": "MilSpec",
       "Class": 6,
@@ -1953,7 +1953,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/ReactorCore",
       "CopyCost": 2944,
       "Properties": {
@@ -1979,7 +1979,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/Refinery",
       "CopyCost": 2347,
       "Properties": {
@@ -2008,7 +2008,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/CommodityFactory/RefiningIndustryCentre",
       "Properties": {
         "Power Required": "1",
@@ -2029,7 +2029,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/RemoteOperationsArray",
       "CopyCost": 2350,
       "Properties": {
@@ -2055,7 +2055,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/ResearchLaboratory",
       "CopyCost": 1628,
       "Properties": {
@@ -2081,7 +2081,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/CommodityFactory/ScienceCentre",
       "Properties": {
         "Power Required": "1",
@@ -2102,7 +2102,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/CommodityFactory/TechnologyInstitute",
       "Properties": {
         "Power Required": "1",
@@ -2123,7 +2123,7 @@
     },
     {
       "OwnerUUID": "",
-      "baseBlueprintUUID": "",
+      "BaseBlueprintUUID": "",
       "BluePrintType": "Flatpacks/Warehouse",
       "CopyCost": 1745,
       "Properties": {

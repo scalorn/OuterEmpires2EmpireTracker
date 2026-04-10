@@ -61,10 +61,10 @@ namespace OE2EmpireTracker.Services
 
                 chain.Add(current);
 
-                if (string.IsNullOrEmpty(current.baseBlueprintUUID))
+                if (string.IsNullOrEmpty(current.BaseBlueprintUUID))
                     break; // reached Ev0 or no further link
 
-                current = resolver(current.baseBlueprintUUID);
+                current = resolver(current.BaseBlueprintUUID);
             }
 
             chain.Sort((a, b) => a.Evolution.CompareTo(b.Evolution));

@@ -16,7 +16,7 @@ namespace OE2EmpireTracker.Models
     {
         public string OwnerUUID { get; set; } = string.Empty;
 
-        public string baseBlueprintUUID { get; set; }
+        public string BaseBlueprintUUID { get; set; }
 
         public string BluePrintType { get; set; }
 

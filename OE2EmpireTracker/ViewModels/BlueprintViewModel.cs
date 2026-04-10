@@ -35,7 +35,7 @@ namespace OE2EmpireTracker.ViewModels
         public string TechLevel { get => _blueprint.TechLevel; set => _blueprint.TechLevel = value; }
         public int Evolution { get => _blueprint.Evolution; set => _blueprint.Evolution = value; }
         public int CopyCost { get => _blueprint.CopyCost; set => _blueprint.CopyCost = value; }
-        public string BaseBlueprintUUID { get => _blueprint.baseBlueprintUUID; set => _blueprint.baseBlueprintUUID = value; }
+        public string BaseBlueprintUUID { get => _blueprint.BaseBlueprintUUID; set => _blueprint.BaseBlueprintUUID = value; }
         public string UUID => _blueprint.UUID;
 
         /// <summary>

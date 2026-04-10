@@ -1,4 +1,4 @@
-{
+﻿{
   "CurrentPlayerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
   "PlayerProfile": [
     {
@@ -169,7 +169,7 @@
   "Blueprint": [
     {
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
-      "baseBlueprintUUID": "f94f16c2-727e-4911-952e-cf42c08de96b",
+      "BaseBlueprintUUID": "f94f16c2-727e-4911-952e-cf42c08de96b",
       "BluePrintType": "JumpDrive",
       "Evolution": 9,
       "TechLevel": "MilSpec",
@@ -205,7 +205,7 @@
     },
     {
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
-      "baseBlueprintUUID": "eebc362d-92fb-4bc6-9332-384c352d834b",
+      "BaseBlueprintUUID": "eebc362d-92fb-4bc6-9332-384c352d834b",
       "BluePrintType": "JumpDrive",
       "Evolution": 8,
       "TechLevel": "MilSpec",
@@ -240,7 +240,7 @@
     },
     {
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
-      "baseBlueprintUUID": "7398ae99-4b3b-4d9f-964d-40b74bae7e72",
+      "BaseBlueprintUUID": "7398ae99-4b3b-4d9f-964d-40b74bae7e72",
       "BluePrintType": "JumpDrive",
       "Evolution": 7,
       "TechLevel": "MilSpec",
@@ -275,7 +275,7 @@
     },
     {
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
-      "baseBlueprintUUID": "fa19d8f2-60b4-48dc-9284-65f9f435d09d",
+      "BaseBlueprintUUID": "fa19d8f2-60b4-48dc-9284-65f9f435d09d",
       "BluePrintType": "JumpDrive",
       "Evolution": 6,
       "TechLevel": "MilSpec",
@@ -310,7 +310,7 @@
     },
     {
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
-      "baseBlueprintUUID": "116f5ef4-e477-4faa-be6d-85601588e9fa",
+      "BaseBlueprintUUID": "116f5ef4-e477-4faa-be6d-85601588e9fa",
       "BluePrintType": "JumpDrive",
       "Evolution": 5,
       "TechLevel": "MilSpec",
@@ -342,7 +342,7 @@
     },
     {
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
-      "baseBlueprintUUID": "3d08c776-0729-4aee-9a58-de321d9dd1e2",
+      "BaseBlueprintUUID": "3d08c776-0729-4aee-9a58-de321d9dd1e2",
       "BluePrintType": "JumpDrive",
       "Evolution": 4,
       "TechLevel": "MilSpec",

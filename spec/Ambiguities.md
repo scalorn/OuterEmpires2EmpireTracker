@@ -356,9 +356,9 @@ These differences are partly justified by domain differences, but the structural
 
 ---
 
-### AMB-041 — OPEN: `baseBlueprintUUID` is camelCase on Blueprint model
+### AMB-041 — RESOLVED: `baseBlueprintUUID` is camelCase on Blueprint model
 **Issue:** `Blueprint.baseBlueprintUUID` is the only camelCase public property on any model class. All other properties use PascalCase (`OwnerUUID`, `BluePrintType`, `ColonyName`, etc.). This is likely a legacy naming from an earlier version.
 
 Renaming it would require a JSON migration strategy since it's serialized to PlayerData.json and BaselineData.json. Newtonsoft.Json serializes using the property name by default.
 
-**Recommendation:** Either rename to `BaseBlueprintUUID` with a `[JsonProperty("baseBlueprintUUID")]` attribute to preserve backward compatibility, or leave as-is and document the exception. Low priority.
+**Resolution:** Renamed to `BaseBlueprintUUID`. Updated all code references across 10+ files. Migrated all JSON data files (Alpha3.json, BaselineData.json main+test, PlayerData.json test) to use the new key name. No `[JsonProperty]` attribute needed since both code and data are aligned on the new name.

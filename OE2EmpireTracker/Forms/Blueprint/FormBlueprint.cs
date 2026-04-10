@@ -1203,7 +1203,7 @@ namespace OE2EmpireTracker
             UpdateBaseBlueprintList();
 
             // Load base blueprint selection (if this is not the base blueprint)
-            cmbBaseBlueprint.SelectedItem = playerContext.FindBlueprint(viewModel.Data.baseBlueprintUUID);
+            cmbBaseBlueprint.SelectedItem = playerContext.FindBlueprint(viewModel.Data.BaseBlueprintUUID);
 
             // Populate text input fields
             txtName.Text = viewModel.Data.Name;
@@ -1537,7 +1537,7 @@ namespace OE2EmpireTracker
                 // Auto-select best base blueprint match
                 using (var guard = new ProgrammaticUpdateGuard(this))
                 {
-                    if (string.IsNullOrEmpty(importedBP.baseBlueprintUUID) && cmbBaseBlueprint.Items.Count > 1)
+                    if (string.IsNullOrEmpty(importedBP.BaseBlueprintUUID) && cmbBaseBlueprint.Items.Count > 1)
                     {
                         cmbBaseBlueprint.SelectedIndex = 1;
                         var bp = cmbBaseBlueprint.SelectedItem as Blueprint;

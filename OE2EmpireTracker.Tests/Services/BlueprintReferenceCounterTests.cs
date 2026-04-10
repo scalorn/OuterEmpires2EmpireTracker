@@ -25,7 +25,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var bp = new Bp("TestBP");
             bp.UUID = uuid;
-            bp.baseBlueprintUUID = baseBlueprintUUID;
+            bp.BaseBlueprintUUID = baseBlueprintUUID;
             return bp;
         }
 

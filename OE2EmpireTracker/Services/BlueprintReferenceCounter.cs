@@ -39,7 +39,7 @@ namespace OE2EmpireTracker.Services
                 .Count(s => s.ManufacturingBlueprintUUID == blueprintUUID);
 
             int baseBlueprintCount = _allBlueprints
-                .Count(b => b.baseBlueprintUUID == blueprintUUID && b.UUID != blueprintUUID);
+                .Count(b => b.BaseBlueprintUUID == blueprintUUID && b.UUID != blueprintUUID);
 
             int scannerCount = _surveys
                 .Count(s => s.ScannerBlueprintUUID == blueprintUUID);

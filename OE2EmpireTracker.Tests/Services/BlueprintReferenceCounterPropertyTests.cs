@@ -26,7 +26,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var bp = new Bp("TestBP");
             bp.UUID = uuid;
-            bp.baseBlueprintUUID = baseBlueprintUUID;
+            bp.BaseBlueprintUUID = baseBlueprintUUID;
             return bp;
         }
 
@@ -100,7 +100,7 @@ namespace OE2EmpireTracker.Tests.Services
                 int expectedFlatpack = data.Structures.Count(s => s.FlatpackBlueprintUUID == data.TargetUUID);
                 int expectedResearching = data.Structures.Count(s => s.ResearchingBlueprintUUID == data.TargetUUID);
                 int expectedManufacturing = data.Structures.Count(s => s.ManufacturingBlueprintUUID == data.TargetUUID);
-                int expectedBase = data.Blueprints.Count(b => b.baseBlueprintUUID == data.TargetUUID && b.UUID != data.TargetUUID);
+                int expectedBase = data.Blueprints.Count(b => b.BaseBlueprintUUID == data.TargetUUID && b.UUID != data.TargetUUID);
                 int expectedScanner = data.Surveys.Count(s => s.ScannerBlueprintUUID == data.TargetUUID);
 
                 return (report.FlatpackCount == expectedFlatpack)

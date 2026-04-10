@@ -273,7 +273,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 UUID = uuid,
                 OwnerUUID = owner,
-                baseBlueprintUUID = baseUuid,
+                BaseBlueprintUUID = baseUuid,
                 BluePrintType = bpType,
                 Evolution = evo,
                 TechLevel = techLevel,

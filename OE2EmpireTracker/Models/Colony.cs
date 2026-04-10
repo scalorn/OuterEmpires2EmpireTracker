@@ -331,7 +331,7 @@ namespace OE2EmpireTracker.Models
             newBp.TechLevel = sourceBp.TechLevel;
             newBp.Evolution = sourceBp.Evolution + 1;
             newBp.CopyCost = sourceBp.CopyCost;
-            newBp.baseBlueprintUUID = sourceBp.baseBlueprintUUID;
+            newBp.BaseBlueprintUUID = sourceBp.BaseBlueprintUUID;
             newBp.Description = sourceBp.Description;
             newBp.NickName = "NEEDS SCANNED"; // Searchable marker for unscanned blueprints
             // Properties copied, resources left empty for user to import
