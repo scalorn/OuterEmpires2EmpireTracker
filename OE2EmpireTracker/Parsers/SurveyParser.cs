@@ -72,6 +72,15 @@ namespace OE2EmpireTracker.Parsers
 
                     ParseResource(survey, rawName, rawDetail);
                 }
+
+                Log.Info("ProcessHtml: PlanetName='{0}', SystemName='{1}', SurveyID='{2}', resources extracted={3}",
+                    survey.PlanetName ?? "(null)", survey.SystemName ?? "(null)",
+                    survey.SurveyID ?? "(null)", survey.Resources.Count);
+                foreach (var kvp in survey.Resources)
+                {
+                    var r = kvp.Value;
+                    Log.Debug("  Resource: {0}, Purity={1}, Amount={2}", r.Resource, r.Purity ?? "(null)", r.Amount ?? "(null)");
+                }
             }
             catch (Exception ex)
             {

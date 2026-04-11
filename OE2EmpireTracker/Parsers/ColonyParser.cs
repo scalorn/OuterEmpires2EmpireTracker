@@ -149,6 +149,9 @@ namespace OE2EmpireTracker.Parsers
                 }
             }
 
+            Log.Info("ParsePlanetOverview: PlanetName='{0}', SystemName='{1}', ColonyName='{2}'",
+                colony.PlanetName ?? "(null)", colony.SystemName ?? "(null)", colony.ColonyName ?? "(null)");
+
             // Fallback: system name from the top location bar
             if (string.IsNullOrEmpty(colony.SystemName))
             {
@@ -176,12 +179,13 @@ namespace OE2EmpireTracker.Parsers
 
             if (!string.IsNullOrEmpty(jsonEncoded))
             {
+                Log.Info("ParseColonyBuildings: using JSON path (colony-buildings attribute found)");
                 ParseColonyBuildingsFromJson(colony, jsonEncoded, empireContext);
                 return;
             }
 
             // Fallback: extract building names from colony-workers workforce detail (non-local colonies)
-            Log.Debug("colony-buildings empty, falling back to colony-workers workforce detail");
+            Log.Info("ParseColonyBuildings: using workers fallback (colony-buildings empty)");
             ParseColonyBuildingsFromWorkers(colony, doc, empireContext);
         }
 
@@ -226,6 +230,8 @@ namespace OE2EmpireTracker.Parsers
                             if (bp != null && bp.BluePrintType == BlueprintTypes.Refinery)
                             {
                                 parsed.RefiningResource = parsed.MiningSurveyResource;
+                                Log.Debug("Refinery {0}: set RefiningResource='{1}' from MiningSurveyResource",
+                                    parsed.FlatpackBlueprintUUID, parsed.RefiningResource);
                             }
                         }
 
@@ -373,6 +379,10 @@ namespace OE2EmpireTracker.Parsers
                     MinerSetupHelper.SetupMiners(colony, empireContext, maxRates);
                     RefinerySetupHelper.SetupRefineries(colony, empireContext);
                 }
+                else
+                {
+                    Log.Info("Skipping miner/refinery setup for temp parse (no OwnerUUID)");
+                }
             }
             catch (Exception ex)
             {
@@ -423,6 +433,8 @@ namespace OE2EmpireTracker.Parsers
             // Update refining resource from game (set by parser for refinery structures)
             if (!string.IsNullOrEmpty(parsed.RefiningResource))
             {
+                Log.Info("MergeStructure: carrying RefiningResource='{0}' from parsed to existing structure {1}",
+                    parsed.RefiningResource, existing.UUID);
                 existing.RefiningResource = parsed.RefiningResource;
             }
 

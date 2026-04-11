@@ -1641,6 +1641,9 @@ namespace OE2EmpireTracker.Forms.Colony
                 if (tempColony == null)
                     return;
 
+                Log.Info("Colony temp parse complete: PlanetName='{0}', SystemName='{1}', {2} structures",
+                    tempColony.PlanetName ?? "(null)", tempColony.SystemName ?? "(null)", tempColony.Structures.Count);
+
                 if (string.IsNullOrEmpty(tempColony.PlanetName))
                 {
                     // Fall back to current behavior when no planet name is parsed
@@ -1661,6 +1664,10 @@ namespace OE2EmpireTracker.Forms.Colony
 
                 var existingColony = ColonyImportHelper.FindByPlanet(
                     playerContext.GetCurrentPlayerColonies(), tempColony.PlanetName, tempColony.SystemName);
+
+                Log.Info("Colony dedup: {0} for planet '{1}'",
+                    existingColony != null ? "found existing colony UUID=" + existingColony.UUID : "no existing colony, creating new",
+                    tempColony.PlanetName);
 
                 if (existingColony != null)
                 {

@@ -130,13 +130,18 @@ namespace OE2EmpireTracker.Parsers
 
             if (candidates.Count == 0)
             {
+                Log.Debug("FindBestSurvey: 0 candidate surveys for planet='{0}', resource='{1}', purity='{2}'",
+                    planetName, resourceName, purity);
                 return null;
             }
+
+            Log.Debug("FindBestSurvey: {0} candidate surveys for planet='{1}', resource='{2}', purity='{3}', maxRate={4}",
+                candidates.Count, planetName, resourceName, purity, maxRate);
 
             if (maxRate > 0m)
             {
                 // Select the survey whose resource Amount most closely matches maxRate
-                return candidates
+                var selected = candidates
                     .OrderBy(s =>
                     {
                         var resource = s.Resources.Values.First(r =>
@@ -147,11 +152,14 @@ namespace OE2EmpireTracker.Parsers
                         return Math.Abs(amount - maxRate);
                     })
                     .First();
+                Log.Info("FindBestSurvey: selected survey {0} (closest match to maxRate={1}) for {2} ({3})",
+                    selected.UUID, maxRate, resourceName, purity);
+                return selected;
             }
             else
             {
                 // maxRate == 0: select the survey with the highest Amount
-                return candidates
+                var selected = candidates
                     .OrderByDescending(s =>
                     {
                         var resource = s.Resources.Values.First(r =>
@@ -162,6 +170,9 @@ namespace OE2EmpireTracker.Parsers
                         return amount;
                     })
                     .First();
+                Log.Info("FindBestSurvey: selected survey {0} (highest amount, maxRate=0) for {1} ({2})",
+                    selected.UUID, resourceName, purity);
+                return selected;
             }
         }
 

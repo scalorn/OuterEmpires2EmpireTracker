@@ -425,6 +425,7 @@ namespace OE2EmpireTracker.Forms.Survey
 
             try
             {
+                Log.Info("Survey import started from clipboard");
                 var parser = new SurveyParser();
                 var tempSurvey = parser.ParseClipboardToTemp(out string extractedHtml);
 
@@ -442,6 +443,10 @@ namespace OE2EmpireTracker.Forms.Survey
 
                 var existingSurvey = SurveyImportHelper.FindByKey(
                     playerContext.GetCurrentPlayerSurveys(), tempSurvey.PlanetName, tempSurvey.SurveyID);
+
+                Log.Info("Survey dedup: {0} for planet '{1}', surveyID '{2}'",
+                    existingSurvey != null ? "found existing survey UUID=" + existingSurvey.UUID : "no existing survey, creating new",
+                    tempSurvey.PlanetName, tempSurvey.SurveyID);
 
                 OE2EmpireTracker.Models.Survey importedSurvey;
 
@@ -461,6 +466,9 @@ namespace OE2EmpireTracker.Forms.Survey
 
                 playerContext.WriteContext();
                 playerContext.OnSurveyDataChanged(importedSurvey.UUID);
+
+                Log.Info("Survey import complete: UUID={0}, PlanetName='{1}', SurveyID='{2}'",
+                    importedSurvey.UUID, importedSurvey.PlanetName, importedSurvey.SurveyID);
 
                 // Refresh list view
                 PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));

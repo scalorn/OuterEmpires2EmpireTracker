@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.Services.Migration;
 using OE2EmpireTracker.Models;
 using Newtonsoft.Json;
 using System;
@@ -199,6 +200,7 @@ namespace OE2EmpireTracker.Tests.Forms
             root.DeliveryRoute = routes.ToArray();
             root.DeliveryPlan = plans.ToArray();
             root.CurrentPlayerUUID = profiles[0].UUID;
+            root.DataVersion = MigrationRunner.CurrentVersion;
 
             return root;
         }
