@@ -45,16 +45,16 @@ Automate mining rig and refinery setup during colony import/reimport. Adds surve
   - [x] 6.2 Write unit tests: creates missing resource, does not overwrite existing, handles null/empty inputs
     - _Validates: Requirements 7.1, 7.2, 7.3_
 
-- [-] 7. Implement MinerSetupHelper.SetupTimer
-  - [-] 7.1 Add `SetupTimer` method — creates repeating timer aligned to next hour boundary if maxRate > 0 and no existing timer
+- [x] 7. Implement MinerSetupHelper.SetupTimer
+  - [x] 7.1 Add `SetupTimer` method — creates repeating timer aligned to next hour boundary if maxRate > 0 and no existing timer
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
-  - [-] 7.2 Write unit tests: creates timer when maxRate > 0, skips when maxRate = 0, preserves existing timer, timer is repeating at SecondsPerHour
+  - [x] 7.2 Write unit tests: creates timer when maxRate > 0, skips when maxRate = 0, preserves existing timer, timer is repeating at SecondsPerHour
     - _Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 8. Implement MinerSetupHelper.CleanupDefaultSurvey
-  - [~] 8.1 Add `CleanupDefaultSurvey` method — removes unmined resources from default survey, deletes survey if empty
+- [-] 8. Implement MinerSetupHelper.CleanupDefaultSurvey
+  - [-] 8.1 Add `CleanupDefaultSurvey` method — removes unmined resources from default survey, deletes survey if empty
     - _Requirements: 6.9_
-  - [~] 8.2 Write unit tests: removes stale resources, deletes empty default survey, preserves active resources
+  - [-] 8.2 Write unit tests: removes stale resources, deletes empty default survey, preserves active resources
     - _Validates: Requirements 6.9_
 
 - [ ] 9. Implement MinerSetupHelper.SetupMiners orchestrator

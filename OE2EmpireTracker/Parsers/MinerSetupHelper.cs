@@ -229,6 +229,57 @@ namespace OE2EmpireTracker.Parsers
         }
 
         /// <summary>
+        /// Removes resource entries from the colony's default survey that are no longer
+        /// being mined. Removes the default survey entirely if no resources remain.
+        /// </summary>
+        internal static void CleanupDefaultSurvey(
+            Colony colony, PlayerContext playerContext,
+            EmpireContext empireContext)
+        {
+            string defaultUUID = DeterministicUUID.GenerateDefaultSurvey(
+                colony.OwnerUUID, colony.PlanetName, colony.SystemName);
+
+            Survey defaultSurvey = playerContext.SurveyList
+                .FirstOrDefault(s => s.UUID == defaultUUID);
+
+            if (defaultSurvey == null)
+            {
+                return;
+            }
+
+            // Collect the set of resources actively being mined from this default survey
+            var activeResources = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var structure in colony.Structures)
+            {
+                if (!string.IsNullOrEmpty(structure.MiningSurveyResource) &&
+                    string.Equals(structure.MiningSurvey, defaultUUID, StringComparison.OrdinalIgnoreCase))
+                {
+                    activeResources.Add(structure.MiningSurveyResource);
+                }
+            }
+
+            // Remove stale resources from the default survey
+            var staleKeys = defaultSurvey.Resources.Keys
+                .Where(k => !activeResources.Contains(k))
+                .ToList();
+
+            foreach (var key in staleKeys)
+            {
+                defaultSurvey.Resources.Remove(key);
+                Log.Info("Removed stale resource {0} from default survey {1} for colony {2}",
+                    key, defaultUUID, colony.PlanetName);
+            }
+
+            // If no resources remain, remove the default survey entirely
+            if (defaultSurvey.Resources.Count == 0)
+            {
+                playerContext.SurveyList.Remove(defaultSurvey);
+                Log.Info("Removed empty default survey {0} for colony {1}",
+                    defaultUUID, colony.PlanetName);
+            }
+        }
+
+        /// <summary>
         /// Creates or updates a default survey for the colony, adding a resource entry
         /// for the given resource/purity/amount.
         /// Returns the default survey.
