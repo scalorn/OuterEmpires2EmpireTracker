@@ -280,6 +280,7 @@
     <Compile Include="Parsers\ColonyParserIdempotencyTests.cs" />
     <Compile Include="Parsers\ColonyParserMaxRateTests.cs" />
     <Compile Include="Parsers\MinerSetupHelperFindBestSurveyTests.cs" />
+    <Compile Include="Parsers\MinerSetupHelperCreateOrUpdateDefaultSurveyTests.cs" />
     <Compile Include="Models\BlueprintOutputNameTests.cs" />
     <Compile Include="Services\JsonDefaultSkipTests.cs" />
     <Compile Include="Services\BughuntDiagnosticTest.cs" />

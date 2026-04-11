@@ -1,6 +1,7 @@
 using NLog;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.Services.Migration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,6 +85,54 @@ namespace OE2EmpireTracker.Parsers
                     })
                     .First();
             }
+        }
+
+        /// <summary>
+        /// Creates or updates a default survey for the colony, adding a resource entry
+        /// for the given resource/purity/amount.
+        /// Returns the default survey.
+        /// </summary>
+        internal static Survey CreateOrUpdateDefaultSurvey(
+            Colony colony, string resourceName, string purity,
+            decimal maxRate, PlayerContext playerContext)
+        {
+            string uuid = DeterministicUUID.GenerateDefaultSurvey(
+                colony.OwnerUUID, colony.PlanetName, colony.SystemName);
+
+            string amount = maxRate > 0m ? maxRate.ToString() : "0";
+
+            // Search for existing default survey with this UUID
+            Survey defaultSurvey = playerContext.SurveyList
+                .FirstOrDefault(s => s.UUID == uuid);
+
+            if (defaultSurvey != null)
+            {
+                // Update existing: add or update the resource entry
+                defaultSurvey.Resources[resourceName] =
+                    new SurveyResource(resourceName, purity, amount);
+                Log.Info("Updated default survey {0} with resource {1} ({2}) amount={3}",
+                    uuid, resourceName, purity, amount);
+            }
+            else
+            {
+                // Create new default survey
+                defaultSurvey = new Survey("Default Survey")
+                {
+                    UUID = uuid,
+                    SurveyID = "DEFAULT",
+                    NickName = "",
+                    PlanetName = colony.PlanetName,
+                    SystemName = colony.SystemName,
+                    OwnerUUID = colony.OwnerUUID
+                };
+                defaultSurvey.Resources[resourceName] =
+                    new SurveyResource(resourceName, purity, amount);
+                playerContext.SurveyList.Add(defaultSurvey);
+                Log.Info("Created default survey {0} for colony {1} with resource {2} ({3}) amount={4}",
+                    uuid, colony.PlanetName, resourceName, purity, amount);
+            }
+
+            return defaultSurvey;
         }
     }
 }

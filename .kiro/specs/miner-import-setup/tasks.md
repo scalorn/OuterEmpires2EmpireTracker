@@ -20,17 +20,17 @@ Automate mining rig and refinery setup during colony import/reimport. Adds surve
   - [x] 2.2 Write property test: deterministic default survey UUID round-trip (same inputs → same UUID, different inputs → different UUID)
     - _Validates: Requirements 6.1_
 
-- [-] 3. Implement MinerSetupHelper.FindBestSurvey
-  - [-] 3.1 Create `MinerSetupHelper.cs` with `FindBestSurvey` method — searches real surveys by planet/resource/purity, selects closest match to maxRate (or highest amount if maxRate=0)
+- [x] 3. Implement MinerSetupHelper.FindBestSurvey
+  - [x] 3.1 Create `MinerSetupHelper.cs` with `FindBestSurvey` method — searches real surveys by planet/resource/purity, selects closest match to maxRate (or highest amount if maxRate=0)
     - Add `<Compile Include>` entry to OE2EmpireTracker.csproj
     - _Requirements: 1.1, 1.2, 1.3, 1.6_
-  - [-] 3.2 Write unit tests for FindBestSurvey: closest match, highest when maxRate=0, no match returns null, excludes default surveys
+  - [x] 3.2 Write unit tests for FindBestSurvey: closest match, highest when maxRate=0, no match returns null, excludes default surveys
     - _Validates: Requirements 1.1, 1.2, 1.3, 1.6_
 
-- [ ] 4. Implement MinerSetupHelper.CreateOrUpdateDefaultSurvey
-  - [~] 4.1 Add `CreateOrUpdateDefaultSurvey` method — creates/updates default survey with deterministic UUID, SurveyID="DEFAULT", resource from maxRate
+- [-] 4. Implement MinerSetupHelper.CreateOrUpdateDefaultSurvey
+  - [-] 4.1 Add `CreateOrUpdateDefaultSurvey` method — creates/updates default survey with deterministic UUID, SurveyID="DEFAULT", resource from maxRate
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6_
-  - [~] 4.2 Write unit tests: creates new default survey, updates existing, sets SurveyID="DEFAULT", NickName null, amount="0" when maxRate=0
+  - [-] 4.2 Write unit tests: creates new default survey, updates existing, sets SurveyID="DEFAULT", NickName null, amount="0" when maxRate=0
     - _Validates: Requirements 6.1, 6.2, 6.3, 6.4, 6.5_
 
 - [ ] 5. Implement MinerSetupHelper.AssignSurvey
