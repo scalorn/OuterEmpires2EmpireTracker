@@ -62,7 +62,7 @@ Add an in-app help system to OE2 Empire Tracker. Markdown docs live in `docs/` a
     - Add 9 `<EmbeddedResource Include="..\docs\{file}"><Link>docs\{file}</Link></EmbeddedResource>` entries to `OE2EmpireTracker/OE2EmpireTracker.csproj` for each markdown file
     - _Requirements: 3.1, 3.2_
 
-  - [~] 2.4 Write property tests for HelpRenderer
+  - [x] 2.4 Write property tests for HelpRenderer
     - Create `OE2EmpireTracker.Tests/Services/HelpRendererPropertyTests.cs`
     - **Property 1: Rendered HTML has complete document structure** — generate random non-null strings, verify output contains `<html>`, `<head>`, `<style`, `<body>`
     - **Property 4: Markdown rendering preserves content** — generate random alphanumeric words, embed in markdown, verify word appears in HTML output
@@ -70,7 +70,7 @@ Add an in-app help system to OE2 Empire Tracker. Markdown docs live in `docs/` a
     - Add `<Compile Include="Services\HelpRendererPropertyTests.cs" />` to test csproj
     - **Validates: Requirements 2.3, 7.1, 7.2, 7.4**
 
-  - [~] 2.5 Write unit tests for HelpRenderer
+  - [x] 2.5 Write unit tests for HelpRenderer
     - Create `OE2EmpireTracker.Tests/Services/HelpRendererTests.cs`
     - Test `RenderTopic` for all registered topics returns non-null (Property 3)
     - Test `RenderTopic` with unknown resource returns null

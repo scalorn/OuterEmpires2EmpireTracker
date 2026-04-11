@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "README Update Reminder",
+  "description": "After completing a spec task, reminds the agent to check if the README.md needs updating to reflect new or changed features visible to end users.",
+  "version": "1",
+  "when": {
+    "type": "postTaskExecution"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A spec task was just completed. Check if this task introduced or changed any user-facing feature, UI element, or capability. If it did, update the root README.md to reflect the change — this file is the first thing gamers see on GitHub, so it needs to accurately describe what the app does. Keep the tone gamer-friendly and focused on problems the tool solves. If the completed task was purely internal (tests, refactoring, infrastructure), no README update is needed."
+  }
+}
