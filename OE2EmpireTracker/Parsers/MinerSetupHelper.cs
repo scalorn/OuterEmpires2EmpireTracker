@@ -18,6 +18,72 @@ namespace OE2EmpireTracker.Parsers
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
+        /// Runs survey assignment and timer setup for all mining rigs in the colony.
+        /// maxRates maps structure UUID → maxRate from the game JSON.
+        /// Called after the merge loop in ParseColonyBuildingsFromJson.
+        /// </summary>
+        public static void SetupMiners(Colony colony, EmpireContext empireContext,
+            Dictionary<string, decimal> maxRates)
+        {
+            if (colony == null || empireContext == null || maxRates == null)
+            {
+                return;
+            }
+
+            PlayerContext playerContext = PlayerContext.GetInstance();
+            int surveysAssigned = 0;
+            int timersStarted = 0;
+            int warehouseResourcesCreated = 0;
+
+            foreach (var structure in colony.Structures)
+            {
+                // Identify mining rigs by non-empty MiningSurveyResource
+                if (string.IsNullOrEmpty(structure.MiningSurveyResource))
+                {
+                    continue;
+                }
+
+                decimal maxRate;
+                if (!maxRates.TryGetValue(structure.UUID, out maxRate))
+                {
+                    maxRate = 0m;
+                }
+
+                // Step a: Assign survey
+                bool assigned = AssignSurvey(structure, colony, playerContext, maxRate);
+                if (assigned)
+                {
+                    surveysAssigned++;
+
+                    // Step b: Ensure warehouse resource exists
+                    if (!string.IsNullOrEmpty(structure.MiningSurveyResource))
+                    {
+                        int itemCountBefore = colony.Items.Count();
+                        EnsureWarehouseResource(colony, structure.MiningSurveyResource, structure.RefiningResourcePurity);
+                        if (colony.Items.Count() > itemCountBefore)
+                        {
+                            warehouseResourcesCreated++;
+                        }
+                    }
+
+                    // Step c: Setup timer
+                    bool hadTimer = structure.ProcessCompletionTime != null && structure.ProcessCompletionTime.IsRepeating;
+                    SetupTimer(structure, maxRate);
+                    if (!hadTimer && structure.ProcessCompletionTime != null && structure.ProcessCompletionTime.IsRepeating)
+                    {
+                        timersStarted++;
+                    }
+                }
+            }
+
+            // Step d: Cleanup stale default survey resources
+            CleanupDefaultSurvey(colony, playerContext, empireContext);
+
+            Log.Info("SetupMiners complete for colony {0}: {1} surveys assigned, {2} timers started, {3} warehouse resources created",
+                colony.PlanetName, surveysAssigned, timersStarted, warehouseResourcesCreated);
+        }
+
+        /// <summary>
         /// Finds the best matching real survey for the given planet, resource, purity, and maxRate.
         /// Returns null if no matching real survey exists.
         /// </summary>

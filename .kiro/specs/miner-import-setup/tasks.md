@@ -51,16 +51,16 @@ Automate mining rig and refinery setup during colony import/reimport. Adds surve
   - [x] 7.2 Write unit tests: creates timer when maxRate > 0, skips when maxRate = 0, preserves existing timer, timer is repeating at SecondsPerHour
     - _Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [-] 8. Implement MinerSetupHelper.CleanupDefaultSurvey
-  - [-] 8.1 Add `CleanupDefaultSurvey` method — removes unmined resources from default survey, deletes survey if empty
+- [x] 8. Implement MinerSetupHelper.CleanupDefaultSurvey
+  - [x] 8.1 Add `CleanupDefaultSurvey` method — removes unmined resources from default survey, deletes survey if empty
     - _Requirements: 6.9_
-  - [-] 8.2 Write unit tests: removes stale resources, deletes empty default survey, preserves active resources
+  - [x] 8.2 Write unit tests: removes stale resources, deletes empty default survey, preserves active resources
     - _Validates: Requirements 6.9_
 
-- [ ] 9. Implement MinerSetupHelper.SetupMiners orchestrator
-  - [~] 9.1 Add `SetupMiners(colony, empireContext, maxRates)` method — iterates structures, identifies mining rigs, looks up maxRate from dictionary, calls AssignSurvey + EnsureWarehouseResource + SetupTimer + CleanupDefaultSurvey
+- [-] 9. Implement MinerSetupHelper.SetupMiners orchestrator
+  - [-] 9.1 Add `SetupMiners(colony, empireContext, maxRates)` method — iterates structures, identifies mining rigs, looks up maxRate from dictionary, calls AssignSurvey + EnsureWarehouseResource + SetupTimer + CleanupDefaultSurvey
     - _Requirements: 4.1, 4.2, 4.3, 5.1, 5.2, 5.3, 5.4, 5.5_
-  - [~] 9.2 Write integration test: full miner setup with real survey, default survey fallback, timer start, warehouse seeding
+  - [-] 9.2 Write integration test: full miner setup with real survey, default survey fallback, timer start, warehouse seeding
     - _Validates: Requirements 4.1, 4.2, 4.3_
 
 - [ ] 10. Implement RefinerySetupHelper
