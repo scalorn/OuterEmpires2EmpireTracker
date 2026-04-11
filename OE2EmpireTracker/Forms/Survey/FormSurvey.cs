@@ -47,9 +47,13 @@ namespace OE2EmpireTracker.Forms.Survey
             lvwSurveys.View = View.Details;
             lvwSurveys.Columns.Add("UUID", 0);
             lvwSurveys.Columns.Add("PlanetName", 100);
+            lvwSurveys.Columns.Add("SurveyID", 70);
             lvwSurveys.Columns.Add("NickName", 100);
             lvwSurveys.Columns.Add("DateTime", 100);
-            PopulateListView(viewModel.GetFilteredSurveys(null));
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
+
+            // Wire survey list filter
+            txtSurveyFilter.TextChanged += txtSurveyFilter_TextChanged;
 
             // Configure resource data grid
             DataGridViewComboBoxColumn cmbResource = (DataGridViewComboBoxColumn)dgvResources.Columns["Resource"];
@@ -96,7 +100,7 @@ namespace OE2EmpireTracker.Forms.Survey
         {
             lvwSurveys.Size = new System.Drawing.Size(
                 lvwSurveys.Size.Width,
-                flpSearchList.Size.Height - flpBlueprintSearch.Size.Height - flpBlueprintSearch.Margin.Top - flpBlueprintSearch.Margin.Bottom - flpResource.Size.Height - flpResource.Margin.Top - flpResource.Margin.Bottom - lvwSurveys.Margin.Top - lvwSurveys.Margin.Bottom);
+                flpSearchList.Size.Height - flpSurveyFilter.Size.Height - flpSurveyFilter.Margin.Top - flpSurveyFilter.Margin.Bottom - flpResource.Size.Height - flpResource.Margin.Top - flpResource.Margin.Bottom - lvwSurveys.Margin.Top - lvwSurveys.Margin.Bottom);
         }
 
         private void flpSurveyData_Layout(object sender, LayoutEventArgs e)
@@ -133,7 +137,7 @@ namespace OE2EmpireTracker.Forms.Survey
             lvwSurveys.Items.Clear();
             viewModel.Reset();
             ClearForm();
-            PopulateListView(viewModel.GetFilteredSurveys(null));
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
         }
 
         private void OnSurveyDataChanged(object sender, SurveyDataChangedEventArgs e)
@@ -149,7 +153,7 @@ namespace OE2EmpireTracker.Forms.Survey
             {
                 PopulateFormFromViewModel();
             }
-            PopulateListView(viewModel.GetFilteredSurveys(null));
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
         }
 
         private void UpdateScannerBlueprintList()
@@ -166,6 +170,7 @@ namespace OE2EmpireTracker.Forms.Survey
         {
             if (surveys == null) return;
 
+            // Track which surveys are currently in the list
             Dictionary<string, ListViewItem> viewableSurveys = new Dictionary<string, ListViewItem>();
             foreach (ListViewItem item in lvwSurveys.Items)
             {
@@ -179,12 +184,21 @@ namespace OE2EmpireTracker.Forms.Survey
                 if (!found)
                 {
                     item = new ListViewItem(survey.UUID);
+                    item.SubItems.Add(survey.PlanetName);
+                    item.SubItems.Add(survey.SurveyID);
+                    item.SubItems.Add(survey.NickName);
+                    item.SubItems.Add(survey.DateTime);
+                }
+                else
+                {
+                    // Update existing item's text in case data changed
+                    item.SubItems[1].Text = survey.PlanetName;
+                    item.SubItems[2].Text = survey.SurveyID;
+                    item.SubItems[3].Text = survey.NickName;
+                    item.SubItems[4].Text = survey.DateTime;
                 }
                 item.Tag = survey;
                 item.SubItems[0].Tag = survey;
-                item.SubItems.Add(survey.PlanetName);
-                item.SubItems.Add(survey.NickName);
-                item.SubItems.Add(survey.DateTime);
 
                 if (!found)
                 {
@@ -200,6 +214,12 @@ namespace OE2EmpireTracker.Forms.Survey
             {
                 lvwSurveys.Items.Remove(viewableSurvey.Value);
             }
+        }
+
+        private void txtSurveyFilter_TextChanged(object sender, EventArgs e)
+        {
+            lvwSurveys.Items.Clear();
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
         }
 
         private void txtPlanetName_TextChanged(object sender, EventArgs e)
@@ -285,7 +305,7 @@ namespace OE2EmpireTracker.Forms.Survey
 
             viewModel.Save();
 
-            PopulateListView(viewModel.GetFilteredSurveys(null));
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
         }
 
         private void ClearForm()
@@ -321,7 +341,7 @@ namespace OE2EmpireTracker.Forms.Survey
             if (result != DialogResult.Yes) return;
             viewModel.Delete();
             viewModel.Reset();
-            PopulateListView(viewModel.GetFilteredSurveys(null));
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
             lvwSurveys.SelectedItems.Clear();
             ClearForm();
         }
@@ -443,7 +463,7 @@ namespace OE2EmpireTracker.Forms.Survey
                 playerContext.OnSurveyDataChanged(importedSurvey.UUID);
 
                 // Refresh list view
-                PopulateListView(viewModel.GetFilteredSurveys(null));
+                PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
 
                 // Select the imported survey in the list view
                 foreach (ListViewItem item in lvwSurveys.Items)

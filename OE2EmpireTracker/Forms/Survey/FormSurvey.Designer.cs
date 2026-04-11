@@ -30,9 +30,9 @@ namespace OE2EmpireTracker.Forms.Survey
         {
             this.flpBase = new System.Windows.Forms.FlowLayoutPanel();
             this.flpSearchList = new System.Windows.Forms.FlowLayoutPanel();
-            this.flpBlueprintSearch = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblPlanetFilter = new System.Windows.Forms.Label();
-            this.txtPlanetFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.flpSurveyFilter = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblSurveyFilter = new System.Windows.Forms.Label();
+            this.txtSurveyFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpResource = new System.Windows.Forms.FlowLayoutPanel();
             this.lblResource = new System.Windows.Forms.Label();
             this.cmbResource = new System.Windows.Forms.ComboBox();
@@ -81,7 +81,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.cmdImport = new System.Windows.Forms.Button();
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
-            this.flpBlueprintSearch.SuspendLayout();
+            this.flpSurveyFilter.SuspendLayout();
             this.flpResource.SuspendLayout();
             this.flpSurveyData.SuspendLayout();
             this.flpSurveyDetails.SuspendLayout();
@@ -112,7 +112,7 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             // flpSearchList
             // 
-            this.flpSearchList.Controls.Add(this.flpBlueprintSearch);
+            this.flpSearchList.Controls.Add(this.flpSurveyFilter);
             this.flpSearchList.Controls.Add(this.flpResource);
             this.flpSearchList.Controls.Add(this.lvwSurveys);
             this.flpSearchList.Location = new System.Drawing.Point(3, 3);
@@ -120,41 +120,41 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpSearchList.Size = new System.Drawing.Size(427, 641);
             this.flpSearchList.TabIndex = 10;
             // 
-            // flpBlueprintSearch
+            // flpSurveyFilter
             // 
-            this.flpBlueprintSearch.AutoSize = true;
-            this.flpBlueprintSearch.Controls.Add(this.lblPlanetFilter);
-            this.flpBlueprintSearch.Controls.Add(this.txtPlanetFilter);
-            this.flpBlueprintSearch.Location = new System.Drawing.Point(2, 2);
-            this.flpBlueprintSearch.Margin = new System.Windows.Forms.Padding(2);
-            this.flpBlueprintSearch.Name = "flpBlueprintSearch";
-            this.flpBlueprintSearch.Size = new System.Drawing.Size(312, 26);
-            this.flpBlueprintSearch.TabIndex = 0;
+            this.flpSurveyFilter.AutoSize = true;
+            this.flpSurveyFilter.Controls.Add(this.lblSurveyFilter);
+            this.flpSurveyFilter.Controls.Add(this.txtSurveyFilter);
+            this.flpSurveyFilter.Location = new System.Drawing.Point(2, 2);
+            this.flpSurveyFilter.Margin = new System.Windows.Forms.Padding(2);
+            this.flpSurveyFilter.Name = "flpSurveyFilter";
+            this.flpSurveyFilter.Size = new System.Drawing.Size(312, 26);
+            this.flpSurveyFilter.TabIndex = 0;
             // 
-            // lblPlanetFilter
+            // lblSurveyFilter
             // 
-            this.lblPlanetFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblPlanetFilter.Location = new System.Drawing.Point(2, 4);
-            this.lblPlanetFilter.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblPlanetFilter.Name = "lblPlanetFilter";
-            this.lblPlanetFilter.Size = new System.Drawing.Size(100, 17);
-            this.lblPlanetFilter.TabIndex = 2;
-            this.lblPlanetFilter.Text = "Planet";
-            this.lblPlanetFilter.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblSurveyFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSurveyFilter.Location = new System.Drawing.Point(2, 4);
+            this.lblSurveyFilter.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblSurveyFilter.Name = "lblSurveyFilter";
+            this.lblSurveyFilter.Size = new System.Drawing.Size(100, 17);
+            this.lblSurveyFilter.TabIndex = 2;
+            this.lblSurveyFilter.Text = "Filter";
+            this.lblSurveyFilter.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // txtPlanetFilter
+            // txtSurveyFilter
             // 
-            this.txtPlanetFilter.AllowSpaces = true;
-            this.txtPlanetFilter.AutoFormat = true;
-            this.txtPlanetFilter.ErrorMessage = "";
-            this.txtPlanetFilter.InvalidColor = System.Drawing.Color.LightCoral;
-            this.txtPlanetFilter.IsValid = true;
-            this.txtPlanetFilter.Location = new System.Drawing.Point(107, 3);
-            this.txtPlanetFilter.Name = "txtPlanetFilter";
-            this.txtPlanetFilter.Size = new System.Drawing.Size(202, 20);
-            this.txtPlanetFilter.TabIndex = 0;
-            this.txtPlanetFilter.ValidationPattern = null;
-            this.txtPlanetFilter.ValidColor = System.Drawing.Color.White;
+            this.txtSurveyFilter.AllowSpaces = true;
+            this.txtSurveyFilter.AutoFormat = true;
+            this.txtSurveyFilter.ErrorMessage = "";
+            this.txtSurveyFilter.InvalidColor = System.Drawing.Color.LightCoral;
+            this.txtSurveyFilter.IsValid = true;
+            this.txtSurveyFilter.Location = new System.Drawing.Point(107, 3);
+            this.txtSurveyFilter.Name = "txtSurveyFilter";
+            this.txtSurveyFilter.Size = new System.Drawing.Size(202, 20);
+            this.txtSurveyFilter.TabIndex = 0;
+            this.txtSurveyFilter.ValidationPattern = null;
+            this.txtSurveyFilter.ValidColor = System.Drawing.Color.White;
             // 
             // flpResource
             // 
@@ -718,8 +718,8 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpBase.ResumeLayout(false);
             this.flpSearchList.ResumeLayout(false);
             this.flpSearchList.PerformLayout();
-            this.flpBlueprintSearch.ResumeLayout(false);
-            this.flpBlueprintSearch.PerformLayout();
+            this.flpSurveyFilter.ResumeLayout(false);
+            this.flpSurveyFilter.PerformLayout();
             this.flpResource.ResumeLayout(false);
             this.flpSurveyData.ResumeLayout(false);
             this.flpSurveyData.PerformLayout();
@@ -754,9 +754,9 @@ namespace OE2EmpireTracker.Forms.Survey
 
         private System.Windows.Forms.FlowLayoutPanel flpBase;
         private System.Windows.Forms.FlowLayoutPanel flpSearchList;
-        private System.Windows.Forms.FlowLayoutPanel flpBlueprintSearch;
-        private System.Windows.Forms.Label lblPlanetFilter;
-        private OE2EmpireTracker.Controls.ValidatedTextBox txtPlanetFilter;
+        private System.Windows.Forms.FlowLayoutPanel flpSurveyFilter;
+        private System.Windows.Forms.Label lblSurveyFilter;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtSurveyFilter;
         private System.Windows.Forms.FlowLayoutPanel flpResource;
         private System.Windows.Forms.Label lblResource;
         private System.Windows.Forms.ComboBox cmbResource;
