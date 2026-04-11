@@ -288,6 +288,7 @@
     <Compile Include="Services\Migration\DeterministicUUIDPropertyTests.cs" />
     <Compile Include="Services\Migration\ColonyDeterministicUUIDPropertyTests.cs" />
     <Compile Include="Services\Migration\RemapUUIDPropertyTests.cs" />
+    <Compile Include="Services\Migration\RemapUUIDColonyPropertyTests.cs" />
     <Compile Include="Services\Migration\RenameTablePropertyTests.cs" />
     <Compile Include="Services\Migration\MigrationVersionGatingPropertyTests.cs" />
     <Compile Include="Services\Migration\LegacyUUIDPropertyTests.cs" />

@@ -22,6 +22,10 @@ namespace OE2EmpireTracker.Services.Migration
                 if (bp.BaseBlueprintUUID == oldUUID)
                     bp.BaseBlueprintUUID = newUUID;
 
+            // Colony.UUID
+            foreach (var colony in pc.ColonyList)
+                if (colony.UUID == oldUUID) colony.UUID = newUUID;
+
             // ColonyStructure references (3 fields)
             foreach (var colony in pc.ColonyList)
                 foreach (var s in colony.Structures)
@@ -33,6 +37,18 @@ namespace OE2EmpireTracker.Services.Migration
                     if (s.ManufacturingBlueprintUUID == oldUUID)
                         s.ManufacturingBlueprintUUID = newUUID;
                 }
+
+            // RouteStop.ColonyUUID
+            foreach (var route in pc.DeliveryRouteList)
+                foreach (var stop in route.Stops)
+                    if (stop.ColonyUUID == oldUUID)
+                        stop.ColonyUUID = newUUID;
+
+            // DeliveryPlanStop.ColonyUUID
+            foreach (var plan in pc.DeliveryPlanList)
+                foreach (var stop in plan.Stops)
+                    if (stop.ColonyUUID == oldUUID)
+                        stop.ColonyUUID = newUUID;
         }
     }
 }

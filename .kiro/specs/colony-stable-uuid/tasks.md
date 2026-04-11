@@ -6,18 +6,18 @@ Fix structure duplication on colony reimport (stale FlatpackBlueprintUUID refere
 
 ## Tasks
 
-- [-] 1. Extend Colony model and DeterministicUUID
-  - [-] 1.1 Add `LegacyUUID` string property to Colony.cs (default null, `[DefaultValue(null)]`) matching the Blueprint pattern
+- [x] 1. Extend Colony model and DeterministicUUID
+  - [x] 1.1 Add `LegacyUUID` string property to Colony.cs (default null, `[DefaultValue(null)]`) matching the Blueprint pattern
     - _Requirements: 2.6_
-  - [~] 1.2 Add colony overloads to DeterministicUUID.cs — `Generate(Colony)` and `Generate(string ownerUUID, string planetName, string systemName)` using a separate ColonyNamespace GUID and `GenerateV5`
+  - [x] 1.2 Add colony overloads to DeterministicUUID.cs — `Generate(Colony)` and `Generate(string ownerUUID, string planetName, string systemName)` using a separate ColonyNamespace GUID and `GenerateV5`
     - _Requirements: 2.3_
-  - [~] 1.3 Write property test for deterministic colony UUID round-trip
+  - [x] 1.3 Write property test for deterministic colony UUID round-trip
     - **Property 1: Deterministic colony UUID round-trip**
     - Generate random (ownerUUID, planetName, systemName) triples, assert Generate called twice yields same value; different triples yield different UUIDs
     - **Validates: Requirements 2.3**
 
-- [ ] 2. Extend RemapUUID to walk colony references
-  - [~] 2.1 Add Colony.UUID, RouteStop.ColonyUUID, and DeliveryPlanStop.ColonyUUID walking to RemapUUID.Remap()
+- [-] 2. Extend RemapUUID to walk colony references
+  - [-] 2.1 Add Colony.UUID, RouteStop.ColonyUUID, and DeliveryPlanStop.ColonyUUID walking to RemapUUID.Remap()
     - _Requirements: 2.5_
   - [~] 2.2 Write property test for RemapUUID colony reference walking
     - **Property 3: RemapUUID walks all colony references**
