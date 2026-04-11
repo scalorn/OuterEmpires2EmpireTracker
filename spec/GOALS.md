@@ -1,5 +1,31 @@
 # OE2 Empire Tracker — Goals & Status
 
+## Open Work Dependency Graph
+
+```mermaid
+graph LR
+    subgraph Independent
+        AIM[Activity Inactivity Mode]
+        MQ[Manufacturing Queue]
+        MBI[Mass Blueprint Importer]
+        PPI[Player Profile Importer]
+    end
+
+    subgraph Ship Chain
+        SH[Ships] --> SADE[Ship-Aware Delivery]
+        SADE --> ST[Stations]
+        ST --> STD[Station Destinations in Routes]
+    end
+
+    subgraph Pricing Chain
+        PP[Pricing Plans] --> MKT[Market]
+    end
+
+    subgraph Geo Chain
+        SPM[Systems & Planets Model] --> RAS[Route Auto-Sequencing]
+    end
+```
+
 ## Specification Documents
 
 - [Requirements README](requirements/README.md) — index of all 15 requirement files

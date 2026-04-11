@@ -1,5 +1,26 @@
 # Background Processing Requirements
 
+## Processing Cycle Flowchart
+
+```mermaid
+flowchart TD
+    A[Timer fires every 60s] --> B{Acquire _cycleLock}
+    B -->|locked| B
+    B -->|acquired| C[Find colonies with expired timers]
+    C --> D{Any colonies?}
+    D -->|no| H[Release lock]
+    D -->|yes| E[ProcessColony for each colony]
+    E --> F[Fire ColonyDataChanged events]
+    F --> G[writeContext to persist]
+    G --> H
+    H --> I[LastCycleHadError = false]
+
+    E -->|exception| ERR[Log error]
+    ERR --> J[LastCycleHadError = true]
+    J --> H2[Release lock]
+    H2 --> K[Timer continues — not stopped]
+```
+
 ## Timer Architecture
 
 **REQ-BP-001** The application SHALL run a background processing timer that fires every 60 seconds (`BackgroundProcessor.TickIntervalMs = 60000`).

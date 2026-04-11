@@ -1,5 +1,23 @@
 # Delivery & Route Requirements
 
+## Delivery Planning Flow
+
+```mermaid
+flowchart TD
+    A[Create Route — ordered stops] --> B[Create Plan for route]
+    B --> C[Add items per stop manually]
+    C --> D[Auto-Fill options]
+    D --> D1[Commodities — from unfulfilled requests]
+    D --> D2[Workers — from ideal vs actual gaps]
+    D --> D3[Resources — from manufacturing needs]
+    D --> D4[Flatpacks — from staged structures]
+    D1 & D2 & D3 & D4 --> E[Execute — checkbox per item per stop]
+    E --> F{Item delivered?}
+    F -->|commodity| G[Update CommodityRequested on colony]
+    F -->|flatpack| H[Mark structure as Staged]
+    F -->|all done| I[Mark plan Completed]
+```
+
 ## Background
 
 Deliveries move items between colonies and a central hub (space station, deferred). Types of deliveries:

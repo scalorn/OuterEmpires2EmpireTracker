@@ -1,5 +1,26 @@
 # Colony Requirements
 
+## Structure Lifecycle
+
+```mermaid
+stateDiagram-v2
+    [*] --> Staged : Flatpack delivered
+    Staged --> Building : Build started (timer)
+    Building --> Built : Timer expires (86400s base)
+    Built --> Online : Set online
+
+    state "Worker Assignment" as WA {
+        [*] --> Unassigned
+        Unassigned --> Assigned : Assign worker
+        Assigned --> Unassigned : Unassign worker
+    }
+
+    note right of Online : Resources only counted\nwhen Online
+    note right of Staged : Background color: Yellow
+    note right of Built : Background color: PaleVioletRed (offline)
+    note right of Online : Background color: Green
+```
+
 ## Colony Data
 
 **REQ-COL-001** A Colony SHALL have a UUID, PlanetName, ColonyName, an ItemBag, a list of ColonyStructures, and a list of CommodityRequested.  

@@ -1,5 +1,26 @@
 # Colony Import Requirements
 
+## Import Flow
+
+```mermaid
+flowchart TD
+    A[Clipboard HTML] --> B[ExtractFragment via markers]
+    B --> C[SGML → well-formed XML]
+    C --> D[ParseColonyBuildings from JSON in HTML]
+    C --> E[BuildFlatpackLookup from blueprint list]
+    D --> F[Parse structures: UUID, state, workers, timers]
+    E --> F
+    F --> G[Assign displaySequence per blueprint type]
+    G --> H{For each structure}
+    H --> I{UUID exists in colony?}
+    I -->|yes| J[Update existing structure]
+    I -->|no| K[Add new structure]
+    J --> H
+    K --> H
+    H -->|done| L[MinerSetup — assign surveys to mining rigs]
+    L --> M[RefinerySetup — configure refineries]
+```
+
 ## HTML Clipboard Import
 
 **REQ-CI-001** The colony form SHALL provide an "Import Clipboard" button that reads HTML from the system clipboard and parses it into the selected colony.

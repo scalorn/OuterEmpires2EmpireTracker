@@ -1,5 +1,39 @@
 # Architecture Requirements
 
+## Layered Architecture Overview
+
+```mermaid
+flowchart TD
+    subgraph UI["Forms (UI)"]
+        F[WinForms]
+    end
+    subgraph VM["ViewModels"]
+        V[Typed properties & commands]
+    end
+    subgraph SVC["Services (Domain Logic)"]
+        S[Calculators, Processors, Eligibility]
+    end
+    subgraph MDL["Models (POCOs)"]
+        M[Colony, Blueprint, Survey, Item, etc.]
+    end
+
+    F --> V --> S --> M
+
+    P[Parsers] -->|HTML import| M
+    PS[Persistence] -->|file I/O| M
+
+    subgraph Singletons
+        EC[EmpireContext]
+        PC[PlayerContext]
+    end
+
+    EC -->|shared game data| M
+    PC -->|player data + save| M
+    S --> EC
+    S --> PC
+    V --> PC
+```
+
 ## Persistence
 
 **REQ-ARCH-001** All player data (profiles, blueprints, surveys, colonies) SHALL be persisted to a single JSON file via PlayerContext.writeContext().  

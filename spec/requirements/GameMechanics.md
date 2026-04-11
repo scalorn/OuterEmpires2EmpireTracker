@@ -1,5 +1,27 @@
 # Game Mechanics Requirements
 
+## Colony Processing Order
+
+```mermaid
+flowchart TD
+    A[1. Structure Building] -->|structures become Built| B[2. Mining]
+    B -->|raw resources added to warehouse| C[3. Refining Base Resources]
+    C -->|refined resources produced| D[4. Refining S1 Synthetics]
+    D -->|S1 synthetics produced| E[5. Refining S2 Synthetics]
+    E -->|S2 synthetics produced| F[6. Manufacturing]
+    F -->|items produced, resources consumed| G[7. Research]
+
+    style A fill:#e6f3ff
+    style B fill:#fff3e6
+    style C fill:#e6ffe6
+    style D fill:#e6ffe6
+    style E fill:#e6ffe6
+    style F fill:#ffe6e6
+    style G fill:#f3e6ff
+```
+
+Each step's output feeds the next step's input within the same cycle.
+
 ## Mining
 
 **REQ-GM-001** Mining rigs produce resources once per hour (3600-second repeating timer).
