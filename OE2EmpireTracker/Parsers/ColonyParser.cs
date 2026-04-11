@@ -209,11 +209,17 @@ namespace OE2EmpireTracker.Parsers
 
                 // === First pass: parse all buildings into a list ===
                 var parsedBuildings = new List<ColonyStructure>();
+                var parsedMaxRates = new Dictionary<int, decimal>(); // index → maxRate
+                int parsedIndex = 0;
                 foreach (var building in buildings)
                 {
-                    var parsed = ParseBuilding(building, flatpackLookup);
+                    var parsed = ParseBuilding(building, flatpackLookup, out decimal maxRate);
                     if (parsed != null)
+                    {
+                        parsedMaxRates[parsedBuildings.Count] = maxRate;
                         parsedBuildings.Add(parsed);
+                    }
+                    parsedIndex++;
                 }
 
                 // Assign displaySequence per FlatpackBlueprintUUID type
@@ -294,7 +300,9 @@ namespace OE2EmpireTracker.Parsers
                 var commodityPositionCounters = new Dictionary<string, int>(StringComparer.Ordinal);
 
                 // === Second pass: merge parsed buildings into existing structures ===
+                var maxRates = new Dictionary<string, decimal>();
                 int added = 0, updated = 0;
+                int mergeIndex = 0;
                 foreach (var parsed in parsedBuildings)
                 {
                     ColonyStructure existing = null;
@@ -325,13 +333,20 @@ namespace OE2EmpireTracker.Parsers
                     if (existing != null)
                     {
                         MergeStructure(existing, parsed);
+                        // Collect maxRate keyed by the merged structure's UUID
+                        if (parsedMaxRates.TryGetValue(mergeIndex, out decimal mr) && mr > 0m)
+                            maxRates[existing.UUID] = mr;
                         updated++;
                     }
                     else
                     {
                         colony.Structures.Add(parsed);
+                        // Collect maxRate keyed by the new structure's UUID
+                        if (parsedMaxRates.TryGetValue(mergeIndex, out decimal mr) && mr > 0m)
+                            maxRates[parsed.UUID] = mr;
                         added++;
                     }
+                    mergeIndex++;
                 }
 
                 Log.Info("Colony structures merge: {0} updated, {1} added (total: {2})",
@@ -436,9 +451,12 @@ namespace OE2EmpireTracker.Parsers
 
         /// <summary>
         /// Parses a single building JSON object into a ColonyStructure.
+        /// The out parameter maxRate receives the building's maxRate from the game JSON (0 if absent).
         /// </summary>
-        internal static ColonyStructure ParseBuilding(JToken building, Dictionary<string, string> flatpackLookup)
+        internal static ColonyStructure ParseBuilding(JToken building, Dictionary<string, string> flatpackLookup, out decimal maxRate)
         {
+            maxRate = building["maxRate"]?.Value<decimal>() ?? 0m;
+
             string designName = building["blueprintDesignName"]?.ToString();
             if (string.IsNullOrEmpty(designName)) return null;
 
