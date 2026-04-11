@@ -21,7 +21,7 @@ Add an in-app help system to OE2 Empire Tracker. Markdown docs live in `docs/` a
     - Add `<Compile Include="Services\HelpTopicRegistry.cs" />` to the csproj
     - _Requirements: 6.3, 6.4, 1.3_
 
-  - [-] 1.3 Write property test for HelpTopicRegistry
+  - [x] 1.3 Write property test for HelpTopicRegistry
     - **Property 2: Topic registry returns correct mapping or fallback**
     - Create `OE2EmpireTracker.Tests/Services/HelpTopicRegistryPropertyTests.cs`
     - Generate random strings with FsCheck; verify mapped types return correct file, all others return `"README.md"`
@@ -29,7 +29,7 @@ Add an in-app help system to OE2 Empire Tracker. Markdown docs live in `docs/` a
     - Add `<Compile Include="Services\HelpTopicRegistryPropertyTests.cs" />` to test csproj
     - **Validates: Requirements 6.3, 6.4**
 
-  - [~] 1.4 Write unit tests for HelpTopicRegistry
+  - [x] 1.4 Write unit tests for HelpTopicRegistry
     - Create `OE2EmpireTracker.Tests/Services/HelpTopicRegistryTests.cs`
     - Test `GetAllTopics` returns 9 topics with correct filenames
     - Test `GetTopicForForm` for each of the 9 specific form-type mappings
