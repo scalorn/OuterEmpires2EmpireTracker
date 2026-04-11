@@ -65,6 +65,10 @@ Press **F1** on any form for context-sensitive help, or use **Help → Contents*
 - [Background Processing](docs/background-processing.md)
 - [Window State](docs/window-state.md)
 
+## About
+
+Built by a developer who's been writing code since getting a Commodore Vic-20 with 5K of RAM at age 8. I'm a coder, not a designer — so yeah, it's not going to win any beauty contests. But it works, and it solves real problems I kept running into while managing my own empire. If you play OE2 and you're tired of spreadsheet hell, hopefully you'll find it useful too.
+
 ## Requirements
 
 - Windows 10 or later

@@ -13,6 +13,10 @@ Welcome to the OE2 Empire Tracker documentation. This application helps you mana
 - [Background Processing](background-processing.md) — Automatic timer processing and status bar indicators
 - [Window State](window-state.md) — Window position persistence and MDI layout options
 
+## About
+
+OE2 Empire Tracker is a personal project built by a long-time developer to scratch a real itch — managing a growing OE2 empire without drowning in spreadsheets. It's function over form (the developer freely admits UI design is not their forte), but it gets the job done. If it helps you too, that's a win.
+
 ## Quick Tips
 
 - Use **F1** at any time to open context-sensitive help for the form you are currently viewing.
