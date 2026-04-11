@@ -351,6 +351,9 @@ namespace OE2EmpireTracker.Parsers
 
                 Log.Info("Colony structures merge: {0} updated, {1} added (total: {2})",
                     updated, added, colony.Structures.Count);
+
+                MinerSetupHelper.SetupMiners(colony, empireContext, maxRates);
+                RefinerySetupHelper.SetupRefineries(colony, empireContext);
             }
             catch (Exception ex)
             {

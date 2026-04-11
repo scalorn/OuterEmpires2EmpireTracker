@@ -63,15 +63,15 @@ Automate mining rig and refinery setup during colony import/reimport. Adds surve
   - [x] 9.2 Write integration test: full miner setup with real survey, default survey fallback, timer start, warehouse seeding
     - _Validates: Requirements 4.1, 4.2, 4.3_
 
-- [-] 10. Implement RefinerySetupHelper
-  - [-] 10.1 Create `RefinerySetupHelper.cs` with `SetupRefineries` method — iterates refineries, ensures warehouse resource, starts timer
+- [x] 10. Implement RefinerySetupHelper
+  - [x] 10.1 Create `RefinerySetupHelper.cs` with `SetupRefineries` method — iterates refineries, ensures warehouse resource, starts timer
     - Add `<Compile Include>` entry to OE2EmpireTracker.csproj
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
-  - [-] 10.2 Write unit tests: ensures warehouse resource for refinery, starts timer, preserves existing timer, skips if not built/online
+  - [x] 10.2 Write unit tests: ensures warehouse resource for refinery, starts timer, preserves existing timer, skips if not built/online
     - _Validates: Requirements 8.1, 8.2, 8.3, 8.4, 8.5_
 
-- [ ] 11. Wire up helpers in ParseColonyBuildingsFromJson
-  - [~] 11.1 Add calls to `MinerSetupHelper.SetupMiners(colony, empireContext, maxRates)` and `RefinerySetupHelper.SetupRefineries(colony, empireContext)` after the merge loop in `ParseColonyBuildingsFromJson`
+- [x] 11. Wire up helpers in ParseColonyBuildingsFromJson
+  - [x] 11.1 Add calls to `MinerSetupHelper.SetupMiners(colony, empireContext, maxRates)` and `RefinerySetupHelper.SetupRefineries(colony, empireContext)` after the merge loop in `ParseColonyBuildingsFromJson`
     - _Requirements: 4.3, 8.5_
 
 - [ ] 12. Update csproj files and verify build
