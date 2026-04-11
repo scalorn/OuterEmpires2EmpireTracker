@@ -246,6 +246,7 @@
     <Compile Include="Parsers\SurveyParserTests.cs" />
     <Compile Include="Parsers\SurveyParserIdempotencyTests.cs" />
     <Compile Include="Parsers\PlayerProfileParserPropertyTests.cs" />
+    <Compile Include="Parsers\PlayerProfileParserTests.cs" />
     <Compile Include="Constants\BlueprintPropertyValidationTests.cs" />
     <Compile Include="Constants\BlueprintTypeExtensionTests.cs" />
     <Compile Include="Constants\BlueprintTypeExtensionPropertyTests.cs" />
@@ -424,6 +425,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestData\IndivudalBPAssetTabWSMS-LL6Resources.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\PlayerProfileScalorn.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

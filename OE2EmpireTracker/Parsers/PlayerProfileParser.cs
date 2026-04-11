@@ -148,6 +148,7 @@ namespace OE2EmpireTracker.Parsers
                         profile.CitizenId = value;
                         break;
                     case "Registration Date":
+                    case "Reg. Date":
                         profile.RegistrationDate = value;
                         break;
                     case "Active Time":
@@ -286,8 +287,15 @@ namespace OE2EmpireTracker.Parsers
                 var nameNode = group.SelectSingleNode(".//div[contains(@class,'Profile_Skill_Group_Name')]");
                 if (nameNode == null) continue;
 
-                string displayName = NormalizeWhitespace(nameNode.InnerText);
-                if (string.IsNullOrEmpty(displayName)) continue;
+                string rawText = NormalizeWhitespace(nameNode.InnerText);
+                if (string.IsNullOrEmpty(rawText)) continue;
+
+                // The group name div may contain trailing "..." and "Unlock for NNsp" text.
+                // Strip everything from the first "..." onward to get the clean group name.
+                string displayName = rawText;
+                int ellipsisIdx = displayName.IndexOf("...");
+                if (ellipsisIdx > 0)
+                    displayName = displayName.Substring(0, ellipsisIdx).Trim();
 
                 if (!groupLookup.TryGetValue(displayName, out SkillGroupName enumValue))
                 {
@@ -339,18 +347,22 @@ namespace OE2EmpireTracker.Parsers
 
                     var skill = profile.GetSkill(enumValue);
 
-                    // Level = count of completed level boxes
-                    var completedBoxes = skillNode.SelectNodes(".//div[contains(@class,'Profile_Skill_Group_Skills_Skill_Level_Box_Complete')]");
+                    // Level = count of completed level boxes (these are <td> elements in the HTML)
+                    var completedBoxes = skillNode.SelectNodes(".//*[contains(@class,'Profile_Skill_Group_Skills_Skill_Level_Box_Complete')]");
                     skill.Level = completedBoxes?.Count ?? 0;
 
-                    // Training in progress = presence of training box
-                    var trainingBox = skillNode.SelectSingleNode(".//div[contains(@class,'Profile_Skill_Group_Skills_Skill_Level_Box_Training')]");
+                    // Training in progress = presence of training box (also a <td> element)
+                    var trainingBox = skillNode.SelectSingleNode(".//*[contains(@class,'Profile_Skill_Group_Skills_Skill_Level_Box_Training')]");
                     skill.TrainingStarted = trainingBox != null;
 
                     // Training time remaining
                     if (skill.TrainingStarted)
                     {
-                        var timeNode = skillNode.SelectSingleNode(".//div[contains(@class,'Profile_Skill_Group_Skills_Skill_Level_Training_Description')]");
+                        // The training time is in a div whose class is exactly
+                        // "Profile_Skill_Group_Skills_Skill_Level_Training" (no suffix).
+                        // Use concat trick to avoid matching _Container, _Bar, _Description.
+                        var timeNode = skillNode.SelectSingleNode(
+                            ".//*[contains(concat(' ',@class,' '),' Profile_Skill_Group_Skills_Skill_Level_Training ')]");
                         if (timeNode != null)
                         {
                             string timeText = NormalizeWhitespace(timeNode.InnerText);

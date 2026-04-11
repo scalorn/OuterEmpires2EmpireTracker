@@ -56,25 +56,25 @@ Implement a clipboard-based HTML parser for importing player profile data from t
 - [x] 5. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [-] 6. Add Import button and form integration
-  - [-] 6.1 Add cmdImport button to FormPlayerProfile.Designer.cs in the flpCommands panel (before cmdNew)
+- [x] 6. Add Import button and form integration
+  - [x] 6.1 Add cmdImport button to FormPlayerProfile.Designer.cs in the flpCommands panel (before cmdNew)
     - _Requirements: 8.1_
-  - [~] 6.2 Implement cmdImport_Click handler in FormPlayerProfile.cs — read clipboard, invoke PlayerProfileParser, match existing profile by name (case-insensitive) or create new with generated UUID, refresh form and list view, show MessageBox on error or missing clipboard data
+  - [x] 6.2 Implement cmdImport_Click handler in FormPlayerProfile.cs — read clipboard, invoke PlayerProfileParser, match existing profile by name (case-insensitive) or create new with generated UUID, refresh form and list view, show MessageBox on error or missing clipboard data
     - _Requirements: 7.1, 7.2, 7.3, 8.2, 8.3, 8.4_
-  - [~] 6.3 Write property test for profile update by case-insensitive name match
+  - [x] 6.3 Write property test for profile update by case-insensitive name match
     - **Property 4: Profile update by case-insensitive name match**
     - Generate profile lists and a parsed profile with matching name (case-shuffled), assert UUID preserved and data updated
     - **Validates: Requirements 7.1, 7.3**
-  - [~] 6.4 Write property test for profile creation when no name match exists
+  - [x] 6.4 Write property test for profile creation when no name match exists
     - **Property 5: Profile creation when no name match exists**
     - Generate profile lists and a parsed profile with unique name, assert list grows by one with non-empty UUID
     - **Validates: Requirements 7.2**
 
-- [ ] 7. Unit tests for PlayerProfileParser
-  - [~] 7.1 Create OE2EmpireTracker.Tests/Parsers/PlayerProfileParserTests.cs with integration tests against PlayerProfileScalorn.html — assert name, faction, credits, all three ranks (level, title, currentXP, nextXP), skill points, skill group states, individual skill levels, training status, CitizenId, RegistrationDate, ActiveTime
+- [-] 7. Unit tests for PlayerProfileParser
+  - [x] 7.1 Create OE2EmpireTracker.Tests/Parsers/PlayerProfileParserTests.cs with integration tests against PlayerProfileScalorn.html — assert name, faction, credits, all three ranks (level, title, currentXP, nextXP), skill points, skill group states, individual skill levels, training status, CitizenId, RegistrationDate, ActiveTime
     - Add `<Compile Include>` and `<Content Include>` entries to test csproj
     - _Requirements: 1.1, 1.2, 2.1, 3.1, 3.2, 3.3, 4.1, 5.1, 5.2, 5.3, 6.1, 6.2, 6.3, 9.1, 9.2, 9.3, 9.4, 9.5, 9.6_
-  - [~] 7.2 Add edge case tests — empty HTML, missing ui_character_detail, missing rank sections, malformed numbers, unknown skill names
+  - [x] 7.2 Add edge case tests — empty HTML, missing ui_character_detail, missing rank sections, malformed numbers, unknown skill names
     - _Requirements: 1.3, 2.2, 3.4, 4.2, 6.5_
 
 - [ ] 8. Update csproj files and final wiring
