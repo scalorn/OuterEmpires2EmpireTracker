@@ -234,6 +234,11 @@ With the dedup key changed from ColonyName to PlanetName+SystemName, the duplica
 **Dependencies:** None
 **Status: Complete** — All 28 camelCase public fields renamed to PascalCase across 41 files. See AMB-045.
 
+### BL-045: GitHub MCP Integration
+**Dependencies:** None (blocked by Docker installation issues)
+
+Set up the GitHub MCP server so Kiro can read/write GitHub issues, PRs, and wiki pages directly. Enables intake of external issues, PR review, and maintaining user documentation in the repo wiki. Requires Docker Desktop (or the standalone Go binary from github/github-mcp-server releases) plus a fine-grained GitHub Personal Access Token scoped to the repo with Issues, Pull Requests, Contents, and Metadata permissions. Configuration goes in `.kiro/settings/mcp.json`. Currently blocked — Docker won't install on the dev machine. Revisit when Docker is available or try the standalone binary approach.
+
 
 ---
 
