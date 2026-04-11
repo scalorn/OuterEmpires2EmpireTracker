@@ -1,5 +1,5 @@
 {
-  "DataVersion": 1,
+  "DataVersion": 2,
   "CurrentPlayerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
   "PlayerProfile": [
     {
@@ -7,162 +7,171 @@
       "Name": "Naibus",
       "Faction": "",
       "TotalCredits": 123.0,
-      "Public": {},
-      "Private": {},
-      "Military": {},
+      "Public": {
+        "Title": ""
+      },
+      "Private": {
+        "Title": ""
+      },
+      "Military": {
+        "Title": ""
+      },
+      "CitizenId": "",
+      "RegistrationDate": "",
+      "ActiveTime": "",
       "Skills": {
         "Human Resources": {
           "TrainingStarted": true,
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9708183-07:00",
-            "EndTime": "2026-04-11T00:27:04.9708183-07:00",
-            "TimeRemainingString": "20h 35m 32s"
+            "StartTime": "2026-04-11T04:58:08.892589-07:00",
+            "EndTime": "2026-04-12T01:33:40.892589-07:00",
+            "TimeRemainingString": "20h 35m 31s"
           }
         },
         "Foreman": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Founder": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Energy Efficiency": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Builder": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Refining Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Production Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Extraction Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Damage Control": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Engineering Capacity": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Sounds As A Pound": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Self Made Millionaire": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "AAA Healthcare": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Job Opportunities": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Contract Management": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Research Review": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Research Methods": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Research Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Surveying Methods": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Scanning Methods": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Quartermaster": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Broker": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         }
@@ -172,161 +181,170 @@
       "UUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "Name": "Scalorn",
       "Faction": "",
-      "Public": {},
-      "Private": {},
-      "Military": {},
+      "Public": {
+        "Title": ""
+      },
+      "Private": {
+        "Title": ""
+      },
+      "Military": {
+        "Title": ""
+      },
+      "CitizenId": "",
+      "RegistrationDate": "",
+      "ActiveTime": "",
       "Skills": {
         "Human Resources": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Foreman": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Founder": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Energy Efficiency": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Builder": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Refining Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Production Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Extraction Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Damage Control": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Engineering Capacity": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Sounds As A Pound": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Self Made Millionaire": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "AAA Healthcare": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Job Opportunities": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Contract Management": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Research Review": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Research Methods": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Research Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9718176-07:00",
-            "EndTime": "2026-04-10T03:51:31.9718176-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Surveying Methods": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9728181-07:00",
-            "EndTime": "2026-04-10T03:51:31.9728181-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Scanning Methods": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9728181-07:00",
-            "EndTime": "2026-04-10T03:51:31.9728181-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Quartermaster": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9728181-07:00",
-            "EndTime": "2026-04-10T03:51:31.9728181-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Broker": {
           "CompletionTime": {
-            "StartTime": "2026-04-10T03:51:31.9728181-07:00",
-            "EndTime": "2026-04-10T03:51:31.9728181-07:00",
+            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
+            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
             "TimeRemainingString": "0s"
           }
         }
@@ -337,8 +355,9 @@
   "Survey": [],
   "Colony": [
     {
-      "UUID": "cc4d922c-080d-46bf-90f7-f4b2d839e682",
+      "UUID": "98ec2a33-5fbc-5d03-8eb1-d5b8edd77e2e",
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
+      "LegacyUUID": "cc4d922c-080d-46bf-90f7-f4b2d839e682",
       "PlanetName": "Alef Wynthoril I",
       "SystemName": "Alef Wynthoril",
       "ColonyName": "Alef Wynthoril I",
@@ -510,7 +529,8 @@
           "AssignedWorkers": {
             "UnassignedSpecialistDetail": "True",
             "WhiteCollar1": "False"
-          }
+          },
+          "CurrentAttitude": ""
         },
         {
           "UUID": "6197bde5-4c64-4568-ad6a-048def276fa2",
@@ -523,7 +543,8 @@
           },
           "AssignedWorkers": {
             "UnassignedSpecialistDetail": "True"
-          }
+          },
+          "CurrentAttitude": ""
         },
         {
           "UUID": "f88224de-fa7e-4622-a859-861057bbba7f",
@@ -536,7 +557,8 @@
           },
           "AssignedWorkers": {
             "UnassignedSpecialistDetail": "True"
-          }
+          },
+          "CurrentAttitude": ""
         },
         {
           "UUID": "a729571f-958d-4d86-9168-1bc18fdadf83",
@@ -550,7 +572,8 @@
           "AssignedWorkers": {
             "UnassignedSpecialistDetail": "True",
             "BlueCollar1": "True"
-          }
+          },
+          "CurrentAttitude": ""
         },
         {
           "UUID": "36375398-3c12-4584-8380-684807d0b647",
@@ -564,7 +587,8 @@
           "AssignedWorkers": {
             "UnassignedSpecialistDetail": "True",
             "BlueCollar1": "False"
-          }
+          },
+          "CurrentAttitude": ""
         },
         {
           "UUID": "003da7af-1df5-47ca-aa39-0d53b8827231",
@@ -578,7 +602,8 @@
           "AssignedWorkers": {
             "UnassignedWhiteCollarDetail": "True",
             "Specialist1": "False"
-          }
+          },
+          "CurrentAttitude": ""
         },
         {
           "UUID": "01aa6788-1627-4669-a212-f86b90e5d423",
@@ -589,7 +614,8 @@
             "Online": "False",
             "Staged": "False"
           },
-          "AssignedWorkers": {}
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
         },
         {
           "UUID": "5108b895-c0d6-406f-ba90-4499962ff044",
@@ -621,7 +647,8 @@
           "AssignedWorkers": {
             "UnassignedWhiteCollarDetail": "True",
             "BlueCollar1": "False"
-          }
+          },
+          "CurrentAttitude": ""
         },
         {
           "UUID": "2c2670b5-b7aa-4caf-b657-53adc92dc3f7",
@@ -646,15 +673,16 @@
             "UnassignedSpecialistDetail": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-04-10T01:51:34.0064124-07:00",
-            "EndTime": "2026-04-10T14:51:34.0064124-07:00",
+            "StartTime": "2026-04-11T02:58:09.9305966-07:00",
+            "EndTime": "2026-04-11T15:58:09.9305966-07:00",
             "RepeatIntervalSeconds": 46800,
             "IsRepeating": true,
-            "TimeRemainingString": "11h 0m 1s"
+            "TimeRemainingString": "11h 0m 0s"
           },
           "ManufacturingBlueprintUUID": "38991c2f-7c2c-5c6f-b121-63ee03fa3fec",
           "ManufacturingQuantity": 3,
-          "ManufacturingCompleted": 1
+          "ManufacturingCompleted": 1,
+          "CurrentAttitude": ""
         },
         {
           "UUID": "f6c661d8-7738-49dd-89c6-d05d4e0298c0",
@@ -677,7 +705,8 @@
             "UnassignedWhiteCollarDetail": "True",
             "BlueCollar1": "False",
             "UnassignedSpecialistDetail": "True"
-          }
+          },
+          "CurrentAttitude": ""
         },
         {
           "UUID": "b13934e5-d8b5-4404-9ca4-565aa55f5fc1",
@@ -732,7 +761,8 @@
             "BlueCollar1": "False"
           },
           "MiningSurveyResource": "",
-          "MiningLeftOvers": 4.1
+          "MiningLeftOvers": 4.1,
+          "CurrentAttitude": ""
         },
         {
           "UUID": "9bfa1b7a-324d-413d-a8df-8c1f4fea199c",
@@ -745,7 +775,8 @@
           },
           "AssignedWorkers": {
             "Specialist1": "False"
-          }
+          },
+          "CurrentAttitude": ""
         }
       ],
       "Commodities": [
@@ -809,8 +840,9 @@
       }
     },
     {
-      "UUID": "a94b0eef-267d-4a30-9e92-7ac1f07f667c",
+      "UUID": "cc6c75de-d8f6-51f3-9558-c9e9a2bb34e5",
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
+      "LegacyUUID": "a94b0eef-267d-4a30-9e92-7ac1f07f667c",
       "PlanetName": "Alef Wynthoril Ib",
       "SystemName": "Alef Wynthoril",
       "ColonyName": "CommodityTest",
@@ -915,7 +947,8 @@
           "AssignedWorkers": {
             "UnassignedSpecialistDetail": "True",
             "WhiteCollar1": "False"
-          }
+          },
+          "CurrentAttitude": ""
         },
         {
           "UUID": "fc0687eb-4fb0-4c13-9d68-65b36aa27b2b",
@@ -977,7 +1010,8 @@
           "AssignedWorkers": {
             "UnassignedWhiteCollarDetail": "True",
             "Specialist1": "True"
-          }
+          },
+          "CurrentAttitude": ""
         },
         {
           "UUID": "dabcdfed-8148-4a64-90f4-d856c9df8fad",
@@ -1026,7 +1060,8 @@
           "AssignedWorkers": {
             "UnassignedWhiteCollarDetail": "True",
             "BlueCollar1": "True"
-          }
+          },
+          "CurrentAttitude": ""
         },
         {
           "UUID": "1eb394cd-df4f-4059-a98a-43dfd63df237",
@@ -1075,11 +1110,11 @@
             "BlueCollar1": "False"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-04-10T03:41:00.0179313-07:00",
-            "EndTime": "2026-04-10T04:41:00.0179313-07:00",
+            "StartTime": "2026-04-11T04:47:35.9446002-07:00",
+            "EndTime": "2026-04-11T05:47:35.9446002-07:00",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true,
-            "TimeRemainingString": "49m 27s"
+            "TimeRemainingString": "49m 26s"
           },
           "MiningSurvey": "a7467233-de2e-4fb5-a29c-92b35490e76d",
           "MiningSurveyResource": "Heavy Post-Trans Metals",
@@ -1105,9 +1140,9 @@
           },
           "AssignedWorkers": {},
           "BuildCompletionTime": {
-            "StartTime": "2026-04-10T03:51:32.0179313-07:00",
-            "EndTime": "2026-04-11T03:22:45.0179313-07:00",
-            "TimeRemainingString": "23h 31m 12s"
+            "StartTime": "2026-04-11T04:58:08.9446002-07:00",
+            "EndTime": "2026-04-12T04:29:20.9446002-07:00",
+            "TimeRemainingString": "23h 31m 11s"
           },
           "CurrentAttitude": ""
         }
@@ -1142,8 +1177,9 @@
       }
     },
     {
-      "UUID": "bc9a835b-4cd5-463f-a480-59cfe294d94d",
+      "UUID": "d36ff352-74ad-5bd2-af7d-b186270e7196",
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
+      "LegacyUUID": "bc9a835b-4cd5-463f-a480-59cfe294d94d",
       "PlanetName": "Quogar V2249 II",
       "SystemName": "",
       "ColonyName": "Quogar V2249 II",
@@ -2196,8 +2232,9 @@
       }
     },
     {
-      "UUID": "3c43fd2b-ee86-439e-b33d-66e4bd482f14",
+      "UUID": "14729ce3-eebc-5090-b90b-fdc7dd1eb442",
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
+      "LegacyUUID": "3c43fd2b-ee86-439e-b33d-66e4bd482f14",
       "PlanetName": "Zeh Vazoran II M2",
       "SystemName": "Zeh Vazoran",
       "ColonyName": "Zeh Vazoran II M2",
@@ -3482,14 +3519,14 @@
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "Stops": [
         {
-          "ColonyUUID": "cc4d922c-080d-46bf-90f7-f4b2d839e682"
+          "ColonyUUID": "98ec2a33-5fbc-5d03-8eb1-d5b8edd77e2e"
         },
         {
-          "ColonyUUID": "bc9a835b-4cd5-463f-a480-59cfe294d94d",
+          "ColonyUUID": "d36ff352-74ad-5bd2-af7d-b186270e7196",
           "Sequence": 1
         },
         {
-          "ColonyUUID": "a94b0eef-267d-4a30-9e92-7ac1f07f667c",
+          "ColonyUUID": "cc6c75de-d8f6-51f3-9558-c9e9a2bb34e5",
           "Sequence": 2
         }
       ]
@@ -3500,14 +3537,14 @@
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "Stops": [
         {
-          "ColonyUUID": "cc4d922c-080d-46bf-90f7-f4b2d839e682"
+          "ColonyUUID": "98ec2a33-5fbc-5d03-8eb1-d5b8edd77e2e"
         },
         {
-          "ColonyUUID": "a94b0eef-267d-4a30-9e92-7ac1f07f667c",
+          "ColonyUUID": "cc6c75de-d8f6-51f3-9558-c9e9a2bb34e5",
           "Sequence": 1
         },
         {
-          "ColonyUUID": "bc9a835b-4cd5-463f-a480-59cfe294d94d",
+          "ColonyUUID": "d36ff352-74ad-5bd2-af7d-b186270e7196",
           "Sequence": 2
         }
       ]
