@@ -14,6 +14,10 @@ namespace OE2EmpireTracker.Services.Migration
         private static readonly Guid ColonyNamespace =
             new Guid("a1b2c3d4-e5f6-7890-abcd-ef1234567890");
 
+        // Separate namespace for default survey UUIDs
+        private static readonly Guid DefaultSurveyNamespace =
+            new Guid("b2c3d4e5-f6a7-8901-bcde-f12345678901");
+
         /// <summary>
         /// Generates a deterministic UUID v5 from the blueprint's dedup key fields.
         /// Input string format: "Name|Evolution|BluePrintType|Class|TechLevel"
@@ -50,6 +54,16 @@ namespace OE2EmpireTracker.Services.Migration
         {
             string input = $"{ownerUUID ?? ""}|{planetName ?? ""}|{systemName ?? ""}";
             return GenerateV5(ColonyNamespace, input).ToString();
+        }
+
+        /// <summary>
+        /// Generates a deterministic UUID v5 for a default survey from colony identity fields.
+        /// Input string format: "OwnerUUID|PlanetName|SystemName"
+        /// </summary>
+        public static string GenerateDefaultSurvey(string ownerUUID, string planetName, string systemName)
+        {
+            string input = $"{ownerUUID ?? ""}|{planetName ?? ""}|{systemName ?? ""}";
+            return GenerateV5(DefaultSurveyNamespace, input).ToString();
         }
 
         /// <summary>
