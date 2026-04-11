@@ -231,6 +231,76 @@ With the dedup key changed from ColonyName to PlanetName+SystemName, the duplica
 
 Set up the GitHub MCP server so Kiro can read/write GitHub issues, PRs, and wiki pages directly. Enables intake of external issues, PR review, and maintaining user documentation in the repo wiki. Requires Docker Desktop (or the standalone Go binary from github/github-mcp-server releases) plus a fine-grained GitHub Personal Access Token scoped to the repo with Issues, Pull Requests, Contents, and Metadata permissions. Configuration goes in `.kiro/settings/mcp.json`. Currently blocked — Docker won't install on the dev machine. Revisit when Docker is available or try the standalone binary approach.
 
+### BL-046: Import Clipboard Validation — Show Error on Wrong Content
+**Dependencies:** None
+
+On all individual import buttons (colony, survey, blueprint), if the clipboard HTML doesn't contain the expected content type, show a message box explaining what was expected. On success, do NOT show a message box — silent success keeps the user in flow when importing many items in a row.
+
+### BL-047: Game API Integration Planning
+**Dependencies:** None
+
+There will be a game API eventually. Plan the integration architecture now so we're ready when it arrives. Consider: authentication, polling vs push, data model mapping, how it replaces clipboard import, and what new capabilities it enables (real-time sync, automated queue management, etc.).
+
+### BL-048: Import Content Type Guard — Prevent Cross-Type Imports
+**Dependencies:** None
+
+Bug: It's currently possible to import a blueprint as a survey (wrong clipboard content accepted by the wrong form). Each import parser should validate that the clipboard HTML matches the expected content type before processing. Reject mismatched content with a clear error message.
+
+### BL-049: Colony Import Timestamp — Surface on Activity Window
+**Dependencies:** BL-031 (Colony Import Timestamp Tracking)
+
+Record the last colony import time on the Colony data model. Surface this on the Colony Activity window. Color the Administration tab based on staleness: yellow if last import was 5+ days ago, red if 6+ days ago. Extends BL-031 with the UI/coloring aspect.
+
+### BL-050: Default Survey Duplicate on Out-of-Order Import
+**Dependencies:** None
+
+Bug: When colonies and surveys are imported in the wrong order, duplicate default surveys can still be created (2 surveys for the same planet). Reimporting the colony removes one but not both. The cleanup logic in CleanupDefaultSurvey should handle all duplicates in a single pass, and CreateOrUpdateDefaultSurvey should be more aggressive about finding and consolidating existing defaults.
+
+### BL-051: Survey Form — Survey Count in Title Bar
+**Dependencies:** None
+
+Show the count of surveys in the Survey form's title bar, matching the pattern used by other forms (e.g. "Manage Colonies - PlayerName : 74"). Format: "Manage Surveys - PlayerName : N".
+
+### BL-052: Survey Deletion Protection — In-Use by Miner
+**Dependencies:** None
+
+Surveys that are currently assigned to a mining rig (referenced by any ColonyStructure.MiningSurvey) should be protected against deletion. Show a warning listing which colonies/miners reference the survey and block the delete.
+
+### BL-053: Colony Deletion Protection — In-Use by Route/Plan
+**Dependencies:** None
+
+Colonies that are referenced by a delivery route or delivery plan should be protected against deletion. Show a warning listing which routes/plans reference the colony and block the delete.
+
+### BL-054: Survey Form — Normalize Scan DateTime
+**Dependencies:** None
+
+The survey's scan date/time comes from the game HTML in a non-standard format. Normalize it into a standard DateTime internally on import. Investigate whether ValidatedTextBox can support a DateTime validation pattern so the field can be edited with format enforcement.
+
+### BL-055: Mining/Refining/Manufacturing/Research Queue System
+**Dependencies:** BL-047 (Game API Integration Planning)
+
+Build an empire-wide queue system for mining, refining, manufacturing, and research operations. Should support both per-colony and empire-wide views. Designed for when the game API becomes available — queued operations can be submitted automatically. Includes priority ordering, dependency tracking (e.g. refine before manufacture), and estimated completion times.
+
+### BL-056: Delivery Routes — Focus After Delete
+**Dependencies:** None
+
+Bug: When you remove a colony stop from a delivery route, the list jumps to the top. After deletion, focus should move to the row above the deleted item (or the first row if the top item was deleted).
+
+### BL-057: Delivery Routes — Focus After Move Up/Down
+**Dependencies:** None
+
+Bug: When you move a stop up or down in a delivery route, the list jumps to the top. The moved row should remain selected and visible after the move operation.
+
+### BL-058: Delivery Execution — Load Before Departure Totals
+**Dependencies:** None
+
+The delivery execution form should show totals for the "Load Before Departure" section — total item count and total volume. Helps the player verify they have everything before departing.
+
+### BL-059: Manufacturing Build Queue — Auto-Create Orders from Fill Levels
+**Dependencies:** BL-011 (Manufacturing Queue)
+
+Add a feature to automatically create manufacturing orders based on target stock levels. Example: "always keep 10,000 2cm Coilgun Munitions on hand" or "always keep 2,000 Joybots on hand." The system checks current warehouse quantities across the empire and creates orders to replenish shortfalls.
+
 
 ---
 
