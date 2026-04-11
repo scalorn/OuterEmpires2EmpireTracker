@@ -122,25 +122,7 @@ Explore whether AI can read the OE2 wiki at https://atlasgamingcorp.com/outer-em
 
 ### BL-024: AI-Generated User Help Documentation
 **Dependencies:** None
-
-Generate end-user documentation covering the full application, derived from spec files and codebase.
-
-**Approach:** Single-source markdown in a `docs/` folder at the repo root. GitHub renders these natively for browsing. The app renders the same files at runtime using Markdig (NuGet markdown-to-HTML library) in a WebBrowser control.
-
-**In-app help:**
-- Help form with tree navigation (left) and WebBrowser panel (right) rendering markdown→HTML via Markdig
-- Help → Contents opens the help form at the table of contents
-- F1 / context-sensitive help opens the help form at the page for the active form
-- Each form maps to a doc file (e.g. FormColony → `docs/colonies.md`)
-- Markdown files shipped as embedded resources so help works offline
-
-**GitHub browsable:**
-- `docs/README.md` as table of contents with links to all pages
-- Standard markdown — renders natively on GitHub without any build step
-
-**Scope:** End users only. No contributor/developer documentation.
-
-**Coverage areas:** colonies (import, structures, commodities, daily build), blueprints (import, market import, evolution, filters), surveys (import, resources), delivery routes (planning, auto-fill, execution), player profiles (skills, ranks), background processing, window state persistence, and general getting-started workflow.
+**Status: Complete** — see `.kiro/specs/user-help-docs/`
 
 ### BL-025: Read Game Status Updates
 **Dependencies:** None

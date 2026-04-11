@@ -132,3 +132,8 @@ Survey clipboard import dedup — parse into a temporary survey first, search by
 ### Baseline Data Stability
 Deterministic UUIDs for global blueprints, versioned migration framework with DataVersion gating, idempotent rename table, LegacyUUID preservation, externalization of GameConstants/Commodities/RefiningRecipes/ResearchTimeLookup from code to BaselineData.json, and double→decimal conversion for all game data numeric types.
 **Status: Complete** — DeterministicUUID (UUID v5), RemapUUID reference walker, MigrationRunner with Migration001, RenameTable, BaselineGameConstants model, ResearchTimeEntry model. All blueprint creation paths updated. 6 FsCheck property tests (UUID determinism, RemapUUID completeness, rename idempotency, migration version gating, LegacyUUID preservation, decimal round-trip). Spec: `.kiro/specs/baseline-data-stability/`.
+
+
+### BL-024: User Help Documentation
+In-app help system with markdown docs in `docs/` folder (GitHub-browsable) rendered at runtime via Markdig + WebBrowser control. FormHelp dialog with TreeView navigation and HTML content panel. Help → Contents (Ctrl+F1) and F1 context-sensitive help mapping each form to its doc page. 9 documentation pages covering all application features.
+**Status: Complete** — HelpTopicRegistry (form-to-doc mapping), HelpRenderer (Markdig markdown→HTML with embedded CSS), FormHelp (SplitContainer with TreeView + WebBrowser, internal link interception), MainWindow integration (Contents menu item, F1 ProcessCmdKey override). Spec: `.kiro/specs/user-help-docs/`.
