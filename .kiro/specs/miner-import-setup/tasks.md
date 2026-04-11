@@ -6,12 +6,12 @@ Automate mining rig and refinery setup during colony import/reimport. Adds surve
 
 ## Tasks
 
-- [ ] 1. Add MiningMaxRate field and parse maxRate from game JSON
-  - [ ] 1.1 Add `[JsonIgnore] public decimal MiningMaxRate` property to ColonyStructure.cs
+- [ ] 1. Extract maxRate from game JSON during parsing
+  - [ ] 1.1 Modify `ParseBuilding` to extract `maxRate` from building JSON and return it alongside the structure (via out parameter or by collecting in the caller)
     - _Requirements: 6.7_
-  - [ ] 1.2 Extract `maxRate` from building JSON in `ParseBuilding` and store on `structure.MiningMaxRate`
+  - [ ] 1.2 Build a `Dictionary<string, decimal>` mapping structure UUID → maxRate in `ParseColonyBuildingsFromJson` during the merge loop
     - _Requirements: 6.7_
-  - [ ] 1.3 Write unit test: ParseBuilding sets MiningMaxRate from game JSON
+  - [ ] 1.3 Write unit test: ParseBuilding extracts maxRate from game JSON correctly
     - _Validates: Requirements 6.7_
 
 - [ ] 2. Add DeterministicUUID.GenerateDefaultSurvey
@@ -58,7 +58,7 @@ Automate mining rig and refinery setup during colony import/reimport. Adds surve
     - _Validates: Requirements 6.9_
 
 - [ ] 9. Implement MinerSetupHelper.SetupMiners orchestrator
-  - [ ] 9.1 Add `SetupMiners` method — iterates structures, identifies mining rigs, calls AssignSurvey + EnsureWarehouseResource + SetupTimer + CleanupDefaultSurvey
+  - [ ] 9.1 Add `SetupMiners(colony, empireContext, maxRates)` method — iterates structures, identifies mining rigs, looks up maxRate from dictionary, calls AssignSurvey + EnsureWarehouseResource + SetupTimer + CleanupDefaultSurvey
     - _Requirements: 4.1, 4.2, 4.3, 5.1, 5.2, 5.3, 5.4, 5.5_
   - [ ] 9.2 Write integration test: full miner setup with real survey, default survey fallback, timer start, warehouse seeding
     - _Validates: Requirements 4.1, 4.2, 4.3_
@@ -71,7 +71,7 @@ Automate mining rig and refinery setup during colony import/reimport. Adds surve
     - _Validates: Requirements 8.1, 8.2, 8.3, 8.4, 8.5_
 
 - [ ] 11. Wire up helpers in ParseColonyBuildingsFromJson
-  - [ ] 11.1 Add calls to `MinerSetupHelper.SetupMiners` and `RefinerySetupHelper.SetupRefineries` after the merge loop in `ParseColonyBuildingsFromJson`
+  - [ ] 11.1 Add calls to `MinerSetupHelper.SetupMiners(colony, empireContext, maxRates)` and `RefinerySetupHelper.SetupRefineries(colony, empireContext)` after the merge loop in `ParseColonyBuildingsFromJson`
     - _Requirements: 4.3, 8.5_
 
 - [ ] 12. Update csproj files and verify build

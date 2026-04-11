@@ -8,7 +8,7 @@ The design introduces two static helper classes that run after the merge loop in
 - `MinerSetupHelper` — handles survey assignment, default survey creation, timer start, and warehouse resource seeding for mining rigs
 - `RefinerySetupHelper` — handles warehouse resource seeding and timer start for refineries
 
-A new `MiningMaxRate` field on `ColonyStructure` stores the parsed `maxRate` from the game JSON, enabling the best-survey selection algorithm and default survey population.
+The `maxRate` values from the game JSON are collected during parsing into a `Dictionary<string, decimal>` keyed by structure UUID and passed to the setup helpers as a parameter. This avoids adding a transient field to ColonyStructure that could confuse readers of the model.
 
 ## Architecture
 
@@ -31,7 +31,7 @@ flowchart TD
     O -- Yes --> P[Assign real survey UUID]
     O -- No --> Q[CreateOrUpdateDefaultSurvey]
     Q --> P
-    P --> R{MiningMaxRate > 0?}
+    P --> R{maxRate > 0?}
     R -- Yes --> S{Existing active timer?}
     S -- Yes --> T[Preserve timer]
     S -- No --> U[Create repeating timer aligned to next hour]
@@ -41,11 +41,11 @@ flowchart TD
 
 ### Call Flow
 
-1. `ParseBuilding` — extracts `maxRate` from building JSON into `ColonyStructure.MiningMaxRate`
-2. `ParseColonyBuildingsFromJson` — after the merge loop, calls:
-   - `MinerSetupHelper.SetupMiners(colony, empireContext)` for mining rigs
+1. `ParseBuilding` — extracts `maxRate` from building JSON, returns it alongside the structure
+2. `ParseColonyBuildingsFromJson` — collects `maxRate` values into a `Dictionary<string, decimal>` keyed by structure UUID during the merge loop, then calls:
+   - `MinerSetupHelper.SetupMiners(colony, empireContext, maxRates)` for mining rigs
    - `RefinerySetupHelper.SetupRefineries(colony, empireContext)` for refineries
-3. `MinerSetupHelper.SetupMiners` — iterates all colony structures, identifies mining rigs via blueprint type, and for each:
+3. `MinerSetupHelper.SetupMiners` — iterates all colony structures, identifies mining rigs via blueprint type, looks up each structure's maxRate from the dictionary, and for each:
    - Calls `AssignSurvey` to handle survey selection/creation
    - Calls `EnsureWarehouseResource` to seed warehouse with mined resource if missing
    - Calls `SetupTimer` to handle timer creation
@@ -57,7 +57,7 @@ flowchart TD
 ### Key Design Decisions
 
 - **Static helper class** rather than instance methods on `ColonyParser` — keeps the parser focused on parsing and the miner setup logic testable in isolation.
-- **Post-merge execution** — miner setup runs after all structures are merged so that both parsed data (MiningMaxRate, MiningSurveyResource) and existing data (MiningSurvey, ProcessCompletionTime) are available.
+- **Post-merge execution** — miner setup runs after all structures are merged so that both parsed data (MiningSurveyResource) and existing data (MiningSurvey, ProcessCompletionTime) are available. The maxRate dictionary provides the game's reported rate without polluting the model.
 - **Per-miner survey selection** — different miners on the same colony may be assigned different surveys because different scanners produce different survey results. The best survey for resource A may differ from the best survey for resource B.
 - **PlayerContext access** — the helper accesses `PlayerContext.GetInstance()` directly, consistent with how `Colony.ProcessMiningRig` and other services access it.
 
@@ -74,9 +74,11 @@ namespace OE2EmpireTracker.Parsers
     {
         /// <summary>
         /// Runs survey assignment and timer setup for all mining rigs in the colony.
+        /// maxRates maps structure UUID → maxRate from the game JSON.
         /// Called after the merge loop in ParseColonyBuildingsFromJson.
         /// </summary>
-        public static void SetupMiners(Colony colony, EmpireContext empireContext);
+        public static void SetupMiners(Colony colony, EmpireContext empireContext,
+            Dictionary<string, decimal> maxRates);
 
         /// <summary>
         /// Assigns the best survey to a single mining rig structure.
@@ -119,22 +121,21 @@ namespace OE2EmpireTracker.Parsers
 }
 ```
 
-### 2. ColonyStructure.MiningMaxRate (new field)
+### 2. maxRate Dictionary (passed through parsing)
 
-**File:** `OE2EmpireTracker/Models/ColonyStructure.cs`
+During `ParseColonyBuildingsFromJson`, a `Dictionary<string, decimal>` is built mapping each parsed structure's UUID to its `maxRate` from the game JSON. This dictionary is passed to `MinerSetupHelper.SetupMiners` so it can look up the rate for each mining rig without storing it on the model.
 
 ```csharp
-/// <summary>
-/// The maxRate value from the game JSON for mining rigs.
-/// Represents the current mining output rate per hour.
-/// 0 means the miner is assigned but not actively mining.
-/// Not persisted — populated during import only.
-/// </summary>
-[JsonIgnore]
-public decimal MiningMaxRate { get; set; } = 0m;
+// In ParseColonyBuildingsFromJson, during the merge loop:
+var maxRates = new Dictionary<string, decimal>();
+
+// For each parsed building, after merge or add:
+decimal maxRate = building["maxRate"]?.Value<decimal>() ?? 0m;
+if (maxRate > 0m)
+    maxRates[structure.UUID] = maxRate; // structure is the merged/added structure
 ```
 
-Marked `[JsonIgnore]` because it is transient — only needed during the import flow, not persisted to `PlayerData.json`.
+No changes to `ColonyStructure.cs` are needed.
 
 ### 3. DeterministicUUID.DefaultSurveyNamespace (new namespace)
 
@@ -158,12 +159,12 @@ public static string GenerateDefaultSurvey(string ownerUUID, string planetName, 
 
 ### 4. ParseBuilding changes
 
-Extract `maxRate` from the building JSON and store it on the structure:
+Extract `maxRate` from the building JSON and return it alongside the structure. The caller collects these into the maxRates dictionary:
 
 ```csharp
 // In ParseBuilding, after existing mining-specific fields:
 decimal maxRate = building["maxRate"]?.Value<decimal>() ?? 0m;
-structure.MiningMaxRate = maxRate;
+// Return maxRate to caller (e.g. via out parameter or tuple)
 ```
 
 ### 5. ParseColonyBuildingsFromJson changes
@@ -172,7 +173,7 @@ After the merge loop completes, call both setup helpers:
 
 ```csharp
 // After the merge loop and the Log.Info line:
-MinerSetupHelper.SetupMiners(colony, empireContext);
+MinerSetupHelper.SetupMiners(colony, empireContext, maxRates);
 RefinerySetupHelper.SetupRefineries(colony, empireContext);
 ```
 
@@ -235,11 +236,11 @@ internal static void EnsureWarehouseResource(Colony colony, string resourceName,
 
 ## Data Models
 
-### ColonyStructure (modified)
+### maxRate Dictionary (transient, not persisted)
 
-| Field | Type | New? | Description |
-|-------|------|------|-------------|
-| MiningMaxRate | decimal | Yes | Transient. Parsed from game JSON `maxRate`. Not serialized. |
+| Key | Value | Description |
+|-----|-------|-------------|
+| Structure UUID (string) | maxRate (decimal) | Game's reported mining rate per hour. Only populated for structures with maxRate > 0. |
 
 ### Survey (used as Default_Survey)
 
