@@ -2,6 +2,7 @@ using OE2EmpireTracker.Persistence;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.ViewModels;
+using OE2EmpireTracker.Parsers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -457,6 +458,100 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             viewModel.Reset();
             PopulateForm();
             lvwPlayerProfiles.SelectedItems.Clear();
+        }
+
+        private void cmdImport_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!System.Windows.Forms.Clipboard.ContainsText(TextDataFormat.Html))
+                {
+                    MessageBox.Show("No profile data found on the clipboard.\n\nCopy the profile panel from the game first.",
+                        "Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Parse clipboard into a temp profile
+                var tempProfile = new Models.PlayerProfile();
+                var parser = new PlayerProfileParser();
+                parser.ProcessClipboard(tempProfile);
+
+                if (string.IsNullOrEmpty(tempProfile.Name))
+                {
+                    MessageBox.Show("Could not extract a player name from the clipboard data.",
+                        "Import", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Find existing profile by name (case-insensitive)
+                var existing = playerContext.PlayerProfileList
+                    .FirstOrDefault(p => string.Equals(p.Name, tempProfile.Name, StringComparison.OrdinalIgnoreCase));
+
+                if (existing != null)
+                {
+                    // Update existing profile — preserve UUID
+                    MergeProfile(existing, tempProfile);
+                    viewModel.SelectProfile(existing);
+                }
+                else
+                {
+                    // Create new profile with generated UUID
+                    tempProfile.UUID = Guid.NewGuid().ToString();
+                    playerContext.PlayerProfileList.Add(tempProfile);
+                    viewModel.SelectProfile(tempProfile);
+                }
+
+                playerContext.WriteContext();
+                playerContext.OnPlayerProfilesChanged();
+                playerContext.OnPlayerProfileDataChanged(viewModel.Data.UUID);
+                PopulateListView(viewModel.Data);
+                PopulateForm();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Import failed: {ex.Message}", "Import Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Merges parsed profile data into an existing profile, preserving UUID.
+        /// </summary>
+        internal static void MergeProfile(Models.PlayerProfile existing, Models.PlayerProfile parsed)
+        {
+            existing.Name = parsed.Name;
+            existing.Faction = parsed.Faction;
+            existing.TotalCredits = parsed.TotalCredits;
+            existing.SkillPoints = parsed.SkillPoints;
+            existing.CitizenId = parsed.CitizenId;
+            existing.RegistrationDate = parsed.RegistrationDate;
+            existing.ActiveTime = parsed.ActiveTime;
+
+            // Merge ranks
+            MergeRank(existing.Public, parsed.Public);
+            MergeRank(existing.Private, parsed.Private);
+            MergeRank(existing.Military, parsed.Military);
+
+            // Merge skill groups and skills
+            foreach (SkillGroupName group in Enum.GetValues(typeof(SkillGroupName)))
+            {
+                existing.SetSkillGroup(group, parsed.GetSkillGroup(group));
+            }
+            foreach (var skillEntry in parsed.Skills)
+            {
+                var existingSkill = existing.GetSkill(skillEntry.Key);
+                existingSkill.Level = skillEntry.Value.Level;
+                existingSkill.TrainingStarted = skillEntry.Value.TrainingStarted;
+                existingSkill.CompletionTime = skillEntry.Value.CompletionTime;
+            }
+        }
+
+        internal static void MergeRank(PlayerRank existing, PlayerRank parsed)
+        {
+            existing.Rank = parsed.Rank;
+            existing.Title = parsed.Title;
+            existing.CurrentXP = parsed.CurrentXP;
+            existing.NextXP = parsed.NextXP;
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)

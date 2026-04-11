@@ -145,6 +145,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.chkTrader = new System.Windows.Forms.CheckBox();
             this.pskBroker = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdImport = new System.Windows.Forms.Button();
             this.cmdNew = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
@@ -1561,19 +1562,30 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             // 
             this.flpCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.flpCommands.AutoSize = true;
+            this.flpCommands.Controls.Add(this.cmdImport);
             this.flpCommands.Controls.Add(this.cmdNew);
             this.flpCommands.Controls.Add(this.cmdSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
             this.flpCommands.Location = new System.Drawing.Point(2, 406);
             this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
             this.flpCommands.Name = "flpCommands";
-            this.flpCommands.Size = new System.Drawing.Size(243, 29);
+            this.flpCommands.Size = new System.Drawing.Size(324, 29);
             this.flpCommands.TabIndex = 1;
             this.flpCommands.WrapContents = false;
             // 
+            // cmdImport
+            // 
+            this.cmdImport.Location = new System.Drawing.Point(3, 3);
+            this.cmdImport.Name = "cmdImport";
+            this.cmdImport.Size = new System.Drawing.Size(75, 23);
+            this.cmdImport.TabIndex = 4;
+            this.cmdImport.Text = "Import";
+            this.cmdImport.UseVisualStyleBackColor = true;
+            this.cmdImport.Click += new System.EventHandler(this.cmdImport_Click);
+            // 
             // cmdNew
             // 
-            this.cmdNew.Location = new System.Drawing.Point(3, 3);
+            this.cmdNew.Location = new System.Drawing.Point(84, 3);
             this.cmdNew.Name = "cmdNew";
             this.cmdNew.Size = new System.Drawing.Size(75, 23);
             this.cmdNew.TabIndex = 3;
@@ -1583,7 +1595,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             // 
             // cmdSave
             // 
-            this.cmdSave.Location = new System.Drawing.Point(84, 3);
+            this.cmdSave.Location = new System.Drawing.Point(165, 3);
             this.cmdSave.Name = "cmdSave";
             this.cmdSave.Size = new System.Drawing.Size(75, 23);
             this.cmdSave.TabIndex = 0;
@@ -1593,7 +1605,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             // 
             // cmdDelete
             // 
-            this.cmdDelete.Location = new System.Drawing.Point(165, 3);
+            this.cmdDelete.Location = new System.Drawing.Point(246, 3);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(75, 23);
             this.cmdDelete.TabIndex = 1;
@@ -1723,6 +1735,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private System.Windows.Forms.Label lblPublicRank;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtPublicRank;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
+        private System.Windows.Forms.Button cmdImport;
         private System.Windows.Forms.Button cmdNew;
         private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Button cmdDelete;

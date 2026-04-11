@@ -39,25 +39,25 @@ Implement a clipboard-based HTML parser for importing player profile data from t
   - [x] 3.3 Implement ParseSkillPoints — extract available SP from Profile_Skills_BankedContainer_Available element
     - _Requirements: 4.1, 4.2_
 
-- [-] 4. Implement skill group and individual skill parsing
-  - [-] 4.1 Implement ParseSkillGroups — iterate Profile_Skill_Group elements, match display names to SkillGroupName enum via reverse lookup dictionary, set locked/unlocked state based on Profile_Skill_Group_Disabled presence
+- [x] 4. Implement skill group and individual skill parsing
+  - [x] 4.1 Implement ParseSkillGroups — iterate Profile_Skill_Group elements, match display names to SkillGroupName enum via reverse lookup dictionary, set locked/unlocked state based on Profile_Skill_Group_Disabled presence
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
-  - [~] 4.2 Implement ParseSkills — iterate individual skill elements within each group, extract level from completed level boxes, detect training-in-progress from training box, parse training time remaining into CountDownTime
+  - [x] 4.2 Implement ParseSkills — iterate individual skill elements within each group, extract level from completed level boxes, detect training-in-progress from training box, parse training time remaining into CountDownTime
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
-  - [~] 4.3 Write property test for enum display name round-trip
+  - [x] 4.3 Write property test for enum display name round-trip
     - **Property 2: Enum display name round-trip**
     - For all SkillName and SkillGroupName values, assert ToDisplayName → reverse lookup = identity
     - **Validates: Requirements 5.1, 5.4, 6.4**
-  - [~] 4.4 Write property test for training time parsing
+  - [x] 4.4 Write property test for training time parsing
     - **Property 3: Training time parsing**
     - Generate random (days 0–99, hours 0–23) pairs, format as game string, parse, assert correct total seconds within 1s tolerance
     - **Validates: Requirements 6.3**
 
-- [~] 5. Checkpoint — Ensure all tests pass
+- [x] 5. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Add Import button and form integration
-  - [~] 6.1 Add cmdImport button to FormPlayerProfile.Designer.cs in the flpCommands panel (before cmdNew)
+- [-] 6. Add Import button and form integration
+  - [-] 6.1 Add cmdImport button to FormPlayerProfile.Designer.cs in the flpCommands panel (before cmdNew)
     - _Requirements: 8.1_
   - [~] 6.2 Implement cmdImport_Click handler in FormPlayerProfile.cs — read clipboard, invoke PlayerProfileParser, match existing profile by name (case-insensitive) or create new with generated UUID, refresh form and list view, show MessageBox on error or missing clipboard data
     - _Requirements: 7.1, 7.2, 7.3, 8.2, 8.3, 8.4_

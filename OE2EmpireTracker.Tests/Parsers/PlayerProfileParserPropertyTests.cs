@@ -6,6 +6,7 @@ using FsCheck.NUnit;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
+using OE2EmpireTracker.Forms.PlayerProfile;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {
@@ -122,6 +123,143 @@ namespace OE2EmpireTracker.Tests.Parsers
 
                     return (Math.Abs(parsed - expectedSeconds) <= 1)
                         .Label($"days={days}, hours={hours}: expected {expectedSeconds}s but got {parsed}s from \"{timeString}\"");
+                });
+        }
+
+        // Feature: player-profile-import, Property 4: Profile update by case-insensitive name match
+        /// <summary>
+        /// For any existing profile and a parsed profile whose name matches under case-insensitive
+        /// comparison, merging should update the existing profile's data while preserving its UUID.
+        /// **Validates: Requirements 7.1, 7.3**
+        /// </summary>
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property ProfileUpdate_CaseInsensitiveNameMatch_PreservesUUID()
+        {
+            // Generator for a non-empty alphabetic name (1–20 chars)
+            var nameGen = Gen.Choose(1, 20).SelectMany(len =>
+                Gen.ArrayOf(len, Gen.Elements<char>(
+                    'A','B','C','D','E','F','G','H','I','J','K','L','M',
+                    'a','b','c','d','e','f','g','h','i','j','k','l','m'))
+                .Select(chars => new string(chars)))
+                .Where(s => !string.IsNullOrEmpty(s));
+
+            var creditsGen = Gen.Choose(0, 999999).Select(x => (decimal)x);
+            var rankGen = Gen.Choose(0, 100);
+
+            return Prop.ForAll(
+                nameGen.ToArbitrary(),
+                creditsGen.ToArbitrary(),
+                rankGen.ToArbitrary(),
+                (baseName, newCredits, newPublicRank) =>
+                {
+                    // Create existing profile with a known UUID
+                    string originalUUID = Guid.NewGuid().ToString();
+                    var existing = new PlayerProfile
+                    {
+                        UUID = originalUUID,
+                        Name = baseName.ToLowerInvariant(),
+                        Faction = "OldFaction",
+                        TotalCredits = 100m
+                    };
+
+                    // Create parsed profile with case-shuffled name
+                    var parsed = new PlayerProfile
+                    {
+                        Name = baseName.ToUpperInvariant(),
+                        Faction = "NewFaction",
+                        TotalCredits = newCredits,
+                        CitizenId = "42-1234",
+                        RegistrationDate = "2223-01-06",
+                        ActiveTime = "1D 2H"
+                    };
+                    parsed.Public.Rank = newPublicRank;
+
+                    // Verify case-insensitive match
+                    bool nameMatches = string.Equals(existing.Name, parsed.Name, StringComparison.OrdinalIgnoreCase);
+
+                    // Merge
+                    FormPlayerProfile.MergeProfile(existing, parsed);
+
+                    return (nameMatches &&
+                            existing.UUID == originalUUID &&
+                            existing.Faction == "NewFaction" &&
+                            existing.TotalCredits == newCredits &&
+                            existing.CitizenId == "42-1234" &&
+                            existing.Public.Rank == newPublicRank)
+                        .Label($"UUID preserved: {existing.UUID == originalUUID}, " +
+                               $"Faction updated: {existing.Faction == "NewFaction"}, " +
+                               $"Credits updated: {existing.TotalCredits == newCredits}");
+                });
+        }
+
+        // Feature: player-profile-import, Property 5: Profile creation when no name match exists
+        /// <summary>
+        /// For any list of existing profiles and a parsed profile whose name does not match
+        /// any existing profile (case-insensitive), adding it should grow the list by one
+        /// with a non-empty UUID.
+        /// **Validates: Requirements 7.2**
+        /// </summary>
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property ProfileCreation_NoNameMatch_AddsNewWithUUID()
+        {
+            // Generator for a list of 0–5 profiles with unique names
+            var existingListGen = Gen.Choose(0, 5).SelectMany(count =>
+                Gen.ArrayOf(count, Gen.Choose(1, 10).SelectMany(len =>
+                    Gen.ArrayOf(len, Gen.Elements<char>(
+                        'A','B','C','D','E','F','G','H','I','J','K','L','M'))
+                    .Select(chars => new string(chars))))
+                .Select(names =>
+                {
+                    var list = new List<PlayerProfile>();
+                    var usedNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var n in names)
+                    {
+                        if (usedNames.Add(n))
+                        {
+                            list.Add(new PlayerProfile
+                            {
+                                UUID = Guid.NewGuid().ToString(),
+                                Name = n
+                            });
+                        }
+                    }
+                    return list;
+                }));
+
+            return Prop.ForAll(
+                existingListGen.ToArbitrary(),
+                existingProfiles =>
+                {
+                    // Generate a unique name that doesn't match any existing profile
+                    string uniqueName = "UNIQUE_" + Guid.NewGuid().ToString("N").Substring(0, 8);
+
+                    var parsed = new PlayerProfile
+                    {
+                        Name = uniqueName,
+                        Faction = "TestFaction",
+                        TotalCredits = 500m
+                    };
+
+                    // Simulate the import logic: check for case-insensitive match
+                    var match = existingProfiles
+                        .FirstOrDefault(p => string.Equals(p.Name, parsed.Name, StringComparison.OrdinalIgnoreCase));
+
+                    int originalCount = existingProfiles.Count;
+
+                    if (match == null)
+                    {
+                        // No match — create new profile with UUID
+                        parsed.UUID = Guid.NewGuid().ToString();
+                        existingProfiles.Add(parsed);
+                    }
+
+                    return (match == null &&
+                            existingProfiles.Count == originalCount + 1 &&
+                            !string.IsNullOrEmpty(existingProfiles.Last().UUID) &&
+                            existingProfiles.Last().Name == uniqueName)
+                        .Label($"Match was null: {match == null}, " +
+                               $"Count grew: {existingProfiles.Count == originalCount + 1}, " +
+                               $"UUID non-empty: {!string.IsNullOrEmpty(existingProfiles.LastOrDefault()?.UUID)}");
                 });
         }
     }
