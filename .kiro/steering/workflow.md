@@ -12,6 +12,7 @@
    - Update any relevant spec files to reflect any new or changed behavior
    - Spec updates must be included in the same commit as the code changes, not in a separate commit
 5. Do not leave uncommitted changes at the end of a task
+6. **Run backup script** after every commit: `D:\projects\OuterEmpires2\OE2EmpireTracker\oebackup.ps1`
 
 ## Commit Messages
 - First line: concise summary of the change
