@@ -1,5 +1,5 @@
 {
-  "DataVersion": 1,
+  "DataVersion": 2,
   "GameConstants": {
     "RefiningBaseRate": 25,
     "CommoditiesPerCycle": 10,

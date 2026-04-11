@@ -78,7 +78,7 @@ Automate mining rig and refinery setup during colony import/reimport. Adds surve
   - [x] 12.1 Ensure OE2EmpireTracker.csproj has `<Compile Include>` for MinerSetupHelper.cs and RefinerySetupHelper.cs
   - [x] 12.2 Ensure OE2EmpireTracker.Tests.csproj has `<Compile Include>` entries for all new test files
 
-- [ ] 13. Final checkpoint — Build and run all tests
+- [x] 13. Final checkpoint — Build and run all tests
   - Build solution and run all tests. Ask the user if questions arise.
 
 ## Notes
