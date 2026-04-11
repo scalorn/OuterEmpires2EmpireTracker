@@ -544,6 +544,16 @@ namespace OE2EmpireTracker.Parsers
                 }
             }
 
+            Log.Debug("ParseBuilding: designName='{0}', buildingID={1}, online={2}, maxRate={3}, " +
+                "MiningSurveyResource='{4}', RefiningResourcePurity='{5}', RefiningResource='{6}', FlatpackBP='{7}'",
+                designName, structure.buildingID,
+                structure.Properties.ContainsKey(GameConstants.PropOnline) ? structure.Properties.Properties[GameConstants.PropOnline] : "?",
+                maxRate,
+                structure.MiningSurveyResource ?? "(null)",
+                structure.RefiningResourcePurity ?? "(null)",
+                structure.RefiningResource ?? "(null)",
+                structure.FlatpackBlueprintUUID ?? "(null)");
+
             return structure;
         }
 

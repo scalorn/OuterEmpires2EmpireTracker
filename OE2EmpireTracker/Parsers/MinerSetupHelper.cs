@@ -35,6 +35,9 @@ namespace OE2EmpireTracker.Parsers
             int timersStarted = 0;
             int warehouseResourcesCreated = 0;
 
+            Log.Info("SetupMiners starting for colony {0}: {1} structures, {2} maxRate entries",
+                colony.PlanetName, colony.Structures.Count, maxRates.Count);
+
             foreach (var structure in colony.Structures)
             {
                 // Identify mining rigs by non-empty MiningSurveyResource
@@ -48,6 +51,14 @@ namespace OE2EmpireTracker.Parsers
                 {
                     maxRate = 0m;
                 }
+
+                Log.Info("Processing miner {0} (FlatpackBP={1}): MiningSurveyResource='{2}', RefiningResourcePurity='{3}', maxRate={4}, existingSurvey='{5}'",
+                    structure.UUID,
+                    structure.FlatpackBlueprintUUID ?? "(null)",
+                    structure.MiningSurveyResource,
+                    structure.RefiningResourcePurity ?? "(null)",
+                    maxRate,
+                    structure.MiningSurvey ?? "(null)");
 
                 // Step a: Assign survey
                 bool assigned = AssignSurvey(structure, colony, playerContext, maxRate);

@@ -29,14 +29,35 @@ namespace OE2EmpireTracker.Parsers
             int timersStarted = 0;
             int warehouseResourcesCreated = 0;
 
+            Log.Info("SetupRefineries starting for colony {0}: {1} structures to scan",
+                colony.PlanetName, colony.Structures.Count);
+
             foreach (var structure in colony.Structures)
             {
                 // Identify refineries by non-empty RefiningResource AND RefiningResourcePurity
                 if (string.IsNullOrEmpty(structure.RefiningResource) ||
                     string.IsNullOrEmpty(structure.RefiningResourcePurity))
                 {
+                    // Log why this structure was skipped — helps diagnose import issues
+                    if (!string.IsNullOrEmpty(structure.RefiningResource) ||
+                        !string.IsNullOrEmpty(structure.RefiningResourcePurity) ||
+                        !string.IsNullOrEmpty(structure.MiningSurveyResource))
+                    {
+                        Log.Debug("Skipped structure {0} (FlatpackBP={1}): RefiningResource='{2}', RefiningResourcePurity='{3}', MiningSurveyResource='{4}'",
+                            structure.UUID,
+                            structure.FlatpackBlueprintUUID ?? "(null)",
+                            structure.RefiningResource ?? "(null)",
+                            structure.RefiningResourcePurity ?? "(null)",
+                            structure.MiningSurveyResource ?? "(null)");
+                    }
                     continue;
                 }
+
+                Log.Info("Processing refinery {0} (FlatpackBP={1}): RefiningResource='{2}', RefiningResourcePurity='{3}'",
+                    structure.UUID,
+                    structure.FlatpackBlueprintUUID ?? "(null)",
+                    structure.RefiningResource,
+                    structure.RefiningResourcePurity);
 
                 // Step a: Ensure warehouse resource exists (Req 8.1, 8.2)
                 int itemCountBefore = colony.Items.Count();
