@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services.Migration;
 
 namespace OE2EmpireTracker.Services
 {
@@ -60,7 +61,7 @@ namespace OE2EmpireTracker.Services
         public static Colony CreateFromTemp(Colony tempColony, string ownerUUID)
         {
             var colony = new Colony();
-            colony.UUID = Guid.NewGuid().ToString();
+            colony.UUID = DeterministicUUID.Generate(ownerUUID, tempColony.PlanetName, tempColony.SystemName);
             colony.OwnerUUID = ownerUUID;
             colony.ColonyName = tempColony.ColonyName;
             colony.PlanetName = tempColony.PlanetName;
