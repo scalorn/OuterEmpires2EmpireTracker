@@ -88,6 +88,86 @@ namespace OE2EmpireTracker.Parsers
         }
 
         /// <summary>
+        /// Assigns the best survey to a single mining rig structure.
+        /// Returns true if a survey was assigned (or preserved), false if skipped.
+        /// </summary>
+        /// <remarks>
+        /// Logic:
+        /// 1. If structure has no MiningSurveyResource → skip (return false)
+        /// 2. If structure already has a MiningSurvey:
+        ///    a. Valid real survey → preserve it
+        ///    b. DEFAULT survey → check if real survey now exists, upgrade if so
+        ///    c. Deleted survey → fall through to step 3
+        /// 3. No valid survey → FindBestSurvey; if none, CreateOrUpdateDefaultSurvey
+        /// </remarks>
+        internal static bool AssignSurvey(
+            ColonyStructure structure, Colony colony,
+            PlayerContext playerContext, decimal maxRate)
+        {
+            // Step 1: skip if no resource assigned
+            if (string.IsNullOrEmpty(structure.MiningSurveyResource))
+            {
+                return false;
+            }
+
+            string resource = structure.MiningSurveyResource;
+            string purity = structure.RefiningResourcePurity ?? "";
+
+            // Step 2: check existing survey assignment
+            if (!string.IsNullOrEmpty(structure.MiningSurvey))
+            {
+                Survey existing = playerContext.FindSurvey(structure.MiningSurvey);
+
+                if (existing != null)
+                {
+                    // 2a: valid real survey → preserve
+                    if (!string.Equals(existing.SurveyID, "DEFAULT", StringComparison.OrdinalIgnoreCase))
+                    {
+                        Log.Info("Preserved existing real survey {0} on structure {1} for {2}",
+                            structure.MiningSurvey, structure.UUID, resource);
+                        return true;
+                    }
+
+                    // 2b: DEFAULT survey → check if a real survey now exists
+                    Survey realSurvey = FindBestSurvey(colony.PlanetName, resource, purity, maxRate, playerContext);
+                    if (realSurvey != null)
+                    {
+                        structure.MiningSurvey = realSurvey.UUID;
+                        Log.Info("Upgraded default survey to real survey {0} on structure {1} for {2}",
+                            realSurvey.UUID, structure.UUID, resource);
+                        return true;
+                    }
+
+                    // No real survey available → keep the default
+                    Log.Info("Kept default survey {0} on structure {1} for {2} (no real survey available)",
+                        structure.MiningSurvey, structure.UUID, resource);
+                    return true;
+                }
+
+                // 2c: survey no longer exists (deleted) → fall through to step 3
+                Log.Info("Existing survey {0} no longer exists for structure {1}, reassigning",
+                    structure.MiningSurvey, structure.UUID);
+            }
+
+            // Step 3: no existing valid survey → find best or create default
+            Survey bestSurvey = FindBestSurvey(colony.PlanetName, resource, purity, maxRate, playerContext);
+            if (bestSurvey != null)
+            {
+                structure.MiningSurvey = bestSurvey.UUID;
+                Log.Info("Assigned real survey {0} to structure {1} for {2}",
+                    bestSurvey.UUID, structure.UUID, resource);
+                return true;
+            }
+
+            // No real survey → create/update default
+            Survey defaultSurvey = CreateOrUpdateDefaultSurvey(colony, resource, purity, maxRate, playerContext);
+            structure.MiningSurvey = defaultSurvey.UUID;
+            Log.Info("Assigned default survey {0} to structure {1} for {2}",
+                defaultSurvey.UUID, structure.UUID, resource);
+            return true;
+        }
+
+        /// <summary>
         /// Creates or updates a default survey for the colony, adding a resource entry
         /// for the given resource/purity/amount.
         /// Returns the default survey.

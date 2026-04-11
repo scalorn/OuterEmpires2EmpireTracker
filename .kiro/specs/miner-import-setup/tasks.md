@@ -27,16 +27,16 @@ Automate mining rig and refinery setup during colony import/reimport. Adds surve
   - [x] 3.2 Write unit tests for FindBestSurvey: closest match, highest when maxRate=0, no match returns null, excludes default surveys
     - _Validates: Requirements 1.1, 1.2, 1.3, 1.6_
 
-- [-] 4. Implement MinerSetupHelper.CreateOrUpdateDefaultSurvey
-  - [-] 4.1 Add `CreateOrUpdateDefaultSurvey` method — creates/updates default survey with deterministic UUID, SurveyID="DEFAULT", resource from maxRate
+- [x] 4. Implement MinerSetupHelper.CreateOrUpdateDefaultSurvey
+  - [x] 4.1 Add `CreateOrUpdateDefaultSurvey` method — creates/updates default survey with deterministic UUID, SurveyID="DEFAULT", resource from maxRate
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6_
-  - [-] 4.2 Write unit tests: creates new default survey, updates existing, sets SurveyID="DEFAULT", NickName null, amount="0" when maxRate=0
+  - [x] 4.2 Write unit tests: creates new default survey, updates existing, sets SurveyID="DEFAULT", NickName null, amount="0" when maxRate=0
     - _Validates: Requirements 6.1, 6.2, 6.3, 6.4, 6.5_
 
-- [ ] 5. Implement MinerSetupHelper.AssignSurvey
-  - [~] 5.1 Add `AssignSurvey` method — handles survey selection logic (preserve valid real, upgrade default→real, find best, fallback to default)
+- [-] 5. Implement MinerSetupHelper.AssignSurvey
+  - [-] 5.1 Add `AssignSurvey` method — handles survey selection logic (preserve valid real, upgrade default→real, find best, fallback to default)
     - _Requirements: 1.4, 1.5, 3.1, 3.2, 3.3_
-  - [~] 5.2 Write unit tests: preserves valid real survey, upgrades default to real, assigns best survey, falls back to default when no real exists, handles deleted survey
+  - [-] 5.2 Write unit tests: preserves valid real survey, upgrades default to real, assigns best survey, falls back to default when no real exists, handles deleted survey
     - _Validates: Requirements 1.4, 1.5, 3.1, 3.2, 3.3_
 
 - [ ] 6. Implement EnsureWarehouseResource utility
