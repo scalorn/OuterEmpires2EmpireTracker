@@ -245,6 +245,7 @@
     <Compile Include="Models\UIPreferencesTests.cs" />
     <Compile Include="Parsers\SurveyParserTests.cs" />
     <Compile Include="Parsers\SurveyParserIdempotencyTests.cs" />
+    <Compile Include="Parsers\PlayerProfileParserPropertyTests.cs" />
     <Compile Include="Constants\BlueprintPropertyValidationTests.cs" />
     <Compile Include="Constants\BlueprintTypeExtensionTests.cs" />
     <Compile Include="Constants\BlueprintTypeExtensionPropertyTests.cs" />
