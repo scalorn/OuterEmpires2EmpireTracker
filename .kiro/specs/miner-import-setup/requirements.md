@@ -16,7 +16,7 @@ This feature automates miner and refinery setup during import so that mining rig
 - **Player_Context**: The singleton service that holds all player data including the survey list
 - **Mining_Timer**: The `ProcessCompletionTime` countdown timer on a colony structure that drives hourly mining cycles
 - **Best_Survey**: For a given miner, the survey for the colony's planet whose Survey_Resource `Amount` for the mined resource most closely matches the Max_Rate reported by the game. Because different scanners produce different survey results, the best survey for resource A may be a different survey than the best survey for resource B on the same planet. Selection is per-miner, not per-colony.
-- **Default_Survey**: A synthetic survey auto-created during import when no real survey exists for a colony's planet that contains the mined resource. Identified by SurveyID = "DEFAULT" (NickName is not set) and a deterministic UUID derived from the colony dedup key (OwnerUUID, PlanetName, SystemName) using a dedicated namespace. At most one Default_Survey exists per colony.
+- **Default_Survey**: A synthetic survey auto-created during import when no real survey exists for a colony's planet that contains the mined resource. Identified by SurveyID = "DEFAULT" (NickName is empty string) and a deterministic UUID derived from the colony dedup key (OwnerUUID, PlanetName, SystemName) using a dedicated namespace. At most one Default_Survey exists per colony.
 - **Max_Rate**: The `maxRate` field from the game JSON on a mining rig building, representing the current mining output rate per hour (e.g. 123.32). A value of 0 means the miner is assigned to a resource but not actively mining (offline or no workers).
 
 ## Requirements
@@ -85,7 +85,7 @@ This feature automates miner and refinery setup during import so that mining rig
 #### Acceptance Criteria
 
 1. WHEN no real survey matches the colony planet, mined resource, and purity, THE Colony_Parser SHALL create a Default_Survey with a deterministic UUID generated from the colony dedup key (OwnerUUID, PlanetName, SystemName) using a dedicated "DefaultSurvey" namespace in DeterministicUUID.
-2. THE Default_Survey SHALL have its SurveyID set to "DEFAULT" and its NickName left unset (null), so that it is identifiable in the UI without appearing to have a user-assigned name.
+2. THE Default_Survey SHALL have its SurveyID set to "DEFAULT" and its NickName set to empty string, so that it is identifiable in the UI and consistent with other model conventions.
 3. THE Default_Survey SHALL have its PlanetName, SystemName, and OwnerUUID set to match the colony being imported.
 4. WHEN a Default_Survey is created for a mining rig, THE Colony_Parser SHALL add a Survey_Resource entry for the mined resource using the resource name from `MiningSurveyResource`, the purity from `RefiningResourcePurity`, and the amount from the Max_Rate value in the game JSON. If Max_Rate is zero, the amount SHALL be stored as "0".
 5. WHEN a Default_Survey already exists for the colony (same deterministic UUID found in Player_Context), THE Colony_Parser SHALL update the existing Default_Survey by adding new resource entries or updating existing resource amounts rather than creating a duplicate.

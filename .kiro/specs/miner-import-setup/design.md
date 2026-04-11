@@ -250,7 +250,7 @@ A default survey is a regular `Survey` object with specific field values:
 |-------|-------|-------------|
 | UUID | Deterministic from `GenerateDefaultSurvey(ownerUUID, planetName, systemName)` | Stable across reimports |
 | SurveyID | `"DEFAULT"` | Identifies it as a default survey in the UI |
-| NickName | `null` | Not set — distinguishes from user-named surveys |
+| NickName | `""` (empty string) | Consistent with other model conventions |
 | PlanetName | Colony's PlanetName | Matches the colony |
 | SystemName | Colony's SystemName | Matches the colony |
 | OwnerUUID | Colony's OwnerUUID | Matches the colony owner |
