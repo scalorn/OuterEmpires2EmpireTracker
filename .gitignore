@@ -402,3 +402,5 @@ COMMIT_MSG.tmp
 
 # Safe file writer backup files
 *.json.bak
+
+nuget.exe
