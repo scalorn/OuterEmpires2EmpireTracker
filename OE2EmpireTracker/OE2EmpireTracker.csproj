@@ -55,6 +55,9 @@
     <StartupObject>OE2EmpireTracker.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Markdig">
+      <HintPath>..\packages\Markdig.0.39.1\lib\net462\Markdig.dll</HintPath>
+    </Reference>
     <Reference Include="AutoLayoutPanel">
       <HintPath>..\..\..\wpf-autolayout\AutoLayoutPanel\bin\Debug\AutoLayoutPanel.dll</HintPath>
     </Reference>
@@ -132,6 +135,7 @@
     <Compile Include="Services\SurveyImportHelper.cs" />
     <Compile Include="Services\BlueprintReferenceCounter.cs" />
     <Compile Include="Services\EvolutionChainService.cs" />
+    <Compile Include="Services\HelpTopicRegistry.cs" />
     <Compile Include="Services\BackgroundProcessor.cs" />
     <Compile Include="Models\BaselineGameConstants.cs" />
     <Compile Include="Models\ResearchTimeEntry.cs" />
