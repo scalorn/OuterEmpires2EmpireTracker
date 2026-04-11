@@ -298,6 +298,7 @@
     <Compile Include="Services\HelpTopicRegistryTests.cs" />
     <Compile Include="Services\HelpRendererTests.cs" />
     <Compile Include="Forms\EvolutionGraphRenderingTests.cs" />
+    <Compile Include="Models\SerializationBackwardCompatibilityTests.cs" />
     <Compile Include="TestHelper.cs" />
     <None Include="app.config" />
     <None Include="packages.config" />

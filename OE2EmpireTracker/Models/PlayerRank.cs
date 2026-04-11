@@ -11,5 +11,6 @@ namespace OE2EmpireTracker.Models
         public int Rank { get; set; } = 0;
         public long CurrentXP { get; set; } = 0;
         public long NextXP { get; set; } = 0;
+        public string Title { get; set; } = string.Empty;
     }
 }

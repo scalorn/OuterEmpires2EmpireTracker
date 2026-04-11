@@ -20,6 +20,10 @@ namespace OE2EmpireTracker.Models
         public PlayerRank Military { get; set; } = new PlayerRank();
         public int SkillPoints { get; set; } = 0;
 
+        public string CitizenId { get; set; } = string.Empty;
+        public string RegistrationDate { get; set; } = string.Empty;
+        public string ActiveTime { get; set; } = string.Empty;
+
         private Dictionary<string, bool> SkillGroups { get; set; } = new Dictionary<string, bool>();
         public Dictionary<string, PlayerSkill> Skills { get; set; } = new Dictionary<string, PlayerSkill>();
 
