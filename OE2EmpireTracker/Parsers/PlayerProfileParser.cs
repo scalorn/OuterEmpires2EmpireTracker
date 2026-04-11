@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -266,7 +267,40 @@ namespace OE2EmpireTracker.Parsers
         /// </summary>
         internal static void ParseSkillGroups(PlayerProfile profile, XmlDocument doc)
         {
-            // Stub — implemented in task 4.1
+            // Build reverse lookup: display name → SkillGroupName enum value
+            var groupLookup = new Dictionary<string, SkillGroupName>();
+            foreach (SkillGroupName g in Enum.GetValues(typeof(SkillGroupName)))
+            {
+                groupLookup[g.ToDisplayName()] = g;
+            }
+
+            var groups = doc.SelectNodes("//div[contains(@class,'Profile_Skill_Group')]");
+            if (groups == null || groups.Count == 0)
+            {
+                Log.Warn("No Profile_Skill_Group elements found in clipboard HTML");
+                return;
+            }
+
+            foreach (XmlNode group in groups)
+            {
+                var nameNode = group.SelectSingleNode(".//div[contains(@class,'Profile_Skill_Group_Name')]");
+                if (nameNode == null) continue;
+
+                string displayName = NormalizeWhitespace(nameNode.InnerText);
+                if (string.IsNullOrEmpty(displayName)) continue;
+
+                if (!groupLookup.TryGetValue(displayName, out SkillGroupName enumValue))
+                {
+                    Log.Warn("Unknown skill group display name: {0}", displayName);
+                    continue;
+                }
+
+                // If the disabled div is present, the group is locked (false); otherwise unlocked (true)
+                var disabledNode = group.SelectSingleNode(".//div[contains(@class,'Profile_Skill_Group_Disabled')]");
+                bool isUnlocked = disabledNode == null;
+
+                profile.SetSkillGroup(enumValue, isUnlocked);
+            }
         }
 
         /// <summary>
@@ -274,7 +308,86 @@ namespace OE2EmpireTracker.Parsers
         /// </summary>
         internal static void ParseSkills(PlayerProfile profile, XmlDocument doc)
         {
-            // Stub — implemented in task 4.2
+            // Build reverse lookup: display name → SkillName enum value
+            var skillLookup = new Dictionary<string, SkillName>();
+            foreach (SkillName s in Enum.GetValues(typeof(SkillName)))
+            {
+                skillLookup[s.ToDisplayName()] = s;
+            }
+
+            var groups = doc.SelectNodes("//div[contains(@class,'Profile_Skill_Group')]");
+            if (groups == null || groups.Count == 0) return;
+
+            foreach (XmlNode group in groups)
+            {
+                var skillNodes = group.SelectNodes(".//div[contains(@class,'Profile_Skill_Group_Skills_Skill')]");
+                if (skillNodes == null) continue;
+
+                foreach (XmlNode skillNode in skillNodes)
+                {
+                    var nameNode = skillNode.SelectSingleNode(".//div[contains(@class,'Profile_Skill_Group_Skills_Skill_Name')]");
+                    if (nameNode == null) continue;
+
+                    string displayName = NormalizeWhitespace(nameNode.InnerText);
+                    if (string.IsNullOrEmpty(displayName)) continue;
+
+                    if (!skillLookup.TryGetValue(displayName, out SkillName enumValue))
+                    {
+                        Log.Warn("Unknown skill display name: {0}", displayName);
+                        continue;
+                    }
+
+                    var skill = profile.GetSkill(enumValue);
+
+                    // Level = count of completed level boxes
+                    var completedBoxes = skillNode.SelectNodes(".//div[contains(@class,'Profile_Skill_Group_Skills_Skill_Level_Box_Complete')]");
+                    skill.Level = completedBoxes?.Count ?? 0;
+
+                    // Training in progress = presence of training box
+                    var trainingBox = skillNode.SelectSingleNode(".//div[contains(@class,'Profile_Skill_Group_Skills_Skill_Level_Box_Training')]");
+                    skill.TrainingStarted = trainingBox != null;
+
+                    // Training time remaining
+                    if (skill.TrainingStarted)
+                    {
+                        var timeNode = skillNode.SelectSingleNode(".//div[contains(@class,'Profile_Skill_Group_Skills_Skill_Level_Training_Description')]");
+                        if (timeNode != null)
+                        {
+                            string timeText = NormalizeWhitespace(timeNode.InnerText);
+                            long totalSeconds = ParseTrainingTime(timeText);
+                            if (totalSeconds > 0)
+                            {
+                                skill.CompletionTime.TimeRemaining = totalSeconds;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Parses a training time string like "22 days, 9 hours" or "5 hours" into total seconds.
+        /// </summary>
+        internal static long ParseTrainingTime(string timeText)
+        {
+            if (string.IsNullOrEmpty(timeText)) return 0;
+
+            int days = 0;
+            int hours = 0;
+
+            var dayMatch = Regex.Match(timeText, @"(\d+)\s*days?");
+            if (dayMatch.Success)
+            {
+                int.TryParse(dayMatch.Groups[1].Value, out days);
+            }
+
+            var hourMatch = Regex.Match(timeText, @"(\d+)\s*hours?");
+            if (hourMatch.Success)
+            {
+                int.TryParse(hourMatch.Groups[1].Value, out hours);
+            }
+
+            return ((long)days * 24 + hours) * 3600;
         }
 
         /// <summary>

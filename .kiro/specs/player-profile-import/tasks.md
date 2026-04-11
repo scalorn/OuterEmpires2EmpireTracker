@@ -39,8 +39,8 @@ Implement a clipboard-based HTML parser for importing player profile data from t
   - [x] 3.3 Implement ParseSkillPoints — extract available SP from Profile_Skills_BankedContainer_Available element
     - _Requirements: 4.1, 4.2_
 
-- [ ] 4. Implement skill group and individual skill parsing
-  - [~] 4.1 Implement ParseSkillGroups — iterate Profile_Skill_Group elements, match display names to SkillGroupName enum via reverse lookup dictionary, set locked/unlocked state based on Profile_Skill_Group_Disabled presence
+- [-] 4. Implement skill group and individual skill parsing
+  - [-] 4.1 Implement ParseSkillGroups — iterate Profile_Skill_Group elements, match display names to SkillGroupName enum via reverse lookup dictionary, set locked/unlocked state based on Profile_Skill_Group_Disabled presence
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
   - [~] 4.2 Implement ParseSkills — iterate individual skill elements within each group, extract level from completed level boxes, detect training-in-progress from training box, parse training time remaining into CountDownTime
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
