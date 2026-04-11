@@ -31,12 +31,12 @@ Implement a clipboard-based HTML parser for importing player profile data from t
     - Generate random non-negative decimals, format with commas, parse with ParseFormattedNumber, assert equality
     - **Validates: Requirements 2.1, 3.2**
 
-- [ ] 3. Implement rank and skill point parsing
-  - [~] 3.1 Implement ParseHeadlineFields — extract CitizenId, RegistrationDate, ActiveTime from ProfileHeadlineRow elements
+- [x] 3. Implement rank and skill point parsing
+  - [x] 3.1 Implement ParseHeadlineFields — extract CitizenId, RegistrationDate, ActiveTime from ProfileHeadlineRow elements
     - _Requirements: 9.5_
-  - [~] 3.2 Implement ParseRankTracks — identify Public/Private/Military tracks by Bar_Public/Bar_Private/Bar_Military CSS classes, extract rank level, title, current XP, and next XP
+  - [x] 3.2 Implement ParseRankTracks — identify Public/Private/Military tracks by Bar_Public/Bar_Private/Bar_Military CSS classes, extract rank level, title, current XP, and next XP
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 9.6_
-  - [~] 3.3 Implement ParseSkillPoints — extract available SP from Profile_Skills_BankedContainer_Available element
+  - [x] 3.3 Implement ParseSkillPoints — extract available SP from Profile_Skills_BankedContainer_Available element
     - _Requirements: 4.1, 4.2_
 
 - [ ] 4. Implement skill group and individual skill parsing

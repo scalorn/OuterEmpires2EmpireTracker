@@ -125,7 +125,35 @@ namespace OE2EmpireTracker.Parsers
         /// </summary>
         internal static void ParseHeadlineFields(PlayerProfile profile, XmlDocument doc)
         {
-            // Stub — implemented in task 3.1
+            var rows = doc.SelectNodes("//div[contains(@class,'ProfileHeadlineRow')]");
+            if (rows == null || rows.Count == 0)
+            {
+                Log.Warn("No ProfileHeadlineRow elements found in clipboard HTML");
+                return;
+            }
+
+            foreach (XmlNode row in rows)
+            {
+                var titleNode = row.SelectSingleNode(".//div[contains(@class,'ProfileHeadline_Title')]");
+                var textNode = row.SelectSingleNode(".//div[contains(@class,'ProfileHeadline_Text')]");
+                if (titleNode == null || textNode == null) continue;
+
+                string label = NormalizeWhitespace(titleNode.InnerText).TrimEnd(':');
+                string value = NormalizeWhitespace(textNode.InnerText);
+
+                switch (label)
+                {
+                    case "Citizen ID":
+                        profile.CitizenId = value;
+                        break;
+                    case "Registration Date":
+                        profile.RegistrationDate = value;
+                        break;
+                    case "Active Time":
+                        profile.ActiveTime = value;
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -133,7 +161,79 @@ namespace OE2EmpireTracker.Parsers
         /// </summary>
         internal static void ParseRankTracks(PlayerProfile profile, XmlDocument doc)
         {
-            // Stub — implemented in task 3.2
+            var sections = doc.SelectNodes("//div[contains(@class,'Profile_TrackInformation_Section')]");
+            if (sections == null || sections.Count == 0)
+            {
+                Log.Warn("No Profile_TrackInformation_Section elements found in clipboard HTML");
+                return;
+            }
+
+            foreach (XmlNode section in sections)
+            {
+                // Determine which track this is by looking for Bar_Public, Bar_Private, or Bar_Military
+                var barNode = section.SelectSingleNode(".//div[contains(@class,'Profile_TrackInformation_Section_LevelTrack_Bar_Public')]");
+                PlayerRank rank = null;
+                if (barNode != null)
+                {
+                    rank = profile.Public;
+                }
+                else
+                {
+                    barNode = section.SelectSingleNode(".//div[contains(@class,'Profile_TrackInformation_Section_LevelTrack_Bar_Private')]");
+                    if (barNode != null)
+                    {
+                        rank = profile.Private;
+                    }
+                    else
+                    {
+                        barNode = section.SelectSingleNode(".//div[contains(@class,'Profile_TrackInformation_Section_LevelTrack_Bar_Military')]");
+                        if (barNode != null)
+                        {
+                            rank = profile.Military;
+                        }
+                    }
+                }
+
+                if (rank == null)
+                {
+                    Log.Warn("Could not identify rank track type for a Profile_TrackInformation_Section");
+                    continue;
+                }
+
+                // Extract rank title from the first ui_text_white div_block in the section
+                // The structure has: icon, grey label ("Public Rank:"), white title ("Under Secretary (Grade 3)")
+                var titleNodes = section.SelectNodes(".//div[contains(@class,'ui_text_white') and contains(@class,'div_block')]");
+                if (titleNodes != null && titleNodes.Count > 0)
+                {
+                    string title = NormalizeWhitespace(titleNodes[0].InnerText);
+                    if (!string.IsNullOrEmpty(title))
+                        rank.Title = title;
+                }
+
+                // Extract rank level from LevelTrack_LevelNumber — text is like "Rank 42"
+                var levelNode = section.SelectSingleNode(".//div[contains(@class,'Profile_TrackInformation_Section_LevelTrack_LevelNumber')]");
+                if (levelNode != null)
+                {
+                    string levelText = NormalizeWhitespace(levelNode.InnerText);
+                    // Strip "Rank " prefix and parse the number
+                    string numPart = levelText.Replace("Rank", "").Trim();
+                    if (int.TryParse(numPart, out int level))
+                        rank.Rank = level;
+                }
+
+                // Extract XP from Bar_Text — format "1,010,379 / 3,063,750"
+                var xpNode = section.SelectSingleNode(".//div[contains(@class,'Profile_TrackInformation_Section_LevelTrack_Bar_Text')]");
+                if (xpNode != null)
+                {
+                    string xpText = NormalizeWhitespace(xpNode.InnerText);
+                    string[] parts = xpText.Split('/');
+                    if (parts.Length == 2)
+                    {
+                        rank.CurrentXP = ParseFormattedNumber(parts[0].Trim());
+                        rank.NextXP = ParseFormattedNumber(parts[1].Trim());
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -141,7 +241,24 @@ namespace OE2EmpireTracker.Parsers
         /// </summary>
         internal static void ParseSkillPoints(PlayerProfile profile, XmlDocument doc)
         {
-            // Stub — implemented in task 3.3
+            var spNode = doc.SelectSingleNode("//div[contains(@class,'Profile_Skills_BankedContainer_Available')]");
+            if (spNode == null)
+            {
+                Log.Warn("Profile_Skills_BankedContainer_Available element not found in clipboard HTML");
+                return;
+            }
+
+            string text = NormalizeWhitespace(spNode.InnerText);
+            // Text is like "42 SP" — strip non-digit characters and parse
+            string cleaned = new string(text.Where(c => char.IsDigit(c)).ToArray());
+            if (!string.IsNullOrEmpty(cleaned) && int.TryParse(cleaned, out int sp))
+            {
+                profile.SkillPoints = sp;
+            }
+            else
+            {
+                Log.Warn("Failed to parse skill points from text: {0}", text);
+            }
         }
 
         /// <summary>
