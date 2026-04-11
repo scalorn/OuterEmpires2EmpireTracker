@@ -168,6 +168,34 @@ namespace OE2EmpireTracker.Parsers
         }
 
         /// <summary>
+        /// Ensures the colony warehouse contains a resource record for the given
+        /// resource name and purity. Creates one with quantity 0 if missing.
+        /// Does NOT modify existing records.
+        /// </summary>
+        internal static void EnsureWarehouseResource(Colony colony, string resourceName, string purity)
+        {
+            if (colony == null ||
+                string.IsNullOrEmpty(resourceName) ||
+                string.IsNullOrEmpty(purity))
+            {
+                return;
+            }
+
+            var existing = colony.Items.FindResource(resourceName, purity);
+            if (existing.Count == 0)
+            {
+                var item = new Item(ItemType.ItemTypeEnum.Resource, resourceName);
+                item.UUID = Guid.NewGuid().ToString();
+                item.ResourcePurity = purity;
+                item.BaseItemTypeID = resourceName;
+                item.Quantity = 0;
+                colony.Items.AddItem(item);
+                Log.Info("Created warehouse resource: {0} ({1}) for colony {2}",
+                    resourceName, purity, colony.PlanetName);
+            }
+        }
+
+        /// <summary>
         /// Creates or updates a default survey for the colony, adding a resource entry
         /// for the given resource/purity/amount.
         /// Returns the default survey.

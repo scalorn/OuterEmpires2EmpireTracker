@@ -33,16 +33,16 @@ Automate mining rig and refinery setup during colony import/reimport. Adds surve
   - [x] 4.2 Write unit tests: creates new default survey, updates existing, sets SurveyID="DEFAULT", NickName null, amount="0" when maxRate=0
     - _Validates: Requirements 6.1, 6.2, 6.3, 6.4, 6.5_
 
-- [-] 5. Implement MinerSetupHelper.AssignSurvey
-  - [-] 5.1 Add `AssignSurvey` method — handles survey selection logic (preserve valid real, upgrade default→real, find best, fallback to default)
+- [x] 5. Implement MinerSetupHelper.AssignSurvey
+  - [x] 5.1 Add `AssignSurvey` method — handles survey selection logic (preserve valid real, upgrade default→real, find best, fallback to default)
     - _Requirements: 1.4, 1.5, 3.1, 3.2, 3.3_
-  - [-] 5.2 Write unit tests: preserves valid real survey, upgrades default to real, assigns best survey, falls back to default when no real exists, handles deleted survey
+  - [x] 5.2 Write unit tests: preserves valid real survey, upgrades default to real, assigns best survey, falls back to default when no real exists, handles deleted survey
     - _Validates: Requirements 1.4, 1.5, 3.1, 3.2, 3.3_
 
-- [ ] 6. Implement EnsureWarehouseResource utility
-  - [~] 6.1 Add `EnsureWarehouseResource` static method (shared between miner and refinery helpers) — creates warehouse resource record with qty 0 if missing
+- [-] 6. Implement EnsureWarehouseResource utility
+  - [-] 6.1 Add `EnsureWarehouseResource` static method (shared between miner and refinery helpers) — creates warehouse resource record with qty 0 if missing
     - _Requirements: 7.1, 7.2, 7.3_
-  - [~] 6.2 Write unit tests: creates missing resource, does not overwrite existing, handles null/empty inputs
+  - [-] 6.2 Write unit tests: creates missing resource, does not overwrite existing, handles null/empty inputs
     - _Validates: Requirements 7.1, 7.2, 7.3_
 
 - [ ] 7. Implement MinerSetupHelper.SetupTimer
