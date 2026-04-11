@@ -157,6 +157,7 @@
     <Compile Include="Services\ColonyBootstrap.cs" />
     <Compile Include="Parsers\ClipboardHelper.cs" />
     <Compile Include="Parsers\ColonyParser.cs" />
+    <Compile Include="Parsers\MinerSetupHelper.cs" />
     <Compile Include="Parsers\PlayerProfileParser.cs" />
     <Compile Include="Models\DeliveryRoute.cs" />
     <Compile Include="Models\DeliveryPlan.cs" />

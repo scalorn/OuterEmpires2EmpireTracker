@@ -14,17 +14,17 @@ Automate mining rig and refinery setup during colony import/reimport. Adds surve
   - [x] 1.3 Write unit test: ParseBuilding extracts maxRate from game JSON correctly
     - _Validates: Requirements 6.7_
 
-- [-] 2. Add DeterministicUUID.GenerateDefaultSurvey
-  - [-] 2.1 Add `DefaultSurveyNamespace` GUID and `GenerateDefaultSurvey(ownerUUID, planetName, systemName)` to DeterministicUUID.cs
+- [x] 2. Add DeterministicUUID.GenerateDefaultSurvey
+  - [x] 2.1 Add `DefaultSurveyNamespace` GUID and `GenerateDefaultSurvey(ownerUUID, planetName, systemName)` to DeterministicUUID.cs
     - _Requirements: 6.1_
-  - [-] 2.2 Write property test: deterministic default survey UUID round-trip (same inputs → same UUID, different inputs → different UUID)
+  - [x] 2.2 Write property test: deterministic default survey UUID round-trip (same inputs → same UUID, different inputs → different UUID)
     - _Validates: Requirements 6.1_
 
-- [ ] 3. Implement MinerSetupHelper.FindBestSurvey
-  - [~] 3.1 Create `MinerSetupHelper.cs` with `FindBestSurvey` method — searches real surveys by planet/resource/purity, selects closest match to maxRate (or highest amount if maxRate=0)
+- [-] 3. Implement MinerSetupHelper.FindBestSurvey
+  - [-] 3.1 Create `MinerSetupHelper.cs` with `FindBestSurvey` method — searches real surveys by planet/resource/purity, selects closest match to maxRate (or highest amount if maxRate=0)
     - Add `<Compile Include>` entry to OE2EmpireTracker.csproj
     - _Requirements: 1.1, 1.2, 1.3, 1.6_
-  - [~] 3.2 Write unit tests for FindBestSurvey: closest match, highest when maxRate=0, no match returns null, excludes default surveys
+  - [-] 3.2 Write unit tests for FindBestSurvey: closest match, highest when maxRate=0, no match returns null, excludes default surveys
     - _Validates: Requirements 1.1, 1.2, 1.3, 1.6_
 
 - [ ] 4. Implement MinerSetupHelper.CreateOrUpdateDefaultSurvey
