@@ -1,4 +1,5 @@
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Services.Migration;
@@ -193,6 +194,38 @@ namespace OE2EmpireTracker.Parsers
                 Log.Info("Created warehouse resource: {0} ({1}) for colony {2}",
                     resourceName, purity, colony.PlanetName);
             }
+        }
+
+        /// <summary>
+        /// Sets up the mining timer on a structure if maxRate > 0 and no active timer exists.
+        /// Creates a repeating timer aligned to the next clock-hour boundary.
+        /// </summary>
+        internal static void SetupTimer(ColonyStructure structure, decimal maxRate)
+        {
+            if (maxRate <= 0m)
+            {
+                Log.Info("Skipped timer creation for structure {0}: maxRate is 0 (miner assigned but not actively mining)",
+                    structure.UUID);
+                return;
+            }
+
+            // Preserve existing active repeating timer
+            if (structure.ProcessCompletionTime != null && structure.ProcessCompletionTime.IsRepeating)
+            {
+                Log.Info("Preserved existing active timer on structure {0}", structure.UUID);
+                return;
+            }
+
+            // Calculate seconds until next clock-hour boundary
+            DateTime now = DateTime.Now;
+            DateTime nextHour = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0).AddHours(1);
+            int secondsUntilNextHour = (int)(nextHour - now).TotalSeconds;
+
+            structure.ProcessCompletionTime = new CountDownTime();
+            structure.ProcessCompletionTime.StartRepeating(GameConstants.SecondsPerHour, secondsUntilNextHour);
+
+            Log.Info("Created repeating mining timer on structure {0}, next fire in {1}s",
+                structure.UUID, secondsUntilNextHour);
         }
 
         /// <summary>

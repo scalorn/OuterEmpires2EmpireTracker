@@ -39,16 +39,16 @@ Automate mining rig and refinery setup during colony import/reimport. Adds surve
   - [x] 5.2 Write unit tests: preserves valid real survey, upgrades default to real, assigns best survey, falls back to default when no real exists, handles deleted survey
     - _Validates: Requirements 1.4, 1.5, 3.1, 3.2, 3.3_
 
-- [-] 6. Implement EnsureWarehouseResource utility
-  - [-] 6.1 Add `EnsureWarehouseResource` static method (shared between miner and refinery helpers) — creates warehouse resource record with qty 0 if missing
+- [x] 6. Implement EnsureWarehouseResource utility
+  - [x] 6.1 Add `EnsureWarehouseResource` static method (shared between miner and refinery helpers) — creates warehouse resource record with qty 0 if missing
     - _Requirements: 7.1, 7.2, 7.3_
-  - [-] 6.2 Write unit tests: creates missing resource, does not overwrite existing, handles null/empty inputs
+  - [x] 6.2 Write unit tests: creates missing resource, does not overwrite existing, handles null/empty inputs
     - _Validates: Requirements 7.1, 7.2, 7.3_
 
-- [ ] 7. Implement MinerSetupHelper.SetupTimer
-  - [~] 7.1 Add `SetupTimer` method — creates repeating timer aligned to next hour boundary if maxRate > 0 and no existing timer
+- [-] 7. Implement MinerSetupHelper.SetupTimer
+  - [-] 7.1 Add `SetupTimer` method — creates repeating timer aligned to next hour boundary if maxRate > 0 and no existing timer
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
-  - [~] 7.2 Write unit tests: creates timer when maxRate > 0, skips when maxRate = 0, preserves existing timer, timer is repeating at SecondsPerHour
+  - [-] 7.2 Write unit tests: creates timer when maxRate > 0, skips when maxRate = 0, preserves existing timer, timer is repeating at SecondsPerHour
     - _Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5_
 
 - [ ] 8. Implement MinerSetupHelper.CleanupDefaultSurvey

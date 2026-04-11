@@ -283,6 +283,7 @@
     <Compile Include="Parsers\MinerSetupHelperCreateOrUpdateDefaultSurveyTests.cs" />
     <Compile Include="Parsers\MinerSetupHelperAssignSurveyTests.cs" />
     <Compile Include="Parsers\EnsureWarehouseResourceTests.cs" />
+    <Compile Include="Parsers\MinerSetupHelperSetupTimerTests.cs" />
     <Compile Include="Models\BlueprintOutputNameTests.cs" />
     <Compile Include="Services\JsonDefaultSkipTests.cs" />
     <Compile Include="Services\BughuntDiagnosticTest.cs" />
