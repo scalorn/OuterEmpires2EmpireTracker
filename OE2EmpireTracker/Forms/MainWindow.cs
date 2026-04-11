@@ -334,6 +334,24 @@ namespace OE2EmpireTracker
             new FormAbout().ShowDialog(this);
         }
 
+        private void contentsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new FormHelp().ShowDialog(this);
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.F1)
+            {
+                string topic = null;
+                if (ActiveMdiChild != null)
+                    topic = HelpTopicRegistry.GetTopicForForm(ActiveMdiChild.GetType().Name);
+                new FormHelp(topic).ShowDialog(this);
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         // -----------------------------------------------------------------------
         // Helper Methods
         // -----------------------------------------------------------------------

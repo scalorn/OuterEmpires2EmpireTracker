@@ -36,7 +36,7 @@ Add an in-app help system to OE2 Empire Tracker. Markdown docs live in `docs/` a
     - Add `<Compile Include="Services\HelpTopicRegistryTests.cs" />` to test csproj
     - _Requirements: 1.3, 6.3_
 
-- [-] 2. Create HelpRenderer and markdown documentation files
+- [x] 2. Create HelpRenderer and markdown documentation files
   - [x] 2.1 Create HelpRenderer static class
     - Create `OE2EmpireTracker/Services/HelpRenderer.cs`
     - Implement `RenderMarkdown(string markdownContent)` using Markdig pipeline to produce a full HTML document with `<html>`, `<head>`, `<style>`, and `<body>` elements
@@ -79,18 +79,18 @@ Add an in-app help system to OE2 Empire Tracker. Markdown docs live in `docs/` a
     - Add `<Compile Include="Services\HelpRendererTests.cs" />` to test csproj
     - _Requirements: 3.3, 3.4, 4.5, 7.4_
 
-- [~] 3. Checkpoint
+- [x] 3. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Create FormHelp and integrate with MainWindow
-  - [~] 4.1 Create FormHelp.Designer.cs (hand-written)
+- [x] 4. Create FormHelp and integrate with MainWindow
+  - [x] 4.1 Create FormHelp.Designer.cs (hand-written)
     - Create `OE2EmpireTracker/Forms/FormHelp.Designer.cs`
     - Define `SplitContainer` with `TreeView` (left, ~250px) and `WebBrowser` (right)
     - Set form properties: `Text = "Help"`, `Size = 900x600`, `StartPosition = CenterParent`
     - Add `<Compile Include="Forms\FormHelp.Designer.cs"><DependentUpon>FormHelp.cs</DependentUpon></Compile>` to csproj
     - _Requirements: 4.1, 4.2, 4.3, 4.6_
 
-  - [~] 4.2 Create FormHelp.cs
+  - [x] 4.2 Create FormHelp.cs
     - Create `OE2EmpireTracker/Forms/FormHelp.cs`
     - Constructor accepts optional `string initialTopic` parameter
     - Populate TreeView from `HelpTopicRegistry.GetAllTopics()` on load
@@ -101,14 +101,14 @@ Add an in-app help system to OE2 Empire Tracker. Markdown docs live in `docs/` a
     - Add `<Compile Include="Forms\FormHelp.cs"><SubType>Form</SubType></Compile>` to csproj
     - _Requirements: 4.4, 4.5, 4.6, 7.3, 3.3, 3.4_
 
-  - [~] 4.3 Add Help → Contents menu item and F1 handling to MainWindow
+  - [x] 4.3 Add Help → Contents menu item and F1 handling to MainWindow
     - Add `contentsToolStripMenuItem` to `MainWindow.Designer.cs` in the Help menu, above About
     - Set `ShortcutKeys = Keys.Control | Keys.F1`
     - Add click handler in `MainWindow.cs` that opens `new FormHelp().ShowDialog(this)`
     - Override `ProcessCmdKey` in `MainWindow.cs` to handle F1: look up `ActiveMdiChild` type name in `HelpTopicRegistry`, open `FormHelp` with that topic
     - _Requirements: 5.1, 5.2, 5.3, 6.1, 6.2, 6.3, 6.4_
 
-- [~] 5. Final checkpoint
+- [x] 5. Final checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
