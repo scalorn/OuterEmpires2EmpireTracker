@@ -365,8 +365,14 @@ namespace OE2EmpireTracker.Parsers
                 Log.Info("Colony structures merge: {0} updated, {1} added (total: {2})",
                     updated, added, colony.Structures.Count);
 
-                MinerSetupHelper.SetupMiners(colony, empireContext, maxRates);
-                RefinerySetupHelper.SetupRefineries(colony, empireContext);
+                // Only run setup helpers for real imports (colony has an OwnerUUID).
+                // Temp parses (ParseClipboardToTemp) create colonies with no OwnerUUID
+                // and must not have side effects on PlayerContext.SurveyList.
+                if (!string.IsNullOrEmpty(colony.OwnerUUID))
+                {
+                    MinerSetupHelper.SetupMiners(colony, empireContext, maxRates);
+                    RefinerySetupHelper.SetupRefineries(colony, empireContext);
+                }
             }
             catch (Exception ex)
             {

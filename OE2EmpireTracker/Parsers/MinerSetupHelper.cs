@@ -316,6 +316,23 @@ namespace OE2EmpireTracker.Parsers
             string defaultUUID = DeterministicUUID.GenerateDefaultSurvey(
                 colony.OwnerUUID, colony.PlanetName, colony.SystemName);
 
+            // Remove duplicate DEFAULT surveys for the same planet/owner (stale orphans
+            // from earlier bugs). Keep only the one with the correct deterministic UUID.
+            var duplicates = playerContext.SurveyList
+                .Where(s =>
+                    s.UUID != defaultUUID &&
+                    string.Equals(s.SurveyID, "DEFAULT", StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(s.PlanetName, colony.PlanetName, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(s.OwnerUUID, colony.OwnerUUID, StringComparison.Ordinal))
+                .ToList();
+
+            foreach (var dup in duplicates)
+            {
+                playerContext.SurveyList.Remove(dup);
+                Log.Info("Removed duplicate default survey {0} for planet {1} (correct UUID is {2})",
+                    dup.UUID, colony.PlanetName, defaultUUID);
+            }
+
             Survey defaultSurvey = playerContext.SurveyList
                 .FirstOrDefault(s => s.UUID == defaultUUID);
 
@@ -373,6 +390,25 @@ namespace OE2EmpireTracker.Parsers
             // Search for existing default survey with this UUID
             Survey defaultSurvey = playerContext.SurveyList
                 .FirstOrDefault(s => s.UUID == uuid);
+
+            // Fallback: find any DEFAULT survey for the same planet (handles stale
+            // duplicates from earlier bugs where temp parse created orphan surveys)
+            if (defaultSurvey == null)
+            {
+                defaultSurvey = playerContext.SurveyList
+                    .FirstOrDefault(s =>
+                        string.Equals(s.SurveyID, "DEFAULT", StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(s.PlanetName, colony.PlanetName, StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(s.OwnerUUID, colony.OwnerUUID, StringComparison.Ordinal));
+
+                if (defaultSurvey != null)
+                {
+                    // Fix the UUID to the correct deterministic value
+                    Log.Info("Found stale default survey {0} for planet {1}, updating UUID to {2}",
+                        defaultSurvey.UUID, colony.PlanetName, uuid);
+                    defaultSurvey.UUID = uuid;
+                }
+            }
 
             if (defaultSurvey != null)
             {
