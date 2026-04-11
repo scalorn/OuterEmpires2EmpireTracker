@@ -21,7 +21,7 @@ Add an in-app help system to OE2 Empire Tracker. Markdown docs live in `docs/` a
     - Add `<Compile Include="Services\HelpTopicRegistry.cs" />` to the csproj
     - _Requirements: 6.3, 6.4, 1.3_
 
-  - [ ]* 1.3 Write property test for HelpTopicRegistry
+  - [-] 1.3 Write property test for HelpTopicRegistry
     - **Property 2: Topic registry returns correct mapping or fallback**
     - Create `OE2EmpireTracker.Tests/Services/HelpTopicRegistryPropertyTests.cs`
     - Generate random strings with FsCheck; verify mapped types return correct file, all others return `"README.md"`
@@ -29,7 +29,7 @@ Add an in-app help system to OE2 Empire Tracker. Markdown docs live in `docs/` a
     - Add `<Compile Include="Services\HelpTopicRegistryPropertyTests.cs" />` to test csproj
     - **Validates: Requirements 6.3, 6.4**
 
-  - [ ]* 1.4 Write unit tests for HelpTopicRegistry
+  - [~] 1.4 Write unit tests for HelpTopicRegistry
     - Create `OE2EmpireTracker.Tests/Services/HelpTopicRegistryTests.cs`
     - Test `GetAllTopics` returns 9 topics with correct filenames
     - Test `GetTopicForForm` for each of the 9 specific form-type mappings
@@ -62,7 +62,7 @@ Add an in-app help system to OE2 Empire Tracker. Markdown docs live in `docs/` a
     - Add 9 `<EmbeddedResource Include="..\docs\{file}"><Link>docs\{file}</Link></EmbeddedResource>` entries to `OE2EmpireTracker/OE2EmpireTracker.csproj` for each markdown file
     - _Requirements: 3.1, 3.2_
 
-  - [ ]* 2.4 Write property tests for HelpRenderer
+  - [~] 2.4 Write property tests for HelpRenderer
     - Create `OE2EmpireTracker.Tests/Services/HelpRendererPropertyTests.cs`
     - **Property 1: Rendered HTML has complete document structure** — generate random non-null strings, verify output contains `<html>`, `<head>`, `<style`, `<body>`
     - **Property 4: Markdown rendering preserves content** — generate random alphanumeric words, embed in markdown, verify word appears in HTML output
@@ -70,7 +70,7 @@ Add an in-app help system to OE2 Empire Tracker. Markdown docs live in `docs/` a
     - Add `<Compile Include="Services\HelpRendererPropertyTests.cs" />` to test csproj
     - **Validates: Requirements 2.3, 7.1, 7.2, 7.4**
 
-  - [ ]* 2.5 Write unit tests for HelpRenderer
+  - [~] 2.5 Write unit tests for HelpRenderer
     - Create `OE2EmpireTracker.Tests/Services/HelpRendererTests.cs`
     - Test `RenderTopic` for all registered topics returns non-null (Property 3)
     - Test `RenderTopic` with unknown resource returns null
