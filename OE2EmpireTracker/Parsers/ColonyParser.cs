@@ -376,9 +376,8 @@ namespace OE2EmpireTracker.Parsers
                 }
             }
 
-            // Update mining resource if parsed has one and existing doesn't
-            if (!string.IsNullOrEmpty(parsed.MiningSurveyResource) &&
-                string.IsNullOrEmpty(existing.MiningSurveyResource))
+            // Update mining resource from game (game is authoritative)
+            if (!string.IsNullOrEmpty(parsed.MiningSurveyResource))
             {
                 existing.MiningSurveyResource = parsed.MiningSurveyResource;
                 existing.RefiningResourcePurity = parsed.RefiningResourcePurity;

@@ -261,6 +261,61 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         [Test]
+        public void Reimport_M1_MiningResourceUpdatedFromGame()
+        {
+            // First import
+            var colony = ParseM1Fresh();
+            var miningRigs = colony.Structures
+                .Where(s => !string.IsNullOrEmpty(s.MiningSurveyResource))
+                .ToList();
+            Assert.That(miningRigs.Count, Is.GreaterThan(0),
+                "M1 should have at least one mining rig");
+
+            // Tamper: clear mining resource on all rigs to simulate stale data
+            foreach (var rig in miningRigs)
+            {
+                rig.MiningSurveyResource = null;
+                rig.RefiningResourcePurity = null;
+            }
+
+            // Reimport same HTML — game is authoritative, should restore resources
+            string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranIIM1.html");
+            string html = ExtractFragment(clipboardData);
+            _parser.ProcessHtml(colony, html, _empireContext);
+
+            var rigsAfter = colony.Structures
+                .Where(s => !string.IsNullOrEmpty(s.MiningSurveyResource))
+                .ToList();
+
+            Assert.That(rigsAfter.Count, Is.EqualTo(miningRigs.Count),
+                "After reimport, all mining rigs should have their resource restored");
+        }
+
+        [Test]
+        public void Reimport_M1_MiningResourceOverwrittenByGame()
+        {
+            // First import
+            var colony = ParseM1Fresh();
+            var miningRigs = colony.Structures
+                .Where(s => !string.IsNullOrEmpty(s.MiningSurveyResource))
+                .ToList();
+            Assert.That(miningRigs.Count, Is.GreaterThan(0));
+
+            // Tamper: set a fake resource to simulate the player reassigning in-game
+            string originalResource = miningRigs[0].MiningSurveyResource;
+            miningRigs[0].MiningSurveyResource = "Fake Resource";
+            miningRigs[0].RefiningResourcePurity = "Low";
+
+            // Reimport — game value should overwrite the fake
+            string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranIIM1.html");
+            string html = ExtractFragment(clipboardData);
+            _parser.ProcessHtml(colony, html, _empireContext);
+
+            Assert.That(miningRigs[0].MiningSurveyResource, Is.EqualTo(originalResource),
+                "After reimport, mining resource should be overwritten by game value");
+        }
+
+        [Test]
         public void Preservation_M1_EmptyColonyImport_WorkerAssignments()
         {
             var colony = ParseM1Fresh();
