@@ -17,7 +17,7 @@
 - First line: concise summary of the change
 - Body: list the specific changes grouped by area (UI, parser, tests, etc.)
 - Reference the spec if one exists
-- Include a `Prompt:` footer with the user's original request that triggered the change (quote it verbatim, trimmed to one or two sentences if long)
+- Include a `Prompt:` footer with ALL user prompts since the last commit, not just the most recent one. Quote each prompt verbatim (trimmed to one or two sentences if long), one per line. This provides full traceability of the conversation that led to the change.
 
 ## Testing
 - Use `getDiagnostics` to verify code compiles cleanly after changes
