@@ -70,20 +70,20 @@ Implement a clipboard-based HTML parser for importing player profile data from t
     - Generate profile lists and a parsed profile with unique name, assert list grows by one with non-empty UUID
     - **Validates: Requirements 7.2**
 
-- [-] 7. Unit tests for PlayerProfileParser
+- [x] 7. Unit tests for PlayerProfileParser
   - [x] 7.1 Create OE2EmpireTracker.Tests/Parsers/PlayerProfileParserTests.cs with integration tests against PlayerProfileScalorn.html — assert name, faction, credits, all three ranks (level, title, currentXP, nextXP), skill points, skill group states, individual skill levels, training status, CitizenId, RegistrationDate, ActiveTime
     - Add `<Compile Include>` and `<Content Include>` entries to test csproj
     - _Requirements: 1.1, 1.2, 2.1, 3.1, 3.2, 3.3, 4.1, 5.1, 5.2, 5.3, 6.1, 6.2, 6.3, 9.1, 9.2, 9.3, 9.4, 9.5, 9.6_
   - [x] 7.2 Add edge case tests — empty HTML, missing ui_character_detail, missing rank sections, malformed numbers, unknown skill names
     - _Requirements: 1.3, 2.2, 3.4, 4.2, 6.5_
 
-- [ ] 8. Update csproj files and final wiring
-  - [~] 8.1 Ensure OE2EmpireTracker.csproj has `<Compile Include="Parsers\PlayerProfileParser.cs" />` entry
+- [x] 8. Update csproj files and final wiring
+  - [x] 8.1 Ensure OE2EmpireTracker.csproj has `<Compile Include="Parsers\PlayerProfileParser.cs" />` entry
     - _Requirements: 10.1_
-  - [~] 8.2 Ensure OE2EmpireTracker.Tests.csproj has `<Compile Include>` entries for all new test files and `<Content Include>` for PlayerProfileScalorn.html with CopyToOutputDirectory
+  - [x] 8.2 Ensure OE2EmpireTracker.Tests.csproj has `<Compile Include>` entries for all new test files and `<Content Include>` for PlayerProfileScalorn.html with CopyToOutputDirectory
     - _Requirements: 10.1_
 
-- [~] 9. Final checkpoint — Ensure all tests pass
+- [x] 9. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

@@ -15,7 +15,19 @@ The left panel shows a list of all player profiles. The right panel shows detail
 - **Total Credits** — Your current credit balance.
 - **Skill Points** — Available unspent skill points.
 
-## Creating a Profile
+## Importing a Profile from the Game
+
+The fastest way to create or update a profile is to import it directly from the game:
+
+1. In the game browser, open your character's profile panel (the left slideout with ranks, skills, and stats).
+2. Select all (Ctrl+A) and copy (Ctrl+C) the page content.
+3. In the tracker, open **Forms → Player Profiles** and click **Import**.
+
+The tracker parses your character name, faction, credits, all three rank tracks (level, title, XP), skill points, skill group states, and individual skill levels including training status. If a profile with the same name already exists, it updates the existing one. Otherwise it creates a new profile automatically.
+
+The import also captures your Citizen ID, Registration Date, and Active Time from the profile headline.
+
+## Creating a Profile Manually
 
 1. Click **New** to clear the form.
 2. Enter a unique **Name** for the profile.

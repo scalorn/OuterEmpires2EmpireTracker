@@ -24,7 +24,7 @@ Build delivery routes between colonies, then auto-fill plans based on what each 
 Paste survey HTML and the tracker extracts planet name, resources, purities, and abundance data. Duplicate surveys are merged automatically. Use this to plan where to drop your next colony.
 
 ### Player Profiles & Skills
-Track multiple characters with their skills, ranks, and faction. Skills like Builder, Extraction Focus, and Research Focus affect colony operations — the tracker accounts for them. Switch between players with a dropdown and all your data follows.
+Track multiple characters with their skills, ranks, and faction. Import your profile directly from the game — copy the profile panel HTML and click Import. The tracker extracts your name, faction, credits, all three rank tracks, skill points, skill group states, individual skill levels, and training status. Skills like Builder, Extraction Focus, and Research Focus affect colony operations — the tracker accounts for them. Switch between players with a dropdown and all your data follows.
 
 ### Window State Persistence
 Every form remembers its position, size, column widths, sort order, and filter state. Open multiple instances of the same form with different layouts. Your workspace is exactly how you left it next time you launch.
