@@ -74,9 +74,9 @@ Automate mining rig and refinery setup during colony import/reimport. Adds surve
   - [x] 11.1 Add calls to `MinerSetupHelper.SetupMiners(colony, empireContext, maxRates)` and `RefinerySetupHelper.SetupRefineries(colony, empireContext)` after the merge loop in `ParseColonyBuildingsFromJson`
     - _Requirements: 4.3, 8.5_
 
-- [ ] 12. Update csproj files and verify build
-  - [~] 12.1 Ensure OE2EmpireTracker.csproj has `<Compile Include>` for MinerSetupHelper.cs and RefinerySetupHelper.cs
-  - [~] 12.2 Ensure OE2EmpireTracker.Tests.csproj has `<Compile Include>` entries for all new test files
+- [x] 12. Update csproj files and verify build
+  - [x] 12.1 Ensure OE2EmpireTracker.csproj has `<Compile Include>` for MinerSetupHelper.cs and RefinerySetupHelper.cs
+  - [x] 12.2 Ensure OE2EmpireTracker.Tests.csproj has `<Compile Include>` entries for all new test files
 
 - [ ] 13. Final checkpoint — Build and run all tests
   - Build solution and run all tests. Ask the user if questions arise.
