@@ -279,6 +279,7 @@
     <Compile Include="Parsers\ColonyParserDedupeTests.cs" />
     <Compile Include="Parsers\ColonyParserIdempotencyTests.cs" />
     <Compile Include="Parsers\ColonyParserMaxRateTests.cs" />
+    <Compile Include="Parsers\ColonyParserRefineryResourceTests.cs" />
     <Compile Include="Parsers\MinerSetupHelperFindBestSurveyTests.cs" />
     <Compile Include="Parsers\MinerSetupHelperCreateOrUpdateDefaultSurveyTests.cs" />
     <Compile Include="Parsers\MinerSetupHelperAssignSurveyTests.cs" />

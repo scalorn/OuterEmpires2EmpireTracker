@@ -42,7 +42,7 @@ flowchart TD
 ### Call Flow
 
 1. `ParseBuilding` — extracts `maxRate` from building JSON, returns it alongside the structure
-2. `ParseColonyBuildingsFromJson` — collects `maxRate` values into a `Dictionary<string, decimal>` keyed by structure UUID during the merge loop, then calls:
+2. `ParseColonyBuildingsFromJson` — after parsing each building, checks if the blueprint type is a Refinery and if so copies `MiningSurveyResource` to `RefiningResource` (the game JSON uses `resourceName` for both miners and refineries, but the model uses separate fields). Collects `maxRate` values into a `Dictionary<string, decimal>` keyed by structure UUID during the merge loop, then calls:
    - `MinerSetupHelper.SetupMiners(colony, empireContext, maxRates)` for mining rigs
    - `RefinerySetupHelper.SetupRefineries(colony, empireContext)` for refineries
 3. `MinerSetupHelper.SetupMiners` — iterates all colony structures, identifies mining rigs via blueprint type, looks up each structure's maxRate from the dictionary, and for each:

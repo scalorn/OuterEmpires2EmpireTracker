@@ -216,6 +216,19 @@ namespace OE2EmpireTracker.Parsers
                     var parsed = ParseBuilding(building, flatpackLookup, out decimal maxRate);
                     if (parsed != null)
                     {
+                        // For refineries, the game JSON uses resourceName for the refining resource
+                        // but ParseMiningResource puts it on MiningSurveyResource. Copy it to
+                        // RefiningResource so RefinerySetupHelper can find it.
+                        if (!string.IsNullOrEmpty(parsed.MiningSurveyResource) &&
+                            !string.IsNullOrEmpty(parsed.FlatpackBlueprintUUID))
+                        {
+                            var bp = empireContext?.FindGlobalBlueprint(parsed.FlatpackBlueprintUUID);
+                            if (bp != null && bp.BluePrintType == BlueprintTypes.Refinery)
+                            {
+                                parsed.RefiningResource = parsed.MiningSurveyResource;
+                            }
+                        }
+
                         parsedMaxRates[parsedBuildings.Count] = maxRate;
                         parsedBuildings.Add(parsed);
                     }
@@ -399,6 +412,12 @@ namespace OE2EmpireTracker.Parsers
             {
                 existing.MiningSurveyResource = parsed.MiningSurveyResource;
                 existing.RefiningResourcePurity = parsed.RefiningResourcePurity;
+            }
+
+            // Update refining resource from game (set by parser for refinery structures)
+            if (!string.IsNullOrEmpty(parsed.RefiningResource))
+            {
+                existing.RefiningResource = parsed.RefiningResource;
             }
 
             // Update manufacturing quantity from game
