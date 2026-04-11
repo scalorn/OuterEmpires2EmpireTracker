@@ -447,7 +447,8 @@ namespace OE2EmpireTracker.Forms.Colony
 
             // Selection: unrefined resources from warehouse + actively mined resources
             flpSelection.Visible = true;
-            flpManufacturingControls.Visible = false;
+            flpManufacturingControls.Visible = true;
+            chkStageResources.Visible = false;
             txtQuantity.Visible = false;
             PopulateSelectionWithUnrefinedResources();
             if (!string.IsNullOrEmpty(ColonyStructureData.RefiningResource))
@@ -687,7 +688,8 @@ namespace OE2EmpireTracker.Forms.Colony
 
             // Selection: researchable blueprints
             flpSelection.Visible = true;
-            flpManufacturingControls.Visible = false;
+            flpManufacturingControls.Visible = true;
+            chkStageResources.Visible = false;
             txtQuantity.Visible = false;
             if (cmbSelection.Items.Count <= 1 || !string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID))
             {
