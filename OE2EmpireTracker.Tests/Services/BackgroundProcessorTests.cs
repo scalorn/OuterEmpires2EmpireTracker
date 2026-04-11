@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Models;
 using System;
@@ -353,14 +353,14 @@ namespace OE2EmpireTracker.Tests.Services
         /// <summary>
         /// **Validates: Requirements 5.1, 5.2, 5.3**
         ///
-        /// Property 5: Conditional persistence â€” exactly once or zero
+        /// Property 5: Conditional persistence Ã¢â‚¬â€ exactly once or zero
         ///
         /// For any processing cycle, WriteContext() should be called exactly
         /// once if at least one colony was processed, and exactly zero times
         /// if no colonies were processed. Verified by monitoring the temp
         /// file's last write time before and after each cycle.
         /// </summary>
-        // Feature: background-processing, Property 5: Conditional persistence â€” exactly once or zero
+        // Feature: background-processing, Property 5: Conditional persistence Ã¢â‚¬â€ exactly once or zero
         [Test]
         public void RunCycleOnce_WritesContextExactlyOnceIfProcessed_ZeroOtherwise()
         {
@@ -466,20 +466,22 @@ namespace OE2EmpireTracker.Tests.Services
 
                         if (shouldError[c])
                         {
-                            // Error cycle: add a colony with an expired ProcessCompletionTime
-                            // but no valid FlatpackBlueprintUUID â€” ProcessColony() will throw
-                            // NullReferenceException when accessing FlatpackBlueprint.BluePrintType
+                            // Error cycle: add a colony whose Structures list contains a null
+                            // entry. ProcessColony() will throw NullReferenceException when
+                            // iterating structures and accessing properties on null.
                             var errorColony = new Colony();
                             errorColony.UUID = Guid.NewGuid().ToString();
                             errorColony.ColonyName = "ErrorColony";
                             errorColony.PlanetName = "ErrorPlanet";
 
-                            var errorStructure = new ColonyStructure();
-                            errorStructure.UUID = Guid.NewGuid().ToString();
-                            errorStructure.FlatpackBlueprintUUID = null; // no valid blueprint
-                            // Expired ProcessCompletionTime triggers the code path that calls FindBlueprint
-                            errorStructure.ProcessCompletionTime = CreateExpiredOneShot();
-                            errorColony.Structures.Add(errorStructure);
+                            // Add a valid structure with an expired timer so HasExpiredTimers() returns true
+                            var triggerStructure = new ColonyStructure();
+                            triggerStructure.UUID = Guid.NewGuid().ToString();
+                            triggerStructure.ProcessCompletionTime = CreateExpiredOneShot();
+                            errorColony.Structures.Add(triggerStructure);
+
+                            // Add a null entry to force NullReferenceException during iteration
+                            errorColony.Structures.Add(null);
 
                             pc.ColonyList.Add(errorColony);
                         }
@@ -490,7 +492,7 @@ namespace OE2EmpireTracker.Tests.Services
                             int successType = rng.Next(0, 3);
                             if (successType == 0)
                             {
-                                // Empty colony list â€” no processing, no error
+                                // Empty colony list Ã¢â‚¬â€ no processing, no error
                             }
                             else if (successType == 1)
                             {

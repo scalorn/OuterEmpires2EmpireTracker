@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using NLog;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Constants;
 using System;
@@ -10,6 +11,7 @@ namespace OE2EmpireTracker.Models
 {
     public class Colony
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         public string UUID { get; set; }
         public string OwnerUUID { get; set; } = string.Empty;
 
@@ -94,6 +96,12 @@ namespace OE2EmpireTracker.Models
                      (!structure.ProcessCompletionTime.IsRepeating && structure.ProcessCompletionTime.TimeRemaining <= 0)))
                 {
                     Blueprint FlatpackBlueprint = PlayerContext.GetInstance().FindBlueprint(structure.FlatpackBlueprintUUID);
+                    if (FlatpackBlueprint == null)
+                    {
+                        Log.Warn("ProcessColony: blueprint not found for structure {0} (FlatpackBP={1}), skipping",
+                            structure.UUID, structure.FlatpackBlueprintUUID ?? "(null)");
+                        continue;
+                    }
                     if (FlatpackBlueprint.BluePrintType == BlueprintTypes.MiningRig)
                     {
                         ProcessMiningRig(structure);
@@ -128,7 +136,20 @@ namespace OE2EmpireTracker.Models
         private void ProcessMiningRig(ColonyStructure structure)
         {
             Survey survey = PlayerContext.GetInstance().FindSurvey(structure.MiningSurvey);
-            SurveyResource surveyResource = survey.Resources[structure.MiningSurveyResource];
+            if (survey == null)
+            {
+                Log.Warn("ProcessMiningRig: survey {0} not found for structure {1}, skipping",
+                    structure.MiningSurvey ?? "(null)", structure.UUID);
+                return;
+            }
+
+            SurveyResource surveyResource;
+            if (!survey.Resources.TryGetValue(structure.MiningSurveyResource, out surveyResource))
+            {
+                Log.Warn("ProcessMiningRig: resource '{0}' not found in survey {1} for structure {2}, skipping",
+                    structure.MiningSurveyResource ?? "(null)", structure.MiningSurvey, structure.UUID);
+                return;
+            }
             List<Item> items = Items.FindResource(surveyResource.Resource, surveyResource.Purity);
             int quantityInt = 0;
             Decimal leftOver = structure.MiningLeftOvers;
