@@ -16,16 +16,16 @@ Fix structure duplication on colony reimport (stale FlatpackBlueprintUUID refere
     - Generate random (ownerUUID, planetName, systemName) triples, assert Generate called twice yields same value; different triples yield different UUIDs
     - **Validates: Requirements 2.3**
 
-- [-] 2. Extend RemapUUID to walk colony references
-  - [-] 2.1 Add Colony.UUID, RouteStop.ColonyUUID, and DeliveryPlanStop.ColonyUUID walking to RemapUUID.Remap()
+- [x] 2. Extend RemapUUID to walk colony references
+  - [x] 2.1 Add Colony.UUID, RouteStop.ColonyUUID, and DeliveryPlanStop.ColonyUUID walking to RemapUUID.Remap()
     - _Requirements: 2.5_
-  - [~] 2.2 Write property test for RemapUUID colony reference walking
+  - [x] 2.2 Write property test for RemapUUID colony reference walking
     - **Property 3: RemapUUID walks all colony references**
     - Generate colonies, delivery routes, and delivery plans with matching ColonyUUIDs, call Remap, assert all references updated
     - **Validates: Requirements 2.5**
 
-- [ ] 3. Implement Migration002_ColonyDeterministicUUIDs
-  - [~] 3.1 Create Migration002_ColonyDeterministicUUIDs.cs with Phase 1 (stale FlatpackBlueprintUUID cleanup via LegacyUUID lookup) and Phase 2 (deterministic colony UUID assignment via RemapUUID.Remap)
+- [-] 3. Implement Migration002_ColonyDeterministicUUIDs
+  - [-] 3.1 Create Migration002_ColonyDeterministicUUIDs.cs with Phase 1 (stale FlatpackBlueprintUUID cleanup via LegacyUUID lookup) and Phase 2 (deterministic colony UUID assignment via RemapUUID.Remap)
     - Add `<Compile Include>` entry to OE2EmpireTracker.csproj
     - _Requirements: 2.1, 2.4_
   - [~] 3.2 Register Migration002 in MigrationRunner.cs — add to Migrations dictionary at key 2, bump CurrentVersion to 2
