@@ -136,6 +136,7 @@
     <Compile Include="Services\BlueprintReferenceCounter.cs" />
     <Compile Include="Services\EvolutionChainService.cs" />
     <Compile Include="Services\HelpTopicRegistry.cs" />
+    <Compile Include="Services\HelpRenderer.cs" />
     <Compile Include="Services\BackgroundProcessor.cs" />
     <Compile Include="Models\BaselineGameConstants.cs" />
     <Compile Include="Models\ResearchTimeEntry.cs" />
@@ -360,6 +361,33 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\README.md">
+      <Link>docs\README.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\getting-started.md">
+      <Link>docs\getting-started.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\colonies.md">
+      <Link>docs\colonies.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\blueprints.md">
+      <Link>docs\blueprints.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\surveys.md">
+      <Link>docs\surveys.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\delivery-routes.md">
+      <Link>docs\delivery-routes.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\player-profiles.md">
+      <Link>docs\player-profiles.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\background-processing.md">
+      <Link>docs\background-processing.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\window-state.md">
+      <Link>docs\window-state.md</Link>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
