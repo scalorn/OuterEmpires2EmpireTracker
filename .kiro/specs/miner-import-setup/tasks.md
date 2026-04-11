@@ -57,17 +57,17 @@ Automate mining rig and refinery setup during colony import/reimport. Adds surve
   - [x] 8.2 Write unit tests: removes stale resources, deletes empty default survey, preserves active resources
     - _Validates: Requirements 6.9_
 
-- [-] 9. Implement MinerSetupHelper.SetupMiners orchestrator
-  - [-] 9.1 Add `SetupMiners(colony, empireContext, maxRates)` method — iterates structures, identifies mining rigs, looks up maxRate from dictionary, calls AssignSurvey + EnsureWarehouseResource + SetupTimer + CleanupDefaultSurvey
+- [x] 9. Implement MinerSetupHelper.SetupMiners orchestrator
+  - [x] 9.1 Add `SetupMiners(colony, empireContext, maxRates)` method — iterates structures, identifies mining rigs, looks up maxRate from dictionary, calls AssignSurvey + EnsureWarehouseResource + SetupTimer + CleanupDefaultSurvey
     - _Requirements: 4.1, 4.2, 4.3, 5.1, 5.2, 5.3, 5.4, 5.5_
-  - [-] 9.2 Write integration test: full miner setup with real survey, default survey fallback, timer start, warehouse seeding
+  - [x] 9.2 Write integration test: full miner setup with real survey, default survey fallback, timer start, warehouse seeding
     - _Validates: Requirements 4.1, 4.2, 4.3_
 
-- [ ] 10. Implement RefinerySetupHelper
-  - [~] 10.1 Create `RefinerySetupHelper.cs` with `SetupRefineries` method — iterates refineries, ensures warehouse resource, starts timer
+- [-] 10. Implement RefinerySetupHelper
+  - [-] 10.1 Create `RefinerySetupHelper.cs` with `SetupRefineries` method — iterates refineries, ensures warehouse resource, starts timer
     - Add `<Compile Include>` entry to OE2EmpireTracker.csproj
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
-  - [~] 10.2 Write unit tests: ensures warehouse resource for refinery, starts timer, preserves existing timer, skips if not built/online
+  - [-] 10.2 Write unit tests: ensures warehouse resource for refinery, starts timer, preserves existing timer, skips if not built/online
     - _Validates: Requirements 8.1, 8.2, 8.3, 8.4, 8.5_
 
 - [ ] 11. Wire up helpers in ParseColonyBuildingsFromJson
