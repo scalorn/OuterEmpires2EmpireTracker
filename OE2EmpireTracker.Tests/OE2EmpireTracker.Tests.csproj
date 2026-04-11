@@ -121,6 +121,9 @@
     <Reference Include="Microsoft.VisualStudio.TestPlatform.ObjectModel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.TestPlatform.ObjectModel.18.3.0\lib\net462\Microsoft.VisualStudio.TestPlatform.ObjectModel.dll</HintPath>
     </Reference>
+    <Reference Include="Markdig">
+      <HintPath>..\packages\Markdig.0.39.1\lib\net462\Markdig.dll</HintPath>
+    </Reference>
     <Reference Include="FsCheck">
       <HintPath>..\packages\FsCheck.2.16.6\lib\net452\FsCheck.dll</HintPath>
     </Reference>
@@ -293,6 +296,7 @@
     <Compile Include="Services\HelpRendererPropertyTests.cs" />
     <Compile Include="Services\HelpTopicRegistryPropertyTests.cs" />
     <Compile Include="Services\HelpTopicRegistryTests.cs" />
+    <Compile Include="Services\HelpRendererTests.cs" />
     <Compile Include="Forms\EvolutionGraphRenderingTests.cs" />
     <Compile Include="TestHelper.cs" />
     <None Include="app.config" />
