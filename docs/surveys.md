@@ -59,6 +59,12 @@ You can manually add or edit resource rows if needed.
 - **Save** — Save the current survey data.
 - **Delete** — Remove the selected survey after confirmation.
 
+## Default Surveys
+
+When you import a colony with active miners but haven't yet imported a real survey for that planet, the tracker creates a temporary "default survey" so miners can still function. Default surveys are identified by a Survey ID of "DEFAULT" and are created automatically — you don't need to do anything.
+
+When you later import a real survey for the same planet, miners will automatically upgrade to the real survey on the next colony reimport. Default surveys are cleaned up automatically: resources that are no longer being mined are removed, and if no resources remain, the default survey is deleted entirely.
+
 ## Filtering Surveys
 
 Use the text filter at the top of the left panel to search surveys by planet name or other fields.

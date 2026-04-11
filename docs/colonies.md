@@ -20,6 +20,16 @@ To import colony data from the game:
 5. If a colony with the same planet name already exists, it will be updated. Otherwise a new colony is created.
 6. Click **Save** to persist the imported data.
 
+### Automatic Miner and Refinery Setup
+
+When you import (or reimport) a colony, the tracker automatically configures mining rigs and refineries so they're ready to go:
+
+- **Survey assignment** — Each active miner is matched to the best survey for its planet, resource, and purity. "Best" means the survey whose amount is closest to the game's reported mining rate. If you haven't imported a survey for that planet yet, a temporary default survey (marked "DEFAULT") is created so the miner still works.
+- **Timer start** — If the game says a miner or refinery is actively running (mining rate > 0, or refinery is built and online), the tracker starts a repeating hourly timer aligned to the next clock-hour boundary — same as clicking Start manually.
+- **Warehouse seeding** — Any resource being mined or refined gets a warehouse slot created automatically (quantity 0) if one doesn't already exist. This keeps the refinery UI working correctly.
+- **Reimport preservation** — If you already have a valid survey assigned to a miner, reimporting won't overwrite it. If a default survey was assigned and you've since imported a real survey, the miner upgrades to the real one automatically.
+- **Default survey cleanup** — After setup, any resources in the default survey that are no longer being mined are removed. If the default survey ends up empty, it's deleted.
+
 ## Colony List
 
 The left panel shows all colonies for the current player. You can:
