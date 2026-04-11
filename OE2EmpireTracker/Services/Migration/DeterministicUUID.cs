@@ -10,6 +10,10 @@ namespace OE2EmpireTracker.Services.Migration
         private static readonly Guid Namespace =
             new Guid("e0058083-0f64-b398-ed53-762f7d8b8eb2");
 
+        // Separate namespace for colony UUIDs to avoid collisions with blueprint UUIDs
+        private static readonly Guid ColonyNamespace =
+            new Guid("a1b2c3d4-e5f6-7890-abcd-ef1234567890");
+
         /// <summary>
         /// Generates a deterministic UUID v5 from the blueprint's dedup key fields.
         /// Input string format: "Name|Evolution|BluePrintType|Class|TechLevel"
@@ -28,6 +32,24 @@ namespace OE2EmpireTracker.Services.Migration
         {
             return Generate(bp.Name, bp.Evolution, bp.BluePrintType,
                 bp.Class, bp.TechLevel);
+        }
+
+        /// <summary>
+        /// Generates a deterministic UUID v5 from a Colony's dedup key.
+        /// </summary>
+        public static string Generate(Colony colony)
+        {
+            return Generate(colony.OwnerUUID, colony.PlanetName, colony.SystemName);
+        }
+
+        /// <summary>
+        /// Generates a deterministic UUID v5 from colony identity fields.
+        /// Input string format: "OwnerUUID|PlanetName|SystemName"
+        /// </summary>
+        public static string Generate(string ownerUUID, string planetName, string systemName)
+        {
+            string input = $"{ownerUUID ?? ""}|{planetName ?? ""}|{systemName ?? ""}";
+            return GenerateV5(ColonyNamespace, input).ToString();
         }
 
         /// <summary>

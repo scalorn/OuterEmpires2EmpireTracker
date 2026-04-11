@@ -3,6 +3,7 @@ using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Constants;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace OE2EmpireTracker.Models
@@ -11,6 +12,10 @@ namespace OE2EmpireTracker.Models
     {
         public string UUID { get; set; }
         public string OwnerUUID { get; set; } = string.Empty;
+
+        [DefaultValue(null)]
+        public string LegacyUUID { get; set; }
+
         public string PlanetName { get; set; }
         public string SystemName { get; set; } = string.Empty;
         public string ColonyName { get; set; }

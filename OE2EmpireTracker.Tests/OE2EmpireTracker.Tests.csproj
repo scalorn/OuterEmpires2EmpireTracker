@@ -286,6 +286,7 @@
     <Compile Include="Services\ColonyImportHelperPropertyTests.cs" />
     <Compile Include="Services\SurveyImportHelperPropertyTests.cs" />
     <Compile Include="Services\Migration\DeterministicUUIDPropertyTests.cs" />
+    <Compile Include="Services\Migration\ColonyDeterministicUUIDPropertyTests.cs" />
     <Compile Include="Services\Migration\RemapUUIDPropertyTests.cs" />
     <Compile Include="Services\Migration\RenameTablePropertyTests.cs" />
     <Compile Include="Services\Migration\MigrationVersionGatingPropertyTests.cs" />
