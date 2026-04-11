@@ -230,6 +230,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             selectedPlan = null;
             cmdCompletePlan.Visible = false;
             cmdDeletePlan.Visible = false;
+            lblLoadListHeader.Text = "Load Before Departure";
         }
 
         private void BuildExecution()
@@ -256,10 +257,25 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             // Build consolidated load list
             var loadItems = selectedPlan.CalculateLoadList();
             Log.Debug("BuildExecution: loadItems={0}", loadItems.Count);
+            int totalQuantity = 0;
+            decimal totalVolume = 0m;
             foreach (var item in loadItems)
             {
                 Log.Debug("  Load: {0} x{1}", item.BaseItemTypeID, item.Quantity);
                 dgvLoadList.Rows.Add(item.ItemType.ToString(), item.BaseItemTypeID, item.ExtendedName, item.Quantity);
+                totalQuantity += item.Quantity;
+                totalVolume += item.Quantity * GetLoadItemVolume(item);
+            }
+
+            // Update header with totals
+            if (loadItems.Count > 0)
+            {
+                lblLoadListHeader.Text = string.Format("Load Before Departure — {0} items, {1} qty, {2:N0} vol",
+                    loadItems.Count, totalQuantity, totalVolume);
+            }
+            else
+            {
+                lblLoadListHeader.Text = "Load Before Departure";
             }
 
             // Build per-stop sections
@@ -609,6 +625,34 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.DeliveryDataChanged -= OnDeliveryDataChanged;
             base.OnFormClosed(e);
+        }
+
+        /// <summary>
+        /// Returns the per-unit cargo volume for a delivery item based on its type.
+        /// Uses the same volume constants as the colony warehouse.
+        /// </summary>
+        private decimal GetLoadItemVolume(DeliveryItem item)
+        {
+            switch (item.ItemType)
+            {
+                case ItemType.ItemTypeEnum.Resource: return 1.0m;
+                case ItemType.ItemTypeEnum.Commodity: return 10.0m;
+                case ItemType.ItemTypeEnum.WorkDetail: return 50.0m;
+                case ItemType.ItemTypeEnum.Blueprint:
+                case ItemType.ItemTypeEnum.Survey: return 0.0m;
+                default:
+                    // Manufactured items: read CargoVolumeSize from blueprint
+                    if (!string.IsNullOrEmpty(item.BaseItemTypeID))
+                    {
+                        var bp = playerContext.FindBlueprint(item.BaseItemTypeID);
+                        if (bp != null)
+                        {
+                            bp.Properties.getDecimal("Cargo Volume Size", 0, out decimal vol);
+                            return vol;
+                        }
+                    }
+                    return 0.0m;
+            }
         }
     }
 }

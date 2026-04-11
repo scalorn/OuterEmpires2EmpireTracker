@@ -204,8 +204,9 @@ The colony Administration tab should have a status area showing all the items fr
 
 ### BL-040: Delivery Execution — Load Item Count and Volume
 **Dependencies:** None
+**Status: Complete**
 
-The delivery execution form should display a count of the number of items and a calculated total volume to the right of the "Load Before Departure" header. Helps the player know at a glance how much cargo space is needed.
+The delivery execution form displays a count of the number of items, total quantity, and calculated total volume to the right of the "Load Before Departure" header. Format: "Load Before Departure — N items, Q qty, V vol".
 
 ### BL-041: Delivery Execution — Stale Plan After Delete
 **Dependencies:** None
