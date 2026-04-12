@@ -35,6 +35,7 @@ namespace OE2EmpireTracker.ViewModels
         public string NickName { get => _survey.NickName; set => _survey.NickName = value; }
         public string ScannedBy { get => _survey.ScannedBy; set => _survey.ScannedBy = value; }
         public string DateTime { get => _survey.DateTime; set => _survey.DateTime = value; }
+        public string DisplayDateTime => SurveyDateTimeParser.FormatForDisplay(_survey.DateTime);
         public string ScannerBlueprintUUID { get => _survey.ScannerBlueprintUUID; set => _survey.ScannerBlueprintUUID = value; }
         public string UUID => _survey.UUID;
 

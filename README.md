@@ -23,7 +23,7 @@ Import blueprints from scanning or the market. Track evolution chains from level
 Build delivery routes between colonies, then auto-fill plans based on what each colony actually needs — commodities, flatpacks, resources, workers. The Delivery Execution form walks you through each stop with checkboxes. When you check off a commodity delivery, the colony's request is automatically marked fulfilled. No more forgetting what goes where.
 
 ### Planet Surveys
-Paste survey HTML and the tracker extracts planet name, resources, purities, and abundance data. Duplicate surveys are merged automatically. Use this to plan where to drop your next colony.
+Paste survey HTML and the tracker extracts planet name, resources, purities, and abundance data. Duplicate surveys are merged automatically. Scan dates are displayed in the game's format but stored internally as proper dates, so the survey list sorts chronologically when you click the DateTime column. Edit dates with a calendar picker — no more typos. Use surveys to plan where to drop your next colony.
 
 ### Player Profiles & Skills
 Track multiple characters with their skills, ranks, and faction. Import your profile directly from the game — copy the profile panel HTML and click Import. The tracker extracts your name, faction, credits, all three rank tracks, skill points, skill group states, individual skill levels, and training status. Skills like Builder, Extraction Focus, and Research Focus affect colony operations — the tracker accounts for them. Switch between players with a dropdown and all your data follows.

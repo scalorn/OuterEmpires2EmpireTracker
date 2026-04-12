@@ -9,7 +9,7 @@ namespace OE2EmpireTracker.Services.Migration
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        public const int CurrentVersion = 2;
+        public const int CurrentVersion = 3;
 
         /// <summary>
         /// Set to true when a migration fails. Prevents saving data in a
@@ -22,6 +22,7 @@ namespace OE2EmpireTracker.Services.Migration
         {
             { 1, Migration001_DeterministicUUIDs.Run },
             { 2, Migration002_ColonyDeterministicUUIDs.Run },
+            { 3, Migration003_SurveyDateTimeNormalization.Run },
         };
 
         public static void Run(EmpireContext ec, PlayerContext pc)

@@ -271,6 +271,7 @@
     <Compile Include="Models\WorkerTypeInfoTests.cs" />
     <Compile Include="Models\LockTrackingTests.cs" />
     <Compile Include="Controls\ValidatedTextBoxTests.cs" />
+    <Compile Include="Controls\ListViewItemComparerTests.cs" />
     <Compile Include="Forms\MainMenuOverhaulTests.cs" />
     <Compile Include="Forms\GetDeleteButtonStateTests.cs" />
     <Compile Include="Forms\MdiWindowNumberPropertyTests.cs" />
@@ -295,6 +296,8 @@
     <Compile Include="Services\BlueprintReferenceCounterTests.cs" />
     <Compile Include="Services\BlueprintReferenceCounterPropertyTests.cs" />
     <Compile Include="Services\ColonyImportHelperPropertyTests.cs" />
+    <Compile Include="Services\SurveyDateTimeParserPropertyTests.cs" />
+    <Compile Include="Services\SurveyDateTimeParserTests.cs" />
     <Compile Include="Services\SurveyImportHelperPropertyTests.cs" />
     <Compile Include="Services\Migration\DeterministicUUIDPropertyTests.cs" />
     <Compile Include="Services\Migration\ColonyDeterministicUUIDPropertyTests.cs" />
@@ -302,6 +305,8 @@
     <Compile Include="Services\Migration\RemapUUIDPropertyTests.cs" />
     <Compile Include="Services\Migration\RemapUUIDColonyPropertyTests.cs" />
     <Compile Include="Services\Migration\Migration002PropertyTests.cs" />
+    <Compile Include="Services\Migration\Migration003PropertyTests.cs" />
+    <Compile Include="Services\Migration\Migration003Tests.cs" />
     <Compile Include="Services\Migration\RenameTablePropertyTests.cs" />
     <Compile Include="Services\Migration\MigrationVersionGatingPropertyTests.cs" />
     <Compile Include="Services\Migration\LegacyUUIDPropertyTests.cs" />

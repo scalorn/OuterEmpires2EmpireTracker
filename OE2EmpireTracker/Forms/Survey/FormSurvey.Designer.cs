@@ -61,6 +61,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpScanDateTime = new System.Windows.Forms.FlowLayoutPanel();
             this.lblScanDateTime = new System.Windows.Forms.Label();
             this.txtScanDateTime = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.dtpScanDateTime = new System.Windows.Forms.DateTimePicker();
             this.flpSensorAbundance = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSensorAbundance = new System.Windows.Forms.Label();
             this.txtSensorAbundance = new OE2EmpireTracker.Controls.ValidatedTextBox();
@@ -468,6 +469,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpScanDateTime.AutoSize = true;
             this.flpScanDateTime.Controls.Add(this.lblScanDateTime);
             this.flpScanDateTime.Controls.Add(this.txtScanDateTime);
+            this.flpScanDateTime.Controls.Add(this.dtpScanDateTime);
             this.flpScanDateTime.Location = new System.Drawing.Point(2, 150);
             this.flpScanDateTime.Margin = new System.Windows.Forms.Padding(2);
             this.flpScanDateTime.Name = "flpScanDateTime";
@@ -496,10 +498,20 @@ namespace OE2EmpireTracker.Forms.Survey
             this.txtScanDateTime.Location = new System.Drawing.Point(106, 2);
             this.txtScanDateTime.Margin = new System.Windows.Forms.Padding(2);
             this.txtScanDateTime.Name = "txtScanDateTime";
+            this.txtScanDateTime.ReadOnly = true;
             this.txtScanDateTime.Size = new System.Drawing.Size(201, 20);
             this.txtScanDateTime.TabIndex = 7;
             this.txtScanDateTime.ValidationPattern = null;
             this.txtScanDateTime.ValidColor = System.Drawing.Color.White;
+            // 
+            // dtpScanDateTime
+            // 
+            this.dtpScanDateTime.CustomFormat = "yyyy-MM-dd HH:mm";
+            this.dtpScanDateTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpScanDateTime.Location = new System.Drawing.Point(311, 2);
+            this.dtpScanDateTime.Margin = new System.Windows.Forms.Padding(2);
+            this.dtpScanDateTime.Name = "dtpScanDateTime";
+            this.dtpScanDateTime.Size = new System.Drawing.Size(160, 20);
             // 
             // flpSensorAbundance
             // 
@@ -806,5 +818,6 @@ namespace OE2EmpireTracker.Forms.Survey
         private System.Windows.Forms.DataGridViewComboBoxColumn Resource;
         private System.Windows.Forms.DataGridViewComboBoxColumn Purity;
         private OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn Amount;
+        private System.Windows.Forms.DateTimePicker dtpScanDateTime;
     }
 }

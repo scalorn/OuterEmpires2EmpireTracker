@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Xml;
 using NLog;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Parsers
 {
@@ -98,7 +99,11 @@ namespace OE2EmpireTracker.Parsers
             var match = Regex.Match(descText, @"(?:taken|generated)\s+on\s+(.+?)\s+by\s+(.+)$", RegexOptions.IgnoreCase);
             if (match.Success)
             {
-                survey.DateTime = match.Groups[1].Value.Trim();
+                string rawDate = match.Groups[1].Value.Trim();
+                if (SurveyDateTimeParser.TryParseGameFormat(rawDate, out DateTime parsed))
+                    survey.DateTime = SurveyDateTimeParser.ToIsoString(parsed);
+                else
+                    survey.DateTime = rawDate; // preserve unparseable values
                 survey.ScannedBy = match.Groups[2].Value.Trim();
             }
         }

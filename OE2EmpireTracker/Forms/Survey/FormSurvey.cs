@@ -78,7 +78,7 @@ namespace OE2EmpireTracker.Forms.Survey
             txtSurveyID.TextChanged += txtSurveyID_TextChanged;
             txtNickName.TextChanged += txtNickName_TextChanged;
             txtScannedBy.TextChanged += txtScannedBy_TextChanged;
-            txtScanDateTime.TextChanged += txtScanDateTime_TextChanged;
+            dtpScanDateTime.ValueChanged += dtpScanDateTime_ValueChanged;
             txtSensorAbundance.TextChanged += txtSensorAbundance_TextChanged;
             txtPurityModifier.TextChanged += txtPurityModifier_TextChanged;
             txtScanLevel.TextChanged += txtScanLevel_TextChanged;
@@ -212,7 +212,8 @@ namespace OE2EmpireTracker.Forms.Survey
                     item.SubItems.Add(survey.PlanetName);
                     item.SubItems.Add(survey.SurveyID);
                     item.SubItems.Add(survey.NickName);
-                    item.SubItems.Add(survey.DateTime);
+                    var dtSubItem = item.SubItems.Add(SurveyDateTimeParser.FormatForDisplay(survey.DateTime));
+                    dtSubItem.Tag = survey.DateTime;
                     item.SubItems.Add(refCount);
                 }
                 else
@@ -220,7 +221,8 @@ namespace OE2EmpireTracker.Forms.Survey
                     item.SubItems[1].Text = survey.PlanetName;
                     item.SubItems[2].Text = survey.SurveyID;
                     item.SubItems[3].Text = survey.NickName;
-                    item.SubItems[4].Text = survey.DateTime;
+                    item.SubItems[4].Text = SurveyDateTimeParser.FormatForDisplay(survey.DateTime);
+                    item.SubItems[4].Tag = survey.DateTime;
                     if (item.SubItems.Count > 5)
                         item.SubItems[5].Text = refCount;
                     else
@@ -281,10 +283,12 @@ namespace OE2EmpireTracker.Forms.Survey
             viewModel.ScannedBy = txtScannedBy.Text;
         }
 
-        private void txtScanDateTime_TextChanged(object sender, EventArgs e)
+        private void dtpScanDateTime_ValueChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            viewModel.DateTime = txtScanDateTime.Text;
+            viewModel.DateTime = SurveyDateTimeParser.ToIsoString(dtpScanDateTime.Value);
+            using var guard = new ProgrammaticUpdateGuard(this);
+            txtScanDateTime.Text = SurveyDateTimeParser.ToGameFormat(dtpScanDateTime.Value);
         }
 
         private void txtSensorAbundance_TextChanged(object sender, EventArgs e)
@@ -348,7 +352,8 @@ namespace OE2EmpireTracker.Forms.Survey
             txtSurveyID.Text = "";
             txtNickName.Text = "";
             txtScannedBy.Text = "";
-            txtScanDateTime.Text = "";
+            dtpScanDateTime.Value = DateTime.Now;
+            txtScanDateTime.Text = SurveyDateTimeParser.ToGameFormat(DateTime.Now);
             txtSensorAbundance.Text = "";
             txtPurityModifier.Text = "";
             txtScanLevel.Text = "";
@@ -549,7 +554,11 @@ namespace OE2EmpireTracker.Forms.Survey
             txtSurveyID.Text = viewModel.SurveyID ?? "";
             txtNickName.Text = viewModel.NickName ?? "";
             txtScannedBy.Text = viewModel.ScannedBy ?? "";
-            txtScanDateTime.Text = viewModel.DateTime ?? "";
+            txtScanDateTime.Text = viewModel.DisplayDateTime ?? "";
+            if (SurveyDateTimeParser.TryParseIso(viewModel.DateTime, out DateTime parsedDt))
+                dtpScanDateTime.Value = parsedDt;
+            else
+                dtpScanDateTime.Value = DateTime.Now;
             txtSensorAbundance.Text = viewModel.SensorAbundance ?? "";
             txtPurityModifier.Text = viewModel.PurityModifier ?? "";
             txtScanLevel.Text = viewModel.ScanLevel ?? "";

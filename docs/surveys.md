@@ -35,7 +35,7 @@ The right panel shows the following fields:
 | Survey ID | The unique identifier for this survey |
 | Nick Name | An optional friendly name for the survey |
 | Scanned By | The player who conducted the survey |
-| Scan Date/Time | When the survey was performed |
+| Scan Date/Time | When the survey was performed, shown in the game's format (e.g. `27JUL24-11:44p`). Use the calendar picker next to the field to change the date — the text box is read-only. |
 | Sensor Abundance | The sensor's abundance reading |
 | Purity Modifier | The purity modifier applied to the scan |
 | Scan Level | The level of the scan |
@@ -64,6 +64,10 @@ You can manually add or edit resource rows if needed.
 When you import a colony with active miners but haven't yet imported a real survey for that planet, the tracker creates a temporary "default survey" so miners can still function. Default surveys are identified by a Survey ID of "DEFAULT" and are created automatically — you don't need to do anything.
 
 When you later import a real survey for the same planet, miners will automatically upgrade to the real survey on the next colony reimport. Default surveys are cleaned up automatically: resources that are no longer being mined are removed, and if no resources remain, the default survey is deleted entirely.
+
+## Sorting by Date
+
+Click the DateTime column header in the survey list to sort surveys chronologically. The list sorts by the actual date, not the display text, so surveys from different months and years sort correctly.
 
 ## Filtering Surveys
 
