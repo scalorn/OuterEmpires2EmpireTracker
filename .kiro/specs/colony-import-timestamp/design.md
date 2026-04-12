@@ -184,6 +184,46 @@ Update all existing property tests and unit tests to account for UTC:
 - SurveyParser test expected values updated with `Z` suffix
 - FormatForDisplay tests account for UTC→local conversion
 
+### 11. DateTime.Now → DateTime.UtcNow Sweep
+
+Replace all `DateTime.Now` with `DateTime.UtcNow` across the main project, except where the value is used purely for local UI display (e.g. DateTimePicker default values shown to the user — those stay as `DateTime.Now` since the picker shows local time).
+
+Files affected:
+- **`CountDownTime.cs`** — `TimeRemaining` getter/setter, `IntervalsPassed`, `StartRepeating` (both overloads), `ConsumeIntervals`, `GetNextIntervalBoundary`. All internal `DateTime.Now` → `DateTime.UtcNow`.
+- **`ColonyStructure.cs`** — All timer start code (`StartTime = DateTime.Now` → `DateTime.UtcNow`), clock-hour boundary calculations.
+- **`PlayerSkillBlock.cs`** — `CompletionTime.StartTime = DateTime.Now` → `DateTime.UtcNow`.
+- **`MinerSetupHelper.cs`** — Clock-hour boundary calculation.
+- **`RefinerySetupHelper.cs`** — Clock-hour boundary calculation.
+- **`BackgroundProcessor.cs`** — `NextProcessTime` scheduling.
+- **`ColonyActivityCollector.cs`** — `NeedBy - DateTime.Now` elapsed calculation.
+- **`ColonyViewModel.cs`** — Expired commodity request cleanup.
+- **`FormColony.cs`** — Commodity request staleness, tab warning, NeedBy countdown display, build timer creation.
+- **`FormDeliveryRoute.cs`** — Plan name date stamp (cosmetic, but should be UTC for consistency).
+- **`MainWindow.cs`** — Next process time display.
+- **`Migration003_SurveyDateTimeNormalization.cs`** — Fallback `DateTime.Now` → `DateTime.UtcNow`.
+- **`FormSurvey.cs`** — `ClearForm` DateTimePicker default stays `DateTime.Now` (local display), but the ISO storage call uses `DateTime.UtcNow`.
+
+### 12. Migration004 — CountDownTime Local→UTC Conversion
+
+Extend `Migration004_ColonyImportTimestampBackfill` (or create a combined migration) to also convert existing `CountDownTime` values from local to UTC:
+
+```csharp
+// Convert CountDownTime StartTime/EndTime from local to UTC
+private static void ConvertToUtc(CountDownTime timer)
+{
+    if (timer == null) return;
+    if (timer.StartTime != DateTime.MinValue)
+        timer.StartTime = timer.StartTime.ToUniversalTime();
+    if (timer.EndTime != DateTime.MinValue)
+        timer.EndTime = timer.EndTime.ToUniversalTime();
+}
+```
+
+Applied to:
+- All `ColonyStructure.ProcessCompletionTime` across all colonies
+- All `ColonyStructure.BuildCompletionTime` across all colonies
+- All `PlayerSkill.CompletionTime` across all player profiles
+
 ## Data Models
 
 ### Colony (modified)
@@ -256,6 +296,18 @@ These are hardcoded for now. BL-061 (Preferences Form) will make them configurab
 *For any* valid UTC DateTime, `ToIsoString` should produce a string ending with `Z`. Parsing that string back via `TryParseIso` should produce a DateTime with `Kind == DateTimeKind.Utc` and the same value. `FormatForDisplay` should convert to local time before formatting, so the game-format output reflects the user's timezone.
 
 **Validates: Requirements 7.3, 7.4, 7.5, 7.6**
+
+### Property 7: CountDownTime uses UTC consistently
+
+*For any* `CountDownTime` initialized via `StartRepeating` or `TimeRemaining` setter using `DateTime.UtcNow`, the `TimeRemaining` getter (which also uses `DateTime.UtcNow` internally) should return a value within 1 second of the expected remaining time. The `StartTime` and `EndTime` stored on the object should have `Kind == DateTimeKind.Utc` (or be `DateTime.MinValue`).
+
+**Validates: Requirements 8.2**
+
+### Property 8: Migration converts local times to UTC correctly
+
+*For any* `CountDownTime` with `StartTime` and `EndTime` in local time (not `DateTime.MinValue`), applying `.ToUniversalTime()` to both should shift them by the local UTC offset. The difference `EndTime - StartTime` should remain unchanged (the interval duration is preserved).
+
+**Validates: Requirements 9.1, 9.2**
 
 ## Error Handling
 

@@ -107,3 +107,29 @@ This spec also retrofits the existing `SurveyDateTimeParser` to be UTC-aware. Th
 7. THE FormSurvey DateTimePicker SHALL display and accept values in the user's local timezone, converting to/from UTC for storage.
 8. THE survey datetime migration (`Migration003`) SHALL use `DateTime.UtcNow` for its fallback timestamp.
 9. THESE changes to `SurveyDateTimeParser` require no data migration because the survey datetime normalization has not shipped to any users yet.
+
+### Requirement 8: Migrate All DateTime.Now Usage to DateTime.UtcNow
+
+**User Story:** As a player, I want all timers and timestamps in the application to use UTC consistently, so that my data is correct regardless of timezone changes.
+
+#### Acceptance Criteria
+
+1. ALL `DateTime.Now` references in the main project SHALL be replaced with `DateTime.UtcNow`, except where the value is used purely for local UI display (e.g. DateTimePicker default values shown to the user).
+2. THE `CountDownTime` model SHALL use `DateTime.UtcNow` in all its internal calculations (`TimeRemaining` getter/setter, `IntervalsPassed`, `StartRepeating`, `ConsumeIntervals`, `GetNextIntervalBoundary`).
+3. ALL callers that set `CountDownTime.StartTime` SHALL use `DateTime.UtcNow` instead of `DateTime.Now`. This includes `ColonyStructure.cs`, `PlayerSkillBlock.cs`, `MinerSetupHelper.cs`, `RefinerySetupHelper.cs`.
+4. THE `ColonyActivityCollector` SHALL use `DateTime.UtcNow` for elapsed time calculations.
+5. THE `BackgroundProcessor` SHALL use `DateTime.UtcNow` for `NextProcessTime` scheduling.
+6. THE `FormColony` SHALL use `DateTime.UtcNow` for commodity request staleness checks and tab warning evaluations.
+7. THE `ColonyViewModel` SHALL use `DateTime.UtcNow` for expired commodity request cleanup.
+
+### Requirement 9: Migrate Existing CountDownTime Data to UTC
+
+**User Story:** As a player with active timers, I want my existing timer data converted from local time to UTC during migration, so that my in-flight timers remain accurate after the upgrade.
+
+#### Acceptance Criteria
+
+1. THE migration SHALL convert all `CountDownTime.StartTime` and `CountDownTime.EndTime` values from local time to UTC by applying `DateTime.ToUniversalTime()`.
+2. THE migration SHALL skip `DateTime.MinValue` values (uninitialized timers).
+3. THE migration SHALL process all `ColonyStructure.ProcessCompletionTime` and `ColonyStructure.BuildCompletionTime` across all colonies.
+4. THE migration SHALL process all `PlayerSkill.CompletionTime` across all player profiles.
+5. THE migration SHALL be included in the same migration pass as the colony import timestamp backfill (Migration004).

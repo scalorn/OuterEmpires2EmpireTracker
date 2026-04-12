@@ -249,8 +249,7 @@ Create a Preferences form (accessible from the menu) that exposes all the magic 
 
 ### BL-068: CountDownTime and Remaining DateTime.Now → UTC Migration
 **Dependencies:** None
-
-The project convention is that all DateTimes are stored in UTC (see spec/requirements/README.md). `CountDownTime` stores `StartTime` and `EndTime` as `DateTime` and uses `DateTime.Now` throughout for elapsed time calculations. These need to be migrated to `DateTime.UtcNow`. Also affects `ColonyStructure.cs` (timer start code), `BackgroundProcessor.cs`, `MinerSetupHelper.cs`, `RefinerySetupHelper.cs`, `PlayerSkillBlock.cs`, `FormColony.cs`, `FormDeliveryRoute.cs`, `ColonyActivityCollector.cs`, and `ColonyViewModel.cs`. Requires a data migration to offset existing saved `StartTime`/`EndTime` values by the user's UTC offset so in-flight timers remain accurate after the switch.
+**Status: Folded into colony-import-timestamp spec** — see `.kiro/specs/colony-import-timestamp/`
 
 ---
 
