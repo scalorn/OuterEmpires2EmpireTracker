@@ -87,6 +87,7 @@ namespace OE2EmpireTracker.Forms.Survey
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.SurveyDataChanged += OnSurveyDataChanged;
+            playerContext.ColonyDataChanged += OnColonyDataChanged;
 
             flpBase.Layout += flpBase_Layout;
             flpSearchList.Layout += flpSearchList_Layout;
@@ -162,6 +163,20 @@ namespace OE2EmpireTracker.Forms.Survey
                 PopulateFormFromViewModel();
             }
             PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
+        }
+
+        private void OnColonyDataChanged(object sender, ColonyDataChangedEventArgs e)
+        {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnColonyDataChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
+            // Refresh list to update Refs column (miner survey assignments may have changed)
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
+            UpdateDeleteButtonState();
         }
 
         private void UpdateScannerBlueprintList()
@@ -607,6 +622,7 @@ namespace OE2EmpireTracker.Forms.Survey
             WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.SurveyDataChanged -= OnSurveyDataChanged;
+            playerContext.ColonyDataChanged -= OnColonyDataChanged;
             base.OnFormClosed(e);
         }
     }
