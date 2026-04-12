@@ -124,6 +124,10 @@ namespace OE2EmpireTracker.Persistence
                 {
                     SaveGridState(grid, formState);
                 }
+                else if (control is ListView listView && !string.IsNullOrEmpty(listView.Name))
+                {
+                    SaveListViewState(listView, formState);
+                }
                 else if (control is TextBox textBox && !string.IsNullOrEmpty(textBox.Name))
                 {
                     formState.FilterTexts[textBox.Name] = textBox.Text;
@@ -175,6 +179,16 @@ namespace OE2EmpireTracker.Persistence
             formState.Grids[grid.Name] = gridState;
         }
 
+        private static void SaveListViewState(ListView listView, FormControlState formState)
+        {
+            var state = new ListViewState();
+            for (int i = 0; i < listView.Columns.Count; i++)
+            {
+                state.ColumnWidths[i] = listView.Columns[i].Width;
+            }
+            formState.ListViews[listView.Name] = state;
+        }
+
         internal static void RestoreControlStates(Control parent, FormControlState formState)
         {
             foreach (Control control in parent.Controls)
@@ -182,6 +196,10 @@ namespace OE2EmpireTracker.Persistence
                 if (control is DataGridView grid && !string.IsNullOrEmpty(grid.Name))
                 {
                     RestoreGridState(grid, formState);
+                }
+                else if (control is ListView listView && !string.IsNullOrEmpty(listView.Name))
+                {
+                    RestoreListViewState(listView, formState);
                 }
                 else if (control is TextBox textBox && !string.IsNullOrEmpty(textBox.Name))
                 {
@@ -246,6 +264,20 @@ namespace OE2EmpireTracker.Persistence
                 else
                 {
                     Log.Debug("Skipping saved sort column '{0}' on grid '{1}' — column no longer exists", gridState.SortColumnName, grid.Name);
+                }
+            }
+        }
+
+        private static void RestoreListViewState(ListView listView, FormControlState formState)
+        {
+            if (!formState.ListViews.ContainsKey(listView.Name)) return;
+
+            var state = formState.ListViews[listView.Name];
+            foreach (var entry in state.ColumnWidths)
+            {
+                if (entry.Key >= 0 && entry.Key < listView.Columns.Count)
+                {
+                    listView.Columns[entry.Key].Width = entry.Value;
                 }
             }
         }

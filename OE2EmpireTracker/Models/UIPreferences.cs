@@ -46,6 +46,9 @@ namespace OE2EmpireTracker.Models
 
         public Dictionary<string, GridState> Grids { get; set; }
             = new Dictionary<string, GridState>();
+
+        public Dictionary<string, ListViewState> ListViews { get; set; }
+            = new Dictionary<string, ListViewState>();
     }
 
     public class ComboState
@@ -67,5 +70,11 @@ namespace OE2EmpireTracker.Models
     {
         public int Width { get; set; }
         public int DisplayIndex { get; set; }
+    }
+
+    public class ListViewState
+    {
+        public Dictionary<int, int> ColumnWidths { get; set; }
+            = new Dictionary<int, int>();
     }
 }
