@@ -316,6 +316,31 @@ Create a Preferences form (accessible from the menu) that exposes all the magic 
 
 Bug: Importing the resources tab of an evolved blueprint creates a new broken blueprint instead of updating the selected one. The resources tab HTML doesn't contain class, tech level, or other fields used by the dedup matching rules, so the import can't find the correct existing blueprint and falls through to creating a new entry. Fix: when the parsed clipboard data looks like a resources-only import (has resources but missing key dedup fields like class/tech level), assume the user is updating the currently selected blueprint rather than importing a new one. The normal workflow is to import the statistics page first (which creates/selects the blueprint), then import the resources page to add resource data to it.
 
+### BL-063: Colony Activity Form — Filter Controls Not Sticky
+**Dependencies:** None
+
+Bug: The filter checkboxes and filter text box on the Colony Activity form don't persist their state between form close and reopen. They should be saved to UIPreferences.json and restored when the form opens, following the window state persistence pattern.
+
+### BL-064: Delivery Execution Form — Filter Controls Not Sticky
+**Dependencies:** None
+
+Bug: None of the filter controls on the Delivery Execution form persist their state between form close and reopen. Route/plan dropdowns and any filter text should be saved to UIPreferences.json and restored when the form opens.
+
+### BL-065: Delivery Routes Form — Filter Text Not Sticky
+**Dependencies:** None
+
+Bug: The filter text box on the Delivery Routes form doesn't persist its state between form close and reopen. Should be saved to UIPreferences.json and restored when the form opens.
+
+### BL-066: Blueprint Form — Filter Combo Boxes Not Sticky
+**Dependencies:** None
+
+Bug: None of the filter combo boxes on the Blueprint form persist their state between form close and reopen. All filter dropdowns (type, class, tech level, etc.) should be saved to UIPreferences.json and restored when the form opens.
+
+### BL-067: MDI Window Numbering — Reuse Lowest Available Number
+**Dependencies:** None
+
+Bug: When opening a new MDI child form, the window number always increments to the next highest value instead of reusing gaps. Example: open 3 copies (#1, #2, #3), close #2, open another — it gets #4 instead of #2. The window numbering logic should find the lowest available number not currently in use by an open form of the same type. This likely applies to all MDI child forms, not just the Blueprint form.
+
 
 ---
 
