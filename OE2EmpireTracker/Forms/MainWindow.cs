@@ -270,9 +270,10 @@ namespace OE2EmpireTracker
                 }
 
                 EmpireContext.Reset();
-                PlayerContext.FilePath = @"..\..\PlayerData.json";
+                PlayerContext.FilePath = string.Empty;
                 context = EmpireContext.GetInstance();
                 playerContext = EmpireContext.PlayerContext;
+                playerContext.PlayerProfilesChanged += OnPlayerProfilesChanged;
 
                 _backgroundProcessor = new BackgroundProcessor(playerContext);
                 _backgroundProcessor.Start();
@@ -439,6 +440,7 @@ namespace OE2EmpireTracker
             PlayerContext.FilePath = filePath;
             context = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
+            playerContext.PlayerProfilesChanged += OnPlayerProfilesChanged;
 
             _backgroundProcessor = new BackgroundProcessor(playerContext);
             _backgroundProcessor.Start();
