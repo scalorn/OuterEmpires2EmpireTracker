@@ -212,3 +212,7 @@ Surface colony import staleness on the Colony Activity form's inactivity mode an
 ### BL-068: CountDownTime and Remaining DateTime.Now → UTC Migration
 Migrate all DateTime.Now usage to DateTime.UtcNow across the codebase. Convert existing CountDownTime StartTime/EndTime from local to UTC via Migration004. Retrofit SurveyDateTimeParser to be UTC-aware with Z suffix.
 **Status: Complete** — Folded into colony-import-timestamp spec. DateTime.Now→UtcNow sweep across 11 source files. Migration004 converts CountDownTime values. SurveyDateTimeParser IsoFormat updated to include Z suffix. 3 FsCheck property tests (UTC storage/display, CountDownTime UTC consistency, migration local→UTC conversion). Spec: `.kiro/specs/colony-import-timestamp/`.
+
+### BL-043: Colony Duplicate Validation — Planet+System Instead of Colony Name
+With the dedup key changed from ColonyName to PlanetName+SystemName, the duplicate-name validation on the colony name text field was no longer relevant. The SetError/ClearError validation was removed from txtColonyName_TextChanged — it now does a simple write-through. ClearError remains in the import handler to clear stale state after successful import.
+**Status: Complete** — Duplicate colony name validation removed as part of the colony-import-dedupe work. Spec: `.kiro/specs/colony-import-dedupe/`.

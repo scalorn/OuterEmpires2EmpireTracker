@@ -192,11 +192,6 @@ Bug: After deleting a delivery plan, the delivery execution form keeps displayin
 
 Bug: After creating a new delivery plan, the delivery execution form doesn't see the new plan until the form is closed and reopened. The form should refresh its plan dropdown when it receives a DeliveryDataChanged event.
 
-### BL-043: Colony Duplicate Validation — Planet+System Instead of Colony Name
-**Dependencies:** None
-
-With the dedup key changed from ColonyName to PlanetName+SystemName, the duplicate-name validation on the colony name text field (SetError/ClearError) is no longer relevant — duplicate colony names don't break dedup anymore. The validation should either be removed entirely or changed to warn on duplicate PlanetName+SystemName combinations instead. Currently the colony name validation has been removed; consider whether planet+system validation is needed on manual edit.
-
 ### BL-045: GitHub MCP Integration
 **Dependencies:** None (blocked by Docker installation issues)
 
