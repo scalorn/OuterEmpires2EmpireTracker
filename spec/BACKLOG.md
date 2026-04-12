@@ -110,11 +110,6 @@ Model star systems and planets more completely with coordinate data. Planet and 
 
 With coordinate data for systems and planets, automatically sequence delivery route stops to minimize travel time. Approximate travel distances from coordinates and optimize stop order.
 
-### BL-021: Player Profile Importer
-**Dependencies:** None
-
-Import player profile data from game HTML. Parse the in-game profile page to extract player name, faction, ranks, skill levels, credits, and other profile fields. Update existing profiles or create new ones. Follows the same HTML parsing pattern used by SurveyParser and the colony importer.
-
 ### BL-023: Explore OE2 Wiki as Data Source
 **Dependencies:** None
 

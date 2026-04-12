@@ -224,3 +224,7 @@ Per-colony status report on the Administration tab of the Colony form. Shows bui
 ### BL-039: Colony Administration Tab — Activity/Inactivity Status Area
 Consolidated into BL-030 (Colony Administration Summary Report). The Administration tab now shows all activity and inactivity data scoped to the selected colony.
 **Status: Complete** — See BL-030. Spec: `.kiro/specs/colony-admin-summary/`.
+
+### BL-021: Player Profile Importer
+Import player profile data from game HTML. Parse the in-game profile page to extract player name, faction, credits, all three rank tracks, skill points, skill group states, individual skill levels, and training status. Update existing profiles by case-insensitive name match or create new ones.
+**Status: Complete** — PlayerProfileParser with ProcessClipboard/ProcessHtml. Parses identity, credits, headline fields (CitizenId, RegistrationDate, ActiveTime), rank tracks (Public/Private/Military with level, title, XP), skill points, skill groups, individual skills with training detection. Import button on FormPlayerProfile. 6 FsCheck property tests + integration tests against real game HTML. Spec: `.kiro/specs/player-profile-import/`.
