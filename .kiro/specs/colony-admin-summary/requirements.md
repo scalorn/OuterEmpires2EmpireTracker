@@ -88,8 +88,8 @@ This feature consolidates backlog items BL-030 and BL-039.
 3. Manufacturing, Commodity Manufacturing, and Research rows SHALL be sorted by seconds remaining in ascending order (soonest completion first).
 4. FOR Manufacturing and Commodity Manufacturing rows with multiple quantity runs, THE row SHALL display both the next item completion (countdown + local time) and the full batch completion (countdown + local time).
 5. FOR Research rows, THE row SHALL display the countdown remaining and Completion_Time in the user's local timezone.
-6. FOR Mining rows, THE report SHALL display one summary row per resource being mined, showing the resource name, purity, and aggregate mining rate per hour across all miners on that resource (e.g. "Halogen (High) — 150/h").
-7. FOR Refining rows, THE report SHALL display one summary row per resource+purity being refined, aggregating across all refiners on that combination, showing the input resource, purity, consume rate total, and produce rate total (e.g. "3x Halogen (High) — 75:375 Halogen"). For synthetic refining recipes where the output resource differs from the input, the output resource name SHALL be shown instead.
+6. FOR Mining rows, THE report SHALL display one summary row per resource being mined, showing the resource name, purity, and aggregate mining rate per hour across all miners on that resource to 2 decimal places (e.g. "Halogen (High) — 150.00/h").
+7. FOR Refining rows, THE report SHALL display one summary row per resource+purity being refined, aggregating across all refiners on that combination, showing the input resource, purity, consume rate total, and produce rate total to 2 decimal places (e.g. "3x Halogen (High) — 75.00:375.00 Halogen"). For synthetic refining recipes where the output resource differs from the input, the output resource name SHALL be shown instead.
 8. WHEN the activity section has zero rows, THE section SHALL be omitted.
 9. ALL completion times (Building, Manufacturing, Commodity Manufacturing, Research) SHALL display both the relative countdown and the local user timezone time.
 

@@ -119,7 +119,7 @@ namespace OE2EmpireTracker.Tests.Services
                 int expectedConsume = baseRate * data.RefinerCount;
                 int expectedProduce = baseRate * PurityMultipliers[data.PurityIndex] * data.RefinerCount;
 
-                string ratePattern = $"{expectedConsume}:{expectedProduce}";
+                string ratePattern = $"{expectedConsume:F2}:{expectedProduce:F2}";
                 if (!rtf.Contains(ratePattern))
                     return false.Label($"Expected rate '{ratePattern}' not found in report");
 

@@ -340,7 +340,7 @@ namespace OE2EmpireTracker.Services
             foreach (var group in miningGroups.Values.OrderBy(g => g.resource).ThenBy(g => g.purity))
             {
                 int displayRate = (int)Math.Round(group.totalRate);
-                builder.Append($"  {group.resource} ({group.purity}) — {displayRate}/h\n", TextColor);
+                builder.Append($"  {group.resource} ({group.purity}) — {group.totalRate:F2}/h\n", TextColor);
             }
 
             return true;
@@ -413,7 +413,7 @@ namespace OE2EmpireTracker.Services
 
             foreach (var group in refiningGroups.Values.OrderBy(g => g.resource).ThenBy(g => g.purity))
             {
-                builder.Append($"  {group.count}x {group.resource} ({group.purity}) — {group.totalConsume}:{group.totalProduce} {group.outputResource}\n", TextColor);
+                builder.Append($"  {group.count}x {group.resource} ({group.purity}) — {group.totalConsume:F2}:{group.totalProduce:F2} {group.outputResource}\n", TextColor);
             }
 
             return true;

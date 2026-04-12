@@ -126,8 +126,8 @@ namespace OE2EmpireTracker.Tests.Services
                     return false.Label($"Expected 1 occurrence of '{pattern}', found {occurrences}");
 
                 // Verify the aggregated rate
-                int expectedRate = (int)Math.Round((decimal)data.Amount * data.MinerCount);
-                string ratePattern = $"{expectedRate}/h";
+                decimal expectedRate = (decimal)data.Amount * data.MinerCount;
+                string ratePattern = $"{expectedRate:F2}/h";
                 if (!rtf.Contains(ratePattern))
                     return false.Label($"Expected rate '{ratePattern}' not found in report");
 

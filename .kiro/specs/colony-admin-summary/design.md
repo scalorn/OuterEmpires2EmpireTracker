@@ -71,7 +71,7 @@ The report builder needs access to the `ColonyStructure` to read `ManufacturingQ
 
 Active mining rows are grouped by `(Resource, Purity)`. For each group:
 - Sum the mining rate (parsed from `SurveyResource.Amount` × ExtractionFocus multiplier) across all miners on that resource+purity.
-- Display: `"Resource (Purity) — {totalRate}/h"`
+- Display: `"Resource (Purity) — {totalRate:F2}/h"`
 
 The report builder reuses the same rate calculation logic from `ColonyInactivityCollector.GetMiningOutputRate` (which is private). Rather than duplicating, the builder will iterate active miners directly, reading survey data and computing rates.
 
@@ -82,7 +82,7 @@ Active refining rows are grouped by `(InputResource, InputPurity)`. For each gro
 - Sum consume rates and produce rates.
 - For normal refining: consume = `RefiningBaseRate` per refiner, produce = `consume × purity_multiplier`.
 - For synthetic refining: use `RefiningRecipe.ConsumeRate` and `ProduceRate`.
-- Display: `"{count}x Resource (Purity) — {totalConsume}:{totalProduce} Resource"`
+- Display: `"{count}x Resource (Purity) — {totalConsume:F2}:{totalProduce:F2} Resource"`
 
 ### Completion Time Formatting
 
@@ -177,12 +177,12 @@ The following shows what the report looks like for a colony with a mix of buildi
     12h 30m 15s (12:52 AM Thu)
 
 [HEADER] Mining
-  Halogen (High) — 150/h
-  Calcium (Medium) — 85/h
+  Halogen (High) — 150.00/h
+  Calcium (Medium) — 85.00/h
 
 [HEADER] Refining
-  3x Halogen (High) — 75:375 Halogen
-  1x Calcium (Medium) — 25:75 Calcium
+  3x Halogen (High) — 75.00:375.00 Halogen
+  1x Calcium (Medium) — 25.00:75.00 Calcium
 ```
 
 ### Building Only (no other activity)
@@ -226,7 +226,7 @@ The following shows what the report looks like for a colony with a mix of buildi
 
 ```
 [HEADER] Mining
-  Halogen (High) — 150/h
+  Halogen (High) — 150.00/h
 ```
 
 This represents e.g. 3 miners each producing 50/h of Halogen (High), aggregated into a single row.
@@ -235,7 +235,7 @@ This represents e.g. 3 miners each producing 50/h of Halogen (High), aggregated 
 
 ```
 [HEADER] Refining
-  3x Halogen (High) — 75:375 Halogen
+  3x Halogen (High) — 75.00:375.00 Halogen
 ```
 
 This represents 3 refiners each consuming 25 and producing 125 Halogen per cycle.
