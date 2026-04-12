@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Forms.Colony;
 
 namespace OE2EmpireTracker.Forms.Survey
 {
@@ -29,6 +30,8 @@ namespace OE2EmpireTracker.Forms.Survey
         private EmpireContext empireContext;
         private PlayerContext playerContext;
         private SurveyViewModel viewModel;
+        private int _sortColumn = 1; // PlanetName
+        private SortOrder _sortOrder = SortOrder.Ascending;
 
         public FormSurvey()
         {
@@ -51,6 +54,8 @@ namespace OE2EmpireTracker.Forms.Survey
             lvwSurveys.Columns.Add("NickName", 100);
             lvwSurveys.Columns.Add("DateTime", 100);
             lvwSurveys.Columns.Add("Refs", 35);
+            lvwSurveys.ColumnClick += lvwSurveys_ColumnClick;
+            lvwSurveys.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
             PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
             UpdateTitle();
 
@@ -582,6 +587,19 @@ namespace OE2EmpireTracker.Forms.Survey
                 cmdDelete.Enabled = true;
                 cmdDelete.Text = "Delete";
             }
+        }
+
+        private void lvwSurveys_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            if (e.Column == _sortColumn)
+                _sortOrder = _sortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
+            else
+            {
+                _sortColumn = e.Column;
+                _sortOrder = SortOrder.Ascending;
+            }
+            lvwSurveys.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
+            lvwSurveys.Sort();
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
