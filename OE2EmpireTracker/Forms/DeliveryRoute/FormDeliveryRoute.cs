@@ -508,9 +508,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 return;
             }
 
-            var execution = new DeliveryExecution.FormDeliveryExecution(viewModel.UUID, planViewModel.UUID);
-            execution.MdiParent = this.MdiParent;
-            execution.Show();
+            var mainWindow = this.MdiParent as MainWindow;
+            if (mainWindow == null) return;
+            var execution = mainWindow.OpenMdiChild<DeliveryExecution.FormDeliveryExecution>();
+            execution.PreSelectRouteUUID = viewModel.UUID;
+            execution.PreSelectPlanUUID = planViewModel.UUID;
+            execution.ApplyPreSelection();
         }
 
         private void cmdAutoFill_Click(object sender, EventArgs e)

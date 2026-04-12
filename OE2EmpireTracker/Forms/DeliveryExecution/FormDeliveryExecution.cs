@@ -20,8 +20,6 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         private EmpireContext empireContext;
         private PlayerContext playerContext;
         private DeliveryPlan selectedPlan;
-        private string preSelectRouteUUID;
-        private string preSelectPlanUUID;
         private Dictionary<DeliveryPlanStop, Button> _stopCompleteButtons = new Dictionary<DeliveryPlanStop, Button>();
 
         public FormDeliveryExecution()
@@ -60,26 +58,29 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             playerContext.DeliveryDataChanged += OnDeliveryDataChanged;
         }
 
+        public string PreSelectRouteUUID { get; set; }
+        public string PreSelectPlanUUID { get; set; }
+
         /// <summary>
-        /// Constructor for launching from route builder with pre-selected route and plan.
+        /// Apply pre-selected route and plan after the form is already shown.
+        /// Called by FormDeliveryRoute when launching via the Execute button.
         /// </summary>
-        public FormDeliveryExecution(string routeUUID, string planUUID) : this()
+        public void ApplyPreSelection()
         {
-            preSelectRouteUUID = routeUUID;
-            preSelectPlanUUID = planUUID;
+            if (!string.IsNullOrEmpty(PreSelectRouteUUID))
+            {
+                cmbRoute.SelectedValue = PreSelectRouteUUID;
+                if (!string.IsNullOrEmpty(PreSelectPlanUUID))
+                {
+                    cmbPlan.SelectedValue = PreSelectPlanUUID;
+                }
+            }
         }
 
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
-            if (!string.IsNullOrEmpty(preSelectRouteUUID))
-            {
-                cmbRoute.SelectedValue = preSelectRouteUUID;
-                if (!string.IsNullOrEmpty(preSelectPlanUUID))
-                {
-                    cmbPlan.SelectedValue = preSelectPlanUUID;
-                }
-            }
+            ApplyPreSelection();
         }
 
         // -----------------------------------------------------------------------

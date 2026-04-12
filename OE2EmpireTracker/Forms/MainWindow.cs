@@ -94,7 +94,7 @@ namespace OE2EmpireTracker
             }
         }
 
-        private T OpenMdiChild<T>() where T : Form, new()
+        internal T OpenMdiChild<T>() where T : Form, new()
         {
             string formTypeKey = typeof(T).Name;
             var usedNumbers = this.MdiChildren

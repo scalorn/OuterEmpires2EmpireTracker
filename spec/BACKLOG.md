@@ -296,21 +296,6 @@ If no player profile has been created yet, the app should limit the user to only
 
 Create a Preferences form (accessible from the menu) that exposes all the magic numbers currently hardcoded in the app. Examples: colony structure count yellow/red thresholds, commodity request urgency windows (hours until yellow, hours until red), colony import staleness thresholds (days until yellow/red), and any other configurable values. Store in UIPreferences.json alongside existing window state preferences. Replace hardcoded constants in TabWarningService and other consumers with reads from the preferences store.
 
-### BL-063: Colony Activity Form — Filter Controls Not Sticky
-**Dependencies:** None
-
-Bug: The filter checkboxes and filter text box on the Colony Activity form don't persist their state between form close and reopen. They should be saved to UIPreferences.json and restored when the form opens, following the window state persistence pattern.
-
-### BL-064: Delivery Execution Form — Filter Controls Not Sticky
-**Dependencies:** None
-
-Bug: None of the filter controls on the Delivery Execution form persist their state between form close and reopen. Route/plan dropdowns and any filter text should be saved to UIPreferences.json and restored when the form opens.
-
-### BL-065: Delivery Routes Form — Filter Text Not Sticky
-**Dependencies:** None
-
-Bug: The filter text box on the Delivery Routes form doesn't persist its state between form close and reopen. Should be saved to UIPreferences.json and restored when the form opens.
-
 ---
 
 ## ~~MarketSample Coverage Gaps~~ — RESOLVED

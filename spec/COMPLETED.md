@@ -157,3 +157,15 @@ In-app help system with markdown docs in `docs/` folder (GitHub-browsable) rende
 ### BL-067: MDI Window Numbering — Reuse Lowest Available Number
 Bug: Window numbers incremented monotonically instead of reusing gaps left by closed windows.
 **Status: Complete** — Replaced `_windowNumberCounters` counter with gap-scanning algorithm in `MainWindow.OpenMdiChild<T>()` that finds the lowest unused positive integer from `this.MdiChildren`. 2 FsCheck property tests + 6 edge-case unit tests. Spec: `.kiro/specs/mdi-window-reuse/`.
+
+### BL-063: Colony Activity Form — Filter Controls Not Sticky
+Bug: Filter checkboxes and text box on Colony Activity form didn't persist between close/reopen.
+**Status: Complete** — Controls already had Name properties in Designer and WindowStateHelper already saved/restored them. Confirmed working via diagnostic logging — no code changes needed.
+
+### BL-064: Delivery Execution Form — Filter Controls Not Sticky
+Bug: Filter controls on Delivery Execution form didn't persist between close/reopen.
+**Status: Complete** — Root cause: the "Execute" button on FormDeliveryRoute created FormDeliveryExecution directly (`new FormDeliveryExecution(routeUUID, planUUID)`) bypassing `OpenMdiChild<T>()`, so no Tag/RestoreState/SaveState occurred. Fix: route through `MainWindow.OpenMdiChild<T>()` (changed from private to internal), replaced parameterized constructor with public properties + `ApplyPreSelection()` method.
+
+### BL-065: Delivery Routes Form — Filter Text Not Sticky
+Bug: Filter text box on Delivery Routes form didn't persist between close/reopen.
+**Status: Complete** — Controls already had Name properties in Designer and WindowStateHelper already saved/restored them. Confirmed working via diagnostic logging — no code changes needed.
