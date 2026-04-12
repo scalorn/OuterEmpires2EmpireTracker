@@ -111,7 +111,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private void cmdStart_Click(object sender, EventArgs e)
         {
             PlayerSkill.TrainingStarted = true;
-            PlayerSkill.CompletionTime.StartTime = DateTime.Now;
+            PlayerSkill.CompletionTime.StartTime = DateTime.UtcNow;
             PlayerSkill.CompletionTime.TimeRemaining = (long) TimeSpan.FromDays(PlayerSkill.Level + 1).TotalSeconds;
             PlayerSkill.CompletionTime.TimeRemaining = 10;
 

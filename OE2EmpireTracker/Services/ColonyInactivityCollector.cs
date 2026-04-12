@@ -21,9 +21,49 @@ namespace OE2EmpireTracker.Services
             {
                 CollectIdleStructures(colony, playerContext, rows);
                 CollectUnderutilizedRefiners(colony, playerContext, rows);
+                CollectColonyImportStaleness(colony, rows);
             }
 
             return rows;
+        }
+
+        /// <summary>
+        /// Emits an ActivityRow for colony import staleness if the colony's LastImportDateTime
+        /// is older than 1 day or is null/empty/unparseable.
+        /// </summary>
+        private static void CollectColonyImportStaleness(Colony colony, List<ActivityRow> rows)
+        {
+            DateTime parsed;
+            if (!SurveyDateTimeParser.TryParseIso(colony.LastImportDateTime, out parsed))
+            {
+                // Unparseable or null/empty — treat as maximally stale
+                rows.Add(new ActivityRow
+                {
+                    Type = ActivityType.ColonyImportStaleness,
+                    SystemName = colony.SystemName,
+                    ColonyName = colony.ColonyName,
+                    SourceName = "Colony Import",
+                    ProcessDetails = "Unknown since last import",
+                    CountDown = null,
+                    NeedBy = DateTime.MinValue
+                });
+                return;
+            }
+
+            long elapsedSeconds = (long)(DateTime.UtcNow - parsed).TotalSeconds;
+            if (elapsedSeconds > 86400)
+            {
+                rows.Add(new ActivityRow
+                {
+                    Type = ActivityType.ColonyImportStaleness,
+                    SystemName = colony.SystemName,
+                    ColonyName = colony.ColonyName,
+                    SourceName = "Colony Import",
+                    ProcessDetails = ActivityRow.FormatSeconds(elapsedSeconds) + " since last import",
+                    CountDown = null,
+                    NeedBy = DateTime.MinValue
+                });
+            }
         }
 
         /// <summary>

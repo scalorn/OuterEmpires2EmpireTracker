@@ -36,7 +36,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 return SurveyDateTimeParser.ToIsoString(fallback);
 
             // Unparseable or null/empty — replace with now
-            return SurveyDateTimeParser.ToIsoString(DateTime.Now);
+            return SurveyDateTimeParser.ToIsoString(DateTime.UtcNow);
         }
 
         #endregion
@@ -46,7 +46,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         [Test]
         public void MigrateDateTime_AlreadyIso_ReturnsUnchanged()
         {
-            string iso = "2024-07-27T23:44:00";
+            string iso = "2024-07-27T23:44:00Z";
             string result = MigrateDateTime(iso);
             Assert.That(result, Is.EqualTo(iso));
         }
@@ -54,7 +54,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         [Test]
         public void MigrateDateTime_AlreadyIso_Midnight_ReturnsUnchanged()
         {
-            string iso = "2025-01-01T00:00:00";
+            string iso = "2025-01-01T00:00:00Z";
             string result = MigrateDateTime(iso);
             Assert.That(result, Is.EqualTo(iso));
         }
@@ -62,7 +62,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         [Test]
         public void MigrateDateTime_AlreadyIso_Noon_ReturnsUnchanged()
         {
-            string iso = "2026-06-15T12:00:00";
+            string iso = "2026-06-15T12:00:00Z";
             string result = MigrateDateTime(iso);
             Assert.That(result, Is.EqualTo(iso));
         }
@@ -75,28 +75,28 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         public void MigrateDateTime_GameFormat_ConvertsToIso()
         {
             string result = MigrateDateTime("27JUL24-11:44p");
-            Assert.That(result, Is.EqualTo("2024-07-27T23:44:00"));
+            Assert.That(result, Is.EqualTo("2024-07-27T23:44:00Z"));
         }
 
         [Test]
         public void MigrateDateTime_GameFormat_Morning_ConvertsToIso()
         {
             string result = MigrateDateTime("19FEB26-08:41p");
-            Assert.That(result, Is.EqualTo("2026-02-19T20:41:00"));
+            Assert.That(result, Is.EqualTo("2026-02-19T20:41:00Z"));
         }
 
         [Test]
         public void MigrateDateTime_GameFormat_Midnight_ConvertsToIso()
         {
             string result = MigrateDateTime("01JAN24-12:00a");
-            Assert.That(result, Is.EqualTo("2024-01-01T00:00:00"));
+            Assert.That(result, Is.EqualTo("2024-01-01T00:00:00Z"));
         }
 
         [Test]
         public void MigrateDateTime_GameFormat_Noon_ConvertsToIso()
         {
             string result = MigrateDateTime("15JUN25-12:30p");
-            Assert.That(result, Is.EqualTo("2025-06-15T12:30:00"));
+            Assert.That(result, Is.EqualTo("2025-06-15T12:30:00Z"));
         }
 
         #endregion

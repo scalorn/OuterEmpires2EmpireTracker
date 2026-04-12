@@ -26,6 +26,7 @@ namespace OE2EmpireTracker.Models
         public List<ColonyStructure> Structures { get; set; }
 
         public List<CommodityRequested> Commodities { get; set; }
+        public string LastImportDateTime { get; set; }
         public OE2EmpireTracker.Models.LockTracking Locks { get; set; }
 
         [JsonIgnore]

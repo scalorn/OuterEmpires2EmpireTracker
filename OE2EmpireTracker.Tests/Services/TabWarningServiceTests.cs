@@ -171,6 +171,76 @@ namespace OE2EmpireTracker.Tests.Services
         // ── Unit Tests: Structure Warning Edge Cases ──
         // **Validates: Requirements 7.1, 7.2, 8.1, 8.2, 9.1**
 
+        // ── Property Test: Colony Import Staleness Warning ──
+
+        /// <summary>
+        /// Feature: colony-import-timestamp, Property 5: TabWarningService returns correct warning level for import staleness
+        /// **Validates: Requirements 5.2, 5.3, 5.4, 5.5**
+        ///
+        /// For any valid ISO 8601 timestamp string and reference DateTime now,
+        /// EvaluateColonyImportStalenessWarning returns Red when elapsed >= 6 days,
+        /// Yellow when elapsed >= 5 days and &lt; 6 days, and None when elapsed &lt; 5 days.
+        /// For null or empty input, it returns Red.
+        /// </summary>
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property ImportStalenessWarning_ReturnsCorrectLevelForElapsedTime()
+        {
+            // Generate elapsed days as a double in [0, 15] range to cover all thresholds
+            var genElapsedDays = Gen.Choose(0, 15000).Select(m => m / 1000.0); // 0.000 to 15.000 days
+
+            // Fixed reference 'now'
+            var now = new DateTime(2025, 6, 15, 12, 0, 0, DateTimeKind.Utc);
+
+            return Prop.ForAll(
+                genElapsedDays.ToArbitrary(),
+                elapsedDays =>
+                {
+                    var importTime = now.AddDays(-elapsedDays);
+                    var isoString = SurveyDateTimeParser.ToIsoString(importTime);
+
+                    var result = TabWarningService.EvaluateColonyImportStalenessWarning(isoString, now);
+
+                    TabWarningLevel expected;
+                    if (elapsedDays >= 6.0)
+                        expected = TabWarningLevel.Red;
+                    else if (elapsedDays >= 5.0)
+                        expected = TabWarningLevel.Yellow;
+                    else
+                        expected = TabWarningLevel.None;
+
+                    return (result == expected)
+                        .Label($"elapsed={elapsedDays:F3}d, iso={isoString}, expected={expected}, got={result}");
+                });
+        }
+
+        /// <summary>
+        /// Feature: colony-import-timestamp, Property 5 (null/empty case)
+        /// **Validates: Requirements 5.5**
+        ///
+        /// For null or empty LastImportDateTime, EvaluateColonyImportStalenessWarning returns Red.
+        /// </summary>
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property ImportStalenessWarning_NullOrEmpty_ReturnsRed()
+        {
+            var genNullOrEmpty = Gen.OneOf(
+                Gen.Constant((string)null),
+                Gen.Constant(string.Empty));
+
+            var now = new DateTime(2025, 6, 15, 12, 0, 0, DateTimeKind.Utc);
+
+            return Prop.ForAll(
+                genNullOrEmpty.ToArbitrary(),
+                input =>
+                {
+                    var result = TabWarningService.EvaluateColonyImportStalenessWarning(input, now);
+                    return (result == TabWarningLevel.Red)
+                        .Label($"input={input ?? "null"}, expected=Red, got={result}");
+                });
+        }
+
+        // ── Unit Tests: Structure Warning Edge Cases ──
+        // **Validates: Requirements 7.1, 7.2, 8.1, 8.2, 9.1**
+
         private static readonly DateTime Now = new DateTime(2025, 6, 15, 12, 0, 0);
 
         [Test]

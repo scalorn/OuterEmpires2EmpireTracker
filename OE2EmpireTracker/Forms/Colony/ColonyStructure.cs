@@ -1414,8 +1414,8 @@ namespace OE2EmpireTracker.Forms.Colony
                 if (string.IsNullOrEmpty(ColonyStructureData.RefiningResource)) return;
 
                 ColonyStructureData.ProcessCompletionTime = new CountDownTime();
-                ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.Now;
-                long secondsUntilNextHour = GameConstants.SecondsPerHour - (long)(DateTime.Now - DateTime.Now.Date.AddHours(DateTime.Now.Hour)).TotalSeconds;
+                ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.UtcNow;
+                long secondsUntilNextHour = GameConstants.SecondsPerHour - (long)(DateTime.UtcNow - DateTime.UtcNow.Date.AddHours(DateTime.UtcNow.Hour)).TotalSeconds;
                 ColonyStructureData.ProcessCompletionTime.StartRepeating(GameConstants.SecondsPerHour, secondsUntilNextHour);
                 timerCountdown.Interval = 1000;
                 timerCountdown.Start();
@@ -1443,7 +1443,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 researchSeconds = Math.Max(1, (long)(researchSeconds * (1.0 - researchFocusLevel * 0.03)));
 
                 ColonyStructureData.ProcessCompletionTime = new CountDownTime();
-                ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.Now;
+                ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.UtcNow;
                 ColonyStructureData.ProcessCompletionTime.TimeRemaining = researchSeconds;
                 timerCountdown.Interval = 1000;
                 timerCountdown.Start();
@@ -1489,7 +1489,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 ColonyStructureData.ManufacturingQuantity = qty;
                 ColonyStructureData.ManufacturingCompleted = 0;
                 ColonyStructureData.ProcessCompletionTime = new CountDownTime();
-                ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.Now;
+                ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.UtcNow;
                 ColonyStructureData.ProcessCompletionTime.StartRepeating(mfgSeconds);
                 timerCountdown.Interval = 1000;
                 timerCountdown.Start();
@@ -1508,7 +1508,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 ColonyStructureData.ManufacturingQuantity = qty;
                 ColonyStructureData.ManufacturingCompleted = 0;
                 ColonyStructureData.ProcessCompletionTime = new CountDownTime();
-                ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.Now;
+                ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.UtcNow;
 
                 // Apply ProductionFocus skill multiplier to commodity cycle time
                 long commodityCycleSeconds = GameConstants.CommodityCycleSeconds;
@@ -1537,8 +1537,8 @@ namespace OE2EmpireTracker.Forms.Colony
         private void cmdSubStart_Click(object sender, EventArgs e)
         {
             ColonyStructureData.ProcessCompletionTime = new CountDownTime();
-            ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.Now;
-            long secondsUntilNextHour = GameConstants.SecondsPerHour - (long)(DateTime.Now - DateTime.Now.Date.AddHours(DateTime.Now.Hour)).TotalSeconds;
+            ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.UtcNow;
+            long secondsUntilNextHour = GameConstants.SecondsPerHour - (long)(DateTime.UtcNow - DateTime.UtcNow.Date.AddHours(DateTime.UtcNow.Hour)).TotalSeconds;
             ColonyStructureData.ProcessCompletionTime.StartRepeating(GameConstants.SecondsPerHour, secondsUntilNextHour);
             timerCountdown.Interval = 1000;
             timerCountdown.Start();
@@ -1609,7 +1609,7 @@ namespace OE2EmpireTracker.Forms.Colony
                     {
                         // Repeating timer: advance StartTime back by one interval
                         ColonyStructureData.ProcessCompletionTime.StartTime =
-                            DateTime.Now.AddSeconds(-ColonyStructureData.ProcessCompletionTime.RepeatIntervalSeconds);
+                            DateTime.UtcNow.AddSeconds(-ColonyStructureData.ProcessCompletionTime.RepeatIntervalSeconds);
                     }
                     else if (!ColonyStructureData.ProcessCompletionTime.IsRepeating &&
                              ColonyStructureData.ProcessCompletionTime.TimeRemaining > 0)

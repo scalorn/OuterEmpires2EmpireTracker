@@ -64,7 +64,7 @@ namespace OE2EmpireTracker.Tests.Services
             bool ok = SurveyDateTimeParser.TryParseGameFormat("27JUL24-11:44p", out DateTime dt);
 
             Assert.That(ok, Is.True);
-            Assert.That(SurveyDateTimeParser.ToIsoString(dt), Is.EqualTo("2024-07-27T23:44:00"));
+            Assert.That(SurveyDateTimeParser.ToIsoString(dt), Is.EqualTo("2024-07-27T23:44:00Z"));
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace OE2EmpireTracker.Tests.Services
             bool ok = SurveyDateTimeParser.TryParseGameFormat("19FEB26-08:41p", out DateTime dt);
 
             Assert.That(ok, Is.True);
-            Assert.That(SurveyDateTimeParser.ToIsoString(dt), Is.EqualTo("2026-02-19T20:41:00"));
+            Assert.That(SurveyDateTimeParser.ToIsoString(dt), Is.EqualTo("2026-02-19T20:41:00Z"));
         }
 
         #endregion

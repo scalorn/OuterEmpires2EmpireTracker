@@ -106,6 +106,22 @@ The status panel on the Structures tab shows a summary of the colony's current s
 - Resource production and consumption rates.
 - Worker allocation summary.
 
+## Import Staleness Tracking
+
+The tracker records when each colony was last imported. This helps you spot colonies with outdated data that might be missing commodity requests or structure changes.
+
+### Administration Tab Warning
+
+The Administration tab on the Colony form changes color based on how long it's been since the colony was imported:
+
+- **No color** — Imported within the last 5 days. Data is fresh.
+- **Yellow** — 5 to 6 days since last import. Consider reimporting soon.
+- **Red** — 6+ days since last import (or never imported). Data is stale — reimport this colony.
+
+### Colony Activity — Inactivity Mode
+
+The Colony Activity form's inactivity mode (toggle "Show Inactive") includes an "Import Staleness" filter. When enabled, colonies that haven't been imported in over 24 hours appear as staleness rows showing elapsed time since the last import (e.g., "5d 3h since last import"). Use this to quickly see which colonies across your empire need a fresh import.
+
 ## Related Topics
 
 - [Delivery Routes](delivery-routes.md) — Plan deliveries between colonies

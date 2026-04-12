@@ -43,7 +43,7 @@ namespace OE2EmpireTracker.Services
             if (_running) return;
 
             _stopping.Reset();
-            NextProcessTime = DateTime.Now.AddMilliseconds(TickIntervalMs);
+            NextProcessTime = DateTime.UtcNow.AddMilliseconds(TickIntervalMs);
             _timer = new Timer(OnTimerTick, null, TickIntervalMs, Timeout.Infinite);
             _running = true;
 
@@ -106,7 +106,7 @@ namespace OE2EmpireTracker.Services
 
             if (!_stopping.IsSet && !_disposed)
             {
-                NextProcessTime = DateTime.Now.AddMilliseconds(TickIntervalMs);
+                NextProcessTime = DateTime.UtcNow.AddMilliseconds(TickIntervalMs);
                 try
                 {
                     _timer?.Change(TickIntervalMs, Timeout.Infinite);

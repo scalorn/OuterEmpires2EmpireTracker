@@ -116,7 +116,7 @@ namespace OE2EmpireTracker.Tests.Forms
                 PlanetName = RandomString(rng),
                 SystemName = RandomString(rng),
                 SurveyID = RandomString(rng, 6),
-                DateTime = System.DateTime.Now.ToString()
+                DateTime = System.DateTime.UtcNow.ToString()
             };
         }
 

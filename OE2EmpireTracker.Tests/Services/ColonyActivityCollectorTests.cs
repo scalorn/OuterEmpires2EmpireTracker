@@ -68,8 +68,8 @@ namespace OE2EmpireTracker.Tests.Services
         private static CountDownTime MakeExpiredTimer()
         {
             var timer = new CountDownTime();
-            timer.StartTime = DateTime.Now.AddHours(-2);
-            timer.EndTime = DateTime.Now.AddHours(-1);
+            timer.StartTime = DateTime.UtcNow.AddHours(-2);
+            timer.EndTime = DateTime.UtcNow.AddHours(-1);
             return timer;
         }
 
@@ -158,7 +158,7 @@ namespace OE2EmpireTracker.Tests.Services
                             Name = "Commodity_" + cr,
                             Requested = Rng.Next(1, 100),
                             Fulfilled = fulfilled,
-                            NeedBy = DateTime.Now.AddDays(Rng.Next(-1, 10))
+                            NeedBy = DateTime.UtcNow.AddDays(Rng.Next(-1, 10))
                         });
                         if (!fulfilled)
                         {
@@ -210,7 +210,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 // Generate random NeedBy from 1 day past to 10 days future
                 double offsetDays = (Rng.NextDouble() * 11.0) - 1.0;
-                DateTime needBy = DateTime.Now.AddDays(offsetDays);
+                DateTime needBy = DateTime.UtcNow.AddDays(offsetDays);
 
                 var row = new ActivityRow
                 {
@@ -220,9 +220,9 @@ namespace OE2EmpireTracker.Tests.Services
                 };
 
                 long actualSeconds = row.GetSecondsRemaining();
-                long expectedSeconds = Math.Max(0, (long)(needBy - DateTime.Now).TotalSeconds);
+                long expectedSeconds = Math.Max(0, (long)(needBy - DateTime.UtcNow).TotalSeconds);
 
-                if (needBy <= DateTime.Now)
+                if (needBy <= DateTime.UtcNow)
                 {
                     Assert.That(actualSeconds, Is.EqualTo(0),
                     $"Iteration {iteration}: past NeedBy should return 0");
@@ -442,7 +442,7 @@ namespace OE2EmpireTracker.Tests.Services
                         Name = crName,
                         Requested = crRequested,
                         Fulfilled = false,
-                        NeedBy = DateTime.Now.AddDays(Rng.Next(1, 10))
+                        NeedBy = DateTime.UtcNow.AddDays(Rng.Next(1, 10))
                     });
 
                     var crRows = ColonyActivityCollector.CollectActivities(new[] { colony2 }, pc);
@@ -563,7 +563,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Name = "Electronics",
                 Requested = 50,
                 Fulfilled = false,
-                NeedBy = DateTime.Now.AddDays(5)
+                NeedBy = DateTime.UtcNow.AddDays(5)
             });
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
@@ -588,7 +588,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Name = "Steel",
                 Requested = 20,
                 Fulfilled = true,
-                NeedBy = DateTime.Now.AddDays(3)
+                NeedBy = DateTime.UtcNow.AddDays(3)
             });
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
@@ -602,7 +602,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 Type = ActivityType.CommodityRequest,
                 CountDown = null,
-                NeedBy = DateTime.Now.AddDays(-2)
+                NeedBy = DateTime.UtcNow.AddDays(-2)
             };
             Assert.That(row.GetSecondsRemaining(), Is.EqualTo(0));
             Assert.That(row.GetTimeRemainingString(), Is.EqualTo("0s"));
@@ -819,7 +819,7 @@ namespace OE2EmpireTracker.Tests.Services
                             SourceName = "Commodity Request",
                             ProcessDetails = "Item x" + Rng.Next(1, 100),
                             CountDown = null,
-                            NeedBy = DateTime.Now.AddSeconds(Rng.Next(0, 864000))
+                            NeedBy = DateTime.UtcNow.AddSeconds(Rng.Next(0, 864000))
                         };
                     }
                     else

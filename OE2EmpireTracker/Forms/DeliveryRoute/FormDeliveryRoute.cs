@@ -580,7 +580,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 return;
             }
 
-            string name = $"{viewModel.Data.Name} - {DateTime.Now:yyyy-MM-dd}";
+            string name = $"{viewModel.Data.Name} - {DateTime.UtcNow:yyyy-MM-dd}";
 
             var plan = new DeliveryPlan
             {

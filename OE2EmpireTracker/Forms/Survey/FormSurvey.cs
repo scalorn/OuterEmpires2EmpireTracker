@@ -286,7 +286,7 @@ namespace OE2EmpireTracker.Forms.Survey
         private void dtpScanDateTime_ValueChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            viewModel.DateTime = SurveyDateTimeParser.ToIsoString(dtpScanDateTime.Value);
+            viewModel.DateTime = SurveyDateTimeParser.ToIsoString(dtpScanDateTime.Value.ToUniversalTime());
             using var guard = new ProgrammaticUpdateGuard(this);
             txtScanDateTime.Text = SurveyDateTimeParser.ToGameFormat(dtpScanDateTime.Value);
         }
@@ -556,7 +556,7 @@ namespace OE2EmpireTracker.Forms.Survey
             txtScannedBy.Text = viewModel.ScannedBy ?? "";
             txtScanDateTime.Text = viewModel.DisplayDateTime ?? "";
             if (SurveyDateTimeParser.TryParseIso(viewModel.DateTime, out DateTime parsedDt))
-                dtpScanDateTime.Value = parsedDt;
+                dtpScanDateTime.Value = parsedDt.ToLocalTime();
             else
                 dtpScanDateTime.Value = DateTime.Now;
             txtSensorAbundance.Text = viewModel.SensorAbundance ?? "";

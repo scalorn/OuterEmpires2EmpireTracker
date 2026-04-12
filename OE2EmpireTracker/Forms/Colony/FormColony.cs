@@ -708,7 +708,7 @@ namespace OE2EmpireTracker.Forms.Colony
             int activeRequests = 0;
             if (selectedColony?.Commodities != null)
             {
-                var now = DateTime.Now;
+                var now = DateTime.UtcNow;
                 activeRequests = selectedColony.Commodities.Count(r =>
                     !r.Fulfilled && (r.NeedBy == DateTime.MinValue || r.NeedBy > now));
             }
@@ -1528,7 +1528,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
             long totalSeconds = ((long)days * 24 + hours) * 3600 + minutes * 60 + seconds;
             if (totalSeconds <= 0) return null;
-            return DateTime.Now.AddSeconds(totalSeconds);
+            return DateTime.UtcNow.AddSeconds(totalSeconds);
         }
 
         /// <summary>
@@ -1538,7 +1538,7 @@ namespace OE2EmpireTracker.Forms.Colony
         private string FormatNeedByCountdown(DateTime needBy)
         {
             if (needBy == DateTime.MinValue) return "";
-            var remaining = needBy - DateTime.Now;
+            var remaining = needBy - DateTime.UtcNow;
             if (remaining.TotalSeconds <= 0)
                 return "overdue";
 
@@ -1856,7 +1856,11 @@ namespace OE2EmpireTracker.Forms.Colony
             var commodities = selectedColony?.Commodities;
             ApplyTabWarning(tabPWorkers,
                 TabWarningService.EvaluateWorkerWarning(
-                    commodities ?? Enumerable.Empty<CommodityRequested>(), DateTime.Now));
+                    commodities ?? Enumerable.Empty<CommodityRequested>(), DateTime.UtcNow));
+
+            ApplyTabWarning(tabPAdministration,
+                TabWarningService.EvaluateColonyImportStalenessWarning(
+                    selectedColony?.LastImportDateTime, DateTime.UtcNow));
         }
     }
 }

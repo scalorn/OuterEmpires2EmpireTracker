@@ -8,7 +8,7 @@ namespace OE2EmpireTracker.Services
 {
     public static class SurveyDateTimeParser
     {
-        public const string IsoFormat = "yyyy-MM-ddTHH:mm:ss";
+        public const string IsoFormat = "yyyy-MM-ddTHH:mm:ssZ";
 
         private static readonly Regex GameFormatRegex = new Regex(
             @"^(\d{2})([A-Z]{3})(\d{2})-(\d{1,2}):(\d{2})([ap])$",
@@ -73,7 +73,8 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Parses an ISO 8601 date/time string (e.g. "2024-07-27T23:44:00") into a DateTime.
+        /// Parses an ISO 8601 date/time string (e.g. "2024-07-27T23:44:00Z") into a UTC DateTime.
+        /// Accepts both Z-suffixed and non-Z-suffixed strings for backward compatibility.
         /// </summary>
         public static bool TryParseIso(string input, out DateTime result)
         {
@@ -81,8 +82,11 @@ namespace OE2EmpireTracker.Services
             if (string.IsNullOrEmpty(input))
                 return false;
 
-            return DateTime.TryParseExact(input, IsoFormat,
-                CultureInfo.InvariantCulture, DateTimeStyles.None, out result);
+            string[] formats = { "yyyy-MM-ddTHH:mm:ssZ", "yyyy-MM-ddTHH:mm:ss" };
+            return DateTime.TryParseExact(input, formats,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                out result);
         }
 
         /// <summary>
@@ -130,12 +134,13 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Converts an ISO string to game display format. Returns the original string unchanged on failure.
+        /// Converts an ISO string to game display format. Converts UTC to local time before formatting.
+        /// Returns the original string unchanged on failure.
         /// </summary>
         public static string FormatForDisplay(string isoString)
         {
             if (TryParseIso(isoString, out DateTime dt))
-                return ToGameFormat(dt);
+                return ToGameFormat(dt.ToLocalTime());
             return isoString;
         }
 

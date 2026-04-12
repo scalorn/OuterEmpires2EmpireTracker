@@ -258,6 +258,7 @@
     <Compile Include="Models\BlueprintTests.cs" />
     <Compile Include="Models\CommodityTests.cs" />
     <Compile Include="Models\CountDownTimeTests.cs" />
+    <Compile Include="Models\CountDownTimeUtcPropertyTests.cs" />
     <Compile Include="Models\ItemBagTests.cs" />
     <Compile Include="Models\ItemTests.cs" />
     <Compile Include="Models\ItemTypeTests.cs" />
@@ -296,7 +297,11 @@
     <Compile Include="Services\BlueprintReferenceCounterTests.cs" />
     <Compile Include="Services\BlueprintReferenceCounterPropertyTests.cs" />
     <Compile Include="Services\ColonyImportHelperPropertyTests.cs" />
+    <Compile Include="Services\ColonyImportTimestampPropertyTests.cs" />
+    <Compile Include="Services\ColonyInactivityStalenessPropertyTests.cs" />
+    <Compile Include="Models\ColonyLastImportDateTimePropertyTests.cs" />
     <Compile Include="Services\SurveyDateTimeParserPropertyTests.cs" />
+    <Compile Include="Services\SurveyDateTimeParserUtcPropertyTests.cs" />
     <Compile Include="Services\SurveyDateTimeParserTests.cs" />
     <Compile Include="Services\SurveyImportHelperPropertyTests.cs" />
     <Compile Include="Services\Migration\DeterministicUUIDPropertyTests.cs" />
@@ -306,6 +311,7 @@
     <Compile Include="Services\Migration\RemapUUIDColonyPropertyTests.cs" />
     <Compile Include="Services\Migration\Migration002PropertyTests.cs" />
     <Compile Include="Services\Migration\Migration003PropertyTests.cs" />
+    <Compile Include="Services\Migration\Migration004PropertyTests.cs" />
     <Compile Include="Services\Migration\Migration003Tests.cs" />
     <Compile Include="Services\Migration\RenameTablePropertyTests.cs" />
     <Compile Include="Services\Migration\MigrationVersionGatingPropertyTests.cs" />

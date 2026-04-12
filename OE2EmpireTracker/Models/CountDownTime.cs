@@ -43,14 +43,14 @@ namespace OE2EmpireTracker.Models
             {
                 if (IsRepeating && RepeatIntervalSeconds > 0)
                 {
-                    return (long)(GetNextIntervalBoundary(DateTime.Now) - DateTime.Now).TotalSeconds;
+                    return (long)(GetNextIntervalBoundary(DateTime.UtcNow) - DateTime.UtcNow).TotalSeconds;
                 }
 
-                return (long)(EndTime - DateTime.Now).TotalSeconds;
+                return (long)(EndTime - DateTime.UtcNow).TotalSeconds;
             }
             set
             {
-                var now = DateTime.Now;
+                var now = DateTime.UtcNow;
                 if (IsRepeating && RepeatIntervalSeconds > 0)
                 {
                     long remaining = value;
@@ -88,7 +88,7 @@ namespace OE2EmpireTracker.Models
                     return 0;
                 }
 
-                var elapsedSeconds = (DateTime.Now - StartTime).TotalSeconds;
+                var elapsedSeconds = (DateTime.UtcNow - StartTime).TotalSeconds;
                 if (elapsedSeconds <= 0)
                 {
                     return 0;
@@ -179,7 +179,7 @@ namespace OE2EmpireTracker.Models
             }
 
             StartTime = StartTime.AddSeconds(toConsume * RepeatIntervalSeconds);
-            EndTime = GetNextIntervalBoundary(DateTime.Now);
+            EndTime = GetNextIntervalBoundary(DateTime.UtcNow);
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace OE2EmpireTracker.Models
             }
 
             RepeatIntervalSeconds = intervalSeconds;
-            StartTime = DateTime.Now;
+            StartTime = DateTime.UtcNow;
             EndTime = StartTime.AddSeconds(intervalSeconds);
         }
 
@@ -222,8 +222,8 @@ namespace OE2EmpireTracker.Models
                 remaining %= RepeatIntervalSeconds;
             }
 
-            StartTime = DateTime.Now.AddSeconds(remaining - RepeatIntervalSeconds);
-            EndTime = DateTime.Now.AddSeconds(remaining);
+            StartTime = DateTime.UtcNow.AddSeconds(remaining - RepeatIntervalSeconds);
+            EndTime = DateTime.UtcNow.AddSeconds(remaining);
         }
 
         /// <summary>

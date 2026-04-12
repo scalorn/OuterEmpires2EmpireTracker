@@ -44,7 +44,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             SurveyParser.ParseDescription(survey,
                 "A detailed survey report taken on 27JUL24-11:44p by Scalorn Scorpus");
 
-            Assert.That(survey.DateTime, Is.EqualTo("2024-07-27T23:44:00"));
+            Assert.That(survey.DateTime, Is.EqualTo("2024-07-27T23:44:00Z"));
             Assert.That(survey.ScannedBy, Is.EqualTo("Scalorn Scorpus"));
         }
 
@@ -55,7 +55,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             SurveyParser.ParseDescription(survey,
                 "Survey report generated on 19FEB26-08:41p by Scalorn Scorpus");
 
-            Assert.That(survey.DateTime, Is.EqualTo("2026-02-19T20:41:00"));
+            Assert.That(survey.DateTime, Is.EqualTo("2026-02-19T20:41:00Z"));
             Assert.That(survey.ScannedBy, Is.EqualTo("Scalorn Scorpus"));
         }
 
@@ -196,7 +196,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             var survey = new Survey();
             _parser.ProcessHtml(survey, SampleHtml);
-            Assert.That(survey.DateTime, Is.EqualTo("2024-07-27T23:44:00"));
+            Assert.That(survey.DateTime, Is.EqualTo("2024-07-27T23:44:00Z"));
         }
 
         [Test]
@@ -310,7 +310,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         [Test]
         public void ZehVazoran_ExtractsDateTime()
         {
-            Assert.That(ParseZehVazoran().DateTime, Is.EqualTo("2026-02-19T20:41:00"));
+            Assert.That(ParseZehVazoran().DateTime, Is.EqualTo("2026-02-19T20:41:00Z"));
         }
 
         [Test]
@@ -383,7 +383,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         [Test]
         public void Quogar_ExtractsDateTime()
         {
-            Assert.That(ParseQuogar().DateTime, Is.EqualTo("2026-02-19T21:39:00"));
+            Assert.That(ParseQuogar().DateTime, Is.EqualTo("2026-02-19T21:39:00Z"));
         }
 
         [Test]

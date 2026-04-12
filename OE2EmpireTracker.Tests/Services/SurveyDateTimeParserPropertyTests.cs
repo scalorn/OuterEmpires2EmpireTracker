@@ -33,6 +33,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// <summary>
         /// Generates valid DateTime values with minute precision (seconds=0).
         /// Constrained to years 2000-2099 to match two-digit year range.
+        /// Produces UTC DateTimes (DateTimeKind.Utc).
         /// </summary>
         private static Gen<DateTime> ValidDateTimeGen()
         {
@@ -41,7 +42,7 @@ namespace OE2EmpireTracker.Tests.Services
                    from day in Gen.Choose(1, 28)
                    from hour in Gen.Choose(0, 23)
                    from minute in Gen.Choose(0, 59)
-                   select new DateTime(year, month, day, hour, minute, 0);
+                   select new DateTime(year, month, day, hour, minute, 0, DateTimeKind.Utc);
         }
 
         /// <summary>

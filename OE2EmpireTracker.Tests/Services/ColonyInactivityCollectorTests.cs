@@ -71,7 +71,8 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 UUID = Guid.NewGuid().ToString(),
                 SystemName = systemName,
-                ColonyName = colonyName
+                ColonyName = colonyName,
+                LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow)
             };
         }
 

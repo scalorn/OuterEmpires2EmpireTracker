@@ -88,7 +88,7 @@ namespace OE2EmpireTracker.Parsers
                 }
 
                 // Step d: Create repeating timer aligned to next clock-hour boundary (Req 8.3)
-                DateTime now = DateTime.Now;
+                DateTime now = DateTime.UtcNow;
                 DateTime nextHour = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0).AddHours(1);
                 int secondsUntilNextHour = (int)(nextHour - now).TotalSeconds;
 

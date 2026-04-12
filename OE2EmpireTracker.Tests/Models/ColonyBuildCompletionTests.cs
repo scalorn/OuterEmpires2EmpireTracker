@@ -45,7 +45,7 @@ namespace OE2EmpireTracker.Tests.Models
             var t = new CountDownTime();
             t.TimeRemaining = 0;
             // Force it to be expired by setting EndTime in the past
-            t.EndTime = DateTime.Now.AddSeconds(-10);
+            t.EndTime = DateTime.UtcNow.AddSeconds(-10);
             return t;
         }
 
@@ -202,7 +202,7 @@ namespace OE2EmpireTracker.Tests.Models
             // Also set up a process timer with 1 interval passed
             var processTimer = new CountDownTime();
             processTimer.StartRepeating(3600);
-            processTimer.StartTime = DateTime.Now.AddSeconds(-3600);
+            processTimer.StartTime = DateTime.UtcNow.AddSeconds(-3600);
             structure.ProcessCompletionTime = processTimer;
 
             colony.Structures.Add(structure);

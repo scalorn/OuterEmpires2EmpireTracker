@@ -305,7 +305,7 @@ namespace OE2EmpireTracker.Parsers
             }
 
             // Calculate seconds until next clock-hour boundary
-            DateTime now = DateTime.Now;
+            DateTime now = DateTime.UtcNow;
             DateTime nextHour = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0).AddHours(1);
             int secondsUntilNextHour = (int)(nextHour - now).TotalSeconds;
 

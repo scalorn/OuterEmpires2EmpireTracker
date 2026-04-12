@@ -203,7 +203,7 @@ namespace OE2EmpireTracker
                 return;
             }
 
-            TimeSpan remaining = next - DateTime.Now;
+            TimeSpan remaining = next - DateTime.UtcNow;
             if (remaining.TotalSeconds < 0)
                 remaining = TimeSpan.Zero;
 

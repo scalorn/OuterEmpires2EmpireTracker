@@ -31,6 +31,12 @@ namespace OE2EmpireTracker.Services
         /// <summary>Due window at or below which the red warning activates for worker requests.</summary>
         public static readonly TimeSpan WorkerRedWindow = TimeSpan.FromDays(1);
 
+        /// <summary>Days since last import at or above which the yellow warning activates.</summary>
+        public const int ColonyImportStalenessYellowDays = 5;
+
+        /// <summary>Days since last import at or above which the red warning activates.</summary>
+        public const int ColonyImportStalenessRedDays = 6;
+
         /// <summary>
         /// Returns the warning level for the Structures tab based on the colony's structure count.
         /// Red if >= 66, Yellow if >= 60, None otherwise.
@@ -74,6 +80,28 @@ namespace OE2EmpireTracker.Services
             }
 
             return level;
+        }
+
+        /// <summary>
+        /// Returns the warning level for the Administration tab based on colony import staleness.
+        /// Red if null/empty, parse failure, or elapsed >= 6 days. Yellow if elapsed >= 5 days. None otherwise.
+        /// </summary>
+        public static TabWarningLevel EvaluateColonyImportStalenessWarning(string lastImportDateTime, DateTime now)
+        {
+            if (string.IsNullOrEmpty(lastImportDateTime))
+                return TabWarningLevel.Red;
+
+            if (!SurveyDateTimeParser.TryParseIso(lastImportDateTime, out DateTime parsed))
+                return TabWarningLevel.Red;
+
+            TimeSpan elapsed = now - parsed;
+
+            if (elapsed >= TimeSpan.FromDays(ColonyImportStalenessRedDays))
+                return TabWarningLevel.Red;
+            if (elapsed >= TimeSpan.FromDays(ColonyImportStalenessYellowDays))
+                return TabWarningLevel.Yellow;
+
+            return TabWarningLevel.None;
         }
     }
 }

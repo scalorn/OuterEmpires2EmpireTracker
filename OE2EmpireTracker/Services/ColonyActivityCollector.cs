@@ -13,7 +13,8 @@ namespace OE2EmpireTracker.Services
         CommodityRequest,
         Research,
         Mining,
-        Refining
+        Refining,
+        ColonyImportStaleness
     }
 
     public class ActivityRow
@@ -48,7 +49,7 @@ namespace OE2EmpireTracker.Services
                     return 0;
                 return Math.Max(0, CountDown.TimeRemaining);
             }
-            long seconds = (long)(NeedBy - DateTime.Now).TotalSeconds;
+            long seconds = (long)(NeedBy - DateTime.UtcNow).TotalSeconds;
             return Math.Max(0, seconds);
         }
 
