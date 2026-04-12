@@ -176,3 +176,11 @@ When no player profile exists, all Manage menu items except Player Profiles are 
 
 ### BL-058: ~~Delivery Execution — Load Before Departure Totals~~
 **Status: Duplicate** — Same as BL-040.
+
+### BL-056: Delivery Routes — Focus After Delete
+Bug: Removing a colony stop from a delivery route caused the grid to jump to the top.
+**Status: Complete** — After deletion, selection moves to the row above the deleted item (or first row if top was deleted), and the grid scrolls to show it via `FirstDisplayedScrollingRowIndex`.
+
+### BL-057: Delivery Routes — Focus After Move Up/Down
+Bug: Moving a stop up or down in a delivery route caused the grid to jump to the top.
+**Status: Complete** — After move, the grid scrolls to the moved row via `FirstDisplayedScrollingRowIndex`. Selection was already being re-applied but the viewport wasn't following it.

@@ -312,6 +312,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             foreach (int i in newIndices)
                 if (i >= 0 && i < dgvStops.Rows.Count)
                     dgvStops.Rows[i].Selected = true;
+            if (newIndices.Count > 0 && newIndices[0] >= 0 && newIndices[0] < dgvStops.Rows.Count)
+                dgvStops.FirstDisplayedScrollingRowIndex = newIndices[0];
         }
 
         private void cmdDown_Click(object sender, EventArgs e)
@@ -326,6 +328,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             foreach (int i in newIndices)
                 if (i >= 0 && i < dgvStops.Rows.Count)
                     dgvStops.Rows[i].Selected = true;
+            if (newIndices.Count > 0 && newIndices[0] >= 0 && newIndices[0] < dgvStops.Rows.Count)
+                dgvStops.FirstDisplayedScrollingRowIndex = newIndices[0];
         }
 
         private void cmdRemoveStop_Click(object sender, EventArgs e)
@@ -334,8 +338,16 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             var indices = new List<int>();
             foreach (DataGridViewRow row in dgvStops.SelectedRows)
                 indices.Add(row.Index);
+            int focusIndex = indices.Min() > 0 ? indices.Min() - 1 : 0;
             viewModel.RemoveStops(indices);
             PopulateStopsGrid();
+            if (dgvStops.Rows.Count > 0)
+            {
+                dgvStops.ClearSelection();
+                int selectIndex = Math.Min(focusIndex, dgvStops.Rows.Count - 1);
+                dgvStops.Rows[selectIndex].Selected = true;
+                dgvStops.FirstDisplayedScrollingRowIndex = selectIndex;
+            }
             if (chkPreventDuplicates.Checked) PopulateColonyPicker();
         }
 

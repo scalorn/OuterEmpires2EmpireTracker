@@ -267,16 +267,6 @@ The survey's scan date/time comes from the game HTML in a non-standard format. N
 
 Build an empire-wide queue system for mining, refining, manufacturing, and research operations. Should support both per-colony and empire-wide views. Designed for when the game API becomes available — queued operations can be submitted automatically. Includes priority ordering, dependency tracking (e.g. refine before manufacture), and estimated completion times.
 
-### BL-056: Delivery Routes — Focus After Delete
-**Dependencies:** None
-
-Bug: When you remove a colony stop from a delivery route, the list jumps to the top. After deletion, focus should move to the row above the deleted item (or the first row if the top item was deleted).
-
-### BL-057: Delivery Routes — Focus After Move Up/Down
-**Dependencies:** None
-
-Bug: When you move a stop up or down in a delivery route, the list jumps to the top. The moved row should remain selected and visible after the move operation.
-
 ### BL-059: Manufacturing Build Queue — Auto-Create Orders from Fill Levels
 **Dependencies:** BL-011 (Manufacturing Queue)
 
