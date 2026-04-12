@@ -84,6 +84,9 @@ namespace OE2EmpireTracker.Forms.Colony
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.ColonyDataChanged += OnColonyDataChanged;
+
+            timerAdminRefresh.Tick += timerAdminRefresh_Tick;
+            timerAdminRefresh.Start();
         }
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
@@ -116,6 +119,7 @@ namespace OE2EmpireTracker.Forms.Colony
             txtPlanetName.Text = "";
             txtColonyName.Text = "";
             txtSystemName.Text = "";
+            rtbAdminReport.Rtf = "";
             UpdateTitle();
         }
 
@@ -134,6 +138,7 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 colonyViewModel.RecalculateStatus();
                 PopulateForm();
+                RefreshAdminReport();
             }
         }
 
@@ -499,6 +504,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
                 PopulateForm();
                 UpdateDeleteButtonState();
+                RefreshAdminReport();
             }
         }
         void PopulateListView(List<Models.Colony> colonies)
@@ -1655,6 +1661,7 @@ namespace OE2EmpireTracker.Forms.Colony
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
+            timerAdminRefresh.Stop();
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.ColonyDataChanged -= OnColonyDataChanged;
             base.OnFormClosed(e);
@@ -1861,6 +1868,50 @@ namespace OE2EmpireTracker.Forms.Colony
             ApplyTabWarning(tabPAdministration,
                 TabWarningService.EvaluateColonyImportStalenessWarning(
                     selectedColony?.LastImportDateTime, DateTime.UtcNow));
+        }
+
+        // ----- Admin Report -----
+
+        private void RefreshAdminReport()
+        {
+            if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID))
+            {
+                rtbAdminReport.Rtf = "";
+                return;
+            }
+
+            try
+            {
+                string rtf = ColonyAdminReportBuilder.BuildReport(selectedColony, playerContext);
+                rtbAdminReport.Rtf = string.IsNullOrEmpty(rtf) ? "" : rtf;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error building admin report");
+            }
+        }
+
+        private void timerAdminRefresh_Tick(object sender, EventArgs e)
+        {
+            if (IsDisposed) return;
+            RefreshAdminReport();
+        }
+
+        private void flowLayoutPanel4_Layout(object sender, LayoutEventArgs e)
+        {
+            int availableWidth = flowLayoutPanel4.ClientSize.Width - flowLayoutPanel4.Padding.Horizontal;
+            int availableHeight = flowLayoutPanel4.ClientSize.Height;
+
+            // flowLayoutPanel3 (buttons) keeps its natural height
+            int buttonRowHeight = flowLayoutPanel3.Height + flowLayoutPanel3.Margin.Vertical;
+            int remaining = availableHeight - buttonRowHeight;
+
+            if (remaining > 0)
+            {
+                rtbAdminReport.Size = new System.Drawing.Size(
+                    availableWidth - rtbAdminReport.Margin.Horizontal,
+                    remaining - rtbAdminReport.Margin.Vertical);
+            }
         }
     }
 }

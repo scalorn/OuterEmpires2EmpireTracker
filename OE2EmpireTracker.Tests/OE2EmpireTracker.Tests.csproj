@@ -299,6 +299,17 @@
     <Compile Include="Services\ColonyImportHelperPropertyTests.cs" />
     <Compile Include="Services\ColonyImportTimestampPropertyTests.cs" />
     <Compile Include="Services\ColonyInactivityStalenessPropertyTests.cs" />
+    <Compile Include="Services\ColonyAdminReportBuilderBatchPropertyTests.cs" />
+    <Compile Include="Services\ColonyAdminReportBuilderMiningPropertyTests.cs" />
+    <Compile Include="Services\ColonyAdminReportBuilderRefiningPropertyTests.cs" />
+    <Compile Include="Services\ColonyAdminReportBuilderOrderPropertyTests.cs" />
+    <Compile Include="Services\ColonyAdminReportBuilderTimePropertyTests.cs" />
+    <Compile Include="Services\ColonyAdminReportBuilderBuildSortPropertyTests.cs" />
+    <Compile Include="Services\ColonyAdminReportBuilderInactivityOrderPropertyTests.cs" />
+    <Compile Include="Services\ColonyAdminReportBuilderInactivityContentPropertyTests.cs" />
+    <Compile Include="Services\ColonyAdminReportBuilderExcludePropertyTests.cs" />
+    <Compile Include="Services\ColonyAdminReportBuilderActivitySortPropertyTests.cs" />
+    <Compile Include="Services\ColonyAdminReportBuilderCommodityPropertyTests.cs" />
     <Compile Include="Models\ColonyLastImportDateTimePropertyTests.cs" />
     <Compile Include="Services\SurveyDateTimeParserPropertyTests.cs" />
     <Compile Include="Services\SurveyDateTimeParserUtcPropertyTests.cs" />

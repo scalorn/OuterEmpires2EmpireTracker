@@ -111,6 +111,9 @@ namespace OE2EmpireTracker.Forms.Colony
             this.cmdBootstrap = new System.Windows.Forms.Button();
             this.cmdOptimize = new System.Windows.Forms.Button();
             this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
+            this.rtbAdminReport = new System.Windows.Forms.RichTextBox();
+            this.components = new System.ComponentModel.Container();
+            this.timerAdminRefresh = new System.Windows.Forms.Timer(this.components);
             this.flpSearchList.SuspendLayout();
             this.flpBlueprintSearch.SuspendLayout();
             this.tlpBase.SuspendLayout();
@@ -1001,10 +1004,29 @@ namespace OE2EmpireTracker.Forms.Colony
             // flowLayoutPanel4
             // 
             this.flowLayoutPanel4.Controls.Add(this.flowLayoutPanel3);
+            this.flowLayoutPanel4.Controls.Add(this.rtbAdminReport);
+            this.flowLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel4.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel4.WrapContents = false;
             this.flowLayoutPanel4.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel4.Name = "flowLayoutPanel4";
-            this.flowLayoutPanel4.Size = new System.Drawing.Size(764, 38);
+            this.flowLayoutPanel4.Size = new System.Drawing.Size(764, 168);
             this.flowLayoutPanel4.TabIndex = 11;
+            this.flowLayoutPanel4.Layout += new System.Windows.Forms.LayoutEventHandler(this.flowLayoutPanel4_Layout);
+            // 
+            // rtbAdminReport
+            // 
+            this.rtbAdminReport.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbAdminReport.Location = new System.Drawing.Point(3, 32);
+            this.rtbAdminReport.Name = "rtbAdminReport";
+            this.rtbAdminReport.ReadOnly = true;
+            this.rtbAdminReport.Size = new System.Drawing.Size(758, 130);
+            this.rtbAdminReport.TabIndex = 12;
+            this.rtbAdminReport.Text = "";
+            // 
+            // timerAdminRefresh
+            // 
+            this.timerAdminRefresh.Interval = 60000;
             // 
             // FormColony
             // 
@@ -1130,6 +1152,8 @@ namespace OE2EmpireTracker.Forms.Colony
         private System.Windows.Forms.DataGridViewCheckBoxColumn CommodityRequestedFulfilled;
         private System.Windows.Forms.DataGridViewTextBoxColumn CommodityRequestedNeedBy;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
+        private System.Windows.Forms.RichTextBox rtbAdminReport;
+        private System.Windows.Forms.Timer timerAdminRefresh;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
         private System.Windows.Forms.Button cmdBootstrap;
         private System.Windows.Forms.Button cmdOptimize;

@@ -118,6 +118,19 @@ The Administration tab on the Colony form changes color based on how long it's b
 - **Yellow** — 5 to 6 days since last import. Consider reimporting soon.
 - **Red** — 6+ days since last import (or never imported). Data is stale — reimport this colony.
 
+### Administration Tab — Colony Status Report
+
+The Administration tab also displays a per-colony status report that gives you a quick overview of what's happening in the selected colony. The report is organized into sections, most actionable first:
+
+- **Building** — Structures currently under construction, sorted by soonest completion. Shows countdown and estimated local time.
+- **Commodity Requests** — Unfulfilled commodity requests with quantities and due dates.
+- **Inactivity** — Idle structures grouped by type (stale imports, idle miners, idle refineries, idle manufactories, idle commodity factories, idle research labs, underutilized refiners). Tells you what needs attention.
+- **Activity** — Active manufacturing, commodity manufacturing, and research processes with countdown timers. Multi-quantity manufacturing shows both next-item and full-batch completion times.
+- **Mining** — Aggregated mining rates per resource and purity across all active miners.
+- **Refining** — Aggregated refining rates per resource and purity across all active refiners.
+
+The report refreshes every 60 seconds, when you select a different colony, and when colony data changes externally (e.g., from background processing or delivery fulfillment).
+
 ### Colony Activity — Inactivity Mode
 
 The Colony Activity form's inactivity mode (toggle "Show Inactive") includes an "Import Staleness" filter. When enabled, colonies that haven't been imported in over 24 hours appear as staleness rows showing elapsed time since the last import (e.g., "5d 3h since last import"). Use this to quickly see which colonies across your empire need a fresh import.

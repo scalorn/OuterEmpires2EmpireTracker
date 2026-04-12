@@ -11,6 +11,8 @@ OE2 Empire Tracker pulls data straight from the game (copy-paste the HTML) and o
 ### Colony Management
 Import your colonies directly from the game browser. The tracker parses structures, warehouse inventory, and worker assignments automatically. No more manually typing structure names into cells. You get a live view of every colony's status — what's staged, building, online — and can optimize build order with one click. The tracker also records when each colony was last imported and warns you when data gets stale — the Administration tab turns yellow at 5 days and red at 6 days, so you always know which colonies need a fresh import.
 
+The Administration tab now includes a per-colony status report that shows you everything at a glance: what's building and when it finishes, unfulfilled commodity requests, idle structures that need attention, active manufacturing with batch completion estimates, and aggregated mining/refining rates. It refreshes automatically so the numbers stay current.
+
 Mining rigs and refineries are fully configured on import. The tracker reads the game's mining rate, picks the best matching survey for each miner, starts the mining/refining timer, and seeds the warehouse with any missing resource slots. If you haven't imported a survey for that planet yet, a temporary default survey is created so everything still works. When you import a real survey later, miners automatically upgrade to it on the next reimport.
 
 ### Background Timer Processing
