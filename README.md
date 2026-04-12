@@ -16,7 +16,10 @@ The Administration tab now includes a per-colony status report that shows you ev
 Mining rigs and refineries are fully configured on import. The tracker reads the game's mining rate, picks the best matching survey for each miner, starts the mining/refining timer, and seeds the warehouse with any missing resource slots. If you haven't imported a survey for that planet yet, a temporary default survey is created so everything still works. When you import a real survey later, miners automatically upgrade to it on the next reimport.
 
 ### Background Timer Processing
-The app simulates game timers locally. Mining cycles, refining jobs, research projects, and manufacturing runs all tick down in the background on a 60-second cycle. Open forms refresh automatically when timers expire. You see what's finishing next without alt-tabbing back to the game every few minutes.
+The app simulates game timers locally. Mining cycles, refining jobs, research projects, and manufacturing runs all tick down in the background (default 60-second cycle, configurable via Preferences). Open forms refresh automatically when timers expire. You see what's finishing next without alt-tabbing back to the game every few minutes.
+
+### Preferences
+Fine-tune the tracker to your play style. Open **File → Preferences** to configure warning thresholds (structure count, worker request due windows, colony import staleness), background processing interval, admin report refresh rate, and countdown display refresh rate. All values take effect immediately — no restart needed. Time-based values use the same countdown format you see everywhere else in the app (e.g. "2d 0h 0m 0s").
 
 ### Blueprint Tracking & Evolution
 Import blueprints from scanning or the market. Track evolution chains from level 0 through 15 with a visual graph showing how stats change at each level. Filter your collection by type, tech level, ship class, or evolution. Reference counting tells you which blueprints are actually in use across your colonies.
@@ -68,6 +71,7 @@ Press **F1** on any form for context-sensitive help, or use **Help → Contents*
 - [Player Profiles](docs/player-profiles.md)
 - [Background Processing](docs/background-processing.md)
 - [Window State](docs/window-state.md)
+- [Preferences](docs/preferences.md)
 
 ## About
 

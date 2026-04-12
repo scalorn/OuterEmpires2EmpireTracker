@@ -365,6 +365,14 @@ namespace OE2EmpireTracker
             }
         }
 
+        private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var form = new FormPreferences())
+            {
+                form.ShowDialog(this);
+            }
+        }
+
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new FormAbout().ShowDialog(this);

@@ -4,7 +4,7 @@ OE2 Empire Tracker runs a background processor that automatically advances colon
 
 ## How It Works
 
-The background processor runs on a 60-second timer cycle. Each cycle:
+The background processor runs on a configurable timer cycle (default 60 seconds — adjust via **File → Preferences**). Each cycle:
 
 1. Scans all colonies for structures with expired timers.
 2. Processes each colony that has at least one expired timer.

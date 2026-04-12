@@ -129,8 +129,8 @@ Implement a Preferences form for configuring nine threshold/interval values curr
 - [x] 9. Checkpoint - Verify all service wiring compiles
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 10. Create FormPreferences dialog
-  - [~] 10.1 Create FormPreferences form files
+- [x] 10. Create FormPreferences dialog
+  - [x] 10.1 Create FormPreferences form files
     - Create `OE2EmpireTracker/Forms/FormPreferences/` directory
     - Create `FormPreferences.cs`, `FormPreferences.Designer.cs`, and `FormPreferences.resx`
     - Add `Compile Include` and `EmbeddedResource` entries in `OE2EmpireTracker/OE2EmpireTracker.csproj` with proper `DependentUpon` and `SubType` attributes
@@ -139,7 +139,7 @@ Implement a Preferences form for configuring nine threshold/interval values curr
     - OK, Cancel, and Reset to Defaults buttons
     - _Requirements: 2.1, 2.2, 2.4, 2.5, 2.7, 2.8, 2.9_
 
-  - [~] 10.2 Implement FormPreferences load, save, and validation logic
+  - [x] 10.2 Implement FormPreferences load, save, and validation logic
     - On load: populate fields from `PreferencesStore.GetInstance().Preferences.Thresholds` — use `ActivityRow.FormatSeconds()` for time-based display
     - On OK: validate all fields using `ThresholdPreferences.Validate()`, parse countdown format inputs via `CountdownFormatParser.TryParse()`, write to PreferencesStore, call `Save()`, close
     - On Cancel: close without saving
@@ -147,15 +147,15 @@ Implement a Preferences form for configuring nine threshold/interval values curr
     - Show `MessageBox` with descriptive error on validation failure, prevent closing
     - _Requirements: 2.3, 2.6, 2.10, 7.5, 7.7_
 
-- [ ] 11. Add Preferences menu item to MainWindow
-  - [~] 11.1 Add "Preferences..." menu item to MainWindow File menu
+- [x] 11. Add Preferences menu item to MainWindow
+  - [x] 11.1 Add "Preferences..." menu item to MainWindow File menu
     - Add `preferencesToolStripMenuItem` to the File menu's DropDownItems, inserted before `toolStripSeparatorFileExit`
     - Click handler opens `FormPreferences` as a modal dialog
     - Update `MainWindow.Designer.cs` for the menu item declaration
     - Add `Compile Include` entry if not already present (MainWindow already exists)
     - _Requirements: 3.1, 3.2_
 
-- [~] 12. Final checkpoint - Ensure all tests pass
+- [-] 12. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

@@ -12,6 +12,7 @@ Welcome to the OE2 Empire Tracker documentation. This application helps you mana
 - [Player Profiles](player-profiles.md) — Skills, ranks, and profile management
 - [Background Processing](background-processing.md) — Automatic timer processing and status bar indicators
 - [Window State](window-state.md) — Window position persistence and MDI layout options
+- [Preferences](preferences.md) — Configurable thresholds, intervals, and refresh rates
 
 ## About
 

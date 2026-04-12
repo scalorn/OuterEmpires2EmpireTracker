@@ -18,7 +18,8 @@ namespace OE2EmpireTracker.Services
             { "FormAutoFill", "delivery-routes.md" },
             { "FormPlayerProfile", "player-profiles.md" },
             { "FormColonyActivity", "colonies.md" },
-            { "FormColonyDailyBuild", "colonies.md" }
+            { "FormColonyDailyBuild", "colonies.md" },
+            { "FormPreferences", "preferences.md" }
         };
 
         private static readonly IReadOnlyList<(string DisplayName, string FileName)> Topics =
@@ -32,7 +33,8 @@ namespace OE2EmpireTracker.Services
                 ("Delivery Routes", "delivery-routes.md"),
                 ("Player Profiles", "player-profiles.md"),
                 ("Background Processing", "background-processing.md"),
-                ("Window State", "window-state.md")
+                ("Window State", "window-state.md"),
+                ("Preferences", "preferences.md")
             };
 
         /// <summary>

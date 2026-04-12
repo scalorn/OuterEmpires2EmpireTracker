@@ -13,11 +13,11 @@ namespace OE2EmpireTracker.Tests.Services
         /// GetAllTopics returns exactly 9 topics with the expected filenames in order.
         /// </summary>
         [Test]
-        public void GetAllTopics_Returns9Topics_WithCorrectFilenames()
+        public void GetAllTopics_Returns10Topics_WithCorrectFilenames()
         {
             var topics = HelpTopicRegistry.GetAllTopics();
 
-            Assert.That(topics.Count, Is.EqualTo(9));
+            Assert.That(topics.Count, Is.EqualTo(10));
 
             var expectedFilenames = new[]
             {
@@ -29,7 +29,8 @@ namespace OE2EmpireTracker.Tests.Services
                 "delivery-routes.md",
                 "player-profiles.md",
                 "background-processing.md",
-                "window-state.md"
+                "window-state.md",
+                "preferences.md"
             };
 
             var actualFilenames = topics.Select(t => t.FileName).ToArray();
@@ -49,6 +50,7 @@ namespace OE2EmpireTracker.Tests.Services
         [TestCase("FormPlayerProfile", "player-profiles.md")]
         [TestCase("FormColonyActivity", "colonies.md")]
         [TestCase("FormColonyDailyBuild", "colonies.md")]
+        [TestCase("FormPreferences", "preferences.md")]
         public void GetTopicForForm_MappedType_ReturnsCorrectFile(string formType, string expectedFile)
         {
             var result = HelpTopicRegistry.GetTopicForForm(formType);
