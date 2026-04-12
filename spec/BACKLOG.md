@@ -173,11 +173,6 @@ Add support for font styles to RtfBuilder — bold, italics, strikethrough, etc.
 
 We recently had a bug caused by duplicated blocks of code (e.g. `ExtractHtmlFragmentFromClipboardData` existed in both `FormBlueprint` and `BlueprintScanner`). Do a complete scan of the codebase looking for other instances of code duplication. Also look for code cleanliness opportunities, refactoring candidates, and general best-practices improvements.
 
-### BL-035: Blueprint Evolution Graph
-**Dependencies:** None
-
-Add a chart to the Blueprint form showing the evolution chain for the selected blueprint. Use `System.Windows.Forms.DataVisualization.Charting` (already available in .NET Framework 4.8.1). Visualize the evolution path — e.g. base blueprint through each evolution level — showing key stats at each stage. Helps players understand the progression and plan which evolution level to target.
-
 ### BL-036: Colony Mining/Refining Production Graph
 **Dependencies:** None
 
