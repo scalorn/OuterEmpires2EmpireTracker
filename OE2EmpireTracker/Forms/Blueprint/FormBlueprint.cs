@@ -1446,6 +1446,46 @@ namespace OE2EmpireTracker
                 if (tempBP == null)
                     return;
 
+                // ── BL-062: Resources-only import (e.g. resources tab copied from game) ──
+                if (MarketBlueprintImporter.IsResourcesOnlyImport(tempBP))
+                {
+                    if (string.IsNullOrEmpty(viewModel.Data.UUID))
+                    {
+                        MessageBox.Show(
+                            "Please select or import a blueprint first, then import the resources tab.",
+                            "Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+
+                    MarketBlueprintImporter.MergeResourcesOnly(viewModel.Data, tempBP);
+
+                    // Persist to the correct list
+                    bool resGlobal = empireContext.GlobalBlueprintList.Any(b => b.UUID == viewModel.Data.UUID);
+                    if (resGlobal)
+                        empireContext.WriteContext();
+                    else
+                        playerContext.WriteContext();
+
+                    // Notify, refresh, re-select
+                    playerContext.OnBlueprintDataChanged(viewModel.Data.UUID);
+                    RefreshBlueprintList();
+
+                    foreach (ListViewItem item in lvwBlueprints.Items)
+                    {
+                        if ((item.Tag as Blueprint)?.UUID == viewModel.Data.UUID)
+                        {
+                            item.Selected = true;
+                            item.EnsureVisible();
+                            break;
+                        }
+                    }
+
+                    PopulateForm();
+                    Log.Info("Resources-only import merged into selected blueprint: {0} UUID={1}",
+                        viewModel.Data.Name, viewModel.Data.UUID);
+                    return;
+                }
+
                 // Fallback: if no name was parsed, use current behavior
                 if (string.IsNullOrEmpty(tempBP.Name))
                 {

@@ -173,6 +173,67 @@ namespace OE2EmpireTracker.Services
             return evolution == 0 || !hasCurrentPlayer;
         }
 
+        /// <summary>
+        /// Returns true when the parsed blueprint has resources but is missing
+        /// the key dedup fields, indicating it came from the game's resources tab.
+        /// </summary>
+        internal static bool IsResourcesOnlyImport(Models.Blueprint bp)
+        {
+            return bp.Resources != null && bp.Resources.Count > 0
+                && string.IsNullOrEmpty(bp.BluePrintType)
+                && bp.Class == 0
+                && string.IsNullOrEmpty(bp.TechLevel);
+        }
+
+        /// <summary>
+        /// Merges resources (and any parsed properties) from incoming into target,
+        /// preserving all existing scalar fields and protected properties.
+        /// </summary>
+        internal static void MergeResourcesOnly(Models.Blueprint target, Models.Blueprint incoming)
+        {
+            // Replace resources
+            target.Resources = incoming.Resources;
+
+            // Merge properties using the same protected-property logic as UpdateExisting
+            if (incoming.Properties != null && incoming.Properties.Count > 0)
+            {
+                // Collect protected values from target before merge
+                var preservedProps = new Dictionary<string, string>();
+                foreach (var protectedKey in ProtectedProperties)
+                {
+                    string existingValue;
+                    if (target.Properties != null
+                        && target.Properties.getString(protectedKey, null, out existingValue)
+                        && existingValue != null)
+                    {
+                        preservedProps[protectedKey] = existingValue;
+                    }
+                }
+
+                // Merge incoming properties into target (add/overwrite non-protected keys)
+                if (target.Properties == null)
+                {
+                    target.Properties = new PropertyBag();
+                }
+                foreach (var kvp in incoming.Properties.Properties)
+                {
+                    if (!ProtectedProperties.Contains(kvp.Key)
+                        || !preservedProps.ContainsKey(kvp.Key))
+                    {
+                        target.Properties.setProperty(kvp.Key, kvp.Value);
+                    }
+                }
+
+                // Restore protected properties that existed before
+                foreach (var kvp in preservedProps)
+                {
+                    target.Properties.setProperty(kvp.Key, kvp.Value);
+                }
+            }
+
+            // Do NOT overwrite any scalar fields
+        }
+
         internal static void UpdateExisting(Models.Blueprint existing, Models.Blueprint incoming)
         {
             // Preserve protected scalar fields: UUID, OwnerUUID, NickName, CopyCost, TechLevel, Description
