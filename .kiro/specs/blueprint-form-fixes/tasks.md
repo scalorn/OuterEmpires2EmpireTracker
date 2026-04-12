@@ -39,8 +39,8 @@ Two localized bug fixes in the Blueprint form. BL-062 adds resources-only import
 - [x] 2. Checkpoint — Verify IsResourcesOnlyImport and MergeResourcesOnly
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 3. Modify cmdImport_Click to handle resources-only imports
-  - [-] 3.1 Add resources-only branch to `cmdImport_Click` in `FormBlueprint.cs`
+- [x] 3. Modify cmdImport_Click to handle resources-only imports
+  - [x] 3.1 Add resources-only branch to `cmdImport_Click` in `FormBlueprint.cs`
     - Insert a new branch after `ParseClipboardToTemp()` succeeds and before the existing "Fallback: if no name was parsed" block
     - Call `MarketBlueprintImporter.IsResourcesOnlyImport(tempBP)` to detect resources-only clipboard data
     - If resources-only AND `viewModel.Data.UUID` is null/empty, show `MessageBox` with "Please select or import a blueprint first, then import the resources tab." and return
@@ -49,7 +49,7 @@ Two localized bug fixes in the Blueprint form. BL-062 adds resources-only import
     - Raise `BlueprintDataChanged`, refresh the list view, re-select the blueprint, and call `PopulateForm()`
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 3.1, 3.2, 3.3_
 
-  - [~] 3.2 Write unit tests for resources-only import edge cases
+  - [x] 3.2 Write unit tests for resources-only import edge cases
     - Add `OE2EmpireTracker.Tests/Services/ResourcesOnlyImportTests.cs` with `Compile Include` in test csproj
     - Test: `IsResourcesOnlyImport` returns `false` when Resources is empty even though dedup fields are missing (Req 1.3 edge case)
     - Test: `IsResourcesOnlyImport` returns `false` when Resources has entries but BluePrintType is non-empty (Req 1.2 edge case)
@@ -57,11 +57,11 @@ Two localized bug fixes in the Blueprint form. BL-062 adds resources-only import
     - Test: `MergeResourcesOnly` replaces resources completely (no leftover keys from target)
     - _Requirements: 1.2, 1.3, 3.1, 3.2, 3.3_
 
-- [~] 4. Checkpoint — Verify resources-only import flow
+- [x] 4. Checkpoint — Verify resources-only import flow
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Assign Name properties to filter combo boxes (BL-066)
-  - [~] 5.1 Add `Name` property assignments in `InitFilterPanel` in `FormBlueprint.cs`
+  - [x] 5.1 Add `Name` property assignments in `InitFilterPanel` in `FormBlueprint.cs`
     - Set `Name = "cmbFilterType"` on the Type filter ComboBox
     - Set `Name = "cmbFilterClass"` on the Class filter ComboBox
     - Set `Name = "cmbFilterTechLevel"` on the Tech Level filter ComboBox
@@ -70,7 +70,7 @@ Two localized bug fixes in the Blueprint form. BL-062 adds resources-only import
     - No changes to `WindowStateHelper` needed — it already saves/restores ComboBox and CheckBox controls by name
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 5.1, 5.2, 6.1, 6.2, 6.3, 6.4, 6.5_
 
-  - [~] 5.2 Write property test for WindowStateHelper ComboBox/CheckBox save-restore round trip
+  - [-] 5.2 Write property test for WindowStateHelper ComboBox/CheckBox save-restore round trip
     - **Property 3: WindowStateHelper ComboBox/CheckBox save-restore round trip**
     - Create `OE2EmpireTracker.Tests/Persistence/WindowStateHelperPropertyTests.cs` with `Compile Include` in test csproj
     - Generate a `Form` containing a `ComboBox` with a random `Name`, random string items, and a random valid `SelectedIndex`, plus a `CheckBox` with a random `Name` and random `Checked` state

@@ -116,7 +116,7 @@ namespace OE2EmpireTracker.Persistence
 
         #region Private Helpers
 
-        private static void SaveControlStates(Control parent, FormControlState formState)
+        internal static void SaveControlStates(Control parent, FormControlState formState)
         {
             foreach (Control control in parent.Controls)
             {
@@ -175,7 +175,7 @@ namespace OE2EmpireTracker.Persistence
             formState.Grids[grid.Name] = gridState;
         }
 
-        private static void RestoreControlStates(Control parent, FormControlState formState)
+        internal static void RestoreControlStates(Control parent, FormControlState formState)
         {
             foreach (Control control in parent.Controls)
             {
