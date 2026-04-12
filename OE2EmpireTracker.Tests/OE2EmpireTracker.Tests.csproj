@@ -306,6 +306,7 @@
     <Compile Include="Services\Migration\LegacyUUIDPropertyTests.cs" />
     <Compile Include="Services\Migration\DecimalRoundTripPropertyTests.cs" />
     <Compile Include="Services\IndividualImportDedupPropertyTests.cs" />
+    <Compile Include="Services\ResourcesOnlyImportPropertyTests.cs" />
     <Compile Include="Services\IconPositionExtractorTests.cs" />
     <Compile Include="Services\IconPositionExtractorPropertyTests.cs" />
     <Compile Include="Services\EvolutionChainServiceTests.cs" />
