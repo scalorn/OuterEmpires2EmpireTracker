@@ -242,16 +242,6 @@ Record the last colony import time on the Colony data model. Surface this on the
 
 Bug: When colonies and surveys are imported in the wrong order, duplicate default surveys can still be created (2 surveys for the same planet). Reimporting the colony removes one but not both. The cleanup logic in CleanupDefaultSurvey should handle all duplicates in a single pass, and CreateOrUpdateDefaultSurvey should be more aggressive about finding and consolidating existing defaults.
 
-### BL-051: Survey Form — Survey Count in Title Bar
-**Dependencies:** None
-
-Show the count of surveys in the Survey form's title bar, matching the pattern used by other forms (e.g. "Manage Colonies - PlayerName : 74"). Format: "Manage Surveys - PlayerName : N".
-
-### BL-052: Survey Deletion Protection — In-Use by Miner
-**Dependencies:** None
-
-Surveys that are currently assigned to a mining rig (referenced by any ColonyStructure.MiningSurvey) should be protected against deletion. Show a warning listing which colonies/miners reference the survey and block the delete.
-
 ### BL-054: Survey Form — Normalize Scan DateTime
 **Dependencies:** None
 

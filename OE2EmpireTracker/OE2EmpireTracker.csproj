@@ -136,6 +136,7 @@
     <Compile Include="Services\SurveyImportHelper.cs" />
     <Compile Include="Services\BlueprintReferenceCounter.cs" />
     <Compile Include="Services\ColonyReferenceCounter.cs" />
+    <Compile Include="Services\SurveyReferenceCounter.cs" />
     <Compile Include="Services\EvolutionChainService.cs" />
     <Compile Include="Services\HelpTopicRegistry.cs" />
     <Compile Include="Services\HelpRenderer.cs" />

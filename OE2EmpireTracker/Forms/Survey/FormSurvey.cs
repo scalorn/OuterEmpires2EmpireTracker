@@ -50,7 +50,9 @@ namespace OE2EmpireTracker.Forms.Survey
             lvwSurveys.Columns.Add("SurveyID", 70);
             lvwSurveys.Columns.Add("NickName", 100);
             lvwSurveys.Columns.Add("DateTime", 100);
+            lvwSurveys.Columns.Add("Refs", 35);
             PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
+            UpdateTitle();
 
             // Wire survey list filter
             txtSurveyFilter.TextChanged += txtSurveyFilter_TextChanged;
@@ -138,6 +140,7 @@ namespace OE2EmpireTracker.Forms.Survey
             viewModel.Reset();
             ClearForm();
             PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
+            UpdateTitle();
         }
 
         private void OnSurveyDataChanged(object sender, SurveyDataChangedEventArgs e)
@@ -170,6 +173,8 @@ namespace OE2EmpireTracker.Forms.Survey
         {
             if (surveys == null) return;
 
+            var counter = new SurveyReferenceCounter(playerContext.ColonyList);
+
             // Track which surveys are currently in the list
             Dictionary<string, ListViewItem> viewableSurveys = new Dictionary<string, ListViewItem>();
             foreach (ListViewItem item in lvwSurveys.Items)
@@ -181,6 +186,7 @@ namespace OE2EmpireTracker.Forms.Survey
             {
                 ListViewItem item;
                 bool found = viewableSurveys.TryGetValue(survey.UUID, out item);
+                string refCount = counter.CountReferences(survey.UUID).TotalCount.ToString();
                 if (!found)
                 {
                     item = new ListViewItem(survey.UUID);
@@ -188,14 +194,18 @@ namespace OE2EmpireTracker.Forms.Survey
                     item.SubItems.Add(survey.SurveyID);
                     item.SubItems.Add(survey.NickName);
                     item.SubItems.Add(survey.DateTime);
+                    item.SubItems.Add(refCount);
                 }
                 else
                 {
-                    // Update existing item's text in case data changed
                     item.SubItems[1].Text = survey.PlanetName;
                     item.SubItems[2].Text = survey.SurveyID;
                     item.SubItems[3].Text = survey.NickName;
                     item.SubItems[4].Text = survey.DateTime;
+                    if (item.SubItems.Count > 5)
+                        item.SubItems[5].Text = refCount;
+                    else
+                        item.SubItems.Add(refCount);
                 }
                 item.Tag = survey;
                 item.SubItems[0].Tag = survey;
@@ -306,6 +316,7 @@ namespace OE2EmpireTracker.Forms.Survey
             viewModel.Save();
 
             PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
+            UpdateTitle();
         }
 
         private void ClearForm()
@@ -333,6 +344,16 @@ namespace OE2EmpireTracker.Forms.Survey
         private void cmdDelete_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(viewModel.UUID)) return;
+
+            var counter = new SurveyReferenceCounter(playerContext.ColonyList);
+            var report = counter.CountReferences(viewModel.UUID);
+            if (report.TotalCount > 0)
+            {
+                var msg = $"Cannot delete '{viewModel.Data.PlanetName}' — it is assigned to {report.MinerCount} mining rig(s).";
+                MessageBox.Show(msg, "Survey In Use", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             var result = MessageBox.Show(
                 $"Delete survey '{viewModel.Data.PlanetName}'?",
                 "Confirm Delete",
@@ -344,6 +365,7 @@ namespace OE2EmpireTracker.Forms.Survey
             PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
             lvwSurveys.SelectedItems.Clear();
             ClearForm();
+            UpdateTitle();
         }
 
         private void cmdNew_Click(object sender, EventArgs e)
@@ -361,6 +383,7 @@ namespace OE2EmpireTracker.Forms.Survey
                 Log.Debug("Selected item = " + lvwSurveys.SelectedItems[0].SubItems[0].Text);
                 viewModel.SelectSurvey(lvwSurveys.SelectedItems[0].SubItems[0].Tag as OE2EmpireTracker.Models.Survey);
                 PopulateForm();
+                UpdateDeleteButtonState();
             }
         }
 
@@ -526,6 +549,38 @@ namespace OE2EmpireTracker.Forms.Survey
                 row.Cells[0].Value = resource.Key;
                 row.Cells[1].Value = resource.Value.Purity;
                 row.Cells[2].Value = resource.Value.Amount;
+            }
+        }
+
+        private void UpdateTitle()
+        {
+            var player = playerContext.CurrentPlayer;
+            string playerName = player != null ? player.Name : "No Player";
+            int surveyCount = playerContext.GetCurrentPlayerSurveys()?.Count ?? 0;
+            string prefix = Tag != null ? "#" + Tag + " - " : "";
+            Text = $"{prefix}Manage Surveys - {playerName} : {surveyCount}";
+        }
+
+        private void UpdateDeleteButtonState()
+        {
+            if (string.IsNullOrEmpty(viewModel?.UUID))
+            {
+                cmdDelete.Enabled = false;
+                cmdDelete.Text = "Delete";
+                return;
+            }
+
+            var counter = new SurveyReferenceCounter(playerContext.ColonyList);
+            var report = counter.CountReferences(viewModel.UUID);
+            if (report.TotalCount > 0)
+            {
+                cmdDelete.Enabled = false;
+                cmdDelete.Text = $"In Use ({report.TotalCount})";
+            }
+            else
+            {
+                cmdDelete.Enabled = true;
+                cmdDelete.Text = "Delete";
             }
         }
 

@@ -188,3 +188,11 @@ Bug: Moving a stop up or down in a delivery route caused the grid to jump to the
 ### BL-053: Colony Deletion Protection — In-Use by Route/Plan
 Colonies referenced by delivery routes or plans are now protected against deletion.
 **Status: Complete** — ColonyReferenceCounter scans DeliveryRouteList and DeliveryPlanList for colony UUID references. Delete button shows "In Use (N)" and is disabled when references exist. Delete handler also blocks with a message listing route/plan counts. Same pattern as BlueprintReferenceCounter.
+
+### BL-051: Survey Form — Survey Count in Title Bar
+Show survey count in the Survey form's title bar matching the Colony form pattern.
+**Status: Complete** — Added `UpdateTitle()` to FormSurvey. Format: "#N - Manage Surveys - PlayerName : Count". Called on startup, player change, save, delete, and import.
+
+### BL-052: Survey Deletion Protection — In-Use by Miner
+Surveys assigned to mining rigs are now protected against deletion.
+**Status: Complete** — SurveyReferenceCounter scans all ColonyStructure.MiningSurvey fields for survey UUID references. Refs column in survey list view, delete button shows "In Use (N)" when referenced, delete handler blocks with miner count message. Same pattern as BlueprintReferenceCounter and ColonyReferenceCounter.
