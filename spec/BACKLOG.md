@@ -169,11 +169,6 @@ We recently had a bug caused by duplicated blocks of code (e.g. `ExtractHtmlFrag
 
 Add a chart to the Colony form showing mining and refining production over time. Use `System.Windows.Forms.DataVisualization.Charting`. Visualize resource output rates from mining rigs and refineries, helping players see production throughput at a glance and identify bottlenecks or underperforming structures.
 
-### BL-037: Spreadsheet Data Migration Tool
-**Dependencies:** None
-
-Build a migration utility to import colony data from an existing OpenOffice Calc (.ods) spreadsheet (~80 tabs) into the application's PlayerData.json format. Use ExcelDataReader (NuGet) to read the .ods file programmatically — it supports .ods natively and returns a DataSet with one DataTable per sheet. The tool needs to map each tab's layout to the app's data model (Colony, ColonyStructure, Blueprint, Survey, etc.) and produce valid PlayerData.json output. This is likely a one-time or infrequent migration, so a simple console app or a dedicated form with a file picker would work. The main complexity is mapping the spreadsheet's ad-hoc layout to the structured data model — will need the actual spreadsheet to design the column mappings.
-
 
 ---
 
