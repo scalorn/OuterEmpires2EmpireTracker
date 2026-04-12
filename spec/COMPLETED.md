@@ -216,3 +216,11 @@ Migrate all DateTime.Now usage to DateTime.UtcNow across the codebase. Convert e
 ### BL-043: Colony Duplicate Validation — Planet+System Instead of Colony Name
 With the dedup key changed from ColonyName to PlanetName+SystemName, the duplicate-name validation on the colony name text field was no longer relevant. The SetError/ClearError validation was removed from txtColonyName_TextChanged — it now does a simple write-through. ClearError remains in the import handler to clear stale state after successful import.
 **Status: Complete** — Duplicate colony name validation removed as part of the colony-import-dedupe work. Spec: `.kiro/specs/colony-import-dedupe/`.
+
+### BL-030: Colony Administration Summary Report
+Per-colony status report on the Administration tab of the Colony form. Shows building progress, commodity requests, idle structures, active manufacturing with batch completion times, and aggregated mining/refining rates — all scoped to the selected colony.
+**Status: Complete** — ColonyAdminReportBuilder static service builds colored RTF via RtfBuilder. Report sections: Building → Commodity Requests → Inactivity (7 groups in fixed order) → Activity (manufacturing/commodity mfg/research with batch times, aggregated mining/refining). RichTextBox on Administration tab with 60-second timer refresh, colony selection refresh, and ColonyDataChanged refresh. 11 FsCheck property tests covering all correctness properties. Spec: `.kiro/specs/colony-admin-summary/`.
+
+### BL-039: Colony Administration Tab — Activity/Inactivity Status Area
+Consolidated into BL-030 (Colony Administration Summary Report). The Administration tab now shows all activity and inactivity data scoped to the selected colony.
+**Status: Complete** — See BL-030. Spec: `.kiro/specs/colony-admin-summary/`.

@@ -143,12 +143,6 @@ Explore whether AI can read the Discord channels for the game. Discord is often 
 **Dependencies:** None
 **Status: Rejected** — The split-file approach adds merge-on-load complexity, "which file wins" ambiguity, and user confusion. With deterministic UUIDs + versioned migrations + idempotent renames (see `spec/discussions/baseline-data-stability.md`), a single BaselineData.json handles upgrades cleanly without a separate user file.
 
-
-### BL-030: Colony Administration Summary Report
-**Dependencies:** None
-
-The colony form's Administration tab should become a per-colony summary report. We already gather activity and inactivity data across all colonies — show the same data scoped to the individual colony on its Administration tab.
-
 ### BL-032: Manufacturing Build Queue Calculator
 **Dependencies:** None
 
@@ -171,12 +165,6 @@ Add a chart to the Colony form showing mining and refining production over time.
 
 
 ---
-
-### BL-039: Colony Administration Tab — Activity/Inactivity Status Area
-**Dependencies:** None
-
-The colony Administration tab should have a status area showing all the items from the activity and inactivity reports, scoped to the individual colony. We already gather this data across all colonies — show the same data for the selected colony on its Administration tab.
-
 ### BL-041: Delivery Execution — Stale Plan After Delete
 **Dependencies:** None
 
