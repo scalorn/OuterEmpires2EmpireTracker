@@ -11,6 +11,21 @@ namespace OE2EmpireTracker.Models
 
         public List<string> OpenForms { get; set; } = new List<string>();
         public List<OpenFormEntry> OpenFormEntries { get; set; } = new List<OpenFormEntry>();
+
+        public ThresholdPreferences Thresholds { get; set; } = new ThresholdPreferences();
+    }
+
+    public class ThresholdPreferences
+    {
+        public int StructureCountYellow { get; set; } = 60;
+        public int StructureCountRed { get; set; } = 66;
+        public long WorkerRequestYellowSeconds { get; set; } = 172800;  // 2 days
+        public long WorkerRequestRedSeconds { get; set; } = 86400;      // 1 day
+        public long ColonyImportStalenessYellowSeconds { get; set; } = 432000; // 5 days
+        public long ColonyImportStalenessRedSeconds { get; set; } = 518400;    // 6 days
+        public long BackgroundProcessingIntervalSeconds { get; set; } = 60;
+        public long AdminRefreshIntervalSeconds { get; set; } = 60;
+        public long CountdownRefreshRateSeconds { get; set; } = 1;
     }
 
     public class OpenFormEntry
