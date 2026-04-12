@@ -38,13 +38,15 @@
 # Restore NuGet packages
 nuget restore OE2EmpireTracker.sln
 
-# Run tests via vstest (dotnet test does NOT work with old-style csproj + packages.config)
-"D:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" OE2EmpireTracker.Tests/bin/Debug/OE2EmpireTracker.Tests.dll
+# Run tests via vstest with TRX output (dotnet test does NOT work with old-style csproj + packages.config)
+"D:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" OE2EmpireTracker.Tests/bin/Debug/OE2EmpireTracker.Tests.dll /Logger:trx
 ```
 
 ## Important: Testing
 - Do NOT use `dotnet test` — it is incompatible with old-style csproj and packages.config
 - Use `vstest.console` against the built test DLL, or rely on `getDiagnostics` for compile checks
+- **Always pass `/Logger:trx`** when running vstest.console — this writes a structured XML results file to `TestResults/` that is far more reliable to parse than console output
+- After running tests, read the TRX file to check results: search for `outcome="Failed"` to find failures, and read the `<Message>` and `<StackTrace>` elements for details
 - When the running app locks the exe, use `getDiagnostics` instead of building
 
 ## Conventions
