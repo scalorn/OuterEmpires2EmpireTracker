@@ -58,6 +58,12 @@ The main window provides standard MDI layout commands under the **Window** menu:
 
 These are useful when you have many forms open and want to quickly reorganize your workspace.
 
+## Session Restore
+
+When you close the application, it remembers which forms were open and their window numbers. The next time you launch, those forms are automatically reopened with their saved positions, sizes, and control states. For example, if you had Colony `#1` and Colony `#3` open, both will reappear exactly as you left them.
+
+This works whether you exit via File → Exit or by closing the main window directly.
+
 ## File Management
 
 The main window also remembers the last opened file path. When you launch the application, it automatically tries to reopen the last file you were working with. If the file no longer exists, the setting is cleared and you start with the default data.

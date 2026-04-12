@@ -59,6 +59,7 @@ namespace OE2EmpireTracker
             _lastCheckTime = DateTime.UtcNow;
 
             TryAutoOpenLastFile();
+            RestoreOpenForms();
         }
 
         private void PopulatePlayerDropdown()
@@ -105,6 +106,12 @@ namespace OE2EmpireTracker
             int windowNumber = 1;
             while (usedNumbers.Contains(windowNumber)) windowNumber++;
 
+            return OpenMdiChildWithNumber<T>(windowNumber);
+        }
+
+        internal T OpenMdiChildWithNumber<T>(int windowNumber) where T : Form, new()
+        {
+            string formTypeKey = typeof(T).Name;
             T form = new T();
             form.MdiParent = this;
             form.Tag = windowNumber;
@@ -236,6 +243,7 @@ namespace OE2EmpireTracker
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            SaveOpenFormsList();
             WindowStateHelper.SaveMainWindowState(this);
             base.OnFormClosing(e);
         }
@@ -502,6 +510,71 @@ namespace OE2EmpireTracker
                 Log.Warn(ex, "Failed to auto-open last file, clearing setting");
                 Properties.Settings.Default.LastOpenedPath = string.Empty;
                 Properties.Settings.Default.Save();
+            }
+        }
+
+        private void SaveOpenFormsList()
+        {
+            var store = PreferencesStore.GetInstance();
+            var entries = new List<OpenFormEntry>();
+            foreach (Form child in this.MdiChildren)
+            {
+                int windowNumber = child.Tag is int ? (int)child.Tag : 0;
+                entries.Add(new OpenFormEntry
+                {
+                    TypeName = child.GetType().Name,
+                    WindowNumber = windowNumber
+                });
+            }
+            // Sort by type then window number so restore order is deterministic
+            entries.Sort((a, b) =>
+            {
+                int typeResult = string.Compare(a.TypeName, b.TypeName, StringComparison.Ordinal);
+                return typeResult != 0 ? typeResult : a.WindowNumber.CompareTo(b.WindowNumber);
+            });
+            store.Preferences.OpenFormEntries = entries;
+            store.Save();
+        }
+
+        private static readonly Dictionary<string, Action<MainWindow, int>> FormOpeners = new Dictionary<string, Action<MainWindow, int>>
+        {
+            { "FormBlueprint", (w, n) => w.OpenMdiChildWithNumber<FormBlueprint>(n) },
+            { "FormColony", (w, n) => w.OpenMdiChildWithNumber<FormColony>(n) },
+            { "FormSurvey", (w, n) => w.OpenMdiChildWithNumber<FormSurvey>(n) },
+            { "FormPlayerProfile", (w, n) => w.OpenMdiChildWithNumber<FormPlayerProfile>(n) },
+            { "FormDeliveryRoute", (w, n) => w.OpenMdiChildWithNumber<Forms.DeliveryRoute.FormDeliveryRoute>(n) },
+            { "FormDeliveryExecution", (w, n) => w.OpenMdiChildWithNumber<Forms.DeliveryExecution.FormDeliveryExecution>(n) },
+            { "FormColonyDailyBuild", (w, n) => w.OpenMdiChildWithNumber<FormColonyDailyBuild>(n) },
+            { "FormColonyActivity", (w, n) => w.OpenMdiChildWithNumber<FormColonyActivity>(n) },
+        };
+
+        private void RestoreOpenForms()
+        {
+            var store = PreferencesStore.GetInstance();
+            var entries = store.Preferences.OpenFormEntries;
+            if (entries == null || entries.Count == 0) return;
+
+            bool hasPlayer = playerContext.PlayerProfileList.Count > 0;
+
+            foreach (var entry in entries)
+            {
+                if (!hasPlayer && entry.TypeName != "FormPlayerProfile") continue;
+
+                if (FormOpeners.TryGetValue(entry.TypeName, out var opener))
+                {
+                    try
+                    {
+                        opener(this, entry.WindowNumber);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Warn(ex, "Failed to restore form {0} #{1}", entry.TypeName, entry.WindowNumber);
+                    }
+                }
+                else
+                {
+                    Log.Debug("Unknown form type in OpenFormEntries: {0}", entry.TypeName);
+                }
             }
         }
     }
