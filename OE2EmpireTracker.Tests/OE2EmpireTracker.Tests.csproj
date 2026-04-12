@@ -273,6 +273,7 @@
     <Compile Include="Controls\ValidatedTextBoxTests.cs" />
     <Compile Include="Forms\MainMenuOverhaulTests.cs" />
     <Compile Include="Forms\GetDeleteButtonStateTests.cs" />
+    <Compile Include="Forms\MdiWindowNumberPropertyTests.cs" />
     <Compile Include="ViewModels\BaseBlueprintCandidatesTests.cs" />
     <Compile Include="ViewModels\BlueprintFilterPropertyTests.cs" />
     <Compile Include="Parsers\ColonyParserTests.cs" />

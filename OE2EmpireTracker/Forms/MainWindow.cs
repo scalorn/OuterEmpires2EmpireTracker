@@ -34,7 +34,6 @@ namespace OE2EmpireTracker
         PlayerContext playerContext = null;
         private BackgroundProcessor _backgroundProcessor;
         private string _lastOpenedPath;
-        private readonly Dictionary<string, int> _windowNumberCounters = new Dictionary<string, int>();
 
         // CPU utilization tracking
         private TimeSpan _lastCpuTime;
@@ -98,10 +97,12 @@ namespace OE2EmpireTracker
         private T OpenMdiChild<T>() where T : Form, new()
         {
             string formTypeKey = typeof(T).Name;
-            if (!_windowNumberCounters.ContainsKey(formTypeKey))
-                _windowNumberCounters[formTypeKey] = 0;
-            _windowNumberCounters[formTypeKey]++;
-            int windowNumber = _windowNumberCounters[formTypeKey];
+            var usedNumbers = this.MdiChildren
+                .OfType<T>()
+                .Select(f => (int)f.Tag)
+                .ToHashSet();
+            int windowNumber = 1;
+            while (usedNumbers.Contains(windowNumber)) windowNumber++;
 
             T form = new T();
             form.MdiParent = this;

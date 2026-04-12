@@ -27,6 +27,8 @@ Each child form (Colonies, Blueprints, Surveys, etc.) saves and restores:
 
 You can open multiple instances of the same form type. Each instance gets a unique window number (shown as `#1`, `#2`, etc. in the title bar). Window state is saved per instance number, so your first Colony form and second Colony form can have different positions and settings.
 
+When you close a window and open a new one of the same type, the app reuses the lowest available number. For example, if you have Colony `#1`, `#2`, and `#3` open and close `#2`, the next Colony window you open will be `#2` again — and it will restore the saved state (position, size, filters) from the previous `#2`.
+
 ## How It Works
 
 Window state is stored in a preferences file managed by the `PreferencesStore` service. The `WindowStateHelper` class handles saving and restoring:
