@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using OE2EmpireTracker.Constants;
 using System;
 using System.Collections.Generic;
 
@@ -46,6 +47,23 @@ namespace OE2EmpireTracker.Models
         {
             Properties = new PropertyBag();
             AssignedWorkers = new PropertyBag();
+        }
+
+        /// <summary>
+        /// Returns true if the structure has Built=True and Online=True in its PropertyBag.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsBuiltAndOnline
+        {
+            get
+            {
+                bool built;
+                Properties.getBoolean(GameConstants.PropBuilt, false, out built);
+                if (!built) return false;
+                bool online;
+                Properties.getBoolean(GameConstants.PropOnline, false, out online);
+                return online;
+            }
         }
     }
 }

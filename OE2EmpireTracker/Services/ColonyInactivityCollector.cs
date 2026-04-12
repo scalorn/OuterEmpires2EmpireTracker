@@ -71,13 +71,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private static bool IsBuiltAndOnline(ColonyStructure structure)
         {
-            bool built;
-            structure.Properties.getBoolean(GameConstants.PropBuilt, false, out built);
-            if (!built) return false;
-
-            bool online;
-            structure.Properties.getBoolean(GameConstants.PropOnline, false, out online);
-            return online;
+            return structure.IsBuiltAndOnline;
         }
 
         /// <summary>

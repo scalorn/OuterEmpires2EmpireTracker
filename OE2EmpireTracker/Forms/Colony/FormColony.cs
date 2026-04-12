@@ -310,9 +310,7 @@ namespace OE2EmpireTracker.Forms.Colony
             colonyViewModel.RecalculateStatus();
             colonyStructureControl.UpdateData();
 
-            RtfBuilder builder = new RtfBuilder();
-            ColonyStatusCalculator.PopulateStatus(builder, statusCalculator.finalActualStatus);
-            rtbStatus.Rtf = builder.ToRtf();
+            RefreshStatusDisplay();
 
             colonyStructureControl.Visible = true;
             UpdateTabWarnings();
@@ -401,9 +399,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 _warehouseDirty = true;
             }
 
-            RtfBuilder builder = new RtfBuilder();
-            ColonyStatusCalculator.PopulateStatus(builder, statusCalculator.finalActualStatus);
-            rtbStatus.Rtf = builder.ToRtf();
+            RefreshStatusDisplay();
 
             // Notify other forms (e.g. ColonyActivityForm) that colony data changed
             if (selectedColony != null)
@@ -628,9 +624,7 @@ namespace OE2EmpireTracker.Forms.Colony
             flpColonyStructure.ResumeLayout();
 
             colonyViewModel.RecalculateStatus();
-            RtfBuilder builder = new RtfBuilder();
-            ColonyStatusCalculator.PopulateStatus(builder, statusCalculator.finalActualStatus);
-            rtbStatus.Rtf = builder.ToRtf();
+            RefreshStatusDisplay();
 
             // Defer item and commodity grids unless their tab is active
             if (tabDetailedData.SelectedTab == tabPWarehousing)
@@ -1604,9 +1598,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
                 // Recalculate status without rebuilding the entire form
                 colonyViewModel.RecalculateStatus();
-                RtfBuilder builder = new RtfBuilder();
-                ColonyStatusCalculator.PopulateStatus(builder, statusCalculator.finalActualStatus);
-                rtbStatus.Rtf = builder.ToRtf();
+                RefreshStatusDisplay();
 
                 _structuresDirty = true;
             }
@@ -1883,6 +1875,13 @@ namespace OE2EmpireTracker.Forms.Colony
         }
 
         // ----- Admin Report -----
+
+        private void RefreshStatusDisplay()
+        {
+            var builder = new RtfBuilder();
+            ColonyStatusCalculator.PopulateStatus(builder, statusCalculator.finalActualStatus);
+            rtbStatus.Rtf = builder.ToRtf();
+        }
 
         private void RefreshAdminReport()
         {

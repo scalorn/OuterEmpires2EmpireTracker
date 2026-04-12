@@ -153,8 +153,16 @@ Add support for font styles to RtfBuilder — bold, italics, strikethrough, etc.
 
 ### BL-034: Codebase Duplication Scan & Cleanup
 **Dependencies:** None
+**Status: Complete**
 
 We recently had a bug caused by duplicated blocks of code (e.g. `ExtractHtmlFragmentFromClipboardData` existed in both `FormBlueprint` and `BlueprintScanner`). Do a complete scan of the codebase looking for other instances of code duplication. Also look for code cleanliness opportunities, refactoring candidates, and general best-practices improvements.
+
+**Completed refactoring:**
+- Moved clipboard HTML extraction logic from BlueprintScanner into ClipboardHelper (canonical location); BlueprintScanner now delegates back
+- Added `IsBuiltAndOnline` property to ColonyStructure model; ColonyInactivityCollector now uses it instead of duplicating the check
+- RefinerySetupHelper now uses `structure.IsBuiltAndOnline` and `MinerSetupHelper.SetupTimer()` instead of reimplementing both
+- Extracted `RefreshStatusDisplay()` helper in FormColony, replacing 4 identical 3-line RtfBuilder patterns
+- Remaining patterns (ListView population, form titles) are similar but domain-specific — not worth abstracting
 
 ### BL-036: Colony Mining/Refining Production Graph
 **Dependencies:** None

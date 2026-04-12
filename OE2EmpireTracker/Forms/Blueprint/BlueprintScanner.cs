@@ -1,6 +1,7 @@
 using Amazon.Runtime.Internal.Transform;
 using NLog;
 using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
@@ -517,56 +518,8 @@ namespace OE2EmpireTracker.Forms.Blueprint
         /// </remarks>
         public static string ExtractHtmlFragmentFromClipboardData(string htmlDataString)
         {
-            // HTML Clipboard Format:
-            // (https://msdn.microsoft.com/en-us/library/aa767917(v=vs.85).aspx)
-            // - Fragment contains valid HTML representing the selected area
-            // - Includes opening tags and attributes for elements with end tags within selection
-            // - End tags that match included opening tags
-            // - Wrapped with <!--StartFragment--> and <!--EndFragment--> markers
-
-            // Prefer marker-based extraction — encoding-safe and avoids byte-offset mismatch
-            const string startMarker = "<!--StartFragment-->";
-            const string endMarker = "<!--EndFragment-->";
-            int startPos = htmlDataString.IndexOf(startMarker);
-            if (startPos >= 0)
-            {
-                startPos += startMarker.Length;
-                int endPos = htmlDataString.IndexOf(endMarker, startPos);
-                if (endPos >= 0)
-                    return htmlDataString.Substring(startPos, endPos - startPos);
-            }
-
-            // Fallback: byte-offset extraction for non-standard clipboard sources
-            int startFragmentIndex = htmlDataString.IndexOf("StartFragment:");
-            if (startFragmentIndex < 0)
-            {
-                return "ERROR: Unrecognized html header";
-            }
-
-            // Parse the byte offset for fragment start
-            startFragmentIndex = Int32.Parse(htmlDataString.Substring(startFragmentIndex + "StartFragment:".Length, 10));
-            if (startFragmentIndex < 0 || startFragmentIndex > htmlDataString.Length)
-            {
-                return "ERROR: Unrecognized html header";
-            }
-
-            // Byte count from beginning of clipboard to end of fragment
-            int endFragmentIndex = htmlDataString.IndexOf("EndFragment:");
-            if (endFragmentIndex < 0)
-            {
-                return "ERROR: Unrecognized html header";
-            }
-
-            // Parse the byte offset for fragment end
-            endFragmentIndex = Int32.Parse(htmlDataString.Substring(endFragmentIndex + "EndFragment:".Length, 10));
-            if (endFragmentIndex > htmlDataString.Length)
-            {
-                endFragmentIndex = htmlDataString.Length;
-            }
-
-            // Convert bytes to string using UTF-8 encoding
-            byte[] bytes = Encoding.UTF8.GetBytes(htmlDataString);
-            return Encoding.UTF8.GetString(bytes, startFragmentIndex, endFragmentIndex - startFragmentIndex);
+            // Delegated to ClipboardHelper — the canonical implementation lives there.
+            return ClipboardHelper.ExtractHtmlFragment(htmlDataString);
         }
 
         /// <summary>

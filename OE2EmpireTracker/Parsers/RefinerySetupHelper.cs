@@ -68,15 +68,10 @@ namespace OE2EmpireTracker.Parsers
                 }
 
                 // Step b: Check if built and online (Req 8.3)
-                bool built;
-                structure.Properties.getBoolean(GameConstants.PropBuilt, false, out built);
-                bool online;
-                structure.Properties.getBoolean(GameConstants.PropOnline, false, out online);
-
-                if (!built || !online)
+                if (!structure.IsBuiltAndOnline)
                 {
-                    Log.Info("Skipped timer for refinery {0}: not built or not online (built={1}, online={2})",
-                        structure.UUID, built, online);
+                    Log.Info("Skipped timer for refinery {0}: not built or not online",
+                        structure.UUID);
                     continue;
                 }
 
@@ -88,16 +83,12 @@ namespace OE2EmpireTracker.Parsers
                 }
 
                 // Step d: Create repeating timer aligned to next clock-hour boundary (Req 8.3)
-                DateTime now = DateTime.UtcNow;
-                DateTime nextHour = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0).AddHours(1);
-                int secondsUntilNextHour = (int)(nextHour - now).TotalSeconds;
-
-                structure.ProcessCompletionTime = new CountDownTime();
-                structure.ProcessCompletionTime.StartRepeating(GameConstants.SecondsPerHour, secondsUntilNextHour);
-                timersStarted++;
-
-                Log.Info("Created repeating refinery timer on structure {0}, next fire in {1}s",
-                    structure.UUID, secondsUntilNextHour);
+                // Reuse MinerSetupHelper.SetupTimer with a non-zero rate to trigger timer creation
+                MinerSetupHelper.SetupTimer(structure, 1m);
+                if (structure.ProcessCompletionTime != null && structure.ProcessCompletionTime.IsRepeating)
+                {
+                    timersStarted++;
+                }
             }
 
             Log.Info("SetupRefineries complete for colony {0}: {1} timers started, {2} warehouse resources created",
