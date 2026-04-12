@@ -144,7 +144,8 @@ namespace OE2EmpireTracker.Models
             }
 
             SurveyResource surveyResource;
-            if (!survey.Resources.TryGetValue(structure.MiningSurveyResource, out surveyResource))
+            if (string.IsNullOrEmpty(structure.MiningSurveyResource) ||
+                !survey.Resources.TryGetValue(structure.MiningSurveyResource, out surveyResource))
             {
                 Log.Warn("ProcessMiningRig: resource '{0}' not found in survey {1} for structure {2}, skipping",
                     structure.MiningSurveyResource ?? "(null)", structure.MiningSurvey, structure.UUID);
