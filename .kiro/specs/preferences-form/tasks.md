@@ -35,8 +35,8 @@ Implement a Preferences form for configuring nine threshold/interval values curr
 - [x] 2. Checkpoint - Verify model layer compiles
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 3. Implement CountdownFormatParser
-  - [~] 3.1 Create CountdownFormatParser static class
+- [x] 3. Implement CountdownFormatParser
+  - [x] 3.1 Create CountdownFormatParser static class
     - Create `OE2EmpireTracker/Parsers/CountdownFormatParser.cs`
     - Add `Compile Include` entry in `OE2EmpireTracker/OE2EmpireTracker.csproj`
     - Implement `public static bool TryParse(string input, out long totalSeconds)` — inverse of `ActivityRow.FormatSeconds`
@@ -44,22 +44,22 @@ Implement a Preferences form for configuring nine threshold/interval values curr
     - Return false for null/empty/whitespace, unrecognized suffixes, negative numbers, duplicate units, overflow
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-  - [~] 3.2 Write unit tests for CountdownFormatParser
+  - [x] 3.2 Write unit tests for CountdownFormatParser
     - Create `OE2EmpireTracker.Tests/Parsers/CountdownFormatParserTests.cs`
     - Add `Compile Include` entry in test `.csproj`
     - Test specific examples: "5d 0h 0m 0s" → 432000, "1h 30m" → 5400, "60s" → 60, "0s" → 0
     - Test failures: "", "abc", "5d 3d" (duplicate unit), negative numbers
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-  - [~] 3.3 Write property test for countdown format round-trip
+  - [x] 3.3 Write property test for countdown format round-trip
     - **Property 1: Countdown format round-trip**
     - **Validates: Requirements 8.1, 8.2, 8.3, 8.5**
 
-  - [~] 3.4 Write property test for countdown format rejects invalid input
+  - [x] 3.4 Write property test for countdown format rejects invalid input
     - **Property 2: Countdown format rejects invalid input**
     - **Validates: Requirements 8.4**
 
-- [~] 4. Checkpoint - Verify parser compiles and tests pass
+- [x] 4. Checkpoint - Verify parser compiles and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Wire TabWarningService to read from PreferencesStore

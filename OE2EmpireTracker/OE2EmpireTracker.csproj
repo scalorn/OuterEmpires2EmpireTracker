@@ -203,6 +203,7 @@
     <Compile Include="Models\ResourceGroup.cs" />
     <Compile Include="Models\ResourcePurity.cs" />
     <Compile Include="Models\ShipClass.cs" />
+    <Compile Include="Parsers\CountdownFormatParser.cs" />
     <Compile Include="Parsers\SurveyParser.cs" />
     <Compile Include="Models\Survey.cs" />
     <Compile Include="Controls\DataEntryGridView.cs">
