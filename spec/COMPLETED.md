@@ -169,3 +169,7 @@ Bug: Filter controls on Delivery Execution form didn't persist between close/reo
 ### BL-065: Delivery Routes Form — Filter Text Not Sticky
 Bug: Filter text box on Delivery Routes form didn't persist between close/reopen.
 **Status: Complete** — Controls already had Name properties in Designer and WindowStateHelper already saved/restored them. Confirmed working via diagnostic logging — no code changes needed.
+
+### BL-060: No-Player Guard — Restrict to Player Profile Form
+When no player profile exists, all Manage menu items except Player Profiles are disabled, along with the player dropdown. Prevents confusing errors when importing data with no active player.
+**Status: Complete** — Added `UpdateNoPlayerGuard()` to MainWindow. Called on startup, after profile changes, after File→New, and after file load. Menu items re-enable automatically when a profile is created.

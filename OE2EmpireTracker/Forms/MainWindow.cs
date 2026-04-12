@@ -46,6 +46,7 @@ namespace OE2EmpireTracker
             InitializeComponent();
             WindowStateHelper.RestoreMainWindowState(this);
             PopulatePlayerDropdown();
+            UpdateNoPlayerGuard();
             playerContext.PlayerProfilesChanged += OnPlayerProfilesChanged;
 
             _backgroundProcessor = new BackgroundProcessor(playerContext);
@@ -156,6 +157,28 @@ namespace OE2EmpireTracker
         private void OnPlayerProfilesChanged(object sender, EventArgs e)
         {
             PopulatePlayerDropdown();
+            UpdateNoPlayerGuard();
+        }
+
+        /// <summary>
+        /// Disables non-profile menu items and the player dropdown when no player
+        /// profiles exist. Re-enables them once at least one profile is created.
+        /// </summary>
+        private void UpdateNoPlayerGuard()
+        {
+            bool hasPlayer = playerContext.PlayerProfileList.Count > 0;
+
+            // Manage menu items (except Player Profiles)
+            addBlueprintToolStripMenuItem.Enabled = hasPlayer;
+            addColonyToolStripMenuItem.Enabled = hasPlayer;
+            addSurveyToolStripMenuItem.Enabled = hasPlayer;
+            deliveryRoutesToolStripMenuItem.Enabled = hasPlayer;
+            deliveryExecutionToolStripMenuItem.Enabled = hasPlayer;
+            colonyDailyBuildToolStripMenuItem.Enabled = hasPlayer;
+            colonyActivityToolStripMenuItem.Enabled = hasPlayer;
+
+            // Player dropdown
+            cmbCurrentPlayer.Enabled = hasPlayer;
         }
 
         private void OnTimerNextProcessTick(object sender, EventArgs e)
@@ -255,6 +278,7 @@ namespace OE2EmpireTracker
                 _backgroundProcessor.Start();
 
                 PopulatePlayerDropdown();
+                UpdateNoPlayerGuard();
                 SetLastOpenedPath(string.Empty);
 
                 Log.Info("File â†’ New completed");
@@ -420,9 +444,8 @@ namespace OE2EmpireTracker
             _backgroundProcessor.Start();
 
             PopulatePlayerDropdown();
-        }
-
-        private bool PerformSaveAs()
+            UpdateNoPlayerGuard();
+        }        private bool PerformSaveAs()
         {
             using (var dlg = new SaveFileDialog())
             {

@@ -286,11 +286,6 @@ Bug: When you move a stop up or down in a delivery route, the list jumps to the 
 
 Add a feature to automatically create manufacturing orders based on target stock levels. Example: "always keep 10,000 2cm Coilgun Munitions on hand" or "always keep 2,000 Joybots on hand." The system checks current warehouse quantities across the empire and creates orders to replenish shortfalls.
 
-### BL-060: No-Player Guard — Restrict to Player Profile Form
-**Dependencies:** None
-
-If no player profile has been created yet, the app should limit the user to only the Player Profile form. Other forms (Colonies, Surveys, Blueprints, Delivery Routes, etc.) should be disabled or hidden in the menu until at least one player profile exists. Prevents confusing errors when importing data with no active player.
-
 ### BL-061: Preferences Form — Configurable Thresholds
 **Dependencies:** None
 
