@@ -155,7 +155,7 @@ Implement a Preferences form for configuring nine threshold/interval values curr
     - Add `Compile Include` entry if not already present (MainWindow already exists)
     - _Requirements: 3.1, 3.2_
 
-- [-] 12. Final checkpoint - Ensure all tests pass
+- [x] 12. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

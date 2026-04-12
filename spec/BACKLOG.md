@@ -185,11 +185,6 @@ Build an empire-wide queue system for mining, refining, manufacturing, and resea
 
 Add a feature to automatically create manufacturing orders based on target stock levels. Example: "always keep 10,000 2cm Coilgun Munitions on hand" or "always keep 2,000 Joybots on hand." The system checks current warehouse quantities across the empire and creates orders to replenish shortfalls.
 
-### BL-061: Preferences Form — Configurable Thresholds
-**Dependencies:** None
-
-Create a Preferences form (accessible from the menu) that exposes all the magic numbers currently hardcoded in the app. Examples: colony structure count yellow/red thresholds, commodity request urgency windows (hours until yellow, hours until red), colony import staleness thresholds (days until yellow/red), and any other configurable values. Store in UIPreferences.json alongside existing window state preferences. Replace hardcoded constants in TabWarningService and other consumers with reads from the preferences store.
-
 ---
 
 ## ~~MarketSample Coverage Gaps~~ — RESOLVED
