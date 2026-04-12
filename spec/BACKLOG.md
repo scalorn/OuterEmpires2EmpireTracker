@@ -311,6 +311,11 @@ If no player profile has been created yet, the app should limit the user to only
 
 Create a Preferences form (accessible from the menu) that exposes all the magic numbers currently hardcoded in the app. Examples: colony structure count yellow/red thresholds, commodity request urgency windows (hours until yellow, hours until red), colony import staleness thresholds (days until yellow/red), and any other configurable values. Store in UIPreferences.json alongside existing window state preferences. Replace hardcoded constants in TabWarningService and other consumers with reads from the preferences store.
 
+### BL-062: Blueprint Form — Evolved Blueprint Resource Import Broken
+**Dependencies:** None
+
+Bug: Importing the resources tab of an evolved blueprint creates a new broken blueprint instead of updating the selected one. The resources tab HTML doesn't contain class, tech level, or other fields used by the dedup matching rules, so the import can't find the correct existing blueprint and falls through to creating a new entry. Fix: when the parsed clipboard data looks like a resources-only import (has resources but missing key dedup fields like class/tech level), assume the user is updating the currently selected blueprint rather than importing a new one. The normal workflow is to import the statistics page first (which creates/selects the blueprint), then import the resources page to add resource data to it.
+
 
 ---
 
