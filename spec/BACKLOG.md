@@ -178,20 +178,10 @@ Bug: After creating a new delivery plan, the delivery execution form doesn't see
 
 Set up the GitHub MCP server so Kiro can read/write GitHub issues, PRs, and wiki pages directly. Enables intake of external issues, PR review, and maintaining user documentation in the repo wiki. Requires Docker Desktop (or the standalone Go binary from github/github-mcp-server releases) plus a fine-grained GitHub Personal Access Token scoped to the repo with Issues, Pull Requests, Contents, and Metadata permissions. Configuration goes in `.kiro/settings/mcp.json`. Currently blocked — Docker won't install on the dev machine. Revisit when Docker is available or try the standalone binary approach.
 
-### BL-046: Import Clipboard Validation — Show Error on Wrong Content
-**Dependencies:** None
-
-On all individual import buttons (colony, survey, blueprint), if the clipboard HTML doesn't contain the expected content type, show a message box explaining what was expected. On success, do NOT show a message box — silent success keeps the user in flow when importing many items in a row.
-
 ### BL-047: Game API Integration Planning
 **Dependencies:** None
 
 There will be a game API eventually. Plan the integration architecture now so we're ready when it arrives. Consider: authentication, polling vs push, data model mapping, how it replaces clipboard import, and what new capabilities it enables (real-time sync, automated queue management, etc.).
-
-### BL-048: Import Content Type Guard — Prevent Cross-Type Imports
-**Dependencies:** None
-
-Bug: It's currently possible to import a blueprint as a survey (wrong clipboard content accepted by the wrong form). Each import parser should validate that the clipboard HTML matches the expected content type before processing. Reject mismatched content with a clear error message.
 
 ### BL-050: Default Survey Duplicate on Out-of-Order Import
 **Dependencies:** None

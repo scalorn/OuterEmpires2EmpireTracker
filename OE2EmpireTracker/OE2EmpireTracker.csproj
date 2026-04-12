@@ -162,6 +162,7 @@
     <Compile Include="Services\BuildOrderOptimizer.cs" />
     <Compile Include="Services\ColonyBootstrap.cs" />
     <Compile Include="Parsers\ClipboardHelper.cs" />
+    <Compile Include="Parsers\ClipboardContentDetector.cs" />
     <Compile Include="Parsers\ColonyParser.cs" />
     <Compile Include="Parsers\MinerSetupHelper.cs" />
     <Compile Include="Parsers\RefinerySetupHelper.cs" />

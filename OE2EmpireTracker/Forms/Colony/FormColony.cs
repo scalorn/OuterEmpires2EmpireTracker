@@ -1685,6 +1685,18 @@ namespace OE2EmpireTracker.Forms.Colony
 
             try
             {
+                // Validate clipboard contains colony data
+                string clipboardData = System.Windows.Forms.Clipboard.GetText(TextDataFormat.Html);
+                string htmlFragment = ClipboardHelper.ExtractHtmlFragment(clipboardData);
+                var detected = Parsers.ClipboardContentDetector.Detect(htmlFragment);
+                if (detected != Parsers.ClipboardContentDetector.ContentType.Colony)
+                {
+                    string found = Parsers.ClipboardContentDetector.GetDescription(detected);
+                    MessageBox.Show($"The clipboard contains {found}, not colony data.\n\nCopy the colony page from the game browser first.",
+                        "Wrong Content", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
                 var parser = new ColonyParser();
                 var tempColony = parser.ParseClipboardToTemp(empireContext, out string extractedHtml);
 

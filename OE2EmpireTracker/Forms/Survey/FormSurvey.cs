@@ -472,6 +472,19 @@ namespace OE2EmpireTracker.Forms.Survey
 
             try
             {
+                // Validate clipboard contains survey data
+                string clipboardData = Clipboard.GetText(TextDataFormat.Html);
+                string htmlFragment = ClipboardHelper.ExtractHtmlFragment(clipboardData);
+                var detected = Parsers.ClipboardContentDetector.Detect(htmlFragment);
+                if (detected != Parsers.ClipboardContentDetector.ContentType.Survey &&
+                    detected != Parsers.ClipboardContentDetector.ContentType.Unknown)
+                {
+                    string found = Parsers.ClipboardContentDetector.GetDescription(detected);
+                    MessageBox.Show($"The clipboard contains {found}, not survey data.\n\nCopy the survey page from the game browser first.",
+                        "Wrong Content", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
                 Log.Info("Survey import started from clipboard");
                 var parser = new SurveyParser();
                 var tempSurvey = parser.ParseClipboardToTemp(out string extractedHtml);

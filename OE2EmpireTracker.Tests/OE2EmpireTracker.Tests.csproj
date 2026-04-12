@@ -291,6 +291,7 @@
     <Compile Include="Parsers\MinerSetupHelperCleanupDefaultSurveyTests.cs" />
     <Compile Include="Parsers\MinerSetupHelperSetupMinersTests.cs" />
     <Compile Include="Parsers\RefinerySetupHelperTests.cs" />
+    <Compile Include="Parsers\ClipboardContentDetectorTests.cs" />
     <Compile Include="Models\BlueprintOutputNameTests.cs" />
     <Compile Include="Services\JsonDefaultSkipTests.cs" />
     <Compile Include="Services\BughuntDiagnosticTest.cs" />

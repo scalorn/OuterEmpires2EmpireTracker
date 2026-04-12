@@ -228,3 +228,11 @@ Consolidated into BL-030 (Colony Administration Summary Report). The Administrat
 ### BL-021: Player Profile Importer
 Import player profile data from game HTML. Parse the in-game profile page to extract player name, faction, credits, all three rank tracks, skill points, skill group states, individual skill levels, and training status. Update existing profiles by case-insensitive name match or create new ones.
 **Status: Complete** — PlayerProfileParser with ProcessClipboard/ProcessHtml. Parses identity, credits, headline fields (CitizenId, RegistrationDate, ActiveTime), rank tracks (Public/Private/Military with level, title, XP), skill points, skill groups, individual skills with training detection. Import button on FormPlayerProfile. 6 FsCheck property tests + integration tests against real game HTML. Spec: `.kiro/specs/player-profile-import/`.
+
+### BL-046: Import Clipboard Validation — Show Error on Wrong Content
+On all import buttons, if the clipboard HTML doesn't contain the expected content type, show a message box explaining what was found vs what was expected.
+**Status: Complete** — Consolidated with BL-048. See BL-048.
+
+### BL-048: Import Content Type Guard — Prevent Cross-Type Imports
+Prevent importing wrong clipboard content type (e.g. blueprint HTML on the survey form). Each import handler validates clipboard HTML via `ClipboardContentDetector.Detect()` before parsing.
+**Status: Complete** — New `ClipboardContentDetector` static class sniffs HTML for distinctive CSS class markers (ColonyInformation_PlanetOverview, ScanDetailOutputResourceName, ShipComponentProperty, ui_character_detail, Market_ShipComponentProperty). All 5 import handlers (colony, survey, blueprint individual, blueprint market, player profile) validate content type before parsing. Mismatched content shows a clear message: "The clipboard contains {found}, not {expected}." 17 unit tests. Blueprint import allows Survey content type through for resources-only imports.

@@ -471,6 +471,19 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                     return;
                 }
 
+                // Validate clipboard contains player profile data
+                string clipboardData = System.Windows.Forms.Clipboard.GetText(TextDataFormat.Html);
+                string htmlFragment = Parsers.ClipboardHelper.ExtractHtmlFragment(clipboardData);
+                var detected = Parsers.ClipboardContentDetector.Detect(htmlFragment);
+                if (detected != Parsers.ClipboardContentDetector.ContentType.PlayerProfile &&
+                    detected != Parsers.ClipboardContentDetector.ContentType.Unknown)
+                {
+                    string found = Parsers.ClipboardContentDetector.GetDescription(detected);
+                    MessageBox.Show($"The clipboard contains {found}, not player profile data.\n\nCopy the profile panel from the game first.",
+                        "Wrong Content", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
                 // Parse clipboard into a temp profile
                 var tempProfile = new Models.PlayerProfile();
                 var parser = new PlayerProfileParser();

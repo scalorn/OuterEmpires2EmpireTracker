@@ -1,4 +1,5 @@
 using OE2EmpireTracker.Persistence;
+using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Services.Migration;
 using OE2EmpireTracker.Constants;
@@ -1393,6 +1394,17 @@ namespace OE2EmpireTracker
                 return;
             }
 
+            // Validate clipboard contains market listing data
+            var detected = ClipboardContentDetector.Detect(html);
+            if (detected != ClipboardContentDetector.ContentType.MarketListing &&
+                detected != ClipboardContentDetector.ContentType.Unknown)
+            {
+                string found = ClipboardContentDetector.GetDescription(detected);
+                MessageBox.Show($"The clipboard contains {found}, not market listing data.\n\nCopy the market page from the game browser first.",
+                    "Wrong Content", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             // Parse market HTML
             var scanner = new BlueprintScanner();
             var parsed = scanner.ProcessMarketHtml(html);
@@ -1445,6 +1457,20 @@ namespace OE2EmpireTracker
 
             try
             {
+                // Validate clipboard contains blueprint data (individual or resources-only)
+                string clipboardData = Clipboard.GetText(TextDataFormat.Html);
+                string htmlFragment = ClipboardHelper.ExtractHtmlFragment(clipboardData);
+                var detected = Parsers.ClipboardContentDetector.Detect(htmlFragment);
+                if (detected != Parsers.ClipboardContentDetector.ContentType.Blueprint &&
+                    detected != Parsers.ClipboardContentDetector.ContentType.Survey &&
+                    detected != Parsers.ClipboardContentDetector.ContentType.Unknown)
+                {
+                    string found = Parsers.ClipboardContentDetector.GetDescription(detected);
+                    MessageBox.Show($"The clipboard contains {found}, not blueprint data.\n\nCopy the blueprint page from the game browser first.",
+                        "Wrong Content", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
                 var scanner = new BlueprintScanner();
                 var tempBP = scanner.ParseClipboardToTemp();
 
