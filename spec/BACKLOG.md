@@ -149,11 +149,6 @@ Explore whether AI can read the Discord channels for the game. Discord is often 
 
 The colony form's Administration tab should become a per-colony summary report. We already gather activity and inactivity data across all colonies — show the same data scoped to the individual colony on its Administration tab.
 
-### BL-031: Colony Import Timestamp Tracking
-**Dependencies:** None
-
-When we import a colony, record the import timestamp inside the Colony data structure. Display this on the inactivity form as "you have not imported this colony for <countdown format> time." Notify if it has been more than a day, since stale imports miss commodity requests. This information also feeds into the colony Administration report.
-
 ### BL-032: Manufacturing Build Queue Calculator
 **Dependencies:** None
 
@@ -222,11 +217,6 @@ There will be a game API eventually. Plan the integration architecture now so we
 
 Bug: It's currently possible to import a blueprint as a survey (wrong clipboard content accepted by the wrong form). Each import parser should validate that the clipboard HTML matches the expected content type before processing. Reject mismatched content with a clear error message.
 
-### BL-049: Colony Import Timestamp — Surface on Activity Window
-**Dependencies:** BL-031 (Colony Import Timestamp Tracking)
-
-Record the last colony import time on the Colony data model. Surface this on the Colony Activity window. Color the Administration tab based on staleness: yellow if last import was 5+ days ago, red if 6+ days ago. Extends BL-031 with the UI/coloring aspect.
-
 ### BL-050: Default Survey Duplicate on Out-of-Order Import
 **Dependencies:** None
 
@@ -246,10 +236,6 @@ Add a feature to automatically create manufacturing orders based on target stock
 **Dependencies:** None
 
 Create a Preferences form (accessible from the menu) that exposes all the magic numbers currently hardcoded in the app. Examples: colony structure count yellow/red thresholds, commodity request urgency windows (hours until yellow, hours until red), colony import staleness thresholds (days until yellow/red), and any other configurable values. Store in UIPreferences.json alongside existing window state preferences. Replace hardcoded constants in TabWarningService and other consumers with reads from the preferences store.
-
-### BL-068: CountDownTime and Remaining DateTime.Now → UTC Migration
-**Dependencies:** None
-**Status: Folded into colony-import-timestamp spec** — see `.kiro/specs/colony-import-timestamp/`
 
 ---
 

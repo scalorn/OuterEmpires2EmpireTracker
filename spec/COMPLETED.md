@@ -200,3 +200,15 @@ Surveys assigned to mining rigs are now protected against deletion.
 ### BL-054: Survey Form — Normalize Scan DateTime
 Normalize survey scan date/time from the game's non-standard format (`"27JUL24-11:44p"`) into ISO 8601 (`"2024-07-27T23:44:00"`) for internal storage. Display game format in the UI. DateTimePicker for editing. Chronological sorting via ISO strings in ListView Tags. Data migration for existing surveys.
 **Status: Complete** — SurveyDateTimeParser utility (parse/format/round-trip), SurveyParser ISO conversion on import, SurveyViewModel.DisplayDateTime, ListViewItemComparer Tag-based sorting, FormSurvey DateTimePicker + read-only text box, Migration003_SurveyDateTimeNormalization. 9 FsCheck property tests (200 iterations each) + 52 unit tests. Spec: `.kiro/specs/survey-datetime-normalization/`.
+
+### BL-031: Colony Import Timestamp Tracking
+Record the import timestamp on the Colony data model when importing via CreateFromTemp or MergeIdentity. Backfill existing colonies via Migration004. Timestamp stored as ISO 8601 UTC string using SurveyDateTimeParser.
+**Status: Complete** — LastImportDateTime property on Colony, stamped during import, backfilled by migration. 2 FsCheck property tests (JSON round-trip, import produces valid ISO). Spec: `.kiro/specs/colony-import-timestamp/`.
+
+### BL-049: Colony Import Timestamp — Surface on Activity Window
+Surface colony import staleness on the Colony Activity form's inactivity mode and color the Administration tab based on staleness (yellow at 5+ days, red at 6+ days). Extends BL-031.
+**Status: Complete** — ColonyInactivityCollector emits ColonyImportStaleness rows for colonies >1 day old. FormColonyActivity "Import Staleness" checkbox in inactivity mode. TabWarningService.EvaluateColonyImportStalenessWarning wired to Administration tab. 3 FsCheck property tests (staleness rows, warning levels, null/empty handling). Spec: `.kiro/specs/colony-import-timestamp/`.
+
+### BL-068: CountDownTime and Remaining DateTime.Now → UTC Migration
+Migrate all DateTime.Now usage to DateTime.UtcNow across the codebase. Convert existing CountDownTime StartTime/EndTime from local to UTC via Migration004. Retrofit SurveyDateTimeParser to be UTC-aware with Z suffix.
+**Status: Complete** — Folded into colony-import-timestamp spec. DateTime.Now→UtcNow sweep across 11 source files. Migration004 converts CountDownTime values. SurveyDateTimeParser IsoFormat updated to include Z suffix. 3 FsCheck property tests (UTC storage/display, CountDownTime UTC consistency, migration local→UTC conversion). Spec: `.kiro/specs/colony-import-timestamp/`.
