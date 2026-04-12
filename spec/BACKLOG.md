@@ -301,6 +301,16 @@ Bug: When you move a stop up or down in a delivery route, the list jumps to the 
 
 Add a feature to automatically create manufacturing orders based on target stock levels. Example: "always keep 10,000 2cm Coilgun Munitions on hand" or "always keep 2,000 Joybots on hand." The system checks current warehouse quantities across the empire and creates orders to replenish shortfalls.
 
+### BL-060: No-Player Guard — Restrict to Player Profile Form
+**Dependencies:** None
+
+If no player profile has been created yet, the app should limit the user to only the Player Profile form. Other forms (Colonies, Surveys, Blueprints, Delivery Routes, etc.) should be disabled or hidden in the menu until at least one player profile exists. Prevents confusing errors when importing data with no active player.
+
+### BL-061: Preferences Form — Configurable Thresholds
+**Dependencies:** None
+
+Create a Preferences form (accessible from the menu) that exposes all the magic numbers currently hardcoded in the app. Examples: colony structure count yellow/red thresholds, commodity request urgency windows (hours until yellow, hours until red), colony import staleness thresholds (days until yellow/red), and any other configurable values. Store in UIPreferences.json alongside existing window state preferences. Replace hardcoded constants in TabWarningService and other consumers with reads from the preferences store.
+
 
 ---
 
