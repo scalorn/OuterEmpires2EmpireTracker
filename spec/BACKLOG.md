@@ -120,10 +120,6 @@ Import player profile data from game HTML. Parse the in-game profile page to ext
 
 Explore whether AI can read the OE2 wiki at https://atlasgamingcorp.com/outer-empires-2/ and pull useful game information from it. Could be a good source of data to enrich the spec and tool — game mechanics, structure types, resource details, etc.
 
-### BL-024: AI-Generated User Help Documentation
-**Dependencies:** None
-**Status: Complete** — see `.kiro/specs/user-help-docs/`
-
 ### BL-025: Read Game Status Updates
 **Dependencies:** None
 
@@ -185,12 +181,6 @@ Build a migration utility to import colony data from an existing OpenOffice Calc
 
 
 ---
-
-### BL-038: Survey Import Dedup
-**Dependencies:** None
-**Status: Complete** — see `.kiro/specs/` (no separate spec; implemented directly from AMB-038)
-
-The survey clipboard import (`FormSurvey.cmdImport_Click`) currently writes parsed HTML directly into the selected survey with no dedup, no clipboard guard, and no error handling. Colony and Blueprint imports both have dedup logic; Survey is the outlier. Importing a survey for a different planet into the wrong selected survey silently corrupts data. Add survey import dedup following the same pattern as colony-import-dedupe: parse into temp, search by PlanetName+SurveyID, merge or create. Add a clipboard HTML guard and error handling. See AMB-038.
 
 ### BL-039: Colony Administration Tab — Activity/Inactivity Status Area
 **Dependencies:** None
