@@ -231,6 +231,7 @@ namespace OE2EmpireTracker
             };
             cmbFilterType = new ComboBox
             {
+                Name = "cmbFilterType",
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Size = new Size(150, 21)
             };
@@ -248,6 +249,7 @@ namespace OE2EmpireTracker
             };
             cmbFilterClass = new ComboBox
             {
+                Name = "cmbFilterClass",
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Size = new Size(150, 21)
             };
@@ -275,6 +277,7 @@ namespace OE2EmpireTracker
             };
             cmbFilterTechLevel = new ComboBox
             {
+                Name = "cmbFilterTechLevel",
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Size = new Size(125, 21)
             };
@@ -291,6 +294,7 @@ namespace OE2EmpireTracker
             };
             cmbFilterEvolution = new ComboBox
             {
+                Name = "cmbFilterEvolution",
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Size = new Size(60, 21)
             };
@@ -301,6 +305,7 @@ namespace OE2EmpireTracker
 
             chkEvolutionAndAbove = new CheckBox
             {
+                Name = "chkEvolutionAndAbove",
                 Text = "And Above",
                 Size = new Size(80, 21),
                 Checked = false
