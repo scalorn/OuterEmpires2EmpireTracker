@@ -22,22 +22,25 @@ namespace OE2EmpireTracker.Parsers
         /// <summary>
         /// Sniffs an HTML fragment for distinctive game UI markers and returns
         /// the detected content type.
+        /// 
+        /// Content-specific markers (Colony, Survey, Market, Blueprint) are checked
+        /// before page-chrome markers (PlayerProfile) because the game UI may include
+        /// ui_character_detail in the page chrome of non-profile pages.
         /// </summary>
         public static ContentType Detect(string html)
         {
             if (string.IsNullOrEmpty(html))
                 return ContentType.Unknown;
 
-            // Player profile: ui_character_detail or Profile_Skill_Group
-            if (html.IndexOf("ui_character_detail", StringComparison.Ordinal) >= 0 ||
-                html.IndexOf("Profile_Skill_Group", StringComparison.Ordinal) >= 0)
-                return ContentType.PlayerProfile;
-
-            // Colony: ColonyInformation_PlanetOverview
+            // Colony: ColonyInformation_PlanetOverview — content-specific marker
             if (html.IndexOf("ColonyInformation_PlanetOverview", StringComparison.Ordinal) >= 0)
                 return ContentType.Colony;
 
-            // Market listing: Market_ShipComponentProperty (bulk import from market page)
+            // Survey: ScanDetailOutputResourceName — content-specific marker
+            if (html.IndexOf("ScanDetailOutputResourceName", StringComparison.Ordinal) >= 0)
+                return ContentType.Survey;
+
+            // Market listing: Market_ShipComponentProperty — content-specific marker
             if (html.IndexOf("Market_ShipComponentProperty", StringComparison.Ordinal) >= 0)
                 return ContentType.MarketListing;
 
@@ -46,9 +49,11 @@ namespace OE2EmpireTracker.Parsers
                 html.IndexOf("SmallSlideOut_Form_Row_Description", StringComparison.Ordinal) >= 0)
                 return ContentType.Blueprint;
 
-            // Survey: ScanDetailOutputResourceName (without blueprint markers above)
-            if (html.IndexOf("ScanDetailOutputResourceName", StringComparison.Ordinal) >= 0)
-                return ContentType.Survey;
+            // Player profile: ui_character_detail or Profile_Skill_Group
+            // Checked last because ui_character_detail may appear in page chrome on any game page
+            if (html.IndexOf("ui_character_detail", StringComparison.Ordinal) >= 0 ||
+                html.IndexOf("Profile_Skill_Group", StringComparison.Ordinal) >= 0)
+                return ContentType.PlayerProfile;
 
             return ContentType.Unknown;
         }

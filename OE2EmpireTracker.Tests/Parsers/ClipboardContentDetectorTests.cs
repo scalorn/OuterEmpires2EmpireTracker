@@ -94,6 +94,42 @@ namespace OE2EmpireTracker.Tests.Parsers
                 Is.EqualTo(ClipboardContentDetector.ContentType.Survey));
         }
 
+        [Test]
+        public void Detect_SurveyWithProfileChrome_ReturnsSurvey()
+        {
+            // Game pages may include ui_character_detail in page chrome alongside survey content
+            string html = "<div id='ui_character_detail'>Player</div><div class='ScanDetailOutputResourceName'>Halogen</div>";
+            Assert.That(ClipboardContentDetector.Detect(html),
+                Is.EqualTo(ClipboardContentDetector.ContentType.Survey));
+        }
+
+        [Test]
+        public void Detect_ColonyWithProfileChrome_ReturnsColony()
+        {
+            // Game pages may include ui_character_detail in page chrome alongside colony content
+            string html = "<div id='ui_character_detail'>Player</div><div class='ColonyInformation_PlanetOverview'>Colony</div>";
+            Assert.That(ClipboardContentDetector.Detect(html),
+                Is.EqualTo(ClipboardContentDetector.ContentType.Colony));
+        }
+
+        [Test]
+        public void Detect_BlueprintWithProfileChrome_ReturnsBlueprint()
+        {
+            // Game pages may include ui_character_detail in page chrome alongside blueprint content
+            string html = "<div id='ui_character_detail'>Player</div><div class='ShipComponentProperty'>Damage</div>";
+            Assert.That(ClipboardContentDetector.Detect(html),
+                Is.EqualTo(ClipboardContentDetector.ContentType.Blueprint));
+        }
+
+        [Test]
+        public void Detect_MarketWithProfileChrome_ReturnsMarketListing()
+        {
+            // Game pages may include ui_character_detail in page chrome alongside market content
+            string html = "<div id='ui_character_detail'>Player</div><div class='Market_ShipComponentProperty'>Item</div>";
+            Assert.That(ClipboardContentDetector.Detect(html),
+                Is.EqualTo(ClipboardContentDetector.ContentType.MarketListing));
+        }
+
         [TestCase("colony data", ClipboardContentDetector.ContentType.Colony)]
         [TestCase("survey data", ClipboardContentDetector.ContentType.Survey)]
         [TestCase("blueprint data", ClipboardContentDetector.ContentType.Blueprint)]
