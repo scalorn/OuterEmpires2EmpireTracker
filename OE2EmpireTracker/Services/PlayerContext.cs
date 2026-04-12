@@ -206,6 +206,11 @@ namespace OE2EmpireTracker.Services
                 Log.Warn("WriteContext blocked â€” migration failed, saving disabled");
                 return;
             }
+            if (string.IsNullOrEmpty(FilePath))
+            {
+                Log.Debug("WriteContext skipped — no file path set (not yet saved)");
+                return;
+            }
             PlayerRoot playerRoot = new PlayerRoot();
             playerRoot.DataVersion = DataVersion;
             playerRoot.CurrentPlayerUUID = _currentPlayerUUID;

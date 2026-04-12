@@ -173,3 +173,6 @@ Bug: Filter text box on Delivery Routes form didn't persist between close/reopen
 ### BL-060: No-Player Guard — Restrict to Player Profile Form
 When no player profile exists, all Manage menu items except Player Profiles are disabled, along with the player dropdown. Prevents confusing errors when importing data with no active player.
 **Status: Complete** — Added `UpdateNoPlayerGuard()` to MainWindow. Called on startup, after profile changes, after File→New, and after file load. Menu items re-enable automatically when a profile is created.
+
+### BL-058: ~~Delivery Execution — Load Before Departure Totals~~
+**Status: Duplicate** — Same as BL-040.

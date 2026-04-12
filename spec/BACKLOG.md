@@ -277,10 +277,6 @@ Bug: When you remove a colony stop from a delivery route, the list jumps to the 
 
 Bug: When you move a stop up or down in a delivery route, the list jumps to the top. The moved row should remain selected and visible after the move operation.
 
-### BL-058: ~~Delivery Execution — Load Before Departure Totals~~
-**Dependencies:** None
-**Status: Duplicate** — Same as BL-040.
-
 ### BL-059: Manufacturing Build Queue — Auto-Create Orders from Fill Levels
 **Dependencies:** BL-011 (Manufacturing Queue)
 
