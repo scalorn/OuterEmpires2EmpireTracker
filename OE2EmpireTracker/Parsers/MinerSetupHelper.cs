@@ -38,6 +38,16 @@ namespace OE2EmpireTracker.Parsers
             Log.Info("SetupMiners starting for colony {0}: {1} structures, {2} maxRate entries",
                 colony.PlanetName, colony.Structures.Count, maxRates.Count);
 
+            // Diagnostic: snapshot of default surveys for this planet before processing
+            var defaultSurveysBefore = playerContext.SurveyList
+                .Where(s => string.Equals(s.SurveyID, "DEFAULT", StringComparison.OrdinalIgnoreCase) &&
+                            string.Equals(s.PlanetName, colony.PlanetName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            Log.Info("SetupMiners: {0} DEFAULT surveys for planet '{1}' before processing: [{2}]",
+                defaultSurveysBefore.Count, colony.PlanetName,
+                string.Join(", ", defaultSurveysBefore.Select(s => s.UUID)));
+            Log.Info("SetupMiners: total survey count before={0}", playerContext.SurveyList.Count);
+
             foreach (var structure in colony.Structures)
             {
                 // Identify mining rigs by non-empty MiningSurveyResource
@@ -92,6 +102,22 @@ namespace OE2EmpireTracker.Parsers
 
             Log.Info("SetupMiners complete for colony {0}: {1} surveys assigned, {2} timers started, {3} warehouse resources created",
                 colony.PlanetName, surveysAssigned, timersStarted, warehouseResourcesCreated);
+
+            // Diagnostic: snapshot of default surveys for this planet after processing
+            var defaultSurveysAfter = playerContext.SurveyList
+                .Where(s => string.Equals(s.SurveyID, "DEFAULT", StringComparison.OrdinalIgnoreCase) &&
+                            string.Equals(s.PlanetName, colony.PlanetName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            Log.Info("SetupMiners: {0} DEFAULT surveys for planet '{1}' after processing: [{2}]",
+                defaultSurveysAfter.Count, colony.PlanetName,
+                string.Join(", ", defaultSurveysAfter.Select(s => s.UUID)));
+            if (defaultSurveysAfter.Count > 1)
+            {
+                Log.Warn("BL-050 DIAGNOSTIC: Multiple DEFAULT surveys remain for planet '{0}' after SetupMiners! UUIDs: [{1}]",
+                    colony.PlanetName,
+                    string.Join(", ", defaultSurveysAfter.Select(s => $"{s.UUID} (OwnerUUID={s.OwnerUUID})")));
+            }
+            Log.Info("SetupMiners: total survey count after={0}", playerContext.SurveyList.Count);
         }
 
         /// <summary>
@@ -327,6 +353,18 @@ namespace OE2EmpireTracker.Parsers
             string defaultUUID = DeterministicUUID.GenerateDefaultSurvey(
                 colony.OwnerUUID, colony.PlanetName, colony.SystemName);
 
+            Log.Info("CleanupDefaultSurvey: expected UUID={0} for planet='{1}', owner='{2}', system='{3}'",
+                defaultUUID, colony.PlanetName, colony.OwnerUUID, colony.SystemName);
+
+            // Log all DEFAULT surveys in the list for this planet (regardless of owner)
+            var allDefaults = playerContext.SurveyList
+                .Where(s => string.Equals(s.SurveyID, "DEFAULT", StringComparison.OrdinalIgnoreCase) &&
+                            string.Equals(s.PlanetName, colony.PlanetName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            Log.Info("CleanupDefaultSurvey: {0} total DEFAULT surveys for planet '{1}': [{2}]",
+                allDefaults.Count, colony.PlanetName,
+                string.Join(", ", allDefaults.Select(s => $"UUID={s.UUID}, Owner={s.OwnerUUID}")));
+
             // Remove duplicate DEFAULT surveys for the same planet/owner (stale orphans
             // from earlier bugs). Keep only the one with the correct deterministic UUID.
             var duplicates = playerContext.SurveyList
@@ -398,9 +436,14 @@ namespace OE2EmpireTracker.Parsers
 
             string amount = maxRate > 0m ? maxRate.ToString() : "0";
 
+            Log.Info("CreateOrUpdateDefaultSurvey: looking for UUID={0} (planet='{1}', owner='{2}', system='{3}'), resource={4} ({5}), maxRate={6}",
+                uuid, colony.PlanetName, colony.OwnerUUID, colony.SystemName, resourceName, purity, maxRate);
+
             // Search for existing default survey with this UUID
             Survey defaultSurvey = playerContext.SurveyList
                 .FirstOrDefault(s => s.UUID == uuid);
+
+            Log.Info("CreateOrUpdateDefaultSurvey: UUID match={0}", defaultSurvey != null ? "found" : "not found");
 
             // Fallback: find any DEFAULT survey for the same planet (handles stale
             // duplicates from earlier bugs where temp parse created orphan surveys)
