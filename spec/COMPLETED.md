@@ -153,3 +153,7 @@ Deterministic UUIDs for global blueprints, versioned migration framework with Da
 ### BL-024: User Help Documentation
 In-app help system with markdown docs in `docs/` folder (GitHub-browsable) rendered at runtime via Markdig + WebBrowser control. FormHelp dialog with TreeView navigation and HTML content panel. Help → Contents (Ctrl+F1) and F1 context-sensitive help mapping each form to its doc page. 9 documentation pages covering all application features.
 **Status: Complete** — HelpTopicRegistry (form-to-doc mapping), HelpRenderer (Markdig markdown→HTML with embedded CSS), FormHelp (SplitContainer with TreeView + WebBrowser, internal link interception), MainWindow integration (Contents menu item, F1 ProcessCmdKey override). Spec: `.kiro/specs/user-help-docs/`.
+
+### BL-067: MDI Window Numbering — Reuse Lowest Available Number
+Bug: Window numbers incremented monotonically instead of reusing gaps left by closed windows.
+**Status: Complete** — Replaced `_windowNumberCounters` counter with gap-scanning algorithm in `MainWindow.OpenMdiChild<T>()` that finds the lowest unused positive integer from `this.MdiChildren`. 2 FsCheck property tests + 6 edge-case unit tests. Spec: `.kiro/specs/mdi-window-reuse/`.

@@ -1,6 +1,6 @@
 ---
 inclusion: fileMatch
-fileMatchPattern: '**/BACKLOG*'
+fileMatchPattern: '**/BACKLOG*,**/COMPLETED*'
 ---
 
 # Backlog Rules
@@ -10,3 +10,4 @@ fileMatchPattern: '**/BACKLOG*'
 - When adding backlog items, append them to `spec/BACKLOG.md` under the appropriate section.
 - New items must have a unique ID following the `BL-NNN` pattern, incrementing from the highest existing ID.
 - Each item needs a `### BL-NNN: Title` heading, a `**Dependencies:**` line, and a description paragraph.
+- When a backlog item is completed, remove it from `spec/BACKLOG.md` and add it to `spec/COMPLETED.md` with a `**Status: Complete**` summary describing what was done and referencing the spec if one exists.

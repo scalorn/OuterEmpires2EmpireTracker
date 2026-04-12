@@ -311,12 +311,6 @@ Bug: None of the filter controls on the Delivery Execution form persist their st
 
 Bug: The filter text box on the Delivery Routes form doesn't persist its state between form close and reopen. Should be saved to UIPreferences.json and restored when the form opens.
 
-### BL-067: MDI Window Numbering — Reuse Lowest Available Number
-**Dependencies:** None
-
-Bug: When opening a new MDI child form, the window number always increments to the next highest value instead of reusing gaps. Example: open 3 copies (#1, #2, #3), close #2, open another — it gets #4 instead of #2. The window numbering logic should find the lowest available number not currently in use by an open form of the same type. This likely applies to all MDI child forms, not just the Blueprint form.
-
-
 ---
 
 ## ~~MarketSample Coverage Gaps~~ — RESOLVED
