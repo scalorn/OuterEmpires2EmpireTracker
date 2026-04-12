@@ -21,16 +21,16 @@ graph TD
     A[Colony.cs<br/>LastImportDateTime property] --> B[ColonyImportHelper.cs<br/>Stamp on CreateFromTemp / MergeIdentity]
     A --> C[Migration004<br/>Backfill existing colonies]
     A --> D[ColonyInactivityCollector.cs<br/>Import staleness rows]
-    A --> E[TabWarningService.cs<br/>EvaluateImportStalenessWarning]
-    D --> F[FormColonyActivity.cs<br/>ImportStaleness checkbox filter]
+    A --> E[TabWarningService.cs<br/>EvaluateColonyImportStalenessWarning]
+    D --> F[FormColonyActivity.cs<br/>ColonyImportStaleness checkbox filter]
     E --> G[FormColony.cs<br/>Administration tab warning]
 ```
 
 Data flows:
 1. **Write path**: `ColonyImportHelper.CreateFromTemp` and `MergeIdentity` stamp `LastImportDateTime` using `SurveyDateTimeParser.ToIsoString(DateTime.UtcNow)`. The value persists to `PlayerData.json` via Newtonsoft.Json serialization.
 2. **Migration path**: `Migration004` iterates all colonies across all player profiles, backfilling null/empty `LastImportDateTime` with `DateTime.UtcNow` in ISO format.
-3. **Read path (inactivity)**: `ColonyInactivityCollector.CollectInactivities` parses `LastImportDateTime` via `SurveyDateTimeParser.TryParseIso`, computes elapsed time against `DateTime.UtcNow`, and emits `ActivityRow` instances with `ActivityType.ImportStaleness` for colonies older than 1 day.
-4. **Read path (tab warning)**: `TabWarningService.EvaluateImportStalenessWarning` parses the timestamp and returns `TabWarningLevel` based on hardcoded thresholds (5 days yellow, 6 days red). Comparison uses `DateTime.UtcNow`.
+3. **Read path (inactivity)**: `ColonyInactivityCollector.CollectInactivities` parses `LastImportDateTime` via `SurveyDateTimeParser.TryParseIso`, computes elapsed time against `DateTime.UtcNow`, and emits `ActivityRow` instances with `ActivityType.ColonyImportStaleness` for colonies older than 1 day.
+4. **Read path (tab warning)**: `TabWarningService.EvaluateColonyImportStalenessWarning` parses the timestamp and returns `TabWarningLevel` based on hardcoded thresholds (5 days yellow, 6 days red). Comparison uses `DateTime.UtcNow`.
 
 ## Components and Interfaces
 
@@ -76,16 +76,16 @@ public enum ActivityType
     Research,
     Mining,
     Refining,
-    ImportStaleness  // NEW
+    ColonyImportStaleness  // NEW
 }
 ```
 
 ### 4. ColonyInactivityCollector (`ColonyInactivityCollector.cs`)
 
-Add a new method `CollectImportStaleness` called from `CollectInactivities`:
+Add a new method `CollectColonyImportStaleness` called from `CollectInactivities`:
 
 ```csharp
-private static void CollectImportStaleness(Colony colony, List<ActivityRow> rows)
+private static void CollectColonyImportStaleness(Colony colony, List<ActivityRow> rows)
 ```
 
 Logic:
@@ -93,7 +93,7 @@ Logic:
 - If parse fails (null/empty/invalid), treat as maximally stale — emit a row with "Unknown" details.
 - Compute elapsed seconds: `(DateTime.UtcNow - parsed).TotalSeconds`.
 - If elapsed > 86400 (1 day), emit an `ActivityRow`:
-  - `Type = ActivityType.ImportStaleness`
+  - `Type = ActivityType.ColonyImportStaleness`
   - `SystemName = colony.SystemName`
   - `ColonyName = colony.ColonyName`
   - `SourceName = "Colony Import"`
@@ -108,10 +108,10 @@ The elapsed time formatting uses the existing `ActivityRow.FormatSeconds` method
 Add constants and a new method:
 
 ```csharp
-public const int ImportStalenessYellowDays = 5;
-public const int ImportStalenessRedDays = 6;
+public const int ColonyImportStalenessYellowDays = 5;
+public const int ColonyImportStalenessRedDays = 6;
 
-public static TabWarningLevel EvaluateImportStalenessWarning(string lastImportDateTime, DateTime now)
+public static TabWarningLevel EvaluateColonyImportStalenessWarning(string lastImportDateTime, DateTime now)
 ```
 
 Logic:
@@ -128,7 +128,7 @@ Modify `UpdateTabWarnings` to add one call:
 
 ```csharp
 ApplyTabWarning(tabPAdministration,
-    TabWarningService.EvaluateImportStalenessWarning(
+    TabWarningService.EvaluateColonyImportStalenessWarning(
         selectedColony?.LastImportDateTime, DateTime.UtcNow));
 ```
 
@@ -136,12 +136,12 @@ This uses the existing `ApplyTabWarning` method and `tabPAdministration` tab pag
 
 ### 7. FormColonyActivity (`FormColonyActivity.cs` + Designer)
 
-**Designer**: Add a new checkbox `chkImportStaleness` in the `flpFilters` panel, positioned after `chkRefining` and before `chkShowInactive`. Default checked.
+**Designer**: Add a new checkbox `chkColonyImportStaleness` in the `flpFilters` panel, positioned after `chkRefining` and before `chkShowInactive`. Default checked.
 
 **Code-behind**:
-- Wire `chkImportStaleness.CheckedChanged` to `chkFilter_CheckedChanged`.
-- Show/hide `chkImportStaleness` based on inactivity mode: visible only when `chkShowInactive.Checked` is true.
-- Add `ActivityType.ImportStaleness` to `GetSelectedActivityTypes()` when `chkShowInactive.Checked && chkImportStaleness.Checked`.
+- Wire `chkColonyImportStaleness.CheckedChanged` to `chkFilter_CheckedChanged`.
+- Show/hide `chkColonyImportStaleness` based on inactivity mode: visible only when `chkShowInactive.Checked` is true.
+- Add `ActivityType.ColonyImportStaleness` to `GetSelectedActivityTypes()` when `chkShowInactive.Checked && chkColonyImportStaleness.Checked`.
 
 ### 8. Migration004 (`Migration004_ColonyImportTimestampBackfill.cs`)
 
@@ -245,14 +245,14 @@ Null/empty is valid — means "never imported". The migration backfills all exis
 
 | Value | Description |
 |---|---|
-| ImportStaleness | New. Represents a colony whose last import is older than 1 day. Used only in inactivity mode. |
+| ColonyImportStaleness | New. Represents a colony whose last import is older than 1 day. Used only in inactivity mode. |
 
 ### TabWarningService Constants (new)
 
 | Constant | Value | Description |
 |---|---|---|
-| ImportStalenessYellowDays | 5 | Days since last import for yellow warning |
-| ImportStalenessRedDays | 6 | Days since last import for red warning |
+| ColonyImportStalenessYellowDays | 5 | Days since last import for yellow warning |
+| ColonyImportStalenessRedDays | 6 | Days since last import for red warning |
 
 These are hardcoded for now. BL-061 (Preferences Form) will make them configurable in the future.
 
@@ -279,15 +279,15 @@ These are hardcoded for now. BL-061 (Preferences Form) will make them configurab
 
 **Validates: Requirements 3.1, 3.2**
 
-### Property 4: Inactivity collector produces correct ImportStaleness rows
+### Property 4: Inactivity collector produces correct ColonyImportStaleness rows
 
-*For any* set of colonies with various `LastImportDateTime` values (some > 1 day old, some < 1 day old, some null), `ColonyInactivityCollector.CollectInactivities` should produce exactly one `ActivityRow` with `Type == ActivityType.ImportStaleness` for each colony whose `LastImportDateTime` is older than 1 day or is null/empty. Each such row should have `ColonyName` and `SystemName` matching the source colony, `SourceName == "Colony Import"`, and `ProcessDetails` ending with " since last import".
+*For any* set of colonies with various `LastImportDateTime` values (some > 1 day old, some < 1 day old, some null), `ColonyInactivityCollector.CollectInactivities` should produce exactly one `ActivityRow` with `Type == ActivityType.ColonyImportStaleness` for each colony whose `LastImportDateTime` is older than 1 day or is null/empty. Each such row should have `ColonyName` and `SystemName` matching the source colony, `SourceName == "Colony Import"`, and `ProcessDetails` ending with " since last import".
 
 **Validates: Requirements 4.2, 4.3, 4.5**
 
 ### Property 5: TabWarningService returns correct warning level for import staleness
 
-*For any* valid ISO 8601 timestamp string and reference `DateTime now`, `TabWarningService.EvaluateImportStalenessWarning` should return `Red` when elapsed >= 6 days, `Yellow` when elapsed >= 5 days and < 6 days, and `None` when elapsed < 5 days. For null or empty input, it should return `Red`.
+*For any* valid ISO 8601 timestamp string and reference `DateTime now`, `TabWarningService.EvaluateColonyImportStalenessWarning` should return `Red` when elapsed >= 6 days, `Yellow` when elapsed >= 5 days and < 6 days, and `None` when elapsed < 5 days. For null or empty input, it should return `Red`.
 
 **Validates: Requirements 5.2, 5.3, 5.4, 5.5**
 
@@ -325,9 +325,9 @@ These are hardcoded for now. BL-061 (Preferences Form) will make them configurab
 Unit tests cover specific examples and edge cases:
 
 - Colony with null `LastImportDateTime` serializes/deserializes without error (edge case from 1.3)
-- `EvaluateImportStalenessWarning` with null input returns Red (edge case from 5.5)
-- `EvaluateImportStalenessWarning` with empty string returns Red (edge case from 5.5)
-- `ActivityType.ImportStaleness` enum value exists (example from 4.1)
+- `EvaluateColonyImportStalenessWarning` with null input returns Red (edge case from 5.5)
+- `EvaluateColonyImportStalenessWarning` with empty string returns Red (edge case from 5.5)
+- `ActivityType.ColonyImportStaleness` enum value exists (example from 4.1)
 - Elapsed time < 1 day formats correctly with "Xh Ym since last import" (edge case from 6.2)
 - Migration on a colony that already has a valid timestamp leaves it unchanged (specific example)
 
@@ -341,7 +341,7 @@ Each property test must be tagged with a comment referencing the design property
 - **Feature: colony-import-timestamp, Property 1: Colony LastImportDateTime JSON round-trip**
 - **Feature: colony-import-timestamp, Property 2: Import operations produce valid ISO timestamps**
 - **Feature: colony-import-timestamp, Property 3: Migration backfills empty and preserves existing**
-- **Feature: colony-import-timestamp, Property 4: Inactivity collector produces correct ImportStaleness rows**
+- **Feature: colony-import-timestamp, Property 4: Inactivity collector produces correct ColonyImportStaleness rows**
 - **Feature: colony-import-timestamp, Property 5: TabWarningService returns correct warning level for import staleness**
 
 Each correctness property is implemented by a single property-based test. Property tests generate random inputs (colony names, planet names, ISO datetime strings, elapsed time values) and verify the universal property holds across all generated cases.

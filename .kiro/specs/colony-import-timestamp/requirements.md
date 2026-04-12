@@ -22,7 +22,7 @@ This spec also retrofits the existing `SurveyDateTimeParser` to be UTC-aware. Th
 - **ColonyActivityCollector**: The service that scans colonies and returns `ActivityRow` instances for active timers and commodity requests.
 - **ColonyInactivityCollector**: The service that scans colonies and returns `ActivityRow` instances for idle or underutilized structures. Import staleness rows belong here because staleness is an inactivity concept.
 - **ActivityType**: The enum categorizing activity rows (Building, Manufacturing, Mining, Refining, etc.).
-- **Import_Staleness_ActivityType**: A new `ActivityType` enum value representing import staleness rows on the Colony_Activity_Form.
+- **ColonyImportStaleness_ActivityType**: A new `ActivityType` enum value (`ColonyImportStaleness`) representing colony import staleness rows on the Colony_Activity_Form.
 
 ## Requirements
 
@@ -62,10 +62,10 @@ This spec also retrofits the existing `SurveyDateTimeParser` to be UTC-aware. Th
 
 #### Acceptance Criteria
 
-1. THE ActivityType enum SHALL include an `ImportStaleness` value for import staleness rows.
+1. THE ActivityType enum SHALL include a `ColonyImportStaleness` value for import staleness rows.
 2. WHEN collecting inactivity data, THE ColonyInactivityCollector SHALL generate an ActivityRow for each colony where `LastImportDateTime` is older than 1 day.
 3. THE ActivityRow for import staleness SHALL display the elapsed time since last import in "Xd Yh since last import" format (e.g., "5d 3h since last import") in the ProcessDetails field.
-4. THE Colony_Activity_Form SHALL include an `ImportStaleness` filter checkbox in the inactivity mode, consistent with existing inactivity type filter checkboxes.
+4. THE Colony_Activity_Form SHALL include a `ColonyImportStaleness` filter checkbox in the inactivity mode, consistent with existing inactivity type filter checkboxes.
 5. THE ActivityRow for import staleness SHALL set the ColonyName and SystemName fields from the colony, and set SourceName to "Colony Import" for display consistency.
 
 ### Requirement 5: Color Administration Tab Based on Import Staleness
@@ -74,12 +74,12 @@ This spec also retrofits the existing `SurveyDateTimeParser` to be UTC-aware. Th
 
 #### Acceptance Criteria
 
-1. THE TabWarningService SHALL include an `EvaluateImportStalenessWarning` method that accepts a `LastImportDateTime` string and the current DateTime, and returns a `TabWarningLevel`.
+1. THE TabWarningService SHALL include an `EvaluateColonyImportStalenessWarning` method that accepts a `LastImportDateTime` string and the current DateTime, and returns a `TabWarningLevel`.
 2. WHILE the elapsed time since `LastImportDateTime` is at or above the Staleness_Red_Threshold (6 days), THE TabWarningService SHALL return `TabWarningLevel.Red`.
 3. WHILE the elapsed time since `LastImportDateTime` is at or above the Staleness_Yellow_Threshold (5 days) and below the Staleness_Red_Threshold, THE TabWarningService SHALL return `TabWarningLevel.Yellow`.
 4. WHILE the elapsed time since `LastImportDateTime` is below the Staleness_Yellow_Threshold, THE TabWarningService SHALL return `TabWarningLevel.None`.
 5. WHILE `LastImportDateTime` is null or empty, THE TabWarningService SHALL return `TabWarningLevel.Red`.
-6. THE Colony_Form SHALL call `EvaluateImportStalenessWarning` in `UpdateTabWarnings` and apply the result to the Administration_Tab using the existing `ApplyTabWarning` method.
+6. THE Colony_Form SHALL call `EvaluateColonyImportStalenessWarning` in `UpdateTabWarnings` and apply the result to the Administration_Tab using the existing `ApplyTabWarning` method.
 7. THE staleness thresholds SHALL be hardcoded constants for now, with the expectation that BL-061 (Preferences Form) will make them configurable in the future.
 
 ### Requirement 6: Display Elapsed Time Format
