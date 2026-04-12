@@ -242,10 +242,6 @@ Record the last colony import time on the Colony data model. Surface this on the
 
 Bug: When colonies and surveys are imported in the wrong order, duplicate default surveys can still be created (2 surveys for the same planet). Reimporting the colony removes one but not both. The cleanup logic in CleanupDefaultSurvey should handle all duplicates in a single pass, and CreateOrUpdateDefaultSurvey should be more aggressive about finding and consolidating existing defaults.
 
-### BL-054: Survey Form — Normalize Scan DateTime
-**Dependencies:** None
-**Status: Complete** — see `.kiro/specs/survey-datetime-normalization/`
-
 ### BL-055: Mining/Refining/Manufacturing/Research Queue System
 **Dependencies:** BL-047 (Game API Integration Planning)
 

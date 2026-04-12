@@ -196,3 +196,7 @@ Show survey count in the Survey form's title bar matching the Colony form patter
 ### BL-052: Survey Deletion Protection — In-Use by Miner
 Surveys assigned to mining rigs are now protected against deletion.
 **Status: Complete** — SurveyReferenceCounter scans all ColonyStructure.MiningSurvey fields for survey UUID references. Refs column in survey list view, delete button shows "In Use (N)" when referenced, delete handler blocks with miner count message. Same pattern as BlueprintReferenceCounter and ColonyReferenceCounter.
+
+### BL-054: Survey Form — Normalize Scan DateTime
+Normalize survey scan date/time from the game's non-standard format (`"27JUL24-11:44p"`) into ISO 8601 (`"2024-07-27T23:44:00"`) for internal storage. Display game format in the UI. DateTimePicker for editing. Chronological sorting via ISO strings in ListView Tags. Data migration for existing surveys.
+**Status: Complete** — SurveyDateTimeParser utility (parse/format/round-trip), SurveyParser ISO conversion on import, SurveyViewModel.DisplayDateTime, ListViewItemComparer Tag-based sorting, FormSurvey DateTimePicker + read-only text box, Migration003_SurveyDateTimeNormalization. 9 FsCheck property tests (200 iterations each) + 52 unit tests. Spec: `.kiro/specs/survey-datetime-normalization/`.
