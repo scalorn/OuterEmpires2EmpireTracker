@@ -252,11 +252,6 @@ Show the count of surveys in the Survey form's title bar, matching the pattern u
 
 Surveys that are currently assigned to a mining rig (referenced by any ColonyStructure.MiningSurvey) should be protected against deletion. Show a warning listing which colonies/miners reference the survey and block the delete.
 
-### BL-053: Colony Deletion Protection — In-Use by Route/Plan
-**Dependencies:** None
-
-Colonies that are referenced by a delivery route or delivery plan should be protected against deletion. Show a warning listing which routes/plans reference the colony and block the delete.
-
 ### BL-054: Survey Form — Normalize Scan DateTime
 **Dependencies:** None
 

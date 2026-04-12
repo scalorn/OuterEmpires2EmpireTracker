@@ -176,6 +176,16 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID)) return;
 
+            // Block deletion if colony is referenced by routes or plans
+            var counter = new ColonyReferenceCounter(playerContext.DeliveryRouteList, playerContext.DeliveryPlanList);
+            var report = counter.CountReferences(selectedColony.UUID);
+            if (report.TotalCount > 0)
+            {
+                var msg = $"Cannot delete '{selectedColony.PlanetName}' — it is referenced by {report.RouteCount} route(s) and {report.PlanCount} plan(s).";
+                MessageBox.Show(msg, "Colony In Use", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             var result = MessageBox.Show(
                 $"Delete colony '{selectedColony.PlanetName}'?",
                 "Confirm Delete",
@@ -188,6 +198,29 @@ namespace OE2EmpireTracker.Forms.Colony
             ClearForm();
             txtColonyListFilter_TextChanged(sender, e);
             UpdateTitle();
+        }
+
+        private void UpdateDeleteButtonState()
+        {
+            if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID))
+            {
+                cmdDelete.Enabled = false;
+                cmdDelete.Text = "Delete";
+                return;
+            }
+
+            var counter = new ColonyReferenceCounter(playerContext.DeliveryRouteList, playerContext.DeliveryPlanList);
+            var report = counter.CountReferences(selectedColony.UUID);
+            if (report.TotalCount > 0)
+            {
+                cmdDelete.Enabled = false;
+                cmdDelete.Text = $"In Use ({report.TotalCount})";
+            }
+            else
+            {
+                cmdDelete.Enabled = true;
+                cmdDelete.Text = "Delete";
+            }
         }
 
         private void ClearForm()
@@ -464,6 +497,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 selectedColony = lvwColonies.SelectedItems[0].SubItems[0].Tag as Models.Colony;
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
                 PopulateForm();
+                UpdateDeleteButtonState();
             }
         }
         void PopulateListView(List<Models.Colony> colonies)

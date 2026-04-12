@@ -184,3 +184,7 @@ Bug: Removing a colony stop from a delivery route caused the grid to jump to the
 ### BL-057: Delivery Routes — Focus After Move Up/Down
 Bug: Moving a stop up or down in a delivery route caused the grid to jump to the top.
 **Status: Complete** — After move, the grid scrolls to the moved row via `FirstDisplayedScrollingRowIndex`. Selection was already being re-applied but the viewport wasn't following it.
+
+### BL-053: Colony Deletion Protection — In-Use by Route/Plan
+Colonies referenced by delivery routes or plans are now protected against deletion.
+**Status: Complete** — ColonyReferenceCounter scans DeliveryRouteList and DeliveryPlanList for colony UUID references. Delete button shows "In Use (N)" and is disabled when references exist. Delete handler also blocks with a message listing route/plan counts. Same pattern as BlueprintReferenceCounter.
