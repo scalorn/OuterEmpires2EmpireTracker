@@ -29,3 +29,4 @@ Each file covers one domain. Requirements are written as verifiable statements.
 - **SHOULD** — recommended but not mandatory
 - **Verifiable** — every requirement has an observable outcome that can be tested
 - **ID format** — `REQ-{DOMAIN}-{NNN}` e.g. `REQ-COL-001`
+- **UTC storage** — All DateTime values SHALL be stored in UTC. The game operates in UTC timezone. Application-generated timestamps use `DateTime.UtcNow`. Display in the UI converts to the user's local timezone. See BL-068 for the CountDownTime migration to complete this convention across the full codebase.

@@ -247,6 +247,11 @@ Add a feature to automatically create manufacturing orders based on target stock
 
 Create a Preferences form (accessible from the menu) that exposes all the magic numbers currently hardcoded in the app. Examples: colony structure count yellow/red thresholds, commodity request urgency windows (hours until yellow, hours until red), colony import staleness thresholds (days until yellow/red), and any other configurable values. Store in UIPreferences.json alongside existing window state preferences. Replace hardcoded constants in TabWarningService and other consumers with reads from the preferences store.
 
+### BL-068: CountDownTime and Remaining DateTime.Now → UTC Migration
+**Dependencies:** None
+
+The project convention is that all DateTimes are stored in UTC (see spec/requirements/README.md). `CountDownTime` stores `StartTime` and `EndTime` as `DateTime` and uses `DateTime.Now` throughout for elapsed time calculations. These need to be migrated to `DateTime.UtcNow`. Also affects `ColonyStructure.cs` (timer start code), `BackgroundProcessor.cs`, `MinerSetupHelper.cs`, `RefinerySetupHelper.cs`, `PlayerSkillBlock.cs`, `FormColony.cs`, `FormDeliveryRoute.cs`, `ColonyActivityCollector.cs`, and `ColonyViewModel.cs`. Requires a data migration to offset existing saved `StartTime`/`EndTime` values by the user's UTC offset so in-flight timers remain accurate after the switch.
+
 ---
 
 ## ~~MarketSample Coverage Gaps~~ — RESOLVED
