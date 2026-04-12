@@ -121,6 +121,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         {
             public string UUID { get; set; }
             public string Display { get; set; }
+            public override string ToString() => Display ?? "";
         }
 
         private void PopulateRouteDropdown()
