@@ -637,12 +637,14 @@ namespace OE2EmpireTracker.Forms.Survey
             this.Resource.FillWeight = 250F;
             this.Resource.HeaderText = "Resource";
             this.Resource.Name = "Resource";
+            this.Resource.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.Resource.Width = 250;
             // 
             // Purity
             // 
             this.Purity.HeaderText = "Purity";
             this.Purity.Name = "Purity";
+            this.Purity.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // Amount
             // 
@@ -650,6 +652,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.Amount.HeaderText = "Amount";
             this.Amount.InvalidColor = System.Drawing.Color.LightCoral;
             this.Amount.Name = "Amount";
+            this.Amount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.Amount.ValidationPattern = "^[+-]?\\d+(\\.\\d+)?$";
             this.Amount.ValidColor = System.Drawing.Color.White;
             // 
