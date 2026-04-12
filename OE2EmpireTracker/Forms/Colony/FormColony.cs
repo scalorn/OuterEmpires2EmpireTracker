@@ -62,6 +62,7 @@ namespace OE2EmpireTracker.Forms.Colony
             lvwColonies.View = View.Details;
             lvwColonies.Columns.Add("Planet", 50);
             lvwColonies.Columns.Add("Name", 100);
+            lvwColonies.Columns.Add("Refs", 35);
             lvwColonies.ColumnClick += lvwColonies_ColumnClick;
             lvwColonies.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
             PopulateListView(playerContext.GetCurrentPlayerColonies());
@@ -507,6 +508,8 @@ namespace OE2EmpireTracker.Forms.Colony
                 return;
             }
 
+            var counter = new ColonyReferenceCounter(playerContext.DeliveryRouteList, playerContext.DeliveryPlanList);
+
             Dictionary<string, ListViewItem> viewableColonies = new Dictionary<string, ListViewItem>();
 
             // First index what is viewable.
@@ -520,10 +523,12 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 ListViewItem item;
                 bool found = viewableColonies.TryGetValue(colony.UUID, out item);
+                string refCount = counter.CountReferences(colony.UUID).TotalCount.ToString();
                 if (!found)
                 {
                     item = new ListViewItem(colony.PlanetName);
                     item.SubItems.Add(colony.ColonyName);
+                    item.SubItems.Add(refCount);
                 }
                 else
                 {
@@ -532,13 +537,17 @@ namespace OE2EmpireTracker.Forms.Colony
                         item.SubItems[1].Text = colony.ColonyName;
                     else
                         item.SubItems.Add(colony.ColonyName);
+                    if (item.SubItems.Count > 2)
+                        item.SubItems[2].Text = refCount;
+                    else
+                        item.SubItems.Add(refCount);
                 }
                 item.Tag = colony;
                 item.SubItems[0].Tag = colony;
 
                 if (!found)
                 {
-                    lvwColonies.Items.Add(item); // Add the item to the ListView
+                    lvwColonies.Items.Add(item);
                 }
                 else
                 {

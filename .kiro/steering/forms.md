@@ -124,3 +124,16 @@ All forms and controls must participate in the window state persistence system (
 ### Pattern
 - Use the Preferences_Store API to save/restore state
 - Key by form type name + window number + control name
+
+
+## Deletion Protection
+
+When implementing delete protection for any entity (blueprints, colonies, surveys, etc.):
+
+1. Create a `*ReferenceCounter` service in `Services/` that counts references from other data sources
+2. Return a `*ReferenceReport` with per-source counts and a `TotalCount`
+3. Add a "Refs" column to the entity's list view showing the reference count for each item
+4. Disable the Delete button with "In Use (N)" text when `TotalCount > 0`
+5. Block the delete handler with a MessageBox listing which sources reference the entity
+
+Existing examples: `BlueprintReferenceCounter` (blueprints), `ColonyReferenceCounter` (colonies).
