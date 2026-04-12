@@ -244,8 +244,7 @@ Bug: When colonies and surveys are imported in the wrong order, duplicate defaul
 
 ### BL-054: Survey Form — Normalize Scan DateTime
 **Dependencies:** None
-
-The survey's scan date/time comes from the game HTML in a non-standard format. Normalize it into a standard DateTime internally on import. Investigate whether ValidatedTextBox can support a DateTime validation pattern so the field can be edited with format enforcement.
+**Status: Complete** — see `.kiro/specs/survey-datetime-normalization/`
 
 ### BL-055: Mining/Refining/Manufacturing/Research Queue System
 **Dependencies:** BL-047 (Game API Integration Planning)
