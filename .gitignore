@@ -404,3 +404,7 @@ COMMIT_MSG.tmp
 *.json.bak
 
 nuget.exe
+
+
+# Test results
+TestResults/
