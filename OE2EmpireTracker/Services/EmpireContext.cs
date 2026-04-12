@@ -27,7 +27,7 @@ namespace OE2EmpireTracker.Services
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static EmpireContext Instance;
-        public static string FilePath { get; set; } = @"..\..\BaselineData.json";
+        public static string FilePath { get; set; } = "BaselineData.json";
 
         public static PlayerContext PlayerContext;
         public BindingList<BlueprintType> BlueprintTypeList;

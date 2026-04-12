@@ -18,7 +18,7 @@ namespace OE2EmpireTracker.Services
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static PlayerContext Instance;
-        public static string FilePath { get; set; } = @"..\..\PlayerData.json";
+        public static string FilePath { get; set; } = "PlayerData.json";
 
         private string _currentPlayerUUID = string.Empty;
 

@@ -1,5 +1,5 @@
 {
-  "DataVersion": 2,
+  "DataVersion": 3,
   "CurrentPlayerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
   "PlayerProfile": [
     {
@@ -23,155 +23,155 @@
         "Human Resources": {
           "TrainingStarted": true,
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.892589-07:00",
-            "EndTime": "2026-04-12T01:33:40.892589-07:00",
-            "TimeRemainingString": "20h 35m 31s"
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-13T02:55:38.5809116-07:00",
+            "TimeRemainingString": "20h 35m 30s"
           }
         },
         "Foreman": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Founder": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Energy Efficiency": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Builder": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Refining Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Production Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Extraction Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Damage Control": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Engineering Capacity": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Sounds As A Pound": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Self Made Millionaire": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "AAA Healthcare": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Job Opportunities": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Contract Management": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Research Review": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Research Methods": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Research Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Surveying Methods": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Scanning Methods": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Quartermaster": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Broker": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         }
@@ -196,155 +196,155 @@
       "Skills": {
         "Human Resources": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Foreman": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Founder": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Energy Efficiency": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Builder": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Refining Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Production Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Extraction Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Damage Control": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Engineering Capacity": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Sounds As A Pound": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Self Made Millionaire": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "AAA Healthcare": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Job Opportunities": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Contract Management": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Research Review": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Research Methods": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Research Focus": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Surveying Methods": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Scanning Methods": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Quartermaster": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         },
         "Broker": {
           "CompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.8935885-07:00",
-            "EndTime": "2026-04-11T04:58:08.8935885-07:00",
+            "StartTime": "2026-04-12T06:20:07.5809116-07:00",
+            "EndTime": "2026-04-12T06:20:07.5809116-07:00",
             "TimeRemainingString": "0s"
           }
         }
@@ -673,11 +673,11 @@
             "UnassignedSpecialistDetail": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-04-11T02:58:09.9305966-07:00",
-            "EndTime": "2026-04-11T15:58:09.9305966-07:00",
+            "StartTime": "2026-04-12T04:20:07.6099162-07:00",
+            "EndTime": "2026-04-12T17:20:07.6099162-07:00",
             "RepeatIntervalSeconds": 46800,
             "IsRepeating": true,
-            "TimeRemainingString": "11h 0m 0s"
+            "TimeRemainingString": "10h 59m 59s"
           },
           "ManufacturingBlueprintUUID": "38991c2f-7c2c-5c6f-b121-63ee03fa3fec",
           "ManufacturingQuantity": 3,
@@ -1110,11 +1110,11 @@
             "BlueCollar1": "False"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-04-11T04:47:35.9446002-07:00",
-            "EndTime": "2026-04-11T05:47:35.9446002-07:00",
+            "StartTime": "2026-04-12T06:09:33.6210235-07:00",
+            "EndTime": "2026-04-12T07:09:33.6210235-07:00",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true,
-            "TimeRemainingString": "49m 26s"
+            "TimeRemainingString": "49m 25s"
           },
           "MiningSurvey": "a7467233-de2e-4fb5-a29c-92b35490e76d",
           "MiningSurveyResource": "Heavy Post-Trans Metals",
@@ -1140,9 +1140,9 @@
           },
           "AssignedWorkers": {},
           "BuildCompletionTime": {
-            "StartTime": "2026-04-11T04:58:08.9446002-07:00",
-            "EndTime": "2026-04-12T04:29:20.9446002-07:00",
-            "TimeRemainingString": "23h 31m 11s"
+            "StartTime": "2026-04-12T06:20:07.6210235-07:00",
+            "EndTime": "2026-04-13T05:51:18.6210235-07:00",
+            "TimeRemainingString": "23h 31m 10s"
           },
           "CurrentAttitude": ""
         }

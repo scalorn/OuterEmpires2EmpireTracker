@@ -13,8 +13,8 @@ namespace OE2EmpireTracker.Tests.Services
             // Reset to defaults before each test so we're not affected by other fixtures
             PlayerContext.Reset();
             EmpireContext.Reset();
-            PlayerContext.FilePath = @"..\..\PlayerData.json";
-            EmpireContext.FilePath = @"..\..\BaselineData.json";
+            PlayerContext.FilePath = "PlayerData.json";
+            EmpireContext.FilePath = "BaselineData.json";
         }
 
         [TearDown]
@@ -22,20 +22,20 @@ namespace OE2EmpireTracker.Tests.Services
         {
             PlayerContext.Reset();
             EmpireContext.Reset();
-            PlayerContext.FilePath = @"..\..\PlayerData.json";
-            EmpireContext.FilePath = @"..\..\BaselineData.json";
+            PlayerContext.FilePath = "PlayerData.json";
+            EmpireContext.FilePath = "BaselineData.json";
         }
 
         [Test]
         public void PlayerContext_DefaultFilePath_IsPlayerDataJson()
         {
-            Assert.AreEqual(@"..\..\PlayerData.json", PlayerContext.FilePath);
+            Assert.AreEqual("PlayerData.json", PlayerContext.FilePath);
         }
 
         [Test]
         public void EmpireContext_DefaultFilePath_IsBaselineDataJson()
         {
-            Assert.AreEqual(@"..\..\BaselineData.json", EmpireContext.FilePath);
+            Assert.AreEqual("BaselineData.json", EmpireContext.FilePath);
         }
 
         [Test]
