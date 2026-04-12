@@ -150,8 +150,11 @@ Add a form/feature to calculate how many items to queue that would keep a manufa
 
 ### BL-033: RtfBuilder Font Style Support
 **Dependencies:** None
+**Status: Deprioritized** — Current consumers (ColonyStatusCalculator, ColonyStructure control, ColonyAdminReportBuilder) use color effectively to distinguish headers, values, and status. No current feature is limited by the lack of font styles.
 
 Add support for font styles to RtfBuilder — bold, italics, strikethrough, etc.
+
+**Implementation notes:** Add an overload `Append(string text, Color color, FontStyle style = FontStyle.Regular)` using `System.Drawing.FontStyle` flags. Wrap text in RTF control words (`\b...\b0`, `\i...\i0`, `\strike...\strike0`). Backward compatible via default parameter. ~30 minutes of work when a specific need arises.
 
 ### BL-034: Codebase Duplication Scan & Cleanup
 **Dependencies:** None
