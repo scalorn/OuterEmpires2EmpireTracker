@@ -26,6 +26,86 @@ namespace OE2EmpireTracker.Models
         public long BackgroundProcessingIntervalSeconds { get; set; } = 60;
         public long AdminRefreshIntervalSeconds { get; set; } = 60;
         public long CountdownRefreshRateSeconds { get; set; } = 1;
+
+        /// <summary>
+        /// Validates a ThresholdPreferences instance. Returns true with error=null if valid,
+        /// false with a descriptive error message if invalid.
+        /// </summary>
+        public static bool Validate(ThresholdPreferences prefs, out string error)
+        {
+            if (prefs.StructureCountYellow <= 0)
+            {
+                error = "Structure Count Yellow threshold must be a positive number.";
+                return false;
+            }
+            if (prefs.StructureCountRed <= 0)
+            {
+                error = "Structure Count Red threshold must be a positive number.";
+                return false;
+            }
+            if (prefs.WorkerRequestYellowSeconds <= 0)
+            {
+                error = "Worker Request Yellow threshold must be a positive number of seconds.";
+                return false;
+            }
+            if (prefs.WorkerRequestRedSeconds <= 0)
+            {
+                error = "Worker Request Red threshold must be a positive number of seconds.";
+                return false;
+            }
+            if (prefs.ColonyImportStalenessYellowSeconds <= 0)
+            {
+                error = "Colony Import Staleness Yellow threshold must be a positive number of seconds.";
+                return false;
+            }
+            if (prefs.ColonyImportStalenessRedSeconds <= 0)
+            {
+                error = "Colony Import Staleness Red threshold must be a positive number of seconds.";
+                return false;
+            }
+            if (prefs.BackgroundProcessingIntervalSeconds <= 0)
+            {
+                error = "Background Processing Interval must be a positive number of seconds.";
+                return false;
+            }
+            if (prefs.AdminRefreshIntervalSeconds <= 0)
+            {
+                error = "Admin Refresh Interval must be a positive number of seconds.";
+                return false;
+            }
+            if (prefs.CountdownRefreshRateSeconds <= 0)
+            {
+                error = "Countdown Refresh Rate must be a positive number of seconds.";
+                return false;
+            }
+
+            if (prefs.StructureCountYellow >= prefs.StructureCountRed)
+            {
+                error = "Structure Count Yellow threshold must be less than Red threshold.";
+                return false;
+            }
+
+            if (prefs.WorkerRequestYellowSeconds <= prefs.WorkerRequestRedSeconds)
+            {
+                error = "Worker Request Yellow threshold must be greater than Red threshold (yellow triggers at a larger remaining window).";
+                return false;
+            }
+
+            if (prefs.ColonyImportStalenessYellowSeconds >= prefs.ColonyImportStalenessRedSeconds)
+            {
+                error = "Colony Import Staleness Yellow threshold must be less than Red threshold.";
+                return false;
+            }
+
+            if (prefs.CountdownRefreshRateSeconds < 1)
+            {
+                error = "Countdown Refresh Rate must be at least 1 second.";
+                return false;
+            }
+
+            error = null;
+            return true;
+        }
     }
 
     public class OpenFormEntry

@@ -6,33 +6,33 @@ Implement a Preferences form for configuring nine threshold/interval values curr
 
 ## Tasks
 
-- [ ] 1. Add ThresholdPreferences model and update UIPreferences
-  - [-] 1.1 Create ThresholdPreferences class and add Thresholds property to UIPreferences
+- [x] 1. Add ThresholdPreferences model and update UIPreferences
+  - [x] 1.1 Create ThresholdPreferences class and add Thresholds property to UIPreferences
     - Add `ThresholdPreferences` class to `OE2EmpireTracker/Models/UIPreferences.cs` with nine properties and defaults matching the hardcoded constants
     - Add `public ThresholdPreferences Thresholds { get; set; } = new ThresholdPreferences();` to `UIPreferences`
     - Add `Compile Include` entry in `OE2EmpireTracker/OE2EmpireTracker.csproj` if needed (ThresholdPreferences is in the same file as UIPreferences, so no new entry needed)
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.10_
 
-  - [~] 1.2 Add null-guard in PreferencesStore.Load for backward compatibility
+  - [x] 1.2 Add null-guard in PreferencesStore.Load for backward compatibility
     - After deserialization in `PreferencesStore.Load()`, add: `if (_preferences.Thresholds == null) _preferences.Thresholds = new ThresholdPreferences();`
     - _Requirements: 1.11, 9.1, 9.2_
 
-  - [~] 1.3 Add ThresholdPreferences validation logic
+  - [x] 1.3 Add ThresholdPreferences validation logic
     - Add a static `Validate(ThresholdPreferences prefs, out string error)` method (either on ThresholdPreferences or as a separate helper) that checks: all values positive, StructureCountYellow < StructureCountRed, WorkerRequestYellowSeconds > WorkerRequestRedSeconds, ColonyImportStalenessYellowSeconds < ColonyImportStalenessRedSeconds, CountdownRefreshRateSeconds >= 1
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6_
 
-  - [~] 1.4 Write unit tests for ThresholdPreferences defaults and validation
+  - [x] 1.4 Write unit tests for ThresholdPreferences defaults and validation
     - Create `OE2EmpireTracker.Tests/Models/ThresholdPreferencesTests.cs`
     - Add `Compile Include` entry in test `.csproj`
     - Test all nine default values match previously hardcoded constants
     - Test validation edge cases: CountdownRefreshRateSeconds = 0 rejected, StructureCountYellow == StructureCountRed rejected, WorkerRequestYellowSeconds == WorkerRequestRedSeconds rejected
     - _Requirements: 1.1–1.9, 7.1–7.6_
 
-  - [~] 1.5 Write property test for validation correctness
+  - [x] 1.5 Write property test for validation correctness
     - **Property 6: Preferences validation accepts valid configurations and rejects invalid ones**
     - **Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5, 7.6**
 
-- [~] 2. Checkpoint - Verify model layer compiles
+- [x] 2. Checkpoint - Verify model layer compiles
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 3. Implement CountdownFormatParser
