@@ -60,7 +60,7 @@ Two localized bug fixes in the Blueprint form. BL-062 adds resources-only import
 - [x] 4. Checkpoint — Verify resources-only import flow
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Assign Name properties to filter combo boxes (BL-066)
+- [x] 5. Assign Name properties to filter combo boxes (BL-066)
   - [x] 5.1 Add `Name` property assignments in `InitFilterPanel` in `FormBlueprint.cs`
     - Set `Name = "cmbFilterType"` on the Type filter ComboBox
     - Set `Name = "cmbFilterClass"` on the Class filter ComboBox
@@ -70,7 +70,7 @@ Two localized bug fixes in the Blueprint form. BL-062 adds resources-only import
     - No changes to `WindowStateHelper` needed — it already saves/restores ComboBox and CheckBox controls by name
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 5.1, 5.2, 6.1, 6.2, 6.3, 6.4, 6.5_
 
-  - [-] 5.2 Write property test for WindowStateHelper ComboBox/CheckBox save-restore round trip
+  - [x] 5.2 Write property test for WindowStateHelper ComboBox/CheckBox save-restore round trip
     - **Property 3: WindowStateHelper ComboBox/CheckBox save-restore round trip**
     - Create `OE2EmpireTracker.Tests/Persistence/WindowStateHelperPropertyTests.cs` with `Compile Include` in test csproj
     - Generate a `Form` containing a `ComboBox` with a random `Name`, random string items, and a random valid `SelectedIndex`, plus a `CheckBox` with a random `Name` and random `Checked` state
@@ -80,7 +80,7 @@ Two localized bug fixes in the Blueprint form. BL-062 adds resources-only import
     - Use FsCheck.NUnit `[Property(MaxTest = 100)]`
     - **Validates: Requirements 5.1, 5.2, 6.1, 6.2, 6.3, 6.4**
 
-- [~] 6. Final checkpoint — Ensure all tests pass
+- [-] 6. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

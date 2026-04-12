@@ -46,6 +46,10 @@ The Blueprint Scanner can parse blueprint data copied from the game browser. Thi
 
 Market blueprints can be imported from the game's market interface. The market importer parses the HTML to extract blueprint details including type, stats, and resource requirements.
 
+### Resources-Only Import
+
+Some game pages (like the resources tab of an evolved blueprint) only contain resource data without the blueprint's type, class, or tech level. The tracker detects this automatically. When you paste resources-only data, it merges the resources into the currently selected blueprint instead of creating a broken duplicate. Just select the blueprint first, then paste the resources tab — the tracker handles the rest. If no blueprint is selected, you'll get a message asking you to select one first.
+
 ## Blueprint Properties
 
 Each blueprint type defines a set of numeric properties (e.g., Hull Points, Shield Capacity, Cargo Space). These are shown in the **Statistics** tab as a grid where you can view and edit each property value.
