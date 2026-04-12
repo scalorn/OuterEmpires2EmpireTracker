@@ -9,6 +9,7 @@ Welcome to the OE2 Empire Tracker documentation. This application helps you mana
 - [Blueprints](blueprints.md) — Blueprint import, market import, evolution chains, and filters
 - [Surveys](surveys.md) — Survey import and resource viewing
 - [Delivery Routes](delivery-routes.md) — Route planning, auto-fill, and delivery execution
+- [Pricing Plans](pricing-plans.md) — Resource pricing, cost computation, and valuation scenarios
 - [Player Profiles](player-profiles.md) — Skills, ranks, and profile management
 - [Background Processing](background-processing.md) — Automatic timer processing and status bar indicators
 - [Window State](window-state.md) — Window position persistence and MDI layout options

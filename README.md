@@ -27,6 +27,9 @@ Import blueprints from scanning or the market. Track evolution chains from level
 ### Delivery Route Planning
 Build delivery routes between colonies, then auto-fill plans based on what each colony actually needs — commodities, flatpacks, resources, workers. The Delivery Execution form walks you through each stop with checkboxes. When you check off a commodity delivery, the colony's request is automatically marked fulfilled. No more forgetting what goes where.
 
+### Pricing Plans
+Create pricing plans to assign credit values to resources and see what your commodities and manufactured items actually cost. Set base prices for Refined, S1, and S2 resources, add optional time costs (fixed per item + hourly rate), and the tracker computes rolled-up prices through the bill-of-materials chain. Create multiple plans to compare market value vs cost basis vs pessimistic estimates — whatever helps you decide if that manufacturing run is worth it.
+
 ### Planet Surveys
 Paste survey HTML and the tracker extracts planet name, resources, purities, and abundance data. Duplicate surveys are merged automatically. Scan dates are displayed in the game's format but stored internally as proper dates, so the survey list sorts chronologically when you click the DateTime column. Edit dates with a calendar picker — no more typos. Use surveys to plan where to drop your next colony.
 
@@ -68,6 +71,7 @@ Press **F1** on any form for context-sensitive help, or use **Help → Contents*
 - [Blueprints](docs/blueprints.md)
 - [Surveys](docs/surveys.md)
 - [Delivery Routes](docs/delivery-routes.md)
+- [Pricing Plans](docs/pricing-plans.md)
 - [Player Profiles](docs/player-profiles.md)
 - [Background Processing](docs/background-processing.md)
 - [Window State](docs/window-state.md)

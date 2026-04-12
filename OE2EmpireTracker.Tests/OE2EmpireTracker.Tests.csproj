@@ -235,6 +235,8 @@
     <Compile Include="Models\DeliveryPlanTests.cs" />
     <Compile Include="Services\DeliveryPlanViewModelTests.cs" />
     <Compile Include="Services\DeliveryFulfillmentTests.cs" />
+    <Compile Include="Services\PriceCalculatorPropertyTests.cs" />
+    <Compile Include="Services\PricingPlanSerializationPropertyTests.cs" />
     <Compile Include="Models\DeliveryRouteTests.cs" />
     <Compile Include="Services\DeliveryRouteViewModelTests.cs" />
     <Compile Include="Persistence\SafeFileWriterTests.cs" />
@@ -278,6 +280,7 @@
     <Compile Include="Forms\MainMenuOverhaulTests.cs" />
     <Compile Include="Forms\GetDeleteButtonStateTests.cs" />
     <Compile Include="Forms\MdiWindowNumberPropertyTests.cs" />
+    <Compile Include="Forms\PricingPlanValidationPropertyTests.cs" />
     <Compile Include="ViewModels\BaseBlueprintCandidatesTests.cs" />
     <Compile Include="ViewModels\BlueprintFilterPropertyTests.cs" />
     <Compile Include="Parsers\ColonyParserTests.cs" />

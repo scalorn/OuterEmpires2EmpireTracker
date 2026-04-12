@@ -169,7 +169,10 @@
     <Compile Include="Parsers\PlayerProfileParser.cs" />
     <Compile Include="Models\DeliveryRoute.cs" />
     <Compile Include="Models\DeliveryPlan.cs" />
+    <Compile Include="Models\PricingPlan.cs" />
+    <Compile Include="Models\ComputedPrice.cs" />
     <Compile Include="Services\DeliveryFulfillment.cs" />
+    <Compile Include="Services\PriceCalculator.cs" />
     <Compile Include="Models\ColonyStructureStatus.cs" />
     <Compile Include="Models\ColonyWorker.cs" />
     <Compile Include="Models\IColonyStructureWorkers.cs" />
@@ -293,6 +296,12 @@
     </Compile>
     <Compile Include="Forms\DeliveryExecution\FormDeliveryExecution.Designer.cs">
       <DependentUpon>FormDeliveryExecution.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\PricingPlan\FormPricingPlan.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PricingPlan\FormPricingPlan.Designer.cs">
+      <DependentUpon>FormPricingPlan.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormPreferences\FormPreferences.cs">
       <SubType>Form</SubType>

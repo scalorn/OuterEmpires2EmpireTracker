@@ -147,6 +147,7 @@ namespace OE2EmpireTracker.Services
         public BindingSource BindingSourceColony;
         public BindingList<DeliveryRoute> DeliveryRouteList;
         public BindingList<DeliveryPlan> DeliveryPlanList;
+        public BindingList<PricingPlan> PricingPlanList;
 
         public IEnumerable<CountDownTimeReference> ActiveCountdowns => AllCountdownSources()
             .Where(c => c.countDownTime.TimeRemaining > 0)
@@ -191,6 +192,7 @@ namespace OE2EmpireTracker.Services
             initColonies(playerRoot);
             InitDeliveryRoutes(playerRoot);
             InitDeliveryPlans(playerRoot);
+            InitPricingPlans(playerRoot);
             DataVersion = playerRoot.DataVersion;
 
             // Migrate and restore current player
@@ -220,6 +222,7 @@ namespace OE2EmpireTracker.Services
             playerRoot.Colony = ColonyList.ToArray();
             playerRoot.DeliveryRoute = DeliveryRouteList.ToArray();
             playerRoot.DeliveryPlan = DeliveryPlanList.ToArray();
+            playerRoot.PricingPlan = PricingPlanList.ToArray();
 
             string jsonContent = JsonConvert.SerializeObject(playerRoot, JsonSettings.SerializerSettings);
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
@@ -304,6 +307,13 @@ namespace OE2EmpireTracker.Services
             DeliveryPlanList = new BindingList<DeliveryPlan>(list);
         }
 
+        public void InitPricingPlans(PlayerRoot playerRoot)
+        {
+            var list = new List<PricingPlan>(playerRoot.PricingPlan ?? new PricingPlan[0]);
+            list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
+            PricingPlanList = new BindingList<PricingPlan>(list);
+        }
+
         public Colony FindColony(string id)
         {
             var filteredList = ColonyList
@@ -383,6 +393,8 @@ namespace OE2EmpireTracker.Services
             { DeliveryRouteList.Remove(route); removed++; }
             foreach (var plan in DeliveryPlanList.Where(p => p.OwnerUUID == playerUUID).ToList())
             { DeliveryPlanList.Remove(plan); removed++; }
+            foreach (var pp in PricingPlanList.Where(p => p.OwnerUUID == playerUUID).ToList())
+            { PricingPlanList.Remove(pp); removed++; }
 
             if (removed > 0)
                 Log.Info("Cascade deleted {0} items for player {1}", removed, playerUUID);
@@ -407,6 +419,8 @@ namespace OE2EmpireTracker.Services
             { Log.Warn("Removing orphaned route: {0} owner={1}", route.Name, route.OwnerUUID); DeliveryRouteList.Remove(route); removed++; }
             foreach (var plan in DeliveryPlanList.Where(p => !string.IsNullOrEmpty(p.OwnerUUID) && !validUUIDs.Contains(p.OwnerUUID)).ToList())
             { Log.Warn("Removing orphaned delivery plan: {0} owner={1}", plan.Name, plan.OwnerUUID); DeliveryPlanList.Remove(plan); removed++; }
+            foreach (var pp in PricingPlanList.Where(p => !string.IsNullOrEmpty(p.OwnerUUID) && !validUUIDs.Contains(p.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned pricing plan: {0} owner={1}", pp.Name, pp.OwnerUUID); PricingPlanList.Remove(pp); removed++; }
 
             if (removed > 0)
                 Log.Info("Cleaned up {0} orphaned items on load", removed);
@@ -484,6 +498,14 @@ namespace OE2EmpireTracker.Services
             return DeliveryPlanList.Where(p => p.OwnerUUID == _currentPlayerUUID).ToList();
         }
 
+        /// <summary>
+        /// Returns pricing plans owned by the current player.
+        /// </summary>
+        public List<PricingPlan> GetCurrentPlayerPricingPlans()
+        {
+            return PricingPlanList.Where(p => p.OwnerUUID == _currentPlayerUUID).ToList();
+        }
+
 
         public List<CountDownTimeReference> AllCountdownSources()
         {
@@ -538,6 +560,7 @@ namespace OE2EmpireTracker.Services
         public Colony[] Colony { get; set; }
         public DeliveryRoute[] DeliveryRoute { get; set; }
         public DeliveryPlan[] DeliveryPlan { get; set; }
+        public PricingPlan[] PricingPlan { get; set; }
         public PlayerRoot()
         {
             DataVersion = 0;
@@ -548,6 +571,7 @@ namespace OE2EmpireTracker.Services
             Colony = new Colony[0];
             DeliveryRoute = new DeliveryRoute[0];
             DeliveryPlan = new DeliveryPlan[0];
+            PricingPlan = new PricingPlan[0];
         }
     }
 

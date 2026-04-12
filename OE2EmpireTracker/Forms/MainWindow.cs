@@ -148,6 +148,11 @@ namespace OE2EmpireTracker
             OpenMdiChild<Forms.DeliveryRoute.FormDeliveryRoute>();
         }
 
+        private void pricingPlansToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenMdiChild<Forms.PricingPlan.FormPricingPlan>();
+        }
+
         private void deliveryExecutionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.DeliveryExecution.FormDeliveryExecution>();

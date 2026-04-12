@@ -48,6 +48,7 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.managePlayerProfiles = new System.Windows.Forms.ToolStripMenuItem();
             this.deliveryRoutesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pricingPlansToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deliveryExecutionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colonyDailyBuildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colonyActivityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -152,6 +153,7 @@
             this.colonyDailyBuildToolStripMenuItem,
             this.deliveryExecutionToolStripMenuItem,
             this.deliveryRoutesToolStripMenuItem,
+            this.pricingPlansToolStripMenuItem,
             this.addBlueprintToolStripMenuItem,
             this.addColonyToolStripMenuItem,
             this.managePlayerProfiles,
@@ -224,6 +226,13 @@
             this.deliveryRoutesToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.deliveryRoutesToolStripMenuItem.Text = "Delivery Routes";
             this.deliveryRoutesToolStripMenuItem.Click += new System.EventHandler(this.deliveryRoutesToolStripMenuItem_Click);
+            // 
+            // pricingPlansToolStripMenuItem
+            // 
+            this.pricingPlansToolStripMenuItem.Name = "pricingPlansToolStripMenuItem";
+            this.pricingPlansToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.pricingPlansToolStripMenuItem.Text = "Pricing Plans";
+            this.pricingPlansToolStripMenuItem.Click += new System.EventHandler(this.pricingPlansToolStripMenuItem_Click);
             // 
             // deliveryExecutionToolStripMenuItem
             // 
@@ -355,6 +364,7 @@
         private System.Windows.Forms.ToolStripMenuItem addColonyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem managePlayerProfiles;
         private System.Windows.Forms.ToolStripMenuItem deliveryRoutesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pricingPlansToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deliveryExecutionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colonyDailyBuildToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colonyActivityToolStripMenuItem;
