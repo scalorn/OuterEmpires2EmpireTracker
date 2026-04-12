@@ -80,7 +80,7 @@ Two localized bug fixes in the Blueprint form. BL-062 adds resources-only import
     - Use FsCheck.NUnit `[Property(MaxTest = 100)]`
     - **Validates: Requirements 5.1, 5.2, 6.1, 6.2, 6.3, 6.4**
 
-- [-] 6. Final checkpoint — Ensure all tests pass
+- [x] 6. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

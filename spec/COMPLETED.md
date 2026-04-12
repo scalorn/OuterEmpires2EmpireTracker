@@ -36,6 +36,22 @@ Change the Worker tab selector background to yellow when any worker request is d
 Add a chart to the Blueprint form showing the evolution chain for the selected blueprint, plotting numeric properties as percentages of Ev0 base values.
 **Status: Complete** — EvolutionChainService resolves ancestor chains. Chart tab with per-property line series and checkbox panel. FsCheck property tests validate chain resolution, graph data extraction, unchanged-property exclusion, and percentage normalization. Spec: `.kiro/specs/evolution-graph/`.
 
+### BL-040: Delivery Execution — Load Item Count and Volume
+The delivery execution form displays a count of the number of items, total quantity, and calculated total volume to the right of the "Load Before Departure" header. Format: "Load Before Departure — N items, Q qty, V vol".
+**Status: Complete** — Implemented in FormDeliveryExecution.
+
+### BL-044: EmpireContext/PlayerContext PascalCase Naming Cleanup
+All 28 camelCase public fields renamed to PascalCase across 41 files.
+**Status: Complete** — See AMB-045.
+
+### BL-062: Blueprint Form — Evolved Blueprint Resource Import Fix
+Bug: Importing the resources tab of an evolved blueprint created a new broken blueprint instead of updating the selected one. The resources tab HTML lacks key dedup fields (class, tech level, blueprint type), so FindByDedupKey couldn't match.
+**Status: Complete** — Added IsResourcesOnlyImport detection and MergeResourcesOnly merge logic to MarketBlueprintImporter. cmdImport_Click routes resources-only imports to the selected blueprint. 2 FsCheck property tests + 4 unit tests. Spec: `.kiro/specs/blueprint-form-fixes/`.
+
+### BL-066: Blueprint Form — Filter Combo Boxes Not Sticky
+Bug: Filter combo boxes on the Blueprint form didn't persist their state between form close and reopen because they were created dynamically without Name properties.
+**Status: Complete** — Assigned Name properties to all 5 filter controls (cmbFilterType, cmbFilterClass, cmbFilterTechLevel, cmbFilterEvolution, chkEvolutionAndAbove) in InitFilterPanel. WindowStateHelper already handles save/restore by name. 2 FsCheck property tests. Spec: `.kiro/specs/blueprint-form-fixes/`.
+
 ---
 
 ## Completed Specs (no backlog entry)

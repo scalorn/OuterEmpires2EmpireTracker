@@ -202,12 +202,6 @@ The survey clipboard import (`FormSurvey.cmdImport_Click`) currently writes pars
 
 The colony Administration tab should have a status area showing all the items from the activity and inactivity reports, scoped to the individual colony. We already gather this data across all colonies — show the same data for the selected colony on its Administration tab.
 
-### BL-040: Delivery Execution — Load Item Count and Volume
-**Dependencies:** None
-**Status: Complete**
-
-The delivery execution form displays a count of the number of items, total quantity, and calculated total volume to the right of the "Load Before Departure" header. Format: "Load Before Departure — N items, Q qty, V vol".
-
 ### BL-041: Delivery Execution — Stale Plan After Delete
 **Dependencies:** None
 
@@ -222,10 +216,6 @@ Bug: After creating a new delivery plan, the delivery execution form doesn't see
 **Dependencies:** None
 
 With the dedup key changed from ColonyName to PlanetName+SystemName, the duplicate-name validation on the colony name text field (SetError/ClearError) is no longer relevant — duplicate colony names don't break dedup anymore. The validation should either be removed entirely or changed to warn on duplicate PlanetName+SystemName combinations instead. Currently the colony name validation has been removed; consider whether planet+system validation is needed on manual edit.
-
-### BL-044: EmpireContext/PlayerContext PascalCase Naming Cleanup
-**Dependencies:** None
-**Status: Complete** — All 28 camelCase public fields renamed to PascalCase across 41 files. See AMB-045.
 
 ### BL-045: GitHub MCP Integration
 **Dependencies:** None (blocked by Docker installation issues)
@@ -311,11 +301,6 @@ If no player profile has been created yet, the app should limit the user to only
 
 Create a Preferences form (accessible from the menu) that exposes all the magic numbers currently hardcoded in the app. Examples: colony structure count yellow/red thresholds, commodity request urgency windows (hours until yellow, hours until red), colony import staleness thresholds (days until yellow/red), and any other configurable values. Store in UIPreferences.json alongside existing window state preferences. Replace hardcoded constants in TabWarningService and other consumers with reads from the preferences store.
 
-### BL-062: Blueprint Form — Evolved Blueprint Resource Import Broken
-**Dependencies:** None
-
-Bug: Importing the resources tab of an evolved blueprint creates a new broken blueprint instead of updating the selected one. The resources tab HTML doesn't contain class, tech level, or other fields used by the dedup matching rules, so the import can't find the correct existing blueprint and falls through to creating a new entry. Fix: when the parsed clipboard data looks like a resources-only import (has resources but missing key dedup fields like class/tech level), assume the user is updating the currently selected blueprint rather than importing a new one. The normal workflow is to import the statistics page first (which creates/selects the blueprint), then import the resources page to add resource data to it.
-
 ### BL-063: Colony Activity Form — Filter Controls Not Sticky
 **Dependencies:** None
 
@@ -330,11 +315,6 @@ Bug: None of the filter controls on the Delivery Execution form persist their st
 **Dependencies:** None
 
 Bug: The filter text box on the Delivery Routes form doesn't persist its state between form close and reopen. Should be saved to UIPreferences.json and restored when the form opens.
-
-### BL-066: Blueprint Form — Filter Combo Boxes Not Sticky
-**Dependencies:** None
-
-Bug: None of the filter combo boxes on the Blueprint form persist their state between form close and reopen. All filter dropdowns (type, class, tech level, etc.) should be saved to UIPreferences.json and restored when the form opens.
 
 ### BL-067: MDI Window Numbering — Reuse Lowest Available Number
 **Dependencies:** None
