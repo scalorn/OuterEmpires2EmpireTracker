@@ -240,3 +240,11 @@ Prevent importing wrong clipboard content type (e.g. blueprint HTML on the surve
 ### BL-034: Codebase Duplication Scan & Cleanup
 Scanned the codebase for duplicated code blocks, refactoring candidates, and cleanliness opportunities.
 **Status: Complete** — Moved clipboard HTML extraction logic from BlueprintScanner into ClipboardHelper (canonical location). Added `IsBuiltAndOnline` property to ColonyStructure model; ColonyInactivityCollector uses it. RefinerySetupHelper now reuses `structure.IsBuiltAndOnline` and `MinerSetupHelper.SetupTimer()` instead of reimplementing. Extracted `RefreshStatusDisplay()` helper in FormColony replacing 4 identical RtfBuilder patterns. Remaining patterns (ListView population, form titles) are domain-specific and not worth abstracting.
+
+### BL-041: Delivery Execution — Stale Plan After Delete
+Bug: After deleting a delivery plan, the delivery execution form kept displaying the deleted plan.
+**Status: Complete** — `OnDeliveryDataChanged` now checks if `selectedPlan` still exists in `DeliveryPlanList`; if not, clears the execution view and hides buttons. `cmdDeletePlan_Click` now fires `playerContext.OnDeliveryDataChanged()` so other open instances get notified.
+
+### BL-042: Delivery Execution — New Plan Not Visible Until Reopen
+Bug: After creating a new delivery plan, the execution form's plan dropdown was stale until form reopen.
+**Status: Complete** — `OnDeliveryDataChanged` now calls `PopulatePlanDropdown()` to refresh the dropdown before rebuilding the execution view. New plans appear immediately.

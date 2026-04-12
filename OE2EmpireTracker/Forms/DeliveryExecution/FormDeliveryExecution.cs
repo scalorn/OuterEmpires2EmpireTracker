@@ -575,6 +575,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             playerContext.DeliveryPlanList.Remove(selectedPlan);
             playerContext.WriteContext();
+            playerContext.OnDeliveryDataChanged();
             Log.Info("Delivery plan '{0}' deleted", selectedPlan.Name);
 
             ClearExecution();
@@ -617,6 +618,23 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 catch (ObjectDisposedException) { }
                 return;
             }
+
+            // Refresh plan dropdown so new/deleted plans appear (BL-042)
+            string routeUUID = cmbRoute.SelectedValue as string;
+            if (!string.IsNullOrEmpty(routeUUID))
+                PopulatePlanDropdown(routeUUID);
+
+            // If the selected plan was deleted externally, clear the view (BL-041)
+            if (selectedPlan != null &&
+                !playerContext.DeliveryPlanList.Any(p => p.UUID == selectedPlan.UUID))
+            {
+                selectedPlan = null;
+                ClearExecution();
+                cmdCompletePlan.Visible = false;
+                cmdDeletePlan.Visible = false;
+                return;
+            }
+
             if (selectedPlan != null)
                 BuildExecution();
         }

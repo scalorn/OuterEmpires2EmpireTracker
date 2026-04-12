@@ -158,16 +158,6 @@ Add a chart to the Colony form showing mining and refining production over time.
 
 
 ---
-### BL-041: Delivery Execution — Stale Plan After Delete
-**Dependencies:** None
-
-Bug: After deleting a delivery plan, the delivery execution form keeps displaying the deleted plan. The form should detect the deletion (via DeliveryDataChanged event) and clear the execution view when the currently displayed plan no longer exists.
-
-### BL-042: Delivery Execution — New Plan Not Visible Until Reopen
-**Dependencies:** None
-
-Bug: After creating a new delivery plan, the delivery execution form doesn't see the new plan until the form is closed and reopened. The form should refresh its plan dropdown when it receives a DeliveryDataChanged event.
-
 ### BL-045: GitHub MCP Integration
 **Dependencies:** None (blocked by Docker installation issues)
 
