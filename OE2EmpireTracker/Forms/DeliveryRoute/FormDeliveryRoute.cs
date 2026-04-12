@@ -297,6 +297,13 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
             viewModel.AddStop(colonyUUID);
             PopulateStopsGrid();
+            if (dgvStops.Rows.Count > 0)
+            {
+                int lastIndex = dgvStops.Rows.Count - 1;
+                dgvStops.ClearSelection();
+                dgvStops.Rows[lastIndex].Selected = true;
+                dgvStops.FirstDisplayedScrollingRowIndex = lastIndex;
+            }
             if (chkPreventDuplicates.Checked) PopulateColonyPicker();
         }
 
