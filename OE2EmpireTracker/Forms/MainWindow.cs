@@ -52,6 +52,8 @@ namespace OE2EmpireTracker
             _backgroundProcessor = new BackgroundProcessor(playerContext);
             _backgroundProcessor.Start();
             timerNextProcess.Tick += OnTimerNextProcessTick;
+            int intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.CountdownRefreshRateSeconds * 1000);
+            timerNextProcess.Interval = Math.Max(intervalMs, 1000);
             timerNextProcess.Start();
 
             var proc = Process.GetCurrentProcess();

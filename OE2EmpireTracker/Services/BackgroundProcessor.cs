@@ -13,6 +13,16 @@ namespace OE2EmpireTracker.Services
         public const int TickIntervalMs = 60_000;
 
         private readonly PlayerContext _playerContext;
+
+        /// <summary>
+        /// Reads the background processing interval from user preferences,
+        /// enforcing a minimum of 1000ms.
+        /// </summary>
+        private int GetTickIntervalMs()
+        {
+            var intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.BackgroundProcessingIntervalSeconds * 1000);
+            return Math.Max(intervalMs, 1000);
+        }
         private Timer _timer;
         private readonly ManualResetEventSlim _stopping = new ManualResetEventSlim(false);
         private readonly object _cycleLock = new object();
@@ -43,11 +53,12 @@ namespace OE2EmpireTracker.Services
             if (_running) return;
 
             _stopping.Reset();
-            NextProcessTime = DateTime.UtcNow.AddMilliseconds(TickIntervalMs);
-            _timer = new Timer(OnTimerTick, null, TickIntervalMs, Timeout.Infinite);
+            int interval = GetTickIntervalMs();
+            NextProcessTime = DateTime.UtcNow.AddMilliseconds(interval);
+            _timer = new Timer(OnTimerTick, null, interval, Timeout.Infinite);
             _running = true;
 
-            Log.Info("BackgroundProcessor started. Tick interval: {0}ms", TickIntervalMs);
+            Log.Info("BackgroundProcessor started. Tick interval: {0}ms", interval);
         }
 
         /// <summary>
@@ -106,10 +117,11 @@ namespace OE2EmpireTracker.Services
 
             if (!_stopping.IsSet && !_disposed)
             {
-                NextProcessTime = DateTime.UtcNow.AddMilliseconds(TickIntervalMs);
+                int interval = GetTickIntervalMs();
+                NextProcessTime = DateTime.UtcNow.AddMilliseconds(interval);
                 try
                 {
-                    _timer?.Change(TickIntervalMs, Timeout.Infinite);
+                    _timer?.Change(interval, Timeout.Infinite);
                 }
                 catch (ObjectDisposedException)
                 {

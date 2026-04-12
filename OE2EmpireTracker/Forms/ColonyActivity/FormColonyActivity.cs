@@ -57,6 +57,8 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             RefreshData();
 
             // Start timer
+            int intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.CountdownRefreshRateSeconds * 1000);
+            timerRefresh.Interval = Math.Max(intervalMs, 1000);
             timerRefresh.Start();
         }
 

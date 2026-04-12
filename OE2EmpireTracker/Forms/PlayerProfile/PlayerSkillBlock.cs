@@ -1,4 +1,5 @@
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -86,7 +87,8 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 this.lblCompletion.Visible = true;
                 this.txtCompletion.Visible = true;
                 this.cmdStart.Visible = false;
-                timerCountdown.Interval = 1000;
+                int intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.CountdownRefreshRateSeconds * 1000);
+                timerCountdown.Interval = Math.Max(intervalMs, 1000);
                 timerCountdown.Start();
                 UpdateCompletion();
             }

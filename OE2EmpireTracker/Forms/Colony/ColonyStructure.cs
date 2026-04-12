@@ -1,4 +1,4 @@
-using NLog;
+﻿using NLog;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
@@ -59,6 +59,12 @@ namespace OE2EmpireTracker.Forms.Colony
             this.ResumeLayout();
         }
 
+        private int GetCountdownIntervalMs()
+        {
+            int intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.CountdownRefreshRateSeconds * 1000);
+            return Math.Max(intervalMs, 1000);
+        }
+
         public void UpdateData()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
@@ -67,7 +73,7 @@ namespace OE2EmpireTracker.Forms.Colony
             FlatpackBlueprint = playerContext.FindBlueprint(ColonyStructureData.FlatpackBlueprintUUID);
             chkStageResources.Visible = false;
 
-            // Building state â€” structure is transitioning from staged to built
+            // Building state Ã¢â‚¬â€ structure is transitioning from staged to built
             if (ColonyStructureData.BuildCompletionTime != null &&
                 ColonyStructureData.BuildCompletionTime.TimeRemaining > 0)
             {
@@ -82,7 +88,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 flpSubSelection.Visible = false;
                 if (!timerCountdown.Enabled)
                 {
-                    timerCountdown.Interval = 1000;
+                    timerCountdown.Interval = GetCountdownIntervalMs();
                     timerCountdown.Start();
                 }
                 flpStructureCommands_Layout(null, null);
@@ -375,7 +381,7 @@ namespace OE2EmpireTracker.Forms.Colony
 
                 if (timerCountdown.Enabled == false)
                 {
-                    timerCountdown.Interval = 1000;
+                    timerCountdown.Interval = GetCountdownIntervalMs();
                     timerCountdown.Start();
                 }
             }
@@ -475,7 +481,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 PopulateRefineryProgressStatus();
                 if (timerCountdown.Enabled == false)
                 {
-                    timerCountdown.Interval = 1000;
+                    timerCountdown.Interval = GetCountdownIntervalMs();
                     timerCountdown.Start();
                 }
             }
@@ -712,7 +718,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 PopulateResearchLabProgressStatus();
                 if (timerCountdown.Enabled == false)
                 {
-                    timerCountdown.Interval = 1000;
+                    timerCountdown.Interval = GetCountdownIntervalMs();
                     timerCountdown.Start();
                 }
             }
@@ -840,7 +846,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // Sub-selection: not used for manufactory
             flpSubSelection.Visible = false;
 
-            // Quantity input â€” only visible when a blueprint is selected
+            // Quantity input Ã¢â‚¬â€ only visible when a blueprint is selected
             txtQuantity.Visible = showCmdStart;
             txtQuantity.Enabled = !showCompletionTime;
             if (ColonyStructureData.ManufacturingQuantity > 0)
@@ -875,7 +881,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 PopulateManufactoryProgressStatus();
                 if (timerCountdown.Enabled == false)
                 {
-                    timerCountdown.Interval = 1000;
+                    timerCountdown.Interval = GetCountdownIntervalMs();
                     timerCountdown.Start();
                 }
             }
@@ -1035,7 +1041,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 PopulateCommodityFactoryProgressStatus();
                 if (timerCountdown.Enabled == false)
                 {
-                    timerCountdown.Interval = 1000;
+                    timerCountdown.Interval = GetCountdownIntervalMs();
                     timerCountdown.Start();
                 }
             }
@@ -1179,7 +1185,7 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             if (ColonyStructureData == null) return false;
 
-            // Check this structure's actual status â€” the calculator determined availability
+            // Check this structure's actual status Ã¢â‚¬â€ the calculator determined availability
             // during its pass with locks cleared, so it's the authoritative answer
             ColonyStructureStatus status;
             if (ColonyStructureData.Statuses.TryGetValue(GameConstants.StatusActual, out status))
@@ -1417,7 +1423,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.UtcNow;
                 long secondsUntilNextHour = GameConstants.SecondsPerHour - (long)(DateTime.UtcNow - DateTime.UtcNow.Date.AddHours(DateTime.UtcNow.Hour)).TotalSeconds;
                 ColonyStructureData.ProcessCompletionTime.StartRepeating(GameConstants.SecondsPerHour, secondsUntilNextHour);
-                timerCountdown.Interval = 1000;
+                timerCountdown.Interval = GetCountdownIntervalMs();
                 timerCountdown.Start();
                 handleRefineryControls();
                 ColonyStructureDataChanged?.Invoke(this, e);
@@ -1445,7 +1451,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 ColonyStructureData.ProcessCompletionTime = new CountDownTime();
                 ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.UtcNow;
                 ColonyStructureData.ProcessCompletionTime.TimeRemaining = researchSeconds;
-                timerCountdown.Interval = 1000;
+                timerCountdown.Interval = GetCountdownIntervalMs();
                 timerCountdown.Start();
                 handleResearchLabControls();
                 ColonyStructureDataChanged?.Invoke(this, e);
@@ -1491,7 +1497,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 ColonyStructureData.ProcessCompletionTime = new CountDownTime();
                 ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.UtcNow;
                 ColonyStructureData.ProcessCompletionTime.StartRepeating(mfgSeconds);
-                timerCountdown.Interval = 1000;
+                timerCountdown.Interval = GetCountdownIntervalMs();
                 timerCountdown.Start();
                 handleManufactoryControls();
                 ColonyStructureDataChanged?.Invoke(this, e);
@@ -1522,7 +1528,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 commodityCycleSeconds = Math.Max(1, (long)(commodityCycleSeconds * (1.0 - commProductionFocusLevel * 0.03)));
 
                 ColonyStructureData.ProcessCompletionTime.StartRepeating(commodityCycleSeconds);
-                timerCountdown.Interval = 1000;
+                timerCountdown.Interval = GetCountdownIntervalMs();
                 timerCountdown.Start();
                 handleCommodityFactoryControls();
                 ColonyStructureDataChanged?.Invoke(this, e);
@@ -1540,7 +1546,7 @@ namespace OE2EmpireTracker.Forms.Colony
             ColonyStructureData.ProcessCompletionTime.StartTime = DateTime.UtcNow;
             long secondsUntilNextHour = GameConstants.SecondsPerHour - (long)(DateTime.UtcNow - DateTime.UtcNow.Date.AddHours(DateTime.UtcNow.Hour)).TotalSeconds;
             ColonyStructureData.ProcessCompletionTime.StartRepeating(GameConstants.SecondsPerHour, secondsUntilNextHour);
-            timerCountdown.Interval = 1000;
+            timerCountdown.Interval = GetCountdownIntervalMs();
             timerCountdown.Start();
             handleMiningRigControls();
             ColonyStructureDataChanged?.Invoke(this, e);

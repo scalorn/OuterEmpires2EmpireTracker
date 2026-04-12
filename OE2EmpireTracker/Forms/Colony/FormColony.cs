@@ -1905,6 +1905,8 @@ namespace OE2EmpireTracker.Forms.Colony
         private void timerAdminRefresh_Tick(object sender, EventArgs e)
         {
             if (IsDisposed) return;
+            int intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.AdminRefreshIntervalSeconds * 1000);
+            timerAdminRefresh.Interval = Math.Max(intervalMs, 1000);
             RefreshAdminReport();
         }
 

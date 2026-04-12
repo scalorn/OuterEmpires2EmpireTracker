@@ -62,8 +62,8 @@ Implement a Preferences form for configuring nine threshold/interval values curr
 - [x] 4. Checkpoint - Verify parser compiles and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Wire TabWarningService to read from PreferencesStore
-  - [~] 5.1 Replace hardcoded constants in TabWarningService with PreferencesStore reads
+- [x] 5. Wire TabWarningService to read from PreferencesStore
+  - [x] 5.1 Replace hardcoded constants in TabWarningService with PreferencesStore reads
     - Replace `const int StructureYellowThreshold` with a static property reading from `PreferencesStore.GetInstance().Preferences.Thresholds.StructureCountYellow`
     - Replace `const int StructureRedThreshold` similarly
     - Replace `readonly TimeSpan WorkerYellowWindow` with a property computing `TimeSpan.FromSeconds(...)` from PreferencesStore
@@ -73,60 +73,60 @@ Implement a Preferences form for configuring nine threshold/interval values curr
     - Update `EvaluateColonyImportStalenessWarning` to compare against TimeSpan instead of `TimeSpan.FromDays(int)`
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7_
 
-  - [~] 5.2 Write property test for structure warning respects configured thresholds
+  - [x] 5.2 Write property test for structure warning respects configured thresholds
     - **Property 3: Structure warning respects configured thresholds**
     - **Validates: Requirements 4.1, 4.2, 4.7**
 
-  - [~] 5.3 Write property test for worker warning respects configured thresholds
+  - [x] 5.3 Write property test for worker warning respects configured thresholds
     - **Property 4: Worker warning respects configured thresholds**
     - **Validates: Requirements 4.3, 4.4**
 
-  - [~] 5.4 Write property test for colony import staleness warning respects configured thresholds
+  - [x] 5.4 Write property test for colony import staleness warning respects configured thresholds
     - **Property 5: Colony import staleness warning respects configured thresholds**
     - **Validates: Requirements 4.5, 4.6**
 
-  - [~] 5.5 Create TabWarningServicePreferencesTests.cs for property tests 3–5
+  - [x] 5.5 Create TabWarningServicePreferencesTests.cs for property tests 3–5
     - Create `OE2EmpireTracker.Tests/Services/TabWarningServicePreferencesTests.cs`
     - Add `Compile Include` entry in test `.csproj`
     - Each test configures PreferencesStore with random thresholds, calls the evaluation method, and verifies the result matches expected warning level
     - _Requirements: 4.1–4.7_
 
-- [ ] 6. Wire BackgroundProcessor to read interval from PreferencesStore
-  - [~] 6.1 Add GetTickIntervalMs method to BackgroundProcessor
+- [x] 6. Wire BackgroundProcessor to read interval from PreferencesStore
+  - [x] 6.1 Add GetTickIntervalMs method to BackgroundProcessor
     - Add `private int GetTickIntervalMs()` that reads from `PreferencesStore.GetInstance().Preferences.Thresholds.BackgroundProcessingIntervalSeconds * 1000`
     - Enforce minimum of 1000ms
     - Replace usages of the `TickIntervalMs` constant in `Start()` and timer rescheduling with `GetTickIntervalMs()`
     - Retain the `const` field for backward compatibility
     - _Requirements: 5.1, 5.2_
 
-- [ ] 7. Wire FormColony admin refresh to read from PreferencesStore
-  - [~] 7.1 Update FormColony timer to read interval from PreferencesStore
+- [x] 7. Wire FormColony admin refresh to read from PreferencesStore
+  - [x] 7.1 Update FormColony timer to read interval from PreferencesStore
     - On timer tick, set `timerAdminRefresh.Interval` from `PreferencesStore.GetInstance().Preferences.Thresholds.AdminRefreshIntervalSeconds * 1000`
     - Enforce minimum of 1000ms
     - _Requirements: 6.1, 6.2_
 
-- [ ] 8. Wire countdown timer forms to read refresh rate from PreferencesStore
-  - [~] 8.1 Update ColonyStructure control countdown timer
+- [x] 8. Wire countdown timer forms to read refresh rate from PreferencesStore
+  - [x] 8.1 Update ColonyStructure control countdown timer
     - Read `CountdownRefreshRateSeconds` from PreferencesStore when starting/rescheduling `timerCountdown`
     - Enforce minimum of 1000ms via `Math.Max(intervalMs, 1000)`
     - _Requirements: 10.1, 10.5_
 
-  - [~] 8.2 Update FormColonyActivity countdown timer
+  - [x] 8.2 Update FormColonyActivity countdown timer
     - Read `CountdownRefreshRateSeconds` from PreferencesStore when starting/rescheduling `timerRefresh`
     - Enforce minimum of 1000ms
     - _Requirements: 10.2, 10.5_
 
-  - [~] 8.3 Update PlayerSkillBlock countdown timer
+  - [x] 8.3 Update PlayerSkillBlock countdown timer
     - Read `CountdownRefreshRateSeconds` from PreferencesStore when starting/rescheduling `timerCountdown`
     - Enforce minimum of 1000ms
     - _Requirements: 10.3, 10.5_
 
-  - [~] 8.4 Update MainWindow countdown timer
+  - [x] 8.4 Update MainWindow countdown timer
     - Read `CountdownRefreshRateSeconds` from PreferencesStore when starting/rescheduling `timerNextProcess`
     - Enforce minimum of 1000ms
     - _Requirements: 10.4, 10.5_
 
-- [~] 9. Checkpoint - Verify all service wiring compiles
+- [x] 9. Checkpoint - Verify all service wiring compiles
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 10. Create FormPreferences dialog

@@ -20,22 +20,28 @@ namespace OE2EmpireTracker.Services
     public static class TabWarningService
     {
         /// <summary>Structure count at or above which the yellow warning activates.</summary>
-        public const int StructureYellowThreshold = 60;
+        private static int StructureYellowThreshold =>
+            PreferencesStore.GetInstance().Preferences.Thresholds.StructureCountYellow;
 
         /// <summary>Structure count at or above which the red warning activates.</summary>
-        public const int StructureRedThreshold = 66;
+        private static int StructureRedThreshold =>
+            PreferencesStore.GetInstance().Preferences.Thresholds.StructureCountRed;
 
         /// <summary>Due window at or below which the yellow warning activates for worker requests.</summary>
-        public static readonly TimeSpan WorkerYellowWindow = TimeSpan.FromDays(2);
+        private static TimeSpan WorkerYellowWindow =>
+            TimeSpan.FromSeconds(PreferencesStore.GetInstance().Preferences.Thresholds.WorkerRequestYellowSeconds);
 
         /// <summary>Due window at or below which the red warning activates for worker requests.</summary>
-        public static readonly TimeSpan WorkerRedWindow = TimeSpan.FromDays(1);
+        private static TimeSpan WorkerRedWindow =>
+            TimeSpan.FromSeconds(PreferencesStore.GetInstance().Preferences.Thresholds.WorkerRequestRedSeconds);
 
-        /// <summary>Days since last import at or above which the yellow warning activates.</summary>
-        public const int ColonyImportStalenessYellowDays = 5;
+        /// <summary>Elapsed time since last import at or above which the yellow warning activates.</summary>
+        private static TimeSpan ColonyImportStalenessYellowWindow =>
+            TimeSpan.FromSeconds(PreferencesStore.GetInstance().Preferences.Thresholds.ColonyImportStalenessYellowSeconds);
 
-        /// <summary>Days since last import at or above which the red warning activates.</summary>
-        public const int ColonyImportStalenessRedDays = 6;
+        /// <summary>Elapsed time since last import at or above which the red warning activates.</summary>
+        private static TimeSpan ColonyImportStalenessRedWindow =>
+            TimeSpan.FromSeconds(PreferencesStore.GetInstance().Preferences.Thresholds.ColonyImportStalenessRedSeconds);
 
         /// <summary>
         /// Returns the warning level for the Structures tab based on the colony's structure count.
@@ -96,9 +102,9 @@ namespace OE2EmpireTracker.Services
 
             TimeSpan elapsed = now - parsed;
 
-            if (elapsed >= TimeSpan.FromDays(ColonyImportStalenessRedDays))
+            if (elapsed >= ColonyImportStalenessRedWindow)
                 return TabWarningLevel.Red;
-            if (elapsed >= TimeSpan.FromDays(ColonyImportStalenessYellowDays))
+            if (elapsed >= ColonyImportStalenessYellowWindow)
                 return TabWarningLevel.Yellow;
 
             return TabWarningLevel.None;

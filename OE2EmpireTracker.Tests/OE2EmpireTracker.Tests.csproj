@@ -242,6 +242,7 @@
     <Compile Include="Services\PreferencesStoreTests.cs" />
     <Compile Include="Services\MarketBlueprintImporterTests.cs" />
     <Compile Include="Services\TabWarningServiceTests.cs" />
+    <Compile Include="Services\TabWarningServicePreferencesTests.cs" />
     <Compile Include="Models\ThresholdPreferencesTests.cs" />
     <Compile Include="Models\UIPreferencesTests.cs" />
     <Compile Include="Parsers\SurveyParserTests.cs" />
