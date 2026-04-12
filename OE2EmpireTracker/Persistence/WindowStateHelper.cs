@@ -186,6 +186,14 @@ namespace OE2EmpireTracker.Persistence
             {
                 state.ColumnWidths[i] = listView.Columns[i].Width;
             }
+
+            // Save sort state if using ListViewItemComparer
+            if (listView.ListViewItemSorter is OE2EmpireTracker.Controls.ListViewItemComparer comparer)
+            {
+                state.SortColumn = comparer.Column;
+                state.SortDirection = comparer.Order == SortOrder.Descending ? "Descending" : "Ascending";
+            }
+
             formState.ListViews[listView.Name] = state;
         }
 
@@ -279,6 +287,14 @@ namespace OE2EmpireTracker.Persistence
                 {
                     listView.Columns[entry.Key].Width = entry.Value;
                 }
+            }
+
+            // Restore sort state
+            if (state.SortColumn >= 0 && state.SortColumn < listView.Columns.Count)
+            {
+                var order = state.SortDirection == "Descending" ? SortOrder.Descending : SortOrder.Ascending;
+                listView.ListViewItemSorter = new OE2EmpireTracker.Controls.ListViewItemComparer(state.SortColumn, order);
+                listView.Sort();
             }
         }
 

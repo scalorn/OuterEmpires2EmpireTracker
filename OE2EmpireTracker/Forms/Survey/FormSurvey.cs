@@ -14,7 +14,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using OE2EmpireTracker.Controls;
-using OE2EmpireTracker.Forms.Colony;
 
 namespace OE2EmpireTracker.Forms.Survey
 {

@@ -1859,33 +1859,4 @@ namespace OE2EmpireTracker.Forms.Colony
                     commodities ?? Enumerable.Empty<CommodityRequested>(), DateTime.Now));
         }
     }
-
-    /// <summary>
-    /// Compares ListView items by a specified column for sorting.
-    /// </summary>
-    internal class ListViewItemComparer : System.Collections.IComparer
-    {
-        private readonly int _column;
-        private readonly SortOrder _order;
-
-        public ListViewItemComparer(int column, SortOrder order)
-        {
-            _column = column;
-            _order = order;
-        }
-
-        public int Compare(object x, object y)
-        {
-            string textX = ((ListViewItem)x).SubItems[_column].Text;
-            string textY = ((ListViewItem)y).SubItems[_column].Text;
-
-            int result;
-            if (int.TryParse(textX, out int numX) && int.TryParse(textY, out int numY))
-                result = numX.CompareTo(numY);
-            else
-                result = string.Compare(textX, textY, StringComparison.OrdinalIgnoreCase);
-
-            return _order == SortOrder.Descending ? -result : result;
-        }
-    }
 }

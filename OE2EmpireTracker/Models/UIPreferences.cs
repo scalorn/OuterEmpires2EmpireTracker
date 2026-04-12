@@ -76,5 +76,8 @@ namespace OE2EmpireTracker.Models
     {
         public Dictionary<int, int> ColumnWidths { get; set; }
             = new Dictionary<int, int>();
+
+        public int SortColumn { get; set; } = -1;
+        public string SortDirection { get; set; }
     }
 }

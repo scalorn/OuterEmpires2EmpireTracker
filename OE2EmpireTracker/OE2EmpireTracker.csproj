@@ -183,6 +183,7 @@
     <Compile Include="Constants\BlueprintPropertyValidation.cs" />
     <Compile Include="Constants\GameConstants.cs" />
     <Compile Include="Controls\DataGridViewValidatedTextBoxColumn.cs" />
+    <Compile Include="Controls\ListViewItemComparer.cs" />
     <Compile Include="Controls\RtfBuilder.cs" />
     <Compile Include="Controls\ProgrammaticUpdateGuard.cs" />
     <Compile Include="Models\Commodity.cs" />
