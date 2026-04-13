@@ -61,6 +61,10 @@ namespace OE2EmpireTracker
             this.flpCopyCost = new System.Windows.Forms.FlowLayoutPanel();
             this.lblCopyCost = new System.Windows.Forms.Label();
             this.txtCopyCost = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.flpPricingPlan = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblPricingPlan = new System.Windows.Forms.Label();
+            this.cmbPricingPlan = new System.Windows.Forms.ComboBox();
+            this.txtCalculatedPrice = new System.Windows.Forms.TextBox();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.chkGlobalBlueprint = new System.Windows.Forms.CheckBox();
             this.cmdNew = new System.Windows.Forms.Button();
@@ -198,6 +202,7 @@ namespace OE2EmpireTracker
             this.flpBaseDetails.Controls.Add(this.flpNickName);
             this.flpBaseDetails.Controls.Add(this.flpDescription);
             this.flpBaseDetails.Controls.Add(this.flpCopyCost);
+            this.flpBaseDetails.Controls.Add(this.flpPricingPlan);
             this.flpBaseDetails.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpBaseDetails.Location = new System.Drawing.Point(2, 2);
             this.flpBaseDetails.Margin = new System.Windows.Forms.Padding(2);
@@ -435,6 +440,48 @@ namespace OE2EmpireTracker
             this.txtCopyCost.Name = "txtCopyCost";
             this.txtCopyCost.Size = new System.Drawing.Size(201, 20);
             this.txtCopyCost.TabIndex = 7;
+            // 
+            // flpPricingPlan
+            // 
+            this.flpPricingPlan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpPricingPlan.AutoSize = true;
+            this.flpPricingPlan.Controls.Add(this.lblPricingPlan);
+            this.flpPricingPlan.Controls.Add(this.cmbPricingPlan);
+            this.flpPricingPlan.Controls.Add(this.txtCalculatedPrice);
+            this.flpPricingPlan.Location = new System.Drawing.Point(2, 259);
+            this.flpPricingPlan.Margin = new System.Windows.Forms.Padding(2);
+            this.flpPricingPlan.Name = "flpPricingPlan";
+            this.flpPricingPlan.Size = new System.Drawing.Size(415, 24);
+            this.flpPricingPlan.TabIndex = 9;
+            // 
+            // lblPricingPlan
+            // 
+            this.lblPricingPlan.Location = new System.Drawing.Point(2, 2);
+            this.lblPricingPlan.Margin = new System.Windows.Forms.Padding(2);
+            this.lblPricingPlan.Name = "lblPricingPlan";
+            this.lblPricingPlan.Size = new System.Drawing.Size(100, 17);
+            this.lblPricingPlan.TabIndex = 0;
+            this.lblPricingPlan.Text = "Pricing Plan";
+            this.lblPricingPlan.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmbPricingPlan
+            // 
+            this.cmbPricingPlan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPricingPlan.FormattingEnabled = true;
+            this.cmbPricingPlan.Location = new System.Drawing.Point(106, 2);
+            this.cmbPricingPlan.Margin = new System.Windows.Forms.Padding(2);
+            this.cmbPricingPlan.Name = "cmbPricingPlan";
+            this.cmbPricingPlan.Size = new System.Drawing.Size(150, 21);
+            this.cmbPricingPlan.TabIndex = 1;
+            // 
+            // txtCalculatedPrice
+            // 
+            this.txtCalculatedPrice.Location = new System.Drawing.Point(260, 2);
+            this.txtCalculatedPrice.Margin = new System.Windows.Forms.Padding(2);
+            this.txtCalculatedPrice.Name = "txtCalculatedPrice";
+            this.txtCalculatedPrice.ReadOnly = true;
+            this.txtCalculatedPrice.Size = new System.Drawing.Size(120, 20);
+            this.txtCalculatedPrice.TabIndex = 2;
             // 
             // flpCommands
             // 
@@ -783,6 +830,10 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.FlowLayoutPanel flpCopyCost;
         private System.Windows.Forms.Label lblCopyCost;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtCopyCost;
+        private System.Windows.Forms.FlowLayoutPanel flpPricingPlan;
+        private System.Windows.Forms.Label lblPricingPlan;
+        private System.Windows.Forms.ComboBox cmbPricingPlan;
+        private System.Windows.Forms.TextBox txtCalculatedPrice;
         private System.Windows.Forms.Button cmdNew;
         private System.Windows.Forms.Button cmdImportMarket;
         private System.Windows.Forms.Button cmdImport;

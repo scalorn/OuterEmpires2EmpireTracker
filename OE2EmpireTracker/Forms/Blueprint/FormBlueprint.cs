@@ -188,6 +188,12 @@ namespace OE2EmpireTracker
             cmbBaseBlueprint.SelectedIndexChanged += cmbBaseBlueprint_SelectedIndexChanged;
             chkGlobalBlueprint.CheckedChanged += chkGlobalBlueprint_CheckedChanged;
 
+            // Configure pricing plan combo
+            cmbPricingPlan.DisplayMember = "Name";
+            cmbPricingPlan.ValueMember = "UUID";
+            PopulatePricingPlanCombo();
+            cmbPricingPlan.SelectedIndexChanged += cmbPricingPlan_SelectedIndexChanged;
+
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.BlueprintDataChanged += OnBlueprintDataChanged;
 
@@ -470,6 +476,7 @@ namespace OE2EmpireTracker
             lvwBlueprints.Items.Clear();
             viewModel.Reset();
             ClearForm();
+            PopulatePricingPlanCombo();
             RefreshBlueprintList();
             UpdateTitleBarCounts();
         }
@@ -1247,6 +1254,8 @@ namespace OE2EmpireTracker
             PopulateResources();
 
             chkGlobalBlueprint.Checked = viewModel.IsGlobal;
+
+            UpdateCalculatedPrice();
         }
         private void PopulateResources()
         {
@@ -1321,6 +1330,8 @@ namespace OE2EmpireTracker
             dgvResources.CellValidating += dgvResources_CellValidating;
 
             chkGlobalBlueprint.Checked = false;
+
+            txtCalculatedPrice.Text = "";
 
             ClearEvolutionGraph();
         }
@@ -1700,6 +1711,80 @@ namespace OE2EmpireTracker
                 dgvStatistics.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
                 dgvStatistics.Rows[e.RowIndex].ErrorText = "";
             }
+        }
+
+        // -----------------------------------------------------------------------
+        // Pricing Plan
+        // -----------------------------------------------------------------------
+
+        private void PopulatePricingPlanCombo()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            string selectedUUID = cmbPricingPlan.SelectedValue as string;
+            cmbPricingPlan.DataSource = null;
+
+            var plans = playerContext.GetCurrentPlayerPricingPlans();
+            var items = new List<object>();
+            items.Add(new { Name = "(none)", UUID = "" });
+            foreach (var p in plans.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase))
+                items.Add(new { Name = p.Name, UUID = p.UUID });
+
+            cmbPricingPlan.DisplayMember = "Name";
+            cmbPricingPlan.ValueMember = "UUID";
+            cmbPricingPlan.DataSource = items;
+
+            if (!string.IsNullOrEmpty(selectedUUID) && items.Any(i => ((dynamic)i).UUID == selectedUUID))
+                cmbPricingPlan.SelectedValue = selectedUUID;
+            else
+                cmbPricingPlan.SelectedIndex = 0;
+        }
+
+        private void cmbPricingPlan_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            UpdateCalculatedPrice();
+        }
+
+        private void UpdateCalculatedPrice()
+        {
+            if (viewModel.Data.UUID == null || viewModel.Data.Resources == null || viewModel.Data.Resources.Count == 0)
+            {
+                txtCalculatedPrice.Text = "";
+                return;
+            }
+
+            string planUUID = cmbPricingPlan.SelectedValue as string;
+            if (string.IsNullOrEmpty(planUUID))
+            {
+                txtCalculatedPrice.Text = "";
+                return;
+            }
+
+            var plan = playerContext.PricingPlanList.FirstOrDefault(p => p.UUID == planUUID);
+            if (plan == null)
+            {
+                txtCalculatedPrice.Text = "";
+                return;
+            }
+
+            // Parse manufacturing hours from blueprint properties
+            decimal mfgHours = 0m;
+            string mfgTimeStr;
+            if (viewModel.Data.Properties != null)
+            {
+                viewModel.Data.Properties.getString("Manufacture Run Time", null, out mfgTimeStr);
+                if (!string.IsNullOrEmpty(mfgTimeStr))
+                {
+                    decimal seconds = EvolutionChainService.ParseTimeToSeconds(mfgTimeStr);
+                    mfgHours = seconds / 3600m;
+                }
+            }
+
+            var result = PriceCalculator.ComputeBlueprintPrice(plan, viewModel.Data, mfgHours);
+            string priceText = result.Price.ToString("N2");
+            if (!result.IsComplete)
+                priceText += " *";
+            txtCalculatedPrice.Text = priceText;
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)

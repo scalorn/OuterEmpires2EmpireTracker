@@ -115,7 +115,7 @@ Implement pricing plans as a per-player valuation layer. Build the PricingPlan m
     - Add `Compile Include` entries if new Designer changes create new files
     - _Requirements: 1.2, 1.5_
 
-- [-] 8. Final checkpoint — Ensure all tests pass
+- [x] 8. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
