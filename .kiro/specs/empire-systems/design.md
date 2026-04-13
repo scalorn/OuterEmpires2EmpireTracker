@@ -377,6 +377,7 @@ public class Ship
 
     // Cargo
     public ItemBag Cargo { get; set; } = new ItemBag();
+    public ItemBag RawMaterialHold { get; set; } = new ItemBag();  // Mining ships only
 }
 ```
 
@@ -384,6 +385,7 @@ Design decisions:
 - Ship duplicates HullBlueprintUUID and Components from the template because the ship is an independent entity — the template can be modified without affecting existing ships, and ships can have components replaced after being built (everything except the hull is swappable).
 - Location uses the same DestinationType enum as route stops.
 - Cargo is an ItemBag, same as colony warehouse. Volume enforcement is in the service layer, not the model.
+- RawMaterialHold is a separate ItemBag for unrefined resources on mining ships. Capacity comes from the hull blueprint's "Raw Material Capacity" property. Empty for non-mining ships.
 
 ### Station
 
@@ -412,15 +414,16 @@ public class Station
     [JsonConverter(typeof(StringEnumConverter))]
     public StationOwnership Ownership { get; set; } = StationOwnership.Government;
 
-    public string OwnerUUID { get; set; } = string.Empty;  // Empty for government
+    public string OwnerUUID { get; set; } = string.Empty;  // Player whose hold this represents
     public ItemBag Hold { get; set; } = new ItemBag();
 }
 ```
 
 Design decisions:
 - UUID is deterministic from station name using DeterministicUUID with a station-specific namespace.
-- Government stations have empty OwnerUUID and are shared across all players.
-- Hold is an ItemBag with no capacity limit (enforced by not checking — ItemBag has no limit concept).
+- Station holds are per-player. Each player has their own Station record for the same physical station, with their own Hold contents. The station UUID + OwnerUUID together identify a unique hold.
+- Government stations are shared locations but each player tracks their own inventory there.
+- Hold is an ItemBag with no capacity limit.
 
 ### MarketListing
 

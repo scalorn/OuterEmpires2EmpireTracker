@@ -290,9 +290,9 @@ Iterations can be reordered based on priorities. The data model is designed to s
 
 #### Acceptance Criteria
 
-1. THE Ship SHALL have a UUID, Name, OwnerUUID, Ship_Template UUID (optional — may be built without a template), a list of installed components, a current location (Station UUID or Colony UUID with DestinationType), and a cargo hold (ItemBag).
+1. THE Ship SHALL have a UUID, Name, OwnerUUID, Ship_Template UUID (optional — may be built without a template), a list of installed components, a current location (Station UUID or Colony UUID with DestinationType), a cargo hold (ItemBag), and a raw material hold (ItemBag, for mining ships).
 2. THE Ship SHALL have a computed Cargo_Capacity (volume) derived from hull + cargo pod components.
-3. THE Ship's cargo hold tracks what is currently loaded, constrained by Cargo_Capacity volume.
+3. THE Ship's cargo hold tracks what is currently loaded, constrained by Cargo_Capacity volume. Mining ships have a separate raw material hold with capacity from the hull's "Raw Material Capacity" property.
 4. THE Application SHALL persist Ships to PlayerData.json.
 5. Ships belong to a player profile (OwnerUUID). Cascade delete on player deletion.
 6. THE Application SHALL allow creating ships from a template (copies the configuration) or manually.
@@ -358,9 +358,9 @@ Iterations can be reordered based on priorities. The data model is designed to s
 #### Acceptance Criteria
 
 1. THE Station SHALL have a UUID, Name, StationType (Outpost, Station, or Starbase), an ownership flag (Government or PlayerOwned), and an optional OwnerUUID (for player-owned).
-2. THE Station SHALL have a Station_Hold modeled as an ItemBag (same as colony warehouse), with no capacity limit.
+2. THE Station SHALL have a Station_Hold modeled as an ItemBag (same as colony warehouse), with no capacity limit. Station holds are per-player — each player has their own hold at a station, there is no shared inventory.
 3. THE Application SHALL persist Stations to PlayerData.json.
-4. Player-owned stations belong to a player profile. Government stations are shared.
+4. Player-owned stations belong to a player profile. Government stations are shared locations but holds are still per-player.
 
 ### Requirement 4.2: Station Management Form
 
@@ -627,4 +627,4 @@ Iterations can be reordered based on priorities. The data model is designed to s
 1. All entities with OwnerUUID SHALL be filtered by current player on display.
 2. Player switch SHALL refresh all forms showing owned data.
 3. Player deletion SHALL cascade delete all owned entities.
-4. Government stations are shared (no OwnerUUID filter).
+4. Government stations are shared locations but station holds are per-player — each player tracks their own inventory.
