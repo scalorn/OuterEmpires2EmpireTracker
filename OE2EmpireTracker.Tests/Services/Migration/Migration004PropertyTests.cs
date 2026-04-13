@@ -164,8 +164,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         {
             return Prop.ForAll(LocalCountDownTimeGen().ToArbitrary(), timer =>
             {
-                // Record original duration
-                TimeSpan originalDuration = timer.EndTime - timer.StartTime;
                 DateTime originalStart = timer.StartTime;
                 DateTime originalEnd = timer.EndTime;
 
@@ -175,19 +173,26 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 if (timer.EndTime != DateTime.MinValue)
                     timer.EndTime = timer.EndTime.ToUniversalTime();
 
-                // Duration should be preserved
-                TimeSpan newDuration = timer.EndTime - timer.StartTime;
-                bool durationPreserved = Math.Abs((newDuration - originalDuration).TotalSeconds) < 1;
+                // Both should now be UTC
+                bool startIsUtc = timer.StartTime.Kind == DateTimeKind.Utc;
+                bool endIsUtc = timer.EndTime.Kind == DateTimeKind.Utc;
 
-                // The shift should equal the local UTC offset
-                TimeSpan expectedOffset = TimeZoneInfo.Local.GetUtcOffset(originalStart);
-                TimeSpan actualShift = originalStart - timer.StartTime;
-                bool shiftCorrect = Math.Abs((actualShift - expectedOffset).TotalSeconds) < 1;
+                // The shift should equal the local UTC offset at each original time
+                // (may differ across DST boundaries — that's correct behavior)
+                TimeSpan startOffset = TimeZoneInfo.Local.GetUtcOffset(originalStart);
+                TimeSpan startShift = originalStart - timer.StartTime;
+                bool startShiftCorrect = Math.Abs((startShift - startOffset).TotalSeconds) < 1;
 
-                return durationPreserved
-                    .Label($"Duration not preserved: original={originalDuration}, new={newDuration}")
-                    .And(shiftCorrect)
-                    .Label($"Shift incorrect: expected={expectedOffset}, actual={actualShift}");
+                TimeSpan endOffset = TimeZoneInfo.Local.GetUtcOffset(originalEnd);
+                TimeSpan endShift = originalEnd - timer.EndTime;
+                bool endShiftCorrect = Math.Abs((endShift - endOffset).TotalSeconds) < 1;
+
+                return (startIsUtc && endIsUtc)
+                    .Label($"Kind not UTC: start={timer.StartTime.Kind}, end={timer.EndTime.Kind}")
+                    .And(startShiftCorrect)
+                    .Label($"Start shift incorrect: expected={startOffset}, actual={startShift}")
+                    .And(endShiftCorrect)
+                    .Label($"End shift incorrect: expected={endOffset}, actual={endShift}");
             });
         }
 
