@@ -559,6 +559,9 @@ Iterations can be reordered based on priorities. The data model is designed to s
 #### OQ-23: Stock Target — Dedicated vs Shared
 **Decision:** Each stock target has a Dedicated flag (checkbox). Dedicated targets reserve stock exclusively — their component requirements are summed independently. Shared targets pool their requirements — for overlapping components, the system takes the max quantity across shared targets rather than summing. Example: "10 Keystones (dedicated)" + "10 Vanguards (dedicated)" both using the same reactor = 20 reactors needed. "10 Keystones (shared)" + "10 Vanguards (shared)" = 10 reactors needed (enough for either, not both).
 
+#### OQ-24: Stock Target — Template Modification Cascade
+**Decision:** Stock targets that reference ship templates use live expansion — the template's current components are resolved at check time, not snapshotted when the target is created. If a template is modified (e.g. reactor swapped), the next stock target evaluation expands the updated template, detects the shortfall of the new component, and triggers the build cascade. Old components remain in inventory for the user to sell or repurpose. Modifying a template sets the stock target dirty flag so the background processor picks it up.
+
 ### Requirement 7.1: Stock Targets
 
 **User Story:** As a player, I want to define target stock levels for items at specific locations or empire-wide, so that the system can identify shortfalls and create manufacturing orders.

@@ -248,6 +248,33 @@ flowchart LR
     H --> I
 ```
 
+### Flow 7: Ship Template Modification — Stock Target Cascade
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant STD as Ship Template Designer
+    participant PC as PlayerContext
+    participant BG as Background Processor
+    participant STS as StockTargetService
+
+    Note over User: Stock target exists:<br/>"Keep stock for 10 Keystones"<br/>Template has Reactor A
+
+    User->>STD: Swap Reactor A → Reactor B in template
+    STD->>PC: Save template + set CascadeStockTargetsDirty
+
+    Note over BG: Next tick
+    BG->>STS: Check stock targets
+    STS->>STS: Expand Keystone template (live)
+    Note right of STS: Template now has Reactor B<br/>Need 10 × Reactor B
+    STS->>STS: Check stock: 0 Reactor B available
+    STS->>STS: Shortfall: 10 Reactor B
+    STS-->>BG: Generate build items for Reactor B
+    BG-->>User: Inactivity: "10 Reactor B needed"
+
+    Note over User: 10 Reactor A still in inventory<br/>User can sell or repurpose
+```
+
 ## Data Models
 
 All new models follow the existing POCO pattern: public properties with defaults, Newtonsoft.Json serialization, UUID + OwnerUUID ownership, persisted as top-level arrays in PlayerRoot.
