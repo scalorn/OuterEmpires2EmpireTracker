@@ -603,6 +603,23 @@ Design decisions:
 - Used for combo box lookups. The combo data source merges PlayerProfiles + ExternalCharacters, sorted by name, with a free-text fallback.
 - No OwnerUUID — external characters are shared across all managed player profiles.
 
+### Item Changes (Crate Support)
+
+```csharp
+// Add to existing ItemType.ItemTypeEnum:
+Crate   // A container that holds other items
+
+// Add to existing Item class:
+public ItemBag Contents { get; set; }  // Non-null for Crate items, null for everything else
+```
+
+Design decisions:
+- Crate is an Item with ItemType = Crate and a non-null Contents ItemBag.
+- Non-crate items have Contents = null (omitted from JSON via NullValueHandling.Ignore).
+- No nesting: validation prevents adding a Crate item to another Crate's Contents.
+- Ship cargo volume computation sums item volumes recursively one level deep: for each item, add its Volume; if it's a Crate, also add the Volume of each item in Contents.
+- Crate itself may have a Volume (the box), and its contents add to the total.
+
 ### PlayerProfile Changes
 
 ```csharp

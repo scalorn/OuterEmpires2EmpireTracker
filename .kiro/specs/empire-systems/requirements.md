@@ -79,6 +79,7 @@ Iterations can be reordered based on priorities. The data model is designed to s
 - **PlayerData**: JSON file where player-specific data is persisted.
 - **Faction**: A player organization. Players belong to at most one faction. Factions enable scoped features (pricing plans, stock targets) and structured character lookups.
 - **ExternalCharacter**: A lightweight record of a character the user interacts with but doesn't manage as a full player profile. Used for combo box lookups in Recipient, Counterparty, etc.
+- **Crate**: An Item that contains other Items (via an ItemBag). Used to organize and transfer groups of items as a single unit. Cannot be nested. Contents count toward container capacity (e.g. ship cargo volume).
 
 ---
 
@@ -691,6 +692,56 @@ Iterations can be reordered based on priorities. The data model is designed to s
 2. WHEN a pricing plan is scoped to a faction, all player profiles in that faction SHALL be able to select it.
 3. THE Application SHALL support faction-scoped stock targets in future iterations.
 4. THE market form SHALL allow filtering transactions by faction members.
+
+---
+
+## Section 11: Crates
+
+**Iteration:** Data model in Iteration 1, UI in later iteration
+**Backlog Items:** New (not previously in backlog)
+
+### Resolved Questions
+
+#### OQ-26: Crate Capacity
+**Decision:** Crates have no inherent capacity limit. The capacity constraint comes from the container the crate is in — ship cargo enforces volume limits (crate contents count toward ship cargo volume), station holds have no limit. A crate in a ship cannot be used to exceed the ship's cargo capacity.
+
+#### OQ-27: Crate Nesting
+**Decision:** Crates cannot be nested (no crate inside a crate) at this time.
+
+#### OQ-28: Crate Transferability
+**Decision:** Crates are transferable between players. Selling a whole crate (with contents) on the market is an expected use case.
+
+### Requirement 11.1: Crate Data Model
+
+**User Story:** As a player, I want to store items in crates, so that I can organize and transfer groups of items as a single unit.
+
+#### Acceptance Criteria
+
+1. A Crate SHALL be an Item with ItemType = Crate and an associated ItemBag containing the crate's contents.
+2. Crates can exist in any ItemBag — colony warehouses, station holds, ship cargo.
+3. Crates SHALL NOT be nested — a crate's contents cannot include another crate.
+4. WHEN computing cargo volume for a ship, THE Application SHALL include the volume of all items inside crates (crate contents count toward ship cargo capacity).
+5. THE Application SHALL serialize crate contents as part of the Item when persisting to JSON.
+
+### Requirement 11.2: Crate Management
+
+**User Story:** As a player, I want to create crates, add items to them, and remove items from them.
+
+#### Acceptance Criteria
+
+1. THE Application SHALL allow creating empty crates in any inventory (colony warehouse, station hold, ship cargo).
+2. THE Application SHALL allow moving items into and out of crates.
+3. THE Application SHALL prevent placing a crate inside another crate.
+4. THE Application SHALL display crate contents when a crate is selected in any inventory view.
+
+### Requirement 11.3: Crate Market Listing
+
+**User Story:** As a player, I want to list a crate with its contents for sale on the market, so that I can sell bundled items as a package.
+
+#### Acceptance Criteria
+
+1. THE Market_Listing SHALL support listing a Crate item, with the listing displaying the crate's contents for buyer visibility.
+2. WHEN a crate is sold, THE entire crate (with contents) transfers — the listing quantity decrements by one crate.
 
 ---
 
