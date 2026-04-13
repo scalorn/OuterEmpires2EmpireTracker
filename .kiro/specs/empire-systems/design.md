@@ -646,6 +646,31 @@ public class SupplyChainStage
 }
 ```
 
+### WarehouseOverflowRule
+
+```csharp
+public class WarehouseOverflowRule
+{
+    public string UUID { get; set; }
+    public string OwnerUUID { get; set; } = string.Empty;
+    public string ColonyUUID { get; set; } = string.Empty;       // Source colony
+    public string ResourceName { get; set; } = string.Empty;
+    public string ResourcePurity { get; set; } = string.Empty;
+    public int TriggerThreshold { get; set; } = 0;               // Move when qty exceeds this
+
+    // Destination
+    [JsonConverter(typeof(StringEnumConverter))]
+    public DestinationType DestinationType { get; set; } = DestinationType.Station;
+    public string DestinationUUID { get; set; } = string.Empty;
+}
+```
+
+Design decisions:
+- One rule per resource per colony. Multiple resources at the same colony = multiple rules.
+- TriggerThreshold is the quantity at which a delivery is generated to move the excess. The amount moved = current quantity - TriggerThreshold (leave TriggerThreshold behind, move the rest).
+- Background processor checks warehouse levels each tick and generates deliveries when thresholds are exceeded.
+- Colony warehouse capacity is tracked via the existing colony data model. A full warehouse is detectable when total item count/volume reaches the limit.
+
 ### RouteStop Changes
 
 The existing `RouteStop` model needs a `DestinationType` discriminator:
@@ -722,6 +747,7 @@ public class PlayerRoot
     public StockTarget[] StockTarget { get; set; }
     public StockPlan[] StockPlan { get; set; }
     public SupplyChain[] SupplyChain { get; set; }
+    public WarehouseOverflowRule[] WarehouseOverflowRule { get; set; }
     public Faction[] Faction { get; set; }
     public ExternalCharacter[] ExternalCharacter { get; set; }
 }
@@ -1072,6 +1098,7 @@ public List<MarketTransaction> MarketTransactionList;
 public List<StockTarget> StockTargetList;
 public List<StockPlan> StockPlanList;
 public List<SupplyChain> SupplyChainList;
+public List<WarehouseOverflowRule> WarehouseOverflowRuleList;
 public List<Faction> FactionList;
 public List<ExternalCharacter> ExternalCharacterList;
 ```

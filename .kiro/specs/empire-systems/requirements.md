@@ -529,6 +529,19 @@ Iterations can be reordered based on priorities. The data model is designed to s
 4. WHEN accumulation at a stage exceeds a configurable threshold, THE Application SHALL generate a delivery plan to move resources to the next stage.
 5. THE Supply_Chain definition SHALL be persisted to PlayerData.json.
 
+### Requirement 6.6: Colony Warehouse Overflow Rules
+
+**User Story:** As a player, I want the system to monitor colony warehouse levels and automatically generate delivery plans to move excess resources before the warehouse fills and production stops.
+
+#### Acceptance Criteria
+
+1. THE Application SHALL support defining Warehouse_Overflow_Rules per colony, specifying a resource, a trigger threshold (quantity at which to move), and a destination (Station or Colony UUID).
+2. WHEN the background processor detects a resource quantity at a colony exceeding the trigger threshold, THE Application SHALL generate a delivery plan to move the excess to the specified destination.
+3. THE Application SHALL display a warning when a colony warehouse is approaching capacity, indicating which resources are accumulating and which overflow rules are defined.
+4. THE Application SHALL display a critical warning when a colony warehouse is full, indicating that mining and refining have stopped.
+5. THE Warehouse_Overflow_Rule SHALL be persisted to PlayerData.json.
+6. THE Inactivity form SHALL surface warehouse overflow warnings alongside other production alerts.
+
 ### Requirement 6.3: Empire-Wide Production View
 
 **User Story:** As a player, I want to see all production across all colonies in one view.
