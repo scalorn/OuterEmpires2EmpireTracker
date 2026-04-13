@@ -1550,11 +1550,16 @@ namespace OE2EmpireTracker
                 bool globalChanged = false;
                 bool playerChanged = false;
 
-                // Check if the selected blueprint matches the dedup key
-                if (!string.IsNullOrEmpty(viewModel.Data.UUID) &&
-                    MarketBlueprintImporter.FindByDedupKey(
-                        new BindingList<Blueprint>(new[] { viewModel.Data }),
-                        tempBP) != null)
+                // Check if the selected blueprint matches the dedup key.
+                // Use relaxed matching (Name + Evolution + BluePrintType) because partial
+                // parses (e.g. resources tab) may not extract Class or TechLevel.
+                bool selectedMatch = !string.IsNullOrEmpty(viewModel.Data.UUID)
+                    && !string.IsNullOrEmpty(tempBP.Name)
+                    && string.Equals(viewModel.Data.Name, tempBP.Name, StringComparison.Ordinal)
+                    && viewModel.Data.Evolution == tempBP.Evolution
+                    && string.Equals(viewModel.Data.BluePrintType, tempBP.BluePrintType, StringComparison.Ordinal);
+
+                if (selectedMatch)
                 {
                     // Selected blueprint matches â€” update in place
                     MarketBlueprintImporter.UpdateExisting(viewModel.Data, tempBP);
@@ -1607,8 +1612,11 @@ namespace OE2EmpireTracker
                 }
 
                 // Persist
+                Log.Info("Pre-save: blueprint {0} UUID={1} has {2} properties, {3} resources (hashcode={4})",
+                    importedBP.Name, importedBP.UUID, importedBP.Properties?.Count ?? 0, importedBP.Resources?.Count ?? 0, importedBP.GetHashCode());
                 if (globalChanged) empireContext.WriteContext();
                 if (playerChanged) playerContext.WriteContext();
+                Log.Info("Post-save complete for {0}", importedBP.Name);
 
                 // Notify
                 playerContext.OnBlueprintDataChanged(importedBP.UUID);

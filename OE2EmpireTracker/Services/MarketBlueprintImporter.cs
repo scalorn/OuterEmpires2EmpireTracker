@@ -244,8 +244,8 @@ namespace OE2EmpireTracker.Services
             // that only extracts 1 property) from wiping out a full property set.
             if (incoming.Properties != null && incoming.Properties.Count > 0)
             {
-                Log.Info("UpdateExisting: merging properties ({0} incoming into {1} existing) for {2}",
-                    incoming.Properties.Count, existing.Properties?.Count ?? 0, existing.Name);
+                Log.Info("UpdateExisting: merging properties ({0} incoming into {1} existing) for {2} (hashcode={3})",
+                    incoming.Properties.Count, existing.Properties?.Count ?? 0, existing.Name, existing.GetHashCode());
 
                 if (existing.Properties == null)
                     existing.Properties = new PropertyBag();
@@ -285,11 +285,17 @@ namespace OE2EmpireTracker.Services
                     existing.Resources?.Count ?? 0, existing.Name);
             }
 
-            // Overwrite non-protected scalar fields from incoming
-            existing.Evolution = incoming.Evolution;
-            existing.Class = incoming.Class;
-            existing.BluePrintType = incoming.BluePrintType;
-            existing.Name = incoming.Name;
+            // Overwrite non-protected scalar fields from incoming, but only if the
+            // incoming value is non-default. Partial parses (e.g. resources tab) produce
+            // default values (Class=0, empty BluePrintType) that should not overwrite real data.
+            if (incoming.Evolution > 0)
+                existing.Evolution = incoming.Evolution;
+            if (incoming.Class > 0)
+                existing.Class = incoming.Class;
+            if (!string.IsNullOrEmpty(incoming.BluePrintType))
+                existing.BluePrintType = incoming.BluePrintType;
+            if (!string.IsNullOrEmpty(incoming.Name))
+                existing.Name = incoming.Name;
         }
     }
 }
