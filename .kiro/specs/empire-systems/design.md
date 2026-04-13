@@ -919,6 +919,37 @@ Forms subscribe to data change events and refresh when the background processor 
 
 The dirty flag approach means cascades are batched — multiple transactions recorded in quick succession result in one cascade evaluation, not one per transaction.
 
+### Implementation
+
+The dirty flags live on PlayerContext as runtime-only fields (not persisted, not part of any data model):
+
+```csharp
+// Runtime cascade flags — not serialized
+[JsonIgnore] public bool CascadeStockTargetsDirty { get; set; } = false;
+[JsonIgnore] public bool CascadeResourceCheckDirty { get; set; } = false;
+```
+
+When a form records a market transaction, updates a station hold, or modifies build plan data, it sets the appropriate flag(s). The BackgroundProcessor checks these flags on each tick:
+
+```csharp
+// In BackgroundProcessor tick:
+if (playerContext.CascadeStockTargetsDirty)
+{
+    playerContext.CascadeStockTargetsDirty = false;
+    // Run StockTargetService.CheckTargets → generate build items if needed
+    // Set CascadeResourceCheckDirty if new items were created
+}
+if (playerContext.CascadeResourceCheckDirty)
+{
+    playerContext.CascadeResourceCheckDirty = false;
+    // Run ResourceCheckService on all active build plans
+    // Update delivery plans, item statuses
+    // Fire BuildPlanDataChanged event
+}
+```
+
+The flags are simple booleans — no queue, no event log. If multiple transactions set the same flag before the next tick, only one cascade evaluation runs. The background processor clears the flag before processing to avoid missing a flag set during processing.
+
 ## PlayerContext Changes
 
 ### New Fields
