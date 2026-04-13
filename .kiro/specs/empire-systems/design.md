@@ -629,6 +629,13 @@ public static class MarketService
         BindingList<MarketListing> listings);
 
     /// <summary>
+    /// Records a buy transaction and adds items to the station hold.
+    /// </summary>
+    public static void RecordPurchase(
+        MarketTransaction transaction,
+        Func<string, Station> stationFinder);
+
+    /// <summary>
     /// Computes profit/loss for a transaction against a pricing plan.
     /// </summary>
     public static decimal ComputeProfitLoss(
@@ -850,6 +857,9 @@ For any stock target, the shortfall equals max(0, target - current quantity) whe
 
 ### Property 8: Market sale decrements listing
 For any sell transaction linked to a listing, the listing quantity after recording equals the listing quantity before minus the transaction quantity.
+
+### Property 11: Market purchase adds to station hold
+For any buy transaction at a station, the station hold quantity of the purchased item after recording equals the hold quantity before plus the transaction quantity.
 
 ### Property 9: Serialization round-trip
 For all new entity types (BuildPlan, ShipTemplate, Ship, Station, MarketListing, MarketTransaction, StockTarget, SupplyChain), serializing then deserializing produces equivalent objects.

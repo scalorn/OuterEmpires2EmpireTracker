@@ -433,6 +433,16 @@ Iterations can be reordered based on priorities. The data model is designed to s
 4. Blueprint copies can be sold without removing the blueprint from the player's collection (blueprints are copyable).
 5. Surveys cannot be copied — selling a survey removes it from the player's collection, but the survey data is retained for reference.
 
+### Requirement 5.6: Inventory Mutation on Purchase
+
+**User Story:** As a player, I want recording a purchase to add items to the station hold where I bought them, so that resource availability is accurate and build plan shortfalls can be re-evaluated.
+
+#### Acceptance Criteria
+
+1. WHEN a Buy transaction is recorded at a station, THE Application SHALL add the purchased items to that station's hold inventory.
+2. AFTER adding items to a station hold, THE Application SHALL trigger a resource availability re-check for any Build_Plans with shortfalls that could be resolved by the newly available resources.
+3. IF a Build_Item's shortfalls are fully resolved by the purchase (all resources now available across warehouse and station holds), THE Application SHALL allow the item's status to advance.
+
 ### Requirement 5.4: Market Form
 
 **User Story:** As a player, I want a form to view and manage my market listings and transactions.
