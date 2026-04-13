@@ -611,10 +611,11 @@ Iterations can be reordered based on priorities. The data model is designed to s
 #### Acceptance Criteria
 
 1. THE Faction SHALL have a UUID, Name, and optional Description.
-2. THE PlayerProfile SHALL have an optional FactionUUID indicating which faction the player belongs to.
-3. A player can belong to at most one faction at a time.
-4. THE Application SHALL persist Factions to PlayerData.json.
-5. THE Application SHALL allow creating, editing, and deleting factions.
+2. THE Faction UUID SHALL be deterministic, generated from the faction name using DeterministicUUID with a faction-specific namespace. This ensures the same faction has the same UUID across different players' data files, facilitating data sharing.
+3. THE PlayerProfile SHALL have an optional FactionUUID indicating which faction the player belongs to.
+4. A player can belong to at most one faction at a time.
+5. THE Application SHALL persist Factions to PlayerData.json.
+6. THE Application SHALL allow creating, editing, and deleting factions.
 
 ### Requirement 10.2: External Character Tracking
 
@@ -623,10 +624,11 @@ Iterations can be reordered based on priorities. The data model is designed to s
 #### Acceptance Criteria
 
 1. THE ExternalCharacter SHALL have a UUID, Name, and optional FactionUUID.
-2. External characters are lightweight — no skills, ranks, or other profile data.
-3. THE Application SHALL persist ExternalCharacters to PlayerData.json.
-4. THE Application SHALL allow creating, editing, and deleting external characters.
-5. WHEREVER a player name is entered (Recipient, Counterparty, etc.), THE Application SHALL present a combo box with managed player profiles and external characters, while still allowing free-text entry for unknown players.
+2. THE ExternalCharacter UUID SHALL be deterministic, generated from the character name using DeterministicUUID with a character-specific namespace. This ensures the same character has the same UUID across different players' data files.
+3. External characters are lightweight — no skills, ranks, or other profile data.
+4. THE Application SHALL persist ExternalCharacters to PlayerData.json.
+5. THE Application SHALL allow creating, editing, and deleting external characters.
+6. WHEREVER a player name is entered (Recipient, Counterparty, etc.), THE Application SHALL present a combo box with managed player profiles and external characters, while still allowing free-text entry for unknown players.
 
 ### Requirement 10.3: Faction-Scoped Features
 

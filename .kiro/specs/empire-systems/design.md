@@ -529,6 +529,7 @@ public class Faction
 
 Design decisions:
 - Factions are not per-player — they're shared entities. All player profiles can reference the same faction.
+- UUID is deterministic from faction name using DeterministicUUID with a faction-specific namespace. Two players who both create "The Space Pirates" get the same UUID, enabling data sharing (ship templates, pricing plans).
 - No OwnerUUID. Factions are created/managed by any player and persist globally in PlayerData.
 
 ### ExternalCharacter
@@ -544,6 +545,7 @@ public class ExternalCharacter
 
 Design decisions:
 - Lightweight — just name and optional faction. No skills, ranks, or other profile data.
+- UUID is deterministic from character name using DeterministicUUID with a character-specific namespace. Two players who both add "Captain Bob" get the same UUID, so shared data references resolve correctly.
 - Used for combo box lookups. The combo data source merges PlayerProfiles + ExternalCharacters, sorted by name, with a free-text fallback.
 - No OwnerUUID — external characters are shared across all managed player profiles.
 
@@ -998,6 +1000,26 @@ public List<SupplyChain> GetCurrentPlayerSupplyChains()
 ```
 
 ## Migration
+
+## UUID Strategy
+
+Entities that represent game-world objects shared across players use deterministic UUIDs (UUID v5 via DeterministicUUID) so that two players who independently create the same entity get the same UUID. This enables data sharing — importing a ship template from another player resolves faction, character, and station references correctly.
+
+| Entity | UUID Type | Seed |
+|---|---|---|
+| Station | Deterministic | Station name (station namespace) |
+| Faction | Deterministic | Faction name (faction namespace) |
+| ExternalCharacter | Deterministic | Character name (character namespace) |
+| BuildPlan | Random | Player-specific work order |
+| BuildItem | Random | Nested in plan |
+| ShipTemplate | Random | Player-created configuration |
+| Ship | Random | Player-owned instance |
+| MarketListing | Random | Player-specific record |
+| MarketTransaction | Random | Player-specific record |
+| StockTarget | Random | Player-specific rule |
+| SupplyChain | Random | Player-specific definition |
+
+Each deterministic entity type uses its own UUID namespace to avoid collisions (e.g. a faction named "Alpha" and a station named "Alpha" get different UUIDs).
 
 ### Migration005_EmpireSystems
 
