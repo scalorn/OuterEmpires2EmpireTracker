@@ -117,8 +117,8 @@ Iterations can be reordered based on priorities. The data model is designed to s
 #### OQ-10: Build Plan Deletion
 **Decision:** Deleting a build plan leaves associated delivery plans/routes in place.
 
-#### OQ-11: Commodity Quantity Unit
-**Decision:** Commodity items specify quantity in runs (cycles), not individual items. Total output displayed for reference.
+#### OQ-11: Quantity Unit
+**Decision:** Quantity is always runs for all item types. Some blueprints produce multiple items per run (e.g. munitions have an "items per run" property). Total output (runs × items per run) is displayed for reference. For commodities, each run produces CommoditiesPerCycle items.
 
 ### Requirement 1.1: Build Plan CRUD
 
@@ -143,7 +143,7 @@ Iterations can be reordered based on priorities. The data model is designed to s
 2. WHEN Item_Type is Manufactory, THE Build_Item SHALL reference a Blueprint by UUID and store the output item name.
 3. WHEN Item_Type is Commodity, THE Build_Item SHALL reference a Commodity by name.
 4. WHEN adding a Build_Item, THE Application SHALL present eligible blueprints or commodities based on Item_Type.
-5. Manufactory quantity represents items to manufacture (≥ 1).
+5. Manufactory quantity represents manufacturing runs (≥ 1). Total output (runs × items per run from blueprint) displayed for reference.
 6. Commodity quantity represents production runs (≥ 1). Total output (runs × CommoditiesPerCycle) displayed for reference.
 7. IF quantity < 1, THEN THE Application SHALL reject the save.
 8. Removing a Build_Item removes it from the plan and persists the change.
@@ -197,7 +197,7 @@ Iterations can be reordered based on priorities. The data model is designed to s
 
 #### Acceptance Criteria
 
-1. For Manufactory: quantity = ceiling(Target_Duration_seconds / Manufacturing_Time_seconds).
+1. For Manufactory: runs = ceiling(Target_Duration_seconds / Manufacturing_Time_seconds).
 2. For Commodity: runs = ceiling(Target_Duration_seconds / Commodity_Cycle_Time_seconds).
 3. IF Target_Duration cannot be parsed, do not compute.
 4. IF blueprint has no "Manufacture Run Time", indicate time is unknown.

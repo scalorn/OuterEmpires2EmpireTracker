@@ -239,11 +239,12 @@ flowchart LR
     A[User enters target duration<br/>'2d 12h 0m 0s'] --> B[Parse to seconds<br/>216000s]
     B --> C{Item type?}
     C -->|Manufactory| D[Blueprint mfg time: 9h = 32400s]
-    D --> E["ceiling(216000 / 32400) = 7 items"]
+    D --> E["ceiling(216000 / 32400) = 7 runs"]
+    E --> E2["7 runs × items per run"]
     C -->|Commodity| F[Cycle time: 600s]
     F --> G["ceiling(216000 / 600) = 360 runs"]
     G --> H["360 × 10 = 3600 items produced"]
-    E --> I[Populate quantity field]
+    E2 --> I[Populate quantity field with runs]
     H --> I
 ```
 
@@ -306,7 +307,7 @@ public class BuildItem
     public string CommodityName { get; set; } = string.Empty;    // Commodity
 
     // How many
-    public int Quantity { get; set; } = 0;  // Items for Manufactory, runs for Commodity
+    public int Quantity { get; set; } = 0;  // Always runs (mfg runs, commodity cycles, etc.)
 
     // Where to build
     public string ColonyUUID { get; set; } = string.Empty;
@@ -329,7 +330,7 @@ public class BuildItem
 Design decisions:
 - All iteration 6 fields are present from the start with empty defaults. `DefaultValueHandling.Ignore` means they won't appear in JSON until used. No migration needed when Iteration 6 ships.
 - `SequenceInStructure` supports multiple items on one structure (time-splitting). Default 0 means "only item" or "first in sequence."
-- `Quantity` is items for Manufactory, runs for Commodity. The service layer computes total output for display.
+- `Quantity` is always runs. The service layer computes total output using items-per-run from the blueprint (default 1, higher for munitions) or CommoditiesPerCycle for commodities.
 - Status is a string enum for readable JSON.
 
 ### ShipTemplate
@@ -716,11 +717,11 @@ Static service in `Services/QueueCalculator.cs`.
 public static class QueueCalculator
 {
     /// <summary>
-    /// Computes how many items to manufacture to keep a structure busy
+    /// Computes how many manufacturing runs to keep a structure busy
     /// for at least the target duration.
     /// Returns -1 if manufacturing time is unknown.
     /// </summary>
-    public static int ComputeManufactoryQuantity(
+    public static int ComputeManufactoryRuns(
         Blueprint blueprint, int targetDurationSeconds);
 
     /// <summary>
@@ -728,6 +729,12 @@ public static class QueueCalculator
     /// for at least the target duration.
     /// </summary>
     public static int ComputeCommodityRuns(int targetDurationSeconds);
+
+    /// <summary>
+    /// Returns total items produced for a given number of manufactory runs.
+    /// Uses the blueprint's items-per-run property (default 1).
+    /// </summary>
+    public static int ManufactoryRunsToItems(Blueprint blueprint, int runs);
 
     /// <summary>
     /// Returns total items produced for a given number of commodity runs.
@@ -738,6 +745,7 @@ public static class QueueCalculator
 
 Logic:
 - Manufactory: parse "Manufacture Run Time" from blueprint.Properties via EvolutionChainService.ParseTimeToSeconds. Return ceiling(targetSeconds / mfgSeconds).
+- ManufactoryRunsToItems: runs × items-per-run from blueprint (munitions produce multiple per run, most produce 1).
 - Commodity: ceiling(targetSeconds / CommodityCycleSeconds).
 - CommodityRunsToItems: runs × CommoditiesPerCycle.
 
