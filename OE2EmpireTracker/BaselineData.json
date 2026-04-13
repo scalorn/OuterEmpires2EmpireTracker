@@ -91,6 +91,7 @@
       "Id": "AsteroidGrapple",
       "Name": "Asteroid Grapple",
       "Properties": [
+        "Manufacture Run Time",
         "Cargo Volume Size",
         "Class",
         "Eng Capacity Required",
@@ -110,6 +111,7 @@
       "Id": "Beamer/Large",
       "Name": "Beamer Large",
       "Properties": [
+        "Manufacture Run Time",
         "Accuracy",
         "Cargo Volume Size",
         "Class",
@@ -133,6 +135,7 @@
       "Id": "Beamer/Medium",
       "Name": "Beamer Medium",
       "Properties": [
+        "Manufacture Run Time",
         "Accuracy",
         "Cargo Volume Size",
         "Class",
@@ -156,6 +159,7 @@
       "Id": "Beamer/Small",
       "Name": "Beamer Small",
       "Properties": [
+        "Manufacture Run Time",
         "Accuracy",
         "Cargo Volume Size",
         "Class",
@@ -227,6 +231,7 @@
       "Id": "CoilGun/Large",
       "Name": "Coil Gun Large",
       "Properties": [
+        "Manufacture Run Time",
         "Accuracy",
         "Ammo Type",
         "Cargo Volume Size",
@@ -254,6 +259,7 @@
       "Id": "CoilGun/Medium",
       "Name": "Coil Gun Medium",
       "Properties": [
+        "Manufacture Run Time",
         "Accuracy",
         "Ammo Type",
         "Cargo Volume Size",
@@ -281,6 +287,7 @@
       "Id": "CoilGun/Small",
       "Name": "Coil Gun Small",
       "Properties": [
+        "Manufacture Run Time",
         "Accuracy",
         "Ammo Type",
         "Cargo Volume Size",
@@ -309,6 +316,7 @@
       "Name": "Coilgun Munitions",
       "Universal": true,
       "Properties": [
+        "Manufacture Run Time",
         "Ammo Type",
         "Amount Manufactured",
         "Cargo Volume Size",
@@ -518,6 +526,7 @@
       "Id": "HullPlating",
       "Name": "Hull Plating",
       "Properties": [
+        "Manufacture Run Time",
         "Cargo Volume Size",
         "Class",
         "Energy Defence Rating",
@@ -797,6 +806,7 @@
       "Id": "MiningLaser",
       "Name": "Mining Laser",
       "Properties": [
+        "Manufacture Run Time",
         "Cargo Volume Size",
         "Class",
         "Eng Capacity Required",
@@ -839,6 +849,7 @@
       "Id": "MissileLauncherLarge",
       "Name": "Missile Launcher Large",
       "Properties": [
+        "Manufacture Run Time",
         "Accuracy",
         "Ammo Type",
         "Cargo Volume Size",
@@ -865,6 +876,7 @@
       "Id": "MissileLauncher/Medium",
       "Name": "Missile Launcher Medium",
       "Properties": [
+        "Manufacture Run Time",
         "Accuracy",
         "Ammo Type",
         "Cargo Volume Size",
@@ -891,6 +903,7 @@
       "Id": "MissileLauncher/Small",
       "Name": "Missile Launcher Small",
       "Properties": [
+        "Manufacture Run Time",
         "Accuracy",
         "Ammo Type",
         "Cargo Volume Size",
@@ -918,6 +931,7 @@
       "Name": "Missile Munitions",
       "Universal": true,
       "Properties": [
+        "Manufacture Run Time",
         "Acceleration Rate",
         "Accuracy",
         "Ammo Type",
@@ -935,6 +949,7 @@
       "Id": "NavComp",
       "Name": "Nav Comp",
       "Properties": [
+        "Manufacture Run Time",
         "Class",
         "Mass",
         "Cargo Volume Size",
@@ -974,6 +989,7 @@
       "Id": "OreHopper",
       "Name": "Ore Hopper",
       "Properties": [
+        "Manufacture Run Time",
         "Class",
         "Mass",
         "Cargo Volume Size",
@@ -991,6 +1007,7 @@
       "Id": "Railgun/Large",
       "Name": "Railgun Large",
       "Properties": [
+        "Manufacture Run Time",
         "Accuracy",
         "Ammo Type",
         "Cargo Volume Size",
@@ -1015,6 +1032,7 @@
       "Id": "Railgun/Medium",
       "Name": "Railgun Medium",
       "Properties": [
+        "Manufacture Run Time",
         "Accuracy",
         "Ammo Type",
         "Cargo Volume Size",
@@ -1040,6 +1058,7 @@
       "Name": "Railgun Munitions",
       "Universal": true,
       "Properties": [
+        "Manufacture Run Time",
         "Ammo Type",
         "Amount Manufactured",
         "Cargo Volume Size",
@@ -1055,6 +1074,7 @@
       "Id": "Railgun/Small",
       "Name": "Railgun Small",
       "Properties": [
+        "Manufacture Run Time",
         "Accuracy",
         "Ammo Type",
         "Cargo Volume Size",
@@ -1229,6 +1249,7 @@
       "Id": "Shield",
       "Name": "Shield",
       "Properties": [
+        "Manufacture Run Time",
         "Class",
         "Mass",
         "Cargo Volume Size",
@@ -1302,6 +1323,7 @@
       "Id": "Thruster",
       "Name": "Thruster",
       "Properties": [
+        "Manufacture Run Time",
         "Class",
         "Mass",
         "Cargo Volume Size",
@@ -1320,6 +1342,7 @@
       "Id": "TorpedoLauncher/Large",
       "Name": "Torpedo Launcher Large",
       "Properties": [
+        "Manufacture Run Time",
         "Accuracy",
         "Ammo Type",
         "Cargo Volume Size",
@@ -1346,6 +1369,7 @@
       "Id": "TorpedoLauncher/Medium",
       "Name": "Torpedo Launcher Medium",
       "Properties": [
+        "Manufacture Run Time",
         "Accuracy",
         "Ammo Type",
         "Cargo Volume Size",
@@ -1372,6 +1396,7 @@
       "Id": "TorpedoLauncher/Small",
       "Name": "Torpedo Launcher Small",
       "Properties": [
+        "Manufacture Run Time",
         "Accuracy",
         "Ammo Type",
         "Cargo Volume Size",
@@ -1399,6 +1424,7 @@
       "Name": "Torpedo Munitions",
       "Universal": true,
       "Properties": [
+        "Manufacture Run Time",
         "Acceleration Rate",
         "Accuracy",
         "Ammo Type",
@@ -1415,6 +1441,7 @@
       "Id": "UniversalCoupler",
       "Name": "Universal Coupler",
       "Properties": [
+        "Manufacture Run Time",
         "Class",
         "Mass",
         "Cargo Volume Size",
