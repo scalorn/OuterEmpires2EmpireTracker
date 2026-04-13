@@ -458,6 +458,13 @@ public class Station
     // Per-player holds: key = PlayerProfile UUID, value = that player's inventory.
     // Each character has their own separate hold at this station.
     public Dictionary<string, ItemBag> Holds { get; set; } = new Dictionary<string, ItemBag>();
+
+    // Player-owned station components (same slot model as Ship)
+    public List<ShipComponentSlot> Components { get; set; } = new List<ShipComponentSlot>();
+    public string StationBlueprintUUID { get; set; } = string.Empty;  // Defines slot counts
+
+    // Munitions hold for armed stations (separate from general holds)
+    public ItemBag MunitionsHold { get; set; } = new ItemBag();
 }
 ```
 
@@ -468,6 +475,8 @@ Design decisions:
 - `Holds[playerUUID]` gives a specific character's inventory. Missing key = empty hold.
 - Station metadata (Name, StationType, Ownership) lives in one place, no duplication across players.
 - Hold is an ItemBag with no capacity limit.
+- Player-owned stations reuse the ShipComponentSlot model for installed components (reactors, shields, weapons). StationBlueprintUUID defines available slots.
+- MunitionsHold is a separate ItemBag for weapon ammunition on armed stations. Empty for government stations and unarmed player stations. DefaultValueHandling.Ignore omits it from JSON when empty.
 
 ### MarketListing
 

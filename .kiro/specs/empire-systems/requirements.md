@@ -387,10 +387,13 @@ Iterations can be reordered based on priorities. The data model is designed to s
 2. THE Station SHALL have a Station_Hold per player, modeled as a Dictionary of ItemBags keyed by player profile UUID. Each character has their own separate inventory at a station, with no capacity limit.
 3. THE Application SHALL persist Stations to PlayerData.json.
 4. Player-owned stations belong to a player profile. Government stations are shared locations but holds are still per-player.
+5. WHEN a Station is PlayerOwned, THE Station SHALL support installed components (reactors, shields, weapons, etc.) using the same slot-based model as Ships. The station's blueprint defines available slot counts per component type.
+6. THE Application SHALL allow installing/removing components on player-owned stations, enforcing slot limits.
+7. WHEN a PlayerOwned Station has weapons installed, THE Station SHALL have a separate munitions hold (ItemBag) for ammunition, distinct from the general per-player holds.
 
 ### Requirement 4.2: Station Management Form
 
-**User Story:** As a player, I want a form to create, edit, and delete station records.
+**User Story:** As a player, I want a form to create, edit, and delete station records and configure player-owned station components.
 
 #### Acceptance Criteria
 
@@ -398,6 +401,7 @@ Iterations can be reordered based on priorities. The data model is designed to s
 2. THE form SHALL allow creating government and player-owned stations.
 3. THE form SHALL display station inventory (hold contents).
 4. THE form SHALL allow manual inventory editing (add/remove items, adjust quantities).
+5. FOR player-owned stations, THE form SHALL display installed components by slot type and allow installing/removing component blueprints, following the same pattern as the Ship Template Designer.
 
 ### Requirement 4.3: Station Destinations in Routes
 
