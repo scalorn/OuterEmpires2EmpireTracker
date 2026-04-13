@@ -1257,6 +1257,9 @@ namespace OE2EmpireTracker
             chkGlobalBlueprint.Checked = viewModel.IsGlobal;
 
             UpdateCalculatedPrice();
+
+            // Check for unknown properties not listed in the blueprint type definition
+            CheckForUnknownProperties();
         }
         private void PopulateResources()
         {
@@ -1720,6 +1723,57 @@ namespace OE2EmpireTracker
                 dgvStatistics.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
                 dgvStatistics.Rows[e.RowIndex].ErrorText = "";
             }
+        }
+
+        // -----------------------------------------------------------------------
+        // Unknown Property Detection
+        // -----------------------------------------------------------------------
+
+        private static readonly HashSet<string> _reportedUnknownProperties = new HashSet<string>();
+
+        private void CheckForUnknownProperties()
+        {
+            if (viewModel.Data.Properties == null || viewModel.Data.Properties.Count == 0)
+                return;
+
+            BlueprintType bt = empireContext.FindBlueprintType(viewModel.Data.BluePrintType);
+            if (bt == null || bt.Properties == null)
+                return;
+
+            var knownProperties = new HashSet<string>(bt.Properties, StringComparer.OrdinalIgnoreCase);
+            // Also include internal properties that aren't displayed
+            knownProperties.Add("_IconPosition");
+
+            var unknownProps = new List<string>();
+            foreach (var key in viewModel.Data.Properties.Properties.Keys)
+            {
+                if (!knownProperties.Contains(key))
+                    unknownProps.Add(key);
+            }
+
+            if (unknownProps.Count == 0)
+                return;
+
+            // Only report each property once per session to avoid spamming
+            var newUnknowns = unknownProps.Where(p => !_reportedUnknownProperties.Contains(p)).ToList();
+            if (newUnknowns.Count == 0)
+                return;
+
+            foreach (var p in newUnknowns)
+                _reportedUnknownProperties.Add(p);
+
+            string propList = string.Join("\n", newUnknowns.Select(p =>
+                $"  • {p} = {viewModel.Data.Properties.Properties[p]}"));
+
+            Log.Warn("Unknown properties on {0} ({1}): {2}",
+                viewModel.Data.Name, bt.Name, string.Join(", ", newUnknowns));
+
+            MessageBox.Show(
+                $"Blueprint '{viewModel.Data.Name}' has properties not defined for type '{bt.Name}':\n\n{propList}\n\n" +
+                "The game may have added new properties. Consider updating the blueprint type definition in BaselineData.json.",
+                "Unknown Blueprint Properties",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
         }
 
         // -----------------------------------------------------------------------
