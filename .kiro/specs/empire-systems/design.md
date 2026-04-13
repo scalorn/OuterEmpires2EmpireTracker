@@ -1012,7 +1012,7 @@ Entities that represent game-world objects shared across players use determinist
 | ExternalCharacter | Deterministic | Character name (character namespace) |
 | BuildPlan | Random | Player-specific work order |
 | BuildItem | Random | Nested in plan |
-| ShipTemplate | Random | Player-created configuration |
+| ShipTemplate | Deterministic | OwnerUUID + template name (template namespace) |
 | Ship | Random | Player-owned instance |
 | MarketListing | Random | Player-specific record |
 | MarketTransaction | Random | Player-specific record |
