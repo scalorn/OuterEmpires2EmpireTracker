@@ -383,7 +383,7 @@ Iterations can be reordered based on priorities. The data model is designed to s
 #### Acceptance Criteria
 
 1. THE Station SHALL have a UUID, Name, StationType (Outpost, Station, or Starbase), an ownership flag (Government or PlayerOwned), and an optional OwnerUUID (for player-owned).
-2. THE Station SHALL have a Station_Hold modeled as an ItemBag (same as colony warehouse), with no capacity limit. Station holds are per-player — each player has their own hold at a station, there is no shared inventory.
+2. THE Station SHALL have a Station_Hold per player, modeled as a Dictionary of ItemBags keyed by player profile UUID. Each character has their own separate inventory at a station, with no capacity limit.
 3. THE Application SHALL persist Stations to PlayerData.json.
 4. Player-owned stations belong to a player profile. Government stations are shared locations but holds are still per-player.
 

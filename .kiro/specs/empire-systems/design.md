@@ -444,13 +444,7 @@ public enum StationOwnership
 
 public class Station
 {
-    // COMPOUND KEY: UUID + OwnerUUID together identify a unique station hold.
-    // Unlike other models where UUID is the sole key, multiple Station records
-    // can share the same UUID (same physical station) with different OwnerUUIDs
-    // (different players' inventories at that station).
     public string UUID { get; set; }
-    public string OwnerUUID { get; set; } = string.Empty;
-
     public string Name { get; set; } = string.Empty;
 
     [JsonConverter(typeof(StringEnumConverter))]
@@ -459,14 +453,20 @@ public class Station
     [JsonConverter(typeof(StringEnumConverter))]
     public StationOwnership Ownership { get; set; } = StationOwnership.Government;
 
-    public ItemBag Hold { get; set; } = new ItemBag();
+    public string OwnerUUID { get; set; } = string.Empty;  // Who owns the station (empty for government)
+
+    // Per-player holds: key = PlayerProfile UUID, value = that player's inventory.
+    // Each character has their own separate hold at this station.
+    public Dictionary<string, ItemBag> Holds { get; set; } = new Dictionary<string, ItemBag>();
 }
 ```
 
 Design decisions:
 - UUID is deterministic from station name using DeterministicUUID with a station-specific namespace.
-- **Compound key:** UUID + OwnerUUID. This is unique among all models — everywhere else UUID is the sole key. Multiple Station records share the same UUID (same physical station) with different OwnerUUIDs (each player's inventory). A player with 3 characters has 3 Station records per station they use.
-- Government stations are shared locations but each player tracks their own inventory there.
+- UUID is the sole key — consistent with every other model. No compound key.
+- OwnerUUID identifies who owns the station (empty for government). The Holds dictionary tracks per-player inventory separately.
+- `Holds[playerUUID]` gives a specific character's inventory. Missing key = empty hold.
+- Station metadata (Name, StationType, Ownership) lives in one place, no duplication across players.
 - Hold is an ItemBag with no capacity limit.
 
 ### MarketListing
