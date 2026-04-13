@@ -950,6 +950,15 @@ if (playerContext.CascadeResourceCheckDirty)
 
 The flags are simple booleans — no queue, no event log. If multiple transactions set the same flag before the next tick, only one cascade evaluation runs. The background processor clears the flag before processing to avoid missing a flag set during processing.
 
+### Startup Cascade
+
+On application startup, the background processor runs a full cascade evaluation unconditionally (as if all flags were dirty). This handles:
+- Dirty flags lost due to app exit before the next tick
+- Manual JSON edits or data imports
+- Any inconsistency from a crash or unexpected shutdown
+
+The startup cascade is the same logic as the tick cascade — check stock targets, re-evaluate resource availability, update delivery plans and statuses. It runs once during initialization before the first regular tick.
+
 ## PlayerContext Changes
 
 ### New Fields
