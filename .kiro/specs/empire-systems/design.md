@@ -76,6 +76,177 @@ graph TD
     FSTK --> STS
 ```
 
+## User Interaction Flows & Cascades
+
+### Flow 1: Build Planner — Manufacturing Workflow
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant BP as Build Planner
+    participant RC as Resource Check
+    participant DG as Delivery Gen
+    participant DE as Delivery Execution
+    participant BG as Background Processor
+
+    User->>BP: Create build plan
+    User->>BP: Add items (blueprint/commodity, qty)
+    User->>BP: Allocate items to structures
+    BP->>RC: Check resource availability
+    RC-->>BP: Shortfalls per item
+    BP-->>User: Display shortfalls
+
+    User->>BP: Generate delivery plan
+    BP->>DG: Create plan for shortfalls
+    DG-->>BP: Delivery plan created
+    BP->>BP: Update item status → Delivering
+
+    User->>DE: Execute delivery (in-game)
+    DE->>DE: Mark items delivered
+    Note over BG: Next tick
+    BG->>RC: Re-check resource availability
+    RC-->>BG: Shortfalls resolved
+    BG->>BG: Update item status → Ready
+    BG-->>User: Inactivity: "Ready to start"
+
+    User->>BP: Mark item In Progress (started in-game)
+    Note over BG: Timer ticking
+    BG-->>User: Activity: "Completes in 2h 15m"
+
+    User->>BP: Mark item Completed
+```
+
+### Flow 2: Ship Build — Template to Assembly
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant ST as Ship Template
+    participant BP as Build Planner
+    participant RC as Resource Check
+    participant DG as Delivery Gen
+
+    User->>ST: Create ship template (hull + components)
+    User->>ST: Order build → select assembly station
+
+    ST->>ST: Check stock for each component
+    ST->>BP: Create build items for missing components
+    Note right of BP: Hull, reactor, drive,<br/>weapons, cargo pods...
+
+    loop For each build item
+        BP->>RC: Check resource availability
+        RC-->>BP: Shortfalls
+    end
+
+    User->>BP: Generate delivery plan (resources)
+    BP->>DG: Create plan for resource shortfalls
+
+    Note over User: Manufacture components in-game
+    User->>BP: Mark components completed
+
+    BP->>DG: Generate delivery plan (components → assembly station)
+    Note over User: Deliver components, assemble ship in-game
+    User->>BP: Mark ship build completed
+```
+
+### Flow 3: Market Sale — Cascade to Manufacturing
+
+```mermaid
+flowchart TD
+    A[User records sale in tool] --> B[Listing quantity decremented]
+    B --> C{Background tick}
+    C --> D[Stock target check]
+    D --> E{Below target?}
+    E -->|No| F[No action]
+    E -->|Yes| G[Compute shortfall]
+    G --> H[Create build items in plan]
+    H --> I[Resource check on build items]
+    I --> J{Resources available?}
+    J -->|Yes| K[Status → Ready]
+    J -->|No| L[Generate delivery plan]
+    L --> M[Status → Delivering]
+    M --> N[Inactivity: delivery needed]
+    K --> O[Inactivity: ready to start]
+```
+
+### Flow 4: Market Purchase — Resource Fulfillment
+
+```mermaid
+flowchart TD
+    A[User records purchase] --> B[Items added to station hold]
+    B --> C{Background tick}
+    C --> D[Re-check build plan shortfalls]
+    D --> E{Shortfalls resolved?}
+    E -->|No| F[No change]
+    E -->|Yes| G[Update delivery plan]
+    G --> H[Status → Ready]
+    H --> I[Inactivity: ready to start]
+```
+
+### Flow 5: Supply Chain — Mining to Manufacturing
+
+```mermaid
+flowchart LR
+    subgraph Mining Colonies
+        A1[Colony A mines M]
+        A2[Colony B mines M]
+        A3[Colony C mines M]
+    end
+
+    subgraph Collection
+        B1[Station Z<br/>unrefined M accumulates]
+    end
+
+    subgraph Refining
+        C1[Planet Q refines M]
+    end
+
+    subgraph Manufacturing
+        D1[Station X<br/>refined M used for mfg]
+    end
+
+    A1 -->|delivery| B1
+    A2 -->|delivery| B1
+    A3 -->|delivery| B1
+    B1 -->|threshold reached<br/>delivery generated| C1
+    C1 -->|delivery| D1
+```
+
+```mermaid
+sequenceDiagram
+    participant BG as Background Processor
+    participant SC as Supply Chain
+    participant DG as Delivery Gen
+
+    Note over BG: Every tick
+    BG->>SC: Check accumulation at each stage
+    SC-->>BG: Station Z has 5000 unrefined M (threshold: 3000)
+    BG->>DG: Generate delivery: Z → Planet Q
+    DG-->>BG: Delivery plan created
+    BG-->>BG: Flag inactivity: "Deliver unrefined M to Q"
+
+    Note over BG: Later tick
+    BG->>SC: Check accumulation at refining stage
+    SC-->>BG: Planet Q has 4000 refined M (threshold: 2000)
+    BG->>DG: Generate delivery: Q → Station X
+    DG-->>BG: Delivery plan created
+```
+
+### Flow 6: Queue Calculator
+
+```mermaid
+flowchart LR
+    A[User enters target duration<br/>'2d 12h 0m 0s'] --> B[Parse to seconds<br/>216000s]
+    B --> C{Item type?}
+    C -->|Manufactory| D[Blueprint mfg time: 9h = 32400s]
+    D --> E["ceiling(216000 / 32400) = 7 items"]
+    C -->|Commodity| F[Cycle time: 600s]
+    F --> G["ceiling(216000 / 600) = 360 runs"]
+    G --> H["360 × 10 = 3600 items produced"]
+    E --> I[Populate quantity field]
+    H --> I
+```
+
 ## Data Models
 
 All new models follow the existing POCO pattern: public properties with defaults, Newtonsoft.Json serialization, UUID + OwnerUUID ownership, persisted as top-level arrays in PlayerRoot.
