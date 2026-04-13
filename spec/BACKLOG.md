@@ -155,6 +155,11 @@ Add support for font styles to RtfBuilder — bold, italics, strikethrough, etc.
 
 Add a chart to the Colony form showing mining and refining production over time. Use `System.Windows.Forms.DataVisualization.Charting`. Visualize resource output rates from mining rigs and refineries, helping players see production throughput at a glance and identify bottlenecks or underperforming structures.
 
+### BL-070: Blueprint Evolution — Capped Property Ranges
+**Dependencies:** None
+
+Some blueprint properties evolve with +/- 50% of the base value, but others are capped to a range of 0–100 (e.g. Max Repair — you wouldn't want more than 100% max repair). The evolution graph and any future evolution prediction need to account for both modes. Per the game developer: "sometimes it's +/- 50%, sometimes it's the +/- 50% of game to 100." Need to identify which properties use which mode and adjust the evolution graph normalization accordingly.
+
 
 ---
 ### BL-045: GitHub MCP Integration
