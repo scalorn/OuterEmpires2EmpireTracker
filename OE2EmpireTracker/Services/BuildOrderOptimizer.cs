@@ -46,21 +46,15 @@ namespace OE2EmpireTracker.Services
         {
             var result = new List<ColonyStructure>();
             _currentResult = result;
-            var builtStructures = new List<ColonyStructure>();
             var primaryPool = new List<ColonyStructure>();
             var supportPool = new List<ColonyStructure>();
 
-            // Separate structures into built (keep in place) and unbuilt (to optimize)
+            // All structures go through the optimizer — built structures are not kept
+            // in their original order because the importer groups them by flatpack type,
+            // not by the order they were actually built. The optimizer produces the best
+            // guess at a correct build order.
             foreach (var structure in colony.Structures)
             {
-                bool built = false;
-                structure.Properties.getBoolean(GameConstants.PropBuilt, false, out built);
-                if (built)
-                {
-                    builtStructures.Add(structure);
-                    continue;
-                }
-
                 Blueprint bp = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (bp != null && IsSupportStructure(bp))
                 {
@@ -72,11 +66,8 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
-            // Start with built structures
-            result.AddRange(builtStructures);
-
-            Log.Info("Optimizer pools: {0} built, {1} primary, {2} support",
-                builtStructures.Count, primaryPool.Count, supportPool.Count);
+            Log.Info("Optimizer pools: {0} primary, {1} support (all structures optimized)",
+                primaryPool.Count, supportPool.Count);
 
             // Simulate building each primary structure, inserting support as needed
             var idealWorkers = new IdealColonyStructureWorkers();
@@ -149,8 +140,8 @@ namespace OE2EmpireTracker.Services
             // Append remaining unused support structures at the end
             result.AddRange(supportPool);
 
-            Log.Info("Build order optimized: {0} structures ({1} built, {2} primary, {3} support)",
-                result.Count, builtStructures.Count, primaryPool.Count, supportPool.Count);
+            Log.Info("Build order optimized: {0} structures ({1} primary, {2} support)",
+                result.Count, primaryPool.Count, supportPool.Count);
 
             return result;
         }
