@@ -72,6 +72,11 @@ namespace OE2EmpireTracker.Services
         public event EventHandler DeliveryDataChanged;
 
         /// <summary>
+        /// Fired when pricing plan data is modified (resource prices, plan settings).
+        /// </summary>
+        public event EventHandler PricingDataChanged;
+
+        /// <summary>
         /// Fired when a player profile is modified externally (e.g. skill training completion).
         /// </summary>
         public event EventHandler<PlayerProfileDataChangedEventArgs> PlayerProfileDataChanged;
@@ -114,6 +119,14 @@ namespace OE2EmpireTracker.Services
         public void OnDeliveryDataChanged()
         {
             DeliveryDataChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Notifies subscribers that pricing plan data has changed.
+        /// </summary>
+        public void OnPricingDataChanged()
+        {
+            PricingDataChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>

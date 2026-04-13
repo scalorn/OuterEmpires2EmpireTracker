@@ -196,6 +196,7 @@ namespace OE2EmpireTracker
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.BlueprintDataChanged += OnBlueprintDataChanged;
+            playerContext.PricingDataChanged += OnPricingDataChanged;
 
             InitEvolutionGraphTab();
             UpdateTitleBarCounts();
@@ -1745,6 +1746,19 @@ namespace OE2EmpireTracker
             UpdateCalculatedPrice();
         }
 
+        private void OnPricingDataChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnPricingDataChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
+            PopulatePricingPlanCombo();
+            UpdateCalculatedPrice();
+        }
+
         private void UpdateCalculatedPrice()
         {
             if (viewModel.Data.UUID == null || viewModel.Data.Resources == null || viewModel.Data.Resources.Count == 0)
@@ -1792,6 +1806,7 @@ namespace OE2EmpireTracker
             WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.BlueprintDataChanged -= OnBlueprintDataChanged;
+            playerContext.PricingDataChanged -= OnPricingDataChanged;
             base.OnFormClosed(e);
         }
 

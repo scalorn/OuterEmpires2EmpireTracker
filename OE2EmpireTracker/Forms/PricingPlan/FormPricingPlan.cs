@@ -208,6 +208,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             };
             playerContext.PricingPlanList.Add(plan);
             playerContext.WriteContext();
+            playerContext.OnPricingDataChanged();
             _selectedPlan = plan;
             PopulatePlanList();
             PopulateForm();
@@ -225,6 +226,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
             playerContext.PricingPlanList.Remove(_selectedPlan);
             playerContext.WriteContext();
+            playerContext.OnPricingDataChanged();
             _selectedPlan = null;
             PopulatePlanList();
             ClearForm();
@@ -289,6 +291,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             _selectedPlan.HourlyCostRate = hourlyCost;
 
             playerContext.WriteContext();
+            playerContext.OnPricingDataChanged();
             PopulatePlanList();
             Log.Info("Saved pricing plan '{0}'", _selectedPlan.Name);
         }
@@ -379,6 +382,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             }
 
             playerContext.WriteContext();
+            playerContext.OnPricingDataChanged();
         }
 
         // -----------------------------------------------------------------------
