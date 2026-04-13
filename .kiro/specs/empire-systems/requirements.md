@@ -551,20 +551,30 @@ Iterations can be reordered based on priorities. The data model is designed to s
 **Iteration:** 7
 **Backlog Items:** BL-059 (Auto-Create Orders from Fill Levels)
 
+### Resolved Questions
+
+#### OQ-22: Stock Target — Ship Template Support
+**Decision:** Stock targets can reference ship templates, not just individual items. "Keep stock for 10 Keystones" means maintaining enough of every component (hull, reactor, drive, weapons, etc.) to build 10 ships.
+
+#### OQ-23: Stock Target — Dedicated vs Shared
+**Decision:** Each stock target has a Dedicated flag (checkbox). Dedicated targets reserve stock exclusively — their component requirements are summed independently. Shared targets pool their requirements — for overlapping components, the system takes the max quantity across shared targets rather than summing. Example: "10 Keystones (dedicated)" + "10 Vanguards (dedicated)" both using the same reactor = 20 reactors needed. "10 Keystones (shared)" + "10 Vanguards (shared)" = 10 reactors needed (enough for either, not both).
+
 ### Requirement 7.1: Stock Targets
 
 **User Story:** As a player, I want to define target stock levels for items at specific locations or empire-wide, so that the system can identify shortfalls and create manufacturing orders.
 
 #### Acceptance Criteria
 
-1. THE Stock_Target SHALL have a UUID, item reference (type + name), target quantity, critical threshold, OwnerUUID, and a scope: Empire-wide, Colony (with Colony UUID), or Station (with Station UUID).
+1. THE Stock_Target SHALL have a UUID, item reference (type + name, or ShipTemplate UUID), target quantity, critical threshold, OwnerUUID, a scope (Empire-wide, Colony, or Station with location UUID), and a Dedicated flag.
 2. An empire-wide target checks total quantity across all colonies and stations.
 3. A colony-specific target checks quantity at that colony's warehouse only.
 4. A station-specific target checks quantity at that station's hold only.
-5. THE Application SHALL persist Stock_Targets to PlayerData.json.
-6. THE Application SHALL allow creating, editing, and deleting stock targets.
-7. THE critical threshold SHALL be less than or equal to the target quantity. IF current quantity falls below the target but above the critical threshold, THE Application SHALL display a yellow warning. IF current quantity falls below the critical threshold, THE Application SHALL display a red warning.
-8. THE Inactivity form SHALL surface stock target warnings, with critical shortfalls displayed prominently.
+5. WHEN a Stock_Target references a ShipTemplate, THE Application SHALL expand the template into component requirements (hull + all components × target quantity) for stock checking.
+6. WHEN Dedicated is true, THE target's component requirements are summed independently with all other targets. WHEN Dedicated is false (shared), overlapping component requirements across shared targets use the maximum quantity rather than the sum.
+7. THE Application SHALL persist Stock_Targets to PlayerData.json.
+8. THE Application SHALL allow creating, editing, and deleting stock targets.
+9. THE critical threshold SHALL be less than or equal to the target quantity. IF current quantity falls below the target but above the critical threshold, THE Application SHALL display a yellow warning. IF current quantity falls below the critical threshold, THE Application SHALL display a red warning.
+10. THE Inactivity form SHALL surface stock target warnings, with critical shortfalls displayed prominently.
 
 ### Requirement 7.2: Automatic Order Generation
 

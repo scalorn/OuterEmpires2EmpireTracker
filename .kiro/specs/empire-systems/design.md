@@ -511,15 +511,17 @@ public class StockTarget
     public string UUID { get; set; }
     public string OwnerUUID { get; set; } = string.Empty;
 
-    // What item
+    // What item (individual item OR ship template)
     [JsonConverter(typeof(StringEnumConverter))]
     public ItemType.ItemTypeEnum ItemType { get; set; } = Models.ItemType.ItemTypeEnum.None;
     public string ItemReferenceID { get; set; } = string.Empty;
     public string ItemName { get; set; } = string.Empty;
+    public string ShipTemplateUUID { get; set; } = string.Empty;  // If targeting a ship template
 
     // Target
     public int TargetQuantity { get; set; } = 0;
     public int CriticalThreshold { get; set; } = 0;  // Red warning below this
+    public bool Dedicated { get; set; } = true;       // true = sum independently, false = max with other shared
 
     // Scope
     [JsonConverter(typeof(StringEnumConverter))]
@@ -890,11 +892,16 @@ public static class StockTargetService
 {
     /// <summary>
     /// Checks all stock targets and returns shortfalls.
+    /// Dedicated targets sum requirements independently.
+    /// Shared targets use max(quantity) for overlapping components.
+    /// Ship template targets are expanded into component requirements.
     /// </summary>
     public static List<StockShortfall> CheckTargets(
         IEnumerable<StockTarget> targets,
         Func<string, Colony> colonyFinder,
         Func<string, Station> stationFinder,
+        Func<string, ShipTemplate> templateFinder,
+        Func<string, Blueprint> blueprintFinder,
         IEnumerable<Colony> allColonies,
         IEnumerable<Station> allStations);
 
