@@ -297,6 +297,7 @@ Iterations can be reordered based on priorities. The data model is designed to s
 5. Ships belong to a player profile (OwnerUUID). Cascade delete on player deletion.
 6. THE Application SHALL allow creating ships from a template (copies the configuration) or manually.
 7. THE Ship Template Designer and Ship Instance forms SHALL be separate MDI child forms.
+8. THE Application SHALL allow replacing any installed component on a ship except the hull. Component swaps update the ship's installed components list and recompute stats.
 
 ---
 

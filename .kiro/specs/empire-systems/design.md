@@ -381,7 +381,7 @@ public class Ship
 ```
 
 Design decisions:
-- Ship duplicates HullBlueprintUUID and Components from the template because the ship is an independent entity — the template can be modified without affecting existing ships.
+- Ship duplicates HullBlueprintUUID and Components from the template because the ship is an independent entity — the template can be modified without affecting existing ships, and ships can have components replaced after being built (everything except the hull is swappable).
 - Location uses the same DestinationType enum as route stops.
 - Cargo is an ItemBag, same as colony warehouse. Volume enforcement is in the service layer, not the model.
 
