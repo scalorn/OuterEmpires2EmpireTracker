@@ -182,7 +182,8 @@ Iterations can be reordered based on priorities. The data model is designed to s
 
 #### Acceptance Criteria
 
-1. WHEN the user requests auto-assign for a Build_Plan, THE Application SHALL identify all unallocated Build_Items and all eligible idle structures across the player's colonies.
+1. WHEN the user requests auto-assign for a Build_Plan, THE Application SHALL identify all unallocated Build_Items and all eligible idle structures across colonies on the Build_Plan's associated delivery route.
+2. IF no delivery route is associated with the Build_Plan, THE Application SHALL prompt the user to select one before auto-assign can proceed.
 2. THE Application SHALL respect the blueprint copy constraint: each blueprint copy can only be running on one manufactory at a time. The maximum parallel manufacturing jobs for a given blueprint equals the number of copies the player owns.
 3. THE Application SHALL distribute work across available structures to minimize total completion time, using stacking (queuing multiple items on one structure) when necessary.
 4. THE Application SHALL present the proposed assignments to the user for review before applying.

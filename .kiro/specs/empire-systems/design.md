@@ -846,12 +846,13 @@ public static class AutoAssignService
     /// <summary>
     /// Proposes structure assignments for unallocated build items,
     /// minimizing total completion time while respecting blueprint copy limits.
+    /// Only considers structures at colonies on the specified delivery route.
     /// </summary>
     public static List<AssignmentProposal> ProposeAssignments(
         BuildPlan plan,
+        DeliveryRoute route,
         Func<string, Colony> colonyFinder,
-        Func<string, Blueprint> blueprintFinder,
-        List<Colony> playerColonies);
+        Func<string, Blueprint> blueprintFinder);
 }
 
 public class AssignmentProposal
@@ -865,7 +866,7 @@ public class AssignmentProposal
 ```
 
 Logic:
-1. Collect all idle manufactories and commodity factories across player colonies.
+1. Collect all idle manufactories and commodity factories at colonies on the delivery route.
 2. For each unallocated Manufactory item, count how many copies of that blueprint the player owns. That's the max parallelism.
 3. Distribute runs across min(available structures, blueprint copies), splitting quantity evenly. Remainder goes to the first structures.
 4. If more items than structures × copies, stack on existing assignments (SequenceInStructure > 0).
