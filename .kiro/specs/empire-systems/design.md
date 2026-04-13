@@ -678,6 +678,21 @@ public class StockShortfall
 }
 ```
 
+## Cascade Processing
+
+Market transactions, stock target checks, resource availability re-evaluation, and delivery plan updates are computationally expensive when they cascade (sale → stock target → build order → resource check → delivery plan). Running these synchronously on the UI thread would block the application.
+
+Design decision: cascade operations run as part of the existing BackgroundProcessor system. The immediate user action (recording a sale, recording a purchase) performs only the direct mutation (decrement listing, add to station hold) and sets a dirty flag. The background processor picks up dirty flags on its next tick and runs the cascade:
+
+1. Check stock targets against current inventory → generate build items if needed
+2. Re-evaluate resource availability for all active build plans → update shortfall data
+3. Update delivery plans if shortfalls have changed
+4. Update build item statuses based on new resource availability
+
+Forms subscribe to data change events and refresh when the background processor completes a cascade cycle. This keeps the UI responsive while ensuring cascades complete within one background tick (default 60 seconds, configurable via Preferences).
+
+The dirty flag approach means cascades are batched — multiple transactions recorded in quick succession result in one cascade evaluation, not one per transaction.
+
 ## PlayerContext Changes
 
 ### New Fields
