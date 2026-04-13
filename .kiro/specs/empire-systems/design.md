@@ -836,6 +836,42 @@ Logic:
 - Commodity: ceiling(targetSeconds / CommodityCycleSeconds).
 - CommodityRunsToItems: runs × CommoditiesPerCycle.
 
+### AutoAssignService (Iteration 1)
+
+Static service in `Services/AutoAssignService.cs`.
+
+```csharp
+public static class AutoAssignService
+{
+    /// <summary>
+    /// Proposes structure assignments for unallocated build items,
+    /// minimizing total completion time while respecting blueprint copy limits.
+    /// </summary>
+    public static List<AssignmentProposal> ProposeAssignments(
+        BuildPlan plan,
+        Func<string, Colony> colonyFinder,
+        Func<string, Blueprint> blueprintFinder,
+        List<Colony> playerColonies);
+}
+
+public class AssignmentProposal
+{
+    public string BuildItemUUID { get; set; }
+    public string ColonyUUID { get; set; }
+    public string StructureUUID { get; set; }
+    public int SequenceInStructure { get; set; }
+    public string Reason { get; set; }  // Why this assignment was chosen
+}
+```
+
+Logic:
+1. Collect all idle manufactories and commodity factories across player colonies.
+2. For each unallocated Manufactory item, count how many copies of that blueprint the player owns. That's the max parallelism.
+3. Distribute runs across min(available structures, blueprint copies), splitting quantity evenly. Remainder goes to the first structures.
+4. If more items than structures × copies, stack on existing assignments (SequenceInStructure > 0).
+5. Commodity items have no copy constraint — distribute across all available commodity factories.
+6. Sort assignments to minimize the longest completion time (balance load across structures).
+
 ### ShipBuildService (Iteration 2)
 
 Static service in `Services/ShipBuildService.cs`.

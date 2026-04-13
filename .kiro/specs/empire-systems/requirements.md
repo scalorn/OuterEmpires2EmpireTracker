@@ -125,6 +125,9 @@ Iterations can be reordered based on priorities. The data model is designed to s
 #### OQ-21: Ship Template as Build Plan Item
 **Decision:** Build plans can include ship template orders as a line item type. "Build 10 Keystones at Station X" is a single Build_Item with ItemType=ShipTemplate, referencing the template UUID, quantity=10, and an assembly location. When the plan is processed, the system expands each ship template order into individual component Build_Items (hull + all components × quantity). The template order acts as a parent — its component items are generated and tracked as children.
 
+#### OQ-25: Auto-Assign and Blueprint Copy Constraint
+**Decision:** Auto-assign distributes build items across available structures to minimize completion time. Key constraint: each blueprint copy can only run on one manufactory at a time. If you have 3 copies of a reactor blueprint, at most 3 manufactories can produce that reactor simultaneously. Remaining work stacks on those structures. The auto-assign proposes assignments for user review before applying. Commodity factories have no copy constraint.
+
 ### Requirement 1.1: Build Plan CRUD
 
 **User Story:** As a player, I want to create, edit, and delete build plans, so that I can organize manufacturing work into logical batches.
@@ -172,6 +175,19 @@ Iterations can be reordered based on priorities. The data model is designed to s
 8. Build_Items can exist without allocation.
 9. Removing allocation clears structure references and resets StagingResources.
 10. Multiple Build_Items can be allocated to the same structure.
+
+### Requirement 1.9: Auto-Assign to Structures
+
+**User Story:** As a player, I want the planner to automatically assign build items to available structures to minimize total completion time, respecting blueprint copy limits.
+
+#### Acceptance Criteria
+
+1. WHEN the user requests auto-assign for a Build_Plan, THE Application SHALL identify all unallocated Build_Items and all eligible idle structures across the player's colonies.
+2. THE Application SHALL respect the blueprint copy constraint: each blueprint copy can only be running on one manufactory at a time. The maximum parallel manufacturing jobs for a given blueprint equals the number of copies the player owns.
+3. THE Application SHALL distribute work across available structures to minimize total completion time, using stacking (queuing multiple items on one structure) when necessary.
+4. THE Application SHALL present the proposed assignments to the user for review before applying.
+5. THE user SHALL be able to accept, modify, or reject the proposed assignments.
+6. FOR Commodity items, there is no copy constraint — commodity factories produce from recipes, not blueprint copies.
 
 ### Requirement 1.4: Resource Availability Check
 
