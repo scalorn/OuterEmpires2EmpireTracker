@@ -1278,7 +1278,22 @@ MDI child form. Layout:
 - Left panel: ListBox of stations (government + player-owned) with filter.
 - Right panel:
   - Station name, type (Outpost/Station/Starbase), ownership
+  - Component management panel (player-owned only) — slot grid like Ship Template Designer
   - Hold inventory grid (ItemBag contents, editable)
+  - Crate detail grid below the inventory grid (master-detail pattern)
+  - Munitions hold grid (armed player-owned stations only)
+
+### Crate UI Pattern (All Inventory Views)
+
+All forms that display ItemBag contents (station holds, ship cargo, colony warehouse) use the same master-detail pattern for crates:
+
+- Main grid shows all items including crates. Crate rows display a crate icon or "[Crate]" prefix and an item count summary (e.g. "Crate: Supply Run (12 items)").
+- When a crate row is selected, a detail grid below shows the crate's contents.
+- When a non-crate row is selected, the detail grid is hidden or shows empty.
+- Buttons: "Move to Crate" (moves selected item into the selected crate), "Remove from Crate" (moves item from crate detail back to main inventory), "New Crate", "Delete Crate" (moves contents back to main inventory first).
+- Crate rows cannot be dragged into other crate rows (no nesting).
+
+This pattern applies to: FormStation hold grid, FormShipInstance cargo grid, Colony warehouse grid (future), and any other ItemBag display.
 
 ### FormMarket (Iteration 5)
 
