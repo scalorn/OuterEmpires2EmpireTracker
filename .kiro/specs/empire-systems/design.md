@@ -851,7 +851,7 @@ public static class MarketService
     /// </summary>
     public static bool RecordSale(
         MarketTransaction transaction,
-        BindingList<MarketListing> listings);
+        List<MarketListing> listings);
 
     /// <summary>
     /// Records a buy transaction and adds items to the station hold.
@@ -964,9 +964,10 @@ The startup cascade is the same logic as the tick cascade — check stock target
 ### New Fields
 
 ```csharp
+// Existing entities — remain as BindingList<T> until BL-069 migration
 public BindingList<DeliveryRoute> DeliveryRouteList;
-        public BindingList<DeliveryPlan> DeliveryPlanList;
-        public BindingList<PricingPlan> PricingPlanList;
+public BindingList<DeliveryPlan> DeliveryPlanList;
+public BindingList<PricingPlan> PricingPlanList;
 
 // New entities use List<T> — forms build their own display lists
 // from filtered queries, so BindingList change notifications aren't needed.
@@ -984,7 +985,7 @@ public List<ExternalCharacter> ExternalCharacterList;
 
 ### New Init Methods
 
-Each follows the existing pattern (null-coalesce, sort by name, create BindingList):
+Each follows the existing pattern (null-coalesce, sort by name, create List):
 
 ```csharp
 public void InitBuildPlans(PlayerRoot playerRoot)
