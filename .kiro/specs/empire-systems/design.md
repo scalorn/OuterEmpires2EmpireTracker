@@ -507,6 +507,7 @@ public class StockTarget
 
     // Target
     public int TargetQuantity { get; set; } = 0;
+    public int CriticalThreshold { get; set; } = 0;  // Red warning below this
 
     // Scope
     [JsonConverter(typeof(StringEnumConverter))]
@@ -897,6 +898,7 @@ public class StockShortfall
     public StockTarget Target { get; set; }
     public int CurrentQuantity { get; set; }
     public int ShortfallQuantity { get; set; }
+    public bool IsCritical { get; set; }  // Below CriticalThreshold
 }
 ```
 
@@ -1096,7 +1098,7 @@ For any build plan with shortfalls, the generated delivery plan's drop-off items
 For any ship class and station type, ValidateAssemblyLocation returns null iff the class/type combination is permitted (2-5 any, 6 Station+Starbase, 7-8 Starbase only).
 
 ### Property 7: Stock target shortfall computation
-For any stock target, the shortfall equals max(0, target - current quantity) where current quantity is scoped correctly (empire-wide sums all locations, colony/station checks one).
+For any stock target, the shortfall equals max(0, target - current quantity) where current quantity is scoped correctly (empire-wide sums all locations, colony/station checks one). IsCritical is true iff current quantity < CriticalThreshold.
 
 ### Property 8: Market sale decrements listing
 For any sell transaction linked to a listing, the listing quantity after recording equals the listing quantity before minus the transaction quantity.

@@ -551,12 +551,14 @@ Iterations can be reordered based on priorities. The data model is designed to s
 
 #### Acceptance Criteria
 
-1. THE Stock_Target SHALL have a UUID, item reference (type + name), target quantity, OwnerUUID, and a scope: Empire-wide, Colony (with Colony UUID), or Station (with Station UUID).
+1. THE Stock_Target SHALL have a UUID, item reference (type + name), target quantity, critical threshold, OwnerUUID, and a scope: Empire-wide, Colony (with Colony UUID), or Station (with Station UUID).
 2. An empire-wide target checks total quantity across all colonies and stations.
 3. A colony-specific target checks quantity at that colony's warehouse only.
 4. A station-specific target checks quantity at that station's hold only.
 5. THE Application SHALL persist Stock_Targets to PlayerData.json.
 6. THE Application SHALL allow creating, editing, and deleting stock targets.
+7. THE critical threshold SHALL be less than or equal to the target quantity. IF current quantity falls below the target but above the critical threshold, THE Application SHALL display a yellow warning. IF current quantity falls below the critical threshold, THE Application SHALL display a red warning.
+8. THE Inactivity form SHALL surface stock target warnings, with critical shortfalls displayed prominently.
 
 ### Requirement 7.2: Automatic Order Generation
 
