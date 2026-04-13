@@ -573,8 +573,8 @@ Iterations can be reordered based on priorities. The data model is designed to s
 #### OQ-22: Stock Target — Ship Template Support
 **Decision:** Stock targets can reference ship templates, not just individual items. "Keep stock for 10 Keystones" means maintaining enough of every component (hull, reactor, drive, weapons, etc.) to build 10 ships.
 
-#### OQ-23: Stock Target — Dedicated vs Shared
-**Decision:** Each stock target has a Dedicated flag (checkbox). Dedicated targets reserve stock exclusively — their component requirements are summed independently. Shared targets pool their requirements — for overlapping components, the system takes the max quantity across shared targets rather than summing. Example: "10 Keystones (dedicated)" + "10 Vanguards (dedicated)" both using the same reactor = 20 reactors needed. "10 Keystones (shared)" + "10 Vanguards (shared)" = 10 reactors needed (enough for either, not both).
+#### OQ-23: Stock Target — Pooling Within Plans, Dedicated Across Plans
+**Decision:** Stock targets within the same stock plan pool their overlapping component requirements (max across targets in the plan). Each plan's total is then dedicated — summed across plans. Example: Plan A has "10 Keystones" and "10 Vanguards" (both use same reactor) → max(10, 10) = 10 reactors for Plan A. Plan B has "10 Apollos" and "10 Jupiters" (also use same reactor) → 10 reactors for Plan B. Total: 10 + 10 = 20 reactors, not 40. The Dedicated flag on individual targets is removed — pooling is always within the plan, dedication is always across plans.
 
 #### OQ-24: Stock Target — Template Modification Cascade
 **Decision:** Stock targets that reference ship templates use live expansion — the template's current components are resolved at check time, not snapshotted when the target is created. If a template is modified (e.g. reactor swapped), the next stock target evaluation expands the updated template, detects the shortfall of the new component, and triggers the build cascade. Old components remain in inventory for the user to sell or repurpose. Modifying a template sets the stock target dirty flag so the background processor picks it up.
@@ -585,16 +585,18 @@ Iterations can be reordered based on priorities. The data model is designed to s
 
 #### Acceptance Criteria
 
-1. THE Stock_Target SHALL have a UUID, item reference (type + name, or ShipTemplate UUID), target quantity, critical threshold, OwnerUUID, a scope (Empire-wide, Colony, or Station with location UUID), and a Dedicated flag.
-2. An empire-wide target checks total quantity across all colonies and stations.
-3. A colony-specific target checks quantity at that colony's warehouse only.
-4. A station-specific target checks quantity at that station's hold only.
-5. WHEN a Stock_Target references a ShipTemplate, THE Application SHALL expand the template into component requirements (hull + all components × target quantity) for stock checking.
-6. WHEN Dedicated is true, THE target's component requirements are summed independently with all other targets. WHEN Dedicated is false (shared), overlapping component requirements across shared targets use the maximum quantity rather than the sum.
-7. THE Application SHALL persist Stock_Targets to PlayerData.json.
-8. THE Application SHALL allow creating, editing, and deleting stock targets.
-9. THE critical threshold SHALL be less than or equal to the target quantity. IF current quantity falls below the target but above the critical threshold, THE Application SHALL display a yellow warning. IF current quantity falls below the critical threshold, THE Application SHALL display a red warning.
-10. THE Inactivity form SHALL surface stock target warnings, with critical shortfalls displayed prominently.
+1. THE Stock_Target SHALL have a UUID, item reference (type + name, or ShipTemplate UUID), target quantity, critical threshold, OwnerUUID, and a scope (Empire-wide, Colony, or Station with location UUID).
+2. Stock_Targets can exist standalone (not in a plan) or grouped into a Stock_Plan. Each Stock_Plan has a UUID, Name, and OwnerUUID.
+3. An empire-wide target checks total quantity across all colonies and stations.
+4. A colony-specific target checks quantity at that colony's warehouse only.
+5. A station-specific target checks quantity at that station's hold only.
+6. WHEN a Stock_Target references a ShipTemplate, THE Application SHALL expand the template into component requirements (hull + all components × target quantity) for stock checking.
+7. WITHIN a Stock_Plan, overlapping component requirements across targets use the maximum quantity (pooled). ACROSS Stock_Plans and standalone targets, each plan/target's requirements are summed (dedicated).
+8. Standalone Stock_Targets are always dedicated — their requirements are summed independently.
+8. THE Application SHALL persist Stock_Plans and Stock_Targets to PlayerData.json.
+9. THE Application SHALL allow creating, editing, and deleting stock plans and targets.
+10. THE critical threshold SHALL be less than or equal to the target quantity. IF current quantity falls below the target but above the critical threshold, THE Application SHALL display a yellow warning. IF current quantity falls below the critical threshold, THE Application SHALL display a red warning.
+11. THE Inactivity form SHALL surface stock target warnings, with critical shortfalls displayed prominently.
 
 ### Requirement 7.2: Automatic Order Generation
 

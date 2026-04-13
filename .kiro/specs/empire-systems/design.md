@@ -533,10 +533,19 @@ public enum StockTargetScope
     Station
 }
 
+public class StockPlan
+{
+    public string UUID { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string OwnerUUID { get; set; } = string.Empty;
+    public List<StockTarget> Targets { get; set; } = new List<StockTarget>();
+}
+
 public class StockTarget
 {
     public string UUID { get; set; }
-    public string OwnerUUID { get; set; } = string.Empty;
+    public string OwnerUUID { get; set; } = string.Empty;  // Set for standalone targets
+    public string StockPlanUUID { get; set; } = string.Empty;  // Set when part of a plan
 
     // What item (individual item OR ship template)
     [JsonConverter(typeof(StringEnumConverter))]
@@ -548,7 +557,6 @@ public class StockTarget
     // Target
     public int TargetQuantity { get; set; } = 0;
     public int CriticalThreshold { get; set; } = 0;  // Red warning below this
-    public bool Dedicated { get; set; } = true;       // true = sum independently, false = max with other shared
 
     // Scope
     [JsonConverter(typeof(StringEnumConverter))]
@@ -712,6 +720,7 @@ public class PlayerRoot
     public MarketListing[] MarketListing { get; set; }
     public MarketTransaction[] MarketTransaction { get; set; }
     public StockTarget[] StockTarget { get; set; }
+    public StockPlan[] StockPlan { get; set; }
     public SupplyChain[] SupplyChain { get; set; }
     public Faction[] Faction { get; set; }
     public ExternalCharacter[] ExternalCharacter { get; set; }
@@ -1061,6 +1070,7 @@ public List<Station> StationList;
 public List<MarketListing> MarketListingList;
 public List<MarketTransaction> MarketTransactionList;
 public List<StockTarget> StockTargetList;
+public List<StockPlan> StockPlanList;
 public List<SupplyChain> SupplyChainList;
 public List<Faction> FactionList;
 public List<ExternalCharacter> ExternalCharacterList;
