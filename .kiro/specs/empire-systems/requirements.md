@@ -49,6 +49,8 @@ Iterations can be reordered based on priorities. The data model is designed to s
 - **Target_Duration**: Time span in countdown format (e.g. "2d 12h 0m 0s") for the queue calculator.
 - **Item_Status**: Lifecycle state: Staged → Delivering → Ready → In_Progress → Completed.
 - **Stock_Target**: A persistent rule specifying a minimum quantity of an item to maintain, scoped to empire-wide, a specific colony, or a specific station (BL-059).
+- **Stock_Plan**: A named group of Stock_Targets that pool overlapping component requirements (OR logic within the plan).
+- **Stock_Profile**: A composition layer that references Stock_Plans and standalone Stock_Targets with AND/OR grouping. Entries in the same group are ORed; different groups are ANDed. Enables reusable plans across factions/customers.
 - **Supply_Chain**: A defined sequence of resource flow stages (mine → collect → refine → deliver) with production rates and accumulation thresholds that drive automatic delivery plan generation.
 
 ### Ship Terms
@@ -597,6 +599,9 @@ Iterations can be reordered based on priorities. The data model is designed to s
 #### OQ-24: Stock Target — Template Modification Cascade
 **Decision:** Stock targets that reference ship templates use live expansion — the template's current components are resolved at check time, not snapshotted when the target is created. If a template is modified (e.g. reactor swapped), the next stock target evaluation expands the updated template, detects the shortfall of the new component, and triggers the build cascade. Old components remain in inventory for the user to sell or repurpose. Modifying a template sets the stock target dirty flag so the background processor picks it up.
 
+#### OQ-29: Stock Plan Composition and Reusability
+**Decision:** Stock Plans are reusable building blocks — each is an OR group internally (targets within a plan pool). A Stock Profile references multiple Stock Plans and standalone Stock Targets, and defines how they combine. Plans within the same profile group are ORed (max across them); groups are ANDed (summed). This supports scenarios like: "maintain stock for Faction Alpha's order OR Faction Beta's order (not both), AND always maintain light combat ships, AND always maintain 20k munitions." Stock Plans can be referenced by multiple Stock Profiles, enabling reuse across factions/customers.
+
 ### Requirement 7.1: Stock Targets
 
 **User Story:** As a player, I want to define target stock levels for items at specific locations or empire-wide, so that the system can identify shortfalls and create manufacturing orders.
@@ -626,6 +631,20 @@ Iterations can be reordered based on priorities. The data model is designed to s
 2. IF current quantity is below the target, THE Application SHALL compute the shortfall.
 3. THE Application SHALL create Build_Items in a designated Build_Plan to cover the shortfall.
 4. THE Application SHALL not create duplicate orders for the same shortfall if an existing Build_Item already covers it.
+
+### Requirement 7.3: Stock Profiles
+
+**User Story:** As a player, I want to compose stock plans into profiles with AND/OR logic, so that I can model complex scenarios like maintaining stock for one faction's order or another's, while always maintaining base supplies.
+
+#### Acceptance Criteria
+
+1. THE Stock_Profile SHALL have a UUID, Name, and OwnerUUID.
+2. THE Stock_Profile SHALL contain a list of Stock_Profile_Entries, each referencing either a Stock_Plan or a standalone Stock_Target.
+3. Each Stock_Profile_Entry SHALL have a group identifier. Entries in the same group are ORed (max across overlapping components). Different groups are ANDed (summed).
+4. Stock_Plans SHALL be reusable — the same plan can be referenced by multiple Stock_Profiles.
+5. THE Application SHALL persist Stock_Profiles to PlayerData.json.
+6. THE Application SHALL allow creating, editing, and deleting stock profiles.
+7. WHEN computing total stock requirements, THE Application SHALL evaluate each profile: OR within groups, AND across groups, then sum across all profiles and standalone targets.
 
 ---
 

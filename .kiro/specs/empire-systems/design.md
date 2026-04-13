@@ -677,6 +677,33 @@ public class SupplyChainStage
 }
 ```
 
+### StockProfile
+
+```csharp
+public class StockProfile
+{
+    public string UUID { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string OwnerUUID { get; set; } = string.Empty;
+    public List<StockProfileEntry> Entries { get; set; } = new List<StockProfileEntry>();
+}
+
+public class StockProfileEntry
+{
+    public string GroupID { get; set; } = string.Empty;  // Entries with same GroupID are ORed
+
+    // Reference to either a StockPlan or a standalone StockTarget (one or the other)
+    public string StockPlanUUID { get; set; } = string.Empty;
+    public string StockTargetUUID { get; set; } = string.Empty;
+}
+```
+
+Design decisions:
+- GroupID is a string — entries with the same GroupID are ORed (max across overlapping components). Different GroupIDs are ANDed (summed).
+- Each entry references either a StockPlan (by UUID) or a standalone StockTarget (by UUID), not both.
+- StockPlans are reusable — the same plan UUID can appear in multiple profiles.
+- Evaluation order: expand all targets/plans in each entry → OR within groups → AND across groups → sum across profiles + standalone targets.
+
 ### WarehouseOverflowRule
 
 ```csharp
@@ -777,6 +804,7 @@ public class PlayerRoot
     public MarketTransaction[] MarketTransaction { get; set; }
     public StockTarget[] StockTarget { get; set; }
     public StockPlan[] StockPlan { get; set; }
+    public StockProfile[] StockProfile { get; set; }
     public SupplyChain[] SupplyChain { get; set; }
     public WarehouseOverflowRule[] WarehouseOverflowRule { get; set; }
     public Faction[] Faction { get; set; }
@@ -1128,6 +1156,7 @@ public List<MarketListing> MarketListingList;
 public List<MarketTransaction> MarketTransactionList;
 public List<StockTarget> StockTargetList;
 public List<StockPlan> StockPlanList;
+public List<StockProfile> StockProfileList;
 public List<SupplyChain> SupplyChainList;
 public List<WarehouseOverflowRule> WarehouseOverflowRuleList;
 public List<Faction> FactionList;
