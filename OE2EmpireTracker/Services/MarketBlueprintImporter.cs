@@ -240,8 +240,13 @@ namespace OE2EmpireTracker.Services
             // (we simply don't overwrite them)
 
             // Overwrite properties, preserving protected property keys
-            if (incoming.Properties != null)
+            // Only replace if incoming actually has properties — an empty PropertyBag from a
+            // resources-only parse should not wipe out existing properties.
+            if (incoming.Properties != null && incoming.Properties.Count > 0)
             {
+                Log.Debug("UpdateExisting: replacing properties ({0} incoming, {1} existing) for {2}",
+                    incoming.Properties.Count, existing.Properties?.Count ?? 0, existing.Name);
+
                 // Collect protected values from existing before overwrite
                 var preservedProps = new Dictionary<string, string>();
                 foreach (var protectedKey in ProtectedProperties)
@@ -267,11 +272,24 @@ namespace OE2EmpireTracker.Services
                     }
                 }
             }
-
-            // Overwrite resources
-            if (incoming.Resources != null)
+            else
             {
+                Log.Debug("UpdateExisting: incoming has no properties, preserving existing ({0} props) for {1}",
+                    existing.Properties?.Count ?? 0, existing.Name);
+            }
+
+            // Overwrite resources only if incoming actually has resources — an empty Resources
+            // dictionary from a statistics-only parse should not wipe out existing resources.
+            if (incoming.Resources != null && incoming.Resources.Count > 0)
+            {
+                Log.Debug("UpdateExisting: replacing resources ({0} incoming, {1} existing) for {2}",
+                    incoming.Resources.Count, existing.Resources?.Count ?? 0, existing.Name);
                 existing.Resources = incoming.Resources;
+            }
+            else
+            {
+                Log.Debug("UpdateExisting: incoming has no resources, preserving existing ({0} resources) for {1}",
+                    existing.Resources?.Count ?? 0, existing.Name);
             }
 
             // Overwrite non-protected scalar fields from incoming
