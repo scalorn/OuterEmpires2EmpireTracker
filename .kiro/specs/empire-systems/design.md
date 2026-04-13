@@ -444,7 +444,13 @@ public enum StationOwnership
 
 public class Station
 {
+    // COMPOUND KEY: UUID + OwnerUUID together identify a unique station hold.
+    // Unlike other models where UUID is the sole key, multiple Station records
+    // can share the same UUID (same physical station) with different OwnerUUIDs
+    // (different players' inventories at that station).
     public string UUID { get; set; }
+    public string OwnerUUID { get; set; } = string.Empty;
+
     public string Name { get; set; } = string.Empty;
 
     [JsonConverter(typeof(StringEnumConverter))]
@@ -453,14 +459,13 @@ public class Station
     [JsonConverter(typeof(StringEnumConverter))]
     public StationOwnership Ownership { get; set; } = StationOwnership.Government;
 
-    public string OwnerUUID { get; set; } = string.Empty;  // Player whose hold this represents
     public ItemBag Hold { get; set; } = new ItemBag();
 }
 ```
 
 Design decisions:
 - UUID is deterministic from station name using DeterministicUUID with a station-specific namespace.
-- Station holds are per-player. Each player has their own Station record for the same physical station, with their own Hold contents. The station UUID + OwnerUUID together identify a unique hold.
+- **Compound key:** UUID + OwnerUUID. This is unique among all models — everywhere else UUID is the sole key. Multiple Station records share the same UUID (same physical station) with different OwnerUUIDs (each player's inventory). A player with 3 characters has 3 Station records per station they use.
 - Government stations are shared locations but each player tracks their own inventory there.
 - Hold is an ItemBag with no capacity limit.
 
