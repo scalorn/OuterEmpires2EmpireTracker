@@ -964,16 +964,22 @@ The startup cascade is the same logic as the tick cascade — check stock target
 ### New Fields
 
 ```csharp
-public BindingList<BuildPlan> BuildPlanList;
-public BindingList<ShipTemplate> ShipTemplateList;
-public BindingList<Ship> ShipList;
-public BindingList<Station> StationList;
-public BindingList<MarketListing> MarketListingList;
-public BindingList<MarketTransaction> MarketTransactionList;
-public BindingList<StockTarget> StockTargetList;
-public BindingList<SupplyChain> SupplyChainList;
-public BindingList<Faction> FactionList;
-public BindingList<ExternalCharacter> ExternalCharacterList;
+public BindingList<DeliveryRoute> DeliveryRouteList;
+        public BindingList<DeliveryPlan> DeliveryPlanList;
+        public BindingList<PricingPlan> PricingPlanList;
+
+// New entities use List<T> — forms build their own display lists
+// from filtered queries, so BindingList change notifications aren't needed.
+public List<BuildPlan> BuildPlanList;
+public List<ShipTemplate> ShipTemplateList;
+public List<Ship> ShipList;
+public List<Station> StationList;
+public List<MarketListing> MarketListingList;
+public List<MarketTransaction> MarketTransactionList;
+public List<StockTarget> StockTargetList;
+public List<SupplyChain> SupplyChainList;
+public List<Faction> FactionList;
+public List<ExternalCharacter> ExternalCharacterList;
 ```
 
 ### New Init Methods

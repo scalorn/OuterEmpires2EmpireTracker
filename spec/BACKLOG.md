@@ -55,6 +55,10 @@ From Recommendations.md #14:
 ### BL-006: Player Transfer UI
 From Recommendations.md #13: UI for transferring colonies/blueprints/surveys between player profiles.
 
+### BL-069: Migrate Existing BindingList Fields to List on PlayerContext
+**Dependencies:** None
+**Status: Deferred** — New empire systems entities use `List<T>` from the start. Existing entities (Blueprint, Colony, Survey, PlayerProfile, DeliveryRoute, DeliveryPlan, PricingPlan) still use `BindingList<T>` on PlayerContext. Forms already build their own display lists from filtered queries, so the BindingList change notifications aren't providing value. Migrate the existing fields to `List<T>` for consistency. Touches many files — do as a standalone cleanup pass.
+
 ---
 
 ## New
