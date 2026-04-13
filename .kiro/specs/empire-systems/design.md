@@ -277,9 +277,10 @@ public enum BuildItemType
 {
     Manufactory,
     Commodity,
-    Mining,      // Iteration 6
-    Refining,    // Iteration 6
-    Research     // Iteration 6
+    ShipTemplate,    // Expands into component Manufactory items
+    Mining,          // Iteration 6
+    Refining,        // Iteration 6
+    Research         // Iteration 6
 }
 
 public enum BuildItemStatus
@@ -305,13 +306,22 @@ public class BuildItem
     public string BlueprintUUID { get; set; } = string.Empty;   // Manufactory, Research
     public string ItemName { get; set; } = string.Empty;         // Display name
     public string CommodityName { get; set; } = string.Empty;    // Commodity
+    public string ShipTemplateUUID { get; set; } = string.Empty; // ShipTemplate
 
     // How many
-    public int Quantity { get; set; } = 0;  // Always runs (mfg runs, commodity cycles, etc.)
+    public int Quantity { get; set; } = 0;  // Always runs (mfg runs, commodity cycles, ships, etc.)
 
     // Where to build
     public string ColonyUUID { get; set; } = string.Empty;
     public string StructureUUID { get; set; } = string.Empty;
+
+    // Assembly location (ShipTemplate items)
+    [JsonConverter(typeof(StringEnumConverter))]
+    public DestinationType AssemblyLocationType { get; set; } = DestinationType.Station;
+    public string AssemblyLocationUUID { get; set; } = string.Empty;
+
+    // Parent-child relationship (ShipTemplate → component items)
+    public string ParentBuildItemUUID { get; set; } = string.Empty;
 
     // Metadata
     public string Recipient { get; set; } = string.Empty;
@@ -330,7 +340,9 @@ public class BuildItem
 Design decisions:
 - All iteration 6 fields are present from the start with empty defaults. `DefaultValueHandling.Ignore` means they won't appear in JSON until used. No migration needed when Iteration 6 ships.
 - `SequenceInStructure` supports multiple items on one structure (time-splitting). Default 0 means "only item" or "first in sequence."
-- `Quantity` is always runs. The service layer computes total output using items-per-run from the blueprint (default 1, higher for munitions) or CommoditiesPerCycle for commodities.
+- `Quantity` is always runs. The service layer computes total output using items-per-run from the blueprint (default 1, higher for munitions) or CommoditiesPerCycle for commodities. For ShipTemplate items, quantity is number of ships.
+- `ShipTemplateUUID` references the template for ShipTemplate items. When expanded, child Manufactory items are created with `ParentBuildItemUUID` pointing back to the template item.
+- `AssemblyLocationUUID` + `AssemblyLocationType` specify where ship components are delivered for final assembly. Only used for ShipTemplate items.
 - Status is a string enum for readable JSON.
 
 ### ShipTemplate

@@ -122,6 +122,9 @@ Iterations can be reordered based on priorities. The data model is designed to s
 #### OQ-11: Quantity Unit
 **Decision:** Quantity is always runs for all item types. Some blueprints produce multiple items per run (e.g. munitions have an "items per run" property). Total output (runs × items per run) is displayed for reference. For commodities, each run produces CommoditiesPerCycle items.
 
+#### OQ-21: Ship Template as Build Plan Item
+**Decision:** Build plans can include ship template orders as a line item type. "Build 10 Keystones at Station X" is a single Build_Item with ItemType=ShipTemplate, referencing the template UUID, quantity=10, and an assembly location. When the plan is processed, the system expands each ship template order into individual component Build_Items (hull + all components × quantity). The template order acts as a parent — its component items are generated and tracked as children.
+
 ### Requirement 1.1: Build Plan CRUD
 
 **User Story:** As a player, I want to create, edit, and delete build plans, so that I can organize manufacturing work into logical batches.
@@ -141,14 +144,17 @@ Iterations can be reordered based on priorities. The data model is designed to s
 
 #### Acceptance Criteria
 
-1. THE Build_Item SHALL have a UUID, Item_Type (Manufactory or Commodity), quantity, optional Recipient, optional notes, and Item_Status.
+1. THE Build_Item SHALL have a UUID, Item_Type (Manufactory, Commodity, or ShipTemplate), quantity, optional Recipient, optional notes, and Item_Status.
 2. WHEN Item_Type is Manufactory, THE Build_Item SHALL reference a Blueprint by UUID and store the output item name.
 3. WHEN Item_Type is Commodity, THE Build_Item SHALL reference a Commodity by name.
-4. WHEN adding a Build_Item, THE Application SHALL present eligible blueprints or commodities based on Item_Type.
-5. Manufactory quantity represents manufacturing runs (≥ 1). Total output (runs × items per run from blueprint) displayed for reference.
-6. Commodity quantity represents production runs (≥ 1). Total output (runs × CommoditiesPerCycle) displayed for reference.
-7. IF quantity < 1, THEN THE Application SHALL reject the save.
-8. Removing a Build_Item removes it from the plan and persists the change.
+4. WHEN Item_Type is ShipTemplate, THE Build_Item SHALL reference a ShipTemplate by UUID, store the template name, and specify an assembly location (Station or Colony UUID with DestinationType). The quantity represents how many ships to build.
+5. WHEN adding a Build_Item, THE Application SHALL present eligible blueprints, commodities, or ship templates based on Item_Type.
+6. Manufactory quantity represents manufacturing runs (≥ 1). Total output (runs × items per run from blueprint) displayed for reference.
+7. Commodity quantity represents production runs (≥ 1). Total output (runs × CommoditiesPerCycle) displayed for reference.
+8. ShipTemplate quantity represents number of ships to build (≥ 1).
+9. IF quantity < 1, THEN THE Application SHALL reject the save.
+10. Removing a Build_Item removes it from the plan and persists the change.
+11. WHEN a ShipTemplate Build_Item is added or its quantity changes, THE Application SHALL expand it into individual component Build_Items (hull + each component × quantity), checking stock and only creating items for components not already available. These component items are children of the template item.
 
 ### Requirement 1.3: Structure Allocation
 
