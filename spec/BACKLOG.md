@@ -9,7 +9,7 @@ Items in the "New" section have dependency annotations. Work them in an order th
 ```
 Activity Inactivity Mode ──── (complete)
 Manufacturing Queue ────────── (standalone)
-Pricing Plans ──────────────── (standalone)
+Pricing Plans ──────────────── (complete)
 Mass Blueprint Importer ────── (complete)
 Systems & Planets Model ────── (standalone)
 
@@ -89,11 +89,6 @@ Introduce the concept of stations. Stations have holds that store items. Two typ
 **Dependencies:** Stations (BL-014)
 
 Once stations exist, they become valid destinations in delivery routes alongside planets. Picking up and dropping off cargo at stations follows the same patterns as colony stops.
-
-### BL-016: Pricing Plans
-**Dependencies:** None
-
-Define pricing models for resources and items. Should be able to calculate the price of a manufactured item based on the raw resources and time invested. Supports multiple pricing plans for different purposes (cost basis, market value, etc.).
 
 ### BL-017: Market
 **Dependencies:** Pricing Plans (BL-016) for valuation context
