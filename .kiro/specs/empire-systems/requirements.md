@@ -77,6 +77,8 @@ Iterations can be reordered based on priorities. The data model is designed to s
 - **Commodity_Cycle_Time**: Time for one commodity production cycle (GameConstants.CommodityCycleSeconds). Each cycle produces GameConstants.CommoditiesPerCycle items.
 - **CountdownFormat**: Human-readable time string "Xd Yh Zm Ws" parsed by CountdownFormatParser.
 - **PlayerData**: JSON file where player-specific data is persisted.
+- **Faction**: A player organization. Players belong to at most one faction. Factions enable scoped features (pricing plans, stock targets) and structured character lookups.
+- **ExternalCharacter**: A lightweight record of a character the user interacts with but doesn't manage as a full player profile. Used for combo box lookups in Recipient, Counterparty, etc.
 
 ---
 
@@ -587,6 +589,56 @@ Iterations can be reordered based on priorities. The data model is designed to s
 
 ---
 
+## Section 10: Factions & Characters
+
+**Iteration:** 1 (data model), forms in later iteration
+**Backlog Items:** New (not previously in backlog)
+
+### Resolved Questions
+
+#### OQ-19: Faction Membership
+**Decision:** A player can belong to only one faction at a time. The faction is stored on the PlayerProfile. External characters (not managed as full player profiles) can also be tracked as faction members or known contacts.
+
+#### OQ-20: External Characters
+**Decision:** Characters that the user doesn't manage as full player profiles (faction mates, trade partners, etc.) are stored as lightweight records — just a name and optional faction. These appear in combo box lookups wherever a player name is needed (Recipient on build items, Counterparty on market transactions, etc.), replacing free-text entry with structured data while still allowing free-text for unknown players.
+
+### Requirement 10.1: Faction Data Model
+
+**User Story:** As a player, I want to record factions and their members, so that I can organize my empire's social structure and target features to faction members.
+
+#### Acceptance Criteria
+
+1. THE Faction SHALL have a UUID, Name, and optional Description.
+2. THE PlayerProfile SHALL have an optional FactionUUID indicating which faction the player belongs to.
+3. A player can belong to at most one faction at a time.
+4. THE Application SHALL persist Factions to PlayerData.json.
+5. THE Application SHALL allow creating, editing, and deleting factions.
+
+### Requirement 10.2: External Character Tracking
+
+**User Story:** As a player, I want to record other characters I interact with (faction mates, trade partners), so that I can select them from dropdowns instead of typing names.
+
+#### Acceptance Criteria
+
+1. THE ExternalCharacter SHALL have a UUID, Name, and optional FactionUUID.
+2. External characters are lightweight — no skills, ranks, or other profile data.
+3. THE Application SHALL persist ExternalCharacters to PlayerData.json.
+4. THE Application SHALL allow creating, editing, and deleting external characters.
+5. WHEREVER a player name is entered (Recipient, Counterparty, etc.), THE Application SHALL present a combo box with managed player profiles and external characters, while still allowing free-text entry for unknown players.
+
+### Requirement 10.3: Faction-Scoped Features
+
+**User Story:** As a player, I want to scope certain features to my faction, so that I can share pricing plans or view faction-wide data.
+
+#### Acceptance Criteria
+
+1. THE PricingPlan SHALL support an optional scope: Player (current behavior) or Faction (visible to all faction members).
+2. WHEN a pricing plan is scoped to a faction, all player profiles in that faction SHALL be able to select it.
+3. THE Application SHALL support faction-scoped stock targets in future iterations.
+4. THE market form SHALL allow filtering transactions by faction members.
+
+---
+
 ## Section 9: Shared Data Model & Serialization
 
 **Iteration:** 1 (data model built to support all iterations)
@@ -617,6 +669,9 @@ Iterations can be reordered based on priorities. The data model is designed to s
 6. Sell transactions decrement Market_Listing quantities, which feeds into Stock_Target checks.
 6. Build_Items optionally reference other Build_Items by UUID for dependency tracking.
 7. Stock_Targets reference items by type + name.
+8. PlayerProfiles optionally reference a Faction by UUID.
+9. ExternalCharacters optionally reference a Faction by UUID.
+10. Recipient and Counterparty fields resolve against PlayerProfiles and ExternalCharacters for combo box lookups.
 
 ### Requirement 9.3: Player Ownership
 

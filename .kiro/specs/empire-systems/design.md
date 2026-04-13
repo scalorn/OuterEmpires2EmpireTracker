@@ -515,6 +515,44 @@ public class StockTarget
 }
 ```
 
+### Faction
+
+```csharp
+public class Faction
+{
+    public string UUID { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+}
+```
+
+Design decisions:
+- Factions are not per-player — they're shared entities. All player profiles can reference the same faction.
+- No OwnerUUID. Factions are created/managed by any player and persist globally in PlayerData.
+
+### ExternalCharacter
+
+```csharp
+public class ExternalCharacter
+{
+    public string UUID { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string FactionUUID { get; set; } = string.Empty;
+}
+```
+
+Design decisions:
+- Lightweight — just name and optional faction. No skills, ranks, or other profile data.
+- Used for combo box lookups. The combo data source merges PlayerProfiles + ExternalCharacters, sorted by name, with a free-text fallback.
+- No OwnerUUID — external characters are shared across all managed player profiles.
+
+### PlayerProfile Changes
+
+```csharp
+// Add to existing PlayerProfile:
+public string FactionUUID { get; set; } = string.Empty;
+```
+
 ### SupplyChain (Iteration 6)
 
 ```csharp
@@ -631,6 +669,8 @@ public class PlayerRoot
     public MarketTransaction[] MarketTransaction { get; set; }
     public StockTarget[] StockTarget { get; set; }
     public SupplyChain[] SupplyChain { get; set; }
+    public Faction[] Faction { get; set; }
+    public ExternalCharacter[] ExternalCharacter { get; set; }
 }
 ```
 
@@ -888,6 +928,8 @@ public BindingList<MarketListing> MarketListingList;
 public BindingList<MarketTransaction> MarketTransactionList;
 public BindingList<StockTarget> StockTargetList;
 public BindingList<SupplyChain> SupplyChainList;
+public BindingList<Faction> FactionList;
+public BindingList<ExternalCharacter> ExternalCharacterList;
 ```
 
 ### New Init Methods
@@ -903,6 +945,8 @@ public void InitMarketListings(PlayerRoot playerRoot)
 public void InitMarketTransactions(PlayerRoot playerRoot)
 public void InitStockTargets(PlayerRoot playerRoot)
 public void InitSupplyChains(PlayerRoot playerRoot)
+public void InitFactions(PlayerRoot playerRoot)
+public void InitExternalCharacters(PlayerRoot playerRoot)
 ```
 
 ### WriteContext Changes
@@ -918,6 +962,8 @@ playerRoot.MarketListing = MarketListingList.ToArray();
 playerRoot.MarketTransaction = MarketTransactionList.ToArray();
 playerRoot.StockTarget = StockTargetList.ToArray();
 playerRoot.SupplyChain = SupplyChainList.ToArray();
+playerRoot.Faction = FactionList.ToArray();
+playerRoot.ExternalCharacter = ExternalCharacterList.ToArray();
 ```
 
 ### CascadeDeletePlayer Changes
