@@ -239,34 +239,20 @@ namespace OE2EmpireTracker.Services
             // Preserve protected scalar fields: UUID, OwnerUUID, NickName, CopyCost, TechLevel, Description
             // (we simply don't overwrite them)
 
-            // Overwrite properties, preserving protected property keys
-            // Only replace if incoming actually has properties — an empty PropertyBag from a
-            // resources-only parse should not wipe out existing properties.
+            // Merge properties — add/overwrite incoming keys but preserve existing keys
+            // not present in incoming. This prevents a partial parse (e.g. resources page
+            // that only extracts 1 property) from wiping out a full property set.
             if (incoming.Properties != null && incoming.Properties.Count > 0)
             {
-                Log.Debug("UpdateExisting: replacing properties ({0} incoming, {1} existing) for {2}",
+                Log.Info("UpdateExisting: merging properties ({0} incoming into {1} existing) for {2}",
                     incoming.Properties.Count, existing.Properties?.Count ?? 0, existing.Name);
 
-                // Collect protected values from existing before overwrite
-                var preservedProps = new Dictionary<string, string>();
-                foreach (var protectedKey in ProtectedProperties)
-                {
-                    string existingValue;
-                    if (existing.Properties != null
-                        && existing.Properties.getString(protectedKey, null, out existingValue)
-                        && existingValue != null)
-                    {
-                        preservedProps[protectedKey] = existingValue;
-                    }
-                }
+                if (existing.Properties == null)
+                    existing.Properties = new PropertyBag();
 
-                // Replace properties with incoming
-                existing.Properties = incoming.Properties;
-
-                // Restore protected properties that existed before but may not be in incoming
-                foreach (var kvp in preservedProps)
+                foreach (var kvp in incoming.Properties.Properties)
                 {
-                    if (!existing.Properties.ContainsKey(kvp.Key))
+                    if (!ProtectedProperties.Contains(kvp.Key))
                     {
                         existing.Properties.setProperty(kvp.Key, kvp.Value);
                     }
@@ -274,21 +260,28 @@ namespace OE2EmpireTracker.Services
             }
             else
             {
-                Log.Debug("UpdateExisting: incoming has no properties, preserving existing ({0} props) for {1}",
+                Log.Info("UpdateExisting: incoming has no properties, preserving existing ({0} props) for {1}",
                     existing.Properties?.Count ?? 0, existing.Name);
             }
 
-            // Overwrite resources only if incoming actually has resources — an empty Resources
-            // dictionary from a statistics-only parse should not wipe out existing resources.
+            // Merge resources — add/overwrite incoming keys but preserve existing keys
+            // not present in incoming. Same rationale as properties.
             if (incoming.Resources != null && incoming.Resources.Count > 0)
             {
-                Log.Debug("UpdateExisting: replacing resources ({0} incoming, {1} existing) for {2}",
+                Log.Info("UpdateExisting: merging resources ({0} incoming into {1} existing) for {2}",
                     incoming.Resources.Count, existing.Resources?.Count ?? 0, existing.Name);
-                existing.Resources = incoming.Resources;
+
+                if (existing.Resources == null)
+                    existing.Resources = new Dictionary<string, string>();
+
+                foreach (var kvp in incoming.Resources)
+                {
+                    existing.Resources[kvp.Key] = kvp.Value;
+                }
             }
             else
             {
-                Log.Debug("UpdateExisting: incoming has no resources, preserving existing ({0} resources) for {1}",
+                Log.Info("UpdateExisting: incoming has no resources, preserving existing ({0} resources) for {1}",
                     existing.Resources?.Count ?? 0, existing.Name);
             }
 
