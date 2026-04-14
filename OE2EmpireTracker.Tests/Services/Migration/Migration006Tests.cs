@@ -58,7 +58,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         }
 
         [Test]
-        public void MigrationRunner_BumpsVersionTo6()
+        public void MigrationRunner_BumpsVersionFromV5()
         {
             var ec = EmpireContext.GetInstance();
             var pc = PlayerContext.GetInstance();
@@ -67,8 +67,8 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
             MigrationRunner.Run(ec, pc);
 
-            Assert.That(ec.DataVersion, Is.EqualTo(6));
-            Assert.That(pc.DataVersion, Is.EqualTo(6));
+            Assert.That(ec.DataVersion, Is.EqualTo(MigrationRunner.CurrentVersion));
+            Assert.That(pc.DataVersion, Is.EqualTo(MigrationRunner.CurrentVersion));
         }
     }
 }

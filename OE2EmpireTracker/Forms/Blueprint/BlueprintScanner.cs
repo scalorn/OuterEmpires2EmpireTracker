@@ -280,6 +280,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                         if (equipClass != null)
                         {
                             blueprint.Class = int.Parse(equipClass);
+                            blueprint.Properties.Remove("Class");
                         }
 
                     }
@@ -443,6 +444,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                             if (equipClass != null && int.TryParse(equipClass, out int cls))
                             {
                                 bp.Class = cls;
+                                bp.Properties.Remove("Class");
                             }
                         }
 

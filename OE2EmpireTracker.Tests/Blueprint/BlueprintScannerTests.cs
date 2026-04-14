@@ -261,10 +261,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
             _scanner.ProcessHtml(bp, page2);
 
             Assert.That(bp.Description, Is.EqualTo("Reactor that generates power for the ship"));
-            string equipClass;
-            bp.Properties.getString("Class", null, out equipClass);
-            Assert.That(equipClass, Is.EqualTo("6"));
             Assert.That(bp.Class, Is.EqualTo(6));
+            Assert.That(bp.Properties.ContainsKey("Class"), Is.False,
+                "Class should be extracted to Blueprint.Class and removed from PropertyBag");
 
             string manuTime;
             bp.Properties.getString("Manufacture Run Time", null, out manuTime);
@@ -574,11 +573,11 @@ namespace OE2EmpireTracker.Tests.Blueprint
                 Assert.That(bp.Properties.Count, Is.GreaterThan(0),
                     $"Blueprint '{bp.Name}' should have properties");
 
-                // All hull blueprints should have Class
-                string cls;
-                bp.Properties.getString("Class", null, out cls);
-                Assert.That(cls, Is.Not.Null,
-                    $"Blueprint '{bp.Name}' should have Class property");
+                // All hull blueprints should have Class extracted to Blueprint.Class
+                Assert.That(bp.Class, Is.GreaterThan(0),
+                    $"Blueprint '{bp.Name}' should have Class > 0");
+                Assert.That(bp.Properties.ContainsKey("Class"), Is.False,
+                    $"Blueprint '{bp.Name}' should not have Class in PropertyBag (extracted to Blueprint.Class)");
             }
         }
 

@@ -9,7 +9,7 @@ namespace OE2EmpireTracker.Services.Migration
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        public const int CurrentVersion = 6;
+        public const int CurrentVersion = 7;
 
         /// <summary>
         /// Set to true when a migration fails. Prevents saving data in a
@@ -26,6 +26,7 @@ namespace OE2EmpireTracker.Services.Migration
             { 4, Migration004_ColonyImportTimestampBackfill.Run },
             { 5, Migration005_PropertyKeyCleanup.Run },
             { 6, Migration006_DisplaySequenceJsonKey.Run },
+            { 7, Migration007_RemoveClassFromProperties.Run },
         };
 
         public static void Run(EmpireContext ec, PlayerContext pc)
