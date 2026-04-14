@@ -19,6 +19,7 @@ Each file covers one domain. Requirements are written as verifiable statements.
 | [Delivery.md](Delivery.md) | Delivery routes, delivery planning, space stations |
 | [GameMechanics.md](GameMechanics.md) | Mining, refining, manufacturing, research, build time formulas |
 | [PlayerProfile.md](PlayerProfile.md) | Player profile management, skills, ranks |
+| [PricingPlan.md](PricingPlan.md) | Pricing plans, resource prices, price calculator |
 | [SafeFileWriter.md](SafeFileWriter.md) | Atomic file write strategy (temp-then-replace) |
 | [Survey.md](Survey.md) | Survey management and blueprint scanning |
 | [UIStatePersistence.md](UIStatePersistence.md) | Window state persistence, preferences store |

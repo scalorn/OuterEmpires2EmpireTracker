@@ -29,7 +29,7 @@ graph LR
 - [Backlog](BACKLOG.md) — open features and enhancements to be worked on
 - [Recommendations](Recommendations.md) — resolved issues and their outcomes
 - [Completed Work Archive](COMPLETED.md) — detailed record of all completed tasks
-- [Ambiguities](Ambiguities.md) — 58 resolved
+- [Ambiguities](Ambiguities.md) — 58 resolved, 1 open (AMB-059)
 
 ## Current Status
 

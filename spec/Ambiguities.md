@@ -500,3 +500,24 @@ Renaming it would require a JSON migration strategy since it's serialized to Pla
 Ready structures are collected once with their blueprints, then each pass filters by type. This ensures mined resources are available for refining, and refined resources are available for manufacturing within the same cycle.
 
 **Action:** `Colony.cs` ProcessColony rewritten. All 1375 tests pass.
+
+---
+
+### AMB-059 — OPEN: Several completed features lack formal requirement docs in spec/requirements/
+
+**Issue:** The `spec/requirements/` directory covers 16 domains, but several completed features only have kiro specs (`.kiro/specs/`) without a corresponding formal requirement document. The kiro specs contain detailed requirements, design, and tasks, but they are not indexed in the `spec/requirements/` directory.
+
+Features with kiro specs but no formal requirement doc:
+- Evolution Graph (`.kiro/specs/evolution-graph/`) — chart on Blueprint form
+- Main Menu Overhaul (`.kiro/specs/main-menu-overhaul/`) — File/Edit/Help menu restructure
+- MDI Window Menu (`.kiro/specs/mdi-window-menu/`) — Window menu with layout commands
+- Preferences Form (`.kiro/specs/preferences-form/`) — configurable thresholds
+- Colony Admin Summary (`.kiro/specs/colony-admin-summary/`) — admin tab report
+- Player Profile Import (`.kiro/specs/player-profile-import/`) — clipboard import for profiles
+
+The PricingPlan feature was the most critical gap (full data model + service + form) and has been addressed with `spec/requirements/PricingPlan.md`.
+
+**Resolution needed:** Decide whether the remaining features need formal requirement docs in `spec/requirements/`, or whether the kiro specs are sufficient as the authoritative source. Options:
+(a) Create requirement docs for each missing feature (6 new files)
+(b) Accept kiro specs as the authoritative source and document this convention
+(c) Create a single "UI Features" requirement doc covering the smaller UI enhancements
