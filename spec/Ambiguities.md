@@ -488,32 +488,15 @@ Renaming it would require a JSON migration strategy since it's serialized to Pla
 
 ## Spec-vs-Code Audit Pass 3 (April 2026)
 
-### AMB-058 — OPEN: Colony.ProcessColony processing order does not match REQ-COL-100 / REQ-ARCH-080
+### AMB-058 — RESOLVED: Colony.ProcessColony processing order does not match REQ-COL-100 / REQ-ARCH-080
 
-**Issue:** REQ-COL-100 and REQ-ARCH-080 specify this processing order within each cycle:
-1. Structure Building
+**Resolution:** Refactored `Colony.ProcessColony()` to match the spec order. The single interleaved loop was split into separate passes:
+1. Structure Building (separate loop)
 2. Mining
-3. Refining Base Resources
-4. Refining S1 Synthetics
-5. Refining S2 Synthetics
-6. Manufacturing
-7. Research
+3. Refining in tier order (base → S1 → S2)
+4. Manufacturing + Commodity Manufacturing
+5. Research
 
-The spec rationale: "resources mined in a cycle are available for refining in the same cycle, and refined resources are available for manufacturing."
+Ready structures are collected once with their blueprints, then each pass filters by type. This ensures mined resources are available for refining, and refined resources are available for manufacturing within the same cycle.
 
-The code in `Colony.ProcessColony()` uses a different order:
-1. Structure Building (separate loop) — correct
-2. Mining, Research, Manufacturing, Commodity Manufacturing (interleaved in a single loop over all structures — order depends on structure list position)
-3. Refining (collected into `pendingRefineries`, processed last in tier order: normal → S1 → S2)
-
-This means:
-- Refining happens AFTER manufacturing/research, not before. Manufacturing in the same cycle cannot consume resources refined in that cycle.
-- Research and manufacturing are interleaved with mining rather than running after refining.
-- The spec's intended resource flow (mine → refine → manufacture) is not enforced within a single cycle.
-
-**Impact:** In practice this may not matter much because the background processor runs every 60 seconds and most timers are hourly, so resources from one cycle are available for the next. But the spec explicitly states the ordering matters for same-cycle resource flow.
-
-**Resolution needed:** Decide whether to:
-(a) Fix the code to match the spec order (separate loops: mining first, then refining by tier, then manufacturing, then research)
-(b) Update the spec to match the code (refining last, others interleaved)
-(c) Accept the current behavior as "close enough" and document the deviation
+**Action:** `Colony.cs` ProcessColony rewritten. All 1375 tests pass.

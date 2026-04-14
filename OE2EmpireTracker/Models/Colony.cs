@@ -75,6 +75,19 @@ namespace OE2EmpireTracker.Models
 
         public void ProcessColony()
         {
+            // Processing order per REQ-COL-100 / REQ-ARCH-080:
+            // 1. Structure Building
+            // 2. Mining
+            // 3. Refining Base Resources (tier 0)
+            // 4. Refining S1 Synthetics (tier 1)
+            // 5. Refining S2 Synthetics (tier 2)
+            // 6. Manufacturing + Commodity Manufacturing
+            // 7. Research
+            // This ordering ensures mined resources are available for refining,
+            // and refined resources are available for manufacturing in the same cycle.
+
+            var pc = PlayerContext.GetInstance();
+
             // Step 1: Structure Building -- check BuildCompletionTime expiration
             foreach (ColonyStructure structure in Structures)
             {
@@ -87,51 +100,48 @@ namespace OE2EmpireTracker.Models
                 }
             }
 
-            // Step 2: Mining, Refining, Research, Manufacturing, Commodity processing
-            var pendingRefineries = new List<ColonyStructure>();
-
+            // Build a list of ready structures with their blueprints for steps 2-7
+            var ready = new List<(ColonyStructure structure, Blueprint blueprint)>();
             foreach (ColonyStructure structure in Structures)
             {
                 if (structure.ProcessCompletionTime != null &&
-                    (structure.ProcessCompletionTime.IntervalsPassed > 0 || 
+                    (structure.ProcessCompletionTime.IntervalsPassed > 0 ||
                      (!structure.ProcessCompletionTime.IsRepeating && structure.ProcessCompletionTime.TimeRemaining <= 0)))
                 {
-                    Blueprint FlatpackBlueprint = PlayerContext.GetInstance().FindBlueprint(structure.FlatpackBlueprintUUID);
-                    if (FlatpackBlueprint == null)
+                    Blueprint bp = pc.FindBlueprint(structure.FlatpackBlueprintUUID);
+                    if (bp == null)
                     {
                         Log.Warn("ProcessColony: blueprint not found for structure {0} (FlatpackBP={1}), skipping",
                             structure.UUID, structure.FlatpackBlueprintUUID ?? "(null)");
                         continue;
                     }
-                    if (FlatpackBlueprint.BluePrintType == BlueprintTypes.MiningRig)
-                    {
-                        ProcessMiningRig(structure);
-                    }
-                    else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Refinery)
-                    {
-                        pendingRefineries.Add(structure);
-                    }
-                    else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
-                    {
-                        ProcessResearchLab(structure);
-                    }
-                    else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Manufactory)
-                    {
-                        ProcessManufactory(structure);
-                    }
-                    else if (FlatpackBlueprint.BluePrintType.IsCommodityFactory())
-                    {
-                        ProcessCommodityFactory(structure);
-                    }
+                    ready.Add((structure, bp));
                 }
             }
 
-            // Process refineries in tier order: normal (0) first, then S1 (1), then S2 (2)
-            foreach (var structure in pendingRefineries.OrderBy(s =>
-                RefiningRecipes.GetTier(s.RefiningResource, s.RefiningResourcePurity)))
-            {
+            // Step 2: Mining
+            foreach (var (structure, bp) in ready)
+                if (bp.BluePrintType == BlueprintTypes.MiningRig)
+                    ProcessMiningRig(structure);
+
+            // Steps 3-5: Refining in tier order (base=0, S1=1, S2=2)
+            foreach (var (structure, bp) in ready
+                .Where(r => r.blueprint.BluePrintType == BlueprintTypes.Refinery)
+                .OrderBy(r => RefiningRecipes.GetTier(r.structure.RefiningResource, r.structure.RefiningResourcePurity)))
                 ProcessRefinery(structure);
-            }
+
+            // Step 6: Manufacturing and Commodity Manufacturing
+            foreach (var (structure, bp) in ready)
+                if (bp.BluePrintType == BlueprintTypes.Manufactory)
+                    ProcessManufactory(structure);
+            foreach (var (structure, bp) in ready)
+                if (bp.BluePrintType.IsCommodityFactory())
+                    ProcessCommodityFactory(structure);
+
+            // Step 7: Research
+            foreach (var (structure, bp) in ready)
+                if (bp.BluePrintType == BlueprintTypes.ResearchLaboratory)
+                    ProcessResearchLab(structure);
         }
 
         private void ProcessMiningRig(ColonyStructure structure)
