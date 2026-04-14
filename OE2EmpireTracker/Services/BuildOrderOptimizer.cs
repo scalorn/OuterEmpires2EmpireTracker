@@ -197,7 +197,7 @@ namespace OE2EmpireTracker.Services
             ColonyStructure support = TakeFromPool(pool, deficitType);
             if (support == null)
             {
-                support = CreateStructure(deficitType);
+                support = CreateStructure(deficitType, result);
                 if (support == null) return;
             }
 
@@ -286,11 +286,21 @@ namespace OE2EmpireTracker.Services
             }
         }
 
-        private ColonyStructure CreateStructure(string provisionProperty)
+        private ColonyStructure CreateStructure(string provisionProperty, List<ColonyStructure> currentResult)
         {
             foreach (var bp in _playerContext.GetAllBlueprints())
             {
                 if (bp.UUID == null || !bp.BluePrintType.IsFlatpack()) continue;
+
+                // Respect MaxPerColony limit
+                long maxPerColony = 0;
+                bp.Properties.getLong(GameConstants.PropMaxPerColony, 0, out maxPerColony);
+                if (maxPerColony > 0)
+                {
+                    int currentCount = currentResult.Count(s => s.FlatpackBlueprintUUID == bp.UUID);
+                    if (currentCount >= maxPerColony) continue;
+                }
+
                 decimal val;
                 if (bp.Properties.getDecimal(provisionProperty, 0, out val) && val > 0)
                 {
