@@ -503,21 +503,16 @@ Ready structures are collected once with their blueprints, then each pass filter
 
 ---
 
-### AMB-059 — OPEN: Several completed features lack formal requirement docs in spec/requirements/
+### AMB-059 — RESOLVED: Several completed features lack formal requirement docs in spec/requirements/
 
-**Issue:** The `spec/requirements/` directory covers 16 domains, but several completed features only have kiro specs (`.kiro/specs/`) without a corresponding formal requirement document. The kiro specs contain detailed requirements, design, and tasks, but they are not indexed in the `spec/requirements/` directory.
+**Resolution:** Created 6 new requirement docs:
+- `EvolutionGraph.md` (REQ-EVO-001 through REQ-EVO-042) — blueprint evolution chain chart
+- `MainMenu.md` (REQ-MM-001 through REQ-MM-031) — file lifecycle, manage menu, help/about
+- `MDIWindowMenu.md` (REQ-MDI-001 through REQ-MDI-012) — window menu, layout, numbering
+- `Preferences.md` (REQ-PRF-001 through REQ-PRF-050) — configurable thresholds and intervals
+- `ColonyAdminSummary.md` (REQ-CAS-001 through REQ-CAS-040) — per-colony admin tab report
+- `PlayerProfileImport.md` (REQ-PPI-001 through REQ-PPI-081) — profile clipboard import
 
-Features with kiro specs but no formal requirement doc:
-- Evolution Graph (`.kiro/specs/evolution-graph/`) — chart on Blueprint form
-- Main Menu Overhaul (`.kiro/specs/main-menu-overhaul/`) — File/Edit/Help menu restructure
-- MDI Window Menu (`.kiro/specs/mdi-window-menu/`) — Window menu with layout commands
-- Preferences Form (`.kiro/specs/preferences-form/`) — configurable thresholds
-- Colony Admin Summary (`.kiro/specs/colony-admin-summary/`) — admin tab report
-- Player Profile Import (`.kiro/specs/player-profile-import/`) — clipboard import for profiles
+All derived from existing kiro specs and verified against implemented code. Requirements README index updated (now 22 files).
 
-The PricingPlan feature was the most critical gap (full data model + service + form) and has been addressed with `spec/requirements/PricingPlan.md`.
-
-**Resolution needed:** Decide whether the remaining features need formal requirement docs in `spec/requirements/`, or whether the kiro specs are sufficient as the authoritative source. Options:
-(a) Create requirement docs for each missing feature (6 new files)
-(b) Accept kiro specs as the authoritative source and document this convention
-(c) Create a single "UI Features" requirement doc covering the smaller UI enhancements
+**Action:** 6 new requirement docs created. README.md updated.

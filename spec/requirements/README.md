@@ -12,13 +12,19 @@ Each file covers one domain. Requirements are written as verifiable statements.
 | [BlueprintProperties.md](BlueprintProperties.md) | Blueprint property validation rules, commodity industries |
 | [Colony.md](Colony.md) | Colony management, structures, items, commodity requests |
 | [ColonyActivity.md](ColonyActivity.md) | Colony Activity form: countdown timers, filtering, display |
+| [ColonyAdminSummary.md](ColonyAdminSummary.md) | Colony Administration tab: per-colony status report |
 | [ColonyDailyBuild.md](ColonyDailyBuild.md) | Colony Daily Build form: eligibility, build initiation |
 | [ColonyImport.md](ColonyImport.md) | Colony HTML clipboard import, parsing, merge semantics |
 | [DataChangeEvents.md](DataChangeEvents.md) | Data change events, form subscriptions, write-through pattern |
 | [DataModel.md](DataModel.md) | Core data classes, serialization, static reference data |
 | [Delivery.md](Delivery.md) | Delivery routes, delivery planning, space stations |
+| [EvolutionGraph.md](EvolutionGraph.md) | Blueprint evolution chain chart |
 | [GameMechanics.md](GameMechanics.md) | Mining, refining, manufacturing, research, build time formulas |
+| [MainMenu.md](MainMenu.md) | File menu lifecycle, Manage menu, Help/About |
+| [MDIWindowMenu.md](MDIWindowMenu.md) | MDI Window menu, layout commands, window numbering |
 | [PlayerProfile.md](PlayerProfile.md) | Player profile management, skills, ranks |
+| [PlayerProfileImport.md](PlayerProfileImport.md) | Player profile clipboard import from game HTML |
+| [Preferences.md](Preferences.md) | Configurable thresholds, intervals, countdown format |
 | [PricingPlan.md](PricingPlan.md) | Pricing plans, resource prices, price calculator |
 | [SafeFileWriter.md](SafeFileWriter.md) | Atomic file write strategy (temp-then-replace) |
 | [Survey.md](Survey.md) | Survey management and blueprint scanning |
