@@ -111,9 +111,9 @@ namespace OE2EmpireTracker.Services
             int iteration = 0;
 
             // All deficits must be resolved. The bootstrap set handles the CC's
-            // initial deficits. The walk uses IsWorseDeficit to find the first
-            // structure that makes any resource deficit worse, then inserts the
-            // highest-priority support at that position.
+            // initial deficits. The walk only checks positions AFTER the bootstrap
+            // (index >= bootstrapCount). The bootstrap order is fixed and never modified.
+            int bootstrapCount = result.Count;
 
             while (iteration < maxIterations)
             {
@@ -121,7 +121,7 @@ namespace OE2EmpireTracker.Services
                 int insertionIndex = -1;
                 ColonyStructureStatus deficitStatus = null;
 
-                // Walk the full list simulating each structure
+                // Simulate the full list to get correct cumulative status
                 ColonyStructureStatus prev = new ColonyStructureStatus();
                 var calculator = new ColonyStatusCalculator(new Colony());
 
@@ -132,12 +132,8 @@ namespace OE2EmpireTracker.Services
                     ColonyStructureStatus current = new ColonyStructureStatus();
                     calculator.CalculateBuilt(structure, prev, current, idealWorkers, bp);
 
-                    // Only flag a deficit if this structure made things WORSE.
-                    // Inherited deficits (same or better than prev) are not actionable
-                    // at this position -- they need to be fixed earlier in the list.
-                    // On the first pass they'll be caught when the structure that
-                    // originally caused them is reached.
-                    if (IsWorseDeficit(prev, current))
+                    // Only check positions after the bootstrap set
+                    if (i >= bootstrapCount && HasDeficit(current))
                     {
                         insertionIndex = i;
                         deficitStatus = current;
@@ -290,35 +286,6 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Returns true if 'current' has a deficit that is WORSE than 'prev'.
-        /// A deficit that was already present in prev and hasn't gotten worse
-        /// is not actionable at this position -- it's inherited.
-        /// </summary>
-        private bool IsWorseDeficit(ColonyStructureStatus prev, ColonyStructureStatus current)
-        {
-            // Power: new deficit or existing deficit got worse
-            decimal prevPowerGap = prev.PowerRequired - prev.PowerProvided;
-            decimal currPowerGap = current.PowerRequired - current.PowerProvided;
-            if (currPowerGap > 0 && currPowerGap > prevPowerGap) return true;
-
-            // Habitation
-            decimal prevHabGap = prev.HabitationRequired - prev.HabitationProvision;
-            decimal currHabGap = current.HabitationRequired - current.HabitationProvision;
-            if (currHabGap > 0 && currHabGap > prevHabGap) return true;
-
-            // Food
-            decimal prevFoodGap = prev.FoodRequired - prev.FoodProvision;
-            decimal currFoodGap = current.FoodRequired - current.FoodProvision;
-            if (currFoodGap > 0 && currFoodGap > prevFoodGap) return true;
-
-            // Entertainment
-            decimal prevEntGap = prev.EntertainmentRequired - prev.EntertainmentProvided;
-            decimal currEntGap = current.EntertainmentRequired - current.EntertainmentProvided;
-            if (currEntGap > 0 && currEntGap > prevEntGap) return true;
-
-            return false;
-        }
-
         /// <summary>
         /// Finds the support structure that best addresses the current deficit.
         /// Prioritizes: Power > Habitation > Food > Entertainment.
