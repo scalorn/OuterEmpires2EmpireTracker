@@ -122,7 +122,7 @@ namespace OE2EmpireTracker.Tests.Services
             // Add support structures (what a real colony would have)
             // 15 Reactors, 7 Hab Blocks, 7 Hydro Bays, 6 Ent Centres, 1 CC
             colony.Structures.Add(MakeStructure("Flatpacks/ColonyCommandCentre"));
-            for (int i = 0; i < 15; i++) colony.Structures.Add(MakeStructure("Flatpacks/ReactorCore"));
+            for (int i = 0; i < 16; i++) colony.Structures.Add(MakeStructure("Flatpacks/ReactorCore"));
             for (int i = 0; i < 7; i++) colony.Structures.Add(MakeStructure("Flatpacks/HabitationBlock"));
             for (int i = 0; i < 7; i++) colony.Structures.Add(MakeStructure("Flatpacks/HydroponicsBay"));
             for (int i = 0; i < 6; i++) colony.Structures.Add(MakeStructure("Flatpacks/EntertainmentCentreFlatpack"));
@@ -175,6 +175,16 @@ namespace OE2EmpireTracker.Tests.Services
                     var bp = playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
                     var current = new ColonyStructureStatus();
                     calc.CalculateBuilt(s, prev, current, iw, bp);
+
+                    TestContext.WriteLine(
+                        $"  [{i}] {bp?.ExtendedName,-40} Pwr={current.PowerRequired}/{current.PowerProvided} " +
+                        $"Hab={current.HabitationRequired}/{current.HabitationProvision} " +
+                        $"Food={current.FoodRequired}/{current.FoodProvision} " +
+                        $"Ent={current.EntertainmentRequired}/{current.EntertainmentProvided}" +
+                        (i >= firstPrimaryPos && (current.PowerRequired > current.PowerProvided ||
+                            current.HabitationRequired > current.HabitationProvision ||
+                            current.FoodRequired > current.FoodProvision ||
+                            current.EntertainmentRequired > current.EntertainmentProvided) ? " *** DEFICIT ***" : ""));
 
                     if (i >= firstPrimaryPos)
                     {
