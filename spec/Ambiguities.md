@@ -99,7 +99,7 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 
 ### AMB-013 — RESOLVED
 **Resolution:** The current implementation is correct:
-- Each structure's assigned workers (BlueCollar1, WhiteCollar1, etc.) are counted in a local `ColonyWorkers` list per structure. The count is added to HabitationRequired, FoodRequired, and EntertainmentRequired for that structure only.
+- Each structure's assigned workers (BlueCollar1, WhiteCollar1, etc.) are counted in a local `ColonyWorkers` list per structure. The count is added to HabitationRequired and FoodRequired (1 per worker), and EntertainmentRequired (2 per worker) for that structure only.
 - Unallocated workers (UnassignedBlueCollarDetail etc.) are tracked via `unallocatedBlueCollarPresent` which propagates through `prevStatus`. The first structure that needs an unallocated worker of a given type adds 1; subsequent structures that also need it see it is already present and do not add again.
 
 **Action:** REQ-COL-017 updated to document this behavior precisely.
@@ -152,15 +152,23 @@ When a worker is assigned to a specific structure slot (BlueCollar1, WhiteCollar
 ---
 
 ### AMB-021 — RESOLVED
-**Resolution:** The optimized flatpack build order algorithm is:
-1. Take all planned (staged/unbuilt) flatpacks and separate them into two groups:
-   - **Support structures**: Power, Habitation, Food, Entertainment providers
-   - **Primary structures**: everything else (in their planned build order)
-2. Walk through the primary structures in order. Before each primary structure is added to the output sequence, check whether building it (with all its workers fully staffed) would cause a deficit in Power, Habitation, Food, or Entertainment.
-3. If a deficit would occur, insert the minimum required support structures from the support group ahead of the primary structure to satisfy the constraint.
-4. The result is a reordered sequence where all resource constraints are satisfied after each build step.
+**Resolution:** The optimized flatpack build order algorithm (implemented in `BuildOrderOptimizer`):
+1. Classify all structures as Support (Power, Habitation, Food, Entertainment providers) or Primary (everything else). CC is classified as Support.
+2. Bootstrap: seed with CC, Reactor, Hab Block, Hydroponics Bay, Entertainment Centre.
+3. For each primary in order:
+   a. Fix existing deficits (power > hab > food > ent priority).
+   b. Fix deficits the primary itself would cause.
+   c. Look ahead: simulate primary + hab + hydro. Fix hab/food/ent deficits from worker cascading.
+   d. Final deficit check after all look-ahead placements.
+   e. Place the primary.
+4. Append leftover support with deficit checks.
+5. When support structures cause cascading deficits (Ent needs power, Hydro needs ent), recursively place prerequisites first. Chain: Hydro -> Ent -> Reactor -> done (max depth 3).
+6. Create new structures from player blueprints when pool is exhausted, respecting MaxPerColony.
+7. Entertainment required is 2 per worker (hab and food are 1 per worker).
 
-**Action:** Colony.md updated with REQ-COL-095 series for the optimization algorithm.
+The algorithm optimizes ALL structures (built and unbuilt) because the colony importer groups them by flatpack type, not by actual build order.
+
+**Action:** Colony.md updated with REQ-COL-095 series. BuildOrderOptimizer implemented with 2 tests.
 
 ---
 

@@ -39,7 +39,7 @@ stateDiagram-v2
 **REQ-COL-014** WarehouseRequired accumulator SHALL be seeded from the previous structure's WarehouseRequired (not WarehouseCapacity).  
 **REQ-COL-015** Power, Habitation, Entertainment, and Warehouse resources SHALL only be counted when the structure is Online.  
 **REQ-COL-016** Food provision SHALL be counted regardless of Online status.  
-**REQ-COL-017** Each structure's assigned workers SHALL contribute their count to HabitationRequired, FoodRequired, and EntertainmentRequired for that structure's status entry. A structure with 2 assigned workers adds 2 to each of those required values.  
+**REQ-COL-017** Each structure's assigned workers SHALL contribute to HabitationRequired, FoodRequired, and EntertainmentRequired for that structure's status entry. A structure with N assigned workers adds N to HabitationRequired and FoodRequired, and N*2 to EntertainmentRequired (entertainment costs 2 per worker).  
 **REQ-COL-017b** Unallocated workers (UnassignedBlueCollarDetail, UnassignedWhiteCollarDetail, UnassignedSpecialistDetail) are counted once per colony per type. The first structure in the list that requires an unallocated worker of a given type adds 1 to the required values. Subsequent structures that also require the same unallocated worker type do not add again — the `UnallocatedXxxPresent` flag propagates through the status chain to prevent double-counting.  
 **REQ-COL-017a** WarehouseRequired SHALL be calculated as the sum of `item.Quantity * item.Volume` across all items in the colony's ItemBag. This value is independent of structure order and SHALL be set on the final status only.  
 **REQ-COL-018** Unallocated worker types (UnassignedBlueCollarDetail etc.) SHALL be counted once per colony, not once per structure — superseded by REQ-COL-017b.  
@@ -114,14 +114,31 @@ stateDiagram-v2
 **REQ-COL-092** ColonyViewModel.RecalculateStatus() SHALL call both CalculateBuilt() and CalculateIdeal().  
 **REQ-COL-093** ColonyViewModel.Save() SHALL ensure UUID is set, add to playerContext if absent, and call writeContext().
 
-## Flatpack Build Order Optimization (Future)
+## Flatpack Build Order Optimization
 
-**REQ-COL-095** The colony form SHALL provide an "Optimize Build Order" action that reorders the colony's planned (staged/unbuilt) structures to satisfy resource constraints at every build step.  
-**REQ-COL-095a** Structures SHALL be classified as either Support (Power, Habitation, Food, Entertainment providers) or Primary (all others).  
-**REQ-COL-095b** The algorithm SHALL walk through Primary structures in their current planned order. Before each Primary structure is placed in the output sequence, it SHALL simulate building that structure with all workers fully staffed using the Ideal calculation.  
-**REQ-COL-095c** If the simulation shows a deficit in Power, Habitation, Food, or Entertainment after building the Primary structure, the algorithm SHALL insert the minimum number of Support structures from the Support pool ahead of it to eliminate the deficit.  
-**REQ-COL-095d** The resulting sequence SHALL guarantee that after each build step, Power >= PowerRequired, HabitationProvision >= HabitationRequired, FoodProvision >= FoodRequired, and EntertainmentProvided >= EntertainmentRequired.  
-**REQ-COL-095e** Support structures that are not needed to satisfy any constraint SHALL be appended at the end of the sequence.
+**REQ-COL-095** The colony form SHALL provide an "Optimize Build Order" action that reorders the colony's structures to satisfy resource constraints at every build step. The optimizer reorders ALL structures (built and unbuilt) because the importer groups them by flatpack type, not by the order they were actually built.
+
+**REQ-COL-095a** Structures SHALL be classified as either Support (Power, Habitation, Food, Entertainment providers) or Primary (all others). The Colony Command Centre is classified as Support for ordering purposes.
+
+**REQ-COL-095b** The algorithm SHALL use a "fix-before-place" approach:
+1. Bootstrap: seed the build order with CC, Reactor, Hab Block, Hydroponics Bay, Entertainment Centre from the support pool. This ensures no deficits from the start.
+2. For each Primary structure in order:
+   a. Fix any existing deficits by placing support (priority: Power > Hab > Food > Entertainment).
+   b. If the primary itself would cause a deficit, fix it before placing.
+   c. Look ahead: simulate placing the primary + a Hab + Hydro. If that would cause hab/food/ent deficits, pre-place the needed support.
+   d. Final check: after all look-ahead placements, verify the primary won't cause any deficit. Fix if needed.
+   e. Place the primary.
+3. Append leftover support, fixing deficits as each is added.
+
+**REQ-COL-095c** When a support structure would itself cause a new deficit (e.g. Entertainment Centre needs 2 power and has a worker), the algorithm SHALL recursively place prerequisites first. The cascade chain is bounded: Hydro -> Ent -> Reactor -> done (max depth 3).
+
+**REQ-COL-095d** When the support pool is exhausted, the algorithm SHALL create new support structures from player blueprints, respecting MaxPerColony limits.
+
+**REQ-COL-095e** The resulting sequence SHALL guarantee that from the first primary structure onwards, Power >= PowerRequired, HabitationProvision >= HabitationRequired, FoodProvision >= FoodRequired, and EntertainmentProvided >= EntertainmentRequired at every position.
+
+**REQ-COL-095f** Entertainment required per worker is 2 (not 1 like habitation and food). The ColonyStatusCalculator computes `EntertainmentRequired = sum(workers) * 2`.
+
+**REQ-COL-095g** Support structures that are not consumed during optimization SHALL be appended at the end, with deficit checks for each (e.g. leftover Entertainment Centres may need Hab/Hydro for their workers).
 
 ## Colony Bootstrap (Future)
 
