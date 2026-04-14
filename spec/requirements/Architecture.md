@@ -88,19 +88,16 @@ flowchart TD
 **REQ-ARCH-060** LockTracking SHALL be added to Colony and serialized as part of the colony JSON.  
 **REQ-ARCH-061** The dgvItems Locked Amount column SHALL display the real locked quantity from LockTracking.  
 **REQ-ARCH-062** ActualColonyStructureWorkers.IsUnassignedWorkerAvailable(workerKey) SHALL check whether the colony warehouse (ItemBag) contains at least 1 unlocked WorkDetail item whose BaseItemTypeID equals workerKey (the full WorkerDetail ID: "BlueCollarDetail", "WhiteCollarDetail", or "SpecialistDetail"). Unlocked means CountByType minus GetLockedQuantity > 0.  
-**REQ-ARCH-062a** One unassigned worker of a given type supports all structures in the colony that need that type — it is not consumed per structure.
+**REQ-ARCH-062a** One unassigned worker of a given type supports all structures in the colony that need that type — it is not consumed per structure.  
+**REQ-ARCH-062b** When a worker is assigned to a specific structure slot (e.g. BlueCollar1), the corresponding WorkDetail item in the warehouse SHALL be locked via LockTracking using the structure's UUID as the process key and the WorkerDetail ID as the item key. Implemented in ColonyStatusCalculator.LockAssignedWorkers().  
+**REQ-ARCH-062c** When a worker is unassigned from a structure slot, the corresponding lock SHALL be cleared via LockTracking.ClearLocksForProcess. Implemented in ColonyStatusCalculator.ClearAllWorkerLocks() which rebuilds all locks from current state on each recalculation.
 
-## Worker & Lock UI (Future)
+## Planned Forms (Implemented)
 
-**REQ-ARCH-062b** When a worker is assigned to a specific structure slot (e.g. BlueCollar1), the corresponding WorkDetail item in the warehouse SHALL be locked via LockTracking using the structure's UUID as the process key and the WorkerDetail ID as the item key.  
-**REQ-ARCH-062c** When a worker is unassigned from a structure slot, the corresponding lock SHALL be cleared via LockTracking.ClearLocksForProcess or by removing the specific lock entry.
-
-## Future Forms
-
-**REQ-ARCH-063** A Timed Event Review form SHALL display all active CountDownTime instances sorted by TimeRemaining, with double-click navigation to the owning form.  
-**REQ-ARCH-064** A Commodity Delivery form SHALL summarize all CommodityRequested entries across all colonies.  
-**REQ-ARCH-065** A Flatpack Building form SHALL list colonies with staged but unbuilt structures.  
-**REQ-ARCH-066** A Worker Delivery form SHALL list colonies with built structures that have unassigned workers.
+**REQ-ARCH-063** A Timed Event Review form SHALL display all active CountDownTime instances sorted by TimeRemaining. Implemented as FormColonyActivity (Colony Activity form) with countdown timers, activity type filtering, and 1-second refresh.  
+**REQ-ARCH-064** A Commodity Delivery form SHALL summarize all CommodityRequested entries across all colonies. Implemented as the Delivery Plan and Delivery Execution forms (REQ-DEL-030 through REQ-DEL-062) with auto-fill from unfulfilled commodity requests.  
+**REQ-ARCH-065** A Flatpack Building form SHALL list colonies with staged but unbuilt structures. Implemented as FormColonyDailyBuild (Colony Daily Build form) with route-based colony filtering and build initiation.  
+**REQ-ARCH-066** A Worker Delivery form SHALL list colonies with built structures that have unassigned workers. Implemented as the Worker auto-fill in the Delivery Plan (REQ-DEL-060) which fills from ideal vs actual worker gaps.
 
 ## Colony Timed Processing (Future — partial implementation exists for Mining)
 
