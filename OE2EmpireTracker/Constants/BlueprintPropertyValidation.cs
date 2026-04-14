@@ -123,7 +123,7 @@ namespace OE2EmpireTracker.Constants
             { "Kinetic Damage Rating", PropertyValueType.Decimal },
             { "Kinetic Defence Rating", PropertyValueType.Decimal },
             { "Launch Velocity", PropertyValueType.Decimal },
-            { "Manufacture Time Reduction", PropertyValueType.Decimal },
+            { "Manufacturing Time Reduction", PropertyValueType.Decimal },
             { "Max Effective Range", PropertyValueType.Decimal },
             { "Max Jump Distance", PropertyValueType.Decimal },
             { "Maximum Damage Repair", PropertyValueType.Decimal },
