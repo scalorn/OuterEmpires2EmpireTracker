@@ -11,9 +11,9 @@
 
 ## Display
 
-**REQ-CDB-020** The form SHALL show a list of eligible colonies with colony name, planet name, and system name.
-**REQ-CDB-021** Selecting a colony SHALL display the first staged structure's details.
-**REQ-CDB-022** A "Build" button SHALL initiate building on the first staged structure of the selected colony.
+**REQ-CDB-020** The form SHALL provide a route selector (filtered combo box) to choose a delivery route. Only colonies on the selected route that are eligible for building SHALL be displayed.
+**REQ-CDB-021** Each eligible colony SHALL be shown as a panel with colony name, planet name, system name, and the first staged structure's details.
+**REQ-CDB-022** A "Build" button on each colony panel SHALL initiate building on the first staged structure of that colony.
 
 ## Build Action
 

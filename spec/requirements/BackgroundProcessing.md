@@ -23,7 +23,7 @@ flowchart TD
 
 ## Timer Architecture
 
-**REQ-BP-001** The application SHALL run a background processing timer that fires every 60 seconds (`BackgroundProcessor.TickIntervalMs = 60000`).
+**REQ-BP-001** The application SHALL run a background processing timer that fires at a configurable interval (default 60 seconds, configurable via Preferences). The interval is read from `PreferencesStore.Preferences.Thresholds.BackgroundProcessingIntervalSeconds` with a minimum of 1 second.
 **REQ-BP-002** On each tick, the processor SHALL identify all colonies with expired timers and call `Colony.ProcessColony()` on each.
 **REQ-BP-003** After processing, the processor SHALL fire `ColonyDataChanged` events for each processed colony to trigger UI refresh.
 **REQ-BP-004** After processing, the processor SHALL call `PlayerContext.writeContext()` to persist changes.

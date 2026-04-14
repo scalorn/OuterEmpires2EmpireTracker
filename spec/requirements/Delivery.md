@@ -92,7 +92,7 @@ Colonies are on planets. Planets are in systems. Travel between systems costs ti
 **REQ-DEL-056** When all items on all stops are marked delivered/picked up, the plan SHALL be marked as Completed.
 **REQ-DEL-057** The execution form SHALL be accessible from the Route Builder via an "Execute" button, or from the Edit menu as "Delivery Execution".
 
-## Phase 7: Auto-Fill Delivery Plans (Future)
+## Phase 7: Auto-Fill Delivery Plans
 
 **REQ-DEL-060** The planning tab SHALL offer auto-fill options by request type:
   - Commodity requests: fill from unfulfilled CommodityRequested entries

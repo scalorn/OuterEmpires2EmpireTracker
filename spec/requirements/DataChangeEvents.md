@@ -10,6 +10,7 @@
 - `DeliveryDataChanged` — fired when delivery route or plan data is modified
 - `PlayerProfileDataChanged(PlayerUUID)` — fired when player profile data is modified
 - `PlayerProfilesChanged` — fired when the profile list changes (add/remove)
+- `PricingDataChanged` — fired when pricing plan data is modified (resource prices, plan settings)
 
 ## Event Args
 
