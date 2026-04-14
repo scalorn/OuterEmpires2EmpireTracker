@@ -60,9 +60,7 @@
         "Can Manufacture",
         "Max Per Colony",
         "Blue Collar Detail",
-        "Unassigned White Collar Detail",
-        "Blue Collar Detail(s)",
-        "Unassigned White Collar Detail(s)"
+        "Unassigned White Collar Detail"
       ],
       "ResearchableProperties": [],
       "IconPosition": "-214px -670px",
@@ -390,8 +388,7 @@
         "Can Research",
         "Unassigned Specialist Detail",
         "Max Per Colony",
-        "Blue Collar Detail",
-        "Unassigned Specialist Detail(s)"
+        "Blue Collar Detail"
       ],
       "ResearchableProperties": [],
       "IconPosition": "-480px -594px",
@@ -1221,8 +1218,7 @@
         "Max Per Colony",
         "Research Time Modification",
         "Specialist Detail",
-        "Research Slot",
-        "Specialist Detail(s)"
+        "Research Slot"
       ],
       "ResearchableProperties": [],
       "IconPosition": "-442px -594px",
