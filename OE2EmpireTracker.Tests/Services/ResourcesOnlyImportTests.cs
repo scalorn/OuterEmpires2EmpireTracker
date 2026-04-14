@@ -14,7 +14,7 @@ namespace OE2EmpireTracker.Tests.Services
     public class ResourcesOnlyImportTests
     {
         /// <summary>
-        /// Req 1.3 edge case: empty resources + missing dedup fields → NOT resources-only.
+        /// Req 1.3 edge case: empty resources + missing dedup fields -> NOT resources-only.
         /// </summary>
         [Test]
         public void IsResourcesOnlyImport_EmptyResources_MissingDedupFields_ReturnsFalse()
@@ -29,7 +29,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// Req 1.2 edge case: has resources but BluePrintType is non-empty → NOT resources-only.
+        /// Req 1.2 edge case: has resources but BluePrintType is non-empty -> NOT resources-only.
         /// </summary>
         [Test]
         public void IsResourcesOnlyImport_HasResources_NonEmptyBluePrintType_ReturnsFalse()
@@ -87,7 +87,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// Req 3.1, 3.3: MergeResourcesOnly replaces resources completely —
+        /// Req 3.1, 3.3: MergeResourcesOnly replaces resources completely --
         /// no leftover keys from the target's original resources.
         /// </summary>
         [Test]

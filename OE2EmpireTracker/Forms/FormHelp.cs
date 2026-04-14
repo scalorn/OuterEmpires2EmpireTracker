@@ -55,7 +55,7 @@ namespace OE2EmpireTracker.Forms
         {
             string url = e.Url.ToString();
 
-            // Allow about:blank — this is how DocumentText works internally
+            // Allow about:blank -- this is how DocumentText works internally
             if (url == "about:blank")
                 return;
 

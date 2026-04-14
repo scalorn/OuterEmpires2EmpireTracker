@@ -8,7 +8,7 @@ namespace OE2EmpireTracker.Tests.Models
     [TestFixture]
     public class ThresholdPreferencesTests
     {
-        #region Default Value Tests (Requirements 1.1–1.9)
+        #region Default Value Tests (Requirements 1.1--1.9)
 
         [Test]
         public void Default_StructureCountYellow_Is60()
@@ -75,7 +75,7 @@ namespace OE2EmpireTracker.Tests.Models
 
         #endregion
 
-        #region Validation Tests (Requirements 7.1–7.6)
+        #region Validation Tests (Requirements 7.1--7.6)
 
         [Test]
         public void Validate_DefaultPreferences_ReturnsTrue()
@@ -168,7 +168,7 @@ namespace OE2EmpireTracker.Tests.Models
 
         #endregion
 
-        #region Property Test: Validation Correctness (Property 6, Requirements 7.1–7.6)
+        #region Property Test: Validation Correctness (Property 6, Requirements 7.1--7.6)
 
         /// <summary>
         /// Generates a random ThresholdPreferences with a mix of valid and invalid values.

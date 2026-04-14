@@ -313,7 +313,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             var profile = ParseScalorn();
             var skill = profile.GetSkill(SkillName.ContractManagement);
             // 22 days, 9 hours = (22*24 + 9) * 3600 = 537 * 3600 = 1933200 seconds
-            // Allow ±5s tolerance because TimeRemaining is computed from DateTime.UtcNow
+            // Allow +/-5s tolerance because TimeRemaining is computed from DateTime.UtcNow
             Assert.That(skill.CompletionTime.TimeRemaining,
                 Is.InRange(1933200L - 5, 1933200L));
         }
@@ -346,7 +346,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         // Edge case tests (Task 7.2)
         // -------------------------------------------------------------------
 
-        // Requirement 1.3: Empty HTML string — parser doesn't crash
+        // Requirement 1.3: Empty HTML string -- parser doesn't crash
         [Test]
         public void ProcessHtml_EmptyString_DoesNotCrash()
         {
@@ -364,7 +364,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(profile.Name, Is.EqualTo("Original"));
         }
 
-        // Requirement 1.3: Missing ui_character_detail — name and faction unchanged
+        // Requirement 1.3: Missing ui_character_detail -- name and faction unchanged
         [Test]
         public void ProcessHtml_MissingCharacterDetail_NameUnchanged()
         {
@@ -375,7 +375,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(profile.Faction, Is.EqualTo("ORG"));
         }
 
-        // Requirement 3.4: Missing rank sections — ranks unchanged
+        // Requirement 3.4: Missing rank sections -- ranks unchanged
         [Test]
         public void ProcessHtml_MissingRankSections_RanksUnchanged()
         {
@@ -388,7 +388,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(profile.Public.CurrentXP, Is.EqualTo(500));
         }
 
-        // Requirement 2.2: Missing credit element — TotalCredits unchanged
+        // Requirement 2.2: Missing credit element -- TotalCredits unchanged
         [Test]
         public void ProcessHtml_MissingCreditElement_CreditsUnchanged()
         {
@@ -398,7 +398,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(profile.TotalCredits, Is.EqualTo(999m));
         }
 
-        // Requirement 4.2: Missing skill points element — SkillPoints unchanged
+        // Requirement 4.2: Missing skill points element -- SkillPoints unchanged
         [Test]
         public void ProcessHtml_MissingSkillPoints_Unchanged()
         {
@@ -408,7 +408,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(profile.SkillPoints, Is.EqualTo(5));
         }
 
-        // Malformed numbers — graceful fallback
+        // Malformed numbers -- graceful fallback
         [Test]
         public void ParseFormattedNumber_EmptyString_ReturnsZero()
         {
@@ -433,7 +433,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(PlayerProfileParser.ParseFormattedNumber("1,234,567"), Is.EqualTo(1234567L));
         }
 
-        // Requirement 6.5: Unknown skill names — logged and skipped, no crash
+        // Requirement 6.5: Unknown skill names -- logged and skipped, no crash
         [Test]
         public void ProcessHtml_UnknownSkillName_DoesNotCrash()
         {

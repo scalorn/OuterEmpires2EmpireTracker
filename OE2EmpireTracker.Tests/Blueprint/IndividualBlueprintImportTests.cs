@@ -35,7 +35,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -------------------------------------------------------------------
-        // Stats tab — full-page HTML with clipboard header
+        // Stats tab -- full-page HTML with clipboard header
         // -------------------------------------------------------------------
 
         [Test]
@@ -125,7 +125,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -------------------------------------------------------------------
-        // Resources tab — full-page HTML with clipboard header
+        // Resources tab -- full-page HTML with clipboard header
         // -------------------------------------------------------------------
 
         [Test]
@@ -217,7 +217,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
 
             // With extraction the name is clean; without it the header noise
             // may or may not corrupt the name depending on SGML tolerance.
-            // The key point is that extraction is the correct approach — it
+            // The key point is that extraction is the correct approach -- it
             // matches what cmdImportMarket_Click already does.
             // We just verify the extracted path produces the correct name.
             string rawExtracted = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);

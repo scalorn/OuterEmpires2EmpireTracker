@@ -25,14 +25,14 @@ namespace OE2EmpireTracker.Tests.Forms
         [FsCheck.NUnit.Property(MaxTest = 100)]
         public Property SegmentDashStyle_MatchesEvolutionGapClassification()
         {
-            // Generate 2–16 distinct evolution levels from 0..15, sorted ascending.
+            // Generate 2--16 distinct evolution levels from 0..15, sorted ascending.
             // This guarantees at least one segment and allows both gaps and consecutive pairs.
             var pointsGen = Gen.Choose(2, 16).SelectMany(count =>
                 Gen.Shuffle(Enumerable.Range(0, 16).ToArray())
                     .Select(shuffled => shuffled.Take(count).OrderBy(x => x).ToArray())
             ).SelectMany(evLevels =>
             {
-                // For each evolution level, generate a random percent value (1.0–500.0)
+                // For each evolution level, generate a random percent value (1.0--500.0)
                 var percentsGen = Gen.Sequence(
                     evLevels.Select(_ => Gen.Choose(1, 500).Select(v => (decimal)v))
                 );
@@ -73,15 +73,15 @@ namespace OE2EmpireTracker.Tests.Forms
                         seg.To.Evolution != expectedEvTo)
                     {
                         allClassificationsCorrect = false;
-                        classificationError = $"Segment {i}: expected Ev{expectedEvFrom}→Ev{expectedEvTo}, " +
-                                              $"got Ev{seg.From.Evolution}→Ev{seg.To.Evolution}";
+                        classificationError = $"Segment {i}: expected Ev{expectedEvFrom}->Ev{expectedEvTo}, " +
+                                              $"got Ev{seg.From.Evolution}->Ev{seg.To.Evolution}";
                         break;
                     }
 
                     if (seg.IsGap != expectedIsGap)
                     {
                         allClassificationsCorrect = false;
-                        classificationError = $"Segment {i} (Ev{seg.From.Evolution}→Ev{seg.To.Evolution}): " +
+                        classificationError = $"Segment {i} (Ev{seg.From.Evolution}->Ev{seg.To.Evolution}): " +
                                               $"evDiff={evDiff}, expected IsGap={expectedIsGap}, got IsGap={seg.IsGap}";
                         break;
                     }
@@ -100,14 +100,14 @@ namespace OE2EmpireTracker.Tests.Forms
 
         /// <summary>
         /// // Feature: evolution-graph, Property 6: Distinct color assignment per property
-        /// Generate random property name lists of size 1–16; verify all assigned colors
+        /// Generate random property name lists of size 1--16; verify all assigned colors
         /// are distinct and from the extended Wong palette.
         /// **Validates: Requirements 5.3**
         /// </summary>
         [FsCheck.NUnit.Property(MaxTest = 100)]
         public Property DistinctColorAssignment_PerProperty()
         {
-            // Generate a random count of properties (1–16), then create that many unique property names.
+            // Generate a random count of properties (1--16), then create that many unique property names.
             var propertyNamesGen = Gen.Choose(1, 16).SelectMany(count =>
             {
                 // Generate 'count' unique property names by shuffling a pool and taking the first 'count'

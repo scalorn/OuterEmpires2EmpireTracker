@@ -64,7 +64,7 @@ namespace OE2EmpireTracker.Tests.Forms
             return path;
         }
 
-        #region Helpers â€” Random Data Generation
+        #region Helpers -- Random Data Generation
 
         private static string RandomString(Random rng, int maxLen = 12)
         {
@@ -223,7 +223,7 @@ namespace OE2EmpireTracker.Tests.Forms
 
         #endregion
 
-        #region Task 8.1 â€” Property 1: New resets all state
+        #region Task 8.1 -- Property 1: New resets all state
 
         // Feature: main-menu-overhaul, Property 1: New resets all state
         // **Validates: Requirements 1.1, 1.3**
@@ -243,7 +243,7 @@ namespace OE2EmpireTracker.Tests.Forms
                 Assert.That(pc.PlayerProfileList.Count, Is.GreaterThan(0),
                     $"Iteration {iteration}: data should be loaded before reset");
 
-                // Act: simulate File â†’ New logic
+                // Act: simulate File -> New logic
                 EmpireContext.Reset();
                 // Point to a non-existent file so PlayerContext starts empty
                 PlayerContext.FilePath = TempFile("nonexistent_" + iteration + ".json");
@@ -273,7 +273,7 @@ namespace OE2EmpireTracker.Tests.Forms
 
         #endregion
 
-        #region Task 8.2 â€” Property 2: Save/load round-trip
+        #region Task 8.2 -- Property 2: Save/load round-trip
 
         // Feature: main-menu-overhaul, Property 2: Save/load round-trip
         // **Validates: Requirements 2.2, 3.1, 4.2**
@@ -345,7 +345,7 @@ namespace OE2EmpireTracker.Tests.Forms
 
         #endregion
 
-        #region Task 8.3 â€” Property 3: Invalid file preserves state
+        #region Task 8.3 -- Property 3: Invalid file preserves state
 
         // Feature: main-menu-overhaul, Property 3: Invalid file preserves state
         // **Validates: Requirements 2.5**
@@ -374,7 +374,7 @@ namespace OE2EmpireTracker.Tests.Forms
                 string invalidFile = TempFile();
                 File.WriteAllText(invalidFile, invalidContent);
 
-                // Act: attempt to load invalid file â€” should throw, state should be preserved
+                // Act: attempt to load invalid file -- should throw, state should be preserved
                 // We simulate what MainWindow does: try ReloadContextFromFile, catch exception
                 bool loadFailed = false;
                 try
@@ -416,7 +416,7 @@ namespace OE2EmpireTracker.Tests.Forms
                 }
                 else
                 {
-                    // If it didn't throw, the invalid JSON was parsed as something â€” 
+                    // If it didn't throw, the invalid JSON was parsed as something -- 
                     // just verify we can still access the context without crashing
                     Assert.That(PlayerContext.GetInstance(), Is.Not.Null,
                         $"Iteration {iteration}: PlayerContext should still be accessible");
@@ -429,7 +429,7 @@ namespace OE2EmpireTracker.Tests.Forms
 
         #endregion
 
-        #region Task 8.4 â€” Property 4: Auto-open round-trip
+        #region Task 8.4 -- Property 4: Auto-open round-trip
 
         // Feature: main-menu-overhaul, Property 4: Auto-open round-trip
         // **Validates: Requirements 6.1, 6.2**
@@ -446,14 +446,14 @@ namespace OE2EmpireTracker.Tests.Forms
                 string json = JsonConvert.SerializeObject(root, Formatting.Indented);
                 File.WriteAllText(filePath, json);
 
-                // Act: simulate auto-open logic â€” set FilePath and load
+                // Act: simulate auto-open logic -- set FilePath and load
                 EmpireContext.Reset();
                 PlayerContext.FilePath = filePath;
                 TestHelper.SetEmpireFilePath();
                 EmpireContext.GetInstance();
                 var pc = PlayerContext.GetInstance();
 
-                // Assert: data equivalence â€” same counts as original root
+                // Assert: data equivalence -- same counts as original root
                 Assert.That(pc.PlayerProfileList.Count, Is.EqualTo(root.PlayerProfile.Length),
                     $"Iteration {iteration}: profile count mismatch after auto-open");
                 Assert.That(pc.BlueprintList.Count, Is.EqualTo(root.Blueprint.Length),
@@ -485,7 +485,7 @@ namespace OE2EmpireTracker.Tests.Forms
 
         #endregion
 
-        #region Task 8.5 â€” Property 5: Manage menu alphabetical ordering
+        #region Task 8.5 -- Property 5: Manage menu alphabetical ordering
 
         // Feature: main-menu-overhaul, Property 5: Manage menu alphabetical ordering
         // **Validates: Requirements 7.5**
@@ -531,7 +531,7 @@ namespace OE2EmpireTracker.Tests.Forms
 
         #endregion
 
-        #region Task 8.6 â€” Unit tests for menu structure and UI behavior
+        #region Task 8.6 -- Unit tests for menu structure and UI behavior
 
         // --- File menu item order: New, Open, Save, Save As, separator, Exit (Req 9.1) ---
         [Test]
@@ -575,7 +575,7 @@ namespace OE2EmpireTracker.Tests.Forms
             }
         }
 
-        // --- Menu label verification (Req 7.1â€“7.4) ---
+        // --- Menu label verification (Req 7.1--7.4) ---
         [Test]
         public void ManageMenu_LabelIsManage()
         {

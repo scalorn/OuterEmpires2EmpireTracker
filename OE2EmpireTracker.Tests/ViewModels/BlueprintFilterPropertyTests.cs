@@ -62,7 +62,7 @@ namespace OE2EmpireTracker.Tests.ViewModels
 
         /// <summary>
         /// Determines whether a blueprint satisfies all active filter constraints.
-        /// This is the oracle â€” a simple, independent re-implementation of the expected logic.
+        /// This is the oracle -- a simple, independent re-implementation of the expected logic.
         /// </summary>
         private static bool SatisfiesAll(BP bp, string nameFilter, BlueprintFilterCriteria criteria)
         {

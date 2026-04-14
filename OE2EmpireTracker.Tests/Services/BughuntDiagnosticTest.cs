@@ -48,7 +48,7 @@ namespace OE2EmpireTracker.Tests.Services
             string baseDir = TestContext.CurrentContext.TestDirectory;
             string rawClipboard = File.ReadAllText(Path.Combine(baseDir, "TestData", "BUGHUNT.html"));
 
-            // Skip fragment extraction — pass raw clipboard data directly
+            // Skip fragment extraction -- pass raw clipboard data directly
             var scanner = new BlueprintScanner();
             var results = scanner.ProcessMarketHtml(rawClipboard);
 

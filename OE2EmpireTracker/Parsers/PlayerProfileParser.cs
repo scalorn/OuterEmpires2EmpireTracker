@@ -65,7 +65,7 @@ namespace OE2EmpireTracker.Parsers
                 return;
             }
 
-            // Extract name from ui_text_white divs — combine first + last name
+            // Extract name from ui_text_white divs -- combine first + last name
             var nameNodes = charDetail.SelectNodes(".//div[contains(@class,'ui_text_white')]");
             if (nameNodes != null && nameNodes.Count > 0)
             {
@@ -77,7 +77,7 @@ namespace OE2EmpireTracker.Parsers
                     profile.Name = fullName;
             }
 
-            // Extract faction from ui_text_purple div — strip brackets
+            // Extract faction from ui_text_purple div -- strip brackets
             var factionNode = charDetail.SelectSingleNode(".//div[contains(@class,'ui_text_purple')]");
             if (factionNode != null)
             {
@@ -108,7 +108,7 @@ namespace OE2EmpireTracker.Parsers
                 return;
             }
 
-            // Tooltip format is like "#11,982,019.28" — strip # and commas, parse as decimal
+            // Tooltip format is like "#11,982,019.28" -- strip # and commas, parse as decimal
             string cleaned = tooltip.Replace("#", "").Replace(",", "").Trim();
             if (decimal.TryParse(cleaned, System.Globalization.NumberStyles.Any,
                 System.Globalization.CultureInfo.InvariantCulture, out decimal credits))
@@ -212,7 +212,7 @@ namespace OE2EmpireTracker.Parsers
                         rank.Title = title;
                 }
 
-                // Extract rank level from LevelTrack_LevelNumber — text is like "Rank 42"
+                // Extract rank level from LevelTrack_LevelNumber -- text is like "Rank 42"
                 var levelNode = section.SelectSingleNode(".//div[contains(@class,'Profile_TrackInformation_Section_LevelTrack_LevelNumber')]");
                 if (levelNode != null)
                 {
@@ -223,7 +223,7 @@ namespace OE2EmpireTracker.Parsers
                         rank.Rank = level;
                 }
 
-                // Extract XP from Bar_Text — format "1,010,379 / 3,063,750"
+                // Extract XP from Bar_Text -- format "1,010,379 / 3,063,750"
                 var xpNode = section.SelectSingleNode(".//div[contains(@class,'Profile_TrackInformation_Section_LevelTrack_Bar_Text')]");
                 if (xpNode != null)
                 {
@@ -251,7 +251,7 @@ namespace OE2EmpireTracker.Parsers
             }
 
             string text = NormalizeWhitespace(spNode.InnerText);
-            // Text is like "42 SP" — strip non-digit characters and parse
+            // Text is like "42 SP" -- strip non-digit characters and parse
             string cleaned = new string(text.Where(c => char.IsDigit(c)).ToArray());
             if (!string.IsNullOrEmpty(cleaned) && int.TryParse(cleaned, out int sp))
             {
@@ -268,7 +268,7 @@ namespace OE2EmpireTracker.Parsers
         /// </summary>
         internal static void ParseSkillGroups(PlayerProfile profile, XmlDocument doc)
         {
-            // Build reverse lookup: display name → SkillGroupName enum value
+            // Build reverse lookup: display name -> SkillGroupName enum value
             var groupLookup = new Dictionary<string, SkillGroupName>();
             foreach (SkillGroupName g in Enum.GetValues(typeof(SkillGroupName)))
             {
@@ -316,7 +316,7 @@ namespace OE2EmpireTracker.Parsers
         /// </summary>
         internal static void ParseSkills(PlayerProfile profile, XmlDocument doc)
         {
-            // Build reverse lookup: display name → SkillName enum value
+            // Build reverse lookup: display name -> SkillName enum value
             var skillLookup = new Dictionary<string, SkillName>();
             foreach (SkillName s in Enum.GetValues(typeof(SkillName)))
             {

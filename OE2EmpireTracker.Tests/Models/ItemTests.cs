@@ -39,7 +39,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ExtendedName — None / plain name
+        // ExtendedName -- None / plain name
         // -----------------------------------------------------------------------
 
         [Test]
@@ -57,7 +57,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ExtendedName — Resource
+        // ExtendedName -- Resource
         // -----------------------------------------------------------------------
 
         [Test]
@@ -97,7 +97,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ExtendedName — Commodity
+        // ExtendedName -- Commodity
         // -----------------------------------------------------------------------
 
         [Test]
@@ -127,7 +127,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ExtendedName — Survey and Blueprint (PlayerContext not available)
+        // ExtendedName -- Survey and Blueprint (PlayerContext not available)
         // -----------------------------------------------------------------------
 
         [Test]

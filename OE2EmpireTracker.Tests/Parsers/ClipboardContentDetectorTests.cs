@@ -88,7 +88,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void Detect_BlueprintResourcesTab_ReturnsSurvey()
         {
             // Blueprint resources tab has ScanDetailOutputResourceName but no ShipComponentProperty
-            // This is expected — the blueprint import handler allows Survey content type through
+            // This is expected -- the blueprint import handler allows Survey content type through
             string html = "<div class='ScanDetailOutputResourceName'>Iron</div><div class='ScanDetailOutputResourceDetail'>50/h</div>";
             Assert.That(ClipboardContentDetector.Detect(html),
                 Is.EqualTo(ClipboardContentDetector.ContentType.Survey));

@@ -23,7 +23,7 @@ namespace OE2EmpireTracker.ViewModels
         }
 
         // -----------------------------------------------------------------------
-        // Structure state — typed wrappers over PropertyBag
+        // Structure state -- typed wrappers over PropertyBag
         // -----------------------------------------------------------------------
 
         public bool IsBuilt
@@ -45,7 +45,7 @@ namespace OE2EmpireTracker.ViewModels
         }
 
         // -----------------------------------------------------------------------
-        // Worker assignment — typed wrappers over AssignedWorkers PropertyBag
+        // Worker assignment -- typed wrappers over AssignedWorkers PropertyBag
         // -----------------------------------------------------------------------
 
         public bool GetWorkerAssigned(string key)
@@ -63,7 +63,7 @@ namespace OE2EmpireTracker.ViewModels
         public bool WorkerKeyExists(string key) => _structure.AssignedWorkers.ContainsKey(key);
 
         // -----------------------------------------------------------------------
-        // Mining / process properties — typed pass-throughs
+        // Mining / process properties -- typed pass-throughs
         // -----------------------------------------------------------------------
 
         public string MiningSurvey
@@ -109,7 +109,7 @@ namespace OE2EmpireTracker.ViewModels
         public int GameSequence => _structure.displaySequence;
 
         // -----------------------------------------------------------------------
-        // Structure list commands — operate on the parent colony's list
+        // Structure list commands -- operate on the parent colony's list
         // -----------------------------------------------------------------------
 
         public void MoveUp(Colony colony)

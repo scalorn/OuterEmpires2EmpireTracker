@@ -105,7 +105,7 @@ namespace OE2EmpireTracker.Tests.Services
         private static MarketBlueprint MakeUnexpandedBlueprint(string name, string seller)
         {
             var bp = new BpModel(name);
-            // Zero properties, no BluePrintType â†’ unexpanded
+            // Zero properties, no BluePrintType -> unexpanded
             bp.BluePrintType = null;
             bp.Properties = new PropertyBag();
             return new MarketBlueprint { Blueprint = bp, SellerName = seller };
@@ -117,7 +117,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Validates: Requirements 3, 7
-        /// Government seller â†’ blueprint added to GlobalBlueprintList
+        /// Government seller -> blueprint added to GlobalBlueprintList
         /// </summary>
         [Test]
         public void Import_GovernmentSeller_CreatesGlobalBlueprint()
@@ -137,7 +137,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Validates: Requirements 3, 7
-        /// Non-Government seller â†’ blueprint added to playerContext.BlueprintList with OwnerUUID
+        /// Non-Government seller -> blueprint added to playerContext.BlueprintList with OwnerUUID
         /// </summary>
         [Test]
         public void Import_PlayerSeller_CreatesPlayerBlueprint()
@@ -177,7 +177,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Validates: Requirement 2
-        /// Unexpanded listing (zero properties, no BluePrintType) â†’ skipped
+        /// Unexpanded listing (zero properties, no BluePrintType) -> skipped
         /// </summary>
         [Test]
         public void Import_UnexpandedListing_IsSkipped()
@@ -197,7 +197,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Validates: Requirement 3
-        /// Player-routed blueprint with no current player â†’ skipped
+        /// Player-routed blueprint with no current player -> skipped
         /// </summary>
         [Test]
         public void Import_NoCurrentPlayer_SkipsPlayerBlueprint()
@@ -219,7 +219,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Validates: Requirements 5, 6
-        /// Duplicate key match â†’ existing blueprint updated, not duplicated
+        /// Duplicate key match -> existing blueprint updated, not duplicated
         /// </summary>
         [Test]
         public void Import_DuplicateKey_UpdatesExistingBlueprint()
@@ -277,7 +277,7 @@ namespace OE2EmpireTracker.Tests.Services
             existing.Properties.setProperty("Power Required", "100");
             empireContext.GlobalBlueprintList.Add(existing);
 
-            // Import with matching dedup key â€” incoming does NOT have protected properties
+            // Import with matching dedup key -- incoming does NOT have protected properties
             var list = new List<MarketBlueprint>
             {
                 MakeMarketBlueprint("AMX-SS Reactor Core", "Government", "Reactor", 0, 1, null,
@@ -341,7 +341,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Validates: Requirements 3, 7
-        /// Government â†’ global, other â†’ player
+        /// Government -> global, other -> player
         /// </summary>
         [Test]
         public void Import_RoutingCorrectness_GovernmentGlobal_OtherPlayer()
@@ -450,7 +450,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// <summary>
         /// **Validates: Requirements 3, 7**
         /// Property 2: Routing correctness
-        /// Government seller â†’ GlobalBlueprintList, other â†’ BlueprintList with OwnerUUID set
+        /// Government seller -> GlobalBlueprintList, other -> BlueprintList with OwnerUUID set
         /// </summary>
         [Test]
         public void Property_RoutingCorrectness()
@@ -537,7 +537,7 @@ namespace OE2EmpireTracker.Tests.Services
                 existing.Properties.setProperty("Power Required", "PR_" + trial);
                 empireContext.GlobalBlueprintList.Add(existing);
 
-                // Import with matching dedup key â€” incoming has different non-protected props
+                // Import with matching dedup key -- incoming has different non-protected props
                 var incoming = MakeMarketBlueprint(name, "Government", bpType, evolution, cls, techLevel,
                     new Dictionary<string, string> { { "Health", "999" }, { "Damage", "42" } });
 
@@ -607,7 +607,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Integration Tests â€” Idempotency with real MarketSample HTML files
+        // Integration Tests -- Idempotency with real MarketSample HTML files
         // -----------------------------------------------------------------------
 
         private static string LoadTestData(string filename)
@@ -624,7 +624,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Validates: Requirements 5, 6
-        /// Import MarketSampleReactor.html once â†’ verify blueprints created with correct count
+        /// Import MarketSampleReactor.html once -> verify blueprints created with correct count
         /// </summary>
         [Test]
         public void Integration_ReactorImportOnce_CreatesExpectedBlueprints()
@@ -657,7 +657,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Validates: Requirements 5, 6
-        /// Import same reactor file 3 times â†’ verify no duplicate blueprints,
+        /// Import same reactor file 3 times -> verify no duplicate blueprints,
         /// all "Updated" on 2nd/3rd import
         /// </summary>
         [Test]
@@ -673,7 +673,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(createdFirst, Is.GreaterThan(0), "First import should create blueprints");
 
-            // Second import â€” re-parse to get fresh objects
+            // Second import -- re-parse to get fresh objects
             parsed = ParseHtml(html);
             var result2 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
 
@@ -777,7 +777,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Validates: Requirements 5, 6
-        /// Import MarketSampleAllWeaponTypes.html 2 times â†’ verify weapon blueprints not duplicated
+        /// Import MarketSampleAllWeaponTypes.html 2 times -> verify weapon blueprints not duplicated
         /// </summary>
         [Test]
         public void Integration_WeaponTypesImport2Times_NoDuplicates()
@@ -964,7 +964,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Integration Tests â€” OreHopper and AllFlatpacks
+        // Integration Tests -- OreHopper and AllFlatpacks
         // -----------------------------------------------------------------------
 
         /// <summary>
@@ -999,7 +999,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Assert.That(bp.Properties.Count, Is.GreaterThan(0),
                     $"OreHopper blueprint '{bp.Name}' should have populated properties");
 
-                TestContext.WriteLine($"OreHopper: '{bp.Name}' â€” BluePrintType={bp.BluePrintType}, " +
+                TestContext.WriteLine($"OreHopper: '{bp.Name}' -- BluePrintType={bp.BluePrintType}, " +
                     $"Props={bp.Properties.Count}, Resources={bp.Resources.Count}");
             }
         }
@@ -1022,7 +1022,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(result1.CreatedCount, Is.GreaterThan(0),
                 "First OreHopper import should create blueprints");
 
-            // Second import â€” re-parse to get fresh objects
+            // Second import -- re-parse to get fresh objects
             parsed = ParseHtml(html);
             var result2 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
             int countAfterSecond = empireContext.GlobalBlueprintList.Count + playerContext.BlueprintList.Count;
@@ -1124,7 +1124,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(result1.CreatedCount, Is.GreaterThan(0),
                 "First AllFlatpacks import should create blueprints");
 
-            // Second import â€” re-parse to get fresh objects
+            // Second import -- re-parse to get fresh objects
             parsed = ParseHtml(html);
             var result2 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
             int countAfterSecond = empireContext.GlobalBlueprintList.Count + playerContext.BlueprintList.Count;

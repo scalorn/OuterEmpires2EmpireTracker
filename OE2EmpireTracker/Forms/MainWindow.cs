@@ -297,11 +297,11 @@ namespace OE2EmpireTracker
                 UpdateNoPlayerGuard();
                 SetLastOpenedPath(string.Empty);
 
-                Log.Info("File â†’ New completed");
+                Log.Info("File -> New completed");
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error during File â†’ New");
+                Log.Error(ex, "Error during File -> New");
                 MessageBox.Show("An error occurred while creating a new file: " + ex.Message,
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -321,7 +321,7 @@ namespace OE2EmpireTracker
                 {
                     ReloadContextFromFile(dlg.FileName);
                     SetLastOpenedPath(dlg.FileName);
-                    Log.Info("File â†’ Open completed: {0}", dlg.FileName);
+                    Log.Info("File -> Open completed: {0}", dlg.FileName);
                 }
                 catch (Exception ex)
                 {
@@ -340,7 +340,7 @@ namespace OE2EmpireTracker
                 {
                     PlayerContext.FilePath = _lastOpenedPath;
                     playerContext.WriteContext();
-                    Log.Info("File â†’ Save completed: {0}", _lastOpenedPath);
+                    Log.Info("File -> Save completed: {0}", _lastOpenedPath);
                 }
                 catch (Exception ex)
                 {
@@ -485,7 +485,7 @@ namespace OE2EmpireTracker
                     PlayerContext.FilePath = dlg.FileName;
                     playerContext.WriteContext();
                     SetLastOpenedPath(dlg.FileName);
-                    Log.Info("File â†’ Save As completed: {0}", dlg.FileName);
+                    Log.Info("File -> Save As completed: {0}", dlg.FileName);
                     return true;
                 }
                 catch (Exception ex)

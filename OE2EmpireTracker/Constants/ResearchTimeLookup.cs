@@ -6,7 +6,7 @@ namespace OE2EmpireTracker.Constants
     /// <summary>
     /// Lookup table for research duration by current evolution level.
     /// Values are in seconds. The rules for growth are opaque and may change
-    /// as the game evolves — this table should be updated as new data is discovered.
+    /// as the game evolves -- this table should be updated as new data is discovered.
     /// Data can be loaded from BaselineData.json or falls back to hardcoded values.
     /// </summary>
     public static class ResearchTimeLookup

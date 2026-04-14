@@ -149,7 +149,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Food accumulation â€” note: Food is accumulated regardless of online state
+        // Food accumulation -- note: Food is accumulated regardless of online state
         // -----------------------------------------------------------------------
 
         [Test]
@@ -269,7 +269,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Worker assignment â€” Actual workers
+        // Worker assignment -- Actual workers
         // -----------------------------------------------------------------------
 
         [Test]
@@ -300,7 +300,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 { GameConstants.PropBlueCollarDetail, "1" }
             });
-            // Worker NOT assigned â€” default is false
+            // Worker NOT assigned -- default is false
 
             var status = Calculate(structure, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), bp);
 
@@ -331,7 +331,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Ideal workers â€” all slots treated as assigned
+        // Ideal workers -- all slots treated as assigned
         // -----------------------------------------------------------------------
 
         [Test]
@@ -456,7 +456,7 @@ namespace OE2EmpireTracker.Tests.Services
             var status = new ColonyStructureStatus();
             calc.CalculateBuilt(structure, prev, status, workers, bp);
 
-            // Should NOT add another 1 â€” already present from previous
+            // Should NOT add another 1 -- already present from previous
             Assert.That(status.UnallocatedBlueCollarPresent, Is.True);
             Assert.That(status.HabitationRequired, Is.EqualTo(1.0).Within(0.01));
             Assert.That(status.FoodRequired, Is.EqualTo(1.0).Within(0.01));
@@ -488,13 +488,13 @@ namespace OE2EmpireTracker.Tests.Services
             var status = new ColonyStructureStatus();
             calc.CalculateBuilt(structure, new ColonyStructureStatus(), status, workers, bp);
 
-            // Worker is locked â€” not available
+            // Worker is locked -- not available
             Assert.That(status.UnallocatedBlueCollarPresent, Is.False);
             Assert.That(status.HabitationRequired, Is.EqualTo(0.0).Within(0.01));
         }
 
         // -----------------------------------------------------------------------
-        // Null blueprint â€” no crash
+        // Null blueprint -- no crash
         // -----------------------------------------------------------------------
 
         [Test]
@@ -511,13 +511,13 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Combined scenario â€” reactor + habitation + workers
+        // Combined scenario -- reactor + habitation + workers
         // -----------------------------------------------------------------------
 
         [Test]
         public void CombinedScenario_ReactorAndHabWithWorkers()
         {
-            // Structure 1: Reactor â€” provides power, requires 1 blue collar
+            // Structure 1: Reactor -- provides power, requires 1 blue collar
             var reactor = MakeStructure(built: true, online: true);
             var reactorBp = MakeBlueprint(new Dictionary<string, string>
             {
@@ -532,7 +532,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(status1.HabitationRequired, Is.EqualTo(1.0).Within(0.01));
             Assert.That(status1.FoodRequired, Is.EqualTo(1.0).Within(0.01));
 
-            // Structure 2: Habitation â€” provides habitation, requires power, 1 white collar
+            // Structure 2: Habitation -- provides habitation, requires power, 1 white collar
             var hab = MakeStructure(built: true, online: true);
             var habBp = MakeBlueprint(new Dictionary<string, string>
             {
@@ -557,7 +557,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // IColonyStructureWorkers â€” ActualColonyStructureWorkers
+        // IColonyStructureWorkers -- ActualColonyStructureWorkers
         // -----------------------------------------------------------------------
 
         [Test]
@@ -661,7 +661,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // IColonyStructureWorkers â€” IdealColonyStructureWorkers
+        // IColonyStructureWorkers -- IdealColonyStructureWorkers
         // -----------------------------------------------------------------------
 
         [Test]

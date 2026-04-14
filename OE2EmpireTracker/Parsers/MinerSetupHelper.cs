@@ -19,7 +19,7 @@ namespace OE2EmpireTracker.Parsers
 
         /// <summary>
         /// Runs survey assignment and timer setup for all mining rigs in the colony.
-        /// maxRates maps structure UUID → maxRate from the game JSON.
+        /// maxRates maps structure UUID -> maxRate from the game JSON.
         /// Called after the merge loop in ParseColonyBuildingsFromJson.
         /// </summary>
         public static void SetupMiners(Colony colony, EmpireContext empireContext,
@@ -208,12 +208,12 @@ namespace OE2EmpireTracker.Parsers
         /// </summary>
         /// <remarks>
         /// Logic:
-        /// 1. If structure has no MiningSurveyResource → skip (return false)
+        /// 1. If structure has no MiningSurveyResource -> skip (return false)
         /// 2. If structure already has a MiningSurvey:
-        ///    a. Valid real survey → preserve it
-        ///    b. DEFAULT survey → check if real survey now exists, upgrade if so
-        ///    c. Deleted survey → fall through to step 3
-        /// 3. No valid survey → FindBestSurvey; if none, CreateOrUpdateDefaultSurvey
+        ///    a. Valid real survey -> preserve it
+        ///    b. DEFAULT survey -> check if real survey now exists, upgrade if so
+        ///    c. Deleted survey -> fall through to step 3
+        /// 3. No valid survey -> FindBestSurvey; if none, CreateOrUpdateDefaultSurvey
         /// </remarks>
         internal static bool AssignSurvey(
             ColonyStructure structure, Colony colony,
@@ -235,7 +235,7 @@ namespace OE2EmpireTracker.Parsers
 
                 if (existing != null)
                 {
-                    // 2a: valid real survey → preserve
+                    // 2a: valid real survey -> preserve
                     if (!string.Equals(existing.SurveyID, "DEFAULT", StringComparison.OrdinalIgnoreCase))
                     {
                         Log.Info("Preserved existing real survey {0} on structure {1} for {2}",
@@ -243,7 +243,7 @@ namespace OE2EmpireTracker.Parsers
                         return true;
                     }
 
-                    // 2b: DEFAULT survey → check if a real survey now exists
+                    // 2b: DEFAULT survey -> check if a real survey now exists
                     Survey realSurvey = FindBestSurvey(colony.PlanetName, resource, purity, maxRate, playerContext);
                     if (realSurvey != null)
                     {
@@ -253,18 +253,18 @@ namespace OE2EmpireTracker.Parsers
                         return true;
                     }
 
-                    // No real survey available → keep the default
+                    // No real survey available -> keep the default
                     Log.Info("Kept default survey {0} on structure {1} for {2} (no real survey available)",
                         structure.MiningSurvey, structure.UUID, resource);
                     return true;
                 }
 
-                // 2c: survey no longer exists (deleted) → fall through to step 3
+                // 2c: survey no longer exists (deleted) -> fall through to step 3
                 Log.Info("Existing survey {0} no longer exists for structure {1}, reassigning",
                     structure.MiningSurvey, structure.UUID);
             }
 
-            // Step 3: no existing valid survey → find best or create default
+            // Step 3: no existing valid survey -> find best or create default
             Survey bestSurvey = FindBestSurvey(colony.PlanetName, resource, purity, maxRate, playerContext);
             if (bestSurvey != null)
             {
@@ -274,7 +274,7 @@ namespace OE2EmpireTracker.Parsers
                 return true;
             }
 
-            // No real survey → create/update default
+            // No real survey -> create/update default
             Survey defaultSurvey = CreateOrUpdateDefaultSurvey(colony, resource, purity, maxRate, playerContext);
             structure.MiningSurvey = defaultSurvey.UUID;
             Log.Info("Assigned default survey {0} to structure {1} for {2}",

@@ -208,7 +208,7 @@ namespace OE2EmpireTracker.Tests.Services
                 string matchedTypeId;
                 if (industryNameToTypeId.TryGetValue(icon.BlueprintName, out matchedTypeId))
                 {
-                    // Found a commodity factory match — update the per-industry entry's IconPosition
+                    // Found a commodity factory match -- update the per-industry entry's IconPosition
                     icon.ResolvedTypeId = matchedTypeId; // Mark as resolved for coverage gap report
                     JToken entry = blueprintTypes
                         .FirstOrDefault(bt => string.Equals(
@@ -233,7 +233,7 @@ namespace OE2EmpireTracker.Tests.Services
                 }
                 else if (icon.BlueprintName.IndexOf("Ore Hopper", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    // OreHopper blueprint — update or create the OreHopper entry
+                    // OreHopper blueprint -- update or create the OreHopper entry
                     icon.ResolvedTypeId = BlueprintTypes.OreHopper; // Mark as resolved for coverage gap report
                     JToken oreHopperEntry = blueprintTypes
                         .FirstOrDefault(bt => string.Equals(
@@ -496,7 +496,7 @@ namespace OE2EmpireTracker.Tests.Services
                 }
                 foreach (string typeId in missingTypes)
                 {
-                    TestContext.WriteLine($"  MISSING: {typeId}  (null IconPosition — never characterized)");
+                    TestContext.WriteLine($"  MISSING: {typeId}  (null IconPosition -- never characterized)");
                 }
                 TestContext.WriteLine("");
             }
@@ -511,7 +511,7 @@ namespace OE2EmpireTracker.Tests.Services
                 }
                 foreach (string typeId in missingCommodityVariants)
                 {
-                    TestContext.WriteLine($"  MISSING: {typeId}  (null IconPosition — never characterized)");
+                    TestContext.WriteLine($"  MISSING: {typeId}  (null IconPosition -- never characterized)");
                 }
                 TestContext.WriteLine("");
             }
@@ -544,7 +544,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// <summary>
         /// Main "run on demand" test that the developer executes whenever the game
         /// updates its sprite sheet. Calls all helpers in sequence:
-        /// extract → compare &amp; update → ensure commodity entries → write files → produce gap report.
+        /// extract -> compare &amp; update -> ensure commodity entries -> write files -> produce gap report.
         /// </summary>
         [Test]
         public void ExtractAndUpdateIconPositions()

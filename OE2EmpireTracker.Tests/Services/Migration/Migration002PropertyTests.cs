@@ -85,7 +85,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     ec.GlobalBlueprintList.Add(bp);
                 }
 
-                // Create colonies with structures — some referencing legacy UUIDs
+                // Create colonies with structures -- some referencing legacy UUIDs
                 int bitIndex = 0;
                 var expectedMappings = new Dictionary<string, string>(); // structKey -> expected UUID
                 for (int c = 0; c < data.ColonyCount; c++)
@@ -197,7 +197,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     pc.ColonyList.Add(colony);
                 }
 
-                // Act — first migration run
+                // Act -- first migration run
                 Migration002_ColonyDeterministicUUIDs.Run(ec, pc);
 
                 // Assert after first run
@@ -230,7 +230,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 var legacyAfterFirst = pc.ColonyList
                     .Select(c => c.LegacyUUID).ToList();
 
-                // Act — second migration run
+                // Act -- second migration run
                 Migration002_ColonyDeterministicUUIDs.Run(ec, pc);
 
                 // Assert LegacyUUID unchanged after second run
@@ -336,7 +336,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     pc.DeliveryPlanList.Add(plan);
                 }
 
-                // Act — first migration run
+                // Act -- first migration run
                 Migration002_ColonyDeterministicUUIDs.Run(ec, pc);
 
                 // Snapshot state after first run
@@ -347,7 +347,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 var planStopUuidsAfterFirst = pc.DeliveryPlanList
                     .SelectMany(p => p.Stops).Select(s => s.ColonyUUID).ToList();
 
-                // Act — second migration run
+                // Act -- second migration run
                 Migration002_ColonyDeterministicUUIDs.Run(ec, pc);
 
                 // Snapshot state after second run

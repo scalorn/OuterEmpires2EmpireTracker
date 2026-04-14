@@ -72,7 +72,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         /// <summary>
-        /// Validates: Requirement 3.1 — preserve existing valid real survey on reimport.
+        /// Validates: Requirement 3.1 -- preserve existing valid real survey on reimport.
         /// </summary>
         [Test]
         public void AssignSurvey_PreservesValidRealSurvey()
@@ -93,7 +93,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         /// <summary>
-        /// Validates: Requirement 3.3 — upgrade DEFAULT survey to real when real becomes available.
+        /// Validates: Requirement 3.3 -- upgrade DEFAULT survey to real when real becomes available.
         /// </summary>
         [Test]
         public void AssignSurvey_UpgradesDefaultToReal_WhenRealSurveyAvailable()
@@ -117,7 +117,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         /// <summary>
-        /// Validates: Requirement 1.4 — assign best real survey when no existing survey.
+        /// Validates: Requirement 1.4 -- assign best real survey when no existing survey.
         /// </summary>
         [Test]
         public void AssignSurvey_AssignsBestSurvey_WhenNoExistingSurvey()
@@ -140,7 +140,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         /// <summary>
-        /// Validates: Requirement 1.5 — fall back to default survey when no real survey exists.
+        /// Validates: Requirement 1.5 -- fall back to default survey when no real survey exists.
         /// </summary>
         [Test]
         public void AssignSurvey_FallsBackToDefault_WhenNoRealSurveyExists()
@@ -162,7 +162,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         /// <summary>
-        /// Validates: Requirement 3.2 — when existing survey is deleted, assign new best survey.
+        /// Validates: Requirement 3.2 -- when existing survey is deleted, assign new best survey.
         /// </summary>
         [Test]
         public void AssignSurvey_HandlesDeletedSurvey_AssignsNewBest()
@@ -183,7 +183,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         /// <summary>
-        /// Validates: Requirement 3.3 — keep default when no real survey available.
+        /// Validates: Requirement 3.3 -- keep default when no real survey available.
         /// </summary>
         [Test]
         public void AssignSurvey_KeepsDefault_WhenNoRealSurveyAvailable()

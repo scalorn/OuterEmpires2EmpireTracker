@@ -81,7 +81,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ProcessCommodityFactory â€” single cycle produces 10 commodities
+        // ProcessCommodityFactory -- single cycle produces 10 commodities
         // -----------------------------------------------------------------------
 
         [Test]
@@ -107,7 +107,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ProcessCommodityFactory â€” multi-cycle produces correct total
+        // ProcessCommodityFactory -- multi-cycle produces correct total
         // -----------------------------------------------------------------------
 
         [Test]
@@ -132,7 +132,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ProcessCommodityFactory â€” commodities stack with existing items
+        // ProcessCommodityFactory -- commodities stack with existing items
         // -----------------------------------------------------------------------
 
         [Test]
@@ -165,7 +165,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ProcessCommodityFactory â€” construction resources consumed per cycle
+        // ProcessCommodityFactory -- construction resources consumed per cycle
         // -----------------------------------------------------------------------
 
         [Test]
@@ -195,13 +195,13 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ProcessCommodityFactory â€” resources depleted to 0 are removed
+        // ProcessCommodityFactory -- resources depleted to 0 are removed
         // -----------------------------------------------------------------------
 
         [Test]
         public void ProcessCommodityFactory_DepletedResources_RemovedFromWarehouse()
         {
-            // Give exactly 2 of each resource â€” one cycle will deplete them to 0
+            // Give exactly 2 of each resource -- one cycle will deplete them to 0
             var colony = MakeCommodityFactoryColony(
                 "Advanced Biolubricants",
                 manufacturingQuantity: 5,
@@ -225,7 +225,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ProcessCommodityFactory â€” ManufacturingCompleted increments per cycle
+        // ProcessCommodityFactory -- ManufacturingCompleted increments per cycle
         // -----------------------------------------------------------------------
 
         [Test]
@@ -248,7 +248,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ProcessCommodityFactory â€” does nothing when ManufacturingCommodityName is empty
+        // ProcessCommodityFactory -- does nothing when ManufacturingCommodityName is empty
         // -----------------------------------------------------------------------
 
         [Test]
@@ -271,7 +271,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ProcessCommodityFactory â€” does nothing when commodity not found
+        // ProcessCommodityFactory -- does nothing when commodity not found
         // -----------------------------------------------------------------------
 
         [Test]
@@ -459,7 +459,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // Skill multiplier tests â€” ExtractionFocus (mining)
+        // Skill multiplier tests -- ExtractionFocus (mining)
         // -----------------------------------------------------------------------
 
         private PlayerProfile CreatePlayerWithSkills(Dictionary<SkillName, int> skills)
@@ -527,7 +527,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // Skill multiplier tests â€” RefiningFocus
+        // Skill multiplier tests -- RefiningFocus
         // -----------------------------------------------------------------------
 
         [Test]
@@ -580,7 +580,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // Skill multiplier tests â€” zero skill level produces base output
+        // Skill multiplier tests -- zero skill level produces base output
         // -----------------------------------------------------------------------
 
         [Test]
@@ -631,7 +631,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // Skill multiplier tests â€” colony with no OwnerUUID uses base rates
+        // Skill multiplier tests -- colony with no OwnerUUID uses base rates
         // -----------------------------------------------------------------------
 
         [Test]

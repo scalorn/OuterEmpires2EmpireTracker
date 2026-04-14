@@ -116,7 +116,7 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void TimeRemainingString_IntermediateZeroMinutes_IsShown()
         {
-            // 1h 0m 30s — the 0m segment must appear because hours was shown
+            // 1h 0m 30s -- the 0m segment must appear because hours was shown
             var cdt = new CountDownTime();
             cdt.EndTime = DateTime.UtcNow.AddHours(1).AddSeconds(30);
             string s = cdt.TimeRemainingString;
@@ -128,7 +128,7 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void TimeRemainingString_LeadingZeroHours_IsOmitted()
         {
-            // 0h 30m 45s — hours should not appear since it is a leading zero
+            // 0h 30m 45s -- hours should not appear since it is a leading zero
             var cdt = new CountDownTime();
             cdt.EndTime = DateTime.UtcNow.AddMinutes(30).AddSeconds(45);
             string s = cdt.TimeRemainingString;

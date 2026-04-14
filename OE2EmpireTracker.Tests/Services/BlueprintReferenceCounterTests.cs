@@ -38,7 +38,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         #endregion
 
-        // Requirement 1.5 — empty data returns zero counts
+        // Requirement 1.5 -- empty data returns zero counts
         [Test]
         public void CountReferences_EmptyData_ReturnsZeroCounts()
         {
@@ -57,7 +57,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(report.ScannerCount, Is.EqualTo(0));
         }
 
-        // Requirement 1.1 — FlatpackBlueprintUUID match
+        // Requirement 1.1 -- FlatpackBlueprintUUID match
         [Test]
         public void CountReferences_SingleFlatpackMatch_FlatpackCountIsOne()
         {
@@ -75,7 +75,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(report.TotalCount, Is.EqualTo(1));
         }
 
-        // Requirement 1.1 — ResearchingBlueprintUUID match
+        // Requirement 1.1 -- ResearchingBlueprintUUID match
         [Test]
         public void CountReferences_SingleResearchingMatch_ResearchingCountIsOne()
         {
@@ -93,7 +93,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(report.TotalCount, Is.EqualTo(1));
         }
 
-        // Requirement 1.1 — ManufacturingBlueprintUUID match
+        // Requirement 1.1 -- ManufacturingBlueprintUUID match
         [Test]
         public void CountReferences_SingleManufacturingMatch_ManufacturingCountIsOne()
         {
@@ -111,7 +111,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(report.TotalCount, Is.EqualTo(1));
         }
 
-        // Requirement 1.2 — baseBlueprintUUID match (different blueprint)
+        // Requirement 1.2 -- baseBlueprintUUID match (different blueprint)
         [Test]
         public void CountReferences_SingleBaseBlueprintMatch_BaseBlueprintCountIsOne()
         {
@@ -128,7 +128,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(report.TotalCount, Is.EqualTo(1));
         }
 
-        // Requirement 1.3 — ScannerBlueprintUUID match
+        // Requirement 1.3 -- ScannerBlueprintUUID match
         [Test]
         public void CountReferences_SingleScannerMatch_ScannerCountIsOne()
         {
@@ -145,7 +145,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(report.TotalCount, Is.EqualTo(1));
         }
 
-        // Requirements 1.1, 1.2, 1.3 — multiple references across types
+        // Requirements 1.1, 1.2, 1.3 -- multiple references across types
         [Test]
         public void CountReferences_MultipleReferencesAcrossTypes_CorrectTotal()
         {
@@ -172,7 +172,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(report.TotalCount, Is.EqualTo(5));
         }
 
-        // Requirement 1.6 — self-referencing blueprint excluded
+        // Requirement 1.6 -- self-referencing blueprint excluded
         [Test]
         public void CountReferences_SelfReferencingBlueprint_ExcludedFromCount()
         {
@@ -189,7 +189,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(report.TotalCount, Is.EqualTo(0));
         }
 
-        // Requirement 1.5 — null UUID returns empty report
+        // Requirement 1.5 -- null UUID returns empty report
         [Test]
         public void CountReferences_NullUUID_ReturnsEmptyReport()
         {
@@ -203,7 +203,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(report, Is.SameAs(ReferenceReport.Empty));
         }
 
-        // Requirement 1.5 — empty string UUID returns empty report
+        // Requirement 1.5 -- empty string UUID returns empty report
         [Test]
         public void CountReferences_EmptyStringUUID_ReturnsEmptyReport()
         {
@@ -217,7 +217,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(report, Is.SameAs(ReferenceReport.Empty));
         }
 
-        // Error handling — colony with null Structures handled gracefully
+        // Error handling -- colony with null Structures handled gracefully
         [Test]
         public void CountReferences_ColonyWithNullStructures_HandledGracefully()
         {

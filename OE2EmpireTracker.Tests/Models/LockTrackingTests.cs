@@ -88,7 +88,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // LockItem — single item
+        // LockItem -- single item
         // -----------------------------------------------------------------------
 
         [Test]
@@ -131,7 +131,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // LockItems — multiple items
+        // LockItems -- multiple items
         // -----------------------------------------------------------------------
 
         [Test]
@@ -159,7 +159,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // GetLockedQuantity — across processes
+        // GetLockedQuantity -- across processes
         // -----------------------------------------------------------------------
 
         [Test]

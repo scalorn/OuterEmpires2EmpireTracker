@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
         #endregion
 
-        #region Property 1: Deterministic colony UUID round-trip — same inputs produce same UUID
+        #region Property 1: Deterministic colony UUID round-trip -- same inputs produce same UUID
 
         /// <summary>
         /// For any (ownerUUID, planetName, systemName) triple, Generate shall produce

@@ -94,7 +94,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // CountByType — core new functionality
+        // CountByType -- core new functionality
         // -----------------------------------------------------------------------
 
         [Test]

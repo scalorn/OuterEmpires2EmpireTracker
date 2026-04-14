@@ -1,4 +1,4 @@
-﻿using NLog;
+using NLog;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
@@ -73,7 +73,7 @@ namespace OE2EmpireTracker.Forms.Colony
             FlatpackBlueprint = playerContext.FindBlueprint(ColonyStructureData.FlatpackBlueprintUUID);
             chkStageResources.Visible = false;
 
-            // Building state Ã¢â‚¬â€ structure is transitioning from staged to built
+            // Building state -- structure is transitioning from staged to built
             if (ColonyStructureData.BuildCompletionTime != null &&
                 ColonyStructureData.BuildCompletionTime.TimeRemaining > 0)
             {
@@ -846,7 +846,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // Sub-selection: not used for manufactory
             flpSubSelection.Visible = false;
 
-            // Quantity input Ã¢â‚¬â€ only visible when a blueprint is selected
+            // Quantity input -- only visible when a blueprint is selected
             txtQuantity.Visible = showCmdStart;
             txtQuantity.Enabled = !showCompletionTime;
             if (ColonyStructureData.ManufacturingQuantity > 0)
@@ -1185,7 +1185,7 @@ namespace OE2EmpireTracker.Forms.Colony
         {
             if (ColonyStructureData == null) return false;
 
-            // Check this structure's actual status Ã¢â‚¬â€ the calculator determined availability
+            // Check this structure's actual status -- the calculator determined availability
             // during its pass with locks cleared, so it's the authoritative answer
             ColonyStructureStatus status;
             if (ColonyStructureData.Statuses.TryGetValue(GameConstants.StatusActual, out status))

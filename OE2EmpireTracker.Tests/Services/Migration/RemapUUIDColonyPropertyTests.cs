@@ -74,7 +74,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 int bitIndex = 0;
                 int plantedCount = 0;
 
-                // Add colonies — some with UUID == oldUuid
+                // Add colonies -- some with UUID == oldUuid
                 for (int i = 0; i < data.ColonyCount; i++)
                 {
                     var colony = new Colony();
@@ -87,7 +87,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     pc.ColonyList.Add(colony);
                 }
 
-                // Add delivery routes with stops — some ColonyUUID == oldUuid
+                // Add delivery routes with stops -- some ColonyUUID == oldUuid
                 for (int r = 0; r < data.RouteCount; r++)
                 {
                     var route = new DeliveryRoute();
@@ -105,7 +105,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     pc.DeliveryRouteList.Add(route);
                 }
 
-                // Add delivery plans with stops — some ColonyUUID == oldUuid
+                // Add delivery plans with stops -- some ColonyUUID == oldUuid
                 for (int p = 0; p < data.PlanCount; p++)
                 {
                     var plan = new DeliveryPlan();

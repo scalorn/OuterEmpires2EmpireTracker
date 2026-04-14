@@ -188,7 +188,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         // -----------------------------------------------------------------------
-        // ProcessHtml — SampleHtml (inline, no clipboard headers)
+        // ProcessHtml -- SampleHtml (inline, no clipboard headers)
         // -----------------------------------------------------------------------
 
         [Test]
@@ -283,7 +283,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         // -----------------------------------------------------------------------
-        // ZehVazoranIIM2 — full integration from external file
+        // ZehVazoranIIM2 -- full integration from external file
         // -----------------------------------------------------------------------
 
         private Survey ParseZehVazoran()
@@ -356,7 +356,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         // -----------------------------------------------------------------------
-        // QuogarV2249II — full integration from external file (Med Purity)
+        // QuogarV2249II -- full integration from external file (Med Purity)
         // -----------------------------------------------------------------------
 
         private Survey ParseQuogar()

@@ -243,7 +243,7 @@ namespace OE2EmpireTracker
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Size = new Size(150, 21)
             };
-            // Local copy with blank first entry â€” avoids cross-talk with detail panel
+            // Local copy with blank first entry -- avoids cross-talk with detail panel
             cmbFilterType.Items.Add("");
             foreach (BlueprintType bt in empireContext.BlueprintTypeList)
                 cmbFilterType.Items.Add(bt.Name);
@@ -411,7 +411,7 @@ namespace OE2EmpireTracker
             chartArea.AxisX.Interval = 1;
             chartArea.AxisX.Title = "Evolution Level";
 
-            // Y-axis: percentage change, range 50â€“150 with 100% baseline center, gridline interval 10%
+            // Y-axis: percentage change, range 50--150 with 100% baseline center, gridline interval 10%
             chartArea.AxisY.Title = "% Change from Evolution 0 Value";
             chartArea.AxisY.Minimum = 50;
             chartArea.AxisY.Maximum = 150;
@@ -628,7 +628,7 @@ namespace OE2EmpireTracker
         private void chkGlobalBlueprint_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            // Global flag is read at save time â€” no viewModel field to write.
+            // Global flag is read at save time -- no viewModel field to write.
         }
 
         /// <summary>
@@ -1003,7 +1003,7 @@ namespace OE2EmpireTracker
             }
             else
             {
-                // No blueprint selected â€” disable delete button
+                // No blueprint selected -- disable delete button
                 var (enabled, text) = GetDeleteButtonState(null);
                 cmdDelete.Enabled = enabled;
                 cmdDelete.Text = text;
@@ -1154,7 +1154,7 @@ namespace OE2EmpireTracker
             // Persist via viewModel
             viewModel.Save(chkGlobalBlueprint.Checked);
 
-            // Preserve the blueprint type filter across the list refresh â€”
+            // Preserve the blueprint type filter across the list refresh --
             // PopulateForm (triggered by selection change) clears it otherwise.
             string savedTypeFilter = txtFilterBlueprintType.Text;
 
@@ -1470,7 +1470,7 @@ namespace OE2EmpireTracker
             {
                 string key = $"{entry.Name} Ev{entry.Evolution} {entry.BluePrintType} C{entry.Class}";
                 if (entry.Action == ImportAction.Skipped)
-                    sb.AppendLine($"  [{entry.Storage ?? "?"}] SKIP  {key} â€” {entry.SkipReason}");
+                    sb.AppendLine($"  [{entry.Storage ?? "?"}] SKIP  {key} -- {entry.SkipReason}");
                 else
                     sb.AppendLine($"  [{entry.Storage}] {entry.Action}  {key}");
             }
@@ -1529,7 +1529,7 @@ namespace OE2EmpireTracker
                 if (tempBP == null)
                     return;
 
-                // ── BL-062: Resources-only import (e.g. resources tab copied from game) ──
+                // -- BL-062: Resources-only import (e.g. resources tab copied from game) --
                 if (MarketBlueprintImporter.IsResourcesOnlyImport(tempBP))
                 {
                     if (string.IsNullOrEmpty(viewModel.Data.UUID))
@@ -1601,7 +1601,7 @@ namespace OE2EmpireTracker
 
                 if (selectedMatch)
                 {
-                    // Selected blueprint matches â€” update in place
+                    // Selected blueprint matches -- update in place
                     MarketBlueprintImporter.UpdateExisting(viewModel.Data, tempBP);
                     importedBP = viewModel.Data;
 
@@ -1616,7 +1616,7 @@ namespace OE2EmpireTracker
                 }
                 else
                 {
-                    // No match with selected â€” route via market logic
+                    // No match with selected -- route via market logic
                     bool hasCurrentPlayer = !string.IsNullOrEmpty(playerContext.CurrentPlayerUUID);
                     bool isGlobal = MarketBlueprintImporter.IsGlobalRoute(tempBP.Evolution, hasCurrentPlayer);
 
@@ -1642,7 +1642,7 @@ namespace OE2EmpireTracker
                             tempBP.OwnerUUID = playerContext.CurrentPlayerUUID;
                         targetList.Add(tempBP);
                         importedBP = tempBP;
-                        Log.Info("New blueprint created via dedup: {0} Ev{1} {2} â†’ {3}",
+                        Log.Info("New blueprint created via dedup: {0} Ev{1} {2} -> {3}",
                             importedBP.Name, importedBP.Evolution, importedBP.BluePrintType,
                             isGlobal ? "Global" : "Player");
                     }
@@ -1743,7 +1743,7 @@ namespace OE2EmpireTracker
             string pattern = Constants.BlueprintPropertyValidation.GetValidationPattern(propertyName);
             if (pattern == null)
             {
-                // Unknown property ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â log and allow free-form
+                // Unknown property -- log and allow free-form
                 Log.Warn("Unknown blueprint property for validation: {0}", propertyName);
                 return;
             }
@@ -1800,7 +1800,7 @@ namespace OE2EmpireTracker
                 _reportedUnknownProperties.Add(p);
 
             string propList = string.Join("\n", newUnknowns.Select(p =>
-                $"  • {p} = {viewModel.Data.Properties.Properties[p]}"));
+                $"  * {p} = {viewModel.Data.Properties.Properties[p]}"));
 
             Log.Warn("Unknown properties on {0} ({1}): {2}",
                 viewModel.Data.Name, bt.Name, string.Join(", ", newUnknowns));
@@ -1987,7 +1987,7 @@ namespace OE2EmpireTracker
                 {
                     if (i == 0 && points.Count == 1)
                     {
-                        // Single point â€” create a series with just one data point
+                        // Single point -- create a series with just one data point
                         var singleSeries = new Series($"{propertyName}_{segmentIndex}")
                         {
                             ChartType = SeriesChartType.Line,

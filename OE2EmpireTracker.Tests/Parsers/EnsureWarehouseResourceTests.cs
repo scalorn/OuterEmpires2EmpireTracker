@@ -76,7 +76,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         /// <summary>
         /// Validates: Requirement 7.1
         /// Checks warehouse for matching resource by name and purity.
-        /// Different purity should not match — creates a new record.
+        /// Different purity should not match -- creates a new record.
         /// </summary>
         [Test]
         public void CreatesResource_WhenSameNameButDifferentPurityExists()
@@ -101,7 +101,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         /// <summary>
-        /// Handles null colony gracefully — no exception.
+        /// Handles null colony gracefully -- no exception.
         /// </summary>
         [Test]
         public void HandlesNullColony_Gracefully()
@@ -111,7 +111,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         /// <summary>
-        /// Handles null/empty resourceName gracefully — no exception, no item created.
+        /// Handles null/empty resourceName gracefully -- no exception, no item created.
         /// </summary>
         [Test]
         public void HandlesNullResourceName_Gracefully()
@@ -124,7 +124,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         /// <summary>
-        /// Handles empty resourceName gracefully — no exception, no item created.
+        /// Handles empty resourceName gracefully -- no exception, no item created.
         /// </summary>
         [Test]
         public void HandlesEmptyResourceName_Gracefully()
@@ -137,7 +137,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         /// <summary>
-        /// Handles null/empty purity gracefully — no exception, no item created.
+        /// Handles null/empty purity gracefully -- no exception, no item created.
         /// </summary>
         [Test]
         public void HandlesNullPurity_Gracefully()
@@ -150,7 +150,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         /// <summary>
-        /// Handles empty purity gracefully — no exception, no item created.
+        /// Handles empty purity gracefully -- no exception, no item created.
         /// </summary>
         [Test]
         public void HandlesEmptyPurity_Gracefully()

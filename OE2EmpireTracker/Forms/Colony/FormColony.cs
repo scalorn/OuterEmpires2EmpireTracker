@@ -37,7 +37,7 @@ namespace OE2EmpireTracker.Forms.Colony
         private bool _warehouseDirty = false;
         private bool _workersDirty = false;
 
-        // Structure control pool â€” reuse controls instead of creating/disposing
+        // Structure control pool -- reuse controls instead of creating/disposing
         private readonly List<ColonyStructure> _structurePool = new List<ColonyStructure>();
         public FormColony()
         {
@@ -187,7 +187,7 @@ namespace OE2EmpireTracker.Forms.Colony
             var report = counter.CountReferences(selectedColony.UUID);
             if (report.TotalCount > 0)
             {
-                var msg = $"Cannot delete '{selectedColony.PlanetName}' — it is referenced by {report.RouteCount} route(s) and {report.PlanCount} plan(s).";
+                var msg = $"Cannot delete '{selectedColony.PlanetName}' -- it is referenced by {report.RouteCount} route(s) and {report.PlanCount} plan(s).";
                 MessageBox.Show(msg, "Colony In Use", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -324,7 +324,7 @@ namespace OE2EmpireTracker.Forms.Colony
             colonyViewModel.RecalculateStatus();
 
             // If the sender is a ColonyStructure control, this is an in-place property change
-            // (worker toggle, built/online, etc.) â€” no need to rebuild all controls.
+            // (worker toggle, built/online, etc.) -- no need to rebuild all controls.
             bool isStructuralChange = !(sender is ColonyStructure);
 
             if (isStructuralChange)
@@ -1567,7 +1567,7 @@ namespace OE2EmpireTracker.Forms.Colony
                     if (locked > 0)
                     {
                         System.Windows.Forms.MessageBox.Show(
-                            $"Cannot delete '{item.ExtendedName}' Ã¢â‚¬â€ {locked} locked by structures.",
+                            $"Cannot delete '{item.ExtendedName}' -- {locked} locked by structures.",
                             "Item Locked",
                             System.Windows.Forms.MessageBoxButtons.OK,
                             System.Windows.Forms.MessageBoxIcon.Warning);
@@ -1727,7 +1727,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     ColonyImportHelper.MergeIdentity(existingColony, tempColony);
 
-                    // Save ColonyName before ProcessHtml â€” the parser's ParsePlanetOverview
+                    // Save ColonyName before ProcessHtml -- the parser's ParsePlanetOverview
                     // overwrites ColonyName with the game's (potentially truncated) value.
                     string preservedColonyName = existingColony.ColonyName;
                     parser.ProcessHtml(existingColony, extractedHtml, empireContext);
@@ -1769,7 +1769,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 PopulateForm();
                 UpdateTitle();
 
-                // Ensure save is enabled after a successful import â€” the imported
+                // Ensure save is enabled after a successful import -- the imported
                 // colony name is valid by definition, so clear any stale validation state.
                 txtColonyName.ClearError();
                 cmdSave.Enabled = true;

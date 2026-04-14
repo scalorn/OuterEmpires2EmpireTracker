@@ -373,7 +373,7 @@ namespace OE2EmpireTracker.Forms.Survey
             var report = counter.CountReferences(viewModel.UUID);
             if (report.TotalCount > 0)
             {
-                var msg = $"Cannot delete '{viewModel.Data.PlanetName}' — it is assigned to {report.MinerCount} mining rig(s).";
+                var msg = $"Cannot delete '{viewModel.Data.PlanetName}' -- it is assigned to {report.MinerCount} mining rig(s).";
                 MessageBox.Show(msg, "Survey In Use", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }

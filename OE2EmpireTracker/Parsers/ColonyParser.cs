@@ -213,7 +213,7 @@ namespace OE2EmpireTracker.Parsers
 
                 // === First pass: parse all buildings into a list ===
                 var parsedBuildings = new List<ColonyStructure>();
-                var parsedMaxRates = new Dictionary<int, decimal>(); // index → maxRate
+                var parsedMaxRates = new Dictionary<int, decimal>(); // index -> maxRate
                 int parsedIndex = 0;
                 foreach (var building in buildings)
                 {
@@ -467,11 +467,11 @@ namespace OE2EmpireTracker.Parsers
             {
                 if (bp.BluePrintType != null && bp.BluePrintType.IsFlatpack())
                 {
-                    // Use OutputItemName: "Mining Rig Flatpack" â†’ "Mining Rig"
+                    // Use OutputItemName: "Mining Rig Flatpack" -> "Mining Rig"
                     string designName = bp.OutputItemName;
 
                     // Commodity factory flatpacks use the building name directly
-                    // (e.g. "Administration Block" â†’ "Administration Block")
+                    // (e.g. "Administration Block" -> "Administration Block")
                     if (!lookup.ContainsKey(designName))
                     {
                         lookup[designName] = bp.UUID;
@@ -516,7 +516,7 @@ namespace OE2EmpireTracker.Parsers
             // Store the game's unique building identifier
             int buildingID = building["buildingID"]?.Value<int>() ?? 0;
             structure.buildingID = buildingID;
-            // displaySequence is NOT set here â€” it will be calculated per-type
+            // displaySequence is NOT set here -- it will be calculated per-type
             // in ParseColonyBuildingsFromJson after all buildings are parsed
 
             // Online/Built status
@@ -524,7 +524,7 @@ namespace OE2EmpireTracker.Parsers
             structure.Properties.setProperty(GameConstants.PropBuilt, true);
             structure.Properties.setProperty(GameConstants.PropOnline, online);
 
-            // Building attributes â†’ Properties
+            // Building attributes -> Properties
             var attributes = building["buildingAttributes"] as JArray;
             if (attributes != null)
             {
@@ -554,7 +554,7 @@ namespace OE2EmpireTracker.Parsers
                 structure.ManufacturingQuantity = mfgNumber;
             }
 
-            // Worker details â†’ AssignedWorkers
+            // Worker details -> AssignedWorkers
             // The UI expects keys like "BlueCollar1", "WhiteCollar1" with boolean values.
             // The JSON provides detail names like "Blue Collar Detail(s)" with workerIDs.
             var details = building["detailsRequired"] as JArray;
@@ -793,7 +793,7 @@ namespace OE2EmpireTracker.Parsers
                             existing.Requested = amount;
                             existing.NeedBy = needBy;
                             existing.Fulfilled = fulfilled;
-                            // Preserve Delivered â€” that's locally tracked
+                            // Preserve Delivered -- that's locally tracked
                             updated++;
                         }
                         else

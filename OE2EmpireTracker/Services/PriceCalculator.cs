@@ -21,7 +21,7 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Determines the purity tier from a resource name.
-        /// "S1. " prefix → "S1", "S2. " prefix → "S2", otherwise "Refined".
+        /// "S1. " prefix -> "S1", "S2. " prefix -> "S2", otherwise "Refined".
         /// </summary>
         public static string DeterminePurity(string resourceName)
         {

@@ -43,7 +43,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // setProperty — string overload
+        // setProperty -- string overload
         // -----------------------------------------------------------------------
 
         [Test]
@@ -72,7 +72,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // setProperty — decimal overload
+        // setProperty -- decimal overload
         // -----------------------------------------------------------------------
 
         [Test]
@@ -86,7 +86,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // setProperty — bool overload
+        // setProperty -- bool overload
         // -----------------------------------------------------------------------
 
         [Test]

@@ -52,7 +52,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ExtendedName — PlanetName only
+        // ExtendedName -- PlanetName only
         // -----------------------------------------------------------------------
 
         [Test]
@@ -70,7 +70,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ExtendedName — SurveyID
+        // ExtendedName -- SurveyID
         // -----------------------------------------------------------------------
 
         [Test]
@@ -83,7 +83,7 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void ExtendedName_SurveyIDOnly_NoLeadingSpace()
         {
-            // No PlanetName — SurveyID segment starts with a space, so result starts with " (S-001)"
+            // No PlanetName -- SurveyID segment starts with a space, so result starts with " (S-001)"
             // This documents the current behaviour
             var survey = new Survey { SurveyID = "S-001" };
             Assert.That(survey.ExtendedName, Does.Contain("(S-001)"));
@@ -97,7 +97,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ExtendedName — NickName
+        // ExtendedName -- NickName
         // -----------------------------------------------------------------------
 
         [Test]
@@ -115,7 +115,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ExtendedName — full combination
+        // ExtendedName -- full combination
         // -----------------------------------------------------------------------
 
         [Test]

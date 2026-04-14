@@ -126,7 +126,7 @@ namespace OE2EmpireTracker.Tests.Forms
         #region Edge Case Unit Tests
 
         /// <summary>
-        /// No open windows → assigns 1.
+        /// No open windows -> assigns 1.
         /// **Validates: Requirement 2.3**
         /// </summary>
         [Test]
@@ -137,7 +137,7 @@ namespace OE2EmpireTracker.Tests.Forms
         }
 
         /// <summary>
-        /// Contiguous {1, 2, 3} → assigns 4 (no gap, preservation).
+        /// Contiguous {1, 2, 3} -> assigns 4 (no gap, preservation).
         /// </summary>
         [Test]
         public void Contiguous123_Assigns4()
@@ -147,7 +147,7 @@ namespace OE2EmpireTracker.Tests.Forms
         }
 
         /// <summary>
-        /// Gap at start {2, 3} → assigns 1.
+        /// Gap at start {2, 3} -> assigns 1.
         /// **Validates: Requirement 2.1**
         /// </summary>
         [Test]
@@ -158,7 +158,7 @@ namespace OE2EmpireTracker.Tests.Forms
         }
 
         /// <summary>
-        /// Gap in middle {1, 3, 4} → assigns 2.
+        /// Gap in middle {1, 3, 4} -> assigns 2.
         /// **Validates: Requirement 2.2**
         /// </summary>
         [Test]
@@ -169,7 +169,7 @@ namespace OE2EmpireTracker.Tests.Forms
         }
 
         /// <summary>
-        /// Multiple gaps {2, 5, 8} → assigns 1 (lowest gap first).
+        /// Multiple gaps {2, 5, 8} -> assigns 1 (lowest gap first).
         /// **Validates: Requirement 2.2**
         /// </summary>
         [Test]
@@ -180,13 +180,13 @@ namespace OE2EmpireTracker.Tests.Forms
         }
 
         /// <summary>
-        /// Single window {1} closed (empty set) → assigns 1.
+        /// Single window {1} closed (empty set) -> assigns 1.
         /// **Validates: Requirement 2.3**
         /// </summary>
         [Test]
         public void SingleWindowClosed_EmptySet_Assigns1()
         {
-            // Simulate: window 1 was open, then closed → empty set
+            // Simulate: window 1 was open, then closed -> empty set
             var used = new HashSet<int> { 1 };
             used.Remove(1);
             Assert.That(FindLowestUnused(used), Is.EqualTo(1));

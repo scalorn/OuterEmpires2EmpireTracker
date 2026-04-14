@@ -150,12 +150,12 @@ namespace OE2EmpireTracker.Tests.Services
                     DateTime parsed;
                     if (!SurveyDateTimeParser.TryParseIso(colony.LastImportDateTime, out parsed))
                     {
-                        // Null/empty/unparseable — should produce a row
+                        // Null/empty/unparseable -- should produce a row
                         expectedStaleColonies.Add(colony);
                     }
                     else if ((DateTime.UtcNow - parsed).TotalSeconds > 86400)
                     {
-                        // Older than 1 day — should produce a row
+                        // Older than 1 day -- should produce a row
                         expectedStaleColonies.Add(colony);
                     }
                 }

@@ -125,7 +125,7 @@ namespace OE2EmpireTracker.Tests.Services
 
                     if (state == 1)
                     {
-                        // Active â€” has a running process timer
+                        // Active -- has a running process timer
                         structure.ProcessCompletionTime = MakeActiveRepeatingTimer(3600);
                         // Also assign a work item so it's truly active
                         AssignWorkItem(structure, bpType);
@@ -135,9 +135,9 @@ namespace OE2EmpireTracker.Tests.Services
                         // Idle with work item assigned but no timer
                         AssignWorkItem(structure, bpType);
                     }
-                    // state 0: no work item, no timer â€” idle
-                    // state 2: not built â€” should not appear
-                    // state 3: not online â€” should not appear
+                    // state 0: no work item, no timer -- idle
+                    // state 2: not built -- should not appear
+                    // state 3: not online -- should not appear
 
                     colony.Structures.Add(structure);
 
@@ -290,8 +290,8 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Unit Tests â€” Edge Cases
-        // **Validates: Requirements 3.1â€“3.4, 4.1â€“4.4, 6.1â€“6.4, 7.1â€“7.4, 8.1â€“8.4, 9.1â€“9.4**
+        // Unit Tests -- Edge Cases
+        // **Validates: Requirements 3.1--3.4, 4.1--4.4, 6.1--6.4, 7.1--7.4, 8.1--8.4, 9.1--9.4**
         // -----------------------------------------------------------------------
 
         [Test]
@@ -790,7 +790,7 @@ namespace OE2EmpireTracker.Tests.Services
             var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "Miner");
             var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "SyntheticRefiner");
 
-            // Miner producing 100/h of Lanthanides (Refined) â€” way less than 1250
+            // Miner producing 100/h of Lanthanides (Refined) -- way less than 1250
             var survey = CreateSurvey("Lanthanides", GameConstants.PurityRefined, "100");
 
             var colony = MakeColony();
@@ -880,7 +880,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void Property5_WarehouseStockpileExemption()
         {
-            // Same as Property4 test but with 25+ units in warehouse â€” no underutilized flag
+            // Same as Property4 test but with 25+ units in warehouse -- no underutilized flag
             var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);
@@ -896,7 +896,7 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 3, "Iron", "Low"));
 
-            // Add 25 units of Iron (Low) to warehouse â€” enough for one cycle
+            // Add 25 units of Iron (Low) to warehouse -- enough for one cycle
             AddWarehouseResource(colony, "Iron", "Low", 25);
 
             var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
@@ -909,7 +909,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void WarehouseExemption_InsufficientStockpile_StillFlagged()
         {
-            // Warehouse has 24 units (less than 25 per cycle) â€” refiner still flagged
+            // Warehouse has 24 units (less than 25 per cycle) -- refiner still flagged
             var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);
@@ -925,7 +925,7 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 3, "Iron", "Low"));
 
-            // Only 24 units â€” not enough
+            // Only 24 units -- not enough
             AddWarehouseResource(colony, "Iron", "Low", 24);
 
             var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
@@ -953,7 +953,7 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Lanthanides"));
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Lanthanides", GameConstants.PurityRefined));
 
-            // Add 1250 units â€” exactly enough for synthetic recipe
+            // Add 1250 units -- exactly enough for synthetic recipe
             AddWarehouseResource(colony, "Lanthanides", GameConstants.PurityRefined, 1250);
 
             var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
@@ -966,7 +966,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void WarehouseExemption_SyntheticRefiner_InsufficientStockpile()
         {
-            // Synthetic refiner with only 1249 units â€” still flagged
+            // Synthetic refiner with only 1249 units -- still flagged
             var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);

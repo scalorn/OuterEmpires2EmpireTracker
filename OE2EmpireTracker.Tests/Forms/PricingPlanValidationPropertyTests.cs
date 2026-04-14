@@ -54,7 +54,7 @@ namespace OE2EmpireTracker.Tests.Forms
             {
                 // The validation logic from FormPricingPlan.cmdSave_Click:
                 // string name = txtPlanName.Text.Trim();
-                // if (string.IsNullOrWhiteSpace(name)) → reject
+                // if (string.IsNullOrWhiteSpace(name)) -> reject
                 bool isRejected = string.IsNullOrWhiteSpace(name);
 
                 return isRejected

@@ -94,7 +94,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     .Where(b => b.LegacyUUID != null)
                     .ToDictionary(b => b.UUID, b => b.LegacyUUID);
 
-                // Run migration again â€” LegacyUUID should not change
+                // Run migration again -- LegacyUUID should not change
                 Migration001_DeterministicUUIDs.Run(ec, pc);
 
                 bool preservedAfterRerun = true;

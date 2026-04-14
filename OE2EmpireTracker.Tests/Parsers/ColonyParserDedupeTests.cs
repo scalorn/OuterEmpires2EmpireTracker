@@ -16,7 +16,7 @@ namespace OE2EmpireTracker.Tests.Parsers
     /// merged with parsed buildings rather than duplicated on import.
     ///
     /// **Validates: Requirements 1.1, 1.2, 1.3, 1.4**
-    /// Property 1: Bug Condition — Manual structures duplicated on import
+    /// Property 1: Bug Condition -- Manual structures duplicated on import
     /// </summary>
     [TestFixture]
     public class ColonyParserDedupeTests
@@ -72,7 +72,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         // -------------------------------------------------------------------
-        // Test case 1 — Full overlap: manual structures for every blueprint
+        // Test case 1 -- Full overlap: manual structures for every blueprint
         // type present in M1, then import M1 HTML
         // -------------------------------------------------------------------
 
@@ -108,7 +108,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(colony.Structures.Count, Is.EqualTo(43),
                 "Pre-import: manual structures should match M1 count");
 
-            // Now import M1 HTML — on fixed code, structures should merge (count stays 43)
+            // Now import M1 HTML -- on fixed code, structures should merge (count stays 43)
             // On UNFIXED code, this will FAIL because manual structures (displaySequence=0)
             // never match parsed buildings (buildingID > 0), so all 43 are appended as duplicates
             string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranIIM1.html");
@@ -121,7 +121,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         // -------------------------------------------------------------------
-        // Test case 2 — Partial overlap: 1 Mining Rig manually, then import M1
+        // Test case 2 -- Partial overlap: 1 Mining Rig manually, then import M1
         // -------------------------------------------------------------------
 
         [Test]
@@ -170,13 +170,13 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         // -------------------------------------------------------------------
-        // Test case 3 — Control: no manual structures, import M1 into empty colony
+        // Test case 3 -- Control: no manual structures, import M1 into empty colony
         // -------------------------------------------------------------------
 
         [Test]
         public void NoManualStructures_Control()
         {
-            // Import M1 into an empty colony — this is the non-bug path
+            // Import M1 into an empty colony -- this is the non-bug path
             // Should produce exactly 43 structures on both fixed and unfixed code
             var colony = ParseM1Fresh();
 
@@ -186,7 +186,7 @@ namespace OE2EmpireTracker.Tests.Parsers
 
         // ===================================================================
         // PRESERVATION PROPERTY TESTS
-        // Property 2: Preservation — Empty colony and idempotent import
+        // Property 2: Preservation -- Empty colony and idempotent import
         // behavior unchanged
         // **Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.5**
         //
@@ -278,7 +278,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                 rig.RefiningResourcePurity = null;
             }
 
-            // Reimport same HTML — game is authoritative, should restore resources
+            // Reimport same HTML -- game is authoritative, should restore resources
             string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranIIM1.html");
             string html = ExtractFragment(clipboardData);
             _parser.ProcessHtml(colony, html, _empireContext);
@@ -306,7 +306,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             miningRigs[0].MiningSurveyResource = "Fake Resource";
             miningRigs[0].RefiningResourcePurity = "Low";
 
-            // Reimport — game value should overwrite the fake
+            // Reimport -- game value should overwrite the fake
             string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranIIM1.html");
             string html = ExtractFragment(clipboardData);
             _parser.ProcessHtml(colony, html, _empireContext);
@@ -328,7 +328,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         // -------------------------------------------------------------------
-        // Preservation: M1 idempotency — importing twice produces same 43
+        // Preservation: M1 idempotency -- importing twice produces same 43
         // structures with identical values
         // Validates: Requirements 3.2
         // -------------------------------------------------------------------

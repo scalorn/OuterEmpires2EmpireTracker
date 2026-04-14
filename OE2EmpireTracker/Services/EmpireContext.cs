@@ -117,7 +117,7 @@ namespace OE2EmpireTracker.Services
         {
             if (MigrationRunner.MigrationFailed)
             {
-                Log.Warn("WriteContext blocked â€” migration failed, saving disabled");
+                Log.Warn("WriteContext blocked -- migration failed, saving disabled");
                 return;
             }
             BaselineRoot baselineRoot = new BaselineRoot();

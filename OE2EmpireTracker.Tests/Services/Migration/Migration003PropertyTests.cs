@@ -12,10 +12,10 @@ namespace OE2EmpireTracker.Tests.Services.Migration
     /// Property tests for Migration003_SurveyDateTimeNormalization conversion logic.
     /// Tests the migration's conversion pipeline directly (without EmpireContext/PlayerContext)
     /// by replicating the same logic inline:
-    ///   1. TryParseIso → skip if already ISO
-    ///   2. TryParseGameFormat → ToIsoString
-    ///   3. DateTime.TryParse → ToIsoString
-    ///   4. Else → DateTime.Now → ToIsoString
+    ///   1. TryParseIso -> skip if already ISO
+    ///   2. TryParseGameFormat -> ToIsoString
+    ///   3. DateTime.TryParse -> ToIsoString
+    ///   4. Else -> DateTime.Now -> ToIsoString
     /// </summary>
     [TestFixture]
     public class Migration003PropertyTests
@@ -39,7 +39,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             if (DateTime.TryParse(original, out DateTime fallback))
                 return SurveyDateTimeParser.ToIsoString(fallback);
 
-            // Unparseable or null/empty — replace with now
+            // Unparseable or null/empty -- replace with now
             return SurveyDateTimeParser.ToIsoString(DateTime.UtcNow);
         }
 
@@ -112,7 +112,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// <summary>
         /// Feature: survey-datetime-normalization, Property 7: Migration is idempotent on ISO values.
         /// For any valid ISO-format string, running the migration conversion logic
-        /// (the same TryParseIso → skip path used in Migration003) shall leave the value unchanged.
+        /// (the same TryParseIso -> skip path used in Migration003) shall leave the value unchanged.
         /// **Validates: Requirements 2.2, 5.6**
         /// </summary>
         [FsCheck.NUnit.Property(MaxTest = 200)]
@@ -145,11 +145,11 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             {
                 // Verify the input is truly unparseable by all three methods
                 if (SurveyDateTimeParser.TryParseIso(input, out _))
-                    return true.Label("Skipped — input is valid ISO");
+                    return true.Label("Skipped -- input is valid ISO");
                 if (SurveyDateTimeParser.TryParseGameFormat(input, out _))
-                    return true.Label("Skipped — input is valid game format");
+                    return true.Label("Skipped -- input is valid game format");
                 if (DateTime.TryParse(input, out _))
-                    return true.Label("Skipped — input is parseable by DateTime.TryParse");
+                    return true.Label("Skipped -- input is parseable by DateTime.TryParse");
 
                 string result = MigrateDateTime(input);
 
@@ -178,7 +178,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             {
                 // Skip if it happens to be valid ISO already (the "s" format is close)
                 if (SurveyDateTimeParser.TryParseIso(formatted, out _))
-                    return true.Label("Skipped — input is already valid ISO");
+                    return true.Label("Skipped -- input is already valid ISO");
 
                 string result = MigrateDateTime(formatted);
 

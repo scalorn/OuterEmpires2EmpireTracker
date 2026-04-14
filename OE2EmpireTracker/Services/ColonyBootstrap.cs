@@ -51,7 +51,7 @@ namespace OE2EmpireTracker.Services
 
             var newStructures = new List<ColonyStructure>();
 
-            // REQ-COL-096d: Fixed sequence â€” Command Centre first
+            // REQ-COL-096d: Fixed sequence -- Command Centre first
             var commandCentre = FindPlayerBlueprint("Flatpacks/ColonyCommandCentre");
             if (commandCentre != null)
             {

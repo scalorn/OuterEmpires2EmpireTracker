@@ -205,7 +205,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
         // ---------------------------------------------------------------
-        // LockTracking (empty — custom converter handles it)
+        // LockTracking (empty -- custom converter handles it)
         // ---------------------------------------------------------------
 
         private static Gen<LockTracking> GenLockTracking() =>
@@ -831,7 +831,7 @@ namespace OE2EmpireTracker.Tests.Services
             ModelGenerators.Register();
         }
 
-        // Property tests and unit tests will be added in tasks 4.2–4.7 and 5.1–5.4.
+        // Property tests and unit tests will be added in tasks 4.2--4.7 and 5.1--5.4.
 
         // Feature: json-default-skip, Property 1: PlayerRoot serialization round-trip
         // Validates: Requirements 5.1, 5.3, 5.4, 2.2, 3.1
@@ -859,7 +859,7 @@ namespace OE2EmpireTracker.Tests.Services
             var deserialized = JsonConvert.DeserializeObject<BaselineRoot>(json);
             var reserializedJson = JsonConvert.SerializeObject(deserialized, JsonSettings.SerializerSettings);
 
-            // BaselineRoot has no CountDownTime fields, so no need to strip volatile fields —
+            // BaselineRoot has no CountDownTime fields, so no need to strip volatile fields --
             // direct string comparison is fine.
             return json == reserializedJson;
         }

@@ -100,7 +100,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         // -------------------------------------------------------------------
-        // AllSurveyFiles sweep property tests (Requirements 1.1–1.4)
+        // AllSurveyFiles sweep property tests (Requirements 1.1--1.4)
         // -------------------------------------------------------------------
 
         private static readonly string[] SurveyFiles = new[]

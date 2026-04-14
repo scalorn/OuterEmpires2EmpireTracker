@@ -369,7 +369,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             string value = row.Cells[colPrice.Index].Value?.ToString();
             if (string.IsNullOrWhiteSpace(value))
             {
-                // Clear entry — resource becomes unpriced
+                // Clear entry -- resource becomes unpriced
                 _selectedPlan.ResourcePrices.Remove(key);
             }
             else

@@ -180,7 +180,7 @@ namespace OE2EmpireTracker.Tests.Services
 
                 // ColonyName should be preserved when target already has one
                 var colonyNamePreserved = (data.Existing.ColonyName == originalColonyName)
-                    .Label($"ColonyName changed from '{originalColonyName}' to '{data.Existing.ColonyName}' — should be preserved when target already has one");
+                    .Label($"ColonyName changed from '{originalColonyName}' to '{data.Existing.ColonyName}' -- should be preserved when target already has one");
 
                 // Local state should be preserved (same object references)
                 var uuidPreserved = (data.Existing.UUID == originalUuid)

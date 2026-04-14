@@ -7,7 +7,7 @@ namespace OE2EmpireTracker.Tests.Constants
     public class BlueprintTypeExtensionTests
     {
         // -----------------------------------------------------------------------
-        // IsCommodityFactory — null and empty
+        // IsCommodityFactory -- null and empty
         // -----------------------------------------------------------------------
 
         [Test]
@@ -24,7 +24,7 @@ namespace OE2EmpireTracker.Tests.Constants
         }
 
         // -----------------------------------------------------------------------
-        // IsCommodityFactory — exact prefix without trailing content
+        // IsCommodityFactory -- exact prefix without trailing content
         // -----------------------------------------------------------------------
 
         [Test]
@@ -36,7 +36,7 @@ namespace OE2EmpireTracker.Tests.Constants
         }
 
         // -----------------------------------------------------------------------
-        // IsCommodityFactory — valid variants
+        // IsCommodityFactory -- valid variants
         // -----------------------------------------------------------------------
 
         [TestCase("Flatpacks/CommodityFactory/Agridome")]
@@ -49,7 +49,7 @@ namespace OE2EmpireTracker.Tests.Constants
         }
 
         // -----------------------------------------------------------------------
-        // IsCommodityFactory — other Flatpacks/ types
+        // IsCommodityFactory -- other Flatpacks/ types
         // -----------------------------------------------------------------------
 
         [TestCase("Flatpacks/MiningRig")]
@@ -62,7 +62,7 @@ namespace OE2EmpireTracker.Tests.Constants
         }
 
         // -----------------------------------------------------------------------
-        // IsCommodityFactory — case insensitive
+        // IsCommodityFactory -- case insensitive
         // -----------------------------------------------------------------------
 
         [TestCase("flatpacks/commodityfactory/Agridome")]
@@ -74,7 +74,7 @@ namespace OE2EmpireTracker.Tests.Constants
         }
 
         // -----------------------------------------------------------------------
-        // IsCommodityFactory — non-flatpack types
+        // IsCommodityFactory -- non-flatpack types
         // -----------------------------------------------------------------------
 
         [TestCase("OreHopper")]

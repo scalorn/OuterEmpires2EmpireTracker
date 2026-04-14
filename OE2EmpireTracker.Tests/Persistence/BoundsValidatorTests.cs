@@ -10,7 +10,7 @@ namespace OE2EmpireTracker.Tests.Persistence
         // A standard parent client area for MDI child tests
         private static readonly Rectangle ParentArea = new Rectangle(0, 0, 1200, 800);
 
-        #region MDI Child — Entirely off-screen resets to default cascade (Req 5.1)
+        #region MDI Child -- Entirely off-screen resets to default cascade (Req 5.1)
 
         [Test]
         public void MdiChild_EntirelyOutsideParent_ResetsToDefaultCascade()
@@ -38,14 +38,14 @@ namespace OE2EmpireTracker.Tests.Persistence
 
         #endregion
 
-        #region MDI Child — Right edge within margin shifts left (Req 5.2)
+        #region MDI Child -- Right edge within margin shifts left (Req 5.2)
 
         [Test]
         public void MdiChild_RightEdgeWithinMargin_ShiftsLeft()
         {
             // Place window so right edge is within 100px of parent right edge
             // Parent right = 1200, margin = 100, so threshold = 1100
-            // Window at x=700, width=500 → right edge = 1200 (> 1100)
+            // Window at x=700, width=500 -> right edge = 1200 (> 1100)
             var saved = new Rectangle(700, 50, 500, 400);
 
             var result = BoundsValidator.ValidateMdiChildBounds(saved, ParentArea);
@@ -58,13 +58,13 @@ namespace OE2EmpireTracker.Tests.Persistence
 
         #endregion
 
-        #region MDI Child — Bottom edge within margin shifts up (Req 5.3)
+        #region MDI Child -- Bottom edge within margin shifts up (Req 5.3)
 
         [Test]
         public void MdiChild_BottomEdgeWithinMargin_ShiftsUp()
         {
             // Parent bottom = 800, margin = 100, threshold = 700
-            // Window at y=450, height=400 → bottom = 850 (> 700)
+            // Window at y=450, height=400 -> bottom = 850 (> 700)
             var saved = new Rectangle(50, 450, 500, 400);
 
             var result = BoundsValidator.ValidateMdiChildBounds(saved, ParentArea);
@@ -77,7 +77,7 @@ namespace OE2EmpireTracker.Tests.Persistence
 
         #endregion
 
-        #region MDI Child — Width/height below minimum clamped to 320x200 (Req 5.4)
+        #region MDI Child -- Width/height below minimum clamped to 320x200 (Req 5.4)
 
         [Test]
         public void MdiChild_WidthBelowMinimum_ClampedTo320()
@@ -112,7 +112,7 @@ namespace OE2EmpireTracker.Tests.Persistence
 
         #endregion
 
-        #region MDI Child — Valid bounds pass through unchanged
+        #region MDI Child -- Valid bounds pass through unchanged
 
         [Test]
         public void MdiChild_ValidBounds_PassThroughUnchanged()
@@ -142,7 +142,7 @@ namespace OE2EmpireTracker.Tests.Persistence
 
         #endregion
 
-        #region MDI Child — Combined edge shifts and size clamping
+        #region MDI Child -- Combined edge shifts and size clamping
 
         [Test]
         public void MdiChild_BothEdgesWithinMargin_ShiftsBothAxes()
@@ -171,7 +171,7 @@ namespace OE2EmpireTracker.Tests.Persistence
 
         #endregion
 
-        #region MDI Child — Non-zero origin parent client area
+        #region MDI Child -- Non-zero origin parent client area
 
         [Test]
         public void MdiChild_NonZeroOriginParent_EntirelyOutside_ResetsToParentCascade()
@@ -181,7 +181,7 @@ namespace OE2EmpireTracker.Tests.Persistence
 
             var result = BoundsValidator.ValidateMdiChildBounds(saved, parent);
 
-            // (0,0) with 400x300 → right=400, bottom=300
+            // (0,0) with 400x300 -> right=400, bottom=300
             // parent is (100,100)-(900,700)
             // The window (0,0,400,300) does intersect with parent (100,100,800,600)
             // since the overlap region is (100,100)-(400,300) which is valid
@@ -208,7 +208,7 @@ namespace OE2EmpireTracker.Tests.Persistence
         {
             var parent = new Rectangle(100, 100, 800, 600);
             // Parent right = 900, margin threshold = 800
-            // Window at x=500, width=400 → right = 900 (> 800)
+            // Window at x=500, width=400 -> right = 900 (> 800)
             var saved = new Rectangle(500, 200, 400, 300);
 
             var result = BoundsValidator.ValidateMdiChildBounds(saved, parent);

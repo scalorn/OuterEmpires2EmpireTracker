@@ -11,7 +11,7 @@ using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Tests.Services
 {
     /// <summary>
-    /// Feature: colony-admin-summary, Property 10: Refining aggregation — one row per resource+purity
+    /// Feature: colony-admin-summary, Property 10: Refining aggregation -- one row per resource+purity
     /// </summary>
     [TestFixture]
     public class ColonyAdminReportBuilderRefiningPropertyTests
@@ -74,7 +74,7 @@ namespace OE2EmpireTracker.Tests.Services
         private static readonly int[] PurityMultipliers = { 1, 3, 5 };
 
         /// <summary>
-        /// Feature: colony-admin-summary, Property 10: Refining aggregation — one row per resource+purity.
+        /// Feature: colony-admin-summary, Property 10: Refining aggregation -- one row per resource+purity.
         /// For any colony with N active refiners on the same (InputResource, InputPurity) combination,
         /// the activity section SHALL contain exactly one refining summary row for that combination,
         /// and the displayed consume and produce rates SHALL equal the sums of individual refiner rates.

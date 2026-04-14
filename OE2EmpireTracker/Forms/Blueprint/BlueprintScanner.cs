@@ -35,14 +35,14 @@ namespace OE2EmpireTracker.Forms.Blueprint
 
         private static Dictionary<string, string> PropertyRemap = new Dictionary<string, string>()
         {
-            // Meaningful remaps — clean up game labels
+            // Meaningful remaps -- clean up game labels
             { "Health (Hitpoints)", "Health" },
             { "Maximum Damage Repair %", "Maximum Damage Repair" },
             { "The number of crew supported", "Crew Supported" },
             { "Eng. Capacity Required", "Eng Capacity Required" },
             { "Eng. Capacity Available", "Eng Capacity Available" },
             { "Power regeneration rate", "Power Regeneration Rate" },
-            // Worker detail remaps — game HTML uses (s) suffix, normalize to without
+            // Worker detail remaps -- game HTML uses (s) suffix, normalize to without
             { "Blue Collar Detail(s)", GameConstants.PropBlueCollarDetail },
             { "Unassigned White Collar Detail(s)", GameConstants.PropUnassignedWhiteCollarDetail },
             { "Unassigned Specialist Detail(s)", GameConstants.PropUnassignedSpecialistDetail },
@@ -346,8 +346,8 @@ namespace OE2EmpireTracker.Forms.Blueprint
                 doc.Load(sgmlReader);
 
                 // Market HTML has pairs of <tr> rows:
-                // 1. MarketListingRow — contains name, evolution, price
-                // 2. MarketListingRowDetail — contains expanded stats and resources
+                // 1. MarketListingRow -- contains name, evolution, price
+                // 2. MarketListingRowDetail -- contains expanded stats and resources
                 // They are siblings in the table, not nested.
 
                 XmlNodeList allRows = doc.SelectNodes("//tr");
@@ -360,7 +360,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                     if (!rowClass.Contains("MarketListingRow") || rowClass.Contains("MarketListingRowDetail"))
                         continue;
 
-                    // This is a listing row — extract name and evolution
+                    // This is a listing row -- extract name and evolution
                     XmlNode nameNode = row.SelectSingleNode(".//div[contains(@class,'MarketListingRowDetailDescription')]");
                     if (nameNode == null) continue;
 
@@ -459,7 +459,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                             bp.Resources[resName] = qtyNormalized;
                         }
 
-                        // Extract blueprint type icon — sprite position from ui_icon_base background
+                        // Extract blueprint type icon -- sprite position from ui_icon_base background
                         XmlNode iconNode = detailRow.SelectSingleNode(".//div[contains(@class,'MarketListingRowDetailIcon')]//div[contains(@class,'ui_icon_base')]");
                         if (iconNode != null)
                         {
@@ -496,7 +496,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                     }
 
                     results.Add(new MarketBlueprint { Blueprint = bp, SellerName = sellerName });
-                    Log.Info($"Market import: {bp.Name} (Ev{bp.Evolution}, TechLevel={bp.TechLevel ?? "null"}, Seller={sellerName}) — {bp.Properties.Count} properties, {bp.Resources.Count} resources");
+                    Log.Info($"Market import: {bp.Name} (Ev{bp.Evolution}, TechLevel={bp.TechLevel ?? "null"}, Seller={sellerName}) -- {bp.Properties.Count} properties, {bp.Resources.Count} resources");
                 }
             }
             catch (Exception ex)
@@ -526,7 +526,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
         /// </remarks>
         public static string ExtractHtmlFragmentFromClipboardData(string htmlDataString)
         {
-            // Delegated to ClipboardHelper — the canonical implementation lives there.
+            // Delegated to ClipboardHelper -- the canonical implementation lives there.
             return ClipboardHelper.ExtractHtmlFragment(htmlDataString);
         }
 

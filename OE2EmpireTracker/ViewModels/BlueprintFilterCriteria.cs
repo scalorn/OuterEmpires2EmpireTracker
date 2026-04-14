@@ -2,7 +2,7 @@ namespace OE2EmpireTracker.ViewModels
 {
     /// <summary>
     /// Structured filter criteria for blueprint list filtering.
-    /// Each field is nullable — null means "no filter on this dimension."
+    /// Each field is nullable -- null means "no filter on this dimension."
     /// </summary>
     public class BlueprintFilterCriteria
     {

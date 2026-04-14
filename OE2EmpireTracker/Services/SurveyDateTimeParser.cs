@@ -26,7 +26,7 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Parses a game-format date/time string (e.g. "27JUL24-11:44p") into a DateTime.
-        /// Returns false on any mismatch — never throws.
+        /// Returns false on any mismatch -- never throws.
         /// </summary>
         public static bool TryParseGameFormat(string input, out DateTime result)
         {

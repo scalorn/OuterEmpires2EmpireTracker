@@ -353,14 +353,14 @@ namespace OE2EmpireTracker.Tests.Services
         /// <summary>
         /// **Validates: Requirements 5.1, 5.2, 5.3**
         ///
-        /// Property 5: Conditional persistence â€” exactly once or zero
+        /// Property 5: Conditional persistence -- exactly once or zero
         ///
         /// For any processing cycle, WriteContext() should be called exactly
         /// once if at least one colony was processed, and exactly zero times
         /// if no colonies were processed. Verified by monitoring the temp
         /// file's last write time before and after each cycle.
         /// </summary>
-        // Feature: background-processing, Property 5: Conditional persistence â€” exactly once or zero
+        // Feature: background-processing, Property 5: Conditional persistence -- exactly once or zero
         [Test]
         public void RunCycleOnce_WritesContextExactlyOnceIfProcessed_ZeroOtherwise()
         {
@@ -492,7 +492,7 @@ namespace OE2EmpireTracker.Tests.Services
                             int successType = rng.Next(0, 3);
                             if (successType == 0)
                             {
-                                // Empty colony list â€” no processing, no error
+                                // Empty colony list -- no processing, no error
                             }
                             else if (successType == 1)
                             {

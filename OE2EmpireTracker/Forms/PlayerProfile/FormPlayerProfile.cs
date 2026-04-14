@@ -502,7 +502,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
                 if (existing != null)
                 {
-                    // Update existing profile — preserve UUID
+                    // Update existing profile -- preserve UUID
                     MergeProfile(existing, tempProfile);
                     viewModel.SelectProfile(existing);
                 }

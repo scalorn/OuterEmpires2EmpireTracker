@@ -56,7 +56,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ExtendedName — UUID null guard
+        // ExtendedName -- UUID null guard
         // -----------------------------------------------------------------------
 
         [Test]
@@ -67,7 +67,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ExtendedName — Name only
+        // ExtendedName -- Name only
         // -----------------------------------------------------------------------
 
         [Test]
@@ -78,7 +78,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ExtendedName — Class prefix
+        // ExtendedName -- Class prefix
         // -----------------------------------------------------------------------
 
         [Test]
@@ -96,7 +96,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ExtendedName — Evolution
+        // ExtendedName -- Evolution
         // -----------------------------------------------------------------------
 
         [Test]
@@ -114,7 +114,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ExtendedName — TechLevel
+        // ExtendedName -- TechLevel
         // -----------------------------------------------------------------------
 
         [Test]
@@ -132,7 +132,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ExtendedName — NickName
+        // ExtendedName -- NickName
         // -----------------------------------------------------------------------
 
         [Test]
@@ -150,7 +150,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ExtendedName — full combination
+        // ExtendedName -- full combination
         // -----------------------------------------------------------------------
 
         [Test]
@@ -185,7 +185,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // JSON serialization — ExtendedName is ignored
+        // JSON serialization -- ExtendedName is ignored
         // -----------------------------------------------------------------------
 
         [Test]

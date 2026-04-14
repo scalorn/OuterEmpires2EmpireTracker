@@ -17,7 +17,7 @@ namespace OE2EmpireTracker.Models
 
         /// <summary>
         /// Base resource prices keyed by "{ResourceName}|{Purity}".
-        /// Example: "Alkali Metals|Refined" → 12.50m
+        /// Example: "Alkali Metals|Refined" -> 12.50m
         /// </summary>
         public Dictionary<string, decimal> ResourcePrices { get; set; }
             = new Dictionary<string, decimal>();

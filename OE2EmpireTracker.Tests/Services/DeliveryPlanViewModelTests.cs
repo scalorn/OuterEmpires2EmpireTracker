@@ -402,7 +402,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // AutoFillFlatpacks â€” Property 1
+        // AutoFillFlatpacks -- Property 1
         // Validates: Requirements 2.1, 2.2, 2.3
         // -----------------------------------------------------------------------
 
@@ -515,9 +515,9 @@ namespace OE2EmpireTracker.Tests.Services
             CreateTestBlueprint("bp-c", "Habitat");
             var vm = CreateViewModel();
             var colony = CreateColonyWithStructures("c1",
-                MakeStructure("bp-a", built: true, staged: false),   // built â€” skip
-                MakeStructure("bp-b", built: false, staged: true),   // staged â€” skip
-                MakeStructure("bp-c", built: false, staged: false)); // unbuilt+unstaged â€” add
+                MakeStructure("bp-a", built: true, staged: false),   // built -- skip
+                MakeStructure("bp-b", built: false, staged: true),   // staged -- skip
+                MakeStructure("bp-c", built: false, staged: false)); // unbuilt+unstaged -- add
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
             int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
@@ -574,7 +574,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // AutoFillManufacturingResources â€” Property 3
+        // AutoFillManufacturingResources -- Property 3
         // Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5, 8.1, 8.2, 8.3, 8.4
         // -----------------------------------------------------------------------
 
@@ -806,7 +806,7 @@ namespace OE2EmpireTracker.Tests.Services
             var flatpackBp = new OE2EmpireTracker.Models.Blueprint("CommodityFactory") { UUID = "fp-cf1", BluePrintType = "Flatpacks/CommodityFactory/Agridome" };
             playerContext.BlueprintList.Add(flatpackBp);
 
-            // Use a real commodity â€” "Advanced Biolubricants" needs Alkali Organics (2) and Strong Acidic Inorganics (2)
+            // Use a real commodity -- "Advanced Biolubricants" needs Alkali Organics (2) and Strong Acidic Inorganics (2)
             var vm = CreateViewModel();
             var structure = MakeStagingCommodityFactory("fp-cf1", "Advanced Biolubricants", 3);
             var colony = CreateColonyWithStructures("c1", structure);
@@ -876,7 +876,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // AutoFillWorkers â€” Property 4
+        // AutoFillWorkers -- Property 4
         // Validates: Requirements 10.1, 10.2, 10.3, 10.4
         // -----------------------------------------------------------------------
 

@@ -22,7 +22,7 @@ namespace OE2EmpireTracker.Persistence
             string tempPath = fullPath + ".tmp";
             string backupPath = fullPath + ".bak";
 
-            // Write to temp file first — if this fails, the original is untouched
+            // Write to temp file first -- if this fails, the original is untouched
             File.WriteAllText(tempPath, content);
 
             if (File.Exists(fullPath))
@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Persistence
             }
             else
             {
-                // First save — target doesn't exist yet, just move the temp file
+                // First save -- target doesn't exist yet, just move the temp file
                 File.Move(tempPath, fullPath);
             }
 

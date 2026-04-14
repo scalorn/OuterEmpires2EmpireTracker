@@ -92,7 +92,7 @@ namespace OE2EmpireTracker.Tests.Parsers
 
         // Feature: player-profile-import, Property 3: Training time parsing
         /// <summary>
-        /// For any combination of days (0–99) and hours (0–23), formatting as the game's
+        /// For any combination of days (0--99) and hours (0--23), formatting as the game's
         /// training time string and parsing should produce the correct total seconds.
         /// **Validates: Requirements 6.3**
         /// </summary>
@@ -135,7 +135,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         [FsCheck.NUnit.Property(MaxTest = 100)]
         public Property ProfileUpdate_CaseInsensitiveNameMatch_PreservesUUID()
         {
-            // Generator for a non-empty alphabetic name (1–20 chars)
+            // Generator for a non-empty alphabetic name (1--20 chars)
             var nameGen = Gen.Choose(1, 20).SelectMany(len =>
                 Gen.ArrayOf(len, Gen.Elements<char>(
                     'A','B','C','D','E','F','G','H','I','J','K','L','M',
@@ -202,7 +202,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         [FsCheck.NUnit.Property(MaxTest = 100)]
         public Property ProfileCreation_NoNameMatch_AddsNewWithUUID()
         {
-            // Generator for a list of 0–5 profiles with unique names
+            // Generator for a list of 0--5 profiles with unique names
             var existingListGen = Gen.Choose(0, 5).SelectMany(count =>
                 Gen.ArrayOf(count, Gen.Choose(1, 10).SelectMany(len =>
                     Gen.ArrayOf(len, Gen.Elements<char>(
@@ -248,7 +248,7 @@ namespace OE2EmpireTracker.Tests.Parsers
 
                     if (match == null)
                     {
-                        // No match — create new profile with UUID
+                        // No match -- create new profile with UUID
                         parsed.UUID = Guid.NewGuid().ToString();
                         existingProfiles.Add(parsed);
                     }

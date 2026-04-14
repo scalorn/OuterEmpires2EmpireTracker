@@ -121,7 +121,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // Unit tests â€” edge cases (Task 2.3)
+        // Unit tests -- edge cases (Task 2.3)
         // -----------------------------------------------------------------------
 
         [Test]

@@ -185,7 +185,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         // -------------------------------------------------------------------
-        // AllColonyFiles sweep property tests (Requirements 2.1–2.4, 3.1–3.4)
+        // AllColonyFiles sweep property tests (Requirements 2.1--2.4, 3.1--3.4)
         // -------------------------------------------------------------------
 
         private static readonly string[] ColonyFiles = new[]

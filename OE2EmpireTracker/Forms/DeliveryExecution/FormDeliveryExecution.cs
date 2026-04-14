@@ -272,7 +272,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             // Update header with totals
             if (loadItems.Count > 0)
             {
-                lblLoadListHeader.Text = string.Format("Load Before Departure — {0} items, {1} qty, {2:N0} vol",
+                lblLoadListHeader.Text = string.Format("Load Before Departure -- {0} items, {1} qty, {2:N0} vol",
                     loadItems.Count, totalQuantity, totalVolume);
             }
             else

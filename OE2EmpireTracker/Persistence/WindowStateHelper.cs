@@ -255,7 +255,7 @@ namespace OE2EmpireTracker.Persistence
                 }
                 else
                 {
-                    Log.Debug("Skipping saved column '{0}' on grid '{1}' — column no longer exists", columnName, grid.Name);
+                    Log.Debug("Skipping saved column '{0}' on grid '{1}' -- column no longer exists", columnName, grid.Name);
                 }
             }
 
@@ -271,7 +271,7 @@ namespace OE2EmpireTracker.Persistence
                 }
                 else
                 {
-                    Log.Debug("Skipping saved sort column '{0}' on grid '{1}' — column no longer exists", gridState.SortColumnName, grid.Name);
+                    Log.Debug("Skipping saved sort column '{0}' on grid '{1}' -- column no longer exists", gridState.SortColumnName, grid.Name);
                 }
             }
         }
@@ -324,7 +324,7 @@ namespace OE2EmpireTracker.Persistence
                 return;
             }
 
-            // Neither valid — skip, leave at default
+            // Neither valid -- skip, leave at default
         }
 
         #endregion

@@ -24,7 +24,7 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Searches colonies for a case-insensitive PlanetName + SystemName match.
         /// Returns the matching colony, or null if none found.
-        /// This is the primary dedup key — one colony per planet per player.
+        /// This is the primary dedup key -- one colony per planet per player.
         /// </summary>
         public static Colony FindByPlanet(IEnumerable<Colony> colonies, string planetName, string systemName)
         {
@@ -38,7 +38,7 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Merges identity fields (PlanetName, SystemName) from source into target.
-        /// Does NOT merge structures or commodities — that is handled by ColonyParser.ProcessHtml.
+        /// Does NOT merge structures or commodities -- that is handled by ColonyParser.ProcessHtml.
         /// Only sets ColonyName if the target doesn't already have one,
         /// preserving user-corrected names (e.g. fixing game truncation bugs).
         /// </summary>

@@ -41,7 +41,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
         #endregion
 
-        #region Property 1: UUID v5 determinism — same inputs produce same UUID
+        #region Property 1: UUID v5 determinism -- same inputs produce same UUID
 
         /// <summary>
         /// For any Dedup_Key, DeterministicUUID.Generate shall produce the same UUID on every call.

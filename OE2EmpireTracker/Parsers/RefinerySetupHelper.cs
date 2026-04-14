@@ -38,7 +38,7 @@ namespace OE2EmpireTracker.Parsers
                 if (string.IsNullOrEmpty(structure.RefiningResource) ||
                     string.IsNullOrEmpty(structure.RefiningResourcePurity))
                 {
-                    // Log why this structure was skipped — helps diagnose import issues
+                    // Log why this structure was skipped -- helps diagnose import issues
                     if (!string.IsNullOrEmpty(structure.RefiningResource) ||
                         !string.IsNullOrEmpty(structure.RefiningResourcePurity) ||
                         !string.IsNullOrEmpty(structure.MiningSurveyResource))

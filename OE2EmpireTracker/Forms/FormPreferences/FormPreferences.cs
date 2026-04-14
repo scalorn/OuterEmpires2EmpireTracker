@@ -26,11 +26,11 @@ namespace OE2EmpireTracker.Forms
 
         private void PopulateFields(ThresholdPreferences thresholds)
         {
-            // Structure count fields — plain integer display
+            // Structure count fields -- plain integer display
             txtStructureYellow.Text = thresholds.StructureCountYellow.ToString();
             txtStructureRed.Text = thresholds.StructureCountRed.ToString();
 
-            // Time-based fields — countdown format display
+            // Time-based fields -- countdown format display
             txtWorkerYellow.Text = ActivityRow.FormatSeconds(thresholds.WorkerRequestYellowSeconds);
             txtWorkerRed.Text = ActivityRow.FormatSeconds(thresholds.WorkerRequestRedSeconds);
             txtColonyImportYellow.Text = ActivityRow.FormatSeconds(thresholds.ColonyImportStalenessYellowSeconds);

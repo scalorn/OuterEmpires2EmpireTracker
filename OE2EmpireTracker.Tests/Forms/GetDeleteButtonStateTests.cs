@@ -6,7 +6,7 @@ namespace OE2EmpireTracker.Tests.Forms
     [TestFixture]
     public class GetDeleteButtonStateTests
     {
-        // Requirement 2.3 — zero-count report returns enabled with "Delete" text
+        // Requirement 2.3 -- zero-count report returns enabled with "Delete" text
         [Test]
         public void ZeroCountReport_ReturnsEnabled_Delete()
         {
@@ -18,7 +18,7 @@ namespace OE2EmpireTracker.Tests.Forms
             Assert.That(text, Is.EqualTo("Delete"));
         }
 
-        // Requirement 2.2 — positive-count report returns disabled with "In Use (N)" text
+        // Requirement 2.2 -- positive-count report returns disabled with "In Use (N)" text
         [Test]
         public void PositiveCountReport_ReturnsDisabled_InUseWithCount()
         {
@@ -30,7 +30,7 @@ namespace OE2EmpireTracker.Tests.Forms
             Assert.That(text, Is.EqualTo("In Use (3)"));
         }
 
-        // Requirement 2.4 — null report (no blueprint selected) returns disabled with "Delete" text
+        // Requirement 2.4 -- null report (no blueprint selected) returns disabled with "Delete" text
         [Test]
         public void NullReport_ReturnsDisabled_Delete()
         {

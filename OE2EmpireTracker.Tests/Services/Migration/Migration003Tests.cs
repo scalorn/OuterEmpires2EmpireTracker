@@ -8,10 +8,10 @@ namespace OE2EmpireTracker.Tests.Services.Migration
     /// Unit tests for Migration003_SurveyDateTimeNormalization conversion logic.
     /// Tests the migration pipeline directly (without EmpireContext/PlayerContext)
     /// by replicating the same logic inline:
-    ///   1. TryParseIso → skip if already ISO
-    ///   2. TryParseGameFormat → ToIsoString
-    ///   3. DateTime.TryParse → ToIsoString
-    ///   4. Else → DateTime.Now → ToIsoString
+    ///   1. TryParseIso -> skip if already ISO
+    ///   2. TryParseGameFormat -> ToIsoString
+    ///   3. DateTime.TryParse -> ToIsoString
+    ///   4. Else -> DateTime.Now -> ToIsoString
     /// </summary>
     [TestFixture]
     public class Migration003Tests
@@ -35,13 +35,13 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             if (DateTime.TryParse(original, out DateTime fallback))
                 return SurveyDateTimeParser.ToIsoString(fallback);
 
-            // Unparseable or null/empty — replace with now
+            // Unparseable or null/empty -- replace with now
             return SurveyDateTimeParser.ToIsoString(DateTime.UtcNow);
         }
 
         #endregion
 
-        #region Already-ISO data (no change) — Requirements 2.2, 5.6
+        #region Already-ISO data (no change) -- Requirements 2.2, 5.6
 
         [Test]
         public void MigrateDateTime_AlreadyIso_ReturnsUnchanged()
@@ -69,7 +69,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
         #endregion
 
-        #region Game-format data (converts to ISO) — Requirements 5.1
+        #region Game-format data (converts to ISO) -- Requirements 5.1
 
         [Test]
         public void MigrateDateTime_GameFormat_ConvertsToIso()
@@ -101,7 +101,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
         #endregion
 
-        #region Garbage string (replaces with valid ISO) — Requirements 5.4
+        #region Garbage string (replaces with valid ISO) -- Requirements 5.4
 
         [Test]
         public void MigrateDateTime_GarbageString_ProducesValidIso()
@@ -122,7 +122,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         [Test]
         public void MigrateDateTime_InvalidDate_ProducesValidIso()
         {
-            // Feb 30 is invalid — should fall through to DateTime.Now fallback
+            // Feb 30 is invalid -- should fall through to DateTime.Now fallback
             string result = MigrateDateTime("2024-02-30T12:00:00");
             Assert.That(SurveyDateTimeParser.TryParseIso(result, out _), Is.True,
                 $"Expected valid ISO output, got: '{result}'");
@@ -130,7 +130,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
         #endregion
 
-        #region Null/empty DateTime (replaces with valid ISO) — Requirements 5.5
+        #region Null/empty DateTime (replaces with valid ISO) -- Requirements 5.5
 
         [Test]
         public void MigrateDateTime_Null_ProducesValidIso()
@@ -150,12 +150,12 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
         #endregion
 
-        #region Common .NET format fallback — Requirements 5.2
+        #region Common .NET format fallback -- Requirements 5.2
 
         [Test]
         public void MigrateDateTime_CommonNetFormat_ProducesValidIso()
         {
-            // "G" format: "07/27/2024 11:44:00 PM" — parseable by DateTime.TryParse
+            // "G" format: "07/27/2024 11:44:00 PM" -- parseable by DateTime.TryParse
             var dt = new DateTime(2024, 7, 27, 23, 44, 0);
             string formatted = dt.ToString("G", System.Globalization.CultureInfo.InvariantCulture);
 

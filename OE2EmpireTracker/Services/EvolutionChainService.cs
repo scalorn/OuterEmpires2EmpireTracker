@@ -16,7 +16,7 @@ namespace OE2EmpireTracker.Services
         public (int Evolution, decimal Percent) To { get; set; }
 
         /// <summary>
-        /// True when the evolution levels differ by more than 1 (gap → dashed line).
+        /// True when the evolution levels differ by more than 1 (gap -> dashed line).
         /// False when consecutive (solid line).
         /// </summary>
         public bool IsGap { get; set; }
@@ -24,7 +24,7 @@ namespace OE2EmpireTracker.Services
 
     public class EvolutionGraphData
     {
-        /// <summary>Property name → list of (evolutionLevel, percentageValue) points.</summary>
+        /// <summary>Property name -> list of (evolutionLevel, percentageValue) points.</summary>
         public Dictionary<string, List<(int Evolution, decimal Percent)>> Series { get; set; }
             = new Dictionary<string, List<(int Evolution, decimal Percent)>>();
 

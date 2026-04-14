@@ -23,7 +23,7 @@ namespace OE2EmpireTracker.Constants
 
         // --- Timers ---
 
-        /// <summary>Seconds in one hour — used for top-of-hour timer alignment.</summary>
+        /// <summary>Seconds in one hour -- used for top-of-hour timer alignment.</summary>
         public const long SecondsPerHour = 3600;
 
         // --- Commodity Manufacturing ---

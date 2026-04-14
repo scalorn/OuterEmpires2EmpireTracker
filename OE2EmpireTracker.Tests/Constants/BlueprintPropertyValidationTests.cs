@@ -9,7 +9,7 @@ namespace OE2EmpireTracker.Tests.Constants
     public class BlueprintPropertyValidationTests
     {
         // -----------------------------------------------------------------------
-        // GetPropertyType — ComboBox
+        // GetPropertyType -- ComboBox
         // -----------------------------------------------------------------------
 
         [Test]
@@ -19,7 +19,7 @@ namespace OE2EmpireTracker.Tests.Constants
         }
 
         // -----------------------------------------------------------------------
-        // GetPropertyType — CheckBox
+        // GetPropertyType -- CheckBox
         // -----------------------------------------------------------------------
 
         [TestCase("Can Manufacture")]
@@ -31,7 +31,7 @@ namespace OE2EmpireTracker.Tests.Constants
         }
 
         // -----------------------------------------------------------------------
-        // GetPropertyType — Integer
+        // GetPropertyType -- Integer
         // -----------------------------------------------------------------------
 
         [TestCase("Blue Collar Detail")]
@@ -43,7 +43,7 @@ namespace OE2EmpireTracker.Tests.Constants
         }
 
         // -----------------------------------------------------------------------
-        // GetPropertyType — Decimal
+        // GetPropertyType -- Decimal
         // -----------------------------------------------------------------------
 
         [TestCase("Cooldown Time")]
@@ -54,7 +54,7 @@ namespace OE2EmpireTracker.Tests.Constants
         }
 
         // -----------------------------------------------------------------------
-        // GetPropertyType — Time
+        // GetPropertyType -- Time
         // -----------------------------------------------------------------------
 
         [Test]
@@ -64,7 +64,7 @@ namespace OE2EmpireTracker.Tests.Constants
         }
 
         // -----------------------------------------------------------------------
-        // GetPropertyType — Unknown
+        // GetPropertyType -- Unknown
         // -----------------------------------------------------------------------
 
         [Test]
@@ -92,7 +92,7 @@ namespace OE2EmpireTracker.Tests.Constants
         [Test]
         public void GetValidationPattern_BooleanProperty_ReturnsNull()
         {
-            // CheckBox properties use a different rendering — no regex pattern needed
+            // CheckBox properties use a different rendering -- no regex pattern needed
             Assert.That(BlueprintPropertyValidation.GetValidationPattern("Can Manufacture"), Is.Null);
         }
 

@@ -241,7 +241,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 // Filter to only non-ISO strings
                 if (SurveyDateTimeParser.TryParseIso(input, out _))
-                    return true.Label("Skipped — input is valid ISO");
+                    return true.Label("Skipped -- input is valid ISO");
 
                 string result = SurveyDateTimeParser.FormatForDisplay(input);
 

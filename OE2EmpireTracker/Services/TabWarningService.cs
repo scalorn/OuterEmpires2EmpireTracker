@@ -79,7 +79,7 @@ namespace OE2EmpireTracker.Services
                 TimeSpan dueWindow = req.NeedBy - now;
 
                 if (dueWindow <= WorkerRedWindow)
-                    return TabWarningLevel.Red; // Can't get worse — short-circuit
+                    return TabWarningLevel.Red; // Can't get worse -- short-circuit
 
                 if (dueWindow <= WorkerYellowWindow)
                     level = TabWarningLevel.Yellow;

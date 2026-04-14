@@ -36,7 +36,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// Generates 0 or a positive int (1–10).
+        /// Generates 0 or a positive int (1--10).
         /// </summary>
         private static Gen<int> ZeroOrPositiveGen()
         {
@@ -47,7 +47,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// Generates a Resources dictionary with 0–5 entries.
+        /// Generates a Resources dictionary with 0--5 entries.
         /// </summary>
         private static Gen<Dictionary<string, string>> ResourcesDictGen()
         {

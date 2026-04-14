@@ -36,7 +36,7 @@ namespace OE2EmpireTracker.Services
             DateTime parsed;
             if (!SurveyDateTimeParser.TryParseIso(colony.LastImportDateTime, out parsed))
             {
-                // Unparseable or null/empty — treat as maximally stale
+                // Unparseable or null/empty -- treat as maximally stale
                 rows.Add(new ActivityRow
                 {
                     Type = ActivityType.ColonyImportStaleness,

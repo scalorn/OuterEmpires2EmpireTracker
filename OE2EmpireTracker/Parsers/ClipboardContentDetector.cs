@@ -32,7 +32,7 @@ namespace OE2EmpireTracker.Parsers
             if (string.IsNullOrEmpty(html))
                 return ContentType.Unknown;
 
-            // Colony: ColonyInformation_PlanetOverview — content-specific marker
+            // Colony: ColonyInformation_PlanetOverview -- content-specific marker
             if (html.IndexOf("ColonyInformation_PlanetOverview", StringComparison.Ordinal) >= 0)
                 return ContentType.Colony;
 
@@ -43,7 +43,7 @@ namespace OE2EmpireTracker.Parsers
                 html.IndexOf("ScanDetailOutputResourceName_MarketListing", StringComparison.Ordinal) >= 0)
                 return ContentType.MarketListing;
 
-            // Survey: ScanDetailOutputResourceName — content-specific marker
+            // Survey: ScanDetailOutputResourceName -- content-specific marker
             // Must come AFTER MarketListing check to avoid false positives from market resource rows.
             if (html.IndexOf("ScanDetailOutputResourceName", StringComparison.Ordinal) >= 0)
                 return ContentType.Survey;

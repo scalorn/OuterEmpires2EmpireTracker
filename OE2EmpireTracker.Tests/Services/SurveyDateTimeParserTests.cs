@@ -7,7 +7,7 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class SurveyDateTimeParserTests
     {
-        #region 12a → midnight, 12p → noon
+        #region 12a -> midnight, 12p -> noon
 
         [Test]
         public void TryParseGameFormat_12a_IsMidnight()
@@ -31,7 +31,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         #endregion
 
-        #region All 12 months JAN–DEC
+        #region All 12 months JAN--DEC
 
         [TestCase("JAN", 1)]
         [TestCase("FEB", 2)]
@@ -56,7 +56,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         #endregion
 
-        #region Known game strings → expected ISO output
+        #region Known game strings -> expected ISO output
 
         [Test]
         public void KnownGameString_27JUL24_1144p()

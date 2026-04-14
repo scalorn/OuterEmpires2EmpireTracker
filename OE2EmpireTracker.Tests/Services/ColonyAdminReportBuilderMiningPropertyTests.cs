@@ -12,7 +12,7 @@ using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Tests.Services
 {
     /// <summary>
-    /// Feature: colony-admin-summary, Property 9: Mining aggregation — one row per resource+purity
+    /// Feature: colony-admin-summary, Property 9: Mining aggregation -- one row per resource+purity
     /// </summary>
     [TestFixture]
     public class ColonyAdminReportBuilderMiningPropertyTests
@@ -82,7 +82,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// Feature: colony-admin-summary, Property 9: Mining aggregation — one row per resource+purity.
+        /// Feature: colony-admin-summary, Property 9: Mining aggregation -- one row per resource+purity.
         /// For any colony with N active miners on the same (Resource, Purity) combination,
         /// the activity section SHALL contain exactly one mining summary row for that combination,
         /// and the displayed rate SHALL equal the sum of individual miner rates.

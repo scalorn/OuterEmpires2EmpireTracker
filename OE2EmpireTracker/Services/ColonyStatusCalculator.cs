@@ -88,7 +88,7 @@ namespace OE2EmpireTracker.Services
             ColonyStructureStatus previousStatus = new ColonyStructureStatus();
             Dictionary<string, int> StructureCounts = new Dictionary<string, int>();
 
-            // Clear all existing worker locks — will be rebuilt from current state
+            // Clear all existing worker locks -- will be rebuilt from current state
             ClearAllWorkerLocks();
 
             foreach (ColonyStructure structure in colony.Structures)

@@ -16,7 +16,7 @@ namespace OE2EmpireTracker.Parsers
         {
             // HTML Clipboard Format:
             // (https://msdn.microsoft.com/en-us/library/aa767917(v=vs.85).aspx)
-            // Prefer marker-based extraction — encoding-safe and avoids byte-offset mismatch
+            // Prefer marker-based extraction -- encoding-safe and avoids byte-offset mismatch
             const string startMarker = "<!--StartFragment-->";
             const string endMarker = "<!--EndFragment-->";
             int startPos = htmlDataString.IndexOf(startMarker);

@@ -75,7 +75,7 @@ namespace OE2EmpireTracker.Models
 
         public void ProcessColony()
         {
-            // Step 1: Structure Building â€” check BuildCompletionTime expiration
+            // Step 1: Structure Building -- check BuildCompletionTime expiration
             foreach (ColonyStructure structure in Structures)
             {
                 if (structure.BuildCompletionTime != null &&
@@ -291,7 +291,7 @@ namespace OE2EmpireTracker.Models
                     available = sourceItem.Quantity;
                 }
 
-                // Only consume whole units ï¿½ floor to nearest multiple of perUnitCost
+                // Only consume whole units / floor to nearest multiple of perUnitCost
                 int wholeUnits = available / perUnitCost;
                 int maxUnits = recipe.ProduceRate; // cap at full batch size
                 int produced = (int)(Math.Min(wholeUnits, maxUnits) * refiningMultiplier);
@@ -347,7 +347,7 @@ namespace OE2EmpireTracker.Models
             if (sourceBp == null)
                 return;
 
-            // Research is a one-shot timer ï¿½ check if time has expired
+            // Research is a one-shot timer / check if time has expired
             if (structure.ProcessCompletionTime.TimeRemaining > 0)
                 return;
 
@@ -367,7 +367,7 @@ namespace OE2EmpireTracker.Models
             {
                 newBp.Properties.setProperty(prop.Key, prop.Value);
             }
-            // Resources intentionally empty ï¿½ user imports via Blueprint Form
+            // Resources intentionally empty / user imports via Blueprint Form
 
             // Add to player's blueprint list
             pc.BlueprintList.Add(newBp);
@@ -402,7 +402,7 @@ namespace OE2EmpireTracker.Models
                 Enum.TryParse(bpType.OutputItemType, out outputType);
             }
 
-            // Process each completed interval ï¿½ one item per interval
+            // Process each completed interval / one item per interval
             while (structure.ProcessCompletionTime.IntervalsPassed > 0 &&
                    structure.ManufacturingCompleted < structure.ManufacturingQuantity)
             {
@@ -447,7 +447,7 @@ namespace OE2EmpireTracker.Models
             if (!Commodity.ResourceMapByString.TryGetValue(structure.ManufacturingCommodityName, out commodity))
                 return;
 
-            // Process each completed cycle â€” 10 commodities per cycle
+            // Process each completed cycle -- 10 commodities per cycle
             while (structure.ProcessCompletionTime.IntervalsPassed > 0 &&
                    structure.ManufacturingCompleted < structure.ManufacturingQuantity)
             {

@@ -76,7 +76,7 @@ namespace OE2EmpireTracker.Services
 
             foreach (var row in sorted)
             {
-                builder.Append("  " + row.SourceName + " — ", TextColor);
+                builder.Append("  " + row.SourceName + " -- ", TextColor);
                 builder.Append(row.GetTimeRemainingString(), CountdownColor);
                 if (row.CountDown != null)
                 {
@@ -103,7 +103,7 @@ namespace OE2EmpireTracker.Services
                 builder.Append("  " + row.ProcessDetails, TextColor);
                 if (row.NeedBy != DateTime.MinValue)
                 {
-                    builder.Append(" — due " + row.NeedBy.ToLocalTime().ToString("ddMMMyy-h:mmtt").ToLower(), DetailColor);
+                    builder.Append(" -- due " + row.NeedBy.ToLocalTime().ToString("ddMMMyy-h:mmtt").ToLower(), DetailColor);
                 }
                 builder.Append("\n", TextColor);
             }
@@ -147,7 +147,7 @@ namespace OE2EmpireTracker.Services
 
                 foreach (var row in groupRows)
                 {
-                    builder.Append("  " + row.SourceName + " — " + row.ProcessDetails + "\n", TextColor);
+                    builder.Append("  " + row.SourceName + " -- " + row.ProcessDetails + "\n", TextColor);
                 }
                 anyRendered = true;
             }
@@ -160,7 +160,7 @@ namespace OE2EmpireTracker.Services
 
                 foreach (var row in underutilized)
                 {
-                    builder.Append("  " + row.SourceName + " — " + row.ProcessDetails + "\n", TextColor);
+                    builder.Append("  " + row.SourceName + " -- " + row.ProcessDetails + "\n", TextColor);
                 }
                 anyRendered = true;
             }
@@ -215,7 +215,7 @@ namespace OE2EmpireTracker.Services
 
             foreach (var row in rows)
             {
-                builder.Append("  " + row.SourceName + " — " + row.ProcessDetails + "\n", TextColor);
+                builder.Append("  " + row.SourceName + " -- " + row.ProcessDetails + "\n", TextColor);
 
                 // Completion time
                 builder.Append("    ", TextColor);
@@ -253,7 +253,7 @@ namespace OE2EmpireTracker.Services
             }
             builder.Append("\n", TextColor);
 
-            // Batch completion — find the matching structure
+            // Batch completion -- find the matching structure
             if (colony.Structures == null || row.CountDown == null) return;
 
             var structure = FindMatchingStructure(colony, row);
@@ -340,7 +340,7 @@ namespace OE2EmpireTracker.Services
             foreach (var group in miningGroups.Values.OrderBy(g => g.resource).ThenBy(g => g.purity))
             {
                 int displayRate = (int)Math.Round(group.totalRate);
-                builder.Append($"  {group.resource} ({group.purity}) — {group.totalRate:F2}/h\n", TextColor);
+                builder.Append($"  {group.resource} ({group.purity}) -- {group.totalRate:F2}/h\n", TextColor);
             }
 
             return true;
@@ -413,7 +413,7 @@ namespace OE2EmpireTracker.Services
 
             foreach (var group in refiningGroups.Values.OrderBy(g => g.resource).ThenBy(g => g.purity))
             {
-                builder.Append($"  {group.count}x {group.resource} ({group.purity}) — {group.totalConsume:F2}:{group.totalProduce:F2} {group.outputResource}\n", TextColor);
+                builder.Append($"  {group.count}x {group.resource} ({group.purity}) -- {group.totalConsume:F2}:{group.totalProduce:F2} {group.outputResource}\n", TextColor);
             }
 
             return true;

@@ -240,7 +240,7 @@ namespace OE2EmpireTracker.Services
             // Preserve protected scalar fields: UUID, OwnerUUID, NickName, CopyCost, TechLevel, Description
             // (we simply don't overwrite them)
 
-            // Merge properties — add/overwrite incoming keys but preserve existing keys
+            // Merge properties -- add/overwrite incoming keys but preserve existing keys
             // not present in incoming. This prevents a partial parse (e.g. resources page
             // that only extracts 1 property) from wiping out a full property set.
             if (incoming.Properties != null && incoming.Properties.Count > 0)
@@ -265,7 +265,7 @@ namespace OE2EmpireTracker.Services
                     existing.Properties?.Count ?? 0, existing.Name);
             }
 
-            // Merge resources — add/overwrite incoming keys but preserve existing keys
+            // Merge resources -- add/overwrite incoming keys but preserve existing keys
             // not present in incoming. Same rationale as properties.
             if (incoming.Resources != null && incoming.Resources.Count > 0)
             {

@@ -22,7 +22,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// </summary>
         private static Gen<decimal> GameDecimalGen()
         {
-            // Generate an integer mantissa and a scale (0–4 decimal places)
+            // Generate an integer mantissa and a scale (0--4 decimal places)
             return from mantissa in Gen.Choose(-99999999, 99999999)
                    from scale in Gen.Choose(0, 4)
                    let divisor = (decimal)Math.Pow(10, scale)

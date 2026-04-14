@@ -31,7 +31,7 @@ namespace OE2EmpireTracker.Services.Migration
                     continue;
                 }
 
-                // Unparseable or null/empty — replace with now, log warning
+                // Unparseable or null/empty -- replace with now, log warning
                 Log.Warn("Survey '{0}': replacing unparseable DateTime '{1}' with current time",
                     survey.PlanetName ?? "(unknown)", original ?? "(null)");
                 survey.DateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow);

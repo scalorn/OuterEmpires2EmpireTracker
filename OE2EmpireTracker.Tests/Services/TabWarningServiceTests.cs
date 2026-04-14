@@ -20,7 +20,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Feature: worker-tab-due-warning, Property 1: Structure warning level is determined by count thresholds
         /// **Validates: Requirements 7.1, 7.2, 8.1, 8.2, 9.1**
         ///
-        /// For any non-negative integer structureCount (0–200),
+        /// For any non-negative integer structureCount (0--200),
         /// EvaluateStructureWarning returns Red if >= 66, Yellow if >= 60, None otherwise.
         /// </summary>
         [FsCheck.NUnit.Property]
@@ -168,10 +168,10 @@ namespace OE2EmpireTracker.Tests.Services
                 });
         }
 
-        // ── Unit Tests: Structure Warning Edge Cases ──
+        // -- Unit Tests: Structure Warning Edge Cases --
         // **Validates: Requirements 7.1, 7.2, 8.1, 8.2, 9.1**
 
-        // ── Property Test: Colony Import Staleness Warning ──
+        // -- Property Test: Colony Import Staleness Warning --
 
         /// <summary>
         /// Feature: colony-import-timestamp, Property 5: TabWarningService returns correct warning level for import staleness
@@ -238,7 +238,7 @@ namespace OE2EmpireTracker.Tests.Services
                 });
         }
 
-        // ── Unit Tests: Structure Warning Edge Cases ──
+        // -- Unit Tests: Structure Warning Edge Cases --
         // **Validates: Requirements 7.1, 7.2, 8.1, 8.2, 9.1**
 
         private static readonly DateTime Now = new DateTime(2025, 6, 15, 12, 0, 0);
@@ -273,7 +273,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(TabWarningService.EvaluateStructureWarning(66), Is.EqualTo(TabWarningLevel.Red));
         }
 
-        // ── Unit Tests: Worker Warning Edge Cases ──
+        // -- Unit Tests: Worker Warning Edge Cases --
         // **Validates: Requirements 1.1, 1.2, 1.3, 2.1, 2.2, 3.1, 4.1, 4.2, 6.1**
 
         [Test]

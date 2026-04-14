@@ -13,7 +13,7 @@ namespace OE2EmpireTracker.Tests.Services
     public class HelpTopicRegistryPropertyTests
     {
         /// <summary>
-        /// The complete set of known form-type → doc-file mappings.
+        /// The complete set of known form-type -> doc-file mappings.
         /// </summary>
         private static readonly Dictionary<string, string> ExpectedMappings = new Dictionary<string, string>
         {

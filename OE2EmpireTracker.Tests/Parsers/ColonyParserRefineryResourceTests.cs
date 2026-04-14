@@ -132,7 +132,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(colony.Structures.Count, Is.EqualTo(1));
             Assert.That(colony.Structures[0].RefiningResource, Is.EqualTo("Copper"));
 
-            // Reimport — should merge and preserve RefiningResource
+            // Reimport -- should merge and preserve RefiningResource
             ColonyParser.ParseColonyBuildingsFromJson(colony, json, _empireContext);
             Assert.That(colony.Structures.Count, Is.EqualTo(1));
             Assert.That(colony.Structures[0].RefiningResource, Is.EqualTo("Copper"));

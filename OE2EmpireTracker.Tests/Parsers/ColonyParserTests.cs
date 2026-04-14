@@ -52,7 +52,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         // -------------------------------------------------------------------
-        // M1 (local colony) — full planet overview + colony-buildings JSON
+        // M1 (local colony) -- full planet overview + colony-buildings JSON
         // -------------------------------------------------------------------
 
         private Colony ParseM1()

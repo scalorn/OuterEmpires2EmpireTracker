@@ -148,7 +148,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             var colony = CreateColony("owner-4", "Delta", "Rigel");
             colony.Structures.Add(CreateMiningStructure("some-real-survey", "Iron"));
 
-            // Act — should not throw
+            // Act -- should not throw
             MinerSetupHelper.CleanupDefaultSurvey(colony, _playerContext, _empireContext);
 
             // Assert: survey list unchanged

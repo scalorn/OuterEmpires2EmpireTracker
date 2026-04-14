@@ -246,7 +246,7 @@ namespace OE2EmpireTracker.Tests.Parsers
 
             var ironSurvey = CreateRealSurvey("s-iron", "Zeta", "SURV-001", "Iron", "Medium", "100");
             _playerContext.SurveyList.Add(ironSurvey);
-            // No real survey for Gold — will fall back to default
+            // No real survey for Gold -- will fall back to default
 
             var maxRates = new Dictionary<string, decimal>
             {
@@ -298,7 +298,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             defaultSurvey.Resources["Copper"] = new SurveyResource("Copper", "High", "50");
             _playerContext.SurveyList.Add(defaultSurvey);
 
-            // Only Iron miner exists — Copper is stale
+            // Only Iron miner exists -- Copper is stale
             var ironMiner = CreateMiningRig("rig-iron", "Iron", "Medium");
             colony.Structures.Add(ironMiner);
 
@@ -319,7 +319,7 @@ namespace OE2EmpireTracker.Tests.Parsers
 
         /// <summary>
         /// Validates: Requirements 4.1
-        /// Handles null/empty maxRates gracefully — miners with no entry get maxRate=0.
+        /// Handles null/empty maxRates gracefully -- miners with no entry get maxRate=0.
         /// </summary>
         [Test]
         public void SetupMiners_HandlesNullInputs_Gracefully()
@@ -350,7 +350,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             var miner = CreateMiningRig("rig-1", "Titanium", "Low");
             colony.Structures.Add(miner);
 
-            // Empty maxRates — rig-1 not present
+            // Empty maxRates -- rig-1 not present
             var maxRates = new Dictionary<string, decimal>();
 
             // Act

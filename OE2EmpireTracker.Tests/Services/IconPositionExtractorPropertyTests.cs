@@ -48,7 +48,7 @@ namespace OE2EmpireTracker.Tests.Services
                 .ToList();
 
             if (typesWithIcons.Count == 0)
-                return true.ToProperty().Label("No distinct icon positions in BaselineData â€” vacuously true");
+                return true.ToProperty().Label("No distinct icon positions in BaselineData -- vacuously true");
 
             // Generator picks a random entry from the distinct set
             var knownGen = Gen.Elements(typesWithIcons.ToArray());

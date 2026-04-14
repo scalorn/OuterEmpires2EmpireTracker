@@ -98,7 +98,7 @@ namespace OE2EmpireTracker.Services.Migration
 
         /// <summary>
         /// Resets the failure flag. Used by tests and after a successful
-        /// File → New / File → Open that reloads clean data.
+        /// File -> New / File -> Open that reloads clean data.
         /// </summary>
         public static void ResetFailureState()
         {

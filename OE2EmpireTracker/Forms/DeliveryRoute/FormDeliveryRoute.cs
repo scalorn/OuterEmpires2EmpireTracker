@@ -651,7 +651,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         }
 
         // -----------------------------------------------------------------------
-        // Plan Tab â€” Stop Items
+        // Plan Tab -- Stop Items
         // -----------------------------------------------------------------------
 
         private void dgvStops_SelectionChanged(object sender, EventArgs e)

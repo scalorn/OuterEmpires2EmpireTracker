@@ -14,7 +14,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         [Test]
         public void TryParse_FullFormat_ReturnsCorrectSeconds()
         {
-            // "5d 0h 0m 0s" → 5 * 86400 = 432000
+            // "5d 0h 0m 0s" -> 5 * 86400 = 432000
             bool result = CountdownFormatParser.TryParse("5d 0h 0m 0s", out long totalSeconds);
             Assert.That(result, Is.True);
             Assert.That(totalSeconds, Is.EqualTo(432000L));
@@ -23,7 +23,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         [Test]
         public void TryParse_HoursAndMinutes_ReturnsCorrectSeconds()
         {
-            // "1h 30m" → 3600 + 1800 = 5400
+            // "1h 30m" -> 3600 + 1800 = 5400
             bool result = CountdownFormatParser.TryParse("1h 30m", out long totalSeconds);
             Assert.That(result, Is.True);
             Assert.That(totalSeconds, Is.EqualTo(5400L));
@@ -32,7 +32,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         [Test]
         public void TryParse_SecondsOnly_ReturnsCorrectSeconds()
         {
-            // "60s" → 60
+            // "60s" -> 60
             bool result = CountdownFormatParser.TryParse("60s", out long totalSeconds);
             Assert.That(result, Is.True);
             Assert.That(totalSeconds, Is.EqualTo(60L));
@@ -41,7 +41,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         [Test]
         public void TryParse_ZeroSeconds_ReturnsZero()
         {
-            // "0s" → 0
+            // "0s" -> 0
             bool result = CountdownFormatParser.TryParse("0s", out long totalSeconds);
             Assert.That(result, Is.True);
             Assert.That(totalSeconds, Is.EqualTo(0L));

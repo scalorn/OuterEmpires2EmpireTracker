@@ -96,9 +96,9 @@ namespace OE2EmpireTracker.Constants
             // ComboBox properties (rendered as ComboBox in grid)
             { "Commodity Industry", PropertyValueType.ComboBox },
 
-            // String properties (Unknown — no validation, free-form text)
+            // String properties (Unknown -- no validation, free-form text)
             // "Ammo Type", "License Career", "Material Focus", "Material Focus Bonus"
-            // These are intentionally left as Unknown (default) — no validation applied.
+            // These are intentionally left as Unknown (default) -- no validation applied.
 
             // Time properties
             { "Manufacture Run Time", PropertyValueType.Time },
@@ -169,7 +169,7 @@ namespace OE2EmpireTracker.Constants
                 case PropertyValueType.Decimal: return DECIMAL_PATTERN;
                 case PropertyValueType.Boolean: return BOOLEAN_PATTERN;
                 case PropertyValueType.Time: return TIME_PATTERN;
-                default: return null; // Unknown — no validation
+                default: return null; // Unknown -- no validation
             }
         }
 

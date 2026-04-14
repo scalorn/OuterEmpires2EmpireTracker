@@ -54,7 +54,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -------------------------------------------------------------------
-        // Stats tab — asset tab view
+        // Stats tab -- asset tab view
         // -------------------------------------------------------------------
 
         [Test]
@@ -109,7 +109,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -------------------------------------------------------------------
-        // Resources tab — asset tab view
+        // Resources tab -- asset tab view
         // -------------------------------------------------------------------
 
         [Test]

@@ -206,8 +206,8 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Property 4: Delete button state is determined by reference count.
-        /// If TotalCount > 0 → enabled=false, text="In Use ({TotalCount})".
-        /// If TotalCount == 0 → enabled=true, text="Delete".
+        /// If TotalCount > 0 -> enabled=false, text="In Use ({TotalCount})".
+        /// If TotalCount == 0 -> enabled=true, text="Delete".
         /// Uses a local helper until GetDeleteButtonState is created in Task 4.1.
         /// **Validates: Requirements 2.2, 2.3**
         /// </summary>

@@ -60,7 +60,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -----------------------------------------------------------------------
-        // ProcessHtml — name and tech level
+        // ProcessHtml -- name and tech level
         // -----------------------------------------------------------------------
 
         [Test]
@@ -93,7 +93,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -----------------------------------------------------------------------
-        // ProcessHtml — evolution
+        // ProcessHtml -- evolution
         // -----------------------------------------------------------------------
 
         [Test]
@@ -124,7 +124,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -----------------------------------------------------------------------
-        // ProcessHtml — description
+        // ProcessHtml -- description
         // -----------------------------------------------------------------------
 
         [Test]
@@ -137,7 +137,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -----------------------------------------------------------------------
-        // ProcessHtml — resources
+        // ProcessHtml -- resources
         // -----------------------------------------------------------------------
 
         [Test]
@@ -184,7 +184,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -----------------------------------------------------------------------
-        // ProcessHtml — properties
+        // ProcessHtml -- properties
         // -----------------------------------------------------------------------
 
         [Test]
@@ -202,7 +202,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void ProcessHtml_PropertyWithDeltaText_DeltaIsStripped()
         {
             var bp = new OE2EmpireTracker.Models.Blueprint();
-            _scanner.ProcessHtml(bp, Html(PropRow("Power", "1200 (▲ 435)")));
+            _scanner.ProcessHtml(bp, Html(PropRow("Power", "1200 (^ 435)")));
 
             string val;
             bp.Properties.getString("Power", null, out val);
@@ -229,7 +229,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -----------------------------------------------------------------------
-        // ProcessHtml — robustness
+        // ProcessHtml -- robustness
         // -----------------------------------------------------------------------
 
         [Test]
@@ -247,7 +247,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -----------------------------------------------------------------------
-        // AMX-LL Milspec — full integration from external files
+        // AMX-LL Milspec -- full integration from external files
         // -----------------------------------------------------------------------
 
         [Test]
@@ -307,7 +307,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -----------------------------------------------------------------------
-        // Corvette Ship Hull — statistics page
+        // Corvette Ship Hull -- statistics page
         // -----------------------------------------------------------------------
 
         [Test]
@@ -486,7 +486,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -----------------------------------------------------------------------
-        // Corvette Ship Hull — resources page
+        // Corvette Ship Hull -- resources page
         // -----------------------------------------------------------------------
 
         [Test]
@@ -529,7 +529,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -----------------------------------------------------------------------
-        // Market HTML — bulk import exploration
+        // Market HTML -- bulk import exploration
         // -----------------------------------------------------------------------
 
         [Test]
@@ -645,7 +645,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessMarketHtml_DumpAllData()
         {
-            // Exploratory test — dumps all extracted data for review
+            // Exploratory test -- dumps all extracted data for review
             string html = LoadTestData("BlueprintMarketHulls.html");
             var results = _scanner.ProcessMarketHtml(html);
 
@@ -684,7 +684,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessMarketHtml_Mixed_DumpAllData()
         {
-            // Exploratory test — dumps mixed blueprint types with resolved types
+            // Exploratory test -- dumps mixed blueprint types with resolved types
             string html = LoadTestData("BlueprintMarketMixed.html");
             var results = _scanner.ProcessMarketHtml(html);
 
@@ -785,7 +785,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         /// </summary>
         private static string MarketHtml(string bpName, string sellerSpan, string evoNumber = "0")
         {
-            // Seller span is optional — pass empty string for no seller
+            // Seller span is optional -- pass empty string for no seller
             string descContent = bpName + sellerSpan;
             return "<html><body><table><tbody>"
                 + $"<tr class='MarketListingRow'>"
@@ -805,7 +805,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
             $"<span class='ui_text_light_grey'><br/>{seller}</span>";
 
         // -----------------------------------------------------------------------
-        // ProcessMarketHtml — TechLevel extraction
+        // ProcessMarketHtml -- TechLevel extraction
         // -----------------------------------------------------------------------
 
         [Test]
@@ -853,7 +853,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -----------------------------------------------------------------------
-        // ProcessMarketHtml — seller name extraction
+        // ProcessMarketHtml -- seller name extraction
         // -----------------------------------------------------------------------
 
         [Test]

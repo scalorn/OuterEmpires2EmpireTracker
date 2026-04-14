@@ -31,7 +31,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// // Feature: evolution-graph, Property 1: Chain resolution produces a complete, ordered ancestor list
-        /// Generate random chains of 1–16 blueprints with valid baseBlueprintUUID links;
+        /// Generate random chains of 1--16 blueprints with valid baseBlueprintUUID links;
         /// verify output is sorted ascending by Evolution and contains all chain members
         /// including the start blueprint.
         /// **Validates: Requirements 1.1, 1.2**
@@ -125,7 +125,7 @@ namespace OE2EmpireTracker.Tests.Services
             "Commodity Industry"                                        // ComboBox
         };
 
-        // Unknown property names (not in BlueprintPropertyValidation → Unknown type)
+        // Unknown property names (not in BlueprintPropertyValidation -> Unknown type)
         private static readonly string[] UnknownProperties = new[]
         {
             "Ammo Type", "License Career", "Material Focus"
@@ -152,7 +152,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Gen.Choose(1, shuffled.Length)
                         .Select(count => shuffled.Take(count).ToArray()));
 
-            // Generator: chain of 2–5 blueprints with varying numeric values
+            // Generator: chain of 2--5 blueprints with varying numeric values
             var testDataGen = propsGen.SelectMany(selectedProps =>
                 Gen.Choose(2, 5).SelectMany(chainLen =>
                 {
@@ -350,7 +350,7 @@ namespace OE2EmpireTracker.Tests.Services
                 }
                 else
                 {
-                    // At least one property changed → NoChanges should be false
+                    // At least one property changed -> NoChanges should be false
                     noChangesCorrect = !result.NoChanges;
                 }
 
@@ -382,7 +382,7 @@ namespace OE2EmpireTracker.Tests.Services
             // Use known numeric property names: Integer and Decimal types
             var numericProps = new[] { "Accuracy", "Mass", "Acceleration Rate" };
 
-            // Generator: chain of 2–6 blueprints with random non-zero values that vary
+            // Generator: chain of 2--6 blueprints with random non-zero values that vary
             var testDataGen = Gen.Choose(2, 6).SelectMany(chainLen =>
             {
                 // For each property, generate a non-zero Ev0 value (1..500)
@@ -507,7 +507,7 @@ namespace OE2EmpireTracker.Tests.Services
         #region Unit Tests: Edge Cases
 
         /// <summary>
-        /// Ev0 blueprint with no base — ResolveChain returns a single-element list.
+        /// Ev0 blueprint with no base -- ResolveChain returns a single-element list.
         /// **Validates: Requirements 1.3**
         /// </summary>
         [Test]
@@ -523,7 +523,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// Broken chain (missing UUID mid-chain) — terminates at last resolved blueprint.
+        /// Broken chain (missing UUID mid-chain) -- terminates at last resolved blueprint.
         /// **Validates: Requirements 1.4**
         /// </summary>
         [Test]
@@ -543,7 +543,7 @@ namespace OE2EmpireTracker.Tests.Services
             Bp resolver(string uuid) =>
                 lookup.TryGetValue(uuid, out var bp) ? bp : null;
 
-            // Start from Ev2 — walks to Ev1, then tries bp-0 which is missing
+            // Start from Ev2 -- walks to Ev1, then tries bp-0 which is missing
             var result = EvolutionChainService.ResolveChain(ev2, resolver);
 
             Assert.That(result, Has.Count.EqualTo(2));
@@ -552,7 +552,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// Circular reference detection — stops when visited UUID is re-encountered.
+        /// Circular reference detection -- stops when visited UUID is re-encountered.
         /// **Validates: Requirements 1.5**
         /// </summary>
         [Test]
@@ -576,7 +576,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// Zero base value exclusion — property with Ev0 value of 0 is excluded from graph data.
+        /// Zero base value exclusion -- property with Ev0 value of 0 is excluded from graph data.
         /// **Validates: Requirements 3.2**
         /// </summary>
         [Test]
@@ -597,7 +597,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// Time property parsing — "1d 2h 30m 15s" → 95415 seconds.
+        /// Time property parsing -- "1d 2h 30m 15s" -> 95415 seconds.
         /// (1×86400 + 2×3600 + 30×60 + 15 = 95415)
         /// </summary>
         [Test]
@@ -609,7 +609,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// All properties unchanged — NoChanges is true and Series is empty.
+        /// All properties unchanged -- NoChanges is true and Series is empty.
         /// **Validates: Requirements 2.4, 2.5**
         /// </summary>
         [Test]

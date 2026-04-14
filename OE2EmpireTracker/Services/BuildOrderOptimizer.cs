@@ -49,7 +49,7 @@ namespace OE2EmpireTracker.Services
             var primaryPool = new List<ColonyStructure>();
             var supportPool = new List<ColonyStructure>();
 
-            // All structures go through the optimizer — built structures are not kept
+            // All structures go through the optimizer -- built structures are not kept
             // in their original order because the importer groups them by flatpack type,
             // not by the order they were actually built. The optimizer produces the best
             // guess at a correct build order.
@@ -58,19 +58,19 @@ namespace OE2EmpireTracker.Services
                 Blueprint bp = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (bp == null)
                 {
-                    Log.Info("Optimizer: structure UUID={0} flatpack={1} — blueprint not found, treating as primary",
+                    Log.Info("Optimizer: structure UUID={0} flatpack={1} -- blueprint not found, treating as primary",
                         structure.UUID, structure.FlatpackBlueprintUUID);
                     primaryPool.Add(structure);
                 }
                 else if (IsSupportStructure(bp))
                 {
-                    Log.Info("Optimizer: structure UUID={0} '{1}' — classified as SUPPORT",
+                    Log.Info("Optimizer: structure UUID={0} '{1}' -- classified as SUPPORT",
                         structure.UUID, bp.ExtendedName);
                     supportPool.Add(structure);
                 }
                 else
                 {
-                    Log.Info("Optimizer: structure UUID={0} '{1}' — classified as PRIMARY",
+                    Log.Info("Optimizer: structure UUID={0} '{1}' -- classified as PRIMARY",
                         structure.UUID, bp.ExtendedName);
                     primaryPool.Add(structure);
                 }
@@ -79,7 +79,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("Optimizer pools: {0} primary, {1} support (all structures optimized)",
                 primaryPool.Count, supportPool.Count);
 
-            // Colony Command Centre must always be first — it's the foundation of every colony.
+            // Colony Command Centre must always be first -- it's the foundation of every colony.
             // Check both pools since it provides habitation/food and gets classified as support.
             var commandCentres = primaryPool
                 .Concat(supportPool)
@@ -151,7 +151,7 @@ namespace OE2EmpireTracker.Services
                     }
                     else
                     {
-                        // No existing support structure can help — create one from player blueprints
+                        // No existing support structure can help -- create one from player blueprints
                         bestSupport = CreateSupportStructure(afterPrimary);
                         if (bestSupport == null)
                         {

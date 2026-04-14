@@ -417,7 +417,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void CalculateLoadList_StopsProcessedInSequenceOrder()
         {
             var plan = new DeliveryPlan();
-            // Add stops out of order — sequence 1 first, then 0
+            // Add stops out of order -- sequence 1 first, then 0
             plan.Stops.Add(new DeliveryPlanStop
             {
                 ColonyUUID = "c2",

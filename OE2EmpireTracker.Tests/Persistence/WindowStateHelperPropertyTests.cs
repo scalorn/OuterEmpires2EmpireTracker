@@ -161,7 +161,7 @@ namespace OE2EmpireTracker.Tests.Persistence
                     {
                         combo.Items.Add("SavedItem_" + i);
                     }
-                    // Select the last item — its index will be out of range in the smaller new list
+                    // Select the last item -- its index will be out of range in the smaller new list
                     combo.SelectedIndex = data.SavedItemCount - 1;
 
                     // Save
@@ -179,10 +179,10 @@ namespace OE2EmpireTracker.Tests.Persistence
 
                         form2.Controls.Add(combo2);
 
-                        // Restore — saved value not in items, saved index out of range
+                        // Restore -- saved value not in items, saved index out of range
                         WindowStateHelper.RestoreControlStates(form2, formState);
 
-                        // Neither value nor index valid — stays at default (-1)
+                        // Neither value nor index valid -- stays at default (-1)
                         return (combo2.SelectedIndex == -1)
                             .Label($"Expected default index -1, got {combo2.SelectedIndex}");
                     }

@@ -70,7 +70,7 @@ namespace OE2EmpireTracker.Controls
     }
 
     /// <summary>
-    /// The editing control — a ValidatedTextBox that implements IDataGridViewEditingControl.
+    /// The editing control -- a ValidatedTextBox that implements IDataGridViewEditingControl.
     /// </summary>
     public class DataGridViewValidatedTextBoxEditingControl : ValidatedTextBox, IDataGridViewEditingControl
     {

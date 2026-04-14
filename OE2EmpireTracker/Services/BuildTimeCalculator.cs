@@ -4,7 +4,7 @@ namespace OE2EmpireTracker.Services
 {
     /// <summary>
     /// Calculates structure build time based on the Builder skill level.
-    /// Uses double (not decimal) intentionally — this is a transient time
+    /// Uses double (not decimal) intentionally -- this is a transient time
     /// calculation that produces a long, not a persisted game data value.
     /// </summary>
     public static class BuildTimeCalculator

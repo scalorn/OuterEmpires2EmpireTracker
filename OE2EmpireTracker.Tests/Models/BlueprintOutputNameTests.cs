@@ -17,7 +17,7 @@ namespace OE2EmpireTracker.Tests.Models
     [TestFixture]
     public class BlueprintOutputNameTests
     {
-        // ── Shared generators ──
+        // -- Shared generators --
 
         private static readonly string[] FlatpackSuffixes = { " Flatpack", " FLATPACK", " flatpack", " FlatPack" };
         private static readonly string[] FlatpackTypes = { "Flatpacks/MiningRig", "Flatpacks/Refinery", "Flatpacks/ResearchLaboratory", "Flatpacks/Manufactory", "Flatpacks/CommodityFactory" };
@@ -98,7 +98,7 @@ namespace OE2EmpireTracker.Tests.Models
             );
         }
 
-        // ── Property 1: Suffix stripping round-trip ──
+        // -- Property 1: Suffix stripping round-trip --
 
         /// <summary>
         /// Feature: structure-name-normalization, Property 1: Suffix stripping round-trip
@@ -142,7 +142,7 @@ namespace OE2EmpireTracker.Tests.Models
                 });
         }
 
-        // ── Property 2: ExtendedName uses OutputItemName ──
+        // -- Property 2: ExtendedName uses OutputItemName --
 
         /// <summary>
         /// Feature: structure-name-normalization, Property 2: ExtendedName uses OutputItemName
@@ -181,7 +181,7 @@ namespace OE2EmpireTracker.Tests.Models
                 });
         }
 
-        // ── Property 3: BuildFlatpackLookup behavioral equivalence ──
+        // -- Property 3: BuildFlatpackLookup behavioral equivalence --
 
         /// <summary>
         /// Feature: structure-name-normalization, Property 3: BuildFlatpackLookup behavioral equivalence
@@ -241,7 +241,7 @@ namespace OE2EmpireTracker.Tests.Models
                 });
         }
 
-        // ── Property 4: Serialization round-trip preserves Name ──
+        // -- Property 4: Serialization round-trip preserves Name --
 
         /// <summary>
         /// Feature: structure-name-normalization, Property 4: Serialization round-trip preserves Name
@@ -267,7 +267,7 @@ namespace OE2EmpireTracker.Tests.Models
                 });
         }
 
-        // ── Property 5: Read-only invariant ──
+        // -- Property 5: Read-only invariant --
 
         /// <summary>
         /// Feature: structure-name-normalization, Property 5: Read-only invariant
@@ -304,7 +304,7 @@ namespace OE2EmpireTracker.Tests.Models
                 });
         }
 
-        // ── Unit Tests (Task 4.6): Specific examples and edge cases ──
+        // -- Unit Tests (Task 4.6): Specific examples and edge cases --
 
         [Test]
         public void OutputItemName_MiningRigFlatpack_ReturnsMiningRig()

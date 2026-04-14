@@ -263,7 +263,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // Statuses are [JsonIgnore] — not serialized (AMB-029)
+        // Statuses are [JsonIgnore] -- not serialized (AMB-029)
         // -----------------------------------------------------------------------
 
         [Test]
@@ -410,7 +410,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // ColonyStructureStatus — GetUnallocatedPresent / SetUnallocatedPresent
+        // ColonyStructureStatus -- GetUnallocatedPresent / SetUnallocatedPresent
         // -----------------------------------------------------------------------
 
         [Test]
@@ -443,7 +443,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // StagingResources — Property 5: StagingResources serialization round-trip
+        // StagingResources -- Property 5: StagingResources serialization round-trip
         // Validates: Requirements 4.1, 4.2
         // -----------------------------------------------------------------------
 

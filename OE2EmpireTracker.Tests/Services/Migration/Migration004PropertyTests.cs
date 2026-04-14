@@ -114,7 +114,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 // Record original values
                 var originals = colonies.Select(c => c.LastImportDateTime).ToList();
 
-                // Run the backfill logic (inline replica — no singletons needed)
+                // Run the backfill logic (inline replica -- no singletons needed)
                 foreach (var colony in colonies)
                 {
                     if (string.IsNullOrEmpty(colony.LastImportDateTime))
@@ -178,7 +178,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 bool endIsUtc = timer.EndTime.Kind == DateTimeKind.Utc;
 
                 // The shift should equal the local UTC offset at each original time
-                // (may differ across DST boundaries — that's correct behavior)
+                // (may differ across DST boundaries -- that's correct behavior)
                 TimeSpan startOffset = TimeZoneInfo.Local.GetUtcOffset(originalStart);
                 TimeSpan startShift = originalStart - timer.StartTime;
                 bool startShiftCorrect = Math.Abs((startShift - startOffset).TotalSeconds) < 1;
@@ -198,7 +198,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
         /// <summary>
         /// Feature: colony-import-timestamp, Property 8 (MinValue edge case).
-        /// DateTime.MinValue should be skipped by the migration — not converted.
+        /// DateTime.MinValue should be skipped by the migration -- not converted.
         /// **Validates: Requirements 9.2**
         /// </summary>
         [Test]

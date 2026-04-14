@@ -48,7 +48,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // GetSkill — string overload
+        // GetSkill -- string overload
         // -----------------------------------------------------------------------
 
         [Test]
@@ -83,7 +83,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // GetSkill — enum overload
+        // GetSkill -- enum overload
         // -----------------------------------------------------------------------
 
         [Test]
@@ -103,7 +103,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // GetSkillGroup / SetSkillGroup — string overloads
+        // GetSkillGroup / SetSkillGroup -- string overloads
         // -----------------------------------------------------------------------
 
         [Test]
@@ -137,7 +137,7 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // GetSkillGroup / SetSkillGroup — enum overloads
+        // GetSkillGroup / SetSkillGroup -- enum overloads
         // -----------------------------------------------------------------------
 
         [Test]
