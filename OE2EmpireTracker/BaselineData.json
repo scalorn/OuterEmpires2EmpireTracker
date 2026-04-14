@@ -1,5 +1,5 @@
 {
-  "DataVersion": 3,
+  "DataVersion": 5,
   "GameConstants": {
     "RefiningBaseRate": 25,
     "CommoditiesPerCycle": 10,
@@ -2107,10 +2107,10 @@
       "BluePrintType": "Flatpacks/CommodityFactory/AdministrationBlock",
       "Properties": {
         "Power Required": "1",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
         "Can Research": "0",
-        "_IconPosition": "-214px -670px"
+        "_IconPosition": "-214px -670px",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Alkali Metals": "568",
@@ -2128,10 +2128,10 @@
       "BluePrintType": "Flatpacks/CommodityFactory/Agridome",
       "Properties": {
         "Power Required": "1",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
         "Can Research": "0",
-        "_IconPosition": "-24px -670px"
+        "_IconPosition": "-24px -670px",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Halogens": "754",
@@ -4192,11 +4192,11 @@
       "BluePrintType": "Flatpacks/CommodityFactory/CentreOfEconomics",
       "Properties": {
         "Power Required": "1",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
         "Can Research": "0",
         "_IconPosition": "-138px -670px",
-        "Manufacture Run Time": "0"
+        "Manufacture Run Time": "0",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Halogens": "699",
@@ -4797,7 +4797,6 @@
       "CopyCost": 2590,
       "Properties": {
         "Structural Integrity": "2500",
-        "Warehousing Capacity": "10000",
         "Manufacturing Time Reduction": "0%",
         "Mining Yield Modification": "0",
         "Refining Time Modification": "0",
@@ -4805,12 +4804,13 @@
         "Hull Manufacture Time Modification": "0",
         "Food Provision": "2",
         "Habitation Provision": "2",
-        "White Collar Detail(s)": "1",
-        "Unassigned Specialist Detail(s)": "1",
+        "Warehouse Capacity": "10000",
+        "White Collar Detail": "1",
         "Max Per Colony": "1",
         "Can Research": "0",
         "_IconPosition": "-24px -594px",
-        "Manufacture Run Time": "1h 0m"
+        "Manufacture Run Time": "1h 0m",
+        "Unassigned Specialist Detail": "1"
       },
       "Resources": {
         "Alkali Metals": "691",
@@ -6167,11 +6167,11 @@
       "BluePrintType": "Flatpacks/CommodityFactory/EngineeringBlock",
       "Properties": {
         "Power Required": "1",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
         "Can Research": "0",
         "_IconPosition": "-328px -670px",
-        "Manufacture Run Time": "0"
+        "Manufacture Run Time": "0",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Noble Gases": "713",
@@ -6192,11 +6192,11 @@
         "Power Required": "2",
         "Structural Integrity": "75",
         "Entertainment Provided": "10",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned Specialist Detail(s)": "1",
+        "Unassigned Specialist Detail": "1",
         "Can Research": "0",
         "_IconPosition": "-480px -594px",
-        "Manufacture Run Time": "1h 0m"
+        "Manufacture Run Time": "1h 0m",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Heavy Noble Gases": "647",
@@ -7797,11 +7797,11 @@
         "Power Required": "1",
         "Structural Integrity": "100",
         "Habitation Provision": "4",
-        "Unassigned Specialist Detail(s)": "1",
         "Max Per Colony": "999",
         "Can Research": "0",
         "_IconPosition": "-100px -594px",
-        "Manufacture Run Time": "1h 0m"
+        "Manufacture Run Time": "1h 0m",
+        "Unassigned Specialist Detail": "1"
       },
       "Resources": {
         "Alkali Metals": "581",
@@ -7924,11 +7924,11 @@
       "BluePrintType": "Flatpacks/CommodityFactory/HealthcareInstitute",
       "Properties": {
         "Power Required": "1",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
         "Can Research": "0",
         "_IconPosition": "-518px -670px",
-        "Manufacture Run Time": "0"
+        "Manufacture Run Time": "0",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Trans-Metals": "566",
@@ -8081,12 +8081,12 @@
         "Power Required": "1",
         "Structural Integrity": "100",
         "Food Provision": "4",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned Specialist Detail(s)": "1",
+        "Unassigned Specialist Detail": "1",
         "Max Per Colony": "999",
         "Can Research": "0",
         "_IconPosition": "-138px -594px",
-        "Manufacture Run Time": "1h 0m"
+        "Manufacture Run Time": "1h 0m",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Post-Trans Metals": "497",
@@ -8489,11 +8489,11 @@
       "BluePrintType": "Flatpacks/CommodityFactory/InstituteOfDefence",
       "Properties": {
         "Power Required": "1",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
         "Can Research": "0",
         "_IconPosition": "-480px -670px",
-        "Manufacture Run Time": "0"
+        "Manufacture Run Time": "0",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Trans-Metals": "516",
@@ -9500,11 +9500,11 @@
       "BluePrintType": "Flatpacks/CommodityFactory/LeisureIndustryCentre",
       "Properties": {
         "Power Required": "1",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
         "Can Research": "0",
         "_IconPosition": "-290px -670px",
-        "Manufacture Run Time": "0"
+        "Manufacture Run Time": "0",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Alkaline Earth Metals": "563",
@@ -9576,11 +9576,11 @@
       "BluePrintType": "Flatpacks/CommodityFactory/LogisticsCentre",
       "Properties": {
         "Power Required": "1",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
         "Can Research": "0",
         "_IconPosition": "-62px -670px",
-        "Manufacture Run Time": "0"
+        "Manufacture Run Time": "0",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Noble Gases": "680",
@@ -9710,12 +9710,12 @@
       "Properties": {
         "Power Required": "5",
         "Structural Integrity": "250",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
-        "Unassigned Specialist Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
+        "Unassigned Specialist Detail": "1",
         "Max Per Colony": "999",
         "Can Research": "0",
-        "_IconPosition": "-366px -594px"
+        "_IconPosition": "-366px -594px",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Trans-Metals": "567",
@@ -9736,11 +9736,11 @@
       "BluePrintType": "Flatpacks/CommodityFactory/ManufacturingIndustryCentre",
       "Properties": {
         "Power Required": "1",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
         "Can Research": "0",
         "_IconPosition": "-404px -670px",
-        "Manufacture Run Time": "0"
+        "Manufacture Run Time": "0",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Noble Gases": "602",
@@ -10651,10 +10651,10 @@
       "BluePrintType": "Flatpacks/CommodityFactory/MiningIndustryCentre",
       "Properties": {
         "Power Required": "1",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
         "Can Research": "0",
-        "_IconPosition": "-366px -670px"
+        "_IconPosition": "-366px -670px",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Trans-Metals": "633",
@@ -10674,14 +10674,14 @@
       "Properties": {
         "Power Required": "2",
         "Structural Integrity": "150",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
-        "Unassigned Specialist Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
+        "Unassigned Specialist Detail": "1",
         "Max Per Colony": "999",
         "Extraction Efficiency": "100",
         "Can Research": "0",
         "_IconPosition": "-290px -594px",
-        "Manufacture Run Time": "1h 0m"
+        "Manufacture Run Time": "1h 0m",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Halogens": "451",
@@ -11563,11 +11563,11 @@
       "BluePrintType": "Flatpacks/CommodityFactory/OffWorldLivingInstitute",
       "Properties": {
         "Power Required": "1",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
         "Can Research": "0",
         "_IconPosition": "-252px -670px",
-        "Manufacture Run Time": "0"
+        "Manufacture Run Time": "0",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Post-Trans Metals": "934",
@@ -15775,14 +15775,14 @@
       "Properties": {
         "Power Required": "5",
         "Structural Integrity": "150",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
-        "Unassigned Specialist Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
+        "Unassigned Specialist Detail": "1",
         "Max Per Colony": "999",
         "Refining Rate": "25",
         "Can Research": "0",
         "_IconPosition": "-328px -594px",
-        "Manufacture Run Time": "1h 0m"
+        "Manufacture Run Time": "1h 0m",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Halogens": "550",
@@ -15803,11 +15803,11 @@
       "BluePrintType": "Flatpacks/CommodityFactory/RefiningIndustryCentre",
       "Properties": {
         "Power Required": "1",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
         "Can Research": "0",
         "_IconPosition": "-442px -670px",
-        "Manufacture Run Time": "0"
+        "Manufacture Run Time": "0",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Trans-Metals": "739",
@@ -15857,12 +15857,12 @@
         "Power Required": "2",
         "Structural Integrity": "50",
         "Remote Operations": "1",
-        "Specialist Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
+        "Specialist Detail": "1",
         "Max Per Colony": "1",
         "Can Research": "0",
         "_IconPosition": "-252px -594px",
-        "Manufacture Run Time": "1h 0m"
+        "Manufacture Run Time": "1h 0m",
+        "Unassigned White Collar Detail": "1"
       },
       "Resources": {
         "Noble Gases": "890",
@@ -15933,11 +15933,11 @@
         "Power Required": "4",
         "Structural Integrity": "150",
         "Research Time Modification": "100",
-        "Specialist Detail(s)": "1",
         "Max Per Colony": "999",
         "Can Research": "0",
         "_IconPosition": "-442px -594px",
-        "Manufacture Run Time": "1h 0m"
+        "Manufacture Run Time": "1h 0m",
+        "Specialist Detail": "1"
       },
       "Resources": {
         "Alkali Metals": "485",
@@ -16727,11 +16727,11 @@
       "BluePrintType": "Flatpacks/CommodityFactory/ScienceCentre",
       "Properties": {
         "Power Required": "1",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
         "Can Research": "0",
         "_IconPosition": "-176px -670px",
-        "Manufacture Run Time": "0"
+        "Manufacture Run Time": "0",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Alkaline Earth Metals": "1051",
@@ -20974,11 +20974,11 @@
       "BluePrintType": "Flatpacks/CommodityFactory/TechnologyInstitute",
       "Properties": {
         "Power Required": "1",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
         "Can Research": "0",
         "_IconPosition": "-100px -670px",
-        "Manufacture Run Time": "0"
+        "Manufacture Run Time": "0",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Heavy Noble Gases": "528",
@@ -21844,13 +21844,13 @@
       "Properties": {
         "Power Required": "2",
         "Structural Integrity": "100",
-        "Warehousing Capacity": "250000",
-        "Blue Collar Detail(s)": "1",
-        "Unassigned White Collar Detail(s)": "1",
+        "Unassigned White Collar Detail": "1",
+        "Warehouse Capacity": "250000",
         "Max Per Colony": "999",
         "Can Research": "0",
         "_IconPosition": "-404px -594px",
-        "Manufacture Run Time": "1h 0m"
+        "Manufacture Run Time": "1h 0m",
+        "Blue Collar Detail": "1"
       },
       "Resources": {
         "Halogens": "558",

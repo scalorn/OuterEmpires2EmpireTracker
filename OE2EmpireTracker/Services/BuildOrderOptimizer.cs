@@ -152,13 +152,23 @@ namespace OE2EmpireTracker.Services
 
                     // Update running status with the support structure
                     Blueprint supportBp = _playerContext.FindBlueprint(bestSupport.FlatpackBlueprintUUID);
-                    Log.Info("Inserted support '{0}' before primary '{1}'",
-                        supportBp?.ExtendedName ?? bestSupport.FlatpackBlueprintUUID,
-                        primaryBp?.ExtendedName ?? primary.FlatpackBlueprintUUID);
                     runningStatus = SimulateOneMore(runningStatus, bestSupport, supportBp, idealWorkers);
+                    Log.Info("Inserted support '{0}' before primary '{1}' -- running: PwrR={2} PwrP={3} HabR={4} HabP={5} FoodR={6} FoodP={7} EntR={8} EntP={9}",
+                        supportBp?.ExtendedName ?? bestSupport.FlatpackBlueprintUUID,
+                        primaryBp?.ExtendedName ?? primary.FlatpackBlueprintUUID,
+                        runningStatus.PowerRequired, runningStatus.PowerProvided,
+                        runningStatus.HabitationRequired, runningStatus.HabitationProvision,
+                        runningStatus.FoodRequired, runningStatus.FoodProvision,
+                        runningStatus.EntertainmentRequired, runningStatus.EntertainmentProvided);
 
                     // Re-simulate primary after adding support
                     afterPrimary = SimulateOneMore(runningStatus, primary, primaryBp, idealWorkers);
+                    Log.Info("  afterPrimary: PwrR={0} PwrP={1} HabR={2} HabP={3} FoodR={4} FoodP={5} EntR={6} EntP={7} deficit={8}",
+                        afterPrimary.PowerRequired, afterPrimary.PowerProvided,
+                        afterPrimary.HabitationRequired, afterPrimary.HabitationProvision,
+                        afterPrimary.FoodRequired, afterPrimary.FoodProvision,
+                        afterPrimary.EntertainmentRequired, afterPrimary.EntertainmentProvided,
+                        HasDeficit(afterPrimary));
                 }
 
                 result.Add(primary);
