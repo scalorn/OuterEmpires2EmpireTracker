@@ -110,23 +110,11 @@ namespace OE2EmpireTracker.Services
             var idealWorkers = new IdealColonyStructureWorkers();
             ColonyStructureStatus runningStatus = SimulateStatus(result, idealWorkers);
 
-            // Check if built structures already have deficits that need support
-            while (HasDeficit(runningStatus))
-            {
-                ColonyStructure bestSupport = FindBestSupport(supportPool, runningStatus, idealWorkers, runningStatus);
-                if (bestSupport != null)
-                {
-                    supportPool.Remove(bestSupport);
-                }
-                else
-                {
-                    bestSupport = CreateSupportStructure(runningStatus);
-                    if (bestSupport == null) break;
-                }
-                result.Add(bestSupport);
-                Blueprint supportBp = _playerContext.FindBlueprint(bestSupport.FlatpackBlueprintUUID);
-                runningStatus = SimulateOneMore(runningStatus, bestSupport, supportBp, idealWorkers);
-            }
+            // NOTE: We do NOT fix deficits from the CC here. The CC's entertainment
+            // deficit is inherent and will be resolved naturally when the first primary
+            // triggers support insertion. Fixing it eagerly would place Entertainment
+            // Centre before Hab Block, which is wrong -- Hab can be built first without
+            // making things worse.
 
             foreach (var primary in primaryPool)
             {
