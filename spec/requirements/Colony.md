@@ -104,7 +104,7 @@ stateDiagram-v2
 ## Colony Persistence
 
 **REQ-COL-080** Clicking Save SHALL write PlanetName and ColonyName from the form fields to the colony, add the colony to the player context if not already present, and call playerContext.writeContext().  
-**REQ-COL-081** The colony list SHALL be populated from playerContext.colonyList on form load.  
+**REQ-COL-081** The colony list SHALL be populated from PlayerContext.ColonyList on form load.  
 **REQ-COL-082** After saving, the colony list SHALL reflect the updated PlanetName and ColonyName.
 
 ## MVVM Pattern

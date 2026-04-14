@@ -24,8 +24,8 @@
 
 **REQ-DM-020** Item.ExtendedName for ItemType=Resource SHALL append `(Purity)` when ResourcePurity is non-empty.  
 **REQ-DM-021** Item.ExtendedName for ItemType=Commodity SHALL return the Commodity's own ExtendedName looked up by BaseItemTypeID; if not found, return Name.  
-**REQ-DM-022** Item.ExtendedName for ItemType=Survey SHALL return `PlanetName (SurveyID)` with `[NickName]` appended when NickName is non-empty, looked up via PlayerContext.findSurvey(BaseItemTypeID); if PlayerContext is null or survey not found, return Name.  
-**REQ-DM-023** Item.ExtendedName for ItemType=Blueprint SHALL return `C{Class} Ev({Evolution}) Name (TechLevel) [NickName]` with each segment omitted when its value is zero/null/empty, looked up via PlayerContext.findBlueprint(BaseItemTypeID); if not found, return Name.  
+**REQ-DM-022** Item.ExtendedName for ItemType=Survey SHALL return `PlanetName (SurveyID)` with `[NickName]` appended when NickName is non-empty, looked up via PlayerContext.FindSurvey(BaseItemTypeID); if PlayerContext is null or survey not found, return Name.  
+**REQ-DM-023** Item.ExtendedName for ItemType=Blueprint SHALL return `C{Class} Ev({Evolution}) Name (TechLevel) [NickName]` with each segment omitted when its value is zero/null/empty, looked up via PlayerContext.FindBlueprint(BaseItemTypeID); if not found, return Name.  
 **REQ-DM-024** Item.ExtendedName SHALL be decorated with [JsonIgnore] and not appear in serialized JSON.  
 **REQ-DM-025** Item.Volume (double) represents the cargo volume of a single unit. It SHALL be set when the item is added to the warehouse according to these rules:
 - Blueprint: 0

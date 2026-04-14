@@ -34,8 +34,8 @@
 
 ## Save / Delete / Cancel
 
-**REQ-PP-050** Clicking Save SHALL write all form fields to the profile, assign a UUID if absent, add to playerProfileList if new, and call playerContext.writeContext().  
-**REQ-PP-051** Clicking Delete SHALL remove the profile from playerProfileList, call writeContext(), reset the form to a blank profile, and refresh the list. Delete SHALL only be enabled when a saved profile is selected.  
+**REQ-PP-050** Clicking Save SHALL write all form fields to the profile, assign a UUID if absent, add to PlayerProfileList if new, and call PlayerContext.WriteContext().  
+**REQ-PP-051** Clicking Delete SHALL remove the profile from PlayerProfileList, call WriteContext(), reset the form to a blank profile, and refresh the list. Delete SHALL only be enabled when a saved profile is selected.  
 **REQ-PP-052** Clicking Cancel SHALL revert the form to the last saved state of the selected profile, or reset to blank if the profile was unsaved.
 
 ## Skill Name Enums

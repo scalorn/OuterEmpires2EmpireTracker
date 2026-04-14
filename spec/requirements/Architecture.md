@@ -99,7 +99,7 @@ flowchart TD
 **REQ-ARCH-065** A Flatpack Building form SHALL list colonies with staged but unbuilt structures. Implemented as FormColonyDailyBuild (Colony Daily Build form) with route-based colony filtering and build initiation.  
 **REQ-ARCH-066** A Worker Delivery form SHALL list colonies with built structures that have unassigned workers. Implemented as the Worker auto-fill in the Delivery Plan (REQ-DEL-060) which fills from ideal vs actual worker gaps.
 
-## Colony Timed Processing (Future — partial implementation exists for Mining)
+## Colony Timed Processing
 
 **REQ-ARCH-080** Colony.ProcessColony() SHALL process structures in the following order per cycle:
 1. Structure Building (BuildCompletionTime expires → set Built=true)
@@ -110,9 +110,9 @@ flowchart TD
 6. Manufacturing
 7. Research
 
-**REQ-ARCH-081** Steps 1 (Structure Building) and 2 (Mining) are implemented. Steps 3–7 are planned features.  
-**REQ-ARCH-082** Structure Building (step 1): when BuildCompletionTime.IntervalsPassed > 0, the structure SHALL be marked Built=true and BuildCompletionTime SHALL be cleared.  
-**REQ-ARCH-083** Refining, Manufacturing, and Research processing types require blueprint definitions that specify inputs, outputs, and cycle times. These SHALL be designed before implementation.
+**REQ-ARCH-081** All 7 processing steps are implemented in Colony.ProcessColony().  
+**REQ-ARCH-082** Structure Building (step 1): when BuildCompletionTime.TimeRemaining <= 0, the structure SHALL be marked Built=true, Staged=false, and BuildCompletionTime SHALL be cleared.  
+**REQ-ARCH-083** Refining uses RefiningRecipes for tier-based processing (base, S1, S2). Manufacturing consumes blueprint resources. Commodity manufacturing uses Commodity.ConstructionResources. Research uses ResearchTimeLookup for evolution-based timing.
 
 **REQ-ARCH-070** The application SHALL support multiple PlayerProfiles. Each Colony, Blueprint, and Survey SHALL have an OwnerUUID field identifying the PlayerProfile that owns it.  
 **REQ-ARCH-070a** Colony.OwnerUUID, Blueprint.OwnerUUID, and Survey.OwnerUUID SHALL be serialized to JSON and SHALL default to empty string for backward compatibility with existing save files.  

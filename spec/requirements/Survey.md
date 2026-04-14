@@ -28,8 +28,8 @@
 
 ## Survey Form — Save / Delete / Cancel
 
-**REQ-SRV-040** Clicking Save SHALL write all form fields to the survey, assign a UUID if absent, add to surveyList if new, persist all resource rows from the grid to the survey's Resources dictionary, and call playerContext.writeContext().  
-**REQ-SRV-041** Clicking Delete SHALL remove the survey from surveyList and call writeContext().  
+**REQ-SRV-040** Clicking Save SHALL write all form fields to the survey, assign a UUID if absent, add to SurveyList if new, persist all resource rows from the grid to the survey's Resources dictionary, and call PlayerContext.WriteContext().  
+**REQ-SRV-041** Clicking Delete SHALL remove the survey from SurveyList and call WriteContext().  
 **REQ-SRV-042** Clicking Cancel SHALL reset the form to a blank state.  
 **REQ-SRV-043** After a successful save, the form SHALL be cleared for new input.
 

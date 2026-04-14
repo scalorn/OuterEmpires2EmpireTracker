@@ -42,7 +42,7 @@ Colonies are on planets. Planets are in systems. Travel between systems costs ti
 **REQ-DEL-011** A `RouteStop` SHALL have: ColonyUUID and a sequence number (int, 0-based).
 **REQ-DEL-012** DeliveryRoute SHALL be serialized to JSON as part of PlayerData.json (new `DeliveryRoute[]` array on PlayerRoot).
 **REQ-DEL-013** DeliveryRoute.OwnerUUID SHALL match the owning player's UUID. Routes are per-player.
-**REQ-DEL-014** PlayerContext SHALL maintain a `deliveryRouteList` (BindingList) loaded/saved alongside other player data.
+**REQ-DEL-014** PlayerContext SHALL maintain a `DeliveryRouteList` (BindingList) loaded/saved alongside other player data.
 **REQ-DEL-015** RouteStop.ColonyUUID SHALL reference a colony owned by the same player.
 
 ## Phase 3: Route Builder — UI
