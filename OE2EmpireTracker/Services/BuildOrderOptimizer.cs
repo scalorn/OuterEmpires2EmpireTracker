@@ -31,10 +31,10 @@ namespace OE2EmpireTracker.Services
             if (blueprint == null) return false;
 
             decimal val;
-            if (blueprint.Properties.getDecimal("PowerProvided", 0, out val) && val > 0) return true;
-            if (blueprint.Properties.getDecimal("HabitationProvision", 0, out val) && val > 0) return true;
-            if (blueprint.Properties.getDecimal("FoodProvision", 0, out val) && val > 0) return true;
-            if (blueprint.Properties.getDecimal("EntertainmentProvided", 0, out val) && val > 0) return true;
+            if (blueprint.Properties.getDecimal("Power Provided", 0, out val) && val > 0) return true;
+            if (blueprint.Properties.getDecimal("Habitation Provision", 0, out val) && val > 0) return true;
+            if (blueprint.Properties.getDecimal("Food Provision", 0, out val) && val > 0) return true;
+            if (blueprint.Properties.getDecimal("Entertainment Provided", 0, out val) && val > 0) return true;
             return false;
         }
 
@@ -56,18 +56,37 @@ namespace OE2EmpireTracker.Services
             foreach (var structure in colony.Structures)
             {
                 Blueprint bp = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
-                if (bp != null && IsSupportStructure(bp))
+                if (bp == null)
                 {
+                    Log.Info("Optimizer: structure UUID={0} flatpack={1} — blueprint not found, treating as primary",
+                        structure.UUID, structure.FlatpackBlueprintUUID);
+                    primaryPool.Add(structure);
+                }
+                else if (IsSupportStructure(bp))
+                {
+                    Log.Info("Optimizer: structure UUID={0} '{1}' — classified as SUPPORT",
+                        structure.UUID, bp.ExtendedName);
                     supportPool.Add(structure);
                 }
                 else
                 {
+                    Log.Info("Optimizer: structure UUID={0} '{1}' — classified as PRIMARY",
+                        structure.UUID, bp.ExtendedName);
                     primaryPool.Add(structure);
                 }
             }
 
             Log.Info("Optimizer pools: {0} primary, {1} support (all structures optimized)",
                 primaryPool.Count, supportPool.Count);
+
+            // Log input order
+            Log.Info("Optimizer INPUT order:");
+            for (int i = 0; i < colony.Structures.Count; i++)
+            {
+                var s = colony.Structures[i];
+                var bp = _playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                Log.Info("  [{0}] {1} (UUID={2})", i, bp?.ExtendedName ?? s.FlatpackBlueprintUUID, s.UUID);
+            }
 
             // Simulate building each primary structure, inserting support as needed
             var idealWorkers = new IdealColonyStructureWorkers();
@@ -97,7 +116,7 @@ namespace OE2EmpireTracker.Services
                 Blueprint primaryBp = _playerContext.FindBlueprint(primary.FlatpackBlueprintUUID);
                 ColonyStructureStatus afterPrimary = SimulateOneMore(runningStatus, primary, primaryBp, idealWorkers);
 
-                Log.Debug("Primary {0}: PowerReq={1} PowerProv={2} HabReq={3} HabProv={4} FoodReq={5} FoodProv={6}",
+                Log.Info("Primary {0}: PowerReq={1} PowerProv={2} HabReq={3} HabProv={4} FoodReq={5} FoodProv={6}",
                     primaryBp?.ExtendedName ?? primary.FlatpackBlueprintUUID,
                     afterPrimary.PowerRequired, afterPrimary.PowerProvided,
                     afterPrimary.HabitationRequired, afterPrimary.HabitationProvision,
@@ -127,6 +146,9 @@ namespace OE2EmpireTracker.Services
 
                     // Update running status with the support structure
                     Blueprint supportBp = _playerContext.FindBlueprint(bestSupport.FlatpackBlueprintUUID);
+                    Log.Info("Inserted support '{0}' before primary '{1}'",
+                        supportBp?.ExtendedName ?? bestSupport.FlatpackBlueprintUUID,
+                        primaryBp?.ExtendedName ?? primary.FlatpackBlueprintUUID);
                     runningStatus = SimulateOneMore(runningStatus, bestSupport, supportBp, idealWorkers);
 
                     // Re-simulate primary after adding support
@@ -142,6 +164,15 @@ namespace OE2EmpireTracker.Services
 
             Log.Info("Build order optimized: {0} structures ({1} primary, {2} support)",
                 result.Count, primaryPool.Count, supportPool.Count);
+
+            // Log output order
+            Log.Info("Optimizer OUTPUT order:");
+            for (int i = 0; i < result.Count; i++)
+            {
+                var s = result[i];
+                var bp = _playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                Log.Info("  [{0}] {1} (UUID={2})", i, bp?.ExtendedName ?? s.FlatpackBlueprintUUID, s.UUID);
+            }
 
             return result;
         }
@@ -199,19 +230,19 @@ namespace OE2EmpireTracker.Services
 
                 // Score based on which deficits this support addresses
                 if (afterPrimary.PowerRequired > afterPrimary.PowerProvided &&
-                    bp.Properties.getDecimal("PowerProvided", 0, out val) && val > 0)
+                    bp.Properties.getDecimal("Power Provided", 0, out val) && val > 0)
                     score += 4;
 
                 if (afterPrimary.HabitationRequired > afterPrimary.HabitationProvision &&
-                    bp.Properties.getDecimal("HabitationProvision", 0, out val) && val > 0)
+                    bp.Properties.getDecimal("Habitation Provision", 0, out val) && val > 0)
                     score += 3;
 
                 if (afterPrimary.FoodRequired > afterPrimary.FoodProvision &&
-                    bp.Properties.getDecimal("FoodProvision", 0, out val) && val > 0)
+                    bp.Properties.getDecimal("Food Provision", 0, out val) && val > 0)
                     score += 2;
 
                 if (afterPrimary.EntertainmentRequired > afterPrimary.EntertainmentProvided &&
-                    bp.Properties.getDecimal("EntertainmentProvided", 0, out val) && val > 0)
+                    bp.Properties.getDecimal("Entertainment Provided", 0, out val) && val > 0)
                     score += 1;
 
                 if (score > bestScore)
@@ -233,13 +264,13 @@ namespace OE2EmpireTracker.Services
             // Determine which deficit to address (priority order)
             string[] deficitProperties;
             if (afterPrimary.PowerRequired > afterPrimary.PowerProvided)
-                deficitProperties = new[] { "PowerProvided" };
+                deficitProperties = new[] { "Power Provided" };
             else if (afterPrimary.HabitationRequired > afterPrimary.HabitationProvision)
-                deficitProperties = new[] { "HabitationProvision" };
+                deficitProperties = new[] { "Habitation Provision" };
             else if (afterPrimary.FoodRequired > afterPrimary.FoodProvision)
-                deficitProperties = new[] { "FoodProvision" };
+                deficitProperties = new[] { "Food Provision" };
             else if (afterPrimary.EntertainmentRequired > afterPrimary.EntertainmentProvided)
-                deficitProperties = new[] { "EntertainmentProvided" };
+                deficitProperties = new[] { "Entertainment Provided" };
             else
                 return null;
 
