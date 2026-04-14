@@ -80,7 +80,9 @@ namespace OE2EmpireTracker.Services
                 primaryPool.Count, supportPool.Count);
 
             // Colony Command Centre must always be first — it's the foundation of every colony.
+            // Check both pools since it provides habitation/food and gets classified as support.
             var commandCentres = primaryPool
+                .Concat(supportPool)
                 .Where(s =>
                 {
                     var bp = _playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
@@ -90,6 +92,7 @@ namespace OE2EmpireTracker.Services
             foreach (var cc in commandCentres)
             {
                 primaryPool.Remove(cc);
+                supportPool.Remove(cc);
                 result.Add(cc);
                 Log.Info("Optimizer: placed Colony Command Centre first (UUID={0})", cc.UUID);
             }
