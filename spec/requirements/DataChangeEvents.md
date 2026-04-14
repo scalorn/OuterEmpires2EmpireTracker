@@ -30,4 +30,4 @@
 ## Write-Through Pattern
 
 **REQ-DCE-030** All editable form controls SHALL write to the data model immediately on change (TextChanged, SelectedIndexChanged, CheckedChanged).
-**REQ-DCE-031** Save buttons SHALL only call `writeContext()` — they SHALL NOT re-read form fields into the model.
+**REQ-DCE-031** Save buttons SHALL only call `WriteContext()` — they SHALL NOT re-read form fields into the model.

@@ -11,7 +11,7 @@ flowchart TD
     D -->|no| H[Release lock]
     D -->|yes| E[ProcessColony for each colony]
     E --> F[Fire ColonyDataChanged events]
-    F --> G[writeContext to persist]
+    F --> G[WriteContext to persist]
     G --> H
     H --> I[LastCycleHadError = false]
 
@@ -26,7 +26,7 @@ flowchart TD
 **REQ-BP-001** The application SHALL run a background processing timer that fires at a configurable interval (default 60 seconds, configurable via Preferences). The interval is read from `PreferencesStore.Preferences.Thresholds.BackgroundProcessingIntervalSeconds` with a minimum of 1 second.
 **REQ-BP-002** On each tick, the processor SHALL identify all colonies with expired timers and call `Colony.ProcessColony()` on each.
 **REQ-BP-003** After processing, the processor SHALL fire `ColonyDataChanged` events for each processed colony to trigger UI refresh.
-**REQ-BP-004** After processing, the processor SHALL call `PlayerContext.writeContext()` to persist changes.
+**REQ-BP-004** After processing, the processor SHALL call `PlayerContext.WriteContext()` to persist changes.
 **REQ-BP-005** The processor SHALL use a lock (`_cycleLock`) to prevent concurrent processing cycles.
 
 ## Error Handling

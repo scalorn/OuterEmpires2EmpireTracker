@@ -15,17 +15,4 @@ Project-level documentation, requirements, and planning.
 
 ## Structured Specs (`.kiro/specs/`)
 
-Detailed design specs live under `.kiro/specs/`. Each spec folder contains requirements, design, and implementation tasks for a feature. These are the authoritative design decisions for implemented features.
-
-| Spec | Status |
-|------|--------|
-| [background-processing](../.kiro/specs/background-processing/) | Complete |
-| [colony-activity-form](../.kiro/specs/colony-activity-form/) | Complete |
-| [colony-daily-build](../.kiro/specs/colony-daily-build/) | Complete |
-| [colony-form-ui-tweaks](../.kiro/specs/colony-form-ui-tweaks/) | Complete |
-| [commodity-delivery-loop](../.kiro/specs/commodity-delivery-loop/) | Complete (1 optional task remaining) |
-| [delivery-autofill-phase7](../.kiro/specs/delivery-autofill-phase7/) | Complete |
-| [form-management-alignment](../.kiro/specs/form-management-alignment/) | Complete |
-| [main-menu-overhaul](../.kiro/specs/main-menu-overhaul/) | Complete |
-| [mdi-window-menu](../.kiro/specs/mdi-window-menu/) | Complete |
-| [window-state-persistence](../.kiro/specs/window-state-persistence/) | Complete |
+Detailed design specs live under `.kiro/specs/`. Each spec folder contains requirements, design, and implementation tasks for a feature. These are the authoritative design decisions for implemented features. There are currently 40 spec folders — see the directory listing for the full set. All are complete except `empire-systems` and `manufacturing-queue` (in progress).
