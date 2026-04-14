@@ -330,6 +330,7 @@
     <Compile Include="Services\Migration\Migration002PropertyTests.cs" />
     <Compile Include="Services\Migration\Migration003PropertyTests.cs" />
     <Compile Include="Services\Migration\Migration004PropertyTests.cs" />
+    <Compile Include="Services\Migration\Migration005PropertyTests.cs" />
     <Compile Include="Services\Migration\Migration003Tests.cs" />
     <Compile Include="Services\Migration\RenameTablePropertyTests.cs" />
     <Compile Include="Services\Migration\MigrationVersionGatingPropertyTests.cs" />
