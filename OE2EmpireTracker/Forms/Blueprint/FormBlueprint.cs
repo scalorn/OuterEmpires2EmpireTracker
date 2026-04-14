@@ -1433,6 +1433,35 @@ namespace OE2EmpireTracker
             // Import
             var result = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
 
+            // Scan all imported blueprints for unknown properties
+            var unknownPropWarnings = new List<string>();
+            foreach (var entry in result.Entries)
+            {
+                if (entry.Action == ImportAction.Skipped || string.IsNullOrEmpty(entry.UUID))
+                    continue;
+
+                Blueprint bp = playerContext.FindBlueprint(entry.UUID)
+                    ?? empireContext.GlobalBlueprintList.FirstOrDefault(b => b.UUID == entry.UUID);
+                if (bp?.Properties == null || bp.Properties.Count == 0)
+                    continue;
+
+                BlueprintType bt = empireContext.FindBlueprintType(bp.BluePrintType);
+                if (bt?.Properties == null)
+                    continue;
+
+                var knownProps = new HashSet<string>(bt.Properties, StringComparer.OrdinalIgnoreCase);
+                knownProps.Add("_IconPosition");
+
+                foreach (var propKey in bp.Properties.Properties.Keys)
+                {
+                    if (!knownProps.Contains(propKey))
+                    {
+                        unknownPropWarnings.Add($"  {bp.Name}: '{propKey}' = '{bp.Properties.Properties[propKey]}'");
+                        Log.Warn("Market import: unknown property '{0}' on {1} ({2})", propKey, bp.Name, bt.Name);
+                    }
+                }
+            }
+
             // Build summary
             var sb = new StringBuilder();
             sb.AppendLine($"Created: {result.CreatedCount}  Updated: {result.UpdatedCount}  Skipped: {result.SkippedCount}");
@@ -1446,8 +1475,16 @@ namespace OE2EmpireTracker
                     sb.AppendLine($"  [{entry.Storage}] {entry.Action}  {key}");
             }
 
+            if (unknownPropWarnings.Count > 0)
+            {
+                sb.AppendLine();
+                sb.AppendLine($"Unknown properties ({unknownPropWarnings.Count}):");
+                foreach (var w in unknownPropWarnings)
+                    sb.AppendLine(w);
+            }
+
             MessageBox.Show(sb.ToString(), "Import Market Results",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBoxButtons.OK, unknownPropWarnings.Count > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
 
             // Notify if player blueprints changed
             bool playerChanged = result.Entries.Any(e2 =>
