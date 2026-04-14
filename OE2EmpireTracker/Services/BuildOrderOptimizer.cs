@@ -128,18 +128,12 @@ namespace OE2EmpireTracker.Services
                     afterPrimary.HabitationRequired, afterPrimary.HabitationProvision,
                     afterPrimary.FoodRequired, afterPrimary.FoodProvision);
 
-                // Check for deficits and insert support structures to fix them.
-                // We check BOTH afterPrimary (the state after the primary is added) AND
-                // runningStatus (the state after each support insertion). Support structures
-                // like Entertainment Centre require power and have workers, so they can
-                // create new deficits at their own position in the build order.
-                while (HasDeficit(afterPrimary) || HasDeficit(runningStatus))
+                // Insert support structures until the primary can be placed without deficit.
+                // After each support insertion, also check if the support itself created a
+                // new deficit in runningStatus (e.g. Entertainment Centre needs power).
+                while (HasDeficit(afterPrimary))
                 {
-                    // Determine which status to fix -- prioritize runningStatus deficits
-                    // since those represent structures already placed in the build order
-                    ColonyStructureStatus deficitStatus = HasDeficit(runningStatus) ? runningStatus : afterPrimary;
-
-                    ColonyStructure bestSupport = FindBestSupport(supportPool, deficitStatus, idealWorkers, runningStatus);
+                    ColonyStructure bestSupport = FindBestSupport(supportPool, afterPrimary, idealWorkers, runningStatus);
 
                     if (bestSupport != null)
                     {
@@ -147,8 +141,7 @@ namespace OE2EmpireTracker.Services
                     }
                     else
                     {
-                        // No existing support structure can help -- create one from player blueprints
-                        bestSupport = CreateSupportStructure(deficitStatus);
+                        bestSupport = CreateSupportStructure(afterPrimary);
                         if (bestSupport == null)
                         {
                             Log.Warn("No support structure available for deficit. Breaking.");
@@ -158,7 +151,6 @@ namespace OE2EmpireTracker.Services
 
                     result.Add(bestSupport);
 
-                    // Update running status with the support structure
                     Blueprint supportBp = _playerContext.FindBlueprint(bestSupport.FlatpackBlueprintUUID);
                     runningStatus = SimulateOneMore(runningStatus, bestSupport, supportBp, idealWorkers);
                     Log.Info("Inserted support '{0}' before primary '{1}' -- running: PwrR={2} PwrP={3} HabR={4} HabP={5} FoodR={6} FoodP={7} EntR={8} EntP={9}",
@@ -169,7 +161,37 @@ namespace OE2EmpireTracker.Services
                         runningStatus.FoodRequired, runningStatus.FoodProvision,
                         runningStatus.EntertainmentRequired, runningStatus.EntertainmentProvided);
 
-                    // Re-simulate primary after adding support
+                    // If the support structure itself created a deficit in runningStatus
+                    // (e.g. Entertainment Centre needs power and has a worker), fix it
+                    // before re-checking the primary.
+                    while (HasDeficit(runningStatus))
+                    {
+                        ColonyStructure fixup = FindBestSupport(supportPool, runningStatus, idealWorkers, runningStatus);
+                        if (fixup != null)
+                        {
+                            supportPool.Remove(fixup);
+                        }
+                        else
+                        {
+                            fixup = CreateSupportStructure(runningStatus);
+                            if (fixup == null)
+                            {
+                                Log.Warn("Cannot fix support-induced deficit. Breaking.");
+                                break;
+                            }
+                        }
+                        result.Add(fixup);
+                        Blueprint fixupBp = _playerContext.FindBlueprint(fixup.FlatpackBlueprintUUID);
+                        runningStatus = SimulateOneMore(runningStatus, fixup, fixupBp, idealWorkers);
+                        Log.Info("  Fixup support '{0}' -- running: PwrR={1} PwrP={2} HabR={3} HabP={4} FoodR={5} FoodP={6} EntR={7} EntP={8}",
+                            fixupBp?.ExtendedName ?? fixup.FlatpackBlueprintUUID,
+                            runningStatus.PowerRequired, runningStatus.PowerProvided,
+                            runningStatus.HabitationRequired, runningStatus.HabitationProvision,
+                            runningStatus.FoodRequired, runningStatus.FoodProvision,
+                            runningStatus.EntertainmentRequired, runningStatus.EntertainmentProvided);
+                    }
+
+                    // Re-simulate primary after all support
                     afterPrimary = SimulateOneMore(runningStatus, primary, primaryBp, idealWorkers);
                     Log.Info("  afterPrimary: PwrR={0} PwrP={1} HabR={2} HabP={3} FoodR={4} FoodP={5} EntR={6} EntP={7} deficit={8}",
                         afterPrimary.PowerRequired, afterPrimary.PowerProvided,
