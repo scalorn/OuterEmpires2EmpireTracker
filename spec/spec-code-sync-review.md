@@ -1,6 +1,8 @@
 # spec/ Directory vs Codebase — Sync Review
 
-## Discrepancies Found
+> **Note (April 2026):** This document was created during an earlier audit pass. Most items below have been resolved. See `Ambiguities.md` AMB-052 through AMB-057 for the current open items from the latest spec-vs-code audit.
+
+## Discrepancies Found (Status)
 
 ### 1. GOALS.md test count is stale
 

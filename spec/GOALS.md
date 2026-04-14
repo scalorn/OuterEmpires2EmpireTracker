@@ -5,10 +5,7 @@
 ```mermaid
 graph LR
     subgraph Independent
-        AIM[Activity Inactivity Mode]
         MQ[Manufacturing Queue]
-        MBI[Mass Blueprint Importer]
-        PPI[Player Profile Importer]
     end
 
     subgraph Ship Chain
@@ -18,7 +15,7 @@ graph LR
     end
 
     subgraph Pricing Chain
-        PP[Pricing Plans] --> MKT[Market]
+        PP[Pricing Plans - DONE] --> MKT[Market]
     end
 
     subgraph Geo Chain
@@ -32,27 +29,23 @@ graph LR
 - [Backlog](BACKLOG.md) — open features and enhancements to be worked on
 - [Recommendations](Recommendations.md) — resolved issues and their outcomes
 - [Completed Work Archive](COMPLETED.md) — detailed record of all completed tasks
-- [Ambiguities](Ambiguities.md) — all 31 resolved
+- [Ambiguities](Ambiguities.md) — 51 resolved, 6 open (AMB-052 through AMB-057)
 
 ## Current Status
 
-750 total tests, all passing. All original Recommendations (1-18) resolved. MVVM complete across all forms. NLog logging throughout. 78 features completed. Directory restructured: `Baseline/` and `Data/` replaced by `Models/`, `Services/`, `Parsers/`, `Persistence/`.
+1371 total tests, all passing. All original Recommendations (1-18) resolved. MVVM complete across all forms. NLog logging throughout. 61 features completed. Directory restructured: `Baseline/` and `Data/` replaced by `Models/`, `Services/`, `Parsers/`, `Persistence/`.
 
 ## Open Work
 
 See [BACKLOG.md](BACKLOG.md) for the full list of open features with dependency graph and suggested build order.
 
 ### Independent (can start anytime)
-- Activity Inactivity Mode
 - Manufacturing Queue
-- Pricing Plans
-- Mass Blueprint Importer
 - Systems & Planets Model
-- Player Profile Importer
 
 ### Dependency Chain
 - Ships → Ship-Aware Delivery Execution → Stations → Station Destinations in Routes
-- Pricing Plans → Market
+- Pricing Plans (complete) → Market
 - Systems & Planets Model → Route Auto-Sequencing
 
 ### Smaller Items
