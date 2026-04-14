@@ -145,6 +145,18 @@ namespace OE2EmpireTracker.Services
                             current.EntertainmentRequired, current.EntertainmentProvided);
                         break;
                     }
+
+                    // Log status at each position on first iteration for diagnostics
+                    if (iteration == 1 && i >= bootstrapCount - 1)
+                    {
+                        Log.Info("  Walk [{0}] {1}: PwrR={2} PwrP={3} HabR={4} HabP={5} FoodR={6} FoodP={7} EntR={8} EntP={9}",
+                            i, bp?.ExtendedName ?? structure.FlatpackBlueprintUUID,
+                            current.PowerRequired, current.PowerProvided,
+                            current.HabitationRequired, current.HabitationProvision,
+                            current.FoodRequired, current.FoodProvision,
+                            current.EntertainmentRequired, current.EntertainmentProvided);
+                    }
+
                     prev = current;
                 }
 
