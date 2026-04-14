@@ -113,8 +113,19 @@ namespace OE2EmpireTracker.Services
 
             // Step 2-4: Iteratively walk and insert support until no deficits
             var idealWorkers = new IdealColonyStructureWorkers();
-            int maxIterations = 200; // safety limit
+            int maxIterations = 500; // safety limit
             int iteration = 0;
+
+            // Track the entertainment deficit that exists from the CC.
+            // We allow entertainment to be in deficit as long as it's not WORSE
+            // than the baseline. This prevents the optimizer from endlessly
+            // inserting Entertainment Centres + Reactors at the start.
+            decimal baselineEntDeficit = 0;
+            {
+                ColonyStructureStatus ccStatus = SimulateStatus(result, idealWorkers);
+                if (ccStatus.EntertainmentRequired > ccStatus.EntertainmentProvided)
+                    baselineEntDeficit = ccStatus.EntertainmentRequired - ccStatus.EntertainmentProvided;
+            }
 
             while (iteration < maxIterations)
             {
@@ -133,14 +144,8 @@ namespace OE2EmpireTracker.Services
                     ColonyStructureStatus current = new ColonyStructureStatus();
                     calculator.CalculateBuilt(structure, prev, current, idealWorkers, bp);
 
-                    if (HasDeficit(current))
+                    if (HasDeficitExcludingBaselineEnt(current, baselineEntDeficit))
                     {
-                        // Skip the CC's inherent entertainment-only deficit at position 0
-                        if (i == 0 && IsEntertainmentOnlyDeficit(current))
-                        {
-                            prev = current;
-                            continue;
-                        }
                         insertionIndex = i;
                         deficitStatus = current;
                         Log.Debug("Iteration {0}: deficit at [{1}] {2} -- PwrR={3} PwrP={4} HabR={5} HabP={6} FoodR={7} FoodP={8} EntR={9} EntP={10}",
@@ -204,17 +209,6 @@ namespace OE2EmpireTracker.Services
             return result;
         }
 
-        /// <summary>
-        /// Returns true if the only deficit is entertainment (power, hab, food are all OK).
-        /// </summary>
-        private bool IsEntertainmentOnlyDeficit(ColonyStructureStatus status)
-        {
-            return status.PowerRequired <= status.PowerProvided &&
-                   status.HabitationRequired <= status.HabitationProvision &&
-                   status.FoodRequired <= status.FoodProvision &&
-                   status.EntertainmentRequired > status.EntertainmentProvided;
-        }
-
         private ColonyStructureStatus SimulateStatus(List<ColonyStructure> structures, IColonyStructureWorkers workerSource)
         {
             var calculator = new ColonyStatusCalculator(new Colony());
@@ -248,20 +242,21 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Returns true if the 'after' status has a deficit in any resource where
-        /// the 'before' status did NOT have a deficit. This detects new deficits
-        /// created by inserting a support structure, ignoring pre-existing deficits.
+        /// Returns true if there's a deficit in power, hab, or food, OR if the
+        /// entertainment deficit exceeds the baseline (inherited from CC).
+        /// The baseline entertainment deficit is tolerated at the start of the
+        /// build order and will be resolved naturally as structures are added.
         /// </summary>
-        private bool HasNewDeficit(ColonyStructureStatus before, ColonyStructureStatus after)
+        private bool HasDeficitExcludingBaselineEnt(ColonyStructureStatus status, decimal baselineEntDeficit)
         {
-            if (after.PowerRequired > after.PowerProvided &&
-                !(before.PowerRequired > before.PowerProvided)) return true;
-            if (after.HabitationRequired > after.HabitationProvision &&
-                !(before.HabitationRequired > before.HabitationProvision)) return true;
-            if (after.FoodRequired > after.FoodProvision &&
-                !(before.FoodRequired > before.FoodProvision)) return true;
-            if (after.EntertainmentRequired > after.EntertainmentProvided &&
-                !(before.EntertainmentRequired > before.EntertainmentProvided)) return true;
+            if (status.PowerRequired > status.PowerProvided) return true;
+            if (status.HabitationRequired > status.HabitationProvision) return true;
+            if (status.FoodRequired > status.FoodProvision) return true;
+
+            // Entertainment: only flag if the deficit is WORSE than the baseline
+            decimal entDeficit = status.EntertainmentRequired - status.EntertainmentProvided;
+            if (entDeficit > baselineEntDeficit) return true;
+
             return false;
         }
 
