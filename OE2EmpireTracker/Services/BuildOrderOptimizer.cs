@@ -152,6 +152,7 @@ namespace OE2EmpireTracker.Services
                     result.Add(bestSupport);
 
                     Blueprint supportBp = _playerContext.FindBlueprint(bestSupport.FlatpackBlueprintUUID);
+                    ColonyStructureStatus beforeSupport = runningStatus;
                     runningStatus = SimulateOneMore(runningStatus, bestSupport, supportBp, idealWorkers);
                     Log.Info("Inserted support '{0}' before primary '{1}' -- running: PwrR={2} PwrP={3} HabR={4} HabP={5} FoodR={6} FoodP={7} EntR={8} EntP={9}",
                         supportBp?.ExtendedName ?? bestSupport.FlatpackBlueprintUUID,
@@ -161,10 +162,12 @@ namespace OE2EmpireTracker.Services
                         runningStatus.FoodRequired, runningStatus.FoodProvision,
                         runningStatus.EntertainmentRequired, runningStatus.EntertainmentProvided);
 
-                    // If the support structure itself created a deficit in runningStatus
-                    // (e.g. Entertainment Centre needs power and has a worker), fix it
-                    // before re-checking the primary.
-                    while (HasDeficit(runningStatus))
+                    // If the support structure created a NEW deficit that didn't exist
+                    // before (e.g. Entertainment Centre needs power and has a worker),
+                    // fix it before re-checking the primary. Only fix deficits that are
+                    // worse than before -- don't fix pre-existing deficits like the CC's
+                    // inherent entertainment deficit.
+                    while (HasNewDeficit(beforeSupport, runningStatus))
                     {
                         ColonyStructure fixup = FindBestSupport(supportPool, runningStatus, idealWorkers, runningStatus);
                         if (fixup != null)
@@ -182,6 +185,7 @@ namespace OE2EmpireTracker.Services
                         }
                         result.Add(fixup);
                         Blueprint fixupBp = _playerContext.FindBlueprint(fixup.FlatpackBlueprintUUID);
+                        beforeSupport = runningStatus;
                         runningStatus = SimulateOneMore(runningStatus, fixup, fixupBp, idealWorkers);
                         Log.Info("  Fixup support '{0}' -- running: PwrR={1} PwrP={2} HabR={3} HabP={4} FoodR={5} FoodP={6} EntR={7} EntP={8}",
                             fixupBp?.ExtendedName ?? fixup.FlatpackBlueprintUUID,
@@ -286,6 +290,24 @@ namespace OE2EmpireTracker.Services
                    status.HabitationRequired > status.HabitationProvision ||
                    status.FoodRequired > status.FoodProvision ||
                    status.EntertainmentRequired > status.EntertainmentProvided;
+        }
+
+        /// <summary>
+        /// Returns true if the 'after' status has a deficit in any resource where
+        /// the 'before' status did NOT have a deficit. This detects new deficits
+        /// created by inserting a support structure, ignoring pre-existing deficits.
+        /// </summary>
+        private bool HasNewDeficit(ColonyStructureStatus before, ColonyStructureStatus after)
+        {
+            if (after.PowerRequired > after.PowerProvided &&
+                !(before.PowerRequired > before.PowerProvided)) return true;
+            if (after.HabitationRequired > after.HabitationProvision &&
+                !(before.HabitationRequired > before.HabitationProvision)) return true;
+            if (after.FoodRequired > after.FoodProvision &&
+                !(before.FoodRequired > before.FoodProvision)) return true;
+            if (after.EntertainmentRequired > after.EntertainmentProvided &&
+                !(before.EntertainmentRequired > before.EntertainmentProvided)) return true;
+            return false;
         }
 
         /// <summary>
