@@ -231,6 +231,7 @@
     <Compile Include="Models\ColonyProcessingTests.cs" />
     <Compile Include="Models\ColonyStructureTests.cs" />
     <Compile Include="Services\ColonyStatusCalculatorTests.cs" />
+    <Compile Include="Services\BuildOrderOptimizerTests.cs" />
     <Compile Include="Services\ContextFilePathTests.cs" />
     <Compile Include="Models\DeliveryPlanTests.cs" />
     <Compile Include="Services\DeliveryPlanViewModelTests.cs" />

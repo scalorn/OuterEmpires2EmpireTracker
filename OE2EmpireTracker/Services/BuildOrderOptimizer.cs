@@ -15,7 +15,6 @@ namespace OE2EmpireTracker.Services
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly PlayerContext _playerContext;
-        private List<ColonyStructure> _currentResult;
 
         public BuildOrderOptimizer(PlayerContext playerContext)
         {
@@ -23,13 +22,11 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Returns true if the blueprint provides any support resource
-        /// (Power, Habitation, Food, Entertainment).
+        /// Returns true if the blueprint provides any support resource.
         /// </summary>
         public bool IsSupportStructure(Blueprint blueprint)
         {
             if (blueprint == null) return false;
-
             decimal val;
             if (blueprint.Properties.getDecimal(GameConstants.PropPowerProvided, 0, out val) && val > 0) return true;
             if (blueprint.Properties.getDecimal(GameConstants.PropHabitationProvision, 0, out val) && val > 0) return true;
@@ -39,254 +36,276 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Optimizes the build order of the colony's structures.
-        /// 
-        /// Algorithm:
-        /// 1. Seed with CC + Reactor + Hab + Hydro + Ent (the bootstrap set that
-        ///    ensures no deficits from the start), then all primaries.
-        /// 2. Walk the list simulating each structure. At the first structure where
-        ///    a deficit gets worse, insert the highest-priority support at that position.
-        /// 3. Restart the walk from the beginning.
-        /// 4. Repeat until a full walk completes with no worsening deficits.
+        /// Optimizes the build order.
+        ///
+        /// 1. Classify into primary/support pools.
+        /// 2. Calculate total support needed, ensure pool has enough.
+        /// 3. Build the support backbone in repeating groups:
+        ///    CC, [Reactor, Hab, Hydro, Ent, ...] ordered by priority.
+        /// 4. Insert each primary at the earliest backbone position
+        ///    where it doesn't create a deficit.
         /// </summary>
         public List<ColonyStructure> Optimize(Colony colony)
         {
-            var primaryPool = new List<ColonyStructure>();
-            var supportPool = new List<ColonyStructure>();
+            var primaries = new List<ColonyStructure>();
+            var support = new List<ColonyStructure>();
 
             foreach (var structure in colony.Structures)
             {
                 Blueprint bp = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (bp == null)
-                {
-                    Log.Info("Optimizer: structure UUID={0} flatpack={1} -- blueprint not found, treating as primary",
-                        structure.UUID, structure.FlatpackBlueprintUUID);
-                    primaryPool.Add(structure);
-                }
+                    primaries.Add(structure);
+                else if (bp.BluePrintType == "Flatpacks/ColonyCommandCentre")
+                    support.Add(structure); // CC goes to support for backbone ordering
                 else if (IsSupportStructure(bp))
-                {
-                    Log.Info("Optimizer: structure UUID={0} '{1}' -- classified as SUPPORT",
-                        structure.UUID, bp.ExtendedName);
-                    supportPool.Add(structure);
-                }
+                    support.Add(structure);
                 else
-                {
-                    Log.Info("Optimizer: structure UUID={0} '{1}' -- classified as PRIMARY",
-                        structure.UUID, bp.ExtendedName);
-                    primaryPool.Add(structure);
-                }
+                    primaries.Add(structure);
             }
 
-            Log.Info("Optimizer pools: {0} primary, {1} support", primaryPool.Count, supportPool.Count);
+            Log.Info("Optimizer: {0} primaries, {1} support", primaries.Count, support.Count);
 
-            // Log input order
-            Log.Info("Optimizer INPUT order:");
-            for (int i = 0; i < colony.Structures.Count; i++)
-            {
-                var s = colony.Structures[i];
-                var bp = _playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
-                Log.Info("  [{0}] {1} (UUID={2})", i, bp?.ExtendedName ?? s.FlatpackBlueprintUUID, s.UUID);
-            }
+            // --- Calculate total support needed ---
+            EnsureSufficientSupport(primaries, support);
 
-            // Step 1: Seed the result with the bootstrap set.
-            // Every colony starts: CC -> Reactor -> Hab -> Hydro -> Ent
-            // This resolves all CC deficits before any primaries are placed.
-            var result = new List<ColonyStructure>();
-            _currentResult = result;
+            // --- Build the support backbone ---
+            // Order: CC first, then repeating groups of [Reactor, Hab, Hydro, Ent]
+            // sorted by priority within each type.
+            var backbone = BuildBackbone(support);
 
-            SeedBootstrap(result, primaryPool, supportPool, "Flatpacks/ColonyCommandCentre");
-            SeedBootstrap(result, primaryPool, supportPool, "Flatpacks/ReactorCore");
-            SeedBootstrap(result, primaryPool, supportPool, "Flatpacks/HabitationBlock");
-            SeedBootstrap(result, primaryPool, supportPool, "Flatpacks/HydroponicsBay");
-            SeedBootstrap(result, primaryPool, supportPool, "Flatpacks/EntertainmentCentreFlatpack");
+            Log.Info("Backbone: {0} structures", backbone.Count);
 
-            Log.Info("Bootstrap: {0} structures seeded", result.Count);
-
-            // Add all primaries after the bootstrap set
-            result.AddRange(primaryPool);
-
-            // Step 2-4: Iteratively walk and insert support until no deficits
+            // --- Insert primaries into the backbone ---
             var idealWorkers = new IdealColonyStructureWorkers();
-            int maxIterations = 500; // safety limit
-            int iteration = 0;
+            var result = new List<ColonyStructure>(backbone);
 
-            // All deficits must be resolved. The bootstrap set handles the CC's
-            // initial deficits. The walk only checks positions AFTER the bootstrap
-            // (index >= bootstrapCount). The bootstrap order is fixed and never modified.
-            int bootstrapCount = result.Count;
-
-            while (iteration < maxIterations)
+            foreach (var primary in primaries)
             {
-                iteration++;
-                int insertionIndex = -1;
-                ColonyStructureStatus deficitStatus = null;
+                int insertPos = FindSafeInsertPosition(result, primary, idealWorkers);
+                result.Insert(insertPos, primary);
 
-                // Simulate the full list to get correct cumulative status
-                ColonyStructureStatus prev = new ColonyStructureStatus();
-                var calculator = new ColonyStatusCalculator(new Colony());
-
-                for (int i = 0; i < result.Count; i++)
-                {
-                    var structure = result[i];
-                    Blueprint bp = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
-                    ColonyStructureStatus current = new ColonyStructureStatus();
-                    calculator.CalculateBuilt(structure, prev, current, idealWorkers, bp);
-
-                    // Only check positions after the bootstrap set
-                    if (i >= bootstrapCount && HasDeficit(current))
-                    {
-                        insertionIndex = i;
-                        deficitStatus = current;
-                        Log.Info("Iteration {0}: deficit at [{1}] {2} -- PwrR={3} PwrP={4} HabR={5} HabP={6} FoodR={7} FoodP={8} EntR={9} EntP={10}",
-                            iteration, i, bp?.ExtendedName ?? structure.FlatpackBlueprintUUID,
-                            current.PowerRequired, current.PowerProvided,
-                            current.HabitationRequired, current.HabitationProvision,
-                            current.FoodRequired, current.FoodProvision,
-                            current.EntertainmentRequired, current.EntertainmentProvided);
-                        break;
-                    }
-
-                    // Log status at each position on first iteration for diagnostics
-                    if (iteration == 1 && i >= bootstrapCount - 1)
-                    {
-                        Log.Info("  Walk [{0}] {1}: PwrR={2} PwrP={3} HabR={4} HabP={5} FoodR={6} FoodP={7} EntR={8} EntP={9}",
-                            i, bp?.ExtendedName ?? structure.FlatpackBlueprintUUID,
-                            current.PowerRequired, current.PowerProvided,
-                            current.HabitationRequired, current.HabitationProvision,
-                            current.FoodRequired, current.FoodProvision,
-                            current.EntertainmentRequired, current.EntertainmentProvided);
-                    }
-
-                    prev = current;
-                }
-
-                if (insertionIndex < 0)
-                {
-                    Log.Info("Optimizer: no deficits found after {0} iteration(s)", iteration);
-                    break;
-                }
-
-                // Find or create a support structure to fix this deficit
-                ColonyStructure support = FindBestSupport(supportPool, deficitStatus, idealWorkers, prev);
-                if (support != null)
-                {
-                    supportPool.Remove(support);
-                }
-                else
-                {
-                    support = CreateSupportStructure(deficitStatus);
-                    if (support == null)
-                    {
-                        Log.Warn("Optimizer: cannot resolve deficit at [{0}] -- no suitable blueprint. Stopping.", insertionIndex);
-                        break;
-                    }
-                }
-
-                Blueprint supportBp = _playerContext.FindBlueprint(support.FlatpackBlueprintUUID);
-                Log.Info("Iteration {0}: inserting '{1}' at [{2}]",
-                    iteration, supportBp?.ExtendedName ?? support.FlatpackBlueprintUUID, insertionIndex);
-                result.Insert(insertionIndex, support);
+                Blueprint pBp = _playerContext.FindBlueprint(primary.FlatpackBlueprintUUID);
+                Log.Info("Inserted primary '{0}' at [{1}]",
+                    pBp?.ExtendedName ?? primary.FlatpackBlueprintUUID, insertPos);
             }
 
-            if (iteration >= maxIterations)
-                Log.Warn("Optimizer: hit iteration limit ({0})", maxIterations);
-
-            // Append any remaining unused support at the end
-            int leftoverCount = supportPool.Count;
-            result.AddRange(supportPool);
-
-            Log.Info("Build order optimized: {0} structures in {1} iterations ({2} leftover support)",
-                result.Count, iteration, leftoverCount);
-
-            // Log output order
-            Log.Info("Optimizer OUTPUT order:");
+            Log.Info("Build order optimized: {0} structures", result.Count);
             for (int i = 0; i < result.Count; i++)
             {
-                var s = result[i];
-                var bp = _playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
-                Log.Info("  [{0}] {1} (UUID={2})", i, bp?.ExtendedName ?? s.FlatpackBlueprintUUID, s.UUID);
+                var bp = _playerContext.FindBlueprint(result[i].FlatpackBlueprintUUID);
+                Log.Info("  [{0}] {1}", i, bp?.ExtendedName ?? result[i].FlatpackBlueprintUUID);
             }
 
             return result;
         }
 
-        private ColonyStructureStatus SimulateStatus(List<ColonyStructure> structures, IColonyStructureWorkers workerSource)
+        // -----------------------------------------------------------------------
+        // Support calculation
+        // -----------------------------------------------------------------------
+
+        private void EnsureSufficientSupport(List<ColonyStructure> primaries, List<ColonyStructure> support)
+        {
+            var idealWorkers = new IdealColonyStructureWorkers();
+
+            // Simulate everything together to get final resource totals
+            var all = new List<ColonyStructure>(support);
+            all.AddRange(primaries);
+            var finalStatus = SimulateAll(all, idealWorkers);
+
+            // Per-structure provision values
+            decimal reactorPower = GetProvision("Flatpacks/ReactorCore", GameConstants.PropPowerProvided);
+            decimal habProvision = GetProvision("Flatpacks/HabitationBlock", GameConstants.PropHabitationProvision);
+            decimal hydroFood = GetProvision("Flatpacks/HydroponicsBay", GameConstants.PropFoodProvision);
+            decimal entProvision = GetProvision("Flatpacks/EntertainmentCentreFlatpack", GameConstants.PropEntertainmentProvided);
+
+            // Iteratively calculate needed support (new support has workers that need support)
+            int extraReactors = 0, extraHabs = 0, extraHydros = 0, extraEnts = 0;
+
+            for (int pass = 0; pass < 10; pass++)
+            {
+                // Current gaps after accounting for already-planned extras
+                decimal powerGap = (finalStatus.PowerRequired - finalStatus.PowerProvided)
+                    + (extraHydros * 1) + (extraEnts * 2) // new support power costs
+                    - (extraReactors * reactorPower);
+                decimal habGap = (finalStatus.HabitationRequired - finalStatus.HabitationProvision)
+                    + (extraHydros + extraEnts) // new support workers need hab
+                    - (extraHabs * habProvision);
+                decimal foodGap = (finalStatus.FoodRequired - finalStatus.FoodProvision)
+                    + (extraHydros + extraEnts) // new support workers need food
+                    - (extraHydros * hydroFood);
+                decimal entGap = (finalStatus.EntertainmentRequired - finalStatus.EntertainmentProvided)
+                    + (extraHydros + extraEnts) // new support workers need ent
+                    - (extraEnts * entProvision);
+
+                int prevTotal = extraReactors + extraHabs + extraHydros + extraEnts;
+
+                if (powerGap > 0 && reactorPower > 0)
+                    extraReactors += (int)Math.Ceiling(powerGap / reactorPower);
+                if (habGap > 0 && habProvision > 0)
+                    extraHabs += (int)Math.Ceiling(habGap / habProvision);
+                if (foodGap > 0 && hydroFood > 0)
+                    extraHydros += (int)Math.Ceiling(foodGap / hydroFood);
+                if (entGap > 0 && entProvision > 0)
+                    extraEnts += (int)Math.Ceiling(entGap / entProvision);
+
+                if (extraReactors + extraHabs + extraHydros + extraEnts == prevTotal)
+                    break; // converged
+            }
+
+            Log.Info("Extra support needed: {0} reactors, {1} habs, {2} hydros, {3} ents",
+                extraReactors, extraHabs, extraHydros, extraEnts);
+
+            for (int i = 0; i < extraReactors; i++) CreateAndAdd(support, "Flatpacks/ReactorCore");
+            for (int i = 0; i < extraHabs; i++) CreateAndAdd(support, "Flatpacks/HabitationBlock");
+            for (int i = 0; i < extraHydros; i++) CreateAndAdd(support, "Flatpacks/HydroponicsBay");
+            for (int i = 0; i < extraEnts; i++) CreateAndAdd(support, "Flatpacks/EntertainmentCentreFlatpack");
+        }
+
+        private decimal GetProvision(string blueprintType, string property)
+        {
+            var bp = _playerContext.GetAllBlueprints()
+                .FirstOrDefault(b => b.UUID != null && b.BluePrintType == blueprintType);
+            if (bp == null) return 0;
+            decimal val;
+            bp.Properties.getDecimal(property, 0, out val);
+            return val;
+        }
+
+        private void CreateAndAdd(List<ColonyStructure> pool, string blueprintType)
+        {
+            var bp = _playerContext.GetAllBlueprints()
+                .FirstOrDefault(b => b.UUID != null && b.BluePrintType == blueprintType);
+            if (bp == null) return;
+            pool.Add(new ColonyStructure
+            {
+                UUID = Guid.NewGuid().ToString(),
+                FlatpackBlueprintUUID = bp.UUID
+            });
+        }
+
+        // -----------------------------------------------------------------------
+        // Backbone construction
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Builds the support backbone ordered by priority.
+        /// CC first, then structures sorted so that at every position
+        /// the backbone itself has no deficits. Uses the same walk-and-insert
+        /// approach but only with support structures.
+        /// </summary>
+        private List<ColonyStructure> BuildBackbone(List<ColonyStructure> supportPool)
+        {
+            var backbone = new List<ColonyStructure>();
+            var pool = new List<ColonyStructure>(supportPool);
+            supportPool.Clear(); // we'll consume everything
+
+            // CC first
+            var cc = pool.FirstOrDefault(s =>
+            {
+                var bp = _playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                return bp != null && bp.BluePrintType == "Flatpacks/ColonyCommandCentre";
+            });
+            if (cc != null) { pool.Remove(cc); backbone.Add(cc); }
+
+            // Sort remaining support by priority:
+            // Reactors first (provide power, no workers), then Habs, then Hydros, then Ents
+            var sorted = pool.OrderByDescending(s =>
+            {
+                var bp = _playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                if (bp == null) return 0;
+                decimal val;
+                if (bp.Properties.getDecimal(GameConstants.PropPowerProvided, 0, out val) && val > 0) return 4;
+                if (bp.Properties.getDecimal(GameConstants.PropHabitationProvision, 0, out val) && val > 0) return 3;
+                if (bp.Properties.getDecimal(GameConstants.PropFoodProvision, 0, out val) && val > 0) return 2;
+                if (bp.Properties.getDecimal(GameConstants.PropEntertainmentProvided, 0, out val) && val > 0) return 1;
+                return 0;
+            }).ToList();
+
+            // Insert each support structure at the earliest position where it doesn't
+            // create a deficit. This interleaves Reactor/Hab/Hydro/Ent naturally.
+            var idealWorkers = new IdealColonyStructureWorkers();
+            foreach (var s in sorted)
+            {
+                int pos = FindSafeInsertPosition(backbone, s, idealWorkers);
+                backbone.Insert(pos, s);
+            }
+
+            return backbone;
+        }
+
+        // -----------------------------------------------------------------------
+        // Primary insertion
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Finds the earliest position in the list where inserting the structure
+        /// doesn't create any deficit at any position in the resulting list.
+        /// Falls back to the end of the list if no safe position exists.
+        /// </summary>
+        private int FindSafeInsertPosition(List<ColonyStructure> list, ColonyStructure toInsert, IColonyStructureWorkers workers)
+        {
+            // Try each position from the end backwards to find the earliest safe spot.
+            // Start from the end because that's most likely safe (most resources available).
+            // Then binary-search-style find the earliest.
+            int safePos = list.Count; // default: append at end
+
+            for (int pos = 1; pos <= list.Count; pos++) // skip 0 (CC must stay first)
+            {
+                // Test inserting at this position
+                list.Insert(pos, toInsert);
+                bool clean = !HasAnyDeficitAfter(list, pos, workers);
+                list.RemoveAt(pos);
+
+                if (clean)
+                {
+                    safePos = pos;
+                    break; // earliest safe position found
+                }
+            }
+
+            return safePos;
+        }
+
+        /// <summary>
+        /// Simulates the full list and returns true if any position at or after
+        /// startFrom has a deficit.
+        /// </summary>
+        private bool HasAnyDeficitAfter(List<ColonyStructure> structures, int startFrom, IColonyStructureWorkers workers)
         {
             var calculator = new ColonyStatusCalculator(new Colony());
             ColonyStructureStatus prev = new ColonyStructureStatus();
 
-            foreach (var structure in structures)
+            for (int i = 0; i < structures.Count; i++)
             {
-                Blueprint bp = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
-                ColonyStructureStatus current = new ColonyStructureStatus();
-                calculator.CalculateBuilt(structure, prev, current, workerSource, bp);
+                var s = structures[i];
+                Blueprint bp = _playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                var current = new ColonyStructureStatus();
+                calculator.CalculateBuilt(s, prev, current, workers, bp);
+
+                if (i >= startFrom && HasDeficit(current))
+                    return true;
+
+                prev = current;
+            }
+            return false;
+        }
+
+        // -----------------------------------------------------------------------
+        // Simulation helpers
+        // -----------------------------------------------------------------------
+
+        private ColonyStructureStatus SimulateAll(List<ColonyStructure> structures, IColonyStructureWorkers workers)
+        {
+            var calculator = new ColonyStatusCalculator(new Colony());
+            ColonyStructureStatus prev = new ColonyStructureStatus();
+            foreach (var s in structures)
+            {
+                Blueprint bp = _playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                var current = new ColonyStructureStatus();
+                calculator.CalculateBuilt(s, prev, current, workers, bp);
                 prev = current;
             }
             return prev;
-        }
-
-        /// <summary>
-        /// Pulls one structure of the given blueprint type from the support pool
-        /// (or primary pool for CC) and adds it to the result. If none exists in
-        /// the pools, creates one from player blueprints.
-        /// </summary>
-        private void SeedBootstrap(List<ColonyStructure> result,
-            List<ColonyStructure> primaryPool, List<ColonyStructure> supportPool,
-            string blueprintType)
-        {
-            // Try support pool first, then primary pool
-            var match = supportPool.FirstOrDefault(s =>
-            {
-                var bp = _playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
-                return bp != null && bp.BluePrintType == blueprintType;
-            });
-            if (match != null)
-            {
-                supportPool.Remove(match);
-                result.Add(match);
-                Log.Info("Bootstrap: seeded '{0}' from support pool", blueprintType);
-                return;
-            }
-
-            match = primaryPool.FirstOrDefault(s =>
-            {
-                var bp = _playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
-                return bp != null && bp.BluePrintType == blueprintType;
-            });
-            if (match != null)
-            {
-                primaryPool.Remove(match);
-                result.Add(match);
-                Log.Info("Bootstrap: seeded '{0}' from primary pool", blueprintType);
-                return;
-            }
-
-            // Not in any pool -- create from player blueprints
-            foreach (var bp in _playerContext.GetAllBlueprints())
-            {
-                if (bp.UUID != null && bp.BluePrintType == blueprintType)
-                {
-                    var created = new ColonyStructure
-                    {
-                        UUID = Guid.NewGuid().ToString(),
-                        FlatpackBlueprintUUID = bp.UUID
-                    };
-                    result.Add(created);
-                    Log.Info("Bootstrap: created '{0}' from blueprint {1}", blueprintType, bp.ExtendedName);
-                    return;
-                }
-            }
-
-            Log.Warn("Bootstrap: no blueprint found for '{0}'", blueprintType);
-        }
-
-        private ColonyStructureStatus SimulateOneMore(ColonyStructureStatus runningStatus,
-            ColonyStructure structure, Blueprint blueprint, IColonyStructureWorkers workerSource)
-        {
-            var calculator = new ColonyStatusCalculator(new Colony());
-            ColonyStructureStatus result = new ColonyStructureStatus();
-            calculator.CalculateBuilt(structure, runningStatus, result, workerSource, blueprint);
-            return result;
         }
 
         private bool HasDeficit(ColonyStructureStatus status)
@@ -295,106 +314,6 @@ namespace OE2EmpireTracker.Services
                    status.HabitationRequired > status.HabitationProvision ||
                    status.FoodRequired > status.FoodProvision ||
                    status.EntertainmentRequired > status.EntertainmentProvided;
-        }
-
-        /// <summary>
-        /// <summary>
-        /// Finds the support structure that best addresses the current deficit.
-        /// Prioritizes: Power > Habitation > Food > Entertainment.
-        /// </summary>
-        private ColonyStructure FindBestSupport(List<ColonyStructure> supportPool,
-            ColonyStructureStatus afterPrimary, IColonyStructureWorkers workerSource,
-            ColonyStructureStatus runningStatus)
-        {
-            ColonyStructure best = null;
-            int bestScore = 0;
-
-            foreach (var candidate in supportPool)
-            {
-                Blueprint bp = _playerContext.FindBlueprint(candidate.FlatpackBlueprintUUID);
-                if (bp == null) continue;
-
-                int score = 0;
-                decimal val;
-
-                // Score based on which deficits this support addresses
-                if (afterPrimary.PowerRequired > afterPrimary.PowerProvided &&
-                    bp.Properties.getDecimal(GameConstants.PropPowerProvided, 0, out val) && val > 0)
-                    score += 4;
-
-                if (afterPrimary.HabitationRequired > afterPrimary.HabitationProvision &&
-                    bp.Properties.getDecimal(GameConstants.PropHabitationProvision, 0, out val) && val > 0)
-                    score += 3;
-
-                if (afterPrimary.FoodRequired > afterPrimary.FoodProvision &&
-                    bp.Properties.getDecimal(GameConstants.PropFoodProvision, 0, out val) && val > 0)
-                    score += 2;
-
-                if (afterPrimary.EntertainmentRequired > afterPrimary.EntertainmentProvided &&
-                    bp.Properties.getDecimal(GameConstants.PropEntertainmentProvided, 0, out val) && val > 0)
-                    score += 1;
-
-                if (score > bestScore)
-                {
-                    bestScore = score;
-                    best = candidate;
-                }
-            }
-
-            return best;
-        }
-
-        /// <summary>
-        /// Creates a new support structure from player blueprints to address the deficit.
-        /// Returns null if no suitable blueprint is available.
-        /// </summary>
-        private ColonyStructure CreateSupportStructure(ColonyStructureStatus afterPrimary)
-        {
-            // Determine which deficit to address (priority order)
-            string[] deficitProperties;
-            if (afterPrimary.PowerRequired > afterPrimary.PowerProvided)
-                deficitProperties = new[] { GameConstants.PropPowerProvided };
-            else if (afterPrimary.HabitationRequired > afterPrimary.HabitationProvision)
-                deficitProperties = new[] { GameConstants.PropHabitationProvision };
-            else if (afterPrimary.FoodRequired > afterPrimary.FoodProvision)
-                deficitProperties = new[] { GameConstants.PropFoodProvision };
-            else if (afterPrimary.EntertainmentRequired > afterPrimary.EntertainmentProvided)
-                deficitProperties = new[] { GameConstants.PropEntertainmentProvided };
-            else
-                return null;
-
-            // Find a blueprint that provides this resource (player + global)
-            foreach (var bp in _playerContext.GetAllBlueprints())
-            {
-                if (bp.UUID == null) continue;
-                if (!bp.BluePrintType.IsFlatpack()) continue;
-
-                // Check MaxPerColony limit
-                long maxPerColony = 0;
-                bp.Properties.getLong(GameConstants.PropMaxPerColony, 0, out maxPerColony);
-                if (maxPerColony > 0)
-                {
-                    int currentCount = _currentResult.Count(s => s.FlatpackBlueprintUUID == bp.UUID);
-                    if (currentCount >= maxPerColony) continue;
-                }
-
-                decimal val;
-                foreach (string prop in deficitProperties)
-                {
-                    if (bp.Properties.getDecimal(prop, 0, out val) && val > 0)
-                    {
-                        Log.Info("Auto-creating support structure: {0} (provides {1})", bp.ExtendedName, prop);
-                        return new ColonyStructure
-                        {
-                            UUID = System.Guid.NewGuid().ToString(),
-                            FlatpackBlueprintUUID = bp.UUID
-                        };
-                    }
-                }
-            }
-
-            Log.Warn("No player blueprint found to address deficit");
-            return null;
         }
     }
 }
