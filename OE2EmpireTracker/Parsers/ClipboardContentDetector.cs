@@ -36,13 +36,17 @@ namespace OE2EmpireTracker.Parsers
             if (html.IndexOf("ColonyInformation_PlanetOverview", StringComparison.Ordinal) >= 0)
                 return ContentType.Colony;
 
+            // Market listing: Market_ShipComponentProperty or ScanDetailOutputResourceName_MarketListing
+            // Checked BEFORE Survey because market HTML contains ScanDetailOutputResourceName_MarketListing
+            // which would match the Survey check's substring search for ScanDetailOutputResourceName.
+            if (html.IndexOf("Market_ShipComponentProperty", StringComparison.Ordinal) >= 0 ||
+                html.IndexOf("ScanDetailOutputResourceName_MarketListing", StringComparison.Ordinal) >= 0)
+                return ContentType.MarketListing;
+
             // Survey: ScanDetailOutputResourceName — content-specific marker
+            // Must come AFTER MarketListing check to avoid false positives from market resource rows.
             if (html.IndexOf("ScanDetailOutputResourceName", StringComparison.Ordinal) >= 0)
                 return ContentType.Survey;
-
-            // Market listing: Market_ShipComponentProperty — content-specific marker
-            if (html.IndexOf("Market_ShipComponentProperty", StringComparison.Ordinal) >= 0)
-                return ContentType.MarketListing;
 
             // Blueprint (individual): ShipComponentProperty or SmallSlideOut_Form_Row_Description
             if (html.IndexOf("ShipComponentProperty", StringComparison.Ordinal) >= 0 ||
