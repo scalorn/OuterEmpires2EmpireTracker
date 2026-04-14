@@ -1,4 +1,5 @@
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 using System.Collections.Generic;
@@ -11,12 +12,12 @@ namespace OE2EmpireTracker.Services.Migration
 
         private static readonly Dictionary<string, string> Remap = new Dictionary<string, string>
         {
-            { "Blue Collar Detail(s)", "Blue Collar Detail" },
-            { "Unassigned White Collar Detail(s)", "Unassigned White Collar Detail" },
-            { "Unassigned Specialist Detail(s)", "Unassigned Specialist Detail" },
-            { "Specialist Detail(s)", "Specialist Detail" },
-            { "White Collar Detail(s)", "White Collar Detail" },
-            { "Warehousing Capacity", "Warehouse Capacity" },
+            { "Blue Collar Detail(s)", GameConstants.PropBlueCollarDetail },
+            { "Unassigned White Collar Detail(s)", GameConstants.PropUnassignedWhiteCollarDetail },
+            { "Unassigned Specialist Detail(s)", GameConstants.PropUnassignedSpecialistDetail },
+            { "Specialist Detail(s)", GameConstants.PropSpecialistDetail },
+            { "White Collar Detail(s)", GameConstants.PropWhiteCollarDetail },
+            { "Warehousing Capacity", GameConstants.PropWarehouseCapacity },
         };
 
         public static void Run(EmpireContext ec, PlayerContext pc)

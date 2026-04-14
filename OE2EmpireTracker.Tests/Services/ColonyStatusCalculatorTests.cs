@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Models;
 using System;
@@ -278,7 +279,7 @@ namespace OE2EmpireTracker.Tests.Services
             // Blueprint requires 1 blue collar worker
             var bp = MakeBlueprint(new Dictionary<string, string>
             {
-                { "BlueCollarDetail", "1" }
+                { GameConstants.PropBlueCollarDetail, "1" }
             });
             // Mark the worker as assigned
             structure.AssignedWorkers.setProperty("BlueCollar1", true);
@@ -297,7 +298,7 @@ namespace OE2EmpireTracker.Tests.Services
             var structure = MakeStructure(built: true, online: true);
             var bp = MakeBlueprint(new Dictionary<string, string>
             {
-                { "BlueCollarDetail", "1" }
+                { GameConstants.PropBlueCollarDetail, "1" }
             });
             // Worker NOT assigned â€” default is false
 
@@ -314,9 +315,9 @@ namespace OE2EmpireTracker.Tests.Services
             var structure = MakeStructure(built: true, online: true);
             var bp = MakeBlueprint(new Dictionary<string, string>
             {
-                { "BlueCollarDetail", "1" },
-                { "WhiteCollarDetail", "1" },
-                { "SpecialistDetail", "1" }
+                { GameConstants.PropBlueCollarDetail, "1" },
+                { GameConstants.PropWhiteCollarDetail, "1" },
+                { GameConstants.PropSpecialistDetail, "1" }
             });
             structure.AssignedWorkers.setProperty("BlueCollar1", true);
             structure.AssignedWorkers.setProperty("WhiteCollar1", true);
@@ -339,8 +340,8 @@ namespace OE2EmpireTracker.Tests.Services
             var structure = MakeStructure(); // state doesn't matter for ideal
             var bp = MakeBlueprint(new Dictionary<string, string>
             {
-                { "BlueCollarDetail", "2" },
-                { "WhiteCollarDetail", "1" }
+                { GameConstants.PropBlueCollarDetail, "2" },
+                { GameConstants.PropWhiteCollarDetail, "1" }
             });
 
             var status = Calculate(structure, new ColonyStructureStatus(), new IdealColonyStructureWorkers(), bp);
@@ -387,7 +388,7 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(structure);
             var bp = MakeBlueprint(new Dictionary<string, string>
             {
-                { "UnassignedBlueCollarDetail", "1" }
+                { GameConstants.PropUnassignedBlueCollarDetail, "1" }
             });
 
             var workers = new ActualColonyStructureWorkers(colony);
@@ -412,7 +413,7 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(structure);
             var bp = MakeBlueprint(new Dictionary<string, string>
             {
-                { "UnassignedBlueCollarDetail", "1" }
+                { GameConstants.PropUnassignedBlueCollarDetail, "1" }
             });
 
             var workers = new ActualColonyStructureWorkers(colony);
@@ -447,7 +448,7 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(structure);
             var bp = MakeBlueprint(new Dictionary<string, string>
             {
-                { "UnassignedBlueCollarDetail", "1" }
+                { GameConstants.PropUnassignedBlueCollarDetail, "1" }
             });
 
             var workers = new ActualColonyStructureWorkers(colony);
@@ -479,7 +480,7 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(structure);
             var bp = MakeBlueprint(new Dictionary<string, string>
             {
-                { "UnassignedBlueCollarDetail", "1" }
+                { GameConstants.PropUnassignedBlueCollarDetail, "1" }
             });
 
             var workers = new ActualColonyStructureWorkers(colony);
@@ -521,7 +522,7 @@ namespace OE2EmpireTracker.Tests.Services
             var reactorBp = MakeBlueprint(new Dictionary<string, string>
             {
                 { "Power Provided", "500" },
-                { "BlueCollarDetail", "1" }
+                { GameConstants.PropBlueCollarDetail, "1" }
             });
             reactor.AssignedWorkers.setProperty("BlueCollar1", true);
 
@@ -537,7 +538,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 { "Power Required", "50" },
                 { "Habitation Provision", "100" },
-                { "WhiteCollarDetail", "1" }
+                { GameConstants.PropWhiteCollarDetail, "1" }
             });
             hab.AssignedWorkers.setProperty("WhiteCollar1", true);
 

@@ -307,10 +307,10 @@ namespace OE2EmpireTracker.ViewModels
                     {
                         var blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                         if (blueprint == null) continue;
-                        if (!blueprint.Properties.ContainsKey(wt.DetailKey)) continue;
+                        if (!blueprint.Properties.ContainsKey(wt.PropertyKey)) continue;
 
                         long slotCount = 0;
-                        blueprint.Properties.getLong(wt.DetailKey, 0, out slotCount);
+                        blueprint.Properties.getLong(wt.PropertyKey, 0, out slotCount);
                         idealCount += (int)slotCount;
 
                         // Count actual assigned workers

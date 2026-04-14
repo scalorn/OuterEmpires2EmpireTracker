@@ -205,13 +205,13 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     foreach (var wt in Models.WorkerDetail.WorkerTypes)
                     {
-                        if (FlatpackBlueprint.Properties.ContainsKey(wt.UnassignedKey))
+                        if (FlatpackBlueprint.Properties.ContainsKey(wt.UnassignedPropertyKey))
                         {
                             bool available = IsUnallocatedWorkerAvailable(wt.DetailKey);
                             checkControls[controlIndex].Visible = true;
                             checkControls[controlIndex].Enabled = false;
                             checkControls[controlIndex].Text = "Support - " + wt.DisplayName;
-                            checkControls[controlIndex].Tag = wt.UnassignedKey;
+                            checkControls[controlIndex].Tag = wt.UnassignedPropertyKey;
                             checkControls[controlIndex].Checked = available;
                             controlIndex++;
                         }
@@ -1192,9 +1192,9 @@ namespace OE2EmpireTracker.Forms.Colony
             {
                 switch (workerDetailID)
                 {
-                    case "BlueCollarDetail": return status.UnallocatedBlueCollarPresent;
-                    case "WhiteCollarDetail": return status.UnallocatedWhiteCollarPresent;
-                    case "SpecialistDetail": return status.UnallocatedSpecialistPresent;
+                    case GameConstants.WorkerIdBlueCollar: return status.UnallocatedBlueCollarPresent;
+                    case GameConstants.WorkerIdWhiteCollar: return status.UnallocatedWhiteCollarPresent;
+                    case GameConstants.WorkerIdSpecialist: return status.UnallocatedSpecialistPresent;
                 }
             }
 

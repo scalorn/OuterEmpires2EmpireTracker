@@ -72,9 +72,9 @@ namespace OE2EmpireTracker.Models
         {
             switch (detailKey)
             {
-                case "BlueCollarDetail": return UnallocatedBlueCollarPresent;
-                case "WhiteCollarDetail": return UnallocatedWhiteCollarPresent;
-                case "SpecialistDetail": return UnallocatedSpecialistPresent;
+                case Constants.GameConstants.WorkerIdBlueCollar: return UnallocatedBlueCollarPresent;
+                case Constants.GameConstants.WorkerIdWhiteCollar: return UnallocatedWhiteCollarPresent;
+                case Constants.GameConstants.WorkerIdSpecialist: return UnallocatedSpecialistPresent;
                 default: return false;
             }
         }
@@ -86,9 +86,9 @@ namespace OE2EmpireTracker.Models
         {
             switch (detailKey)
             {
-                case "BlueCollarDetail": UnallocatedBlueCollarPresent = value; break;
-                case "WhiteCollarDetail": UnallocatedWhiteCollarPresent = value; break;
-                case "SpecialistDetail": UnallocatedSpecialistPresent = value; break;
+                case Constants.GameConstants.WorkerIdBlueCollar: UnallocatedBlueCollarPresent = value; break;
+                case Constants.GameConstants.WorkerIdWhiteCollar: UnallocatedWhiteCollarPresent = value; break;
+                case Constants.GameConstants.WorkerIdSpecialist: UnallocatedSpecialistPresent = value; break;
             }
         }
 

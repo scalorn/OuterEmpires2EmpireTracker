@@ -4,6 +4,7 @@ using System.Linq;
 using FsCheck;
 using FsCheck.NUnit;
 using NUnit.Framework;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Services.Migration;
@@ -16,12 +17,12 @@ namespace OE2EmpireTracker.Tests.Services.Migration
     {
         private static readonly Dictionary<string, string> Remap = new Dictionary<string, string>
         {
-            { "Blue Collar Detail(s)", "Blue Collar Detail" },
-            { "Unassigned White Collar Detail(s)", "Unassigned White Collar Detail" },
-            { "Unassigned Specialist Detail(s)", "Unassigned Specialist Detail" },
-            { "Specialist Detail(s)", "Specialist Detail" },
-            { "White Collar Detail(s)", "White Collar Detail" },
-            { "Warehousing Capacity", "Warehouse Capacity" },
+            { "Blue Collar Detail(s)", GameConstants.PropBlueCollarDetail },
+            { "Unassigned White Collar Detail(s)", GameConstants.PropUnassignedWhiteCollarDetail },
+            { "Unassigned Specialist Detail(s)", GameConstants.PropUnassignedSpecialistDetail },
+            { "Specialist Detail(s)", GameConstants.PropSpecialistDetail },
+            { "White Collar Detail(s)", GameConstants.PropWhiteCollarDetail },
+            { "Warehousing Capacity", GameConstants.PropWarehouseCapacity },
         };
 
         [SetUp]
@@ -202,15 +203,15 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             // Player blueprint assertions
             Assert.That(playerBp.Properties.Properties.ContainsKey("Blue Collar Detail(s)"), Is.False);
             Assert.That(playerBp.Properties.Properties.ContainsKey("Warehousing Capacity"), Is.False);
-            Assert.That(playerBp.Properties.Properties["Blue Collar Detail"], Is.EqualTo("42"));
-            Assert.That(playerBp.Properties.Properties["Warehouse Capacity"], Is.EqualTo("100"));
+            Assert.That(playerBp.Properties.Properties[GameConstants.PropBlueCollarDetail], Is.EqualTo("42"));
+            Assert.That(playerBp.Properties.Properties[GameConstants.PropWarehouseCapacity], Is.EqualTo("100"));
             Assert.That(playerBp.Properties.Properties["Health"], Is.EqualTo("500"));
 
             // Global blueprint assertions
             Assert.That(globalBp.Properties.Properties.ContainsKey("Specialist Detail(s)"), Is.False);
             Assert.That(globalBp.Properties.Properties.ContainsKey("White Collar Detail(s)"), Is.False);
-            Assert.That(globalBp.Properties.Properties["Specialist Detail"], Is.EqualTo("7"));
-            Assert.That(globalBp.Properties.Properties["White Collar Detail"], Is.EqualTo("3"));
+            Assert.That(globalBp.Properties.Properties[GameConstants.PropSpecialistDetail], Is.EqualTo("7"));
+            Assert.That(globalBp.Properties.Properties[GameConstants.PropWhiteCollarDetail], Is.EqualTo("3"));
 
             // Version bumped
             Assert.That(ec.DataVersion, Is.EqualTo(MigrationRunner.CurrentVersion));

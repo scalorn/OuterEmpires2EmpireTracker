@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using System.Linq;
 
@@ -25,31 +26,37 @@ namespace OE2EmpireTracker.Tests.Models
         public void WorkerTypes_FirstEntry_IsBlueCollar()
         {
             var entry = WorkerDetail.WorkerTypes[0];
-            Assert.That(entry.DetailKey, Is.EqualTo("BlueCollarDetail"));
+            Assert.That(entry.DetailKey, Is.EqualTo(GameConstants.WorkerIdBlueCollar));
             Assert.That(entry.WorkerPrefix, Is.EqualTo("BlueCollar"));
             Assert.That(entry.DisplayName, Is.EqualTo("Blue Collar"));
+            Assert.That(entry.PropertyKey, Is.EqualTo(GameConstants.PropBlueCollarDetail));
+            Assert.That(entry.UnassignedPropertyKey, Is.EqualTo(GameConstants.PropUnassignedBlueCollarDetail));
         }
 
         [Test]
         public void WorkerTypes_SecondEntry_IsWhiteCollar()
         {
             var entry = WorkerDetail.WorkerTypes[1];
-            Assert.That(entry.DetailKey, Is.EqualTo("WhiteCollarDetail"));
+            Assert.That(entry.DetailKey, Is.EqualTo(GameConstants.WorkerIdWhiteCollar));
             Assert.That(entry.WorkerPrefix, Is.EqualTo("WhiteCollar"));
             Assert.That(entry.DisplayName, Is.EqualTo("White Collar"));
+            Assert.That(entry.PropertyKey, Is.EqualTo(GameConstants.PropWhiteCollarDetail));
+            Assert.That(entry.UnassignedPropertyKey, Is.EqualTo(GameConstants.PropUnassignedWhiteCollarDetail));
         }
 
         [Test]
         public void WorkerTypes_ThirdEntry_IsSpecialist()
         {
             var entry = WorkerDetail.WorkerTypes[2];
-            Assert.That(entry.DetailKey, Is.EqualTo("SpecialistDetail"));
+            Assert.That(entry.DetailKey, Is.EqualTo(GameConstants.WorkerIdSpecialist));
             Assert.That(entry.WorkerPrefix, Is.EqualTo("Specialist"));
             Assert.That(entry.DisplayName, Is.EqualTo("Specialist"));
+            Assert.That(entry.PropertyKey, Is.EqualTo(GameConstants.PropSpecialistDetail));
+            Assert.That(entry.UnassignedPropertyKey, Is.EqualTo(GameConstants.PropUnassignedSpecialistDetail));
         }
 
         // -----------------------------------------------------------------------
-        // UnassignedKey is "Unassigned" + DetailKey
+        // UnassignedKey is "Unassigned" + DetailKey (item type ID, no spaces)
         // -----------------------------------------------------------------------
 
         [TestCase(0, "UnassignedBlueCollarDetail")]

@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.ViewModels;
@@ -883,9 +884,9 @@ namespace OE2EmpireTracker.Tests.Services
             int blueCollar = 0, int whiteCollar = 0, int specialist = 0)
         {
             var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, BluePrintType = bpType };
-            if (blueCollar > 0) bp.Properties.setProperty("BlueCollarDetail", blueCollar.ToString());
-            if (whiteCollar > 0) bp.Properties.setProperty("WhiteCollarDetail", whiteCollar.ToString());
-            if (specialist > 0) bp.Properties.setProperty("SpecialistDetail", specialist.ToString());
+            if (blueCollar > 0) bp.Properties.setProperty(GameConstants.PropBlueCollarDetail, blueCollar.ToString());
+            if (whiteCollar > 0) bp.Properties.setProperty(GameConstants.PropWhiteCollarDetail, whiteCollar.ToString());
+            if (specialist > 0) bp.Properties.setProperty(GameConstants.PropSpecialistDetail, specialist.ToString());
             playerContext.BlueprintList.Add(bp);
             return bp;
         }

@@ -1,4 +1,5 @@
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Forms.Blueprint;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services.Migration;
@@ -42,7 +43,7 @@ namespace OE2EmpireTracker.Services
         private static readonly HashSet<string> ProtectedProperties = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "Manufacture Run Time",
-            "Power Required"
+            GameConstants.PropPowerRequired
         };
 
         public static ImportResult Import(

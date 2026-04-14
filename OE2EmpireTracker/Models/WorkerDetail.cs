@@ -1,3 +1,4 @@
+using OE2EmpireTracker.Constants;
 using System.Collections.Generic;
 
 namespace OE2EmpireTracker.Models
@@ -14,9 +15,12 @@ namespace OE2EmpireTracker.Models
         /// </summary>
         public static readonly WorkerTypeInfo[] WorkerTypes = new[]
         {
-            new WorkerTypeInfo("BlueCollarDetail", "BlueCollar", "Blue Collar"),
-            new WorkerTypeInfo("WhiteCollarDetail", "WhiteCollar", "White Collar"),
-            new WorkerTypeInfo("SpecialistDetail", "Specialist", "Specialist"),
+            new WorkerTypeInfo(GameConstants.WorkerIdBlueCollar, "BlueCollar", "Blue Collar",
+                GameConstants.PropBlueCollarDetail, GameConstants.PropUnassignedBlueCollarDetail),
+            new WorkerTypeInfo(GameConstants.WorkerIdWhiteCollar, "WhiteCollar", "White Collar",
+                GameConstants.PropWhiteCollarDetail, GameConstants.PropUnassignedWhiteCollarDetail),
+            new WorkerTypeInfo(GameConstants.WorkerIdSpecialist, "Specialist", "Specialist",
+                GameConstants.PropSpecialistDetail, GameConstants.PropUnassignedSpecialistDetail),
         };
 
         private static readonly List<WorkerDetail> _workerDetails = getWorkerDetails();
@@ -47,9 +51,9 @@ namespace OE2EmpireTracker.Models
             return new List<WorkerDetail>
             {
                 new WorkerDetail { ID = "",   Name = ""   },
-                new WorkerDetail { ID = "BlueCollarDetail",   Name = "Blue Collar Detail"   },
-                new WorkerDetail { ID = "WhiteCollarDetail",  Name = "White Collar Detail"  },
-                new WorkerDetail { ID = "SpecialistDetail",   Name = "Specialist Detail"    },
+                new WorkerDetail { ID = GameConstants.WorkerIdBlueCollar,   Name = GameConstants.PropBlueCollarDetail   },
+                new WorkerDetail { ID = GameConstants.WorkerIdWhiteCollar,  Name = GameConstants.PropWhiteCollarDetail  },
+                new WorkerDetail { ID = GameConstants.WorkerIdSpecialist,   Name = GameConstants.PropSpecialistDetail   },
             };
         }
     }
@@ -59,21 +63,28 @@ namespace OE2EmpireTracker.Models
     /// </summary>
     public class WorkerTypeInfo
     {
-        /// <summary>Blueprint property key for the worker count (e.g. "BlueCollarDetail").</summary>
+        /// <summary>Item type ID for WorkDetail items (e.g. "BlueCollarDetail"). No spaces.</summary>
         public string DetailKey { get; }
         /// <summary>Worker key prefix used in AssignedWorkers (e.g. "BlueCollar").</summary>
         public string WorkerPrefix { get; }
         /// <summary>Display name for UI (e.g. "Blue Collar").</summary>
         public string DisplayName { get; }
-        /// <summary>Blueprint property key for unassigned workers (e.g. "UnassignedBlueCollarDetail").</summary>
+        /// <summary>Item type ID for unassigned workers (e.g. "UnassignedBlueCollarDetail"). No spaces.</summary>
         public string UnassignedKey { get; }
+        /// <summary>Blueprint property key for the worker count (e.g. "Blue Collar Detail"). With spaces, matches JSON data.</summary>
+        public string PropertyKey { get; }
+        /// <summary>Blueprint property key for unassigned workers (e.g. "Unassigned Blue Collar Detail"). With spaces, matches JSON data.</summary>
+        public string UnassignedPropertyKey { get; }
 
-        public WorkerTypeInfo(string detailKey, string workerPrefix, string displayName)
+        public WorkerTypeInfo(string detailKey, string workerPrefix, string displayName,
+            string propertyKey, string unassignedPropertyKey)
         {
             DetailKey = detailKey;
             WorkerPrefix = workerPrefix;
             DisplayName = displayName;
             UnassignedKey = "Unassigned" + detailKey;
+            PropertyKey = propertyKey;
+            UnassignedPropertyKey = unassignedPropertyKey;
         }
     }
 }

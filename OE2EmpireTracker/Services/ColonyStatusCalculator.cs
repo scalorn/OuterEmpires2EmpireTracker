@@ -177,29 +177,30 @@ namespace OE2EmpireTracker.Services
         {
             if (colony.Locks == null || string.IsNullOrEmpty(structure.UUID)) return;
 
-            LockWorkerType(structure, flatpackBlueprint, "BlueCollarDetail", "BlueCollar");
-            LockWorkerType(structure, flatpackBlueprint, "WhiteCollarDetail", "WhiteCollar");
-            LockWorkerType(structure, flatpackBlueprint, "SpecialistDetail", "Specialist");
+            foreach (var wt in Models.WorkerDetail.WorkerTypes)
+            {
+                LockWorkerType(structure, flatpackBlueprint, wt);
+            }
         }
 
         private void LockWorkerType(ColonyStructure structure, Models.Blueprint flatpackBlueprint,
-            string detailKey, string workerPrefix)
+            Models.WorkerTypeInfo wt)
         {
-            if (!flatpackBlueprint.Properties.ContainsKey(detailKey)) return;
+            if (!flatpackBlueprint.Properties.ContainsKey(wt.PropertyKey)) return;
 
             long count = 0;
-            flatpackBlueprint.Properties.getLong(detailKey, 0, out count);
+            flatpackBlueprint.Properties.getLong(wt.PropertyKey, 0, out count);
 
             for (int i = 1; i <= count; i++)
             {
-                string key = workerPrefix + i;
+                string key = wt.WorkerPrefix + i;
                 bool assigned = false;
                 structure.AssignedWorkers.getBoolean(key, false, out assigned);
                 if (assigned)
                 {
-                    EnsureWorkerItemExists(detailKey);
+                    EnsureWorkerItemExists(wt.DetailKey);
                     colony.Locks.LockItem(structure.UUID,
-                        Models.ItemType.ItemTypeEnum.WorkDetail, detailKey, 1);
+                        Models.ItemType.ItemTypeEnum.WorkDetail, wt.DetailKey, 1);
                 }
             }
         }
@@ -210,21 +211,21 @@ namespace OE2EmpireTracker.Services
 
             if (finalStatus.UnallocatedBlueCollarPresent)
             {
-                EnsureWorkerItemExists("BlueCollarDetail");
+                EnsureWorkerItemExists(GameConstants.WorkerIdBlueCollar);
                 colony.Locks.LockItem(colony.UUID,
-                    Models.ItemType.ItemTypeEnum.WorkDetail, "BlueCollarDetail", 1);
+                    Models.ItemType.ItemTypeEnum.WorkDetail, GameConstants.WorkerIdBlueCollar, 1);
             }
             if (finalStatus.UnallocatedWhiteCollarPresent)
             {
-                EnsureWorkerItemExists("WhiteCollarDetail");
+                EnsureWorkerItemExists(GameConstants.WorkerIdWhiteCollar);
                 colony.Locks.LockItem(colony.UUID,
-                    Models.ItemType.ItemTypeEnum.WorkDetail, "WhiteCollarDetail", 1);
+                    Models.ItemType.ItemTypeEnum.WorkDetail, GameConstants.WorkerIdWhiteCollar, 1);
             }
             if (finalStatus.UnallocatedSpecialistPresent)
             {
-                EnsureWorkerItemExists("SpecialistDetail");
+                EnsureWorkerItemExists(GameConstants.WorkerIdSpecialist);
                 colony.Locks.LockItem(colony.UUID,
-                    Models.ItemType.ItemTypeEnum.WorkDetail, "SpecialistDetail", 1);
+                    Models.ItemType.ItemTypeEnum.WorkDetail, GameConstants.WorkerIdSpecialist, 1);
             }
         }
 
@@ -384,22 +385,22 @@ namespace OE2EmpireTracker.Services
                 // --- Resource Accumulation ---
                 if (online)
                 {
-                    builtPowerProvided += GetBlueprintDecimal(flatpackBlueprint, "Power Provided");
-                    builtPowerRequired += GetBlueprintDecimal(flatpackBlueprint, "Power Required");
-                    builtHabitationProvision += GetBlueprintDecimal(flatpackBlueprint, "Habitation Provision");
-                    builtEntertainmentProvided += GetBlueprintDecimal(flatpackBlueprint, "Entertainment Provided");
-                    builtWarehouseCapacity += GetBlueprintDecimal(flatpackBlueprint, "Warehouse Capacity");
+                    builtPowerProvided += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropPowerProvided);
+                    builtPowerRequired += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropPowerRequired);
+                    builtHabitationProvision += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropHabitationProvision);
+                    builtEntertainmentProvided += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropEntertainmentProvided);
+                    builtWarehouseCapacity += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropWarehouseCapacity);
                 }
                 // Food accumulates regardless of online state
-                builtFoodProvision += GetBlueprintDecimal(flatpackBlueprint, "Food Provision");
+                builtFoodProvision += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropFoodProvision);
 
                 // --- Worker Assignment Parsing ---
                 foreach (var wt in Models.WorkerDetail.WorkerTypes)
                 {
-                    if (flatpackBlueprint.Properties.ContainsKey(wt.DetailKey))
+                    if (flatpackBlueprint.Properties.ContainsKey(wt.PropertyKey))
                     {
                         long count = 0;
-                        flatpackBlueprint.Properties.getLong(wt.DetailKey, 0, out count);
+                        flatpackBlueprint.Properties.getLong(wt.PropertyKey, 0, out count);
                         for (int i = 1; i <= count; i++)
                         {
                             string key = wt.WorkerPrefix + i;
@@ -412,7 +413,7 @@ namespace OE2EmpireTracker.Services
                         }
                     }
                     long unassignedCount = 0;
-                    flatpackBlueprint.Properties.getLong(wt.UnassignedKey, 0, out unassignedCount);
+                    flatpackBlueprint.Properties.getLong(wt.UnassignedPropertyKey, 0, out unassignedCount);
                     if (unassignedCount > 0)
                     {
                         needUnallocated[wt.DetailKey] = true;

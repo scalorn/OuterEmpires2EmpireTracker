@@ -31,10 +31,10 @@ namespace OE2EmpireTracker.Services
             if (blueprint == null) return false;
 
             decimal val;
-            if (blueprint.Properties.getDecimal("Power Provided", 0, out val) && val > 0) return true;
-            if (blueprint.Properties.getDecimal("Habitation Provision", 0, out val) && val > 0) return true;
-            if (blueprint.Properties.getDecimal("Food Provision", 0, out val) && val > 0) return true;
-            if (blueprint.Properties.getDecimal("Entertainment Provided", 0, out val) && val > 0) return true;
+            if (blueprint.Properties.getDecimal(GameConstants.PropPowerProvided, 0, out val) && val > 0) return true;
+            if (blueprint.Properties.getDecimal(GameConstants.PropHabitationProvision, 0, out val) && val > 0) return true;
+            if (blueprint.Properties.getDecimal(GameConstants.PropFoodProvision, 0, out val) && val > 0) return true;
+            if (blueprint.Properties.getDecimal(GameConstants.PropEntertainmentProvided, 0, out val) && val > 0) return true;
             return false;
         }
 
@@ -248,19 +248,19 @@ namespace OE2EmpireTracker.Services
 
                 // Score based on which deficits this support addresses
                 if (afterPrimary.PowerRequired > afterPrimary.PowerProvided &&
-                    bp.Properties.getDecimal("Power Provided", 0, out val) && val > 0)
+                    bp.Properties.getDecimal(GameConstants.PropPowerProvided, 0, out val) && val > 0)
                     score += 4;
 
                 if (afterPrimary.HabitationRequired > afterPrimary.HabitationProvision &&
-                    bp.Properties.getDecimal("Habitation Provision", 0, out val) && val > 0)
+                    bp.Properties.getDecimal(GameConstants.PropHabitationProvision, 0, out val) && val > 0)
                     score += 3;
 
                 if (afterPrimary.FoodRequired > afterPrimary.FoodProvision &&
-                    bp.Properties.getDecimal("Food Provision", 0, out val) && val > 0)
+                    bp.Properties.getDecimal(GameConstants.PropFoodProvision, 0, out val) && val > 0)
                     score += 2;
 
                 if (afterPrimary.EntertainmentRequired > afterPrimary.EntertainmentProvided &&
-                    bp.Properties.getDecimal("Entertainment Provided", 0, out val) && val > 0)
+                    bp.Properties.getDecimal(GameConstants.PropEntertainmentProvided, 0, out val) && val > 0)
                     score += 1;
 
                 if (score > bestScore)
@@ -282,13 +282,13 @@ namespace OE2EmpireTracker.Services
             // Determine which deficit to address (priority order)
             string[] deficitProperties;
             if (afterPrimary.PowerRequired > afterPrimary.PowerProvided)
-                deficitProperties = new[] { "Power Provided" };
+                deficitProperties = new[] { GameConstants.PropPowerProvided };
             else if (afterPrimary.HabitationRequired > afterPrimary.HabitationProvision)
-                deficitProperties = new[] { "Habitation Provision" };
+                deficitProperties = new[] { GameConstants.PropHabitationProvision };
             else if (afterPrimary.FoodRequired > afterPrimary.FoodProvision)
-                deficitProperties = new[] { "Food Provision" };
+                deficitProperties = new[] { GameConstants.PropFoodProvision };
             else if (afterPrimary.EntertainmentRequired > afterPrimary.EntertainmentProvided)
-                deficitProperties = new[] { "Entertainment Provided" };
+                deficitProperties = new[] { GameConstants.PropEntertainmentProvided };
             else
                 return null;
 
@@ -300,7 +300,7 @@ namespace OE2EmpireTracker.Services
 
                 // Check MaxPerColony limit
                 long maxPerColony = 0;
-                bp.Properties.getLong("MaxPerColony", 0, out maxPerColony);
+                bp.Properties.getLong(GameConstants.PropMaxPerColony, 0, out maxPerColony);
                 if (maxPerColony > 0)
                 {
                     int currentCount = _currentResult.Count(s => s.FlatpackBlueprintUUID == bp.UUID);

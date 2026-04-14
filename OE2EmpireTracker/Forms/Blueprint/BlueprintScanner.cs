@@ -43,13 +43,13 @@ namespace OE2EmpireTracker.Forms.Blueprint
             { "Eng. Capacity Available", "Eng Capacity Available" },
             { "Power regeneration rate", "Power Regeneration Rate" },
             // Worker detail remaps — game HTML uses (s) suffix, normalize to without
-            { "Blue Collar Detail(s)", "Blue Collar Detail" },
-            { "Unassigned White Collar Detail(s)", "Unassigned White Collar Detail" },
-            { "Unassigned Specialist Detail(s)", "Unassigned Specialist Detail" },
-            { "Specialist Detail(s)", "Specialist Detail" },
-            { "White Collar Detail(s)", "White Collar Detail" },
+            { "Blue Collar Detail(s)", GameConstants.PropBlueCollarDetail },
+            { "Unassigned White Collar Detail(s)", GameConstants.PropUnassignedWhiteCollarDetail },
+            { "Unassigned Specialist Detail(s)", GameConstants.PropUnassignedSpecialistDetail },
+            { "Specialist Detail(s)", GameConstants.PropSpecialistDetail },
+            { "White Collar Detail(s)", GameConstants.PropWhiteCollarDetail },
             // Warehouse property remap
-            { "Warehousing Capacity", "Warehouse Capacity" },
+            { "Warehousing Capacity", GameConstants.PropWarehouseCapacity },
         };
 
         private static Dictionary<string, string> BPTypeImageRemap = new Dictionary<string, string>()
