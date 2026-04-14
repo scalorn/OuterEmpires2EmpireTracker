@@ -39,7 +39,7 @@
 **REQ-SRV-051** The evolution number SHALL be stripped from the title string before setting Name.  
 **REQ-SRV-052** TechLevel SHALL be extracted from parentheses at the end of the title, e.g. `Name (TechLevel)`.  
 **REQ-SRV-053** Property values SHALL have delta indicators (e.g. `(▲ 435)`) stripped before storage.  
-**REQ-SRV-054** Property keys SHALL be remapped using the PropertyRemap dictionary (e.g. "Manufacture Run Time" → "ManufactureTime").  
+**REQ-SRV-054** Property keys SHALL be remapped using the PropertyRemap dictionary to normalize game HTML labels to canonical spaced form (e.g. "Health (Hitpoints)" → "Health", "Eng. Capacity Required" → "Eng Capacity Required", "Blue Collar Detail(s)" → "Blue Collar Detail", "Warehousing Capacity" → "Warehouse Capacity"). Keys not in the remap table are used as-is.  
 **REQ-SRV-055** Resource quantities SHALL have non-digit characters (commas, spaces) stripped, leaving only digits.  
 **REQ-SRV-056** The Class property SHALL be extracted from the "Class" property key and stored as Blueprint.Class (int).  
 **REQ-SRV-057** processHtml() SHALL not throw on malformed or empty HTML input.

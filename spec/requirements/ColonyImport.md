@@ -41,7 +41,7 @@ flowchart TD
 
 ## Merge Semantics
 
-**REQ-CI-020** When importing into an existing colony, structures SHALL be merged by UUID — existing structures are updated, new structures are added.
+**REQ-CI-020** When importing into an existing colony, structures SHALL be merged by compound key (FlatpackBlueprintUUID + per-type displaySequence). Existing structures with a matching compound key are updated; new structures are added. For CommodityManufactory types, positional matching within each sub-type is used instead of displaySequence.
 **REQ-CI-021** The parser SHALL preserve any locally-set data (nicknames, manual overrides) that is not present in the game HTML.
 **REQ-CI-022** SystemName SHALL be extracted from the location bar data when available.
 
@@ -56,5 +56,5 @@ flowchart TD
 **REQ-CI-041** The parser SHALL extract blueprint name, type, evolution, properties, resources, seller name, and TechLevel from each expanded market listing row.
 **REQ-CI-042** Government-seller blueprints SHALL be imported as global blueprints (empty OwnerUUID). Player-seller blueprints SHALL be imported as player-specific blueprints.
 **REQ-CI-043** Import SHALL be idempotent — re-importing the same market data SHALL update existing blueprints (matched by Name+Evolution+Type+Class+TechLevel) without creating duplicates.
-**REQ-CI-044** Import SHALL preserve protected fields (NickName, CopyCost, baseBlueprintUUID) on existing blueprints.
+**REQ-CI-044** Import SHALL preserve protected fields (NickName, CopyCost, BaseBlueprintUUID) on existing blueprints.
 **REQ-CI-045** HTML fragment extraction SHALL use StartFragment/EndFragment markers when present in clipboard data, falling back to byte offset headers when markers are absent.

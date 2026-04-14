@@ -138,10 +138,10 @@ flowchart TD
 - ColonyStructure.FlatpackBlueprintUUID (across all colonies, all players)
 - ColonyStructure.ResearchingBlueprintUUID (across all colonies, all players)
 - ColonyStructure.ManufacturingBlueprintUUID (across all colonies, all players)
-- Blueprint.baseBlueprintUUID (player and global blueprint lists)
+- Blueprint.BaseBlueprintUUID (player and global blueprint lists)
 - Survey.ScannerBlueprintUUID (all player surveys)
 
-**REQ-ARCH-093** CountReferences SHALL exclude self-references: if the blueprint being checked has its own UUID as baseBlueprintUUID, that match SHALL NOT be counted in BaseBlueprintCount.  
+**REQ-ARCH-093** CountReferences SHALL exclude self-references: if the blueprint being checked has its own UUID as BaseBlueprintUUID, that match SHALL NOT be counted in BaseBlueprintCount.  
 **REQ-ARCH-094** CountReferences SHALL return ReferenceReport.Empty when the provided blueprintUUID is null or empty.  
 **REQ-ARCH-095** CountReferences SHALL handle colonies with null Structures lists gracefully by skipping them.
 
