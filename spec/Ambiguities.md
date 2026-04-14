@@ -454,15 +454,11 @@ Renaming it would require a JSON migration strategy since it's serialized to Pla
 
 ---
 
-### AMB-054 — OPEN: WorkerDetail.Name field uses property key string instead of display name
+### AMB-054 — RESOLVED: WorkerDetail.Name field uses property key string instead of display name
 
-**Issue:** `WorkerDetail.getWorkerDetails()` populates the `Name` field using `GameConstants.PropBlueCollarDetail` (= `"Blue Collar Detail"`), `GameConstants.PropWhiteCollarDetail` (= `"White Collar Detail"`), and `GameConstants.PropSpecialistDetail` (= `"Specialist Detail"`). These are blueprint property keys, not display names.
+**Resolution:** The game's cargo hold displays worker items as "Blue Collar Detail", "White Collar Detail", "Specialist Detail" — matching the current `WorkerDetail.Name` values. These happen to be the same strings as the blueprint property keys (`GameConstants.PropBlueCollarDetail` etc.), which is intentional — the game uses the same name in both contexts. `WorkerTypeInfo.DisplayName` (e.g. "Blue Collar") is a shorter form used for UI labels like worker assignment checkboxes, not the canonical item name. No code change needed — the current values are correct.
 
-Meanwhile, `WorkerTypeInfo.DisplayName` holds the actual display name (e.g. `"Blue Collar"`, `"White Collar"`, `"Specialist"`).
-
-The `WorkerDetail.Name` field is used in `WorkerDetailMapByName` for lookups. If any code looks up a worker by display name (e.g. `"Blue Collar"`) it will fail because the map key is `"Blue Collar Detail"`.
-
-**Resolution needed:** Decide whether `WorkerDetail.Name` should be the display name (`"Blue Collar"`) or the property key (`"Blue Collar Detail"`). If it's the property key, rename the field to `PropertyKey` or add a doc comment clarifying this. If it's the display name, fix `getWorkerDetails()` to use `WorkerTypeInfo.DisplayName` values instead.
+**Action:** No code change. Documented in spec.
 
 ---
 
