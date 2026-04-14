@@ -166,10 +166,43 @@ namespace OE2EmpireTracker.Services
             }
 
             // Append remaining unused support structures at the end
-            result.AddRange(supportPool);
+            foreach (var leftover in supportPool)
+            {
+                result.Add(leftover);
+                Blueprint leftoverBp = _playerContext.FindBlueprint(leftover.FlatpackBlueprintUUID);
+                runningStatus = SimulateOneMore(runningStatus, leftover, leftoverBp, idealWorkers);
+            }
+            int leftoverCount = supportPool.Count;
+            supportPool.Clear();
 
-            Log.Info("Build order optimized: {0} structures ({1} primary, {2} support)",
-                result.Count, primaryPool.Count, supportPool.Count);
+            // Fill remaining deficits by creating new support structures from player blueprints.
+            // This handles the case where the user added staged primaries that need more support
+            // than what was in the original pool.
+            int created = 0;
+            while (HasDeficit(runningStatus))
+            {
+                ColonyStructure newSupport = CreateSupportStructure(runningStatus);
+                if (newSupport == null)
+                {
+                    Log.Warn("Cannot fill remaining deficit -- no suitable blueprint found. " +
+                        "PowerReq={0} PowerProv={1} HabReq={2} HabProv={3} FoodReq={4} FoodProv={5} EntReq={6} EntProv={7}",
+                        runningStatus.PowerRequired, runningStatus.PowerProvided,
+                        runningStatus.HabitationRequired, runningStatus.HabitationProvision,
+                        runningStatus.FoodRequired, runningStatus.FoodProvision,
+                        runningStatus.EntertainmentRequired, runningStatus.EntertainmentProvided);
+                    break;
+                }
+                result.Add(newSupport);
+                Blueprint newBp = _playerContext.FindBlueprint(newSupport.FlatpackBlueprintUUID);
+                Log.Info("Created support to fill deficit: {0}", newBp?.ExtendedName ?? newSupport.FlatpackBlueprintUUID);
+                runningStatus = SimulateOneMore(runningStatus, newSupport, newBp, idealWorkers);
+                created++;
+            }
+            if (created > 0)
+                Log.Info("Created {0} additional support structure(s) to fill deficits", created);
+
+            Log.Info("Build order optimized: {0} structures ({1} primary, {2} leftover support, {3} created)",
+                result.Count, primaryPool.Count, leftoverCount, created);
 
             // Log output order
             Log.Info("Optimizer OUTPUT order:");
