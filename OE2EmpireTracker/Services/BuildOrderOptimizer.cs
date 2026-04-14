@@ -79,6 +79,21 @@ namespace OE2EmpireTracker.Services
             Log.Info("Optimizer pools: {0} primary, {1} support (all structures optimized)",
                 primaryPool.Count, supportPool.Count);
 
+            // Colony Command Centre must always be first — it's the foundation of every colony.
+            var commandCentres = primaryPool
+                .Where(s =>
+                {
+                    var bp = _playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                    return bp != null && bp.BluePrintType == "Flatpacks/ColonyCommandCentre";
+                })
+                .ToList();
+            foreach (var cc in commandCentres)
+            {
+                primaryPool.Remove(cc);
+                result.Add(cc);
+                Log.Info("Optimizer: placed Colony Command Centre first (UUID={0})", cc.UUID);
+            }
+
             // Log input order
             Log.Info("Optimizer INPUT order:");
             for (int i = 0; i < colony.Structures.Count; i++)
