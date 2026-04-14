@@ -122,10 +122,10 @@ namespace OE2EmpireTracker.Tests.Services
             // Add support structures (what a real colony would have)
             // 15 Reactors, 7 Hab Blocks, 7 Hydro Bays, 6 Ent Centres, 1 CC
             colony.Structures.Add(MakeStructure("Flatpacks/ColonyCommandCentre"));
-            for (int i = 0; i < 16; i++) colony.Structures.Add(MakeStructure("Flatpacks/ReactorCore"));
-            for (int i = 0; i < 7; i++) colony.Structures.Add(MakeStructure("Flatpacks/HabitationBlock"));
-            for (int i = 0; i < 7; i++) colony.Structures.Add(MakeStructure("Flatpacks/HydroponicsBay"));
-            for (int i = 0; i < 6; i++) colony.Structures.Add(MakeStructure("Flatpacks/EntertainmentCentreFlatpack"));
+            for (int i = 0; i < 20; i++) colony.Structures.Add(MakeStructure("Flatpacks/ReactorCore"));
+            for (int i = 0; i < 8; i++) colony.Structures.Add(MakeStructure("Flatpacks/HabitationBlock"));
+            for (int i = 0; i < 8; i++) colony.Structures.Add(MakeStructure("Flatpacks/HydroponicsBay"));
+            for (int i = 0; i < 8; i++) colony.Structures.Add(MakeStructure("Flatpacks/EntertainmentCentreFlatpack"));
 
             // Add primaries
             colony.Structures.Add(MakeStructure("Flatpacks/RemoteOperationsArray"));

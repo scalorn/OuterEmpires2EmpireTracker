@@ -114,33 +114,28 @@ namespace OE2EmpireTracker.Services
                 // After fixing these, also check if the new support structures
                 // pushed power into deficit (hab/hydro/ent all need power).
                 ColonyStructureStatus currentEnd = SimulateAll(result, idealWorkers);
-                bool placedAny = false;
                 if (afterFutureSupport.HabitationRequired > currentEnd.HabitationProvision)
                 {
                     PlaceSupportSafe(result, supportPool, GameConstants.PropHabitationProvision, idealWorkers);
-                    placedAny = true;
                 }
                 currentEnd = SimulateAll(result, idealWorkers);
                 if (afterFutureSupport.FoodRequired > currentEnd.FoodProvision)
                 {
                     PlaceSupportSafe(result, supportPool, GameConstants.PropFoodProvision, idealWorkers);
-                    placedAny = true;
                 }
                 currentEnd = SimulateAll(result, idealWorkers);
                 if (afterFutureSupport.EntertainmentRequired > currentEnd.EntertainmentProvided)
                 {
                     PlaceSupportSafe(result, supportPool, GameConstants.PropEntertainmentProvided, idealWorkers);
-                    placedAny = true;
                 }
-                // If we placed support that needs power, fix the power deficit too
-                if (placedAny)
+                // Final check: after all look-ahead placements, verify the primary
+                // won't cause a deficit. This catches power deficits from support
+                // structures placed by the look-ahead or Step B.
+                status = SimulateAll(result, idealWorkers);
+                afterPrimary = SimulateOneMore(status, primary, primaryBp, idealWorkers);
+                if (HasDeficit(afterPrimary))
                 {
-                    currentEnd = SimulateAll(result, idealWorkers);
-                    afterPrimary = SimulateOneMore(currentEnd, primary, primaryBp, idealWorkers);
-                    if (afterPrimary.PowerRequired > currentEnd.PowerProvided)
-                    {
-                        FixDeficits(result, supportPool, afterPrimary, idealWorkers);
-                    }
+                    FixDeficits(result, supportPool, afterPrimary, idealWorkers);
                 }
 
                 // Step C: Place the primary

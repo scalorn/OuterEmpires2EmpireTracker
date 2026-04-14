@@ -289,7 +289,7 @@ namespace OE2EmpireTracker.Tests.Services
             // 1 assigned worker adds 1 to each required
             Assert.That(status.HabitationRequired, Is.EqualTo(1.0).Within(0.01));
             Assert.That(status.FoodRequired, Is.EqualTo(1.0).Within(0.01));
-            Assert.That(status.EntertainmentRequired, Is.EqualTo(1.0).Within(0.01));
+            Assert.That(status.EntertainmentRequired, Is.EqualTo(2.0).Within(0.01));
         }
 
         [Test]
@@ -327,7 +327,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(status.HabitationRequired, Is.EqualTo(3.0).Within(0.01));
             Assert.That(status.FoodRequired, Is.EqualTo(3.0).Within(0.01));
-            Assert.That(status.EntertainmentRequired, Is.EqualTo(3.0).Within(0.01));
+            Assert.That(status.EntertainmentRequired, Is.EqualTo(6.0).Within(0.01));
         }
 
         // -----------------------------------------------------------------------
@@ -349,7 +349,7 @@ namespace OE2EmpireTracker.Tests.Services
             // Ideal: all 3 workers assigned
             Assert.That(status.HabitationRequired, Is.EqualTo(3.0).Within(0.01));
             Assert.That(status.FoodRequired, Is.EqualTo(3.0).Within(0.01));
-            Assert.That(status.EntertainmentRequired, Is.EqualTo(3.0).Within(0.01));
+            Assert.That(status.EntertainmentRequired, Is.EqualTo(6.0).Within(0.01));
         }
 
         [Test]
@@ -400,7 +400,7 @@ namespace OE2EmpireTracker.Tests.Services
             // 1 unallocated worker adds 1 to required
             Assert.That(status.HabitationRequired, Is.EqualTo(1.0).Within(0.01));
             Assert.That(status.FoodRequired, Is.EqualTo(1.0).Within(0.01));
-            Assert.That(status.EntertainmentRequired, Is.EqualTo(1.0).Within(0.01));
+            Assert.That(status.EntertainmentRequired, Is.EqualTo(2.0).Within(0.01));
         }
 
         [Test]
@@ -434,7 +434,7 @@ namespace OE2EmpireTracker.Tests.Services
                 UnallocatedBlueCollarPresent = true,
                 HabitationRequired = 1,
                 FoodRequired = 1,
-                EntertainmentRequired = 1
+                EntertainmentRequired = 2 // 1 worker * 2 ent per worker
             };
 
             var colony = new Colony();
@@ -460,7 +460,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(status.UnallocatedBlueCollarPresent, Is.True);
             Assert.That(status.HabitationRequired, Is.EqualTo(1.0).Within(0.01));
             Assert.That(status.FoodRequired, Is.EqualTo(1.0).Within(0.01));
-            Assert.That(status.EntertainmentRequired, Is.EqualTo(1.0).Within(0.01));
+            Assert.That(status.EntertainmentRequired, Is.EqualTo(2.0).Within(0.01));
         }
 
         [Test]
@@ -553,7 +553,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(status2.HabitationProvision, Is.EqualTo(100.0).Within(0.01));
             Assert.That(status2.HabitationRequired, Is.EqualTo(2.0).Within(0.01)); // 1 from reactor + 1 from hab
             Assert.That(status2.FoodRequired, Is.EqualTo(2.0).Within(0.01));
-            Assert.That(status2.EntertainmentRequired, Is.EqualTo(2.0).Within(0.01));
+            Assert.That(status2.EntertainmentRequired, Is.EqualTo(4.0).Within(0.01)); // 2 workers * 2 ent each
         }
 
         // -----------------------------------------------------------------------

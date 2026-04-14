@@ -451,8 +451,8 @@ namespace OE2EmpireTracker.Services
             status.FoodRequired = builtFoodRequired + ColonyWorkers.Count + unallocatedWorkersAdded;
 
             status.EntertainmentProvided = builtEntertainmentProvided;
-            // Entertainment required is calculated based on workers in current implementation
-            status.EntertainmentRequired = builtEntertainmentRequired + ColonyWorkers.Count + unallocatedWorkersAdded;
+            // Entertainment required is 2 per worker (game rule)
+            status.EntertainmentRequired = builtEntertainmentRequired + (ColonyWorkers.Count + unallocatedWorkersAdded) * 2;
 
             status.WarehouseCapacity = builtWarehouseCapacity;
             // Warehouse required is calculated based on workers in current implementation
