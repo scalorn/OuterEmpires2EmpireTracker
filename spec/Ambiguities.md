@@ -438,27 +438,19 @@ Renaming it would require a JSON migration strategy since it's serialized to Pla
 
 ## Spec-vs-Code Audit (April 2026)
 
-### AMB-052 — OPEN: REQ-BPV-010 lists property names without spaces but code uses spaced names
+### AMB-052 — RESOLVED: REQ-BPV-010 lists property names without spaces but code uses spaced names
 
-**Issue:** `REQ-BPV-010` in `BlueprintProperties.md` lists integer property names in CamelCase without spaces (e.g. `BlueCollarDetail`, `PowerProvided`, `HabitationProvision`, `WarehouseCapacity`). However, `BlueprintPropertyValidation.cs` uses the actual game names with spaces (e.g. `"Blue Collar Detail"`, `"Power Provided"`, `"Habitation Provision"`, `"Warehouse Capacity"`). The same applies to REQ-BPV-020 (decimal properties), REQ-BPV-030 (boolean), REQ-BPV-040 (combo), and REQ-BPV-050 (time).
+**Resolution:** Updated `BlueprintProperties.md` REQ-BPV-010 through REQ-BPV-050 to list property names with spaces matching the actual game data and `BlueprintPropertyValidation.cs`. Updated integer property count from 57 to 62 (added Accuracy, Amount Manufactured, Blue Collar Detail, Unassigned Blue Collar Detail, White Collar Detail). All property names now match the canonical spaced form used in the code and game data.
 
-The code is correct — the game uses spaced names. The spec is stale.
-
-**Resolution needed:** Update REQ-BPV-010 through REQ-BPV-050 to list property names with spaces matching the actual game data and `BlueprintPropertyValidation.cs`. Also update the property count in the section headers (e.g. "57 total" may be wrong after recent additions like `"Unassigned Blue Collar Detail"`).
+**Action:** `spec/requirements/BlueprintProperties.md` rewritten.
 
 ---
 
-### AMB-053 — OPEN: REQ-DM-079 conflates two different key types
+### AMB-053 — RESOLVED: REQ-DM-079 conflates two different key types
 
-**Issue:** `REQ-DM-079` states: "WorkerDetail IDs SHALL match the property bag keys used in ColonyStatusCalculator (BlueCollarDetail, WhiteCollarDetail, SpecialistDetail)."
+**Resolution:** Rewrote REQ-DM-079 to distinguish WorkerDetail IDs (no spaces, used as `BaseItemTypeID` and lock keys) from blueprint property keys (with spaces, used for worker count lookups). References `WorkerTypeInfo.DetailKey` and `WorkerTypeInfo.PropertyKey` as the canonical separation.
 
-This is now incorrect in two ways:
-1. The ColonyStatusCalculator uses `wt.PropertyKey` (spaced, e.g. `"Blue Collar Detail"`) for blueprint property lookups — not the WorkerDetail IDs.
-2. The WorkerDetail IDs (`BlueCollarDetail`, `WhiteCollarDetail`, `SpecialistDetail`) are used as `BaseItemTypeID` for WorkDetail items in the warehouse and as lock keys — not as blueprint property keys.
-
-The `WorkerTypeInfo` class now cleanly separates these two concerns: `DetailKey` (no spaces, item type ID) vs `PropertyKey` (with spaces, blueprint property key).
-
-**Resolution needed:** Rewrite REQ-DM-079 to: "WorkerDetail IDs (e.g. `BlueCollarDetail`) SHALL be used as `BaseItemTypeID` for WorkDetail items in the colony warehouse and as lock process keys. Blueprint property keys for worker counts SHALL use the spaced form (e.g. `"Blue Collar Detail"`) matching the game data. These are distinct keys and SHALL NOT be conflated. `WorkerTypeInfo.DetailKey` holds the item ID; `WorkerTypeInfo.PropertyKey` holds the blueprint property key."
+**Action:** `spec/requirements/DataModel.md` REQ-DM-079 updated.
 
 ---
 
@@ -474,41 +466,24 @@ The `WorkerDetail.Name` field is used in `WorkerDetailMapByName` for lookups. If
 
 ---
 
-### AMB-055 — OPEN: REQ-COL-017b does not specify entertainment cost for unallocated workers
+### AMB-055 — RESOLVED: REQ-COL-017b does not specify entertainment cost for unallocated workers
 
-**Issue:** `REQ-COL-017b` states: "The first structure in the list that requires an unallocated worker of a given type adds 1 to the required values." The phrase "required values" is ambiguous — it could mean hab+food only, or hab+food+entertainment.
+**Resolution:** Updated REQ-COL-017b to explicitly state that an unallocated worker adds 1 to HabitationRequired, 1 to FoodRequired, and 2 to EntertainmentRequired, consistent with REQ-COL-017's 2x entertainment rule.
 
-The code in `ColonyStatusCalculator.CalculateBuilt` adds `unallocatedWorkersAdded` to all three:
-```csharp
-status.HabitationRequired = builtHabitationRequired + ColonyWorkers.Count + unallocatedWorkersAdded;
-status.FoodRequired = builtFoodRequired + ColonyWorkers.Count + unallocatedWorkersAdded;
-status.EntertainmentRequired = builtEntertainmentRequired + (ColonyWorkers.Count + unallocatedWorkersAdded) * 2;
-```
-
-So an unallocated worker costs 1 hab, 1 food, and 2 entertainment — same as an assigned worker. This is consistent with REQ-COL-017 (which says N workers adds N to hab/food and N*2 to entertainment), but REQ-COL-017b's "adds 1 to the required values" doesn't explicitly say entertainment is included at 2x.
-
-**Resolution needed:** Update REQ-COL-017b to explicitly state: "The first structure that requires an unallocated worker of a given type adds 1 to HabitationRequired, 1 to FoodRequired, and 2 to EntertainmentRequired (consistent with REQ-COL-017's 2x entertainment rule)."
+**Action:** `spec/requirements/Colony.md` REQ-COL-017b updated.
 
 ---
 
-### AMB-056 — OPEN: GOALS.md and spec-code-sync-review.md are stale
+### AMB-056 — RESOLVED: GOALS.md and spec-code-sync-review.md are stale
 
-**Issue:** Multiple stale counts and references:
+**Resolution:** GOALS.md updated: test count 750 -> 1371, feature count corrected, completed items removed from Open Work, dependency graph updated. spec-code-sync-review.md marked as superseded with pointer to AMB-052-057.
 
-1. `GOALS.md` says "750 total tests, all passing" — actual count is 1371.
-2. `GOALS.md` says "78 features completed" — COMPLETED.md now has many more entries.
-3. `GOALS.md` Open Work section still lists "Mass Blueprint Importer" and "Pricing Plans" as open — both are complete.
-4. `GOALS.md` says "All original Recommendations (1-18) resolved" — Recommendations.md only shows 3 items; unclear if this count is accurate.
-5. `spec-code-sync-review.md` lists several discrepancies that have since been resolved (AMB-032 resolved the gameSequence/displaySequence issue; REQ-CI-020 was updated; COMPLETED.md entries 79-80 were added). The sync review doc itself is now stale.
-
-**Resolution needed:** Update `GOALS.md` with current test count (1371), current feature count (count COMPLETED.md entries), and remove completed items from Open Work. Either update or archive `spec-code-sync-review.md` — it served its purpose and is now misleading.
+**Action:** `spec/GOALS.md` and `spec/spec-code-sync-review.md` updated in prior commit.
 
 ---
 
-### AMB-057 — OPEN: ColonyStructure.displaySequence has [JsonProperty("gameSequence")] — migration concern
+### AMB-057 — RESOLVED: ColonyStructure.displaySequence has [JsonProperty("gameSequence")] — migration concern
 
-**Issue:** `ColonyStructure.displaySequence` is decorated with `[JsonProperty("gameSequence")]` so it serializes/deserializes as `"gameSequence"` in JSON. This was done to maintain backward compatibility with existing save files after the rename from `gameSequence` to `displaySequence` (AMB-032).
+**Resolution:** Migrated to the new JSON key name `"displaySequence"`. Removed `[JsonProperty("gameSequence")]` from the public property. Added a private write-only `gameSequenceLegacy` property with `[JsonProperty("gameSequence")]` so old save files with the `"gameSequence"` key still deserialize correctly. New saves write `"displaySequence"`. Added Migration006 (no-op — data already loaded correctly, bumps DataVersion to 6 so next save writes the new key). Renamed ViewModel property `GameSequence` to `DisplaySequence`. Updated test names.
 
-The `Colony Structure Dedupe Fix` spec in COMPLETED.md says this was resolved, but there is no migration entry for it in `MigrationRunner`. If a user has an old save file with `"gameSequence"` values, the `[JsonProperty]` attribute handles it transparently. However, new saves will also write `"gameSequence"` (not `"displaySequence"`), which means the JSON key name never actually changed.
-
-**Resolution needed:** Decide whether to keep the `[JsonProperty("gameSequence")]` alias permanently (accepting that the JSON key stays `"gameSequence"`) or add a migration to rename the JSON key to `"displaySequence"` and remove the attribute. Document the decision in the spec. Currently the code is correct and functional — this is a naming consistency question only.
+**Action:** `ColonyStructure.cs`, `ColonyStructureViewModel.cs`, `MigrationRunner.cs` updated. `Migration006_DisplaySequenceJsonKey.cs` created. 4 tests added. REQ-COL-033 updated to say `displaySequence`.

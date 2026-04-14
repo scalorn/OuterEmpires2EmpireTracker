@@ -9,8 +9,14 @@ namespace OE2EmpireTracker.Models
     {
         public string UUID { get; set; } = null;
         public string FlatpackBlueprintUUID { get; set; } = null;
-        [JsonProperty("gameSequence")]
         public int displaySequence { get; set; } = 0;
+
+        /// <summary>
+        /// Backward-compat: reads old "gameSequence" JSON key into displaySequence.
+        /// Write-only; new saves serialize as "displaySequence".
+        /// </summary>
+        [JsonProperty("gameSequence")]
+        private int gameSequenceLegacy { set { displaySequence = value; } }
         public int buildingID { get; set; } = 0;
         public int buildQueueSequence { get; set; } = 0;
         public PropertyBag Properties { get; set; }

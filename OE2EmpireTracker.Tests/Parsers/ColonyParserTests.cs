@@ -152,7 +152,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         [Test]
-        public void M1_StructuresHaveGameSequence()
+        public void M1_StructuresHaveDisplaySequence()
         {
             var colony = ParseM1();
             foreach (var s in colony.Structures)

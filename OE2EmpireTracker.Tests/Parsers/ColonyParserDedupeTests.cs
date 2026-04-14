@@ -221,7 +221,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         [Test]
-        public void Preservation_M1_EmptyColonyImport_AllHaveGameSequenceGtZero()
+        public void Preservation_M1_EmptyColonyImport_AllHaveDisplaySequenceGtZero()
         {
             var colony = ParseM1Fresh();
             foreach (var s in colony.Structures)
@@ -372,7 +372,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         [Test]
-        public void Preservation_M1_Idempotency_GameSequenceValuesPreserved()
+        public void Preservation_M1_Idempotency_DisplaySequenceValuesPreserved()
         {
             string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranIIM1.html");
             string html = ExtractFragment(clipboardData);

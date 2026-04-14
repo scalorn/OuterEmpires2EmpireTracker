@@ -49,11 +49,11 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // gameSequence and buildQueueSequence
+        // displaySequence and buildQueueSequence
         // -----------------------------------------------------------------------
 
         [Test]
-        public void Set_GameSequenceAndBuildQueueSequence_CanBeSetAndRead()
+        public void Set_DisplaySequenceAndBuildQueueSequence_CanBeSetAndRead()
         {
             var structure = new ColonyStructure();
             structure.displaySequence = 5;

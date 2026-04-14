@@ -91,7 +91,7 @@
 **REQ-DM-076** ResourceGroup.Synthetic entry SHALL have Synthetic=true; all other entries SHALL have Synthetic=false.  
 **REQ-DM-077** ResourcePurity.Refined entry SHALL have Refined=true; all other entries SHALL have Refined=false.  
 **REQ-DM-078** WorkerDetail SHALL contain exactly three named entries: BlueCollarDetail, WhiteCollarDetail, SpecialistDetail.  
-**REQ-DM-079** WorkerDetail IDs SHALL match the property bag keys used in ColonyStatusCalculator (BlueCollarDetail, WhiteCollarDetail, SpecialistDetail).
+**REQ-DM-079** WorkerDetail IDs (e.g. `BlueCollarDetail`, `WhiteCollarDetail`, `SpecialistDetail`) SHALL be used as `BaseItemTypeID` for WorkDetail items in the colony warehouse and as lock process keys. Blueprint property keys for worker counts SHALL use the spaced form (e.g. `"Blue Collar Detail"`, `"White Collar Detail"`, `"Specialist Detail"`) matching the game data. These are distinct key types: `WorkerTypeInfo.DetailKey` holds the item type ID (no spaces); `WorkerTypeInfo.PropertyKey` holds the blueprint property key (with spaces).
 
 ## PlayerProfile and Skills
 

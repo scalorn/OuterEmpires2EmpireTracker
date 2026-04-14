@@ -135,6 +135,7 @@
     <Compile Include="Services\Migration\Migrations\Migration003_SurveyDateTimeNormalization.cs" />
     <Compile Include="Services\Migration\Migrations\Migration004_ColonyImportTimestampBackfill.cs" />
     <Compile Include="Services\Migration\Migrations\Migration005_PropertyKeyCleanup.cs" />
+    <Compile Include="Services\Migration\Migrations\Migration006_DisplaySequenceJsonKey.cs" />
     <Compile Include="Services\ColonyImportHelper.cs" />
     <Compile Include="Services\SurveyImportHelper.cs" />
     <Compile Include="Services\BlueprintReferenceCounter.cs" />

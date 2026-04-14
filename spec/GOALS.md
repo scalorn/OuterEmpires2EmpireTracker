@@ -29,11 +29,11 @@ graph LR
 - [Backlog](BACKLOG.md) — open features and enhancements to be worked on
 - [Recommendations](Recommendations.md) — resolved issues and their outcomes
 - [Completed Work Archive](COMPLETED.md) — detailed record of all completed tasks
-- [Ambiguities](Ambiguities.md) — 51 resolved, 6 open (AMB-052 through AMB-057)
+- [Ambiguities](Ambiguities.md) — 57 resolved, 1 open (AMB-054)
 
 ## Current Status
 
-1371 total tests, all passing. All original Recommendations (1-18) resolved. MVVM complete across all forms. NLog logging throughout. 61 features completed. Directory restructured: `Baseline/` and `Data/` replaced by `Models/`, `Services/`, `Parsers/`, `Persistence/`.
+1375 total tests, all passing. All original Recommendations (1-18) resolved. MVVM complete across all forms. NLog logging throughout. 61 features completed. Directory restructured: `Baseline/` and `Data/` replaced by `Models/`, `Services/`, `Parsers/`, `Persistence/`.
 
 ## Open Work
 
