@@ -97,9 +97,11 @@ namespace OE2EmpireTracker.Services
                     afterPrimary = SimulateOneMore(status, primary, primaryBp, idealWorkers);
                 }
 
-                // Then look further ahead: after the primary + hab + hydro
-                // (support structures with workers that create cascading needs).
-                // Don't include reactor in look-ahead -- it doesn't have workers.
+                // Then look further ahead: after the primary + hab + hydro,
+                // would hab/food/ent go into deficit? (Hab/Hydro workers need these.)
+                // Don't fix POWER here -- power deficits from future primaries will
+                // be handled by their own Step B. Fixing power in the look-ahead
+                // double-counts and over-provisions reactors.
                 Blueprint habBp = FindBlueprintByType("Flatpacks/HabitationBlock");
                 Blueprint hydroBp = FindBlueprintByType("Flatpacks/HydroponicsBay");
                 ColonyStructureStatus afterFutureSupport = afterPrimary;
@@ -108,9 +110,37 @@ namespace OE2EmpireTracker.Services
                 if (hydroBp != null)
                     afterFutureSupport = SimulateOneMore(afterFutureSupport, null, hydroBp, idealWorkers);
 
-                if (HasDeficit(afterFutureSupport))
+                // Fix hab, food, and entertainment deficits from the look-ahead.
+                // After fixing these, also check if the new support structures
+                // pushed power into deficit (hab/hydro/ent all need power).
+                ColonyStructureStatus currentEnd = SimulateAll(result, idealWorkers);
+                bool placedAny = false;
+                if (afterFutureSupport.HabitationRequired > currentEnd.HabitationProvision)
                 {
-                    FixDeficits(result, supportPool, afterFutureSupport, idealWorkers);
+                    PlaceSupportSafe(result, supportPool, GameConstants.PropHabitationProvision, idealWorkers);
+                    placedAny = true;
+                }
+                currentEnd = SimulateAll(result, idealWorkers);
+                if (afterFutureSupport.FoodRequired > currentEnd.FoodProvision)
+                {
+                    PlaceSupportSafe(result, supportPool, GameConstants.PropFoodProvision, idealWorkers);
+                    placedAny = true;
+                }
+                currentEnd = SimulateAll(result, idealWorkers);
+                if (afterFutureSupport.EntertainmentRequired > currentEnd.EntertainmentProvided)
+                {
+                    PlaceSupportSafe(result, supportPool, GameConstants.PropEntertainmentProvided, idealWorkers);
+                    placedAny = true;
+                }
+                // If we placed support that needs power, fix the power deficit too
+                if (placedAny)
+                {
+                    currentEnd = SimulateAll(result, idealWorkers);
+                    afterPrimary = SimulateOneMore(currentEnd, primary, primaryBp, idealWorkers);
+                    if (afterPrimary.PowerRequired > currentEnd.PowerProvided)
+                    {
+                        FixDeficits(result, supportPool, afterPrimary, idealWorkers);
+                    }
                 }
 
                 // Step C: Place the primary
@@ -191,8 +221,6 @@ namespace OE2EmpireTracker.Services
         private void PlaceSupportSafe(List<ColonyStructure> result, List<ColonyStructure> pool,
             string deficitType, IColonyStructureWorkers workers)
         {
-            ColonyStructureStatus beforeStatus = SimulateAll(result, workers);
-
             // Get the support structure from pool or create it
             ColonyStructure support = TakeFromPool(pool, deficitType);
             if (support == null)
@@ -203,30 +231,32 @@ namespace OE2EmpireTracker.Services
 
             // Simulate placing it -- would it cause a NEW deficit?
             Blueprint bp = _playerContext.FindBlueprint(support.FlatpackBlueprintUUID);
+            ColonyStructureStatus beforeStatus = SimulateAll(result, workers);
             ColonyStructureStatus afterStatus = SimulateOneMore(beforeStatus, support, bp, workers);
 
-            // Check for new deficits caused by this support structure
-            // Ent Centre needs power -> place Reactor first
+            // Check for new deficits caused by this support structure.
+            // Place prerequisites BEFORE this structure.
+            // Power: Ent Centre needs 2 power, Hydro/Hab need 1
             if (afterStatus.PowerRequired > afterStatus.PowerProvided &&
                 !(beforeStatus.PowerRequired > beforeStatus.PowerProvided))
             {
                 PlaceSupportSafe(result, pool, GameConstants.PropPowerProvided, workers);
             }
-            // Hydro/Ent have workers that need entertainment -> place Ent first
+            // Entertainment: Hydro/Ent workers need entertainment
             if (afterStatus.EntertainmentRequired > afterStatus.EntertainmentProvided &&
                 !(beforeStatus.EntertainmentRequired > beforeStatus.EntertainmentProvided) &&
-                deficitType != GameConstants.PropEntertainmentProvided) // don't recurse on self
+                deficitType != GameConstants.PropEntertainmentProvided)
             {
                 PlaceSupportSafe(result, pool, GameConstants.PropEntertainmentProvided, workers);
             }
-            // Workers need hab
+            // Hab: workers need habitation
             if (afterStatus.HabitationRequired > afterStatus.HabitationProvision &&
                 !(beforeStatus.HabitationRequired > beforeStatus.HabitationProvision) &&
                 deficitType != GameConstants.PropHabitationProvision)
             {
                 PlaceSupportSafe(result, pool, GameConstants.PropHabitationProvision, workers);
             }
-            // Workers need food
+            // Food: workers need food
             if (afterStatus.FoodRequired > afterStatus.FoodProvision &&
                 !(beforeStatus.FoodRequired > beforeStatus.FoodProvision) &&
                 deficitType != GameConstants.PropFoodProvision)
