@@ -42,12 +42,12 @@ namespace OE2EmpireTracker.Services
         /// Optimizes the build order of the colony's structures.
         /// 
         /// Algorithm:
-        /// 1. Place CC first, then all primaries in order.
-        /// 2. Walk the list simulating each structure. At the first deficit,
-        ///    insert the highest-priority support (power > hab > food > ent) at that position.
-        /// 3. Restart the walk from the beginning (insertion changes subsequent positions).
-        /// 4. Repeat until a full walk completes with no deficits (except the acceptable
-        ///    initial entertainment deficit from the CC).
+        /// 1. Seed with CC + Reactor + Hab + Hydro + Ent (the bootstrap set that
+        ///    ensures no deficits from the start), then all primaries.
+        /// 2. Walk the list simulating each structure. At the first structure where
+        ///    a deficit gets worse, insert the highest-priority support at that position.
+        /// 3. Restart the walk from the beginning.
+        /// 4. Repeat until a full walk completes with no worsening deficits.
         /// </summary>
         public List<ColonyStructure> Optimize(Colony colony)
         {
@@ -88,27 +88,21 @@ namespace OE2EmpireTracker.Services
                 Log.Info("  [{0}] {1} (UUID={2})", i, bp?.ExtendedName ?? s.FlatpackBlueprintUUID, s.UUID);
             }
 
-            // Step 1: Build initial list -- CC first, then all primaries
+            // Step 1: Seed the result with the bootstrap set.
+            // Every colony starts: CC -> Reactor -> Hab -> Hydro -> Ent
+            // This resolves all CC deficits before any primaries are placed.
             var result = new List<ColonyStructure>();
             _currentResult = result;
 
-            var commandCentres = primaryPool
-                .Concat(supportPool)
-                .Where(s =>
-                {
-                    var bp = _playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
-                    return bp != null && bp.BluePrintType == "Flatpacks/ColonyCommandCentre";
-                })
-                .ToList();
-            foreach (var cc in commandCentres)
-            {
-                primaryPool.Remove(cc);
-                supportPool.Remove(cc);
-                result.Add(cc);
-                Log.Info("Optimizer: placed Colony Command Centre first (UUID={0})", cc.UUID);
-            }
+            SeedBootstrap(result, primaryPool, supportPool, "Flatpacks/ColonyCommandCentre");
+            SeedBootstrap(result, primaryPool, supportPool, "Flatpacks/ReactorCore");
+            SeedBootstrap(result, primaryPool, supportPool, "Flatpacks/HabitationBlock");
+            SeedBootstrap(result, primaryPool, supportPool, "Flatpacks/HydroponicsBay");
+            SeedBootstrap(result, primaryPool, supportPool, "Flatpacks/EntertainmentCentreFlatpack");
 
-            // Add all primaries after CC
+            Log.Info("Bootstrap: {0} structures seeded", result.Count);
+
+            // Add all primaries after the bootstrap set
             result.AddRange(primaryPool);
 
             // Step 2-4: Iteratively walk and insert support until no deficits
@@ -116,16 +110,10 @@ namespace OE2EmpireTracker.Services
             int maxIterations = 500; // safety limit
             int iteration = 0;
 
-            // Track the entertainment deficit that exists from the CC.
-            // We allow entertainment to be in deficit as long as it's not WORSE
-            // than the baseline. This prevents the optimizer from endlessly
-            // inserting Entertainment Centres + Reactors at the start.
-            decimal baselineEntDeficit = 0;
-            {
-                ColonyStructureStatus ccStatus = SimulateStatus(result, idealWorkers);
-                if (ccStatus.EntertainmentRequired > ccStatus.EntertainmentProvided)
-                    baselineEntDeficit = ccStatus.EntertainmentRequired - ccStatus.EntertainmentProvided;
-            }
+            // All deficits must be resolved. The bootstrap set handles the CC's
+            // initial deficits. The walk uses IsWorseDeficit to find the first
+            // structure that makes any resource deficit worse, then inserts the
+            // highest-priority support at that position.
 
             while (iteration < maxIterations)
             {
@@ -133,7 +121,7 @@ namespace OE2EmpireTracker.Services
                 int insertionIndex = -1;
                 ColonyStructureStatus deficitStatus = null;
 
-                // Walk the list, simulating each structure
+                // Walk the full list simulating each structure
                 ColonyStructureStatus prev = new ColonyStructureStatus();
                 var calculator = new ColonyStatusCalculator(new Colony());
 
@@ -144,11 +132,16 @@ namespace OE2EmpireTracker.Services
                     ColonyStructureStatus current = new ColonyStructureStatus();
                     calculator.CalculateBuilt(structure, prev, current, idealWorkers, bp);
 
-                    if (HasDeficitExcludingBaselineEnt(current, baselineEntDeficit))
+                    // Only flag a deficit if this structure made things WORSE.
+                    // Inherited deficits (same or better than prev) are not actionable
+                    // at this position -- they need to be fixed earlier in the list.
+                    // On the first pass they'll be caught when the structure that
+                    // originally caused them is reached.
+                    if (IsWorseDeficit(prev, current))
                     {
                         insertionIndex = i;
                         deficitStatus = current;
-                        Log.Debug("Iteration {0}: deficit at [{1}] {2} -- PwrR={3} PwrP={4} HabR={5} HabP={6} FoodR={7} FoodP={8} EntR={9} EntP={10}",
+                        Log.Info("Iteration {0}: deficit at [{1}] {2} -- PwrR={3} PwrP={4} HabR={5} HabP={6} FoodR={7} FoodP={8} EntR={9} EntP={10}",
                             iteration, i, bp?.ExtendedName ?? structure.FlatpackBlueprintUUID,
                             current.PowerRequired, current.PowerProvided,
                             current.HabitationRequired, current.HabitationProvision,
@@ -224,6 +217,61 @@ namespace OE2EmpireTracker.Services
             return prev;
         }
 
+        /// <summary>
+        /// Pulls one structure of the given blueprint type from the support pool
+        /// (or primary pool for CC) and adds it to the result. If none exists in
+        /// the pools, creates one from player blueprints.
+        /// </summary>
+        private void SeedBootstrap(List<ColonyStructure> result,
+            List<ColonyStructure> primaryPool, List<ColonyStructure> supportPool,
+            string blueprintType)
+        {
+            // Try support pool first, then primary pool
+            var match = supportPool.FirstOrDefault(s =>
+            {
+                var bp = _playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                return bp != null && bp.BluePrintType == blueprintType;
+            });
+            if (match != null)
+            {
+                supportPool.Remove(match);
+                result.Add(match);
+                Log.Info("Bootstrap: seeded '{0}' from support pool", blueprintType);
+                return;
+            }
+
+            match = primaryPool.FirstOrDefault(s =>
+            {
+                var bp = _playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                return bp != null && bp.BluePrintType == blueprintType;
+            });
+            if (match != null)
+            {
+                primaryPool.Remove(match);
+                result.Add(match);
+                Log.Info("Bootstrap: seeded '{0}' from primary pool", blueprintType);
+                return;
+            }
+
+            // Not in any pool -- create from player blueprints
+            foreach (var bp in _playerContext.GetAllBlueprints())
+            {
+                if (bp.UUID != null && bp.BluePrintType == blueprintType)
+                {
+                    var created = new ColonyStructure
+                    {
+                        UUID = Guid.NewGuid().ToString(),
+                        FlatpackBlueprintUUID = bp.UUID
+                    };
+                    result.Add(created);
+                    Log.Info("Bootstrap: created '{0}' from blueprint {1}", blueprintType, bp.ExtendedName);
+                    return;
+                }
+            }
+
+            Log.Warn("Bootstrap: no blueprint found for '{0}'", blueprintType);
+        }
+
         private ColonyStructureStatus SimulateOneMore(ColonyStructureStatus runningStatus,
             ColonyStructure structure, Blueprint blueprint, IColonyStructureWorkers workerSource)
         {
@@ -242,20 +290,31 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Returns true if there's a deficit in power, hab, or food, OR if the
-        /// entertainment deficit exceeds the baseline (inherited from CC).
-        /// The baseline entertainment deficit is tolerated at the start of the
-        /// build order and will be resolved naturally as structures are added.
+        /// Returns true if 'current' has a deficit that is WORSE than 'prev'.
+        /// A deficit that was already present in prev and hasn't gotten worse
+        /// is not actionable at this position -- it's inherited.
         /// </summary>
-        private bool HasDeficitExcludingBaselineEnt(ColonyStructureStatus status, decimal baselineEntDeficit)
+        private bool IsWorseDeficit(ColonyStructureStatus prev, ColonyStructureStatus current)
         {
-            if (status.PowerRequired > status.PowerProvided) return true;
-            if (status.HabitationRequired > status.HabitationProvision) return true;
-            if (status.FoodRequired > status.FoodProvision) return true;
+            // Power: new deficit or existing deficit got worse
+            decimal prevPowerGap = prev.PowerRequired - prev.PowerProvided;
+            decimal currPowerGap = current.PowerRequired - current.PowerProvided;
+            if (currPowerGap > 0 && currPowerGap > prevPowerGap) return true;
 
-            // Entertainment: only flag if the deficit is WORSE than the baseline
-            decimal entDeficit = status.EntertainmentRequired - status.EntertainmentProvided;
-            if (entDeficit > baselineEntDeficit) return true;
+            // Habitation
+            decimal prevHabGap = prev.HabitationRequired - prev.HabitationProvision;
+            decimal currHabGap = current.HabitationRequired - current.HabitationProvision;
+            if (currHabGap > 0 && currHabGap > prevHabGap) return true;
+
+            // Food
+            decimal prevFoodGap = prev.FoodRequired - prev.FoodProvision;
+            decimal currFoodGap = current.FoodRequired - current.FoodProvision;
+            if (currFoodGap > 0 && currFoodGap > prevFoodGap) return true;
+
+            // Entertainment
+            decimal prevEntGap = prev.EntertainmentRequired - prev.EntertainmentProvided;
+            decimal currEntGap = current.EntertainmentRequired - current.EntertainmentProvided;
+            if (currEntGap > 0 && currEntGap > prevEntGap) return true;
 
             return false;
         }
