@@ -128,10 +128,18 @@ namespace OE2EmpireTracker.Services
                     afterPrimary.HabitationRequired, afterPrimary.HabitationProvision,
                     afterPrimary.FoodRequired, afterPrimary.FoodProvision);
 
-                // Check for deficits and insert support structures to fix them
-                while (HasDeficit(afterPrimary))
+                // Check for deficits and insert support structures to fix them.
+                // We check BOTH afterPrimary (the state after the primary is added) AND
+                // runningStatus (the state after each support insertion). Support structures
+                // like Entertainment Centre require power and have workers, so they can
+                // create new deficits at their own position in the build order.
+                while (HasDeficit(afterPrimary) || HasDeficit(runningStatus))
                 {
-                    ColonyStructure bestSupport = FindBestSupport(supportPool, afterPrimary, idealWorkers, runningStatus);
+                    // Determine which status to fix -- prioritize runningStatus deficits
+                    // since those represent structures already placed in the build order
+                    ColonyStructureStatus deficitStatus = HasDeficit(runningStatus) ? runningStatus : afterPrimary;
+
+                    ColonyStructure bestSupport = FindBestSupport(supportPool, deficitStatus, idealWorkers, runningStatus);
 
                     if (bestSupport != null)
                     {
@@ -140,7 +148,7 @@ namespace OE2EmpireTracker.Services
                     else
                     {
                         // No existing support structure can help -- create one from player blueprints
-                        bestSupport = CreateSupportStructure(afterPrimary);
+                        bestSupport = CreateSupportStructure(deficitStatus);
                         if (bestSupport == null)
                         {
                             Log.Warn("No support structure available for deficit. Breaking.");
