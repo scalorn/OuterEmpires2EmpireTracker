@@ -2,7 +2,7 @@
 
 ## PropertyBag
 
-**REQ-DM-001** PropertyBag SHALL store string, double, and bool values under string keys.  
+**REQ-DM-001** PropertyBag SHALL store string, decimal, long, and bool values under string keys.  
 **REQ-DM-002** Setting a key that already exists SHALL overwrite the previous value without error.  
 **REQ-DM-003** Getting a missing key SHALL return false and the supplied default value unchanged.  
 **REQ-DM-004** Getting a key whose stored string cannot be parsed to the requested type SHALL return false.  
@@ -27,13 +27,13 @@
 **REQ-DM-022** Item.ExtendedName for ItemType=Survey SHALL return `PlanetName (SurveyID)` with `[NickName]` appended when NickName is non-empty, looked up via PlayerContext.FindSurvey(BaseItemTypeID); if PlayerContext is null or survey not found, return Name.  
 **REQ-DM-023** Item.ExtendedName for ItemType=Blueprint SHALL return `C{Class} Ev({Evolution}) Name (TechLevel) [NickName]` with each segment omitted when its value is zero/null/empty, looked up via PlayerContext.FindBlueprint(BaseItemTypeID); if not found, return Name.  
 **REQ-DM-024** Item.ExtendedName SHALL be decorated with [JsonIgnore] and not appear in serialized JSON.  
-**REQ-DM-025** Item.Volume (double) represents the cargo volume of a single unit. It SHALL be set when the item is added to the warehouse according to these rules:
+**REQ-DM-025** Item.Volume (decimal) represents the cargo volume of a single unit. It SHALL be set when the item is added to the warehouse according to these rules:
 - Blueprint: 0
 - Survey: 0
 - Resource: 1
 - Commodity: 10
 - WorkDetail: 50
-- Manufactured items (Flatpack, ShipHull, ShipPart, Munition, SpaceBuildPackage, Share): from the blueprint's CargoVolumeSize property (parsed as double, default 0 if absent)
+- Manufactured items (Flatpack, ShipHull, ShipPart, Munition, SpaceBuildPackage, Share): from the blueprint's CargoVolumeSize property (parsed as decimal, default 0 if absent)
 
 **REQ-DM-026** Item.ItemType SHALL serialize as the enum name string (e.g. `"Resource"`, `"Commodity"`) not as an integer. This SHALL be achieved via `[JsonConverter(typeof(StringEnumConverter))]` on the ItemType property.  
 **REQ-DM-027** BlueprintType SHALL have an OutputItemType string field recording what ItemType is produced when a blueprint of this type is manufactured. The value SHALL be the ItemType.ItemTypeEnum name (e.g. `"ShipHull"`, `"Flatpack"`). This field SHALL be populated in BaselineData.json for all BlueprintTypes.
