@@ -41,7 +41,7 @@ Old form stays working throughout. Shared refactors (BlueprintImportHandler) use
 ## Phase 4: Import Integration
 
 - [ ] 4. Wire import handlers into new form
-  - [ ] 4.1 Individual import button using BlueprintImportHandler service
+  - [x] 4.1 Individual import button using BlueprintImportHandler service
   - [ ] 4.2 Market import button using existing ProcessMarketHtml flow
   - [ ] 4.3 Clipboard content validation with user-friendly messages
   - [ ] 4.4 Post-import: select imported blueprint, refresh list, populate form

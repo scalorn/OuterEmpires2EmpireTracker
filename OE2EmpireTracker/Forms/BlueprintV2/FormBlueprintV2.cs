@@ -1,7 +1,10 @@
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Forms.Blueprint;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.Services.Migration;
 using OE2EmpireTracker.ViewModels;
 using NLog;
 using System;
@@ -82,6 +85,7 @@ namespace OE2EmpireTracker
             btnNew.Click += btnNew_Click;
             btnSave.Click += btnSave_Click;
             btnDelete.Click += btnDelete_Click;
+            btnImport.Click += btnImport_Click;
 
             // Wire statistics grid events
             dgvStatistics.CellValueChanged += dgvStatistics_CellValueChanged;
@@ -385,6 +389,127 @@ namespace OE2EmpireTracker
             RefreshBlueprintList();
             lvwBlueprints.SelectedItems.Clear();
             ClearForm();
+        }
+
+        // -----------------------------------------------------------------------
+        // Individual Import (Task 4.1)
+        // -----------------------------------------------------------------------
+
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+            if (!Clipboard.ContainsText(TextDataFormat.Html))
+            {
+                MessageBox.Show("No HTML found on clipboard. Copy the blueprint page from the game first.",
+                    "Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            try
+            {
+                // Validate clipboard contains blueprint data (individual or resources-only)
+                string clipboardData = Clipboard.GetText(TextDataFormat.Html);
+                string htmlFragment = ClipboardHelper.ExtractHtmlFragment(clipboardData);
+                var detected = ClipboardContentDetector.Detect(htmlFragment);
+                if (detected != ClipboardContentDetector.ContentType.Blueprint &&
+                    detected != ClipboardContentDetector.ContentType.Survey &&
+                    detected != ClipboardContentDetector.ContentType.Unknown)
+                {
+                    string found = ClipboardContentDetector.GetDescription(detected);
+                    MessageBox.Show($"The clipboard contains {found}, not blueprint data.\n\nCopy the blueprint page from the game browser first.",
+                        "Wrong Content", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                var scanner = new BlueprintScanner();
+                var tempBP = scanner.ParseClipboardToTemp();
+
+                if (tempBP == null)
+                    return;
+
+                BlueprintImportHandler.LogParsedBlueprint(tempBP);
+
+                // Classify the import via the shared service
+                var importType = BlueprintImportHandler.ClassifyImport(tempBP);
+                Log.Info("  ImportType: {0}", importType);
+
+                // Resources-only import: merge into selected blueprint
+                if (importType == BlueprintImportHandler.ImportType.ResourcesOnly)
+                {
+                    if (string.IsNullOrEmpty(viewModel.Data.UUID))
+                    {
+                        MessageBox.Show(
+                            "Please select or import a blueprint first, then import the resources tab.",
+                            "Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+
+                    MarketBlueprintImporter.MergeResourcesOnly(viewModel.Data, tempBP);
+
+                    // Persist to the correct list
+                    bool resGlobal = empireContext.GlobalBlueprintList.Any(b => b.UUID == viewModel.Data.UUID);
+                    if (resGlobal)
+                        empireContext.WriteContext();
+                    else
+                        playerContext.WriteContext();
+
+                    // Notify, refresh, re-select
+                    playerContext.OnBlueprintDataChanged(viewModel.Data.UUID);
+                    RefreshBlueprintList();
+                    SelectBlueprintInList(viewModel.Data.UUID);
+                    PopulateForm();
+                    Log.Info("Resources-only import merged into selected blueprint: {0} UUID={1}",
+                        viewModel.Data.Name, viewModel.Data.UUID);
+                    return;
+                }
+
+                // NoName fallback: use scanner.ProcessClipboard directly
+                if (importType == BlueprintImportHandler.ImportType.NoName)
+                {
+                    Log.Warn("  No name parsed from clipboard -- using fallback direct import");
+                    scanner.ProcessClipboard(viewModel.Data);
+                    if (string.IsNullOrEmpty(viewModel.Data.UUID))
+                    {
+                        bool fallbackGlobal = viewModel.Data.Evolution == 0
+                            && string.IsNullOrEmpty(viewModel.Data.OwnerUUID);
+                        viewModel.Data.UUID = fallbackGlobal
+                            ? DeterministicUUID.Generate(viewModel.Data)
+                            : Guid.NewGuid().ToString();
+                    }
+                    PopulateForm();
+                    Log.Info("Blueprint imported from clipboard (fallback, no name parsed)");
+                    return;
+                }
+
+                // Full import — delegate routing and merge to BlueprintImportHandler
+                var findResult = BlueprintImportHandler.FindTarget(
+                    tempBP, viewModel.Data, playerContext, empireContext);
+
+                var importedBP = BlueprintImportHandler.MergeAndPersist(
+                    findResult, tempBP, playerContext, empireContext);
+
+                // Refresh UI, select imported blueprint
+                viewModel.SelectBlueprint(importedBP);
+                RefreshBlueprintList();
+                SelectBlueprintInList(importedBP.UUID);
+                PopulateForm();
+
+                // Auto-select best base blueprint match
+                using (var guard = new ProgrammaticUpdateGuard(this))
+                {
+                    if (string.IsNullOrEmpty(importedBP.BaseBlueprintUUID) && cmbBaseBlueprint.Items.Count > 1)
+                    {
+                        cmbBaseBlueprint.SelectedIndex = 1;
+                        var bp = cmbBaseBlueprint.SelectedItem as Models.Blueprint;
+                        viewModel.BaseBlueprintUUID = bp?.UUID ?? "";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error importing blueprint from clipboard");
+                MessageBox.Show("Failed to import blueprint: " + ex.Message,
+                    "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // -----------------------------------------------------------------------
