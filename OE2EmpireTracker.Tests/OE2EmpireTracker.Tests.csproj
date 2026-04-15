@@ -342,6 +342,7 @@
     <Compile Include="Services\IndividualImportDedupPropertyTests.cs" />
     <Compile Include="Services\ResourcesOnlyImportPropertyTests.cs" />
     <Compile Include="Services\BlueprintImportHandlerClassifyTests.cs" />
+    <Compile Include="Services\BlueprintImportHandlerFindTargetTests.cs" />
     <Compile Include="Services\ResourcesOnlyImportTests.cs" />
     <Compile Include="Persistence\WindowStateHelperPropertyTests.cs" />
     <Compile Include="Services\IconPositionExtractorTests.cs" />
