@@ -137,6 +137,15 @@ namespace OE2EmpireTracker.Models
                         structure.UUID, bp.BluePrintType);
                     structure.ResearchingBlueprintUUID = null;
                 }
+                if (isResearchLab && !string.IsNullOrEmpty(structure.ResearchingBlueprintUUID)
+                    && pc.FindBlueprint(structure.ResearchingBlueprintUUID) == null)
+                {
+                    Log.Warn("Clearing ResearchingBlueprintUUID on {0} (blueprint {1} not found)",
+                        structure.UUID, structure.ResearchingBlueprintUUID);
+                    structure.ResearchingBlueprintUUID = null;
+                    if (structure.ProcessCompletionTime != null)
+                        structure.ProcessCompletionTime = null;
+                }
                 // Clear ProcessCompletionTime on manufactories/commodity factories/research labs
                 // that have a timer but no active job
                 if (isManufactory && string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID)

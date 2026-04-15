@@ -683,12 +683,16 @@ namespace OE2EmpireTracker.Forms.Colony
 
             if (ColonyStructureData.ProcessCompletionTime != null)
             {
-                // If there's a timer but no research job, clear the orphaned timer
-                if (string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID))
+                // If there's a timer but no research job, or the referenced
+                // blueprint doesn't exist, clear the orphaned timer
+                if (string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID)
+                    || playerContext.FindBlueprint(ColonyStructureData.ResearchingBlueprintUUID) == null)
                 {
-                    Log.Warn("ResearchLab {0}: clearing orphaned ProcessCompletionTime (no ResearchingBlueprintUUID)",
-                        ColonyStructureData.UUID);
+                    Log.Warn("ResearchLab {0}: clearing orphaned research state (blueprint={1})",
+                        ColonyStructureData.UUID,
+                        ColonyStructureData.ResearchingBlueprintUUID ?? "(null)");
                     ColonyStructureData.ProcessCompletionTime = null;
+                    ColonyStructureData.ResearchingBlueprintUUID = null;
                 }
                 else
                 {
