@@ -1,8 +1,11 @@
 using NLog;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace OE2EmpireTracker.Persistence
@@ -194,6 +197,16 @@ namespace OE2EmpireTracker.Persistence
                 state.SortDirection = comparer.Order == SortOrder.Descending ? "Descending" : "Ascending";
             }
 
+            // Save unchecked items for CheckBoxes ListViews
+            if (listView.CheckBoxes)
+            {
+                foreach (ListViewItem item in listView.Items)
+                {
+                    if (!item.Checked && item.Tag is string tag)
+                        state.UncheckedItems.Add(tag);
+                }
+            }
+
             formState.ListViews[listView.Name] = state;
         }
 
@@ -295,6 +308,17 @@ namespace OE2EmpireTracker.Persistence
                 var order = state.SortDirection == "Descending" ? SortOrder.Descending : SortOrder.Ascending;
                 listView.ListViewItemSorter = new OE2EmpireTracker.Controls.ListViewItemComparer(state.SortColumn, order);
                 listView.Sort();
+            }
+
+            // Restore unchecked items for CheckBoxes ListViews
+            if (listView.CheckBoxes && state.UncheckedItems != null && state.UncheckedItems.Count > 0)
+            {
+                var uncheckedSet = new HashSet<string>(state.UncheckedItems, StringComparer.Ordinal);
+                foreach (ListViewItem item in listView.Items)
+                {
+                    if (item.Tag is string tag && uncheckedSet.Contains(tag))
+                        item.Checked = false;
+                }
             }
         }
 

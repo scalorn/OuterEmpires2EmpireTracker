@@ -42,6 +42,30 @@ namespace OE2EmpireTracker.Forms.Colony
 
         // Structure type filter -- tracks which types the user has unchecked
         private readonly HashSet<string> _uncheckedStructureTypes = new HashSet<string>(StringComparer.Ordinal);
+
+        /// <summary>
+        /// Seeds _uncheckedStructureTypes from saved preferences so the filter
+        /// is restored before the first PopulateStructureTypeFilter call.
+        /// Called by WindowStateHelper.RestoreState via the ListView restore path,
+        /// and also directly from the form's Tag setter (after window number is assigned).
+        /// </summary>
+        private void SeedUncheckedStructureTypes()
+        {
+            var store = PreferencesStore.GetInstance();
+            string formTypeKey = GetType().Name;
+            int windowNumber = Tag is int n ? n : 1;
+            string stateKey = windowNumber.ToString();
+
+            if (store.Preferences.Forms.TryGetValue(formTypeKey, out var windows) &&
+                windows.TryGetValue(stateKey, out var windowState) &&
+                windowState.FormState?.ListViews != null &&
+                windowState.FormState.ListViews.TryGetValue("lvwStructureTypes", out var lvState) &&
+                lvState.UncheckedItems != null)
+            {
+                foreach (var typeId in lvState.UncheckedItems)
+                    _uncheckedStructureTypes.Add(typeId);
+            }
+        }
         public FormColony()
         {
             InitializeComponent();
@@ -699,8 +723,16 @@ namespace OE2EmpireTracker.Forms.Colony
         // Structure Type Filter
         // -----------------------------------------------------------------------
 
+        private bool _structureTypesSeeded = false;
+
         private void PopulateStructureTypeFilter()
         {
+            if (!_structureTypesSeeded)
+            {
+                _structureTypesSeeded = true;
+                SeedUncheckedStructureTypes();
+            }
+
             lvwStructureTypes.ItemChecked -= lvwStructureTypes_ItemChecked;
             lvwStructureTypes.Items.Clear();
 

@@ -174,5 +174,12 @@ namespace OE2EmpireTracker.Models
 
         public int SortColumn { get; set; } = -1;
         public string SortDirection { get; set; }
+
+        /// <summary>
+        /// For CheckBoxes ListViews: Tag values of unchecked items.
+        /// Empty list means all checked (the default).
+        /// </summary>
+        public List<string> UncheckedItems { get; set; }
+            = new List<string>();
     }
 }
