@@ -1529,8 +1529,26 @@ namespace OE2EmpireTracker
                 if (tempBP == null)
                     return;
 
+                Log.Info("=== Individual Blueprint Import ===");
+                Log.Info("  Parsed: name='{0}' evo={1} type='{2}' class={3} tech='{4}'",
+                    tempBP.Name, tempBP.Evolution, tempBP.BluePrintType, tempBP.Class, tempBP.TechLevel);
+                Log.Info("  Parsed: {0} properties, {1} resources",
+                    tempBP.Properties?.Count ?? 0, tempBP.Resources?.Count ?? 0);
+                if (tempBP.Properties != null)
+                {
+                    foreach (var prop in tempBP.Properties.Properties)
+                        Log.Info("    prop: {0} = {1}", prop.Key, prop.Value);
+                }
+                if (tempBP.Resources != null)
+                {
+                    foreach (var res in tempBP.Resources)
+                        Log.Info("    resource: {0} = {1}", res.Key, res.Value);
+                }
+
                 // -- BL-062: Resources-only import (e.g. resources tab copied from game) --
-                if (MarketBlueprintImporter.IsResourcesOnlyImport(tempBP))
+                bool isResourcesOnly = MarketBlueprintImporter.IsResourcesOnlyImport(tempBP);
+                Log.Info("  IsResourcesOnly: {0}", isResourcesOnly);
+                if (isResourcesOnly)
                 {
                     if (string.IsNullOrEmpty(viewModel.Data.UUID))
                     {
@@ -1572,6 +1590,7 @@ namespace OE2EmpireTracker
                 // Fallback: if no name was parsed, use current behavior
                 if (string.IsNullOrEmpty(tempBP.Name))
                 {
+                    Log.Warn("  No name parsed from clipboard -- using fallback direct import");
                     scanner.ProcessClipboard(viewModel.Data);
                     if (string.IsNullOrEmpty(viewModel.Data.UUID))
                     {
@@ -1590,14 +1609,26 @@ namespace OE2EmpireTracker
                 bool globalChanged = false;
                 bool playerChanged = false;
 
+                Log.Info("  Selected blueprint: name='{0}' evo={1} type='{2}' class={3} tech='{4}' UUID={5}",
+                    viewModel.Data.Name, viewModel.Data.Evolution, viewModel.Data.BluePrintType,
+                    viewModel.Data.Class, viewModel.Data.TechLevel, viewModel.Data.UUID ?? "(null)");
+
                 // Check if the selected blueprint matches the dedup key.
-                // Use relaxed matching (Name + Evolution + BluePrintType) because partial
-                // parses (e.g. resources tab) may not extract Class or TechLevel.
+                // Use relaxed matching: Name + Evolution required.
+                // BluePrintType matches if equal OR if the existing has no type (will be filled by import).
+                bool nameMatch = string.Equals(viewModel.Data.Name, tempBP.Name, StringComparison.Ordinal);
+                bool evoMatch = viewModel.Data.Evolution == tempBP.Evolution;
+                bool typeMatch = string.Equals(viewModel.Data.BluePrintType, tempBP.BluePrintType, StringComparison.Ordinal)
+                    || string.IsNullOrEmpty(viewModel.Data.BluePrintType);
                 bool selectedMatch = !string.IsNullOrEmpty(viewModel.Data.UUID)
                     && !string.IsNullOrEmpty(tempBP.Name)
-                    && string.Equals(viewModel.Data.Name, tempBP.Name, StringComparison.Ordinal)
-                    && viewModel.Data.Evolution == tempBP.Evolution
-                    && string.Equals(viewModel.Data.BluePrintType, tempBP.BluePrintType, StringComparison.Ordinal);
+                    && nameMatch && evoMatch && typeMatch;
+
+                Log.Info("  Selected match check: name={0} evo={1} type={2} hasUUID={3} hasName={4} => {5}",
+                    nameMatch, evoMatch, typeMatch,
+                    !string.IsNullOrEmpty(viewModel.Data.UUID),
+                    !string.IsNullOrEmpty(tempBP.Name),
+                    selectedMatch);
 
                 if (selectedMatch)
                 {
@@ -1619,12 +1650,17 @@ namespace OE2EmpireTracker
                     // No match with selected -- route via market logic
                     bool hasCurrentPlayer = !string.IsNullOrEmpty(playerContext.CurrentPlayerUUID);
                     bool isGlobal = MarketBlueprintImporter.IsGlobalRoute(tempBP.Evolution, hasCurrentPlayer);
+                    Log.Info("  No selected match -- routing: isGlobal={0} (evo={1}, hasPlayer={2})",
+                        isGlobal, tempBP.Evolution, hasCurrentPlayer);
 
                     var targetList = isGlobal
                         ? empireContext.GlobalBlueprintList
                         : playerContext.BlueprintList;
 
                     var existing = MarketBlueprintImporter.FindByDedupKey(targetList, tempBP);
+                    Log.Info("  FindByDedupKey in {0} list ({1} blueprints): {2}",
+                        isGlobal ? "global" : "player", targetList.Count,
+                        existing != null ? $"MATCH UUID={existing.UUID}" : "NO MATCH");
 
                     if (existing != null)
                     {
