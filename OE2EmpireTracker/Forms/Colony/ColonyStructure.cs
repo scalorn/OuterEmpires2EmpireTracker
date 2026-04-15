@@ -1381,7 +1381,26 @@ namespace OE2EmpireTracker.Forms.Colony
 
         private void txtSelectionFilter_TextChanged(object sender, EventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
+            if (FlatpackBlueprint == null) return;
 
+            string previousValue = cmbSelection.SelectedValue as string;
+
+            if (FlatpackBlueprint.BluePrintType == BlueprintTypes.MiningRig)
+                PopulateSelectionWithSurveys();
+            else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Refinery)
+                PopulateSelectionWithUnrefinedResources();
+            else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
+                PopulateSelectionWithResearchableBlueprints();
+            else if (FlatpackBlueprint.BluePrintType == BlueprintTypes.Manufactory)
+                PopulateSelectionWithManufacturableBlueprints();
+            else if (FlatpackBlueprint.BluePrintType.IsCommodityFactory())
+                PopulateSelectionWithCommodities();
+
+            if (previousValue != null)
+                cmbSelection.SelectedValue = previousValue;
+
+            cmbSelection.DroppedDown = true;
         }
 
         private void cmdStart_Click(object sender, EventArgs e)
