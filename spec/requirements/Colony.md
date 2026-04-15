@@ -57,7 +57,8 @@ stateDiagram-v2
 **REQ-COL-036** Pressing the Delete key when a structure control is focused SHALL delete that structure.  
 **REQ-COL-037** After any structure change (add, reorder, delete, worker assignment, state change), CalculateBuilt() and CalculateIdeal() SHALL be called and all structure controls SHALL be refreshed.  
 **REQ-COL-037a** The status display SHALL color each resource label red when Required > Provided (or Capacity for Warehouse), and green otherwise. This applies to all five resources: Power, Habitation, Food, Entertainment, and Warehouse.  
-**REQ-COL-038** The structure background color SHALL indicate state: Yellow=Staged, PaleVioletRed=Built but Offline, LightGreen=Online with missing workers, Green=Online with all workers.
+**REQ-COL-038** The structure background color SHALL indicate state: Yellow=Staged, PaleVioletRed=Built but Offline, LightGreen=Online with missing workers, Green=Online with all workers.  
+**REQ-COL-038a** The Structures tab SHALL display a structure type filter (lvwStructureTypes) as a checkbox ListView showing all distinct blueprint types present in the colony. All types SHALL be checked by default. Unchecking a type SHALL hide all structure controls of that type. The filter SHALL refresh when structures are added, removed, or reordered.
 
 ## Structure State
 

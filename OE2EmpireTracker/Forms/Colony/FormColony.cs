@@ -387,6 +387,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 }
 
                 flpColonyStructure.ResumeLayout();
+                PopulateStructureTypeFilter();
             }
 
             // Defer item grid refresh if not on the Warehousing tab
@@ -623,6 +624,8 @@ namespace OE2EmpireTracker.Forms.Colony
             _structuresDirty = !structuresTabActive;
             flpColonyStructure.ResumeLayout();
 
+            PopulateStructureTypeFilter();
+
             colonyViewModel.RecalculateStatus();
             RefreshStatusDisplay();
 
@@ -687,6 +690,70 @@ namespace OE2EmpireTracker.Forms.Colony
         private void flpStructureData_Layout(object sender, LayoutEventArgs e)
         {
             flpColonyStructure.Size = new System.Drawing.Size(flpStructureData.Size.Width - flpColonyStructure.Margin.Left - flpColonyStructure.Margin.Right, flpStructureData.Size.Height - flpStatus.Size.Height - flpStatus.Margin.Top - flpStatus.Margin.Bottom - flpAddBox.Size.Height - flpAddBox.Margin.Top - flpAddBox.Margin.Bottom - flpColonyStructure.Margin.Top - flpColonyStructure.Margin.Bottom);
+        }
+
+        // -----------------------------------------------------------------------
+        // Structure Type Filter
+        // -----------------------------------------------------------------------
+
+        private void PopulateStructureTypeFilter()
+        {
+            lvwStructureTypes.ItemChecked -= lvwStructureTypes_ItemChecked;
+            lvwStructureTypes.Items.Clear();
+
+            if (selectedColony == null)
+            {
+                lvwStructureTypes.ItemChecked += lvwStructureTypes_ItemChecked;
+                return;
+            }
+
+            var empireContext = EmpireContext.GetInstance();
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (var structure in selectedColony.Structures)
+            {
+                var bp = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                string typeId = bp?.BluePrintType ?? "";
+                if (string.IsNullOrEmpty(typeId) || !seen.Add(typeId)) continue;
+
+                var bpType = empireContext.FindBlueprintType(typeId);
+                string displayName = bpType?.Name ?? typeId;
+
+                var item = new ListViewItem(displayName);
+                item.Tag = typeId;
+                item.Checked = true;
+                lvwStructureTypes.Items.Add(item);
+            }
+
+            lvwStructureTypes.ItemChecked += lvwStructureTypes_ItemChecked;
+        }
+
+        private void lvwStructureTypes_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            ApplyStructureTypeFilter();
+        }
+
+        private void ApplyStructureTypeFilter()
+        {
+            var selectedTypes = new HashSet<string>(StringComparer.Ordinal);
+            foreach (ListViewItem item in lvwStructureTypes.Items)
+            {
+                if (item.Checked)
+                    selectedTypes.Add((string)item.Tag);
+            }
+
+            flpColonyStructure.SuspendLayout();
+            foreach (Control c in flpColonyStructure.Controls)
+            {
+                if (c is ColonyStructure cs && cs.ColonyStructureData != null)
+                {
+                    var bp = playerContext.FindBlueprint(cs.ColonyStructureData.FlatpackBlueprintUUID);
+                    string typeId = bp?.BluePrintType ?? "";
+                    cs.Visible = selectedTypes.Contains(typeId);
+                }
+            }
+            flpColonyStructure.ResumeLayout();
         }
 
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }

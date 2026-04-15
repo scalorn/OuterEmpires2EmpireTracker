@@ -387,14 +387,19 @@ namespace OE2EmpireTracker.Forms.Colony
             // 
             // lvwStructureTypes
             // 
+            this.lvwStructureTypes.CheckBoxes = true;
             this.lvwStructureTypes.FullRowSelect = true;
+            this.lvwStructureTypes.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.lvwStructureTypes.HideSelection = false;
             this.lvwStructureTypes.Location = new System.Drawing.Point(3, 3);
-            this.lvwStructureTypes.MultiSelect = false;
+            this.lvwStructureTypes.MultiSelect = true;
             this.lvwStructureTypes.Name = "lvwStructureTypes";
             this.lvwStructureTypes.Size = new System.Drawing.Size(130, 100);
             this.lvwStructureTypes.TabIndex = 7;
             this.lvwStructureTypes.UseCompatibleStateImageBehavior = false;
+            this.lvwStructureTypes.View = System.Windows.Forms.View.Details;
+            this.lvwStructureTypes.Columns.Add("Type", 126);
+            this.lvwStructureTypes.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvwStructureTypes_ItemChecked);
             // 
             // flpStructureData
             // 
