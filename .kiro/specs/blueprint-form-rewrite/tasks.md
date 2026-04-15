@@ -17,26 +17,26 @@ Old form stays working throughout. Shared refactors (BlueprintImportHandler) use
 
 ## Phase 2: New Form — Core Layout and CRUD
 
-- [ ] 2. Create FormBlueprintV2 in Forms/BlueprintV2/
+- [x] 2. Create FormBlueprintV2 in Forms/BlueprintV2/
   - [x] 2.1 Create `Forms/BlueprintV2/` directory with FormBlueprintV2.cs and .Designer.cs
   - [x] 2.2 Design form layout in Designer: search panel, filter panel, detail panel, tab control
   - [x] 2.3 Add "Manage Blueprints V2" menu item to MainWindow (alongside existing)
   - [x] 2.4 Add csproj Compile Include entries for new files
-  - [ ] 2.5 Implement blueprint list population with text + structured filters
-  - [ ] 2.6 Implement New/Save/Delete with write-through (no ClearProperties on save)
-  - [ ] 2.7 Implement identity field write-through (Name, NickName, Description, etc.)
-  - [ ] 2.8 Implement delete protection via BlueprintReferenceCounter
-  - [ ] 2.9 Implement dynamic title bar with global/player counts
+  - [x] 2.5 Implement blueprint list population with text + structured filters
+  - [x] 2.6 Implement New/Save/Delete with write-through (no ClearProperties on save)
+  - [x] 2.7 Implement identity field write-through (Name, NickName, Description, etc.)
+  - [x] 2.8 Implement delete protection via BlueprintReferenceCounter
+  - [x] 2.9 Implement dynamic title bar with global/player counts
 
 ## Phase 3: Statistics and Resources Grids
 
-- [ ] 3. Implement write-through grids
-  - [ ] 3.1 Statistics grid: CellValueChanged writes to PropertyBag, empty clears
-  - [ ] 3.2 Statistics grid: structure caching per BlueprintType
-  - [ ] 3.3 Statistics grid: cell validation via BlueprintPropertyValidation
-  - [ ] 3.4 Statistics grid: CheckBox and ComboBox column types
-  - [ ] 3.5 Resources grid: write-through to Blueprint.Resources
-  - [ ] 3.6 Resources grid: add/delete rows update Resources dictionary
+- [x] 3. Implement write-through grids
+  - [x] 3.1 Statistics grid: CellValueChanged writes to PropertyBag, empty clears
+  - [x] 3.2 Statistics grid: structure caching per BlueprintType
+  - [x] 3.3 Statistics grid: cell validation via BlueprintPropertyValidation
+  - [x] 3.4 Statistics grid: CheckBox and ComboBox column types
+  - [x] 3.5 Resources grid: write-through to Blueprint.Resources
+  - [x] 3.6 Resources grid: add/delete rows update Resources dictionary
 
 ## Phase 4: Import Integration
 

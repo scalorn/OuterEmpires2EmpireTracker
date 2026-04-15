@@ -1,3 +1,4 @@
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
@@ -6,7 +7,9 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace OE2EmpireTracker
@@ -31,6 +34,9 @@ namespace OE2EmpireTracker
         // ListView sorting state
         private int _sortColumn = 0;
         private SortOrder _sortOrder = SortOrder.Ascending;
+
+        // Statistics grid structure cache key: "{typeId}|{extraKeysHash}"
+        private string _cachedGridKey;
 
         public FormBlueprintV2()
         {
@@ -76,6 +82,22 @@ namespace OE2EmpireTracker
             btnNew.Click += btnNew_Click;
             btnSave.Click += btnSave_Click;
             btnDelete.Click += btnDelete_Click;
+
+            // Wire statistics grid events
+            dgvStatistics.CellValueChanged += dgvStatistics_CellValueChanged;
+            dgvStatistics.CellValidating += dgvStatistics_CellValidating;
+            dgvStatistics.CurrentCellDirtyStateChanged += dgvStatistics_CurrentCellDirtyStateChanged;
+
+            // Configure resources grid combo
+            colResource.DisplayMember = "Name";
+            colResource.ValueMember = "Name";
+            colResource.DataSource = empireContext.BindingSourceResource;
+
+            // Wire resources grid events
+            dgvResources.CellValueChanged += dgvResources_CellValueChanged;
+            dgvResources.CellValidating += dgvResources_CellValidating;
+            btnAddResource.Click += btnAddResource_Click;
+            btnDeleteResource.Click += btnDeleteResource_Click;
 
             // Subscribe to data events
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
@@ -402,6 +424,9 @@ namespace OE2EmpireTracker
 
             // Hide ShipClass and TechLevel for Universal types
             UpdateUniversalVisibility(bt);
+
+            // Rebuild statistics grid for the new type
+            RefreshStatisticsGrid();
         }
 
         private void cmbShipClass_SelectedIndexChanged(object sender, EventArgs e)
@@ -527,6 +552,316 @@ namespace OE2EmpireTracker
         }
 
         // -----------------------------------------------------------------------
+        // Statistics Grid (Tasks 3.1–3.4)
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Rebuilds the statistics grid structure if the BlueprintType or extra PropertyBag
+        /// keys have changed, then populates values. Uses caching key "{typeId}|{extraKeys}"
+        /// to avoid unnecessary rebuilds when only values change.
+        /// </summary>
+        private void RefreshStatisticsGrid()
+        {
+            var bt = cmbBlueprintType.SelectedItem as BlueprintType;
+            string[] definedProps = bt?.Properties ?? Array.Empty<string>();
+
+            // Find extra properties in PropertyBag not in the type definition
+            var definedSet = new HashSet<string>(definedProps, StringComparer.Ordinal);
+            var extraProps = viewModel.Data.Properties.Properties.Keys
+                .Where(k => !definedSet.Contains(k) && !k.StartsWith("_"))
+                .OrderBy(k => k, StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+
+            string gridKey = (bt?.Id ?? "") + "|" + string.Join(",", extraProps);
+
+            if (gridKey != _cachedGridKey)
+            {
+                RebuildStatisticsGrid(definedProps, extraProps);
+                _cachedGridKey = gridKey;
+            }
+
+            PopulateStatisticsValues();
+        }
+
+        /// <summary>
+        /// Rebuilds the statistics grid rows from scratch. Defined properties first,
+        /// then extra/unknown properties. Handles CheckBox, ComboBox, and text cell types.
+        /// </summary>
+        private void RebuildStatisticsGrid(string[] definedProps, string[] extraProps)
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+
+            dgvStatistics.CellValidating -= dgvStatistics_CellValidating;
+            try { dgvStatistics.EndEdit(); } catch { }
+            dgvStatistics.Rows.Clear();
+            dgvStatistics.Columns.Clear();
+
+            // Rebuild columns: Property (read-only text) + CurrentValue (editable)
+            var colProp = new DataGridViewTextBoxColumn
+            {
+                Name = "Property",
+                HeaderText = "Property",
+                ReadOnly = true,
+                Width = 180
+            };
+            dgvStatistics.Columns.Add(colProp);
+
+            // CurrentValue column — placeholder, cells are swapped per-row below
+            var colVal = new DataGridViewTextBoxColumn
+            {
+                Name = "CurrentValue",
+                HeaderText = "Value",
+                Width = 150
+            };
+            dgvStatistics.Columns.Add(colVal);
+
+            // Add rows for defined properties
+            foreach (string property in definedProps)
+            {
+                AddStatisticsRow(property);
+            }
+
+            // Add rows for extra/unknown properties (logged at WARN)
+            foreach (string property in extraProps)
+            {
+                Log.Warn("Extra property '{0}' on '{1}' (not in {2} type definition)",
+                    property, viewModel.Data.Name ?? "(new)", 
+                    (cmbBlueprintType.SelectedItem as BlueprintType)?.Id ?? "unknown");
+                AddStatisticsRow(property);
+            }
+
+            dgvStatistics.CellValidating += dgvStatistics_CellValidating;
+        }
+
+        /// <summary>
+        /// Adds a single row to the statistics grid, swapping the CurrentValue cell
+        /// to CheckBox or ComboBox as needed based on BlueprintPropertyValidation.
+        /// </summary>
+        private void AddStatisticsRow(string property)
+        {
+            int rowIndex = dgvStatistics.Rows.Add();
+            var row = dgvStatistics.Rows[rowIndex];
+            row.Cells["Property"].Value = property;
+            row.Cells["Property"].Tag = property;
+
+            var propType = BlueprintPropertyValidation.GetPropertyType(property);
+            if (propType == PropertyValueType.ComboBox)
+            {
+                var comboCell = new DataGridViewComboBoxCell();
+                comboCell.DataSource = BlueprintPropertyValidation.GetComboBoxDataSource(property);
+                comboCell.FlatStyle = FlatStyle.Flat;
+                row.Cells["CurrentValue"] = comboCell;
+            }
+            else if (propType == PropertyValueType.CheckBox)
+            {
+                var checkCell = new DataGridViewCheckBoxCell();
+                checkCell.Value = false;
+                row.Cells["CurrentValue"] = checkCell;
+            }
+        }
+
+        /// <summary>
+        /// Reads values from the PropertyBag and fills the statistics grid cells.
+        /// </summary>
+        private void PopulateStatisticsValues()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+
+            foreach (DataGridViewRow row in dgvStatistics.Rows)
+            {
+                string property = row.Cells["Property"].Tag as string;
+                if (string.IsNullOrEmpty(property)) continue;
+
+                viewModel.GetProperty(property, "", out string value);
+                if (value == null) value = "";
+
+                var propType = BlueprintPropertyValidation.GetPropertyType(property);
+                if (propType == PropertyValueType.CheckBox)
+                {
+                    bool.TryParse(value, out bool boolVal);
+                    row.Cells["CurrentValue"].Value = boolVal;
+                }
+                else
+                {
+                    row.Cells["CurrentValue"].Value = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Write-through: non-empty values written to PropertyBag, empty clears the key.
+        /// </summary>
+        private void dgvStatistics_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (e.RowIndex < 0) return;
+
+            // Only handle the CurrentValue column
+            var col = dgvStatistics.Columns[e.ColumnIndex];
+            if (col.Name != "CurrentValue") return;
+
+            string propName = dgvStatistics.Rows[e.RowIndex].Cells["Property"].Tag as string;
+            if (string.IsNullOrEmpty(propName)) return;
+
+            object cellValue = dgvStatistics.Rows[e.RowIndex].Cells["CurrentValue"].Value;
+            string strValue = cellValue is bool ? cellValue.ToString() : cellValue as string;
+
+            if (string.IsNullOrEmpty(strValue))
+                viewModel.Data.Properties.Remove(propName);
+            else
+                viewModel.SetProperty(propName, strValue);
+        }
+
+        /// <summary>
+        /// Validates cell input using BlueprintPropertyValidation patterns.
+        /// </summary>
+        private void dgvStatistics_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            var col = dgvStatistics.Columns[e.ColumnIndex];
+            if (col.Name != "CurrentValue") return;
+            if (e.RowIndex < 0) return;
+
+            string value = e.FormattedValue?.ToString();
+            if (string.IsNullOrEmpty(value)) return; // Allow empty
+
+            string propertyName = dgvStatistics.Rows[e.RowIndex].Cells["Property"].Tag as string;
+            if (string.IsNullOrEmpty(propertyName)) return;
+
+            string pattern = BlueprintPropertyValidation.GetValidationPattern(propertyName);
+            if (pattern == null) return; // Unknown — no validation
+
+            if (!Regex.IsMatch(value, pattern))
+            {
+                e.Cancel = true;
+                dgvStatistics.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.LightCoral;
+                var propType = BlueprintPropertyValidation.GetPropertyType(propertyName);
+                dgvStatistics.Rows[e.RowIndex].ErrorText = $"{propertyName} must be a valid {propType}";
+            }
+            else
+            {
+                dgvStatistics.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
+                dgvStatistics.Rows[e.RowIndex].ErrorText = "";
+            }
+        }
+
+        /// <summary>
+        /// Commits CheckBox and ComboBox edits immediately so CellValueChanged fires.
+        /// </summary>
+        private void dgvStatistics_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (dgvStatistics.IsCurrentCellDirty)
+                dgvStatistics.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        }
+
+        // -----------------------------------------------------------------------
+        // Resources Grid (Tasks 3.5–3.6)
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Populates the resources grid from Blueprint.Resources.
+        /// </summary>
+        private void PopulateResourcesGrid()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+
+            dgvResources.CellValidating -= dgvResources_CellValidating;
+            try { dgvResources.EndEdit(); } catch { }
+            dgvResources.Rows.Clear();
+            dgvResources.CellValidating += dgvResources_CellValidating;
+
+            foreach (var resource in viewModel.GetResources())
+            {
+                int rowIndex = dgvResources.Rows.Add();
+                var row = dgvResources.Rows[rowIndex];
+                row.Cells["colResource"].Value = resource.Key;
+                row.Cells["colAmount"].Value = resource.Value;
+            }
+        }
+
+        /// <summary>
+        /// Write-through: resource edits written to Blueprint.Resources immediately.
+        /// </summary>
+        private void dgvResources_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (e.RowIndex < 0) return;
+
+            string resourceName = dgvResources.Rows[e.RowIndex].Cells["colResource"].Value as string;
+            string amount = dgvResources.Rows[e.RowIndex].Cells["colAmount"].Value as string;
+
+            if (!string.IsNullOrEmpty(resourceName))
+                viewModel.SetResource(resourceName, amount ?? "0");
+        }
+
+        /// <summary>
+        /// Validates the Amount column as integer.
+        /// </summary>
+        private void dgvResources_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            var col = dgvResources.Columns[e.ColumnIndex];
+            if (col.Name != "colAmount") return;
+            if (e.RowIndex < 0) return;
+
+            string value = e.FormattedValue?.ToString();
+            if (string.IsNullOrEmpty(value))
+            {
+                dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = "0";
+                dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
+                dgvResources.Rows[e.RowIndex].ErrorText = "";
+                return;
+            }
+
+            if (!int.TryParse(value, out _))
+            {
+                e.Cancel = true;
+                dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.LightCoral;
+                dgvResources.Rows[e.RowIndex].ErrorText = "Amount must be an integer";
+            }
+            else
+            {
+                dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
+                dgvResources.Rows[e.RowIndex].ErrorText = "";
+            }
+        }
+
+        /// <summary>
+        /// Adds an empty row and a placeholder entry in Blueprint.Resources.
+        /// </summary>
+        private void btnAddResource_Click(object sender, EventArgs e)
+        {
+            int rowIndex = dgvResources.Rows.Add();
+            dgvResources.Rows[rowIndex].Cells["colAmount"].Value = "0";
+        }
+
+        /// <summary>
+        /// Removes the selected row and its entry from Blueprint.Resources.
+        /// </summary>
+        private void btnDeleteResource_Click(object sender, EventArgs e)
+        {
+            if (dgvResources.CurrentRow == null) return;
+            int rowIndex = dgvResources.CurrentRow.Index;
+
+            string resourceName = dgvResources.Rows[rowIndex].Cells["colResource"].Value as string;
+            if (!string.IsNullOrEmpty(resourceName))
+                viewModel.Data.Resources.Remove(resourceName);
+
+            dgvResources.Rows.RemoveAt(rowIndex);
+        }
+
+        /// <summary>
+        /// Clears the resources grid.
+        /// </summary>
+        private void ClearResourcesGrid()
+        {
+            dgvResources.CellValidating -= dgvResources_CellValidating;
+            try { dgvResources.EndEdit(); } catch { }
+            dgvResources.Rows.Clear();
+            dgvResources.CellValidating += dgvResources_CellValidating;
+        }
+
+        // -----------------------------------------------------------------------
         // Form Population / Clear
         // -----------------------------------------------------------------------
 
@@ -565,6 +900,10 @@ namespace OE2EmpireTracker
 
             // Global checkbox
             chkGlobalBlueprint.Checked = viewModel.IsGlobal;
+
+            // Statistics and Resources grids
+            RefreshStatisticsGrid();
+            PopulateResourcesGrid();
         }
 
         /// <summary>
@@ -590,6 +929,16 @@ namespace OE2EmpireTracker
             cmbBaseBlueprint.SelectedIndex = -1;
 
             chkGlobalBlueprint.Checked = false;
+
+            // Clear grids
+            dgvStatistics.CellValidating -= dgvStatistics_CellValidating;
+            try { dgvStatistics.EndEdit(); } catch { }
+            dgvStatistics.Rows.Clear();
+            dgvStatistics.Columns.Clear();
+            dgvStatistics.CellValidating += dgvStatistics_CellValidating;
+            _cachedGridKey = null;
+
+            ClearResourcesGrid();
 
             // Reset delete button
             btnDelete.Enabled = false;
