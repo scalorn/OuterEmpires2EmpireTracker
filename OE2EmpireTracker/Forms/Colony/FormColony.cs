@@ -39,6 +39,9 @@ namespace OE2EmpireTracker.Forms.Colony
 
         // Structure control pool -- reuse controls instead of creating/disposing
         private readonly List<ColonyStructure> _structurePool = new List<ColonyStructure>();
+
+        // Structure type filter -- tracks which types the user has unchecked
+        private readonly HashSet<string> _uncheckedStructureTypes = new HashSet<string>(StringComparer.Ordinal);
         public FormColony()
         {
             InitializeComponent();
@@ -721,17 +724,28 @@ namespace OE2EmpireTracker.Forms.Colony
 
                 var item = new ListViewItem(displayName);
                 item.Tag = typeId;
-                item.Checked = true;
+                item.Checked = !_uncheckedStructureTypes.Contains(typeId);
                 lvwStructureTypes.Items.Add(item);
             }
 
             lvwStructureTypes.ItemChecked += lvwStructureTypes_ItemChecked;
+            ApplyStructureTypeFilter();
         }
 
         private void lvwStructureTypes_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (selectedColony == null) return;
+
+            string typeId = e.Item.Tag as string;
+            if (typeId != null)
+            {
+                if (e.Item.Checked)
+                    _uncheckedStructureTypes.Remove(typeId);
+                else
+                    _uncheckedStructureTypes.Add(typeId);
+            }
+
             ApplyStructureTypeFilter();
         }
 
