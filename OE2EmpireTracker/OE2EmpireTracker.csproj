@@ -259,6 +259,12 @@
     <Compile Include="Forms\Blueprint\FormBlueprint.Designer.cs">
       <DependentUpon>FormBlueprint.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\BlueprintV2\FormBlueprintV2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\BlueprintV2\FormBlueprintV2.Designer.cs">
+      <DependentUpon>FormBlueprintV2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Colony\ColonyStructure.cs">
       <SubType>UserControl</SubType>
     </Compile>

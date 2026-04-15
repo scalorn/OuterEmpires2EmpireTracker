@@ -18,7 +18,7 @@ Old form stays working throughout. Shared refactors (BlueprintImportHandler) use
 ## Phase 2: New Form — Core Layout and CRUD
 
 - [ ] 2. Create FormBlueprintV2 in Forms/BlueprintV2/
-  - [~] 2.1 Create `Forms/BlueprintV2/` directory with FormBlueprintV2.cs and .Designer.cs
+  - [x] 2.1 Create `Forms/BlueprintV2/` directory with FormBlueprintV2.cs and .Designer.cs
   - [~] 2.2 Design form layout in Designer: search panel, filter panel, detail panel, tab control
   - [~] 2.3 Add "Manage Blueprints V2" menu item to MainWindow (alongside existing)
   - [~] 2.4 Add csproj Compile Include entries for new files
