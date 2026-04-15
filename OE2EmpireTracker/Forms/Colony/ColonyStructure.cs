@@ -683,8 +683,18 @@ namespace OE2EmpireTracker.Forms.Colony
 
             if (ColonyStructureData.ProcessCompletionTime != null)
             {
-                showCompletionTime = true;
-                enableCmbSelection = false;
+                // If there's a timer but no research job, clear the orphaned timer
+                if (string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID))
+                {
+                    Log.Warn("ResearchLab {0}: clearing orphaned ProcessCompletionTime (no ResearchingBlueprintUUID)",
+                        ColonyStructureData.UUID);
+                    ColonyStructureData.ProcessCompletionTime = null;
+                }
+                else
+                {
+                    showCompletionTime = true;
+                    enableCmbSelection = false;
+                }
             }
 
             if (!string.IsNullOrEmpty(ColonyStructureData.ResearchingBlueprintUUID))
@@ -820,8 +830,20 @@ namespace OE2EmpireTracker.Forms.Colony
 
             if (ColonyStructureData.ProcessCompletionTime != null)
             {
-                showCompletionTime = true;
-                enableCmbSelection = false;
+                // If there's a timer but no manufacturing job, clear the orphaned timer
+                if (string.IsNullOrEmpty(ColonyStructureData.ManufacturingBlueprintUUID))
+                {
+                    Log.Warn("Manufactory {0}: clearing orphaned ProcessCompletionTime (no ManufacturingBlueprintUUID)",
+                        ColonyStructureData.UUID);
+                    ColonyStructureData.ProcessCompletionTime = null;
+                    ColonyStructureData.ManufacturingQuantity = 0;
+                    ColonyStructureData.ManufacturingCompleted = 0;
+                }
+                else
+                {
+                    showCompletionTime = true;
+                    enableCmbSelection = false;
+                }
             }
 
             if (!string.IsNullOrEmpty(ColonyStructureData.ManufacturingBlueprintUUID))
@@ -976,8 +998,20 @@ namespace OE2EmpireTracker.Forms.Colony
 
             if (ColonyStructureData.ProcessCompletionTime != null)
             {
-                showCompletionTime = true;
-                enableCmbSelection = false;
+                // If there's a timer but no commodity job, clear the orphaned timer
+                if (string.IsNullOrEmpty(ColonyStructureData.ManufacturingCommodityName))
+                {
+                    Log.Warn("CommodityFactory {0}: clearing orphaned ProcessCompletionTime (no ManufacturingCommodityName)",
+                        ColonyStructureData.UUID);
+                    ColonyStructureData.ProcessCompletionTime = null;
+                    ColonyStructureData.ManufacturingQuantity = 0;
+                    ColonyStructureData.ManufacturingCompleted = 0;
+                }
+                else
+                {
+                    showCompletionTime = true;
+                    enableCmbSelection = false;
+                }
             }
 
             if (!string.IsNullOrEmpty(ColonyStructureData.ManufacturingCommodityName))
