@@ -88,6 +88,64 @@ namespace OE2EmpireTracker.Models
 
             var pc = PlayerContext.GetInstance();
 
+            // Step 0: Clean up orphaned manufacturing state on structures whose
+            // blueprint type doesn't support it (e.g. mining rig with stale
+            // ManufacturingBlueprintUUID from a data import or prior bug)
+            foreach (ColonyStructure structure in Structures)
+            {
+                Blueprint bp = pc.FindBlueprint(structure.FlatpackBlueprintUUID);
+                if (bp == null) continue;
+
+                bool isManufactory = bp.BluePrintType == BlueprintTypes.Manufactory;
+                bool isCommodityFactory = bp.BluePrintType.IsCommodityFactory();
+                bool isResearchLab = bp.BluePrintType == BlueprintTypes.ResearchLaboratory;
+
+                if (!isManufactory && !string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID))
+                {
+                    Log.Warn("Clearing orphaned ManufacturingBlueprintUUID on {0} (type={1})",
+                        structure.UUID, bp.BluePrintType);
+                    structure.ManufacturingBlueprintUUID = null;
+                    structure.ManufacturingQuantity = 0;
+                    structure.ManufacturingCompleted = 0;
+                    structure.StagingResources = false;
+                }
+                if (!isCommodityFactory && !string.IsNullOrEmpty(structure.ManufacturingCommodityName))
+                {
+                    Log.Warn("Clearing orphaned ManufacturingCommodityName on {0} (type={1})",
+                        structure.UUID, bp.BluePrintType);
+                    structure.ManufacturingCommodityName = null;
+                    structure.ManufacturingQuantity = 0;
+                    structure.ManufacturingCompleted = 0;
+                    structure.StagingResources = false;
+                }
+                if (!isResearchLab && !string.IsNullOrEmpty(structure.ResearchingBlueprintUUID))
+                {
+                    Log.Warn("Clearing orphaned ResearchingBlueprintUUID on {0} (type={1})",
+                        structure.UUID, bp.BluePrintType);
+                    structure.ResearchingBlueprintUUID = null;
+                }
+                // Clear ProcessCompletionTime on manufactories/commodity factories/research labs
+                // that have a timer but no active job
+                if (isManufactory && string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID)
+                    && structure.ProcessCompletionTime != null)
+                {
+                    Log.Warn("Clearing orphaned ProcessCompletionTime on manufactory {0}", structure.UUID);
+                    structure.ProcessCompletionTime = null;
+                }
+                if (isCommodityFactory && string.IsNullOrEmpty(structure.ManufacturingCommodityName)
+                    && structure.ProcessCompletionTime != null)
+                {
+                    Log.Warn("Clearing orphaned ProcessCompletionTime on commodity factory {0}", structure.UUID);
+                    structure.ProcessCompletionTime = null;
+                }
+                if (isResearchLab && string.IsNullOrEmpty(structure.ResearchingBlueprintUUID)
+                    && structure.ProcessCompletionTime != null)
+                {
+                    Log.Warn("Clearing orphaned ProcessCompletionTime on research lab {0}", structure.UUID);
+                    structure.ProcessCompletionTime = null;
+                }
+            }
+
             // Step 1: Structure Building -- check BuildCompletionTime expiration
             foreach (ColonyStructure structure in Structures)
             {
