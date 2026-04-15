@@ -139,6 +139,22 @@ namespace OE2EmpireTracker.Forms.Blueprint
                 // Populate blueprint name, evolution, techlevel and description if available
                 try
                 {
+                    // Log what we found in the HTML for diagnostics
+                    Log.Info("Individual import HTML diagnostics:");
+                    Log.Info($"  iconBaseNode: {(iconBaseNode != null ? "FOUND" : "MISSING")}");
+                    Log.Info($"  titleNode: {(titleNode != null ? titleNode.InnerText.Trim() : "MISSING")}");
+                    Log.Info($"  evoNode: {(evoNode != null ? evoNode.InnerText.Trim() : "MISSING")}");
+                    Log.Info($"  descNode: {(descNode != null ? "FOUND (" + descNode.InnerText.Trim().Substring(0, Math.Min(50, descNode.InnerText.Trim().Length)) + "...)" : "MISSING")}");
+                    Log.Info($"  propNodes: {propNodes?.Count ?? 0} ShipComponentProperty divs");
+                    Log.Info($"  nameNodes: {nameNodes?.Count ?? 0} resource name divs");
+                    Log.Info($"  detailNodes: {detailNodes?.Count ?? 0} resource detail divs");
+
+                    if (iconBaseNode != null)
+                    {
+                        string style = iconBaseNode.Attributes?["style"]?.Value ?? "";
+                        Log.Info($"  iconBaseNode style: {style}");
+                    }
+
                     // Resolve blueprint type from icon sprite position
                     if (iconBaseNode != null)
                     {
@@ -155,21 +171,40 @@ namespace OE2EmpireTracker.Forms.Blueprint
                             {
                                 blueprint.BluePrintType = bpType.Id;
                                 blueprint.BluePrintType = ReclassifyByName(blueprint.BluePrintType, blueprint.Name);
-                                Log.Info($"  Individual import icon {iconPosition} -> {blueprint.BluePrintType}");
+                                Log.Info($"  Icon {iconPosition} -> type={blueprint.BluePrintType}");
                             }
                             else
                             {
                                 blueprint.BluePrintType = ReclassifyByName(null, blueprint.Name);
                                 if (blueprint.BluePrintType != null)
                                 {
-                                    Log.Info($"  Individual import name-based classification for '{blueprint.Name}' -> {blueprint.BluePrintType}");
+                                    Log.Info($"  No icon match, name-based classification '{blueprint.Name}' -> {blueprint.BluePrintType}");
                                 }
                                 else
                                 {
-                                    Log.Warn($"  Individual import unknown icon position: {iconPosition} for '{blueprint.Name}'");
+                                    Log.Warn($"  Unknown icon position: {iconPosition} for '{blueprint.Name}' -- no type assigned");
                                 }
                             }
                         }
+                        else
+                        {
+                            Log.Warn($"  iconBaseNode found but style doesn't match background pattern: {style}");
+                            blueprint.BluePrintType = ReclassifyByName(null, blueprint.Name);
+                            if (blueprint.BluePrintType != null)
+                                Log.Info($"  Fallback name-based classification '{blueprint.Name}' -> {blueprint.BluePrintType}");
+                            else
+                                Log.Warn($"  No icon and no name match for '{blueprint.Name}' -- no type assigned");
+                        }
+                    }
+                    else
+                    {
+                        Log.Warn($"  No ui_icon_base div found in HTML -- attempting name-based classification");
+                        // Try name-based classification as fallback when icon is completely missing
+                        blueprint.BluePrintType = ReclassifyByName(null, blueprint.Name);
+                        if (blueprint.BluePrintType != null)
+                            Log.Info($"  Name-based classification '{blueprint.Name}' -> {blueprint.BluePrintType}");
+                        else
+                            Log.Warn($"  No icon and no name match for '{blueprint.Name}' -- no type assigned");
                     }
 
                     // Evolution
