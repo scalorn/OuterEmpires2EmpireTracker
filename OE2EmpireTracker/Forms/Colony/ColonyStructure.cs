@@ -910,11 +910,6 @@ namespace OE2EmpireTracker.Forms.Colony
                 bp.Properties.getBoolean("Can Manufacture", true, out canManufacture);
                 if (!canManufacture) continue;
 
-                // Must have a ManufactureTime
-                string mfgTime;
-                bp.Properties.getString("Manufacture Run Time", null, out mfgTime);
-                if (string.IsNullOrEmpty(mfgTime)) continue;
-
                 string display = bp.ExtendedName;
                 if (!string.IsNullOrEmpty(searchText) &&
                     display.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) < 0)
@@ -1482,10 +1477,10 @@ namespace OE2EmpireTracker.Forms.Colony
                 Models.Blueprint bp = playerContext.FindBlueprint(ColonyStructureData.ManufacturingBlueprintUUID);
                 if (bp == null) return;
 
-                // Parse manufacture time from blueprint properties
+                // Parse manufacture time from blueprint properties (default 1s if absent)
                 string mfgTimeStr;
-                bp.Properties.getString("Manufacture Run Time", null, out mfgTimeStr);
-                if (string.IsNullOrEmpty(mfgTimeStr)) return;
+                bp.Properties.getString("Manufacture Run Time", "1s", out mfgTimeStr);
+                if (string.IsNullOrEmpty(mfgTimeStr)) mfgTimeStr = "1s";
 
                 // Normalize time format: "9 hours" -> "9h", "30 minutes" -> "30m", etc.
                 mfgTimeStr = NormalizeTimeString(mfgTimeStr);
