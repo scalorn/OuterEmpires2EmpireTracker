@@ -19,8 +19,8 @@ Old form stays working throughout. Shared refactors (BlueprintImportHandler) use
 
 - [ ] 2. Create FormBlueprintV2 in Forms/BlueprintV2/
   - [x] 2.1 Create `Forms/BlueprintV2/` directory with FormBlueprintV2.cs and .Designer.cs
-  - [-] 2.2 Design form layout in Designer: search panel, filter panel, detail panel, tab control
-  - [~] 2.3 Add "Manage Blueprints V2" menu item to MainWindow (alongside existing)
+  - [x] 2.2 Design form layout in Designer: search panel, filter panel, detail panel, tab control
+  - [x] 2.3 Add "Manage Blueprints V2" menu item to MainWindow (alongside existing)
   - [~] 2.4 Add csproj Compile Include entries for new files
   - [~] 2.5 Implement blueprint list population with text + structured filters
   - [~] 2.6 Implement New/Save/Delete with write-through (no ClearProperties on save)

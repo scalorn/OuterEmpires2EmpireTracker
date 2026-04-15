@@ -52,6 +52,7 @@
             this.deliveryExecutionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colonyDailyBuildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colonyActivityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addBlueprintV2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cascadeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tileHorizontalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -155,6 +156,7 @@
             this.deliveryRoutesToolStripMenuItem,
             this.pricingPlansToolStripMenuItem,
             this.addBlueprintToolStripMenuItem,
+            this.addBlueprintV2ToolStripMenuItem,
             this.addColonyToolStripMenuItem,
             this.managePlayerProfiles,
             this.addSurveyToolStripMenuItem});
@@ -175,6 +177,13 @@
             this.addBlueprintToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.addBlueprintToolStripMenuItem.Text = "Manage Blueprints";
             this.addBlueprintToolStripMenuItem.Click += new System.EventHandler(this.addBlueprintToolStripMenuItem_Click);
+            // 
+            // addBlueprintV2ToolStripMenuItem
+            // 
+            this.addBlueprintV2ToolStripMenuItem.Name = "addBlueprintV2ToolStripMenuItem";
+            this.addBlueprintV2ToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.addBlueprintV2ToolStripMenuItem.Text = "Manage Blueprints V2";
+            this.addBlueprintV2ToolStripMenuItem.Click += new System.EventHandler(this.addBlueprintV2ToolStripMenuItem_Click);
             // 
             // addColonyToolStripMenuItem
             // 
@@ -357,6 +366,7 @@
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addSurveyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addBlueprintToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addBlueprintV2ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem contentsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
