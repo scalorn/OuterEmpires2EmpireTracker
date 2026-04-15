@@ -140,6 +140,7 @@
     <Compile Include="Services\ColonyImportHelper.cs" />
     <Compile Include="Services\SurveyImportHelper.cs" />
     <Compile Include="Services\BlueprintReferenceCounter.cs" />
+    <Compile Include="Services\BlueprintImportHandler.cs" />
     <Compile Include="Services\ColonyReferenceCounter.cs" />
     <Compile Include="Services\SurveyReferenceCounter.cs" />
     <Compile Include="Services\EvolutionChainService.cs" />
