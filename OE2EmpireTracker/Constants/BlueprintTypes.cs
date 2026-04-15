@@ -41,6 +41,12 @@ namespace OE2EmpireTracker.Constants
 
         /// <summary>Ore hopper ship component type</summary>
         public const string OreHopper = "OreHopper";
+
+        /// <summary>Mining laser ship component type</summary>
+        public const string MiningLaser = "MiningLaser";
+
+        /// <summary>Asteroid grapple ship component type</summary>
+        public const string AsteroidGrapple = "AsteroidGrapple";
     }
 
     /// <summary>

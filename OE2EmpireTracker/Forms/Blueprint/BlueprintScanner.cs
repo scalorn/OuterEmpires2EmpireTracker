@@ -139,15 +139,44 @@ namespace OE2EmpireTracker.Forms.Blueprint
                 // Populate blueprint name, evolution, techlevel and description if available
                 try
                 {
-                    // Log what we found in the HTML for diagnostics
+                    // --- Parse name, evolution, tech level, description FIRST ---
+                    // (needed for name-based type classification when icon is missing)
+
+                    if (evoNode != null && int.TryParse(evoNode.InnerText.Trim(), out int evo))
+                    {
+                        blueprint.Evolution = evo;
+                    }
+
+                    if (titleNode != null)
+                    {
+                        string titleFull = titleNode.InnerText.Trim();
+                        if (evoNode != null && !string.IsNullOrEmpty(evoNode.InnerText))
+                        {
+                            titleFull = titleFull.Replace(evoNode.InnerText, "").Trim();
+                        }
+
+                        var m = Regex.Match(titleFull, "^(.*)\\((.*)\\)$");
+                        if (m.Success)
+                        {
+                            blueprint.Name = m.Groups[1].Value.Trim();
+                            blueprint.TechLevel = m.Groups[2].Value.Trim();
+                        }
+                        else
+                        {
+                            blueprint.Name = titleFull;
+                        }
+                    }
+
+                    if (descNode != null)
+                    {
+                        blueprint.Description = descNode.InnerText.Trim();
+                    }
+
+                    // --- Log diagnostics ---
                     Log.Info("Individual import HTML diagnostics:");
+                    Log.Info($"  name='{blueprint.Name}' evo={blueprint.Evolution} tech='{blueprint.TechLevel}'");
                     Log.Info($"  iconBaseNode: {(iconBaseNode != null ? "FOUND" : "MISSING")}");
-                    Log.Info($"  titleNode: {(titleNode != null ? titleNode.InnerText.Trim() : "MISSING")}");
-                    Log.Info($"  evoNode: {(evoNode != null ? evoNode.InnerText.Trim() : "MISSING")}");
-                    Log.Info($"  descNode: {(descNode != null ? "FOUND (" + descNode.InnerText.Trim().Substring(0, Math.Min(50, descNode.InnerText.Trim().Length)) + "...)" : "MISSING")}");
-                    Log.Info($"  propNodes: {propNodes?.Count ?? 0} ShipComponentProperty divs");
-                    Log.Info($"  nameNodes: {nameNodes?.Count ?? 0} resource name divs");
-                    Log.Info($"  detailNodes: {detailNodes?.Count ?? 0} resource detail divs");
+                    Log.Info($"  propNodes: {propNodes?.Count ?? 0}, nameNodes: {nameNodes?.Count ?? 0}, detailNodes: {detailNodes?.Count ?? 0}");
 
                     if (iconBaseNode != null)
                     {
@@ -155,7 +184,7 @@ namespace OE2EmpireTracker.Forms.Blueprint
                         Log.Info($"  iconBaseNode style: {style}");
                     }
 
-                    // Resolve blueprint type from icon sprite position
+                    // --- Resolve blueprint type from icon sprite position ---
                     if (iconBaseNode != null)
                     {
                         string style = iconBaseNode.Attributes?["style"]?.Value ?? "";
@@ -177,70 +206,30 @@ namespace OE2EmpireTracker.Forms.Blueprint
                             {
                                 blueprint.BluePrintType = ReclassifyByName(null, blueprint.Name);
                                 if (blueprint.BluePrintType != null)
-                                {
-                                    Log.Info($"  No icon match, name-based classification '{blueprint.Name}' -> {blueprint.BluePrintType}");
-                                }
+                                    Log.Info($"  No icon match, name-based '{blueprint.Name}' -> {blueprint.BluePrintType}");
                                 else
-                                {
-                                    Log.Warn($"  Unknown icon position: {iconPosition} for '{blueprint.Name}' -- no type assigned");
-                                }
+                                    Log.Warn($"  Unknown icon {iconPosition} for '{blueprint.Name}' -- no type assigned");
                             }
                         }
                         else
                         {
-                            Log.Warn($"  iconBaseNode found but style doesn't match background pattern: {style}");
+                            // Icon div exists but has no background sprite (game bug for newer items)
+                            Log.Warn($"  iconBaseNode has no background sprite for '{blueprint.Name}' -- using name-based classification");
                             blueprint.BluePrintType = ReclassifyByName(null, blueprint.Name);
                             if (blueprint.BluePrintType != null)
-                                Log.Info($"  Fallback name-based classification '{blueprint.Name}' -> {blueprint.BluePrintType}");
+                                Log.Info($"  Name-based classification '{blueprint.Name}' -> {blueprint.BluePrintType}");
                             else
-                                Log.Warn($"  No icon and no name match for '{blueprint.Name}' -- no type assigned");
+                                Log.Warn($"  No name match for '{blueprint.Name}' -- no type assigned");
                         }
                     }
                     else
                     {
-                        Log.Warn($"  No ui_icon_base div found in HTML -- attempting name-based classification");
-                        // Try name-based classification as fallback when icon is completely missing
+                        Log.Warn($"  No ui_icon_base div for '{blueprint.Name}' -- using name-based classification");
                         blueprint.BluePrintType = ReclassifyByName(null, blueprint.Name);
                         if (blueprint.BluePrintType != null)
                             Log.Info($"  Name-based classification '{blueprint.Name}' -> {blueprint.BluePrintType}");
                         else
-                            Log.Warn($"  No icon and no name match for '{blueprint.Name}' -- no type assigned");
-                    }
-
-                    // Evolution
-                    if (evoNode != null && int.TryParse(evoNode.InnerText.Trim(), out int evo))
-                    {
-                        blueprint.Evolution = evo;
-                    }
-
-                    // Title contains the name and possibly tech level in parentheses
-                    if (titleNode != null)
-                    {
-                        string titleFull = titleNode.InnerText.Trim();
-                        // Remove evolution number text if present (guard against empty string)
-                        if (evoNode != null && !string.IsNullOrEmpty(evoNode.InnerText))
-                        {
-                            titleFull = titleFull.Replace(evoNode.InnerText, "").Trim();
-                        }
-
-                        // Extract tech level in parentheses at end, e.g. "Name (MilSpec)"
-                        var m = Regex.Match(titleFull, "^(.*)\\((.*)\\)$");
-                        if (m.Success)
-                        {
-                            string nameOnly = m.Groups[1].Value.Trim();
-                            string tech = m.Groups[2].Value.Trim();
-                            blueprint.Name = nameOnly;
-                            blueprint.TechLevel = tech;
-                        }
-                        else
-                        {
-                            blueprint.Name = titleFull;
-                        }
-                    }
-
-                    if (descNode != null)
-                    {
-                        blueprint.Description = descNode.InnerText.Trim();
+                            Log.Warn($"  No name match for '{blueprint.Name}' -- no type assigned");
                     }
 
                     // Individual blueprint pages don't include " Flatpack" in the title,
@@ -252,6 +241,8 @@ namespace OE2EmpireTracker.Forms.Blueprint
                     {
                         blueprint.Name += " Flatpack";
                     }
+
+                    Log.Info($"  Final: name='{blueprint.Name}' type='{blueprint.BluePrintType}'");
                 }
                 catch (Exception ex)
                 {
@@ -574,14 +565,31 @@ namespace OE2EmpireTracker.Forms.Blueprint
         /// </summary>
         private static string ReclassifyByName(string resolvedType, string blueprintName)
         {
-            if (!string.IsNullOrEmpty(blueprintName) &&
-                blueprintName.IndexOf("Ore Hopper", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (string.IsNullOrEmpty(blueprintName))
+                return resolvedType;
+
+            // Ore Hopper
+            if (blueprintName.IndexOf("Ore Hopper", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 if (resolvedType != BlueprintTypes.OreHopper)
-                {
                     Log.Info($"  Reclassified '{blueprintName}' from '{resolvedType}' to '{BlueprintTypes.OreHopper}' by name");
-                }
                 return BlueprintTypes.OreHopper;
+            }
+
+            // Mining Laser
+            if (blueprintName.IndexOf("Mining Laser", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                if (resolvedType != BlueprintTypes.MiningLaser)
+                    Log.Info($"  Reclassified '{blueprintName}' from '{resolvedType}' to '{BlueprintTypes.MiningLaser}' by name");
+                return BlueprintTypes.MiningLaser;
+            }
+
+            // Asteroid Grapple / Speed Grapple / any Grapple
+            if (blueprintName.IndexOf("Grapple", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                if (resolvedType != BlueprintTypes.AsteroidGrapple)
+                    Log.Info($"  Reclassified '{blueprintName}' from '{resolvedType}' to '{BlueprintTypes.AsteroidGrapple}' by name");
+                return BlueprintTypes.AsteroidGrapple;
             }
 
             return resolvedType;
