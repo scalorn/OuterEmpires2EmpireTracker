@@ -830,12 +830,16 @@ namespace OE2EmpireTracker.Forms.Colony
 
             if (ColonyStructureData.ProcessCompletionTime != null)
             {
-                // If there's a timer but no manufacturing job, clear the orphaned timer
-                if (string.IsNullOrEmpty(ColonyStructureData.ManufacturingBlueprintUUID))
+                // If there's a timer but no manufacturing job, or the referenced
+                // blueprint doesn't exist, clear the orphaned timer
+                if (string.IsNullOrEmpty(ColonyStructureData.ManufacturingBlueprintUUID)
+                    || playerContext.FindBlueprint(ColonyStructureData.ManufacturingBlueprintUUID) == null)
                 {
-                    Log.Warn("Manufactory {0}: clearing orphaned ProcessCompletionTime (no ManufacturingBlueprintUUID)",
-                        ColonyStructureData.UUID);
+                    Log.Warn("Manufactory {0}: clearing orphaned manufacturing state (blueprint={1})",
+                        ColonyStructureData.UUID,
+                        ColonyStructureData.ManufacturingBlueprintUUID ?? "(null)");
                     ColonyStructureData.ProcessCompletionTime = null;
+                    ColonyStructureData.ManufacturingBlueprintUUID = null;
                     ColonyStructureData.ManufacturingQuantity = 0;
                     ColonyStructureData.ManufacturingCompleted = 0;
                 }

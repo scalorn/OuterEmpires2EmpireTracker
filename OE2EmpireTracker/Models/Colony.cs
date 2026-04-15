@@ -109,6 +109,19 @@ namespace OE2EmpireTracker.Models
                     structure.ManufacturingCompleted = 0;
                     structure.StagingResources = false;
                 }
+                // Also clear if the referenced manufacturing blueprint doesn't exist
+                if (isManufactory && !string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID)
+                    && pc.FindBlueprint(structure.ManufacturingBlueprintUUID) == null)
+                {
+                    Log.Warn("Clearing ManufacturingBlueprintUUID on {0} (blueprint {1} not found)",
+                        structure.UUID, structure.ManufacturingBlueprintUUID);
+                    structure.ManufacturingBlueprintUUID = null;
+                    structure.ManufacturingQuantity = 0;
+                    structure.ManufacturingCompleted = 0;
+                    structure.StagingResources = false;
+                    if (structure.ProcessCompletionTime != null)
+                        structure.ProcessCompletionTime = null;
+                }
                 if (!isCommodityFactory && !string.IsNullOrEmpty(structure.ManufacturingCommodityName))
                 {
                     Log.Warn("Clearing orphaned ManufacturingCommodityName on {0} (type={1})",
