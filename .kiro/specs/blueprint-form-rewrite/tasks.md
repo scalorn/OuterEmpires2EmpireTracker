@@ -12,7 +12,7 @@ Old form stays working throughout. Shared refactors (BlueprintImportHandler) use
   - [x] 1.4 Write unit tests for ClassifyImport (ResourcesOnly, Full, NoName)
   - [x] 1.5 Write unit tests for FindTarget (selected match, dedup match, no match)
   - [x] 1.6 Write unit tests for MergeAndPersist (additive merge, empty props skipped)
-  - [~] 1.7 Update old FormBlueprint.cmdImport_Click to delegate to BlueprintImportHandler
+  - [x] 1.7 Update old FormBlueprint.cmdImport_Click to delegate to BlueprintImportHandler
   - [~] 1.8 Verify all existing tests still pass and old form works unchanged
 
 ## Phase 2: New Form — Core Layout and CRUD

@@ -832,6 +832,22 @@ namespace OE2EmpireTracker
         }
 
         /// <summary>
+        /// Selects the blueprint with the given UUID in the list view and scrolls it into view.
+        /// </summary>
+        private void SelectBlueprintInList(string uuid)
+        {
+            foreach (ListViewItem item in lvwBlueprints.Items)
+            {
+                if ((item.Tag as Blueprint)?.UUID == uuid)
+                {
+                    item.Selected = true;
+                    item.EnsureVisible();
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
         /// Updates the blueprint list view with filtered blueprints based on current search filters.
         /// </summary>
         /// <param name="sender">The TextBox object that triggered the event.</param>
@@ -1532,25 +1548,14 @@ namespace OE2EmpireTracker
                     return;
 
                 Log.Info("=== Individual Blueprint Import ===");
-                Log.Info("  Parsed: name='{0}' evo={1} type='{2}' class={3} tech='{4}'",
-                    tempBP.Name, tempBP.Evolution, tempBP.BluePrintType, tempBP.Class, tempBP.TechLevel);
-                Log.Info("  Parsed: {0} properties, {1} resources",
-                    tempBP.Properties?.Count ?? 0, tempBP.Resources?.Count ?? 0);
-                if (tempBP.Properties != null)
-                {
-                    foreach (var prop in tempBP.Properties.Properties)
-                        Log.Info("    prop: {0} = {1}", prop.Key, prop.Value);
-                }
-                if (tempBP.Resources != null)
-                {
-                    foreach (var res in tempBP.Resources)
-                        Log.Info("    resource: {0} = {1}", res.Key, res.Value);
-                }
+                BlueprintImportHandler.LogParsedBlueprint(tempBP);
+
+                // Classify the import via the shared service
+                var importType = BlueprintImportHandler.ClassifyImport(tempBP);
+                Log.Info("  ImportType: {0}", importType);
 
                 // -- BL-062: Resources-only import (e.g. resources tab copied from game) --
-                bool isResourcesOnly = MarketBlueprintImporter.IsResourcesOnlyImport(tempBP);
-                Log.Info("  IsResourcesOnly: {0}", isResourcesOnly);
-                if (isResourcesOnly)
+                if (importType == BlueprintImportHandler.ImportType.ResourcesOnly)
                 {
                     if (string.IsNullOrEmpty(viewModel.Data.UUID))
                     {
@@ -1572,17 +1577,7 @@ namespace OE2EmpireTracker
                     // Notify, refresh, re-select
                     playerContext.OnBlueprintDataChanged(viewModel.Data.UUID);
                     RefreshBlueprintList();
-
-                    foreach (ListViewItem item in lvwBlueprints.Items)
-                    {
-                        if ((item.Tag as Blueprint)?.UUID == viewModel.Data.UUID)
-                        {
-                            item.Selected = true;
-                            item.EnsureVisible();
-                            break;
-                        }
-                    }
-
+                    SelectBlueprintInList(viewModel.Data.UUID);
                     PopulateForm();
                     Log.Info("Resources-only import merged into selected blueprint: {0} UUID={1}",
                         viewModel.Data.Name, viewModel.Data.UUID);
@@ -1590,7 +1585,7 @@ namespace OE2EmpireTracker
                 }
 
                 // Fallback: if no name was parsed, use current behavior
-                if (string.IsNullOrEmpty(tempBP.Name))
+                if (importType == BlueprintImportHandler.ImportType.NoName)
                 {
                     Log.Warn("  No name parsed from clipboard -- using fallback direct import");
                     scanner.ProcessClipboard(viewModel.Data);
@@ -1607,112 +1602,17 @@ namespace OE2EmpireTracker
                     return;
                 }
 
-                Blueprint importedBP;
-                bool globalChanged = false;
-                bool playerChanged = false;
+                // Full import — delegate routing and merge to BlueprintImportHandler
+                var findResult = BlueprintImportHandler.FindTarget(
+                    tempBP, viewModel.Data, playerContext, empireContext);
 
-                Log.Info("  Selected blueprint: name='{0}' evo={1} type='{2}' class={3} tech='{4}' UUID={5}",
-                    viewModel.Data.Name, viewModel.Data.Evolution, viewModel.Data.BluePrintType,
-                    viewModel.Data.Class, viewModel.Data.TechLevel, viewModel.Data.UUID ?? "(null)");
-
-                // Check if the selected blueprint matches the dedup key.
-                // Use relaxed matching: Name + Evolution required.
-                // BluePrintType matches if equal OR if the existing has no type (will be filled by import).
-                bool nameMatch = string.Equals(viewModel.Data.Name, tempBP.Name, StringComparison.Ordinal);
-                bool evoMatch = viewModel.Data.Evolution == tempBP.Evolution;
-                bool typeMatch = string.Equals(viewModel.Data.BluePrintType, tempBP.BluePrintType, StringComparison.Ordinal)
-                    || string.IsNullOrEmpty(viewModel.Data.BluePrintType);
-                bool selectedMatch = !string.IsNullOrEmpty(viewModel.Data.UUID)
-                    && !string.IsNullOrEmpty(tempBP.Name)
-                    && nameMatch && evoMatch && typeMatch;
-
-                Log.Info("  Selected match check: name={0} evo={1} type={2} hasUUID={3} hasName={4} => {5}",
-                    nameMatch, evoMatch, typeMatch,
-                    !string.IsNullOrEmpty(viewModel.Data.UUID),
-                    !string.IsNullOrEmpty(tempBP.Name),
-                    selectedMatch);
-
-                if (selectedMatch)
-                {
-                    // Selected blueprint matches -- update in place
-                    MarketBlueprintImporter.UpdateExisting(viewModel.Data, tempBP);
-                    importedBP = viewModel.Data;
-
-                    // Determine which list it belongs to for persistence
-                    if (empireContext.GlobalBlueprintList.Any(b => b.UUID == importedBP.UUID))
-                        globalChanged = true;
-                    else
-                        playerChanged = true;
-
-                    Log.Info("Blueprint updated via dedup (selected match): {0} Ev{1} {2}",
-                        importedBP.Name, importedBP.Evolution, importedBP.BluePrintType);
-                }
-                else
-                {
-                    // No match with selected -- route via market logic
-                    bool hasCurrentPlayer = !string.IsNullOrEmpty(playerContext.CurrentPlayerUUID);
-                    bool isGlobal = MarketBlueprintImporter.IsGlobalRoute(tempBP.Evolution, hasCurrentPlayer);
-                    Log.Info("  No selected match -- routing: isGlobal={0} (evo={1}, hasPlayer={2})",
-                        isGlobal, tempBP.Evolution, hasCurrentPlayer);
-
-                    var targetList = isGlobal
-                        ? empireContext.GlobalBlueprintList
-                        : playerContext.BlueprintList;
-
-                    var existing = MarketBlueprintImporter.FindByDedupKey(targetList, tempBP);
-                    Log.Info("  FindByDedupKey in {0} list ({1} blueprints): {2}",
-                        isGlobal ? "global" : "player", targetList.Count,
-                        existing != null ? $"MATCH UUID={existing.UUID}" : "NO MATCH");
-
-                    if (existing != null)
-                    {
-                        MarketBlueprintImporter.UpdateExisting(existing, tempBP);
-                        importedBP = existing;
-                        Log.Info("Blueprint updated via dedup (list match): {0} Ev{1} {2}",
-                            importedBP.Name, importedBP.Evolution, importedBP.BluePrintType);
-                    }
-                    else
-                    {
-                        tempBP.UUID = isGlobal
-                            ? DeterministicUUID.Generate(tempBP)
-                            : Guid.NewGuid().ToString();
-                        if (!isGlobal)
-                            tempBP.OwnerUUID = playerContext.CurrentPlayerUUID;
-                        targetList.Add(tempBP);
-                        importedBP = tempBP;
-                        Log.Info("New blueprint created via dedup: {0} Ev{1} {2} -> {3}",
-                            importedBP.Name, importedBP.Evolution, importedBP.BluePrintType,
-                            isGlobal ? "Global" : "Player");
-                    }
-
-                    if (isGlobal) globalChanged = true;
-                    else playerChanged = true;
-                }
-
-                // Persist
-                Log.Info("Pre-save: blueprint {0} UUID={1} has {2} properties, {3} resources (hashcode={4})",
-                    importedBP.Name, importedBP.UUID, importedBP.Properties?.Count ?? 0, importedBP.Resources?.Count ?? 0, importedBP.GetHashCode());
-                if (globalChanged) empireContext.WriteContext();
-                if (playerChanged) playerContext.WriteContext();
-                Log.Info("Post-save complete for {0}", importedBP.Name);
-
-                // Notify
-                playerContext.OnBlueprintDataChanged(importedBP.UUID);
+                var importedBP = BlueprintImportHandler.MergeAndPersist(
+                    findResult, tempBP, playerContext, empireContext);
 
                 // Refresh UI, select imported blueprint
-                RefreshBlueprintList();
-
-                foreach (ListViewItem item in lvwBlueprints.Items)
-                {
-                    if ((item.Tag as Blueprint)?.UUID == importedBP.UUID)
-                    {
-                        item.Selected = true;
-                        item.EnsureVisible();
-                        break;
-                    }
-                }
-
                 viewModel.SelectBlueprint(importedBP);
+                RefreshBlueprintList();
+                SelectBlueprintInList(importedBP.UUID);
                 PopulateForm();
 
                 // Auto-select best base blueprint match
