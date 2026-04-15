@@ -5,7 +5,7 @@ Old form stays working throughout. Shared refactors (BlueprintImportHandler) use
 
 ## Phase 1: Extract Import Logic (shared refactor)
 
-- [-] 1. Create BlueprintImportHandler service
+- [x] 1. Create BlueprintImportHandler service
   - [x] 1.1 Create `Services/BlueprintImportHandler.cs` with ClassifyImport, FindTarget, MergeAndPersist
   - [x] 1.2 Move import routing logic from FormBlueprint.cmdImport_Click into the service
   - [x] 1.3 Add comprehensive logging at each decision point
@@ -13,7 +13,7 @@ Old form stays working throughout. Shared refactors (BlueprintImportHandler) use
   - [x] 1.5 Write unit tests for FindTarget (selected match, dedup match, no match)
   - [x] 1.6 Write unit tests for MergeAndPersist (additive merge, empty props skipped)
   - [x] 1.7 Update old FormBlueprint.cmdImport_Click to delegate to BlueprintImportHandler
-  - [~] 1.8 Verify all existing tests still pass and old form works unchanged
+  - [x] 1.8 Verify all existing tests still pass and old form works unchanged
 
 ## Phase 2: New Form — Core Layout and CRUD
 

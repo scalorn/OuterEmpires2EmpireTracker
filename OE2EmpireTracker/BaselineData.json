@@ -1,5 +1,5 @@
 {
-  "DataVersion": 5,
+  "DataVersion": 7,
   "GameConstants": {
     "RefiningBaseRate": 25,
     "CommoditiesPerCycle": 10,
@@ -2149,7 +2149,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "160",
         "Cargo Volume Size": "215",
         "Power Required": "255",
@@ -2180,7 +2179,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "160",
         "Cargo Volume Size": "215",
         "Power Required": "255",
@@ -2211,7 +2209,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "160",
         "Cargo Volume Size": "215",
         "Power Required": "255",
@@ -2242,7 +2239,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "160",
         "Cargo Volume Size": "215",
         "Power Required": "255",
@@ -2273,7 +2269,6 @@
       "TechLevel": "MilSpec",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "1960",
         "Cargo Volume Size": "820",
         "Power Required": "3189",
@@ -2301,7 +2296,6 @@
       "TechLevel": "MilSpec",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "870",
         "Cargo Volume Size": "360",
         "Power Required": "1823",
@@ -2329,7 +2323,6 @@
       "TechLevel": "MilSpec",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "510",
         "Cargo Volume Size": "210",
         "Power Required": "1013",
@@ -2357,7 +2350,6 @@
       "TechLevel": "MilSpec",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "260",
         "Cargo Volume Size": "110",
         "Power Required": "540",
@@ -2385,7 +2377,6 @@
       "TechLevel": "MilSpec",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "120",
         "Cargo Volume Size": "50",
         "Power Required": "270",
@@ -2414,7 +2405,6 @@
       "TechLevel": "MilSpec",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "40",
         "Cargo Volume Size": "15",
         "Power Required": "120",
@@ -2442,7 +2432,6 @@
       "TechLevel": "MilSpec",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "3840",
         "Cargo Volume Size": "1600",
         "Power Required": "5468",
@@ -2470,7 +2459,6 @@
       "TechLevel": "Junker",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "180",
         "Cargo Volume Size": "135",
         "Power Required": "170",
@@ -2496,7 +2484,6 @@
       "BluePrintType": "MissileLauncherLarge",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "64",
         "Cargo Volume Size": "34",
         "Health": "23",
@@ -2529,7 +2516,6 @@
       "BluePrintType": "MissileLauncher/Medium",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "54",
         "Cargo Volume Size": "29",
         "Health": "20",
@@ -2563,7 +2549,6 @@
       "BluePrintType": "MissileLauncherLarge",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "133",
         "Cargo Volume Size": "72",
         "Health": "49",
@@ -2596,7 +2581,6 @@
       "BluePrintType": "MissileLauncher/Medium",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "112",
         "Cargo Volume Size": "60",
         "Health": "42",
@@ -2629,7 +2613,6 @@
       "BluePrintType": "MissileLauncher/Small",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "94",
         "Cargo Volume Size": "51",
         "Health": "35",
@@ -2663,7 +2646,6 @@
       "BluePrintType": "MissileLauncherLarge",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "296",
         "Cargo Volume Size": "159",
         "Health": "110",
@@ -2696,7 +2678,6 @@
       "BluePrintType": "MissileLauncher/Medium",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "249",
         "Cargo Volume Size": "133",
         "Health": "93",
@@ -2729,7 +2710,6 @@
       "BluePrintType": "MissileLauncher/Small",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "208",
         "Cargo Volume Size": "112",
         "Health": "78",
@@ -2762,7 +2742,6 @@
       "BluePrintType": "MissileLauncherLarge",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "665",
         "Cargo Volume Size": "357",
         "Health": "249",
@@ -2796,7 +2775,6 @@
       "BluePrintType": "MissileLauncher/Small",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "468",
         "Cargo Volume Size": "251",
         "Health": "175",
@@ -2829,7 +2807,6 @@
       "BluePrintType": "MissileLauncher/Medium",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1257",
         "Cargo Volume Size": "673",
         "Health": "471",
@@ -2862,7 +2839,6 @@
       "BluePrintType": "MissileLauncher/Small",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1053",
         "Cargo Volume Size": "564",
         "Health": "394",
@@ -2895,7 +2871,6 @@
       "BluePrintType": "MissileLauncherLarge",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "3516",
         "Cargo Volume Size": "1884",
         "Health": "1318",
@@ -2928,7 +2903,6 @@
       "BluePrintType": "MissileLauncher/Small",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "2474",
         "Cargo Volume Size": "1326",
         "Health": "927",
@@ -2962,7 +2936,6 @@
       "BluePrintType": "MissileLauncherLarge",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "9844",
         "Cargo Volume Size": "5274",
         "Health": "3691",
@@ -2996,7 +2969,6 @@
       "BluePrintType": "MissileLauncher/Medium",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "8266",
         "Cargo Volume Size": "4428",
         "Health": "3099",
@@ -3030,7 +3002,6 @@
       "BluePrintType": "MissileLauncher/Small",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "6927",
         "Cargo Volume Size": "3711",
         "Health": "2597",
@@ -3064,7 +3035,6 @@
       "TechLevel": "Junker",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "180",
         "Cargo Volume Size": "70",
         "Power Required": "95",
@@ -3090,7 +3060,6 @@
       "BluePrintType": "Hull",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "25500",
         "Cargo Volume Size": "23334",
         "License Level": "36",
@@ -3140,7 +3109,6 @@
       "BluePrintType": "Hull",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "63000",
         "Cargo Volume Size": "66667",
         "License Level": "40",
@@ -3189,7 +3157,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "90",
         "Cargo Volume Size": "110",
         "Power Required": "43",
@@ -3221,7 +3188,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "90",
         "Cargo Volume Size": "110",
         "Power Required": "43",
@@ -3251,7 +3217,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "90",
         "Cargo Volume Size": "110",
         "Power Required": "43",
@@ -3282,7 +3247,6 @@
       "TechLevel": "Junker",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "2700",
         "Cargo Volume Size": "3595",
         "Power Required": "595",
@@ -3311,7 +3275,6 @@
       "TechLevel": "Junker",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "140",
         "Cargo Volume Size": "180",
         "Power Required": "170",
@@ -3343,7 +3306,6 @@
       "TechLevel": "Junker",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "140",
         "Cargo Volume Size": "180",
         "Power Required": "170",
@@ -3374,7 +3336,6 @@
       "TechLevel": "Junker",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "140",
         "Cargo Volume Size": "180",
         "Power Required": "170",
@@ -3404,7 +3365,6 @@
       "TechLevel": "Junker",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "140",
         "Cargo Volume Size": "180",
         "Power Required": "170",
@@ -3435,7 +3395,6 @@
       "TechLevel": "Junker",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "140",
         "Cargo Volume Size": "180",
         "Power Required": "170",
@@ -3466,7 +3425,6 @@
       "TechLevel": "Junker",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "6",
@@ -3498,7 +3456,6 @@
       "TechLevel": "Junker",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "6",
@@ -3529,7 +3486,6 @@
       "TechLevel": "Junker",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "6",
@@ -3560,7 +3516,6 @@
       "TechLevel": "Junker",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "6",
@@ -3592,7 +3547,6 @@
       "TechLevel": "Junker",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "6",
@@ -3623,7 +3577,6 @@
       "TechLevel": "Junker",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "6",
@@ -3654,7 +3607,6 @@
       "TechLevel": "Junker",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "6",
@@ -3685,7 +3637,6 @@
       "TechLevel": "Junker",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "110",
         "Cargo Volume Size": "140",
         "Power Required": "54",
@@ -3717,7 +3668,6 @@
       "TechLevel": "Junker",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "110",
         "Cargo Volume Size": "140",
         "Power Required": "54",
@@ -3747,7 +3697,6 @@
       "TechLevel": "Junker",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "110",
         "Cargo Volume Size": "140",
         "Power Required": "54",
@@ -3779,7 +3728,6 @@
       "TechLevel": "Junker",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "110",
         "Cargo Volume Size": "140",
         "Power Required": "54",
@@ -3810,7 +3758,6 @@
       "TechLevel": "Rugged",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "660",
         "Cargo Volume Size": "200",
         "Health": "117",
@@ -3839,7 +3786,6 @@
       "BluePrintType": "CargoPod",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "250",
         "Cargo Volume Size": "150",
         "Health": "1500",
@@ -3863,7 +3809,6 @@
       "BluePrintType": "OreHopper",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "400",
         "Cargo Volume Size": "200",
         "Health": "1200",
@@ -3888,7 +3833,6 @@
       "BluePrintType": "HullReinforcement",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "360",
         "Cargo Volume Size": "110",
         "Power Required": "0",
@@ -3913,7 +3857,6 @@
       "BluePrintType": "HullReinforcement",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "860",
         "Cargo Volume Size": "260",
         "Power Required": "0",
@@ -3940,7 +3883,6 @@
       "TechLevel": "Junker",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "120",
         "Cargo Volume Size": "50",
         "Power Required": "144",
@@ -3968,7 +3910,6 @@
       "TechLevel": "Junker",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "2160",
         "Cargo Volume Size": "900",
         "Power Required": "1701",
@@ -3995,7 +3936,6 @@
       "BluePrintType": "CargoPod",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "400",
         "Cargo Volume Size": "240",
         "Health": "3200",
@@ -4020,7 +3960,6 @@
       "TechLevel": "Standard",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "60",
         "Cargo Volume Size": "80",
         "Power Required": "28",
@@ -4048,7 +3987,6 @@
       "TechLevel": "Standard",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "190",
         "Cargo Volume Size": "225",
         "Power Required": "63",
@@ -4077,7 +4015,6 @@
       "TechLevel": "Standard",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "420",
         "Cargo Volume Size": "555",
         "Power Required": "126",
@@ -4106,7 +4043,6 @@
       "TechLevel": "Standard",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1190",
         "Cargo Volume Size": "1590",
         "Power Required": "425",
@@ -4134,7 +4070,6 @@
       "TechLevel": "Standard",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "2450",
         "Cargo Volume Size": "3270",
         "Power Required": "744",
@@ -4163,7 +4098,6 @@
       "TechLevel": "Standard",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "4800",
         "Cargo Volume Size": "6400",
         "Power Required": "1276",
@@ -4213,7 +4147,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "250",
         "Cargo Volume Size": "250",
         "Power Required": "76",
@@ -4241,7 +4174,6 @@
       "BluePrintType": "HullSealantInjectionUnit",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "10",
         "Power Required": "2",
@@ -4267,7 +4199,6 @@
       "BluePrintType": "HullSealantInjectionUnit",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "70",
         "Cargo Volume Size": "35",
         "Power Required": "4",
@@ -4294,7 +4225,6 @@
       "BluePrintType": "HullSealantInjectionUnit",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "160",
         "Cargo Volume Size": "80",
         "Power Required": "8",
@@ -4320,7 +4250,6 @@
       "BluePrintType": "HullSealantInjectionUnit",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "540",
         "Cargo Volume Size": "270",
         "Power Required": "26",
@@ -4347,7 +4276,6 @@
       "BluePrintType": "HullSealantInjectionUnit",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "1230",
         "Cargo Volume Size": "615",
         "Power Required": "48",
@@ -4374,7 +4302,6 @@
       "BluePrintType": "HullSealantInjectionUnit",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "2400",
         "Cargo Volume Size": "1200",
         "Power Required": "82",
@@ -4402,7 +4329,6 @@
       "TechLevel": "Junker",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "28",
         "Cargo Volume Size": "16",
         "Power Required": "5",
@@ -4428,7 +4354,6 @@
       "TechLevel": "Junker",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "73",
         "Cargo Volume Size": "41",
         "Power Required": "9",
@@ -4455,7 +4380,6 @@
       "TechLevel": "Junker",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "158",
         "Cargo Volume Size": "89",
         "Power Required": "18",
@@ -4481,7 +4405,6 @@
       "TechLevel": "Junker",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "338",
         "Cargo Volume Size": "190",
         "Power Required": "38",
@@ -4508,7 +4431,6 @@
       "TechLevel": "Junker",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "585",
         "Cargo Volume Size": "330",
         "Power Required": "78",
@@ -4535,7 +4457,6 @@
       "TechLevel": "Junker",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "1324",
         "Cargo Volume Size": "745",
         "Power Required": "140",
@@ -4562,7 +4483,6 @@
       "TechLevel": "Junker",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "2370",
         "Cargo Volume Size": "1335",
         "Power Required": "194",
@@ -4588,7 +4508,6 @@
       "TechLevel": "Junker",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "28",
         "Cargo Volume Size": "16",
         "Power Required": "5",
@@ -4614,7 +4533,6 @@
       "TechLevel": "Junker",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "73",
         "Cargo Volume Size": "41",
         "Power Required": "9",
@@ -4641,7 +4559,6 @@
       "TechLevel": "Junker",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "158",
         "Cargo Volume Size": "89",
         "Power Required": "18",
@@ -4668,7 +4585,6 @@
       "TechLevel": "Junker",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "338",
         "Cargo Volume Size": "190",
         "Power Required": "38",
@@ -4695,7 +4611,6 @@
       "TechLevel": "Junker",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "585",
         "Cargo Volume Size": "330",
         "Power Required": "78",
@@ -4721,7 +4636,6 @@
       "TechLevel": "Junker",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "1324",
         "Cargo Volume Size": "745",
         "Power Required": "140",
@@ -4746,7 +4660,6 @@
       "BluePrintType": "Hull",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "7000",
         "Cargo Volume Size": "3667",
         "License Level": "16",
@@ -4830,7 +4743,6 @@
       "BluePrintType": "Hull",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "3200",
         "Cargo Volume Size": "2000",
         "License Level": "8",
@@ -4881,7 +4793,6 @@
       "TechLevel": "Junker",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "270",
         "Cargo Volume Size": "355",
         "Power Required": "292",
@@ -4913,7 +4824,6 @@
       "TechLevel": "Junker",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "270",
         "Cargo Volume Size": "355",
         "Power Required": "292",
@@ -4942,7 +4852,6 @@
       "TechLevel": "Junker",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "270",
         "Cargo Volume Size": "355",
         "Power Required": "292",
@@ -4974,7 +4883,6 @@
       "TechLevel": "Junker",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "270",
         "Cargo Volume Size": "355",
         "Power Required": "292",
@@ -5005,7 +4913,6 @@
       "TechLevel": "Junker",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "270",
         "Cargo Volume Size": "355",
         "Power Required": "292",
@@ -5037,7 +4944,6 @@
       "TechLevel": "Junker",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "270",
         "Cargo Volume Size": "355",
         "Power Required": "292",
@@ -5069,7 +4975,6 @@
       "TechLevel": "Junker",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "270",
         "Cargo Volume Size": "355",
         "Power Required": "292",
@@ -5101,7 +5006,6 @@
       "TechLevel": "Junker",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "960",
         "Cargo Volume Size": "360",
         "Power Required": "642",
@@ -5128,7 +5032,6 @@
       "TechLevel": "Junker",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "1800",
         "Cargo Volume Size": "675",
         "Power Required": "1123",
@@ -5155,7 +5058,6 @@
       "BluePrintType": "Hull",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "22500",
         "Cargo Volume Size": "20000",
         "License Level": "32",
@@ -5205,7 +5107,6 @@
       "TechLevel": "Rugged",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "8",
@@ -5237,7 +5138,6 @@
       "TechLevel": "Rugged",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "55",
         "Power Required": "18",
@@ -5269,7 +5169,6 @@
       "TechLevel": "Rugged",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "120",
         "Cargo Volume Size": "150",
         "Power Required": "68",
@@ -5300,7 +5199,6 @@
       "TechLevel": "Rugged",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "150",
         "Cargo Volume Size": "200",
         "Power Required": "213",
@@ -5331,7 +5229,6 @@
       "TechLevel": "Rugged",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "80",
         "Cargo Volume Size": "105",
         "Power Required": "36",
@@ -5363,7 +5260,6 @@
       "TechLevel": "Rugged",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "290",
         "Cargo Volume Size": "385",
         "Power Required": "365",
@@ -5395,7 +5291,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "540",
         "Cargo Volume Size": "720",
         "Power Required": "151",
@@ -5423,7 +5318,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "10",
@@ -5454,7 +5348,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "10",
@@ -5486,7 +5379,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "10",
@@ -5517,7 +5409,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "10",
@@ -5549,7 +5440,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "10",
@@ -5580,7 +5470,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "10",
@@ -5612,7 +5501,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "10",
@@ -5643,7 +5531,6 @@
       "TechLevel": "Junker",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "560",
         "Cargo Volume Size": "230",
         "Power Required": "540",
@@ -5671,7 +5558,6 @@
       "TechLevel": "Junker",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "140",
         "Cargo Volume Size": "105",
         "Power Required": "54",
@@ -5697,7 +5583,6 @@
       "BluePrintType": "Hull",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "13000",
         "Cargo Volume Size": "9167",
         "License Level": "28",
@@ -5746,7 +5631,6 @@
       "BluePrintType": "Hull",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "58000",
         "Cargo Volume Size": "100000",
         "License Level": "40",
@@ -5794,7 +5678,6 @@
       "BluePrintType": "Hull",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "13500",
         "Cargo Volume Size": "8334",
         "License Level": "24",
@@ -5844,7 +5727,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "24960",
         "Cargo Volume Size": "7490",
         "Health": "1510",
@@ -5874,7 +5756,6 @@
       "TechLevel": "Rugged",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "3000",
         "Cargo Volume Size": "900",
         "Health": "130",
@@ -5903,7 +5784,6 @@
       "BluePrintType": "Shield",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "160",
         "Cargo Volume Size": "50",
         "Health": "65",
@@ -5932,7 +5812,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "12750",
         "Cargo Volume Size": "3825",
         "Health": "1049",
@@ -5962,7 +5841,6 @@
       "TechLevel": "Standard",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "160",
         "Cargo Volume Size": "50",
         "Health": "65",
@@ -5991,7 +5869,6 @@
       "TechLevel": "Standard",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "550",
         "Cargo Volume Size": "165",
         "Health": "117",
@@ -6020,7 +5897,6 @@
       "TechLevel": "Standard",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "1280",
         "Cargo Volume Size": "385",
         "Health": "72",
@@ -6049,7 +5925,6 @@
       "TechLevel": "Standard",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "2510",
         "Cargo Volume Size": "755",
         "Health": "324",
@@ -6078,7 +5953,6 @@
       "TechLevel": "Standard",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "4320",
         "Cargo Volume Size": "1300",
         "Health": "466",
@@ -6108,7 +5982,6 @@
       "TechLevel": "Standard",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "9800",
         "Cargo Volume Size": "2940",
         "Health": "684",
@@ -6137,7 +6010,6 @@
       "TechLevel": "Standard",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "19200",
         "Cargo Volume Size": "5760",
         "Health": "1231",
@@ -6216,7 +6088,6 @@
       "BluePrintType": "Hull",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "23500",
         "Cargo Volume Size": "25000",
         "License Level": "36",
@@ -6266,7 +6137,6 @@
       "TechLevel": "Rugged",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "55",
         "Cargo Volume Size": "32",
         "Health": "10",
@@ -6294,7 +6164,6 @@
       "TechLevel": "Rugged",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "145",
         "Cargo Volume Size": "82",
         "Health": "65",
@@ -6323,7 +6192,6 @@
       "TechLevel": "Rugged",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "315",
         "Cargo Volume Size": "178",
         "Health": "140",
@@ -6352,7 +6220,6 @@
       "TechLevel": "Rugged",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "675",
         "Cargo Volume Size": "380",
         "Health": "300",
@@ -6381,7 +6248,6 @@
       "TechLevel": "Rugged",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1170",
         "Cargo Volume Size": "660",
         "Health": "520",
@@ -6410,7 +6276,6 @@
       "TechLevel": "Rugged",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "2645",
         "Cargo Volume Size": "1490",
         "Health": "1165",
@@ -6439,7 +6304,6 @@
       "TechLevel": "Standard",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "40",
         "Cargo Volume Size": "15",
         "Power Required": "80",
@@ -6467,7 +6331,6 @@
       "TechLevel": "Standard",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "260",
         "Cargo Volume Size": "110",
         "Power Required": "360",
@@ -6495,7 +6358,6 @@
       "TechLevel": "Standard",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "510",
         "Cargo Volume Size": "210",
         "Power Required": "675",
@@ -6523,7 +6385,6 @@
       "TechLevel": "Standard",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "870",
         "Cargo Volume Size": "360",
         "Power Required": "1215",
@@ -6552,7 +6413,6 @@
       "TechLevel": "Standard",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "1960",
         "Cargo Volume Size": "820",
         "Power Required": "2126",
@@ -6581,7 +6441,6 @@
       "TechLevel": "Standard",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "3840",
         "Cargo Volume Size": "1600",
         "Power Required": "3645",
@@ -6610,7 +6469,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "2130",
         "Cargo Volume Size": "800",
         "Power Required": "1684",
@@ -6637,7 +6495,6 @@
       "BluePrintType": "Hull",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "850",
         "Cargo Volume Size": "584",
         "License Level": "1",
@@ -6686,7 +6543,6 @@
       "TechLevel": "Junker",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "4230",
         "Cargo Volume Size": "1760",
         "Power Required": "2916",
@@ -6714,7 +6570,6 @@
       "TechLevel": "Junker",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "280",
         "Cargo Volume Size": "120",
         "Power Required": "288",
@@ -6742,7 +6597,6 @@
       "TechLevel": "Junker",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "960",
         "Cargo Volume Size": "400",
         "Power Required": "972",
@@ -6770,7 +6624,6 @@
       "BluePrintType": "Hull",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "6500",
         "Cargo Volume Size": "5334",
         "License Level": "11",
@@ -6819,7 +6672,6 @@
       "BluePrintType": "Hull",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "7500",
         "Cargo Volume Size": "4000",
         "License Level": "16",
@@ -6868,7 +6720,6 @@
       "TechLevel": "Standard",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "28",
         "Cargo Volume Size": "16",
         "Power Required": "5",
@@ -6894,7 +6745,6 @@
       "TechLevel": "Standard",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "28",
         "Cargo Volume Size": "16",
         "Power Required": "5",
@@ -6920,7 +6770,6 @@
       "TechLevel": "Standard",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "73",
         "Cargo Volume Size": "41",
         "Power Required": "9",
@@ -6946,7 +6795,6 @@
       "TechLevel": "Standard",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "73",
         "Cargo Volume Size": "41",
         "Power Required": "9",
@@ -6973,7 +6821,6 @@
       "TechLevel": "Standard",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "158",
         "Cargo Volume Size": "89",
         "Power Required": "18",
@@ -6999,7 +6846,6 @@
       "TechLevel": "Standard",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "338",
         "Cargo Volume Size": "190",
         "Power Required": "38",
@@ -7026,7 +6872,6 @@
       "TechLevel": "Standard",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "338",
         "Cargo Volume Size": "190",
         "Power Required": "38",
@@ -7053,7 +6898,6 @@
       "TechLevel": "Standard",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "585",
         "Cargo Volume Size": "330",
         "Power Required": "78",
@@ -7079,7 +6923,6 @@
       "TechLevel": "Standard",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "585",
         "Cargo Volume Size": "330",
         "Power Required": "78",
@@ -7105,7 +6948,6 @@
       "TechLevel": "Standard",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "1324",
         "Cargo Volume Size": "745",
         "Power Required": "140",
@@ -7131,7 +6973,6 @@
       "TechLevel": "Standard",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "1324",
         "Cargo Volume Size": "745",
         "Power Required": "140",
@@ -7158,7 +6999,6 @@
       "TechLevel": "Standard",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "2370",
         "Cargo Volume Size": "1335",
         "Power Required": "194",
@@ -7184,7 +7024,6 @@
       "BluePrintType": "GERTYDroneRack",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "100",
         "Cargo Volume Size": "25",
         "Power Required": "5",
@@ -7209,7 +7048,6 @@
       "BluePrintType": "GERTYDroneRack",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "100",
         "Cargo Volume Size": "25",
         "Power Required": "5",
@@ -7234,7 +7072,6 @@
       "BluePrintType": "GERTYDroneRack",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "100",
         "Cargo Volume Size": "25",
         "Power Required": "5",
@@ -7259,7 +7096,6 @@
       "BluePrintType": "GERTYDroneRack",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "100",
         "Cargo Volume Size": "25",
         "Power Required": "5",
@@ -7285,7 +7121,6 @@
       "BluePrintType": "GERTYDroneRack",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "100",
         "Cargo Volume Size": "25",
         "Power Required": "5",
@@ -7311,7 +7146,6 @@
       "TechLevel": "Junker",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "55",
         "Cargo Volume Size": "32",
         "Health": "8",
@@ -7339,7 +7173,6 @@
       "TechLevel": "Junker",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "315",
         "Cargo Volume Size": "178",
         "Health": "110",
@@ -7367,7 +7200,6 @@
       "TechLevel": "Junker",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "675",
         "Cargo Volume Size": "380",
         "Health": "240",
@@ -7396,7 +7228,6 @@
       "TechLevel": "Junker",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "4740",
         "Cargo Volume Size": "2670",
         "Health": "1660",
@@ -7423,7 +7254,6 @@
       "BluePrintType": "Hull",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "13500",
         "Cargo Volume Size": "8334",
         "License Level": "28",
@@ -7474,7 +7304,6 @@
       "TechLevel": "Rugged",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "28",
         "Cargo Volume Size": "16",
         "Power Required": "5",
@@ -7501,7 +7330,6 @@
       "TechLevel": "Rugged",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "28",
         "Cargo Volume Size": "16",
         "Power Required": "5",
@@ -7528,7 +7356,6 @@
       "TechLevel": "Rugged",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "73",
         "Cargo Volume Size": "41",
         "Power Required": "9",
@@ -7555,7 +7382,6 @@
       "TechLevel": "Rugged",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "73",
         "Cargo Volume Size": "41",
         "Power Required": "9",
@@ -7582,7 +7408,6 @@
       "TechLevel": "Rugged",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "158",
         "Cargo Volume Size": "89",
         "Power Required": "18",
@@ -7608,7 +7433,6 @@
       "TechLevel": "Rugged",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "158",
         "Cargo Volume Size": "89",
         "Power Required": "18",
@@ -7634,7 +7458,6 @@
       "TechLevel": "Rugged",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "338",
         "Cargo Volume Size": "190",
         "Power Required": "38",
@@ -7660,7 +7483,6 @@
       "TechLevel": "Rugged",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "338",
         "Cargo Volume Size": "190",
         "Power Required": "38",
@@ -7687,7 +7509,6 @@
       "TechLevel": "Rugged",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "585",
         "Cargo Volume Size": "330",
         "Power Required": "78",
@@ -7714,7 +7535,6 @@
       "TechLevel": "Rugged",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "1324",
         "Cargo Volume Size": "745",
         "Power Required": "140",
@@ -7741,7 +7561,6 @@
       "TechLevel": "Rugged",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "1324",
         "Cargo Volume Size": "745",
         "Power Required": "140",
@@ -7767,7 +7586,6 @@
       "TechLevel": "Rugged",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "2370",
         "Cargo Volume Size": "1335",
         "Power Required": "194",
@@ -7819,7 +7637,6 @@
       "TechLevel": "Junker",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "210",
         "Cargo Volume Size": "250",
         "Power Required": "50",
@@ -7848,7 +7665,6 @@
       "TechLevel": "Junker",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "5280",
         "Cargo Volume Size": "7040",
         "Power Required": "1021",
@@ -7875,7 +7691,6 @@
       "BluePrintType": "Hull",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "3200",
         "Cargo Volume Size": "1334",
         "License Level": "6",
@@ -7945,7 +7760,6 @@
       "TechLevel": "Junker",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "160",
         "Cargo Volume Size": "120",
         "Power Required": "97",
@@ -7971,7 +7785,6 @@
       "TechLevel": "Rugged",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "11760",
         "Cargo Volume Size": "3530",
         "Health": "839",
@@ -8001,7 +7814,6 @@
       "TechLevel": "Junker",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "40",
         "Cargo Volume Size": "15",
         "Power Required": "64",
@@ -8028,7 +7840,6 @@
       "BluePrintType": "Hull",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "14500",
         "Cargo Volume Size": "9667",
         "License Level": "28",
@@ -8107,7 +7918,6 @@
       "TechLevel": "MilSpec",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "170",
         "Cargo Volume Size": "125",
         "Power Required": "319",
@@ -8134,7 +7944,6 @@
       "TechLevel": "MilSpec",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "150",
         "Cargo Volume Size": "110",
         "Power Required": "182",
@@ -8161,7 +7970,6 @@
       "TechLevel": "MilSpec",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "90",
         "Cargo Volume Size": "65",
         "Power Required": "54",
@@ -8187,7 +7995,6 @@
       "TechLevel": "MilSpec",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "50",
         "Cargo Volume Size": "35",
         "Power Required": "27",
@@ -8214,7 +8021,6 @@
       "TechLevel": "MilSpec",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "15",
         "Power Required": "12",
@@ -8241,7 +8047,6 @@
       "TechLevel": "MilSpec",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "320",
         "Cargo Volume Size": "240",
         "Power Required": "547",
@@ -8267,7 +8072,6 @@
       "TechLevel": "Rugged",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "8",
@@ -8299,7 +8103,6 @@
       "TechLevel": "Rugged",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "55",
         "Power Required": "18",
@@ -8331,7 +8134,6 @@
       "TechLevel": "Rugged",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "120",
         "Cargo Volume Size": "150",
         "Power Required": "68",
@@ -8362,7 +8164,6 @@
       "TechLevel": "Rugged",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "130",
         "Cargo Volume Size": "175",
         "Power Required": "122",
@@ -8393,7 +8194,6 @@
       "TechLevel": "Rugged",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "150",
         "Cargo Volume Size": "200",
         "Power Required": "213",
@@ -8425,7 +8225,6 @@
       "TechLevel": "Rugged",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "80",
         "Cargo Volume Size": "105",
         "Power Required": "36",
@@ -8457,7 +8256,6 @@
       "TechLevel": "Rugged",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "290",
         "Cargo Volume Size": "385",
         "Power Required": "365",
@@ -8510,7 +8308,6 @@
       "BluePrintType": "Hull",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "700",
         "Cargo Volume Size": "584",
         "License Level": "4",
@@ -8560,7 +8357,6 @@
       "TechLevel": "Standard",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "60",
         "Cargo Volume Size": "20",
         "Power Required": "53",
@@ -8588,7 +8384,6 @@
       "TechLevel": "Standard",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "160",
         "Cargo Volume Size": "60",
         "Power Required": "119",
@@ -8616,7 +8411,6 @@
       "TechLevel": "Standard",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "590",
         "Cargo Volume Size": "220",
         "Power Required": "446",
@@ -8643,7 +8437,6 @@
       "TechLevel": "Standard",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "870",
         "Cargo Volume Size": "325",
         "Power Required": "802",
@@ -8670,7 +8463,6 @@
       "TechLevel": "Standard",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "3200",
         "Cargo Volume Size": "1200",
         "Power Required": "2406",
@@ -8697,7 +8489,6 @@
       "BluePrintType": "Hull",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "6000",
         "Cargo Volume Size": "3334",
         "License Level": "20",
@@ -8746,7 +8537,6 @@
       "TechLevel": "Junker",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "2750",
         "Cargo Volume Size": "825",
         "Health": "380",
@@ -8775,7 +8565,6 @@
       "TechLevel": "Junker",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "640",
         "Cargo Volume Size": "240",
         "Power Required": "356",
@@ -8802,7 +8591,6 @@
       "BluePrintType": "CoilGun/Large",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "81",
         "Cargo Volume Size": "43",
         "Power Required": "0",
@@ -8836,7 +8624,6 @@
       "BluePrintType": "CoilGun/Medium",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "67",
         "Cargo Volume Size": "36",
         "Power Required": "0",
@@ -8870,7 +8657,6 @@
       "BluePrintType": "CoilGun/Small",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "60",
         "Cargo Volume Size": "30",
         "Health": "15",
@@ -8903,7 +8689,6 @@
       "BluePrintType": "CoilGun/Large",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "169",
         "Cargo Volume Size": "91",
         "Power Required": "0",
@@ -8937,7 +8722,6 @@
       "BluePrintType": "CoilGun/Medium",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "141",
         "Cargo Volume Size": "76",
         "Power Required": "0",
@@ -8972,7 +8756,6 @@
       "BluePrintType": "CoilGun/Small",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "118",
         "Cargo Volume Size": "63",
         "Power Required": "0",
@@ -9007,7 +8790,6 @@
       "BluePrintType": "CoilGun/Large",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "375",
         "Cargo Volume Size": "201",
         "Power Required": "0",
@@ -9042,7 +8824,6 @@
       "BluePrintType": "CoilGun/Medium",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "312",
         "Cargo Volume Size": "168",
         "Power Required": "0",
@@ -9076,7 +8857,6 @@
       "BluePrintType": "CoilGun/Large",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "843",
         "Cargo Volume Size": "452",
         "Power Required": "0",
@@ -9111,7 +8891,6 @@
       "BluePrintType": "CoilGun/Medium",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "702",
         "Cargo Volume Size": "376",
         "Power Required": "0",
@@ -9145,7 +8924,6 @@
       "BluePrintType": "CoilGun/Small",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "587",
         "Cargo Volume Size": "315",
         "Power Required": "0",
@@ -9180,7 +8958,6 @@
       "BluePrintType": "CoilGun/Large",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1897",
         "Cargo Volume Size": "1017",
         "Power Required": "0",
@@ -9215,7 +8992,6 @@
       "BluePrintType": "CoilGun/Small",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1320",
         "Cargo Volume Size": "708",
         "Power Required": "0",
@@ -9250,7 +9026,6 @@
       "BluePrintType": "CoilGun/Large",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "4458",
         "Cargo Volume Size": "2388",
         "Power Required": "0",
@@ -9285,7 +9060,6 @@
       "BluePrintType": "CoilGun/Small",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "3102",
         "Cargo Volume Size": "1662",
         "Power Required": "0",
@@ -9320,7 +9094,6 @@
       "BluePrintType": "CoilGun/Large",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "12481",
         "Cargo Volume Size": "6687",
         "Power Required": "0",
@@ -9355,7 +9128,6 @@
       "BluePrintType": "CoilGun/Medium",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "10389",
         "Cargo Volume Size": "5566",
         "Power Required": "0",
@@ -9390,7 +9162,6 @@
       "BluePrintType": "CoilGun/Small",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "8687",
         "Cargo Volume Size": "4654",
         "Power Required": "0",
@@ -9424,7 +9195,6 @@
       "BluePrintType": "CargoPod",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "170",
         "Cargo Volume Size": "100",
         "Health": "850",
@@ -9449,7 +9219,6 @@
       "BluePrintType": "OreHopper",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "220",
         "Cargo Volume Size": "120",
         "Health": "600",
@@ -9474,7 +9243,6 @@
       "BluePrintType": "FuelTank",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "170",
         "Cargo Volume Size": "255",
         "Health": "680",
@@ -9521,7 +9289,6 @@
       "TechLevel": "Junker",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1310",
         "Cargo Volume Size": "1740",
         "Power Required": "340",
@@ -9549,7 +9316,6 @@
       "TechLevel": "Junker",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "15",
         "Power Required": "6",
@@ -9598,7 +9364,6 @@
       "TechLevel": "Junker",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "15",
         "Power Required": "3",
@@ -9625,7 +9390,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "760",
         "Cargo Volume Size": "285",
         "Power Required": "535",
@@ -9652,7 +9416,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "220",
         "Cargo Volume Size": "80",
         "Power Required": "143",
@@ -9680,7 +9443,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "450",
         "Cargo Volume Size": "170",
         "Power Required": "285",
@@ -9758,7 +9520,6 @@
       "TechLevel": "Rugged",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "8",
@@ -9790,7 +9551,6 @@
       "TechLevel": "Rugged",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "120",
         "Cargo Volume Size": "150",
         "Power Required": "68",
@@ -9820,7 +9580,6 @@
       "TechLevel": "Rugged",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "130",
         "Cargo Volume Size": "175",
         "Power Required": "122",
@@ -9850,7 +9609,6 @@
       "TechLevel": "Rugged",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "80",
         "Cargo Volume Size": "105",
         "Power Required": "36",
@@ -9880,7 +9638,6 @@
       "TechLevel": "Rugged",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "290",
         "Cargo Volume Size": "385",
         "Power Required": "365",
@@ -9910,7 +9667,6 @@
       "TechLevel": "MilSpec",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1190",
         "Cargo Volume Size": "1590",
         "Power Required": "638",
@@ -9939,7 +9695,6 @@
       "TechLevel": "MilSpec",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "750",
         "Cargo Volume Size": "1000",
         "Power Required": "354",
@@ -9968,7 +9723,6 @@
       "TechLevel": "MilSpec",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "190",
         "Cargo Volume Size": "225",
         "Power Required": "95",
@@ -9997,7 +9751,6 @@
       "TechLevel": "MilSpec",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "60",
         "Cargo Volume Size": "80",
         "Power Required": "42",
@@ -10026,7 +9779,6 @@
       "TechLevel": "MilSpec",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "4800",
         "Cargo Volume Size": "6400",
         "Power Required": "1914",
@@ -10053,7 +9805,6 @@
       "BluePrintType": "CargoPod",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "90",
         "Cargo Volume Size": "50",
         "Health": "360",
@@ -10077,7 +9828,6 @@
       "BluePrintType": "OreHopper",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "100",
         "Cargo Volume Size": "60",
         "Health": "240",
@@ -10101,7 +9851,6 @@
       "BluePrintType": "FuelTank",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "80",
         "Cargo Volume Size": "110",
         "Health": "240",
@@ -10127,7 +9876,6 @@
       "TechLevel": "Rugged",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "55",
         "Power Required": "18",
@@ -10158,7 +9906,6 @@
       "TechLevel": "Rugged",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "120",
         "Cargo Volume Size": "150",
         "Power Required": "68",
@@ -10189,7 +9936,6 @@
       "TechLevel": "Rugged",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "130",
         "Cargo Volume Size": "175",
         "Power Required": "122",
@@ -10221,7 +9967,6 @@
       "TechLevel": "Rugged",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "150",
         "Cargo Volume Size": "200",
         "Power Required": "213",
@@ -10252,7 +9997,6 @@
       "TechLevel": "Rugged",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "80",
         "Cargo Volume Size": "105",
         "Power Required": "36",
@@ -10283,7 +10027,6 @@
       "TechLevel": "Rugged",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "70",
         "Cargo Volume Size": "95",
         "Power Required": "28",
@@ -10312,7 +10055,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "70",
         "Cargo Volume Size": "25",
         "Power Required": "63",
@@ -10339,7 +10081,6 @@
       "TechLevel": "Rugged",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "70",
         "Cargo Volume Size": "25",
         "Power Required": "53",
@@ -10367,7 +10108,6 @@
       "TechLevel": "Rugged",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "15",
         "Power Required": "8",
@@ -10394,7 +10134,6 @@
       "TechLevel": "Rugged",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "310",
         "Cargo Volume Size": "130",
         "Power Required": "360",
@@ -10422,7 +10161,6 @@
       "TechLevel": "Rugged",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "1540",
         "Cargo Volume Size": "460",
         "Health": "211",
@@ -10452,7 +10190,6 @@
       "TechLevel": "Rugged",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "500",
         "Cargo Volume Size": "670",
         "Power Required": "126",
@@ -10481,7 +10218,6 @@
       "TechLevel": "Rugged",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "410",
         "Cargo Volume Size": "155",
         "Power Required": "238",
@@ -10509,7 +10245,6 @@
       "TechLevel": "Rugged",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "110",
         "Cargo Volume Size": "80",
         "Power Required": "36",
@@ -10536,7 +10271,6 @@
       "TechLevel": "Rugged",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "130",
         "Cargo Volume Size": "55",
         "Power Required": "180",
@@ -10564,7 +10298,6 @@
       "TechLevel": "Rugged",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "190",
         "Cargo Volume Size": "60",
         "Health": "65",
@@ -10594,7 +10327,6 @@
       "TechLevel": "Rugged",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "230",
         "Cargo Volume Size": "250",
         "Power Required": "63",
@@ -10623,7 +10355,6 @@
       "TechLevel": "Rugged",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "200",
         "Cargo Volume Size": "75",
         "Power Required": "119",
@@ -10701,7 +10432,6 @@
       "TechLevel": "Junker",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "50",
         "Cargo Volume Size": "40",
         "Power Required": "14",
@@ -10727,7 +10457,6 @@
       "BluePrintType": "FuelTank",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "580",
         "Cargo Volume Size": "865",
         "Health": "3480",
@@ -10752,7 +10481,6 @@
       "BluePrintType": "HullReinforcement",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "2880",
         "Cargo Volume Size": "865",
         "Power Required": "34",
@@ -10778,7 +10506,6 @@
       "BluePrintType": "HullReinforcement",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "6540",
         "Cargo Volume Size": "1960",
         "Power Required": "60",
@@ -10805,7 +10532,6 @@
       "TechLevel": "Rugged",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "2940",
         "Cargo Volume Size": "3920",
         "Power Required": "744",
@@ -10833,7 +10559,6 @@
       "TechLevel": "Rugged",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "1960",
         "Cargo Volume Size": "735",
         "Power Required": "1403",
@@ -10860,7 +10585,6 @@
       "TechLevel": "Rugged",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "200",
         "Cargo Volume Size": "150",
         "Power Required": "213",
@@ -10886,7 +10610,6 @@
       "TechLevel": "MilSpec",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "150",
         "Cargo Volume Size": "110",
         "Power Required": "91",
@@ -10913,7 +10636,6 @@
       "TechLevel": "MilSpec",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "130",
         "Cargo Volume Size": "95",
         "Power Required": "51",
@@ -10940,7 +10662,6 @@
       "TechLevel": "MilSpec",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "90",
         "Cargo Volume Size": "65",
         "Power Required": "27",
@@ -10968,7 +10689,6 @@
       "TechLevel": "MilSpec",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "50",
         "Cargo Volume Size": "35",
         "Power Required": "14",
@@ -10996,7 +10716,6 @@
       "TechLevel": "MilSpec",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "15",
         "Power Required": "6",
@@ -11024,7 +10743,6 @@
       "TechLevel": "MilSpec",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "320",
         "Cargo Volume Size": "240",
         "Power Required": "273",
@@ -11051,7 +10769,6 @@
       "TechLevel": "Rugged",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "180",
         "Cargo Volume Size": "130",
         "Power Required": "61",
@@ -11079,7 +10796,6 @@
       "TechLevel": "Rugged",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "60",
         "Cargo Volume Size": "40",
         "Power Required": "9",
@@ -11106,7 +10822,6 @@
       "TechLevel": "Rugged",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "110",
         "Cargo Volume Size": "80",
         "Power Required": "18",
@@ -11133,7 +10848,6 @@
       "TechLevel": "Rugged",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "150",
         "Cargo Volume Size": "115",
         "Power Required": "34",
@@ -11161,7 +10875,6 @@
       "TechLevel": "Rugged",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "200",
         "Cargo Volume Size": "150",
         "Power Required": "106",
@@ -11188,7 +10901,6 @@
       "TechLevel": "Rugged",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "390",
         "Cargo Volume Size": "290",
         "Power Required": "182",
@@ -11216,7 +10928,6 @@
       "TechLevel": "Standard",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "15",
         "Power Required": "4",
@@ -11244,7 +10955,6 @@
       "TechLevel": "Standard",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "50",
         "Cargo Volume Size": "35",
         "Power Required": "9",
@@ -11271,7 +10981,6 @@
       "TechLevel": "Standard",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "90",
         "Cargo Volume Size": "65",
         "Power Required": "18",
@@ -11299,7 +11008,6 @@
       "TechLevel": "Standard",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "130",
         "Cargo Volume Size": "95",
         "Power Required": "34",
@@ -11326,7 +11034,6 @@
       "TechLevel": "Standard",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "150",
         "Cargo Volume Size": "110",
         "Power Required": "61",
@@ -11353,7 +11060,6 @@
       "TechLevel": "Standard",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "170",
         "Cargo Volume Size": "125",
         "Power Required": "106",
@@ -11380,7 +11086,6 @@
       "TechLevel": "Standard",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "320",
         "Cargo Volume Size": "240",
         "Power Required": "182",
@@ -11407,7 +11112,6 @@
       "TechLevel": "Rugged",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "8",
@@ -11439,7 +11143,6 @@
       "TechLevel": "Rugged",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "130",
         "Cargo Volume Size": "175",
         "Power Required": "122",
@@ -11470,7 +11173,6 @@
       "TechLevel": "Rugged",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "150",
         "Cargo Volume Size": "200",
         "Power Required": "213",
@@ -11502,7 +11204,6 @@
       "TechLevel": "Rugged",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "80",
         "Cargo Volume Size": "105",
         "Power Required": "36",
@@ -11534,7 +11235,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1550",
         "Cargo Volume Size": "2060",
         "Power Required": "510",
@@ -11584,7 +11284,6 @@
       "TechLevel": "Junker",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "180",
         "Cargo Volume Size": "135",
         "Power Required": "85",
@@ -11611,7 +11310,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "6240",
         "Cargo Volume Size": "8320",
         "Power Required": "1531",
@@ -11640,7 +11338,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "220",
         "Cargo Volume Size": "65",
         "Health": "80",
@@ -11670,7 +11367,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "320",
         "Cargo Volume Size": "420",
         "Power Required": "437",
@@ -11701,7 +11397,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "320",
         "Cargo Volume Size": "420",
         "Power Required": "437",
@@ -11733,7 +11428,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "320",
         "Cargo Volume Size": "420",
         "Power Required": "437",
@@ -11764,7 +11458,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "320",
         "Cargo Volume Size": "420",
         "Power Required": "437",
@@ -11795,7 +11488,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "320",
         "Cargo Volume Size": "420",
         "Power Required": "437",
@@ -11827,7 +11519,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "320",
         "Cargo Volume Size": "420",
         "Power Required": "437",
@@ -11859,7 +11550,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "1670",
         "Cargo Volume Size": "500",
         "Health": "211",
@@ -11889,7 +11579,6 @@
       "TechLevel": "Rugged",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "8",
@@ -11920,7 +11609,6 @@
       "TechLevel": "Rugged",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "55",
         "Power Required": "18",
@@ -11952,7 +11640,6 @@
       "TechLevel": "Rugged",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "120",
         "Cargo Volume Size": "150",
         "Power Required": "68",
@@ -11984,7 +11671,6 @@
       "TechLevel": "Rugged",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "150",
         "Cargo Volume Size": "200",
         "Power Required": "213",
@@ -12016,7 +11702,6 @@
       "TechLevel": "Rugged",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "80",
         "Cargo Volume Size": "105",
         "Power Required": "36",
@@ -12047,7 +11732,6 @@
       "TechLevel": "Junker",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "100",
         "Cargo Volume Size": "70",
         "Power Required": "29",
@@ -12072,7 +11756,6 @@
       "BluePrintType": "Hull",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "2700",
         "Cargo Volume Size": "1500",
         "License Level": "8",
@@ -12122,7 +11805,6 @@
       "TechLevel": "Junker",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "21120",
         "Cargo Volume Size": "6340",
         "Health": "758",
@@ -12150,7 +11832,6 @@
       "BluePrintType": "HullPlating",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "520",
         "Cargo Volume Size": "520",
         "Health": "2600",
@@ -12177,7 +11858,6 @@
       "BluePrintType": "HullPlating",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "720",
         "Cargo Volume Size": "720",
         "Health": "4320",
@@ -12203,7 +11883,6 @@
       "BluePrintType": "HullPlating",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "2400",
         "Cargo Volume Size": "2400",
         "Health": "19200",
@@ -12230,7 +11909,6 @@
       "BluePrintType": "HullPlating",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "320",
         "Cargo Volume Size": "320",
         "Health": "1280",
@@ -12258,7 +11936,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "420",
         "Cargo Volume Size": "315",
         "Power Required": "437",
@@ -12283,7 +11960,6 @@
       "BluePrintType": "Beamer/Large",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "3000",
         "Cargo Volume Size": "1688",
         "Health": "1050",
@@ -12315,7 +11991,6 @@
       "BluePrintType": "Beamer/Small",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1560",
         "Cargo Volume Size": "878",
         "Health": "546",
@@ -12346,7 +12021,6 @@
       "BluePrintType": "Beamer/Large",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "5880",
         "Cargo Volume Size": "3308",
         "Health": "2058",
@@ -12378,7 +12052,6 @@
       "BluePrintType": "Beamer/Medium",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "5070",
         "Cargo Volume Size": "2852",
         "Health": "1774",
@@ -12409,7 +12082,6 @@
       "BluePrintType": "Beamer/Small",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "3528",
         "Cargo Volume Size": "1985",
         "Health": "1234",
@@ -12441,7 +12113,6 @@
       "BluePrintType": "Beamer/Large",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "12024",
         "Cargo Volume Size": "6764",
         "Health": "4208",
@@ -12473,7 +12144,6 @@
       "BluePrintType": "Beamer/Medium",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "8853",
         "Cargo Volume Size": "4981",
         "Health": "3098",
@@ -12505,7 +12175,6 @@
       "BluePrintType": "Beamer/Small",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "6324",
         "Cargo Volume Size": "3558",
         "Health": "2213",
@@ -12537,7 +12206,6 @@
       "BluePrintType": "Beamer/Large",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "120",
         "Cargo Volume Size": "68",
         "Health": "42",
@@ -12569,7 +12237,6 @@
       "BluePrintType": "Beamer/Medium",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "96",
         "Cargo Volume Size": "54",
         "Health": "30",
@@ -12601,7 +12268,6 @@
       "BluePrintType": "Beamer/Small",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "72",
         "Cargo Volume Size": "41",
         "Health": "10",
@@ -12633,7 +12299,6 @@
       "BluePrintType": "Beamer/Large",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "312",
         "Cargo Volume Size": "176",
         "Health": "109",
@@ -12664,7 +12329,6 @@
       "BluePrintType": "Beamer/Medium",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "240",
         "Cargo Volume Size": "135",
         "Health": "84",
@@ -12696,7 +12360,6 @@
       "BluePrintType": "Beamer/Small",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "192",
         "Cargo Volume Size": "108",
         "Health": "67",
@@ -12728,7 +12391,6 @@
       "BluePrintType": "Beamer/Medium",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "504",
         "Cargo Volume Size": "284",
         "Health": "176",
@@ -12759,7 +12421,6 @@
       "BluePrintType": "Beamer/Large",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "1380",
         "Cargo Volume Size": "777",
         "Health": "483",
@@ -12790,7 +12451,6 @@
       "BluePrintType": "Beamer/Medium",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "1080",
         "Cargo Volume Size": "608",
         "Health": "378",
@@ -12822,7 +12482,6 @@
       "TechLevel": "Junker",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "380",
         "Cargo Volume Size": "140",
         "Power Required": "190",
@@ -12850,7 +12509,6 @@
       "TechLevel": "Rugged",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1430",
         "Cargo Volume Size": "1900",
         "Power Required": "425",
@@ -12878,7 +12536,6 @@
       "TechLevel": "Rugged",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1040",
         "Cargo Volume Size": "390",
         "Power Required": "802",
@@ -12906,7 +12563,6 @@
       "TechLevel": "Rugged",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "180",
         "Cargo Volume Size": "130",
         "Power Required": "122",
@@ -12933,7 +12589,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "55",
         "Cargo Volume Size": "32",
         "Health": "14",
@@ -12961,7 +12616,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "315",
         "Cargo Volume Size": "178",
         "Health": "200",
@@ -12990,7 +12644,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "675",
         "Cargo Volume Size": "380",
         "Health": "430",
@@ -13018,7 +12671,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1170",
         "Cargo Volume Size": "660",
         "Health": "750",
@@ -13047,7 +12699,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "2645",
         "Cargo Volume Size": "1490",
         "Health": "1680",
@@ -13075,7 +12726,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "4740",
         "Cargo Volume Size": "2670",
         "Health": "2990",
@@ -13102,7 +12752,6 @@
       "BluePrintType": "CargoPod",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "300",
         "Cargo Volume Size": "180",
         "Health": "2100",
@@ -13127,7 +12776,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "28",
         "Cargo Volume Size": "16",
         "Power Required": "5",
@@ -13153,7 +12801,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "28",
         "Cargo Volume Size": "16",
         "Power Required": "5",
@@ -13180,7 +12827,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "73",
         "Cargo Volume Size": "41",
         "Power Required": "9",
@@ -13206,7 +12852,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "158",
         "Cargo Volume Size": "89",
         "Power Required": "18",
@@ -13232,7 +12877,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "158",
         "Cargo Volume Size": "89",
         "Power Required": "18",
@@ -13258,7 +12902,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "338",
         "Cargo Volume Size": "190",
         "Power Required": "38",
@@ -13284,7 +12927,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "338",
         "Cargo Volume Size": "190",
         "Power Required": "38",
@@ -13310,7 +12952,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "585",
         "Cargo Volume Size": "330",
         "Power Required": "78",
@@ -13336,7 +12977,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "1324",
         "Cargo Volume Size": "745",
         "Power Required": "140",
@@ -13363,7 +13003,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "2370",
         "Cargo Volume Size": "1335",
         "Power Required": "194",
@@ -13390,7 +13029,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "2370",
         "Cargo Volume Size": "1335",
         "Power Required": "194",
@@ -13416,7 +13054,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "140",
         "Cargo Volume Size": "190",
         "Power Required": "146",
@@ -13448,7 +13085,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "140",
         "Cargo Volume Size": "190",
         "Power Required": "146",
@@ -13479,7 +13115,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "140",
         "Cargo Volume Size": "190",
         "Power Required": "146",
@@ -13508,7 +13143,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "140",
         "Cargo Volume Size": "190",
         "Power Required": "146",
@@ -13540,7 +13174,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "140",
         "Cargo Volume Size": "190",
         "Power Required": "146",
@@ -13571,7 +13204,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "140",
         "Cargo Volume Size": "190",
         "Power Required": "146",
@@ -13603,7 +13235,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "3190",
         "Cargo Volume Size": "4250",
         "Power Required": "893",
@@ -13632,7 +13263,6 @@
       "TechLevel": "MilSpec",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "130",
         "Cargo Volume Size": "165",
         "Power Required": "319",
@@ -13694,7 +13324,6 @@
       "TechLevel": "MilSpec",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "130",
         "Cargo Volume Size": "165",
         "Power Required": "319",
@@ -13725,7 +13354,6 @@
       "TechLevel": "MilSpec",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "130",
         "Cargo Volume Size": "165",
         "Power Required": "319",
@@ -13757,7 +13385,6 @@
       "TechLevel": "MilSpec",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "130",
         "Cargo Volume Size": "165",
         "Power Required": "319",
@@ -13788,7 +13415,6 @@
       "TechLevel": "MilSpec",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "130",
         "Cargo Volume Size": "165",
         "Power Required": "319",
@@ -13851,7 +13477,6 @@
       "TechLevel": "MilSpec",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "110",
         "Cargo Volume Size": "145",
         "Power Required": "182",
@@ -13882,7 +13507,6 @@
       "TechLevel": "MilSpec",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "110",
         "Cargo Volume Size": "145",
         "Power Required": "182",
@@ -13913,7 +13537,6 @@
       "TechLevel": "MilSpec",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "110",
         "Cargo Volume Size": "145",
         "Power Required": "182",
@@ -13945,7 +13568,6 @@
       "TechLevel": "MilSpec",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "110",
         "Cargo Volume Size": "145",
         "Power Required": "182",
@@ -13977,7 +13599,6 @@
       "TechLevel": "MilSpec",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "100",
         "Cargo Volume Size": "130",
         "Power Required": "101",
@@ -14008,7 +13629,6 @@
       "TechLevel": "MilSpec",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "100",
         "Cargo Volume Size": "130",
         "Power Required": "101",
@@ -14039,7 +13659,6 @@
       "TechLevel": "MilSpec",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "55",
         "Cargo Volume Size": "32",
         "Health": "16",
@@ -14068,7 +13687,6 @@
       "TechLevel": "MilSpec",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "145",
         "Cargo Volume Size": "82",
         "Health": "110",
@@ -14096,7 +13714,6 @@
       "TechLevel": "MilSpec",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "315",
         "Cargo Volume Size": "178",
         "Health": "230",
@@ -14124,7 +13741,6 @@
       "TechLevel": "MilSpec",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "675",
         "Cargo Volume Size": "380",
         "Health": "500",
@@ -14153,7 +13769,6 @@
       "TechLevel": "MilSpec",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1170",
         "Cargo Volume Size": "660",
         "Health": "875",
@@ -14181,7 +13796,6 @@
       "TechLevel": "MilSpec",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "90",
         "Power Required": "54",
@@ -14213,7 +13827,6 @@
       "TechLevel": "MilSpec",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "90",
         "Power Required": "54",
@@ -14244,7 +13857,6 @@
       "TechLevel": "MilSpec",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "90",
         "Power Required": "54",
@@ -14273,7 +13885,6 @@
       "TechLevel": "MilSpec",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "90",
         "Power Required": "54",
@@ -14305,7 +13916,6 @@
       "TechLevel": "MilSpec",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "90",
         "Power Required": "54",
@@ -14336,7 +13946,6 @@
       "TechLevel": "MilSpec",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "90",
         "Power Required": "54",
@@ -14367,7 +13976,6 @@
       "TechLevel": "MilSpec",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "90",
         "Power Required": "54",
@@ -14398,7 +14006,6 @@
       "TechLevel": "MilSpec",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "27",
@@ -14429,7 +14036,6 @@
       "TechLevel": "MilSpec",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "27",
@@ -14460,7 +14066,6 @@
       "TechLevel": "MilSpec",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "27",
@@ -14491,7 +14096,6 @@
       "TechLevel": "MilSpec",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "27",
@@ -14523,7 +14127,6 @@
       "TechLevel": "MilSpec",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "27",
@@ -14554,7 +14157,6 @@
       "TechLevel": "MilSpec",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "27",
@@ -14586,7 +14188,6 @@
       "TechLevel": "MilSpec",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "27",
@@ -14618,7 +14219,6 @@
       "TechLevel": "MilSpec",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "28",
         "Cargo Volume Size": "16",
         "Power Required": "5",
@@ -14645,7 +14245,6 @@
       "TechLevel": "MilSpec",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "73",
         "Cargo Volume Size": "41",
         "Power Required": "9",
@@ -14671,7 +14270,6 @@
       "TechLevel": "MilSpec",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "158",
         "Cargo Volume Size": "89",
         "Power Required": "18",
@@ -14697,7 +14295,6 @@
       "TechLevel": "MilSpec",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "338",
         "Cargo Volume Size": "190",
         "Power Required": "38",
@@ -14723,16 +14320,17 @@
       "TechLevel": "MilSpec",
       "Class": 6,
       "Properties": {
-        "Class": "6",
-        "Mass": "585",
+        "Manufacture Run Time": "",
         "Cargo Volume Size": "330",
-        "Power Required": "78",
-        "Health": "875",
+        "Class": "",
         "Eng Capacity Required": "585",
-        "Wear and Tear Rate": "3",
+        "Health": "875",
+        "Mass": "585",
         "Maximum Damage Repair": "80",
         "Mining Cycle Time": "-22",
-        "_IconPosition": "-214px -442px"
+        "Mining Yield Increase": "",
+        "Power Required": "78",
+        "Wear and Tear Rate": "3"
       },
       "Resources": {
         "Heavy Noble Gases": "2606",
@@ -14749,7 +14347,6 @@
       "TechLevel": "MilSpec",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "1324",
         "Cargo Volume Size": "745",
         "Power Required": "140",
@@ -14776,7 +14373,6 @@
       "TechLevel": "MilSpec",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "2370",
         "Cargo Volume Size": "1335",
         "Power Required": "194",
@@ -14802,7 +14398,6 @@
       "TechLevel": "MilSpec",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "12",
@@ -14834,7 +14429,6 @@
       "TechLevel": "MilSpec",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "12",
@@ -14866,7 +14460,6 @@
       "TechLevel": "MilSpec",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "12",
@@ -14898,7 +14491,6 @@
       "TechLevel": "MilSpec",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "12",
@@ -14929,7 +14521,6 @@
       "TechLevel": "MilSpec",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "12",
@@ -14960,7 +14551,6 @@
       "TechLevel": "MilSpec",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "12",
@@ -14991,7 +14581,6 @@
       "TechLevel": "MilSpec",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "12",
@@ -15022,7 +14611,6 @@
       "TechLevel": "MilSpec",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "240",
         "Cargo Volume Size": "320",
         "Power Required": "547",
@@ -15053,7 +14641,6 @@
       "TechLevel": "MilSpec",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "240",
         "Cargo Volume Size": "320",
         "Power Required": "547",
@@ -15085,7 +14672,6 @@
       "TechLevel": "MilSpec",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "240",
         "Cargo Volume Size": "320",
         "Power Required": "547",
@@ -15115,7 +14701,6 @@
       "TechLevel": "MilSpec",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "240",
         "Cargo Volume Size": "320",
         "Power Required": "547",
@@ -15146,7 +14731,6 @@
       "TechLevel": "MilSpec",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "240",
         "Cargo Volume Size": "320",
         "Power Required": "547",
@@ -15177,7 +14761,6 @@
       "TechLevel": "MilSpec",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "240",
         "Cargo Volume Size": "320",
         "Power Required": "547",
@@ -15208,7 +14791,6 @@
       "TechLevel": "MilSpec",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "240",
         "Cargo Volume Size": "320",
         "Power Required": "547",
@@ -15240,7 +14822,6 @@
       "TechLevel": "MilSpec",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "28",
         "Cargo Volume Size": "16",
         "Power Required": "5",
@@ -15266,7 +14847,6 @@
       "TechLevel": "MilSpec",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "73",
         "Cargo Volume Size": "41",
         "Power Required": "9",
@@ -15293,7 +14873,6 @@
       "TechLevel": "MilSpec",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "158",
         "Cargo Volume Size": "89",
         "Power Required": "18",
@@ -15320,7 +14899,6 @@
       "TechLevel": "MilSpec",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "338",
         "Cargo Volume Size": "190",
         "Power Required": "38",
@@ -15347,7 +14925,6 @@
       "TechLevel": "MilSpec",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "1324",
         "Cargo Volume Size": "745",
         "Power Required": "140",
@@ -15374,7 +14951,6 @@
       "TechLevel": "MilSpec",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "2370",
         "Cargo Volume Size": "1335",
         "Power Required": "194",
@@ -15401,7 +14977,6 @@
       "TechLevel": "Standard",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "15",
         "Power Required": "8",
@@ -15427,7 +15002,6 @@
       "TechLevel": "Standard",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "50",
         "Cargo Volume Size": "35",
         "Power Required": "18",
@@ -15454,7 +15028,6 @@
       "TechLevel": "Standard",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "90",
         "Cargo Volume Size": "65",
         "Power Required": "36",
@@ -15480,7 +15053,6 @@
       "TechLevel": "Standard",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "130",
         "Cargo Volume Size": "95",
         "Power Required": "68",
@@ -15507,7 +15079,6 @@
       "TechLevel": "Standard",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "150",
         "Cargo Volume Size": "110",
         "Power Required": "122",
@@ -15534,7 +15105,6 @@
       "TechLevel": "Standard",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "170",
         "Cargo Volume Size": "125",
         "Power Required": "213",
@@ -15561,7 +15131,6 @@
       "TechLevel": "Standard",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "320",
         "Cargo Volume Size": "240",
         "Power Required": "365",
@@ -15587,7 +15156,6 @@
       "TechLevel": "Rugged",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "8",
@@ -15618,7 +15186,6 @@
       "TechLevel": "Rugged",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "120",
         "Cargo Volume Size": "150",
         "Power Required": "68",
@@ -15649,7 +15216,6 @@
       "TechLevel": "Rugged",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "130",
         "Cargo Volume Size": "175",
         "Power Required": "122",
@@ -15681,7 +15247,6 @@
       "TechLevel": "Rugged",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "150",
         "Cargo Volume Size": "200",
         "Power Required": "213",
@@ -15713,7 +15278,6 @@
       "TechLevel": "Rugged",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "80",
         "Cargo Volume Size": "105",
         "Power Required": "36",
@@ -15825,7 +15389,6 @@
       "TechLevel": "Junker",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "830",
         "Cargo Volume Size": "1100",
         "Power Required": "189",
@@ -15880,7 +15443,6 @@
       "BluePrintType": "Hull",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "2700",
         "Cargo Volume Size": "2167",
         "License Level": "12",
@@ -15955,7 +15517,6 @@
       "BluePrintType": "HullPlating",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "200",
         "Cargo Volume Size": "200",
         "Power Required": "0",
@@ -15983,7 +15544,6 @@
       "BluePrintType": "HullPlating",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "520",
         "Cargo Volume Size": "520",
         "Power Required": "0",
@@ -16011,7 +15571,6 @@
       "BluePrintType": "HullPlating",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "720",
         "Cargo Volume Size": "720",
         "Power Required": "0",
@@ -16039,7 +15598,6 @@
       "BluePrintType": "HullPlating",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "320",
         "Cargo Volume Size": "320",
         "Power Required": "0",
@@ -16067,7 +15625,6 @@
       "BluePrintType": "HullPlating",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "1400",
         "Cargo Volume Size": "1400",
         "Power Required": "0",
@@ -16094,7 +15651,6 @@
       "BluePrintType": "HullPlating",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "80",
         "Cargo Volume Size": "80",
         "Power Required": "0",
@@ -16122,7 +15678,6 @@
       "BluePrintType": "FuelTank",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "340",
         "Cargo Volume Size": "500",
         "Health": "1700",
@@ -16147,7 +15702,6 @@
       "BluePrintType": "Hull",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "7500",
         "Cargo Volume Size": "4667",
         "License Level": "20",
@@ -16196,7 +15750,6 @@
       "BluePrintType": "Hull",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "6500",
         "Cargo Volume Size": "3334",
         "License Level": "16",
@@ -16249,7 +15802,6 @@
       "TechLevel": "Junker",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "460",
         "Cargo Volume Size": "615",
         "Power Required": "101",
@@ -16278,7 +15830,6 @@
       "TechLevel": "Junker",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "70",
         "Cargo Volume Size": "90",
         "Power Required": "22",
@@ -16306,7 +15857,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "50",
         "Cargo Volume Size": "60",
         "Power Required": "22",
@@ -16337,7 +15887,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "50",
         "Cargo Volume Size": "60",
         "Power Required": "22",
@@ -16369,7 +15918,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "50",
         "Cargo Volume Size": "60",
         "Power Required": "22",
@@ -16401,7 +15949,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "50",
         "Cargo Volume Size": "60",
         "Power Required": "22",
@@ -16432,7 +15979,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "50",
         "Cargo Volume Size": "60",
         "Power Required": "22",
@@ -16463,7 +16009,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "50",
         "Cargo Volume Size": "60",
         "Power Required": "22",
@@ -16494,7 +16039,6 @@
       "BluePrintType": "HullReinforcement",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "110",
         "Cargo Volume Size": "35",
         "Power Required": "0",
@@ -16520,7 +16064,6 @@
       "BluePrintType": "UniversalCoupler",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "5",
         "Power Required": "2",
@@ -16545,7 +16088,6 @@
       "BluePrintType": "UniversalCoupler",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "60",
         "Cargo Volume Size": "20",
         "Power Required": "8",
@@ -16571,7 +16113,6 @@
       "BluePrintType": "UniversalCoupler",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "250",
         "Cargo Volume Size": "85",
         "Power Required": "24",
@@ -16596,7 +16137,6 @@
       "BluePrintType": "UniversalCoupler",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "430",
         "Cargo Volume Size": "145",
         "Power Required": "30",
@@ -16622,7 +16162,6 @@
       "BluePrintType": "UniversalCoupler",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "980",
         "Cargo Volume Size": "330",
         "Power Required": "48",
@@ -16648,7 +16187,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "5620",
         "Cargo Volume Size": "1685",
         "Health": "234",
@@ -16677,7 +16215,6 @@
       "BluePrintType": "Hull",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "900",
         "Cargo Volume Size": "667",
         "License Level": "4",
@@ -16747,7 +16284,6 @@
       "BluePrintType": "Hull",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "800",
         "Cargo Volume Size": "584",
         "License Level": "4",
@@ -16796,7 +16332,6 @@
       "BluePrintType": "Hull",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "13500",
         "Cargo Volume Size": "8334",
         "License Level": "28",
@@ -16846,7 +16381,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "190",
         "Cargo Volume Size": "140",
         "Power Required": "146",
@@ -16872,7 +16406,6 @@
       "BluePrintType": "CoilGun/Large",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "81",
         "Cargo Volume Size": "43",
         "Power Required": "0",
@@ -16906,7 +16439,6 @@
       "BluePrintType": "Railgun/Large",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "103",
         "Cargo Volume Size": "55",
         "Health": "38",
@@ -16939,7 +16471,6 @@
       "BluePrintType": "Railgun/Small",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "100",
         "Cargo Volume Size": "30",
         "Health": "30",
@@ -16973,7 +16504,6 @@
       "BluePrintType": "Railgun/Large",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "216",
         "Cargo Volume Size": "116",
         "Health": "81",
@@ -17007,7 +16537,6 @@
       "BluePrintType": "Railgun/Medium",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "185",
         "Cargo Volume Size": "99",
         "Health": "69",
@@ -17040,7 +16569,6 @@
       "BluePrintType": "Railgun/Large",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "479",
         "Cargo Volume Size": "257",
         "Health": "179",
@@ -17074,7 +16602,6 @@
       "BluePrintType": "Railgun/Medium",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "410",
         "Cargo Volume Size": "220",
         "Health": "153",
@@ -17108,7 +16635,6 @@
       "BluePrintType": "Railgun/Small",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "261",
         "Cargo Volume Size": "140",
         "Health": "97",
@@ -17142,7 +16668,6 @@
       "BluePrintType": "Railgun/Large",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "1079",
         "Cargo Volume Size": "578",
         "Health": "404",
@@ -17176,7 +16701,6 @@
       "BluePrintType": "Railgun/Medium",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "922",
         "Cargo Volume Size": "494",
         "Health": "345",
@@ -17209,7 +16733,6 @@
       "BluePrintType": "Railgun/Large",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "2426",
         "Cargo Volume Size": "1300",
         "Health": "909",
@@ -17242,7 +16765,6 @@
       "BluePrintType": "Railgun/Medium",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "2073",
         "Cargo Volume Size": "1111",
         "Health": "777",
@@ -17276,7 +16798,6 @@
       "BluePrintType": "Railgun/Small",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1320",
         "Cargo Volume Size": "708",
         "Health": "495",
@@ -17310,7 +16831,6 @@
       "BluePrintType": "Railgun/Large",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "5701",
         "Cargo Volume Size": "3054",
         "Health": "2137",
@@ -17344,7 +16864,6 @@
       "BluePrintType": "Railgun/Medium",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "4871",
         "Cargo Volume Size": "2610",
         "Health": "1826",
@@ -17378,7 +16897,6 @@
       "BluePrintType": "Railgun/Small",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "3102",
         "Cargo Volume Size": "1662",
         "Health": "1163",
@@ -17412,7 +16930,6 @@
       "BluePrintType": "Railgun/Large",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "11972",
         "Cargo Volume Size": "6414",
         "Health": "4489",
@@ -17446,7 +16963,6 @@
       "BluePrintType": "Railgun/Small",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "8687",
         "Cargo Volume Size": "4654",
         "Health": "3257",
@@ -17480,7 +16996,6 @@
       "BluePrintType": "TorpedoLauncher/Large",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -17515,7 +17030,6 @@
       "BluePrintType": "TorpedoLauncher/Medium",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -17550,7 +17064,6 @@
       "BluePrintType": "TorpedoLauncher/Large",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -17584,7 +17097,6 @@
       "BluePrintType": "TorpedoLauncher/Medium",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -17618,7 +17130,6 @@
       "BluePrintType": "TorpedoLauncher/Large",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -17652,7 +17163,6 @@
       "BluePrintType": "TorpedoLauncher/Medium",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -17687,7 +17197,6 @@
       "BluePrintType": "TorpedoLauncher/Small",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -17721,7 +17230,6 @@
       "BluePrintType": "TorpedoLauncher/Large",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -17755,7 +17263,6 @@
       "BluePrintType": "TorpedoLauncher/Medium",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -17789,7 +17296,6 @@
       "BluePrintType": "TorpedoLauncher/Small",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -17824,7 +17330,6 @@
       "BluePrintType": "TorpedoLauncher/Large",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -17858,7 +17363,6 @@
       "BluePrintType": "TorpedoLauncher/Medium",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -17893,7 +17397,6 @@
       "BluePrintType": "TorpedoLauncher/Small",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -17927,7 +17430,6 @@
       "BluePrintType": "TorpedoLauncher/Large",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -17961,7 +17463,6 @@
       "BluePrintType": "TorpedoLauncher/Medium",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -17996,7 +17497,6 @@
       "BluePrintType": "TorpedoLauncher/Small",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -18030,7 +17530,6 @@
       "BluePrintType": "TorpedoLauncher/Large",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -18065,7 +17564,6 @@
       "BluePrintType": "TorpedoLauncher/Medium",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -18100,7 +17598,6 @@
       "BluePrintType": "TorpedoLauncher/Small",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "350",
         "Cargo Volume Size": "125",
         "Health": "75",
@@ -18134,7 +17631,6 @@
       "BluePrintType": "CargoPod",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "20",
         "Health": "120",
@@ -18158,7 +17654,6 @@
       "BluePrintType": "OreHopper",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "45",
         "Cargo Volume Size": "25",
         "Health": "80",
@@ -18183,7 +17678,6 @@
       "BluePrintType": "FuelTank",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "30",
         "Health": "40",
@@ -18208,7 +17702,6 @@
       "TechLevel": "Standard",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "145",
         "Cargo Volume Size": "82",
         "Health": "80",
@@ -18236,7 +17729,6 @@
       "TechLevel": "Standard",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "675",
         "Cargo Volume Size": "380",
         "Health": "360",
@@ -18265,7 +17757,6 @@
       "TechLevel": "Standard",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1170",
         "Cargo Volume Size": "660",
         "Health": "630",
@@ -18294,7 +17785,6 @@
       "TechLevel": "Standard",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "2645",
         "Cargo Volume Size": "1490",
         "Health": "1400",
@@ -18323,7 +17813,6 @@
       "TechLevel": "Standard",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "4740",
         "Cargo Volume Size": "2670",
         "Health": "2490",
@@ -18351,7 +17840,6 @@
       "TechLevel": "Standard",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "8",
@@ -18383,7 +17871,6 @@
       "TechLevel": "Standard",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "8",
@@ -18414,7 +17901,6 @@
       "TechLevel": "Standard",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "8",
@@ -18446,7 +17932,6 @@
       "TechLevel": "Standard",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "8",
@@ -18478,7 +17963,6 @@
       "TechLevel": "Standard",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "8",
@@ -18510,7 +17994,6 @@
       "TechLevel": "Standard",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "8",
@@ -18542,7 +18025,6 @@
       "TechLevel": "Standard",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "18",
@@ -18574,7 +18056,6 @@
       "TechLevel": "Standard",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "18",
@@ -18605,7 +18086,6 @@
       "TechLevel": "Standard",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "18",
@@ -18636,7 +18116,6 @@
       "TechLevel": "Standard",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "18",
@@ -18667,7 +18146,6 @@
       "TechLevel": "Standard",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "18",
@@ -18698,7 +18176,6 @@
       "TechLevel": "Standard",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "18",
@@ -18729,7 +18206,6 @@
       "TechLevel": "Standard",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "18",
@@ -18760,7 +18236,6 @@
       "TechLevel": "Standard",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "90",
         "Power Required": "36",
@@ -18792,7 +18267,6 @@
       "TechLevel": "Standard",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "90",
         "Power Required": "36",
@@ -18824,7 +18298,6 @@
       "TechLevel": "Standard",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "90",
         "Power Required": "36",
@@ -18855,7 +18328,6 @@
       "TechLevel": "Standard",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "90",
         "Power Required": "36",
@@ -18887,7 +18359,6 @@
       "TechLevel": "Standard",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "90",
         "Power Required": "36",
@@ -18919,7 +18390,6 @@
       "TechLevel": "Standard",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "100",
         "Cargo Volume Size": "130",
         "Power Required": "68",
@@ -18950,7 +18420,6 @@
       "TechLevel": "Standard",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "100",
         "Cargo Volume Size": "130",
         "Power Required": "68",
@@ -18981,7 +18450,6 @@
       "TechLevel": "Standard",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "100",
         "Cargo Volume Size": "130",
         "Power Required": "68",
@@ -19013,7 +18481,6 @@
       "TechLevel": "Standard",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "100",
         "Cargo Volume Size": "130",
         "Power Required": "68",
@@ -19045,7 +18512,6 @@
       "TechLevel": "Standard",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "110",
         "Cargo Volume Size": "145",
         "Power Required": "122",
@@ -19077,7 +18543,6 @@
       "TechLevel": "Standard",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "110",
         "Cargo Volume Size": "145",
         "Power Required": "122",
@@ -19108,7 +18573,6 @@
       "TechLevel": "Standard",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "110",
         "Cargo Volume Size": "145",
         "Power Required": "122",
@@ -19139,7 +18603,6 @@
       "TechLevel": "Standard",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "110",
         "Cargo Volume Size": "145",
         "Power Required": "122",
@@ -19171,7 +18634,6 @@
       "TechLevel": "Standard",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "130",
         "Cargo Volume Size": "165",
         "Power Required": "213",
@@ -19202,7 +18664,6 @@
       "TechLevel": "Standard",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "130",
         "Cargo Volume Size": "165",
         "Power Required": "213",
@@ -19231,7 +18692,6 @@
       "TechLevel": "Standard",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "130",
         "Cargo Volume Size": "165",
         "Power Required": "213",
@@ -19262,7 +18722,6 @@
       "TechLevel": "Standard",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "130",
         "Cargo Volume Size": "165",
         "Power Required": "213",
@@ -19293,7 +18752,6 @@
       "TechLevel": "Standard",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "130",
         "Cargo Volume Size": "165",
         "Power Required": "213",
@@ -19325,7 +18783,6 @@
       "TechLevel": "Standard",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "240",
         "Cargo Volume Size": "320",
         "Power Required": "365",
@@ -19357,7 +18814,6 @@
       "TechLevel": "Standard",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "240",
         "Cargo Volume Size": "320",
         "Power Required": "365",
@@ -19388,7 +18844,6 @@
       "TechLevel": "Standard",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "240",
         "Cargo Volume Size": "320",
         "Power Required": "365",
@@ -19418,7 +18873,6 @@
       "TechLevel": "Standard",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "240",
         "Cargo Volume Size": "320",
         "Power Required": "365",
@@ -19449,7 +18903,6 @@
       "TechLevel": "Standard",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "240",
         "Cargo Volume Size": "320",
         "Power Required": "365",
@@ -19480,7 +18933,6 @@
       "TechLevel": "Standard",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "240",
         "Cargo Volume Size": "320",
         "Power Required": "365",
@@ -19511,7 +18963,6 @@
       "BluePrintType": "Reactor",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "40",
         "Cargo Volume Size": "15",
         "Power Required": "64",
@@ -19539,7 +18990,6 @@
       "BluePrintType": "HullPlating",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "200",
         "Cargo Volume Size": "200",
         "Power Required": "0",
@@ -19567,7 +19017,6 @@
       "BluePrintType": "HullPlating",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "520",
         "Cargo Volume Size": "520",
         "Power Required": "0",
@@ -19595,7 +19044,6 @@
       "BluePrintType": "HullPlating",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "720",
         "Cargo Volume Size": "720",
         "Power Required": "0",
@@ -19622,7 +19070,6 @@
       "BluePrintType": "HullPlating",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "2400",
         "Cargo Volume Size": "2400",
         "Power Required": "0",
@@ -19650,7 +19097,6 @@
       "BluePrintType": "HullPlating",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "320",
         "Cargo Volume Size": "320",
         "Power Required": "0",
@@ -19677,7 +19123,6 @@
       "BluePrintType": "HullPlating",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "80",
         "Cargo Volume Size": "80",
         "Power Required": "0",
@@ -19705,7 +19150,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "15",
         "Power Required": "10",
@@ -19732,7 +19176,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "980",
         "Cargo Volume Size": "1300",
         "Power Required": "284",
@@ -19761,7 +19204,6 @@
       "TechLevel": "Junker",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "120",
         "Cargo Volume Size": "160",
         "Power Required": "97",
@@ -19792,7 +19234,6 @@
       "TechLevel": "Junker",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "120",
         "Cargo Volume Size": "160",
         "Power Required": "97",
@@ -19824,7 +19265,6 @@
       "TechLevel": "Junker",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "120",
         "Cargo Volume Size": "160",
         "Power Required": "97",
@@ -19854,7 +19294,6 @@
       "TechLevel": "Junker",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "120",
         "Cargo Volume Size": "160",
         "Power Required": "97",
@@ -19886,7 +19325,6 @@
       "TechLevel": "Rugged",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "4610",
         "Cargo Volume Size": "1920",
         "Power Required": "3645",
@@ -19915,7 +19353,6 @@
       "TechLevel": "Rugged",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "5760",
         "Cargo Volume Size": "7680",
         "Power Required": "1276",
@@ -19944,7 +19381,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "60",
         "Cargo Volume Size": "45",
         "Power Required": "22",
@@ -19971,7 +19407,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "190",
         "Cargo Volume Size": "140",
         "Power Required": "73",
@@ -19999,7 +19434,6 @@
       "TechLevel": "Rugged",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "390",
         "Cargo Volume Size": "290",
         "Power Required": "365",
@@ -20024,7 +19458,6 @@
       "BluePrintType": "Hull",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "58000",
         "Cargo Volume Size": "106667",
         "License Level": "40",
@@ -20074,7 +19507,6 @@
       "TechLevel": "Rugged",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "600",
         "Cargo Volume Size": "250",
         "Power Required": "675",
@@ -20103,7 +19535,6 @@
       "TechLevel": "Rugged",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "900",
         "Cargo Volume Size": "1200",
         "Power Required": "236",
@@ -20132,7 +19563,6 @@
       "TechLevel": "Rugged",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "700",
         "Cargo Volume Size": "265",
         "Power Required": "446",
@@ -20159,7 +19589,6 @@
       "TechLevel": "Rugged",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "150",
         "Cargo Volume Size": "115",
         "Power Required": "68",
@@ -20184,7 +19613,6 @@
       "BluePrintType": "Hull",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "2700",
         "Cargo Volume Size": "2167",
         "License Level": "6",
@@ -20235,7 +19663,6 @@
       "TechLevel": "Junker",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "14",
@@ -20267,7 +19694,6 @@
       "TechLevel": "Junker",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "14",
@@ -20299,7 +19725,6 @@
       "TechLevel": "Junker",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "14",
@@ -20330,7 +19755,6 @@
       "TechLevel": "Junker",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "50",
         "Power Required": "14",
@@ -20800,7 +20224,6 @@
       "TechLevel": "Junker",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "600",
         "Cargo Volume Size": "180",
         "Health": "180",
@@ -20830,7 +20253,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "150",
         "Cargo Volume Size": "60",
         "Power Required": "216",
@@ -20858,7 +20280,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "1120",
         "Cargo Volume Size": "470",
         "Power Required": "1458",
@@ -20887,7 +20308,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "340",
         "Cargo Volume Size": "140",
         "Power Required": "432",
@@ -20916,7 +20336,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "2560",
         "Cargo Volume Size": "1065",
         "Power Required": "2552",
@@ -20945,7 +20364,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "650",
         "Cargo Volume Size": "270",
         "Power Required": "810",
@@ -20995,7 +20413,6 @@
       "TechLevel": "Junker",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "3510",
         "Cargo Volume Size": "1315",
         "Power Required": "1925",
@@ -21022,7 +20439,6 @@
       "BluePrintType": "CargoPod",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "30",
         "Cargo Volume Size": "20",
         "Health": "60",
@@ -21047,7 +20463,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "710",
         "Cargo Volume Size": "215",
         "Health": "117",
@@ -21076,7 +20491,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "170",
         "Cargo Volume Size": "125",
         "Power Required": "41",
@@ -21103,7 +20517,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "130",
         "Cargo Volume Size": "165",
         "Power Required": "81",
@@ -21135,7 +20548,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "130",
         "Cargo Volume Size": "165",
         "Power Required": "81",
@@ -21166,7 +20578,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "130",
         "Cargo Volume Size": "165",
         "Power Required": "81",
@@ -21195,7 +20606,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "130",
         "Cargo Volume Size": "165",
         "Power Required": "81",
@@ -21226,7 +20636,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "130",
         "Cargo Volume Size": "165",
         "Power Required": "81",
@@ -21256,7 +20665,6 @@
       "BluePrintType": "Hull",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "900",
         "Cargo Volume Size": "667",
         "License Level": "4",
@@ -21305,7 +20713,6 @@
       "TechLevel": "Junker",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "95",
         "Power Required": "29",
@@ -21337,7 +20744,6 @@
       "TechLevel": "Junker",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "95",
         "Power Required": "29",
@@ -21368,7 +20774,6 @@
       "TechLevel": "Junker",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "95",
         "Power Required": "29",
@@ -21397,7 +20802,6 @@
       "TechLevel": "Junker",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "95",
         "Power Required": "29",
@@ -21428,7 +20832,6 @@
       "TechLevel": "Junker",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "95",
         "Power Required": "29",
@@ -21459,7 +20862,6 @@
       "TechLevel": "Junker",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "95",
         "Power Required": "29",
@@ -21491,7 +20893,6 @@
       "TechLevel": "Junker",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "70",
         "Cargo Volume Size": "95",
         "Power Required": "29",
@@ -21522,7 +20923,6 @@
       "BluePrintType": "Hull",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "1000",
         "Cargo Volume Size": "667",
         "License Level": "1",
@@ -21572,7 +20972,6 @@
       "TechLevel": "Junker",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "360",
         "Cargo Volume Size": "265",
         "Power Required": "292",
@@ -21599,7 +20998,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "110",
         "Cargo Volume Size": "85",
         "Power Required": "22",
@@ -21626,7 +21024,6 @@
       "TechLevel": "Rugged",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "20",
         "Power Required": "8",
@@ -21658,7 +21055,6 @@
       "TechLevel": "Rugged",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "40",
         "Cargo Volume Size": "55",
         "Power Required": "18",
@@ -21690,7 +21086,6 @@
       "TechLevel": "Rugged",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "120",
         "Cargo Volume Size": "150",
         "Power Required": "68",
@@ -21722,7 +21117,6 @@
       "TechLevel": "Rugged",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "150",
         "Cargo Volume Size": "200",
         "Power Required": "213",
@@ -21754,7 +21148,6 @@
       "TechLevel": "Rugged",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "290",
         "Cargo Volume Size": "385",
         "Power Required": "365",
@@ -21785,7 +21178,6 @@
       "BluePrintType": "Thruster",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "20",
         "Cargo Volume Size": "15",
         "Power Required": "12",
@@ -21812,7 +21204,6 @@
       "TechLevel": "Junker",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "4750",
         "Cargo Volume Size": "1425",
         "Health": "684",
@@ -21869,7 +21260,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "4160",
         "Cargo Volume Size": "1560",
         "Power Required": "2887",
@@ -21896,7 +21286,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 7,
       "Properties": {
-        "Class": "7",
         "Mass": "220",
         "Cargo Volume Size": "160",
         "Power Required": "128",
@@ -21923,7 +21312,6 @@
       "TechLevel": "Hi-Tech",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "420",
         "Cargo Volume Size": "315",
         "Power Required": "219",
@@ -21950,7 +21338,6 @@
       "TechLevel": "Junker",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "100",
         "Cargo Volume Size": "70",
         "Power Required": "14",
@@ -21978,7 +21365,6 @@
       "TechLevel": "MilSpec",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "870",
         "Cargo Volume Size": "325",
         "Power Required": "1203",
@@ -22008,7 +21394,6 @@
       "TechLevel": "MilSpec",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "590",
         "Cargo Volume Size": "220",
         "Power Required": "668",
@@ -22035,7 +21420,6 @@
       "TechLevel": "MilSpec",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "340",
         "Cargo Volume Size": "130",
         "Power Required": "356",
@@ -22063,7 +21447,6 @@
       "TechLevel": "MilSpec",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "160",
         "Cargo Volume Size": "60",
         "Power Required": "178",
@@ -22091,7 +21474,6 @@
       "TechLevel": "MilSpec",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "60",
         "Cargo Volume Size": "20",
         "Power Required": "79",
@@ -22119,7 +21501,6 @@
       "TechLevel": "MilSpec",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "3200",
         "Cargo Volume Size": "1200",
         "Power Required": "3609",
@@ -22146,7 +21527,6 @@
       "TechLevel": "MilSpec",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "4320",
         "Cargo Volume Size": "1300",
         "Health": "684",
@@ -22176,7 +21556,6 @@
       "TechLevel": "MilSpec",
       "Class": 5,
       "Properties": {
-        "Class": "5",
         "Mass": "2510",
         "Cargo Volume Size": "755",
         "Health": "380",
@@ -22205,7 +21584,6 @@
       "TechLevel": "MilSpec",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "550",
         "Cargo Volume Size": "165",
         "Health": "144",
@@ -22234,7 +21612,6 @@
       "TechLevel": "MilSpec",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "160",
         "Cargo Volume Size": "50",
         "Health": "100",
@@ -22263,7 +21640,6 @@
       "TechLevel": "MilSpec",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "19200",
         "Cargo Volume Size": "5760",
         "Health": "1888",
@@ -22292,7 +21668,6 @@
       "TechLevel": "Junker",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "160",
         "Cargo Volume Size": "120",
         "Power Required": "49",
@@ -22318,7 +21693,6 @@
       "BluePrintType": "HullPlating",
       "Class": 3,
       "Properties": {
-        "Class": "3",
         "Mass": "200",
         "Cargo Volume Size": "200",
         "Power Required": "0",
@@ -22346,7 +21720,6 @@
       "BluePrintType": "HullPlating",
       "Class": 6,
       "Properties": {
-        "Class": "6",
         "Mass": "720",
         "Cargo Volume Size": "720",
         "Power Required": "0",
@@ -22374,7 +21747,6 @@
       "BluePrintType": "HullPlating",
       "Class": 8,
       "Properties": {
-        "Class": "8",
         "Mass": "2400",
         "Cargo Volume Size": "2400",
         "Power Required": "0",
@@ -22401,7 +21773,6 @@
       "BluePrintType": "HullPlating",
       "Class": 4,
       "Properties": {
-        "Class": "4",
         "Mass": "320",
         "Cargo Volume Size": "320",
         "Power Required": "0",
@@ -22429,7 +21800,6 @@
       "BluePrintType": "HullPlating",
       "Class": 2,
       "Properties": {
-        "Class": "2",
         "Mass": "80",
         "Cargo Volume Size": "80",
         "Power Required": "0",
