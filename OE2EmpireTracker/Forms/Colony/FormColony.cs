@@ -731,11 +731,14 @@ namespace OE2EmpireTracker.Forms.Colony
         private void lvwStructureTypes_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
+            if (selectedColony == null) return;
             ApplyStructureTypeFilter();
         }
 
         private void ApplyStructureTypeFilter()
         {
+            if (selectedColony == null) return;
+
             var selectedTypes = new HashSet<string>(StringComparer.Ordinal);
             foreach (ListViewItem item in lvwStructureTypes.Items)
             {
@@ -750,7 +753,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 {
                     var bp = playerContext.FindBlueprint(cs.ColonyStructureData.FlatpackBlueprintUUID);
                     string typeId = bp?.BluePrintType ?? "";
-                    cs.Visible = selectedTypes.Contains(typeId);
+                    cs.Visible = selectedTypes.Count == 0 || selectedTypes.Contains(typeId);
                 }
             }
             flpColonyStructure.ResumeLayout();
