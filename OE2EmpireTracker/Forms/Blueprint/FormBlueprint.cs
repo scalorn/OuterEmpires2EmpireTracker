@@ -1136,7 +1136,9 @@ namespace OE2EmpireTracker
                 string propName = row.Cells[0].Tag as string;
                 object cellValue = row.Cells[2].Value;
                 string strValue = cellValue is bool ? cellValue.ToString() : cellValue as string;
-                viewModel.SetProperty(propName, strValue);
+                // Only save non-empty values -- empty cells mean "no data", not "set to empty"
+                if (!string.IsNullOrEmpty(strValue))
+                    viewModel.SetProperty(propName, strValue);
             }
 
             // Map resources from grid via viewModel
