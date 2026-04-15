@@ -723,45 +723,39 @@ namespace OE2EmpireTracker.Forms.Colony
         // Structure Type Filter
         // -----------------------------------------------------------------------
 
-        private bool _structureTypesSeeded = false;
+        private bool _structureTypesPopulated = false;
 
         private void PopulateStructureTypeFilter()
         {
-            if (!_structureTypesSeeded)
+            if (!_structureTypesPopulated)
             {
-                _structureTypesSeeded = true;
+                _structureTypesPopulated = true;
                 SeedUncheckedStructureTypes();
+                BuildStructureTypeList();
             }
+            ApplyStructureTypeFilter();
+        }
 
+        private void BuildStructureTypeList()
+        {
             lvwStructureTypes.ItemChecked -= lvwStructureTypes_ItemChecked;
             lvwStructureTypes.Items.Clear();
 
-            if (selectedColony == null)
-            {
-                lvwStructureTypes.ItemChecked += lvwStructureTypes_ItemChecked;
-                return;
-            }
-
             var empireContext = EmpireContext.GetInstance();
-            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var flatpackTypes = empireContext.BlueprintTypeList
+                .Where(bt => bt.Id.IsFlatpack())
+                .OrderBy(bt => bt.Name, StringComparer.OrdinalIgnoreCase)
+                .ToList();
 
-            foreach (var structure in selectedColony.Structures)
+            foreach (var bpType in flatpackTypes)
             {
-                var bp = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
-                string typeId = bp?.BluePrintType ?? "";
-                if (string.IsNullOrEmpty(typeId) || !seen.Add(typeId)) continue;
-
-                var bpType = empireContext.FindBlueprintType(typeId);
-                string displayName = bpType?.Name ?? typeId;
-
-                var item = new ListViewItem(displayName);
-                item.Tag = typeId;
-                item.Checked = !_uncheckedStructureTypes.Contains(typeId);
+                var item = new ListViewItem(bpType.Name);
+                item.Tag = bpType.Id;
+                item.Checked = !_uncheckedStructureTypes.Contains(bpType.Id);
                 lvwStructureTypes.Items.Add(item);
             }
 
             lvwStructureTypes.ItemChecked += lvwStructureTypes_ItemChecked;
-            ApplyStructureTypeFilter();
         }
 
         private void lvwStructureTypes_ItemChecked(object sender, ItemCheckedEventArgs e)
