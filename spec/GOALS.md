@@ -25,7 +25,7 @@ graph LR
 
 ## Specification Documents
 
-- [Requirements README](requirements/README.md) — index of all 15 requirement files
+- [Requirements README](requirements/README.md) — index of all 22 requirement files
 - [Backlog](BACKLOG.md) — open features and enhancements to be worked on
 - [Recommendations](Recommendations.md) — resolved issues and their outcomes
 - [Completed Work Archive](COMPLETED.md) — detailed record of all completed tasks
@@ -33,7 +33,7 @@ graph LR
 
 ## Current Status
 
-1375 total tests, all passing. All original Recommendations (1-18) resolved. MVVM complete across all forms. NLog logging throughout. 61 features completed. Directory restructured: `Baseline/` and `Data/` replaced by `Models/`, `Services/`, `Parsers/`, `Persistence/`.
+1379 total tests, all passing. All original Recommendations (1-18) resolved. MVVM complete across all forms. NLog logging throughout. 61 features completed. Directory restructured: `Baseline/` and `Data/` replaced by `Models/`, `Services/`, `Parsers/`, `Persistence/`.
 
 ## Open Work
 
