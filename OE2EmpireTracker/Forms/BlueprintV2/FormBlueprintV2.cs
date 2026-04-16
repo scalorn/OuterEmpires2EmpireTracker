@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace OE2EmpireTracker
 {
@@ -41,6 +42,31 @@ namespace OE2EmpireTracker
 
         // Statistics grid structure cache key: "{typeId}|{extraKeysHash}"
         private string _cachedGridKey;
+
+        /// <summary>
+        /// Extended 16-color Wong palette (8 base + 8 lighter tints) for colorblind-friendly chart lines.
+        /// </summary>
+        internal static readonly Color[] WongPalette = new Color[]
+        {
+            // Base Wong palette (8 colors)
+            ColorTranslator.FromHtml("#000000"), // black
+            ColorTranslator.FromHtml("#E69F00"), // orange
+            ColorTranslator.FromHtml("#56B4E9"), // sky blue
+            ColorTranslator.FromHtml("#009E73"), // bluish green
+            ColorTranslator.FromHtml("#B8860B"), // dark goldenrod
+            ColorTranslator.FromHtml("#0072B2"), // blue
+            ColorTranslator.FromHtml("#D55E00"), // vermillion
+            ColorTranslator.FromHtml("#CC79A7"), // reddish purple
+            // 50% lighter tints for properties 9-16
+            ColorTranslator.FromHtml("#808080"), // light black (grey)
+            ColorTranslator.FromHtml("#F2CF80"), // light orange
+            ColorTranslator.FromHtml("#ABD9F4"), // light sky blue
+            ColorTranslator.FromHtml("#80CEB9"), // light bluish green
+            ColorTranslator.FromHtml("#DAA520"), // goldenrod
+            ColorTranslator.FromHtml("#80B8D8"), // light blue
+            ColorTranslator.FromHtml("#EAAF80"), // light vermillion
+            ColorTranslator.FromHtml("#E5BCD3"), // light reddish purple
+        };
 
         public FormBlueprintV2()
         {
@@ -337,6 +363,7 @@ namespace OE2EmpireTracker
                 btnDelete.Text = text;
 
                 PopulateForm();
+                RefreshEvolutionGraph();
             }
             else
             {
@@ -1100,6 +1127,164 @@ namespace OE2EmpireTracker
         }
 
         // -----------------------------------------------------------------------
+        // Evolution Graph (Tasks 5.1–5.2)
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Resolves the evolution chain, builds graph data, and renders series with solid/dashed segments.
+        /// Called on selection change and BlueprintDataChanged.
+        /// </summary>
+        private void RefreshEvolutionGraph()
+        {
+            if (viewModel == null)
+            {
+                ClearEvolutionGraph();
+                return;
+            }
+
+            var blueprint = viewModel.Data;
+            if (blueprint == null || string.IsNullOrEmpty(blueprint.UUID))
+            {
+                ClearEvolutionGraph();
+                return;
+            }
+
+            // Resolve the evolution chain
+            var chain = EvolutionChainService.ResolveChain(
+                blueprint,
+                uuid => playerContext.FindBlueprint(uuid) ?? EmpireContext.GetInstance()?.FindGlobalBlueprint(uuid));
+
+            // Look up BlueprintType to get Properties array
+            var blueprintType = empireContext.BlueprintTypeList?
+                .FirstOrDefault(bt => bt.Id == blueprint.BluePrintType);
+            string[] blueprintTypeProperties = blueprintType?.Properties ?? new string[0];
+
+            // Build graph data
+            var graphData = EvolutionChainService.BuildGraphData(chain, blueprintTypeProperties);
+
+            if (graphData.NoChanges)
+            {
+                lblNoChanges.Visible = true;
+                chartEvolution.Visible = false;
+                pnlPropertyCheckboxes.Visible = false;
+                return;
+            }
+
+            // Show chart and checkbox panel, hide no-changes label
+            lblNoChanges.Visible = false;
+            chartEvolution.Visible = true;
+            pnlPropertyCheckboxes.Visible = true;
+
+            // Clear existing series and checkboxes
+            chartEvolution.Series.Clear();
+            pnlPropertyCheckboxes.Controls.Clear();
+
+            int colorIndex = 0;
+            foreach (var kvp in graphData.Series)
+            {
+                string propertyName = kvp.Key;
+                var points = kvp.Value;
+                Color lineColor = WongPalette[colorIndex % WongPalette.Length];
+
+                // Sort points by evolution level
+                points.Sort((a, b) => a.Evolution.CompareTo(b.Evolution));
+
+                // Build segments: solid for consecutive evolution levels, dashed for gaps
+                int segmentIndex = 0;
+                for (int i = 0; i < points.Count; i++)
+                {
+                    if (i == 0 && points.Count == 1)
+                    {
+                        // Single point — create a series with just one data point
+                        var singleSeries = new Series($"{propertyName}_{segmentIndex}")
+                        {
+                            ChartType = SeriesChartType.Line,
+                            Color = lineColor,
+                            BorderWidth = 2,
+                            MarkerStyle = MarkerStyle.Circle,
+                            MarkerSize = 6
+                        };
+                        singleSeries.Points.AddXY(points[i].Evolution, points[i].Percent);
+                        chartEvolution.Series.Add(singleSeries);
+                        segmentIndex++;
+                        continue;
+                    }
+
+                    if (i == 0) continue; // Start processing pairs from index 1
+
+                    int evDiff = points[i].Evolution - points[i - 1].Evolution;
+                    bool isGap = evDiff > 1;
+                    ChartDashStyle dashStyle = isGap ? ChartDashStyle.Dash : ChartDashStyle.Solid;
+
+                    // Check if we can extend the previous segment (same dash style and connects)
+                    bool extendPrevious = false;
+                    if (segmentIndex > 0)
+                    {
+                        string prevSeriesName = $"{propertyName}_{segmentIndex - 1}";
+                        var prevSeries = chartEvolution.Series.FindByName(prevSeriesName);
+                        if (prevSeries != null && prevSeries.BorderDashStyle == dashStyle)
+                        {
+                            prevSeries.Points.AddXY(points[i].Evolution, points[i].Percent);
+                            extendPrevious = true;
+                        }
+                    }
+
+                    if (!extendPrevious)
+                    {
+                        var segmentSeries = new Series($"{propertyName}_{segmentIndex}")
+                        {
+                            ChartType = SeriesChartType.Line,
+                            Color = lineColor,
+                            BorderWidth = 2,
+                            BorderDashStyle = dashStyle,
+                            MarkerStyle = MarkerStyle.Circle,
+                            MarkerSize = 6
+                        };
+                        segmentSeries.Points.AddXY(points[i - 1].Evolution, points[i - 1].Percent);
+                        segmentSeries.Points.AddXY(points[i].Evolution, points[i].Percent);
+                        chartEvolution.Series.Add(segmentSeries);
+                        segmentIndex++;
+                    }
+                }
+
+                // Add checkbox for this property (checked by default)
+                var checkbox = new CheckBox
+                {
+                    Text = propertyName,
+                    Checked = true,
+                    ForeColor = lineColor,
+                    AutoSize = true,
+                    Tag = propertyName
+                };
+                checkbox.CheckedChanged += (s, ev) =>
+                {
+                    string propTag = (string)((CheckBox)s).Tag;
+                    bool visible = ((CheckBox)s).Checked;
+                    foreach (var series in chartEvolution.Series)
+                    {
+                        if (series.Name.StartsWith(propTag + "_"))
+                        {
+                            series.Enabled = visible;
+                        }
+                    }
+                };
+                pnlPropertyCheckboxes.Controls.Add(checkbox);
+
+                colorIndex++;
+            }
+        }
+
+        /// <summary>
+        /// Clears the evolution graph chart series, checkbox panel, and hides the no-changes label.
+        /// </summary>
+        private void ClearEvolutionGraph()
+        {
+            chartEvolution.Series.Clear();
+            pnlPropertyCheckboxes.Controls.Clear();
+            lblNoChanges.Visible = false;
+        }
+
+        // -----------------------------------------------------------------------
         // Form Population / Clear
         // -----------------------------------------------------------------------
 
@@ -1200,6 +1385,7 @@ namespace OE2EmpireTracker
             {
                 PopulateForm();
             }
+            RefreshEvolutionGraph();
             RefreshBlueprintList();
         }
 

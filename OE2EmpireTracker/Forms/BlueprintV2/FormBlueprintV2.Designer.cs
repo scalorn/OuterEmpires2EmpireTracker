@@ -1,4 +1,5 @@
-﻿using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Controls;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace OE2EmpireTracker
 {
@@ -19,7 +20,8 @@ namespace OE2EmpireTracker
 
         private void InitializeComponent()
         {
-            this.splitMain = new System.Windows.Forms.SplitContainer();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+                        this.splitMain = new System.Windows.Forms.SplitContainer();
             this.flpSearchList = new System.Windows.Forms.FlowLayoutPanel();
             this.txtFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpFilterPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -92,7 +94,9 @@ namespace OE2EmpireTracker
             this.colResource = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.colAmount = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
             this.tabPEvolutionGraph = new System.Windows.Forms.TabPage();
-            this.pnlEvolutionGraphPlaceholder = new System.Windows.Forms.Panel();
+            this.chartEvolution = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.pnlPropertyCheckboxes = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblNoChanges = new System.Windows.Forms.Label();
             this.flpPricing = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPricingPlan = new System.Windows.Forms.Label();
             this.cmbPricingPlan = new System.Windows.Forms.ComboBox();
@@ -122,7 +126,11 @@ namespace OE2EmpireTracker
             ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).BeginInit();
             this.tabPResources.SuspendLayout();
             this.pnlResourceButtons.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).BeginInit();            this.tabPEvolutionGraph.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartEvolution)).BeginInit();
+
+            this.tabPEvolutionGraph.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartEvolution)).BeginInit();
             this.flpPricing.SuspendLayout();
             this.SuspendLayout();
             // splitMain
@@ -685,7 +693,9 @@ namespace OE2EmpireTracker
             this.colAmount.ValidationPattern = OE2EmpireTracker.Controls.ValidatedTextBox.NUMBER_VALIDATION;
             this.colAmount.Width = 100;
             // tabPEvolutionGraph
-            this.tabPEvolutionGraph.Controls.Add(this.pnlEvolutionGraphPlaceholder);
+            this.tabPEvolutionGraph.Controls.Add(this.chartEvolution);
+            this.tabPEvolutionGraph.Controls.Add(this.pnlPropertyCheckboxes);
+            this.tabPEvolutionGraph.Controls.Add(this.lblNoChanges);
             this.tabPEvolutionGraph.Location = new System.Drawing.Point(4, 22);
             this.tabPEvolutionGraph.Margin = new System.Windows.Forms.Padding(2);
             this.tabPEvolutionGraph.Name = "tabPEvolutionGraph";
@@ -694,11 +704,44 @@ namespace OE2EmpireTracker
             this.tabPEvolutionGraph.TabIndex = 2;
             this.tabPEvolutionGraph.Text = "Evolution Graph";
             this.tabPEvolutionGraph.UseVisualStyleBackColor = true;
-            this.pnlEvolutionGraphPlaceholder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlEvolutionGraphPlaceholder.Location = new System.Drawing.Point(2, 2);
-            this.pnlEvolutionGraphPlaceholder.Name = "pnlEvolutionGraphPlaceholder";
-            this.pnlEvolutionGraphPlaceholder.Size = new System.Drawing.Size(788, 290);
-            this.pnlEvolutionGraphPlaceholder.TabIndex = 0;
+            chartArea1.AxisX.Minimum = 0D;
+            chartArea1.AxisX.Maximum = 15D;
+            chartArea1.AxisX.Interval = 1D;
+            chartArea1.AxisX.Title = "Evolution Level";
+            chartArea1.AxisY.Minimum = 50D;
+            chartArea1.AxisY.Maximum = 150D;
+            chartArea1.AxisY.MajorGrid.Interval = 10D;
+            chartArea1.AxisY.Title = "% Change from Evolution 0 Value";
+            chartArea1.Name = "EvolutionArea";
+            this.chartEvolution.ChartAreas.Add(chartArea1);
+            this.chartEvolution.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chartEvolution.Location = new System.Drawing.Point(2, 2);
+            this.chartEvolution.Name = "chartEvolution";
+            this.chartEvolution.Size = new System.Drawing.Size(608, 290);
+            this.chartEvolution.TabIndex = 0;
+            //
+            // pnlPropertyCheckboxes
+            //
+            this.pnlPropertyCheckboxes.AutoScroll = true;
+            this.pnlPropertyCheckboxes.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pnlPropertyCheckboxes.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.pnlPropertyCheckboxes.Location = new System.Drawing.Point(610, 2);
+            this.pnlPropertyCheckboxes.Name = "pnlPropertyCheckboxes";
+            this.pnlPropertyCheckboxes.Size = new System.Drawing.Size(180, 290);
+            this.pnlPropertyCheckboxes.TabIndex = 1;
+            this.pnlPropertyCheckboxes.WrapContents = false;
+            //
+            // lblNoChanges
+            //
+            this.lblNoChanges.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblNoChanges.Location = new System.Drawing.Point(2, 2);
+            this.lblNoChanges.Name = "lblNoChanges";
+            this.lblNoChanges.Size = new System.Drawing.Size(788, 290);
+            this.lblNoChanges.TabIndex = 2;
+            this.lblNoChanges.Text = "No property changes found across the evolution chain.";
+            this.lblNoChanges.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblNoChanges.Visible = false;
+
             // flpPricing
             this.flpPricing.AutoSize = true;
             this.flpPricing.Controls.Add(this.lblPricingPlan);
@@ -775,7 +818,11 @@ namespace OE2EmpireTracker
             ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).EndInit();
             this.tabPResources.ResumeLayout(false);
             this.pnlResourceButtons.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).EndInit();            this.tabPEvolutionGraph.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chartEvolution)).EndInit();
+
+            this.tabPEvolutionGraph.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chartEvolution)).EndInit();
             this.flpPricing.ResumeLayout(false);
             this.ResumeLayout(false);
         }
@@ -855,7 +902,9 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.DataGridViewComboBoxColumn colResource;
         private OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn colAmount;
         private System.Windows.Forms.TabPage tabPEvolutionGraph;
-        private System.Windows.Forms.Panel pnlEvolutionGraphPlaceholder;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartEvolution;
+        private System.Windows.Forms.FlowLayoutPanel pnlPropertyCheckboxes;
+        private System.Windows.Forms.Label lblNoChanges;
         private System.Windows.Forms.FlowLayoutPanel flpPricing;
         private System.Windows.Forms.Label lblPricingPlan;
         private System.Windows.Forms.ComboBox cmbPricingPlan;

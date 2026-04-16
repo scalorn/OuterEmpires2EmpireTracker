@@ -40,17 +40,17 @@ Old form stays working throughout. Shared refactors (BlueprintImportHandler) use
 
 ## Phase 4: Import Integration
 
-- [ ] 4. Wire import handlers into new form
+- [x] 4. Wire import handlers into new form
   - [x] 4.1 Individual import button using BlueprintImportHandler service
   - [x] 4.2 Market import button using existing ProcessMarketHtml flow
-  - [ ] 4.3 Clipboard content validation with user-friendly messages
-  - [ ] 4.4 Post-import: select imported blueprint, refresh list, populate form
+  - [x] 4.3 Clipboard content validation with user-friendly messages
+  - [x] 4.4 Post-import: select imported blueprint, refresh list, populate form
 
 ## Phase 5: Evolution Graph and Pricing
 
 - [ ] 5. Add evolution graph and pricing tabs
-  - [ ] 5.1 Evolution graph tab with chart, checkbox panel, no-changes label
-  - [ ] 5.2 Graph refresh on selection change and BlueprintDataChanged
+  - [x] 5.1 Evolution graph tab with chart, checkbox panel, no-changes label
+  - [x] 5.2 Graph refresh on selection change and BlueprintDataChanged
   - [ ] 5.3 Pricing plan combo with computed price display
   - [ ] 5.4 Pricing refresh on PricingDataChanged
 
