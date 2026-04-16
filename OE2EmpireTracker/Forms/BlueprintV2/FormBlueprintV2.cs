@@ -1046,8 +1046,8 @@ namespace OE2EmpireTracker
             {
                 int rowIndex = dgvResources.Rows.Add();
                 var row = dgvResources.Rows[rowIndex];
-                row.Cells["colResource"].Value = resource.Key;
-                row.Cells["colAmount"].Value = resource.Value;
+                row.Cells["Resource"].Value = resource.Key;
+                row.Cells["Amount"].Value = resource.Value;
             }
         }
 
@@ -1059,8 +1059,8 @@ namespace OE2EmpireTracker
             if (_isProgrammaticUpdate > 0) return;
             if (e.RowIndex < 0) return;
 
-            string resourceName = dgvResources.Rows[e.RowIndex].Cells["colResource"].Value as string;
-            string amount = dgvResources.Rows[e.RowIndex].Cells["colAmount"].Value as string;
+            string resourceName = dgvResources.Rows[e.RowIndex].Cells["Resource"].Value as string;
+            string amount = dgvResources.Rows[e.RowIndex].Cells["Amount"].Value as string;
 
             if (!string.IsNullOrEmpty(resourceName))
                 viewModel.SetResource(resourceName, amount ?? "0");
@@ -1073,7 +1073,7 @@ namespace OE2EmpireTracker
         {
             if (_isProgrammaticUpdate > 0) return;
             var col = dgvResources.Columns[e.ColumnIndex];
-            if (col.Name != "colAmount") return;
+            if (col.Name != "Amount") return;
             if (e.RowIndex < 0) return;
 
             string value = e.FormattedValue?.ToString();
@@ -1104,7 +1104,7 @@ namespace OE2EmpireTracker
         private void btnAddResource_Click(object sender, EventArgs e)
         {
             int rowIndex = dgvResources.Rows.Add();
-            dgvResources.Rows[rowIndex].Cells["colAmount"].Value = "0";
+            dgvResources.Rows[rowIndex].Cells["Amount"].Value = "0";
         }
 
         /// <summary>
@@ -1115,7 +1115,7 @@ namespace OE2EmpireTracker
             if (dgvResources.CurrentRow == null) return;
             int rowIndex = dgvResources.CurrentRow.Index;
 
-            string resourceName = dgvResources.Rows[rowIndex].Cells["colResource"].Value as string;
+            string resourceName = dgvResources.Rows[rowIndex].Cells["Resource"].Value as string;
             if (!string.IsNullOrEmpty(resourceName))
                 viewModel.Data.Resources.Remove(resourceName);
 
