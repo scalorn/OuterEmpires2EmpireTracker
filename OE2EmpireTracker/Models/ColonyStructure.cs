@@ -42,6 +42,13 @@ namespace OE2EmpireTracker.Models
         [JsonIgnore]
         public Dictionary<string, ColonyStructureStatus> Statuses { get; set; } = new Dictionary<string, ColonyStructureStatus>();
 
+        /// <summary>
+        /// Per-structure incremental delta for O(1) status recalculation.
+        /// Computed by ColonyStatusCalculator.ComputeStructureDelta() during CalculateBuilt().
+        /// </summary>
+        [JsonIgnore]
+        public StructureStatusDelta StatusDelta { get; set; }
+
         DateTime completion { get; set; }
         public string CurrentAttitude { get; set; } = string.Empty;
         public int ContentmentIndex { get; set; }

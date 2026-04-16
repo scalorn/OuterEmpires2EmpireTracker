@@ -38,17 +38,17 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
   - [x] 3.3 Write unit tests for StructureViewModels cache invalidation and GetAllBlueprints cache invalidation
     - _Requirements: 24.2, 24.6_
 
-- [ ] 4. Incremental status deltas in ColonyStatusCalculator
-  - [ ] 4.1 Add `StructureStatusDelta` class to Models; add `StatusDelta` property to ColonyStructure
+- [-] 4. Incremental status deltas in ColonyStatusCalculator
+  - [x] 4.1 Add `StructureStatusDelta` class to Models; add `StatusDelta` property to ColonyStructure
     - Fields: PowerProvided, PowerRequired, HabitationProvision, FoodProvision, EntertainmentProvided, WarehouseCapacity, WorkerCount, UnallocatedCount
     - _Requirements: 24.4_
-  - [ ] 4.2 Add blueprint cache per calculation pass in ColonyStatusCalculator.CalculateBuilt() to avoid repeated FindBlueprint calls
+  - [x] 4.2 Add blueprint cache per calculation pass in ColonyStatusCalculator.CalculateBuilt() to avoid repeated FindBlueprint calls
     - _Requirements: 24.3_
-  - [ ] 4.3 Implement `ComputeStructureDelta()` and `SumAllDeltas()` in ColonyStatusCalculator for full recalculation path
+  - [x] 4.3 Implement `ComputeStructureDelta()` and `SumAllDeltas()` in ColonyStatusCalculator for full recalculation path
     - _Requirements: 24.4_
-  - [ ] 4.4 Implement `RecalculateStructure()` for O(1) single-structure update: subtract old delta, compute new, add new
+  - [x] 4.4 Implement `RecalculateStructure()` for O(1) single-structure update: subtract old delta, compute new, add new
     - _Requirements: 24.4_
-  - [ ] 4.5 Write unit tests for incremental deltas: verify single-structure recalculation produces same totals as full recalculation
+  - [x] 4.5 Write unit tests for incremental deltas: verify single-structure recalculation produces same totals as full recalculation
     - _Requirements: 24.4_
 
 - [ ] 5. Checkpoint — Service-level fixes

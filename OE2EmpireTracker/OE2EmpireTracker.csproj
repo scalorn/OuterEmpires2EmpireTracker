@@ -235,6 +235,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Models\LockTracking.cs" />
+    <Compile Include="Models\StructureStatusDelta.cs" />
     <Compile Include="Models\ReferenceReport.cs" />
     <Compile Include="Models\WorkerDetail.cs" />
     <Compile Include="ViewModels\ColonyStructureViewModel.cs" />

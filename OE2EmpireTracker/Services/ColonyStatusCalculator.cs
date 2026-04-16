@@ -87,13 +87,14 @@ namespace OE2EmpireTracker.Services
             var workers = new ActualColonyStructureWorkers(colony);
             ColonyStructureStatus previousStatus = new ColonyStructureStatus();
             Dictionary<string, int> StructureCounts = new Dictionary<string, int>();
+            var blueprintPassCache = new Dictionary<string, Blueprint>();
 
             // Clear all existing worker locks -- will be rebuilt from current state
             ClearAllWorkerLocks();
 
             foreach (ColonyStructure structure in colony.Structures)
             {
-                Models.Blueprint FlatpackBlueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                Models.Blueprint FlatpackBlueprint = GetCachedBlueprint(structure.FlatpackBlueprintUUID, blueprintPassCache);
                 if (FlatpackBlueprint != null)
                 {
                     int count = 0;
@@ -118,10 +119,17 @@ namespace OE2EmpireTracker.Services
                 ColonyStructureStatus currentStatus = new ColonyStructureStatus();
                 CalculateBuilt(structure, previousStatus, currentStatus, workers, FlatpackBlueprint);
                 structure.Statuses[GameConstants.StatusActual] = currentStatus;
+
+                // Compute and store per-structure delta for incremental recalculation
+                structure.StatusDelta = ComputeStructureDelta(structure, FlatpackBlueprint);
+
                 previousStatus = currentStatus;
             }
             finalActualStatus = previousStatus;
             finalActualStatus.WarehouseRequired = CalculateWarehouseRequired();
+
+            // Cross-check: sum all deltas into finalActualStatus
+            SumAllDeltas();
 
             // Lock unallocated workers against the colony
             LockUnallocatedWorkers(previousStatus);
@@ -152,6 +160,185 @@ namespace OE2EmpireTracker.Services
                 total += item.Quantity * item.Volume;
             }
             return total;
+        }
+
+        // -----------------------------------------------------------------------
+        // Blueprint Cache
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Looks up a blueprint from the per-pass cache, falling back to playerContext.FindBlueprint()
+        /// and caching the result for subsequent calls within the same calculation pass.
+        /// </summary>
+        private Blueprint GetCachedBlueprint(string uuid, Dictionary<string, Blueprint> cache)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            Blueprint bp;
+            if (cache.TryGetValue(uuid, out bp))
+                return bp;
+
+            bp = playerContext.FindBlueprint(uuid);
+            if (bp != null)
+                cache[uuid] = bp;
+            return bp;
+        }
+
+        // -----------------------------------------------------------------------
+        // Incremental Delta Calculation
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Computes what a single structure contributes to colony totals.
+        /// Does not modify any colony state -- pure computation.
+        /// </summary>
+        public StructureStatusDelta ComputeStructureDelta(ColonyStructure structure, Blueprint bp)
+        {
+            var delta = new StructureStatusDelta();
+            if (bp == null) return delta;
+
+            bool built = false, staged = false, online = false;
+            structure.Properties.getBoolean(GameConstants.PropBuilt, false, out built);
+            structure.Properties.getBoolean(GameConstants.PropStaged, false, out staged);
+            structure.Properties.getBoolean(GameConstants.PropOnline, false, out online);
+
+            if (online)
+            {
+                delta.PowerProvided = GetBlueprintDecimal(bp, GameConstants.PropPowerProvided);
+                delta.PowerRequired = GetBlueprintDecimal(bp, GameConstants.PropPowerRequired);
+                delta.HabitationProvision = GetBlueprintDecimal(bp, GameConstants.PropHabitationProvision);
+                delta.EntertainmentProvided = GetBlueprintDecimal(bp, GameConstants.PropEntertainmentProvided);
+                delta.WarehouseCapacity = GetBlueprintDecimal(bp, GameConstants.PropWarehouseCapacity);
+            }
+
+            // Food accumulates regardless of online state
+            delta.FoodProvision = GetBlueprintDecimal(bp, GameConstants.PropFoodProvision);
+
+            // Count assigned workers
+            int assignedCount = 0;
+            foreach (var wt in WorkerDetail.WorkerTypes)
+            {
+                if (bp.Properties.ContainsKey(wt.PropertyKey))
+                {
+                    long count = 0;
+                    bp.Properties.getLong(wt.PropertyKey, 0, out count);
+                    for (int i = 1; i <= count; i++)
+                    {
+                        string key = wt.WorkerPrefix + i;
+                        bool assigned = false;
+                        structure.AssignedWorkers.getBoolean(key, false, out assigned);
+                        if (assigned)
+                            assignedCount++;
+                    }
+                }
+            }
+            delta.WorkerCount = assignedCount;
+
+            // Count unallocated workers for this structure
+            int unallocatedCount = 0;
+            foreach (var wt in WorkerDetail.WorkerTypes)
+            {
+                long unassignedCount = 0;
+                bp.Properties.getLong(wt.UnassignedPropertyKey, 0, out unassignedCount);
+                if (unassignedCount > 0)
+                    unallocatedCount++;
+            }
+            delta.UnallocatedCount = unallocatedCount;
+
+            return delta;
+        }
+
+        /// <summary>
+        /// Sums all per-structure StatusDelta values into finalActualStatus.
+        /// Called after CalculateBuilt() has computed deltas for every structure.
+        /// Also sets Habitation/Food/Entertainment Required from worker counts.
+        /// </summary>
+        public void SumAllDeltas()
+        {
+            decimal powerProvided = 0m, powerRequired = 0m;
+            decimal habitationProvision = 0m, foodProvision = 0m;
+            decimal entertainmentProvided = 0m, warehouseCapacity = 0m;
+            int totalWorkers = 0, totalUnallocated = 0;
+
+            foreach (var structure in colony.Structures)
+            {
+                var d = structure.StatusDelta;
+                if (d == null) continue;
+
+                powerProvided += d.PowerProvided;
+                powerRequired += d.PowerRequired;
+                habitationProvision += d.HabitationProvision;
+                foodProvision += d.FoodProvision;
+                entertainmentProvided += d.EntertainmentProvided;
+                warehouseCapacity += d.WarehouseCapacity;
+                totalWorkers += d.WorkerCount;
+                totalUnallocated += d.UnallocatedCount;
+            }
+
+            finalActualStatus.PowerProvided = powerProvided;
+            finalActualStatus.PowerRequired = powerRequired;
+            finalActualStatus.HabitationProvision = habitationProvision;
+            finalActualStatus.FoodProvision = foodProvision;
+            finalActualStatus.EntertainmentProvided = entertainmentProvided;
+            finalActualStatus.WarehouseCapacity = warehouseCapacity;
+
+            int totalPeople = totalWorkers + totalUnallocated;
+            finalActualStatus.HabitationRequired = totalPeople;
+            finalActualStatus.FoodRequired = totalPeople;
+            finalActualStatus.EntertainmentRequired = totalPeople * 2;
+            finalActualStatus.WarehouseRequired = CalculateWarehouseRequired();
+        }
+
+        /// <summary>
+        /// Performs an O(1) single-structure status update.
+        /// Subtracts the old delta, computes a new one, adds it, and re-locks resources.
+        /// </summary>
+        public void RecalculateStructure(ColonyStructure structure)
+        {
+            var oldDelta = structure.StatusDelta ?? new StructureStatusDelta();
+
+            Blueprint bp = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+            var newDelta = ComputeStructureDelta(structure, bp);
+            structure.StatusDelta = newDelta;
+
+            // Subtract old delta from totals
+            finalActualStatus.PowerProvided -= oldDelta.PowerProvided;
+            finalActualStatus.PowerRequired -= oldDelta.PowerRequired;
+            finalActualStatus.HabitationProvision -= oldDelta.HabitationProvision;
+            finalActualStatus.FoodProvision -= oldDelta.FoodProvision;
+            finalActualStatus.EntertainmentProvided -= oldDelta.EntertainmentProvided;
+            finalActualStatus.WarehouseCapacity -= oldDelta.WarehouseCapacity;
+
+            int oldPeople = oldDelta.WorkerCount + oldDelta.UnallocatedCount;
+            finalActualStatus.HabitationRequired -= oldPeople;
+            finalActualStatus.FoodRequired -= oldPeople;
+            finalActualStatus.EntertainmentRequired -= oldPeople * 2;
+
+            // Add new delta to totals
+            finalActualStatus.PowerProvided += newDelta.PowerProvided;
+            finalActualStatus.PowerRequired += newDelta.PowerRequired;
+            finalActualStatus.HabitationProvision += newDelta.HabitationProvision;
+            finalActualStatus.FoodProvision += newDelta.FoodProvision;
+            finalActualStatus.EntertainmentProvided += newDelta.EntertainmentProvided;
+            finalActualStatus.WarehouseCapacity += newDelta.WarehouseCapacity;
+
+            int newPeople = newDelta.WorkerCount + newDelta.UnallocatedCount;
+            finalActualStatus.HabitationRequired += newPeople;
+            finalActualStatus.FoodRequired += newPeople;
+            finalActualStatus.EntertainmentRequired += newPeople * 2;
+
+            // Re-lock resources for this structure only
+            if (colony.Locks != null && !string.IsNullOrEmpty(structure.UUID))
+            {
+                colony.Locks.ClearLocksForProcess(structure.UUID);
+                if (bp != null)
+                {
+                    LockAssignedWorkers(structure, bp);
+                    LockManufacturingResources(structure, bp);
+                    LockCommodityFactoryResources(structure);
+                    LockStagedFlatpack(structure);
+                }
+            }
         }
 
         // -----------------------------------------------------------------------
