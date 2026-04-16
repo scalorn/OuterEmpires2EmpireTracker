@@ -75,6 +75,8 @@ namespace OE2EmpireTracker
             this.txtFilterBaseBlueprint = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmbBaseBlueprint = new System.Windows.Forms.ComboBox();
             this.chkGlobalBlueprint = new System.Windows.Forms.CheckBox();
+            this.flpGlobalRow = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblGlobal = new System.Windows.Forms.Label();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.btnNew = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
@@ -120,6 +122,7 @@ namespace OE2EmpireTracker
             this.flpTechLevelRow.SuspendLayout();
             this.flpEvolutionRow.SuspendLayout();
             this.flpBaseBlueprintRow.SuspendLayout();
+            this.flpGlobalRow.SuspendLayout();
             this.flpCommands.SuspendLayout();
             this.tabDetailedData.SuspendLayout();
             this.tabPStatistics.SuspendLayout();
@@ -312,9 +315,8 @@ namespace OE2EmpireTracker
             this.colRefs.Width = 35;
             // flpBlueprintData
             this.flpBlueprintData.Controls.Add(this.flpIdentity);
-            this.flpBlueprintData.Controls.Add(this.flpCommands);
             this.flpBlueprintData.Controls.Add(this.tabDetailedData);
-            this.flpBlueprintData.Controls.Add(this.flpPricing);
+            this.flpBlueprintData.Controls.Add(this.flpCommands);
             this.flpBlueprintData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBlueprintData.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpBlueprintData.Location = new System.Drawing.Point(0, 0);
@@ -334,7 +336,8 @@ namespace OE2EmpireTracker
             this.flpIdentity.Controls.Add(this.flpTechLevelRow);
             this.flpIdentity.Controls.Add(this.flpEvolutionRow);
             this.flpIdentity.Controls.Add(this.flpBaseBlueprintRow);
-            this.flpIdentity.Controls.Add(this.chkGlobalBlueprint);
+            this.flpIdentity.Controls.Add(this.flpPricing);
+            this.flpIdentity.Controls.Add(this.flpGlobalRow);
             this.flpIdentity.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpIdentity.Location = new System.Drawing.Point(7, 7);
             this.flpIdentity.Name = "flpIdentity";
@@ -556,13 +559,30 @@ namespace OE2EmpireTracker
             this.cmbBaseBlueprint.TabIndex = 2;
             // chkGlobalBlueprint
             this.chkGlobalBlueprint.AutoSize = true;
-            this.chkGlobalBlueprint.Location = new System.Drawing.Point(3, 261);
-            this.chkGlobalBlueprint.Margin = new System.Windows.Forms.Padding(3);
+            this.chkGlobalBlueprint.Location = new System.Drawing.Point(106, 3);
+            this.chkGlobalBlueprint.Margin = new System.Windows.Forms.Padding(2);
             this.chkGlobalBlueprint.Name = "chkGlobalBlueprint";
-            this.chkGlobalBlueprint.Size = new System.Drawing.Size(100, 17);
-            this.chkGlobalBlueprint.TabIndex = 9;
-            this.chkGlobalBlueprint.Text = "Global Blueprint";
+            this.chkGlobalBlueprint.Size = new System.Drawing.Size(15, 14);
+            this.chkGlobalBlueprint.TabIndex = 1;
             this.chkGlobalBlueprint.UseVisualStyleBackColor = true;
+            // flpGlobalRow
+            this.flpGlobalRow.AutoSize = true;
+            this.flpGlobalRow.Controls.Add(this.lblGlobal);
+            this.flpGlobalRow.Controls.Add(this.chkGlobalBlueprint);
+            this.flpGlobalRow.Location = new System.Drawing.Point(2, 290);
+            this.flpGlobalRow.Margin = new System.Windows.Forms.Padding(2);
+            this.flpGlobalRow.Name = "flpGlobalRow";
+            this.flpGlobalRow.Size = new System.Drawing.Size(309, 20);
+            this.flpGlobalRow.TabIndex = 10;
+            // lblGlobal
+            this.lblGlobal.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblGlobal.Location = new System.Drawing.Point(2, 3);
+            this.lblGlobal.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblGlobal.Name = "lblGlobal";
+            this.lblGlobal.Size = new System.Drawing.Size(100, 17);
+            this.lblGlobal.TabIndex = 0;
+            this.lblGlobal.Text = "Global Blueprint";
+            this.lblGlobal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // flpCommands
             this.flpCommands.AutoSize = true;
             this.flpCommands.Controls.Add(this.btnNew);
@@ -812,6 +832,8 @@ namespace OE2EmpireTracker
             this.flpEvolutionRow.ResumeLayout(false);
             this.flpBaseBlueprintRow.ResumeLayout(false);
             this.flpBaseBlueprintRow.PerformLayout();
+            this.flpGlobalRow.ResumeLayout(false);
+            this.flpGlobalRow.PerformLayout();
             this.flpCommands.ResumeLayout(false);
             this.tabDetailedData.ResumeLayout(false);
             this.tabPStatistics.ResumeLayout(false);
@@ -883,6 +905,8 @@ namespace OE2EmpireTracker
         private OE2EmpireTracker.Controls.ValidatedTextBox txtFilterBaseBlueprint;
         private System.Windows.Forms.ComboBox cmbBaseBlueprint;
         private System.Windows.Forms.CheckBox chkGlobalBlueprint;
+        private System.Windows.Forms.FlowLayoutPanel flpGlobalRow;
+        private System.Windows.Forms.Label lblGlobal;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnSave;

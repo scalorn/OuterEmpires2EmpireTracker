@@ -1579,10 +1579,9 @@ namespace OE2EmpireTracker
 
         private void flpBlueprintData_Layout(object sender, LayoutEventArgs e)
         {
-            // TabControl fills remaining height after identity, commands, and pricing
+            // TabControl fills remaining height after identity and commands
             int usedHeight = flpIdentity.Height + flpIdentity.Margin.Top + flpIdentity.Margin.Bottom
-                           + flpCommands.Height + flpCommands.Margin.Top + flpCommands.Margin.Bottom
-                           + flpPricing.Height + flpPricing.Margin.Top + flpPricing.Margin.Bottom;
+                           + flpCommands.Height + flpCommands.Margin.Top + flpCommands.Margin.Bottom;
             int tabHeight = flpBlueprintData.ClientSize.Height - usedHeight
                           - tabDetailedData.Margin.Top - tabDetailedData.Margin.Bottom
                           - flpBlueprintData.Padding.Top - flpBlueprintData.Padding.Bottom;
