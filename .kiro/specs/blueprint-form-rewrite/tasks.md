@@ -64,11 +64,11 @@ Old form stays working throughout. Shared refactors (BlueprintImportHandler) use
 
 ## Phase 7: Acceptance Testing and Cutover
 
-- [ ] 7. Verify and cut over
+- [x] 7. Verify and cut over
   - [x] 7.1 Run full test suite — all existing tests must pass
   - [x] 7.2 Manual testing: import individual blueprint (stats + resources pages)
   - [x] 7.3 Manual testing: import market blueprints
   - [x] 7.4 Manual testing: evolution graph with chain resolution
   - [x] 7.5 Manual testing: filter persistence across app restart
   - [x] 7.6 Manual testing: verify old form still works identically
-  - [-] 7.7 Cutover: rename menu item, remove old form files (deferred until user approves)
+  - [x] 7.7 Cutover: rename menu item, remove old form files (deferred until user approves)
