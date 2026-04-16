@@ -953,6 +953,15 @@ namespace OE2EmpireTracker
                 dgvStatistics.Rows.Count, viewModel.Data.Name ?? "(null)",
                 viewModel.Data.Properties?.Count ?? 0);
 
+            // Dump actual bag keys for diagnosis
+            if (viewModel.Data.Properties?.Count > 0)
+            {
+                foreach (var kvp in viewModel.Data.Properties.Properties)
+                    Log.Info("  BAG KEY: [{0}] = '{1}' (len={2}, chars={3})",
+                        kvp.Key, kvp.Value, kvp.Key.Length,
+                        string.Join(",", kvp.Key.Select(c => ((int)c).ToString("X4"))));
+            }
+
             foreach (DataGridViewRow row in dgvStatistics.Rows)
             {
                 string property = row.Cells["Property"].Tag as string;
@@ -961,7 +970,7 @@ namespace OE2EmpireTracker
                 viewModel.GetProperty(property, "", out string value);
                 if (value == null) value = "";
 
-                Log.Debug("PopulateStatisticsValues: '{0}' = '{1}' (from bag: {2})",
+                Log.Info("PopulateStatisticsValues: '{0}' = '{1}' (from bag: {2})",
                     property, value, viewModel.Data.Properties.ContainsKey(property));
 
                 var propType = BlueprintPropertyValidation.GetPropertyType(property);

@@ -257,6 +257,11 @@ namespace OE2EmpireTracker.Services
                     {
                         existing.Properties.setProperty(kvp.Key, kvp.Value);
                     }
+                    else if (!existing.Properties.ContainsKey(kvp.Key))
+                    {
+                        // Protected property, but existing doesn't have it yet — write it
+                        existing.Properties.setProperty(kvp.Key, kvp.Value);
+                    }
                 }
             }
             else
