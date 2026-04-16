@@ -31,6 +31,18 @@ namespace OE2EmpireTracker.Tests.Models
             };
         }
 
+        private static Item MakeResource(string baseID, string purity, int quantity, string uuid = null)
+        {
+            return new Item
+            {
+                UUID = uuid ?? Guid.NewGuid().ToString(),
+                ItemType = IT.Resource,
+                BaseItemTypeID = baseID,
+                ResourcePurity = purity,
+                Quantity = quantity
+            };
+        }
+
         // -----------------------------------------------------------------------
         // AddItem / ContainsKey / Count
         // -----------------------------------------------------------------------
@@ -185,6 +197,218 @@ namespace OE2EmpireTracker.Tests.Models
                             locks.GetLockedQuantity(IT.Resource, "Iron");
 
             Assert.That(available, Is.EqualTo(100));
+        }
+
+        // -----------------------------------------------------------------------
+        // Secondary Index — FindByType
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void FindByType_ReturnsMatchingItems()
+        {
+            var iron1 = MakeItem(IT.Resource, "Iron", 10);
+            var iron2 = MakeItem(IT.Resource, "Iron", 20);
+            var gold = MakeItem(IT.Resource, "Gold", 5);
+            _bag.AddItem(iron1);
+            _bag.AddItem(iron2);
+            _bag.AddItem(gold);
+
+            var result = _bag.FindByType(IT.Resource, "Iron");
+
+            Assert.That(result.Count, Is.EqualTo(2));
+            Assert.That(result, Does.Contain(iron1));
+            Assert.That(result, Does.Contain(iron2));
+        }
+
+        [Test]
+        public void FindByType_NoMatch_ReturnsEmptyList()
+        {
+            _bag.AddItem(MakeItem(IT.Resource, "Gold", 5));
+            var result = _bag.FindByType(IT.Commodity, "Steel");
+            Assert.That(result, Is.Empty);
+        }
+
+        [Test]
+        public void FindByType_EmptyBag_ReturnsEmptyList()
+        {
+            var result = _bag.FindByType(IT.Resource, "Iron");
+            Assert.That(result, Is.Empty);
+        }
+
+        // -----------------------------------------------------------------------
+        // Secondary Index — CountByType with index
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void CountByType_UsesIndex_SumsCorrectly()
+        {
+            _bag.AddItem(MakeItem(IT.Commodity, "Steel", 10));
+            _bag.AddItem(MakeItem(IT.Commodity, "Steel", 25));
+            _bag.AddItem(MakeItem(IT.Commodity, "Copper Wire", 7));
+
+            Assert.That(_bag.CountByType(IT.Commodity, "Steel"), Is.EqualTo(35));
+            Assert.That(_bag.CountByType(IT.Commodity, "Copper Wire"), Is.EqualTo(7));
+        }
+
+        // -----------------------------------------------------------------------
+        // Secondary Index — FindResource
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void FindResource_ReturnsMatchingResourceAndPurity()
+        {
+            var ironHigh = MakeResource("Iron", "High", 10);
+            var ironLow = MakeResource("Iron", "Low", 20);
+            var goldHigh = MakeResource("Gold", "High", 5);
+            _bag.AddItem(ironHigh);
+            _bag.AddItem(ironLow);
+            _bag.AddItem(goldHigh);
+
+            var result = _bag.FindResource("Iron", "High");
+
+            Assert.That(result.Count, Is.EqualTo(1));
+            Assert.That(result[0], Is.SameAs(ironHigh));
+        }
+
+        [Test]
+        public void FindResource_MultipleStacksSamePurity_ReturnsAll()
+        {
+            var r1 = MakeResource("Iron", "High", 10);
+            var r2 = MakeResource("Iron", "High", 20);
+            _bag.AddItem(r1);
+            _bag.AddItem(r2);
+
+            var result = _bag.FindResource("Iron", "High");
+            Assert.That(result.Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void FindResource_NoMatch_ReturnsEmptyList()
+        {
+            _bag.AddItem(MakeResource("Iron", "High", 10));
+            var result = _bag.FindResource("Iron", "Low");
+            Assert.That(result, Is.Empty);
+        }
+
+        [Test]
+        public void FindResource_EmptyBag_ReturnsEmptyList()
+        {
+            var result = _bag.FindResource("Iron", "High");
+            Assert.That(result, Is.Empty);
+        }
+
+        // -----------------------------------------------------------------------
+        // Cache Invalidation — Add then query
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void FindByType_AfterAddItem_FindsNewItem()
+        {
+            // Prime the index
+            _bag.AddItem(MakeItem(IT.Resource, "Iron", 10));
+            _bag.FindByType(IT.Resource, "Iron");
+
+            // Add another item — index should be invalidated
+            var newItem = MakeItem(IT.Resource, "Iron", 20);
+            _bag.AddItem(newItem);
+
+            var result = _bag.FindByType(IT.Resource, "Iron");
+            Assert.That(result.Count, Is.EqualTo(2));
+            Assert.That(result, Does.Contain(newItem));
+        }
+
+        [Test]
+        public void FindResource_AfterAddItem_FindsNewItem()
+        {
+            _bag.AddItem(MakeResource("Iron", "High", 10));
+            _bag.FindResource("Iron", "High");
+
+            var newItem = MakeResource("Iron", "High", 5);
+            _bag.AddItem(newItem);
+
+            var result = _bag.FindResource("Iron", "High");
+            Assert.That(result.Count, Is.EqualTo(2));
+            Assert.That(result, Does.Contain(newItem));
+        }
+
+        // -----------------------------------------------------------------------
+        // Cache Invalidation — Remove then query
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void FindByType_AfterRemove_NoLongerFindsRemovedItem()
+        {
+            var item = MakeItem(IT.Resource, "Iron", 10, "uuid-rem");
+            _bag.AddItem(item);
+            _bag.FindByType(IT.Resource, "Iron"); // prime index
+
+            _bag.Remove("uuid-rem");
+
+            var result = _bag.FindByType(IT.Resource, "Iron");
+            Assert.That(result, Is.Empty);
+        }
+
+        [Test]
+        public void FindResource_AfterRemove_NoLongerFindsRemovedItem()
+        {
+            var item = MakeResource("Iron", "High", 10);
+            item.UUID = "uuid-rem-res";
+            _bag.AddItem(item);
+            _bag.FindResource("Iron", "High"); // prime index
+
+            _bag.Remove("uuid-rem-res");
+
+            var result = _bag.FindResource("Iron", "High");
+            Assert.That(result, Is.Empty);
+        }
+
+        [Test]
+        public void CountByType_AfterRemove_ReflectsRemoval()
+        {
+            var item = MakeItem(IT.Resource, "Iron", 50, "uuid-cnt");
+            _bag.AddItem(item);
+            _bag.CountByType(IT.Resource, "Iron"); // prime index
+
+            _bag.Remove("uuid-cnt");
+
+            Assert.That(_bag.CountByType(IT.Resource, "Iron"), Is.EqualTo(0));
+        }
+
+        // -----------------------------------------------------------------------
+        // Cache Invalidation — Clear then query
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void FindByType_AfterClear_ReturnsEmpty()
+        {
+            _bag.AddItem(MakeItem(IT.Resource, "Iron", 10));
+            _bag.FindByType(IT.Resource, "Iron"); // prime index
+
+            _bag.Clear();
+
+            Assert.That(_bag.FindByType(IT.Resource, "Iron"), Is.Empty);
+        }
+
+        [Test]
+        public void CountByType_AfterClear_ReturnsZero()
+        {
+            _bag.AddItem(MakeItem(IT.Resource, "Iron", 50));
+            _bag.CountByType(IT.Resource, "Iron"); // prime index
+
+            _bag.Clear();
+
+            Assert.That(_bag.CountByType(IT.Resource, "Iron"), Is.EqualTo(0));
+        }
+
+        [Test]
+        public void FindResource_AfterClear_ReturnsEmpty()
+        {
+            _bag.AddItem(MakeResource("Iron", "High", 10));
+            _bag.FindResource("Iron", "High"); // prime index
+
+            _bag.Clear();
+
+            Assert.That(_bag.FindResource("Iron", "High"), Is.Empty);
         }
     }
 }

@@ -15,6 +15,12 @@ namespace OE2EmpireTracker.Models
     {
         public Dictionary<string, Item> Items { get; set; }
 
+        // Secondary index: (ItemType, BaseItemTypeID) -> list of items
+        private Dictionary<(ItemType.ItemTypeEnum, string), List<Item>> _typeIndex;
+
+        // Secondary index: (ItemType, BaseItemTypeID, Purity) -> list of items (Resources only)
+        private Dictionary<(ItemType.ItemTypeEnum, string, string), List<Item>> _resourceIndex;
+
         public ItemBag()
         {
             Items = new Dictionary<string, Item>();
@@ -28,11 +34,46 @@ namespace OE2EmpireTracker.Models
         public void AddItem(Item item)
         {
             Items.Add(item.UUID, item);
+            _typeIndex = null;
+            _resourceIndex = null;
         }
 
         public int Count()
         {
             return Items.Count;
+        }
+
+        private void EnsureTypeIndex()
+        {
+            if (_typeIndex != null) return;
+            _typeIndex = new Dictionary<(ItemType.ItemTypeEnum, string), List<Item>>();
+            foreach (var kvp in Items)
+            {
+                var key = (kvp.Value.ItemType, kvp.Value.BaseItemTypeID ?? "");
+                if (!_typeIndex.TryGetValue(key, out var list))
+                {
+                    list = new List<Item>();
+                    _typeIndex[key] = list;
+                }
+                list.Add(kvp.Value);
+            }
+        }
+
+        private void EnsureResourceIndex()
+        {
+            if (_resourceIndex != null) return;
+            _resourceIndex = new Dictionary<(ItemType.ItemTypeEnum, string, string), List<Item>>();
+            foreach (var kvp in Items)
+            {
+                if (kvp.Value.ItemType != ItemType.ItemTypeEnum.Resource) continue;
+                var key = (kvp.Value.ItemType, kvp.Value.BaseItemTypeID ?? "", kvp.Value.ResourcePurity ?? "");
+                if (!_resourceIndex.TryGetValue(key, out var list))
+                {
+                    list = new List<Item>();
+                    _resourceIndex[key] = list;
+                }
+                list.Add(kvp.Value);
+            }
         }
 
         /// <summary>
@@ -41,28 +82,23 @@ namespace OE2EmpireTracker.Models
         /// </summary>
         public int CountByType(Models.ItemType.ItemTypeEnum itemType, string baseItemTypeID)
         {
-            return Items.Values
-                .Where(i => i.ItemType == itemType &&
-                            string.Equals(i.BaseItemTypeID, baseItemTypeID, StringComparison.Ordinal))
-                .Sum(i => i.Quantity);
+            EnsureTypeIndex();
+            var key = (itemType, baseItemTypeID ?? "");
+            return _typeIndex.TryGetValue(key, out var list) ? list.Sum(i => i.Quantity) : 0;
         }
+
         public List<Item> FindByType(Models.ItemType.ItemTypeEnum itemType, string baseItemTypeID)
         {
-            List<Item> results = new List<Item>();
-            return Items.Values
-                .Where(i => i.ItemType == itemType &&
-                            string.Equals(i.BaseItemTypeID, baseItemTypeID, StringComparison.Ordinal))
-                .ToList<Item>();
+            EnsureTypeIndex();
+            var key = (itemType, baseItemTypeID ?? "");
+            return _typeIndex.TryGetValue(key, out var list) ? new List<Item>(list) : new List<Item>();
         }
 
         public List<Item> FindResource(string resource, string purity)
         {
-            List<Item> results = new List<Item>();
-            return Items.Values
-                .Where(i => i.ItemType == Models.ItemType.ItemTypeEnum.Resource &&
-                            string.Equals(i.BaseItemTypeID, resource, StringComparison.Ordinal) &&
-                            string.Equals(i.ResourcePurity, purity, StringComparison.Ordinal))
-                .ToList<Item>();
+            EnsureResourceIndex();
+            var key = (ItemType.ItemTypeEnum.Resource, resource ?? "", purity ?? "");
+            return _resourceIndex.TryGetValue(key, out var list) ? new List<Item>(list) : new List<Item>();
         }
 
         public bool Remove(string uuid)
@@ -73,6 +109,8 @@ namespace OE2EmpireTracker.Models
             {
                 present = true;
                 Items.Remove(uuid);
+                _typeIndex = null;
+                _resourceIndex = null;
             }
 
             return present;
@@ -80,6 +118,8 @@ namespace OE2EmpireTracker.Models
         public void Clear()
         {
             Items.Clear();
+            _typeIndex = null;
+            _resourceIndex = null;
         }
     }
     public class ItemBagJSONConverter : JsonConverter<ItemBag>
