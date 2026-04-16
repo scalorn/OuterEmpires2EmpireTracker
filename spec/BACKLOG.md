@@ -174,6 +174,20 @@ Build a custom `TreeDataGridView` control extending DataGridView that supports e
 
 **Decision point:** Try master-detail first during Iteration 4 (Stations). If vertical space is a problem in practice, build this control as a replacement. Design the control with depth support from the start so nesting is incremental if it comes.
 
+### BL-072: BuildOrderOptimizer — Incremental Simulation
+**Dependencies:** None
+**Status: New**
+
+BuildOrderOptimizer.SimulateAll() is O(n) per call — it iterates all placed structures and calls FindBlueprint for each. It's called O(n) times during optimization (multiple times per primary structure: Step A deficit check, Step B look-ahead, Step C final check, plus FixDeficits loops up to 50 iterations). For a colony with 60 structures this produces ~18,000 FindBlueprint calls and O(n²) overall simulation cost.
+
+The FindBlueprint dictionary cache (colony-form-rewrite Req 24.1) fixes the inner loop cost, turning 18,000 linear scans into dictionary lookups. But SimulateAll itself remains O(n) per call × O(n) calls = O(n²).
+
+**Proposed fix:** Replace SimulateAll with incremental delta tracking. Maintain a running ColonyStructureStatus total. When a structure is added to the result list, compute its delta and add it to the total — O(1) per placement instead of re-simulating the entire list. SimulateOneMore already does single-structure simulation; the optimizer just needs to accumulate rather than recompute from scratch.
+
+**Additional issues found:**
+- `GetAllBlueprints()` allocates a new merged list (700+ entries) on every call. Called by FindBlueprintByType, CreateStructure, CreateStructureByType. Now cached via Req 24.6.
+- `TakeFromPool` and `PlaceFromPool` call FindBlueprint per pool candidate — linear scan of pool × FindBlueprint per element. Pool is typically small (< 20) so not critical, but benefits from the dictionary cache.
+
 
 ---
 ### BL-045: GitHub MCP Integration
