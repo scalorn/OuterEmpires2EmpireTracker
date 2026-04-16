@@ -354,14 +354,26 @@ Each structure control is a compact UserControl with:
 | rtbStatus: Actual: P:0/100 H:0/50 ... (colored RTF)     |
 |            Ideal:  P:0/100 H:0/50 ...                    |
 | flpWorkers: [BC1] [WC1] [Spec1] [Support-BC]            |
-| flpSelection: [Filter] [Combo] [Start] [Done]           |
+| flpSelection: [Filter] [Primary Combo] [Start] [Done]   |
+| flpSubSelection: [Filter] [Secondary Combo]              |
 | flpManufacturing: [Qty] [StageResources]                 |
 | flpTimer: [Countdown] [Progress Status]                  |
 | flpStructureCommands: [Up] [Down] [Delete] [Build]       |
 +----------------------------------------------------------+
 ```
 
-Visibility of panels is controlled by blueprint type and structure state. Mining rigs show survey+resource combos. Refineries show resource combo. Research labs show blueprint combo. Manufactories show blueprint combo + quantity + stage checkbox. Commodity factories show commodity combo + quantity + stage checkbox.
+Panel visibility is controlled by blueprint type and structure state:
+
+| Blueprint Type     | flpSelection (primary)   | flpSubSelection (secondary) | flpManufacturing     |
+|--------------------|--------------------------|-----------------------------|-----------------------|
+| MiningRig          | Survey combo + filter    | Resource combo + filter     | hidden                |
+| Refinery           | Resource combo + filter  | hidden                      | hidden                |
+| ResearchLab        | Blueprint combo + filter | hidden                      | hidden                |
+| Manufactory        | Blueprint combo + filter | hidden                      | Qty + StageResources  |
+| CommodityFactory   | Commodity combo + filter | hidden                      | Qty + StageResources  |
+| Other (no process) | hidden                   | hidden                      | hidden                |
+
+Mining flow: user selects a survey in flpSelection → flpSubSelection becomes visible with resources from that survey → user selects a resource → clicks Start. When MiningSurvey or MiningSurveyResource changes, MiningLeftOvers resets to zero.
 
 ### 10. Event Lifecycle
 
