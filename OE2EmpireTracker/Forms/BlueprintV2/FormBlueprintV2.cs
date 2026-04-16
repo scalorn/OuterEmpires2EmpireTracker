@@ -627,21 +627,26 @@ namespace OE2EmpireTracker
             var sb = new StringBuilder();
             sb.AppendLine($"Created: {result.CreatedCount}  Updated: {result.UpdatedCount}  Skipped: {result.SkippedCount}");
             sb.AppendLine();
+            int shown = 0;
             foreach (var entry in result.Entries)
             {
+                if (shown >= 15)
+                {
+                    sb.AppendLine($"  ... and {result.Entries.Count - 15} more");
+                    break;
+                }
                 string key = $"{entry.Name} Ev{entry.Evolution} {entry.BluePrintType} C{entry.Class}";
                 if (entry.Action == ImportAction.Skipped)
                     sb.AppendLine($"  [{entry.Storage ?? "?"}] SKIP  {key} -- {entry.SkipReason}");
                 else
                     sb.AppendLine($"  [{entry.Storage}] {entry.Action}  {key}");
+                shown++;
             }
 
             if (unknownPropWarnings.Count > 0)
             {
                 sb.AppendLine();
-                sb.AppendLine($"Unknown properties ({unknownPropWarnings.Count}):");
-                foreach (var w in unknownPropWarnings)
-                    sb.AppendLine(w);
+                sb.AppendLine($"Unknown properties detected ({unknownPropWarnings.Count}) — details in the log.");
             }
 
             MessageBox.Show(sb.ToString(), "Import Market Results",
