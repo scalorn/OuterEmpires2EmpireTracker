@@ -48,7 +48,7 @@ Old form stays working throughout. Shared refactors (BlueprintImportHandler) use
 
 ## Phase 5: Evolution Graph and Pricing
 
-- [ ] 5. Add evolution graph and pricing tabs
+- [x] 5. Add evolution graph and pricing tabs
   - [x] 5.1 Evolution graph tab with chart, checkbox panel, no-changes label
   - [x] 5.2 Graph refresh on selection change and BlueprintDataChanged
   - [x] 5.3 Pricing plan combo with computed price display
@@ -57,7 +57,7 @@ Old form stays working throughout. Shared refactors (BlueprintImportHandler) use
 ## Phase 6: Window State and Events
 
 - [ ] 6. Implement state persistence and event lifecycle
-  - [ ] 6.1 WindowStateHelper save/restore for position, grids, filters, combos
+  - [-] 6.1 WindowStateHelper save/restore for position, grids, filters, combos
   - [ ] 6.2 Subscribe to CurrentPlayerChanged, BlueprintDataChanged, PricingDataChanged
   - [ ] 6.3 Unsubscribe in OnFormClosed with IsDisposed guards
   - [ ] 6.4 ProgrammaticUpdateGuard on all programmatic UI updates

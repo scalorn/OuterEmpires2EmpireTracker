@@ -3,6 +3,7 @@ using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Forms.Blueprint;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
+using OE2EmpireTracker.Persistence;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Services.Migration;
 using OE2EmpireTracker.ViewModels;
@@ -1523,6 +1524,7 @@ namespace OE2EmpireTracker
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.BlueprintDataChanged -= OnBlueprintDataChanged;
             playerContext.PricingDataChanged -= OnPricingDataChanged;

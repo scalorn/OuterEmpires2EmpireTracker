@@ -147,6 +147,14 @@ namespace OE2EmpireTracker.Persistence
                         SelectedIndex = combo.SelectedIndex
                     };
                 }
+                else if (control is SplitContainer splitter && !string.IsNullOrEmpty(splitter.Name))
+                {
+                    formState.SplitterDistances[splitter.Name] = splitter.SplitterDistance;
+                }
+                else if (control is TabControl tab && !string.IsNullOrEmpty(tab.Name))
+                {
+                    formState.TabSelectedIndices[tab.Name] = tab.SelectedIndex;
+                }
 
                 // Recurse into child controls
                 if (control.HasChildren)
@@ -239,6 +247,31 @@ namespace OE2EmpireTracker.Persistence
                 else if (control is ComboBox combo && !string.IsNullOrEmpty(combo.Name))
                 {
                     RestoreComboState(combo, formState);
+                }
+                else if (control is SplitContainer splitter && !string.IsNullOrEmpty(splitter.Name))
+                {
+                    if (formState.SplitterDistances != null &&
+                        formState.SplitterDistances.ContainsKey(splitter.Name))
+                    {
+                        int saved = formState.SplitterDistances[splitter.Name];
+                        if (saved >= splitter.Panel1MinSize &&
+                            saved <= splitter.Width - splitter.Panel2MinSize)
+                        {
+                            splitter.SplitterDistance = saved;
+                        }
+                    }
+                }
+                else if (control is TabControl tab && !string.IsNullOrEmpty(tab.Name))
+                {
+                    if (formState.TabSelectedIndices != null &&
+                        formState.TabSelectedIndices.ContainsKey(tab.Name))
+                    {
+                        int saved = formState.TabSelectedIndices[tab.Name];
+                        if (saved >= 0 && saved < tab.TabCount)
+                        {
+                            tab.SelectedIndex = saved;
+                        }
+                    }
                 }
 
                 // Recurse into child controls

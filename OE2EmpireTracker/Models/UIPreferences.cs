@@ -144,6 +144,12 @@ namespace OE2EmpireTracker.Models
 
         public Dictionary<string, ListViewState> ListViews { get; set; }
             = new Dictionary<string, ListViewState>();
+
+        public Dictionary<string, int> SplitterDistances { get; set; }
+            = new Dictionary<string, int>();
+
+        public Dictionary<string, int> TabSelectedIndices { get; set; }
+            = new Dictionary<string, int>();
     }
 
     public class ComboState
