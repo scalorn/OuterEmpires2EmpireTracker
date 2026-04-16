@@ -51,8 +51,8 @@ Old form stays working throughout. Shared refactors (BlueprintImportHandler) use
 - [ ] 5. Add evolution graph and pricing tabs
   - [x] 5.1 Evolution graph tab with chart, checkbox panel, no-changes label
   - [x] 5.2 Graph refresh on selection change and BlueprintDataChanged
-  - [ ] 5.3 Pricing plan combo with computed price display
-  - [ ] 5.4 Pricing refresh on PricingDataChanged
+  - [x] 5.3 Pricing plan combo with computed price display
+  - [x] 5.4 Pricing refresh on PricingDataChanged
 
 ## Phase 6: Window State and Events
 

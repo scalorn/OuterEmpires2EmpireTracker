@@ -131,6 +131,12 @@ namespace OE2EmpireTracker
             btnAddResource.Click += btnAddResource_Click;
             btnDeleteResource.Click += btnDeleteResource_Click;
 
+            // Configure pricing plan combo
+            cmbPricingPlan.DisplayMember = "Name";
+            cmbPricingPlan.ValueMember = "UUID";
+            PopulatePricingPlanCombo();
+            cmbPricingPlan.SelectedIndexChanged += cmbPricingPlan_SelectedIndexChanged;
+
             // Subscribe to data events
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.BlueprintDataChanged += OnBlueprintDataChanged;
@@ -1285,6 +1291,100 @@ namespace OE2EmpireTracker
         }
 
         // -----------------------------------------------------------------------
+        // Pricing Plan (Tasks 5.3–5.4)
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Populates the pricing plan combo with the current player's pricing plans.
+        /// Preserves the previous selection if it still exists.
+        /// </summary>
+        private void PopulatePricingPlanCombo()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            string selectedUUID = cmbPricingPlan.SelectedValue as string;
+            cmbPricingPlan.DataSource = null;
+
+            var plans = playerContext.GetCurrentPlayerPricingPlans();
+            var items = new List<object>();
+            items.Add(new { Name = "(none)", UUID = "" });
+            foreach (var p in plans.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase))
+                items.Add(new { Name = p.Name, UUID = p.UUID });
+
+            cmbPricingPlan.DisplayMember = "Name";
+            cmbPricingPlan.ValueMember = "UUID";
+            cmbPricingPlan.DataSource = items;
+
+            if (!string.IsNullOrEmpty(selectedUUID) && items.Any(i => ((dynamic)i).UUID == selectedUUID))
+                cmbPricingPlan.SelectedValue = selectedUUID;
+            else
+                cmbPricingPlan.SelectedIndex = 0;
+        }
+
+        /// <summary>
+        /// Handles pricing plan selection changes — recomputes the displayed price.
+        /// </summary>
+        private void cmbPricingPlan_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            UpdateCalculatedPrice();
+        }
+
+        /// <summary>
+        /// Computes the blueprint price using PriceCalculator and displays it in lblComputedPrice.
+        /// Shows an asterisk (*) indicator when the price is incomplete (missing resource prices).
+        /// </summary>
+        private void UpdateCalculatedPrice()
+        {
+            if (viewModel.Data.UUID == null || viewModel.Data.Resources == null || viewModel.Data.Resources.Count == 0)
+            {
+                lblComputedPrice.Text = "";
+                return;
+            }
+
+            string planUUID = cmbPricingPlan.SelectedValue as string;
+            if (string.IsNullOrEmpty(planUUID))
+            {
+                lblComputedPrice.Text = "";
+                return;
+            }
+
+            var plan = playerContext.PricingPlanList.FirstOrDefault(p => p.UUID == planUUID);
+            if (plan == null)
+            {
+                lblComputedPrice.Text = "";
+                return;
+            }
+
+            // Parse manufacturing hours from blueprint properties
+            decimal mfgHours = 0m;
+            if (viewModel.Data.Properties != null)
+            {
+                viewModel.Data.Properties.getString("Manufacture Run Time", null, out string mfgTimeStr);
+                if (!string.IsNullOrEmpty(mfgTimeStr))
+                {
+                    decimal seconds = EvolutionChainService.ParseTimeToSeconds(mfgTimeStr);
+                    mfgHours = seconds / 3600m;
+                }
+            }
+
+            var result = PriceCalculator.ComputeBlueprintPrice(plan, viewModel.Data, mfgHours);
+            string priceText = result.Price.ToString("N2");
+            if (!result.IsComplete)
+                priceText += " *";
+            lblComputedPrice.Text = priceText;
+        }
+
+        /// <summary>
+        /// Refreshes pricing data: repopulates the plan combo and recomputes the price.
+        /// Called on PricingDataChanged events.
+        /// </summary>
+        private void RefreshPricing()
+        {
+            PopulatePricingPlanCombo();
+            UpdateCalculatedPrice();
+        }
+
+        // -----------------------------------------------------------------------
         // Form Population / Clear
         // -----------------------------------------------------------------------
 
@@ -1327,6 +1427,10 @@ namespace OE2EmpireTracker
             // Statistics and Resources grids
             RefreshStatisticsGrid();
             PopulateResourcesGrid();
+
+            // Pricing
+            PopulatePricingPlanCombo();
+            UpdateCalculatedPrice();
         }
 
         /// <summary>
@@ -1401,6 +1505,7 @@ namespace OE2EmpireTracker
             lvwBlueprints.Items.Clear();
             viewModel.Reset();
             ClearForm();
+            PopulatePricingPlanCombo();
             RefreshBlueprintList();
         }
 
@@ -1413,7 +1518,7 @@ namespace OE2EmpireTracker
                 catch (ObjectDisposedException) { }
                 return;
             }
-            // Pricing refresh will be implemented in Phase 5
+            RefreshPricing();
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
