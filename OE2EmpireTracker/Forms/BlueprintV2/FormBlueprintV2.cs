@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -86,6 +87,7 @@ namespace OE2EmpireTracker
             btnSave.Click += btnSave_Click;
             btnDelete.Click += btnDelete_Click;
             btnImport.Click += btnImport_Click;
+            btnImportMarket.Click += btnImportMarket_Click;
 
             // Wire statistics grid events
             dgvStatistics.CellValueChanged += dgvStatistics_CellValueChanged;
@@ -510,6 +512,117 @@ namespace OE2EmpireTracker
                 MessageBox.Show("Failed to import blueprint: " + ex.Message,
                     "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        // -----------------------------------------------------------------------
+        // Market Import (Task 4.2)
+        // -----------------------------------------------------------------------
+
+        private void btnImportMarket_Click(object sender, EventArgs e)
+        {
+            if (!Clipboard.ContainsText(TextDataFormat.Html))
+            {
+                MessageBox.Show("No market HTML found on clipboard.",
+                    "Import Market", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            string clipboardData = Clipboard.GetText(TextDataFormat.Html);
+            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(clipboardData);
+            if (string.IsNullOrEmpty(html) || html.StartsWith("ERROR:"))
+            {
+                MessageBox.Show("No market HTML found on clipboard.",
+                    "Import Market", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Validate clipboard contains market listing data
+            var detected = ClipboardContentDetector.Detect(html);
+            if (detected != ClipboardContentDetector.ContentType.MarketListing &&
+                detected != ClipboardContentDetector.ContentType.Unknown)
+            {
+                string found = ClipboardContentDetector.GetDescription(detected);
+                MessageBox.Show($"The clipboard contains {found}, not market listing data.\n\nCopy the market page from the game browser first.",
+                    "Wrong Content", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Parse market HTML
+            var scanner = new BlueprintScanner();
+            var parsed = scanner.ProcessMarketHtml(html);
+            if (parsed == null || parsed.Count == 0)
+            {
+                MessageBox.Show("No blueprint listings found in clipboard data.",
+                    "Import Market", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Import
+            var result = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
+
+            // Scan all imported blueprints for unknown properties
+            var unknownPropWarnings = new List<string>();
+            foreach (var entry in result.Entries)
+            {
+                if (entry.Action == ImportAction.Skipped || string.IsNullOrEmpty(entry.UUID))
+                    continue;
+
+                Blueprint bp = playerContext.FindBlueprint(entry.UUID)
+                    ?? empireContext.GlobalBlueprintList.FirstOrDefault(b => b.UUID == entry.UUID);
+                if (bp?.Properties == null || bp.Properties.Count == 0)
+                    continue;
+
+                BlueprintType bt = empireContext.FindBlueprintType(bp.BluePrintType);
+                if (bt?.Properties == null)
+                    continue;
+
+                var knownProps = new HashSet<string>(bt.Properties, StringComparer.OrdinalIgnoreCase);
+                knownProps.Add("_IconPosition");
+
+                foreach (var propKey in bp.Properties.Properties.Keys)
+                {
+                    if (!knownProps.Contains(propKey))
+                    {
+                        unknownPropWarnings.Add($"  {bp.Name}: '{propKey}' = '{bp.Properties.Properties[propKey]}'");
+                        Log.Warn("Market import: unknown property '{0}' on {1} ({2})", propKey, bp.Name, bt.Name);
+                    }
+                }
+            }
+
+            // Build summary
+            var sb = new StringBuilder();
+            sb.AppendLine($"Created: {result.CreatedCount}  Updated: {result.UpdatedCount}  Skipped: {result.SkippedCount}");
+            sb.AppendLine();
+            foreach (var entry in result.Entries)
+            {
+                string key = $"{entry.Name} Ev{entry.Evolution} {entry.BluePrintType} C{entry.Class}";
+                if (entry.Action == ImportAction.Skipped)
+                    sb.AppendLine($"  [{entry.Storage ?? "?"}] SKIP  {key} -- {entry.SkipReason}");
+                else
+                    sb.AppendLine($"  [{entry.Storage}] {entry.Action}  {key}");
+            }
+
+            if (unknownPropWarnings.Count > 0)
+            {
+                sb.AppendLine();
+                sb.AppendLine($"Unknown properties ({unknownPropWarnings.Count}):");
+                foreach (var w in unknownPropWarnings)
+                    sb.AppendLine(w);
+            }
+
+            MessageBox.Show(sb.ToString(), "Import Market Results",
+                MessageBoxButtons.OK, unknownPropWarnings.Count > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+
+            // Notify if player blueprints changed
+            bool playerChanged = result.Entries.Any(e2 =>
+                e2.Storage == "Player" && (e2.Action == ImportAction.Created || e2.Action == ImportAction.Updated));
+            if (playerChanged)
+            {
+                playerContext.OnBlueprintDataChanged(null);
+            }
+
+            // Refresh the blueprint list
+            RefreshBlueprintList();
         }
 
         // -----------------------------------------------------------------------
