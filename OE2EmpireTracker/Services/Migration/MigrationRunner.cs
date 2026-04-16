@@ -83,19 +83,27 @@ namespace OE2EmpireTracker.Services.Migration
             Log.Info("All migrations complete, DataVersion set to {0}", CurrentVersion);
         }
 
+        /// <summary>
+        /// When true, suppresses MessageBox dialogs (e.g. during unit tests).
+        /// </summary>
+        public static bool SuppressUI { get; set; }
+
         private static void HandleFailure(string phase, Exception ex)
         {
             MigrationFailed = true;
             Log.Error(ex, "Migration failed during {0}", phase);
-            MessageBox.Show(
-                $"Data migration failed during {phase}.\n\n" +
-                $"{ex.Message}\n\n" +
-                "Your data files have NOT been modified. " +
-                "Saving is disabled to prevent data corruption. " +
-                "Please report this error.",
-                "Migration Error",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
+            if (!SuppressUI)
+            {
+                MessageBox.Show(
+                    $"Data migration failed during {phase}.\n\n" +
+                    $"{ex.Message}\n\n" +
+                    "Your data files have NOT been modified. " +
+                    "Saving is disabled to prevent data corruption. " +
+                    "Please report this error.",
+                    "Migration Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
@@ -105,6 +113,7 @@ namespace OE2EmpireTracker.Services.Migration
         public static void ResetFailureState()
         {
             MigrationFailed = false;
+            SuppressUI = false;
         }
     }
 }

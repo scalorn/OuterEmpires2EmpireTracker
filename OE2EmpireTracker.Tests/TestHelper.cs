@@ -1,6 +1,7 @@
 using System.IO;
 using NUnit.Framework;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.Services.Migration;
 
 namespace OE2EmpireTracker.Tests
 {
@@ -38,10 +39,11 @@ namespace OE2EmpireTracker.Tests
         }
 
         /// <summary>
-        /// Sets both file paths to the test copies.
+        /// Sets both file paths to the test copies and suppresses migration UI.
         /// </summary>
         public static void SetAllFilePaths()
         {
+            MigrationRunner.SuppressUI = true;
             SetEmpireFilePath();
             SetPlayerFilePath();
         }

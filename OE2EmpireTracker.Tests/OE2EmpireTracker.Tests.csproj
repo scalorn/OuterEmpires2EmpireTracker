@@ -356,6 +356,7 @@
     <Compile Include="Forms\EvolutionGraphRenderingTests.cs" />
     <Compile Include="Models\SerializationBackwardCompatibilityTests.cs" />
     <Compile Include="TestHelper.cs" />
+    <Compile Include="GlobalSetup.cs" />
     <None Include="app.config" />
     <None Include="packages.config" />
     <Content Include="TestData\BaselineData.json">
