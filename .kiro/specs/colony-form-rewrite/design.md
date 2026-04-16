@@ -329,16 +329,16 @@ All panels defined in Designer.cs. The form layout:
 |  txtColonyFilter      |  flpIdentity              |
 |  lvwColonies          |    Planet, Colony, System  |
 |                       |  tabDetailedData          |
+|                       |    Administration          |
+|                       |      rtbAdminReport        |
 |                       |    Structures              |
 |                       |      flpStatus (top)       |
 |                       |      lvwStructureTypes     |
 |                       |      flpStructures (scroll)|
-|                       |    Warehousing             |
-|                       |      dgvItems              |
 |                       |    Workers                 |
 |                       |      dgvCommodityRequests  |
-|                       |    Administration          |
-|                       |      rtbAdminReport        |
+|                       |    Warehousing             |
+|                       |      dgvItems              |
 |                       |  flpCommands               |
 |                       |    New|Save|Delete|Import  |
 +--------------------------------------------------+
