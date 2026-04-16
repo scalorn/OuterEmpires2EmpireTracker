@@ -15,6 +15,7 @@ namespace OE2EmpireTracker.ViewModels
         private readonly Colony _colony;
         private readonly PlayerContext _playerContext;
         private readonly ColonyStatusCalculator _calculator;
+        private List<ColonyStructureViewModel> _cachedStructureVMs;
 
         public Colony Data => _colony;
 
@@ -49,11 +50,28 @@ namespace OE2EmpireTracker.ViewModels
         // Structure management
         // -----------------------------------------------------------------------
 
-        public IReadOnlyList<ColonyStructureViewModel> StructureViewModels =>
-            _colony.Structures
-                .Select(s => new ColonyStructureViewModel(s, _playerContext))
-                .ToList()
-                .AsReadOnly();
+        public IReadOnlyList<ColonyStructureViewModel> StructureViewModels
+        {
+            get
+            {
+                if (_cachedStructureVMs == null)
+                {
+                    _cachedStructureVMs = _colony.Structures
+                        .Select(s => new ColonyStructureViewModel(s, _playerContext))
+                        .ToList();
+                }
+                return _cachedStructureVMs.AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Clears the cached StructureViewModels so the next access rebuilds from the colony's Structures list.
+        /// Call after adding, removing, or reordering structures.
+        /// </summary>
+        public void InvalidateStructureViewModels()
+        {
+            _cachedStructureVMs = null;
+        }
 
         public ColonyStructureViewModel AddStructure(string flatpackBlueprintUUID)
         {
@@ -67,6 +85,7 @@ namespace OE2EmpireTracker.ViewModels
                 displaySequence = existingCount + 1
             };
             _colony.Structures.Add(structure);
+            InvalidateStructureViewModels();
             return new ColonyStructureViewModel(structure, _playerContext);
         }
 

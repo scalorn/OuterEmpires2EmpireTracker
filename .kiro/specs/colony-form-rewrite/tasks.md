@@ -30,12 +30,12 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
   - [x] 2.3 Write unit tests for ItemBag secondary index: FindByType/CountByType/FindResource return correct results after add/remove
     - _Requirements: 24.5_
 
-- [ ] 3. Cache StructureViewModels and GetAllBlueprints
-  - [ ] 3.1 Add `_cachedStructureVMs` to ColonyViewModel; invalidate on AddStructure/RemoveStructure/reorder
+- [x] 3. Cache StructureViewModels and GetAllBlueprints
+  - [x] 3.1 Add `_cachedStructureVMs` to ColonyViewModel; invalidate on AddStructure/RemoveStructure/reorder
     - _Requirements: 24.2_
-  - [ ] 3.2 Add `_allBlueprintsCache` to PlayerContext.GetAllBlueprints(); invalidate when either blueprint list changes
+  - [x] 3.2 Add `_allBlueprintsCache` to PlayerContext.GetAllBlueprints(); invalidate when either blueprint list changes
     - _Requirements: 24.6_
-  - [ ] 3.3 Write unit tests for StructureViewModels cache invalidation and GetAllBlueprints cache invalidation
+  - [x] 3.3 Write unit tests for StructureViewModels cache invalidation and GetAllBlueprints cache invalidation
     - _Requirements: 24.2, 24.6_
 
 - [ ] 4. Incremental status deltas in ColonyStatusCalculator

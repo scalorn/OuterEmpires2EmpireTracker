@@ -25,6 +25,7 @@ namespace OE2EmpireTracker.Services
         private Dictionary<string, Blueprint> _blueprintCache;
         private Dictionary<string, Survey> _surveyCache;
         private Dictionary<string, Colony> _colonyCache;
+        private List<Blueprint> _allBlueprintsCache;
 
         /// <summary>
         /// UUID of the currently selected player. Forms filter data by this value.
@@ -291,6 +292,7 @@ namespace OE2EmpireTracker.Services
         public void InvalidateBlueprintCache()
         {
             _blueprintCache = null;
+            InvalidateAllBlueprintsCache();
         }
 
         public void InitSurveys(PlayerRoot playerRoot)
@@ -533,14 +535,26 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Returns all blueprints: current player's + global.
         /// Use this instead of accessing BlueprintList directly.
+        /// Cached; invalidated when either blueprint list changes.
         /// </summary>
         public List<Blueprint> GetAllBlueprints()
         {
-            var all = new List<Blueprint>(BlueprintList);
-            var ec = EmpireContext.GetInstance();
-            if (ec?.GlobalBlueprintList != null)
-                all.AddRange(ec.GlobalBlueprintList);
-            return all;
+            if (_allBlueprintsCache == null)
+            {
+                _allBlueprintsCache = new List<Blueprint>(BlueprintList);
+                var ec = EmpireContext.GetInstance();
+                if (ec?.GlobalBlueprintList != null)
+                    _allBlueprintsCache.AddRange(ec.GlobalBlueprintList);
+            }
+            return _allBlueprintsCache;
+        }
+
+        /// <summary>
+        /// Clears the cached merged blueprint list so the next GetAllBlueprints() call rebuilds it.
+        /// </summary>
+        public void InvalidateAllBlueprintsCache()
+        {
+            _allBlueprintsCache = null;
         }
 
         /// <summary>
