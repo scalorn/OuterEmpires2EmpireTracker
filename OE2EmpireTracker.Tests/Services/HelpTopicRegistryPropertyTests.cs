@@ -18,7 +18,7 @@ namespace OE2EmpireTracker.Tests.Services
         private static readonly Dictionary<string, string> ExpectedMappings = new Dictionary<string, string>
         {
             { "FormColony", "colonies.md" },
-            { "FormBlueprint", "blueprints.md" },
+            { "FormBlueprintV2", "blueprints.md" },
             { "FormSurvey", "surveys.md" },
             { "FormDeliveryRoute", "delivery-routes.md" },
             { "FormDeliveryExecution", "delivery-routes.md" },

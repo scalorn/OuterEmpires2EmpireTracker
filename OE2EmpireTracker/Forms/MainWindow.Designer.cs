@@ -40,7 +40,6 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addSurveyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addBlueprintToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addColonyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -155,7 +154,6 @@
             this.deliveryExecutionToolStripMenuItem,
             this.deliveryRoutesToolStripMenuItem,
             this.pricingPlansToolStripMenuItem,
-            this.addBlueprintToolStripMenuItem,
             this.addBlueprintV2ToolStripMenuItem,
             this.addColonyToolStripMenuItem,
             this.managePlayerProfiles,
@@ -171,18 +169,11 @@
             this.addSurveyToolStripMenuItem.Text = "Manage Surveys";
             this.addSurveyToolStripMenuItem.Click += new System.EventHandler(this.addSurveyToolStripMenuItem_Click);
             // 
-            // addBlueprintToolStripMenuItem
-            // 
-            this.addBlueprintToolStripMenuItem.Name = "addBlueprintToolStripMenuItem";
-            this.addBlueprintToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
-            this.addBlueprintToolStripMenuItem.Text = "Manage Blueprints";
-            this.addBlueprintToolStripMenuItem.Click += new System.EventHandler(this.addBlueprintToolStripMenuItem_Click);
-            // 
             // addBlueprintV2ToolStripMenuItem
             // 
             this.addBlueprintV2ToolStripMenuItem.Name = "addBlueprintV2ToolStripMenuItem";
             this.addBlueprintV2ToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
-            this.addBlueprintV2ToolStripMenuItem.Text = "Manage Blueprints V2";
+            this.addBlueprintV2ToolStripMenuItem.Text = "Manage Blueprints";
             this.addBlueprintV2ToolStripMenuItem.Click += new System.EventHandler(this.addBlueprintV2ToolStripMenuItem_Click);
             // 
             // addColonyToolStripMenuItem
@@ -365,7 +356,6 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addSurveyToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addBlueprintToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addBlueprintV2ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem contentsToolStripMenuItem;

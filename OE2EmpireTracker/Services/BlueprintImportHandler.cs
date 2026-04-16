@@ -9,7 +9,7 @@ namespace OE2EmpireTracker.Services
     /// <summary>
     /// Handles individual blueprint import routing: classify the import type,
     /// find the target blueprint (selected match, dedup match, or new),
-    /// and merge + persist. Shared by both FormBlueprint and FormBlueprintV2.
+    /// and merge + persist. Used by FormBlueprintV2.
     /// </summary>
     public static class BlueprintImportHandler
     {

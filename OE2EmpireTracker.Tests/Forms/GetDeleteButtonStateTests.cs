@@ -12,7 +12,7 @@ namespace OE2EmpireTracker.Tests.Forms
         {
             var report = ReferenceReport.Empty;
 
-            var (enabled, text) = FormBlueprint.GetDeleteButtonState(report);
+            var (enabled, text) = FormBlueprintV2.GetDeleteButtonState(report);
 
             Assert.That(enabled, Is.True);
             Assert.That(text, Is.EqualTo("Delete"));
@@ -24,7 +24,7 @@ namespace OE2EmpireTracker.Tests.Forms
         {
             var report = new ReferenceReport(1, 0, 2, 0, 0);
 
-            var (enabled, text) = FormBlueprint.GetDeleteButtonState(report);
+            var (enabled, text) = FormBlueprintV2.GetDeleteButtonState(report);
 
             Assert.That(enabled, Is.False);
             Assert.That(text, Is.EqualTo("In Use (3)"));
@@ -34,7 +34,7 @@ namespace OE2EmpireTracker.Tests.Forms
         [Test]
         public void NullReport_ReturnsDisabled_Delete()
         {
-            var (enabled, text) = FormBlueprint.GetDeleteButtonState(null);
+            var (enabled, text) = FormBlueprintV2.GetDeleteButtonState(null);
 
             Assert.That(enabled, Is.False);
             Assert.That(text, Is.EqualTo("Delete"));

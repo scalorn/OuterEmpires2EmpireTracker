@@ -11,7 +11,7 @@ namespace OE2EmpireTracker.Services
         private static readonly Dictionary<string, string> FormTopicMap = new Dictionary<string, string>
         {
             { "FormColony", "colonies.md" },
-            { "FormBlueprint", "blueprints.md" },
+            { "FormBlueprintV2", "blueprints.md" },
             { "FormSurvey", "surveys.md" },
             { "FormDeliveryRoute", "delivery-routes.md" },
             { "FormDeliveryExecution", "delivery-routes.md" },

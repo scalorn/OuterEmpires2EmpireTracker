@@ -123,11 +123,6 @@ namespace OE2EmpireTracker
             return form;
         }
 
-        private void addBlueprintToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenMdiChild<FormBlueprint>();
-        }
-
         private void addBlueprintV2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<FormBlueprintV2>();
@@ -188,7 +183,6 @@ namespace OE2EmpireTracker
             bool hasPlayer = playerContext.PlayerProfileList.Count > 0;
 
             // Manage menu items (except Player Profiles)
-            addBlueprintToolStripMenuItem.Enabled = hasPlayer;
             addBlueprintV2ToolStripMenuItem.Enabled = hasPlayer;
             addColonyToolStripMenuItem.Enabled = hasPlayer;
             addSurveyToolStripMenuItem.Enabled = hasPlayer;
@@ -559,7 +553,7 @@ namespace OE2EmpireTracker
 
         private static readonly Dictionary<string, Action<MainWindow, int>> FormOpeners = new Dictionary<string, Action<MainWindow, int>>
         {
-            { "FormBlueprint", (w, n) => w.OpenMdiChildWithNumber<FormBlueprint>(n) },
+            { "FormBlueprint", (w, n) => w.OpenMdiChildWithNumber<FormBlueprintV2>(n) },
             { "FormBlueprintV2", (w, n) => w.OpenMdiChildWithNumber<FormBlueprintV2>(n) },
             { "FormColony", (w, n) => w.OpenMdiChildWithNumber<FormColony>(n) },
             { "FormSurvey", (w, n) => w.OpenMdiChildWithNumber<FormSurvey>(n) },

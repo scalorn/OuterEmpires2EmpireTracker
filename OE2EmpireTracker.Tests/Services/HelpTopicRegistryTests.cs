@@ -42,7 +42,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Each of the 9 form-type mappings returns the correct documentation file.
         /// </summary>
         [TestCase("FormColony", "colonies.md")]
-        [TestCase("FormBlueprint", "blueprints.md")]
+        [TestCase("FormBlueprintV2", "blueprints.md")]
         [TestCase("FormSurvey", "surveys.md")]
         [TestCase("FormDeliveryRoute", "delivery-routes.md")]
         [TestCase("FormDeliveryExecution", "delivery-routes.md")]

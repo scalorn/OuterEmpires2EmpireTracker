@@ -117,7 +117,7 @@ namespace OE2EmpireTracker.Tests.Forms
 
             return Prop.ForAll(propertyNamesGen.ToArbitrary(), propertyNames =>
             {
-                var palette = FormBlueprint.WongPalette;
+                var palette = FormBlueprintV2.WongPalette;
 
                 // Assign colors using the same index-based logic as RefreshEvolutionGraph
                 var assignedColors = new Color[propertyNames.Length];

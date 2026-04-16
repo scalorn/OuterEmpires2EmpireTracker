@@ -253,12 +253,6 @@
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Resource.cs" />
     <Compile Include="Forms\Blueprint\BlueprintScanner.cs" />
-    <Compile Include="Forms\Blueprint\FormBlueprint.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Blueprint\FormBlueprint.Designer.cs">
-      <DependentUpon>FormBlueprint.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\BlueprintV2\FormBlueprintV2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -362,9 +356,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\FilteredTextComboSet.resx">
       <DependentUpon>FilteredTextComboSet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Blueprint\FormBlueprint.resx">
-      <DependentUpon>FormBlueprint.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Colony\ColonyStructure.resx">
       <DependentUpon>ColonyStructure.cs</DependentUpon>
