@@ -5,8 +5,8 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
 
 ## Phase 1: Service-Level Performance Fixes (shared refactors)
 
-- [ ] 1. Add dictionary caches for FindBlueprint/FindSurvey/FindColony
-  - [ ] 1.1 Add `Dictionary<string, Blueprint> _blueprintCache` to PlayerContext with lazy build and O(1) lookup in FindBlueprint(); invalidate on add/remove/UUID change
+- [-] 1. Add dictionary caches for FindBlueprint/FindSurvey/FindColony
+  - [-] 1.1 Add `Dictionary<string, Blueprint> _blueprintCache` to PlayerContext with lazy build and O(1) lookup in FindBlueprint(); invalidate on add/remove/UUID change
     - PlayerContext.FindBlueprint() checks local cache first, then delegates to EmpireContext
     - _Requirements: 24.1_
   - [ ] 1.2 Add `Dictionary<string, Blueprint>` cache to EmpireContext.FindGlobalBlueprint() with same pattern
@@ -15,7 +15,7 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
     - _Requirements: 24.1_
   - [ ] 1.4 Add `Dictionary<string, Colony>` cache to PlayerContext.FindColony() with invalidation
     - _Requirements: 24.1_
-  - [ ]* 1.5 Write unit tests for dictionary caches: verify O(1) lookup, cache invalidation on add/remove, null/empty UUID handling
+  - [ ] 1.5 Write unit tests for dictionary caches: verify O(1) lookup, cache invalidation on add/remove, null/empty UUID handling
     - Test FindBlueprint returns correct blueprint after cache built
     - Test cache is invalidated when BlueprintList changes
     - Test FindBlueprint falls back to EmpireContext global cache
@@ -27,7 +27,7 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
     - _Requirements: 24.5_
   - [ ] 2.2 Add compound key `(ItemType, BaseItemTypeID, Purity)` lookup for FindResource
     - _Requirements: 24.5_
-  - [ ]* 2.3 Write unit tests for ItemBag secondary index: FindByType/CountByType/FindResource return correct results after add/remove
+  - [ ] 2.3 Write unit tests for ItemBag secondary index: FindByType/CountByType/FindResource return correct results after add/remove
     - _Requirements: 24.5_
 
 - [ ] 3. Cache StructureViewModels and GetAllBlueprints
@@ -35,7 +35,7 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
     - _Requirements: 24.2_
   - [ ] 3.2 Add `_allBlueprintsCache` to PlayerContext.GetAllBlueprints(); invalidate when either blueprint list changes
     - _Requirements: 24.6_
-  - [ ]* 3.3 Write unit tests for StructureViewModels cache invalidation and GetAllBlueprints cache invalidation
+  - [ ] 3.3 Write unit tests for StructureViewModels cache invalidation and GetAllBlueprints cache invalidation
     - _Requirements: 24.2, 24.6_
 
 - [ ] 4. Incremental status deltas in ColonyStatusCalculator
@@ -48,7 +48,7 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
     - _Requirements: 24.4_
   - [ ] 4.4 Implement `RecalculateStructure()` for O(1) single-structure update: subtract old delta, compute new, add new
     - _Requirements: 24.4_
-  - [ ]* 4.5 Write unit tests for incremental deltas: verify single-structure recalculation produces same totals as full recalculation
+  - [ ] 4.5 Write unit tests for incremental deltas: verify single-structure recalculation produces same totals as full recalculation
     - _Requirements: 24.4_
 
 - [ ] 5. Checkpoint — Service-level fixes

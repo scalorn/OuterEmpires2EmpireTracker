@@ -22,6 +22,10 @@ namespace OE2EmpireTracker.Services
 
         private string _currentPlayerUUID = string.Empty;
 
+        private Dictionary<string, Blueprint> _blueprintCache;
+        private Dictionary<string, Survey> _surveyCache;
+        private Dictionary<string, Colony> _colonyCache;
+
         /// <summary>
         /// UUID of the currently selected player. Forms filter data by this value.
         /// </summary>
@@ -256,19 +260,37 @@ namespace OE2EmpireTracker.Services
             List<Blueprint> list = new List<Blueprint>(playerRoot.Blueprint);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
             BlueprintList = new BindingList<Blueprint>(list);
+            BlueprintList.ListChanged += (s, e) => InvalidateBlueprintCache();
             // Initialize the BindingSource component
             BindingSourceBlueprint = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
             BindingSourceBlueprint.DataSource = BlueprintList;
+            InvalidateBlueprintCache();
         }
         public Blueprint FindBlueprint(string id)
         {
-            var match = BlueprintList.FirstOrDefault(item => item.UUID == id);
-            if (match != null) return match;
+            if (string.IsNullOrEmpty(id)) return null;
+
+            if (_blueprintCache == null)
+            {
+                _blueprintCache = new Dictionary<string, Blueprint>();
+                foreach (var bp in BlueprintList)
+                {
+                    if (bp.UUID != null && !_blueprintCache.ContainsKey(bp.UUID))
+                        _blueprintCache[bp.UUID] = bp;
+                }
+            }
+
+            if (_blueprintCache.TryGetValue(id, out var match))
+                return match;
 
             // Fall back to global blueprints
-            var ec = EmpireContext.GetInstance();
-            return ec?.FindGlobalBlueprint(id);
+            return EmpireContext.GetInstance()?.FindGlobalBlueprint(id);
+        }
+
+        public void InvalidateBlueprintCache()
+        {
+            _blueprintCache = null;
         }
 
         public void InitSurveys(PlayerRoot playerRoot)
@@ -277,21 +299,36 @@ namespace OE2EmpireTracker.Services
             list = list.OrderBy(p => p.PlanetName).ThenBy(p => p.DateTime).ToList();
 
             SurveyList = new BindingList<Survey>(list);
+            SurveyList.ListChanged += (s, e) => InvalidateSurveyCache();
             // Initialize the BindingSource component
             BindingSourceSurvey = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
             BindingSourceSurvey.DataSource = SurveyList;
+            InvalidateSurveyCache();
         }
         public Survey FindSurvey(string id)
         {
-            var filteredList = SurveyList
-                .Where(item => item.UUID == id)
-                .ToList();
-            if (filteredList.Count == 1)
+            if (string.IsNullOrEmpty(id)) return null;
+
+            if (_surveyCache == null)
             {
-                return filteredList[0];
+                _surveyCache = new Dictionary<string, Survey>();
+                foreach (var s in SurveyList)
+                {
+                    if (s.UUID != null && !_surveyCache.ContainsKey(s.UUID))
+                        _surveyCache[s.UUID] = s;
+                }
             }
+
+            if (_surveyCache.TryGetValue(id, out var match))
+                return match;
+
             return null;
+        }
+
+        public void InvalidateSurveyCache()
+        {
+            _surveyCache = null;
         }
 
         public void initColonies(PlayerRoot playerRoot)
@@ -300,10 +337,12 @@ namespace OE2EmpireTracker.Services
             list = list.OrderBy(p => p.PlanetName).ToList();
 
             ColonyList = new BindingList<Colony>(list);
+            ColonyList.ListChanged += (s, e) => InvalidateColonyCache();
             // Initialize the BindingSource component
             BindingSourceColony = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
             BindingSourceColony.DataSource = ColonyList;
+            InvalidateColonyCache();
         }
 
         public void InitDeliveryRoutes(PlayerRoot playerRoot)
@@ -329,14 +368,27 @@ namespace OE2EmpireTracker.Services
 
         public Colony FindColony(string id)
         {
-            var filteredList = ColonyList
-                .Where(item => item.UUID == id)
-                .ToList();
-            if (filteredList.Count == 1)
+            if (string.IsNullOrEmpty(id)) return null;
+
+            if (_colonyCache == null)
             {
-                return filteredList[0];
+                _colonyCache = new Dictionary<string, Colony>();
+                foreach (var c in ColonyList)
+                {
+                    if (c.UUID != null && !_colonyCache.ContainsKey(c.UUID))
+                        _colonyCache[c.UUID] = c;
+                }
             }
+
+            if (_colonyCache.TryGetValue(id, out var match))
+                return match;
+
             return null;
+        }
+
+        public void InvalidateColonyCache()
+        {
+            _colonyCache = null;
         }
 
         // -----------------------------------------------------------------------
@@ -411,6 +463,10 @@ namespace OE2EmpireTracker.Services
 
             if (removed > 0)
                 Log.Info("Cascade deleted {0} items for player {1}", removed, playerUUID);
+
+            InvalidateBlueprintCache();
+            InvalidateSurveyCache();
+            InvalidateColonyCache();
         }
 
         /// <summary>

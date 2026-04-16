@@ -47,6 +47,7 @@ namespace OE2EmpireTracker.Services
         public int DataVersion { get; set; } = 0;
         public BaselineGameConstants GameConstants { get; set; }
         public BindingList<Blueprint> GlobalBlueprintList;
+        private Dictionary<string, Blueprint> _globalBlueprintCache;
         public List<Commodity> CommodityList;
 
         public static EmpireContext GetInstance()
@@ -314,15 +315,38 @@ namespace OE2EmpireTracker.Services
             var list = new List<Blueprint>(baselineRoot.Blueprint ?? new Blueprint[0]);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
             GlobalBlueprintList = new BindingList<Blueprint>(list);
+            GlobalBlueprintList.ListChanged += (s, e) => InvalidateGlobalBlueprintCache();
+            InvalidateGlobalBlueprintCache();
             Log.Info("Loaded {0} global blueprints", GlobalBlueprintList.Count);
         }
 
         /// <summary>
-        /// Searches global blueprints by UUID.
+        /// Searches global blueprints by UUID using a dictionary cache for O(1) lookup.
         /// </summary>
         public Blueprint FindGlobalBlueprint(string id)
         {
-            return GlobalBlueprintList?.FirstOrDefault(b => b.UUID == id);
+            if (string.IsNullOrEmpty(id)) return null;
+            if (GlobalBlueprintList == null) return null;
+
+            if (_globalBlueprintCache == null)
+            {
+                _globalBlueprintCache = new Dictionary<string, Blueprint>();
+                foreach (var bp in GlobalBlueprintList)
+                {
+                    if (bp.UUID != null && !_globalBlueprintCache.ContainsKey(bp.UUID))
+                        _globalBlueprintCache[bp.UUID] = bp;
+                }
+            }
+
+            if (_globalBlueprintCache.TryGetValue(id, out var match))
+                return match;
+
+            return null;
+        }
+
+        public void InvalidateGlobalBlueprintCache()
+        {
+            _globalBlueprintCache = null;
         }
 
     }

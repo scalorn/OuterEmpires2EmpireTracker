@@ -233,6 +233,7 @@
     <Compile Include="Services\ColonyStatusCalculatorTests.cs" />
     <Compile Include="Services\BuildOrderOptimizerTests.cs" />
     <Compile Include="Services\ContextFilePathTests.cs" />
+    <Compile Include="Services\DictionaryCacheTests.cs" />
     <Compile Include="Models\DeliveryPlanTests.cs" />
     <Compile Include="Services\DeliveryPlanViewModelTests.cs" />
     <Compile Include="Services\DeliveryFulfillmentTests.cs" />
