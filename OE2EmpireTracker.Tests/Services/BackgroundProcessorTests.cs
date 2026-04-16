@@ -188,12 +188,20 @@ namespace OE2EmpireTracker.Tests.Services
             var rng = new Random(seed);
             const int iterations = 100;
 
+            // Set up EmpireContext with test data so FindBlueprint() doesn't trigger
+            // a default-path load with migration side effects
+            TestHelper.SetEmpireFilePath();
+
             // Set up PlayerContext with a temp file path so WriteContext() doesn't fail
             string tempPath = System.IO.Path.Combine(
                 System.IO.Path.GetTempPath(),
                 "BackgroundProcessorTest_Property3_" + Guid.NewGuid().ToString("N") + ".json");
             PlayerContext.FilePath = tempPath;
             var pc = PlayerContext.GetInstance();
+
+            // Force EmpireContext initialization now (before adding test colonies)
+            // so migration doesn't reassign colony UUIDs during ProcessColony()
+            var ec = EmpireContext.GetInstance();
 
             try
             {
@@ -275,12 +283,20 @@ namespace OE2EmpireTracker.Tests.Services
             var rng = new Random(seed);
             const int iterations = 100;
 
+            // Set up EmpireContext with test data so FindBlueprint() doesn't trigger
+            // a default-path load with migration side effects
+            TestHelper.SetEmpireFilePath();
+
             // Set up PlayerContext with a temp file path so WriteContext() doesn't fail
             string tempPath = System.IO.Path.Combine(
                 System.IO.Path.GetTempPath(),
                 "BackgroundProcessorTest_Property4_" + Guid.NewGuid().ToString("N") + ".json");
             PlayerContext.FilePath = tempPath;
             var pc = PlayerContext.GetInstance();
+
+            // Force EmpireContext initialization now (before adding test colonies)
+            // so migration doesn't reassign colony UUIDs during ProcessColony()
+            var ec = EmpireContext.GetInstance();
 
             try
             {
@@ -368,11 +384,18 @@ namespace OE2EmpireTracker.Tests.Services
             var rng = new Random(seed);
             const int iterations = 100;
 
+            // Set up EmpireContext with test data so FindBlueprint() doesn't trigger
+            // a default-path load with migration side effects
+            TestHelper.SetEmpireFilePath();
+
             string tempPath = System.IO.Path.Combine(
                 System.IO.Path.GetTempPath(),
                 "BackgroundProcessorTest_Property5_" + Guid.NewGuid().ToString("N") + ".json");
             PlayerContext.FilePath = tempPath;
             var pc = PlayerContext.GetInstance();
+
+            // Force EmpireContext initialization now (before adding test colonies)
+            var ec = EmpireContext.GetInstance();
 
             try
             {
@@ -440,11 +463,18 @@ namespace OE2EmpireTracker.Tests.Services
             var rng = new Random(seed);
             const int iterations = 100;
 
+            // Set up EmpireContext with test data so FindBlueprint() doesn't trigger
+            // a default-path load with migration side effects
+            TestHelper.SetEmpireFilePath();
+
             string tempPath = System.IO.Path.Combine(
                 System.IO.Path.GetTempPath(),
                 "BackgroundProcessorTest_Property6_" + Guid.NewGuid().ToString("N") + ".json");
             PlayerContext.FilePath = tempPath;
             var pc = PlayerContext.GetInstance();
+
+            // Force EmpireContext initialization now (before adding test colonies)
+            var ec = EmpireContext.GetInstance();
 
             try
             {
