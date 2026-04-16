@@ -360,7 +360,7 @@ Rewrite FormColony and the ColonyStructure user control from scratch to produce 
 
 #### Service-Level Fixes (shared improvements)
 
-1. PlayerContext.FindBlueprint() and EmpireContext.FindGlobalBlueprint() SHALL use a Dictionary<string, Blueprint> lookup cache instead of O(n) linear scans via FirstOrDefault. The cache SHALL be invalidated when blueprints are added, removed, or have their UUID changed (e.g., during migration or import).
+1. PlayerContext.FindBlueprint() and EmpireContext.FindGlobalBlueprint() SHALL each maintain a Dictionary<string, Blueprint> lookup cache indexed by UUID, replacing the current O(n) linear scans via FirstOrDefault. PlayerContext.FindBlueprint() SHALL check its local cache first, then delegate to EmpireContext's cached lookup for the global fallback. Each cache SHALL be invalidated when blueprints are added, removed, or have their UUID changed (e.g., during migration or import).
 2. ColonyViewModel.StructureViewModels SHALL cache the list of ColonyStructureViewModel objects instead of creating new objects on every property access. The cache SHALL be invalidated when structures are added, removed, or reordered.
 3. ColonyStatusCalculator.CalculateBuilt() SHALL cache the blueprint lookup results for the duration of a single calculation pass, avoiding repeated FindBlueprint calls for the same structure across multiple methods (LockAssignedWorkers, LockManufacturingResources, etc.).
 4. THE Colony_Structure_Control SHALL accept a pre-resolved Blueprint reference from the caller (passed during UpdateData) instead of calling FindBlueprint independently, eliminating redundant lookups.
