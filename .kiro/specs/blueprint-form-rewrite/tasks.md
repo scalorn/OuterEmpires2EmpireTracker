@@ -56,16 +56,16 @@ Old form stays working throughout. Shared refactors (BlueprintImportHandler) use
 
 ## Phase 6: Window State and Events
 
-- [ ] 6. Implement state persistence and event lifecycle
-  - [-] 6.1 WindowStateHelper save/restore for position, grids, filters, combos
-  - [ ] 6.2 Subscribe to CurrentPlayerChanged, BlueprintDataChanged, PricingDataChanged
-  - [ ] 6.3 Unsubscribe in OnFormClosed with IsDisposed guards
-  - [ ] 6.4 ProgrammaticUpdateGuard on all programmatic UI updates
+- [x] 6. Implement state persistence and event lifecycle
+  - [x] 6.1 WindowStateHelper save/restore for position, grids, filters, combos
+  - [x] 6.2 Subscribe to CurrentPlayerChanged, BlueprintDataChanged, PricingDataChanged
+  - [x] 6.3 Unsubscribe in OnFormClosed with IsDisposed guards
+  - [x] 6.4 ProgrammaticUpdateGuard on all programmatic UI updates
 
 ## Phase 7: Acceptance Testing and Cutover
 
 - [ ] 7. Verify and cut over
-  - [ ] 7.1 Run full test suite — all existing tests must pass
+  - [x] 7.1 Run full test suite — all existing tests must pass
   - [ ] 7.2 Manual testing: import individual blueprint (stats + resources pages)
   - [ ] 7.3 Manual testing: import market blueprints
   - [ ] 7.4 Manual testing: evolution graph with chain resolution
