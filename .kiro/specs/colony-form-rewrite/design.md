@@ -354,9 +354,9 @@ Each structure control is a compact UserControl with:
 | rtbStatus: Actual: P:0/100 H:0/50 ... (colored RTF)     |
 |            Ideal:  P:0/100 H:0/50 ...                    |
 | flpWorkers: [BC1] [WC1] [Spec1] [Support-BC]            |
-| flpSelection: [Filter] [Primary Combo] [Start] [Done]   |
-| flpSubSelection: [Filter] [Secondary Combo]              |
-| flpManufacturing: [Qty] [StageResources]                 |
+| flpSurveySelection: [Filter] [Survey Combo]              |
+| flpSelection: [Filter] [Primary Combo] [Qty] [StageRes] |
+| flpManufacturing: [Start] [Done]                         |
 | flpTimer: [Countdown] [Progress Status]                  |
 | flpStructureCommands: [Up] [Down] [Delete] [Build]       |
 +----------------------------------------------------------+
@@ -364,16 +364,16 @@ Each structure control is a compact UserControl with:
 
 Panel visibility is controlled by blueprint type and structure state:
 
-| Blueprint Type     | flpSelection (primary)   | flpSubSelection (secondary) | flpManufacturing     |
-|--------------------|--------------------------|-----------------------------|-----------------------|
-| MiningRig          | Survey combo + filter    | Resource combo + filter     | hidden                |
-| Refinery           | Resource combo + filter  | hidden                      | hidden                |
-| ResearchLab        | Blueprint combo + filter | hidden                      | hidden                |
-| Manufactory        | Blueprint combo + filter | hidden                      | Qty + StageResources  |
-| CommodityFactory   | Commodity combo + filter | hidden                      | Qty + StageResources  |
-| Other (no process) | hidden                   | hidden                      | hidden                |
+| Blueprint Type     | flpSurveySelection       | flpSelection (primary)   | Qty/StageRes visible | flpManufacturing |
+|--------------------|--------------------------|--------------------------|----------------------|------------------|
+| MiningRig          | Survey combo + filter    | Resource combo + filter  | hidden               | Start/Done       |
+| Refinery           | hidden                   | Resource combo + filter  | hidden               | Start/Done       |
+| ResearchLab        | hidden                   | Blueprint combo + filter | hidden               | Start/Done       |
+| Manufactory        | hidden                   | Blueprint combo + filter | Qty + StageResources | Start/Done       |
+| CommodityFactory   | hidden                   | Commodity combo + filter | Qty + StageResources | Start/Done       |
+| Other (no process) | hidden                   | hidden                   | hidden               | hidden           |
 
-Mining flow: user selects a survey in flpSelection → flpSubSelection becomes visible with resources from that survey → user selects a resource → clicks Start. When MiningSurvey or MiningSurveyResource changes, MiningLeftOvers resets to zero.
+Mining flow: user selects a survey in flpSurveySelection → flpSelection becomes visible with resources from that survey → user selects a resource → clicks Start. When MiningSurvey or MiningSurveyResource changes, MiningLeftOvers resets to zero.
 
 ### 10. Event Lifecycle
 
