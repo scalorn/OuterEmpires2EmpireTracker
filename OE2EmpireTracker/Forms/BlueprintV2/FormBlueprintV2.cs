@@ -837,6 +837,10 @@ namespace OE2EmpireTracker
             var bt = cmbBlueprintType.SelectedItem as BlueprintType;
             string[] definedProps = bt?.Properties ?? Array.Empty<string>();
 
+            Log.Info("RefreshStatisticsGrid: blueprint='{0}' type='{1}' definedProps={2} bagCount={3}",
+                viewModel.Data.Name ?? "(null)", bt?.Id ?? "(null)", definedProps.Length,
+                viewModel.Data.Properties?.Count ?? 0);
+
             // Find extra properties in PropertyBag not in the type definition
             var definedSet = new HashSet<string>(definedProps, StringComparer.Ordinal);
             var extraProps = viewModel.Data.Properties.Properties.Keys
@@ -844,7 +848,13 @@ namespace OE2EmpireTracker
                 .OrderBy(k => k, StringComparer.OrdinalIgnoreCase)
                 .ToArray();
 
+            if (extraProps.Length > 0)
+                Log.Info("RefreshStatisticsGrid: extraProps=[{0}]", string.Join(", ", extraProps));
+
             string gridKey = (bt?.Id ?? "") + "|" + string.Join(",", extraProps);
+
+            Log.Info("RefreshStatisticsGrid: gridKey='{0}' cachedKey='{1}' rebuild={2}",
+                gridKey, _cachedGridKey ?? "(null)", gridKey != _cachedGridKey);
 
             if (gridKey != _cachedGridKey)
             {
@@ -939,6 +949,10 @@ namespace OE2EmpireTracker
         {
             using var guard = new ProgrammaticUpdateGuard(this);
 
+            Log.Info("PopulateStatisticsValues: rows={0} blueprint='{1}' bagCount={2}",
+                dgvStatistics.Rows.Count, viewModel.Data.Name ?? "(null)",
+                viewModel.Data.Properties?.Count ?? 0);
+
             foreach (DataGridViewRow row in dgvStatistics.Rows)
             {
                 string property = row.Cells["Property"].Tag as string;
@@ -946,6 +960,9 @@ namespace OE2EmpireTracker
 
                 viewModel.GetProperty(property, "", out string value);
                 if (value == null) value = "";
+
+                Log.Debug("PopulateStatisticsValues: '{0}' = '{1}' (from bag: {2})",
+                    property, value, viewModel.Data.Properties.ContainsKey(property));
 
                 var propType = BlueprintPropertyValidation.GetPropertyType(property);
                 if (propType == PropertyValueType.CheckBox)
