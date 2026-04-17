@@ -187,29 +187,29 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
     - Clear orphaned research state when blueprint UUID is null or blueprint not found
     - _Requirements: 11.4, 11.5, 11.6_
 
-- [ ] 15. Implement manufactory controls in ColonyStructureV2
-  - [ ] 15.1 Populate blueprint combo: "Can Manufacture" not false; show quantity input and Stage Resources checkbox
+- [x] 15. Implement manufactory controls in ColonyStructureV2
+  - [x] 15.1 Populate blueprint combo: "Can Manufacture" not false; show quantity input and Stage Resources checkbox
     - Stage Resources visible when no manufacturing running, writes to ColonyStructureViewModel.StagingResources
     - _Requirements: 12.1, 12.2, 12.7_
-  - [ ] 15.2 Implement Start: repeating CountDownTime with "Manufacture Run Time", reduced by ProductionFocus skill (3%/level)
+  - [x] 15.2 Implement Start: repeating CountDownTime with "Manufacture Run Time", reduced by ProductionFocus skill (3%/level)
     - _Requirements: 12.3_
-  - [ ] 15.3 Implement Done: call Colony.ProcessColony(), display progress "(2/5) Mining Rig Ev3", clear on completion
+  - [x] 15.3 Implement Done: call Colony.ProcessColony(), display progress "(2/5) Mining Rig Ev3", clear on completion
     - Clear orphaned state when blueprint UUID null or not found
     - _Requirements: 12.4, 12.5, 12.6, 12.8_
 
-- [ ] 16. Implement commodity factory controls in ColonyStructureV2
-  - [ ] 16.1 Populate commodity combo filtered by blueprint's "Commodity Industry"; show quantity (cycles) and Stage Resources
+- [x] 16. Implement commodity factory controls in ColonyStructureV2
+  - [x] 16.1 Populate commodity combo filtered by blueprint's "Commodity Industry"; show quantity (cycles) and Stage Resources
     - _Requirements: 13.1, 13.2_
-  - [ ] 16.2 Implement Start/Done with repeating CountDownTime reduced by ProductionFocus; display cycle progress
+  - [x] 16.2 Implement Start/Done with repeating CountDownTime reduced by ProductionFocus; display cycle progress
     - Clear orphaned state when commodity name is null
     - _Requirements: 13.3, 13.4, 13.5, 13.6, 13.7_
 
-- [ ] 17. Implement structure building controls
-  - [ ] 17.1 Show Build button when Staged, not Built, and no other structure currently building
+- [x] 17. Implement structure building controls
+  - [x] 17.1 Show Build button when Staged, not Built, and no other structure currently building
     - _Requirements: 14.1_
-  - [ ] 17.2 Implement Build: set IsStaged=false, create BuildCompletionTime via BuildTimeCalculator (accounting for Builder skill)
+  - [x] 17.2 Implement Build: set IsStaged=false, create BuildCompletionTime via BuildTimeCalculator (accounting for Builder skill)
     - _Requirements: 14.2_
-  - [ ] 17.3 Implement building countdown display, "Building..." status, Done button to force complete
+  - [x] 17.3 Implement building countdown display, "Building..." status, Done button to force complete
     - Disable Built checkbox while build timer active
     - _Requirements: 14.3, 14.4, 14.5_
 

@@ -119,6 +119,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             public string DisplayName { get; set; }
         }
 
+        private class CommoditySelectionItem
+        {
+            public string Name { get; set; }
+            public string DisplayName { get; set; }
+        }
+
         // -----------------------------------------------------------------------
         // 7.2: Reset() — pool reuse
         // -----------------------------------------------------------------------
@@ -240,9 +246,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 else if (bpType == BlueprintTypes.ResearchLaboratory)
                     HandleResearchLabControls();
                 else if (bpType == BlueprintTypes.Manufactory)
-                    SetPanelVisibilityByType(); // Phase 5 task 15
+                    HandleManufactoryControls();
                 else if (bpType.IsCommodityFactory())
-                    SetPanelVisibilityByType(); // Phase 5 task 16
+                    HandleCommodityFactoryControls();
                 else
                     SetPanelVisibilityByType();
             }
@@ -963,6 +969,339 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -----------------------------------------------------------------------
+        // Task 15: Manufactory Controls
+        // -----------------------------------------------------------------------
+
+        private void HandleManufactoryControls()
+        {
+            var structureData = ViewModel.Data;
+
+            if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
+            {
+                flpSurveySelection.Visible = false;
+                flpSelection.Visible = false;
+                flpManufacturing.Visible = false;
+                flpTimer.Visible = false;
+                return;
+            }
+
+            bool showCompletionTime = false;
+            bool enableCmbSelection = true;
+            bool showCmdStart = false;
+
+            if (structureData.ProcessCompletionTime != null)
+            {
+                // Clear orphaned manufacturing state when blueprint UUID is null or not found
+                if (string.IsNullOrEmpty(structureData.ManufacturingBlueprintUUID)
+                    || _playerContext.FindBlueprint(structureData.ManufacturingBlueprintUUID) == null)
+                {
+                    Log.Warn("Manufactory {0}: clearing orphaned manufacturing state (blueprint={1})",
+                        structureData.UUID,
+                        structureData.ManufacturingBlueprintUUID ?? "(null)");
+                    structureData.ProcessCompletionTime = null;
+                    structureData.ManufacturingBlueprintUUID = null;
+                    structureData.ManufacturingQuantity = 0;
+                    structureData.ManufacturingCompleted = 0;
+                }
+                else
+                {
+                    showCompletionTime = true;
+                    enableCmbSelection = false;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(structureData.ManufacturingBlueprintUUID))
+            {
+                showCmdStart = true;
+            }
+
+            // No survey selection for manufactory
+            flpSurveySelection.Visible = false;
+
+            // Selection: manufacturable blueprints
+            flpSelection.Visible = true;
+            PopulateSelectionWithManufacturableBlueprints();
+            if (!string.IsNullOrEmpty(structureData.ManufacturingBlueprintUUID))
+            {
+                cmbSelection.SelectedValue = structureData.ManufacturingBlueprintUUID;
+            }
+            txtSelectionFilter.Enabled = enableCmbSelection;
+            cmbSelection.Enabled = enableCmbSelection;
+
+            // Manufacturing row: qty, stage resources, start/done
+            flpManufacturing.Visible = true;
+            txtQuantity.Visible = showCmdStart;
+            txtQuantity.Enabled = !showCompletionTime;
+            if (structureData.ManufacturingQuantity > 0)
+            {
+                txtQuantity.Text = structureData.ManufacturingQuantity.ToString();
+            }
+            else if (string.IsNullOrEmpty(txtQuantity.Text) || !int.TryParse(txtQuantity.Text, out _))
+            {
+                txtQuantity.Text = "1";
+            }
+            cmdStart.Text = "Start";
+            cmdStart.Visible = showCmdStart && !showCompletionTime;
+            cmdDone.Visible = showCompletionTime;
+
+            // Stage Resources checkbox: visible when not manufacturing
+            if (showCompletionTime)
+            {
+                chkStageResources.Visible = false;
+            }
+            else
+            {
+                chkStageResources.Visible = true;
+                int mfgQty = 0;
+                int.TryParse(txtQuantity.Text, out mfgQty);
+                chkStageResources.Enabled = !string.IsNullOrEmpty(structureData.ManufacturingBlueprintUUID) && mfgQty > 0;
+                chkStageResources.Checked = ViewModel.StagingResources;
+            }
+
+            // Timer row
+            if (showCompletionTime)
+            {
+                flpTimer.Visible = true;
+                txtCompletionTime.Text = structureData.ProcessCompletionTime.TimeRemainingString;
+                PopulateManufactoryProgressStatus();
+                if (!timerCountdown.Enabled)
+                {
+                    timerCountdown.Interval = GetCountdownIntervalMs();
+                    timerCountdown.Start();
+                }
+            }
+            else
+            {
+                flpTimer.Visible = false;
+                rtbProgressStatus.Text = "";
+            }
+        }
+
+        private void PopulateSelectionWithManufacturableBlueprints()
+        {
+            string searchText = txtSelectionFilter.Text ?? "";
+
+            var items = new List<ResearchSelectionItem>();
+
+            foreach (Models.Blueprint bp in _playerContext.GetAllBlueprints())
+            {
+                if (bp.UUID == null) continue;
+
+                bool canManufacture = true;
+                bp.Properties.getBoolean("Can Manufacture", true, out canManufacture);
+                if (!canManufacture) continue;
+
+                string display = bp.ExtendedName;
+                if (!string.IsNullOrEmpty(searchText) &&
+                    display.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) < 0)
+                    continue;
+
+                items.Add(new ResearchSelectionItem
+                {
+                    UUID = bp.UUID,
+                    DisplayName = display
+                });
+            }
+
+            items.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
+            items.Insert(0, new ResearchSelectionItem { UUID = "", DisplayName = "" });
+
+            cmbSelection.DataSource = null;
+            cmbSelection.DisplayMember = "DisplayName";
+            cmbSelection.ValueMember = "UUID";
+            cmbSelection.DataSource = items;
+            cmbSelection.SelectedIndex = -1;
+        }
+
+        private void PopulateManufactoryProgressStatus()
+        {
+            var structureData = ViewModel.Data;
+            if (structureData.ProcessCompletionTime == null ||
+                string.IsNullOrEmpty(structureData.ManufacturingBlueprintUUID))
+            {
+                rtbProgressStatus.Text = "";
+                return;
+            }
+
+            Models.Blueprint bp = _playerContext.FindBlueprint(structureData.ManufacturingBlueprintUUID);
+            if (bp == null)
+            {
+                rtbProgressStatus.Text = "";
+                return;
+            }
+
+            int displayProgress = Math.Min(structureData.ManufacturingCompleted + 1, structureData.ManufacturingQuantity);
+            rtbProgressStatus.Text = $"({displayProgress}/{structureData.ManufacturingQuantity}) {bp.ExtendedName}";
+        }
+
+        // -----------------------------------------------------------------------
+        // Task 16: Commodity Factory Controls
+        // -----------------------------------------------------------------------
+
+        private void HandleCommodityFactoryControls()
+        {
+            var structureData = ViewModel.Data;
+
+            if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
+            {
+                flpSurveySelection.Visible = false;
+                flpSelection.Visible = false;
+                flpManufacturing.Visible = false;
+                flpTimer.Visible = false;
+                return;
+            }
+
+            bool showCompletionTime = false;
+            bool enableCmbSelection = true;
+            bool showCmdStart = false;
+
+            if (structureData.ProcessCompletionTime != null)
+            {
+                // Clear orphaned state when commodity name is null
+                if (string.IsNullOrEmpty(structureData.ManufacturingCommodityName))
+                {
+                    Log.Warn("CommodityFactory {0}: clearing orphaned ProcessCompletionTime (no ManufacturingCommodityName)",
+                        structureData.UUID);
+                    structureData.ProcessCompletionTime = null;
+                    structureData.ManufacturingQuantity = 0;
+                    structureData.ManufacturingCompleted = 0;
+                }
+                else
+                {
+                    showCompletionTime = true;
+                    enableCmbSelection = false;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(structureData.ManufacturingCommodityName))
+            {
+                showCmdStart = true;
+            }
+
+            // No survey selection for commodity factory
+            flpSurveySelection.Visible = false;
+
+            // Selection: commodities filtered by CommodityIndustry
+            flpSelection.Visible = true;
+            PopulateSelectionWithCommodities();
+            if (!string.IsNullOrEmpty(structureData.ManufacturingCommodityName))
+            {
+                cmbSelection.SelectedValue = structureData.ManufacturingCommodityName;
+            }
+            txtSelectionFilter.Enabled = enableCmbSelection;
+            cmbSelection.Enabled = enableCmbSelection;
+
+            // Manufacturing row: qty, stage resources, start/done
+            flpManufacturing.Visible = true;
+            txtQuantity.Visible = showCmdStart;
+            txtQuantity.Enabled = !showCompletionTime;
+            if (structureData.ManufacturingQuantity > 0)
+            {
+                txtQuantity.Text = structureData.ManufacturingQuantity.ToString();
+            }
+            else if (string.IsNullOrEmpty(txtQuantity.Text) || !int.TryParse(txtQuantity.Text, out _))
+            {
+                txtQuantity.Text = "1";
+            }
+            cmdStart.Text = "Start";
+            cmdStart.Visible = showCmdStart && !showCompletionTime;
+            cmdDone.Visible = showCompletionTime;
+
+            // Stage Resources checkbox: visible when not manufacturing
+            if (showCompletionTime)
+            {
+                chkStageResources.Visible = false;
+            }
+            else
+            {
+                chkStageResources.Visible = true;
+                int mfgQty = 0;
+                int.TryParse(txtQuantity.Text, out mfgQty);
+                chkStageResources.Enabled = !string.IsNullOrEmpty(structureData.ManufacturingCommodityName) && mfgQty > 0;
+                chkStageResources.Checked = ViewModel.StagingResources;
+            }
+
+            // Timer row
+            if (showCompletionTime)
+            {
+                flpTimer.Visible = true;
+                txtCompletionTime.Text = structureData.ProcessCompletionTime.TimeRemainingString;
+                PopulateCommodityFactoryProgressStatus();
+                if (!timerCountdown.Enabled)
+                {
+                    timerCountdown.Interval = GetCountdownIntervalMs();
+                    timerCountdown.Start();
+                }
+            }
+            else
+            {
+                flpTimer.Visible = false;
+                rtbProgressStatus.Text = "";
+            }
+        }
+
+        private void PopulateSelectionWithCommodities()
+        {
+            string searchText = txtSelectionFilter.Text ?? "";
+
+            // Get the CommodityIndustry from the flatpack blueprint
+            string industryFilter = "";
+            if (_blueprint != null)
+            {
+                _blueprint.Properties.getString("Commodity Industry", "", out industryFilter);
+            }
+
+            var items = new List<CommoditySelectionItem>();
+            foreach (var commodity in Models.Commodity.Commodities)
+            {
+                if (string.IsNullOrEmpty(commodity.Name)) continue;
+
+                // Filter by CommodityIndustry if set
+                if (!string.IsNullOrEmpty(industryFilter))
+                {
+                    var industry = Models.CommodityIndustry.CommodityIndustryMapByEnum.ContainsKey(commodity.CommodityIndustry)
+                        ? Models.CommodityIndustry.CommodityIndustryMapByEnum[commodity.CommodityIndustry]
+                        : null;
+                    if (industry == null || industry.Name != industryFilter) continue;
+                }
+
+                string display = commodity.ExtendedName;
+                if (!string.IsNullOrEmpty(searchText) &&
+                    display.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) < 0)
+                    continue;
+
+                items.Add(new CommoditySelectionItem
+                {
+                    Name = commodity.Name,
+                    DisplayName = display
+                });
+            }
+
+            items.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
+            items.Insert(0, new CommoditySelectionItem { Name = "", DisplayName = "" });
+
+            cmbSelection.DataSource = null;
+            cmbSelection.DisplayMember = "DisplayName";
+            cmbSelection.ValueMember = "Name";
+            cmbSelection.DataSource = items;
+            cmbSelection.SelectedIndex = -1;
+        }
+
+        private void PopulateCommodityFactoryProgressStatus()
+        {
+            var structureData = ViewModel.Data;
+            if (structureData.ProcessCompletionTime == null ||
+                string.IsNullOrEmpty(structureData.ManufacturingCommodityName))
+            {
+                rtbProgressStatus.Text = "";
+                return;
+            }
+
+            int displayProgress = Math.Min(structureData.ManufacturingCompleted + 1, structureData.ManufacturingQuantity);
+            rtbProgressStatus.Text = $"({displayProgress}/{structureData.ManufacturingQuantity}) {structureData.ManufacturingCommodityName} x{GameConstants.CommoditiesPerCycle}";
+        }
+
+        // -----------------------------------------------------------------------
         // 7.5: State checkboxes — Built, Online, Staged with mutual exclusion
         // -----------------------------------------------------------------------
 
@@ -1174,6 +1513,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 PopulateSelectionWithUnrefinedResources();
             else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
                 PopulateSelectionWithResearchableBlueprints();
+            else if (_blueprint.BluePrintType == BlueprintTypes.Manufactory)
+                PopulateSelectionWithManufacturableBlueprints();
+            else if (_blueprint.BluePrintType.IsCommodityFactory())
+                PopulateSelectionWithCommodities();
 
             if (previousValue != null)
                 cmbSelection.SelectedValue = previousValue;
@@ -1220,6 +1563,20 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 structureData.ResearchingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
                 HandleResearchLabControls();
             }
+            else if (_blueprint.BluePrintType == BlueprintTypes.Manufactory)
+            {
+                string uuid = cmbSelection.SelectedValue as string;
+                structureData.ManufacturingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
+                structureData.ManufacturingCompleted = 0;
+                HandleManufactoryControls();
+            }
+            else if (_blueprint.BluePrintType.IsCommodityFactory())
+            {
+                string name = cmbSelection.SelectedValue as string;
+                structureData.ManufacturingCommodityName = string.IsNullOrEmpty(name) ? null : name;
+                structureData.ManufacturingCompleted = 0;
+                HandleCommodityFactoryControls();
+            }
         }
 
         // -----------------------------------------------------------------------
@@ -1251,6 +1608,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
             {
                 HandleResearchStart();
+            }
+            else if (_blueprint.BluePrintType == BlueprintTypes.Manufactory)
+            {
+                HandleManufactoryStart();
+            }
+            else if (_blueprint.BluePrintType.IsCommodityFactory())
+            {
+                HandleCommodityStart();
             }
         }
 
@@ -1342,6 +1707,87 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             OnColonyStructureDataChanged(structural: false);
         }
 
+        private void HandleManufactoryStart()
+        {
+            var structureData = ViewModel.Data;
+            if (string.IsNullOrEmpty(structureData.ManufacturingBlueprintUUID)) return;
+
+            Models.Blueprint bp = _playerContext.FindBlueprint(structureData.ManufacturingBlueprintUUID);
+            if (bp == null) return;
+
+            // Parse manufacture time from blueprint properties (default 1s if absent)
+            string mfgTimeStr;
+            bp.Properties.getString("Manufacture Run Time", "1s", out mfgTimeStr);
+            if (string.IsNullOrEmpty(mfgTimeStr)) mfgTimeStr = "1s";
+
+            // Normalize time format: "9 hours" -> "9h", "30 minutes" -> "30m", etc.
+            mfgTimeStr = NormalizeTimeString(mfgTimeStr);
+
+            // Parse using CountDownTime's TimeRemainingString parser
+            CountDownTime tempTimer = new CountDownTime();
+            tempTimer.TimeRemainingString = mfgTimeStr;
+            long mfgSeconds = tempTimer.TimeRemaining;
+            if (mfgSeconds <= 0) return;
+
+            // Apply ProductionFocus skill multiplier (3% per level)
+            int productionFocusLevel = 0;
+            if (Colony != null && !string.IsNullOrEmpty(Colony.OwnerUUID))
+            {
+                var owner = _playerContext.PlayerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
+                if (owner != null)
+                    productionFocusLevel = owner.GetSkill(SkillName.ProductionFocus).Level;
+            }
+            mfgSeconds = Math.Max(1, (long)(mfgSeconds * (1.0 - productionFocusLevel * 0.03)));
+
+            // Parse quantity from txtQuantity
+            int qty = 1;
+            int.TryParse(txtQuantity.Text, out qty);
+            if (qty <= 0) qty = 1;
+
+            structureData.ManufacturingQuantity = qty;
+            structureData.ManufacturingCompleted = 0;
+            structureData.ProcessCompletionTime = new CountDownTime();
+            structureData.ProcessCompletionTime.StartTime = DateTime.UtcNow;
+            structureData.ProcessCompletionTime.StartRepeating(mfgSeconds);
+            timerCountdown.Interval = GetCountdownIntervalMs();
+            timerCountdown.Start();
+            HandleManufactoryControls();
+            OnColonyStructureDataChanged(structural: false);
+        }
+
+        private void HandleCommodityStart()
+        {
+            var structureData = ViewModel.Data;
+            if (string.IsNullOrEmpty(structureData.ManufacturingCommodityName)) return;
+
+            // Parse quantity (number of cycles) from txtQuantity
+            int qty = 1;
+            int.TryParse(txtQuantity.Text, out qty);
+            if (qty <= 0) qty = 1;
+
+            structureData.ManufacturingQuantity = qty;
+            structureData.ManufacturingCompleted = 0;
+            structureData.ProcessCompletionTime = new CountDownTime();
+            structureData.ProcessCompletionTime.StartTime = DateTime.UtcNow;
+
+            // Apply ProductionFocus skill multiplier to commodity cycle time
+            long commodityCycleSeconds = GameConstants.CommodityCycleSeconds;
+            int productionFocusLevel = 0;
+            if (Colony != null && !string.IsNullOrEmpty(Colony.OwnerUUID))
+            {
+                var owner = _playerContext.PlayerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
+                if (owner != null)
+                    productionFocusLevel = owner.GetSkill(SkillName.ProductionFocus).Level;
+            }
+            commodityCycleSeconds = Math.Max(1, (long)(commodityCycleSeconds * (1.0 - productionFocusLevel * 0.03)));
+
+            structureData.ProcessCompletionTime.StartRepeating(commodityCycleSeconds);
+            timerCountdown.Interval = GetCountdownIntervalMs();
+            timerCountdown.Start();
+            HandleCommodityFactoryControls();
+            OnColonyStructureDataChanged(structural: false);
+        }
+
         // -----------------------------------------------------------------------
         // Done button handler
         // -----------------------------------------------------------------------
@@ -1423,6 +1869,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     HandleRefineryControls();
                 else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
                     HandleResearchLabControls();
+                else if (_blueprint.BluePrintType == BlueprintTypes.Manufactory)
+                    HandleManufactoryControls();
+                else if (_blueprint.BluePrintType.IsCommodityFactory())
+                    HandleCommodityFactoryControls();
             }
 
             OnColonyStructureDataChanged(structural: false);
