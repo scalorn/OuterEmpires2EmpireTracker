@@ -264,54 +264,54 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
 
 ## Phase 8: Import
 
-- [-] 21. Implement colony import from game clipboard
-  - [-] 21.1 Implement Import button: validate HTML clipboard, check player selected, detect content type via ClipboardContentDetector
+- [x] 21. Implement colony import from game clipboard
+  - [x] 21.1 Implement Import button: validate HTML clipboard, check player selected, detect content type via ClipboardContentDetector
     - Display informational messages for non-HTML, no player, or wrong content type
     - _Requirements: 18.1, 18.2, 18.3, 18.4_
-  - [ ] 21.2 Parse clipboard to temp colony via ColonyParser.ParseClipboardToTemp(); find existing colony by planet+system via ColonyImportHelper.FindByPlanet()
+  - [x] 21.2 Parse clipboard to temp colony via ColonyParser.ParseClipboardToTemp(); find existing colony by planet+system via ColonyImportHelper.FindByPlanet()
     - _Requirements: 18.5, 18.6_
-  - [ ] 21.3 Implement merge (existing) and create (new) paths
+  - [x] 21.3 Implement merge (existing) and create (new) paths
     - Existing: merge identity, process HTML, preserve ColonyName
     - New: create via ColonyImportHelper.CreateFromTemp() with current player UUID
     - _Requirements: 18.7, 18.8_
-  - [ ] 21.4 Post-import: WriteContext(), fire ColonyDataChanged, refresh list, select imported colony, populate form
+  - [x] 21.4 Post-import: WriteContext(), fire ColonyDataChanged, refresh list, select imported colony, populate form
     - _Requirements: 18.9_
-  - [ ] 21.5 Implement Save Clipboard button for debugging; implement error handling with logging
+  - [x] 21.5 Implement Save Clipboard button for debugging; implement error handling with logging
     - _Requirements: 18.10, 18.11_
 
 ## Phase 9: Tab Warning Indicators and Owner-Draw TabControl
 
-- [ ] 22. Implement tab warning system
-  - [ ] 22.1 Implement owner-draw mode on TabControl for tab background colors with visual styles enabled
+- [x] 22. Implement tab warning system
+  - [x] 22.1 Implement owner-draw mode on TabControl for tab background colors with visual styles enabled
     - _Requirements: 22.4_
-  - [ ] 22.2 Wire TabWarningService.EvaluateStructureWarning() for Structures tab, EvaluateWorkerWarning() for Workers tab, EvaluateColonyImportStalenessWarning() for Administration tab
+  - [x] 22.2 Wire TabWarningService.EvaluateStructureWarning() for Structures tab, EvaluateWorkerWarning() for Workers tab, EvaluateColonyImportStalenessWarning() for Administration tab
     - Update after structure change, commodity request change, or colony selection change
     - _Requirements: 22.1, 22.2, 22.3, 22.5_
 
 ## Phase 10: Window State and Event Lifecycle
 
-- [ ] 23. Implement state persistence and event lifecycle
-  - [ ] 23.1 Implement WindowStateHelper save/restore for position, size, grid columns, ListView state, structure type filter selections
+- [x] 23. Implement state persistence and event lifecycle
+  - [x] 23.1 Implement WindowStateHelper save/restore for position, size, grid columns, ListView state, structure type filter selections
     - _Requirements: 23.1, 23.2_
-  - [ ] 23.2 Subscribe to CurrentPlayerChanged and ColonyDataChanged in constructor; unsubscribe in OnFormClosed
+  - [x] 23.2 Subscribe to CurrentPlayerChanged and ColonyDataChanged in constructor; unsubscribe in OnFormClosed
     - _Requirements: 23.3, 23.4_
-  - [ ] 23.3 Implement CurrentPlayerChanged handler: clear form state, create blank colony, repopulate colony list
+  - [x] 23.3 Implement CurrentPlayerChanged handler: clear form state, create blank colony, repopulate colony list
     - _Requirements: 23.8_
-  - [ ] 23.4 Implement ColonyDataChanged handler: check if change is for selected colony and not self-triggered; recalculate status, repopulate form, refresh admin report
+  - [x] 23.4 Implement ColonyDataChanged handler: check if change is for selected colony and not self-triggered; recalculate status, repopulate form, refresh admin report
     - _Requirements: 23.7_
-  - [ ] 23.5 Add IsDisposed guards on all event handlers; use BeginInvoke for cross-thread marshaling when InvokeRequired
+  - [x] 23.5 Add IsDisposed guards on all event handlers; use BeginInvoke for cross-thread marshaling when InvokeRequired
     - _Requirements: 23.5, 23.6_
-  - [ ] 23.6 Wire ProgrammaticUpdateGuard on all programmatic UI updates to prevent cascading handlers
+  - [x] 23.6 Wire ProgrammaticUpdateGuard on all programmatic UI updates to prevent cascading handlers
     - _Requirements: 23.9_
 
-- [ ] 24. Checkpoint — Full form integration
+- [x] 24. Checkpoint — Full form integration
   - Ensure all tests pass, verify all tabs populate correctly, event lifecycle is clean
   - Ask the user if questions arise.
 
 ## Phase 11: Acceptance Testing and Cutover
 
 - [ ] 25. Verify and cut over
-  - [ ] 25.1 Run full test suite — all existing tests must pass
+  - [x] 25.1 Run full test suite — all existing tests must pass
   - [ ] 25.2 Manual testing: import colony from HTML clipboard (new colony + merge existing)
   - [ ] 25.3 Manual testing: structure add/reorder/delete with pool reuse visible (no flicker)
   - [ ] 25.4 Manual testing: mining rig full flow (survey → resource → start → countdown → done)

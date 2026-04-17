@@ -1941,13 +1941,30 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         /// <summary>
         /// Shows/hides structure controls based on the current checked types.
+        /// Lightweight — just toggles Visible on existing controls instead of full rebuild.
         /// </summary>
         private void ApplyStructureTypeFilter()
         {
             if (selectedColony == null) return;
 
-            // Rebuild with the filter applied
-            PopulateStructures();
+            // Build set of checked types
+            var checkedTypes = new HashSet<string>(StringComparer.Ordinal);
+            foreach (ListViewItem item in lvwStructureTypes.Items)
+            {
+                if (item.Checked)
+                    checkedTypes.Add((string)item.Tag);
+            }
+
+            flpStructures.SuspendLayout();
+            for (int i = 0; i < _poolInUse; i++)
+            {
+                var ctrl = _pool[i];
+                if (ctrl.ViewModel == null) continue;
+                var bp = playerContext.FindBlueprint(ctrl.ViewModel.Data.FlatpackBlueprintUUID);
+                string typeId = bp?.BluePrintType ?? "";
+                ctrl.Visible = checkedTypes.Count == 0 || checkedTypes.Contains(typeId);
+            }
+            flpStructures.ResumeLayout();
         }
     }
 }
