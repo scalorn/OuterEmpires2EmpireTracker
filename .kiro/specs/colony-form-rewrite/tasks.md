@@ -220,22 +220,22 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
 ## Phase 6: Workers Tab (Commodity Requests)
 
 - [-] 19. Implement Workers tab
-  - [-] 19.1 Add DataGridView with columns: Name, Amount (editable), Fulfilled (checkbox), NeedBy (editable countdown format)
+  - [x] 19.1 Add DataGridView with columns: Name, Amount (editable), Fulfilled (checkbox), NeedBy (editable countdown format)
     - FullRowSelect mode; Name column click redirects to Amount column
     - _Requirements: 17.1, 17.8_
-  - [ ] 19.2 Implement Add: filtered commodity combo, quantity input, optional NeedBy countdown, call ColonyViewModel.AddCommodityRequest()
+  - [x] 19.2 Implement Add: filtered commodity combo, quantity input, optional NeedBy countdown, call ColonyViewModel.AddCommodityRequest()
     - _Requirements: 17.2_
-  - [ ] 19.3 Implement in-place edits: Amount writes to CommodityRequested.Requested + WriteContext(); NeedBy parses countdown and updates request.NeedBy
+  - [x] 19.3 Implement in-place edits: Amount writes to CommodityRequested.Requested + WriteContext(); NeedBy parses countdown and updates request.NeedBy
     - _Requirements: 17.3, 17.5_
-  - [ ] 19.4 Implement Fulfilled checkbox: set Fulfilled=true, Delivered=Requested, refresh grid with strikethrough styling
+  - [x] 19.4 Implement Fulfilled checkbox: set Fulfilled=true, Delivered=Requested, refresh grid with strikethrough styling
     - _Requirements: 17.4_
-  - [ ] 19.5 Implement Delete key to remove commodity request via ColonyViewModel.RemoveCommodityRequest()
+  - [x] 19.5 Implement Delete key to remove commodity request via ColonyViewModel.RemoveCommodityRequest()
     - _Requirements: 17.6_
-  - [ ] 19.6 Implement auto-cleanup of expired fulfilled requests (> 3 days past NeedBy)
+  - [x] 19.6 Implement auto-cleanup of expired fulfilled requests (> 3 days past NeedBy)
     - _Requirements: 17.7_
-  - [ ] 19.7 Implement Workers tab title with active request count "Workers : 3"; display "overdue" for past-due NeedBy
+  - [x] 19.7 Implement Workers tab title with active request count "Workers : 3"; display "overdue" for past-due NeedBy
     - _Requirements: 17.9, 17.10_
-  - [ ] 19.8 Implement Workers tab background color via TabWarningService.EvaluateWorkerWarning()
+  - [x] 19.8 Implement Workers tab background color via TabWarningService.EvaluateWorkerWarning()
     - _Requirements: 22.2_
 
 ## Phase 7: Warehousing Tab
