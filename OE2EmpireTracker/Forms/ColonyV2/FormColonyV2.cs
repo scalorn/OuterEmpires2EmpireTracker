@@ -353,6 +353,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             txtSystemName.Text = colonyViewModel.Data.SystemName ?? "";
 
             MarkAllTabsDirty();
+
+            // Immediately populate the currently visible tab
+            PopulateActiveTab();
         }
 
         private void MarkAllTabsDirty()
@@ -361,6 +364,36 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             _warehouseDirty = true;
             _workersDirty = true;
             _adminDirty = true;
+        }
+
+        /// <summary>
+        /// Populates whichever tab is currently selected, if it's dirty.
+        /// Called after MarkAllTabsDirty to handle the case where the user
+        /// is already on a tab and switches colonies.
+        /// </summary>
+        private void PopulateActiveTab()
+        {
+            var tab = tabDetailedData.SelectedTab;
+            if (tab == tabPStructures && _structuresDirty)
+            {
+                PopulateStructures();
+                _structuresDirty = false;
+            }
+            else if (tab == tabPAdministration && _adminDirty)
+            {
+                RefreshAdminReport();
+                _adminDirty = false;
+            }
+            else if (tab == tabPWorkers && _workersDirty)
+            {
+                PopulateCommodityRequestGrid();
+                _workersDirty = false;
+            }
+            else if (tab == tabPWarehousing && _warehouseDirty)
+            {
+                PopulateItemGrid();
+                _warehouseDirty = false;
+            }
         }
 
         private void tabDetailedData_SelectedIndexChanged(object sender, EventArgs e)
