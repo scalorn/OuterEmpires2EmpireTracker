@@ -1,5 +1,6 @@
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Persistence;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.ViewModels;
 using NLog;
@@ -35,6 +36,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Structure_Pool (8.1)
         private readonly List<ColonyStructureV2> _pool = new List<ColonyStructureV2>();
         private int _poolInUse = 0;
+
+        // Structure type filter (9.1)
+        private readonly HashSet<string> _uncheckedStructureTypes = new HashSet<string>(StringComparer.Ordinal);
+        private bool _structureTypesPopulated = false;
 
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
@@ -78,6 +83,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmdAddFlatpack.Click += cmdAddFlatpack_Click;
             PopulateFlatpackCombo();
 
+            // Structure type filter (9.1, 9.3)
+            SeedUncheckedStructureTypes();
+
             // Subscribe to context events
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.ColonyDataChanged += OnColonyDataChanged;
@@ -91,6 +99,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            // Save window state including structure type filter (9.3)
+            int windowNumber = Tag is int n ? n : 1;
+            WindowStateHelper.SaveState(this, GetType().Name, windowNumber);
+
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.ColonyDataChanged -= OnColonyDataChanged;
             base.OnFormClosed(e);
@@ -448,17 +460,34 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             using var guard = new ProgrammaticUpdateGuard(this);
 
+            // Ensure structure type filter list is populated (9.1)
+            PopulateStructureTypeFilter();
+
             flpStructures.SuspendLayout();
             ReturnAllToPool();
             flpStructures.Controls.Clear();
 
+            // Build set of checked types for filter (9.2)
+            var checkedTypes = new HashSet<string>(StringComparer.Ordinal);
+            foreach (ListViewItem item in lvwStructureTypes.Items)
+            {
+                if (item.Checked)
+                    checkedTypes.Add((string)item.Tag);
+            }
+
             var structureVMs = colonyViewModel.StructureViewModels;
             foreach (var vm in structureVMs)
             {
+                var bp = playerContext.FindBlueprint(vm.Data.FlatpackBlueprintUUID);
+                string typeId = bp?.BluePrintType ?? "";
+
+                // Skip structures whose type is unchecked (9.2)
+                if (checkedTypes.Count > 0 && !checkedTypes.Contains(typeId))
+                    continue;
+
                 var ctrl = AcquireStructureControl();
                 ctrl.ViewModel = vm;
                 ctrl.Colony = selectedColony;
-                var bp = playerContext.FindBlueprint(vm.Data.FlatpackBlueprintUUID);
                 ctrl.UpdateData(bp);
                 flpStructures.Controls.Add(ctrl);
             }
@@ -579,10 +608,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void tabPStructures_Layout(object sender, LayoutEventArgs e)
         {
-            int w = tabPStructures.ClientSize.Width - tabPStructures.Padding.Horizontal;
-            flpStructures.Width = w;
-
-            // Size each pooled control to match the panel width
+            // Size pooled controls to match the structure panel width (inside splitStructures.Panel2)
+            int w = flpStructures.ClientSize.Width;
             for (int i = 0; i < _poolInUse; i++)
             {
                 _pool[i].Width = w - SystemInformation.VerticalScrollBarWidth - 6;
@@ -606,6 +633,101 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             tabDetailedData.Size = new System.Drawing.Size(
                 totalWidth - tabDetailedData.Margin.Horizontal,
                 tabHeight);
+        }
+
+        // -------------------------------------------------------------------
+        // Structure Type Filter (9.1, 9.2, 9.3)
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Seeds _uncheckedStructureTypes from saved preferences so the filter
+        /// is restored before the first PopulateStructureTypeFilter call.
+        /// </summary>
+        private void SeedUncheckedStructureTypes()
+        {
+            var store = PreferencesStore.GetInstance();
+            string formTypeKey = GetType().Name;
+            int windowNumber = Tag is int n ? n : 1;
+            string stateKey = windowNumber.ToString();
+
+            if (store.Preferences.Forms.TryGetValue(formTypeKey, out var windows) &&
+                windows.TryGetValue(stateKey, out var windowState) &&
+                windowState.FormState?.ListViews != null &&
+                windowState.FormState.ListViews.TryGetValue("lvwStructureTypes", out var lvState) &&
+                lvState.UncheckedItems != null)
+            {
+                foreach (var typeId in lvState.UncheckedItems)
+                    _uncheckedStructureTypes.Add(typeId);
+            }
+        }
+
+        /// <summary>
+        /// Populates the structure type filter on first call, then applies the filter.
+        /// </summary>
+        private void PopulateStructureTypeFilter()
+        {
+            if (!_structureTypesPopulated)
+            {
+                _structureTypesPopulated = true;
+                BuildStructureTypeList();
+            }
+        }
+
+        /// <summary>
+        /// Builds the lvwStructureTypes list from all flatpack blueprint types,
+        /// checking/unchecking based on _uncheckedStructureTypes.
+        /// </summary>
+        private void BuildStructureTypeList()
+        {
+            lvwStructureTypes.ItemChecked -= lvwStructureTypes_ItemChecked;
+            lvwStructureTypes.Items.Clear();
+
+            var flatpackTypes = empireContext.BlueprintTypeList
+                .Where(bt => bt.Id.IsFlatpack())
+                .OrderBy(bt => bt.Name, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            foreach (var bpType in flatpackTypes)
+            {
+                var item = new ListViewItem(bpType.Name);
+                item.Tag = bpType.Id;
+                item.Checked = !_uncheckedStructureTypes.Contains(bpType.Id);
+                lvwStructureTypes.Items.Add(item);
+            }
+
+            lvwStructureTypes.ItemChecked += lvwStructureTypes_ItemChecked;
+        }
+
+        /// <summary>
+        /// Handler for structure type checkbox changes — updates the unchecked set
+        /// and re-applies the filter.
+        /// </summary>
+        private void lvwStructureTypes_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (selectedColony == null) return;
+
+            string typeId = e.Item.Tag as string;
+            if (typeId != null)
+            {
+                if (e.Item.Checked)
+                    _uncheckedStructureTypes.Remove(typeId);
+                else
+                    _uncheckedStructureTypes.Add(typeId);
+            }
+
+            ApplyStructureTypeFilter();
+        }
+
+        /// <summary>
+        /// Shows/hides structure controls based on the current checked types.
+        /// </summary>
+        private void ApplyStructureTypeFilter()
+        {
+            if (selectedColony == null) return;
+
+            // Rebuild with the filter applied
+            PopulateStructures();
         }
     }
 }

@@ -112,7 +112,7 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
     - Delete also triggered by Delete key when control is focused
     - _Requirements: 4.3, 4.4, 4.5, 4.6_
 
-- [-] 8. Implement Structure_Pool and structure panel in FormColonyV2
+- [x] 8. Implement Structure_Pool and structure panel in FormColonyV2
   - [x] 8.1 Implement Structure_Pool: AcquireStructureControl(), ReturnAllToPool() with high-water-mark growth
     - _Requirements: 24.5 (form-level), 4.8_
   - [x] 8.2 Implement structure panel population: acquire controls from pool, call UpdateData(bp), add to flpStructures with SuspendLayout/ResumeLayout
@@ -128,13 +128,13 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
     - Red when Required > Provided, green otherwise, format "Required/Provided"
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-- [ ] 9. Implement structure type filter
-  - [ ] 9.1 Add lvwStructureTypes checkbox ListView showing all flatpack blueprint types from BaselineData.json, sorted alphabetically
+- [-] 9. Implement structure type filter
+  - [x] 9.1 Add lvwStructureTypes checkbox ListView showing all flatpack blueprint types from BaselineData.json, sorted alphabetically
     - Static list — not filtered by current colony
     - _Requirements: 5.1, 5.2_
-  - [ ] 9.2 Implement check/uncheck to show/hide ColonyStructureV2 controls of matching type
+  - [x] 9.2 Implement check/uncheck to show/hide ColonyStructureV2 controls of matching type
     - _Requirements: 5.4, 5.5_
-  - [ ] 9.3 Persist unchecked types to UIPreferences.json; restore on form load
+  - [x] 9.3 Persist unchecked types to UIPreferences.json; restore on form load
     - _Requirements: 5.3, 5.6_
 
 - [ ] 10. Checkpoint — Structure control and pool

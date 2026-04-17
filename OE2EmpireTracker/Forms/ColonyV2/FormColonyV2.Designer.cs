@@ -45,6 +45,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.tabDetailedData = new System.Windows.Forms.TabControl();
             this.tabPAdministration = new System.Windows.Forms.TabPage();
             this.tabPStructures = new System.Windows.Forms.TabPage();
+            this.splitStructures = new System.Windows.Forms.SplitContainer();
+            this.lvwStructureTypes = new System.Windows.Forms.ListView();
             this.rtbStatusSummary = new System.Windows.Forms.RichTextBox();
             this.flpStructures = new System.Windows.Forms.FlowLayoutPanel();
             this.flpAddStructure = new System.Windows.Forms.FlowLayoutPanel();
@@ -70,6 +72,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpSystemName.SuspendLayout();
             this.tabDetailedData.SuspendLayout();
             this.tabPStructures.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitStructures)).BeginInit();
+            this.splitStructures.Panel1.SuspendLayout();
+            this.splitStructures.Panel2.SuspendLayout();
+            this.splitStructures.SuspendLayout();
             this.flpAddStructure.SuspendLayout();
             this.flpCommands.SuspendLayout();
             this.SuspendLayout();
@@ -256,7 +262,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // 
             // tabPStructures
             // 
-            this.tabPStructures.Controls.Add(this.flpStructures);
+            this.tabPStructures.Controls.Add(this.splitStructures);
             this.tabPStructures.Controls.Add(this.rtbStatusSummary);
             this.tabPStructures.Controls.Add(this.flpAddStructure);
             this.tabPStructures.Location = new System.Drawing.Point(4, 22);
@@ -268,6 +274,40 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.tabPStructures.Text = "Structures";
             this.tabPStructures.UseVisualStyleBackColor = true;
             this.tabPStructures.Layout += new System.Windows.Forms.LayoutEventHandler(this.tabPStructures_Layout);
+            // 
+            // splitStructures
+            // 
+            this.splitStructures.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitStructures.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.splitStructures.Location = new System.Drawing.Point(2, 38);
+            this.splitStructures.Name = "splitStructures";
+            this.splitStructures.SplitterDistance = 140;
+            this.splitStructures.Size = new System.Drawing.Size(788, 254);
+            this.splitStructures.TabIndex = 3;
+            // 
+            // splitStructures.Panel1 — structure type filter
+            // 
+            this.splitStructures.Panel1.Controls.Add(this.lvwStructureTypes);
+            // 
+            // splitStructures.Panel2 — structure controls
+            // 
+            this.splitStructures.Panel2.Controls.Add(this.flpStructures);
+            // 
+            // lvwStructureTypes
+            // 
+            this.lvwStructureTypes.CheckBoxes = true;
+            this.lvwStructureTypes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvwStructureTypes.FullRowSelect = true;
+            this.lvwStructureTypes.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lvwStructureTypes.HideSelection = false;
+            this.lvwStructureTypes.Location = new System.Drawing.Point(0, 0);
+            this.lvwStructureTypes.MultiSelect = true;
+            this.lvwStructureTypes.Name = "lvwStructureTypes";
+            this.lvwStructureTypes.Size = new System.Drawing.Size(140, 254);
+            this.lvwStructureTypes.TabIndex = 0;
+            this.lvwStructureTypes.UseCompatibleStateImageBehavior = false;
+            this.lvwStructureTypes.View = System.Windows.Forms.View.Details;
+            this.lvwStructureTypes.Columns.Add("Type", 136);
             // 
             // rtbStatusSummary
             // 
@@ -287,10 +327,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpStructures.AutoScroll = true;
             this.flpStructures.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpStructures.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpStructures.Location = new System.Drawing.Point(2, 38);
+            this.flpStructures.Location = new System.Drawing.Point(0, 0);
             this.flpStructures.Name = "flpStructures";
-            this.flpStructures.Size = new System.Drawing.Size(788, 254);
-            this.flpStructures.TabIndex = 1;
+            this.flpStructures.Size = new System.Drawing.Size(644, 254);
+            this.flpStructures.TabIndex = 0;
             this.flpStructures.WrapContents = false;
             // 
             // flpAddStructure
@@ -432,6 +472,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpSystemName.ResumeLayout(false);
             this.flpSystemName.PerformLayout();
             this.tabDetailedData.ResumeLayout(false);
+            this.splitStructures.Panel1.ResumeLayout(false);
+            this.splitStructures.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitStructures)).EndInit();
+            this.splitStructures.ResumeLayout(false);
             this.tabPStructures.ResumeLayout(false);
             this.flpAddStructure.ResumeLayout(false);
             this.flpAddStructure.PerformLayout();
@@ -460,6 +504,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private System.Windows.Forms.TabPage tabPAdministration;
         private System.Windows.Forms.TabPage tabPStructures;
         private System.Windows.Forms.RichTextBox rtbStatusSummary;
+        private System.Windows.Forms.SplitContainer splitStructures;
+        private System.Windows.Forms.ListView lvwStructureTypes;
         private System.Windows.Forms.FlowLayoutPanel flpStructures;
         private System.Windows.Forms.FlowLayoutPanel flpAddStructure;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtFilterFlatpack;
