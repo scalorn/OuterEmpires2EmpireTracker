@@ -1,6 +1,7 @@
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Persistence;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.ViewModels;
@@ -8,6 +9,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -119,6 +121,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Wire admin refresh timer (11.1)
             timerAdminRefresh.Tick += timerAdminRefresh_Tick;
             timerAdminRefresh.Start();
+
+            // Wire import handlers (21.1, 21.5)
+            cmdImportColony.Click += cmdImportColony_Click;
+            cmdImportClipboard.Click += cmdImportClipboard_Click;
 
             // Subscribe to context events
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
@@ -1687,6 +1693,165 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 using var guard = new ProgrammaticUpdateGuard(this);
                 dgvItems.CurrentCell = dgvItems.Rows[dgvItems.CurrentCell.RowIndex].Cells[3];
+            }
+        }
+
+        // -------------------------------------------------------------------
+        // Colony Import (21.1-21.5)
+        // -------------------------------------------------------------------
+
+        private void cmdImportColony_Click(object sender, EventArgs e)
+        {
+            if (!Clipboard.ContainsText(TextDataFormat.Html))
+            {
+                MessageBox.Show("No HTML content found on the clipboard.\n\nCopy colony data from the game browser first.",
+                    "No HTML", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(playerContext.CurrentPlayerUUID))
+            {
+                MessageBox.Show("No player selected. Select a player profile first.",
+                    "No Player", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            try
+            {
+                // Validate clipboard contains colony data
+                string clipboardData = Clipboard.GetText(TextDataFormat.Html);
+                string htmlFragment = ClipboardHelper.ExtractHtmlFragment(clipboardData);
+                var detected = ClipboardContentDetector.Detect(htmlFragment);
+                if (detected != ClipboardContentDetector.ContentType.Colony)
+                {
+                    string found = ClipboardContentDetector.GetDescription(detected);
+                    MessageBox.Show($"The clipboard contains {found}, not colony data.\n\nCopy the colony page from the game browser first.",
+                        "Wrong Content", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                var parser = new ColonyParser();
+                var tempColony = parser.ParseClipboardToTemp(empireContext, out string extractedHtml);
+
+                if (tempColony == null)
+                    return;
+
+                Log.Info("Colony temp parse complete: PlanetName='{0}', SystemName='{1}', {2} structures",
+                    tempColony.PlanetName ?? "(null)", tempColony.SystemName ?? "(null)", tempColony.Structures.Count);
+
+                if (string.IsNullOrEmpty(tempColony.PlanetName))
+                {
+                    // Fall back to current behavior when no planet name is parsed
+                    parser.ProcessClipboard(selectedColony, empireContext);
+
+                    if (string.IsNullOrEmpty(selectedColony.OwnerUUID))
+                    {
+                        selectedColony.OwnerUUID = playerContext.CurrentPlayerUUID;
+                    }
+
+                    colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
+                    PopulateForm();
+
+                    Log.Info("Colony imported from clipboard (fallback): {0} ({1} structures, {2} commodity requests)",
+                        selectedColony.PlanetName, selectedColony.Structures.Count, selectedColony.Commodities.Count);
+                    return;
+                }
+
+                var existingColony = ColonyImportHelper.FindByPlanet(
+                    playerContext.GetCurrentPlayerColonies(), tempColony.PlanetName, tempColony.SystemName);
+
+                Log.Info("Colony dedup: {0} for planet '{1}'",
+                    existingColony != null ? "found existing colony UUID=" + existingColony.UUID : "no existing colony, creating new",
+                    tempColony.PlanetName);
+
+                if (existingColony != null)
+                {
+                    ColonyImportHelper.MergeIdentity(existingColony, tempColony);
+
+                    // Save ColonyName before ProcessHtml -- the parser's ParsePlanetOverview
+                    // overwrites ColonyName with the game's (potentially truncated) value.
+                    string preservedColonyName = existingColony.ColonyName;
+                    parser.ProcessHtml(existingColony, extractedHtml, empireContext);
+                    existingColony.ColonyName = preservedColonyName;
+
+                    selectedColony = existingColony;
+
+                    Log.Info("Colony updated via dedup: {0} ({1} structures, {2} commodity requests)",
+                        existingColony.ColonyName, existingColony.Structures.Count, existingColony.Commodities.Count);
+                }
+                else
+                {
+                    var newColony = ColonyImportHelper.CreateFromTemp(tempColony, playerContext.CurrentPlayerUUID);
+                    playerContext.ColonyList.Add(newColony);
+                    selectedColony = newColony;
+
+                    Log.Info("New colony created via dedup: {0} ({1} structures, {2} commodity requests)",
+                        newColony.ColonyName, newColony.Structures.Count, newColony.Commodities.Count);
+                }
+
+                playerContext.WriteContext();
+                playerContext.OnColonyDataChanged(selectedColony.UUID);
+
+                // Refresh list view
+                txtColonyFilter_TextChanged(sender, e);
+
+                // Select the imported colony in the list view
+                foreach (ListViewItem item in lvwColonies.Items)
+                {
+                    if ((item.Tag as Models.Colony)?.UUID == selectedColony.UUID)
+                    {
+                        item.Selected = true;
+                        item.EnsureVisible();
+                        break;
+                    }
+                }
+
+                colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
+                PopulateForm();
+                UpdateTitle();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error importing colony from clipboard");
+                MessageBox.Show("Failed to import colony: " + ex.Message,
+                    "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void cmdImportClipboard_Click(object sender, EventArgs e)
+        {
+            if (!Clipboard.ContainsText(TextDataFormat.Html))
+            {
+                MessageBox.Show("No HTML content found on the clipboard.\n\nCopy colony data from the game browser first.",
+                    "No HTML", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            string clipboardData = Clipboard.GetText(TextDataFormat.Html);
+
+            using (var dlg = new SaveFileDialog())
+            {
+                dlg.Filter = "HTML files (*.html)|*.html|All files (*.*)|*.*";
+                dlg.DefaultExt = "html";
+                dlg.FileName = "ColonyCapture.html";
+                dlg.Title = "Save Clipboard HTML";
+
+                if (dlg.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                try
+                {
+                    File.WriteAllText(dlg.FileName, clipboardData, System.Text.Encoding.UTF8);
+                    Log.Info("Clipboard HTML saved to {0} ({1} bytes)", dlg.FileName, clipboardData.Length);
+                    MessageBox.Show("Clipboard HTML saved to:\n" + dlg.FileName,
+                        "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error saving clipboard HTML to {0}", dlg.FileName);
+                    MessageBox.Show("Failed to save: " + ex.Message,
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

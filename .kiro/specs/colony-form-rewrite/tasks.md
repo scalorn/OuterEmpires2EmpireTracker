@@ -240,7 +240,7 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
 
 ## Phase 7: Warehousing Tab
 
-- [-] 20. Implement Warehousing tab
+- [x] 20. Implement Warehousing tab
   - [x] 20.1 Add DataGridView with columns: ItemType, Item (ExtendedName), Locked, Amount (editable integer)
     - _Requirements: 16.1_
   - [x] 20.2 Implement item type combo with dynamic secondary combo/filter per type
@@ -264,8 +264,8 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
 
 ## Phase 8: Import
 
-- [ ] 21. Implement colony import from game clipboard
-  - [ ] 21.1 Implement Import button: validate HTML clipboard, check player selected, detect content type via ClipboardContentDetector
+- [-] 21. Implement colony import from game clipboard
+  - [-] 21.1 Implement Import button: validate HTML clipboard, check player selected, detect content type via ClipboardContentDetector
     - Display informational messages for non-HTML, no player, or wrong content type
     - _Requirements: 18.1, 18.2, 18.3, 18.4_
   - [ ] 21.2 Parse clipboard to temp colony via ColonyParser.ParseClipboardToTemp(); find existing colony by planet+system via ColonyImportHelper.FindByPlanet()
