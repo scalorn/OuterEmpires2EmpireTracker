@@ -213,6 +213,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // --- Header ---
             string bpName = bp != null ? bp.ExtendedName : "(Unknown)";
             lblName.Text = $"{bpName} #{structureData.displaySequence}";
+            Log.Debug("V2.UpdateData: blueprint={0} uuid={1} seq={2}", bpName, structureData.UUID, structureData.displaySequence);
 
             // --- State checkboxes ---
             chkStaged.Checked = ViewModel.IsStaged;
@@ -437,7 +438,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void HandleMiningRigControls()
         {
+            using var guard = new ProgrammaticUpdateGuard(this);
             var structureData = ViewModel.Data;
+            Log.Debug("V2.HandleMiningRigControls: survey={0} resource={1} process={2}",
+                structureData.MiningSurvey ?? "(none)",
+                structureData.MiningSurveyResource ?? "(none)",
+                structureData.ProcessCompletionTime != null ? "active" : "idle");
 
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
@@ -613,7 +619,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void HandleRefineryControls()
         {
+            using var guard = new ProgrammaticUpdateGuard(this);
             var structureData = ViewModel.Data;
+            Log.Debug("V2.HandleRefineryControls: resource={0} purity={1} process={2}",
+                structureData.RefiningResource ?? "(none)",
+                structureData.RefiningResourcePurity ?? "(none)",
+                structureData.ProcessCompletionTime != null ? "active" : "idle");
 
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
@@ -831,7 +842,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void HandleResearchLabControls()
         {
+            using var guard = new ProgrammaticUpdateGuard(this);
             var structureData = ViewModel.Data;
+            Log.Debug("V2.HandleResearchLabControls: blueprintUUID={0} process={1}",
+                structureData.ResearchingBlueprintUUID ?? "(none)",
+                structureData.ProcessCompletionTime != null ? "active" : "idle");
 
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
@@ -974,7 +989,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void HandleManufactoryControls()
         {
+            using var guard = new ProgrammaticUpdateGuard(this);
             var structureData = ViewModel.Data;
+            Log.Debug("V2.HandleManufactoryControls: blueprintUUID={0} qty={1} process={2}",
+                structureData.ManufacturingBlueprintUUID ?? "(none)",
+                structureData.ManufacturingQuantity,
+                structureData.ProcessCompletionTime != null ? "active" : "idle");
 
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
@@ -1140,7 +1160,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void HandleCommodityFactoryControls()
         {
+            using var guard = new ProgrammaticUpdateGuard(this);
             var structureData = ViewModel.Data;
+            Log.Debug("V2.HandleCommodityFactoryControls: commodity={0} qty={1} process={2}",
+                structureData.ManufacturingCommodityName ?? "(none)",
+                structureData.ManufacturingQuantity,
+                structureData.ProcessCompletionTime != null ? "active" : "idle");
 
             if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
             {
@@ -1308,6 +1333,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void chkBuilt_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
+            Log.Debug("V2.chkBuilt_CheckedChanged: new={0}", chkBuilt.Checked);
             ViewModel.IsBuilt = chkBuilt.Checked;
             if (chkBuilt.Checked)
             {
@@ -1320,6 +1346,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void chkOnline_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
+            Log.Debug("V2.chkOnline_CheckedChanged: new={0}", chkOnline.Checked);
             ViewModel.IsOnline = chkOnline.Checked;
             if (chkOnline.Checked)
             {
@@ -1333,6 +1360,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void chkStaged_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
+            Log.Debug("V2.chkStaged_CheckedChanged: new={0}", chkStaged.Checked);
             ViewModel.IsStaged = chkStaged.Checked;
             if (chkStaged.Checked)
             {
@@ -1487,6 +1515,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             var structureData = ViewModel.Data;
             string survey = cmbSurvey.SelectedValue as string;
+            Log.Debug("V2.cmbSurvey_SelectedIndexChanged: old={0} new={1}", structureData.MiningSurvey ?? "(none)", survey ?? "(none)");
             if (survey != structureData.MiningSurvey)
             {
                 structureData.MiningLeftOvers = Decimal.Zero;
@@ -1534,6 +1563,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (_blueprint.BluePrintType == BlueprintTypes.MiningRig)
             {
                 string surveyResource = cmbSelection.SelectedValue as string;
+                Log.Debug("V2.cmbSelection_SelectedIndexChanged: type=MiningRig old={0} new={1}", structureData.MiningSurveyResource ?? "(none)", surveyResource ?? "(none)");
                 if (surveyResource != structureData.MiningSurveyResource)
                 {
                     structureData.MiningLeftOvers = Decimal.Zero;
@@ -1544,6 +1574,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             else if (_blueprint.BluePrintType == BlueprintTypes.Refinery)
             {
                 string key = cmbSelection.SelectedValue as string;
+                Log.Debug("V2.cmbSelection_SelectedIndexChanged: type=Refinery old={0}|{1} new={2}",
+                    structureData.RefiningResource ?? "(none)", structureData.RefiningResourcePurity ?? "(none)", key ?? "(none)");
                 if (!string.IsNullOrEmpty(key) && key.Contains("|"))
                 {
                     string[] parts = key.Split('|');
@@ -1560,12 +1592,16 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
             {
                 string uuid = cmbSelection.SelectedValue as string;
+                Log.Debug("V2.cmbSelection_SelectedIndexChanged: type=ResearchLab old={0} new={1}",
+                    structureData.ResearchingBlueprintUUID ?? "(none)", uuid ?? "(none)");
                 structureData.ResearchingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
                 HandleResearchLabControls();
             }
             else if (_blueprint.BluePrintType == BlueprintTypes.Manufactory)
             {
                 string uuid = cmbSelection.SelectedValue as string;
+                Log.Debug("V2.cmbSelection_SelectedIndexChanged: type=Manufactory old={0} new={1}",
+                    structureData.ManufacturingBlueprintUUID ?? "(none)", uuid ?? "(none)");
                 structureData.ManufacturingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
                 structureData.ManufacturingCompleted = 0;
                 HandleManufactoryControls();
@@ -1573,6 +1609,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             else if (_blueprint.BluePrintType.IsCommodityFactory())
             {
                 string name = cmbSelection.SelectedValue as string;
+                Log.Debug("V2.cmbSelection_SelectedIndexChanged: type=CommodityFactory old={0} new={1}",
+                    structureData.ManufacturingCommodityName ?? "(none)", name ?? "(none)");
                 structureData.ManufacturingCommodityName = string.IsNullOrEmpty(name) ? null : name;
                 structureData.ManufacturingCompleted = 0;
                 HandleCommodityFactoryControls();
@@ -1591,6 +1629,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Handle Build button for staged structures
             if (ViewModel.IsStaged && !ViewModel.IsBuilt && cmdStart.Text == "Build")
             {
+                Log.Debug("V2.cmdStart_Click: type=Build structure={0}", structureData.UUID);
                 HandleBuildStart();
                 return;
             }
@@ -1599,22 +1638,27 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             if (_blueprint.BluePrintType == BlueprintTypes.MiningRig)
             {
+                Log.Debug("V2.cmdStart_Click: type=MiningRig structure={0}", structureData.UUID);
                 HandleMiningStart();
             }
             else if (_blueprint.BluePrintType == BlueprintTypes.Refinery)
             {
+                Log.Debug("V2.cmdStart_Click: type=Refinery structure={0}", structureData.UUID);
                 HandleRefineryStart();
             }
             else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
             {
+                Log.Debug("V2.cmdStart_Click: type=ResearchLab structure={0}", structureData.UUID);
                 HandleResearchStart();
             }
             else if (_blueprint.BluePrintType == BlueprintTypes.Manufactory)
             {
+                Log.Debug("V2.cmdStart_Click: type=Manufactory structure={0}", structureData.UUID);
                 HandleManufactoryStart();
             }
             else if (_blueprint.BluePrintType.IsCommodityFactory())
             {
+                Log.Debug("V2.cmdStart_Click: type=CommodityFactory structure={0}", structureData.UUID);
                 HandleCommodityStart();
             }
         }
@@ -1800,6 +1844,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Handle Build completion (BuildCompletionTime)
             if (structureData.BuildCompletionTime != null)
             {
+                Log.Debug("V2.cmdDone_Click: type=Build structure={0}", structureData.UUID);
                 lock (Colony.ProcessingLock)
                 {
                     if (structureData.BuildCompletionTime.TimeRemaining > 0)
@@ -1819,6 +1864,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Handle process completion
             lock (Colony.ProcessingLock)
             {
+                Log.Debug("V2.cmdDone_Click: type=Process structure={0} bpType={1}",
+                    structureData.UUID, _blueprint?.BluePrintType ?? "(none)");
                 if (structureData.ProcessCompletionTime != null)
                 {
                     if (structureData.ProcessCompletionTime.IsRepeating &&

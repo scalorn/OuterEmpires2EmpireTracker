@@ -159,6 +159,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 return;
             }
 
+            Log.Debug("V2.OnCurrentPlayerChanged: player={0}", playerContext.CurrentPlayer?.Name ?? "(none)");
+
             using var guard = new ProgrammaticUpdateGuard(this);
             lvwColonies.Items.Clear();
             selectedColony = new Models.Colony();
@@ -184,6 +186,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 return;
             }
             if (_isProgrammaticUpdate > 0) return;
+            Log.Debug("V2.OnColonyDataChanged: colonyUUID={0}", e.ColonyUUID);
             if (selectedColony != null && selectedColony.UUID == e.ColonyUUID)
             {
                 colonyViewModel.RecalculateStatus();
@@ -333,6 +336,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (lvwColonies.SelectedItems.Count == 1)
             {
                 selectedColony = lvwColonies.SelectedItems[0].Tag as Models.Colony;
+                Log.Debug("V2.lvwColonies_ItemSelectionChanged: colony={0} uuid={1}",
+                    selectedColony?.ColonyName ?? selectedColony?.PlanetName ?? "(null)",
+                    selectedColony?.UUID ?? "(null)");
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
                 PopulateForm();
                 UpdateDeleteButtonState();
@@ -347,6 +353,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             using var guard = new ProgrammaticUpdateGuard(this);
 
             if (selectedColony == null) return;
+
+            Log.Debug("V2.PopulateForm: colony={0}", selectedColony.ColonyName ?? selectedColony.PlanetName ?? "(null)");
 
             txtPlanetName.Text = colonyViewModel.PlanetName;
             txtColonyName.Text = colonyViewModel.ColonyName;
@@ -553,6 +561,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             using var guard = new ProgrammaticUpdateGuard(this);
 
+            Log.Debug("V2.PopulateStructures: count={0}", selectedColony.Structures?.Count ?? 0);
+
             // Ensure structure type filter list is populated (9.1)
             PopulateStructureTypeFilter();
 
@@ -635,6 +645,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 return;
 
             string uuid = cmbFlatpacks.SelectedValue.ToString();
+            Log.Debug("V2.cmdAddFlatpack_Click: blueprintUUID={0}", uuid);
             colonyViewModel.AddStructure(uuid);
             colonyViewModel.RecalculateStatus();
             PopulateStructures();
@@ -652,6 +663,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             if (_isProgrammaticUpdate > 0) return;
 
+            var ctrl = sender as ColonyStructureV2;
+            Log.Debug("V2.structures_ColonyStructureDataChanged: structural={0} sender={1}",
+                e.IsStructural, ctrl?.ViewModel?.Data?.UUID ?? "(unknown)");
+
             if (e.IsStructural)
             {
                 // 8.4: Structural change — full rebuild
@@ -662,7 +677,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             else
             {
                 // 8.5: Non-structural change — O(1) delta update
-                var ctrl = sender as ColonyStructureV2;
                 if (ctrl?.ViewModel != null)
                 {
                     colonyViewModel.Calculator.RecalculateStructure(ctrl.ViewModel.Data);
@@ -1743,6 +1757,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void cmdImportColony_Click(object sender, EventArgs e)
         {
+            Log.Debug("V2.cmdImportColony_Click: starting import");
             if (!Clipboard.ContainsText(TextDataFormat.Html))
             {
                 MessageBox.Show("No HTML content found on the clipboard.\n\nCopy colony data from the game browser first.",
