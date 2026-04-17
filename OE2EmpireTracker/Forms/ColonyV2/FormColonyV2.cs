@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -47,6 +48,22 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        // WM_SETREDRAW: suppress all painting until re-enabled
+        [DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int wMsg, bool wParam, int lParam);
+        private const int WM_SETREDRAW = 0x000B;
+
+        private static void SuspendDrawing(Control control)
+        {
+            SendMessage(control.Handle, WM_SETREDRAW, false, 0);
+        }
+
+        private static void ResumeDrawing(Control control)
+        {
+            SendMessage(control.Handle, WM_SETREDRAW, true, 0);
+            control.Refresh();
+        }
 
         public FormColonyV2()
         {
@@ -566,6 +583,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Ensure structure type filter list is populated (9.1)
             PopulateStructureTypeFilter();
 
+            // Suppress all painting until we're done updating controls
+            SuspendDrawing(flpStructures);
+
             // Build set of checked types for filter (9.2)
             var checkedTypes = new HashSet<string>(StringComparer.Ordinal);
             foreach (ListViewItem item in lvwStructureTypes.Items)
@@ -623,6 +643,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             _poolInUse = needed;
 
             flpStructures.ResumeLayout();
+            ResumeDrawing(flpStructures);
 
             RefreshStatusSummary();
         }
