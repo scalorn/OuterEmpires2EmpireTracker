@@ -51,6 +51,7 @@
             this.deliveryExecutionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colonyDailyBuildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colonyActivityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addColonyV2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addBlueprintV2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cascadeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -156,6 +157,7 @@
             this.pricingPlansToolStripMenuItem,
             this.addBlueprintV2ToolStripMenuItem,
             this.addColonyToolStripMenuItem,
+            this.addColonyV2ToolStripMenuItem,
             this.managePlayerProfiles,
             this.addSurveyToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
@@ -182,6 +184,13 @@
             this.addColonyToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.addColonyToolStripMenuItem.Text = "Manage Colonies";
             this.addColonyToolStripMenuItem.Click += new System.EventHandler(this.addColonyToolStripMenuItem_Click);
+            // 
+            // addColonyV2ToolStripMenuItem
+            // 
+            this.addColonyV2ToolStripMenuItem.Name = "addColonyV2ToolStripMenuItem";
+            this.addColonyV2ToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.addColonyV2ToolStripMenuItem.Text = "Manage Colonies V2";
+            this.addColonyV2ToolStripMenuItem.Click += new System.EventHandler(this.addColonyV2ToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -362,6 +371,7 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem addColonyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addColonyV2ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem managePlayerProfiles;
         private System.Windows.Forms.ToolStripMenuItem deliveryRoutesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pricingPlansToolStripMenuItem;

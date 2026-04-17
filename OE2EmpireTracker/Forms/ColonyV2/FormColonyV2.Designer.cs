@@ -1,0 +1,395 @@
+namespace OE2EmpireTracker.Forms.ColonyV2
+{
+    partial class FormColonyV2
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.splitMain = new System.Windows.Forms.SplitContainer();
+            this.lvwColonies = new System.Windows.Forms.ListView();
+            this.txtColonyFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.flpColonyData = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpIdentity = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpPlanetName = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblPlanetName = new System.Windows.Forms.Label();
+            this.txtPlanetName = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.flpColonyName = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblColonyName = new System.Windows.Forms.Label();
+            this.txtColonyName = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.flpSystemName = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblSystemName = new System.Windows.Forms.Label();
+            this.txtSystemName = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.tabDetailedData = new System.Windows.Forms.TabControl();
+            this.tabPAdministration = new System.Windows.Forms.TabPage();
+            this.tabPStructures = new System.Windows.Forms.TabPage();
+            this.tabPWorkers = new System.Windows.Forms.TabPage();
+            this.tabPWarehousing = new System.Windows.Forms.TabPage();
+            this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdNew = new System.Windows.Forms.Button();
+            this.cmdSave = new System.Windows.Forms.Button();
+            this.cmdDelete = new System.Windows.Forms.Button();
+            this.cmdImportColony = new System.Windows.Forms.Button();
+            this.cmdImportClipboard = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
+            this.splitMain.Panel1.SuspendLayout();
+            this.splitMain.Panel2.SuspendLayout();
+            this.splitMain.SuspendLayout();
+            this.flpColonyData.SuspendLayout();
+            this.flpIdentity.SuspendLayout();
+            this.flpPlanetName.SuspendLayout();
+            this.flpColonyName.SuspendLayout();
+            this.flpSystemName.SuspendLayout();
+            this.tabDetailedData.SuspendLayout();
+            this.flpCommands.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // splitMain
+            // 
+            this.splitMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.splitMain.Location = new System.Drawing.Point(0, 0);
+            this.splitMain.Name = "splitMain";
+            this.splitMain.SplitterDistance = 240;
+            this.splitMain.Size = new System.Drawing.Size(1225, 500);
+            this.splitMain.TabIndex = 0;
+            // 
+            // splitMain.Panel1 — left colony list
+            // 
+            this.splitMain.Panel1.Controls.Add(this.lvwColonies);
+            this.splitMain.Panel1.Controls.Add(this.txtColonyFilter);
+            this.splitMain.Panel1.Padding = new System.Windows.Forms.Padding(2);
+            // 
+            // splitMain.Panel2 — right colony data
+            // 
+            this.splitMain.Panel2.Controls.Add(this.flpColonyData);
+            // 
+            // txtColonyFilter
+            // 
+            this.txtColonyFilter.Dock = System.Windows.Forms.DockStyle.Top;
+            this.txtColonyFilter.Location = new System.Drawing.Point(2, 2);
+            this.txtColonyFilter.Name = "txtColonyFilter";
+            this.txtColonyFilter.Size = new System.Drawing.Size(236, 20);
+            this.txtColonyFilter.TabIndex = 0;
+            // 
+            // lvwColonies
+            // 
+            this.lvwColonies.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvwColonies.FullRowSelect = true;
+            this.lvwColonies.HideSelection = false;
+            this.lvwColonies.Location = new System.Drawing.Point(2, 22);
+            this.lvwColonies.MultiSelect = false;
+            this.lvwColonies.Name = "lvwColonies";
+            this.lvwColonies.Size = new System.Drawing.Size(236, 476);
+            this.lvwColonies.TabIndex = 1;
+            this.lvwColonies.UseCompatibleStateImageBehavior = false;
+            this.lvwColonies.View = System.Windows.Forms.View.Details;
+            // 
+            // flpColonyData
+            // 
+            this.flpColonyData.Controls.Add(this.flpIdentity);
+            this.flpColonyData.Controls.Add(this.tabDetailedData);
+            this.flpColonyData.Controls.Add(this.flpCommands);
+            this.flpColonyData.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpColonyData.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpColonyData.Location = new System.Drawing.Point(0, 0);
+            this.flpColonyData.Name = "flpColonyData";
+            this.flpColonyData.Size = new System.Drawing.Size(981, 500);
+            this.flpColonyData.TabIndex = 0;
+            this.flpColonyData.WrapContents = false;
+            this.flpColonyData.Layout += new System.Windows.Forms.LayoutEventHandler(this.flpColonyData_Layout);
+            // 
+            // flpIdentity
+            // 
+            this.flpIdentity.Controls.Add(this.flpPlanetName);
+            this.flpIdentity.Controls.Add(this.flpColonyName);
+            this.flpIdentity.Controls.Add(this.flpSystemName);
+            this.flpIdentity.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpIdentity.Location = new System.Drawing.Point(2, 2);
+            this.flpIdentity.Margin = new System.Windows.Forms.Padding(2);
+            this.flpIdentity.Name = "flpIdentity";
+            this.flpIdentity.Size = new System.Drawing.Size(800, 92);
+            this.flpIdentity.TabIndex = 0;
+            this.flpIdentity.WrapContents = false;
+            // 
+            // flpPlanetName
+            // 
+            this.flpPlanetName.Controls.Add(this.lblPlanetName);
+            this.flpPlanetName.Controls.Add(this.txtPlanetName);
+            this.flpPlanetName.Location = new System.Drawing.Point(2, 2);
+            this.flpPlanetName.Margin = new System.Windows.Forms.Padding(2);
+            this.flpPlanetName.Name = "flpPlanetName";
+            this.flpPlanetName.Size = new System.Drawing.Size(364, 26);
+            this.flpPlanetName.TabIndex = 0;
+            this.flpPlanetName.WrapContents = false;
+            // 
+            // lblPlanetName
+            // 
+            this.lblPlanetName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblPlanetName.Location = new System.Drawing.Point(2, 4);
+            this.lblPlanetName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblPlanetName.Name = "lblPlanetName";
+            this.lblPlanetName.Size = new System.Drawing.Size(100, 17);
+            this.lblPlanetName.TabIndex = 0;
+            this.lblPlanetName.Text = "Planet Name";
+            this.lblPlanetName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtPlanetName
+            // 
+            this.txtPlanetName.Location = new System.Drawing.Point(107, 3);
+            this.txtPlanetName.Name = "txtPlanetName";
+            this.txtPlanetName.Size = new System.Drawing.Size(254, 20);
+            this.txtPlanetName.TabIndex = 1;
+            // 
+            // flpColonyName
+            // 
+            this.flpColonyName.Controls.Add(this.lblColonyName);
+            this.flpColonyName.Controls.Add(this.txtColonyName);
+            this.flpColonyName.Location = new System.Drawing.Point(2, 32);
+            this.flpColonyName.Margin = new System.Windows.Forms.Padding(2);
+            this.flpColonyName.Name = "flpColonyName";
+            this.flpColonyName.Size = new System.Drawing.Size(364, 26);
+            this.flpColonyName.TabIndex = 1;
+            this.flpColonyName.WrapContents = false;
+            // 
+            // lblColonyName
+            // 
+            this.lblColonyName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblColonyName.Location = new System.Drawing.Point(2, 4);
+            this.lblColonyName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblColonyName.Name = "lblColonyName";
+            this.lblColonyName.Size = new System.Drawing.Size(100, 17);
+            this.lblColonyName.TabIndex = 0;
+            this.lblColonyName.Text = "Colony Name";
+            this.lblColonyName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtColonyName
+            // 
+            this.txtColonyName.Location = new System.Drawing.Point(107, 3);
+            this.txtColonyName.Name = "txtColonyName";
+            this.txtColonyName.Size = new System.Drawing.Size(254, 20);
+            this.txtColonyName.TabIndex = 1;
+            // 
+            // flpSystemName
+            // 
+            this.flpSystemName.Controls.Add(this.lblSystemName);
+            this.flpSystemName.Controls.Add(this.txtSystemName);
+            this.flpSystemName.Location = new System.Drawing.Point(2, 62);
+            this.flpSystemName.Margin = new System.Windows.Forms.Padding(2);
+            this.flpSystemName.Name = "flpSystemName";
+            this.flpSystemName.Size = new System.Drawing.Size(364, 26);
+            this.flpSystemName.TabIndex = 2;
+            this.flpSystemName.WrapContents = false;
+            // 
+            // lblSystemName
+            // 
+            this.lblSystemName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSystemName.Location = new System.Drawing.Point(2, 4);
+            this.lblSystemName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblSystemName.Name = "lblSystemName";
+            this.lblSystemName.Size = new System.Drawing.Size(100, 17);
+            this.lblSystemName.TabIndex = 0;
+            this.lblSystemName.Text = "System";
+            this.lblSystemName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtSystemName
+            // 
+            this.txtSystemName.Location = new System.Drawing.Point(107, 3);
+            this.txtSystemName.Name = "txtSystemName";
+            this.txtSystemName.Size = new System.Drawing.Size(254, 20);
+            this.txtSystemName.TabIndex = 1;
+            // 
+            // tabDetailedData
+            // 
+            this.tabDetailedData.Controls.Add(this.tabPAdministration);
+            this.tabDetailedData.Controls.Add(this.tabPStructures);
+            this.tabDetailedData.Controls.Add(this.tabPWorkers);
+            this.tabDetailedData.Controls.Add(this.tabPWarehousing);
+            this.tabDetailedData.Location = new System.Drawing.Point(2, 98);
+            this.tabDetailedData.Margin = new System.Windows.Forms.Padding(2);
+            this.tabDetailedData.Multiline = true;
+            this.tabDetailedData.Name = "tabDetailedData";
+            this.tabDetailedData.SelectedIndex = 0;
+            this.tabDetailedData.Size = new System.Drawing.Size(800, 350);
+            this.tabDetailedData.TabIndex = 1;
+            // 
+            // tabPAdministration
+            // 
+            this.tabPAdministration.Location = new System.Drawing.Point(4, 22);
+            this.tabPAdministration.Margin = new System.Windows.Forms.Padding(2);
+            this.tabPAdministration.Name = "tabPAdministration";
+            this.tabPAdministration.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPAdministration.Size = new System.Drawing.Size(792, 324);
+            this.tabPAdministration.TabIndex = 0;
+            this.tabPAdministration.Text = "Administration";
+            this.tabPAdministration.UseVisualStyleBackColor = true;
+            // 
+            // tabPStructures
+            // 
+            this.tabPStructures.Location = new System.Drawing.Point(4, 22);
+            this.tabPStructures.Margin = new System.Windows.Forms.Padding(2);
+            this.tabPStructures.Name = "tabPStructures";
+            this.tabPStructures.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPStructures.Size = new System.Drawing.Size(792, 324);
+            this.tabPStructures.TabIndex = 1;
+            this.tabPStructures.Text = "Structures";
+            this.tabPStructures.UseVisualStyleBackColor = true;
+            // 
+            // tabPWorkers
+            // 
+            this.tabPWorkers.Location = new System.Drawing.Point(4, 22);
+            this.tabPWorkers.Name = "tabPWorkers";
+            this.tabPWorkers.Size = new System.Drawing.Size(792, 324);
+            this.tabPWorkers.TabIndex = 2;
+            this.tabPWorkers.Text = "Workers";
+            this.tabPWorkers.UseVisualStyleBackColor = true;
+            // 
+            // tabPWarehousing
+            // 
+            this.tabPWarehousing.Location = new System.Drawing.Point(4, 22);
+            this.tabPWarehousing.Name = "tabPWarehousing";
+            this.tabPWarehousing.Size = new System.Drawing.Size(792, 324);
+            this.tabPWarehousing.TabIndex = 3;
+            this.tabPWarehousing.Text = "Warehousing";
+            this.tabPWarehousing.UseVisualStyleBackColor = true;
+            // 
+            // flpCommands
+            // 
+            this.flpCommands.Controls.Add(this.cmdNew);
+            this.flpCommands.Controls.Add(this.cmdSave);
+            this.flpCommands.Controls.Add(this.cmdDelete);
+            this.flpCommands.Controls.Add(this.cmdImportColony);
+            this.flpCommands.Controls.Add(this.cmdImportClipboard);
+            this.flpCommands.Location = new System.Drawing.Point(2, 452);
+            this.flpCommands.Margin = new System.Windows.Forms.Padding(2);
+            this.flpCommands.Name = "flpCommands";
+            this.flpCommands.Size = new System.Drawing.Size(800, 32);
+            this.flpCommands.TabIndex = 2;
+            // 
+            // cmdNew
+            // 
+            this.cmdNew.Location = new System.Drawing.Point(3, 3);
+            this.cmdNew.Name = "cmdNew";
+            this.cmdNew.Size = new System.Drawing.Size(75, 23);
+            this.cmdNew.TabIndex = 0;
+            this.cmdNew.Text = "New";
+            this.cmdNew.UseVisualStyleBackColor = true;
+            this.cmdNew.Click += new System.EventHandler(this.cmdNew_Click);
+            // 
+            // cmdSave
+            // 
+            this.cmdSave.Location = new System.Drawing.Point(84, 3);
+            this.cmdSave.Name = "cmdSave";
+            this.cmdSave.Size = new System.Drawing.Size(75, 23);
+            this.cmdSave.TabIndex = 1;
+            this.cmdSave.Text = "Save";
+            this.cmdSave.UseVisualStyleBackColor = true;
+            this.cmdSave.Click += new System.EventHandler(this.cmdSave_Click);
+            // 
+            // cmdDelete
+            // 
+            this.cmdDelete.Location = new System.Drawing.Point(165, 3);
+            this.cmdDelete.Name = "cmdDelete";
+            this.cmdDelete.Size = new System.Drawing.Size(75, 23);
+            this.cmdDelete.TabIndex = 2;
+            this.cmdDelete.Text = "Delete";
+            this.cmdDelete.UseVisualStyleBackColor = true;
+            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
+            // 
+            // cmdImportColony
+            // 
+            this.cmdImportColony.Location = new System.Drawing.Point(246, 3);
+            this.cmdImportColony.Name = "cmdImportColony";
+            this.cmdImportColony.Size = new System.Drawing.Size(75, 23);
+            this.cmdImportColony.TabIndex = 3;
+            this.cmdImportColony.Text = "Import";
+            this.cmdImportColony.UseVisualStyleBackColor = true;
+            // 
+            // cmdImportClipboard
+            // 
+            this.cmdImportClipboard.Location = new System.Drawing.Point(327, 3);
+            this.cmdImportClipboard.Name = "cmdImportClipboard";
+            this.cmdImportClipboard.Size = new System.Drawing.Size(95, 23);
+            this.cmdImportClipboard.TabIndex = 4;
+            this.cmdImportClipboard.Text = "Save Clipboard";
+            this.cmdImportClipboard.UseVisualStyleBackColor = true;
+            // 
+            // FormColonyV2
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1225, 500);
+            this.Controls.Add(this.splitMain);
+            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Name = "FormColonyV2";
+            this.Text = "Manage Colonies";
+            this.splitMain.Panel1.ResumeLayout(false);
+            this.splitMain.Panel1.PerformLayout();
+            this.splitMain.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
+            this.splitMain.ResumeLayout(false);
+            this.flpColonyData.ResumeLayout(false);
+            this.flpIdentity.ResumeLayout(false);
+            this.flpPlanetName.ResumeLayout(false);
+            this.flpPlanetName.PerformLayout();
+            this.flpColonyName.ResumeLayout(false);
+            this.flpColonyName.PerformLayout();
+            this.flpSystemName.ResumeLayout(false);
+            this.flpSystemName.PerformLayout();
+            this.tabDetailedData.ResumeLayout(false);
+            this.flpCommands.ResumeLayout(false);
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.SplitContainer splitMain;
+        private System.Windows.Forms.ListView lvwColonies;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtColonyFilter;
+        private System.Windows.Forms.FlowLayoutPanel flpColonyData;
+        private System.Windows.Forms.FlowLayoutPanel flpIdentity;
+        private System.Windows.Forms.FlowLayoutPanel flpPlanetName;
+        private System.Windows.Forms.Label lblPlanetName;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtPlanetName;
+        private System.Windows.Forms.FlowLayoutPanel flpColonyName;
+        private System.Windows.Forms.Label lblColonyName;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtColonyName;
+        private System.Windows.Forms.FlowLayoutPanel flpSystemName;
+        private System.Windows.Forms.Label lblSystemName;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtSystemName;
+        private System.Windows.Forms.TabControl tabDetailedData;
+        private System.Windows.Forms.TabPage tabPAdministration;
+        private System.Windows.Forms.TabPage tabPStructures;
+        private System.Windows.Forms.TabPage tabPWorkers;
+        private System.Windows.Forms.TabPage tabPWarehousing;
+        private System.Windows.Forms.FlowLayoutPanel flpCommands;
+        private System.Windows.Forms.Button cmdNew;
+        private System.Windows.Forms.Button cmdSave;
+        private System.Windows.Forms.Button cmdDelete;
+        private System.Windows.Forms.Button cmdImportColony;
+        private System.Windows.Forms.Button cmdImportClipboard;
+    }
+}

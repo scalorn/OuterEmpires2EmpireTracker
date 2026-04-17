@@ -38,7 +38,7 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
   - [x] 3.3 Write unit tests for StructureViewModels cache invalidation and GetAllBlueprints cache invalidation
     - _Requirements: 24.2, 24.6_
 
-- [-] 4. Incremental status deltas in ColonyStatusCalculator
+- [x] 4. Incremental status deltas in ColonyStatusCalculator
   - [x] 4.1 Add `StructureStatusDelta` class to Models; add `StatusDelta` property to ColonyStructure
     - Fields: PowerProvided, PowerRequired, HabitationProvision, FoodProvision, EntertainmentProvided, WarehouseCapacity, WorkerCount, UnallocatedCount
     - _Requirements: 24.4_
@@ -51,34 +51,34 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
   - [x] 4.5 Write unit tests for incremental deltas: verify single-structure recalculation produces same totals as full recalculation
     - _Requirements: 24.4_
 
-- [ ] 5. Checkpoint — Service-level fixes
+- [x] 5. Checkpoint — Service-level fixes
   - Ensure all existing tests pass (ColonyStatusCalculatorTests, ItemBagTests, etc.)
   - Verify old FormColony still works unchanged with the enhanced services
   - Ask the user if questions arise.
 
 ## Phase 2: Form Scaffolding and Colony List
 
-- [ ] 6. Create FormColonyV2 shell with colony list
-  - [ ] 6.1 Create `Forms/ColonyV2/` directory with FormColonyV2.cs and FormColonyV2.Designer.cs
+- [-] 6. Create FormColonyV2 shell with colony list
+  - [x] 6.1 Create `Forms/ColonyV2/` directory with FormColonyV2.cs and FormColonyV2.Designer.cs
     - Designer layout: flpColonyList (left) with txtColonyFilter + lvwColonies; flpColonyData (right) with flpIdentity + tabDetailedData + flpCommands
     - _Requirements: 25.1, 1.1_
-  - [ ] 6.2 Add "Manage Colonies V2" menu item to MainWindow alongside existing
+  - [x] 6.2 Add "Manage Colonies V2" menu item to MainWindow alongside existing
     - _Requirements: 25.3_
-  - [ ] 6.3 Add csproj Compile Include entries for new files
+  - [x] 6.3 Add csproj Compile Include entries for new files
     - _Requirements: 25.1_
-  - [ ] 6.4 Implement colony list population with FullRowSelect, single-selection, columns: Planet, Name, Refs
+  - [x] 6.4 Implement colony list population with FullRowSelect, single-selection, columns: Planet, Name, Refs
     - Refs column shows ColonyReferenceCounter.TotalCount per colony
     - _Requirements: 1.1, 1.4, 1.7_
-  - [ ] 6.5 Implement case-insensitive substring filter on PlanetName and ColonyName
+  - [x] 6.5 Implement case-insensitive substring filter on PlanetName and ColonyName
     - _Requirements: 1.2_
-  - [ ] 6.6 Implement column header sort with ascending/descending toggle
+  - [x] 6.6 Implement column header sort with ascending/descending toggle
     - _Requirements: 1.3_
-  - [ ] 6.7 Implement dynamic title bar "Manage Colonies - {PlayerName} : {ColonyCount}"
+  - [x] 6.7 Implement dynamic title bar "Manage Colonies - {PlayerName} : {ColonyCount}"
     - _Requirements: 1.6_
-  - [ ] 6.8 Implement colony selection handler: create ColonyViewModel, populate identity fields (PlanetName, ColonyName, SystemName), mark all tabs dirty
+  - [x] 6.8 Implement colony selection handler: create ColonyViewModel, populate identity fields (PlanetName, ColonyName, SystemName), mark all tabs dirty
     - Use ProgrammaticUpdateGuard during population
     - _Requirements: 3.1, 3.2, 3.5, 2.7_
-  - [ ] 6.9 Implement New/Save/Delete CRUD operations
+  - [x] 6.9 Implement New/Save/Delete CRUD operations
     - New: reset form, clear selection
     - Save: set OwnerUUID, call ColonyViewModel.Save(), refresh list, update title
     - Delete: check ColonyReferenceCounter, prompt or prevent, show "In Use (N)" when refs > 0
