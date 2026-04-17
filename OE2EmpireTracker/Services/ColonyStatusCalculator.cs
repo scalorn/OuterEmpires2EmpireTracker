@@ -295,6 +295,14 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public void RecalculateStructure(ColonyStructure structure)
         {
+            // If no full calculation has been done yet, do one now
+            if (finalActualStatus == null)
+            {
+                CalculateBuilt();
+                CalculateIdeal();
+                return;
+            }
+
             var oldDelta = structure.StatusDelta ?? new StructureStatusDelta();
 
             Blueprint bp = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
