@@ -21,7 +21,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private int _isProgrammaticUpdate = 0;
 
         /// <summary>The ViewModel wrapping the current ColonyStructure data.</summary>
-        public ColonyStructureViewModel ViewModel { get; private set; }
+        public ColonyStructureViewModel ViewModel { get; set; }
 
         /// <summary>The parent colony that owns this structure.</summary>
         public Models.Colony Colony { get; set; }

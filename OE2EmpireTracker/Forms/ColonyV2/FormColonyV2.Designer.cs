@@ -45,6 +45,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.tabDetailedData = new System.Windows.Forms.TabControl();
             this.tabPAdministration = new System.Windows.Forms.TabPage();
             this.tabPStructures = new System.Windows.Forms.TabPage();
+            this.rtbStatusSummary = new System.Windows.Forms.RichTextBox();
+            this.flpStructures = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpAddStructure = new System.Windows.Forms.FlowLayoutPanel();
+            this.txtFilterFlatpack = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.cmbFlatpacks = new System.Windows.Forms.ComboBox();
+            this.cmdAddFlatpack = new System.Windows.Forms.Button();
             this.tabPWorkers = new System.Windows.Forms.TabPage();
             this.tabPWarehousing = new System.Windows.Forms.TabPage();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
@@ -63,6 +69,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpColonyName.SuspendLayout();
             this.flpSystemName.SuspendLayout();
             this.tabDetailedData.SuspendLayout();
+            this.tabPStructures.SuspendLayout();
+            this.flpAddStructure.SuspendLayout();
             this.flpCommands.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -248,6 +256,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // 
             // tabPStructures
             // 
+            this.tabPStructures.Controls.Add(this.flpStructures);
+            this.tabPStructures.Controls.Add(this.rtbStatusSummary);
+            this.tabPStructures.Controls.Add(this.flpAddStructure);
             this.tabPStructures.Location = new System.Drawing.Point(4, 22);
             this.tabPStructures.Margin = new System.Windows.Forms.Padding(2);
             this.tabPStructures.Name = "tabPStructures";
@@ -256,6 +267,68 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.tabPStructures.TabIndex = 1;
             this.tabPStructures.Text = "Structures";
             this.tabPStructures.UseVisualStyleBackColor = true;
+            this.tabPStructures.Layout += new System.Windows.Forms.LayoutEventHandler(this.tabPStructures_Layout);
+            // 
+            // rtbStatusSummary
+            // 
+            this.rtbStatusSummary.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbStatusSummary.Dock = System.Windows.Forms.DockStyle.Top;
+            this.rtbStatusSummary.Location = new System.Drawing.Point(2, 2);
+            this.rtbStatusSummary.Name = "rtbStatusSummary";
+            this.rtbStatusSummary.ReadOnly = true;
+            this.rtbStatusSummary.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.rtbStatusSummary.Size = new System.Drawing.Size(788, 36);
+            this.rtbStatusSummary.TabIndex = 0;
+            this.rtbStatusSummary.Text = "";
+            this.rtbStatusSummary.WordWrap = false;
+            // 
+            // flpStructures
+            // 
+            this.flpStructures.AutoScroll = true;
+            this.flpStructures.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpStructures.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpStructures.Location = new System.Drawing.Point(2, 38);
+            this.flpStructures.Name = "flpStructures";
+            this.flpStructures.Size = new System.Drawing.Size(788, 254);
+            this.flpStructures.TabIndex = 1;
+            this.flpStructures.WrapContents = false;
+            // 
+            // flpAddStructure
+            // 
+            this.flpAddStructure.Controls.Add(this.txtFilterFlatpack);
+            this.flpAddStructure.Controls.Add(this.cmbFlatpacks);
+            this.flpAddStructure.Controls.Add(this.cmdAddFlatpack);
+            this.flpAddStructure.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.flpAddStructure.Location = new System.Drawing.Point(2, 292);
+            this.flpAddStructure.Name = "flpAddStructure";
+            this.flpAddStructure.Size = new System.Drawing.Size(788, 30);
+            this.flpAddStructure.TabIndex = 2;
+            this.flpAddStructure.WrapContents = false;
+            // 
+            // txtFilterFlatpack
+            // 
+            this.txtFilterFlatpack.Location = new System.Drawing.Point(3, 3);
+            this.txtFilterFlatpack.Name = "txtFilterFlatpack";
+            this.txtFilterFlatpack.Size = new System.Drawing.Size(150, 20);
+            this.txtFilterFlatpack.TabIndex = 0;
+            // 
+            // cmbFlatpacks
+            // 
+            this.cmbFlatpacks.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFlatpacks.FormattingEnabled = true;
+            this.cmbFlatpacks.Location = new System.Drawing.Point(159, 3);
+            this.cmbFlatpacks.Name = "cmbFlatpacks";
+            this.cmbFlatpacks.Size = new System.Drawing.Size(300, 21);
+            this.cmbFlatpacks.TabIndex = 1;
+            // 
+            // cmdAddFlatpack
+            // 
+            this.cmdAddFlatpack.Location = new System.Drawing.Point(465, 3);
+            this.cmdAddFlatpack.Name = "cmdAddFlatpack";
+            this.cmdAddFlatpack.Size = new System.Drawing.Size(50, 23);
+            this.cmdAddFlatpack.TabIndex = 2;
+            this.cmdAddFlatpack.Text = "Add";
+            this.cmdAddFlatpack.UseVisualStyleBackColor = true;
             // 
             // tabPWorkers
             // 
@@ -359,6 +432,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpSystemName.ResumeLayout(false);
             this.flpSystemName.PerformLayout();
             this.tabDetailedData.ResumeLayout(false);
+            this.tabPStructures.ResumeLayout(false);
+            this.flpAddStructure.ResumeLayout(false);
+            this.flpAddStructure.PerformLayout();
             this.flpCommands.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -383,6 +459,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private System.Windows.Forms.TabControl tabDetailedData;
         private System.Windows.Forms.TabPage tabPAdministration;
         private System.Windows.Forms.TabPage tabPStructures;
+        private System.Windows.Forms.RichTextBox rtbStatusSummary;
+        private System.Windows.Forms.FlowLayoutPanel flpStructures;
+        private System.Windows.Forms.FlowLayoutPanel flpAddStructure;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtFilterFlatpack;
+        private System.Windows.Forms.ComboBox cmbFlatpacks;
+        private System.Windows.Forms.Button cmdAddFlatpack;
         private System.Windows.Forms.TabPage tabPWorkers;
         private System.Windows.Forms.TabPage tabPWarehousing;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;

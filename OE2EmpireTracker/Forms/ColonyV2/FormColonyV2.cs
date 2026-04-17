@@ -1,9 +1,11 @@
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.ViewModels;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -29,6 +31,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private bool _warehouseDirty = false;
         private bool _workersDirty = false;
         private bool _adminDirty = false;
+
+        // Structure_Pool (8.1)
+        private readonly List<ColonyStructureV2> _pool = new List<ColonyStructureV2>();
+        private int _poolInUse = 0;
 
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
@@ -66,6 +72,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Wire tab change for deferred population
             tabDetailedData.SelectedIndexChanged += tabDetailedData_SelectedIndexChanged;
+
+            // Wire flatpack filter and add button (8.3)
+            txtFilterFlatpack.TextChanged += txtFilterFlatpack_TextChanged;
+            cmdAddFlatpack.Click += cmdAddFlatpack_Click;
+            PopulateFlatpackCombo();
 
             // Subscribe to context events
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
@@ -296,7 +307,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void tabDetailedData_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Placeholder for deferred tab population in later phases
+            var tab = tabDetailedData.SelectedTab;
+            if (tab == tabPStructures && _structuresDirty)
+            {
+                PopulateStructures();
+                _structuresDirty = false;
+            }
+            // Future tabs: tabPWarehousing, tabPWorkers, tabPAdministration
         }
 
         // -------------------------------------------------------------------
@@ -388,6 +405,187 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 cmdDelete.Enabled = true;
                 cmdDelete.Text = "Delete";
+            }
+        }
+
+        // -------------------------------------------------------------------
+        // Structure_Pool (8.1)
+        // -------------------------------------------------------------------
+
+        private ColonyStructureV2 AcquireStructureControl()
+        {
+            if (_poolInUse < _pool.Count)
+            {
+                var ctrl = _pool[_poolInUse];
+                _poolInUse++;
+                ctrl.Visible = true;
+                return ctrl;
+            }
+            var newCtrl = new ColonyStructureV2();
+            newCtrl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
+            _pool.Add(newCtrl);
+            _poolInUse++;
+            return newCtrl;
+        }
+
+        private void ReturnAllToPool()
+        {
+            for (int i = 0; i < _poolInUse; i++)
+            {
+                _pool[i].Visible = false;
+                _pool[i].Reset();
+            }
+            _poolInUse = 0;
+        }
+
+        // -------------------------------------------------------------------
+        // Structure panel population (8.2)
+        // -------------------------------------------------------------------
+
+        private void PopulateStructures()
+        {
+            if (selectedColony == null) return;
+
+            using var guard = new ProgrammaticUpdateGuard(this);
+
+            flpStructures.SuspendLayout();
+            ReturnAllToPool();
+            flpStructures.Controls.Clear();
+
+            var structureVMs = colonyViewModel.StructureViewModels;
+            foreach (var vm in structureVMs)
+            {
+                var ctrl = AcquireStructureControl();
+                ctrl.ViewModel = vm;
+                ctrl.Colony = selectedColony;
+                var bp = playerContext.FindBlueprint(vm.Data.FlatpackBlueprintUUID);
+                ctrl.UpdateData(bp);
+                flpStructures.Controls.Add(ctrl);
+            }
+
+            flpStructures.ResumeLayout();
+
+            RefreshStatusSummary();
+        }
+
+        // -------------------------------------------------------------------
+        // Flatpack filter + combo + add (8.3)
+        // -------------------------------------------------------------------
+
+        private void PopulateFlatpackCombo()
+        {
+            string searchText = txtFilterFlatpack.Text;
+            var filteredList = new List<Models.Blueprint>(playerContext.GetAllBlueprints());
+
+            filteredList = filteredList
+                .Where(item => item.BluePrintType != null && item.BluePrintType.IsFlatpack())
+                .ToList();
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(item => item.ExtendedName != null &&
+                                   item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+            }
+
+            filteredList = filteredList.OrderBy(p => p.ExtendedName, StringComparer.OrdinalIgnoreCase).ToList();
+            filteredList.Insert(0, new Models.Blueprint());
+
+            var bs = new BindingSource();
+            bs.DataSource = filteredList;
+
+            cmbFlatpacks.DataSource = null;
+            cmbFlatpacks.DisplayMember = "ExtendedName";
+            cmbFlatpacks.ValueMember = "UUID";
+            cmbFlatpacks.DataSource = bs;
+        }
+
+        private void txtFilterFlatpack_TextChanged(object sender, EventArgs e)
+        {
+            PopulateFlatpackCombo();
+            cmbFlatpacks.DroppedDown = true;
+        }
+
+        private void cmdAddFlatpack_Click(object sender, EventArgs e)
+        {
+            if (cmbFlatpacks.SelectedValue == null || string.IsNullOrEmpty(cmbFlatpacks.SelectedValue.ToString()))
+                return;
+
+            string uuid = cmbFlatpacks.SelectedValue.ToString();
+            colonyViewModel.AddStructure(uuid);
+            colonyViewModel.RecalculateStatus();
+            PopulateStructures();
+
+            // Save context
+            if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
+                playerContext.WriteContext();
+        }
+
+        // -------------------------------------------------------------------
+        // Structure change handlers (8.4, 8.5)
+        // -------------------------------------------------------------------
+
+        private void structures_ColonyStructureDataChanged(object sender, ColonyStructureDataChangedEventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+
+            if (e.IsStructural)
+            {
+                // 8.4: Structural change — full rebuild
+                colonyViewModel.InvalidateStructureViewModels();
+                colonyViewModel.RecalculateStatus();
+                PopulateStructures();
+            }
+            else
+            {
+                // 8.5: Non-structural change — O(1) delta update
+                var ctrl = sender as ColonyStructureV2;
+                if (ctrl?.ViewModel != null)
+                {
+                    colonyViewModel.Calculator.RecalculateStructure(ctrl.ViewModel.Data);
+                    ctrl.UpdateBackgroundColor();
+                }
+            }
+
+            RefreshStatusSummary();
+
+            // Save context
+            if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
+                playerContext.WriteContext();
+        }
+
+        // -------------------------------------------------------------------
+        // Status summary (8.6)
+        // -------------------------------------------------------------------
+
+        private void RefreshStatusSummary()
+        {
+            var status = colonyViewModel.Calculator.finalActualStatus;
+            if (status == null)
+            {
+                rtbStatusSummary.Text = "";
+                return;
+            }
+
+            var builder = new RtfBuilder();
+            ColonyStatusCalculator.PopulateStatus(builder, status);
+            rtbStatusSummary.Rtf = builder.ToRtf();
+        }
+
+        // -------------------------------------------------------------------
+        // Structures tab layout handler
+        // -------------------------------------------------------------------
+
+        private void tabPStructures_Layout(object sender, LayoutEventArgs e)
+        {
+            int w = tabPStructures.ClientSize.Width - tabPStructures.Padding.Horizontal;
+            flpStructures.Width = w;
+
+            // Size each pooled control to match the panel width
+            for (int i = 0; i < _poolInUse; i++)
+            {
+                _pool[i].Width = w - SystemInformation.VerticalScrollBarWidth - 6;
             }
         }
 

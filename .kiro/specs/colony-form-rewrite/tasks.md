@@ -112,19 +112,19 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
     - Delete also triggered by Delete key when control is focused
     - _Requirements: 4.3, 4.4, 4.5, 4.6_
 
-- [ ] 8. Implement Structure_Pool and structure panel in FormColonyV2
-  - [ ] 8.1 Implement Structure_Pool: AcquireStructureControl(), ReturnAllToPool() with high-water-mark growth
+- [-] 8. Implement Structure_Pool and structure panel in FormColonyV2
+  - [x] 8.1 Implement Structure_Pool: AcquireStructureControl(), ReturnAllToPool() with high-water-mark growth
     - _Requirements: 24.5 (form-level), 4.8_
-  - [ ] 8.2 Implement structure panel population: acquire controls from pool, call UpdateData(bp), add to flpStructures with SuspendLayout/ResumeLayout
+  - [x] 8.2 Implement structure panel population: acquire controls from pool, call UpdateData(bp), add to flpStructures with SuspendLayout/ResumeLayout
     - Wire ColonyStructureDataChanged event on each control
     - _Requirements: 4.2, 4.7, 4.8, 24.6 (form-level)_
-  - [ ] 8.3 Implement flatpack filter + combo for adding structures; Add button calls ColonyViewModel.AddStructure()
+  - [x] 8.3 Implement flatpack filter + combo for adding structures; Add button calls ColonyViewModel.AddStructure()
     - _Requirements: 4.1, 4.2_
-  - [ ] 8.4 Implement structural change handler: rebuild layout using pool (add/reorder/delete), call RecalculateStatus
+  - [x] 8.4 Implement structural change handler: rebuild layout using pool (add/reorder/delete), call RecalculateStatus
     - _Requirements: 4.7, 4.8_
-  - [ ] 8.5 Implement non-structural change handler: update only affected control, call RecalculateStructure() for O(1) delta update
+  - [x] 8.5 Implement non-structural change handler: update only affected control, call RecalculateStructure() for O(1) delta update
     - _Requirements: 4.9, 24.8 (form-level)_
-  - [ ] 8.6 Implement status summary panel: Power, Habitation, Food, Entertainment, Warehouse with colored RTF
+  - [x] 8.6 Implement status summary panel: Power, Habitation, Food, Entertainment, Warehouse with colored RTF
     - Red when Required > Provided, green otherwise, format "Required/Provided"
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
 
