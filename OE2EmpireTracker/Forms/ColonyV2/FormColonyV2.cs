@@ -358,6 +358,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     selectedColony?.ColonyName ?? selectedColony?.PlanetName ?? "(null)",
                     selectedColony?.UUID ?? "(null)");
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
+                colonyViewModel.RecalculateStatus();
                 long t0 = sw.ElapsedMilliseconds;
                 PopulateForm();
                 long t1 = sw.ElapsedMilliseconds;
