@@ -22,6 +22,8 @@ namespace OE2EmpireTracker.Services
 
         private string _currentPlayerUUID = string.Empty;
 
+        private readonly object _listLock = new object();
+
         private Dictionary<string, Blueprint> _blueprintCache;
         private Dictionary<string, Survey> _surveyCache;
         private Dictionary<string, Colony> _colonyCache;
@@ -231,16 +233,21 @@ namespace OE2EmpireTracker.Services
                 Log.Debug("WriteContext skipped -- no file path set (not yet saved)");
                 return;
             }
-            PlayerRoot playerRoot = new PlayerRoot();
-            playerRoot.DataVersion = DataVersion;
-            playerRoot.CurrentPlayerUUID = _currentPlayerUUID;
-            playerRoot.PlayerProfile = PlayerProfileList.ToArray();
-            playerRoot.Blueprint = BlueprintList.ToArray();
-            playerRoot.Survey = SurveyList.ToArray();
-            playerRoot.Colony = ColonyList.ToArray();
-            playerRoot.DeliveryRoute = DeliveryRouteList.ToArray();
-            playerRoot.DeliveryPlan = DeliveryPlanList.ToArray();
-            playerRoot.PricingPlan = PricingPlanList.ToArray();
+
+            PlayerRoot playerRoot;
+            lock (_listLock)
+            {
+                playerRoot = new PlayerRoot();
+                playerRoot.DataVersion = DataVersion;
+                playerRoot.CurrentPlayerUUID = _currentPlayerUUID;
+                playerRoot.PlayerProfile = PlayerProfileList.ToArray();
+                playerRoot.Blueprint = BlueprintList.ToArray();
+                playerRoot.Survey = SurveyList.ToArray();
+                playerRoot.Colony = ColonyList.ToArray();
+                playerRoot.DeliveryRoute = DeliveryRouteList.ToArray();
+                playerRoot.DeliveryPlan = DeliveryPlanList.ToArray();
+                playerRoot.PricingPlan = PricingPlanList.ToArray();
+            }
 
             string jsonContent = JsonConvert.SerializeObject(playerRoot, JsonSettings.SerializerSettings);
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
@@ -272,26 +279,29 @@ namespace OE2EmpireTracker.Services
         {
             if (string.IsNullOrEmpty(id)) return null;
 
-            if (_blueprintCache == null)
+            lock (_listLock)
             {
-                _blueprintCache = new Dictionary<string, Blueprint>();
-                foreach (var bp in BlueprintList)
+                if (_blueprintCache == null)
                 {
-                    if (bp.UUID != null && !_blueprintCache.ContainsKey(bp.UUID))
-                        _blueprintCache[bp.UUID] = bp;
+                    _blueprintCache = new Dictionary<string, Blueprint>();
+                    foreach (var bp in BlueprintList)
+                    {
+                        if (bp.UUID != null && !_blueprintCache.ContainsKey(bp.UUID))
+                            _blueprintCache[bp.UUID] = bp;
+                    }
                 }
+
+                if (_blueprintCache.TryGetValue(id, out var match))
+                    return match;
             }
 
-            if (_blueprintCache.TryGetValue(id, out var match))
-                return match;
-
-            // Fall back to global blueprints
+            // Fall back to global blueprints outside the lock
             return EmpireContext.GetInstance()?.FindGlobalBlueprint(id);
         }
 
         public void InvalidateBlueprintCache()
         {
-            _blueprintCache = null;
+            lock (_listLock) { _blueprintCache = null; }
             InvalidateAllBlueprintsCache();
         }
 
@@ -312,25 +322,28 @@ namespace OE2EmpireTracker.Services
         {
             if (string.IsNullOrEmpty(id)) return null;
 
-            if (_surveyCache == null)
+            lock (_listLock)
             {
-                _surveyCache = new Dictionary<string, Survey>();
-                foreach (var s in SurveyList)
+                if (_surveyCache == null)
                 {
-                    if (s.UUID != null && !_surveyCache.ContainsKey(s.UUID))
-                        _surveyCache[s.UUID] = s;
+                    _surveyCache = new Dictionary<string, Survey>();
+                    foreach (var s in SurveyList)
+                    {
+                        if (s.UUID != null && !_surveyCache.ContainsKey(s.UUID))
+                            _surveyCache[s.UUID] = s;
+                    }
                 }
-            }
 
-            if (_surveyCache.TryGetValue(id, out var match))
-                return match;
+                if (_surveyCache.TryGetValue(id, out var match))
+                    return match;
+            }
 
             return null;
         }
 
         public void InvalidateSurveyCache()
         {
-            _surveyCache = null;
+            lock (_listLock) { _surveyCache = null; }
         }
 
         public void initColonies(PlayerRoot playerRoot)
@@ -372,25 +385,39 @@ namespace OE2EmpireTracker.Services
         {
             if (string.IsNullOrEmpty(id)) return null;
 
-            if (_colonyCache == null)
+            lock (_listLock)
             {
-                _colonyCache = new Dictionary<string, Colony>();
-                foreach (var c in ColonyList)
+                if (_colonyCache == null)
                 {
-                    if (c.UUID != null && !_colonyCache.ContainsKey(c.UUID))
-                        _colonyCache[c.UUID] = c;
+                    _colonyCache = new Dictionary<string, Colony>();
+                    foreach (var c in ColonyList)
+                    {
+                        if (c.UUID != null && !_colonyCache.ContainsKey(c.UUID))
+                            _colonyCache[c.UUID] = c;
+                    }
                 }
-            }
 
-            if (_colonyCache.TryGetValue(id, out var match))
-                return match;
+                if (_colonyCache.TryGetValue(id, out var match))
+                    return match;
+            }
 
             return null;
         }
 
         public void InvalidateColonyCache()
         {
-            _colonyCache = null;
+            lock (_listLock) { _colonyCache = null; }
+        }
+
+        /// <summary>
+        /// Returns a snapshot of ColonyList for safe iteration outside the lock.
+        /// </summary>
+        public List<Colony> SnapshotColonyList()
+        {
+            lock (_listLock)
+            {
+                return new List<Colony>(ColonyList);
+            }
         }
 
         // -----------------------------------------------------------------------

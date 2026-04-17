@@ -55,12 +55,12 @@ Introduce layered synchronization to the OE2EmpireTracker data model so that Bac
     - If lock timeout, log warning and return without processing
     - _Requirements: 1.3, 1.6, 1.7_
 
-- [-] 4. Checkpoint — Verify ColonyLock migration compiles and tests pass
+- [x] 4. Checkpoint — Verify ColonyLock migration compiles and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 5. Add PlayerContext._listLock and SnapshotColonyList
-  - [~] 5.1 Add _listLock field and wrap cache methods
+- [-] 5. Add PlayerContext._listLock and SnapshotColonyList
+  - [x] 5.1 Add _listLock field and wrap cache methods
     - Add `private readonly object _listLock = new object();` field to `Services/PlayerContext.cs`
     - Wrap `FindBlueprint` cache rebuild in `lock(_listLock)` — acquire lock, check/rebuild `_blueprintCache`, lookup, release lock, then fall back to global blueprints outside the lock
     - Wrap `FindSurvey` cache rebuild in `lock(_listLock)` — same pattern
@@ -68,17 +68,17 @@ Introduce layered synchronization to the OE2EmpireTracker data model so that Bac
     - Wrap `InvalidateBlueprintCache`, `InvalidateSurveyCache`, `InvalidateColonyCache` in `lock(_listLock)` before setting cache to null
     - _Requirements: 5.1, 5.3, 5.5_
 
-  - [~] 5.2 Add SnapshotColonyList method to PlayerContext
+  - [x] 5.2 Add SnapshotColonyList method to PlayerContext
     - Add `public List<Colony> SnapshotColonyList()` that acquires `lock(_listLock)` and returns `new List<Colony>(ColonyList)`
     - This is used by BackgroundProcessor to safely iterate colonies
     - _Requirements: 5.2_
 
-  - [~] 5.3 Wrap WriteContext serialization snapshot in _listLock
+  - [x] 5.3 Wrap WriteContext serialization snapshot in _listLock
     - In `PlayerContext.WriteContext()`, acquire `lock(_listLock)` to snapshot all lists into a `PlayerRoot` object
     - Release the lock before calling `JsonConvert.SerializeObject` and `SafeFileWriter.WriteAllText`
     - _Requirements: 5.4_
 
-  - [~] 5.4 Update BackgroundProcessor to use SnapshotColonyList
+  - [x] 5.4 Update BackgroundProcessor to use SnapshotColonyList
     - In `Services/BackgroundProcessor.cs`, replace `new List<Colony>(_playerContext.ColonyList)` with `_playerContext.SnapshotColonyList()`
     - _Requirements: 5.2, 7.4, 8.1_
 
