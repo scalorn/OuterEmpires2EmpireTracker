@@ -220,11 +220,15 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             chkBuilt.Checked = ViewModel.IsBuilt;
             chkOnline.Checked = ViewModel.IsOnline;
 
+            var udSw = System.Diagnostics.Stopwatch.StartNew();
+
             // --- Status RTF ---
             PopulateStatusRtf();
+            long tRtf = udSw.ElapsedMilliseconds;
 
             // --- Worker checkboxes (7.6 + 7.7) ---
             PopulateWorkerCheckboxes();
+            long tWorkers = udSw.ElapsedMilliseconds;
 
             // --- Building state: structure transitioning from staged to built ---
             if (structureData.BuildCompletionTime != null &&
@@ -233,6 +237,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 HandleBuildingState();
                 UpdateBackgroundColor();
                 this.ResumeLayout();
+                udSw.Stop();
+                Log.Debug("V2.UpdateData PERF: {0} rtf={1}ms workers={2}ms building total={3}ms",
+                    bpName, tRtf, tWorkers - tRtf, udSw.ElapsedMilliseconds);
                 return;
             }
 
@@ -257,12 +264,20 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 SetPanelVisibilityByType();
             }
+            long tControls = udSw.ElapsedMilliseconds;
 
             // --- Build button for staged structures ---
             HandleStagedBuildButton();
 
             // --- Background color (7.4) ---
             UpdateBackgroundColor();
+
+            udSw.Stop();
+            if (udSw.ElapsedMilliseconds > 5)
+            {
+                Log.Debug("V2.UpdateData PERF: {0} rtf={1}ms workers={2}ms controls={3}ms total={4}ms",
+                    bpName, tRtf, tWorkers - tRtf, tControls - tWorkers, udSw.ElapsedMilliseconds);
+            }
 
             this.ResumeLayout();
         }

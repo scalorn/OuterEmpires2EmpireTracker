@@ -352,16 +352,23 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             if (lvwColonies.SelectedItems.Count == 1)
             {
+                var sw = System.Diagnostics.Stopwatch.StartNew();
                 selectedColony = lvwColonies.SelectedItems[0].Tag as Models.Colony;
                 Log.Debug("V2.lvwColonies_ItemSelectionChanged: colony={0} uuid={1}",
                     selectedColony?.ColonyName ?? selectedColony?.PlanetName ?? "(null)",
                     selectedColony?.UUID ?? "(null)");
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
+                long t0 = sw.ElapsedMilliseconds;
                 PopulateForm();
+                long t1 = sw.ElapsedMilliseconds;
                 UpdateDeleteButtonState();
                 RefreshAdminReport();
+                long t2 = sw.ElapsedMilliseconds;
                 UpdateTabWarnings();
                 UpdateTitle();
+                sw.Stop();
+                Log.Info("V2.ColonySelection PERF: total={0}ms populateForm={1}ms adminReport={2}ms rest={3}ms",
+                    sw.ElapsedMilliseconds, t1 - t0, t2 - t1, sw.ElapsedMilliseconds - t2);
             }
         }
 
@@ -576,6 +583,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             if (selectedColony == null) return;
 
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+
             using var guard = new ProgrammaticUpdateGuard(this);
 
             Log.Debug("V2.PopulateStructures: count={0}", selectedColony.Structures?.Count ?? 0);
@@ -599,6 +608,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             var structureVMs = colonyViewModel.StructureViewModels;
             int needed = structureVMs.Count;
 
+            long t0 = sw.ElapsedMilliseconds;
+
             // Grow pool if needed (without removing/re-adding to Controls)
             while (_pool.Count < needed)
             {
@@ -616,7 +627,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     flpStructures.Controls.Add(_pool[i]);
             }
 
+            long t1 = sw.ElapsedMilliseconds;
+
             // Assign data to active controls, hide extras
+            long updateDataTotal = 0;
+            long resetTotal = 0;
             for (int i = 0; i < _pool.Count; i++)
             {
                 var ctrl = _pool[i];
@@ -628,24 +643,38 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
                     ctrl.ViewModel = vm;
                     ctrl.Colony = selectedColony;
+                    var udSw = System.Diagnostics.Stopwatch.StartNew();
                     ctrl.UpdateData(bp);
+                    udSw.Stop();
+                    updateDataTotal += udSw.ElapsedMilliseconds;
                     ctrl.Visible = checkedTypes.Count == 0 || checkedTypes.Contains(typeId);
                 }
                 else
                 {
                     if (ctrl.Visible || ctrl.ViewModel != null)
                     {
+                        var rSw = System.Diagnostics.Stopwatch.StartNew();
                         ctrl.Visible = false;
                         ctrl.Reset();
+                        rSw.Stop();
+                        resetTotal += rSw.ElapsedMilliseconds;
                     }
                 }
             }
             _poolInUse = needed;
 
+            long t2 = sw.ElapsedMilliseconds;
+
             flpStructures.ResumeLayout();
             ResumeDrawing(flpStructures);
 
+            long t3 = sw.ElapsedMilliseconds;
+
             RefreshStatusSummary();
+
+            sw.Stop();
+            Log.Info("V2.PopulateStructures PERF: total={0}ms pool={1}ms updateData={2}ms(x{3}) reset={4}ms layout={5}ms",
+                sw.ElapsedMilliseconds, t1 - t0, updateDataTotal, needed, resetTotal, t3 - t2);
         }
 
         // -------------------------------------------------------------------
