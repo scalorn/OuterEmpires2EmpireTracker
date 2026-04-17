@@ -378,16 +378,24 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             if (selectedColony == null) return;
 
+            var pfSw = System.Diagnostics.Stopwatch.StartNew();
+
             Log.Debug("V2.PopulateForm: colony={0}", selectedColony.ColonyName ?? selectedColony.PlanetName ?? "(null)");
 
             txtPlanetName.Text = colonyViewModel.PlanetName;
             txtColonyName.Text = colonyViewModel.ColonyName;
             txtSystemName.Text = colonyViewModel.Data.SystemName ?? "";
 
+            long t0 = pfSw.ElapsedMilliseconds;
+
             MarkAllTabsDirty();
 
             // Immediately populate the currently visible tab
             PopulateActiveTab();
+
+            pfSw.Stop();
+            Log.Info("V2.PopulateForm PERF: total={0}ms identity={1}ms activeTab={2}ms",
+                pfSw.ElapsedMilliseconds, t0, pfSw.ElapsedMilliseconds - t0);
         }
 
         private void MarkAllTabsDirty()
@@ -832,6 +840,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 return;
             }
 
+            var arSw = System.Diagnostics.Stopwatch.StartNew();
             try
             {
                 string rtf = ColonyAdminReportBuilder.BuildReport(selectedColony, playerContext);
@@ -841,6 +850,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 Log.Error(ex, "Error building admin report");
             }
+            arSw.Stop();
+            if (arSw.ElapsedMilliseconds > 10)
+                Log.Info("V2.RefreshAdminReport PERF: {0}ms", arSw.ElapsedMilliseconds);
         }
 
         private void timerAdminRefresh_Tick(object sender, EventArgs e)
