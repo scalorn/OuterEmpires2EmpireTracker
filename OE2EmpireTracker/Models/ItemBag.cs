@@ -21,6 +21,8 @@ namespace OE2EmpireTracker.Models
         // Secondary index: (ItemType, BaseItemTypeID, Purity) -> list of items (Resources only)
         private Dictionary<(ItemType.ItemTypeEnum, string, string), List<Item>> _resourceIndex;
 
+        private readonly object _syncRoot = new object();
+
         public ItemBag()
         {
             Items = new Dictionary<string, Item>();
@@ -28,19 +30,28 @@ namespace OE2EmpireTracker.Models
 
         public bool ContainsKey(string uuid)
         {
-            return Items.ContainsKey(uuid);
+            lock (_syncRoot)
+            {
+                return Items.ContainsKey(uuid);
+            }
         }
 
         public void AddItem(Item item)
         {
-            Items.Add(item.UUID, item);
-            _typeIndex = null;
-            _resourceIndex = null;
+            lock (_syncRoot)
+            {
+                Items.Add(item.UUID, item);
+                _typeIndex = null;
+                _resourceIndex = null;
+            }
         }
 
         public int Count()
         {
-            return Items.Count;
+            lock (_syncRoot)
+            {
+                return Items.Count;
+            }
         }
 
         private void EnsureTypeIndex()
@@ -82,44 +93,60 @@ namespace OE2EmpireTracker.Models
         /// </summary>
         public int CountByType(Models.ItemType.ItemTypeEnum itemType, string baseItemTypeID)
         {
-            EnsureTypeIndex();
-            var key = (itemType, baseItemTypeID ?? "");
-            return _typeIndex.TryGetValue(key, out var list) ? list.Sum(i => i.Quantity) : 0;
+            lock (_syncRoot)
+            {
+                EnsureTypeIndex();
+                var key = (itemType, baseItemTypeID ?? "");
+                return _typeIndex.TryGetValue(key, out var list) ? list.Sum(i => i.Quantity) : 0;
+            }
         }
 
         public List<Item> FindByType(Models.ItemType.ItemTypeEnum itemType, string baseItemTypeID)
         {
-            EnsureTypeIndex();
-            var key = (itemType, baseItemTypeID ?? "");
-            return _typeIndex.TryGetValue(key, out var list) ? new List<Item>(list) : new List<Item>();
+            lock (_syncRoot)
+            {
+                EnsureTypeIndex();
+                var key = (itemType, baseItemTypeID ?? "");
+                return _typeIndex.TryGetValue(key, out var list) ? new List<Item>(list) : new List<Item>();
+            }
         }
 
         public List<Item> FindResource(string resource, string purity)
         {
-            EnsureResourceIndex();
-            var key = (ItemType.ItemTypeEnum.Resource, resource ?? "", purity ?? "");
-            return _resourceIndex.TryGetValue(key, out var list) ? new List<Item>(list) : new List<Item>();
+            lock (_syncRoot)
+            {
+                EnsureResourceIndex();
+                var key = (ItemType.ItemTypeEnum.Resource, resource ?? "", purity ?? "");
+                return _resourceIndex.TryGetValue(key, out var list) ? new List<Item>(list) : new List<Item>();
+            }
         }
 
         public bool Remove(string uuid)
         {
-            bool present = false;
-            // Write the value so the UI knows what to do.
-            if (Items.ContainsKey(uuid))
+            lock (_syncRoot)
             {
-                present = true;
-                Items.Remove(uuid);
+                bool present = false;
+                // Write the value so the UI knows what to do.
+                if (Items.ContainsKey(uuid))
+                {
+                    present = true;
+                    Items.Remove(uuid);
+                    _typeIndex = null;
+                    _resourceIndex = null;
+                }
+
+                return present;
+            }
+        }
+
+        public void Clear()
+        {
+            lock (_syncRoot)
+            {
+                Items.Clear();
                 _typeIndex = null;
                 _resourceIndex = null;
             }
-
-            return present;
-        }
-        public void Clear()
-        {
-            Items.Clear();
-            _typeIndex = null;
-            _resourceIndex = null;
         }
     }
     public class ItemBagJSONConverter : JsonConverter<ItemBag>

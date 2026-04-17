@@ -55,7 +55,7 @@ Introduce layered synchronization to the OE2EmpireTracker data model so that Bac
     - If lock timeout, log warning and return without processing
     - _Requirements: 1.3, 1.6, 1.7_
 
-- [ ] 4. Checkpoint — Verify ColonyLock migration compiles and tests pass
+- [-] 4. Checkpoint — Verify ColonyLock migration compiles and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 

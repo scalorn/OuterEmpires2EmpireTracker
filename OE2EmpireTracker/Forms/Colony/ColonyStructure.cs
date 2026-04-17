@@ -1646,7 +1646,7 @@ namespace OE2EmpireTracker.Forms.Colony
             // Handle Build completion (BuildCompletionTime)
             if (ColonyStructureData.BuildCompletionTime != null)
             {
-                if (!Colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs))
+                if (!Colony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
                 {
                     Log.Warn("ColonyStructure: write lock timeout on colony {0}", Colony.UUID);
                     return;
@@ -1671,7 +1671,7 @@ namespace OE2EmpireTracker.Forms.Colony
                 return;
             }
 
-            if (!Colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs))
+            if (!Colony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
             {
                 Log.Warn("ColonyStructure: write lock timeout on colony {0}", Colony.UUID);
                 return;
