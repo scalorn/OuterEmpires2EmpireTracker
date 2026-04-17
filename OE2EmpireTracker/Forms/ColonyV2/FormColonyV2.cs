@@ -541,14 +541,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 var bp = playerContext.FindBlueprint(vm.Data.FlatpackBlueprintUUID);
                 string typeId = bp?.BluePrintType ?? "";
 
-                // Skip structures whose type is unchecked (9.2)
-                if (checkedTypes.Count > 0 && !checkedTypes.Contains(typeId))
-                    continue;
-
                 var ctrl = AcquireStructureControl();
                 ctrl.ViewModel = vm;
                 ctrl.Colony = selectedColony;
                 ctrl.UpdateData(bp);
+
+                // Hide structures whose type is unchecked (9.2)
+                ctrl.Visible = checkedTypes.Count == 0 || checkedTypes.Contains(typeId);
+
                 flpStructures.Controls.Add(ctrl);
             }
 
