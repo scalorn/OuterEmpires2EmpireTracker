@@ -52,13 +52,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.txtSelectionFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmbSelection = new System.Windows.Forms.ComboBox();
             this.flpManufacturing = new System.Windows.Forms.FlowLayoutPanel();
+            this.rtbProgressStatus = new System.Windows.Forms.RichTextBox();
+            this.txtCompletionTime = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.txtQuantity = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.chkStageResources = new System.Windows.Forms.CheckBox();
             this.cmdStart = new System.Windows.Forms.Button();
             this.cmdDone = new System.Windows.Forms.Button();
-            this.flpTimer = new System.Windows.Forms.FlowLayoutPanel();
-            this.txtCompletionTime = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.rtbProgressStatus = new System.Windows.Forms.RichTextBox();
             this.flpStructureCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdUp = new System.Windows.Forms.Button();
             this.cmdDown = new System.Windows.Forms.Button();
@@ -70,7 +69,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpSurveySelection.SuspendLayout();
             this.flpSelection.SuspendLayout();
             this.flpManufacturing.SuspendLayout();
-            this.flpTimer.SuspendLayout();
             this.flpStructureCommands.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -83,10 +81,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpColonyStructure.Controls.Add(this.flpSurveySelection);
             this.flpColonyStructure.Controls.Add(this.flpSelection);
             this.flpColonyStructure.Controls.Add(this.flpManufacturing);
-            this.flpColonyStructure.Controls.Add(this.flpTimer);
             this.flpColonyStructure.Controls.Add(this.flpStructureCommands);
             this.flpColonyStructure.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpColonyStructure.Location = new System.Drawing.Point(0, 0);
+            this.flpColonyStructure.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.flpColonyStructure.Name = "flpColonyStructure";
             this.flpColonyStructure.Size = new System.Drawing.Size(620, 200);
             this.flpColonyStructure.TabIndex = 0;
@@ -100,6 +98,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpHeader.Controls.Add(this.chkBuilt);
             this.flpHeader.Controls.Add(this.chkOnline);
             this.flpHeader.Location = new System.Drawing.Point(3, 3);
+            this.flpHeader.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.flpHeader.Name = "flpHeader";
             this.flpHeader.Size = new System.Drawing.Size(610, 23);
             this.flpHeader.TabIndex = 0;
@@ -152,7 +151,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // rtbStatus
             // 
             this.rtbStatus.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtbStatus.Location = new System.Drawing.Point(3, 29);
+            this.rtbStatus.Location = new System.Drawing.Point(3, 26);
+            this.rtbStatus.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.rtbStatus.Name = "rtbStatus";
             this.rtbStatus.ReadOnly = true;
             this.rtbStatus.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -171,13 +171,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpWorkers.Controls.Add(this.chkWorker4);
             this.flpWorkers.Controls.Add(this.chkWorker5);
             this.flpWorkers.Controls.Add(this.chkWorker6);
-            this.flpWorkers.Location = new System.Drawing.Point(3, 75);
+            this.flpWorkers.Location = new System.Drawing.Point(3, 66);
+            this.flpWorkers.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.flpWorkers.Name = "flpWorkers";
             this.flpWorkers.Size = new System.Drawing.Size(610, 23);
             this.flpWorkers.TabIndex = 2;
             this.flpWorkers.WrapContents = false;
             // 
-            // chkWorker1
+            // chkWorker1 through chkWorker6 (unchanged)
             // 
             this.chkWorker1.AutoSize = true;
             this.chkWorker1.Location = new System.Drawing.Point(3, 3);
@@ -188,9 +189,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.chkWorker1.Visible = false;
             this.chkWorker1.UseVisualStyleBackColor = true;
             this.chkWorker1.CheckedChanged += new System.EventHandler(this.chkWorker_CheckedChanged);
-            // 
-            // chkWorker2
-            // 
             this.chkWorker2.AutoSize = true;
             this.chkWorker2.Location = new System.Drawing.Point(89, 3);
             this.chkWorker2.Name = "chkWorker2";
@@ -200,9 +198,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.chkWorker2.Visible = false;
             this.chkWorker2.UseVisualStyleBackColor = true;
             this.chkWorker2.CheckedChanged += new System.EventHandler(this.chkWorker_CheckedChanged);
-            // 
-            // chkWorker3
-            // 
             this.chkWorker3.AutoSize = true;
             this.chkWorker3.Location = new System.Drawing.Point(175, 3);
             this.chkWorker3.Name = "chkWorker3";
@@ -212,9 +207,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.chkWorker3.Visible = false;
             this.chkWorker3.UseVisualStyleBackColor = true;
             this.chkWorker3.CheckedChanged += new System.EventHandler(this.chkWorker_CheckedChanged);
-            // 
-            // chkWorker4
-            // 
             this.chkWorker4.AutoSize = true;
             this.chkWorker4.Location = new System.Drawing.Point(261, 3);
             this.chkWorker4.Name = "chkWorker4";
@@ -224,9 +216,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.chkWorker4.Visible = false;
             this.chkWorker4.UseVisualStyleBackColor = true;
             this.chkWorker4.CheckedChanged += new System.EventHandler(this.chkWorker_CheckedChanged);
-            // 
-            // chkWorker5
-            // 
             this.chkWorker5.AutoSize = true;
             this.chkWorker5.Location = new System.Drawing.Point(347, 3);
             this.chkWorker5.Name = "chkWorker5";
@@ -236,9 +225,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.chkWorker5.Visible = false;
             this.chkWorker5.UseVisualStyleBackColor = true;
             this.chkWorker5.CheckedChanged += new System.EventHandler(this.chkWorker_CheckedChanged);
-            // 
-            // chkWorker6
-            // 
             this.chkWorker6.AutoSize = true;
             this.chkWorker6.Location = new System.Drawing.Point(433, 3);
             this.chkWorker6.Name = "chkWorker6";
@@ -254,7 +240,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpSurveySelection.Controls.Add(this.lblSurveyFilter);
             this.flpSurveySelection.Controls.Add(this.txtSurveyFilter);
             this.flpSurveySelection.Controls.Add(this.cmbSurvey);
-            this.flpSurveySelection.Location = new System.Drawing.Point(3, 104);
+            this.flpSurveySelection.Location = new System.Drawing.Point(3, 89);
+            this.flpSurveySelection.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.flpSurveySelection.Name = "flpSurveySelection";
             this.flpSurveySelection.Size = new System.Drawing.Size(610, 26);
             this.flpSurveySelection.TabIndex = 3;
@@ -268,16 +255,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.lblSurveyFilter.Size = new System.Drawing.Size(45, 13);
             this.lblSurveyFilter.TabIndex = 0;
             this.lblSurveyFilter.Text = "Survey:";
-            // 
-            // txtSurveyFilter
-            // 
             this.txtSurveyFilter.Location = new System.Drawing.Point(54, 3);
             this.txtSurveyFilter.Name = "txtSurveyFilter";
             this.txtSurveyFilter.Size = new System.Drawing.Size(100, 20);
             this.txtSurveyFilter.TabIndex = 1;
-            // 
-            // cmbSurvey
-            // 
             this.cmbSurvey.FormattingEnabled = true;
             this.cmbSurvey.Location = new System.Drawing.Point(160, 3);
             this.cmbSurvey.Name = "cmbSurvey";
@@ -289,129 +270,112 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpSelection.Controls.Add(this.lblSelectionFilter);
             this.flpSelection.Controls.Add(this.txtSelectionFilter);
             this.flpSelection.Controls.Add(this.cmbSelection);
-            this.flpSelection.Location = new System.Drawing.Point(3, 136);
+            this.flpSelection.Location = new System.Drawing.Point(3, 115);
+            this.flpSelection.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.flpSelection.Name = "flpSelection";
             this.flpSelection.Size = new System.Drawing.Size(610, 26);
             this.flpSelection.TabIndex = 4;
             this.flpSelection.Visible = false;
             this.flpSelection.WrapContents = false;
-            // 
-            // lblSelectionFilter
-            // 
             this.lblSelectionFilter.Location = new System.Drawing.Point(3, 3);
             this.lblSelectionFilter.Name = "lblSelectionFilter";
             this.lblSelectionFilter.Size = new System.Drawing.Size(40, 13);
             this.lblSelectionFilter.TabIndex = 0;
             this.lblSelectionFilter.Text = "Select:";
-            // 
-            // txtSelectionFilter
-            // 
             this.txtSelectionFilter.Location = new System.Drawing.Point(49, 3);
             this.txtSelectionFilter.Name = "txtSelectionFilter";
             this.txtSelectionFilter.Size = new System.Drawing.Size(100, 20);
             this.txtSelectionFilter.TabIndex = 1;
-            // 
-            // cmbSelection
-            // 
             this.cmbSelection.FormattingEnabled = true;
             this.cmbSelection.Location = new System.Drawing.Point(155, 3);
             this.cmbSelection.Name = "cmbSelection";
             this.cmbSelection.Size = new System.Drawing.Size(200, 21);
             this.cmbSelection.TabIndex = 2;
             // 
-            // flpManufacturing
+            // flpManufacturing — merged with former flpTimer
+            // Layout: [ProgressStatus] [Countdown] [Qty] [StageRes] [Start] [Done]
             // 
+            this.flpManufacturing.Controls.Add(this.rtbProgressStatus);
+            this.flpManufacturing.Controls.Add(this.txtCompletionTime);
             this.flpManufacturing.Controls.Add(this.txtQuantity);
             this.flpManufacturing.Controls.Add(this.chkStageResources);
             this.flpManufacturing.Controls.Add(this.cmdStart);
             this.flpManufacturing.Controls.Add(this.cmdDone);
-            this.flpManufacturing.Location = new System.Drawing.Point(3, 168);
+            this.flpManufacturing.Location = new System.Drawing.Point(3, 141);
+            this.flpManufacturing.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.flpManufacturing.Name = "flpManufacturing";
             this.flpManufacturing.Size = new System.Drawing.Size(610, 26);
             this.flpManufacturing.TabIndex = 5;
             this.flpManufacturing.Visible = false;
             this.flpManufacturing.WrapContents = false;
             // 
+            // rtbProgressStatus
+            // 
+            this.rtbProgressStatus.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbProgressStatus.Location = new System.Drawing.Point(3, 3);
+            this.rtbProgressStatus.Name = "rtbProgressStatus";
+            this.rtbProgressStatus.ReadOnly = true;
+            this.rtbProgressStatus.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.rtbProgressStatus.Size = new System.Drawing.Size(200, 20);
+            this.rtbProgressStatus.TabIndex = 0;
+            this.rtbProgressStatus.Text = "";
+            this.rtbProgressStatus.WordWrap = false;
+            // 
+            // txtCompletionTime
+            // 
+            this.txtCompletionTime.Location = new System.Drawing.Point(209, 3);
+            this.txtCompletionTime.Name = "txtCompletionTime";
+            this.txtCompletionTime.Size = new System.Drawing.Size(80, 20);
+            this.txtCompletionTime.TabIndex = 1;
+            // 
             // txtQuantity
             // 
-            this.txtQuantity.Location = new System.Drawing.Point(3, 3);
+            this.txtQuantity.Location = new System.Drawing.Point(295, 3);
             this.txtQuantity.Name = "txtQuantity";
             this.txtQuantity.Size = new System.Drawing.Size(39, 20);
-            this.txtQuantity.TabIndex = 0;
+            this.txtQuantity.TabIndex = 2;
             this.txtQuantity.Visible = false;
             // 
             // chkStageResources
             // 
             this.chkStageResources.AutoSize = true;
-            this.chkStageResources.Location = new System.Drawing.Point(48, 3);
+            this.chkStageResources.Location = new System.Drawing.Point(340, 3);
             this.chkStageResources.Name = "chkStageResources";
             this.chkStageResources.Size = new System.Drawing.Size(109, 17);
-            this.chkStageResources.TabIndex = 1;
+            this.chkStageResources.TabIndex = 3;
             this.chkStageResources.Text = "Stage Resources";
             this.chkStageResources.Visible = false;
             this.chkStageResources.UseVisualStyleBackColor = true;
             // 
             // cmdStart
             // 
-            this.cmdStart.Location = new System.Drawing.Point(163, 3);
+            this.cmdStart.Location = new System.Drawing.Point(455, 3);
             this.cmdStart.Name = "cmdStart";
             this.cmdStart.Size = new System.Drawing.Size(50, 23);
-            this.cmdStart.TabIndex = 2;
+            this.cmdStart.TabIndex = 4;
             this.cmdStart.Text = "Start";
             this.cmdStart.UseVisualStyleBackColor = true;
             // 
             // cmdDone
             // 
-            this.cmdDone.Location = new System.Drawing.Point(219, 3);
+            this.cmdDone.Location = new System.Drawing.Point(511, 3);
             this.cmdDone.Name = "cmdDone";
             this.cmdDone.Size = new System.Drawing.Size(50, 23);
-            this.cmdDone.TabIndex = 3;
+            this.cmdDone.TabIndex = 5;
             this.cmdDone.Text = "Done";
             this.cmdDone.UseVisualStyleBackColor = true;
-            // 
-            // flpTimer
-            // 
-            this.flpTimer.Controls.Add(this.txtCompletionTime);
-            this.flpTimer.Controls.Add(this.rtbProgressStatus);
-            this.flpTimer.Location = new System.Drawing.Point(3, 200);
-            this.flpTimer.Name = "flpTimer";
-            this.flpTimer.Size = new System.Drawing.Size(610, 26);
-            this.flpTimer.TabIndex = 6;
-            this.flpTimer.Visible = false;
-            this.flpTimer.WrapContents = false;
-            // 
-            // txtCompletionTime
-            // 
-            this.txtCompletionTime.Location = new System.Drawing.Point(3, 3);
-            this.txtCompletionTime.Name = "txtCompletionTime";
-            this.txtCompletionTime.Size = new System.Drawing.Size(100, 20);
-            this.txtCompletionTime.TabIndex = 0;
-            // 
-            // rtbProgressStatus
-            // 
-            this.rtbProgressStatus.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtbProgressStatus.Location = new System.Drawing.Point(109, 3);
-            this.rtbProgressStatus.Name = "rtbProgressStatus";
-            this.rtbProgressStatus.ReadOnly = true;
-            this.rtbProgressStatus.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.rtbProgressStatus.Size = new System.Drawing.Size(200, 20);
-            this.rtbProgressStatus.TabIndex = 1;
-            this.rtbProgressStatus.Text = "";
-            this.rtbProgressStatus.WordWrap = false;
             // 
             // flpStructureCommands
             // 
             this.flpStructureCommands.Controls.Add(this.cmdUp);
             this.flpStructureCommands.Controls.Add(this.cmdDown);
             this.flpStructureCommands.Controls.Add(this.cmdDelete);
-            this.flpStructureCommands.Location = new System.Drawing.Point(3, 232);
+            this.flpStructureCommands.Location = new System.Drawing.Point(3, 167);
+            this.flpStructureCommands.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.flpStructureCommands.Name = "flpStructureCommands";
             this.flpStructureCommands.Size = new System.Drawing.Size(610, 26);
-            this.flpStructureCommands.TabIndex = 7;
+            this.flpStructureCommands.TabIndex = 6;
             this.flpStructureCommands.WrapContents = false;
-            // 
-            // cmdUp
-            // 
             this.cmdUp.Location = new System.Drawing.Point(3, 3);
             this.cmdUp.Name = "cmdUp";
             this.cmdUp.Size = new System.Drawing.Size(50, 23);
@@ -419,9 +383,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmdUp.Text = "Up";
             this.cmdUp.UseVisualStyleBackColor = true;
             this.cmdUp.Click += new System.EventHandler(this.cmdUp_Click);
-            // 
-            // cmdDown
-            // 
             this.cmdDown.Location = new System.Drawing.Point(59, 3);
             this.cmdDown.Name = "cmdDown";
             this.cmdDown.Size = new System.Drawing.Size(50, 23);
@@ -429,9 +390,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmdDown.Text = "Down";
             this.cmdDown.UseVisualStyleBackColor = true;
             this.cmdDown.Click += new System.EventHandler(this.cmdDown_Click);
-            // 
-            // cmdDelete
-            // 
             this.cmdDelete.Location = new System.Drawing.Point(115, 3);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(50, 23);
@@ -449,8 +407,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.flpColonyStructure);
+            this.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.Name = "ColonyStructureV2";
-            this.Size = new System.Drawing.Size(624, 260);
+            this.Size = new System.Drawing.Size(624, 200);
             this.flpColonyStructure.ResumeLayout(false);
             this.flpColonyStructure.PerformLayout();
             this.flpHeader.ResumeLayout(false);
@@ -463,8 +422,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpSelection.PerformLayout();
             this.flpManufacturing.ResumeLayout(false);
             this.flpManufacturing.PerformLayout();
-            this.flpTimer.ResumeLayout(false);
-            this.flpTimer.PerformLayout();
             this.flpStructureCommands.ResumeLayout(false);
             this.ResumeLayout(false);
         }
@@ -494,13 +451,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private OE2EmpireTracker.Controls.ValidatedTextBox txtSelectionFilter;
         private System.Windows.Forms.ComboBox cmbSelection;
         private System.Windows.Forms.FlowLayoutPanel flpManufacturing;
+        private System.Windows.Forms.RichTextBox rtbProgressStatus;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtCompletionTime;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtQuantity;
         private System.Windows.Forms.CheckBox chkStageResources;
         private System.Windows.Forms.Button cmdStart;
         private System.Windows.Forms.Button cmdDone;
-        private System.Windows.Forms.FlowLayoutPanel flpTimer;
-        private OE2EmpireTracker.Controls.ValidatedTextBox txtCompletionTime;
-        private System.Windows.Forms.RichTextBox rtbProgressStatus;
         private System.Windows.Forms.FlowLayoutPanel flpStructureCommands;
         private System.Windows.Forms.Button cmdUp;
         private System.Windows.Forms.Button cmdDown;

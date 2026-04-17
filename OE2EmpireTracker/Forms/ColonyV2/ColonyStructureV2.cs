@@ -172,7 +172,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             flpSurveySelection.Visible = false;
             flpSelection.Visible = false;
             flpManufacturing.Visible = false;
-            flpTimer.Visible = false;
+
 
             // Reset manufacturing sub-controls
             txtQuantity.Visible = false;
@@ -303,7 +303,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 flpSurveySelection.Visible = false;
                 flpSelection.Visible = false;
                 flpManufacturing.Visible = false;
-                flpTimer.Visible = false;
+
                 return;
             }
 
@@ -316,7 +316,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 flpManufacturing.Visible = true;
                 txtQuantity.Visible = true;
                 chkStageResources.Visible = true;
-                flpTimer.Visible = true;
+
             }
             else if (bpType.IsCommodityFactory())
             {
@@ -325,7 +325,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 flpManufacturing.Visible = true;
                 txtQuantity.Visible = true;
                 chkStageResources.Visible = true;
-                flpTimer.Visible = true;
+
             }
             else
             {
@@ -333,7 +333,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 flpSurveySelection.Visible = false;
                 flpSelection.Visible = false;
                 flpManufacturing.Visible = false;
-                flpTimer.Visible = false;
+
             }
         }
 
@@ -354,7 +354,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             chkStageResources.Visible = false;
             chkBuilt.Enabled = false;
 
-            flpTimer.Visible = true;
+
             txtCompletionTime.Text = structureData.BuildCompletionTime.TimeRemainingString;
             rtbProgressStatus.Text = "Building...";
 
@@ -444,7 +444,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 flpSurveySelection.Visible = false;
                 flpSelection.Visible = false;
                 flpManufacturing.Visible = false;
-                flpTimer.Visible = false;
+
                 return;
             }
 
@@ -514,7 +514,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Timer row
             if (showCompletionTime)
             {
-                flpTimer.Visible = true;
+
                 txtCompletionTime.Text = structureData.ProcessCompletionTime.TimeRemainingString;
                 PopulateMiningProgressStatus();
                 if (!timerCountdown.Enabled)
@@ -525,7 +525,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             else
             {
-                flpTimer.Visible = false;
+
                 rtbProgressStatus.Text = "";
             }
         }
@@ -620,7 +620,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 flpSurveySelection.Visible = false;
                 flpSelection.Visible = false;
                 flpManufacturing.Visible = false;
-                flpTimer.Visible = false;
+
                 return;
             }
 
@@ -669,7 +669,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Timer row
             if (showCompletionTime)
             {
-                flpTimer.Visible = true;
+
                 txtCompletionTime.Text = structureData.ProcessCompletionTime.TimeRemainingString;
                 PopulateRefineryProgressStatus();
                 if (!timerCountdown.Enabled)
@@ -680,7 +680,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             else
             {
-                flpTimer.Visible = false;
+
                 rtbProgressStatus.Text = "";
             }
         }
@@ -838,7 +838,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 flpSurveySelection.Visible = false;
                 flpSelection.Visible = false;
                 flpManufacturing.Visible = false;
-                flpTimer.Visible = false;
+
                 return;
             }
 
@@ -894,7 +894,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Timer row
             if (showCompletionTime)
             {
-                flpTimer.Visible = true;
+
                 txtCompletionTime.Text = structureData.ProcessCompletionTime.TimeRemainingString;
                 PopulateResearchLabProgressStatus();
                 if (!timerCountdown.Enabled)
@@ -905,7 +905,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             else
             {
-                flpTimer.Visible = false;
+
                 rtbProgressStatus.Text = "";
             }
         }
@@ -981,7 +981,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 flpSurveySelection.Visible = false;
                 flpSelection.Visible = false;
                 flpManufacturing.Visible = false;
-                flpTimer.Visible = false;
+
                 return;
             }
 
@@ -1061,7 +1061,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Timer row
             if (showCompletionTime)
             {
-                flpTimer.Visible = true;
+
                 txtCompletionTime.Text = structureData.ProcessCompletionTime.TimeRemainingString;
                 PopulateManufactoryProgressStatus();
                 if (!timerCountdown.Enabled)
@@ -1072,7 +1072,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             else
             {
-                flpTimer.Visible = false;
+
                 rtbProgressStatus.Text = "";
             }
         }
@@ -1147,7 +1147,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 flpSurveySelection.Visible = false;
                 flpSelection.Visible = false;
                 flpManufacturing.Visible = false;
-                flpTimer.Visible = false;
+
                 return;
             }
 
@@ -1224,7 +1224,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Timer row
             if (showCompletionTime)
             {
-                flpTimer.Visible = true;
+
                 txtCompletionTime.Text = structureData.ProcessCompletionTime.TimeRemainingString;
                 PopulateCommodityFactoryProgressStatus();
                 if (!timerCountdown.Enabled)
@@ -1235,7 +1235,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             else
             {
-                flpTimer.Visible = false;
+
                 rtbProgressStatus.Text = "";
             }
         }
