@@ -61,6 +61,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cmdImportColony = new System.Windows.Forms.Button();
             this.cmdImportClipboard = new System.Windows.Forms.Button();
+            this.rtbAdminReport = new System.Windows.Forms.RichTextBox();
+            this.flpAdminCommands = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdBootstrap = new System.Windows.Forms.Button();
+            this.cmdOptimize = new System.Windows.Forms.Button();
+            this.components = new System.ComponentModel.Container();
+            this.timerAdminRefresh = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
             this.splitMain.Panel1.SuspendLayout();
             this.splitMain.Panel2.SuspendLayout();
@@ -71,6 +77,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpColonyName.SuspendLayout();
             this.flpSystemName.SuspendLayout();
             this.tabDetailedData.SuspendLayout();
+            this.tabPAdministration.SuspendLayout();
+            this.flpAdminCommands.SuspendLayout();
             this.tabPStructures.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitStructures)).BeginInit();
             this.splitStructures.Panel1.SuspendLayout();
@@ -251,6 +259,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // 
             // tabPAdministration
             // 
+            this.tabPAdministration.Controls.Add(this.rtbAdminReport);
+            this.tabPAdministration.Controls.Add(this.flpAdminCommands);
             this.tabPAdministration.Location = new System.Drawing.Point(4, 22);
             this.tabPAdministration.Margin = new System.Windows.Forms.Padding(2);
             this.tabPAdministration.Name = "tabPAdministration";
@@ -370,6 +380,55 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmdAddFlatpack.Text = "Add";
             this.cmdAddFlatpack.UseVisualStyleBackColor = true;
             // 
+            // rtbAdminReport
+            // 
+            this.rtbAdminReport.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbAdminReport.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbAdminReport.Location = new System.Drawing.Point(2, 2);
+            this.rtbAdminReport.Name = "rtbAdminReport";
+            this.rtbAdminReport.ReadOnly = true;
+            this.rtbAdminReport.Size = new System.Drawing.Size(788, 291);
+            this.rtbAdminReport.TabIndex = 0;
+            this.rtbAdminReport.Text = "";
+            // 
+            // flpAdminCommands
+            // 
+            this.flpAdminCommands.Controls.Add(this.cmdBootstrap);
+            this.flpAdminCommands.Controls.Add(this.cmdOptimize);
+            this.flpAdminCommands.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.flpAdminCommands.Location = new System.Drawing.Point(2, 293);
+            this.flpAdminCommands.Margin = new System.Windows.Forms.Padding(2);
+            this.flpAdminCommands.Name = "flpAdminCommands";
+            this.flpAdminCommands.Size = new System.Drawing.Size(788, 29);
+            this.flpAdminCommands.TabIndex = 1;
+            this.flpAdminCommands.WrapContents = false;
+            // 
+            // cmdBootstrap
+            // 
+            this.cmdBootstrap.AutoSize = true;
+            this.cmdBootstrap.Location = new System.Drawing.Point(3, 3);
+            this.cmdBootstrap.Name = "cmdBootstrap";
+            this.cmdBootstrap.Size = new System.Drawing.Size(129, 23);
+            this.cmdBootstrap.TabIndex = 0;
+            this.cmdBootstrap.Text = "Bootstrap From Surveys";
+            this.cmdBootstrap.UseVisualStyleBackColor = true;
+            this.cmdBootstrap.Click += new System.EventHandler(this.cmdBootstrap_Click);
+            // 
+            // cmdOptimize
+            // 
+            this.cmdOptimize.AutoSize = true;
+            this.cmdOptimize.Location = new System.Drawing.Point(138, 3);
+            this.cmdOptimize.Name = "cmdOptimize";
+            this.cmdOptimize.Size = new System.Drawing.Size(112, 23);
+            this.cmdOptimize.TabIndex = 1;
+            this.cmdOptimize.Text = "Optimize Build Order";
+            this.cmdOptimize.UseVisualStyleBackColor = true;
+            this.cmdOptimize.Click += new System.EventHandler(this.cmdOptimize_Click);
+            // 
+            // timerAdminRefresh
+            // 
+            this.timerAdminRefresh.Interval = 60000;
+            // 
             // tabPWorkers
             // 
             this.tabPWorkers.Location = new System.Drawing.Point(4, 22);
@@ -472,6 +531,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpSystemName.ResumeLayout(false);
             this.flpSystemName.PerformLayout();
             this.tabDetailedData.ResumeLayout(false);
+            this.tabPAdministration.ResumeLayout(false);
+            this.flpAdminCommands.ResumeLayout(false);
+            this.flpAdminCommands.PerformLayout();
             this.splitStructures.Panel1.ResumeLayout(false);
             this.splitStructures.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitStructures)).EndInit();
@@ -519,5 +581,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Button cmdImportColony;
         private System.Windows.Forms.Button cmdImportClipboard;
+        private System.Windows.Forms.RichTextBox rtbAdminReport;
+        private System.Windows.Forms.FlowLayoutPanel flpAdminCommands;
+        private System.Windows.Forms.Button cmdBootstrap;
+        private System.Windows.Forms.Button cmdOptimize;
+        private System.Windows.Forms.Timer timerAdminRefresh;
     }
 }

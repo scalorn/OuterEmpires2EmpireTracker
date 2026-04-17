@@ -143,15 +143,15 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
 
 ## Phase 4: Administration Tab
 
-- [ ] 11. Implement Administration tab
-  - [ ] 11.1 Add RichTextBox for admin report, wire ColonyAdminReportBuilder.BuildReport()
+- [-] 11. Implement Administration tab
+  - [x] 11.1 Add RichTextBox for admin report, wire ColonyAdminReportBuilder.BuildReport()
     - Refresh on colony selection, ColonyDataChanged, and timer interval (AdminRefreshIntervalSeconds)
     - _Requirements: 21.1, 21.2, 21.3_
-  - [ ] 11.2 Add Bootstrap button: call ColonyBootstrap.Bootstrap(), check PlanetName, refresh structures
+  - [x] 11.2 Add Bootstrap button: call ColonyBootstrap.Bootstrap(), check PlanetName, refresh structures
     - _Requirements: 20.1, 20.2, 20.3, 21.4_
-  - [ ] 11.3 Add Optimize button: call BuildOrderOptimizer.Optimize(), replace structure list, refresh display
+  - [x] 11.3 Add Optimize button: call BuildOrderOptimizer.Optimize(), replace structure list, refresh display
     - _Requirements: 19.1, 19.2, 19.3, 21.4_
-  - [ ] 11.4 Implement admin tab background color for import staleness via TabWarningService
+  - [x] 11.4 Implement admin tab background color for import staleness via TabWarningService
     - No color < 5 days, Yellow 5-6 days, Red 6+ days or never imported
     - _Requirements: 21.5, 22.3_
 

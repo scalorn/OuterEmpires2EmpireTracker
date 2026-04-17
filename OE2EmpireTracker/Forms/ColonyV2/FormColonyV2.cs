@@ -1,5 +1,6 @@
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Persistence;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.ViewModels;
@@ -86,6 +87,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Structure type filter (9.1, 9.3)
             SeedUncheckedStructureTypes();
 
+            // Enable owner-draw so tab BackColor renders with visual styles (11.4)
+            tabDetailedData.DrawMode = TabDrawMode.OwnerDrawFixed;
+            tabDetailedData.DrawItem += tabDetailedData_DrawItem;
+
+            // Wire admin refresh timer (11.1)
+            timerAdminRefresh.Tick += timerAdminRefresh_Tick;
+            timerAdminRefresh.Start();
+
             // Subscribe to context events
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.ColonyDataChanged += OnColonyDataChanged;
@@ -103,6 +112,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             int windowNumber = Tag is int n ? n : 1;
             WindowStateHelper.SaveState(this, GetType().Name, windowNumber);
 
+            timerAdminRefresh.Stop();
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.ColonyDataChanged -= OnColonyDataChanged;
             base.OnFormClosed(e);
@@ -129,6 +139,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             txtColonyName.Text = "";
             txtSystemName.Text = "";
             MarkAllTabsDirty();
+            UpdateTabWarnings();
             UpdateTitle();
         }
 
@@ -146,6 +157,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 colonyViewModel.RecalculateStatus();
                 PopulateForm();
+                RefreshAdminReport();
+                UpdateTabWarnings();
             }
         }
 
@@ -292,6 +305,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
                 PopulateForm();
                 UpdateDeleteButtonState();
+                RefreshAdminReport();
+                UpdateTabWarnings();
                 UpdateTitle();
             }
         }
@@ -325,7 +340,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 PopulateStructures();
                 _structuresDirty = false;
             }
-            // Future tabs: tabPWarehousing, tabPWorkers, tabPAdministration
+            else if (tab == tabPAdministration && _adminDirty)
+            {
+                RefreshAdminReport();
+                _adminDirty = false;
+            }
+            // Future tabs: tabPWarehousing, tabPWorkers
         }
 
         // -------------------------------------------------------------------
@@ -578,6 +598,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             RefreshStatusSummary();
+            UpdateTabWarnings();
 
             // Save context
             if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
@@ -633,6 +654,140 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             tabDetailedData.Size = new System.Drawing.Size(
                 totalWidth - tabDetailedData.Margin.Horizontal,
                 tabHeight);
+        }
+
+        // -------------------------------------------------------------------
+        // Administration tab — Admin Report (11.1)
+        // -------------------------------------------------------------------
+
+        private void RefreshAdminReport()
+        {
+            if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID))
+            {
+                rtbAdminReport.Rtf = "";
+                return;
+            }
+
+            try
+            {
+                string rtf = ColonyAdminReportBuilder.BuildReport(selectedColony, playerContext);
+                rtbAdminReport.Rtf = string.IsNullOrEmpty(rtf) ? "" : rtf;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error building admin report");
+            }
+        }
+
+        private void timerAdminRefresh_Tick(object sender, EventArgs e)
+        {
+            if (IsDisposed) return;
+            int intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.AdminRefreshIntervalSeconds * 1000);
+            timerAdminRefresh.Interval = Math.Max(intervalMs, 1000);
+            RefreshAdminReport();
+            UpdateTabWarnings();
+        }
+
+        // -------------------------------------------------------------------
+        // Administration tab — Bootstrap / Optimize (11.2, 11.3)
+        // -------------------------------------------------------------------
+
+        private void cmdBootstrap_Click(object sender, EventArgs e)
+        {
+            if (selectedColony == null) return;
+            if (string.IsNullOrEmpty(selectedColony.PlanetName))
+            {
+                MessageBox.Show(
+                    "Set a planet name before bootstrapping.",
+                    "No Planet",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            var bootstrap = new ColonyBootstrap(playerContext);
+            bootstrap.Bootstrap(selectedColony);
+
+            // Refresh via structural change pattern
+            colonyViewModel.InvalidateStructureViewModels();
+            colonyViewModel.RecalculateStatus();
+            PopulateStructures();
+            RefreshStatusSummary();
+            UpdateTabWarnings();
+
+            if (!string.IsNullOrEmpty(selectedColony.UUID))
+                playerContext.WriteContext();
+        }
+
+        private void cmdOptimize_Click(object sender, EventArgs e)
+        {
+            if (selectedColony == null) return;
+
+            var optimizer = new BuildOrderOptimizer(playerContext);
+            var optimized = optimizer.Optimize(selectedColony);
+
+            selectedColony.Structures.Clear();
+            selectedColony.Structures.AddRange(optimized);
+
+            // Refresh via structural change pattern
+            colonyViewModel.InvalidateStructureViewModels();
+            colonyViewModel.RecalculateStatus();
+            PopulateStructures();
+            RefreshStatusSummary();
+            UpdateTabWarnings();
+
+            if (!string.IsNullOrEmpty(selectedColony.UUID))
+                playerContext.WriteContext();
+        }
+
+        // -------------------------------------------------------------------
+        // Tab Warning Indicators (11.4)
+        // -------------------------------------------------------------------
+
+        private void ApplyTabWarning(TabPage tab, TabWarningLevel level)
+        {
+            switch (level)
+            {
+                case TabWarningLevel.Red:
+                    tab.UseVisualStyleBackColor = false;
+                    tab.BackColor = Color.LightCoral;
+                    break;
+                case TabWarningLevel.Yellow:
+                    tab.UseVisualStyleBackColor = false;
+                    tab.BackColor = Color.Yellow;
+                    break;
+                default:
+                    tab.UseVisualStyleBackColor = true;
+                    tab.BackColor = SystemColors.Control;
+                    break;
+            }
+            tabDetailedData.Invalidate();
+        }
+
+        private void tabDetailedData_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            TabPage page = tabDetailedData.TabPages[e.Index];
+            Color backColor = page.UseVisualStyleBackColor ? SystemColors.Control : page.BackColor;
+
+            using (var brush = new SolidBrush(backColor))
+            {
+                e.Graphics.FillRectangle(brush, e.Bounds);
+            }
+
+            string title = page.Text;
+            var flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
+            TextRenderer.DrawText(e.Graphics, title, e.Font, e.Bounds, page.ForeColor, flags);
+        }
+
+        private void UpdateTabWarnings()
+        {
+            int structureCount = selectedColony?.Structures?.Count ?? 0;
+            ApplyTabWarning(tabPStructures,
+                TabWarningService.EvaluateStructureWarning(structureCount));
+
+            ApplyTabWarning(tabPAdministration,
+                TabWarningService.EvaluateColonyImportStalenessWarning(
+                    selectedColony?.LastImportDateTime, DateTime.UtcNow));
         }
 
         // -------------------------------------------------------------------
