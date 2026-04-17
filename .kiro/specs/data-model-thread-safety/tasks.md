@@ -59,7 +59,7 @@ Introduce layered synchronization to the OE2EmpireTracker data model so that Bac
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [-] 5. Add PlayerContext._listLock and SnapshotColonyList
+- [x] 5. Add PlayerContext._listLock and SnapshotColonyList
   - [x] 5.1 Add _listLock field and wrap cache methods
     - Add `private readonly object _listLock = new object();` field to `Services/PlayerContext.cs`
     - Wrap `FindBlueprint` cache rebuild in `lock(_listLock)` — acquire lock, check/rebuild `_blueprintCache`, lookup, release lock, then fall back to global blueprints outside the lock
@@ -82,16 +82,16 @@ Introduce layered synchronization to the OE2EmpireTracker data model so that Bac
     - In `Services/BackgroundProcessor.cs`, replace `new List<Colony>(_playerContext.ColonyList)` with `_playerContext.SnapshotColonyList()`
     - _Requirements: 5.2, 7.4, 8.1_
 
-- [ ] 6. Checkpoint — Verify PlayerContext._listLock compiles and tests pass
+- [x] 6. Checkpoint — Verify PlayerContext._listLock compiles and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Add background calculation with cancellation to FormColonyV2
-  - [~] 7.1 Add CancellationTokenSource and generation counter fields
+- [x] 7. Add background calculation with cancellation to FormColonyV2
+  - [x] 7.1 Add CancellationTokenSource and generation counter fields
     - Add `private CancellationTokenSource _calcCts;` and `private int _calcGeneration = 0;` fields to `Forms/ColonyV2/FormColonyV2.cs`
     - Add `using System.Threading;` if not already present
     - _Requirements: 6.2_
 
-  - [~] 7.2 Refactor colony selection to show identity immediately and queue background work
+  - [x] 7.2 Refactor colony selection to show identity immediately and queue background work
     - In `lvwColonies_ItemSelectionChanged`, cancel any previous `_calcCts` and create a new one
     - Increment `_calcGeneration` via `Interlocked.Increment`
     - Immediately display PlanetName, ColonyName, SystemName on the UI thread
@@ -99,7 +99,7 @@ Introduce layered synchronization to the OE2EmpireTracker data model so that Bac
     - Queue `RecalculateStatus` + `PopulateForm` onto `ThreadPool.QueueUserWorkItem`
     - _Requirements: 6.1, 6.2, 6.3, 6.4_
 
-  - [~] 7.3 Implement background calculation with ColonyLock and BeginInvoke
+  - [x] 7.3 Implement background calculation with ColonyLock and BeginInvoke
     - In the ThreadPool callback: check `cts.IsCancellationRequested` before starting
     - Acquire `colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs)` for `RecalculateStatus` (which calls CalculateBuilt/CalculateIdeal)
     - Release write lock in finally block
@@ -108,17 +108,17 @@ Introduce layered synchronization to the OE2EmpireTracker data model so that Bac
     - Catch `ObjectDisposedException` and `InvalidOperationException` from `BeginInvoke`
     - _Requirements: 6.5, 6.6, 6.8, 9.1, 9.2_
 
-  - [~] 7.4 Cancel background calculation on form close
+  - [x] 7.4 Cancel background calculation on form close
     - In `OnFormClosed`, call `_calcCts?.Cancel()` before existing cleanup
     - _Requirements: 6.7_
 
-  - [~] 7.5 Add read lock acquisition for colony data display
+  - [x] 7.5 Add read lock acquisition for colony data display
     - In `PopulateStructures`, `PopulateItemGrid`, `PopulateCommodityRequestGrid`, and `RefreshAdminReport`: acquire `colony.ColonyLock.TryEnterReadLock(Colony.ReadLockTimeoutMs)` to snapshot collections before populating UI controls
     - If read lock times out, log warning and display stale data
     - Release read lock in finally block before populating UI controls from the snapshot
     - _Requirements: 1.4, 10.2, 11.1_
 
-  - [~] 7.6 Add write lock acquisition for colony mutation operations
+  - [x] 7.6 Add write lock acquisition for colony mutation operations
     - In `cmdSave_Click`, `cmdAddFlatpack_Click`, `cmdDelete_Click`, and other mutation handlers: acquire `colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs)` before mutating colony state
     - Release write lock before calling `PlayerContext.WriteContext()` and `OnColonyDataChanged` (lock ordering)
     - Fire `OnColonyDataChanged` after save so other open forms refresh
