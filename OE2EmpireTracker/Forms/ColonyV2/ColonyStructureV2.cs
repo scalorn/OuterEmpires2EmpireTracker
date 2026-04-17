@@ -60,8 +60,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Wire event handlers for survey/selection/sub-selection combos and filters
             txtSurveyFilter.TextChanged += txtSurveyFilter_TextChanged;
             cmbSurvey.SelectedIndexChanged += cmbSurvey_SelectedIndexChanged;
+            cmbSurvey.DropDown += cmbSurvey_DropDown;
             txtSelectionFilter.TextChanged += txtSelectionFilter_TextChanged;
             cmbSelection.SelectedIndexChanged += cmbSelection_SelectedIndexChanged;
+            cmbSelection.DropDown += cmbSelection_DropDown;
             cmdStart.Click += cmdStart_Click;
             cmdDone.Click += cmdDone_Click;
             txtCompletionTime.Enter += txtCompletionTime_Enter;
@@ -499,10 +501,16 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Survey selection row
             flpSurveySelection.Visible = true;
-            PopulateSurveyCombo();
-            if (!string.IsNullOrEmpty(structureData.MiningSurvey))
+            // Only populate combos if there's an active process or existing selection (perf: defer for idle)
+            bool needsSurveyPopulation = structureData.ProcessCompletionTime != null
+                || !string.IsNullOrEmpty(structureData.MiningSurvey);
+            if (needsSurveyPopulation)
             {
-                cmbSurvey.SelectedValue = structureData.MiningSurvey;
+                PopulateSurveyCombo();
+                if (!string.IsNullOrEmpty(structureData.MiningSurvey))
+                {
+                    cmbSurvey.SelectedValue = structureData.MiningSurvey;
+                }
             }
             txtSurveyFilter.Enabled = enableCmbSurvey;
             cmbSurvey.Enabled = enableCmbSurvey;
@@ -511,10 +519,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (!string.IsNullOrEmpty(structureData.MiningSurvey))
             {
                 flpSelection.Visible = true;
-                PopulateResourceComboFromSurvey();
-                if (!string.IsNullOrEmpty(structureData.MiningSurveyResource))
+                if (needsSurveyPopulation)
                 {
-                    cmbSelection.SelectedValue = structureData.MiningSurveyResource;
+                    PopulateResourceComboFromSurvey();
+                    if (!string.IsNullOrEmpty(structureData.MiningSurveyResource))
+                    {
+                        cmbSelection.SelectedValue = structureData.MiningSurveyResource;
+                    }
                 }
                 txtSelectionFilter.Enabled = enableCmbSelection;
                 cmbSelection.Enabled = enableCmbSelection;
@@ -670,16 +681,21 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Selection: unrefined resources from warehouse + actively mined resources + synthetic recipes
             flpSelection.Visible = true;
-            PopulateSelectionWithUnrefinedResources();
-            if (!string.IsNullOrEmpty(structureData.RefiningResource))
+            bool needsComboPopulation = structureData.ProcessCompletionTime != null
+                || !string.IsNullOrEmpty(structureData.RefiningResource);
+            if (needsComboPopulation)
             {
-                string restoreKey = structureData.RefiningResource + "|" + structureData.RefiningResourcePurity;
-                var recipe = RefiningRecipes.FindByInput(structureData.RefiningResource, structureData.RefiningResourcePurity);
-                if (recipe != null)
+                PopulateSelectionWithUnrefinedResources();
+                if (!string.IsNullOrEmpty(structureData.RefiningResource))
                 {
-                    restoreKey += "|S" + recipe.Tier;
+                    string restoreKey = structureData.RefiningResource + "|" + structureData.RefiningResourcePurity;
+                    var recipe = RefiningRecipes.FindByInput(structureData.RefiningResource, structureData.RefiningResourcePurity);
+                    if (recipe != null)
+                    {
+                        restoreKey += "|S" + recipe.Tier;
+                    }
+                    cmbSelection.SelectedValue = restoreKey;
                 }
-                cmbSelection.SelectedValue = restoreKey;
             }
             txtSelectionFilter.Enabled = enableCmbSelection;
             cmbSelection.Enabled = enableCmbSelection;
@@ -905,10 +921,15 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Selection: researchable blueprints
             flpSelection.Visible = true;
-            PopulateSelectionWithResearchableBlueprints();
-            if (!string.IsNullOrEmpty(structureData.ResearchingBlueprintUUID))
+            bool needsComboPopulation = structureData.ProcessCompletionTime != null
+                || !string.IsNullOrEmpty(structureData.ResearchingBlueprintUUID);
+            if (needsComboPopulation)
             {
-                cmbSelection.SelectedValue = structureData.ResearchingBlueprintUUID;
+                PopulateSelectionWithResearchableBlueprints();
+                if (!string.IsNullOrEmpty(structureData.ResearchingBlueprintUUID))
+                {
+                    cmbSelection.SelectedValue = structureData.ResearchingBlueprintUUID;
+                }
             }
             txtSelectionFilter.Enabled = enableCmbSelection;
             cmbSelection.Enabled = enableCmbSelection;
@@ -1055,10 +1076,15 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Selection: manufacturable blueprints
             flpSelection.Visible = true;
-            PopulateSelectionWithManufacturableBlueprints();
-            if (!string.IsNullOrEmpty(structureData.ManufacturingBlueprintUUID))
+            bool needsComboPopulation = structureData.ProcessCompletionTime != null
+                || !string.IsNullOrEmpty(structureData.ManufacturingBlueprintUUID);
+            if (needsComboPopulation)
             {
-                cmbSelection.SelectedValue = structureData.ManufacturingBlueprintUUID;
+                PopulateSelectionWithManufacturableBlueprints();
+                if (!string.IsNullOrEmpty(structureData.ManufacturingBlueprintUUID))
+                {
+                    cmbSelection.SelectedValue = structureData.ManufacturingBlueprintUUID;
+                }
             }
             txtSelectionFilter.Enabled = enableCmbSelection;
             cmbSelection.Enabled = enableCmbSelection;
@@ -1223,10 +1249,15 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Selection: commodities filtered by CommodityIndustry
             flpSelection.Visible = true;
-            PopulateSelectionWithCommodities();
-            if (!string.IsNullOrEmpty(structureData.ManufacturingCommodityName))
+            bool needsComboPopulation = structureData.ProcessCompletionTime != null
+                || !string.IsNullOrEmpty(structureData.ManufacturingCommodityName);
+            if (needsComboPopulation)
             {
-                cmbSelection.SelectedValue = structureData.ManufacturingCommodityName;
+                PopulateSelectionWithCommodities();
+                if (!string.IsNullOrEmpty(structureData.ManufacturingCommodityName))
+                {
+                    cmbSelection.SelectedValue = structureData.ManufacturingCommodityName;
+                }
             }
             txtSelectionFilter.Enabled = enableCmbSelection;
             cmbSelection.Enabled = enableCmbSelection;
@@ -1526,6 +1557,36 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // -----------------------------------------------------------------------
         // Survey filter and selection handlers (Mining Rig)
         // -----------------------------------------------------------------------
+
+        /// <summary>Populate survey combo on first dropdown if it was deferred during colony switch.</summary>
+        private void cmbSurvey_DropDown(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (cmbSurvey.DataSource == null || cmbSurvey.Items.Count <= 1)
+            {
+                PopulateSurveyCombo();
+            }
+        }
+
+        /// <summary>Populate selection combo on first dropdown if it was deferred during colony switch.</summary>
+        private void cmbSelection_DropDown(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (cmbSelection.DataSource == null || cmbSelection.Items.Count <= 1)
+            {
+                if (_blueprint == null) return;
+                if (_blueprint.BluePrintType == BlueprintTypes.MiningRig)
+                    PopulateResourceComboFromSurvey();
+                else if (_blueprint.BluePrintType == BlueprintTypes.Refinery)
+                    PopulateSelectionWithUnrefinedResources();
+                else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
+                    PopulateSelectionWithResearchableBlueprints();
+                else if (_blueprint.BluePrintType == BlueprintTypes.Manufactory)
+                    PopulateSelectionWithManufacturableBlueprints();
+                else if (_blueprint.BluePrintType.IsCommodityFactory())
+                    PopulateSelectionWithCommodities();
+            }
+        }
 
         private void txtSurveyFilter_TextChanged(object sender, EventArgs e)
         {
