@@ -1,4 +1,3 @@
-using NLog;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Models;
 using System;
@@ -13,7 +12,6 @@ namespace OE2EmpireTracker.ViewModels
     /// </summary>
     public class ColonyViewModel
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly Colony _colony;
         private readonly PlayerContext _playerContext;
         private readonly ColonyStatusCalculator _calculator;
@@ -93,13 +91,8 @@ namespace OE2EmpireTracker.ViewModels
 
         public void RecalculateStatus()
         {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
             _calculator.CalculateBuilt();
-            long tBuilt = sw.ElapsedMilliseconds;
             _calculator.CalculateIdeal();
-            sw.Stop();
-            Log.Info("V2.RecalculateStatus PERF: total={0}ms calculateBuilt={1}ms calculateIdeal={2}ms structures={3}",
-                sw.ElapsedMilliseconds, tBuilt, sw.ElapsedMilliseconds - tBuilt, _colony.Structures?.Count ?? 0);
         }
 
         // -----------------------------------------------------------------------
