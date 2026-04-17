@@ -102,6 +102,20 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             tabDetailedData.DrawMode = TabDrawMode.OwnerDrawFixed;
             tabDetailedData.DrawItem += tabDetailedData_DrawItem;
 
+            // Wire warehouse handlers (20.1-20.6)
+            cmbItemType.DataSource = Models.ItemType.ItemTypes;
+            cmbItemType.DisplayMember = "Name";
+            cmbItemType.SelectedIndexChanged += cmbItemType_SelectedIndexChanged;
+            txtItemFilter.TextChanged += txtItemFilter_TextChanged;
+            cmbItem.SelectedIndexChanged += cmbItem_SelectedIndexChanged;
+            cmbPurity.DataSource = Models.ResourcePurity.Purities;
+            cmbPurity.DisplayMember = "Name";
+            cmdAddItem.Click += cmdAddItem_Click;
+            dgvItems.CellValidating += dgvItems_CellValidating;
+            dgvItems.CellValueChanged += dgvItems_CellValueChanged;
+            dgvItems.SelectionChanged += dgvItems_SelectionChanged;
+            dgvItems.KeyDown += dgvItems_KeyDown;
+
             // Wire admin refresh timer (11.1)
             timerAdminRefresh.Tick += timerAdminRefresh_Tick;
             timerAdminRefresh.Start();
@@ -361,7 +375,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 PopulateCommodityRequestGrid();
                 _workersDirty = false;
             }
-            // Future tabs: tabPWarehousing
+            else if (tab == tabPWarehousing && _warehouseDirty)
+            {
+                PopulateItemGrid();
+                _warehouseDirty = false;
+            }
         }
 
         // -------------------------------------------------------------------
@@ -1133,6 +1151,543 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (remaining.Minutes > 0 || remaining.Hours > 0 || remaining.Days > 0) result += $"{remaining.Minutes}m";
             else result += $"{remaining.Seconds}s";
             return result.Trim();
+        }
+
+        // -------------------------------------------------------------------
+        // Warehousing Tab — Item Grid and Add Controls (20.1-20.6)
+        // -------------------------------------------------------------------
+
+        private void PopulateItemGrid()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            dgvItems.CellValidating -= dgvItems_CellValidating;
+            try { dgvItems.EndEdit(); } catch { }
+
+            // Index existing rows by item UUID for in-place update (20.6)
+            var existingRows = new Dictionary<string, DataGridViewRow>();
+            foreach (DataGridViewRow row in dgvItems.Rows)
+            {
+                var item = row.Tag as Item;
+                if (item != null && !string.IsNullOrEmpty(item.UUID))
+                    existingRows[item.UUID] = row;
+            }
+
+            var seen = new HashSet<string>();
+            foreach (KeyValuePair<string, Item> itemEntry in colonyViewModel.GetItems())
+            {
+                var itemValue = itemEntry.Value;
+                seen.Add(itemValue.UUID);
+
+                DataGridViewRow row;
+                if (existingRows.TryGetValue(itemValue.UUID, out row))
+                {
+                    // Update in place
+                    row.Cells[0].Value = itemValue.ItemType.ToString();
+                    row.Cells[1].Value = itemValue.ExtendedName;
+                }
+                else
+                {
+                    // Add new row
+                    int idx = dgvItems.Rows.Add();
+                    row = dgvItems.Rows[idx];
+                    row.Tag = itemValue;
+                    row.Cells[0].Value = itemValue.ItemType.ToString();
+                    row.Cells[1].Value = itemValue.ExtendedName;
+                }
+
+                int lockedQty = colonyViewModel.Data.Locks != null
+                    ? colonyViewModel.Data.Locks.GetLockedQuantity(itemValue.ItemType, itemValue.BaseItemTypeID)
+                    : 0;
+                row.Cells[2].Value = lockedQty;
+                row.Cells[3].Value = itemValue.Quantity;
+            }
+
+            // Remove rows for deleted items (iterate backwards)
+            for (int i = dgvItems.Rows.Count - 1; i >= 0; i--)
+            {
+                var item = dgvItems.Rows[i].Tag as Item;
+                if (item != null && !seen.Contains(item.UUID))
+                    dgvItems.Rows.RemoveAt(i);
+            }
+
+            dgvItems.CellValidating += dgvItems_CellValidating;
+        }
+
+        /// <summary>
+        /// Refreshes only the Locked column (index 2) without rebuilding the grid.
+        /// </summary>
+        private void RefreshItemGridLocks()
+        {
+            foreach (DataGridViewRow row in dgvItems.Rows)
+            {
+                Item item = row.Tag as Item;
+                if (item == null) continue;
+                int lockedQty = colonyViewModel.Data.Locks != null
+                    ? colonyViewModel.Data.Locks.GetLockedQuantity(item.ItemType, item.BaseItemTypeID)
+                    : 0;
+                row.Cells[2].Value = lockedQty;
+            }
+        }
+
+        // -------------------------------------------------------------------
+        // Warehousing — Item Type Combo (20.2)
+        // -------------------------------------------------------------------
+
+        private void cmbItemType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Models.ItemType itemType = cmbItemType.SelectedItem as Models.ItemType;
+            cmbPurity.Visible = false;
+            if (itemType == null) return;
+
+            if (itemType.ID == Models.ItemType.ItemTypeEnum.Resource)
+            {
+                PopulateItemWithResources();
+                cmbPurity.Visible = true;
+            }
+            else if (itemType.ID == Models.ItemType.ItemTypeEnum.Commodity)
+            {
+                PopulateItemWithCommodities();
+            }
+            else if (itemType.ID == Models.ItemType.ItemTypeEnum.WorkDetail)
+            {
+                PopulateItemWithWorkerDetails();
+            }
+            else if (itemType.ID == Models.ItemType.ItemTypeEnum.Survey)
+            {
+                PopulateItemWithSurveys();
+            }
+            else if (itemType.ID == Models.ItemType.ItemTypeEnum.Blueprint)
+            {
+                PopulateItemWithBlueprints();
+            }
+            else if (itemType.ID == Models.ItemType.ItemTypeEnum.ShipPart ||
+                     itemType.ID == Models.ItemType.ItemTypeEnum.ShipHull ||
+                     itemType.ID == Models.ItemType.ItemTypeEnum.Munition ||
+                     itemType.ID == Models.ItemType.ItemTypeEnum.Flatpack ||
+                     itemType.ID == Models.ItemType.ItemTypeEnum.SpaceBuildPackage ||
+                     itemType.ID == Models.ItemType.ItemTypeEnum.Share)
+            {
+                PopulateItemWithBlueprintsByOutputType(itemType.ID);
+            }
+        }
+
+        private void cmbItem_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Models.ItemType itemType = cmbItemType.SelectedItem as Models.ItemType;
+            cmbPurity.Visible = false;
+            if (itemType != null && itemType.ID == Models.ItemType.ItemTypeEnum.Resource)
+            {
+                Resource resource = cmbItem.SelectedItem as Resource;
+                if (resource != null && !string.IsNullOrEmpty(resource.Name))
+                {
+                    // Hide purity for synthetic resources
+                    if (ResourceGroup.ResourceGroupMapByEnum[resource.ResourceGroup].Synthetic)
+                        cmbPurity.Visible = false;
+                    else
+                        cmbPurity.Visible = true;
+                }
+            }
+        }
+
+        private void txtItemFilter_TextChanged(object sender, EventArgs e)
+        {
+            Models.ItemType itemType = cmbItemType.SelectedItem as Models.ItemType;
+            if (itemType == null) return;
+
+            if (itemType.ID == Models.ItemType.ItemTypeEnum.Resource)
+                PopulateItemWithResources();
+            else if (itemType.ID == Models.ItemType.ItemTypeEnum.Commodity)
+                PopulateItemWithCommodities();
+            else if (itemType.ID == Models.ItemType.ItemTypeEnum.WorkDetail)
+                PopulateItemWithWorkerDetails();
+            else if (itemType.ID == Models.ItemType.ItemTypeEnum.Survey)
+                PopulateItemWithSurveys();
+            else if (itemType.ID == Models.ItemType.ItemTypeEnum.Blueprint)
+                PopulateItemWithBlueprints();
+            else if (itemType.ID == Models.ItemType.ItemTypeEnum.ShipPart ||
+                     itemType.ID == Models.ItemType.ItemTypeEnum.ShipHull ||
+                     itemType.ID == Models.ItemType.ItemTypeEnum.Munition ||
+                     itemType.ID == Models.ItemType.ItemTypeEnum.Flatpack ||
+                     itemType.ID == Models.ItemType.ItemTypeEnum.SpaceBuildPackage ||
+                     itemType.ID == Models.ItemType.ItemTypeEnum.Share)
+                PopulateItemWithBlueprintsByOutputType(itemType.ID);
+
+            cmbItem.DroppedDown = true;
+        }
+
+        private void PopulateItemWithResources()
+        {
+            string searchText = txtItemFilter.Text;
+            List<Resource> filteredList = new List<Resource>(Models.Resource.Resources);
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(item => item.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .OrderBy(p => p.Name)
+                    .ToList();
+                filteredList.Insert(0, new Resource());
+            }
+
+            var bs = new BindingSource();
+            bs.DataSource = filteredList;
+
+            cmbItem.DataSource = null;
+            cmbItem.DisplayMember = "Name";
+            cmbItem.ValueMember = "Name";
+            cmbItem.DataSource = bs;
+        }
+
+        private void PopulateItemWithCommodities()
+        {
+            string searchText = txtItemFilter.Text;
+            List<Commodity> filteredList = new List<Commodity>(Models.Commodity.Commodities);
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .OrderBy(p => p.ExtendedName)
+                    .ToList();
+                filteredList.Insert(0, new Commodity());
+            }
+
+            var bs = new BindingSource();
+            bs.DataSource = filteredList;
+
+            cmbItem.DataSource = null;
+            cmbItem.DisplayMember = "ExtendedName";
+            cmbItem.ValueMember = "Name";
+            cmbItem.DataSource = bs;
+        }
+
+        private void PopulateItemWithWorkerDetails()
+        {
+            string searchText = txtItemFilter.Text;
+            List<WorkerDetail> filteredList = new List<WorkerDetail>(Models.WorkerDetail.WorkerDetails);
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(item => item.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .OrderBy(p => p.Name)
+                    .ToList();
+                filteredList.Insert(0, new WorkerDetail());
+            }
+
+            var bs = new BindingSource();
+            bs.DataSource = filteredList;
+
+            cmbItem.DataSource = null;
+            cmbItem.DisplayMember = "Name";
+            cmbItem.ValueMember = "ID";
+            cmbItem.DataSource = bs;
+        }
+
+        private void PopulateItemWithSurveys()
+        {
+            string searchText = txtItemFilter.Text;
+            List<Models.Survey> filteredList = new List<Models.Survey>(playerContext.SurveyList);
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(s => s.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0
+                             || s.PlanetName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .OrderBy(s => s.PlanetName)
+                    .ToList();
+            }
+            filteredList.Insert(0, new Models.Survey());
+
+            var bs = new BindingSource();
+            bs.DataSource = filteredList;
+
+            cmbItem.DataSource = null;
+            cmbItem.DisplayMember = "ExtendedName";
+            cmbItem.ValueMember = "UUID";
+            cmbItem.DataSource = bs;
+        }
+
+        private void PopulateItemWithBlueprints()
+        {
+            string searchText = txtItemFilter.Text;
+            List<Models.Blueprint> filteredList = new List<Models.Blueprint>(playerContext.GetAllBlueprints());
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(b => b.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+            }
+            filteredList.Sort((x, y) => x.ExtendedName.CompareTo(y.ExtendedName));
+            filteredList.Insert(0, new Models.Blueprint());
+
+            var bs = new BindingSource();
+            bs.DataSource = filteredList;
+
+            cmbItem.DataSource = null;
+            cmbItem.DisplayMember = "ExtendedName";
+            cmbItem.ValueMember = "UUID";
+            cmbItem.DataSource = bs;
+        }
+
+        private void PopulateItemWithBlueprintsByOutputType(Models.ItemType.ItemTypeEnum outputType)
+        {
+            string searchText = txtItemFilter.Text;
+            string outputTypeName = outputType.ToString();
+
+            List<Models.Blueprint> filteredList = new List<Models.Blueprint>();
+            foreach (Models.Blueprint bp in playerContext.GetAllBlueprints())
+            {
+                if (bp.UUID == null) continue;
+                BlueprintType bpType = empireContext.FindBlueprintType(bp.BluePrintType);
+                if (bpType == null || bpType.OutputItemType != outputTypeName) continue;
+                filteredList.Add(bp);
+            }
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(b => b.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+            }
+            filteredList.Sort((x, y) => x.ExtendedName.CompareTo(y.ExtendedName));
+            filteredList.Insert(0, new Models.Blueprint());
+
+            var bs = new BindingSource();
+            bs.DataSource = filteredList;
+
+            cmbItem.DataSource = null;
+            cmbItem.DisplayMember = "ExtendedName";
+            cmbItem.ValueMember = "UUID";
+            cmbItem.DataSource = bs;
+        }
+
+        // -------------------------------------------------------------------
+        // Warehousing — Add Item (20.3)
+        // -------------------------------------------------------------------
+
+        private void cmdAddItem_Click(object sender, EventArgs e)
+        {
+            Models.ItemType itemType = cmbItemType.SelectedItem as Models.ItemType;
+            if (itemType == null || itemType.ID == Models.ItemType.ItemTypeEnum.None) return;
+
+            Models.Item item = new Models.Item() { UUID = Guid.NewGuid().ToString() };
+            item.ItemType = itemType.ID;
+
+            if (itemType.ID == Models.ItemType.ItemTypeEnum.Resource)
+            {
+                Models.Resource resource = cmbItem.SelectedItem as Models.Resource;
+                if (resource != null)
+                {
+                    item.BaseItemTypeID = resource.Name;
+                    item.Name = resource.Name;
+                }
+                Models.ResourcePurity purity = cmbPurity.SelectedItem as Models.ResourcePurity;
+                if (purity != null)
+                    item.ResourcePurity = purity.Name;
+                else
+                    item.ResourcePurity = Models.ResourcePurity.ItemTypeMapByEnum[Models.ResourcePurity.PurityEnum.Refined].Name;
+            }
+            else if (itemType.ID == Models.ItemType.ItemTypeEnum.Commodity)
+            {
+                Models.Commodity commodity = cmbItem.SelectedItem as Models.Commodity;
+                if (commodity != null)
+                {
+                    item.BaseItemTypeID = commodity.Name;
+                    item.Name = commodity.Name;
+                }
+            }
+            else if (itemType.ID == Models.ItemType.ItemTypeEnum.WorkDetail)
+            {
+                Models.WorkerDetail workerDetail = cmbItem.SelectedItem as Models.WorkerDetail;
+                if (workerDetail != null)
+                {
+                    item.BaseItemTypeID = workerDetail.ID;
+                    item.Name = workerDetail.Name;
+                }
+            }
+            else if (itemType.ID == Models.ItemType.ItemTypeEnum.Survey)
+            {
+                Models.Survey survey = cmbItem.SelectedItem as Models.Survey;
+                if (survey != null)
+                {
+                    item.BaseItemTypeID = survey.UUID;
+                    item.Name = survey.Name;
+                }
+            }
+            else if (itemType.ID == Models.ItemType.ItemTypeEnum.Blueprint)
+            {
+                Models.Blueprint blueprint = cmbItem.SelectedItem as Models.Blueprint;
+                if (blueprint != null)
+                {
+                    item.BaseItemTypeID = blueprint.UUID;
+                    item.Name = blueprint.Name;
+                }
+            }
+            else if (itemType.ID == Models.ItemType.ItemTypeEnum.ShipPart ||
+                     itemType.ID == Models.ItemType.ItemTypeEnum.ShipHull ||
+                     itemType.ID == Models.ItemType.ItemTypeEnum.Munition ||
+                     itemType.ID == Models.ItemType.ItemTypeEnum.Flatpack ||
+                     itemType.ID == Models.ItemType.ItemTypeEnum.SpaceBuildPackage ||
+                     itemType.ID == Models.ItemType.ItemTypeEnum.Share)
+            {
+                Models.Blueprint blueprint = cmbItem.SelectedItem as Models.Blueprint;
+                if (blueprint != null)
+                {
+                    item.BaseItemTypeID = blueprint.UUID;
+                    item.Name = blueprint.Name;
+                }
+            }
+
+            string quantityStr = txtQuantity.Text;
+            if (!string.IsNullOrEmpty(quantityStr))
+            {
+                int quantity = 0;
+                int.TryParse(quantityStr, out quantity);
+                item.Quantity = quantity;
+            }
+
+            item.Volume = GetItemVolume(item, playerContext);
+
+            colonyViewModel.AddItem(item);
+            PopulateItemGrid();
+
+            if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
+                playerContext.WriteContext();
+        }
+
+        private static decimal GetItemVolume(Models.Item item, PlayerContext playerContext)
+        {
+            switch (item.ItemType)
+            {
+                case Models.ItemType.ItemTypeEnum.Resource:
+                    return 1.0m;
+                case Models.ItemType.ItemTypeEnum.Commodity:
+                    return 10.0m;
+                case Models.ItemType.ItemTypeEnum.WorkDetail:
+                    return 50.0m;
+                case Models.ItemType.ItemTypeEnum.Blueprint:
+                case Models.ItemType.ItemTypeEnum.Survey:
+                    return 0.0m;
+                default:
+                    // Manufactured items: read CargoVolumeSize from blueprint
+                    if (!string.IsNullOrEmpty(item.BaseItemTypeID) && playerContext != null)
+                    {
+                        Models.Blueprint bp = playerContext.FindBlueprint(item.BaseItemTypeID);
+                        if (bp != null)
+                        {
+                            decimal vol = 0;
+                            bp.Properties.getDecimal("Cargo Volume Size", 0, out vol);
+                            return vol;
+                        }
+                    }
+                    return 0.0m;
+            }
+        }
+
+        // -------------------------------------------------------------------
+        // Warehousing — Delete Item (20.4)
+        // -------------------------------------------------------------------
+
+        private void dgvItems_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Delete) return;
+            if (dgvItems.SelectedRows.Count == 0) return;
+
+            foreach (DataGridViewRow row in dgvItems.SelectedRows)
+            {
+                Item item = row.Tag as Item;
+                if (item != null)
+                {
+                    int locked = colonyViewModel.Data.Locks != null
+                        ? colonyViewModel.Data.Locks.GetLockedQuantity(item.ItemType, item.BaseItemTypeID)
+                        : 0;
+                    if (locked > 0)
+                    {
+                        MessageBox.Show(
+                            $"Cannot delete '{item.ExtendedName}' -- {locked} locked by structures.",
+                            "Item Locked",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        continue;
+                    }
+                    colonyViewModel.RemoveItem(item.UUID);
+                }
+            }
+            PopulateItemGrid();
+
+            if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
+                playerContext.WriteContext();
+
+            e.Handled = true;
+        }
+
+        // -------------------------------------------------------------------
+        // Warehousing — Editable Amount Column (20.5)
+        // -------------------------------------------------------------------
+
+        private void dgvItems_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (e.RowIndex < 0) return;
+
+            DataGridViewRow row = dgvItems.Rows[e.RowIndex];
+            Item item = row.Tag as Item;
+            if (item == null) return;
+
+            // Amount column is index 3
+            if (e.ColumnIndex == 3)
+            {
+                int qty = 0;
+                int.TryParse(row.Cells[3].Value?.ToString(), out qty);
+                item.Quantity = qty;
+
+                colonyViewModel.RecalculateStatus();
+                RefreshStatusSummary();
+                _structuresDirty = true;
+
+                if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
+                    playerContext.WriteContext();
+            }
+        }
+
+        private void dgvItems_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            // Only validate the Amount column (index 3)
+            if (e.ColumnIndex != 3) return;
+            if (e.RowIndex < 0) return;
+
+            string value = e.FormattedValue?.ToString();
+
+            if (string.IsNullOrEmpty(value))
+            {
+                dgvItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = 0;
+                dgvItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
+                dgvItems.Rows[e.RowIndex].ErrorText = "";
+                return;
+            }
+
+            if (!int.TryParse(value, out _))
+            {
+                e.Cancel = true;
+                dgvItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.LightCoral;
+                dgvItems.Rows[e.RowIndex].ErrorText = "Amount must be an integer";
+            }
+            else
+            {
+                dgvItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
+                dgvItems.Rows[e.RowIndex].ErrorText = "";
+            }
+        }
+
+        private void dgvItems_SelectionChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (dgvItems.CurrentCell == null) return;
+            if (dgvItems.SelectedRows.Count > 0) return;
+
+            // Redirect non-Amount column clicks to Amount (index 3)
+            if (dgvItems.Columns[dgvItems.CurrentCell.ColumnIndex].Name != "colItemAmount")
+            {
+                using var guard = new ProgrammaticUpdateGuard(this);
+                dgvItems.CurrentCell = dgvItems.Rows[dgvItems.CurrentCell.RowIndex].Cells[3];
+            }
         }
 
         // -------------------------------------------------------------------

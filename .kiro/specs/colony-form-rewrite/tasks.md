@@ -219,7 +219,7 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
 
 ## Phase 6: Workers Tab (Commodity Requests)
 
-- [-] 19. Implement Workers tab
+- [x] 19. Implement Workers tab
   - [x] 19.1 Add DataGridView with columns: Name, Amount (editable), Fulfilled (checkbox), NeedBy (editable countdown format)
     - FullRowSelect mode; Name column click redirects to Amount column
     - _Requirements: 17.1, 17.8_
@@ -240,10 +240,10 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
 
 ## Phase 7: Warehousing Tab
 
-- [ ] 20. Implement Warehousing tab
-  - [ ] 20.1 Add DataGridView with columns: ItemType, Item (ExtendedName), Locked, Amount (editable integer)
+- [-] 20. Implement Warehousing tab
+  - [x] 20.1 Add DataGridView with columns: ItemType, Item (ExtendedName), Locked, Amount (editable integer)
     - _Requirements: 16.1_
-  - [ ] 20.2 Implement item type combo with dynamic secondary combo/filter per type
+  - [x] 20.2 Implement item type combo with dynamic secondary combo/filter per type
     - Resource: resource combo + purity combo (hide purity for synthetics)
     - Commodity: commodity combo with ExtendedName
     - WorkDetail: BlueCollarDetail/WhiteCollarDetail/SpecialistDetail
@@ -252,14 +252,14 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
     - ShipPart/ShipHull/Munition/Flatpack/SpaceBuildPackage/Share: blueprints filtered by OutputItemType
     - Each combo has a text filter field
     - _Requirements: 16.2, 16.3, 16.4, 16.5, 16.6, 16.7, 16.8, 16.15_
-  - [ ] 20.3 Implement Add: create Item with correct type, BaseItemTypeID, name, purity, quantity, volume; call ColonyViewModel.AddItem()
+  - [x] 20.3 Implement Add: create Item with correct type, BaseItemTypeID, name, purity, quantity, volume; call ColonyViewModel.AddItem()
     - Volume by type: Resource=1, Commodity=10, WorkDetail=50, Blueprint/Survey=0, manufactured items use "Cargo Volume Size"
     - _Requirements: 16.9, 16.10_
-  - [ ] 20.4 Implement Delete key: remove item via ColonyViewModel.RemoveItem(); prevent deletion if item has locked quantities with warning message
+  - [x] 20.4 Implement Delete key: remove item via ColonyViewModel.RemoveItem(); prevent deletion if item has locked quantities with warning message
     - _Requirements: 16.11, 16.12_
-  - [ ] 20.5 Implement editable Amount column with integer validation; update item.Quantity and recalculate status on edit
+  - [x] 20.5 Implement editable Amount column with integer validation; update item.Quantity and recalculate status on edit
     - _Requirements: 16.13_
-  - [ ] 20.6 Display Locked column from Colony.Locks for each item; use in-place row updates instead of clearing all rows
+  - [x] 20.6 Display Locked column from Colony.Locks for each item; use in-place row updates instead of clearing all rows
     - _Requirements: 16.14, 24.10 (form-level)_
 
 ## Phase 8: Import
