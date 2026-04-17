@@ -124,65 +124,65 @@ Introduce layered synchronization to the OE2EmpireTracker data model so that Bac
     - Fire `OnColonyDataChanged` after save so other open forms refresh
     - _Requirements: 10.1, 10.3, 10.4, 8.1_
 
-- [ ] 8. Checkpoint — Verify FormColonyV2 background calculation compiles and tests pass
+- [x] 8. Checkpoint — Verify FormColonyV2 background calculation compiles and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Thread-safety tests
-  - [~] 9.1 Write concurrent colony processing test (Property 1)
+- [x] 9. Thread-safety tests
+  - [x] 9.1 Write concurrent colony processing test (Property 1)
     - **Property 1: Concurrent colony processing safety**
     - Create a colony with structures, items, and locks
     - Run `BackgroundProcessor.RunCycleOnce()` and `ColonyStatusCalculator.CalculateBuilt()` on separate threads, both acquiring `ColonyLock`
     - Assert no exceptions thrown and colony data remains internally consistent
     - **Validates: Requirements 1.3, 1.5, 9.1, 12.1**
 
-  - [~] 9.2 Write concurrent ItemBag access test (Property 2)
+  - [x] 9.2 Write concurrent ItemBag access test (Property 2)
     - **Property 2: ItemBag concurrent access safety**
     - Generate random items, spawn N threads doing concurrent `AddItem` and `FindByType`
     - Assert no exceptions and final item count matches expected
     - **Validates: Requirements 2.2, 2.3, 12.2**
 
-  - [~] 9.3 Write ItemBag defensive copy test (Property 3)
+  - [x] 9.3 Write ItemBag defensive copy test (Property 3)
     - **Property 3: ItemBag defensive copies**
     - Add items, call `FindByType`, modify the returned list, call `FindByType` again
     - Assert results are unchanged by the modification
     - **Validates: Requirements 2.5**
 
-  - [~] 9.4 Write concurrent PropertyBag access test (Property 4)
+  - [x] 9.4 Write concurrent PropertyBag access test (Property 4)
     - **Property 4: PropertyBag concurrent access safety**
     - Generate random property names/values, spawn N threads doing concurrent `setProperty` and `getBoolean`
     - Assert no exceptions
     - **Validates: Requirements 3.2, 3.3, 12.3**
 
-  - [~] 9.5 Write concurrent LockTracking access test (Property 5)
+  - [x] 9.5 Write concurrent LockTracking access test (Property 5)
     - **Property 5: LockTracking concurrent access safety**
     - Generate random process UUIDs and item keys, spawn N threads doing concurrent `LockItem` and `GetLockedQuantity`
     - Assert no exceptions and quantities are non-negative
     - **Validates: Requirements 4.2, 4.3, 12.4**
 
-  - [~] 9.6 Write LockTracking defensive copy test (Property 6)
+  - [x] 9.6 Write LockTracking defensive copy test (Property 6)
     - **Property 6: LockTracking defensive copies**
     - Lock items for a process, get locks via `GetLocksForProcess`, verify the returned collection is read-only
     - **Validates: Requirements 4.4**
 
-  - [~] 9.7 Write cancellation prevents stale results test (Property 7)
+  - [x] 9.7 Write cancellation prevents stale results test (Property 7)
     - **Property 7: Cancellation prevents stale results**
     - Create a `CancellationTokenSource` and generation counter, simulate rapid colony switches by incrementing generation and cancelling token
     - Assert only the final generation's callback executes
     - **Validates: Requirements 6.2, 6.6, 12.5**
 
-  - [~] 9.8 Write read lock timeout test (Property 8)
+  - [x] 9.8 Write read lock timeout test (Property 8)
     - **Property 8: Read lock timeout graceful degradation**
     - Hold a write lock on a colony, attempt a read lock with 1000ms timeout from another thread
     - Assert `TryEnterReadLock` returns false and colony data is unchanged
     - **Validates: Requirements 11.1, 12.6**
 
-  - [~] 9.9 Write write lock timeout test (Property 9)
+  - [x] 9.9 Write write lock timeout test (Property 9)
     - **Property 9: Write lock timeout skips colony without corruption**
     - Hold a write lock on a colony, attempt another write lock with 5000ms timeout
     - Assert `TryEnterWriteLock` returns false and colony data is unchanged
     - **Validates: Requirements 11.2, 12.6**
 
-  - [~] 9.10 Write BackgroundProcessor continues after skip test (Property 10)
+  - [x] 9.10 Write BackgroundProcessor continues after skip test (Property 10)
     - **Property 10: BackgroundProcessor continues after contended colony**
     - Create multiple colonies, hold the write lock on one, run `BackgroundProcessor.RunCycleOnce()`
     - Assert the locked colony is skipped and others with expired timers are processed
