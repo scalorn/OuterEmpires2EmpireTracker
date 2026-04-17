@@ -54,6 +54,17 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmbFlatpacks = new System.Windows.Forms.ComboBox();
             this.cmdAddFlatpack = new System.Windows.Forms.Button();
             this.tabPWorkers = new System.Windows.Forms.TabPage();
+            this.dgvCommodityRequests = new System.Windows.Forms.DataGridView();
+            this.colCRName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCRAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCRFulfilled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colCRNeedBy = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.flpAddCommodityRequest = new System.Windows.Forms.FlowLayoutPanel();
+            this.txtCommodityRequestFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.cmbCommodityRequest = new System.Windows.Forms.ComboBox();
+            this.txtCommodityRequestQty = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.txtCommodityRequestNeedBy = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.cmdAddCommodityRequest = new System.Windows.Forms.Button();
             this.tabPWarehousing = new System.Windows.Forms.TabPage();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdNew = new System.Windows.Forms.Button();
@@ -85,6 +96,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.splitStructures.Panel2.SuspendLayout();
             this.splitStructures.SuspendLayout();
             this.flpAddStructure.SuspendLayout();
+            this.tabPWorkers.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCommodityRequests)).BeginInit();
+            this.flpAddCommodityRequest.SuspendLayout();
             this.flpCommands.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -431,12 +445,113 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // 
             // tabPWorkers
             // 
+            this.tabPWorkers.Controls.Add(this.dgvCommodityRequests);
+            this.tabPWorkers.Controls.Add(this.flpAddCommodityRequest);
             this.tabPWorkers.Location = new System.Drawing.Point(4, 22);
             this.tabPWorkers.Name = "tabPWorkers";
+            this.tabPWorkers.Padding = new System.Windows.Forms.Padding(2);
             this.tabPWorkers.Size = new System.Drawing.Size(792, 324);
             this.tabPWorkers.TabIndex = 2;
             this.tabPWorkers.Text = "Workers";
             this.tabPWorkers.UseVisualStyleBackColor = true;
+            // 
+            // dgvCommodityRequests
+            // 
+            this.dgvCommodityRequests.AllowUserToAddRows = false;
+            this.dgvCommodityRequests.AllowUserToDeleteRows = false;
+            this.dgvCommodityRequests.AllowUserToOrderColumns = true;
+            this.dgvCommodityRequests.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvCommodityRequests.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colCRName,
+            this.colCRAmount,
+            this.colCRFulfilled,
+            this.colCRNeedBy});
+            this.dgvCommodityRequests.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvCommodityRequests.Location = new System.Drawing.Point(2, 2);
+            this.dgvCommodityRequests.Name = "dgvCommodityRequests";
+            this.dgvCommodityRequests.RowHeadersVisible = false;
+            this.dgvCommodityRequests.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvCommodityRequests.Size = new System.Drawing.Size(788, 290);
+            this.dgvCommodityRequests.TabIndex = 0;
+            // 
+            // colCRName
+            // 
+            this.colCRName.HeaderText = "Name";
+            this.colCRName.Name = "colCRName";
+            this.colCRName.ReadOnly = true;
+            this.colCRName.Width = 200;
+            // 
+            // colCRAmount
+            // 
+            this.colCRAmount.HeaderText = "Amount";
+            this.colCRAmount.Name = "colCRAmount";
+            this.colCRAmount.Width = 80;
+            // 
+            // colCRFulfilled
+            // 
+            this.colCRFulfilled.HeaderText = "Fulfilled";
+            this.colCRFulfilled.Name = "colCRFulfilled";
+            this.colCRFulfilled.Width = 60;
+            // 
+            // colCRNeedBy
+            // 
+            this.colCRNeedBy.HeaderText = "NeedBy";
+            this.colCRNeedBy.Name = "colCRNeedBy";
+            this.colCRNeedBy.Width = 120;
+            // 
+            // flpAddCommodityRequest
+            // 
+            this.flpAddCommodityRequest.Controls.Add(this.txtCommodityRequestFilter);
+            this.flpAddCommodityRequest.Controls.Add(this.cmbCommodityRequest);
+            this.flpAddCommodityRequest.Controls.Add(this.txtCommodityRequestQty);
+            this.flpAddCommodityRequest.Controls.Add(this.txtCommodityRequestNeedBy);
+            this.flpAddCommodityRequest.Controls.Add(this.cmdAddCommodityRequest);
+            this.flpAddCommodityRequest.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.flpAddCommodityRequest.Location = new System.Drawing.Point(2, 292);
+            this.flpAddCommodityRequest.Name = "flpAddCommodityRequest";
+            this.flpAddCommodityRequest.Size = new System.Drawing.Size(788, 30);
+            this.flpAddCommodityRequest.TabIndex = 1;
+            this.flpAddCommodityRequest.WrapContents = false;
+            // 
+            // txtCommodityRequestFilter
+            // 
+            this.txtCommodityRequestFilter.Location = new System.Drawing.Point(3, 3);
+            this.txtCommodityRequestFilter.Name = "txtCommodityRequestFilter";
+            this.txtCommodityRequestFilter.Size = new System.Drawing.Size(120, 20);
+            this.txtCommodityRequestFilter.TabIndex = 0;
+            // 
+            // cmbCommodityRequest
+            // 
+            this.cmbCommodityRequest.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbCommodityRequest.FormattingEnabled = true;
+            this.cmbCommodityRequest.Location = new System.Drawing.Point(129, 3);
+            this.cmbCommodityRequest.Name = "cmbCommodityRequest";
+            this.cmbCommodityRequest.Size = new System.Drawing.Size(280, 21);
+            this.cmbCommodityRequest.TabIndex = 1;
+            // 
+            // txtCommodityRequestQty
+            // 
+            this.txtCommodityRequestQty.Location = new System.Drawing.Point(415, 3);
+            this.txtCommodityRequestQty.Name = "txtCommodityRequestQty";
+            this.txtCommodityRequestQty.Size = new System.Drawing.Size(60, 20);
+            this.txtCommodityRequestQty.TabIndex = 2;
+            this.txtCommodityRequestQty.Text = "0";
+            // 
+            // txtCommodityRequestNeedBy
+            // 
+            this.txtCommodityRequestNeedBy.Location = new System.Drawing.Point(481, 3);
+            this.txtCommodityRequestNeedBy.Name = "txtCommodityRequestNeedBy";
+            this.txtCommodityRequestNeedBy.Size = new System.Drawing.Size(100, 20);
+            this.txtCommodityRequestNeedBy.TabIndex = 3;
+            // 
+            // cmdAddCommodityRequest
+            // 
+            this.cmdAddCommodityRequest.Location = new System.Drawing.Point(587, 3);
+            this.cmdAddCommodityRequest.Name = "cmdAddCommodityRequest";
+            this.cmdAddCommodityRequest.Size = new System.Drawing.Size(50, 23);
+            this.cmdAddCommodityRequest.TabIndex = 4;
+            this.cmdAddCommodityRequest.Text = "Add";
+            this.cmdAddCommodityRequest.UseVisualStyleBackColor = true;
             // 
             // tabPWarehousing
             // 
@@ -541,6 +656,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.tabPStructures.ResumeLayout(false);
             this.flpAddStructure.ResumeLayout(false);
             this.flpAddStructure.PerformLayout();
+            this.tabPWorkers.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCommodityRequests)).EndInit();
+            this.flpAddCommodityRequest.ResumeLayout(false);
+            this.flpAddCommodityRequest.PerformLayout();
             this.flpCommands.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -574,6 +693,17 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private System.Windows.Forms.ComboBox cmbFlatpacks;
         private System.Windows.Forms.Button cmdAddFlatpack;
         private System.Windows.Forms.TabPage tabPWorkers;
+        private System.Windows.Forms.DataGridView dgvCommodityRequests;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCRName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCRAmount;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colCRFulfilled;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCRNeedBy;
+        private System.Windows.Forms.FlowLayoutPanel flpAddCommodityRequest;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtCommodityRequestFilter;
+        private System.Windows.Forms.ComboBox cmbCommodityRequest;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtCommodityRequestQty;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtCommodityRequestNeedBy;
+        private System.Windows.Forms.Button cmdAddCommodityRequest;
         private System.Windows.Forms.TabPage tabPWarehousing;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
         private System.Windows.Forms.Button cmdNew;

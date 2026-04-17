@@ -213,14 +213,14 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
     - Disable Built checkbox while build timer active
     - _Requirements: 14.3, 14.4, 14.5_
 
-- [ ] 18. Checkpoint — Process controls
+- [x] 18. Checkpoint — Process controls
   - Ensure all tests pass, verify mining/refining/research/manufacturing/commodity/build flows work
   - Ask the user if questions arise.
 
 ## Phase 6: Workers Tab (Commodity Requests)
 
-- [ ] 19. Implement Workers tab
-  - [ ] 19.1 Add DataGridView with columns: Name, Amount (editable), Fulfilled (checkbox), NeedBy (editable countdown format)
+- [-] 19. Implement Workers tab
+  - [-] 19.1 Add DataGridView with columns: Name, Amount (editable), Fulfilled (checkbox), NeedBy (editable countdown format)
     - FullRowSelect mode; Name column click redirects to Amount column
     - _Requirements: 17.1, 17.8_
   - [ ] 19.2 Implement Add: filtered commodity combo, quantity input, optional NeedBy countdown, call ColonyViewModel.AddCommodityRequest()

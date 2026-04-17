@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace OE2EmpireTracker.Forms.ColonyV2
@@ -86,6 +87,16 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Structure type filter (9.1, 9.3)
             SeedUncheckedStructureTypes();
+
+            // Wire commodity request handlers (19.1-19.8)
+            txtCommodityRequestFilter.TextChanged += txtCommodityRequestFilter_TextChanged;
+            cmdAddCommodityRequest.Click += cmdAddCommodityRequest_Click;
+            dgvCommodityRequests.CurrentCellDirtyStateChanged += dgvCommodityRequests_CurrentCellDirtyStateChanged;
+            dgvCommodityRequests.CellValueChanged += dgvCommodityRequests_CellValueChanged;
+            dgvCommodityRequests.CellValidating += dgvCommodityRequests_CellValidating;
+            dgvCommodityRequests.SelectionChanged += dgvCommodityRequests_SelectionChanged;
+            dgvCommodityRequests.KeyDown += dgvCommodityRequests_KeyDown;
+            UpdateCommodityRequestList();
 
             // Enable owner-draw so tab BackColor renders with visual styles (11.4)
             tabDetailedData.DrawMode = TabDrawMode.OwnerDrawFixed;
@@ -345,7 +356,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 RefreshAdminReport();
                 _adminDirty = false;
             }
-            // Future tabs: tabPWarehousing, tabPWorkers
+            else if (tab == tabPWorkers && _workersDirty)
+            {
+                PopulateCommodityRequestGrid();
+                _workersDirty = false;
+            }
+            // Future tabs: tabPWarehousing
         }
 
         // -------------------------------------------------------------------
@@ -785,9 +801,338 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             ApplyTabWarning(tabPStructures,
                 TabWarningService.EvaluateStructureWarning(structureCount));
 
+            ApplyTabWarning(tabPWorkers,
+                TabWarningService.EvaluateWorkerWarning(
+                    selectedColony?.Commodities, DateTime.UtcNow));
+
             ApplyTabWarning(tabPAdministration,
                 TabWarningService.EvaluateColonyImportStalenessWarning(
                     selectedColony?.LastImportDateTime, DateTime.UtcNow));
+
+            UpdateWorkerTabTitle();
+        }
+
+        // -------------------------------------------------------------------
+        // Workers Tab — Commodity Requests (19.1-19.8)
+        // -------------------------------------------------------------------
+
+        private void cmdAddCommodityRequest_Click(object sender, EventArgs e)
+        {
+            Models.Commodity commodity = cmbCommodityRequest.SelectedItem as Models.Commodity;
+            if (commodity == null || string.IsNullOrEmpty(commodity.ID)) return;
+
+            int qty;
+            int.TryParse(txtCommodityRequestQty.Text, out qty);
+
+            DateTime? needBy = null;
+            string needByText = txtCommodityRequestNeedBy.Text?.Trim();
+            if (!string.IsNullOrEmpty(needByText))
+            {
+                needBy = ParseCountdownToDateTime(needByText);
+            }
+
+            colonyViewModel.AddCommodityRequest(commodity.Name, qty, needBy);
+            PopulateCommodityRequestGrid();
+            UpdateTabWarnings();
+
+            if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
+                playerContext.WriteContext();
+        }
+
+        private void txtCommodityRequestFilter_TextChanged(object sender, EventArgs e)
+        {
+            UpdateCommodityRequestList();
+            cmbCommodityRequest.DroppedDown = true;
+        }
+
+        private void UpdateCommodityRequestList()
+        {
+            string searchText = txtCommodityRequestFilter.Text;
+
+            List<Models.Commodity> filteredList = new List<Models.Commodity>(Models.Commodity.Commodities);
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(c => c.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .OrderBy(c => c.ExtendedName)
+                    .ToList();
+            }
+            filteredList.Insert(0, new Models.Commodity());
+
+            var bindingList = new BindingSource();
+            bindingList.DataSource = filteredList;
+
+            cmbCommodityRequest.DataSource = null;
+            cmbCommodityRequest.DisplayMember = "ExtendedName";
+            cmbCommodityRequest.ValueMember = "Name";
+            cmbCommodityRequest.DataSource = bindingList;
+        }
+
+        private void PopulateCommodityRequestGrid()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            dgvCommodityRequests.CellValidating -= dgvCommodityRequests_CellValidating;
+            try { dgvCommodityRequests.EndEdit(); } catch { }
+
+            // Auto-cleanup expired fulfilled requests (19.6)
+            int cleaned = colonyViewModel.CleanupExpiredCommodityRequests();
+            if (cleaned > 0)
+            {
+                Log.Debug("Cleaned up {0} expired commodity requests", cleaned);
+                if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
+                    playerContext.WriteContext();
+            }
+
+            // Index existing rows by their CommodityRequested reference
+            var existingRows = new Dictionary<CommodityRequested, DataGridViewRow>();
+            foreach (DataGridViewRow row in dgvCommodityRequests.Rows)
+            {
+                var req = row.Tag as CommodityRequested;
+                if (req != null)
+                    existingRows[req] = row;
+            }
+
+            var seen = new HashSet<CommodityRequested>();
+            var requests = colonyViewModel.GetCommodityRequests();
+            foreach (CommodityRequested request in requests)
+            {
+                seen.Add(request);
+
+                DataGridViewRow row;
+                if (!existingRows.TryGetValue(request, out row))
+                {
+                    int idx = dgvCommodityRequests.Rows.Add();
+                    row = dgvCommodityRequests.Rows[idx];
+                    row.Tag = request;
+                }
+
+                row.Cells[0].Value = request.Name;
+                row.Cells[1].Value = request.Requested;
+                row.Cells[2].Value = request.Fulfilled;
+                row.Cells[3].Value = FormatNeedByCountdown(request.NeedBy);
+
+                // Strikethrough styling for fulfilled requests (19.4)
+                if (request.Fulfilled)
+                {
+                    row.DefaultCellStyle.Font = new Font(dgvCommodityRequests.Font, FontStyle.Strikeout);
+                    row.DefaultCellStyle.ForeColor = Color.Gray;
+                }
+                else
+                {
+                    row.DefaultCellStyle.Font = dgvCommodityRequests.Font;
+                    row.DefaultCellStyle.ForeColor = dgvCommodityRequests.ForeColor;
+                }
+            }
+
+            // Remove rows for deleted/cleaned requests (iterate backwards)
+            for (int i = dgvCommodityRequests.Rows.Count - 1; i >= 0; i--)
+            {
+                var req = dgvCommodityRequests.Rows[i].Tag as CommodityRequested;
+                if (req != null && !seen.Contains(req))
+                    dgvCommodityRequests.Rows.RemoveAt(i);
+            }
+
+            dgvCommodityRequests.CellValidating += dgvCommodityRequests_CellValidating;
+
+            UpdateWorkerTabTitle();
+        }
+
+        private void dgvCommodityRequests_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (dgvCommodityRequests.IsCurrentCellDirty)
+            {
+                dgvCommodityRequests.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
+
+        private void dgvCommodityRequests_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (e.RowIndex < 0) return;
+            DataGridViewRow row = dgvCommodityRequests.Rows[e.RowIndex];
+            CommodityRequested request = row.Tag as CommodityRequested;
+            if (request == null) return;
+
+            // Column 1 = Amount (Requested) (19.3)
+            if (e.ColumnIndex == 1)
+            {
+                int value;
+                if (int.TryParse(row.Cells[1].Value?.ToString(), out value))
+                    request.Requested = value;
+                playerContext.WriteContext();
+            }
+            // Column 2 = Fulfilled (checkbox) (19.4)
+            else if (e.ColumnIndex == 2)
+            {
+                bool fulfilled = row.Cells[2].Value is bool b && b;
+                request.Fulfilled = fulfilled;
+                if (fulfilled)
+                    request.Delivered = request.Requested;
+                else
+                    request.Delivered = 0;
+                playerContext.WriteContext();
+                // Refresh to update strikethrough
+                PopulateCommodityRequestGrid();
+            }
+            // Column 3 = NeedBy (countdown format) (19.3)
+            else if (e.ColumnIndex == 3)
+            {
+                string text = row.Cells[3].Value?.ToString() ?? "";
+                DateTime? parsed = ParseCountdownToDateTime(text);
+                if (parsed.HasValue)
+                {
+                    request.NeedBy = parsed.Value;
+                    playerContext.WriteContext();
+                }
+            }
+
+            UpdateTabWarnings();
+        }
+
+        private void dgvCommodityRequests_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+
+            // Column 1 = Amount
+            if (e.ColumnIndex == 1)
+            {
+                string value = e.FormattedValue?.ToString();
+                if (string.IsNullOrEmpty(value))
+                {
+                    dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = 0;
+                    dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
+                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "";
+                    return;
+                }
+                if (!int.TryParse(value, out _))
+                {
+                    e.Cancel = true;
+                    dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.LightCoral;
+                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "Amount must be an integer";
+                }
+                else
+                {
+                    dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
+                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "";
+                }
+            }
+            // Column 3 = NeedBy (countdown format)
+            else if (e.ColumnIndex == 3)
+            {
+                string value = e.FormattedValue?.ToString();
+                if (string.IsNullOrEmpty(value))
+                {
+                    dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
+                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "";
+                    return;
+                }
+                if (ParseCountdownToDateTime(value) == null)
+                {
+                    e.Cancel = true;
+                    dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.LightCoral;
+                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "Use countdown format: e.g. 2d 6h 30m";
+                }
+                else
+                {
+                    dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
+                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "";
+                }
+            }
+        }
+
+        private void dgvCommodityRequests_SelectionChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (dgvCommodityRequests.CurrentCell == null) return;
+            if (dgvCommodityRequests.SelectedRows.Count > 0) return;
+
+            // Redirect Name column (0) clicks to Amount (1) (19.1)
+            int col = dgvCommodityRequests.CurrentCell.ColumnIndex;
+            if (col == 0)
+            {
+                using var guard = new ProgrammaticUpdateGuard(this);
+                dgvCommodityRequests.CurrentCell = dgvCommodityRequests.Rows[dgvCommodityRequests.CurrentCell.RowIndex].Cells[1];
+            }
+        }
+
+        private void dgvCommodityRequests_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Delete) return;
+            if (dgvCommodityRequests.SelectedRows.Count == 0) return;
+
+            foreach (DataGridViewRow row in dgvCommodityRequests.SelectedRows)
+            {
+                CommodityRequested request = row.Tag as CommodityRequested;
+                if (request != null)
+                    colonyViewModel.RemoveCommodityRequest(request);
+            }
+            PopulateCommodityRequestGrid();
+            UpdateTabWarnings();
+
+            if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
+                playerContext.WriteContext();
+
+            e.Handled = true;
+        }
+
+        // -------------------------------------------------------------------
+        // Workers Tab — Tab Title and Countdown Helpers (19.7)
+        // -------------------------------------------------------------------
+
+        private void UpdateWorkerTabTitle()
+        {
+            if (selectedColony == null)
+            {
+                tabPWorkers.Text = "Workers";
+                return;
+            }
+
+            int activeCount = selectedColony.Commodities
+                .Count(cr => !cr.Fulfilled);
+            tabPWorkers.Text = activeCount > 0 ? $"Workers : {activeCount}" : "Workers";
+        }
+
+        /// <summary>
+        /// Parses a countdown string (e.g. "2d 6h 30m") into a DateTime (now + duration).
+        /// Returns null if the format is invalid.
+        /// </summary>
+        private DateTime? ParseCountdownToDateTime(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return null;
+            var match = Regex.Match(text.Trim(),
+                @"^(?:(\d+)d\s*)?(?:(\d+)h\s*)?(?:(\d+)m\s*)?(?:(\d+)s)?$");
+            if (!match.Success) return null;
+            if (!match.Groups[1].Success && !match.Groups[2].Success && !match.Groups[3].Success && !match.Groups[4].Success)
+                return null;
+
+            int days = match.Groups[1].Success ? int.Parse(match.Groups[1].Value) : 0;
+            int hours = match.Groups[2].Success ? int.Parse(match.Groups[2].Value) : 0;
+            int minutes = match.Groups[3].Success ? int.Parse(match.Groups[3].Value) : 0;
+            int seconds = match.Groups[4].Success ? int.Parse(match.Groups[4].Value) : 0;
+
+            long totalSeconds = ((long)days * 24 + hours) * 3600 + minutes * 60 + seconds;
+            if (totalSeconds <= 0) return null;
+            return DateTime.UtcNow.AddSeconds(totalSeconds);
+        }
+
+        /// <summary>
+        /// Formats a NeedBy DateTime as a countdown string relative to now.
+        /// Returns empty string for DateTime.MinValue. Shows "overdue" for past-due (19.7).
+        /// </summary>
+        private string FormatNeedByCountdown(DateTime needBy)
+        {
+            if (needBy == DateTime.MinValue) return "";
+            var remaining = needBy - DateTime.UtcNow;
+            if (remaining.TotalSeconds <= 0)
+                return "overdue";
+
+            string result = "";
+            if (remaining.Days > 0) result += $"{remaining.Days}d ";
+            if (remaining.Hours > 0 || remaining.Days > 0) result += $"{remaining.Hours}h ";
+            if (remaining.Minutes > 0 || remaining.Hours > 0 || remaining.Days > 0) result += $"{remaining.Minutes}m";
+            else result += $"{remaining.Seconds}s";
+            return result.Trim();
         }
 
         // -------------------------------------------------------------------
