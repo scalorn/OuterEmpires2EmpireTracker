@@ -86,6 +86,8 @@ namespace OE2EmpireTracker.Models
         private Dictionary<string, Dictionary<ItemKey, int>> _locks =
             new Dictionary<string, Dictionary<ItemKey, int>>();
 
+        private readonly object _syncRoot = new object();
+
         /// <summary>
         /// Locks a quantity of a single item for the given process.
         /// Adds to any existing lock for the same process and item.
@@ -94,17 +96,20 @@ namespace OE2EmpireTracker.Models
         {
             if (string.IsNullOrEmpty(processUUID)) throw new ArgumentNullException(nameof(processUUID));
 
-            Dictionary<ItemKey, int> processLocks;
-            if (!_locks.TryGetValue(processUUID, out processLocks))
+            lock (_syncRoot)
             {
-                processLocks = new Dictionary<ItemKey, int>();
-                _locks[processUUID] = processLocks;
-            }
+                Dictionary<ItemKey, int> processLocks;
+                if (!_locks.TryGetValue(processUUID, out processLocks))
+                {
+                    processLocks = new Dictionary<ItemKey, int>();
+                    _locks[processUUID] = processLocks;
+                }
 
-            var key = new ItemKey(itemType, baseItemTypeID);
-            int existing;
-            processLocks.TryGetValue(key, out existing);
-            processLocks[key] = existing + quantity;
+                var key = new ItemKey(itemType, baseItemTypeID);
+                int existing;
+                processLocks.TryGetValue(key, out existing);
+                processLocks[key] = existing + quantity;
+            }
         }
 
         /// <summary>
@@ -112,8 +117,11 @@ namespace OE2EmpireTracker.Models
         /// </summary>
         public void LockItems(string processUUID, IEnumerable<ItemLock> items)
         {
-            foreach (var item in items)
-                LockItem(processUUID, item.Key.ItemType, item.Key.BaseItemTypeID, item.Quantity);
+            lock (_syncRoot)
+            {
+                foreach (var item in items)
+                    LockItem(processUUID, item.Key.ItemType, item.Key.BaseItemTypeID, item.Quantity);
+            }
         }
 
         /// <summary>
@@ -121,13 +129,16 @@ namespace OE2EmpireTracker.Models
         /// </summary>
         public int GetLockedQuantity(Models.ItemType.ItemTypeEnum itemType, string baseItemTypeID)
         {
-            var key = new ItemKey(itemType, baseItemTypeID);
-            return _locks.Values.Sum(processLocks =>
+            lock (_syncRoot)
             {
-                int qty;
-                processLocks.TryGetValue(key, out qty);
-                return qty;
-            });
+                var key = new ItemKey(itemType, baseItemTypeID);
+                return _locks.Values.Sum(processLocks =>
+                {
+                    int qty;
+                    processLocks.TryGetValue(key, out qty);
+                    return qty;
+                });
+            }
         }
 
         /// <summary>
@@ -136,14 +147,17 @@ namespace OE2EmpireTracker.Models
         /// </summary>
         public IReadOnlyList<ItemLock> GetLocksForProcess(string processUUID)
         {
-            Dictionary<ItemKey, int> processLocks;
-            if (!_locks.TryGetValue(processUUID, out processLocks))
-                return new List<ItemLock>();
+            lock (_syncRoot)
+            {
+                Dictionary<ItemKey, int> processLocks;
+                if (!_locks.TryGetValue(processUUID, out processLocks))
+                    return new List<ItemLock>();
 
-            return processLocks
-                .Select(kv => new ItemLock(kv.Key, kv.Value))
-                .ToList()
-                .AsReadOnly();
+                return processLocks
+                    .Select(kv => new ItemLock(kv.Key, kv.Value))
+                    .ToList()
+                    .AsReadOnly();
+            }
         }
 
         /// <summary>
@@ -151,7 +165,10 @@ namespace OE2EmpireTracker.Models
         /// </summary>
         public void ClearLocksForProcess(string processUUID)
         {
-            _locks.Remove(processUUID);
+            lock (_syncRoot)
+            {
+                _locks.Remove(processUUID);
+            }
         }
 
         /// <summary>
