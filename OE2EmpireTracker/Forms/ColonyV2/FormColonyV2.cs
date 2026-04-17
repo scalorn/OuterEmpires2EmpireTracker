@@ -644,7 +644,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     ctrl.ViewModel = vm;
                     ctrl.Colony = selectedColony;
                     var udSw = System.Diagnostics.Stopwatch.StartNew();
-                    ctrl.UpdateDataFast(bp);
+                    ctrl.UpdateData(bp);
                     udSw.Stop();
                     updateDataTotal += udSw.ElapsedMilliseconds;
                     ctrl.Visible = checkedTypes.Count == 0 || checkedTypes.Contains(typeId);

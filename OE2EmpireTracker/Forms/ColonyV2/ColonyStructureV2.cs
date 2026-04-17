@@ -189,7 +189,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             Colony = null;
             _blueprint = null;
             _completionModification = false;
-            _needsFullUpdate = false;
 
             // Reset background
             flpColonyStructure.BackColor = SystemColors.Control;
@@ -198,63 +197,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // -----------------------------------------------------------------------
         // 7.3: UpdateData(Blueprint bp) — full repaint
         // -----------------------------------------------------------------------
-
-        /// <summary>
-        /// Lightweight update for colony switch — sets header, state checkboxes, background color,
-        /// and hides optional panels. Skips RTF, worker checkboxes, and process controls.
-        /// Call UpdateData for full repaint when the user interacts with this structure.
-        /// </summary>
-        public void UpdateDataFast(Models.Blueprint bp)
-        {
-            if (ViewModel == null) return;
-
-            using var guard = new ProgrammaticUpdateGuard(this);
-
-            _blueprint = bp;
-            var structureData = ViewModel.Data;
-
-            // --- Header ---
-            string bpName = bp != null ? bp.ExtendedName : "(Unknown)";
-            lblName.Text = $"{bpName} #{structureData.displaySequence}";
-
-            // --- State checkboxes ---
-            chkStaged.Checked = ViewModel.IsStaged;
-            chkBuilt.Checked = ViewModel.IsBuilt;
-            chkOnline.Checked = ViewModel.IsOnline;
-
-            // --- Clear status (will be populated on demand) ---
-            rtbStatus.Text = "";
-
-            // --- Hide all optional panels (will be shown on demand) ---
-            flpSurveySelection.Visible = false;
-            flpSelection.Visible = false;
-            flpManufacturing.Visible = false;
-
-            // --- Hide worker checkboxes ---
-            for (int i = 0; i < _workerCheckboxes.Length; i++)
-                _workerCheckboxes[i].Visible = false;
-
-            // --- Background color ---
-            UpdateBackgroundColor();
-
-            // Mark that this control needs a full UpdateData when interacted with
-            _needsFullUpdate = true;
-        }
-
-        /// <summary>True if this control was populated with UpdateDataFast and needs a full UpdateData.</summary>
-        private bool _needsFullUpdate = false;
-
-        /// <summary>
-        /// Ensures this control has had a full UpdateData. Called before user interaction.
-        /// </summary>
-        public void EnsureFullUpdate()
-        {
-            if (_needsFullUpdate && ViewModel != null)
-            {
-                _needsFullUpdate = false;
-                UpdateData(_blueprint);
-            }
-        }
 
         /// <summary>
         /// Full repaint of the control with the given pre-resolved blueprint.
@@ -1620,7 +1562,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void cmbSurvey_DropDown(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            EnsureFullUpdate();
             if (cmbSurvey.DataSource == null || cmbSurvey.Items.Count <= 1)
             {
                 PopulateSurveyCombo();
@@ -1631,7 +1572,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void cmbSelection_DropDown(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            EnsureFullUpdate();
             if (cmbSelection.DataSource == null || cmbSelection.Items.Count <= 1)
             {
                 if (_blueprint == null) return;
