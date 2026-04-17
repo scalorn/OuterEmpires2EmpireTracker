@@ -58,7 +58,7 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
 
 ## Phase 2: Form Scaffolding and Colony List
 
-- [-] 6. Create FormColonyV2 shell with colony list
+- [x] 6. Create FormColonyV2 shell with colony list
   - [x] 6.1 Create `Forms/ColonyV2/` directory with FormColonyV2.cs and FormColonyV2.Designer.cs
     - Designer layout: flpColonyList (left) with txtColonyFilter + lvwColonies; flpColonyData (right) with flpIdentity + tabDetailedData + flpCommands
     - _Requirements: 25.1, 1.1_
@@ -86,29 +86,29 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
 
 ## Phase 3: Structure Control (ColonyStructureV2)
 
-- [ ] 7. Create ColonyStructureV2 poolable UserControl
-  - [ ] 7.1 Create `Forms/ColonyV2/ColonyStructureV2.cs` and `.Designer.cs` with panel layout
+- [x] 7. Create ColonyStructureV2 poolable UserControl
+  - [x] 7.1 Create `Forms/ColonyV2/ColonyStructureV2.cs` and `.Designer.cs` with panel layout
     - Panels: flpHeader, rtbStatus, flpWorkers, flpSurveySelection, flpSelection, flpManufacturing, flpTimer, flpStructureCommands
     - _Requirements: 25.2, 6.1_
-  - [ ] 7.2 Implement `Reset()` method for pool reuse — clear all fields, hide optional panels, detach ViewModel
+  - [x] 7.2 Implement `Reset()` method for pool reuse — clear all fields, hide optional panels, detach ViewModel
     - _Requirements: 24.5 (form-level)_
-  - [ ] 7.3 Implement `UpdateData(Blueprint bp)` full repaint — accepts pre-resolved blueprint, sets header, status RTF, worker checkboxes, panel visibility by blueprint type
+  - [x] 7.3 Implement `UpdateData(Blueprint bp)` full repaint — accepts pre-resolved blueprint, sets header, status RTF, worker checkboxes, panel visibility by blueprint type
     - Panel visibility table: MiningRig/Refinery/ResearchLab/Manufactory/CommodityFactory/Other
     - _Requirements: 6.1, 6.2, 6.3, 24.7_
-  - [ ] 7.4 Implement `UpdateBackgroundColor()` lightweight path — Yellow (Staged), PaleVioletRed (Built/Offline), LightGreen (Online, missing workers), Green (Online, all workers)
+  - [x] 7.4 Implement `UpdateBackgroundColor()` lightweight path — Yellow (Staged), PaleVioletRed (Built/Offline), LightGreen (Online, missing workers), Green (Online, all workers)
     - _Requirements: 6.3, 24.9 (form-level)_
-  - [ ] 7.5 Implement state checkboxes: Built, Online, Staged with mutual exclusion logic
+  - [x] 7.5 Implement state checkboxes: Built, Online, Staged with mutual exclusion logic
     - Built: IsBuilt=true, IsStaged=false; Online: IsOnline=true, IsBuilt=true, IsStaged=false; Staged: IsStaged=true, IsBuilt=false, IsOnline=false
     - Fire ColonyStructureDataChanged on each change
     - _Requirements: 6.4, 6.5, 6.6, 6.7_
-  - [ ] 7.6 Implement worker checkboxes (BlueCollar, WhiteCollar, Specialist) with write-through to AssignedWorkers PropertyBag
+  - [x] 7.6 Implement worker checkboxes (BlueCollar, WhiteCollar, Specialist) with write-through to AssignedWorkers PropertyBag
     - Toggle calls UpdateBackgroundColor() instead of full UpdateData()
     - Fire ColonyStructureDataChanged with structural=false
     - _Requirements: 7.1, 7.2, 7.3, 7.4_
-  - [ ] 7.7 Implement unallocated worker checkboxes (disabled, read-only) for structures with UnassignedDetail properties
+  - [x] 7.7 Implement unallocated worker checkboxes (disabled, read-only) for structures with UnassignedDetail properties
     - State determined by ColonyStatusCalculator actual status
     - _Requirements: 7.5, 7.6_
-  - [ ] 7.8 Implement Up/Down/Delete structure command buttons
+  - [x] 7.8 Implement Up/Down/Delete structure command buttons
     - Delete also triggered by Delete key when control is focused
     - _Requirements: 4.3, 4.4, 4.5, 4.6_
 

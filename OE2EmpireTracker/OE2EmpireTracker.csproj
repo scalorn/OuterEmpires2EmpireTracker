@@ -272,6 +272,13 @@
     <Compile Include="Forms\Colony\FormColony.Designer.cs">
       <DependentUpon>FormColony.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ColonyV2\ColonyStructureDataChangedEventArgs.cs" />
+    <Compile Include="Forms\ColonyV2\ColonyStructureV2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\ColonyV2\ColonyStructureV2.Designer.cs">
+      <DependentUpon>ColonyStructureV2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ColonyV2\FormColonyV2.cs">
       <SubType>Form</SubType>
     </Compile>
