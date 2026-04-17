@@ -834,6 +834,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     selectedColony?.LastImportDateTime, DateTime.UtcNow));
 
             UpdateWorkerTabTitle();
+            UpdateStructuresTabTitle();
         }
 
         // -------------------------------------------------------------------
@@ -1112,9 +1113,16 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 return;
             }
 
+            var now = DateTime.UtcNow;
             int activeCount = selectedColony.Commodities
-                .Count(cr => !cr.Fulfilled);
+                .Count(r => !r.Fulfilled && (r.NeedBy == DateTime.MinValue || r.NeedBy > now));
             tabPWorkers.Text = activeCount > 0 ? $"Workers : {activeCount}" : "Workers";
+        }
+
+        private void UpdateStructuresTabTitle()
+        {
+            int structureCount = selectedColony?.Structures?.Count ?? 0;
+            tabPStructures.Text = structureCount > 0 ? $"Structures : {structureCount}" : "Structures";
         }
 
         /// <summary>
