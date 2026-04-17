@@ -358,22 +358,27 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     selectedColony?.ColonyName ?? selectedColony?.PlanetName ?? "(null)",
                     selectedColony?.UUID ?? "(null)");
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
-                long t0 = sw.ElapsedMilliseconds;
+                long tViewModel = sw.ElapsedMilliseconds;
+                colonyViewModel.RecalculateStatus();
+                long tRecalc = sw.ElapsedMilliseconds;
                 PopulateForm();
-                long t1 = sw.ElapsedMilliseconds;
+                long tPopulate = sw.ElapsedMilliseconds;
                 UpdateDeleteButtonState();
+                long tDelete = sw.ElapsedMilliseconds;
                 RefreshAdminReport();
-                long t2 = sw.ElapsedMilliseconds;
+                long tAdmin = sw.ElapsedMilliseconds;
                 UpdateTabWarnings();
+                long tWarnings = sw.ElapsedMilliseconds;
                 UpdateTitle();
                 sw.Stop();
-                Log.Info("V2.ColonySelection PERF: total={0}ms populateForm={1}ms adminReport={2}ms rest={3}ms",
-                    sw.ElapsedMilliseconds, t1 - t0, t2 - t1, sw.ElapsedMilliseconds - t2);
+                Log.Info("V2.ColonySelection PERF: total={0}ms viewModel={1}ms recalcStatus={2}ms populateForm={3}ms deleteBtn={4}ms adminReport={5}ms tabWarnings={6}ms",
+                    sw.ElapsedMilliseconds, tViewModel, tRecalc - tViewModel, tPopulate - tRecalc, tDelete - tPopulate, tAdmin - tDelete, tWarnings - tAdmin);
             }
         }
 
         private void PopulateForm()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
 
             if (selectedColony == null) return;
@@ -383,11 +388,17 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             txtPlanetName.Text = colonyViewModel.PlanetName;
             txtColonyName.Text = colonyViewModel.ColonyName;
             txtSystemName.Text = colonyViewModel.Data.SystemName ?? "";
+            long tIdentity = sw.ElapsedMilliseconds;
 
             MarkAllTabsDirty();
 
             // Immediately populate the currently visible tab
             PopulateActiveTab();
+            long tActiveTab = sw.ElapsedMilliseconds;
+
+            sw.Stop();
+            Log.Info("V2.PopulateForm PERF: total={0}ms identity={1}ms activeTab={2}ms",
+                sw.ElapsedMilliseconds, tIdentity, tActiveTab - tIdentity);
         }
 
         private void MarkAllTabsDirty()
@@ -405,27 +416,35 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         /// </summary>
         private void PopulateActiveTab()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            string tabName = "none";
             var tab = tabDetailedData.SelectedTab;
             if (tab == tabPStructures && _structuresDirty)
             {
+                tabName = "Structures";
                 PopulateStructures();
                 _structuresDirty = false;
             }
             else if (tab == tabPAdministration && _adminDirty)
             {
+                tabName = "Administration";
                 RefreshAdminReport();
                 _adminDirty = false;
             }
             else if (tab == tabPWorkers && _workersDirty)
             {
+                tabName = "Workers";
                 PopulateCommodityRequestGrid();
                 _workersDirty = false;
             }
             else if (tab == tabPWarehousing && _warehouseDirty)
             {
+                tabName = "Warehousing";
                 PopulateItemGrid();
                 _warehouseDirty = false;
             }
+            sw.Stop();
+            Log.Info("V2.PopulateActiveTab PERF: tab={0} elapsed={1}ms", tabName, sw.ElapsedMilliseconds);
         }
 
         private void tabDetailedData_SelectedIndexChanged(object sender, EventArgs e)
@@ -523,10 +542,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void UpdateDeleteButtonState()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+
             if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID))
             {
                 cmdDelete.Enabled = false;
                 cmdDelete.Text = "Delete";
+                sw.Stop();
+                Log.Info("V2.UpdateDeleteButtonState PERF: total={0}ms (no colony)", sw.ElapsedMilliseconds);
                 return;
             }
 
@@ -543,6 +566,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 cmdDelete.Enabled = true;
                 cmdDelete.Text = "Delete";
             }
+
+            sw.Stop();
+            Log.Info("V2.UpdateDeleteButtonState PERF: total={0}ms", sw.ElapsedMilliseconds);
         }
 
         // -------------------------------------------------------------------
@@ -594,6 +620,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Suppress all painting until we're done updating controls
             SuspendDrawing(flpStructures);
+            long tSuspend = sw.ElapsedMilliseconds;
 
             // Build set of checked types for filter (9.2)
             var checkedTypes = new HashSet<string>(StringComparer.Ordinal);
@@ -667,14 +694,16 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             flpStructures.ResumeLayout();
             ResumeDrawing(flpStructures);
+            long tResume = sw.ElapsedMilliseconds;
 
-            long t3 = sw.ElapsedMilliseconds;
+            long tLayoutOverhead = tResume - t2;
 
             RefreshStatusSummary();
+            long tStatusSummary = sw.ElapsedMilliseconds;
 
             sw.Stop();
-            Log.Info("V2.PopulateStructures PERF: total={0}ms pool={1}ms updateData={2}ms(x{3}) reset={4}ms layout={5}ms",
-                sw.ElapsedMilliseconds, t1 - t0, updateDataTotal, needed, resetTotal, t3 - t2);
+            Log.Info("V2.PopulateStructures PERF: total={0}ms suspend={1}ms pool={2}ms updateData={3}ms(x{4}) reset={5}ms layout={6}ms statusSummary={7}ms",
+                sw.ElapsedMilliseconds, tSuspend, t1 - t0, updateDataTotal, needed, resetTotal, tLayoutOverhead, tStatusSummary - tResume);
         }
 
         // -------------------------------------------------------------------
@@ -775,16 +804,21 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void RefreshStatusSummary()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             var status = colonyViewModel.Calculator.finalActualStatus;
             if (status == null)
             {
                 rtbStatusSummary.Text = "";
+                sw.Stop();
+                Log.Info("V2.RefreshStatusSummary PERF: total={0}ms (no status)", sw.ElapsedMilliseconds);
                 return;
             }
 
             var builder = new RtfBuilder();
             ColonyStatusCalculator.PopulateStatus(builder, status);
             rtbStatusSummary.Rtf = builder.ToRtf();
+            sw.Stop();
+            Log.Info("V2.RefreshStatusSummary PERF: total={0}ms", sw.ElapsedMilliseconds);
         }
 
         // -------------------------------------------------------------------
@@ -826,9 +860,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void RefreshAdminReport()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+
             if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID))
             {
                 rtbAdminReport.Rtf = "";
+                sw.Stop();
+                Log.Info("V2.RefreshAdminReport PERF: total={0}ms (no colony)", sw.ElapsedMilliseconds);
                 return;
             }
 
@@ -841,6 +879,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 Log.Error(ex, "Error building admin report");
             }
+
+            sw.Stop();
+            Log.Info("V2.RefreshAdminReport PERF: total={0}ms", sw.ElapsedMilliseconds);
         }
 
         private void timerAdminRefresh_Tick(object sender, EventArgs e)
@@ -945,6 +986,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void UpdateTabWarnings()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+
             int structureCount = selectedColony?.Structures?.Count ?? 0;
             ApplyTabWarning(tabPStructures,
                 TabWarningService.EvaluateStructureWarning(structureCount));
@@ -959,6 +1002,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             UpdateWorkerTabTitle();
             UpdateStructuresTabTitle();
+
+            sw.Stop();
+            Log.Info("V2.UpdateTabWarnings PERF: total={0}ms", sw.ElapsedMilliseconds);
         }
 
         // -------------------------------------------------------------------

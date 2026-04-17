@@ -137,6 +137,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         /// </summary>
         public void Reset()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
 
             // Stop timer
@@ -193,6 +194,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Reset background
             flpColonyStructure.BackColor = SystemColors.Control;
+
+            sw.Stop();
+            if (sw.ElapsedMilliseconds > 2)
+                Log.Info("V2.Reset PERF: total={0}ms", sw.ElapsedMilliseconds);
         }
 
         // -----------------------------------------------------------------------
@@ -208,6 +213,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             if (ViewModel == null) return;
 
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
 
             _blueprint = bp;
@@ -239,6 +245,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Mark that this control needs a full UpdateData when interacted with
             _needsFullUpdate = true;
+
+            sw.Stop();
+            if (sw.ElapsedMilliseconds > 2)
+                Log.Info("V2.UpdateDataFast PERF: total={0}ms blueprint={1}", sw.ElapsedMilliseconds, bpName);
         }
 
         /// <summary>True if this control was populated with UpdateDataFast and needs a full UpdateData.</summary>
