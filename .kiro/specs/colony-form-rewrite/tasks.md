@@ -143,7 +143,7 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
 
 ## Phase 4: Administration Tab
 
-- [-] 11. Implement Administration tab
+- [x] 11. Implement Administration tab
   - [x] 11.1 Add RichTextBox for admin report, wire ColonyAdminReportBuilder.BuildReport()
     - Refresh on colony selection, ColonyDataChanged, and timer interval (AdminRefreshIntervalSeconds)
     - _Requirements: 21.1, 21.2, 21.3_
@@ -157,33 +157,33 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
 
 ## Phase 5: Structures Tab — Process Controls
 
-- [ ] 12. Implement mining rig controls in ColonyStructureV2
-  - [ ] 12.1 Implement survey selection combo filtered by colony PlanetName; populate resource combo from selected survey
+- [x] 12. Implement mining rig controls in ColonyStructureV2
+  - [x] 12.1 Implement survey selection combo filtered by colony PlanetName; populate resource combo from selected survey
     - _Requirements: 9.1, 9.2, 9.3_
-  - [ ] 12.2 Implement Start: create repeating CountDownTime aligned to clock-hour boundary, start countdown timer
+  - [x] 12.2 Implement Start: create repeating CountDownTime aligned to clock-hour boundary, start countdown timer
     - _Requirements: 9.4_
-  - [ ] 12.3 Implement Done: call Colony.ProcessColony() under ProcessingLock, stop timer, clear state
+  - [x] 12.3 Implement Done: call Colony.ProcessColony() under ProcessingLock, stop timer, clear state
     - _Requirements: 9.6_
-  - [ ] 12.4 Implement countdown display with configurable refresh rate; manual edit support (click to edit, leave to parse)
+  - [x] 12.4 Implement countdown display with configurable refresh rate; manual edit support (click to edit, leave to parse)
     - _Requirements: 9.5, 15.1, 15.2, 15.3, 15.4_
-  - [ ] 12.5 Reset MiningLeftOvers to zero when MiningSurvey or MiningSurveyResource changes
+  - [x] 12.5 Reset MiningLeftOvers to zero when MiningSurvey or MiningSurveyResource changes
     - _Requirements: 9.7_
-  - [ ] 12.6 Display mining progress status (rate, resource, purity); hide controls when not built/online
+  - [x] 12.6 Display mining progress status (rate, resource, purity); hide controls when not built/online
     - _Requirements: 9.8, 9.9_
 
-- [ ] 13. Implement refinery controls in ColonyStructureV2
-  - [ ] 13.1 Populate resource combo with unrefined warehouse resources, actively mined resources, and eligible synthetic recipes
+- [x] 13. Implement refinery controls in ColonyStructureV2
+  - [x] 13.1 Populate resource combo with unrefined warehouse resources, actively mined resources, and eligible synthetic recipes
     - Compound key format "ResourceName|Purity" and "ResourceName|Purity|S{Tier}"
     - _Requirements: 10.1, 10.2, 10.6_
-  - [ ] 13.2 Implement Start/Done with repeating CountDownTime aligned to clock-hour; display refining progress status
+  - [x] 13.2 Implement Start/Done with repeating CountDownTime aligned to clock-hour; display refining progress status
     - _Requirements: 10.3, 10.4, 10.5_
 
-- [ ] 14. Implement research lab controls in ColonyStructureV2
-  - [ ] 14.1 Populate blueprint combo: Evolution < 15, passes CanResearchEvolution(), "Can Research" not false
+- [x] 14. Implement research lab controls in ColonyStructureV2
+  - [x] 14.1 Populate blueprint combo: Evolution < 15, passes CanResearchEvolution(), "Can Research" not false
     - _Requirements: 11.1, 11.2_
-  - [ ] 14.2 Implement Start: one-shot CountDownTime with ResearchTimeLookup duration, reduced by ResearchFocus skill (3%/level)
+  - [x] 14.2 Implement Start: one-shot CountDownTime with ResearchTimeLookup duration, reduced by ResearchFocus skill (3%/level)
     - _Requirements: 11.3_
-  - [ ] 14.3 Implement Done: call Colony.ProcessColony() to create evolved blueprint; display evolution status
+  - [x] 14.3 Implement Done: call Colony.ProcessColony() to create evolved blueprint; display evolution status
     - Clear orphaned research state when blueprint UUID is null or blueprint not found
     - _Requirements: 11.4, 11.5, 11.6_
 

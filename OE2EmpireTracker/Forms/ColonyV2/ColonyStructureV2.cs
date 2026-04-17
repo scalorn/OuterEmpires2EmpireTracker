@@ -5,7 +5,10 @@ using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace OE2EmpireTracker.Forms.ColonyV2
@@ -19,6 +22,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private int _isProgrammaticUpdate = 0;
+
+        /// <summary>Player context for looking up surveys, blueprints, profiles.</summary>
+        private readonly PlayerContext _playerContext;
+
+        /// <summary>True while the user is manually editing txtCompletionTime.</summary>
+        private bool _completionModification = false;
 
         /// <summary>The ViewModel wrapping the current ColonyStructure data.</summary>
         public ColonyStructureViewModel ViewModel { get; set; }
@@ -41,11 +50,24 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         public ColonyStructureV2()
         {
             InitializeComponent();
+            _playerContext = EmpireContext.PlayerContext;
             _workerCheckboxes = new CheckBox[]
             {
                 chkWorker1, chkWorker2, chkWorker3,
                 chkWorker4, chkWorker5, chkWorker6
             };
+
+            // Wire event handlers for survey/selection/sub-selection combos and filters
+            txtSurveyFilter.TextChanged += txtSurveyFilter_TextChanged;
+            cmbSurvey.SelectedIndexChanged += cmbSurvey_SelectedIndexChanged;
+            txtSelectionFilter.TextChanged += txtSelectionFilter_TextChanged;
+            cmbSelection.SelectedIndexChanged += cmbSelection_SelectedIndexChanged;
+            cmdStart.Click += cmdStart_Click;
+            cmdDone.Click += cmdDone_Click;
+            txtCompletionTime.Enter += txtCompletionTime_Enter;
+            txtCompletionTime.Leave += txtCompletionTime_Leave;
+            chkStageResources.CheckedChanged += chkStageResources_CheckedChanged;
+            txtQuantity.TextChanged += txtQuantity_TextChanged;
         }
 
         // -----------------------------------------------------------------------
@@ -54,6 +76,48 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+
+        private int GetCountdownIntervalMs()
+        {
+            int intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.CountdownRefreshRateSeconds * 1000);
+            return Math.Max(intervalMs, 1000);
+        }
+
+        /// <summary>
+        /// Normalizes time strings from blueprint properties to the format expected by
+        /// CountDownTime.TimeRemainingString (e.g. "9 hours" -> "9h", "30 minutes" -> "30m").
+        /// </summary>
+        private static string NormalizeTimeString(string timeStr)
+        {
+            if (string.IsNullOrEmpty(timeStr)) return timeStr;
+            timeStr = Regex.Replace(timeStr, @"\s*hours?\s*", "h ", RegexOptions.IgnoreCase);
+            timeStr = Regex.Replace(timeStr, @"\s*minutes?\s*", "m ", RegexOptions.IgnoreCase);
+            timeStr = Regex.Replace(timeStr, @"\s*seconds?\s*", "s ", RegexOptions.IgnoreCase);
+            timeStr = Regex.Replace(timeStr, @"\s*days?\s*", "d ", RegexOptions.IgnoreCase);
+            return timeStr.Trim();
+        }
+
+        // -----------------------------------------------------------------------
+        // Helper classes for combo box data binding
+        // -----------------------------------------------------------------------
+
+        private class RefinerySelectionItem
+        {
+            public string Key { get; set; }
+            public string DisplayName { get; set; }
+            public string ResourceName { get; set; }
+            public string Purity { get; set; }
+        }
+
+        private class ResearchSelectionItem
+        {
+            public string UUID { get; set; }
+            public string DisplayName { get; set; }
+        }
 
         // -----------------------------------------------------------------------
         // 7.2: Reset() — pool reuse
@@ -76,6 +140,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             rtbStatus.Text = string.Empty;
             txtCompletionTime.Text = string.Empty;
             rtbProgressStatus.Text = string.Empty;
+            txtSurveyFilter.Text = string.Empty;
+            txtSelectionFilter.Text = string.Empty;
+
+            // Clear combo data sources
+            cmbSurvey.DataSource = null;
+            cmbSelection.DataSource = null;
 
             // Uncheck all state checkboxes
             chkStaged.Checked = false;
@@ -100,13 +170,17 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Reset manufacturing sub-controls
             txtQuantity.Visible = false;
+            txtQuantity.Text = string.Empty;
             chkStageResources.Visible = false;
             chkStageResources.Checked = false;
+            cmdStart.Visible = false;
+            cmdDone.Visible = false;
 
             // Detach data
             ViewModel = null;
             Colony = null;
             _blueprint = null;
+            _completionModification = false;
 
             // Reset background
             flpColonyStructure.BackColor = SystemColors.Control;
@@ -145,8 +219,40 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // --- Worker checkboxes (7.6 + 7.7) ---
             PopulateWorkerCheckboxes();
 
-            // --- Panel visibility by blueprint type (7.3 table) ---
-            SetPanelVisibilityByType();
+            // --- Building state: structure transitioning from staged to built ---
+            if (structureData.BuildCompletionTime != null &&
+                structureData.BuildCompletionTime.TimeRemaining > 0)
+            {
+                HandleBuildingState();
+                UpdateBackgroundColor();
+                this.ResumeLayout();
+                return;
+            }
+
+            // --- Panel visibility and controls by blueprint type ---
+            if (bp != null)
+            {
+                string bpType = bp.BluePrintType ?? string.Empty;
+                if (bpType == BlueprintTypes.MiningRig)
+                    HandleMiningRigControls();
+                else if (bpType == BlueprintTypes.Refinery)
+                    HandleRefineryControls();
+                else if (bpType == BlueprintTypes.ResearchLaboratory)
+                    HandleResearchLabControls();
+                else if (bpType == BlueprintTypes.Manufactory)
+                    SetPanelVisibilityByType(); // Phase 5 task 15
+                else if (bpType.IsCommodityFactory())
+                    SetPanelVisibilityByType(); // Phase 5 task 16
+                else
+                    SetPanelVisibilityByType();
+            }
+            else
+            {
+                SetPanelVisibilityByType();
+            }
+
+            // --- Build button for staged structures ---
+            HandleStagedBuildButton();
 
             // --- Background color (7.4) ---
             UpdateBackgroundColor();
@@ -181,8 +287,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         /// <summary>
-        /// Sets panel visibility based on blueprint type. Only controls visibility —
-        /// actual combo population is deferred to Phase 5 (tasks 12-17).
+        /// Sets panel visibility based on blueprint type for types not yet fully implemented
+        /// (Manufactory, CommodityFactory, Other). Mining/Refinery/Research have their own handlers.
         /// </summary>
         private void SetPanelVisibilityByType()
         {
@@ -197,41 +303,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             string bpType = _blueprint.BluePrintType ?? string.Empty;
 
-            if (bpType == BlueprintTypes.MiningRig)
-            {
-                flpSurveySelection.Visible = true;
-                flpSelection.Visible = true;
-                // Start/Done only — hide Qty + StageRes
-                flpManufacturing.Visible = true;
-                txtQuantity.Visible = false;
-                chkStageResources.Visible = false;
-                flpTimer.Visible = true;
-            }
-            else if (bpType == BlueprintTypes.Refinery)
+            if (bpType == BlueprintTypes.Manufactory)
             {
                 flpSurveySelection.Visible = false;
                 flpSelection.Visible = true;
-                // Start/Done only
-                flpManufacturing.Visible = true;
-                txtQuantity.Visible = false;
-                chkStageResources.Visible = false;
-                flpTimer.Visible = true;
-            }
-            else if (bpType == BlueprintTypes.ResearchLaboratory)
-            {
-                flpSurveySelection.Visible = false;
-                flpSelection.Visible = true;
-                // Start/Done only
-                flpManufacturing.Visible = true;
-                txtQuantity.Visible = false;
-                chkStageResources.Visible = false;
-                flpTimer.Visible = true;
-            }
-            else if (bpType == BlueprintTypes.Manufactory)
-            {
-                flpSurveySelection.Visible = false;
-                flpSelection.Visible = true;
-                // Qty + StageResources + Start/Done
                 flpManufacturing.Visible = true;
                 txtQuantity.Visible = true;
                 chkStageResources.Visible = true;
@@ -241,7 +316,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 flpSurveySelection.Visible = false;
                 flpSelection.Visible = true;
-                // Qty + StageResources + Start/Done
                 flpManufacturing.Visible = true;
                 txtQuantity.Visible = true;
                 chkStageResources.Visible = true;
@@ -254,6 +328,57 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 flpSelection.Visible = false;
                 flpManufacturing.Visible = false;
                 flpTimer.Visible = false;
+            }
+        }
+
+        // -----------------------------------------------------------------------
+        // Building state handler
+        // -----------------------------------------------------------------------
+
+        private void HandleBuildingState()
+        {
+            var structureData = ViewModel.Data;
+
+            flpSurveySelection.Visible = false;
+            flpSelection.Visible = false;
+            flpManufacturing.Visible = true;
+            cmdStart.Visible = false;
+            cmdDone.Visible = true;
+            txtQuantity.Visible = false;
+            chkStageResources.Visible = false;
+            chkBuilt.Enabled = false;
+
+            flpTimer.Visible = true;
+            txtCompletionTime.Text = structureData.BuildCompletionTime.TimeRemainingString;
+            rtbProgressStatus.Text = "Building...";
+
+            if (!timerCountdown.Enabled)
+            {
+                timerCountdown.Interval = GetCountdownIntervalMs();
+                timerCountdown.Start();
+            }
+        }
+
+        /// <summary>
+        /// Shows Build button for staged structures when no sibling is building.
+        /// </summary>
+        private void HandleStagedBuildButton()
+        {
+            if (ViewModel == null || !ViewModel.IsStaged || ViewModel.IsBuilt) return;
+
+            bool siblingBuilding = Colony != null && Colony.Structures.Any(s =>
+                s != ViewModel.Data &&
+                s.BuildCompletionTime != null &&
+                s.BuildCompletionTime.TimeRemaining > 0);
+
+            if (!siblingBuilding)
+            {
+                cmdStart.Text = "Build";
+                cmdStart.Visible = true;
+                cmdDone.Visible = false;
+                flpManufacturing.Visible = true;
+                txtQuantity.Visible = false;
+                chkStageResources.Visible = false;
             }
         }
 
@@ -296,9 +421,545 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             else
             {
-                // Not staged, not built
                 flpColonyStructure.BackColor = Color.White;
             }
+        }
+
+        // -----------------------------------------------------------------------
+        // Task 12: Mining Rig Controls
+        // -----------------------------------------------------------------------
+
+        private void HandleMiningRigControls()
+        {
+            var structureData = ViewModel.Data;
+
+            if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
+            {
+                flpSurveySelection.Visible = false;
+                flpSelection.Visible = false;
+                flpManufacturing.Visible = false;
+                flpTimer.Visible = false;
+                return;
+            }
+
+            bool showSelection = false;
+            bool showCompletionTime = false;
+            bool enableCmbSurvey = true;
+            bool enableCmbSelection = true;
+            bool showCmdStart = false;
+
+            if (structureData.ProcessCompletionTime != null)
+            {
+                showSelection = true;
+                showCompletionTime = true;
+                enableCmbSurvey = false;
+                enableCmbSelection = false;
+            }
+            else
+            {
+                showSelection = true;
+            }
+
+            if (!string.IsNullOrEmpty(structureData.MiningSurvey))
+            {
+                showSelection = true;
+            }
+
+            if (showSelection && (cmbSelection.SelectedIndex >= 0 || !string.IsNullOrEmpty(structureData.MiningSurveyResource)))
+            {
+                showCmdStart = true;
+            }
+
+            // Survey selection row
+            flpSurveySelection.Visible = true;
+            PopulateSurveyCombo();
+            if (!string.IsNullOrEmpty(structureData.MiningSurvey))
+            {
+                cmbSurvey.SelectedValue = structureData.MiningSurvey;
+            }
+            txtSurveyFilter.Enabled = enableCmbSurvey;
+            cmbSurvey.Enabled = enableCmbSurvey;
+
+            // Resource selection row
+            if (!string.IsNullOrEmpty(structureData.MiningSurvey))
+            {
+                flpSelection.Visible = true;
+                PopulateResourceComboFromSurvey();
+                if (!string.IsNullOrEmpty(structureData.MiningSurveyResource))
+                {
+                    cmbSelection.SelectedValue = structureData.MiningSurveyResource;
+                }
+                txtSelectionFilter.Enabled = enableCmbSelection;
+                cmbSelection.Enabled = enableCmbSelection;
+            }
+            else
+            {
+                flpSelection.Visible = false;
+            }
+
+            // Manufacturing row: Start/Done buttons only (no qty/stage)
+            flpManufacturing.Visible = true;
+            txtQuantity.Visible = false;
+            chkStageResources.Visible = false;
+            cmdStart.Text = "Start";
+            cmdStart.Visible = showCmdStart && !showCompletionTime;
+            cmdDone.Visible = showCompletionTime;
+
+            // Timer row
+            if (showCompletionTime)
+            {
+                flpTimer.Visible = true;
+                txtCompletionTime.Text = structureData.ProcessCompletionTime.TimeRemainingString;
+                PopulateMiningProgressStatus();
+                if (!timerCountdown.Enabled)
+                {
+                    timerCountdown.Interval = GetCountdownIntervalMs();
+                    timerCountdown.Start();
+                }
+            }
+            else
+            {
+                flpTimer.Visible = false;
+                rtbProgressStatus.Text = "";
+            }
+        }
+
+        private void PopulateSurveyCombo()
+        {
+            string searchText = txtSurveyFilter.Text ?? "";
+
+            var filteredList = new List<Models.Survey>(_playerContext.SurveyList);
+
+            filteredList = filteredList
+                .Where(item => Colony != null && string.Equals(item.PlanetName, Colony.PlanetName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+            }
+
+            filteredList.Insert(0, new Models.Survey());
+
+            cmbSurvey.DataSource = null;
+            cmbSurvey.DisplayMember = "ExtendedName";
+            cmbSurvey.ValueMember = "UUID";
+            cmbSurvey.DataSource = filteredList;
+            cmbSurvey.SelectedIndex = -1;
+        }
+
+        private void PopulateResourceComboFromSurvey()
+        {
+            string searchText = txtSelectionFilter.Text ?? "";
+
+            Models.Survey survey = cmbSurvey.SelectedItem as Models.Survey;
+            if (survey == null || survey.Resources == null)
+            {
+                cmbSelection.DataSource = null;
+                return;
+            }
+
+            var filteredList = survey.Resources.Values.ToList();
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                filteredList = filteredList
+                    .Where(item => item.Resource.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+            }
+
+            filteredList.Insert(0, new SurveyResource());
+
+            cmbSelection.DataSource = null;
+            cmbSelection.DisplayMember = "ExtendedName";
+            cmbSelection.ValueMember = "Resource";
+            cmbSelection.DataSource = filteredList;
+            cmbSelection.SelectedIndex = -1;
+        }
+
+        private void PopulateMiningProgressStatus()
+        {
+            var structureData = ViewModel.Data;
+            if (structureData.ProcessCompletionTime == null ||
+                string.IsNullOrEmpty(structureData.MiningSurvey) ||
+                string.IsNullOrEmpty(structureData.MiningSurveyResource))
+            {
+                rtbProgressStatus.Text = "";
+                return;
+            }
+
+            Models.Survey survey = _playerContext.FindSurvey(structureData.MiningSurvey);
+            if (survey == null || !survey.Resources.ContainsKey(structureData.MiningSurveyResource))
+            {
+                rtbProgressStatus.Text = "";
+                return;
+            }
+
+            SurveyResource resource = survey.Resources[structureData.MiningSurveyResource];
+            rtbProgressStatus.Text = $"{resource.Amount}/h {resource.Resource} ({resource.Purity})";
+        }
+
+        // -----------------------------------------------------------------------
+        // Task 13: Refinery Controls
+        // -----------------------------------------------------------------------
+
+        private void HandleRefineryControls()
+        {
+            var structureData = ViewModel.Data;
+
+            if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
+            {
+                flpSurveySelection.Visible = false;
+                flpSelection.Visible = false;
+                flpManufacturing.Visible = false;
+                flpTimer.Visible = false;
+                return;
+            }
+
+            bool showCompletionTime = false;
+            bool enableCmbSelection = true;
+            bool showCmdStart = false;
+
+            if (structureData.ProcessCompletionTime != null)
+            {
+                showCompletionTime = true;
+                enableCmbSelection = false;
+            }
+
+            if (!string.IsNullOrEmpty(structureData.RefiningResource))
+            {
+                showCmdStart = true;
+            }
+
+            // No survey selection for refinery
+            flpSurveySelection.Visible = false;
+
+            // Selection: unrefined resources from warehouse + actively mined resources + synthetic recipes
+            flpSelection.Visible = true;
+            PopulateSelectionWithUnrefinedResources();
+            if (!string.IsNullOrEmpty(structureData.RefiningResource))
+            {
+                string restoreKey = structureData.RefiningResource + "|" + structureData.RefiningResourcePurity;
+                var recipe = RefiningRecipes.FindByInput(structureData.RefiningResource, structureData.RefiningResourcePurity);
+                if (recipe != null)
+                {
+                    restoreKey += "|S" + recipe.Tier;
+                }
+                cmbSelection.SelectedValue = restoreKey;
+            }
+            txtSelectionFilter.Enabled = enableCmbSelection;
+            cmbSelection.Enabled = enableCmbSelection;
+
+            // Manufacturing row: Start/Done only (no qty/stage)
+            flpManufacturing.Visible = true;
+            txtQuantity.Visible = false;
+            chkStageResources.Visible = false;
+            cmdStart.Text = "Start";
+            cmdStart.Visible = showCmdStart && !showCompletionTime;
+            cmdDone.Visible = showCompletionTime;
+
+            // Timer row
+            if (showCompletionTime)
+            {
+                flpTimer.Visible = true;
+                txtCompletionTime.Text = structureData.ProcessCompletionTime.TimeRemainingString;
+                PopulateRefineryProgressStatus();
+                if (!timerCountdown.Enabled)
+                {
+                    timerCountdown.Interval = GetCountdownIntervalMs();
+                    timerCountdown.Start();
+                }
+            }
+            else
+            {
+                flpTimer.Visible = false;
+                rtbProgressStatus.Text = "";
+            }
+        }
+
+        private void PopulateSelectionWithUnrefinedResources()
+        {
+            string searchText = txtSelectionFilter.Text ?? "";
+
+            var unrefinedItems = new List<RefinerySelectionItem>();
+
+            // Add unrefined resources from warehouse
+            if (Colony != null && Colony.Items != null)
+            {
+                foreach (var itemEntry in Colony.Items.Items.Values)
+                {
+                    if (itemEntry.ItemType == Models.ItemType.ItemTypeEnum.Resource &&
+                        !string.IsNullOrEmpty(itemEntry.ResourcePurity) &&
+                        itemEntry.ResourcePurity != GameConstants.PurityRefined)
+                    {
+                        string key = itemEntry.BaseItemTypeID + "|" + itemEntry.ResourcePurity;
+                        if (!unrefinedItems.Any(u => u.Key == key))
+                        {
+                            unrefinedItems.Add(new RefinerySelectionItem
+                            {
+                                Key = key,
+                                DisplayName = $"{itemEntry.Name} ({itemEntry.ResourcePurity})",
+                                ResourceName = itemEntry.BaseItemTypeID,
+                                Purity = itemEntry.ResourcePurity
+                            });
+                        }
+                    }
+                }
+
+                // Add resources being actively mined
+                if (Colony.Structures != null)
+                {
+                    foreach (var structure in Colony.Structures)
+                    {
+                        if (structure.ProcessCompletionTime != null &&
+                            !string.IsNullOrEmpty(structure.MiningSurvey) &&
+                            !string.IsNullOrEmpty(structure.MiningSurveyResource))
+                        {
+                            Models.Survey survey = _playerContext.FindSurvey(structure.MiningSurvey);
+                            if (survey != null && survey.Resources.ContainsKey(structure.MiningSurveyResource))
+                            {
+                                SurveyResource sr = survey.Resources[structure.MiningSurveyResource];
+                                if (!string.IsNullOrEmpty(sr.Purity) && sr.Purity != GameConstants.PurityRefined)
+                                {
+                                    string key = sr.Resource + "|" + sr.Purity;
+                                    if (!unrefinedItems.Any(u => u.Key == key))
+                                    {
+                                        unrefinedItems.Add(new RefinerySelectionItem
+                                        {
+                                            Key = key,
+                                            DisplayName = $"{sr.Resource} ({sr.Purity})",
+                                            ResourceName = sr.Resource,
+                                            Purity = sr.Purity
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Add synthetic recipes whose input resources are available in sufficient quantity
+                foreach (var recipe in RefiningRecipes.Recipes)
+                {
+                    var inputItems = Colony.Items.FindResource(recipe.InputResource, recipe.InputPurity);
+                    int totalAvailable = inputItems.Sum(i => i.Quantity);
+
+                    int perUnitCost = recipe.ConsumeRate / recipe.ProduceRate;
+                    if (totalAvailable >= perUnitCost)
+                    {
+                        string key = recipe.InputResource + "|" + recipe.InputPurity + "|S" + recipe.Tier;
+                        if (!unrefinedItems.Any(u => u.Key == key))
+                        {
+                            unrefinedItems.Add(new RefinerySelectionItem
+                            {
+                                Key = key,
+                                DisplayName = $"{recipe.OutputResource} <- {recipe.InputResource} ({recipe.InputPurity})",
+                                ResourceName = recipe.InputResource,
+                                Purity = recipe.InputPurity
+                            });
+                        }
+                    }
+                }
+            }
+
+            // Filter by search text
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                unrefinedItems = unrefinedItems
+                    .Where(item => item.DisplayName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+            }
+
+            unrefinedItems.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
+            unrefinedItems.Insert(0, new RefinerySelectionItem { Key = "", DisplayName = "", ResourceName = "", Purity = "" });
+
+            cmbSelection.DataSource = null;
+            cmbSelection.DisplayMember = "DisplayName";
+            cmbSelection.ValueMember = "Key";
+            cmbSelection.DataSource = unrefinedItems;
+            cmbSelection.SelectedIndex = -1;
+        }
+
+        private void PopulateRefineryProgressStatus()
+        {
+            var structureData = ViewModel.Data;
+            if (structureData.ProcessCompletionTime == null ||
+                string.IsNullOrEmpty(structureData.RefiningResource) ||
+                string.IsNullOrEmpty(structureData.RefiningResourcePurity))
+            {
+                rtbProgressStatus.Text = "";
+                return;
+            }
+
+            var recipe = RefiningRecipes.FindByInput(
+                structureData.RefiningResource, structureData.RefiningResourcePurity);
+
+            if (recipe != null)
+            {
+                rtbProgressStatus.Text = $"{recipe.ConsumeRate}:{recipe.ProduceRate} {recipe.OutputResource}";
+            }
+            else
+            {
+                int baseRate = GameConstants.RefiningBaseRate;
+                int outputRate = GetRefiningOutputRate(structureData.RefiningResourcePurity, baseRate);
+                rtbProgressStatus.Text = $"{baseRate}:{outputRate} {structureData.RefiningResource} ({structureData.RefiningResourcePurity})";
+            }
+        }
+
+        private static int GetRefiningOutputRate(string purity, int baseRate)
+        {
+            switch (purity)
+            {
+                case "Low": return baseRate;
+                case "Medium": return baseRate * 3;
+                case "High": return baseRate * 5;
+                default: return baseRate;
+            }
+        }
+
+        // -----------------------------------------------------------------------
+        // Task 14: Research Lab Controls
+        // -----------------------------------------------------------------------
+
+        private void HandleResearchLabControls()
+        {
+            var structureData = ViewModel.Data;
+
+            if (!ViewModel.IsBuilt || !ViewModel.IsOnline)
+            {
+                flpSurveySelection.Visible = false;
+                flpSelection.Visible = false;
+                flpManufacturing.Visible = false;
+                flpTimer.Visible = false;
+                return;
+            }
+
+            bool showCompletionTime = false;
+            bool enableCmbSelection = true;
+            bool showCmdStart = false;
+
+            if (structureData.ProcessCompletionTime != null)
+            {
+                // Clear orphaned research state when blueprint UUID is null or blueprint not found
+                if (string.IsNullOrEmpty(structureData.ResearchingBlueprintUUID)
+                    || _playerContext.FindBlueprint(structureData.ResearchingBlueprintUUID) == null)
+                {
+                    Log.Warn("ResearchLab {0}: clearing orphaned research state (blueprint={1})",
+                        structureData.UUID,
+                        structureData.ResearchingBlueprintUUID ?? "(null)");
+                    structureData.ProcessCompletionTime = null;
+                    structureData.ResearchingBlueprintUUID = null;
+                }
+                else
+                {
+                    showCompletionTime = true;
+                    enableCmbSelection = false;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(structureData.ResearchingBlueprintUUID))
+            {
+                showCmdStart = true;
+            }
+
+            // No survey selection for research lab
+            flpSurveySelection.Visible = false;
+
+            // Selection: researchable blueprints
+            flpSelection.Visible = true;
+            PopulateSelectionWithResearchableBlueprints();
+            if (!string.IsNullOrEmpty(structureData.ResearchingBlueprintUUID))
+            {
+                cmbSelection.SelectedValue = structureData.ResearchingBlueprintUUID;
+            }
+            txtSelectionFilter.Enabled = enableCmbSelection;
+            cmbSelection.Enabled = enableCmbSelection;
+
+            // Manufacturing row: Start/Done only (no qty/stage)
+            flpManufacturing.Visible = true;
+            txtQuantity.Visible = false;
+            chkStageResources.Visible = false;
+            cmdStart.Text = "Start";
+            cmdStart.Visible = showCmdStart && !showCompletionTime;
+            cmdDone.Visible = showCompletionTime;
+
+            // Timer row
+            if (showCompletionTime)
+            {
+                flpTimer.Visible = true;
+                txtCompletionTime.Text = structureData.ProcessCompletionTime.TimeRemainingString;
+                PopulateResearchLabProgressStatus();
+                if (!timerCountdown.Enabled)
+                {
+                    timerCountdown.Interval = GetCountdownIntervalMs();
+                    timerCountdown.Start();
+                }
+            }
+            else
+            {
+                flpTimer.Visible = false;
+                rtbProgressStatus.Text = "";
+            }
+        }
+
+        private void PopulateSelectionWithResearchableBlueprints()
+        {
+            string searchText = txtSelectionFilter.Text ?? "";
+
+            var items = new List<ResearchSelectionItem>();
+
+            foreach (Models.Blueprint bp in _playerContext.GetAllBlueprints())
+            {
+                if (bp.UUID == null) continue;
+                if (bp.Evolution >= 15) continue;
+                if (!ResearchTimeLookup.CanResearchEvolution(bp.Evolution)) continue;
+
+                bool canResearch = true;
+                bp.Properties.getBoolean("Can Research", true, out canResearch);
+                if (!canResearch) continue;
+
+                string display = bp.ExtendedName;
+                if (!string.IsNullOrEmpty(searchText) &&
+                    display.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) < 0)
+                    continue;
+
+                items.Add(new ResearchSelectionItem
+                {
+                    UUID = bp.UUID,
+                    DisplayName = display
+                });
+            }
+
+            items.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
+            items.Insert(0, new ResearchSelectionItem { UUID = "", DisplayName = "" });
+
+            cmbSelection.DataSource = null;
+            cmbSelection.DisplayMember = "DisplayName";
+            cmbSelection.ValueMember = "UUID";
+            cmbSelection.DataSource = items;
+            cmbSelection.SelectedIndex = -1;
+        }
+
+        private void PopulateResearchLabProgressStatus()
+        {
+            var structureData = ViewModel.Data;
+            if (structureData.ProcessCompletionTime == null ||
+                string.IsNullOrEmpty(structureData.ResearchingBlueprintUUID))
+            {
+                rtbProgressStatus.Text = "";
+                return;
+            }
+
+            Models.Blueprint bp = _playerContext.FindBlueprint(structureData.ResearchingBlueprintUUID);
+            if (bp == null)
+            {
+                rtbProgressStatus.Text = "";
+                return;
+            }
+
+            rtbProgressStatus.Text = $"Evo {bp.Evolution}->{bp.Evolution + 1} {bp.Name}";
         }
 
         // -----------------------------------------------------------------------
@@ -348,13 +1009,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // 7.7: Unallocated worker checkboxes (disabled, read-only)
         // -----------------------------------------------------------------------
 
-        /// <summary>
-        /// Populates worker checkboxes based on blueprint worker properties.
-        /// Checkboxes 0-2 are for assigned workers, 3-5 for unallocated.
-        /// </summary>
         private void PopulateWorkerCheckboxes()
         {
-            // Hide all first
             for (int i = 0; i < _workerCheckboxes.Length; i++)
             {
                 _workerCheckboxes[i].Visible = false;
@@ -367,7 +1023,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             int controlIndex = 0;
 
-            // --- 7.6: Assigned Workers ---
+            // Assigned Workers
             foreach (var wt in WorkerDetail.WorkerTypes)
             {
                 int index = 1;
@@ -385,10 +1041,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 }
             }
 
-            // --- 7.7: Unallocated Workers (disabled, read-only) ---
+            // Unallocated Workers (disabled, read-only)
             if (_blueprint != null)
             {
-                int unallocatedIndex = 3; // slots 3-5
+                int unallocatedIndex = 3;
                 foreach (var wt in WorkerDetail.WorkerTypes)
                 {
                     if (_blueprint.Properties.ContainsKey(wt.UnassignedPropertyKey) && unallocatedIndex < 6)
@@ -405,10 +1061,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        /// <summary>
-        /// Checks whether unallocated workers of the given type are available
-        /// based on the ColonyStatusCalculator actual status.
-        /// </summary>
         private bool IsUnallocatedWorkerAvailable(string workerDetailID)
         {
             if (ViewModel == null) return false;
@@ -421,10 +1073,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             return false;
         }
 
-        /// <summary>
-        /// Shared handler for all worker checkboxes (chkWorker1 through chkWorker6).
-        /// Writes through to ViewModel and updates background color (not full repaint).
-        /// </summary>
         private void chkWorker_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
@@ -432,7 +1080,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             string key = chk.Tag as string;
             if (string.IsNullOrEmpty(key) || ViewModel == null) return;
 
-            // Only write-through for assigned (enabled) checkboxes, not unallocated (disabled)
             if (chk.Enabled)
             {
                 ViewModel.SetWorkerAssigned(key, chk.Checked);
@@ -467,9 +1114,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             OnColonyStructureDataChanged(structural: true);
         }
 
-        /// <summary>
-        /// Handle Delete key when the control is focused.
-        /// </summary>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == Keys.Delete && ViewModel != null && Colony != null)
@@ -482,13 +1126,385 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -----------------------------------------------------------------------
-        // Timer tick handler (placeholder — full implementation in Phase 5)
+        // Survey filter and selection handlers (Mining Rig)
+        // -----------------------------------------------------------------------
+
+        private void txtSurveyFilter_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (_blueprint == null || _blueprint.BluePrintType != BlueprintTypes.MiningRig) return;
+
+            string previousValue = cmbSurvey.SelectedValue as string;
+            PopulateSurveyCombo();
+            if (previousValue != null)
+                cmbSurvey.SelectedValue = previousValue;
+            cmbSurvey.DroppedDown = true;
+        }
+
+        private void cmbSurvey_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (ViewModel == null) return;
+
+            var structureData = ViewModel.Data;
+            string survey = cmbSurvey.SelectedValue as string;
+            if (survey != structureData.MiningSurvey)
+            {
+                structureData.MiningLeftOvers = Decimal.Zero;
+                structureData.MiningSurveyResource = null;
+            }
+            structureData.MiningSurvey = survey;
+            HandleMiningRigControls();
+        }
+
+        // -----------------------------------------------------------------------
+        // Selection filter and combo handlers (shared across types)
+        // -----------------------------------------------------------------------
+
+        private void txtSelectionFilter_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (_blueprint == null) return;
+
+            string previousValue = cmbSelection.SelectedValue as string;
+
+            if (_blueprint.BluePrintType == BlueprintTypes.MiningRig)
+                PopulateResourceComboFromSurvey();
+            else if (_blueprint.BluePrintType == BlueprintTypes.Refinery)
+                PopulateSelectionWithUnrefinedResources();
+            else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
+                PopulateSelectionWithResearchableBlueprints();
+
+            if (previousValue != null)
+                cmbSelection.SelectedValue = previousValue;
+
+            cmbSelection.DroppedDown = true;
+        }
+
+        private void cmbSelection_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (ViewModel == null || _blueprint == null) return;
+
+            var structureData = ViewModel.Data;
+
+            if (_blueprint.BluePrintType == BlueprintTypes.MiningRig)
+            {
+                string surveyResource = cmbSelection.SelectedValue as string;
+                if (surveyResource != structureData.MiningSurveyResource)
+                {
+                    structureData.MiningLeftOvers = Decimal.Zero;
+                }
+                structureData.MiningSurveyResource = surveyResource;
+                HandleMiningRigControls();
+            }
+            else if (_blueprint.BluePrintType == BlueprintTypes.Refinery)
+            {
+                string key = cmbSelection.SelectedValue as string;
+                if (!string.IsNullOrEmpty(key) && key.Contains("|"))
+                {
+                    string[] parts = key.Split('|');
+                    structureData.RefiningResource = parts[0];
+                    structureData.RefiningResourcePurity = parts[1];
+                }
+                else
+                {
+                    structureData.RefiningResource = null;
+                    structureData.RefiningResourcePurity = null;
+                }
+                HandleRefineryControls();
+            }
+            else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
+            {
+                string uuid = cmbSelection.SelectedValue as string;
+                structureData.ResearchingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
+                HandleResearchLabControls();
+            }
+        }
+
+        // -----------------------------------------------------------------------
+        // Start button handler
+        // -----------------------------------------------------------------------
+
+        private void cmdStart_Click(object sender, EventArgs e)
+        {
+            if (ViewModel == null) return;
+            var structureData = ViewModel.Data;
+
+            // Handle Build button for staged structures
+            if (ViewModel.IsStaged && !ViewModel.IsBuilt && cmdStart.Text == "Build")
+            {
+                HandleBuildStart();
+                return;
+            }
+
+            if (_blueprint == null) return;
+
+            if (_blueprint.BluePrintType == BlueprintTypes.MiningRig)
+            {
+                HandleMiningStart();
+            }
+            else if (_blueprint.BluePrintType == BlueprintTypes.Refinery)
+            {
+                HandleRefineryStart();
+            }
+            else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
+            {
+                HandleResearchStart();
+            }
+        }
+
+        private void HandleBuildStart()
+        {
+            var structureData = ViewModel.Data;
+
+            // Check single-build constraint
+            if (Colony != null && Colony.Structures.Any(s =>
+                s != structureData &&
+                s.BuildCompletionTime != null &&
+                s.BuildCompletionTime.TimeRemaining > 0))
+                return;
+
+            // Look up Builder skill level
+            int builderLevel = 0;
+            if (Colony != null && !string.IsNullOrEmpty(Colony.OwnerUUID))
+            {
+                var owner = _playerContext.PlayerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
+                if (owner != null)
+                    builderLevel = owner.GetSkill(SkillName.Builder).Level;
+            }
+
+            long buildSeconds = BuildTimeCalculator.Calculate(builderLevel);
+
+            ViewModel.IsStaged = false;
+            structureData.BuildCompletionTime = new CountDownTime();
+            structureData.BuildCompletionTime.TimeRemaining = buildSeconds;
+
+            OnColonyStructureDataChanged(structural: false);
+        }
+
+        private void HandleMiningStart()
+        {
+            var structureData = ViewModel.Data;
+
+            structureData.ProcessCompletionTime = new CountDownTime();
+            structureData.ProcessCompletionTime.StartTime = DateTime.UtcNow;
+            long secondsUntilNextHour = GameConstants.SecondsPerHour - (long)(DateTime.UtcNow - DateTime.UtcNow.Date.AddHours(DateTime.UtcNow.Hour)).TotalSeconds;
+            structureData.ProcessCompletionTime.StartRepeating(GameConstants.SecondsPerHour, secondsUntilNextHour);
+            timerCountdown.Interval = GetCountdownIntervalMs();
+            timerCountdown.Start();
+            HandleMiningRigControls();
+            OnColonyStructureDataChanged(structural: false);
+        }
+
+        private void HandleRefineryStart()
+        {
+            var structureData = ViewModel.Data;
+            if (string.IsNullOrEmpty(structureData.RefiningResource)) return;
+
+            structureData.ProcessCompletionTime = new CountDownTime();
+            structureData.ProcessCompletionTime.StartTime = DateTime.UtcNow;
+            long secondsUntilNextHour = GameConstants.SecondsPerHour - (long)(DateTime.UtcNow - DateTime.UtcNow.Date.AddHours(DateTime.UtcNow.Hour)).TotalSeconds;
+            structureData.ProcessCompletionTime.StartRepeating(GameConstants.SecondsPerHour, secondsUntilNextHour);
+            timerCountdown.Interval = GetCountdownIntervalMs();
+            timerCountdown.Start();
+            HandleRefineryControls();
+            OnColonyStructureDataChanged(structural: false);
+        }
+
+        private void HandleResearchStart()
+        {
+            var structureData = ViewModel.Data;
+            if (string.IsNullOrEmpty(structureData.ResearchingBlueprintUUID)) return;
+
+            Models.Blueprint bp = _playerContext.FindBlueprint(structureData.ResearchingBlueprintUUID);
+            if (bp == null) return;
+
+            long researchSeconds = ResearchTimeLookup.GetResearchTimeSeconds(bp.Evolution);
+            if (researchSeconds <= 0) return;
+
+            // Apply ResearchFocus skill multiplier (3% per level)
+            int researchFocusLevel = 0;
+            if (Colony != null && !string.IsNullOrEmpty(Colony.OwnerUUID))
+            {
+                var owner = _playerContext.PlayerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
+                if (owner != null)
+                    researchFocusLevel = owner.GetSkill(SkillName.ResearchFocus).Level;
+            }
+            researchSeconds = Math.Max(1, (long)(researchSeconds * (1.0 - researchFocusLevel * 0.03)));
+
+            structureData.ProcessCompletionTime = new CountDownTime();
+            structureData.ProcessCompletionTime.StartTime = DateTime.UtcNow;
+            structureData.ProcessCompletionTime.TimeRemaining = researchSeconds;
+            timerCountdown.Interval = GetCountdownIntervalMs();
+            timerCountdown.Start();
+            HandleResearchLabControls();
+            OnColonyStructureDataChanged(structural: false);
+        }
+
+        // -----------------------------------------------------------------------
+        // Done button handler
+        // -----------------------------------------------------------------------
+
+        private void cmdDone_Click(object sender, EventArgs e)
+        {
+            if (ViewModel == null || Colony == null) return;
+            var structureData = ViewModel.Data;
+
+            // Handle Build completion (BuildCompletionTime)
+            if (structureData.BuildCompletionTime != null)
+            {
+                lock (Colony.ProcessingLock)
+                {
+                    if (structureData.BuildCompletionTime.TimeRemaining > 0)
+                    {
+                        structureData.BuildCompletionTime.TimeRemaining = 0;
+                    }
+                    Colony.ProcessColony();
+                }
+                timerCountdown.Stop();
+                txtCompletionTime.Text = "";
+                rtbProgressStatus.Text = "";
+                UpdateData(_blueprint);
+                OnColonyStructureDataChanged(structural: false);
+                return;
+            }
+
+            // Handle process completion
+            lock (Colony.ProcessingLock)
+            {
+                if (structureData.ProcessCompletionTime != null)
+                {
+                    if (structureData.ProcessCompletionTime.IsRepeating &&
+                        structureData.ProcessCompletionTime.IntervalsPassed == 0)
+                    {
+                        structureData.ProcessCompletionTime.StartTime =
+                            DateTime.UtcNow.AddSeconds(-structureData.ProcessCompletionTime.RepeatIntervalSeconds);
+                    }
+                    else if (!structureData.ProcessCompletionTime.IsRepeating &&
+                             structureData.ProcessCompletionTime.TimeRemaining > 0)
+                    {
+                        structureData.ProcessCompletionTime.TimeRemaining = 0;
+                    }
+                }
+
+                Colony.ProcessColony();
+            }
+
+            // For manufactories/commodity factories with remaining cycles, keep the timer running
+            bool keepTimer = false;
+            if (_blueprint != null &&
+                _blueprint.BluePrintType == BlueprintTypes.Manufactory &&
+                structureData.ManufacturingCompleted < structureData.ManufacturingQuantity)
+            {
+                keepTimer = true;
+            }
+            if (_blueprint != null &&
+                _blueprint.BluePrintType.IsCommodityFactory() &&
+                structureData.ManufacturingCompleted < structureData.ManufacturingQuantity)
+            {
+                keepTimer = true;
+            }
+
+            if (!keepTimer)
+            {
+                timerCountdown.Stop();
+                structureData.ProcessCompletionTime = null;
+                txtCompletionTime.Text = "";
+                rtbProgressStatus.Text = "";
+            }
+
+            // Refresh the appropriate controls
+            if (_blueprint != null)
+            {
+                if (_blueprint.BluePrintType == BlueprintTypes.MiningRig)
+                    HandleMiningRigControls();
+                else if (_blueprint.BluePrintType == BlueprintTypes.Refinery)
+                    HandleRefineryControls();
+                else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
+                    HandleResearchLabControls();
+            }
+
+            OnColonyStructureDataChanged(structural: false);
+        }
+
+        // -----------------------------------------------------------------------
+        // Timer tick handler
         // -----------------------------------------------------------------------
 
         private void timerCountdown_Tick(object sender, EventArgs e)
         {
-            // Timer tick — countdown display will be fully implemented in Phase 5 tasks.
-            // For now just a stub to satisfy the designer event wiring.
+            if (ViewModel == null) return;
+            var structureData = ViewModel.Data;
+
+            if (!_completionModification && structureData.ProcessCompletionTime != null)
+            {
+                txtCompletionTime.Text = structureData.ProcessCompletionTime.TimeRemainingString;
+            }
+            else if (!_completionModification && structureData.BuildCompletionTime != null)
+            {
+                txtCompletionTime.Text = structureData.BuildCompletionTime.TimeRemainingString;
+            }
+        }
+
+        // -----------------------------------------------------------------------
+        // Countdown manual edit support
+        // -----------------------------------------------------------------------
+
+        private void txtCompletionTime_Enter(object sender, EventArgs e)
+        {
+            _completionModification = true;
+        }
+
+        private void txtCompletionTime_Leave(object sender, EventArgs e)
+        {
+            _completionModification = false;
+            if (ViewModel == null) return;
+            var structureData = ViewModel.Data;
+
+            if (structureData.ProcessCompletionTime != null)
+            {
+                structureData.ProcessCompletionTime.TimeRemainingString = txtCompletionTime.Text;
+            }
+            else if (structureData.BuildCompletionTime != null)
+            {
+                structureData.BuildCompletionTime.TimeRemainingString = txtCompletionTime.Text;
+            }
+
+            OnColonyStructureDataChanged(structural: false);
+        }
+
+        // -----------------------------------------------------------------------
+        // Stage Resources and Quantity handlers
+        // -----------------------------------------------------------------------
+
+        private void chkStageResources_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (ViewModel == null) return;
+
+            ViewModel.StagingResources = chkStageResources.Checked;
+
+            if (chkStageResources.Checked)
+            {
+                int qty = 1;
+                int.TryParse(txtQuantity.Text, out qty);
+                if (qty <= 0) qty = 1;
+                ViewModel.Data.ManufacturingQuantity = qty;
+            }
+
+            OnColonyStructureDataChanged(structural: false);
+        }
+
+        private void txtQuantity_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (ViewModel == null) return;
+
+            int qty = 0;
+            int.TryParse(txtQuantity.Text, out qty);
+            if (qty > 0)
+                ViewModel.Data.ManufacturingQuantity = qty;
         }
 
         // -----------------------------------------------------------------------
