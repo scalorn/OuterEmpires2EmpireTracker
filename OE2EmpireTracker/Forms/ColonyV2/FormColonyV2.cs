@@ -566,10 +566,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Ensure structure type filter list is populated (9.1)
             PopulateStructureTypeFilter();
 
-            flpStructures.SuspendLayout();
-            ReturnAllToPool();
-            flpStructures.Controls.Clear();
-
             // Build set of checked types for filter (9.2)
             var checkedTypes = new HashSet<string>(StringComparer.Ordinal);
             foreach (ListViewItem item in lvwStructureTypes.Items)
@@ -578,22 +574,53 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     checkedTypes.Add((string)item.Tag);
             }
 
+            flpStructures.SuspendLayout();
+
             var structureVMs = colonyViewModel.StructureViewModels;
-            foreach (var vm in structureVMs)
+            int needed = structureVMs.Count;
+
+            // Grow pool if needed (without removing/re-adding to Controls)
+            while (_pool.Count < needed)
             {
-                var bp = playerContext.FindBlueprint(vm.Data.FlatpackBlueprintUUID);
-                string typeId = bp?.BluePrintType ?? "";
-
-                var ctrl = AcquireStructureControl();
-                ctrl.ViewModel = vm;
-                ctrl.Colony = selectedColony;
-                ctrl.UpdateData(bp);
-
-                // Hide structures whose type is unchecked (9.2)
-                ctrl.Visible = checkedTypes.Count == 0 || checkedTypes.Contains(typeId);
-
-                flpStructures.Controls.Add(ctrl);
+                var newCtrl = new ColonyStructureV2();
+                newCtrl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
+                newCtrl.Visible = false;
+                _pool.Add(newCtrl);
+                flpStructures.Controls.Add(newCtrl);
             }
+
+            // Ensure all needed controls are in the FlowLayoutPanel
+            for (int i = 0; i < _pool.Count; i++)
+            {
+                if (!flpStructures.Controls.Contains(_pool[i]))
+                    flpStructures.Controls.Add(_pool[i]);
+            }
+
+            // Assign data to active controls, hide extras
+            for (int i = 0; i < _pool.Count; i++)
+            {
+                var ctrl = _pool[i];
+                if (i < needed)
+                {
+                    var vm = structureVMs[i];
+                    var bp = playerContext.FindBlueprint(vm.Data.FlatpackBlueprintUUID);
+                    string typeId = bp?.BluePrintType ?? "";
+
+                    ctrl.ViewModel = vm;
+                    ctrl.Colony = selectedColony;
+                    ctrl.UpdateData(bp);
+                    ctrl.Visible = checkedTypes.Count == 0 || checkedTypes.Contains(typeId);
+                }
+                else
+                {
+                    if (ctrl.Visible || ctrl.ViewModel != null)
+                    {
+                        ctrl.Visible = false;
+                        ctrl.Reset();
+                    }
+                }
+            }
+            _poolInUse = needed;
 
             flpStructures.ResumeLayout();
 
