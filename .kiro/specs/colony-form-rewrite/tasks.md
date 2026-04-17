@@ -128,7 +128,7 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
     - Red when Required > Provided, green otherwise, format "Required/Provided"
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-- [-] 9. Implement structure type filter
+- [x] 9. Implement structure type filter
   - [x] 9.1 Add lvwStructureTypes checkbox ListView showing all flatpack blueprint types from BaselineData.json, sorted alphabetically
     - Static list — not filtered by current colony
     - _Requirements: 5.1, 5.2_
@@ -137,7 +137,7 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
   - [x] 9.3 Persist unchecked types to UIPreferences.json; restore on form load
     - _Requirements: 5.3, 5.6_
 
-- [ ] 10. Checkpoint — Structure control and pool
+- [x] 10. Checkpoint — Structure control and pool
   - Ensure all tests pass, verify structure controls render correctly with pool reuse
   - Ask the user if questions arise.
 
