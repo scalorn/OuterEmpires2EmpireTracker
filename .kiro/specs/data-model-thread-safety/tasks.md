@@ -28,29 +28,29 @@ Introduce layered synchronization to the OE2EmpireTracker data model so that Bac
     - `GetLocksForProcess` already returns `.ToList().AsReadOnly()` — verify this is preserved
     - _Requirements: 4.1, 4.2, 4.3, 4.4_
 
-- [ ] 2. Checkpoint — Verify collection-level locks compile cleanly
+- [x] 2. Checkpoint — Verify collection-level locks compile cleanly
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 3. Replace Colony.ProcessingLock with Colony.ColonyLock (ReaderWriterLockSlim)
-  - [~] 3.1 Add ColonyLock and timeout constants to Colony.cs
+- [x] 3. Replace Colony.ProcessingLock with Colony.ColonyLock (ReaderWriterLockSlim)
+  - [x] 3.1 Add ColonyLock and timeout constants to Colony.cs
     - Add `using System.Threading;` to `Models/Colony.cs`
     - Replace `[JsonIgnore] public object ProcessingLock { get; } = new object();` with `[JsonIgnore] public ReaderWriterLockSlim ColonyLock { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);`
     - Add `public const int ReadLockTimeoutMs = 1000;` and `public const int WriteLockTimeoutMs = 5000;`
     - _Requirements: 1.1, 1.2, 1.6_
 
-  - [~] 3.2 Update BackgroundProcessor.ExecuteCycle to use ColonyLock
+  - [x] 3.2 Update BackgroundProcessor.ExecuteCycle to use ColonyLock
     - In `Services/BackgroundProcessor.cs`, replace `lock (colony.ProcessingLock)` with `colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs)` / `try` / `finally { colony.ColonyLock.ExitWriteLock(); }`
     - If `TryEnterWriteLock` returns false, log a warning and `continue` to skip the colony
     - Ensure `OnColonyDataChanged` is fired OUTSIDE the ColonyLock (already the case)
     - Ensure `WriteContext` is called OUTSIDE any ColonyLock (already the case)
     - _Requirements: 1.3, 1.6, 1.7, 7.1, 7.4, 8.1, 11.2, 11.3_
 
-  - [~] 3.3 Update ColonyStructureV2 Done button to use ColonyLock
+  - [x] 3.3 Update ColonyStructureV2 Done button to use ColonyLock
     - In `Forms/ColonyV2/ColonyStructureV2.cs`, replace both `lock (Colony.ProcessingLock)` blocks with `Colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs)` / `try` / `finally { Colony.ColonyLock.ExitWriteLock(); }`
     - If lock timeout, log warning and return without processing
     - _Requirements: 1.3, 1.6, 1.7, 10.1_
 
-  - [~] 3.4 Update ColonyStructure (V1) Done button to use ColonyLock
+  - [x] 3.4 Update ColonyStructure (V1) Done button to use ColonyLock
     - In `Forms/Colony/ColonyStructure.cs`, replace both `lock (Colony.ProcessingLock)` blocks with `Colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs)` / `try` / `finally { Colony.ColonyLock.ExitWriteLock(); }`
     - If lock timeout, log warning and return without processing
     - _Requirements: 1.3, 1.6, 1.7_

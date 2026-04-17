@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 
 namespace OE2EmpireTracker.Models
 {
@@ -30,7 +31,10 @@ namespace OE2EmpireTracker.Models
         public OE2EmpireTracker.Models.LockTracking Locks { get; set; }
 
         [JsonIgnore]
-        public object ProcessingLock { get; } = new object();
+        public ReaderWriterLockSlim ColonyLock { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+
+        public const int ReadLockTimeoutMs = 1000;
+        public const int WriteLockTimeoutMs = 5000;
 
         public bool HasExpiredTimers()
         {

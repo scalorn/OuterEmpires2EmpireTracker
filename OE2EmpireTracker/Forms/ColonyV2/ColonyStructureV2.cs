@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace OE2EmpireTracker.Forms.ColonyV2
@@ -1937,13 +1938,22 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (structureData.BuildCompletionTime != null)
             {
                 Log.Debug("V2.cmdDone_Click: type=Build structure={0}", structureData.UUID);
-                lock (Colony.ProcessingLock)
+                if (!Colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs))
+                {
+                    Log.Warn("ColonyStructureV2: write lock timeout on colony {0}", Colony.UUID);
+                    return;
+                }
+                try
                 {
                     if (structureData.BuildCompletionTime.TimeRemaining > 0)
                     {
                         structureData.BuildCompletionTime.TimeRemaining = 0;
                     }
                     Colony.ProcessColony();
+                }
+                finally
+                {
+                    Colony.ColonyLock.ExitWriteLock();
                 }
                 timerCountdown.Stop();
                 txtCompletionTime.Text = "";
@@ -1954,7 +1964,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             // Handle process completion
-            lock (Colony.ProcessingLock)
+            if (!Colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs))
+            {
+                Log.Warn("ColonyStructureV2: write lock timeout on colony {0}", Colony.UUID);
+                return;
+            }
+            try
             {
                 Log.Debug("V2.cmdDone_Click: type=Process structure={0} bpType={1}",
                     structureData.UUID, _blueprint?.BluePrintType ?? "(none)");
@@ -1974,6 +1989,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 }
 
                 Colony.ProcessColony();
+            }
+            finally
+            {
+                Colony.ColonyLock.ExitWriteLock();
             }
 
             // For manufactories/commodity factories with remaining cycles, keep the timer running

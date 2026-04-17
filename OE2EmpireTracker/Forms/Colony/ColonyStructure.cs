@@ -11,6 +11,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -1645,13 +1646,22 @@ namespace OE2EmpireTracker.Forms.Colony
             // Handle Build completion (BuildCompletionTime)
             if (ColonyStructureData.BuildCompletionTime != null)
             {
-                lock (Colony.ProcessingLock)
+                if (!Colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs))
+                {
+                    Log.Warn("ColonyStructure: write lock timeout on colony {0}", Colony.UUID);
+                    return;
+                }
+                try
                 {
                     if (ColonyStructureData.BuildCompletionTime.TimeRemaining > 0)
                     {
                         ColonyStructureData.BuildCompletionTime.TimeRemaining = 0;
                     }
                     Colony.ProcessColony();
+                }
+                finally
+                {
+                    Colony.ColonyLock.ExitWriteLock();
                 }
                 timerCountdown.Stop();
                 txtCompletionTime.Text = "";
@@ -1661,7 +1671,12 @@ namespace OE2EmpireTracker.Forms.Colony
                 return;
             }
 
-            lock (Colony.ProcessingLock)
+            if (!Colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs))
+            {
+                Log.Warn("ColonyStructure: write lock timeout on colony {0}", Colony.UUID);
+                return;
+            }
+            try
             {
                 // Force completion so Done always processes
                 if (ColonyStructureData.ProcessCompletionTime != null)
@@ -1682,6 +1697,10 @@ namespace OE2EmpireTracker.Forms.Colony
                 }
 
                 Colony.ProcessColony();
+            }
+            finally
+            {
+                Colony.ColonyLock.ExitWriteLock();
             }
 
             // For manufactories/commodity factories with remaining cycles, keep the timer running

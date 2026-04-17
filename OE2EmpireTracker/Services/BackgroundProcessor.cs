@@ -154,9 +154,18 @@ namespace OE2EmpireTracker.Services
 
                     try
                     {
-                        lock (colony.ProcessingLock)
+                        if (!colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs))
+                        {
+                            Log.Warn("BackgroundProcessor: write lock timeout on colony {0}, skipping", colony.UUID);
+                            continue;
+                        }
+                        try
                         {
                             colony.ProcessColony();
+                        }
+                        finally
+                        {
+                            colony.ColonyLock.ExitWriteLock();
                         }
 
                         processedCount++;
