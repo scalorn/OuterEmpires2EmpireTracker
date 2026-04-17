@@ -1485,11 +1485,27 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             if (keyData == Keys.Delete && ViewModel != null && Colony != null)
             {
+                // Don't intercept Delete when a text input or combo has focus
+                var focused = FindFocusedControl(this);
+                if (focused is TextBox || focused is ComboBox || focused is RichTextBox)
+                    return base.ProcessCmdKey(ref msg, keyData);
+
                 ViewModel.Delete(Colony);
                 OnColonyStructureDataChanged(structural: true);
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private static Control FindFocusedControl(Control parent)
+        {
+            if (parent == null || !parent.ContainsFocus) return null;
+            foreach (Control child in parent.Controls)
+            {
+                if (child.Focused) return child;
+                if (child.ContainsFocus) return FindFocusedControl(child);
+            }
+            return null;
         }
 
         // -----------------------------------------------------------------------

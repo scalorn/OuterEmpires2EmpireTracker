@@ -260,6 +260,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.txtSurveyFilter.Size = new System.Drawing.Size(100, 20);
             this.txtSurveyFilter.TabIndex = 1;
             this.cmbSurvey.FormattingEnabled = true;
+            this.cmbSurvey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSurvey.Location = new System.Drawing.Point(160, 3);
             this.cmbSurvey.Name = "cmbSurvey";
             this.cmbSurvey.Size = new System.Drawing.Size(200, 21);
@@ -287,6 +288,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.txtSelectionFilter.Size = new System.Drawing.Size(100, 20);
             this.txtSelectionFilter.TabIndex = 1;
             this.cmbSelection.FormattingEnabled = true;
+            this.cmbSelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSelection.Location = new System.Drawing.Point(155, 3);
             this.cmbSelection.Name = "cmbSelection";
             this.cmbSelection.Size = new System.Drawing.Size(200, 21);
