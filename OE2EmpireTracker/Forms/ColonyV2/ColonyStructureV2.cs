@@ -1538,7 +1538,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 structureData.MiningSurveyResource = null;
             }
             structureData.MiningSurvey = survey;
-            HandleMiningRigControls();
+            // Only refresh controls if a real survey was selected
+            if (!string.IsNullOrEmpty(survey))
+                HandleMiningRigControls();
         }
 
         // -----------------------------------------------------------------------
@@ -1585,7 +1587,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     structureData.MiningLeftOvers = Decimal.Zero;
                 }
                 structureData.MiningSurveyResource = surveyResource;
-                HandleMiningRigControls();
+                // Only refresh controls if a real item was selected (not the empty placeholder)
+                if (!string.IsNullOrEmpty(surveyResource))
+                    HandleMiningRigControls();
             }
             else if (_blueprint.BluePrintType == BlueprintTypes.Refinery)
             {
@@ -1603,7 +1607,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     structureData.RefiningResource = null;
                     structureData.RefiningResourcePurity = null;
                 }
-                HandleRefineryControls();
             }
             else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
             {
@@ -1611,7 +1614,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 Log.Debug("V2.cmbSelection_SelectedIndexChanged: type=ResearchLab old={0} new={1}",
                     structureData.ResearchingBlueprintUUID ?? "(none)", uuid ?? "(none)");
                 structureData.ResearchingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
-                HandleResearchLabControls();
             }
             else if (_blueprint.BluePrintType == BlueprintTypes.Manufactory)
             {
@@ -1620,7 +1622,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     structureData.ManufacturingBlueprintUUID ?? "(none)", uuid ?? "(none)");
                 structureData.ManufacturingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
                 structureData.ManufacturingCompleted = 0;
-                HandleManufactoryControls();
             }
             else if (_blueprint.BluePrintType.IsCommodityFactory())
             {
@@ -1629,7 +1630,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     structureData.ManufacturingCommodityName ?? "(none)", name ?? "(none)");
                 structureData.ManufacturingCommodityName = string.IsNullOrEmpty(name) ? null : name;
                 structureData.ManufacturingCompleted = 0;
-                HandleCommodityFactoryControls();
             }
         }
 
