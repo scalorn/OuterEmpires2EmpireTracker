@@ -318,9 +318,9 @@ Iterations can be reordered based on priorities. The data model is designed to s
 
 #### Acceptance Criteria
 
-1. THE Ship SHALL have a UUID, Name, OwnerUUID, Ship_Template UUID (optional — may be built without a template), a list of installed components, a current location (Station UUID or Colony UUID with DestinationType), a cargo hold (ItemBag), and a raw material hold (ItemBag, for mining ships).
+1. THE Ship SHALL have a UUID, Name, OwnerUUID, Ship_Template UUID (optional — may be built without a template), a list of installed components, a current location (Station UUID or Colony UUID with DestinationType), a cargo hold (ItemBag), and a hopper (ItemBag, for mining ships).
 2. THE Ship SHALL have a computed Cargo_Capacity (volume) derived from hull + cargo pod components.
-3. THE Ship's cargo hold tracks what is currently loaded, constrained by Cargo_Capacity volume. Mining ships have a separate raw material hold with capacity from the hull's "Raw Material Capacity" property.
+3. THE Ship's cargo hold tracks what is currently loaded, constrained by Cargo_Capacity volume. Mining ships have a separate hopper with capacity from the sum of installed Ore Hopper components' "Raw Material Capacity" property. The hopper can only hold unrefined resources (High, Medium, or Low purity).
 4. THE Application SHALL persist Ships to PlayerData.json.
 5. Ships belong to a player profile (OwnerUUID). Cascade delete on player deletion.
 6. THE Application SHALL allow creating ships from a template (copies the configuration) or manually.

@@ -213,8 +213,8 @@ flowchart LR
     A1 -->|delivery| B1
     A2 -->|delivery| B1
     A3 -->|delivery| B1
-    AM1 -->|ship pickup<br/>RawMaterialHold| B1
-    AM2 -->|ship pickup<br/>RawMaterialHold| B1
+    AM1 -->|ship pickup<br/>Hopper| B1
+    AM2 -->|ship pickup<br/>Hopper| B1
     B1 -->|threshold reached<br/>delivery generated| C1
     C1 -->|delivery| D1
 ```
@@ -423,7 +423,7 @@ public class Ship
 
     // Cargo
     public ItemBag Cargo { get; set; } = new ItemBag();
-    public ItemBag RawMaterialHold { get; set; } = new ItemBag();  // Mining ships only
+    public ItemBag Hopper { get; set; } = new ItemBag();  // Mining ships only — unrefined resources (High/Medium/Low purity)
 }
 ```
 
@@ -431,7 +431,7 @@ Design decisions:
 - Ship duplicates HullBlueprintUUID and Components from the template because the ship is an independent entity — the template can be modified without affecting existing ships, and ships can have components replaced after being built (everything except the hull is swappable).
 - Location uses the same DestinationType enum as route stops.
 - Cargo is an ItemBag, same as colony warehouse. Volume enforcement is in the service layer, not the model.
-- RawMaterialHold is a separate ItemBag for unrefined resources on mining ships. Capacity comes from the hull blueprint's "Raw Material Capacity" property. Empty for non-mining ships.
+- Hopper is a separate ItemBag for unrefined resources on mining ships. In-game this is called the "Hopper" (or "Ore Hopper" for the component that provides it). It can only hold resources at High, Medium, or Low purity — Refined and synthetic purities are not allowed. Capacity comes from the sum of installed Ore Hopper components' "Raw Material Capacity" property. Empty for non-mining ships. The service layer enforces the purity restriction on add operations.
 
 ### Station
 
@@ -514,8 +514,8 @@ Design decisions:
 - `MaxReserve` is the hard cap on how much can be mined from this resource before it depletes. `CurrentReserve` tracks remaining (visible in-game when mining starts). When CurrentReserve reaches 0, the resource is exhausted until it resets.
 - `ResetTimestamp` records when the reserve last reset. The reset interval is TBD (game mechanic not yet confirmed). When known, a service can compute time-until-next-reset.
 - Reserves are a shared pool — multiple characters mining the same asteroid all decrement the same CurrentReserve.
-- Asteroids are available as delivery route stops via `DestinationType.Asteroid`. Mining at an asteroid is modeled as a pickup operation on the route — the ship arrives, mines (fills RawMaterialHold), and departs.
-- No per-player holds on asteroids — mined resources go directly into the ship's RawMaterialHold.
+- Asteroids are available as delivery route stops via `DestinationType.Asteroid`. Mining at an asteroid is modeled as a pickup operation on the route — the ship arrives, mines (fills Hopper), and departs.
+- No per-player holds on asteroids — mined resources go directly into the ship's Hopper.
 
 ### Asteroid Surveys (Survey Model Extension)
 
@@ -1095,7 +1095,7 @@ public class ShipStats
     // Capacity
     public decimal CargoCapacity { get; set; }          // Hull base + sum(Cargo Pod)
     public decimal FuelCapacity { get; set; }           // Hull base + sum(Fuel Tank)
-    public decimal RawMaterialCapacity { get; set; }    // sum(Ore Hopper)
+    public decimal HopperCapacity { get; set; }        // sum(Ore Hopper Raw Material Capacity)
     public int CrewSupported { get; set; }              // From hull
 
     // Defence
@@ -1666,6 +1666,8 @@ Cargo tab:
 ```
 │ ┌─ Overview ─┬─ Cargo ─────────────────────────────────────────────────┐   │
 │ │                                                                      │   │
+│ │ View: (●) Cargo Hold  ( ) Hopper                                    │   │
+│ │                                                                      │   │
 │ │ ┌─ Cargo Hold (1850 / 2400 m³) ─────────────────────────────────┐   │   │
 │ │ │ ┌──────────┬──────────────────┬─────┬────────────┐             │   │   │
 │ │ │ │ Type     │ Item             │ Qty │ Volume     │             │   │   │
@@ -1683,23 +1685,39 @@ Cargo tab:
 │ │ │ └──────────┴──────────────────┴─────┴────────────┘             │   │   │
 │ │ │ [New Crate] [Move to Crate] [Remove from Crate] [Delete Crate]│   │   │
 │ │ └───────────────────────────────────────────────────────────────┘│   │   │
-│ │                                                                  │   │   │
-│ │ ┌─ Raw Material Hold (2200 / 5000 m³) ──────────────────────┐   │   │   │
-│ │ │ ┌──────────┬──────────────────┬─────┬────────────┐         │   │   │   │
-│ │ │ │ Type     │ Item             │ Qty │ Volume     │         │   │   │   │
-│ │ │ ├──────────┼──────────────────┼─────┼────────────┤         │   │   │   │
-│ │ │ │ Resource │ Unrefined Iron   │ 800 │   1200 m³  │         │   │   │   │
-│ │ │ │ Resource │ Unrefined Copper │ 500 │   1000 m³  │         │   │   │   │
-│ │ │ └──────────┴──────────────────┴─────┴────────────┘         │   │   │   │
-│ │ └───────────────────────────────────────────────────────────┘│   │   │   │
-│ └──────────────────────────────────────────────────────────────────┘   │   │
+│ └──────────────────────────────────────────────────────────────────────┘   │
+```
+
+Hopper view (when "Hopper" radio selected):
+
+```
+│ ┌─ Overview ─┬─ Cargo ─────────────────────────────────────────────────┐   │
+│ │                                                                      │   │
+│ │ View: ( ) Cargo Hold  (●) Hopper                                    │   │
+│ │                                                                      │   │
+│ │ ┌─ Hopper (2200 / 5000 m³) ─────────────────────────────────────┐   │   │
+│ │ │ ┌──────────┬──────────────────┬────────┬─────┬────────────┐    │   │   │
+│ │ │ │ Resource │ Name             │ Purity │ Qty │ Volume     │    │   │   │
+│ │ │ ├──────────┼──────────────────┼────────┼─────┼────────────┤    │   │   │
+│ │ │ │ Resource │ Iron             │ High   │ 400 │    600 m³  │    │   │   │
+│ │ │ │ Resource │ Iron             │ Medium │ 300 │    450 m³  │    │   │   │
+│ │ │ │ Resource │ Copper           │ High   │ 200 │    400 m³  │    │   │   │
+│ │ │ │ Resource │ Copper           │ Low    │ 500 │    750 m³  │    │   │   │
+│ │ │ └──────────┴──────────────────┴────────┴─────┴────────────┘    │   │   │
+│ │ │                                                                │   │   │
+│ │ │ Add: Resource:[Filter:___] [Iron              ▼]               │   │   │
+│ │ │      Purity: [High   ▼]  Qty:[100]  [Add]                     │   │   │
+│ │ └───────────────────────────────────────────────────────────────┘│   │   │
+│ └──────────────────────────────────────────────────────────────────────┘   │
 ```
 
 Controls:
 - Left: `flpSearchList` → `txtShipFilter` + `lvwShips` (ListView) + `cmdCreateFromTemplate`
 - Right: `flpShipData` → `txtShipName`, template/location labels, `tabShipDetail` (TabControl with Overview and Cargo tabs)
 - Overview tab: `dgvComponents` (read-only DataGridView), `cmdSwapComponent` (opens component picker), `dgvStats` (read-only DataGridView) — computed via ShipBuildService.ComputeStats, same grouped layout as FormShipTemplate. Mining/scanning sections shown only when relevant components are installed.
-- Cargo tab: `dgvCargo` (DataGridView with crate master-detail), `dgvCrateContents` (detail grid), crate management buttons, volume header showing used/capacity. `dgvRawMaterials` section visible for mining ships only (ships with Ore Hopper components), showing raw material hold used/capacity.
+- Cargo tab: `rbCargoHold` / `rbHopper` (RadioButtons) to switch views. Hopper radio only enabled when ship has Ore Hopper components.
+  - Cargo Hold view: `dgvCargo` (DataGridView with crate master-detail), `dgvCrateContents` (detail grid), crate management buttons, volume header showing used/capacity.
+  - Hopper view: `dgvHopper` (DataGridView) with columns Resource, Name, Purity, Qty, Volume. Hopper only accepts unrefined resources (High, Medium, Low purity). Add panel with resource filter/combo, purity combo (restricted to High/Medium/Low), quantity, and Add button. Volume header showing used/capacity from Ore Hopper `Raw Material Capacity`.
 
 ### FormStation (Iteration 4)
 
