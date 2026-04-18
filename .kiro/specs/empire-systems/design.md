@@ -3007,6 +3007,120 @@ Every new form must:
 | PlayerData missing new arrays | Init methods create empty lists, no error |
 | RouteStop has ColonyUUID but no DestinationUUID | Migration copies ColonyUUID → DestinationUUID |
 
+## Open Design Questions
+
+These questions were identified during design review and need resolution before implementation of the affected iteration. Each is tagged with the iteration it blocks.
+
+### OQ-30: StockTarget Persistence — Nested vs Flat (Iteration 7)
+
+The `StockPlan` has a nested `List<StockTarget> Targets`, but `PlayerRoot` also has a top-level `StockTarget[]` array. The `StockTarget` class has both `OwnerUUID` (for standalone) and `StockPlanUUID` (when part of a plan).
+
+Question: Are plan targets nested inside `StockPlan.Targets` (like `BuildPlan.Items`) with only standalone targets in `PlayerRoot.StockTarget[]`? Or are all targets flat in `PlayerRoot.StockTarget[]` with `StockPlanUUID` as a foreign key and `StockPlan.Targets` populated at load time?
+
+Impact: Affects serialization, Init methods, cascade delete behavior, and how FormStockTargets saves data.
+
+### OQ-31: ShipComponentSlot SlotType Values (Iteration 2)
+
+The Hull blueprint in BaselineData.json defines slot counts via property names like "Reactor Slots", "Cargo Pod Slots", "Main Drive Slots", "Small Weapon Mounts", "Medium Weapon Mounts", "Large Weapon Mounts", "Max Hull Plating", "Max Hull Reinforcement", "Max Hull Sealant Units", "Max Mining Lasers", "Max Mining Grapples", "GERTY Slots", etc.
+
+Question: What are the canonical `SlotType` string values for `ShipComponentSlot`? Specifically:
+- Are weapons three separate slot types (`SmallWeapon`, `MediumWeapon`, `LargeWeapon`) or one type (`Weapon`) with a size attribute?
+- Are hull modifications (`HullPlating`, `HullReinforcement`, `HullSealant`) separate slot types or grouped?
+- What is the complete mapping from hull property name → SlotType string?
+
+Impact: Affects ShipTemplate validation, component installation logic, slot grid display, and ComputeStats aggregation.
+
+### OQ-32: Weapon Slot Size Enforcement (Iteration 2)
+
+Weapon blueprints have a "Weapon Slot Size" property (Small, Medium, Large). The hull defines separate counts for Small/Medium/Large weapon mounts. `ShipComponentSlot` has `SlotType` and `SlotIndex` but no slot size field.
+
+Question: How does the template/ship enforce that a weapon blueprint's slot size matches the mount size? Options:
+- (a) SlotType encodes size: `SmallWeapon`, `MediumWeapon`, `LargeWeapon` as separate types.
+- (b) Add a `SlotSize` field to `ShipComponentSlot`.
+- (c) Validation reads the weapon blueprint's "Weapon Slot Size" property and checks against the hull's mount type at install time.
+
+Impact: Affects the data model, install validation, and the slot grid display in FormShipTemplate.
+
+### OQ-33: WarehouseOverflowRule Delivery Route (Iteration 6)
+
+When the background processor detects a warehouse overflow and generates a delivery, it needs a route from the source colony to the destination.
+
+Question: How is the delivery route determined? Options:
+- (a) The rule includes a `DeliveryRouteUUID` field — user picks the route when creating the rule.
+- (b) The system auto-creates a point-to-point route (source → destination) if one doesn't exist.
+- (c) The system finds an existing route that includes both the source and destination as stops.
+
+Impact: Affects the WarehouseOverflowRule model (may need a route field), the overflow tab UI, and the background processor logic.
+
+### OQ-34: BuildItem Status — Cascade vs Manual Override (Iteration 1)
+
+The background processor updates build item status during cascade processing (e.g. Delivering → Ready when resources arrive). Requirement 1.7 says "User can manually transition between any status."
+
+Question: What happens when the cascade wants to set a status that conflicts with a manual override? Specifically:
+- If user manually sets InProgress but resources aren't actually available, does the cascade revert to Staged?
+- If user manually sets Completed, does the cascade skip that item entirely?
+- Should there be a `ManualOverride` flag that prevents cascade status changes?
+
+Impact: Affects cascade processing logic and the status transition rules in BackgroundProcessor.
+
+### OQ-35: StockTarget Replenishment Plan Designation (Iteration 7)
+
+When `StockTargetService.GenerateReplenishmentItems()` creates build items for shortfalls, they need to go into a `BuildPlan`.
+
+Question: Which BuildPlan receives the auto-generated items? Options:
+- (a) One auto-replenishment plan per player, auto-created if missing (e.g. "Auto-Replenishment").
+- (b) One plan per StockPlan, named after the stock plan.
+- (c) User designates a target plan on the StockPlan or in preferences.
+- (d) The "Check & Generate Orders" button prompts the user to select/create a plan.
+
+Impact: Affects StockTargetService, the FormStockTargets "Check & Generate Orders" flow, and whether replenishment is fully automatic or user-confirmed.
+
+### OQ-36: Crate Volume in Delivery Planning (Iteration 3)
+
+The Crate design says "Contents count toward container capacity (e.g. ship cargo volume)." Delivery planning (Iteration 3) computes cargo volume for trip splitting.
+
+Question: When computing delivery plan cargo volume, does the system:
+- (a) Sum volumes of all items including crate contents (recursive one level)?
+- (b) Use only the crate's own Volume property (treating it as a single item)?
+- (c) Crates aren't expected in delivery plans — they're an inventory organization tool, not a shipping unit?
+
+Impact: Affects the cargo capacity enforcement and trip splitting logic in Iteration 3.
+
+### OQ-37: Station Blueprint Type (Iteration 4)
+
+The Station model has `StationBlueprintUUID` that "defines slot counts" for player-owned stations. But BaselineData.json has no station blueprint type — only Hull for ships.
+
+Question: How are station blueprints modeled? Options:
+- (a) Add a new `StationBlueprint` BlueprintType to BaselineData.json with slot-count properties (similar to Hull).
+- (b) Station slot counts are hardcoded per StationType (Outpost gets X reactors, Station gets Y, Starbase gets Z).
+- (c) Station blueprints are player-owned blueprints with a new BluePrintType ID, imported like ship blueprints.
+
+Impact: Affects BaselineData.json, EmpireContext, the Station model, and the FormStation Components tab.
+
+### OQ-38: ExternalCharacter Name Collision (Iteration 1)
+
+ExternalCharacter UUID is deterministic from character name alone. Two different in-game characters with the same name would get the same UUID.
+
+Question: Is this acceptable? In-game character names are unique per server, so collisions would only occur if tracking characters across multiple servers (not currently supported). If multi-server support is ever added, the seed would need to include a server identifier.
+
+Impact: Low risk for current scope. Document as a known limitation.
+
+### OQ-39: SupplyChain Delivery Route Selection (Iteration 6)
+
+When the background processor detects accumulation at a supply chain stage and generates a delivery to the next stage, it needs a route.
+
+Question: Same options as OQ-33 — does the SupplyChainStage include a route reference, does the system auto-create routes, or does it find existing routes? This is the same fundamental question as warehouse overflow but for supply chains.
+
+Impact: Affects the SupplyChainStage model (may need a `DeliveryRouteUUID` field), FormSupplyChain UI, and background processor logic. Should be resolved consistently with OQ-33.
+
+### OQ-40: Resource Check Scope — Colony Warehouse Only or Also Station Holds? (Iteration 1)
+
+ResourceCheckService checks build item resource requirements against the target colony's warehouse. But resources might also be available at a nearby station hold.
+
+Question: Should the resource check consider only the colony warehouse, or also station holds at stops on the associated delivery route? If station holds are included, which player's hold at each station is checked?
+
+Impact: Affects ResourceCheckService logic and the shortfall display. A broader scope reduces false shortfalls but adds complexity.
+
 ## Testing Strategy
 
 ### Property-Based Tests (FsCheck)
