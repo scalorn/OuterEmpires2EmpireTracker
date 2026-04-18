@@ -431,7 +431,7 @@ Design decisions:
 - Ship duplicates HullBlueprintUUID and Components from the template because the ship is an independent entity — the template can be modified without affecting existing ships, and ships can have components replaced after being built (everything except the hull is swappable).
 - Location uses the same DestinationType enum as route stops.
 - Cargo is an ItemBag, same as colony warehouse. Volume enforcement is in the service layer, not the model.
-- Hopper is a separate ItemBag for unrefined resources on mining ships. In-game this is called the "Hopper" (or "Ore Hopper" for the component that provides it). It can only hold resources at High, Medium, or Low purity — Refined and synthetic purities are not allowed. Capacity comes from the sum of installed Ore Hopper components' "Raw Material Capacity" property. Empty for non-mining ships. The service layer enforces the purity restriction on add operations.
+- Hopper is a separate ItemBag for unrefined resources on mining ships. In-game this is called the "Hopper" (or "Ore Hopper" for the component that provides it). It can only hold resources at High, Medium, or Low purity — Refined and synthetic purities are not allowed. Capacity comes from the hull's "Raw Material Capacity" property plus the sum of installed Ore Hopper components' "Raw Material Capacity" property. Empty for non-mining ships (hulls without `Raw Material Capacity` or `Max Ore Hoppers`). The service layer enforces the purity restriction on add operations.
 
 ### Station
 
@@ -1091,11 +1091,12 @@ public class ShipStats
     public decimal PowerConsumed { get; set; }
     public decimal PowerBalance { get; set; }           // Generated - Consumed
     public decimal EngCapacityUsed { get; set; }
+    public decimal EngCapacityAvailable { get; set; }   // From hull "Eng Capacity Available"
 
     // Capacity
     public decimal CargoCapacity { get; set; }          // Hull base + sum(Cargo Pod)
     public decimal FuelCapacity { get; set; }           // Hull base + sum(Fuel Tank)
-    public decimal HopperCapacity { get; set; }        // sum(Ore Hopper Raw Material Capacity)
+    public decimal HopperCapacity { get; set; }        // Hull Raw Material Capacity + sum(Ore Hopper Raw Material Capacity)
     public int CrewSupported { get; set; }              // From hull
 
     // Defence
@@ -3044,10 +3045,12 @@ Impact: Affects serialization, Init methods, cascade delete behavior, and how Fo
 | Max Hull Sealant Units | `HullSealant` | Hull property value | `HullSealantInjectionUnit` |
 | Max Mining Lasers | `MiningLaser` | Hull property value | `MiningLaser` |
 | Max Mining Grapples | `MiningGrapple` | Hull property value | `AsteroidGrapple` |
-| (no hull property) | `OreHopper` | `Max Allowed On Ship` on blueprint | `OreHopper` |
+| Max Ore Hoppers | `OreHopper` | Hull property value | `OreHopper` |
 
 Notes:
-- Ore Hopper has no hull slot property — its max count comes from the blueprint's own "Max Allowed On Ship" property rather than the hull. Same pattern applies to any component with "Max Allowed On Ship" instead of a hull slot count.
+- Mining-capable hulls (e.g. Hostile Environment Mining Rig) have additional properties not present on non-mining hulls: `Max Ore Hoppers` (slot count for Ore Hopper components), `Raw Material Capacity` (base hopper capacity from the hull itself), and `Eng Capacity Available` (total engineering capacity the hull provides, as opposed to `Eng Capacity Required` which components consume). The Hull BlueprintType definition in BaselineData.json needs to be updated to include these properties: `Max Ore Hoppers`, `Raw Material Capacity`, `Eng Capacity Available`.
+- `Raw Material Capacity` on the hull is the base hopper volume. Ore Hopper components add their own `Raw Material Capacity` on top. Total hopper capacity = hull `Raw Material Capacity` + sum(Ore Hopper `Raw Material Capacity`).
+- `Eng Capacity Available` on the hull is the total engineering budget. Components consume `Eng Capacity Required`. The ShipStats `EngCapacityUsed` should be compared against the hull's `Eng Capacity Available` to detect over-engineering.
 - `MissileLauncherLarge` has an inconsistent ID format (no slash) compared to `MissileLauncher/Medium` and `MissileLauncher/Small`. This is a BaselineData quirk, not a design choice.
 - The SlotType string is used as-is in `ShipComponentSlot.SlotType`. The mapping from BlueprintType ID to SlotType is done by a lookup table in `ShipBuildService` (or a constants class).
 - When installing a component, the service resolves the blueprint's BluePrintType to a SlotType via this mapping, then checks the hull's available count for that SlotType.
