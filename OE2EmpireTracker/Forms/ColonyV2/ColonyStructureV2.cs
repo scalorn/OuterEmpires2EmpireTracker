@@ -215,6 +215,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             using var guard = new ProgrammaticUpdateGuard(this);
             this.SuspendLayout();
+            flpColonyStructure.SuspendLayout();
 
             _blueprint = bp;
             var structureData = ViewModel.Data;
@@ -245,6 +246,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 HandleBuildingState();
                 UpdateBackgroundColor();
+                flpColonyStructure.ResumeLayout(false);
                 this.ResumeLayout();
                 udSw.Stop();
                 Log.Debug("V2.UpdateData PERF: {0} rtf={1}ms workers={2}ms building total={3}ms",
@@ -288,6 +290,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     bpName, tRtf, tWorkers - tRtf, tControls - tWorkers, udSw.ElapsedMilliseconds);
             }
 
+            flpColonyStructure.ResumeLayout(false);
             this.ResumeLayout();
         }
 
@@ -1441,6 +1444,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void PopulateWorkerCheckboxes()
         {
+            flpWorkers.SuspendLayout();
+
             for (int i = 0; i < _workerCheckboxes.Length; i++)
             {
                 _workerCheckboxes[i].Visible = false;
@@ -1449,7 +1454,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 _workerCheckboxes[i].Tag = null;
             }
 
-            if (ViewModel == null) return;
+            if (ViewModel == null) { flpWorkers.ResumeLayout(false); return; }
 
             int controlIndex = 0;
 
@@ -1489,6 +1494,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     }
                 }
             }
+
+            flpWorkers.ResumeLayout(false);
         }
 
         private bool IsUnallocatedWorkerAvailable(string workerDetailID)
