@@ -36,6 +36,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         /// <summary>The parent colony that owns this structure.</summary>
         public Models.Colony Colony { get; set; }
 
+        /// <summary>Whether the countdown timer is currently running.</summary>
+        public bool TimerRunning => timerCountdown.Enabled;
+
+        /// <summary>Stops the countdown timer without a full Reset.</summary>
+        public void StopTimer() { if (timerCountdown.Enabled) timerCountdown.Stop(); }
+
         /// <summary>Cached blueprint reference, set during UpdateData.</summary>
         private Models.Blueprint _blueprint;
 
@@ -291,24 +297,34 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void PopulateStatusRtf()
         {
             var structureData = ViewModel.Data;
-            var builder = new RtfBuilder();
+            rtbStatus.Text = BuildStatusPlainText(structureData);
+        }
 
-            if (structureData.Statuses != null)
+        private static string BuildStatusPlainText(ColonyStructure structureData)
+        {
+            if (structureData.Statuses == null) return "";
+            var sb = new System.Text.StringBuilder();
+            if (structureData.Statuses.TryGetValue(GameConstants.StatusActual, out var actual))
             {
-                if (structureData.Statuses.TryGetValue(GameConstants.StatusActual, out var actualStatus))
-                {
-                    builder.Append("Actual: ", Color.Black);
-                    ColonyStatusCalculator.PopulateStatus(builder, actualStatus);
-                }
-                if (structureData.Statuses.TryGetValue(GameConstants.StatusIdeal, out var idealStatus))
-                {
-                    builder.Append("\n", Color.Black);
-                    builder.Append("Ideal:  ", Color.Black);
-                    ColonyStatusCalculator.PopulateStatus(builder, idealStatus);
-                }
+                sb.Append("Actual: ");
+                sb.AppendFormat("Power:{0}/{1} Hab:{2}/{3} Food:{4}/{5} Ent:{6}/{7} WH:{8}/{9}",
+                    actual.PowerRequired, actual.PowerProvided,
+                    actual.HabitationRequired, actual.HabitationProvision,
+                    actual.FoodRequired, actual.FoodProvision,
+                    actual.EntertainmentRequired, actual.EntertainmentProvided,
+                    actual.WarehouseRequired, actual.WarehouseCapacity);
             }
-
-            rtbStatus.Rtf = builder.ToRtf();
+            if (structureData.Statuses.TryGetValue(GameConstants.StatusIdeal, out var ideal))
+            {
+                sb.Append("\nIdeal:  ");
+                sb.AppendFormat("Power:{0}/{1} Hab:{2}/{3} Food:{4}/{5} Ent:{6}/{7} WH:{8}/{9}",
+                    ideal.PowerRequired, ideal.PowerProvided,
+                    ideal.HabitationRequired, ideal.HabitationProvision,
+                    ideal.FoodRequired, ideal.FoodProvision,
+                    ideal.EntertainmentRequired, ideal.EntertainmentProvided,
+                    ideal.WarehouseRequired, ideal.WarehouseCapacity);
+            }
+            return sb.ToString();
         }
 
         /// <summary>

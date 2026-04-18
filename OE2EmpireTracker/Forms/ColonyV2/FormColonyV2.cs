@@ -778,7 +778,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     {
                         var rSw = System.Diagnostics.Stopwatch.StartNew();
                         ctrl.Visible = false;
-                        ctrl.Reset();
+                        ctrl.ViewModel = null;
+                        ctrl.Colony = null;
+                        if (ctrl.TimerRunning)
+                            ctrl.StopTimer();
                         rSw.Stop();
                         resetTotal += rSw.ElapsedMilliseconds;
                     }

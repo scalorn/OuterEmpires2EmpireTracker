@@ -188,7 +188,7 @@ Introduce layered synchronization to the OE2EmpireTracker data model so that Bac
     - Assert the locked colony is skipped and others with expired timers are processed
     - **Validates: Requirements 11.3**
 
-- [-] 10. Final checkpoint — Full test suite and manual verification
+- [x] 10. Final checkpoint — Full test suite and manual verification
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
