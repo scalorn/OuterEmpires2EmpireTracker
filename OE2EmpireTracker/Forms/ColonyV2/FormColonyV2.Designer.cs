@@ -137,6 +137,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.splitMain.Panel1.Controls.Add(this.txtColonyFilter);
             this.splitMain.Panel1.Padding = new System.Windows.Forms.Padding(2);
             this.splitMain.Panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.splitMain.Panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             // 
             // splitMain.Panel2 — right colony data
             // 
