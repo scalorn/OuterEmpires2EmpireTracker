@@ -877,7 +877,7 @@
       "OutputItemType": "Flatpack"
     },
     {
-      "Id": "MissileLauncherLarge",
+      "Id": "MissileLauncher/Large",
       "Name": "Missile Launcher Large",
       "Properties": [
         "Manufacture Run Time",
@@ -2607,7 +2607,7 @@
     {
       "OwnerUUID": "",
       "LegacyUUID": "98b1fa47-dad7-43f1-937a-8a867382c523",
-      "BluePrintType": "MissileLauncherLarge",
+      "BluePrintType": "MissileLauncher/Large",
       "Class": 2,
       "Properties": {
         "Mass": "64",
@@ -2704,7 +2704,7 @@
     {
       "OwnerUUID": "",
       "LegacyUUID": "e5903698-bafd-425f-b4d0-7a1de2ae8a8a",
-      "BluePrintType": "MissileLauncherLarge",
+      "BluePrintType": "MissileLauncher/Large",
       "Class": 3,
       "Properties": {
         "Mass": "133",
@@ -2801,7 +2801,7 @@
     {
       "OwnerUUID": "",
       "LegacyUUID": "24443736-847d-4c1c-8032-eb0e24affdce",
-      "BluePrintType": "MissileLauncherLarge",
+      "BluePrintType": "MissileLauncher/Large",
       "Class": 4,
       "Properties": {
         "Mass": "296",
@@ -2897,7 +2897,7 @@
     },
     {
       "OwnerUUID": "",
-      "BluePrintType": "MissileLauncherLarge",
+      "BluePrintType": "MissileLauncher/Large",
       "Class": 5,
       "Properties": {
         "Mass": "665",
@@ -3026,7 +3026,7 @@
     },
     {
       "OwnerUUID": "",
-      "BluePrintType": "MissileLauncherLarge",
+      "BluePrintType": "MissileLauncher/Large",
       "Class": 7,
       "Properties": {
         "Mass": "3516",
@@ -3091,7 +3091,7 @@
     {
       "OwnerUUID": "",
       "LegacyUUID": "868a1d84-12c1-4a79-9021-810dd1fc6fc5",
-      "BluePrintType": "MissileLauncherLarge",
+      "BluePrintType": "MissileLauncher/Large",
       "Class": 8,
       "Properties": {
         "Mass": "9844",
@@ -24409,6 +24409,59 @@
       "UUID": "9839b5fa-206a-5a90-9377-5aaa1bee3e1c",
       "ItemType": "Blueprint",
       "Name": "Zeus Rudimentary Plating"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "Hull",
+      "Class": 6,
+      "Properties": {
+        "_IconPosition": "-328px -62px",
+        "Manufacture Run Time": "3d , 12h",
+        "Mass": "28500",
+        "Cargo Volume Size": "28334",
+        "License Level": "36",
+        "License Career": "Private",
+        "Health": "6000",
+        "Eng Capacity Available": "20000",
+        "Max Hull Plating": "1",
+        "Max Hull Reinforcement": "3",
+        "Max Hull Sealant Units": "3",
+        "Cargo Capacity": "2000",
+        "Fuel Capacity": "14500",
+        "Large Weapon Mounts": "0",
+        "Medium Weapon Mounts": "1",
+        "Small Weapon Mounts": "2",
+        "Raw Material Capacity": "20000",
+        "Wear and Tear Rate": "1",
+        "Maximum Damage Repair": "80",
+        "Energy Defence": "86",
+        "Kinetic Damage Defence": "81",
+        "Missile Damage Defence": "286",
+        "Max Mining Lasers": "3",
+        "Max Mining Grapples": "1",
+        "Crew Supported": "3",
+        "Reactor Slots": "1",
+        "Main Drive Slots": "1",
+        "Thruster Slots": "1",
+        "Jump Drive Slots": "1",
+        "Nav Comp Slots": "1",
+        "Scanner Slots": "1",
+        "Shield Slots": "1",
+        "Cargo Pod Slots": "5",
+        "Fuel Tank Slots": "3",
+        "Coupler Slots": "1",
+        "GERTY Slots": "6",
+        "Max Ore Hoppers": "3"
+      },
+      "Resources": {
+        "Halogens": "68877",
+        "Acidic Inorganics": "7924",
+        "Heavy Trans-Metals": "21518"
+      },
+      "UUID": "e6adda12-a86e-57e0-b2f3-6998cf481b53",
+      "ItemType": "Blueprint",
+      "Name": "Hostile Environment Mining Rig",
+      "Description": "Ship Hull"
     }
   ],
   "TechLevel": [

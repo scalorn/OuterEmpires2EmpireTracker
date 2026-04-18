@@ -3039,7 +3039,7 @@ Impact: Affects serialization, Init methods, cascade delete behavior, and how Fo
 | Scanner Slots | `Scanner` | Hull property value | `SystemObjectScanner` |
 | Small Weapon Mounts | `WeaponSmall` | Hull property value | `Beamer/Small`, `Railgun/Small`, `CoilGun/Small`, `MissileLauncher/Small`, `TorpedoLauncher/Small` |
 | Medium Weapon Mounts | `WeaponMedium` | Hull property value | `Beamer/Medium`, `Railgun/Medium`, `CoilGun/Medium`, `MissileLauncher/Medium`, `TorpedoLauncher/Medium` |
-| Large Weapon Mounts | `WeaponLarge` | Hull property value | `Beamer/Large`, `Railgun/Large`, `CoilGun/Large`, `MissileLauncherLarge`, `TorpedoLauncher/Large` |
+| Large Weapon Mounts | `WeaponLarge` | Hull property value | `Beamer/Large`, `Railgun/Large`, `CoilGun/Large`, `MissileLauncher/Large`, `TorpedoLauncher/Large` |
 | Max Hull Plating | `HullPlating` | Hull property value | `HullPlating` |
 | Max Hull Reinforcement | `HullReinforcement` | Hull property value | `HullReinforcement` |
 | Max Hull Sealant Units | `HullSealant` | Hull property value | `HullSealantInjectionUnit` |
@@ -3051,7 +3051,6 @@ Notes:
 - Mining-capable hulls (e.g. Hostile Environment Mining Rig) have additional properties not present on non-mining hulls: `Max Ore Hoppers` (slot count for Ore Hopper components), `Raw Material Capacity` (base hopper capacity from the hull itself), and `Eng Capacity Available` (total engineering capacity the hull provides, as opposed to `Eng Capacity Required` which components consume). The Hull BlueprintType definition in BaselineData.json needs to be updated to include these properties: `Max Ore Hoppers`, `Raw Material Capacity`, `Eng Capacity Available`.
 - `Raw Material Capacity` on the hull is the base hopper volume. Ore Hopper components add their own `Raw Material Capacity` on top. Total hopper capacity = hull `Raw Material Capacity` + sum(Ore Hopper `Raw Material Capacity`).
 - `Eng Capacity Available` on the hull is the total engineering budget. Components consume `Eng Capacity Required`. The ShipStats `EngCapacityUsed` should be compared against the hull's `Eng Capacity Available` to detect over-engineering.
-- `MissileLauncherLarge` has an inconsistent ID format (no slash) compared to `MissileLauncher/Medium` and `MissileLauncher/Small`. This is a BaselineData quirk, not a design choice.
 - The SlotType string is used as-is in `ShipComponentSlot.SlotType`. The mapping from BlueprintType ID to SlotType is done by a lookup table in `ShipBuildService` (or a constants class).
 - When installing a component, the service resolves the blueprint's BluePrintType to a SlotType via this mapping, then checks the hull's available count for that SlotType.
 
@@ -3059,7 +3058,7 @@ Notes:
 
 **Decision:** Option (a) — SlotType encodes size. Weapons use `WeaponSmall`, `WeaponMedium`, `WeaponLarge` as separate slot types. The weapon blueprint's BluePrintType ID encodes the size (e.g. `Beamer/Small` → `WeaponSmall`, `Railgun/Large` → `WeaponLarge`). The mapping table above defines which BlueprintType IDs map to which SlotType. No additional `SlotSize` field is needed on `ShipComponentSlot`.
 
-Validation: When installing a weapon, the service extracts the size from the BlueprintType ID (the `/Small`, `/Medium`, `/Large` suffix, or the `Large` suffix for `MissileLauncherLarge`), maps it to the corresponding `WeaponSmall`/`WeaponMedium`/`WeaponLarge` SlotType, and checks the hull's available mount count for that size.
+Validation: When installing a weapon, the service extracts the size from the BlueprintType ID (the `/Small`, `/Medium`, `/Large` suffix), maps it to the corresponding `WeaponSmall`/`WeaponMedium`/`WeaponLarge` SlotType, and checks the hull's available mount count for that size.
 
 ### OQ-33: WarehouseOverflowRule Delivery Route (Iteration 6)
 
