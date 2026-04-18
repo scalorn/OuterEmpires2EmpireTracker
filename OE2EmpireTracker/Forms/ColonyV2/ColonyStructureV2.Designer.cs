@@ -158,6 +158,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.rtbStatus.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.rtbStatus.Size = new System.Drawing.Size(610, 40);
             this.rtbStatus.TabIndex = 1;
+            this.rtbStatus.TabStop = false;
+            this.rtbStatus.Enabled = false;
             this.rtbStatus.Text = "";
             this.rtbStatus.WordWrap = false;
             this.rtbStatus.ContentsResized += new System.Windows.Forms.ContentsResizedEventHandler(this.rtbStatus_ContentsResized);
@@ -271,6 +273,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpSelection.Controls.Add(this.lblSelectionFilter);
             this.flpSelection.Controls.Add(this.txtSelectionFilter);
             this.flpSelection.Controls.Add(this.cmbSelection);
+            this.flpSelection.Controls.Add(this.cmdDone);
             this.flpSelection.Location = new System.Drawing.Point(3, 115);
             this.flpSelection.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.flpSelection.Name = "flpSelection";
@@ -302,7 +305,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpManufacturing.Controls.Add(this.txtQuantity);
             this.flpManufacturing.Controls.Add(this.chkStageResources);
             this.flpManufacturing.Controls.Add(this.cmdStart);
-            this.flpManufacturing.Controls.Add(this.cmdDone);
             this.flpManufacturing.Location = new System.Drawing.Point(3, 141);
             this.flpManufacturing.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.flpManufacturing.Name = "flpManufacturing";
@@ -320,6 +322,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.rtbProgressStatus.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.rtbProgressStatus.Size = new System.Drawing.Size(200, 20);
             this.rtbProgressStatus.TabIndex = 0;
+            this.rtbProgressStatus.TabStop = false;
+            this.rtbProgressStatus.Enabled = false;
             this.rtbProgressStatus.Text = "";
             this.rtbProgressStatus.WordWrap = false;
             // 
