@@ -998,6 +998,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 splitMain.SplitterDistance, splitMain.SplitterWidth, splitMain.Panel1.Width, splitMain.Panel2.Width,
                 splitMain.Width, splitMain.Height, splitMain.SplitterRectangle, splitMain.IsSplitterFixed,
                 splitMain.Panel1.BorderStyle, splitMain.Panel1.Visible, splitMain.Panel2.Visible, splitMain.Visible);
+
+            // Auto-select the first colony if none is selected (e.g. first open, no saved selection)
+            if (lvwColonies.SelectedItems.Count == 0 && lvwColonies.Items.Count > 0)
+            {
+                lvwColonies.Items[0].Selected = true;
+                lvwColonies.EnsureVisible(0);
+            }
         }
 
         private void splitMain_Paint(object sender, PaintEventArgs e)

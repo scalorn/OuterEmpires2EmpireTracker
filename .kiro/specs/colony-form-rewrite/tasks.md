@@ -312,17 +312,17 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
 
 - [ ] 25. Verify and cut over
   - [x] 25.1 Run full test suite — all existing tests must pass
-  - [ ] 25.2 Manual testing: import colony from HTML clipboard (new colony + merge existing)
-  - [ ] 25.3 Manual testing: structure add/reorder/delete with pool reuse visible (no flicker)
+  - [x] 25.2 Manual testing: import colony from HTML clipboard (new colony + merge existing)
+  - [x] 25.3 Manual testing: structure add/reorder/delete with pool reuse visible (no flicker)
   - [ ] 25.4 Manual testing: mining rig full flow (survey → resource → start → countdown → done)
   - [ ] 25.5 Manual testing: refinery, research lab, manufactory, commodity factory flows
   - [ ] 25.6 Manual testing: warehouse add/edit/delete items across all item types
-  - [ ] 25.7 Manual testing: commodity requests add/edit/fulfill/delete/overdue
-  - [ ] 25.8 Manual testing: admin report refresh, bootstrap, optimize
-  - [ ] 25.9 Manual testing: tab warnings update correctly (structure, worker, staleness)
-  - [ ] 25.10 Manual testing: structure type filter persistence across colony switch and app restart
-  - [ ] 25.11 Manual testing: window state persistence (position, grids, filters) across app restart
-  - [ ] 25.12 Manual testing: verify old FormColony still works identically
+  - [x] 25.7 Manual testing: commodity requests add/edit/fulfill/delete/overdue
+  - [x] 25.8 Manual testing: admin report refresh, bootstrap, optimize
+  - [x] 25.9 Manual testing: tab warnings update correctly (structure, worker, staleness)
+  - [x] 25.10 Manual testing: structure type filter persistence across colony switch and app restart
+  - [x] 25.11 Manual testing: window state persistence (position, grids, filters) across app restart
+  - [x] 25.12 Manual testing: verify old FormColony still works identically
   - [ ] 25.13 Cutover: rename menu item, remove old form files (deferred until user approves)
 
 ## Notes
