@@ -608,6 +608,10 @@ namespace OE2EmpireTracker.Services
                 builtFoodProvision += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropFoodProvision);
 
                 // --- Worker Assignment Parsing ---
+                // Only count workers for built structures. Staged structures have no workers
+                // consuming hab/food/ent even if worker data exists in the property bag.
+                if (built)
+                {
                 foreach (var wt in Models.WorkerDetail.WorkerTypes)
                 {
                     if (flatpackBlueprint.Properties.ContainsKey(wt.PropertyKey))
@@ -632,6 +636,7 @@ namespace OE2EmpireTracker.Services
                         needUnallocated[wt.DetailKey] = true;
                     }
                 }
+                } // end if (built)
             }
 
 
