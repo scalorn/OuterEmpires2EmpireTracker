@@ -232,8 +232,10 @@ namespace OE2EmpireTracker.Services
             // Food accumulates regardless of online state
             delta.FoodProvision = GetBlueprintDecimal(bp, GameConstants.PropFoodProvision);
 
-            // Count assigned workers
+            // Count assigned workers — only for built structures
             int assignedCount = 0;
+            if (built)
+            {
             foreach (var wt in WorkerDetail.WorkerTypes)
             {
                 if (bp.Properties.ContainsKey(wt.PropertyKey))
@@ -250,18 +252,15 @@ namespace OE2EmpireTracker.Services
                     }
                 }
             }
+            }
             delta.WorkerCount = assignedCount;
 
-            // Count unallocated workers for this structure
-            int unallocatedCount = 0;
-            foreach (var wt in WorkerDetail.WorkerTypes)
-            {
-                long unassignedCount = 0;
-                bp.Properties.getLong(wt.UnassignedPropertyKey, 0, out unassignedCount);
-                if (unassignedCount > 0)
-                    unallocatedCount++;
-            }
-            delta.UnallocatedCount = unallocatedCount;
+            // Count unallocated workers for this structure — only for built structures.
+            // NOTE: UnallocatedCount is set to 0 here because unallocated workers are
+            // a colony-wide concept (one per worker type), not per-structure. The inner
+            // CalculateBuilt handles unallocated workers correctly via prevStatus tracking.
+            // SumAllDeltas should not re-count them from per-structure deltas.
+            delta.UnallocatedCount = 0;
 
             return delta;
         }
