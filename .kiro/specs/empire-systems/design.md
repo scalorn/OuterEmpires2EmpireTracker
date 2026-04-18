@@ -3130,13 +3130,9 @@ For now:
 - `StationStats` computation is deferred alongside the Components tab.
 - The `StationBlueprintUUID` field and `Components` list on Station are present in the model with empty defaults so no migration is needed when the feature is eventually implemented.
 
-### OQ-38: ExternalCharacter Name Collision (Iteration 1)
+### OQ-38: ExternalCharacter Name Collision (Iteration 1) — RESOLVED
 
-ExternalCharacter UUID is deterministic from character name alone. Two different in-game characters with the same name would get the same UUID.
-
-Question: Is this acceptable? In-game character names are unique per server, so collisions would only occur if tracking characters across multiple servers (not currently supported). If multi-server support is ever added, the seed would need to include a server identifier.
-
-Impact: Low risk for current scope. Document as a known limitation.
+**Decision:** Not an issue. The game has a single server and character names are unique — no duplicate names are allowed. Deterministic UUID from character name is safe.
 
 ### OQ-39: SupplyChain Delivery Route Selection (Iteration 6) — RESOLVED
 
