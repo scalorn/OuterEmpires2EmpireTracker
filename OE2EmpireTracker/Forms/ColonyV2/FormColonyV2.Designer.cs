@@ -126,6 +126,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.splitMain.SplitterDistance = 480;
             this.splitMain.SplitterWidth = 8;
             this.splitMain.Panel1MinSize = 150;
+            this.splitMain.BackColor = System.Drawing.SystemColors.ControlDark;
             this.splitMain.Size = new System.Drawing.Size(1225, 500);
             this.splitMain.TabIndex = 0;
             // 
@@ -134,10 +135,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.splitMain.Panel1.Controls.Add(this.lvwColonies);
             this.splitMain.Panel1.Controls.Add(this.txtColonyFilter);
             this.splitMain.Panel1.Padding = new System.Windows.Forms.Padding(2);
+            this.splitMain.Panel1.BackColor = System.Drawing.SystemColors.Control;
             // 
             // splitMain.Panel2 — right colony data
             // 
             this.splitMain.Panel2.Controls.Add(this.flpColonyData);
+            this.splitMain.Panel2.BackColor = System.Drawing.SystemColors.Control;
             // 
             // txtColonyFilter
             // 
