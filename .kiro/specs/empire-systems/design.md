@@ -3078,16 +3078,20 @@ public string DeliveryRouteUUID { get; set; } = string.Empty;
 
 The Overflow tab on FormColony includes a route selector combo in the add-rule panel. If the selected route doesn't include both the source colony and the destination as stops, the UI shows a validation warning.
 
-### OQ-34: BuildItem Status — Cascade vs Manual Override (Iteration 1)
+### OQ-34: BuildItem Status — Cascade vs Manual Override (Iteration 1) — RESOLVED
 
-The background processor updates build item status during cascade processing (e.g. Delivering → Ready when resources arrive). Requirement 1.7 says "User can manually transition between any status."
+**Decision:** Manual status transitions always win. The user has an incomplete view of the data (no game API), so the tool must trust the user's judgment. The cascade processor only advances status automatically in one direction (Staged → Delivering → Ready) and never overwrites a status that the user has manually set forward.
 
-Question: What happens when the cascade wants to set a status that conflicts with a manual override? Specifically:
-- If user manually sets InProgress but resources aren't actually available, does the cascade revert to Staged?
-- If user manually sets Completed, does the cascade skip that item entirely?
-- Should there be a `ManualOverride` flag that prevents cascade status changes?
+Rules:
+- The cascade can set `Delivering` (when a delivery plan is generated) and `Ready` (when resources are confirmed available). It never sets `InProgress` or `Completed` — those are always manual.
+- If the user manually sets a status forward (e.g. skips from Staged straight to Ready because they know resources are there), the cascade respects that and does not revert it.
+- If the user manually sets `Completed`, the cascade skips that item entirely — it's done.
+- If the user manually sets `InProgress`, the cascade does not revert to Ready or Delivering even if the resource check says resources are missing. The user is saying "I started this in-game" and the tool trusts that.
+- The cascade only moves status forward, never backward. The user can move status backward manually if they made a mistake.
 
-Impact: Affects cascade processing logic and the status transition rules in BackgroundProcessor.
+This means the cascade is advisory — it advances items through the pipeline when it can confirm conditions are met, but the user can always override by manually setting any status. No `ManualOverride` flag is needed; the rule is simply "cascade never decreases status ordinal."
+
+Status ordinal: Staged(0) < Delivering(1) < Ready(2) < InProgress(3) < Completed(4). Cascade sets `max(currentStatus, computedStatus)`.
 
 ### OQ-35: StockTarget Replenishment Plan Designation (Iteration 7)
 
