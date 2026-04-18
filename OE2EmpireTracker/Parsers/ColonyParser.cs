@@ -762,15 +762,15 @@ namespace OE2EmpireTracker.Parsers
                     return;
                 }
 
-                // Index existing commodities by name for merge
-                var existingByName = new Dictionary<string, CommodityRequested>(StringComparer.OrdinalIgnoreCase);
-                foreach (var c in colony.Commodities)
-                {
-                    if (!string.IsNullOrEmpty(c.Name) && !existingByName.ContainsKey(c.Name))
-                        existingByName[c.Name] = c;
-                }
+                // Build list of existing commodities for merge.
+                // Multiple requests for the same commodity are allowed (e.g. one fulfilled, one open).
+                // Match strategy: for each incoming demand, find an existing request with the same name
+                // AND same fulfilled status. If multiple match, prefer the one with the same amount.
+                // This handles the common case of one fulfilled + one open request for the same commodity.
 
                 int added = 0, updated = 0;
+                var matchedIndices = new HashSet<int>();
+
                 foreach (var demand in demands)
                 {
                     string name = demand["typeName"]?.ToString();
@@ -785,29 +785,50 @@ namespace OE2EmpireTracker.Parsers
                             System.Globalization.DateTimeStyles.RoundtripKind, out needBy);
                     }
 
-                    if (!string.IsNullOrEmpty(name))
+                    if (string.IsNullOrEmpty(name)) continue;
+
+                    // Find best unmatched existing request: same name + same fulfilled status preferred,
+                    // then same amount as tiebreaker
+                    int bestIdx = -1;
+                    int bestScore = -1;
+                    for (int i = 0; i < colony.Commodities.Count; i++)
                     {
-                        if (existingByName.TryGetValue(name, out var existing))
+                        if (matchedIndices.Contains(i)) continue;
+                        var c = colony.Commodities[i];
+                        if (!string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase)) continue;
+
+                        int score = 0;
+                        if (c.Fulfilled == fulfilled) score += 2;
+                        if (c.Requested == amount) score += 1;
+
+                        if (score > bestScore)
                         {
-                            // Update existing: refresh amount, deadline, fulfilled from game
-                            existing.Requested = amount;
-                            existing.NeedBy = needBy;
-                            existing.Fulfilled = fulfilled;
-                            // Preserve Delivered -- that's locally tracked
-                            updated++;
+                            bestScore = score;
+                            bestIdx = i;
                         }
-                        else
+                    }
+
+                    if (bestIdx >= 0)
+                    {
+                        var existing = colony.Commodities[bestIdx];
+                        matchedIndices.Add(bestIdx);
+                        existing.Requested = amount;
+                        existing.NeedBy = needBy;
+                        existing.Fulfilled = fulfilled;
+                        // Preserve Delivered -- that's locally tracked
+                        updated++;
+                    }
+                    else
+                    {
+                        colony.Commodities.Add(new CommodityRequested
                         {
-                            colony.Commodities.Add(new CommodityRequested
-                            {
-                                Name = name,
-                                Requested = amount,
-                                Delivered = 0,
-                                NeedBy = needBy,
-                                Fulfilled = fulfilled
-                            });
-                            added++;
-                        }
+                            Name = name,
+                            Requested = amount,
+                            Delivered = 0,
+                            NeedBy = needBy,
+                            Fulfilled = fulfilled
+                        });
+                        added++;
                     }
                 }
 
