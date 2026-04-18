@@ -2236,6 +2236,197 @@ Controls:
 - Logic summary: read-only label auto-generated from the entries, showing the AND/OR grouping in plain language. Entries with the same GroupID are ORed (max), different GroupIDs are ANDed (summed).
 - `cmbEntryType` switches the combo data source between StockPlans and standalone StockTargets.
 
+## Reference Counting & Delete Protection
+
+Every entity that can be referenced by UUID from another entity needs a reference counter service and delete protection in its form. This extends the existing pattern (BlueprintReferenceCounter, ColonyReferenceCounter, SurveyReferenceCounter) to all new entity types.
+
+### Reference Graph
+
+The complete cross-entity reference map. Each row shows an entity, what references it, and which reference counter service handles it.
+
+| Entity | Referenced By | Reference Counter |
+|---|---|---|
+| Blueprint | ColonyStructure (Flatpack, Research, Manufacturing), BuildItem.BlueprintUUID, ShipTemplate.HullBlueprintUUID, ShipTemplate.Components[].BlueprintUUID, Ship.HullBlueprintUUID, Ship.Components[].BlueprintUUID, Station.Components[].BlueprintUUID, Station.StationBlueprintUUID, Survey.ScannerBlueprintUUID, Blueprint.BaseBlueprintUUID, MarketListing.ItemReferenceID (when ItemType=Blueprint), MarketTransaction.ItemReferenceID (when ItemType=Blueprint), StockTarget.ItemReferenceID (when ItemType=Blueprint) | BlueprintReferenceCounter (expand existing) |
+| Colony | DeliveryRoute stops (DestinationUUID), DeliveryPlan stops (DestinationUUID), BuildItem.ColonyUUID, SupplyChainStage.LocationUUID (when Colony), WarehouseOverflowRule.ColonyUUID, StockTarget.LocationUUID (when Scope=Colony) | ColonyReferenceCounter (expand existing) |
+| Survey | ColonyStructure.MiningSurvey, BuildItem.MiningSurveyUUID | SurveyReferenceCounter (expand existing) |
+| Station | DeliveryRoute stops (DestinationUUID when Station), DeliveryPlan stops (DestinationUUID when Station), Ship.LocationUUID (when Station), MarketListing.StationUUID, MarketTransaction.StationUUID, BuildItem.AssemblyLocationUUID (when Station), SupplyChainStage.LocationUUID (when Station), StockTarget.LocationUUID (when Scope=Station), WarehouseOverflowRule.DestinationUUID (when Station) | StationReferenceCounter (new) |
+| ShipTemplate | Ship.TemplateUUID, BuildItem.ShipTemplateUUID, StockTarget.ShipTemplateUUID | ShipTemplateReferenceCounter (new) |
+| Ship | DeliveryPlan.ShipUUID | ShipReferenceCounter (new) |
+| Asteroid | Survey.AsteroidUUID, SupplyChainStage.LocationUUID (when Asteroid), DeliveryRoute stops (DestinationUUID when Asteroid) | AsteroidReferenceCounter (new) |
+| Faction | PlayerProfile.FactionUUID, ExternalCharacter.FactionUUID | FactionReferenceCounter (new) |
+| BuildPlan | BuildPlan.DeliveryPlanUUID (reverse: DeliveryPlan referenced by BuildPlan) | — (BuildPlans are top-level, not referenced by other entities) |
+| DeliveryRoute | BuildPlan (user selects route for delivery generation), DeliveryPlan.RouteUUID | DeliveryRouteReferenceCounter (new) |
+| DeliveryPlan | BuildPlan.DeliveryPlanUUID | DeliveryPlanReferenceCounter (new) |
+| StockPlan | StockProfileEntry.StockPlanUUID | StockPlanReferenceCounter (new) |
+| StockTarget (standalone) | StockProfileEntry.StockTargetUUID | StockTargetReferenceCounter (new) |
+| MarketListing | MarketTransaction.ListingUUID | MarketListingReferenceCounter (new) |
+| SupplyChain | — (top-level, not referenced by other entities) | — |
+| WarehouseOverflowRule | — (top-level, not referenced by other entities) | — |
+| ExternalCharacter | — (used in combo lookups but not referenced by UUID from other entities) | — |
+| StockProfile | — (top-level, not referenced by other entities) | — |
+
+### Existing Reference Counters — Required Expansions
+
+The existing counters need to be expanded to cover new reference sources:
+
+**BlueprintReferenceCounter** — currently counts: ColonyStructure (flatpack, research, manufacturing), Blueprint.BaseBlueprintUUID, Survey.ScannerBlueprintUUID. Must add:
+- BuildItem.BlueprintUUID (build plans referencing this blueprint)
+- ShipTemplate.HullBlueprintUUID and ShipTemplate.Components[].BlueprintUUID
+- Ship.HullBlueprintUUID and Ship.Components[].BlueprintUUID
+- Station.StationBlueprintUUID and Station.Components[].BlueprintUUID
+- MarketListing.ItemReferenceID (when ItemType = Blueprint)
+- StockTarget.ItemReferenceID (when ItemType = Blueprint)
+
+**ColonyReferenceCounter** — currently counts: DeliveryRoute stops, DeliveryPlan stops. Must add:
+- BuildItem.ColonyUUID (build items allocated to this colony)
+- SupplyChainStage.LocationUUID (when LocationType = Colony)
+- WarehouseOverflowRule.ColonyUUID (overflow rules for this colony)
+- WarehouseOverflowRule.DestinationUUID (when DestinationType = Colony)
+- StockTarget.LocationUUID (when Scope = Colony)
+
+**SurveyReferenceCounter** — currently counts: ColonyStructure.MiningSurvey. Must add:
+- BuildItem.MiningSurveyUUID (build items referencing this survey for mining)
+
+### New Reference Counter Services
+
+Each follows the same pattern: constructor takes the collections to search, `CountReferences(string uuid)` returns a typed report with per-source counts and `TotalCount`.
+
+```csharp
+// Services/StationReferenceCounter.cs
+public class StationReferenceCounter
+{
+    public StationReferenceCounter(
+        IEnumerable<DeliveryRoute> routes,
+        IEnumerable<DeliveryPlan> plans,
+        IEnumerable<Ship> ships,
+        IEnumerable<MarketListing> listings,
+        IEnumerable<MarketTransaction> transactions,
+        IEnumerable<BuildPlan> buildPlans,
+        IEnumerable<SupplyChain> supplyChains,
+        IEnumerable<StockTarget> stockTargets,
+        IEnumerable<WarehouseOverflowRule> overflowRules);
+
+    public StationReferenceReport CountReferences(string stationUUID);
+}
+
+// Services/ShipTemplateReferenceCounter.cs
+public class ShipTemplateReferenceCounter
+{
+    public ShipTemplateReferenceCounter(
+        IEnumerable<Ship> ships,
+        IEnumerable<BuildPlan> buildPlans,
+        IEnumerable<StockTarget> stockTargets);
+
+    public ShipTemplateReferenceReport CountReferences(string templateUUID);
+}
+
+// Services/ShipReferenceCounter.cs
+public class ShipReferenceCounter
+{
+    public ShipReferenceCounter(
+        IEnumerable<DeliveryPlan> plans);
+
+    public ShipReferenceReport CountReferences(string shipUUID);
+}
+
+// Services/AsteroidReferenceCounter.cs
+public class AsteroidReferenceCounter
+{
+    public AsteroidReferenceCounter(
+        IEnumerable<Survey> surveys,
+        IEnumerable<SupplyChain> supplyChains,
+        IEnumerable<DeliveryRoute> routes);
+
+    public AsteroidReferenceReport CountReferences(string asteroidUUID);
+}
+
+// Services/FactionReferenceCounter.cs
+public class FactionReferenceCounter
+{
+    public FactionReferenceCounter(
+        IEnumerable<PlayerProfile> profiles,
+        IEnumerable<ExternalCharacter> externalCharacters);
+
+    public FactionReferenceReport CountReferences(string factionUUID);
+}
+
+// Services/DeliveryRouteReferenceCounter.cs
+public class DeliveryRouteReferenceCounter
+{
+    public DeliveryRouteReferenceCounter(
+        IEnumerable<DeliveryPlan> plans);
+
+    public DeliveryRouteReferenceReport CountReferences(string routeUUID);
+}
+
+// Services/DeliveryPlanReferenceCounter.cs
+public class DeliveryPlanReferenceCounter
+{
+    public DeliveryPlanReferenceCounter(
+        IEnumerable<BuildPlan> buildPlans);
+
+    public DeliveryPlanReferenceReport CountReferences(string planUUID);
+}
+
+// Services/StockPlanReferenceCounter.cs
+public class StockPlanReferenceCounter
+{
+    public StockPlanReferenceCounter(
+        IEnumerable<StockProfile> profiles);
+
+    public StockPlanReferenceReport CountReferences(string planUUID);
+}
+
+// Services/StockTargetReferenceCounter.cs (standalone targets only)
+public class StockTargetReferenceCounter
+{
+    public StockTargetReferenceCounter(
+        IEnumerable<StockProfile> profiles);
+
+    public StockTargetReferenceReport CountReferences(string targetUUID);
+}
+
+// Services/MarketListingReferenceCounter.cs
+public class MarketListingReferenceCounter
+{
+    public MarketListingReferenceCounter(
+        IEnumerable<MarketTransaction> transactions);
+
+    public MarketListingReferenceReport CountReferences(string listingUUID);
+}
+```
+
+### Form Integration
+
+Every form with a Delete button must follow this pattern (from the forms steering):
+
+1. Create the reference counter with current data from PlayerContext
+2. Show a "Refs" column in the entity list showing the reference count
+3. Disable the Delete button with "In Use (N)" text when TotalCount > 0
+4. Block the delete handler with a MessageBox listing which sources reference the entity
+
+| Form | Entity | Reference Counter | Refs Column |
+|---|---|---|---|
+| FormBuildPlanner | BuildPlan | — (not referenced) | No |
+| FormShipTemplate | ShipTemplate | ShipTemplateReferenceCounter | Yes |
+| FormShipInstance | Ship | ShipReferenceCounter | Yes |
+| FormStation | Station | StationReferenceCounter | Yes |
+| FormMarket (Listings) | MarketListing | MarketListingReferenceCounter | Yes |
+| FormStockTargets (Plans) | StockPlan | StockPlanReferenceCounter | Yes |
+| FormStockTargets (Standalone) | StockTarget | StockTargetReferenceCounter | Yes |
+| FormContacts (Factions) | Faction | FactionReferenceCounter | Yes |
+| FormContacts (ExtChars) | ExternalCharacter | — (not referenced by UUID) | No |
+| FormAsteroid | Asteroid | AsteroidReferenceCounter | Yes |
+| FormSupplyChain | SupplyChain | — (not referenced) | No |
+| FormDeliveryRoute | DeliveryRoute | DeliveryRouteReferenceCounter | Yes (new) |
+| FormColony (Overflow tab) | WarehouseOverflowRule | — (not referenced) | No |
+| FormStockTargets (Profiles) | StockProfile | — (not referenced) | No |
+| FormBlueprintV2 | Blueprint | BlueprintReferenceCounter (expanded) | Yes (existing) |
+| FormColonyV2 | Colony | ColonyReferenceCounter (expanded) | Yes (existing) |
+| FormSurvey | Survey | SurveyReferenceCounter (expanded) | Yes (existing) |
+
+Note: FormDeliveryRoute currently has no reference counting. DeliveryRoutes are referenced by DeliveryPlans, so deleting a route with active plans would orphan those plans. A DeliveryRouteReferenceCounter needs to be added to the existing form.
+
 ## Correctness Properties
 
 ### Property 1: Build item quantity validation
