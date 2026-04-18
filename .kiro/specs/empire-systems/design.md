@@ -1603,7 +1603,7 @@ Controls:
 
 ### FormShipInstance (Iteration 2)
 
-MDI child form. Left-list / right-detail pattern.
+MDI child form. Left-list / right-detail pattern with tabs for stats/components and cargo/holds.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1612,37 +1612,48 @@ MDI child form. Left-list / right-detail pattern.
 │ Filter: [__________] │ Name: [ISS Endeavour_________]                          │
 │                      │ Template: Keystone          Location: Station Alpha      │
 │ ┌──────────────────┐ │                                                         │
-│ │▸ ISS Endeavour   │ │ ┌─ Components ──────────────────────────────────────┐   │
-│ │  ISS Reliant     │ │ │ ┌────────────┬───────┬──────────────────────────┐ │   │
-│ │  Mining Barge 1  │ │ │ │ Slot Type  │ Slot# │ Blueprint                │ │   │
-│ │  Mining Barge 2  │ │ │ ├────────────┼───────┼──────────────────────────┤ │   │
-│ │                  │ │ │ │ Hull       │   -   │ Clipper Hull Mk3         │ │   │
-│ │                  │ │ │ │ Reactor    │   0   │ Reactor Mk3              │ │   │
-│ │                  │ │ │ │ Drive      │   0   │ Drive Mk3                │ │   │
-│ │                  │ │ │ │ Cargo Pod  │   0   │ Cargo Pod Mk2            │ │   │
-│ │                  │ │ │ │ Cargo Pod  │   1   │ Cargo Pod Mk2            │ │   │
-│ │                  │ │ │ │ Weapon     │   0   │ Laser Cannon Mk2         │ │   │
-│ │                  │ │ │ └────────────┴───────┴──────────────────────────┘ │   │
-│ │                  │ │ │ [Swap Component ▼]                                │   │
-│ │                  │ │ └───────────────────────────────────────────────────┘   │
-│ │                  │ │                                                         │
-│ │                  │ │ ┌─ Cargo Hold (1850 / 2400 m³) ─────────────────────┐   │
-│ │                  │ │ │ ┌──────────┬──────────────────┬─────┬────────────┐│   │
-│ │                  │ │ │ │ Type     │ Item             │ Qty │ Volume     ││   │
-│ │                  │ │ │ ├──────────┼──────────────────┼─────┼────────────┤│   │
-│ │                  │ │ │ │ Resource │ Refined Titanium │ 500 │    500 m³  ││   │
-│ │                  │ │ │ │ [Crate]  │ Supply Run (12)  │   1 │    850 m³  ││   │
-│ │                  │ │ │ │ Commodty │ Fuel Cells       │  50 │    500 m³  ││   │
-│ │                  │ │ │ └──────────┴──────────────────┴─────┴────────────┘│   │
-│ │                  │ │ │ Crate Contents (Supply Run):                      │   │
-│ │                  │ │ │ ┌──────────┬──────────────────┬─────┬────────────┐│   │
-│ │                  │ │ │ │ Type     │ Item             │ Qty │ Volume     ││   │
-│ │                  │ │ │ ├──────────┼──────────────────┼─────┼────────────┤│   │
-│ │                  │ │ │ │ Resource │ Flatpack: Mfg    │   4 │    400 m³  ││   │
-│ │                  │ │ │ │ Commodty │ Fuel Cells       │  20 │    200 m³  ││   │
-│ │                  │ │ │ └──────────┴──────────────────┴─────┴────────────┘│   │
-│ │                  │ │ │ [New Crate] [Move to Crate] [Remove] [Del Crate] │   │
-│ │                  │ │ └───────────────────────────────────────────────────┘   │
+│ │▸ ISS Endeavour   │ │ ┌─ Overview ─┬─ Cargo ─────────────────────────────┐   │
+│ │  ISS Reliant     │ │ │                                                  │   │
+│ │  Mining Barge 1  │ │ │ Components:                                      │   │
+│ │  Mining Barge 2  │ │ │ ┌────────────┬───────┬────────────────────────┐  │   │
+│ │                  │ │ │ │ Slot Type  │ Slot# │ Blueprint              │  │   │
+│ │                  │ │ │ ├────────────┼───────┼────────────────────────┤  │   │
+│ │                  │ │ │ │ Hull       │   -   │ Clipper Hull Mk3       │  │   │
+│ │                  │ │ │ │ Reactor    │   0   │ Reactor Mk3            │  │   │
+│ │                  │ │ │ │ Drive      │   0   │ Drive Mk3              │  │   │
+│ │                  │ │ │ │ Cargo Pod  │   0   │ Cargo Pod Mk2          │  │   │
+│ │                  │ │ │ │ Cargo Pod  │   1   │ Cargo Pod Mk2          │  │   │
+│ │                  │ │ │ │ Weapon     │   0   │ Laser Cannon Mk2       │  │   │
+│ │                  │ │ │ └────────────┴───────┴────────────────────────┘  │   │
+│ │                  │ │ │ [Swap Component ▼]                               │   │
+│ │                  │ │ │                                                  │   │
+│ │                  │ │ │ Stats:                                           │   │
+│ │                  │ │ │ ┌──────────────────────┬────────────┐            │   │
+│ │                  │ │ │ │ Total Mass           │  18500 kg  │            │   │
+│ │                  │ │ │ │ Power Generated      │    850 MW  │            │   │
+│ │                  │ │ │ │ Power Consumed       │    620 MW  │            │   │
+│ │                  │ │ │ │ Power Balance        │  + 230 MW  │            │   │
+│ │                  │ │ │ │ Eng Capacity Used    │   1200     │            │   │
+│ │                  │ │ │ ├──────────────────────┼────────────┤            │   │
+│ │                  │ │ │ │ Cargo Capacity       │   2400 m³  │            │   │
+│ │                  │ │ │ │ Fuel Capacity        │    800 m³  │            │   │
+│ │                  │ │ │ │ Crew Supported       │      12    │            │   │
+│ │                  │ │ │ ├──────────────────────┼────────────┤            │   │
+│ │                  │ │ │ │ Total Health         │  15000 HP  │            │   │
+│ │                  │ │ │ │ Shield HP            │   5000     │            │   │
+│ │                  │ │ │ │ Shield Regen         │     25/s   │            │   │
+│ │                  │ │ │ │ Energy Defence       │    120     │            │   │
+│ │                  │ │ │ │ Kinetic Defence      │     85     │            │   │
+│ │                  │ │ │ │ Missile Defence      │     60     │            │   │
+│ │                  │ │ │ ├──────────────────────┼────────────┤            │   │
+│ │                  │ │ │ │ Acceleration         │    4.2 m/s²│            │   │
+│ │                  │ │ │ │ Rotational Thrust    │    3.8     │            │   │
+│ │                  │ │ │ │ Max Jump Distance    │     12 AU  │            │   │
+│ │                  │ │ │ ├──────────────────────┼────────────┤            │   │
+│ │                  │ │ │ │ Weapons (S/M/L)      │   1/1/0    │            │   │
+│ │                  │ │ │ │ License              │ Combat Lv3 │            │   │
+│ │                  │ │ │ └──────────────────────┴────────────┘            │   │
+│ │                  │ │ └──────────────────────────────────────────────────┘   │
 │ └──────────────────┘ │                                                         │
 │ [Create from Tmpl]   │                                                         │
 ├──────────────────────┴─────────────────────────────────────────────────────────┤
@@ -1650,12 +1661,45 @@ MDI child form. Left-list / right-detail pattern.
 └────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+Cargo tab:
+
+```
+│ ┌─ Overview ─┬─ Cargo ─────────────────────────────────────────────────┐   │
+│ │                                                                      │   │
+│ │ ┌─ Cargo Hold (1850 / 2400 m³) ─────────────────────────────────┐   │   │
+│ │ │ ┌──────────┬──────────────────┬─────┬────────────┐             │   │   │
+│ │ │ │ Type     │ Item             │ Qty │ Volume     │             │   │   │
+│ │ │ ├──────────┼──────────────────┼─────┼────────────┤             │   │   │
+│ │ │ │ Resource │ Refined Titanium │ 500 │    500 m³  │             │   │   │
+│ │ │ │ [Crate]  │ Supply Run (12)  │   1 │    850 m³  │             │   │   │
+│ │ │ │ Commodty │ Fuel Cells       │  50 │    500 m³  │             │   │   │
+│ │ │ └──────────┴──────────────────┴─────┴────────────┘             │   │   │
+│ │ │ Crate Contents (Supply Run):                                   │   │   │
+│ │ │ ┌──────────┬──────────────────┬─────┬────────────┐             │   │   │
+│ │ │ │ Type     │ Item             │ Qty │ Volume     │             │   │   │
+│ │ │ ├──────────┼──────────────────┼─────┼────────────┤             │   │   │
+│ │ │ │ Resource │ Flatpack: Mfg    │   4 │    400 m³  │             │   │   │
+│ │ │ │ Commodty │ Fuel Cells       │  20 │    200 m³  │             │   │   │
+│ │ │ └──────────┴──────────────────┴─────┴────────────┘             │   │   │
+│ │ │ [New Crate] [Move to Crate] [Remove from Crate] [Delete Crate]│   │   │
+│ │ └───────────────────────────────────────────────────────────────┘│   │   │
+│ │                                                                  │   │   │
+│ │ ┌─ Raw Material Hold (2200 / 5000 m³) ──────────────────────┐   │   │   │
+│ │ │ ┌──────────┬──────────────────┬─────┬────────────┐         │   │   │   │
+│ │ │ │ Type     │ Item             │ Qty │ Volume     │         │   │   │   │
+│ │ │ ├──────────┼──────────────────┼─────┼────────────┤         │   │   │   │
+│ │ │ │ Resource │ Unrefined Iron   │ 800 │   1200 m³  │         │   │   │   │
+│ │ │ │ Resource │ Unrefined Copper │ 500 │   1000 m³  │         │   │   │   │
+│ │ │ └──────────┴──────────────────┴─────┴────────────┘         │   │   │   │
+│ │ └───────────────────────────────────────────────────────────┘│   │   │   │
+│ └──────────────────────────────────────────────────────────────────┘   │   │
+```
+
 Controls:
 - Left: `flpSearchList` → `txtShipFilter` + `lvwShips` (ListView) + `cmdCreateFromTemplate`
-- Right: `flpShipData` → `txtShipName`, template/location labels, components group, cargo group
-- Components group: `dgvComponents` (read-only DataGridView), `cmdSwapComponent` (opens component picker)
-- Cargo group: volume header label, `dgvCargo` (DataGridView with crate master-detail), `dgvCrateContents` (detail grid), crate management buttons
-- Raw material hold section (visible for mining ships only): same layout as cargo with separate `dgvRawMaterials`
+- Right: `flpShipData` → `txtShipName`, template/location labels, `tabShipDetail` (TabControl with Overview and Cargo tabs)
+- Overview tab: `dgvComponents` (read-only DataGridView), `cmdSwapComponent` (opens component picker), `dgvStats` (read-only DataGridView) — computed via ShipBuildService.ComputeStats, same grouped layout as FormShipTemplate. Mining/scanning sections shown only when relevant components are installed.
+- Cargo tab: `dgvCargo` (DataGridView with crate master-detail), `dgvCrateContents` (detail grid), crate management buttons, volume header showing used/capacity. `dgvRawMaterials` section visible for mining ships only (ships with Ore Hopper components), showing raw material hold used/capacity.
 
 ### FormStation (Iteration 4)
 
