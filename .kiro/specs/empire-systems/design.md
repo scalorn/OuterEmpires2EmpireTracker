@@ -493,28 +493,56 @@ public class Asteroid
     public string UUID { get; set; }
     public string Name { get; set; } = string.Empty;
     public string SystemName { get; set; } = string.Empty;
-    public List<AsteroidResource> Resources { get; set; } = new List<AsteroidResource>();
+
+    // Reserve tracking per resource (depletes as anyone mines)
+    public List<AsteroidReserve> Reserves { get; set; } = new List<AsteroidReserve>();
 }
 
-public class AsteroidResource
+public class AsteroidReserve
 {
     public string ResourceName { get; set; } = string.Empty;
     public string Purity { get; set; } = string.Empty;
-    public decimal RatePerCycle { get; set; } = 0m;    // Units mined per cycle
     public int MaxReserve { get; set; } = 0;           // Total minable before depletion
-    public int CurrentReserve { get; set; } = 0;       // Remaining reserve (decremented on mine)
+    public int CurrentReserve { get; set; } = 0;       // Remaining (decremented on mine)
     public string ResetTimestamp { get; set; } = string.Empty;  // ISO 8601 UTC — when reserve last reset (TBD timing)
 }
 ```
 
 Design decisions:
 - UUID is deterministic from asteroid name using DeterministicUUID with an asteroid-specific namespace. Asteroids are shared game-world objects like stations.
-- Resources model the asteroid survey: each entry has a resource type, purity, rate per cycle (how much you mine per mining cycle), and a max reserve (total extractable before depletion).
-- `RatePerCycle` is the base rate from the asteroid survey. Actual yield per cycle depends on ship equipment (mining laser, grapple) and player skills (ExtractionFocus). The service layer applies these multipliers at calculation time.
+- `Reserves` tracks the depletion state of each resource on the asteroid. This is a property of the asteroid itself (shared across all players), not the survey.
 - `MaxReserve` is the hard cap on how much can be mined from this resource before it depletes. `CurrentReserve` tracks remaining. When CurrentReserve reaches 0, the resource is exhausted until it resets.
 - `ResetTimestamp` records when the reserve last reset. The reset interval is TBD (game mechanic not yet confirmed). When known, a service can compute time-until-next-reset.
 - Asteroids are available as delivery route stops via `DestinationType.Asteroid`. Mining at an asteroid is modeled as a pickup operation on the route — the ship arrives, mines (fills RawMaterialHold), and departs.
-- No per-player holds on asteroids — mined resources go directly into the ship's RawMaterialHold. The asteroid itself just tracks the shared reserve state.
+- No per-player holds on asteroids — mined resources go directly into the ship's RawMaterialHold.
+
+### Asteroid Surveys (Survey Model Extension)
+
+Asteroid surveys reuse the existing `Survey` model with a new `SurveyType` discriminator:
+
+```csharp
+public enum SurveyType
+{
+    Planet,     // Existing: planet surface survey (Amount = rate per hour from mining rig)
+    Asteroid    // New: asteroid survey (Amount = rate per mining cycle from ship equipment)
+}
+
+// Add to existing Survey class:
+[JsonConverter(typeof(StringEnumConverter))]
+[DefaultValue(SurveyType.Planet)]
+public SurveyType SurveyType { get; set; } = SurveyType.Planet;
+
+public string AsteroidUUID { get; set; } = string.Empty;  // Links to Asteroid (empty for planet surveys)
+```
+
+Design decisions:
+- Planet surveys and asteroid surveys share the same `Survey` model, `SurveyList`, form, and import infrastructure. The `SurveyType` discriminator distinguishes them.
+- `SurveyType` defaults to `Planet` for backward compatibility — existing surveys are planet surveys without any migration needed. `DefaultValueHandling.Ignore` omits it from JSON for planet surveys.
+- For asteroid surveys, `PlanetName` holds the asteroid name (for display/dedup consistency), and `AsteroidUUID` links to the `Asteroid` entity for reserve tracking.
+- `SurveyResource.Amount` means "rate per hour" for planet surveys and "rate per mining cycle" for asteroid surveys. The interpretation depends on `SurveyType`.
+- For asteroid surveys, the actual yield per cycle = `Amount` × equipment multiplier × skill multiplier. The service layer computes this from the ship's mining laser/grapple blueprints and the player's ExtractionFocus skill level.
+- Asteroid surveys are imported from game HTML the same way planet surveys are — the parser detects the asteroid context and sets `SurveyType = Asteroid` + `AsteroidUUID`.
+- The Survey form can filter by SurveyType to show planet vs asteroid surveys separately.
 
 ### MarketListing
 
