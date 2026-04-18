@@ -1096,6 +1096,18 @@ Forms subscribe to data change events and refresh when the background processor 
 
 The dirty flag approach means cascades are batched — multiple transactions recorded in quick succession result in one cascade evaluation, not one per transaction.
 
+### Thread Safety Integration
+
+The cascade processing integrates with the existing three-tier locking model (see `.kiro/specs/data-model-thread-safety/`):
+
+- **PlayerContext._listLock** protects all `List<T>` collections (BuildPlanList, StationList, etc.) during iteration and mutation. The BackgroundProcessor uses `SnapshotColonyList()` and equivalent snapshot methods for new lists.
+- **Colony.ColonyLock** (ReaderWriterLockSlim) protects per-colony data. Cascade operations that read colony warehouse data acquire `TryEnterReadLock(1000ms)`. Operations that mutate colony data (e.g. updating build item status based on warehouse contents) acquire `TryEnterWriteLock(5000ms)`. On timeout, the cascade skips that colony and retries next tick.
+- **Collection-level _syncRoot** (ItemBag, PropertyBag, LockTracking) provides fine-grained protection within each colony's data structures.
+
+Lock ordering is always: `_listLock` → `ColonyLock` → `_syncRoot`. Events (BuildPlanDataChanged, MarketDataChanged, StationDataChanged) are fired outside all locks. WriteContext is called outside ColonyLock.
+
+New entity lists (BuildPlanList, StationList, etc.) use `List<T>` instead of `BindingList<T>`. Access is protected by `_listLock` — snapshot under lock, iterate outside. Forms use `BeginInvoke` to marshal data-change events to the UI thread.
+
 ### Implementation
 
 The dirty flags live on PlayerContext as runtime-only fields (not persisted, not part of any data model):
@@ -1137,6 +1149,14 @@ On application startup, the background processor runs a full cascade evaluation 
 The startup cascade is the same logic as the tick cascade — check stock targets, re-evaluate resource availability, update delivery plans and statuses. It runs once during initialization before the first regular tick.
 
 ## PlayerContext Changes
+
+### Thread Safety
+
+All new `List<T>` fields are protected by the existing `_listLock`. Access patterns:
+- **Read**: acquire `lock(_listLock)`, snapshot the list (`new List<T>(list)`), release lock, iterate the snapshot.
+- **Write**: acquire `lock(_listLock)`, mutate the list, release lock, then fire events and call WriteContext outside the lock.
+- **WriteContext**: snapshots all lists (including new ones) under `_listLock`, serializes outside the lock.
+- **Find methods**: acquire `lock(_listLock)` for cache rebuild/lookup, release before returning.
 
 ### New Fields
 
