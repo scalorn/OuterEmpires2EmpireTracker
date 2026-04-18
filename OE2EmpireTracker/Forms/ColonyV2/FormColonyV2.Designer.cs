@@ -124,6 +124,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.splitMain.Location = new System.Drawing.Point(0, 0);
             this.splitMain.Name = "splitMain";
             this.splitMain.SplitterDistance = 480;
+            this.splitMain.SplitterWidth = 8;
+            this.splitMain.Panel1MinSize = 150;
             this.splitMain.Size = new System.Drawing.Size(1225, 500);
             this.splitMain.TabIndex = 0;
             // 
