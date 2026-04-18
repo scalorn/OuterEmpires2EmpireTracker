@@ -36,6 +36,9 @@ namespace OE2EmpireTracker.Constants
         /// <summary>Manufactory structure type</summary>
         public const string Manufactory = "Flatpacks/Manufactory";
 
+        /// <summary>Colony Command Centre structure type</summary>
+        public const string ColonyCommandCentre = "Flatpacks/ColonyCommandCentre";
+
         /// <summary>Prefix for all commodity factory per-industry types (e.g. Flatpacks/CommodityFactory/Agridome)</summary>
         public const string CommodityFactoryPrefix = "Flatpacks/CommodityFactory/";
 

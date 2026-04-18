@@ -116,6 +116,15 @@ namespace OE2EmpireTracker.ViewModels
         {
             int index = colony.Structures.IndexOf(_structure);
             if (index <= 0) return;
+
+            // Prevent moving a non-CC structure into position 0 (CC must always be first)
+            if (index == 1)
+            {
+                var firstBp = _playerContext.FindBlueprint(colony.Structures[0].FlatpackBlueprintUUID);
+                if (firstBp != null && firstBp.BluePrintType == BlueprintTypes.ColonyCommandCentre)
+                    return;
+            }
+
             colony.Structures.RemoveAt(index);
             colony.Structures.Insert(index - 1, _structure);
         }
@@ -124,6 +133,15 @@ namespace OE2EmpireTracker.ViewModels
         {
             int index = colony.Structures.IndexOf(_structure);
             if (index < 0 || index >= colony.Structures.Count - 1) return;
+
+            // Prevent moving the CC away from position 0
+            if (index == 0)
+            {
+                var bp = _playerContext.FindBlueprint(_structure.FlatpackBlueprintUUID);
+                if (bp != null && bp.BluePrintType == BlueprintTypes.ColonyCommandCentre)
+                    return;
+            }
+
             colony.Structures.RemoveAt(index);
             colony.Structures.Insert(index + 1, _structure);
         }
