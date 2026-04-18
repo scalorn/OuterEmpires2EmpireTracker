@@ -335,10 +335,10 @@ sequenceDiagram
     User->>STN: Set name, type (Outpost/Station/Starbase), ownership
     STN-->>User: Station created
 
-    Note over User: Manage inventory
-    User->>STN: Select Hold tab, pick player
+    Note over User: Manage inventory (scoped to current player)
+    User->>STN: Select Hold tab
     User->>STN: Add items to hold (type, item, purity, qty)
-    STN->>STN: Update station.Holds[playerUUID]
+    STN->>STN: Update station.Holds[currentPlayerUUID]
     STN-->>User: Hold grid refreshed
 
     Note over User: Organize with crates
@@ -2080,7 +2080,7 @@ MDI child form. Left-list / right-detail pattern with tabs for hold/components/m
 │ ┌──────────────────┐ │                                                         │
 │ │▸ Station Alpha   │ │ ┌─ Hold ─┬─ Components ─┬─ Munitions ──────────────┐   │
 │ │  Outpost Beta    │ │ │        │              │                          │   │
-│ │  Starbase Omega  │ │ │ Player: [Captain Kirk              ▼]           │   │
+│ │  Starbase Omega  │ │ │ (current player's hold)                          │   │
 │ │  My Station      │ │ │                                                  │   │
 │ │                  │ │ │ ┌──────────┬──────────────────┬─────┐            │   │
 │ │                  │ │ │ │ Type     │ Item             │ Qty │            │   │
@@ -2151,7 +2151,7 @@ Components tab (player-owned stations only):
 Controls:
 - Left: `flpSearchList` → `txtStationFilter` + `lvwStations` (ListView) + `cmdNew` / `cmdDelete`
 - Right: `flpStationData` → name/type/ownership fields, `tabStationDetail` (TabControl with Hold, Components, Munitions tabs)
-- Hold tab: `cmbHoldPlayer` (player selector), `dgvHold` (DataGridView, editable), `dgvCrateContents` (detail grid), add-item panel, crate buttons
+- Hold tab: `dgvHold` (DataGridView, editable — scoped to current player's hold), `dgvCrateContents` (detail grid), add-item panel, crate buttons
 - Components tab: `cmbStationBlueprint`, `dgvStationComponents` (same pattern as ship template), install panel, `dgvStationStats` (read-only) — computed via ShipBuildService.ComputeStationStats
 - Munitions tab: `dgvMunitions` (DataGridView) — visible only for armed player-owned stations
 
