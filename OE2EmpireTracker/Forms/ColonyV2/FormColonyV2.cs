@@ -692,7 +692,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             using var guard = new ProgrammaticUpdateGuard(this);
 
-            Log.Debug("V2.PopulateStructures: count={0}", selectedColony.Structures?.Count ?? 0);
+            Log.Debug("V2.PopulateStructures: starting");
 
             // Ensure structure type filter list is populated (9.1)
             PopulateStructureTypeFilter();
@@ -707,6 +707,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 if (item.Checked)
                     checkedTypes.Add((string)item.Tag);
             }
+
+            Log.Info("V2.PopulateStructures: structureCount={0} filterActive={1} filterTypes={2}",
+                selectedColony.Structures?.Count ?? 0,
+                checkedTypes.Count > 0,
+                checkedTypes.Count > 0 ? string.Join(",", checkedTypes) : "(none)");
 
             flpStructures.SuspendLayout();
 
@@ -789,6 +794,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             _poolInUse = needed;
 
+            // Count visible structures for logging
+            int visibleCount = 0;
+            for (int j = 0; j < needed; j++)
+                if (_pool[j].Visible) visibleCount++;
+
             long t2 = sw.ElapsedMilliseconds;
 
             flpStructures.ResumeLayout();
@@ -799,8 +809,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             RefreshStatusSummary();
 
             sw.Stop();
-            Log.Info("V2.PopulateStructures PERF: total={0}ms pool={1}ms updateData={2}ms(x{3}) reset={4}ms layout={5}ms",
-                sw.ElapsedMilliseconds, t1 - t0, updateDataTotal, needed, resetTotal, t3 - t2);
+            Log.Info("V2.PopulateStructures PERF: total={0}ms pool={1}ms updateData={2}ms(x{3}) reset={4}ms layout={5}ms visible={6}/{3}",
+                sw.ElapsedMilliseconds, t1 - t0, updateDataTotal, needed, resetTotal, t3 - t2, visibleCount);
         }
 
         // -------------------------------------------------------------------
@@ -1089,6 +1099,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             if (selectedColony == null) return;
 
+            Log.Info("cmdOptimize_Click: colony={0} structureCount={1} filterActive={2}",
+                selectedColony.ColonyName ?? selectedColony.PlanetName,
+                selectedColony.Structures?.Count ?? 0,
+                lvwStructureTypes.CheckedItems.Count > 0);
+
             if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
             {
                 Log.Warn("cmdOptimize_Click: write lock timeout on colony {0}", selectedColony.UUID);
@@ -1099,8 +1114,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 var optimizer = new BuildOrderOptimizer(playerContext);
                 var optimized = optimizer.Optimize(selectedColony);
 
+                Log.Info("cmdOptimize_Click: optimizer returned {0} structures (input was {1})",
+                    optimized.Count, selectedColony.Structures.Count);
+
                 selectedColony.Structures.Clear();
                 selectedColony.Structures.AddRange(optimized);
+
+                Log.Info("cmdOptimize_Click: colony now has {0} structures after replace",
+                    selectedColony.Structures.Count);
 
                 // Refresh via structural change pattern
                 colonyViewModel.InvalidateStructureViewModels();

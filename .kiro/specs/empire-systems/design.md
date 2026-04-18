@@ -193,6 +193,11 @@ flowchart LR
         A3[Colony C mines M]
     end
 
+    subgraph Asteroid Mining
+        AM1[Asteroid X<br/>ship mines M]
+        AM2[Asteroid Y<br/>ship mines M]
+    end
+
     subgraph Collection
         B1[Station Z<br/>unrefined M accumulates]
     end
@@ -208,6 +213,8 @@ flowchart LR
     A1 -->|delivery| B1
     A2 -->|delivery| B1
     A3 -->|delivery| B1
+    AM1 -->|ship pickup<br/>RawMaterialHold| B1
+    AM2 -->|ship pickup<br/>RawMaterialHold| B1
     B1 -->|threshold reached<br/>delivery generated| C1
     C1 -->|delivery| D1
 ```
@@ -478,6 +485,37 @@ Design decisions:
 - Player-owned stations reuse the ShipComponentSlot model for installed components (reactors, shields, weapons). StationBlueprintUUID defines available slots.
 - MunitionsHold is a separate ItemBag for weapon ammunition on armed stations. Empty for government stations and unarmed player stations. DefaultValueHandling.Ignore omits it from JSON when empty.
 
+### Asteroid
+
+```csharp
+public class Asteroid
+{
+    public string UUID { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string SystemName { get; set; } = string.Empty;
+    public List<AsteroidResource> Resources { get; set; } = new List<AsteroidResource>();
+}
+
+public class AsteroidResource
+{
+    public string ResourceName { get; set; } = string.Empty;
+    public string Purity { get; set; } = string.Empty;
+    public decimal RatePerCycle { get; set; } = 0m;    // Units mined per cycle
+    public int MaxReserve { get; set; } = 0;           // Total minable before depletion
+    public int CurrentReserve { get; set; } = 0;       // Remaining reserve (decremented on mine)
+    public string ResetTimestamp { get; set; } = string.Empty;  // ISO 8601 UTC — when reserve last reset (TBD timing)
+}
+```
+
+Design decisions:
+- UUID is deterministic from asteroid name using DeterministicUUID with an asteroid-specific namespace. Asteroids are shared game-world objects like stations.
+- Resources model the asteroid survey: each entry has a resource type, purity, rate per cycle (how much you mine per mining cycle), and a max reserve (total extractable before depletion).
+- `RatePerCycle` is the base rate from the asteroid survey. Actual yield per cycle depends on ship equipment (mining laser, grapple) and player skills (ExtractionFocus). The service layer applies these multipliers at calculation time.
+- `MaxReserve` is the hard cap on how much can be mined from this resource before it depletes. `CurrentReserve` tracks remaining. When CurrentReserve reaches 0, the resource is exhausted until it resets.
+- `ResetTimestamp` records when the reserve last reset. The reset interval is TBD (game mechanic not yet confirmed). When known, a service can compute time-until-next-reset.
+- Asteroids are available as delivery route stops via `DestinationType.Asteroid`. Mining at an asteroid is modeled as a pickup operation on the route — the ship arrives, mines (fills RawMaterialHold), and departs.
+- No per-player holds on asteroids — mined resources go directly into the ship's RawMaterialHold. The asteroid itself just tracks the shared reserve state.
+
 ### MarketListing
 
 ```csharp
@@ -649,7 +687,8 @@ public class SupplyChain
 
 public enum SupplyChainStageType
 {
-    Mine,
+    Mine,           // Colony-based mining (mining rig structure)
+    AsteroidMine,   // Ship-based asteroid mining (laser + grapple)
     Collect,
     Refine,
     Deliver
@@ -737,7 +776,8 @@ The existing `RouteStop` model needs a `DestinationType` discriminator:
 public enum DestinationType
 {
     Colony,
-    Station
+    Station,
+    Asteroid
 }
 
 public class RouteStop
@@ -809,6 +849,7 @@ public class PlayerRoot
     public WarehouseOverflowRule[] WarehouseOverflowRule { get; set; }
     public Faction[] Faction { get; set; }
     public ExternalCharacter[] ExternalCharacter { get; set; }
+    public Asteroid[] Asteroid { get; set; }
 }
 ```
 
@@ -1181,6 +1222,7 @@ public List<SupplyChain> SupplyChainList;
 public List<WarehouseOverflowRule> WarehouseOverflowRuleList;
 public List<Faction> FactionList;
 public List<ExternalCharacter> ExternalCharacterList;
+public List<Asteroid> AsteroidList;
 ```
 
 ### New Init Methods
@@ -1198,6 +1240,7 @@ public void InitStockTargets(PlayerRoot playerRoot)
 public void InitSupplyChains(PlayerRoot playerRoot)
 public void InitFactions(PlayerRoot playerRoot)
 public void InitExternalCharacters(PlayerRoot playerRoot)
+public void InitAsteroids(PlayerRoot playerRoot)
 ```
 
 ### WriteContext Changes
@@ -1215,6 +1258,7 @@ playerRoot.StockTarget = StockTargetList.ToArray();
 playerRoot.SupplyChain = SupplyChainList.ToArray();
 playerRoot.Faction = FactionList.ToArray();
 playerRoot.ExternalCharacter = ExternalCharacterList.ToArray();
+playerRoot.Asteroid = AsteroidList.ToArray();
 ```
 
 ### CascadeDeletePlayer Changes
@@ -1255,6 +1299,7 @@ Entities that represent game-world objects shared across players use determinist
 | Entity | UUID Type | Seed |
 |---|---|---|
 | Station | Deterministic | Station name (station namespace) |
+| Asteroid | Deterministic | Asteroid name (asteroid namespace) |
 | Faction | Deterministic | Faction name (faction namespace) |
 | ExternalCharacter | Deterministic | Character name (character namespace) |
 | BuildPlan | Random | Player-specific work order |
