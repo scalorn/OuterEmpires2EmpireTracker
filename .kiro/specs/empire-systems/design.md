@@ -1994,6 +1994,248 @@ Controls:
 - Expanded components panel: `dgvExpandedComponents` (read-only) — visible when a ShipTemplate target is selected, shows per-component breakdown
 - "Check & Generate Orders" runs StockTargetService.CheckTargets, shows results, and creates build items for shortfalls
 
+### FormContacts (Iteration 1 — data model, form in later iteration)
+
+MDI child form. Tabbed layout for Factions and External Characters.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ #1 - Contacts                                                           [_][□][X]│
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ ┌─ Factions ─┬─ External Characters ───────────────────────────────────────┐   │
+│ │                                                                          │   │
+│ │ Filter: [__________]                                                     │   │
+│ │                                                                          │   │
+│ │ ┌──────────────────────┬──────────────────────────────────────────┐       │   │
+│ │ │ Name                 │ Description                              │       │   │
+│ │ ├──────────────────────┼──────────────────────────────────────────┤       │   │
+│ │ │▸ The Space Pirates   │ Faction of scoundrels and traders        │       │   │
+│ │ │  Galactic Merchants  │ Trade consortium                         │       │   │
+│ │ │  Lone Wolves         │                                          │       │   │
+│ │ └──────────────────────┴──────────────────────────────────────────┘       │   │
+│ │                                                                          │   │
+│ │ Name: [The Space Pirates_____]  Description: [Faction of scoundrels___] │   │
+│ │                                                                          │   │
+│ │ Members:                                                                 │   │
+│ │ ┌──────────────────────┬──────────┐                                      │   │
+│ │ │ Character            │ Type     │                                      │   │
+│ │ ├──────────────────────┼──────────┤                                      │   │
+│ │ │ Captain Kirk         │ Player   │                                      │   │
+│ │ │ Bob the Trader       │ External │                                      │   │
+│ │ │ Alice                │ External │                                      │   │
+│ │ └──────────────────────┴──────────┘                                      │   │
+│ │                                                                          │   │
+│ │ [New Faction] [Save] [Delete]                                            │   │
+│ └──────────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+External Characters tab:
+
+```
+│ ┌─ Factions ─┬─ External Characters ───────────────────────────────────────┐   │
+│ │                                                                          │   │
+│ │ Filter: [__________]                                                     │   │
+│ │                                                                          │   │
+│ │ ┌──────────────────────┬──────────────────────┐                          │   │
+│ │ │ Name                 │ Faction              │                          │   │
+│ │ ├──────────────────────┼──────────────────────┤                          │   │
+│ │ │▸ Bob the Trader      │ The Space Pirates    │                          │   │
+│ │ │  Alice               │ The Space Pirates    │                          │   │
+│ │ │  Charlie             │ Galactic Merchants   │                          │   │
+│ │ │  Dave                │ (none)               │                          │   │
+│ │ └──────────────────────┴──────────────────────┘                          │   │
+│ │                                                                          │   │
+│ │ Name: [Bob the Trader________]                                           │   │
+│ │ Faction: [Filter:____] [The Space Pirates              ▼]               │   │
+│ │                                                                          │   │
+│ │ [New Character] [Save] [Delete]                                          │   │
+│ └──────────────────────────────────────────────────────────────────────────┘   │
+```
+
+Controls:
+- `tabContacts` (TabControl with Factions and External Characters tabs)
+- Factions tab: `txtFactionFilter`, `dgvFactions` (DataGridView), name/description fields, `dgvMembers` (read-only, shows PlayerProfiles + ExternalCharacters with matching FactionUUID), `cmdNewFaction` / `cmdSaveFaction` / `cmdDeleteFaction`
+- External Characters tab: `txtCharFilter`, `dgvCharacters` (DataGridView), name field, faction combo (`txtFactionFilterChar` + `cmbFaction`), `cmdNewChar` / `cmdSaveChar` / `cmdDeleteChar`
+- Factions are shared (no OwnerUUID) — all players see the same list. External characters are also shared.
+- Members grid is read-only and auto-populated from PlayerProfiles and ExternalCharacters that reference the selected faction.
+
+### FormAsteroid (Iteration 6)
+
+MDI child form. Left-list / right-detail pattern.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ #1 - Asteroids                                                          [_][□][X]│
+├──────────────────────┬──────────────────────────────────────────────────────────┤
+│ Filter: [__________] │ Name: [Asteroid K-7___________]                         │
+│                      │ System: [Kepler-442_____________]                        │
+│ ┌──────────────────┐ │                                                         │
+│ │▸ Asteroid K-7    │ │ Reserves:                                               │
+│ │  Asteroid M-12   │ │ ┌──────────────┬────────┬──────────┬─────────┬────────┐ │
+│ │  Belt Fragment 3 │ │ │ Resource     │ Purity │ Max Rsrv │ Current │ Reset  │ │
+│ │  Ceres Shard     │ │ ├──────────────┼────────┼──────────┼─────────┼────────┤ │
+│ │                  │ │ │ Iron         │ High   │    50000 │   32000 │ Apr 15 │ │
+│ │                  │ │ │ Iron         │ Medium │    80000 │   80000 │        │ │
+│ │                  │ │ │ Copper       │ High   │    30000 │   18500 │ Apr 12 │ │
+│ │                  │ │ │ Titanium     │ Low    │   120000 │   95000 │        │ │
+│ │                  │ │ └──────────────┴────────┴──────────┴─────────┴────────┘ │
+│ │                  │ │                                                         │
+│ │                  │ │ Add Reserve:                                            │
+│ │                  │ │ Resource:[Filter:___] [Iron              ▼]            │
+│ │                  │ │ Purity:[High   ▼] Max:[50000] Current:[32000]          │
+│ │                  │ │ [Add Reserve] [Remove Reserve]                          │
+│ │                  │ │                                                         │
+│ │                  │ │ Linked Surveys:                                         │
+│ │                  │ │ ┌──────────────┬──────────────┬────────┬──────────┐     │
+│ │                  │ │ │ Player       │ Resource     │ Purity │ Rate/Cyc │     │
+│ │                  │ │ ├──────────────┼──────────────┼────────┼──────────┤     │
+│ │                  │ │ │ Captain Kirk │ Iron         │ High   │      120 │     │
+│ │                  │ │ │ Captain Kirk │ Copper       │ High   │       85 │     │
+│ │                  │ │ └──────────────┴──────────────┴────────┴──────────┘     │
+│ └──────────────────┘ │                                                         │
+│ [New] [Delete]       │                                                         │
+├──────────────────────┴─────────────────────────────────────────────────────────┤
+│ [Save] [Delete]                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
+```
+
+Controls:
+- Left: `flpSearchList` → `txtAsteroidFilter` + `lvwAsteroids` (ListView) + `cmdNew` / `cmdDelete`
+- Right: `flpAsteroidData` → `txtAsteroidName`, `txtSystemName`, `dgvReserves` (DataGridView, editable Current column), add-reserve panel, `dgvLinkedSurveys` (read-only)
+- `dgvReserves` columns: Resource, Purity, MaxReserve, CurrentReserve (editable), ResetTimestamp
+- Add-reserve panel: `txtReserveResourceFilter`, `cmbReserveResource`, `cmbReservePurity`, `txtMaxReserve`, `txtCurrentReserve`, `cmdAddReserve` / `cmdRemoveReserve`
+- Linked Surveys grid: read-only, auto-populated from surveys where `AsteroidUUID` matches the selected asteroid. Shows which players have surveyed this asteroid and their yield rates.
+- Asteroid UUID is deterministic from "SystemName:Name" — changing the name or system regenerates the UUID (with a confirmation warning).
+
+### FormSupplyChain (Iteration 6)
+
+MDI child form. Left-list / right-detail pattern with a visual stage editor.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ #1 - Supply Chains                                                      [_][□][X]│
+├──────────────────────┬──────────────────────────────────────────────────────────┤
+│ Filter: [__________] │ Name: [Iron Pipeline__________]                         │
+│                      │                                                         │
+│ ┌──────────────────┐ │ Stages:                                                 │
+│ │▸ Iron Pipeline   │ │ ┌─────┬────────────┬──────────────┬──────────┬────────┐ │
+│ │  Copper Chain    │ │ │ Seq │ Type       │ Location     │ Resource │Threshld│ │
+│ │  Titanium Flow   │ │ ├─────┼────────────┼──────────────┼──────────┼────────┤ │
+│ │                  │ │ │   1 │ Mine       │ Alpha Prime  │ Iron     │        │ │
+│ │                  │ │ │   2 │ Mine       │ Beta Colony  │ Iron     │        │ │
+│ │                  │ │ │   3 │ AsteroidMn │ Asteroid K-7 │ Iron     │        │ │
+│ │                  │ │ │   4 │ Collect    │ Station Alpha│ Iron(unr)│   5000 │ │
+│ │                  │ │ │   5 │ Refine     │ Gamma Colony │ Iron(ref)│   3000 │ │
+│ │                  │ │ │   6 │ Deliver    │ Station Beta │ Iron(ref)│        │ │
+│ │                  │ │ └─────┴────────────┴──────────────┴──────────┴────────┘ │
+│ │                  │ │                                                         │
+│ │                  │ │ Add/Edit Stage:                                         │
+│ │                  │ │ Seq:[4] Type:[Collect     ▼]                            │
+│ │                  │ │ Location Type:[Station▼] Location:[Station Alpha    ▼]  │
+│ │                  │ │ Resource:[Filter:___] [Iron ▼] Purity:[Unrefined ▼]    │
+│ │                  │ │ Threshold:[5000]  Rate/hr:[250]                         │
+│ │                  │ │ [Add Stage] [Update Stage] [Remove Stage]               │
+│ │                  │ │ [▲ Move Up] [▼ Move Down]                               │
+│ │                  │ │                                                         │
+│ │                  │ │ Flow Summary:                                           │
+│ │                  │ │ Mine(3 sources) → Collect@Stn Alpha(5000) →            │
+│ │                  │ │   Refine@Gamma(3000) → Deliver@Stn Beta                │
+│ └──────────────────┘ │                                                         │
+│ [New] [Delete]       │                                                         │
+├──────────────────────┴─────────────────────────────────────────────────────────┤
+│ [Save] [Delete]                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
+```
+
+Controls:
+- Left: `flpSearchList` → `txtChainFilter` + `lvwSupplyChains` (ListView) + `cmdNew` / `cmdDelete`
+- Right: `flpChainData` → `txtChainName`, `dgvStages` (DataGridView), add/edit stage panel, flow summary label
+- `dgvStages` columns: Sequence, StageType, Location, Resource (with purity), AccumulationThreshold, ProductionRatePerHour
+- Add/edit panel: `txtSequence`, `cmbStageType`, `cmbLocationType`, `cmbLocation` (FilteredComboBox — populates with colonies/stations/asteroids based on type), `cmbResource`, `cmbPurity`, `txtThreshold`, `txtRate`, `cmdAddStage` / `cmdUpdateStage` / `cmdRemoveStage`, `cmdMoveUp` / `cmdMoveDown`
+- Flow summary: read-only label showing a condensed text representation of the pipeline stages. Auto-generated from the stages list.
+- Stage type determines which fields are relevant: Mine/AsteroidMine stages have no threshold (they produce continuously). Collect stages have a threshold (trigger delivery when accumulated). Refine stages have a threshold. Deliver stages are the terminal destination.
+
+### Warehouse Overflow Rules — FormColony Tab (Iteration 6)
+
+New tab on the existing FormColony, added alongside the existing Administration, Structures, Workers, and Warehousing tabs.
+
+```
+│ ┌─ Admin ─┬─ Structures ─┬─ Workers ─┬─ Warehousing ─┬─ Overflow ─────┐   │
+│ │                                                                       │   │
+│ │ Rules for: Alpha Prime                                                │   │
+│ │                                                                       │   │
+│ │ ┌──────────────┬────────────┬───────────┬──────────┬────────────────┐  │   │
+│ │ │ Resource     │ Purity     │ Threshold │ Current  │ Destination    │  │   │
+│ │ ├──────────────┼────────────┼───────────┼──────────┼────────────────┤  │   │
+│ │ │ Iron         │ Refined    │     3000  │    4200  │ Station Alpha  │  │   │
+│ │ │ Copper       │ Refined    │     2000  │    1800  │ Station Alpha  │  │   │
+│ │ │ Titanium     │ Refined    │     5000  │    5100  │ Station Beta   │  │   │
+│ │ └──────────────┴────────────┴───────────┴──────────┴────────────────┘  │   │
+│ │                                                                       │   │
+│ │ Add Rule:                                                             │   │
+│ │ Resource:[Filter:___] [Iron ▼] Purity:[Refined ▼]                    │   │
+│ │ Threshold:[3000]                                                      │   │
+│ │ Dest Type:[Station▼] Dest:[Filter:___] [Station Alpha          ▼]   │   │
+│ │ [Add Rule] [Remove Rule]                                              │   │
+│ └───────────────────────────────────────────────────────────────────────┘   │
+```
+
+Controls:
+- New `tabPOverflow` tab page on the existing `tabDetailedData` TabControl
+- `dgvOverflowRules` (DataGridView) — columns: Resource, Purity, Threshold, Current (read-only, from warehouse), Destination
+- Current column is color-coded: green when below threshold, yellow when within 20% of threshold, red when at or above threshold
+- Add-rule panel: `txtOverflowResourceFilter`, `cmbOverflowResource`, `cmbOverflowPurity`, `txtOverflowThreshold`, `cmbOverflowDestType`, `txtOverflowDestFilter`, `cmbOverflowDest`, `cmdAddRule` / `cmdRemoveRule`
+- Rules are per-colony (ColonyUUID set automatically from the selected colony). One rule per resource+purity per colony.
+- Destination combo populates with stations or colonies based on `cmbOverflowDestType`.
+
+### Stock Profiles — FormStockTargets Tab (Iteration 7)
+
+New tab on FormStockTargets, added alongside the existing targets view. The main form becomes tabbed: "Targets & Plans" (existing content) and "Profiles" (new).
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ #1 - Stock Targets                                                      [_][□][X]│
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ ┌─ Targets & Plans ─┬─ Profiles ───────────────────────────────────────────┐   │
+│ │                                                                          │   │
+│ │ Filter: [__________]                                                     │   │
+│ │                                                                          │   │
+│ │ ┌──────────────────────┐  Profile: [Faction Alpha Full Stock___]         │   │
+│ │ │▸ Faction Alpha Full  │                                                 │   │
+│ │ │  Light Combat Ready  │  Entries:                                       │   │
+│ │ │  Base Maintenance    │  ┌───────┬──────────┬──────────────────────────┐ │   │
+│ │ └──────────────────────┘  │ Group │ Type     │ Plan / Target           │ │   │
+│ │ [New Profile] [Delete]    ├───────┼──────────┼──────────────────────────┤ │   │
+│ │                           │ A     │ Plan     │ Faction Alpha Ships     │ │   │
+│ │                           │ A     │ Plan     │ Faction Beta Ships      │ │   │
+│ │                           │ B     │ Plan     │ Base Supplies           │ │   │
+│ │                           │ C     │ Target   │ 20k Munitions           │ │   │
+│ │                           └───────┴──────────┴──────────────────────────┘ │   │
+│ │                                                                          │   │
+│ │  Add Entry:                                                              │   │
+│ │  Group:[A___] Type:[Plan    ▼] [Filter:___] [Faction Alpha Ships   ▼]  │   │
+│ │  [Add Entry] [Remove Entry]                                              │   │
+│ │                                                                          │   │
+│ │  Logic: Group A (OR): max(Faction Alpha Ships, Faction Beta Ships)       │   │
+│ │         Group B (AND): + Base Supplies                                   │   │
+│ │         Group C (AND): + 20k Munitions                                   │   │
+│ │         Total = max(A) + sum(B) + sum(C)                                 │   │
+│ │                                                                          │   │
+│ │  [Save]                                                                  │   │
+│ └──────────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+Controls:
+- The existing FormStockTargets content moves into a "Targets & Plans" tab. The new "Profiles" tab is added alongside it.
+- Profiles tab left section: `txtProfileFilter`, `lvwProfiles` (ListView), `cmdNewProfile` / `cmdDeleteProfile`
+- Profiles tab right section: `txtProfileName`, `dgvEntries` (DataGridView), add-entry panel, logic summary label
+- `dgvEntries` columns: GroupID (editable text), Type (Plan or Target), Plan/Target name (read-only, resolved from UUID)
+- Add-entry panel: `txtGroupID`, `cmbEntryType` (Plan or Target), `txtEntryFilter`, `cmbEntry` (FilteredComboBox — populates with StockPlans or standalone StockTargets based on type), `cmdAddEntry` / `cmdRemoveEntry`
+- Logic summary: read-only label auto-generated from the entries, showing the AND/OR grouping in plain language. Entries with the same GroupID are ORed (max), different GroupIDs are ANDed (summed).
+- `cmbEntryType` switches the combo data source between StockPlans and standalone StockTargets.
+
 ## Correctness Properties
 
 ### Property 1: Build item quantity validation

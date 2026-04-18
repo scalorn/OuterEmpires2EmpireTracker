@@ -58,3 +58,5 @@ nuget restore OE2EmpireTracker.sln
 
 ## Tool Limitations
 - **Do NOT use `semanticRename`** — it does not work with old-style csproj / .NET Framework 4.8.1. The language server cannot resolve symbols for rename. Use manual find-and-replace (`strReplace` or `executePwsh` with grep/sed) instead.
+- **`strReplace` parameter ordering** — when calling `strReplace`, always provide `newStr` before `oldStr`. Providing `oldStr` first causes silent failures ("aborted" error with no message). The correct order is: `newStr`, `oldStr`, `path`.
+- **Large file edits** — for inserting large blocks of content (50+ lines), prefer `fsWrite` to create a temp file with the new content, then use `readFile` + `strReplace` to insert it. Or use multiple smaller `strReplace` calls. Single massive `newStr` values can be unreliable.
