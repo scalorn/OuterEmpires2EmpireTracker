@@ -1,4 +1,4 @@
-using NLog;
+﻿using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
@@ -135,7 +135,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -----------------------------------------------------------------------
-        // 7.2: Reset() — pool reuse
+        // 7.2: Reset() â€” pool reuse
         // -----------------------------------------------------------------------
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -----------------------------------------------------------------------
-        // 7.3: UpdateData(Blueprint bp) — full repaint
+        // 7.3: UpdateData(Blueprint bp) â€” full repaint
         // -----------------------------------------------------------------------
 
         /// <summary>
@@ -455,7 +455,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -----------------------------------------------------------------------
-        // 7.4: UpdateBackgroundColor() — lightweight path
+        // 7.4: UpdateBackgroundColor() â€” lightweight path
         // -----------------------------------------------------------------------
 
         /// <summary>
@@ -584,7 +584,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             // Manufacturing row: Start/Done buttons only (no qty/stage)
-            flpManufacturing.Visible = true;
+            flpManufacturing.Visible = showCompletionTime;
             txtQuantity.Visible = false;
             chkStageResources.Visible = false;
             cmdStart.Text = "Start";
@@ -815,7 +815,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbSelection.Enabled = enableCmbSelection;
 
             // Manufacturing row: Start/Done only (no qty/stage)
-            flpManufacturing.Visible = true;
+            flpManufacturing.Visible = showCompletionTime;
             txtQuantity.Visible = false;
             chkStageResources.Visible = false;
             cmdStart.Text = "Start";
@@ -1053,7 +1053,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbSelection.Enabled = enableCmbSelection;
 
             // Manufacturing row: Start/Done only (no qty/stage)
-            flpManufacturing.Visible = true;
+            flpManufacturing.Visible = showCompletionTime;
             txtQuantity.Visible = false;
             chkStageResources.Visible = false;
             cmdStart.Text = "Start";
@@ -1212,7 +1212,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbSelection.Enabled = enableCmbSelection;
 
             // Manufacturing row: qty, stage resources, start/done
-            flpManufacturing.Visible = true;
+            flpManufacturing.Visible = showCompletionTime;
             txtQuantity.Visible = showCmdStart;
             txtQuantity.Enabled = !showCompletionTime;
             if (structureData.ManufacturingQuantity > 0)
@@ -1395,7 +1395,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbSelection.Enabled = enableCmbSelection;
 
             // Manufacturing row: qty, stage resources, start/done
-            flpManufacturing.Visible = true;
+            flpManufacturing.Visible = showCompletionTime;
             txtQuantity.Visible = showCmdStart;
             txtQuantity.Enabled = !showCompletionTime;
             if (structureData.ManufacturingQuantity > 0)
@@ -1505,7 +1505,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -----------------------------------------------------------------------
-        // 7.5: State checkboxes — Built, Online, Staged with mutual exclusion
+        // 7.5: State checkboxes â€” Built, Online, Staged with mutual exclusion
         // -----------------------------------------------------------------------
 
         private void chkBuilt_CheckedChanged(object sender, EventArgs e)

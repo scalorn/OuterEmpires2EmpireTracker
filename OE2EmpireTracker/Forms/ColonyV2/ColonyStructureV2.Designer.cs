@@ -273,6 +273,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpSelection.Controls.Add(this.lblSelectionFilter);
             this.flpSelection.Controls.Add(this.txtSelectionFilter);
             this.flpSelection.Controls.Add(this.cmbSelection);
+            this.flpSelection.Controls.Add(this.txtQuantity);
+            this.flpSelection.Controls.Add(this.chkStageResources);
+            this.flpSelection.Controls.Add(this.cmdStart);
             this.flpSelection.Controls.Add(this.cmdDone);
             this.flpSelection.Location = new System.Drawing.Point(3, 115);
             this.flpSelection.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
@@ -302,9 +305,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // 
             this.flpManufacturing.Controls.Add(this.rtbProgressStatus);
             this.flpManufacturing.Controls.Add(this.txtCompletionTime);
-            this.flpManufacturing.Controls.Add(this.txtQuantity);
-            this.flpManufacturing.Controls.Add(this.chkStageResources);
-            this.flpManufacturing.Controls.Add(this.cmdStart);
             this.flpManufacturing.Location = new System.Drawing.Point(3, 141);
             this.flpManufacturing.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.flpManufacturing.Name = "flpManufacturing";
