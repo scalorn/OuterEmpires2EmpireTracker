@@ -486,6 +486,19 @@ sequenceDiagram
 
 All new models follow the existing POCO pattern: public properties with defaults, Newtonsoft.Json serialization, UUID + OwnerUUID ownership, persisted as top-level arrays in PlayerRoot.
 
+### Shared Enums
+
+These enums are used across multiple models and are defined first to avoid forward references.
+
+```csharp
+public enum DestinationType
+{
+    Colony,
+    Station,
+    Asteroid
+}
+```
+
 ### BuildPlan
 
 ```csharp
@@ -1004,16 +1017,9 @@ Design decisions:
 
 ### RouteStop Changes
 
-The existing `RouteStop` model needs a `DestinationType` discriminator:
+The existing `RouteStop` model uses the `DestinationType` enum (defined in Shared Enums above):
 
 ```csharp
-public enum DestinationType
-{
-    Colony,
-    Station,
-    Asteroid
-}
-
 public class RouteStop
 {
     [JsonConverter(typeof(StringEnumConverter))]
