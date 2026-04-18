@@ -672,6 +672,15 @@ namespace OE2EmpireTracker.Services
             // Entertainment required is 2 per worker (game rule)
             status.EntertainmentRequired = builtEntertainmentRequired + (ColonyWorkers.Count + unallocatedWorkersAdded) * 2;
 
+            // Diagnostic: log per-structure worker accumulation
+            var bp = flatpackBlueprint;
+            string bpName = bp?.ExtendedName ?? structure.FlatpackBlueprintUUID ?? "?";
+            Log.Info("CalcBuilt structure [{0}] built={1} staged={2} online={3} workers={4} unalloc={5} " +
+                "habProv={6} habReq={7} prevHabReq={8} bpType={9}",
+                bpName, built, staged, online, ColonyWorkers.Count, unallocatedWorkersAdded,
+                status.HabitationProvision, status.HabitationRequired, builtHabitationRequired,
+                bp?.BluePrintType ?? "null");
+
             status.WarehouseCapacity = builtWarehouseCapacity;
             // Warehouse required is calculated based on workers in current implementation
             status.WarehouseRequired = builtWarehouseRequired;
