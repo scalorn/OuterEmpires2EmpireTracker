@@ -698,8 +698,8 @@ Design decisions:
 - Crate is an Item with ItemType = Crate and a non-null Contents ItemBag.
 - Non-crate items have Contents = null (omitted from JSON via NullValueHandling.Ignore).
 - No nesting: validation prevents adding a Crate item to another Crate's Contents.
-- Ship cargo volume computation sums item volumes recursively one level deep: for each item, add its Volume; if it's a Crate, also add the Volume of each item in Contents.
-- Crate itself may have a Volume (the box), and its contents add to the total.
+- Crates have no inherent volume or mass — they are purely organizational. A crate's volume is the sum of the volumes of items inside it. A crate's mass is the sum of the masses of items inside it.
+- Ship cargo volume computation sums item volumes recursively one level deep: for each item, add its Volume; if it's a Crate, add the sum of Volume of each item in Contents instead (the crate itself contributes zero).
 
 ### PlayerProfile Changes
 
@@ -3113,16 +3113,11 @@ public string ReplenishmentBuildPlanUUID { get; set; } = string.Empty;
 
 FormStockTargets shows a build plan selector combo on both the plan detail panel and the standalone target edit panel. If no replenishment plan is designated when "Check & Generate Orders" is clicked, the form prompts the user to select or create one before proceeding.
 
-### OQ-36: Crate Volume in Delivery Planning (Iteration 3)
+### OQ-36: Crate Volume in Delivery Planning (Iteration 3) — RESOLVED
 
-The Crate design says "Contents count toward container capacity (e.g. ship cargo volume)." Delivery planning (Iteration 3) computes cargo volume for trip splitting.
+**Decision:** Crates have no volume or mass of their own — they are purely an organizational concept. A crate's volume is the sum of the volumes of items inside it. A crate's mass is the sum of the masses of items inside it. This applies everywhere: ship cargo capacity checks, delivery plan trip splitting, and any other volume/mass computation.
 
-Question: When computing delivery plan cargo volume, does the system:
-- (a) Sum volumes of all items including crate contents (recursive one level)?
-- (b) Use only the crate's own Volume property (treating it as a single item)?
-- (c) Crates aren't expected in delivery plans — they're an inventory organization tool, not a shipping unit?
-
-Impact: Affects the cargo capacity enforcement and trip splitting logic in Iteration 3.
+For delivery planning, crate contents are included in the cargo volume computation. A crate with 10 items totaling 500 m³ counts as 500 m³ toward the ship's cargo capacity, not as a single item with its own volume.
 
 ### OQ-37: Station Blueprint Type (Iteration 4)
 
