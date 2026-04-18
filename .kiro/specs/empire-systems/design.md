@@ -2462,6 +2462,141 @@ For all new entity types (BuildPlan, ShipTemplate, Ship, Station, MarketListing,
 ### Property 10: RouteStop migration preserves destinations
 For any existing RouteStop with ColonyUUID, after migration DestinationUUID equals ColonyUUID and DestinationType equals Colony.
 
+## Cross-Cutting Implementation Requirements
+
+These requirements apply to ALL new services, forms, and background processing code. They codify patterns established during the colony form optimization that must be followed consistently across the empire systems implementation.
+
+### Logging Requirements
+
+All new code must use NLog via `private static readonly Logger Log = LogManager.GetCurrentClassLogger();`.
+
+#### Logic Logging
+
+Every significant decision point, data mutation, and error path must be logged:
+
+- **Service entry/exit**: Log.Debug on entry with key parameters, Log.Info on completion with result summary.
+- **Data mutations**: Log.Info when creating, updating, or deleting entities. Include entity type, name/UUID, and the change made.
+- **Validation failures**: Log.Warn when validation rejects input (empty name, quantity < 1, invalid reference).
+- **Reference resolution**: Log.Debug when resolving UUID references (FindBlueprint, FindColony, etc.). Log.Warn when a reference cannot be resolved (orphaned UUID).
+- **Cascade triggers**: Log.Info when setting dirty flags (CascadeStockTargetsDirty, CascadeResourceCheckDirty). Log.Info when the background processor picks up a dirty flag.
+- **Background processing**: Log.Info at start/end of each cascade evaluation cycle with counts (items checked, shortfalls found, build items created, delivery plans updated).
+- **Error paths**: Log.Error with exception for all catch blocks. Never swallow exceptions silently.
+
+Pattern from ColonyV2:
+```csharp
+Log.Debug("V2.PopulateForm: colony={0}", selectedColony.ColonyName ?? "(null)");
+Log.Info("V2.PopulateStructures: structureCount={0} filterActive={1}", count, active);
+Log.Warn("PopulateStructures: read lock timeout on colony {0}, using stale data", uuid);
+```
+
+#### Performance Logging
+
+All operations that could take measurable time (>5ms) must include PERF logging with Stopwatch timing:
+
+- **Form population methods**: Time the overall method and each significant phase. Log with `PERF:` tag.
+- **Service computations**: Time resource checks, shortfall computations, delivery plan generation, stock target evaluation, auto-assign optimization.
+- **Grid rebuilds**: Time DataGridView population (Rows.Clear + Rows.Add loops).
+- **Background cascade cycles**: Time each phase of the cascade (stock target check, resource check, delivery plan update).
+
+Pattern from ColonyV2:
+```csharp
+var sw = System.Diagnostics.Stopwatch.StartNew();
+// ... phase 1 ...
+long t1 = sw.ElapsedMilliseconds;
+// ... phase 2 ...
+long t2 = sw.ElapsedMilliseconds;
+// ... phase 3 ...
+sw.Stop();
+Log.Info("MethodName PERF: total={0}ms phase1={1}ms phase2={2}ms phase3={3}ms",
+    sw.ElapsedMilliseconds, t1, t2 - t1, sw.ElapsedMilliseconds - t2);
+```
+
+Conditional logging for high-frequency operations (only log if elapsed > threshold):
+```csharp
+if (sw.ElapsedMilliseconds > 5)
+    Log.Debug("UpdateData PERF: {0} total={1}ms", itemName, sw.ElapsedMilliseconds);
+```
+
+### Thread Safety Requirements
+
+All new code must follow the three-tier locking model from `.kiro/specs/data-model-thread-safety/`. Lock ordering: `_listLock` → entity-level lock → `_syncRoot`. Never reversed.
+
+#### New Entity Lists
+
+All new `List<T>` fields on PlayerContext (BuildPlanList, ShipTemplateList, ShipList, StationList, etc.) are protected by `_listLock`:
+
+- **Read**: `lock(_listLock)` → snapshot → release → iterate snapshot.
+- **Write**: `lock(_listLock)` → mutate → release → fire events → WriteContext.
+- **Snapshot methods**: Each new list gets a `SnapshotXxxList()` method on PlayerContext (same pattern as `SnapshotColonyList()`).
+
+#### Station and Ship Holds
+
+Station holds (`Dictionary<string, ItemBag>`) and Ship cargo/hopper (`ItemBag`) use the existing `ItemBag._syncRoot` for fine-grained protection. The service layer must:
+
+- Acquire `_listLock` to find the Station/Ship.
+- Access the ItemBag through its thread-safe public API (AddItem, Remove, FindByType — all internally locked).
+- Never hold `_listLock` while iterating ItemBag contents.
+
+#### Background Cascade Processing
+
+The cascade processor (stock target check → resource check → delivery plan update) runs on the BackgroundProcessor timer thread:
+
+- Snapshot all needed lists under `_listLock` at the start of the cascade.
+- For operations that read colony warehouse data: acquire `ColonyLock.TryEnterReadLock(1000ms)`. On timeout, skip and retry next tick.
+- For operations that mutate build item status: acquire `ColonyLock.TryEnterWriteLock(5000ms)`. On timeout, skip and retry next tick.
+- Fire all data-change events (BuildPlanDataChanged, MarketDataChanged, StationDataChanged) outside all locks.
+- Call WriteContext outside all entity-level locks.
+
+#### Form Threading
+
+All new forms must follow the FormColonyV2 pattern:
+
+- Subscribe to data-change events with named methods (not lambdas) for clean unsubscribe in OnFormClosed.
+- Event handlers from background threads must use `BeginInvoke` to marshal to the UI thread.
+- Catch `ObjectDisposedException` and `InvalidOperationException` on `BeginInvoke` calls (form may be closed).
+- Long-running computations (reference counting, shortfall computation, auto-assign) should use `ThreadPool.QueueUserWorkItem` with `CancellationTokenSource` + generation counter to prevent stale results.
+- Unsubscribe from all PlayerContext events in `OnFormClosed`. Cancel any pending `CancellationTokenSource`.
+
+#### Lock Timeout Logging
+
+All lock acquisition attempts must log on timeout:
+```csharp
+if (!colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs))
+{
+    Log.Warn("MethodName: write lock timeout on colony {0}, skipping", colony.UUID);
+    return;
+}
+```
+
+### Service Implementation Checklist
+
+Every new service (BuildPlanService, ResourceCheckService, ShipBuildService, MarketService, StockTargetService, etc.) must:
+
+1. Have a `private static readonly Logger Log = LogManager.GetCurrentClassLogger();`
+2. Log entry with key parameters at Debug level
+3. Log result summary at Info level
+4. Log validation failures at Warn level
+5. Log exceptions at Error level with the exception object
+6. Include PERF timing for any computation that iterates collections or does multi-step processing
+7. Never acquire locks internally — the caller is responsible for lock acquisition (same pattern as ColonyStatusCalculator)
+8. Accept data via constructor parameters or method arguments (dependency injection), not by reaching into singletons
+9. Return results rather than mutating shared state directly
+
+### Form Implementation Checklist
+
+Every new form must:
+
+1. Have a `private static readonly Logger Log = LogManager.GetCurrentClassLogger();`
+2. Implement `IProgrammaticUpdateSource` with `ProgrammaticUpdateGuard`
+3. Log selection changes, save operations, and delete operations at Debug/Info level
+4. Include PERF timing on `PopulateForm`, `PopulateList`, and any grid rebuild method
+5. Subscribe to relevant PlayerContext data-change events with named methods
+6. Unsubscribe from all events in `OnFormClosed`
+7. Use `BeginInvoke` for cross-thread UI updates with disposed-form protection
+8. Use `CancellationTokenSource` for background computations
+9. Follow the reference counting pattern (Refs column, disabled Delete button) where applicable
+10. Preserve selection state across list rebuilds
+
 ## Error Handling
 
 | Scenario | Handling |
