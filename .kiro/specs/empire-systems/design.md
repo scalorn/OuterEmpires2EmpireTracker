@@ -743,6 +743,9 @@ public class SupplyChainStage
     // Thresholds
     public int AccumulationThreshold { get; set; } = 0;  // Trigger delivery when this much accumulates
     public decimal ProductionRatePerHour { get; set; } = 0m;
+
+    // Route for threshold-triggered deliveries (Collect, Refine, Deliver stages)
+    public string DeliveryRouteUUID { get; set; } = string.Empty;
 }
 ```
 
@@ -789,6 +792,9 @@ public class WarehouseOverflowRule
     [JsonConverter(typeof(StringEnumConverter))]
     public DestinationType DestinationType { get; set; } = DestinationType.Station;
     public string DestinationUUID { get; set; } = string.Empty;
+
+    // Route for generated deliveries
+    public string DeliveryRouteUUID { get; set; } = string.Empty;
 }
 ```
 
@@ -2307,6 +2313,7 @@ New tab on the existing FormColony, added alongside the existing Administration,
 │ │ Resource:[Filter:___] [Iron ▼] Purity:[Refined ▼]                    │   │
 │ │ Threshold:[3000]                                                      │   │
 │ │ Dest Type:[Station▼] Dest:[Filter:___] [Station Alpha          ▼]   │   │
+│ │ Route:[Filter:___] [Alpha → Station Alpha          ▼]               │   │
 │ │ [Add Rule] [Remove Rule]                                              │   │
 │ └───────────────────────────────────────────────────────────────────────┘   │
 ```
@@ -2315,7 +2322,7 @@ Controls:
 - New `tabPOverflow` tab page on the existing `tabDetailedData` TabControl
 - `dgvOverflowRules` (DataGridView) — columns: Resource, Purity, Threshold, Current (read-only, from warehouse), Destination
 - Current column is color-coded: green when below threshold, yellow when within 20% of threshold, red when at or above threshold
-- Add-rule panel: `txtOverflowResourceFilter`, `cmbOverflowResource`, `cmbOverflowPurity`, `txtOverflowThreshold`, `cmbOverflowDestType`, `txtOverflowDestFilter`, `cmbOverflowDest`, `cmdAddRule` / `cmdRemoveRule`
+- Add-rule panel: `txtOverflowResourceFilter`, `cmbOverflowResource`, `cmbOverflowPurity`, `txtOverflowThreshold`, `cmbOverflowDestType`, `txtOverflowDestFilter`, `cmbOverflowDest`, `txtOverflowRouteFilter`, `cmbOverflowRoute` (FilteredComboBox of delivery routes), `cmdAddRule` / `cmdRemoveRule`
 - Rules are per-colony (ColonyUUID set automatically from the selected colony). One rule per resource+purity per colony.
 - Destination combo populates with stations or colonies based on `cmbOverflowDestType`.
 
@@ -2385,7 +2392,7 @@ The complete cross-entity reference map. Each row shows an entity, what referenc
 | Asteroid | Survey.AsteroidUUID, SupplyChainStage.LocationUUID (when Asteroid), DeliveryRoute stops (DestinationUUID when Asteroid) | AsteroidReferenceCounter (new) |
 | Faction | PlayerProfile.FactionUUID, ExternalCharacter.FactionUUID | FactionReferenceCounter (new) |
 | BuildPlan | BuildPlan.DeliveryPlanUUID (reverse: DeliveryPlan referenced by BuildPlan) | — (BuildPlans are top-level, not referenced by other entities) |
-| DeliveryRoute | BuildPlan (user selects route for delivery generation), DeliveryPlan.RouteUUID | DeliveryRouteReferenceCounter (new) |
+| DeliveryRoute | BuildPlan (user selects route for delivery generation), DeliveryPlan.RouteUUID, WarehouseOverflowRule.DeliveryRouteUUID, SupplyChainStage.DeliveryRouteUUID | DeliveryRouteReferenceCounter (new) |
 | DeliveryPlan | BuildPlan.DeliveryPlanUUID | DeliveryPlanReferenceCounter (new) |
 | StockPlan | StockProfileEntry.StockPlanUUID | StockPlanReferenceCounter (new) |
 | StockTarget (standalone) | StockProfileEntry.StockTargetUUID | StockTargetReferenceCounter (new) |
@@ -3060,16 +3067,16 @@ Notes:
 
 Validation: When installing a weapon, the service extracts the size from the BlueprintType ID (the `/Small`, `/Medium`, `/Large` suffix), maps it to the corresponding `WeaponSmall`/`WeaponMedium`/`WeaponLarge` SlotType, and checks the hull's available mount count for that size.
 
-### OQ-33: WarehouseOverflowRule Delivery Route (Iteration 6)
+### OQ-33: WarehouseOverflowRule Delivery Route (Iteration 6) — RESOLVED
 
-When the background processor detects a warehouse overflow and generates a delivery, it needs a route from the source colony to the destination.
+**Decision:** Option (a) — the rule includes a `DeliveryRouteUUID` field. The user picks the route when creating the overflow rule. The background processor uses that route when generating the delivery plan.
 
-Question: How is the delivery route determined? Options:
-- (a) The rule includes a `DeliveryRouteUUID` field — user picks the route when creating the rule.
-- (b) The system auto-creates a point-to-point route (source → destination) if one doesn't exist.
-- (c) The system finds an existing route that includes both the source and destination as stops.
+Model change — add to `WarehouseOverflowRule`:
+```csharp
+public string DeliveryRouteUUID { get; set; } = string.Empty;
+```
 
-Impact: Affects the WarehouseOverflowRule model (may need a route field), the overflow tab UI, and the background processor logic.
+The Overflow tab on FormColony includes a route selector combo in the add-rule panel. If the selected route doesn't include both the source colony and the destination as stops, the UI shows a validation warning.
 
 ### OQ-34: BuildItem Status — Cascade vs Manual Override (Iteration 1)
 
@@ -3124,13 +3131,16 @@ Question: Is this acceptable? In-game character names are unique per server, so 
 
 Impact: Low risk for current scope. Document as a known limitation.
 
-### OQ-39: SupplyChain Delivery Route Selection (Iteration 6)
+### OQ-39: SupplyChain Delivery Route Selection (Iteration 6) — RESOLVED
 
-When the background processor detects accumulation at a supply chain stage and generates a delivery to the next stage, it needs a route.
+**Decision:** Consistent with OQ-33 — each `SupplyChainStage` that triggers a delivery (Collect, Refine, Deliver stages with accumulation thresholds) includes a `DeliveryRouteUUID` field. The user picks the route when defining the stage.
 
-Question: Same options as OQ-33 — does the SupplyChainStage include a route reference, does the system auto-create routes, or does it find existing routes? This is the same fundamental question as warehouse overflow but for supply chains.
+Model change — add to `SupplyChainStage`:
+```csharp
+public string DeliveryRouteUUID { get; set; } = string.Empty;  // Route for threshold-triggered deliveries
+```
 
-Impact: Affects the SupplyChainStage model (may need a `DeliveryRouteUUID` field), FormSupplyChain UI, and background processor logic. Should be resolved consistently with OQ-33.
+Mine and AsteroidMine stages don't need a route (they produce at a location, they don't move resources). Collect/Refine/Deliver stages that have an `AccumulationThreshold > 0` require a route to be set. FormSupplyChain validates this on save.
 
 ### OQ-40: Resource Check Scope — Colony Warehouse Only or Also Station Holds? (Iteration 1)
 
