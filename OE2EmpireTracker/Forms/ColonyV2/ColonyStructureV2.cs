@@ -251,6 +251,19 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 udSw.Stop();
                 Log.Debug("V2.UpdateData PERF: {0} rtf={1}ms workers={2}ms building total={3}ms",
                     bpName, tRtf, tWorkers - tRtf, udSw.ElapsedMilliseconds);
+                Log.Debug("V2.UpdateData LAYOUT [{0}]: " +
+                    "Header={1} vis={2} | Status={3} vis={4} | Workers={5} vis={6} | " +
+                    "Survey={7} vis={8} | Selection={9} vis={10} | Mfg={11} vis={12} | " +
+                    "Cmds={13} vis={14} | flpCS.Size={15}",
+                    bpName,
+                    flpHeader.Location, flpHeader.Visible,
+                    rtbStatus.Location, rtbStatus.Visible,
+                    flpWorkers.Location, flpWorkers.Visible,
+                    flpSurveySelection.Location, flpSurveySelection.Visible,
+                    flpSelection.Location, flpSelection.Visible,
+                    flpManufacturing.Location, flpManufacturing.Visible,
+                    flpStructureCommands.Location, flpStructureCommands.Visible,
+                    flpColonyStructure.Size);
                 return;
             }
 
@@ -292,6 +305,21 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             flpColonyStructure.ResumeLayout(false);
             this.ResumeLayout();
+
+            // Diagnostic: log panel positions and visibility
+            Log.Debug("V2.UpdateData LAYOUT [{0}]: " +
+                "Header={1} vis={2} | Status={3} vis={4} | Workers={5} vis={6} | " +
+                "Survey={7} vis={8} | Selection={9} vis={10} | Mfg={11} vis={12} | " +
+                "Cmds={13} vis={14} | flpCS.Size={15}",
+                bpName,
+                flpHeader.Location, flpHeader.Visible,
+                rtbStatus.Location, rtbStatus.Visible,
+                flpWorkers.Location, flpWorkers.Visible,
+                flpSurveySelection.Location, flpSurveySelection.Visible,
+                flpSelection.Location, flpSelection.Visible,
+                flpManufacturing.Location, flpManufacturing.Visible,
+                flpStructureCommands.Location, flpStructureCommands.Visible,
+                flpColonyStructure.Size);
         }
 
         /// <summary>
