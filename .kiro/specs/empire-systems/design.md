@@ -509,10 +509,11 @@ public class AsteroidReserve
 ```
 
 Design decisions:
-- UUID is deterministic from asteroid name using DeterministicUUID with an asteroid-specific namespace. Asteroids are shared game-world objects like stations.
-- `Reserves` tracks the depletion state of each resource on the asteroid. This is a property of the asteroid itself (shared across all players), not the survey.
-- `MaxReserve` is the hard cap on how much can be mined from this resource before it depletes. `CurrentReserve` tracks remaining. When CurrentReserve reaches 0, the resource is exhausted until it resets.
+- UUID is deterministic from "SystemName:AsteroidName" using DeterministicUUID with an asteroid-specific namespace. Asteroid names are unique within a solar system but not globally, so the system name is part of the seed.
+- `Reserves` tracks the depletion state of each resource on the asteroid. This is a property of the asteroid itself (shared across all players/characters), not the survey.
+- `MaxReserve` is the hard cap on how much can be mined from this resource before it depletes. `CurrentReserve` tracks remaining (visible in-game when mining starts). When CurrentReserve reaches 0, the resource is exhausted until it resets.
 - `ResetTimestamp` records when the reserve last reset. The reset interval is TBD (game mechanic not yet confirmed). When known, a service can compute time-until-next-reset.
+- Reserves are a shared pool — multiple characters mining the same asteroid all decrement the same CurrentReserve.
 - Asteroids are available as delivery route stops via `DestinationType.Asteroid`. Mining at an asteroid is modeled as a pickup operation on the route — the ship arrives, mines (fills RawMaterialHold), and departs.
 - No per-player holds on asteroids — mined resources go directly into the ship's RawMaterialHold.
 
@@ -541,7 +542,8 @@ Design decisions:
 - For asteroid surveys, `PlanetName` holds the asteroid name (for display/dedup consistency), and `AsteroidUUID` links to the `Asteroid` entity for reserve tracking.
 - `SurveyResource.Amount` means "rate per hour" for planet surveys and "rate per mining cycle" for asteroid surveys. The interpretation depends on `SurveyType`.
 - For asteroid surveys, the actual yield per cycle = `Amount` × equipment multiplier × skill multiplier. The service layer computes this from the ship's mining laser/grapple blueprints and the player's ExtractionFocus skill level.
-- Asteroid surveys are imported from game HTML the same way planet surveys are — the parser detects the asteroid context and sets `SurveyType = Asteroid` + `AsteroidUUID`.
+- Mining cycle duration comes from the mining laser blueprint (a property on the laser). Grapple blueprints can reduce the cycle time (also a property). The service layer combines both to compute effective cycle time.
+- Asteroid surveys are imported from game HTML in a similar format to planet surveys — the parser detects the asteroid context and sets `SurveyType = Asteroid` + `AsteroidUUID`. The existing SurveyParser will be extended to handle the asteroid variant.
 - The Survey form can filter by SurveyType to show planet vs asteroid surveys separately.
 
 ### MarketListing
@@ -1327,7 +1329,7 @@ Entities that represent game-world objects shared across players use determinist
 | Entity | UUID Type | Seed |
 |---|---|---|
 | Station | Deterministic | Station name (station namespace) |
-| Asteroid | Deterministic | Asteroid name (asteroid namespace) |
+| Asteroid | Deterministic | SystemName:AsteroidName (asteroid namespace) |
 | Faction | Deterministic | Faction name (faction namespace) |
 | ExternalCharacter | Deterministic | Character name (character namespace) |
 | BuildPlan | Random | Player-specific work order |
