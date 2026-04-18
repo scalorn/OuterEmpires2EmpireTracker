@@ -152,6 +152,16 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.ColonyDataChanged += OnColonyDataChanged;
 
+            // Diagnostic: log splitter state after construction
+            Log.Info("V2.Constructor: splitMain.SplitterDistance={0} SplitterWidth={1} Panel1.Width={2} Panel2.Width={3} " +
+                "splitMain.Width={4} splitMain.Orientation={5} IsSplitterFixed={6} Panel1MinSize={7} Panel1.BorderStyle={8} " +
+                "splitMain.BackColor={9} Panel1.BackColor={10}",
+                splitMain.SplitterDistance, splitMain.SplitterWidth, splitMain.Panel1.Width, splitMain.Panel2.Width,
+                splitMain.Width, splitMain.Orientation, splitMain.IsSplitterFixed, splitMain.Panel1MinSize,
+                splitMain.Panel1.BorderStyle, splitMain.BackColor, splitMain.Panel1.BackColor);
+
+            this.Shown += FormColonyV2_Shown;
+
             UpdateTitle();
         }
 
@@ -980,10 +990,21 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Splitter visual indicator
         // -------------------------------------------------------------------
 
+        private void FormColonyV2_Shown(object sender, EventArgs e)
+        {
+            Log.Info("V2.Shown: splitMain.SplitterDistance={0} SplitterWidth={1} Panel1.Width={2} Panel2.Width={3} " +
+                "splitMain.Width={4} splitMain.Height={5} SplitterRect={6} IsSplitterFixed={7} " +
+                "Panel1.BorderStyle={8} Panel1.Visible={9} Panel2.Visible={10} splitMain.Visible={11}",
+                splitMain.SplitterDistance, splitMain.SplitterWidth, splitMain.Panel1.Width, splitMain.Panel2.Width,
+                splitMain.Width, splitMain.Height, splitMain.SplitterRectangle, splitMain.IsSplitterFixed,
+                splitMain.Panel1.BorderStyle, splitMain.Panel1.Visible, splitMain.Panel2.Visible, splitMain.Visible);
+        }
+
         private void splitMain_Paint(object sender, PaintEventArgs e)
         {
             // Draw a visible bar on the splitter area so the user can find it
             var rect = splitMain.SplitterRectangle;
+            Log.Info("splitMain_Paint fired: SplitterRect={0}, ClipRect={1}", rect, e.ClipRectangle);
             using (var brush = new System.Drawing.SolidBrush(System.Drawing.SystemColors.ControlDark))
             {
                 e.Graphics.FillRectangle(brush, rect);
