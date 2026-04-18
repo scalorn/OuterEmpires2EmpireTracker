@@ -331,6 +331,19 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             lvwColonies.Items.Clear();
             PopulateListView(colonies);
             lvwColonies.Sort();
+
+            // If filter results in empty list, clear the form
+            if (lvwColonies.Items.Count == 0)
+            {
+                using var guard = new ProgrammaticUpdateGuard(this);
+                selectedColony = new Models.Colony();
+                colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
+                txtPlanetName.Text = "";
+                txtColonyName.Text = "";
+                txtSystemName.Text = "";
+                MarkAllTabsDirty();
+                UpdateDeleteButtonState();
+            }
         }
 
         // -------------------------------------------------------------------
@@ -1000,6 +1013,15 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 splitMain.Panel1.BorderStyle, splitMain.Panel1.Visible, splitMain.Panel2.Visible, splitMain.Visible);
 
             // Auto-select the first colony if none is selected (e.g. first open, no saved selection)
+            // Clear any restored filter first so the full list is visible
+            if (!string.IsNullOrEmpty(txtColonyFilter.Text))
+            {
+                using (var guard = new ProgrammaticUpdateGuard(this))
+                {
+                    txtColonyFilter.Text = "";
+                }
+                txtColonyFilter_TextChanged(this, EventArgs.Empty);
+            }
             if (lvwColonies.SelectedItems.Count == 0 && lvwColonies.Items.Count > 0)
             {
                 lvwColonies.Items[0].Selected = true;
