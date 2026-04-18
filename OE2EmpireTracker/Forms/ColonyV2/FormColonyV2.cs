@@ -977,12 +977,37 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -------------------------------------------------------------------
+        // Splitter visual indicator
+        // -------------------------------------------------------------------
+
+        private void splitMain_Paint(object sender, PaintEventArgs e)
+        {
+            // Draw a visible bar on the splitter area so the user can find it
+            var rect = splitMain.SplitterRectangle;
+            using (var brush = new System.Drawing.SolidBrush(System.Drawing.SystemColors.ControlDark))
+            {
+                e.Graphics.FillRectangle(brush, rect);
+            }
+            // Draw grip dots in the center
+            int midX = rect.X + rect.Width / 2;
+            int midY = rect.Y + rect.Height / 2;
+            using (var dotBrush = new System.Drawing.SolidBrush(System.Drawing.SystemColors.ControlDarkDark))
+            {
+                for (int dy = -20; dy <= 20; dy += 10)
+                {
+                    e.Graphics.FillEllipse(dotBrush, midX - 1, midY + dy - 1, 3, 3);
+                }
+            }
+        }
+
+        // -------------------------------------------------------------------
         // Layout handler
         // -------------------------------------------------------------------
 
         private void flpColonyData_Layout(object sender, LayoutEventArgs e)
         {
             int totalHeight = flpColonyData.ClientSize.Height;
+
             int totalWidth = flpColonyData.ClientSize.Width;
 
             int identityHeight = flpIdentity.Height + flpIdentity.Margin.Vertical;

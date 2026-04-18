@@ -127,6 +127,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.splitMain.SplitterWidth = 8;
             this.splitMain.Panel1MinSize = 150;
             this.splitMain.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.splitMain.Paint += new System.Windows.Forms.PaintEventHandler(this.splitMain_Paint);
             this.splitMain.Size = new System.Drawing.Size(1225, 500);
             this.splitMain.TabIndex = 0;
             // 
