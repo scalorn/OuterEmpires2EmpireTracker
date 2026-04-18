@@ -3145,13 +3145,15 @@ public string DeliveryRouteUUID { get; set; } = string.Empty;  // Route for thre
 
 Mine and AsteroidMine stages don't need a route (they produce at a location, they don't move resources). Collect/Refine/Deliver stages that have an `AccumulationThreshold > 0` require a route to be set. FormSupplyChain validates this on save.
 
-### OQ-40: Resource Check Scope — Colony Warehouse Only or Also Station Holds? (Iteration 1)
+### OQ-40: Resource Check Scope — Colony Warehouse Only or Also Station Holds? (Iteration 1) — RESOLVED
 
-ResourceCheckService checks build item resource requirements against the target colony's warehouse. But resources might also be available at a nearby station hold.
+**Decision:** Station holds are included in resource checks. Only the current player's hold at each station is checked — `station.Holds[currentPlayerUUID]`. All plans, stock levels, and automations are owned by a specific player; there are no cross-player automations.
 
-Question: Should the resource check consider only the colony warehouse, or also station holds at stops on the associated delivery route? If station holds are included, which player's hold at each station is checked?
+For ResourceCheckService, the scope is:
+- Colony warehouse at the allocated colony (primary)
+- Station holds for the current player at stations on the associated delivery route (secondary)
 
-Impact: Affects ResourceCheckService logic and the shortfall display. A broader scope reduces false shortfalls but adds complexity.
+This reduces false shortfalls — if the player already has resources at a station on the route, the system knows they're available and doesn't flag them as missing. The resource check takes a `Func<string, Station> stationFinder` and the current player UUID to look up the relevant holds.
 
 ## Testing Strategy
 
