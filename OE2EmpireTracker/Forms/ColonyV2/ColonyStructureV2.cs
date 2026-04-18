@@ -522,14 +522,22 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Survey selection row
             flpSurveySelection.Visible = true;
             // Only populate combos if there's an active process or existing selection (perf: defer for idle)
-            bool needsSurveyPopulation = structureData.ProcessCompletionTime != null
-                || !string.IsNullOrEmpty(structureData.MiningSurvey);
-            if (needsSurveyPopulation)
+            bool hasActiveProcess = structureData.ProcessCompletionTime != null;
+            bool hasSelection = !string.IsNullOrEmpty(structureData.MiningSurvey);
+            if (hasActiveProcess && hasSelection)
+            {
+                // Active process: just show the selected item, don't build full list
+                SetSingleItemSurveyCombo(structureData.MiningSurvey);
+                SetSingleItemResourceCombo(structureData.MiningSurveyResource);
+            }
+            else if (hasSelection)
             {
                 PopulateSurveyCombo();
-                if (!string.IsNullOrEmpty(structureData.MiningSurvey))
+                cmbSurvey.SelectedValue = structureData.MiningSurvey;
+                PopulateResourceComboFromSurvey();
+                if (!string.IsNullOrEmpty(structureData.MiningSurveyResource))
                 {
-                    cmbSurvey.SelectedValue = structureData.MiningSurvey;
+                    cmbSelection.SelectedValue = structureData.MiningSurveyResource;
                 }
             }
             txtSurveyFilter.Enabled = enableCmbSurvey;
@@ -539,14 +547,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (!string.IsNullOrEmpty(structureData.MiningSurvey))
             {
                 flpSelection.Visible = true;
-                if (needsSurveyPopulation)
-                {
-                    PopulateResourceComboFromSurvey();
-                    if (!string.IsNullOrEmpty(structureData.MiningSurveyResource))
-                    {
-                        cmbSelection.SelectedValue = structureData.MiningSurveyResource;
-                    }
-                }
                 txtSelectionFilter.Enabled = enableCmbSelection;
                 cmbSelection.Enabled = enableCmbSelection;
             }
@@ -606,6 +606,59 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbSurvey.ValueMember = "UUID";
             cmbSurvey.DataSource = filteredList;
             cmbSurvey.SelectedIndex = -1;
+        }
+
+        /// <summary>
+        /// Sets cmbSurvey to display a single survey item without building the full list.
+        /// Used when the process is active and the combo is disabled.
+        /// </summary>
+        private void SetSingleItemSurveyCombo(string surveyUUID)
+        {
+            var survey = _playerContext.FindSurvey(surveyUUID);
+            var items = new List<Models.Survey>();
+            if (survey != null) items.Add(survey);
+            else items.Add(new Models.Survey { PlanetName = surveyUUID });
+            cmbSurvey.DataSource = null;
+            cmbSurvey.DisplayMember = "ExtendedName";
+            cmbSurvey.ValueMember = "UUID";
+            cmbSurvey.DataSource = items;
+            if (items.Count > 0) cmbSurvey.SelectedIndex = 0;
+        }
+
+        /// <summary>
+        /// Sets cmbSelection to display a single resource item without building the full list.
+        /// Used when the mining process is active and the combo is disabled.
+        /// </summary>
+        private void SetSingleItemResourceCombo(string resource)
+        {
+            if (string.IsNullOrEmpty(resource))
+            {
+                cmbSelection.DataSource = null;
+                return;
+            }
+            var items = new List<SurveyResource> { new SurveyResource { Resource = resource } };
+            cmbSelection.DataSource = null;
+            cmbSelection.DisplayMember = "ExtendedName";
+            cmbSelection.ValueMember = "Resource";
+            cmbSelection.DataSource = items;
+            cmbSelection.SelectedIndex = 0;
+        }
+
+        /// <summary>
+        /// Sets cmbSelection to display a single item (by key/display) without building the full list.
+        /// Used when a process is active and the combo is disabled.
+        /// </summary>
+        private void SetSingleItemSelectionCombo(string key, string displayName)
+        {
+            var items = new List<ResearchSelectionItem>
+            {
+                new ResearchSelectionItem { UUID = key, DisplayName = displayName }
+            };
+            cmbSelection.DataSource = null;
+            cmbSelection.DisplayMember = "DisplayName";
+            cmbSelection.ValueMember = "UUID";
+            cmbSelection.DataSource = items;
+            cmbSelection.SelectedIndex = 0;
         }
 
         private void PopulateResourceComboFromSurvey()
@@ -701,21 +754,34 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Selection: unrefined resources from warehouse + actively mined resources + synthetic recipes
             flpSelection.Visible = true;
-            bool needsComboPopulation = structureData.ProcessCompletionTime != null
-                || !string.IsNullOrEmpty(structureData.RefiningResource);
-            if (needsComboPopulation)
+            bool hasActiveProcess = structureData.ProcessCompletionTime != null;
+            bool hasSelection = !string.IsNullOrEmpty(structureData.RefiningResource);
+            if (hasActiveProcess && hasSelection)
+            {
+                // Active process: just show the selected item, don't build full list
+                string displayKey = structureData.RefiningResource + "|" + structureData.RefiningResourcePurity;
+                var recipe = RefiningRecipes.FindByInput(structureData.RefiningResource, structureData.RefiningResourcePurity);
+                if (recipe != null) displayKey += "|S" + recipe.Tier;
+                string displayName = structureData.RefiningResource + " (" + (structureData.RefiningResourcePurity ?? "") + ")";
+                if (recipe != null) displayName = recipe.OutputResource + " (S" + recipe.Tier + ")";
+                var items = new List<RefinerySelectionItem>
+                {
+                    new RefinerySelectionItem { Key = displayKey, DisplayName = displayName,
+                        ResourceName = structureData.RefiningResource, Purity = structureData.RefiningResourcePurity }
+                };
+                cmbSelection.DataSource = null;
+                cmbSelection.DisplayMember = "DisplayName";
+                cmbSelection.ValueMember = "Key";
+                cmbSelection.DataSource = items;
+                cmbSelection.SelectedIndex = 0;
+            }
+            else if (hasSelection)
             {
                 PopulateSelectionWithUnrefinedResources();
-                if (!string.IsNullOrEmpty(structureData.RefiningResource))
-                {
-                    string restoreKey = structureData.RefiningResource + "|" + structureData.RefiningResourcePurity;
-                    var recipe = RefiningRecipes.FindByInput(structureData.RefiningResource, structureData.RefiningResourcePurity);
-                    if (recipe != null)
-                    {
-                        restoreKey += "|S" + recipe.Tier;
-                    }
-                    cmbSelection.SelectedValue = restoreKey;
-                }
+                string restoreKey = structureData.RefiningResource + "|" + structureData.RefiningResourcePurity;
+                var recipe = RefiningRecipes.FindByInput(structureData.RefiningResource, structureData.RefiningResourcePurity);
+                if (recipe != null) restoreKey += "|S" + recipe.Tier;
+                cmbSelection.SelectedValue = restoreKey;
             }
             txtSelectionFilter.Enabled = enableCmbSelection;
             cmbSelection.Enabled = enableCmbSelection;
@@ -941,15 +1007,19 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Selection: researchable blueprints
             flpSelection.Visible = true;
-            bool needsComboPopulation = structureData.ProcessCompletionTime != null
-                || !string.IsNullOrEmpty(structureData.ResearchingBlueprintUUID);
-            if (needsComboPopulation)
+            bool hasActiveProcess = structureData.ProcessCompletionTime != null;
+            bool hasSelection = !string.IsNullOrEmpty(structureData.ResearchingBlueprintUUID);
+            if (hasActiveProcess && hasSelection)
+            {
+                // Active process: just show the selected blueprint, don't build full list
+                var bp = _playerContext.FindBlueprint(structureData.ResearchingBlueprintUUID);
+                string displayName = bp != null ? bp.ExtendedName : structureData.ResearchingBlueprintUUID;
+                SetSingleItemSelectionCombo(structureData.ResearchingBlueprintUUID, displayName);
+            }
+            else if (hasSelection)
             {
                 PopulateSelectionWithResearchableBlueprints();
-                if (!string.IsNullOrEmpty(structureData.ResearchingBlueprintUUID))
-                {
-                    cmbSelection.SelectedValue = structureData.ResearchingBlueprintUUID;
-                }
+                cmbSelection.SelectedValue = structureData.ResearchingBlueprintUUID;
             }
             txtSelectionFilter.Enabled = enableCmbSelection;
             cmbSelection.Enabled = enableCmbSelection;
@@ -1096,15 +1166,19 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Selection: manufacturable blueprints
             flpSelection.Visible = true;
-            bool needsComboPopulation = structureData.ProcessCompletionTime != null
-                || !string.IsNullOrEmpty(structureData.ManufacturingBlueprintUUID);
-            if (needsComboPopulation)
+            bool hasActiveProcess = structureData.ProcessCompletionTime != null;
+            bool hasSelection = !string.IsNullOrEmpty(structureData.ManufacturingBlueprintUUID);
+            if (hasActiveProcess && hasSelection)
+            {
+                // Active process: just show the selected blueprint, don't build full list
+                var bp = _playerContext.FindBlueprint(structureData.ManufacturingBlueprintUUID);
+                string displayName = bp != null ? bp.ExtendedName : structureData.ManufacturingBlueprintUUID;
+                SetSingleItemSelectionCombo(structureData.ManufacturingBlueprintUUID, displayName);
+            }
+            else if (hasSelection)
             {
                 PopulateSelectionWithManufacturableBlueprints();
-                if (!string.IsNullOrEmpty(structureData.ManufacturingBlueprintUUID))
-                {
-                    cmbSelection.SelectedValue = structureData.ManufacturingBlueprintUUID;
-                }
+                cmbSelection.SelectedValue = structureData.ManufacturingBlueprintUUID;
             }
             txtSelectionFilter.Enabled = enableCmbSelection;
             cmbSelection.Enabled = enableCmbSelection;
@@ -1269,15 +1343,25 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Selection: commodities filtered by CommodityIndustry
             flpSelection.Visible = true;
-            bool needsComboPopulation = structureData.ProcessCompletionTime != null
-                || !string.IsNullOrEmpty(structureData.ManufacturingCommodityName);
-            if (needsComboPopulation)
+            bool hasActiveProcess = structureData.ProcessCompletionTime != null;
+            bool hasSelection = !string.IsNullOrEmpty(structureData.ManufacturingCommodityName);
+            if (hasActiveProcess && hasSelection)
+            {
+                // Active process: just show the selected commodity, don't build full list
+                var items = new List<CommoditySelectionItem>
+                {
+                    new CommoditySelectionItem { Name = structureData.ManufacturingCommodityName, DisplayName = structureData.ManufacturingCommodityName }
+                };
+                cmbSelection.DataSource = null;
+                cmbSelection.DisplayMember = "DisplayName";
+                cmbSelection.ValueMember = "Name";
+                cmbSelection.DataSource = items;
+                cmbSelection.SelectedIndex = 0;
+            }
+            else if (hasSelection)
             {
                 PopulateSelectionWithCommodities();
-                if (!string.IsNullOrEmpty(structureData.ManufacturingCommodityName))
-                {
-                    cmbSelection.SelectedValue = structureData.ManufacturingCommodityName;
-                }
+                cmbSelection.SelectedValue = structureData.ManufacturingCommodityName;
             }
             txtSelectionFilter.Enabled = enableCmbSelection;
             cmbSelection.Enabled = enableCmbSelection;
