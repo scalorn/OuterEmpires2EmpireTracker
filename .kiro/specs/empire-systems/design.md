@@ -620,6 +620,7 @@ public class StockPlan
     public string UUID { get; set; }
     public string Name { get; set; } = string.Empty;
     public string OwnerUUID { get; set; } = string.Empty;
+    public string ReplenishmentBuildPlanUUID { get; set; } = string.Empty;
     public List<StockTarget> Targets { get; set; } = new List<StockTarget>();
 }
 
@@ -644,6 +645,9 @@ public class StockTarget
     [JsonConverter(typeof(StringEnumConverter))]
     public StockTargetScope Scope { get; set; } = StockTargetScope.EmpireWide;
     public string LocationUUID { get; set; } = string.Empty;  // Colony or Station UUID when scoped
+
+    // Replenishment (standalone targets only — plan targets use StockPlan.ReplenishmentBuildPlanUUID)
+    public string ReplenishmentBuildPlanUUID { get; set; } = string.Empty;
 }
 ```
 
@@ -3093,17 +3097,21 @@ This means the cascade is advisory — it advances items through the pipeline wh
 
 Status ordinal: Staged(0) < Delivering(1) < Ready(2) < InProgress(3) < Completed(4). Cascade sets `max(currentStatus, computedStatus)`.
 
-### OQ-35: StockTarget Replenishment Plan Designation (Iteration 7)
+### OQ-35: StockTarget Replenishment Plan Designation (Iteration 7) — RESOLVED
 
-When `StockTargetService.GenerateReplenishmentItems()` creates build items for shortfalls, they need to go into a `BuildPlan`.
+**Decision:** Option (c) — user designates a target build plan on the StockPlan or standalone StockTarget. When the stock target check finds shortfalls, replenishment items are created in the designated plan.
 
-Question: Which BuildPlan receives the auto-generated items? Options:
-- (a) One auto-replenishment plan per player, auto-created if missing (e.g. "Auto-Replenishment").
-- (b) One plan per StockPlan, named after the stock plan.
-- (c) User designates a target plan on the StockPlan or in preferences.
-- (d) The "Check & Generate Orders" button prompts the user to select/create a plan.
+Model change — add to `StockPlan`:
+```csharp
+public string ReplenishmentBuildPlanUUID { get; set; } = string.Empty;
+```
 
-Impact: Affects StockTargetService, the FormStockTargets "Check & Generate Orders" flow, and whether replenishment is fully automatic or user-confirmed.
+Add to `StockTarget` (for standalone targets):
+```csharp
+public string ReplenishmentBuildPlanUUID { get; set; } = string.Empty;
+```
+
+FormStockTargets shows a build plan selector combo on both the plan detail panel and the standalone target edit panel. If no replenishment plan is designated when "Check & Generate Orders" is clicked, the form prompts the user to select or create one before proceeding.
 
 ### OQ-36: Crate Volume in Delivery Planning (Iteration 3)
 
