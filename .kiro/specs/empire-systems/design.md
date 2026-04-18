@@ -627,8 +627,6 @@ public class StockPlan
 public class StockTarget
 {
     public string UUID { get; set; }
-    public string OwnerUUID { get; set; } = string.Empty;  // Set for standalone targets
-    public string StockPlanUUID { get; set; } = string.Empty;  // Set when part of a plan
 
     // What item (individual item OR ship template)
     [JsonConverter(typeof(StringEnumConverter))]
@@ -645,9 +643,6 @@ public class StockTarget
     [JsonConverter(typeof(StringEnumConverter))]
     public StockTargetScope Scope { get; set; } = StockTargetScope.EmpireWide;
     public string LocationUUID { get; set; } = string.Empty;  // Colony or Station UUID when scoped
-
-    // Replenishment (standalone targets only — plan targets use StockPlan.ReplenishmentBuildPlanUUID)
-    public string ReplenishmentBuildPlanUUID { get; set; } = string.Empty;
 }
 ```
 
@@ -768,17 +763,16 @@ public class StockProfileEntry
 {
     public string GroupID { get; set; } = string.Empty;  // Entries with same GroupID are ORed
 
-    // Reference to either a StockPlan or a standalone StockTarget (one or the other)
+    // Reference to a StockPlan
     public string StockPlanUUID { get; set; } = string.Empty;
-    public string StockTargetUUID { get; set; } = string.Empty;
 }
 ```
 
 Design decisions:
 - GroupID is a string — entries with the same GroupID are ORed (max across overlapping components). Different GroupIDs are ANDed (summed).
-- Each entry references either a StockPlan (by UUID) or a standalone StockTarget (by UUID), not both.
+- Each entry references a StockPlan by UUID. There are no standalone targets — simple targets are modeled as single-target plans.
 - StockPlans are reusable — the same plan UUID can appear in multiple profiles.
-- Evaluation order: expand all targets/plans in each entry → OR within groups → AND across groups → sum across profiles + standalone targets.
+- Evaluation order: expand all targets in each plan → OR within groups → AND across groups → sum across profiles.
 
 ### WarehouseOverflowRule
 
@@ -882,7 +876,6 @@ public class PlayerRoot
     public Station[] Station { get; set; }
     public MarketListing[] MarketListing { get; set; }
     public MarketTransaction[] MarketTransaction { get; set; }
-    public StockTarget[] StockTarget { get; set; }
     public StockPlan[] StockPlan { get; set; }
     public StockProfile[] StockProfile { get; set; }
     public SupplyChain[] SupplyChain { get; set; }
@@ -1351,7 +1344,6 @@ public List<Ship> ShipList;
 public List<Station> StationList;
 public List<MarketListing> MarketListingList;
 public List<MarketTransaction> MarketTransactionList;
-public List<StockTarget> StockTargetList;
 public List<StockPlan> StockPlanList;
 public List<StockProfile> StockProfileList;
 public List<SupplyChain> SupplyChainList;
@@ -1390,7 +1382,6 @@ playerRoot.Ship = ShipList.ToArray();
 playerRoot.Station = StationList.ToArray();
 playerRoot.MarketListing = MarketListingList.ToArray();
 playerRoot.MarketTransaction = MarketTransactionList.ToArray();
-playerRoot.StockTarget = StockTargetList.ToArray();
 playerRoot.SupplyChain = SupplyChainList.ToArray();
 playerRoot.Faction = FactionList.ToArray();
 playerRoot.ExternalCharacter = ExternalCharacterList.ToArray();
@@ -1561,7 +1552,7 @@ The existing reference counters don't account for all reference sources. These e
 - `Ship.HullBlueprintUUID` and `Ship.Components[].BlueprintUUID`
 - `Station.StationBlueprintUUID` and `Station.Components[].BlueprintUUID`
 - `MarketListing.ItemReferenceID` (when ItemType = Blueprint)
-- `StockTarget.ItemReferenceID` (when ItemType = Blueprint)
+- `StockPlan.Targets[].ItemReferenceID` (when ItemType = Blueprint)
 
 Note: These new reference sources only exist after the new entity types are implemented. The counter expansion should be done as each iteration adds the referencing entity. Iteration 1 adds BuildItem → expand for BuildItem.BlueprintUUID. Iteration 2 adds ShipTemplate/Ship → expand for those. And so on.
 
@@ -1569,7 +1560,7 @@ Note: These new reference sources only exist after the new entity types are impl
 - `BuildItem.ColonyUUID` (Iteration 1)
 - `SupplyChainStage.LocationUUID` when Colony (Iteration 6)
 - `WarehouseOverflowRule.ColonyUUID` and `.DestinationUUID` when Colony (Iteration 6)
-- `StockTarget.LocationUUID` when Scope=Colony (Iteration 7)
+- `StockPlan.Targets[].LocationUUID` when Scope=Colony (Iteration 7)
 
 **SurveyReferenceCounter** — add count for:
 - `BuildItem.MiningSurveyUUID` (Iteration 6)
@@ -2073,66 +2064,56 @@ Controls:
 
 ### FormStockTargets (Iteration 7)
 
-MDI child form. Left-list / right-detail pattern with plans and standalone targets on the left, targets on the right.
+MDI child form. Left-list / right-detail pattern with plans on the left and targets on the right. All stock targets live inside plans — simple targets like "20k Munitions" are single-target plans.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ #1 - Stock Targets                                                      [_][□][X]│
 ├──────────────────────┬──────────────────────────────────────────────────────────┤
 │ Filter: [__________] │ Plan: [Ship Stock for Faction Alpha___]                 │
-│                      │                                                         │
-│ ── Plans ──────────  │ Targets:                                                │
-│ ┌──────────────────┐ │ ┌──────────┬──────────────┬────────┬───────┬──────┬────┐│
-│ │▸ Faction Alpha   │ │ │ Type     │ Item         │ Target │ Scope │ Curr │ Δ  ││
-│ │  Faction Beta    │ │ ├──────────┼──────────────┼────────┼───────┼──────┼────┤│
-│ │  Base Supplies   │ │ │ ShipTmpl │ Keystone     │     10 │Empire │    7 │ -3 ││
+│                      │ Replenishment Plan: [Filter:___] [Restock Orders    ▼]  │
+│ ┌──────────────────┐ │                                                         │
+│ │▸ Faction Alpha   │ │ Targets:                                                │
+│ │  Faction Beta    │ │ ┌──────────┬──────────────┬────────┬───────┬──────┬────┐│
+│ │  Base Supplies   │ │ │ Type     │ Item         │ Target │ Scope │ Curr │ Δ  ││
+│ │  20k Munitions   │ │ ├──────────┼──────────────┼────────┼───────┼──────┼────┤│
+│ │  Spare Reactors  │ │ │ ShipTmpl │ Keystone     │     10 │Empire │    7 │ -3 ││
 │ │                  │ │ │ ShipTmpl │ Vanguard     │     10 │Empire │   10 │  0 ││
-│ └──────────────────┘ │ │ Commodty │ Fuel Cells   │    500 │Stn A  │  320 │-180││
-│ [New Plan] [Delete]  │ └──────────┴──────────────┴────────┴───────┴──────┴────┘│
-│                      │                                                         │
-│ ── Standalone ─────  │ Add Target:                                             │
-│ ┌──────────────────┐ │ Type:[ShipTemplate▼] Item:[Keystone          ▼]        │
-│ │▸ 20k Munitions   │ │ Target Qty:[10] Critical:[3]                            │
-│ │  Spare Reactors  │ │ Scope:[EmpireWide▼] Location:[                ▼]       │
+│ │                  │ │ │ Commodty │ Fuel Cells   │    500 │Stn A  │  320 │-180││
+│ │                  │ │ └──────────┴──────────────┴────────┴───────┴──────┴────┘│
+│ │                  │ │                                                         │
+│ │                  │ │ Add Target:                                             │
+│ │                  │ │ Type:[ShipTemplate▼] Item:[Keystone          ▼]        │
+│ │                  │ │ Target Qty:[10] Critical:[3]                            │
+│ │                  │ │ Scope:[EmpireWide▼] Location:[                ▼]       │
 │ │                  │ │ [Add Target] [Remove Target]                            │
+│ │                  │ │                                                         │
+│ │                  │ │ Expanded Components (Keystone × 10):                    │
+│ │                  │ │ ┌──────────────────┬──────────┬──────────┬──────────┐   │
+│ │                  │ │ │ Component        │ Required │ In Stock │Shortfall │   │
+│ │                  │ │ │ Clipper Hull Mk3 │       10 │        7 │        3 │   │
+│ │                  │ │ │ Reactor Mk3      │       10 │       12 │        0 │   │
+│ │                  │ │ │ Drive Mk3        │       10 │        8 │        2 │   │
+│ │                  │ │ │ Cargo Pod Mk2    │       20 │       15 │        5 │   │
+│ │                  │ │ └──────────────────┴──────────┴──────────┴──────────┘   │
+│ │                  │ │                                                         │
+│ │                  │ │ [Check & Generate Orders]                               │
 │ └──────────────────┘ │                                                         │
-│ [New Target] [Delete]│ Expanded Components (Keystone × 10):                    │
-│                      │ ┌──────────────────┬──────────┬──────────┬──────────┐   │
-│                      │ │ Component        │ Required │ In Stock │Shortfall │   │
-│                      │ │ Clipper Hull Mk3 │       10 │        7 │        3 │   │
-│                      │ │ Reactor Mk3      │       10 │       12 │        0 │   │
-│                      │ │ Drive Mk3        │       10 │        8 │        2 │   │
-│                      │ │ Cargo Pod Mk2    │       20 │       15 │        5 │   │
-│                      │ └──────────────────┴──────────┴──────────┴──────────┘   │
-│                      │                                                         │
-│                      │ [Check & Generate Orders]                               │
+│[New Plan][Quick Add] │                                                         │
+│ [Delete]             │                                                         │
 ├──────────────────────┴─────────────────────────────────────────────────────────┤
 │ [Save]                                                                         │
 └────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-The left panel has two sections, each with its own list and buttons:
-
-Plans section:
-- `lvwStockPlans` (ListView) showing named stock plans
-- `cmdNewPlan` creates a new StockPlan. The right panel shows the plan name and its targets grid.
-- `cmdDeletePlan` deletes the selected plan and all its targets.
-
-Standalone section:
-- `lvwStandaloneTargets` (ListView) showing standalone targets by item name
-- `cmdNewTarget` creates a new standalone StockTarget (no plan). The right panel shows the target's fields directly — same add-target panel but for a single target rather than a list.
-- `cmdDeleteTarget` deletes the selected standalone target.
-
-When a plan is selected in the top list, the right panel shows the plan name, the targets grid, and the add-target panel for adding targets to that plan. When a standalone target is selected in the bottom list, the right panel shows that single target's fields for editing (type, item, qty, critical, scope, location). Selecting in one list deselects the other.
-
 Controls:
-- Left: `flpSearchList` → `txtFilter` (shared filter), Plans section (`lvwStockPlans` + `cmdNewPlan` / `cmdDeletePlan`), Standalone section (`lvwStandaloneTargets` + `cmdNewTarget` / `cmdDeleteTarget`)
-- Right (plan selected): `txtPlanName`, `dgvTargets` (DataGridView with color-coded shortfall column: green=0, yellow=below target, red=below critical), add-target panel, expanded components panel
-- Right (standalone selected): same fields as add-target panel but bound to the selected target for direct editing
+- Left: `flpSearchList` → `txtPlanFilter` + `lvwStockPlans` (ListView) + `cmdNewPlan` / `cmdQuickAdd` / `cmdDeletePlan`
+- `cmdNewPlan` creates an empty plan. `cmdQuickAdd` creates a plan with a single target in one step (prompts for item type, item, quantity, scope — names the plan after the item).
+- Right: `txtPlanName`, `cmbReplenishmentPlan` (FilteredComboBox of build plans), `dgvTargets` (DataGridView with color-coded shortfall column: green=0, yellow=below target, red=below critical), add-target panel, expanded components panel
 - `dgvTargets` columns: Type, Item, TargetQty, CriticalThreshold, Scope, Location, CurrentQty, Shortfall
 - Add-target panel: `cmbTargetType`, `cmbTargetItem` (FilteredComboBox), `txtTargetQty`, `txtCriticalThreshold`, `cmbScope`, `cmbLocation`, `cmdAddTarget` / `cmdRemoveTarget`
 - Expanded components panel: `dgvExpandedComponents` (read-only) — visible when a ShipTemplate target is selected, shows per-component breakdown
-- "Check & Generate Orders" runs StockTargetService.CheckTargets, shows results, and creates build items for shortfalls
+- "Check & Generate Orders" runs StockTargetService.CheckTargets, shows results, and creates build items in the designated replenishment plan
 
 ### FormContacts (Iteration 1 — data model, form in later iteration)
 
@@ -2373,9 +2354,8 @@ Controls:
 - Profiles tab left section: `txtProfileFilter`, `lvwProfiles` (ListView), `cmdNewProfile` / `cmdDeleteProfile`
 - Profiles tab right section: `txtProfileName`, `dgvEntries` (DataGridView), add-entry panel, logic summary label
 - `dgvEntries` columns: GroupID (editable text), Type (Plan or Target), Plan/Target name (read-only, resolved from UUID)
-- Add-entry panel: `txtGroupID`, `cmbEntryType` (Plan or Target), `txtEntryFilter`, `cmbEntry` (FilteredComboBox — populates with StockPlans or standalone StockTargets based on type), `cmdAddEntry` / `cmdRemoveEntry`
+- Add-entry panel: `txtGroupID`, `txtEntryFilter`, `cmbEntry` (FilteredComboBox of StockPlans), `cmdAddEntry` / `cmdRemoveEntry`
 - Logic summary: read-only label auto-generated from the entries, showing the AND/OR grouping in plain language. Entries with the same GroupID are ORed (max), different GroupIDs are ANDed (summed).
-- `cmbEntryType` switches the combo data source between StockPlans and standalone StockTargets.
 
 ## Reference Counting & Delete Protection
 
@@ -2387,11 +2367,11 @@ The complete cross-entity reference map. Each row shows an entity, what referenc
 
 | Entity | Referenced By | Reference Counter |
 |---|---|---|
-| Blueprint | ColonyStructure (Flatpack, Research, Manufacturing), BuildItem.BlueprintUUID, ShipTemplate.HullBlueprintUUID, ShipTemplate.Components[].BlueprintUUID, Ship.HullBlueprintUUID, Ship.Components[].BlueprintUUID, Station.Components[].BlueprintUUID, Station.StationBlueprintUUID, Survey.ScannerBlueprintUUID, Blueprint.BaseBlueprintUUID, MarketListing.ItemReferenceID (when ItemType=Blueprint), MarketTransaction.ItemReferenceID (when ItemType=Blueprint), StockTarget.ItemReferenceID (when ItemType=Blueprint) | BlueprintReferenceCounter (expand existing) |
-| Colony | DeliveryRoute stops (DestinationUUID), DeliveryPlan stops (DestinationUUID), BuildItem.ColonyUUID, SupplyChainStage.LocationUUID (when Colony), WarehouseOverflowRule.ColonyUUID, StockTarget.LocationUUID (when Scope=Colony) | ColonyReferenceCounter (expand existing) |
+| Blueprint | ColonyStructure (Flatpack, Research, Manufacturing), BuildItem.BlueprintUUID, ShipTemplate.HullBlueprintUUID, ShipTemplate.Components[].BlueprintUUID, Ship.HullBlueprintUUID, Ship.Components[].BlueprintUUID, Station.Components[].BlueprintUUID, Station.StationBlueprintUUID, Survey.ScannerBlueprintUUID, Blueprint.BaseBlueprintUUID, MarketListing.ItemReferenceID (when ItemType=Blueprint), MarketTransaction.ItemReferenceID (when ItemType=Blueprint), StockPlan.Targets[].ItemReferenceID (when ItemType=Blueprint) | BlueprintReferenceCounter (expand existing) |
+| Colony | DeliveryRoute stops (DestinationUUID), DeliveryPlan stops (DestinationUUID), BuildItem.ColonyUUID, SupplyChainStage.LocationUUID (when Colony), WarehouseOverflowRule.ColonyUUID, StockPlan.Targets[].LocationUUID (when Scope=Colony) | ColonyReferenceCounter (expand existing) |
 | Survey | ColonyStructure.MiningSurvey, BuildItem.MiningSurveyUUID | SurveyReferenceCounter (expand existing) |
-| Station | DeliveryRoute stops (DestinationUUID when Station), DeliveryPlan stops (DestinationUUID when Station), Ship.LocationUUID (when Station), MarketListing.StationUUID, MarketTransaction.StationUUID, BuildItem.AssemblyLocationUUID (when Station), SupplyChainStage.LocationUUID (when Station), StockTarget.LocationUUID (when Scope=Station), WarehouseOverflowRule.DestinationUUID (when Station) | StationReferenceCounter (new) |
-| ShipTemplate | Ship.TemplateUUID, BuildItem.ShipTemplateUUID, StockTarget.ShipTemplateUUID | ShipTemplateReferenceCounter (new) |
+| Station | DeliveryRoute stops (DestinationUUID when Station), DeliveryPlan stops (DestinationUUID when Station), Ship.LocationUUID (when Station), MarketListing.StationUUID, MarketTransaction.StationUUID, BuildItem.AssemblyLocationUUID (when Station), SupplyChainStage.LocationUUID (when Station), StockPlan.Targets[].LocationUUID (when Scope=Station), WarehouseOverflowRule.DestinationUUID (when Station) | StationReferenceCounter (new) |
+| ShipTemplate | Ship.TemplateUUID, BuildItem.ShipTemplateUUID, StockPlan.Targets[].ShipTemplateUUID | ShipTemplateReferenceCounter (new) |
 | Ship | DeliveryPlan.ShipUUID | ShipReferenceCounter (new) |
 | Asteroid | Survey.AsteroidUUID, SupplyChainStage.LocationUUID (when Asteroid), DeliveryRoute stops (DestinationUUID when Asteroid) | AsteroidReferenceCounter (new) |
 | Faction | PlayerProfile.FactionUUID, ExternalCharacter.FactionUUID | FactionReferenceCounter (new) |
@@ -2399,7 +2379,6 @@ The complete cross-entity reference map. Each row shows an entity, what referenc
 | DeliveryRoute | BuildPlan (user selects route for delivery generation), DeliveryPlan.RouteUUID, WarehouseOverflowRule.DeliveryRouteUUID, SupplyChainStage.DeliveryRouteUUID | DeliveryRouteReferenceCounter (new) |
 | DeliveryPlan | BuildPlan.DeliveryPlanUUID | DeliveryPlanReferenceCounter (new) |
 | StockPlan | StockProfileEntry.StockPlanUUID | StockPlanReferenceCounter (new) |
-| StockTarget (standalone) | StockProfileEntry.StockTargetUUID | StockTargetReferenceCounter (new) |
 | MarketListing | MarketTransaction.ListingUUID | MarketListingReferenceCounter (new) |
 | SupplyChain | — (top-level, not referenced by other entities) | — |
 | WarehouseOverflowRule | — (top-level, not referenced by other entities) | — |
@@ -2416,14 +2395,14 @@ The existing counters need to be expanded to cover new reference sources:
 - Ship.HullBlueprintUUID and Ship.Components[].BlueprintUUID
 - Station.StationBlueprintUUID and Station.Components[].BlueprintUUID
 - MarketListing.ItemReferenceID (when ItemType = Blueprint)
-- StockTarget.ItemReferenceID (when ItemType = Blueprint)
+- StockPlan.Targets[].ItemReferenceID (when ItemType = Blueprint)
 
 **ColonyReferenceCounter** — currently counts: DeliveryRoute stops, DeliveryPlan stops. Must add:
 - BuildItem.ColonyUUID (build items allocated to this colony)
 - SupplyChainStage.LocationUUID (when LocationType = Colony)
 - WarehouseOverflowRule.ColonyUUID (overflow rules for this colony)
 - WarehouseOverflowRule.DestinationUUID (when DestinationType = Colony)
-- StockTarget.LocationUUID (when Scope = Colony)
+- StockPlan.Targets[].LocationUUID (when Scope = Colony)
 
 **SurveyReferenceCounter** — currently counts: ColonyStructure.MiningSurvey. Must add:
 - BuildItem.MiningSurveyUUID (build items referencing this survey for mining)
@@ -2518,15 +2497,6 @@ public class StockPlanReferenceCounter
     public StockPlanReferenceReport CountReferences(string planUUID);
 }
 
-// Services/StockTargetReferenceCounter.cs (standalone targets only)
-public class StockTargetReferenceCounter
-{
-    public StockTargetReferenceCounter(
-        IEnumerable<StockProfile> profiles);
-
-    public StockTargetReferenceReport CountReferences(string targetUUID);
-}
-
 // Services/MarketListingReferenceCounter.cs
 public class MarketListingReferenceCounter
 {
@@ -2554,7 +2524,6 @@ Every form with a Delete button must follow this pattern (from the forms steerin
 | FormStation | Station | StationReferenceCounter | Yes |
 | FormMarket (Listings) | MarketListing | MarketListingReferenceCounter | Yes |
 | FormStockTargets (Plans) | StockPlan | StockPlanReferenceCounter | Yes |
-| FormStockTargets (Standalone) | StockTarget | StockTargetReferenceCounter | Yes |
 | FormContacts (Factions) | Faction | FactionReferenceCounter | Yes |
 | FormContacts (ExtChars) | ExternalCharacter | — (not referenced by UUID) | No |
 | FormAsteroid | Asteroid | AsteroidReferenceCounter | Yes |
@@ -2727,7 +2696,7 @@ XxxReferenceCounter.CountReferences(uuid)
   ├─ scan ShipList → each ship.Components                ← ★ O(ships × components)
   ├─ scan StationList → each station.Components          ← ★ O(stations × components)
   ├─ scan MarketListingList                              ← ★ O(listings)
-  ├─ scan StockTargetList                                ← ★ O(targets)
+  ├─ scan StockPlanList → each plan.Targets              ← ★ O(plans × targets)
   ├─ scan DeliveryRouteList → each route.Stops           ← O(routes × stops)
   ├─ scan DeliveryPlanList → each plan.Stops             ← O(plans × stops)
   │
@@ -3023,13 +2992,21 @@ Every new form must:
 
 These questions were identified during design review and need resolution before implementation of the affected iteration. Each is tagged with the iteration it blocks.
 
-### OQ-30: StockTarget Persistence — Nested vs Flat (Iteration 7)
+### OQ-30: StockTarget Persistence — Nested vs Flat (Iteration 7) — RESOLVED
 
-The `StockPlan` has a nested `List<StockTarget> Targets`, but `PlayerRoot` also has a top-level `StockTarget[]` array. The `StockTarget` class has both `OwnerUUID` (for standalone) and `StockPlanUUID` (when part of a plan).
+**Decision:** Eliminate standalone StockTargets entirely. Everything is a StockPlan with nested targets. What was previously a "standalone target" (e.g. "20k Munitions") is modeled as a StockPlan with a single target inside it. This simplifies the data model, persistence, UI, and reference counting.
 
-Question: Are plan targets nested inside `StockPlan.Targets` (like `BuildPlan.Items`) with only standalone targets in `PlayerRoot.StockTarget[]`? Or are all targets flat in `PlayerRoot.StockTarget[]` with `StockPlanUUID` as a foreign key and `StockPlan.Targets` populated at load time?
+Changes:
+- `PlayerRoot.StockTarget[]` removed. All targets live inside `StockPlan.Targets`.
+- `StockTarget.OwnerUUID` removed (ownership is on the plan).
+- `StockTarget.StockPlanUUID` removed (targets are always nested, no foreign key needed).
+- `StockTarget.ReplenishmentBuildPlanUUID` removed (lives on StockPlan only).
+- `StockTargetList` on PlayerContext removed.
+- `StockProfileEntry.StockTargetUUID` removed — entries only reference StockPlans.
+- `StockTargetReferenceCounter` eliminated — no standalone targets to reference-count.
+- FormStockTargets simplified to a single plan list (no separate standalone section).
 
-Impact: Affects serialization, Init methods, cascade delete behavior, and how FormStockTargets saves data.
+The AND/OR composition system works the same way — StockProfiles reference StockPlans. A "simple" target like "20k Munitions" is just a plan named "20k Munitions" with one target inside it. The UI can streamline creation of single-target plans with a "Quick Add" button that creates the plan and target in one step.
 
 ### OQ-31: ShipComponentSlot SlotType Values (Iteration 2) — RESOLVED
 
@@ -3099,19 +3076,14 @@ Status ordinal: Staged(0) < Delivering(1) < Ready(2) < InProgress(3) < Completed
 
 ### OQ-35: StockTarget Replenishment Plan Designation (Iteration 7) — RESOLVED
 
-**Decision:** Option (c) — user designates a target build plan on the StockPlan or standalone StockTarget. When the stock target check finds shortfalls, replenishment items are created in the designated plan.
+**Decision:** Option (c) — user designates a target build plan on the StockPlan. When the stock target check finds shortfalls, replenishment items are created in the designated plan.
 
 Model change — add to `StockPlan`:
 ```csharp
 public string ReplenishmentBuildPlanUUID { get; set; } = string.Empty;
 ```
 
-Add to `StockTarget` (for standalone targets):
-```csharp
-public string ReplenishmentBuildPlanUUID { get; set; } = string.Empty;
-```
-
-FormStockTargets shows a build plan selector combo on both the plan detail panel and the standalone target edit panel. If no replenishment plan is designated when "Check & Generate Orders" is clicked, the form prompts the user to select or create one before proceeding.
+FormStockTargets shows a build plan selector combo on the plan detail panel. If no replenishment plan is designated when "Check & Generate Orders" is clicked, the form prompts the user to select or create one before proceeding.
 
 ### OQ-36: Crate Volume in Delivery Planning (Iteration 3) — RESOLVED
 
@@ -3159,7 +3131,7 @@ This reduces false shortfalls — if the player already has resources at a stati
 
 ### Property-Based Tests (FsCheck)
 
-One test per correctness property (Properties 1-10 above), minimum 100 iterations each. Custom generators for BuildPlan, BuildItem, ShipTemplate, Station, MarketListing, StockTarget.
+One test per correctness property (Properties 1-10 above), minimum 100 iterations each. Custom generators for BuildPlan, BuildItem, ShipTemplate, Station, MarketListing, StockPlan.
 
 ### Unit Tests
 
