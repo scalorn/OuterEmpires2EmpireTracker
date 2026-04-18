@@ -1070,16 +1070,111 @@ public static class ShipBuildService
     public static ShipStats ComputeStats(
         Blueprint hull, IEnumerable<ShipComponentSlot> components,
         Func<string, Blueprint> blueprintFinder);
+
+    /// <summary>
+    /// Computes station stats from station blueprint + installed components.
+    /// Stations support reactors, shields, weapons, hull plating, hull reinforcement,
+    /// hull sealant, GERTY drones, thrusters, and couplers.
+    /// They do not have drives, cargo pods, fuel tanks, jump drives, nav comps,
+    /// mining lasers, grapples, ore hoppers, or scanners.
+    /// </summary>
+    public static StationStats ComputeStationStats(
+        Blueprint stationBlueprint, IEnumerable<ShipComponentSlot> components,
+        Func<string, Blueprint> blueprintFinder);
 }
 
 public class ShipStats
 {
-    public decimal CargoCapacity { get; set; }
+    // Core
     public decimal TotalMass { get; set; }
     public decimal PowerGenerated { get; set; }
     public decimal PowerConsumed { get; set; }
+    public decimal PowerBalance { get; set; }           // Generated - Consumed
+    public decimal EngCapacityUsed { get; set; }
+
+    // Capacity
+    public decimal CargoCapacity { get; set; }          // Hull base + sum(Cargo Pod)
+    public decimal FuelCapacity { get; set; }           // Hull base + sum(Fuel Tank)
+    public decimal RawMaterialCapacity { get; set; }    // sum(Ore Hopper)
+    public int CrewSupported { get; set; }              // From hull
+
+    // Defence
+    public decimal TotalHealth { get; set; }            // Hull Health × (1 + sum(Hull Reinforcement %))
+    public decimal EnergyDefence { get; set; }          // Hull + sum(Hull Plating Energy Defence Rating)
+    public decimal KineticDefence { get; set; }         // Hull + sum(Hull Plating Kinetic Defence Rating)
+    public decimal MissileDefence { get; set; }         // Hull + sum(Hull Plating Missile Defence Rating)
+    public decimal ShieldHitpoints { get; set; }        // sum(Shield)
+    public decimal ShieldRegen { get; set; }            // sum(Shield)
+
+    // Propulsion
+    public decimal Acceleration { get; set; }           // sum(Main Drive)
+    public decimal RotationalThrust { get; set; }       // sum(Thruster)
+    public decimal MaxJumpDistance { get; set; }         // max(Jump Drive or Main Drive)
+    public decimal FuelPerJump { get; set; }            // from Jump Drive / Main Drive
+
+    // Mining (zero for non-mining ships)
+    public decimal MiningYield { get; set; }            // sum(Mining Laser)
+    public decimal MiningCycleTime { get; set; }        // Mining Laser base, modified by Grapple
+    public decimal MiningYieldIncrease { get; set; }    // sum(Asteroid Grapple)
+
+    // Scanning (zero for non-scanner ships)
+    public int ScanLevel { get; set; }                  // max(Scanner)
+    public decimal SensorAbundanceFactor { get; set; }  // from Scanner
+    public decimal PurityModifier { get; set; }         // from Scanner
+
+    // Weapons summary
+    public int SmallWeaponsInstalled { get; set; }
+    public int MediumWeaponsInstalled { get; set; }
+    public int LargeWeaponsInstalled { get; set; }
+
+    // Slot usage (installed / available from hull)
+    public string SlotSummary { get; set; } = string.Empty;  // For display: "Reactors 1/2, Drives 1/1, ..."
+
+    // Hull identity
+    public string LicenseCareer { get; set; } = string.Empty;
+    public int LicenseLevel { get; set; }
+}
+
+/// <summary>
+/// Computed stats for a player-owned station. Subset of ShipStats —
+/// stations have reactors, shields, weapons, hull plating, and thrusters
+/// but no drives, cargo pods, fuel tanks, jump drives, mining equipment,
+/// or scanners.
+/// </summary>
+public class StationStats
+{
+    // Core
+    public decimal TotalMass { get; set; }
+    public decimal PowerGenerated { get; set; }
+    public decimal PowerConsumed { get; set; }
+    public decimal PowerBalance { get; set; }
+    public decimal EngCapacityUsed { get; set; }
+
+    // Defence
+    public decimal TotalHealth { get; set; }
+    public decimal EnergyDefence { get; set; }
+    public decimal KineticDefence { get; set; }
+    public decimal MissileDefence { get; set; }
+    public decimal ShieldHitpoints { get; set; }
+    public decimal ShieldRegen { get; set; }
+
+    // Weapons summary
+    public int SmallWeaponsInstalled { get; set; }
+    public int MediumWeaponsInstalled { get; set; }
+    public int LargeWeaponsInstalled { get; set; }
+
+    // Slot usage
+    public string SlotSummary { get; set; } = string.Empty;
 }
 ```
+
+Design decisions:
+- `ShipStats` covers every stat derivable from the hull + component blueprints in BaselineData.json. Properties that don't apply to a given ship (e.g. mining stats on a combat ship) are zero.
+- `StationStats` is a separate class rather than reusing `ShipStats` because stations lack propulsion, cargo, fuel, mining, and scanning. A shared base class would have too many always-zero fields on stations and would confuse the UI. Keeping them separate makes form binding straightforward.
+- `PowerBalance` is a convenience field (Generated - Consumed). Negative means the ship/station is underpowered.
+- `TotalHealth` accounts for Hull Reinforcement percentage bonuses: `hullHP × (1 + sum(reinforcement %))`.
+- `SlotSummary` is a pre-formatted string for display (e.g. "Reactors 1/2, Shields 1/2, Weapons 3/6"). Forms can also compute slot usage from the raw component list if they need structured data.
+- Weapon stats (damage, accuracy, rate of fire, range) are per-weapon and displayed in the component grid, not aggregated into the summary. The summary only tracks mount counts.
 
 ### MarketService (Iteration 5)
 
@@ -1464,12 +1559,31 @@ MDI child form. Left-list / right-detail pattern.
 │ │                  │ │         Slot:  [Reactor / 0  ▼]  [Install]             │
 │ │                  │ │                                                         │
 │ │                  │ │ Stats:                                                  │
-│ │                  │ │ ┌──────────────────┬────────────┐                       │
-│ │                  │ │ │ Cargo Capacity   │   2400 m³  │                       │
-│ │                  │ │ │ Total Mass       │  18500 kg  │                       │
-│ │                  │ │ │ Power Generated  │    850 MW  │                       │
-│ │                  │ │ │ Power Consumed   │    620 MW  │                       │
-│ │                  │ │ └──────────────────┴────────────┘                       │
+│ │                  │ │ ┌──────────────────────┬────────────┐                   │
+│ │                  │ │ │ Total Mass           │  18500 kg  │                   │
+│ │                  │ │ │ Power Generated      │    850 MW  │                   │
+│ │                  │ │ │ Power Consumed       │    620 MW  │                   │
+│ │                  │ │ │ Power Balance        │  + 230 MW  │                   │
+│ │                  │ │ │ Eng Capacity Used    │   1200     │                   │
+│ │                  │ │ ├──────────────────────┼────────────┤                   │
+│ │                  │ │ │ Cargo Capacity       │   2400 m³  │                   │
+│ │                  │ │ │ Fuel Capacity        │    800 m³  │                   │
+│ │                  │ │ │ Crew Supported       │      12    │                   │
+│ │                  │ │ ├──────────────────────┼────────────┤                   │
+│ │                  │ │ │ Total Health         │  15000 HP  │                   │
+│ │                  │ │ │ Shield HP            │   5000     │                   │
+│ │                  │ │ │ Shield Regen         │     25/s   │                   │
+│ │                  │ │ │ Energy Defence       │    120     │                   │
+│ │                  │ │ │ Kinetic Defence      │     85     │                   │
+│ │                  │ │ │ Missile Defence      │     60     │                   │
+│ │                  │ │ ├──────────────────────┼────────────┤                   │
+│ │                  │ │ │ Acceleration         │    4.2 m/s²│                   │
+│ │                  │ │ │ Rotational Thrust    │    3.8     │                   │
+│ │                  │ │ │ Max Jump Distance    │     12 AU  │                   │
+│ │                  │ │ ├──────────────────────┼────────────┤                   │
+│ │                  │ │ │ Weapons (S/M/L)      │   1/1/0    │                   │
+│ │                  │ │ │ License              │ Combat Lv3 │                   │
+│ │                  │ │ └──────────────────────┴────────────┘                   │
 │ │                  │ │                                                         │
 │ │                  │ │ [Order Build ▼]                                         │
 │ └──────────────────┘ │                                                         │
@@ -1484,7 +1598,7 @@ Controls:
 - Right: `flpTemplateData` → `txtTemplateName`, hull selector (`txtHullFilter` + `cmbHull`), `dgvComponents` (DataGridView), install panel, stats panel, `cmdOrderBuild`
 - `dgvComponents` columns: SlotType, SlotIndex, Blueprint (read-only), Actions (button column)
 - Install panel: `txtComponentFilter`, `cmbComponent` (FilteredComboBox), `cmbSlot`, `cmdInstall`
-- Stats panel: `dgvStats` (read-only DataGridView or labels) — computed from hull + components via ShipBuildService.ComputeStats
+- Stats panel: `dgvStats` (read-only DataGridView) — computed from hull + components via ShipBuildService.ComputeStats. Grouped into sections: Core (mass, power, eng capacity), Capacity (cargo, fuel, crew), Defence (health, shields, armour ratings), Propulsion (acceleration, thrust, jump), Weapons (mount counts, license). Mining and scanning sections shown only when relevant components are installed.
 - "Order Build" opens a dialog to select/create a build plan and specify assembly location
 
 ### FormShipInstance (Iteration 2)
@@ -1604,6 +1718,23 @@ Components tab (player-owned stations only):
 │ │                                                          │   │
 │ │ Install: Filter:[______] [Shield Gen Mk2          ▼]    │   │
 │ │          Slot:  [Shield / 0  ▼]  [Install]              │   │
+│ │                                                          │   │
+│ │ Stats:                                                   │   │
+│ │ ┌──────────────────────┬────────────┐                    │   │
+│ │ │ Total Mass           │  45000 kg  │                    │   │
+│ │ │ Power Generated      │   1200 MW  │                    │   │
+│ │ │ Power Consumed       │    850 MW  │                    │   │
+│ │ │ Power Balance        │  + 350 MW  │                    │   │
+│ │ ├──────────────────────┼────────────┤                    │   │
+│ │ │ Total Health         │  80000 HP  │                    │   │
+│ │ │ Shield HP            │  12000     │                    │   │
+│ │ │ Shield Regen         │     50/s   │                    │   │
+│ │ │ Energy Defence       │    250     │                    │   │
+│ │ │ Kinetic Defence      │    180     │                    │   │
+│ │ │ Missile Defence      │    120     │                    │   │
+│ │ ├──────────────────────┼────────────┤                    │   │
+│ │ │ Weapons (S/M/L)      │   1/1/0    │                    │   │
+│ │ └──────────────────────┴────────────┘                    │   │
 │ └──────────────────────────────────────────────────────────┘   │
 ```
 
@@ -1611,7 +1742,7 @@ Controls:
 - Left: `flpSearchList` → `txtStationFilter` + `lvwStations` (ListView) + `cmdNew` / `cmdDelete`
 - Right: `flpStationData` → name/type/ownership fields, `tabStationDetail` (TabControl with Hold, Components, Munitions tabs)
 - Hold tab: `cmbHoldPlayer` (player selector), `dgvHold` (DataGridView, editable), `dgvCrateContents` (detail grid), add-item panel, crate buttons
-- Components tab: `cmbStationBlueprint`, `dgvStationComponents` (same pattern as ship template), install panel
+- Components tab: `cmbStationBlueprint`, `dgvStationComponents` (same pattern as ship template), install panel, `dgvStationStats` (read-only) — computed via ShipBuildService.ComputeStationStats
 - Munitions tab: `dgvMunitions` (DataGridView) — visible only for armed player-owned stations
 
 ### Crate UI Pattern (All Inventory Views)
