@@ -30,3 +30,87 @@ The MainWindow menu provides File lifecycle operations (New/Open/Save/Save As/Ex
 
 **REQ-MM-030** Help > About SHALL display a modal dialog with application name, version, and copyright from assembly metadata.  
 **REQ-MM-031** Help > Contents (Ctrl+F1) SHALL open the help system. F1 SHALL open context-sensitive help for the active form.
+
+## User Interaction Flows
+
+### File Menu Operations
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Main as MainWindow
+    participant PC as PlayerContext
+    participant FS as File System
+
+    alt New
+        User->>Main: File > New
+        Main->>Main: Close all MDI children
+        Main->>PC: Clear all data
+        Main->>Main: Clear Last_Opened_Path, update title
+    else Open
+        User->>Main: File > Open
+        Main->>Main: Show OpenFileDialog (.json)
+        User->>Main: Select file
+        Main->>Main: Close all MDI children
+        Main->>PC: Load file
+        Main->>Main: Store Last_Opened_Path, update title
+    else Save
+        User->>Main: File > Save
+        alt Last_Opened_Path set
+            Main->>PC: WriteContext() to stored path
+        else No path
+            Main->>Main: Behave as Save As
+        end
+    else Save As
+        User->>Main: File > Save As
+        Main->>Main: Show SaveFileDialog (.json)
+        User->>Main: Confirm path
+        Main->>PC: WriteContext() to new path
+        Main->>Main: Update Last_Opened_Path, update title
+    end
+```
+
+### Application Startup
+
+```mermaid
+flowchart TD
+    A[App starts] --> B{Last_Opened_Path stored?}
+    B -->|yes| C{File exists?}
+    C -->|yes| D[Load file, update title]
+    C -->|no| E[Clear path, log warning]
+    E --> F[Load default PlayerData.json]
+    B -->|no| F
+    D --> G[Start BackgroundProcessor]
+    F --> G
+    G --> H[Display MainWindow]
+```
+
+## Form Mockup
+
+### MainWindow Menu Bar
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ OE2 Empire Tracker — PlayerData.json                                    [_][□][X] │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ File │ Manage │ Window │ Help │  Player: [▼ Alice              ]           │
+├──────┴────────┴────────┴──────┴─────────────────────────────────────────────┤
+│                                                                             │
+│  ┌─ File ──────────┐  ┌─ Manage ──────────────────┐  ┌─ Window ─────────┐ │
+│  │ New              │  │ Manage Blueprints          │  │ Cascade           │ │
+│  │ Open...          │  │ Manage Colonies            │  │ Tile Horizontal   │ │
+│  │ Save             │  │ Manage Colony Activity     │  │ Tile Vertical     │ │
+│  │ Save As...       │  │ Manage Colony Daily Build  │  │ ─────────────     │ │
+│  │ Preferences...   │  │ Manage Delivery Execution  │  │ #1 - Colonies     │ │
+│  │ ─────────────    │  │ Manage Delivery Routes     │  │ #2 - Blueprints   │ │
+│  │ Exit             │  │ Manage Player Profiles     │  └───────────────────┘ │
+│  └──────────────────┘  │ Manage Pricing Plans       │                       │
+│                        │ Manage Surveys             │                       │
+│                        └───────────────────────────┘                        │
+│                                                                             │
+│  (MDI child windows displayed here)                                         │
+│                                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Next Process: 45s │ Memory: 128 MB │ CPU: 2.1%                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```

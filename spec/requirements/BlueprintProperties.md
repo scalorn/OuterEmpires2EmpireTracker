@@ -32,3 +32,32 @@ Acceleration Rate, Cooldown Time, Deploy Time, Energy Damage Rating, Energy Defe
 
 **REQ-BPV-060** The following commodity industry types SHALL be available:
 Administration Block, Agridome, Centre Of Economics, Engineering Block, Healthcare Institute, Institute Of Defence, Leisure Industry Centre, Logistics Centre, Manufacturing Industry Centre, Mining Industry Centre, Off World Living Institute, Refining Industry Centre, Science Centre, Technology Institute.
+
+## Data Flow Diagram
+
+### Property Validation Pipeline
+
+```mermaid
+flowchart LR
+    subgraph Input
+        BT[BlueprintType<br/>Properties array]
+        BPV[BlueprintPropertyValidation<br/>type classification]
+    end
+
+    subgraph Validation
+        INT["Integer → ^[+-]?\\d+$"]
+        DEC["Decimal → ^[+-]?\\d+\\.?\\d*$"]
+        BOOL["Boolean → CheckBox control"]
+        TIME["Time → time string parse"]
+        CMB["ComboBox → CommodityIndustry list"]
+        UNK["Unknown → free text"]
+    end
+
+    subgraph Display["Blueprint Form Grid"]
+        CELL[Property cell<br/>validated input per type]
+    end
+
+    BT --> BPV
+    BPV --> INT & DEC & BOOL & TIME & CMB & UNK
+    INT & DEC & BOOL & TIME & CMB & UNK --> CELL
+```

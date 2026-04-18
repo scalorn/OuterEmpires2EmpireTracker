@@ -50,3 +50,70 @@ Import player profile data from the game's clipboard HTML. Parses character iden
 
 **REQ-PPI-080** The parser SHALL use SgmlReader and XPath queries, following the ColonyParser/SurveyParser pattern.  
 **REQ-PPI-081** The parser SHALL use ClipboardHelper.ExtractHtmlFragment for clipboard data extraction.
+
+## User Interaction Flow
+
+### Profile Import from Clipboard
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormPlayerProfile
+    participant Parser as PlayerProfileParser
+    participant PC as PlayerContext
+
+    User->>User: Copy character page HTML in game browser
+    User->>Form: Click [Import]
+    Form->>Form: Read HTML from clipboard via ClipboardHelper
+    alt No HTML in clipboard
+        Form->>User: Show informational message
+    else HTML found
+        Form->>Parser: Parse(htmlFragment)
+        Parser->>Parser: SgmlReader → XPath queries
+        Parser->>Parser: Extract name from ui_character_detail
+        Parser->>Parser: Extract faction from ui_text_purple
+        Parser->>Parser: Extract CitizenId, RegistrationDate, ActiveTime
+        Parser->>Parser: Extract TotalCredits from data-ui-tooltip
+        Parser->>Parser: Extract 3 rank tracks (Public, Private, Military)
+        Parser->>Parser: Extract skill points
+        Parser->>Parser: Match skill groups via SkillGroupName.Description
+        Parser->>Parser: Match skills via SkillName.Description
+        Parser-->>Form: Return parsed profile data
+
+        Form->>PC: Find profile by name (case-insensitive)
+        alt Exists
+            Form->>Form: Update existing profile fields
+        else New
+            Form->>Form: Create profile with generated UUID
+        end
+        Form->>PC: WriteContext()
+        Form->>Form: Refresh list, select imported profile
+    end
+```
+
+## Data Flow Diagram
+
+```mermaid
+flowchart LR
+    subgraph Input
+        CB[Clipboard HTML]
+    end
+
+    subgraph Parser["PlayerProfileParser"]
+        ID[Character Identity<br/>name, faction, citizenId]
+        CR[Credits<br/>data-ui-tooltip → decimal]
+        RK[Rank Tracks<br/>Public, Private, Military]
+        SP[Skill Points<br/>integer]
+        SG[Skill Groups<br/>10 groups → locked/unlocked]
+        SK[Individual Skills<br/>22 skills → level + training]
+    end
+
+    subgraph Output
+        PP[PlayerProfile<br/>updated or new]
+        JSON[PlayerData.json]
+    end
+
+    CB --> ID & CR & RK & SP & SG & SK
+    ID & CR & RK & SP & SG & SK --> PP
+    PP --> JSON
+```

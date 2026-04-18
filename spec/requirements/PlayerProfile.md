@@ -64,3 +64,112 @@ Additional profile fields from the game (not yet tracked):
 - Registration Date
 - Active Timer
 - Ship License Information (list of ship types based on ranks)
+
+## User Interaction Flows
+
+### Profile Selection and Editing
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormPlayerProfile
+    participant VM as PlayerProfileViewModel
+    participant PC as PlayerContext
+
+    User->>Form: Type in name filter
+    Form->>Form: Filter lvwPlayerProfiles (case-insensitive)
+
+    User->>Form: Click profile in list
+    Form->>VM: Load profile data
+    Form->>Form: Populate Name, Faction, Credits, SkillPoints
+    Form->>Form: Populate 3 rank blocks (Public, Private, Military)
+    Form->>Form: Set 10 skill group checkboxes
+    Form->>Form: Populate 22 PlayerSkillBlock controls
+```
+
+### Skill Training
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant PSB as PlayerSkillBlock
+    participant Profile as PlayerProfile
+
+    User->>PSB: Click [Start Training]
+    PSB->>Profile: Set skill TrainingStarted=true
+    PSB->>Profile: Set CompletionTime
+    PSB->>PSB: Start countdown timer
+    Note over PSB: All other skill blocks disable Start button
+
+    loop Every second
+        PSB->>PSB: Update countdown display
+    end
+
+    Note over PSB: Timer expires
+    PSB->>Profile: Increment skill level
+    PSB->>Profile: Clear training state
+```
+
+### Profile Import
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormPlayerProfile
+    participant Parser as PlayerProfileParser
+    participant PC as PlayerContext
+
+    User->>Form: Copy game HTML to clipboard
+    User->>Form: Click [Import]
+    Form->>Parser: Parse clipboard HTML
+    Parser->>Parser: Extract name, faction, credits
+    Parser->>Parser: Extract 3 rank tracks
+    Parser->>Parser: Extract skill points, groups, skills
+    Parser-->>Form: Return parsed profile data
+
+    Form->>PC: Find existing profile by name (case-insensitive)
+    alt Profile exists
+        Form->>Form: Update existing profile
+    else New profile
+        Form->>Form: Create new profile with UUID
+    end
+    Form->>PC: WriteContext()
+    Form->>Form: Refresh list, select imported profile
+```
+
+## Form Mockup
+
+### FormPlayerProfile — Main Layout
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ #1 - Manage Player Profiles                                             [_][□][X] │
+├──────────────────┬──────────────────────────────────────────────────────────┤
+│ Filter [________]│  Name          [____________________]                    │
+│                  │  Faction       [____] [▼ UNE       ]                     │
+│ ┌──────────────┐ │  Total Credits [____________________]                    │
+│ │ Profile List │ │                                                          │
+│ │              │ │  Public Rank [3]  CurXP [12500]  NextXP [25000]         │
+│ │ Alice        │ │  Private Rank [5] CurXP [45000]  NextXP [60000]        │
+│ │ Bob          │ │  Military Rank [2] CurXP [5000]  NextXP [10000]        │
+│ │              │ │  Skill Points [15]                                       │
+│ │              │ │                                                          │
+│ │              │ │  ── Colony Director ──────────────────────────────       │
+│ │              │ │  ☑ Colony Director                                       │
+│ │              │ │  ┌─────────────────────────────────────────────┐         │
+│ │              │ │  │ Human Resources    Lv 12    (not training)  │         │
+│ │              │ │  │ Foreman            Lv 8     2d 14h 32m 10s │         │
+│ │              │ │  └─────────────────────────────────────────────┘         │
+│ │              │ │                                                          │
+│ │              │ │  ── Colony Founder ───────────────────────────────       │
+│ │              │ │  ☑ Colony Founder                                        │
+│ │              │ │  ┌─────────────────────────────────────────────┐         │
+│ │              │ │  │ Founder            Lv 5     (not training)  │         │
+│ │              │ │  │ Energy Efficiency  Lv 3     (not training)  │         │
+│ │              │ │  │ Builder            Lv 20    (not training)  │         │
+│ │              │ │  └─────────────────────────────────────────────┘         │
+│ │              │ │  ... (8 more skill groups with 22 total skills) ...      │
+│ └──────────────┘ │                                                          │
+│                  │  [New] [Save] [Delete] [Import]                          │
+└──────────────────┴──────────────────────────────────────────────────────────┘
+```

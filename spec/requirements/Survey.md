@@ -43,3 +43,129 @@
 **REQ-SRV-055** Resource quantities SHALL have non-digit characters (commas, spaces) stripped, leaving only digits.  
 **REQ-SRV-056** The Class property SHALL be extracted from the "Class" property key and stored as Blueprint.Class (int).  
 **REQ-SRV-057** processHtml() SHALL not throw on malformed or empty HTML input.
+
+## User Interaction Flows
+
+### Survey Selection and Editing
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormSurvey
+    participant VM as SurveyViewModel
+    participant PC as PlayerContext
+
+    User->>Form: Type in filter textbox / select resource filter
+    Form->>PC: Filter SurveyList by name + resource
+    Form->>Form: Repopulate lvwSurveys
+
+    User->>Form: Click survey in list
+    Form->>PC: Find survey by UUID
+    Form->>VM: Create SurveyViewModel(survey)
+    Form->>Form: Populate fields (PlanetName, SystemName, SurveyID, NickName, etc.)
+    Form->>Form: Populate scanner blueprint combo (filtered to SystemObjectScanner)
+    Form->>Form: Clear and repopulate dgvResources from survey.Resources
+```
+
+### Survey Save Flow
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormSurvey
+    participant VM as SurveyViewModel
+    participant PC as PlayerContext
+
+    User->>Form: Edit fields, add/edit resource rows
+    User->>Form: Click [Save]
+    Form->>VM: Write all fields to survey
+    VM->>VM: Assign UUID if absent
+    VM->>VM: Set OwnerUUID = CurrentPlayerUUID
+    VM->>PC: Add to SurveyList if new
+    VM->>PC: WriteContext()
+    Form->>Form: Clear form for new input
+    Form->>Form: Refresh lvwSurveys
+```
+
+### Survey Import (Clipboard)
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormSurvey
+    participant Scanner as BlueprintScanner
+    participant PC as PlayerContext
+
+    User->>Form: Click [Import]
+    Form->>Form: Read HTML from clipboard
+    Form->>Scanner: processHtml(htmlFragment)
+    Scanner->>Scanner: Parse name, tech level, evolution
+    Scanner->>Scanner: Strip delta indicators from properties
+    Scanner->>Scanner: Remap property keys via PropertyRemap
+    Scanner->>Scanner: Strip non-digits from resource quantities
+    Scanner-->>Form: Return populated Blueprint object
+    Form->>Form: Populate form fields from parsed data
+    Note over Form: User reviews and clicks Save
+```
+
+## Data Flow Diagram
+
+```mermaid
+flowchart LR
+    subgraph Input
+        CB[Clipboard HTML]
+        EC[EmpireContext<br/>Resource list, Purity list]
+        BPL[Blueprint list<br/>SystemObjectScanner type]
+    end
+
+    subgraph FormSurvey
+        F[Filter + List]
+        D[Detail fields]
+        G[Resources grid]
+    end
+
+    subgraph Output
+        SL[PlayerContext.SurveyList]
+        JSON[PlayerData.json]
+    end
+
+    CB -->|Import| D
+    EC -->|populate combos| G
+    BPL -->|scanner blueprints| D
+    SL -->|load| F
+    F -->|select| D
+    D -->|save| SL
+    SL -->|WriteContext| JSON
+```
+
+## Form Mockup
+
+### FormSurvey — Main Layout
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ #1 - Manage Surveys                                                     [_][□][X] │
+├──────────────────────────┬──────────────────────────────────────────────────┤
+│ Filter [________________]│  Planet Name    [____________________]           │
+│ Resource [▼ All        ] │  System         [____________________]           │
+│                          │  Survey ID      [____________________]           │
+│ ┌──────────────────────┐ │  Nick Name      [____________________]           │
+│ │ Survey List          │ │  Scanner BP     [filter__] [▼ Scanner Mk3    ]  │
+│ │                      │ │  Scanned By     [____________________]           │
+│ │ Helorix (SRV-1234)  │ │  Scan DateTime  [2026-04-15 14:30   ] [📅]      │
+│ │ Proxima (SRV-5678)  │ │  Sensor Abund.  [____________________]           │
+│ │ Zeh Vaz (SRV-9012)  │ │  Purity Mod.    [____________________]           │
+│ │                      │ │  Scan Level     [____________________]           │
+│ │                      │ │                                                  │
+│ │                      │ │  ┌──────────────────┬──────────┬────────┐        │
+│ │                      │ │  │ Resource         │ Purity   │ Amount │        │
+│ │                      │ │  ├──────────────────┼──────────┼────────┤        │
+│ │                      │ │  │ ▼ Alkali Metals  │ ▼ High   │ 125    │        │
+│ │                      │ │  │ ▼ Lanthanides    │ ▼ Medium │ 80     │        │
+│ │                      │ │  │ ▼ Noble Gases    │ ▼ Low    │ 200    │        │
+│ │                      │ │  │                  │          │        │        │
+│ │                      │ │  └──────────────────┴──────────┴────────┘        │
+│ └──────────────────────┘ │                                                  │
+│                          │  [New] [Save] [Delete] [Import]                  │
+└──────────────────────────┴──────────────────────────────────────────────────┘
+```

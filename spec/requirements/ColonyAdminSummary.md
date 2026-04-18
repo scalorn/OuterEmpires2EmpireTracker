@@ -33,3 +33,55 @@ The Colony form's Administration tab displays a per-colony status report summari
 ## Layout
 
 **REQ-CAS-040** The report SHALL coexist with existing Bootstrap and Optimize buttons, filling remaining vertical space below them.
+
+## User Interaction Flow
+
+### Admin Report Generation
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormColonyV2 (Admin tab)
+    participant Collector as ColonyActivityCollector
+    participant Inact as InactivityCollector
+    participant RTF as RtfBuilder
+
+    User->>Form: Select colony from list
+    Form->>Collector: Collect activities for this colony
+    Form->>Inact: Collect inactivity data for this colony
+    Form->>RTF: Build formatted report
+    RTF->>RTF: Building section (soonest first)
+    RTF->>RTF: Commodity Requests section
+    RTF->>RTF: Inactivity section (staleness, idle structures)
+    RTF->>RTF: Activity section (mfg, mining, refining summaries)
+    RTF-->>Form: RTF string
+    Form->>Form: Set rtbAdminReport.Rtf
+
+    loop Every 60 seconds (configurable)
+        Form->>Form: Regenerate report
+    end
+```
+
+## Data Flow Diagram
+
+```mermaid
+flowchart LR
+    subgraph "Selected Colony"
+        ST[Structures<br/>timers + state]
+        CR[CommodityRequested<br/>unfulfilled]
+        IMP[Last import timestamp]
+    end
+
+    subgraph Report["Admin Report Sections"]
+        BLD[Building<br/>countdown + completion]
+        CRQ[Commodity Requests<br/>name + qty + due]
+        INA[Inactivity<br/>staleness, idle rigs/refineries]
+        ACT[Activity<br/>mfg progress, mining rates,<br/>refining rates]
+    end
+
+    ST --> BLD
+    ST --> INA
+    ST --> ACT
+    CR --> CRQ
+    IMP --> INA
+```

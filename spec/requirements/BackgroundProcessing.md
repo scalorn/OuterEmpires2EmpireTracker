@@ -56,3 +56,36 @@ flowchart TD
 **REQ-BP-042** The processor SHALL release the write lock in a finally block before firing `ColonyDataChanged` events.
 **REQ-BP-043** The processor SHALL use `PlayerContext.SnapshotColonyList()` to safely iterate colonies without holding _listLock during processing.
 **REQ-BP-044** `WriteContext()` SHALL be called outside any ColonyLock to respect lock ordering.
+
+## User Interaction Flow
+
+### Status Bar Monitoring
+
+```mermaid
+sequenceDiagram
+    participant Timer as BackgroundProcessor (60s)
+    participant Main as MainWindow
+    participant Status as Status Bar
+
+    loop Every 60 seconds
+        Timer->>Timer: Acquire _cycleLock
+        Timer->>Timer: SnapshotColonyList()
+        loop Each colony with expired timers
+            Timer->>Timer: Acquire ColonyLock (write)
+            Timer->>Timer: ProcessColony()
+            Timer->>Timer: Release ColonyLock
+            Timer->>Main: Fire ColonyDataChanged
+        end
+        Timer->>Timer: WriteContext()
+        Timer->>Timer: Release _cycleLock
+    end
+
+    loop Every 1 second (UI timer)
+        Main->>Status: Update "Next Process: Xs"
+        Main->>Status: Update Memory: X MB
+        Main->>Status: Update CPU: X%
+        alt LastCycleHadError
+            Status->>Status: Display in red
+        end
+    end
+```

@@ -58,3 +58,103 @@ flowchart TD
 **REQ-CI-043** Import SHALL be idempotent — re-importing the same market data SHALL update existing blueprints (matched by Name+Evolution+Type+Class+TechLevel) without creating duplicates.
 **REQ-CI-044** Import SHALL preserve protected fields (NickName, CopyCost, BaseBlueprintUUID) on existing blueprints.
 **REQ-CI-045** HTML fragment extraction SHALL use StartFragment/EndFragment markers when present in clipboard data, falling back to byte offset headers when markers are absent.
+
+## User Interaction Flows
+
+### Clipboard Import
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormColonyV2
+    participant Parser as ColonyParser
+    participant PC as PlayerContext
+
+    User->>User: Copy colony page HTML in game browser
+    User->>Form: Click [Import Clipboard]
+    Form->>Form: Read HTML from system clipboard
+    Form->>Parser: ExtractFragment(clipboardData)
+    Parser->>Parser: SGML → well-formed XML
+    Parser->>Parser: ParseColonyBuildings (JSON in HTML)
+    Parser->>Parser: BuildFlatpackLookup (blueprint list)
+    Parser->>Parser: Parse structures: UUID, state, workers, timers
+    Parser->>Parser: Assign displaySequence per blueprint type
+    Parser->>Parser: ParseCommodityDemands (scored matching)
+
+    loop Each parsed structure
+        alt UUID exists in colony
+            Parser->>Parser: Update existing structure
+        else New structure
+            Parser->>Parser: Add new structure
+        end
+    end
+
+    Parser->>Parser: MinerSetup — assign surveys to mining rigs
+    Parser->>Parser: RefinerySetup — configure refineries
+    Parser-->>Form: Return merged colony data
+
+    Form->>PC: WriteContext()
+    Form->>Form: Refresh all tabs
+```
+
+### Market Blueprint Import
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormBlueprintV2
+    participant Parser as BlueprintScanner
+    participant PC as PlayerContext
+
+    User->>User: Copy market listing HTML in game browser
+    User->>Form: Click [Import Market]
+    Form->>Form: Read HTML from clipboard
+    Form->>Parser: Parse market listing rows
+
+    loop Each expanded listing row
+        Parser->>Parser: Extract name, type, evolution, properties, resources
+        Parser->>Parser: Determine seller (government → global, player → owned)
+        Parser->>PC: Match by Name+Evolution+Type+Class+TechLevel
+        alt Existing blueprint
+            Parser->>PC: Update (preserve NickName, CopyCost, BaseBlueprintUUID)
+        else New blueprint
+            Parser->>PC: Add with new UUID
+        end
+    end
+
+    Form->>PC: WriteContext()
+    Form->>Form: Refresh blueprint list
+```
+
+## Data Flow Diagram
+
+### Colony Import Merge Pipeline
+
+```mermaid
+flowchart TD
+    subgraph Input
+        CB[Clipboard HTML]
+        BPL[Blueprint List<br/>flatpack lookup]
+        EC[Existing Colony<br/>structures + items]
+    end
+
+    subgraph Parser["ColonyParser"]
+        EXT[ExtractFragment<br/>StartFragment/EndFragment markers]
+        SGML[SGML → XML]
+        JSON[ParseColonyBuildings<br/>embedded JSON]
+        FPL[BuildFlatpackLookup<br/>OutputItemName + Name keys]
+        STR[Structure merge<br/>by FlatpackBlueprintUUID + displaySequence]
+        CMD[ParseCommodityDemands<br/>scored matching for duplicates]
+    end
+
+    subgraph Output
+        MC[Merged Colony<br/>updated structures + demands]
+    end
+
+    CB --> EXT --> SGML --> JSON
+    BPL --> FPL
+    JSON --> STR
+    FPL --> STR
+    EC --> STR --> MC
+    SGML --> CMD --> MC
+```

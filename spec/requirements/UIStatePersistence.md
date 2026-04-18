@@ -34,3 +34,48 @@ Note: Full detailed requirements are in `.kiro/specs/window-state-persistence/re
 **REQ-UI-041** Save SHALL use SafeFileWriter for atomic writes.
 **REQ-UI-042** Malformed JSON SHALL be logged and discarded (start with empty preferences).
 **REQ-UI-043** I/O errors SHALL be logged without crashing.
+
+## Data Flow Diagram
+
+### State Save/Restore Cycle
+
+```mermaid
+flowchart LR
+    subgraph FormClose["On Form Close"]
+        WP[Window position + size]
+        GC[Grid column widths,<br/>display order, sort]
+        FT[Filter text values]
+        CS[ComboBox selections]
+    end
+
+    subgraph Store["PreferencesStore"]
+        PS[UIPreferences object<br/>keyed by formType + windowNum + controlName]
+    end
+
+    subgraph Disk
+        JSON["%LOCALAPPDATA%\OE2EmpireTracker\<br/>UIPreferences.json"]
+    end
+
+    subgraph FormOpen["On Form Open"]
+        RW[Restore window bounds<br/>(validate vs monitors)]
+        RG[Restore grid columns<br/>(skip missing columns)]
+        RF[Restore filter text]
+        RC[Restore combo selection<br/>(by value, then index)]
+    end
+
+    FormClose --> PS --> JSON
+    JSON --> PS --> FormOpen
+```
+
+### Bounds Validation
+
+```mermaid
+flowchart TD
+    A[Restored bounds] --> B{On any active monitor?}
+    B -->|yes| C{Within 100px margin?}
+    C -->|yes| D{Size >= 320×200?}
+    D -->|yes| E[Apply restored bounds]
+    B -->|no| F[Reset to primary monitor default]
+    C -->|no| F
+    D -->|no| F
+```

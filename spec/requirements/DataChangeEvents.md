@@ -31,3 +31,70 @@
 
 **REQ-DCE-030** All editable form controls SHALL write to the data model immediately on change (TextChanged, SelectedIndexChanged, CheckedChanged).
 **REQ-DCE-031** Save buttons SHALL only call `WriteContext()` — they SHALL NOT re-read form fields into the model.
+
+## Data Flow Diagram
+
+### Event Propagation
+
+```mermaid
+flowchart TD
+    subgraph Sources["Event Sources"]
+        UI[Form saves<br/>user edits]
+        BG[BackgroundProcessor<br/>timer-driven processing]
+        IMP[Import operations<br/>clipboard/file]
+    end
+
+    subgraph PC["PlayerContext Events"]
+        CPC[CurrentPlayerChanged]
+        CDC[ColonyDataChanged<br/>colonyUUID]
+        BDC[BlueprintDataChanged<br/>blueprintUUID]
+        SDC[SurveyDataChanged<br/>surveyUUID]
+        DDC[DeliveryDataChanged]
+        PDC[PlayerProfileDataChanged<br/>playerUUID]
+        PPC[PlayerProfilesChanged]
+        PRDC[PricingDataChanged]
+    end
+
+    subgraph Subscribers["Form Subscribers"]
+        FC[FormColonyV2]
+        FB[FormBlueprintV2]
+        FS[FormSurvey]
+        FCA[FormColonyActivity]
+        FDB[FormColonyDailyBuild]
+        FDR[FormDeliveryRoute]
+        FDE[FormDeliveryExecution]
+        FPP[FormPlayerProfile]
+        FPR[FormPricingPlan]
+    end
+
+    UI --> PC
+    BG --> CDC
+    IMP --> PC
+
+    CPC --> FC & FB & FS & FCA & FDB & FDR & FDE & FPP & FPR
+    CDC --> FC & FCA & FDB & FDE
+    BDC --> FB
+    SDC --> FS
+    DDC --> FDR & FDE
+    PDC --> FPP
+    PRDC --> FPR
+```
+
+### Write-Through Pattern
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as Any Form
+    participant Model as Data Model
+    participant PC as PlayerContext
+
+    User->>Form: Edit TextBox / ComboBox / CheckBox
+    Form->>Form: Check _isProgrammaticUpdate > 0? Skip if yes
+    Form->>Model: Write value immediately (TextChanged etc.)
+    Note over Model: In-memory model always current
+
+    User->>Form: Click [Save]
+    Form->>PC: WriteContext()
+    Note over PC: Persist to disk only — no re-read from UI
+```

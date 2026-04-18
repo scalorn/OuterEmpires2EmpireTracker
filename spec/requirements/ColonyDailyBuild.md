@@ -25,3 +25,81 @@
 
 **REQ-CDB-040** The form SHALL subscribe to CurrentPlayerChanged and ColonyDataChanged events.
 **REQ-CDB-041** The form SHALL unsubscribe from events in OnFormClosed.
+
+## User Interaction Flows
+
+### Daily Build Workflow
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormColonyDailyBuild
+    participant Elig as ColonyBuildEligibility
+    participant PC as PlayerContext
+
+    User->>Form: Select route from cmbRoute
+    Form->>PC: Get colonies on selected route
+    Form->>Elig: Check eligibility for each colony
+    Note over Elig: Eligible = has staged structure<br/>AND no currently building structure
+    Form->>Form: Display eligible colony panels in pnlContent
+
+    User->>Form: Click [Build] on a colony panel
+    Form->>PC: Set structure Staged=false, start BuildCompletionTime
+    Form->>PC: Fire ColonyDataChanged
+    Form->>PC: WriteContext()
+    Form->>Form: Remove colony from eligible list (now building)
+```
+
+## Data Flow Diagram
+
+```mermaid
+flowchart LR
+    subgraph Input
+        RT[Selected Route<br/>ordered colony stops]
+        CL[Colony List<br/>structures + state]
+    end
+
+    subgraph Eligibility["ColonyBuildEligibility"]
+        CHK[Has staged structure?<br/>No building structure?]
+    end
+
+    subgraph Display
+        PNL[Colony panels<br/>name, planet, system,<br/>first staged structure]
+        BTN[Build button per colony]
+    end
+
+    subgraph Effect
+        BT[BuildCompletionTime set<br/>Staged=false]
+    end
+
+    RT --> CHK
+    CL --> CHK
+    CHK -->|eligible| PNL
+    PNL --> BTN
+    BTN -->|click| BT
+```
+
+## Form Mockup
+
+### FormColonyDailyBuild
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ #1 - Colony Daily Build                                                 [_][□][X] │
+├──────────────────┬──────────────────────────────────────────────────────────┤
+│ Route            │  ┌──────────────────────────────────────────────────┐    │
+│ [filter________] │  │ Helorix M1 — Helorix-Zeta II, Zeta System       │    │
+│ [▼ Alpha Run   ] │  │ First staged: Habitation Block Flatpack          │    │
+│                  │  │ Build time: 20h 10m 24s (Builder Lv 3)           │    │
+│                  │  │                                        [Build]   │    │
+│                  │  └──────────────────────────────────────────────────┘    │
+│                  │  ┌──────────────────────────────────────────────────┐    │
+│                  │  │ Zeh Vaz M1 — Zeh Vazoran II, Delta System        │    │
+│                  │  │ First staged: Power Plant Flatpack                │    │
+│                  │  │ Build time: 20h 10m 24s (Builder Lv 3)           │    │
+│                  │  │                                        [Build]   │    │
+│                  │  └──────────────────────────────────────────────────┘    │
+│                  │                                                          │
+│                  │  (scrollable — more colonies below)                      │
+└──────────────────┴──────────────────────────────────────────────────────────┘
+```

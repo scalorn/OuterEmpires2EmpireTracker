@@ -38,3 +38,92 @@ The Evolution Graph adds a chart tab to the Blueprint form showing how blueprint
 **REQ-EVO-040** The tab SHALL appear after Statistics and Resources in the Blueprint form's tabDetailedData control, with text "Evolution Graph".  
 **REQ-EVO-041** The chart SHALL refresh when a different blueprint is selected or when BlueprintDataChanged fires for a blueprint in the current chain.  
 **REQ-EVO-042** When no blueprint is selected, the chart and checkboxes SHALL be cleared.
+
+## User Interaction Flow
+
+### Evolution Graph Display
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormBlueprintV2 (Evo Graph tab)
+    participant Resolver as EvolutionChainResolver
+    participant Chart as EvolutionChart
+
+    User->>Form: Select blueprint in list
+    Form->>Resolver: Resolve full evolution chain
+    Resolver->>Resolver: Walk BaseBlueprintUUID backward to Ev0
+    Resolver->>Resolver: Sort by Evolution ascending
+    Resolver->>Resolver: Detect circular refs, terminate
+    Resolver-->>Form: Ordered chain [Ev0, Ev1, ..., EvN]
+
+    Form->>Chart: Filter candidate properties
+    Note over Chart: Include Integer, Decimal, Time only<br/>Exclude unchanged properties<br/>Exclude zero base values
+    Chart->>Chart: Normalize values as % of Ev0
+    Chart->>Chart: Draw lines (solid between consecutive, dashed across gaps)
+    Chart->>Form: Render chart + property checkboxes
+
+    User->>Form: Toggle property checkbox
+    Form->>Chart: Show/hide corresponding line
+```
+
+## Data Flow Diagram
+
+```mermaid
+flowchart LR
+    subgraph Input
+        BP[Selected Blueprint]
+        BPL[All Blueprints<br/>player + global]
+        BT[BlueprintType<br/>Properties array]
+    end
+
+    subgraph Processing
+        CR[Chain Resolver<br/>walk BaseBlueprintUUID]
+        PF[Property Filter<br/>Integer/Decimal/Time only<br/>exclude unchanged]
+        NM[Normalizer<br/>value / Ev0 × 100]
+    end
+
+    subgraph Display
+        CH[Chart<br/>X: 0-15 evo levels<br/>Y: 50%-150%]
+        CB[Property checkboxes<br/>colored to match lines]
+    end
+
+    BP --> CR
+    BPL --> CR
+    CR --> PF
+    BT --> PF
+    PF --> NM --> CH
+    PF --> CB
+```
+
+## Form Mockup
+
+### Evolution Graph Tab (within FormBlueprintV2)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ Statistics │ Resources │ Evolution Graph │                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  150% ┤                                                                     │
+│       │                                    ●───● Health                     │
+│  140% ┤                               ●──╱                                  │
+│       │                          ●───╱                                      │
+│  130% ┤                     ●──╱          ●───● Power Generated             │
+│       │                ●──╱          ●──╱                                   │
+│  120% ┤           ●──╱          ●──╱                                        │
+│       │      ●──╱          ●──╱                                             │
+│  110% ┤ ●──╱          ●──╱                                                  │
+│       │          ●──╱                                                       │
+│  100% ●─────●──╱─────────────────────────────────────────                   │
+│       │                                                                     │
+│   90% ┤                                                                     │
+│       │                                                                     │
+│   80% ┤                                                                     │
+│       └──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──                    │
+│          0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15                   │
+│                        Evolution Level                                      │
+│                                                                             │
+│  ☑ Health (red)  ☑ Power Generated (blue)  ☐ Cargo Capacity (green)        │
+└─────────────────────────────────────────────────────────────────────────────┘
+```

@@ -43,3 +43,88 @@
 
 **REQ-CA-050** The form SHALL subscribe to CurrentPlayerChanged and ColonyDataChanged events.
 **REQ-CA-051** The form SHALL unsubscribe from events in OnFormClosed.
+
+## User Interaction Flows
+
+### Activity Filtering and Display
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormColonyActivity
+    participant Collector as ColonyActivityCollector
+    participant PC as PlayerContext
+
+    Form->>PC: Get all colonies for current player
+    Form->>Collector: Collect activities from all colonies
+    Collector->>Collector: Scan structures for active timers
+    Collector->>Collector: Scan commodity requests (unfulfilled)
+    Collector-->>Form: Return activity list
+
+    Form->>Form: Apply checkbox filters + text filter
+    Form->>Form: Populate dgvActivities
+
+    loop Every 1 second
+        Form->>Form: Update countdown column for all rows
+        Form->>Form: Re-sort by SecondsRemaining
+    end
+
+    User->>Form: Toggle activity type checkbox
+    Form->>Form: Re-filter and refresh grid
+
+    User->>Form: Type in text filter
+    Form->>Form: Case-insensitive substring match across all columns
+```
+
+## Data Flow Diagram
+
+```mermaid
+flowchart TD
+    subgraph "All Player Colonies"
+        C1[Colony 1 structures]
+        C2[Colony 2 structures]
+        CN[Colony N structures]
+    end
+
+    subgraph Collector["ColonyActivityCollector"]
+        BLD[Building timers]
+        MFG[Manufacturing timers]
+        CMF[Commodity Mfg timers]
+        CRQ[Commodity Requests]
+        RES[Research timers]
+        MIN[Mining timers]
+        REF[Refining timers]
+    end
+
+    C1 & C2 & CN --> Collector
+
+    subgraph Display
+        FLT[Checkbox + text filters]
+        GRD[dgvActivities grid<br/>countdown, system, colony,<br/>type, source, details]
+    end
+
+    Collector --> FLT --> GRD
+```
+
+## Form Mockup
+
+### FormColonyActivity
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ #1 - Colony Activity                                                    [_][□][X] │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ ☑Building ☑Manufacturing ☑CommodityMfg ☑CommodityReq ☑Research            │
+│ ☐Mining ☐Refining ☐ImportStaleness ☐ShowInactive  Filter [______________] │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ ┌──────────┬──────────┬──────────────┬──────────┬──────────┬─────────────┐ │
+│ │ Countdown│ System   │ Colony       │ Type     │ Source   │ Details     │ │
+│ ├──────────┼──────────┼──────────────┼──────────┼──────────┼─────────────┤ │
+│ │ 2h 14m   │ Zeta Sys │ Helorix M1   │ Building │ Hab #3   │ Building    │ │
+│ │ 5h 32m   │ Zeta Sys │ Helorix M1   │ Mfg      │ Mfg #1   │ (2/5) Rig  │ │
+│ │ 45m 12s  │ Alpha Sys│ Proxima M2   │ Mining   │ Rig #1   │ 125/h Alk  │ │
+│ │ 2d 3h    │ Delta Sys│ Zeh Vaz M1   │ CmdReq   │ —        │ Scanners x35│ │
+│ │ 12d 6h   │ Zeta Sys │ Helorix M1   │ Research │ Lab #1   │ Ev 4->5 Rig│ │
+│ └──────────┴──────────┴──────────────┴──────────┴──────────┴─────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────┘
+```

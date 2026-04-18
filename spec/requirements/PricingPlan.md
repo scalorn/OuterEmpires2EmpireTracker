@@ -62,3 +62,102 @@ Pricing Plans assign monetary values (in credits) to resources, commodities, and
 
 **REQ-PRC-070** When a player profile is deleted, all PricingPlans owned by that player SHALL be removed (cascade delete).  
 **REQ-PRC-071** Orphaned PricingPlans (OwnerUUID not matching any player) SHALL be cleaned up on load.
+
+## User Interaction Flows
+
+### Pricing Plan Selection and Editing
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormPricingPlan
+    participant PC as PlayerContext
+
+    User->>Form: Click plan in left list
+    Form->>Form: Populate Name, Description, FixedCostPerItem, HourlyCostRate
+    Form->>Form: Populate dgvResourcePrices from plan.ResourcePrices
+
+    User->>Form: Edit resource price cell
+    Form->>Form: Validate non-negative decimal
+    alt Valid price
+        Form->>Form: Store in plan ResourcePrices
+    else Cleared
+        Form->>Form: Remove entry (unpriced)
+    end
+
+    User->>Form: Click [Save]
+    Form->>PC: WriteContext()
+```
+
+### Price Calculation Flow
+
+```mermaid
+sequenceDiagram
+    participant Form as FormPricingPlan
+    participant Calc as PriceCalculator
+    participant Plan as PricingPlan
+
+    Form->>Calc: ComputeCommodityPrice(commodity, plan)
+    Calc->>Plan: Look up Refined price for each input resource
+    Calc->>Calc: Sum(inputQty × resourcePrice)
+    Calc-->>Form: ComputedPrice(price, isComplete)
+
+    Form->>Calc: ComputeBlueprintPrice(blueprint, plan, hours)
+    Calc->>Plan: Look up price per resource (Refined/S1/S2 by prefix)
+    Calc->>Calc: ResourceCost + FixedCostPerItem + (HourlyCostRate × hours)
+    Calc-->>Form: ComputedPrice(price, isComplete)
+```
+
+## Data Flow Diagram
+
+```mermaid
+flowchart LR
+    subgraph Input
+        RP[ResourcePrices dictionary<br/>ResourceName|Purity → price]
+        FC[FixedCostPerItem]
+        HR[HourlyCostRate]
+    end
+
+    subgraph Calculator
+        CC[ComputeCommodityPrice<br/>Σ(inputQty × refinedPrice)]
+        CB[ComputeBlueprintPrice<br/>resourceCost + fixed + hourly]
+    end
+
+    subgraph Output
+        CP[ComputedPrice<br/>price + isComplete flag]
+    end
+
+    RP --> CC --> CP
+    RP --> CB --> CP
+    FC --> CB
+    HR --> CB
+```
+
+## Form Mockup
+
+### FormPricingPlan
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ #1 - Pricing Plans                                                      [_][□][X] │
+├──────────────────┬──────────────────────────────────────────────────────────┤
+│ ┌──────────────┐ │  Name             [________________________]            │
+│ │ Plan List    │ │  Description       [________________________]            │
+│ │              │ │  Fixed Cost/Item   [0.00___]                             │
+│ │ Standard     │ │  Hourly Cost Rate  [0.00___]                             │
+│ │ Premium      │ │                                                          │
+│ │              │ │  ┌──────────────────────────────┬──────────┐             │
+│ │              │ │  │ Resource                     │ Price    │             │
+│ │              │ │  ├──────────────────────────────┼──────────┤             │
+│ │              │ │  │ Alkali Metals (Refined)      │ 12.50    │             │
+│ │              │ │  │ Lanthanides (Refined)         │ 25.00    │             │
+│ │              │ │  │ Noble Gases (Refined)          │          │             │
+│ │              │ │  │ S1. Translanthanic Exotics    │ 150.00   │             │
+│ │              │ │  │ S2. Element 126               │ 500.00   │             │
+│ │              │ │  │ ...                           │          │             │
+│ │              │ │  └──────────────────────────────┴──────────┘             │
+│ │              │ │                                                          │
+│ │ [New][Delete]│ │  [Save]                                                  │
+│ └──────────────┘ │                                                          │
+└──────────────────┴──────────────────────────────────────────────────────────┘
+```

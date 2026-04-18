@@ -39,3 +39,72 @@ A Preferences form (File > Preferences) exposes nine configurable values previou
 ## Backward Compatibility
 
 **REQ-PRF-050** If UIPreferences.json has no Thresholds property, defaults matching the previously hardcoded constants SHALL be used.
+
+## User Interaction Flow
+
+### Preferences Editing
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Main as MainWindow
+    participant Form as FormPreferences (modal)
+    participant Store as PreferencesStore
+
+    User->>Main: File > Preferences...
+    Main->>Form: ShowDialog()
+    Form->>Store: Load current thresholds
+    Form->>Form: Populate 9 input fields
+
+    User->>Form: Edit values
+    User->>Form: Click [OK]
+    Form->>Form: Validate all inputs
+    alt Valid
+        Form->>Store: Save thresholds
+        Store->>Store: Write UIPreferences.json
+        Form-->>Main: DialogResult.OK
+        Note over Main: Changes take effect immediately
+    else Invalid
+        Form->>Form: Show error message
+        Note over Form: Prevent saving
+    end
+
+    alt Reset
+        User->>Form: Click [Reset to Defaults]
+        Form->>Form: Restore all 9 values to defaults
+    end
+```
+
+## Form Mockup
+
+### FormPreferences (Modal Dialog)
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ Preferences                                          [X] │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  Structure Count Thresholds                             │
+│    Yellow Warning    [60_____]                           │
+│    Red Warning       [66_____]                           │
+│                                                         │
+│  Worker Request Due Window                              │
+│    Yellow Warning    [2d 0h 0m 0s____]                  │
+│    Red Warning       [1d 0h 0m 0s____]                  │
+│                                                         │
+│  Colony Import Staleness                                │
+│    Yellow Warning    [5d 0h 0m 0s____]                  │
+│    Red Warning       [6d 0h 0m 0s____]                  │
+│                                                         │
+│  Background Processing                                  │
+│    Interval          [0d 0h 1m 0s____]                  │
+│                                                         │
+│  Administration Report                                  │
+│    Refresh Interval  [0d 0h 1m 0s____]                  │
+│                                                         │
+│  Countdown Display                                      │
+│    Refresh Rate      [0d 0h 0m 1s____]                  │
+│                                                         │
+│  [OK]  [Cancel]  [Reset to Defaults]                    │
+└─────────────────────────────────────────────────────────┘
+```

@@ -87,3 +87,58 @@ Each step's output feeds the next step's input within the same cycle.
 **REQ-GM-071** A structure is "building" when IsStaged=false AND IsBuilt=false AND BuildCompletionTime has time remaining > 0.
 **REQ-GM-072** A colony is eligible for building when it has at least one staged structure AND no currently building structure.
 **REQ-GM-073** GetFirstStagedStructure returns the first staged structure in list order.
+
+## Data Flow Diagrams
+
+### Mining Calculation
+
+```mermaid
+flowchart LR
+    subgraph Input
+        SA[SurveyAmount]
+        ML[MiningLeftOvers<br/>fractional accumulator]
+        EF[ExtractionFocus skill level]
+    end
+
+    subgraph Calculation
+        RAW["rawQty = SurveyAmount × (1 + EF × 0.01)"]
+        FLR["minedQty = floor(rawQty + MiningLeftOvers)"]
+        REM["newLeftOvers = (rawQty + MiningLeftOvers) - minedQty"]
+    end
+
+    subgraph Output
+        WH[Colony Warehouse<br/>+minedQty of resource]
+        NML[MiningLeftOvers updated]
+    end
+
+    SA & ML & EF --> RAW --> FLR --> WH
+    RAW --> REM --> NML
+```
+
+### Refining Tiers
+
+```mermaid
+flowchart TD
+    subgraph "Tier 0 — Base Resources"
+        R0["25 raw → refined<br/>Low: ×1 (25)<br/>Med: ×3 (75)<br/>High: ×5 (125)<br/>× RefiningFocus skill"]
+    end
+
+    subgraph "Tier 1 — S1 Synthetics"
+        R1["1250 refined natural → 25 S1<br/>Lanthanides → S1. Translanthanic<br/>Superheavy → S1. Translivermoric<br/>Transuranic → S1. Transuranic"]
+    end
+
+    subgraph "Tier 2 — S2 Synthetics"
+        R2["500 refined S1 → 25 S2<br/>S1. Translanthanic → S2. Element 126<br/>S1. Translivermoric → S2. Element 127<br/>S1. Transuranic → S2. Superactinides"]
+    end
+
+    R0 -->|"refined output feeds"| R1 -->|"S1 output feeds"| R2
+```
+
+### Build Time Calculation
+
+```mermaid
+flowchart LR
+    BL[Builder skill level] --> CALC["buildTime = 86400 × (1 - level × 0.02)<br/>minimum 1 second"]
+    CALC --> BT[BuildCompletionTime<br/>set on structure]
+    Note["At Builder Lv 50:<br/>86400 × (1 - 1.0) = 0 → clamped to 1s"]
+```

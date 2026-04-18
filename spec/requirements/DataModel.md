@@ -122,3 +122,70 @@
 **REQ-DM-106** BackgroundProcessor SHALL acquire ColonyLock.TryEnterWriteLock before ProcessColony. On timeout, skip the colony and continue. Fire OnColonyDataChanged outside the lock.  
 **REQ-DM-107** UI forms reading colony data SHALL acquire ColonyLock.TryEnterReadLock, snapshot collections, release lock, then populate controls. On timeout, display stale data.  
 **REQ-DM-108** UI forms mutating colony data SHALL acquire ColonyLock.TryEnterWriteLock, mutate, release lock, then call WriteContext and fire events.
+
+## Data Flow Diagrams
+
+### Persistence Pipeline
+
+```mermaid
+flowchart LR
+    subgraph InMemory["In-Memory (Singletons)"]
+        EC[EmpireContext<br/>BaselineData.json<br/>resources, commodities,<br/>blueprint types]
+        PC[PlayerContext<br/>PlayerData.json<br/>profiles, colonies,<br/>blueprints, surveys,<br/>routes, plans, pricing]
+    end
+
+    subgraph Serialization
+        NJ[Newtonsoft.Json<br/>JsonConvert]
+        CV[Custom Converters<br/>PropertyBag, ItemBag,<br/>LockTracking]
+    end
+
+    subgraph Disk
+        BD[BaselineData.json<br/>read-only at runtime]
+        PD[PlayerData.json<br/>read/write]
+    end
+
+    BD -->|load| NJ --> EC
+    PD -->|load| NJ --> PC
+    PC -->|WriteContext| NJ -->|SafeFileWriter| PD
+```
+
+### Thread Safety Lock Ordering
+
+```mermaid
+flowchart TD
+    subgraph "Lock Hierarchy (acquire top → bottom, never reversed)"
+        LL["_listLock<br/>(PlayerContext)<br/>protects BindingList collections"]
+        CL["ColonyLock<br/>(per Colony)<br/>ReaderWriterLockSlim"]
+        SR["_syncRoot<br/>(per PropertyBag/ItemBag/LockTracking)<br/>fine-grained object lock"]
+    end
+
+    LL --> CL --> SR
+
+    subgraph "Rules"
+        R1["Events fired OUTSIDE all locks"]
+        R2["WriteContext called OUTSIDE ColonyLock"]
+        R3["UI reads: ReadLock → snapshot → release → populate"]
+        R4["UI writes: WriteLock → mutate → release → WriteContext"]
+    end
+```
+
+### ItemBag / LockTracking Interaction
+
+```mermaid
+flowchart LR
+    subgraph Colony
+        IB[ItemBag<br/>items keyed by UUID]
+        LT[LockTracking<br/>processUUID → item → qty]
+    end
+
+    subgraph Queries
+        CBT["CountByType(type, id)"]
+        GLQ["GetLockedQuantity(type, id)"]
+        AVL["Available = Count - Locked"]
+    end
+
+    IB --> CBT
+    LT --> GLQ
+    CBT --> AVL
+    GLQ --> AVL
+```

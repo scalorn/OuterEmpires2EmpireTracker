@@ -161,3 +161,81 @@ flowchart TD
 
 **REQ-ARCH-102** The Blueprint_List_View SHALL include a "Refs" column displaying the TotalCount from the ReferenceReport for each blueprint.  
 **REQ-ARCH-103** The Refs column SHALL be populated during `PopulateListView` by instantiating a BlueprintReferenceCounter from the current PlayerContext and EmpireContext data and calling CountReferences for each blueprint.
+
+## Data Flow Diagrams
+
+### Application Startup Sequence
+
+```mermaid
+sequenceDiagram
+    participant App as Program.cs
+    participant EC as EmpireContext
+    participant PC as PlayerContext
+    participant PS as PreferencesStore
+    participant Main as MainWindow
+    participant BP as BackgroundProcessor
+
+    App->>EC: getInstance() — load BaselineData.json
+    EC->>PC: Initialize PlayerContext singleton
+    App->>PS: getInstance() — load UIPreferences.json
+    App->>Main: Create MainWindow
+    Main->>Main: Restore window state from preferences
+    Main->>PC: Auto-load last opened file (or default)
+    Main->>BP: Create and Start()
+    Main->>Main: Start UI timer (1s status bar updates)
+```
+
+### Blueprint Reference Counting
+
+```mermaid
+flowchart LR
+    subgraph Sources["Reference Sources (5)"]
+        FP[ColonyStructure<br/>.FlatpackBlueprintUUID]
+        RS[ColonyStructure<br/>.ResearchingBlueprintUUID]
+        MF[ColonyStructure<br/>.ManufacturingBlueprintUUID]
+        BB[Blueprint<br/>.BaseBlueprintUUID]
+        SC[Survey<br/>.ScannerBlueprintUUID]
+    end
+
+    subgraph Counter["BlueprintReferenceCounter"]
+        CR[CountReferences<br/>blueprintUUID]
+    end
+
+    subgraph Report["ReferenceReport"]
+        FC[FlatpackCount]
+        RC[ResearchingCount]
+        MC[ManufacturingCount]
+        BC[BaseBlueprintCount]
+        SCC[ScannerCount]
+        TC[TotalCount = Σ all]
+    end
+
+    FP & RS & MF & BB & SC --> CR --> FC & RC & MC & BC & SCC --> TC
+```
+
+### Multi-Player Data Ownership
+
+```mermaid
+flowchart TD
+    subgraph Players
+        P1[Player Alice<br/>UUID: aaa]
+        P2[Player Bob<br/>UUID: bbb]
+    end
+
+    subgraph "Owned Data (filtered by CurrentPlayerUUID)"
+        C1[Colonies<br/>OwnerUUID = aaa]
+        B1[Blueprints<br/>OwnerUUID = aaa]
+        S1[Surveys<br/>OwnerUUID = aaa]
+        R1[Routes<br/>OwnerUUID = aaa]
+        PR1[PricingPlans<br/>OwnerUUID = aaa]
+    end
+
+    subgraph Global
+        GB[Global Blueprints<br/>OwnerUUID = empty]
+    end
+
+    P1 --> C1 & B1 & S1 & R1 & PR1
+    P2 -.->|"switch player"| C1
+
+    Note["CurrentPlayerChanged event<br/>→ all forms refresh"]
+```
