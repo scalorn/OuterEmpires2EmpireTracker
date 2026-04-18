@@ -50,7 +50,7 @@ Iterations can be reordered based on priorities. The data model is designed to s
 - **Item_Status**: Lifecycle state: Staged → Delivering → Ready → In_Progress → Completed.
 - **Stock_Target**: A persistent rule specifying a minimum quantity of an item to maintain, scoped to empire-wide, a specific colony, or a specific station (BL-059).
 - **Stock_Plan**: A named group of Stock_Targets that pool overlapping component requirements (OR logic within the plan).
-- **Stock_Profile**: A composition layer that references Stock_Plans and standalone Stock_Targets with AND/OR grouping. Entries in the same group are ORed; different groups are ANDed. Enables reusable plans across factions/customers.
+- **Stock_Profile**: A composition layer that references Stock_Plans with AND/OR grouping. Entries in the same group are ORed; different groups are ANDed. Enables reusable plans across factions/customers.
 - **Supply_Chain**: A defined sequence of resource flow stages (mine → collect → refine → deliver) with production rates and accumulation thresholds that drive automatic delivery plan generation.
 
 ### Ship Terms
@@ -600,7 +600,7 @@ Iterations can be reordered based on priorities. The data model is designed to s
 **Decision:** Stock targets that reference ship templates use live expansion — the template's current components are resolved at check time, not snapshotted when the target is created. If a template is modified (e.g. reactor swapped), the next stock target evaluation expands the updated template, detects the shortfall of the new component, and triggers the build cascade. Old components remain in inventory for the user to sell or repurpose. Modifying a template sets the stock target dirty flag so the background processor picks it up.
 
 #### OQ-29: Stock Plan Composition and Reusability
-**Decision:** Stock Plans are reusable building blocks — each is an OR group internally (targets within a plan pool). A Stock Profile references multiple Stock Plans and standalone Stock Targets, and defines how they combine. Plans within the same profile group are ORed (max across them); groups are ANDed (summed). This supports scenarios like: "maintain stock for Faction Alpha's order OR Faction Beta's order (not both), AND always maintain light combat ships, AND always maintain 20k munitions." Stock Plans can be referenced by multiple Stock Profiles, enabling reuse across factions/customers.
+**Decision:** Stock Plans are reusable building blocks — each is an OR group internally (targets within a plan pool). A Stock Profile references multiple Stock Plans and defines how they combine. Plans within the same profile group are ORed (max across them); groups are ANDed (summed). This supports scenarios like: "maintain stock for Faction Alpha's order OR Faction Beta's order (not both), AND always maintain light combat ships, AND always maintain 20k munitions." Stock Plans can be referenced by multiple Stock Profiles, enabling reuse across factions/customers. Simple targets (e.g. "20k Munitions") are modeled as single-target plans.
 
 ### Requirement 7.1: Stock Targets
 
@@ -608,16 +608,15 @@ Iterations can be reordered based on priorities. The data model is designed to s
 
 #### Acceptance Criteria
 
-1. THE Stock_Target SHALL have a UUID, item reference (type + name, or ShipTemplate UUID), target quantity, critical threshold, OwnerUUID, and a scope (Empire-wide, Colony, or Station with location UUID).
-2. Stock_Targets can exist standalone (not in a plan) or grouped into a Stock_Plan. Each Stock_Plan has a UUID, Name, and OwnerUUID.
-3. An empire-wide target checks total quantity across all colonies and stations.
+1. THE Stock_Target SHALL have a UUID, item reference (type + name, or ShipTemplate UUID), target quantity, critical threshold, and a scope (Empire-wide, Colony, or Station with location UUID).
+2. All Stock_Targets exist within a Stock_Plan. Each Stock_Plan has a UUID, Name, OwnerUUID, and ReplenishmentBuildPlanUUID. Simple targets are modeled as single-target plans.
+3. An empire-wide target checks total quantity across all colony warehouses and the current player's station holds.
 4. A colony-specific target checks quantity at that colony's warehouse only.
-5. A station-specific target checks quantity at that station's hold only.
+5. A station-specific target checks quantity at the current player's hold at that station only.
 6. WHEN a Stock_Target references a ShipTemplate, THE Application SHALL expand the template into component requirements (hull + all components × target quantity) for stock checking.
-7. WITHIN a Stock_Plan, overlapping component requirements across targets use the maximum quantity (pooled). ACROSS Stock_Plans and standalone targets, each plan/target's requirements are summed (dedicated).
-8. Standalone Stock_Targets are always dedicated — their requirements are summed independently.
-8. THE Application SHALL persist Stock_Plans and Stock_Targets to PlayerData.json.
-9. THE Application SHALL allow creating, editing, and deleting stock plans and targets.
+7. WITHIN a Stock_Plan, overlapping component requirements across targets use the maximum quantity (pooled). ACROSS Stock_Plans, each plan's requirements are summed (dedicated).
+8. THE Application SHALL persist Stock_Plans (with nested targets) to PlayerData.json.
+9. THE Application SHALL allow creating, editing, and deleting stock plans and their targets.
 10. THE critical threshold SHALL be less than or equal to the target quantity. IF current quantity falls below the target but above the critical threshold, THE Application SHALL display a yellow warning. IF current quantity falls below the critical threshold, THE Application SHALL display a red warning.
 11. THE Inactivity form SHALL surface stock target warnings, with critical shortfalls displayed prominently.
 
@@ -639,12 +638,12 @@ Iterations can be reordered based on priorities. The data model is designed to s
 #### Acceptance Criteria
 
 1. THE Stock_Profile SHALL have a UUID, Name, and OwnerUUID.
-2. THE Stock_Profile SHALL contain a list of Stock_Profile_Entries, each referencing either a Stock_Plan or a standalone Stock_Target.
+2. THE Stock_Profile SHALL contain a list of Stock_Profile_Entries, each referencing a Stock_Plan.
 3. Each Stock_Profile_Entry SHALL have a group identifier. Entries in the same group are ORed (max across overlapping components). Different groups are ANDed (summed).
 4. Stock_Plans SHALL be reusable — the same plan can be referenced by multiple Stock_Profiles.
 5. THE Application SHALL persist Stock_Profiles to PlayerData.json.
 6. THE Application SHALL allow creating, editing, and deleting stock profiles.
-7. WHEN computing total stock requirements, THE Application SHALL evaluate each profile: OR within groups, AND across groups, then sum across all profiles and standalone targets.
+7. WHEN computing total stock requirements, THE Application SHALL evaluate each profile: OR within groups, AND across groups, then sum across all profiles.
 
 ---
 

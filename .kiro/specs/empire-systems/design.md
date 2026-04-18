@@ -1379,7 +1379,9 @@ public void InitStations(PlayerRoot playerRoot)
 public void InitMarketListings(PlayerRoot playerRoot)
 public void InitMarketTransactions(PlayerRoot playerRoot)
 public void InitStockPlans(PlayerRoot playerRoot)
+public void InitStockProfiles(PlayerRoot playerRoot)
 public void InitSupplyChains(PlayerRoot playerRoot)
+public void InitWarehouseOverflowRules(PlayerRoot playerRoot)
 public void InitFactions(PlayerRoot playerRoot)
 public void InitExternalCharacters(PlayerRoot playerRoot)
 public void InitAsteroids(PlayerRoot playerRoot)
@@ -1397,7 +1399,9 @@ playerRoot.Station = StationList.ToArray();
 playerRoot.MarketListing = MarketListingList.ToArray();
 playerRoot.MarketTransaction = MarketTransactionList.ToArray();
 playerRoot.StockPlan = StockPlanList.ToArray();
+playerRoot.StockProfile = StockProfileList.ToArray();
 playerRoot.SupplyChain = SupplyChainList.ToArray();
+playerRoot.WarehouseOverflowRule = WarehouseOverflowRuleList.ToArray();
 playerRoot.Faction = FactionList.ToArray();
 playerRoot.ExternalCharacter = ExternalCharacterList.ToArray();
 playerRoot.Asteroid = AsteroidList.ToArray();
@@ -1429,7 +1433,9 @@ public List<Station> GetCurrentPlayerStations()  // Includes government stations
 public List<MarketListing> GetCurrentPlayerListings()
 public List<MarketTransaction> GetCurrentPlayerTransactions()
 public List<StockPlan> GetCurrentPlayerStockPlans()
+public List<StockProfile> GetCurrentPlayerStockProfiles()
 public List<SupplyChain> GetCurrentPlayerSupplyChains()
+public List<WarehouseOverflowRule> GetCurrentPlayerOverflowRules()
 ```
 
 ## Migration
@@ -1450,8 +1456,11 @@ Entities that represent game-world objects shared across players use determinist
 | Ship | Random | Player-owned instance |
 | MarketListing | Random | Player-specific record |
 | MarketTransaction | Random | Player-specific record |
-| StockTarget | Random | Player-specific rule |
+| StockPlan | Random | Player-specific plan |
+| StockTarget | Random | Nested in plan |
+| StockProfile | Random | Player-specific composition |
 | SupplyChain | Random | Player-specific definition |
+| WarehouseOverflowRule | Random | Player-specific rule |
 
 Each deterministic entity type uses its own UUID namespace to avoid collisions (e.g. a faction named "Alpha" and a station named "Alpha" get different UUIDs).
 
