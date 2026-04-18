@@ -133,6 +133,15 @@ namespace OE2EmpireTracker.Services
 
             // Lock unallocated workers against the colony
             LockUnallocatedWorkers(previousStatus);
+
+            Log.Info("CalculateBuilt ACTUAL: colony={0} structures={1} Power={2}/{3} Hab={4}/{5} Food={6}/{7} Ent={8}/{9} WH={10}/{11}",
+                colony.ColonyName ?? colony.PlanetName ?? colony.UUID,
+                colony.Structures.Count,
+                finalActualStatus.PowerProvided, finalActualStatus.PowerRequired,
+                finalActualStatus.HabitationProvision, finalActualStatus.HabitationRequired,
+                finalActualStatus.FoodProvision, finalActualStatus.FoodRequired,
+                finalActualStatus.EntertainmentProvided, finalActualStatus.EntertainmentRequired,
+                finalActualStatus.WarehouseCapacity, finalActualStatus.WarehouseRequired);
         }
 
         public void CalculateIdeal()
@@ -150,6 +159,15 @@ namespace OE2EmpireTracker.Services
             }
             finalIdealStatus = previousStatus;
             finalIdealStatus.WarehouseRequired = CalculateWarehouseRequired();
+
+            Log.Info("CalculateIdeal IDEAL: colony={0} structures={1} Power={2}/{3} Hab={4}/{5} Food={6}/{7} Ent={8}/{9} WH={10}/{11}",
+                colony.ColonyName ?? colony.PlanetName ?? colony.UUID,
+                colony.Structures.Count,
+                finalIdealStatus.PowerProvided, finalIdealStatus.PowerRequired,
+                finalIdealStatus.HabitationProvision, finalIdealStatus.HabitationRequired,
+                finalIdealStatus.FoodProvision, finalIdealStatus.FoodRequired,
+                finalIdealStatus.EntertainmentProvided, finalIdealStatus.EntertainmentRequired,
+                finalIdealStatus.WarehouseCapacity, finalIdealStatus.WarehouseRequired);
         }
 
         private decimal CalculateWarehouseRequired()
