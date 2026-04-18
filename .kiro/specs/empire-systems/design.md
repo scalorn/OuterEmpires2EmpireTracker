@@ -1933,50 +1933,62 @@ Controls:
 
 ### FormStockTargets (Iteration 7)
 
-MDI child form. Left-list / right-detail pattern with plans on the left and targets on the right.
+MDI child form. Left-list / right-detail pattern with plans and standalone targets on the left, targets on the right.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ #1 - Stock Targets                                                      [_][□][X]│
 ├──────────────────────┬──────────────────────────────────────────────────────────┤
-│ Plans:               │ Plan: [Ship Stock for Faction Alpha___]                 │
-│ Filter: [__________] │                                                         │
-│                      │ Targets:                                                │
+│ Filter: [__________] │ Plan: [Ship Stock for Faction Alpha___]                 │
+│                      │                                                         │
+│ ── Plans ──────────  │ Targets:                                                │
 │ ┌──────────────────┐ │ ┌──────────┬──────────────┬────────┬───────┬──────┬────┐│
 │ │▸ Faction Alpha   │ │ │ Type     │ Item         │ Target │ Scope │ Curr │ Δ  ││
 │ │  Faction Beta    │ │ ├──────────┼──────────────┼────────┼───────┼──────┼────┤│
 │ │  Base Supplies   │ │ │ ShipTmpl │ Keystone     │     10 │Empire │    7 │ -3 ││
-│ │  ── Standalone ──│ │ │ ShipTmpl │ Vanguard     │     10 │Empire │   10 │  0 ││
-│ │  20k Munitions   │ │ │ Commodty │ Fuel Cells   │    500 │Stn A  │  320 │-180││
-│ │                  │ │ └──────────┴──────────────┴────────┴───────┴──────┴────┘│
-│ │                  │ │                                                         │
-│ │                  │ │ Add Target:                                             │
-│ │                  │ │ Type:[ShipTemplate▼] Item:[Keystone          ▼]        │
-│ │                  │ │ Target Qty:[10] Critical:[3]                            │
-│ │                  │ │ Scope:[EmpireWide▼] Location:[                ▼]       │
+│ │                  │ │ │ ShipTmpl │ Vanguard     │     10 │Empire │   10 │  0 ││
+│ └──────────────────┘ │ │ Commodty │ Fuel Cells   │    500 │Stn A  │  320 │-180││
+│ [New Plan] [Delete]  │ └──────────┴──────────────┴────────┴───────┴──────┴────┘│
+│                      │                                                         │
+│ ── Standalone ─────  │ Add Target:                                             │
+│ ┌──────────────────┐ │ Type:[ShipTemplate▼] Item:[Keystone          ▼]        │
+│ │▸ 20k Munitions   │ │ Target Qty:[10] Critical:[3]                            │
+│ │  Spare Reactors  │ │ Scope:[EmpireWide▼] Location:[                ▼]       │
 │ │                  │ │ [Add Target] [Remove Target]                            │
-│ │                  │ │                                                         │
-│ │                  │ │ Expanded Components (Keystone × 10):                    │
-│ │                  │ │ ┌──────────────────┬──────────┬──────────┬──────────┐   │
-│ │                  │ │ │ Component        │ Required │ In Stock │Shortfall │   │
-│ │                  │ │ ├──────────────────┼──────────┼──────────┼──────────┤   │
-│ │                  │ │ │ Clipper Hull Mk3 │       10 │        7 │        3 │   │
-│ │                  │ │ │ Reactor Mk3      │       10 │       12 │        0 │   │
-│ │                  │ │ │ Drive Mk3        │       10 │        8 │        2 │   │
-│ │                  │ │ │ Cargo Pod Mk2    │       20 │       15 │        5 │   │
-│ │                  │ │ └──────────────────┴──────────┴──────────┴──────────┘   │
-│ │                  │ │                                                         │
-│ │                  │ │ [Check & Generate Orders]                               │
 │ └──────────────────┘ │                                                         │
-│ [New Plan] [Delete]  │                                                         │
+│ [New Target] [Delete]│ Expanded Components (Keystone × 10):                    │
+│                      │ ┌──────────────────┬──────────┬──────────┬──────────┐   │
+│                      │ │ Component        │ Required │ In Stock │Shortfall │   │
+│                      │ │ Clipper Hull Mk3 │       10 │        7 │        3 │   │
+│                      │ │ Reactor Mk3      │       10 │       12 │        0 │   │
+│                      │ │ Drive Mk3        │       10 │        8 │        2 │   │
+│                      │ │ Cargo Pod Mk2    │       20 │       15 │        5 │   │
+│                      │ └──────────────────┴──────────┴──────────┴──────────┘   │
+│                      │                                                         │
+│                      │ [Check & Generate Orders]                               │
 ├──────────────────────┴─────────────────────────────────────────────────────────┤
 │ [Save]                                                                         │
 └────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+The left panel has two sections, each with its own list and buttons:
+
+Plans section:
+- `lvwStockPlans` (ListView) showing named stock plans
+- `cmdNewPlan` creates a new StockPlan. The right panel shows the plan name and its targets grid.
+- `cmdDeletePlan` deletes the selected plan and all its targets.
+
+Standalone section:
+- `lvwStandaloneTargets` (ListView) showing standalone targets by item name
+- `cmdNewTarget` creates a new standalone StockTarget (no plan). The right panel shows the target's fields directly — same add-target panel but for a single target rather than a list.
+- `cmdDeleteTarget` deletes the selected standalone target.
+
+When a plan is selected in the top list, the right panel shows the plan name, the targets grid, and the add-target panel for adding targets to that plan. When a standalone target is selected in the bottom list, the right panel shows that single target's fields for editing (type, item, qty, critical, scope, location). Selecting in one list deselects the other.
+
 Controls:
-- Left: `flpSearchList` → `txtPlanFilter` + `lvwStockPlans` (ListView, shows plans + standalone targets separated by a divider) + `cmdNewPlan` / `cmdDeletePlan`
-- Right: `flpTargetData` → plan name, `dgvTargets` (DataGridView with color-coded shortfall column: green=0, yellow=below target, red=below critical), add-target panel, expanded components panel
+- Left: `flpSearchList` → `txtFilter` (shared filter), Plans section (`lvwStockPlans` + `cmdNewPlan` / `cmdDeletePlan`), Standalone section (`lvwStandaloneTargets` + `cmdNewTarget` / `cmdDeleteTarget`)
+- Right (plan selected): `txtPlanName`, `dgvTargets` (DataGridView with color-coded shortfall column: green=0, yellow=below target, red=below critical), add-target panel, expanded components panel
+- Right (standalone selected): same fields as add-target panel but bound to the selected target for direct editing
 - `dgvTargets` columns: Type, Item, TargetQty, CriticalThreshold, Scope, Location, CurrentQty, Shortfall
 - Add-target panel: `cmbTargetType`, `cmbTargetItem` (FilteredComboBox), `txtTargetQty`, `txtCriticalThreshold`, `cmbScope`, `cmbLocation`, `cmdAddTarget` / `cmdRemoveTarget`
 - Expanded components panel: `dgvExpandedComponents` (read-only) — visible when a ShipTemplate target is selected, shows per-component breakdown
