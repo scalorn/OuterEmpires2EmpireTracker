@@ -2,7 +2,6 @@ using OE2EmpireTracker.Persistence;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Forms;
-using OE2EmpireTracker.Forms.Colony;
 using OE2EmpireTracker.Forms.ColonyV2;
 using OE2EmpireTracker.Forms.PlayerProfile;
 using OE2EmpireTracker.Forms.Survey;
@@ -129,11 +128,6 @@ namespace OE2EmpireTracker
             OpenMdiChild<FormBlueprintV2>();
         }
 
-        private void addColonyToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenMdiChild<FormColony>();
-        }
-
         private void addColonyV2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<FormColonyV2>();
@@ -190,7 +184,6 @@ namespace OE2EmpireTracker
 
             // Manage menu items (except Player Profiles)
             addBlueprintV2ToolStripMenuItem.Enabled = hasPlayer;
-            addColonyToolStripMenuItem.Enabled = hasPlayer;
             addColonyV2ToolStripMenuItem.Enabled = hasPlayer;
             addSurveyToolStripMenuItem.Enabled = hasPlayer;
             deliveryRoutesToolStripMenuItem.Enabled = hasPlayer;
@@ -562,7 +555,7 @@ namespace OE2EmpireTracker
         {
             { "FormBlueprint", (w, n) => w.OpenMdiChildWithNumber<FormBlueprintV2>(n) },
             { "FormBlueprintV2", (w, n) => w.OpenMdiChildWithNumber<FormBlueprintV2>(n) },
-            { "FormColony", (w, n) => w.OpenMdiChildWithNumber<FormColony>(n) },
+            { "FormColony", (w, n) => w.OpenMdiChildWithNumber<FormColonyV2>(n) },
             { "FormColonyV2", (w, n) => w.OpenMdiChildWithNumber<FormColonyV2>(n) },
             { "FormSurvey", (w, n) => w.OpenMdiChildWithNumber<FormSurvey>(n) },
             { "FormPlayerProfile", (w, n) => w.OpenMdiChildWithNumber<FormPlayerProfile>(n) },
