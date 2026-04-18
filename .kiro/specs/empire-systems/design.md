@@ -18,8 +18,13 @@ graph TD
         STN[Station]
         ML[MarketListing]
         MT[MarketTransaction]
-        SKT[StockTarget]
+        SP[StockPlan]
+        SPR[StockProfile]
         SC[SupplyChain]
+        WOR[WarehouseOverflowRule]
+        FAC[Faction]
+        EC[ExternalCharacter]
+        AST[Asteroid]
     end
 
     subgraph Existing Models
@@ -43,6 +48,7 @@ graph TD
         STS[StockTargetService]
         SCS[SupplyChainService]
         QC[QueueCalculator]
+        AAS[AutoAssignService]
     end
 
     subgraph Forms
@@ -52,6 +58,9 @@ graph TD
         FSTN[FormStation]
         FMK[FormMarket]
         FSTK[FormStockTargets]
+        FCON[FormContacts]
+        FAST[FormAsteroid]
+        FSCH[FormSupplyChain]
     end
 
     BP -->|contains| BI
@@ -64,13 +73,17 @@ graph TD
     STN -->|hold| IB
     ML -->|at| STN
     MT -->|decrements| ML
-    SKT -->|triggers| BPS
+    SP -->|triggers| BPS
     SC -->|generates| DP
+    SPR -->|references| SP
+    WOR -->|monitors| COL
+    FAC -->|groups| EC
 
     FBP --> BPS
     FBP --> RCS
     FBP --> DGS
     FBP --> QC
+    FBP --> AAS
     FST --> SBS
     FMK --> MKS
     FSTK --> STS
@@ -2425,7 +2438,7 @@ public class StationReferenceCounter
         IEnumerable<MarketTransaction> transactions,
         IEnumerable<BuildPlan> buildPlans,
         IEnumerable<SupplyChain> supplyChains,
-        IEnumerable<StockTarget> stockTargets,
+        IEnumerable<StockPlan> stockPlans,
         IEnumerable<WarehouseOverflowRule> overflowRules);
 
     public StationReferenceReport CountReferences(string stationUUID);
@@ -2437,7 +2450,7 @@ public class ShipTemplateReferenceCounter
     public ShipTemplateReferenceCounter(
         IEnumerable<Ship> ships,
         IEnumerable<BuildPlan> buildPlans,
-        IEnumerable<StockTarget> stockTargets);
+        IEnumerable<StockPlan> stockPlans);
 
     public ShipTemplateReferenceReport CountReferences(string templateUUID);
 }
@@ -2551,7 +2564,7 @@ For any blueprint with a known manufacturing time and any positive target durati
 For any positive target duration, the computed runs × CommodityCycleSeconds ≥ target duration.
 
 ### Property 4: Resource shortfall computation
-For any build item and colony, the shortfall for each resource equals max(0, required - warehouse stock).
+For any build item allocated to a colony with an associated delivery route, the shortfall for each resource equals max(0, required - available), where available = colony warehouse stock + current player's station hold stock at stations on the route.
 
 ### Property 5: Delivery plan generation covers all shortfalls
 For any build plan with shortfalls, the generated delivery plan's drop-off items cover every shortfall quantity.
@@ -2560,19 +2573,22 @@ For any build plan with shortfalls, the generated delivery plan's drop-off items
 For any ship class and station type, ValidateAssemblyLocation returns null iff the class/type combination is permitted (2-5 any, 6 Station+Starbase, 7-8 Starbase only).
 
 ### Property 7: Stock target shortfall computation
-For any stock target, the shortfall equals max(0, target - current quantity) where current quantity is scoped correctly (empire-wide sums all locations, colony/station checks one). IsCritical is true iff current quantity < CriticalThreshold.
+For any stock target within a stock plan, the shortfall equals max(0, target - current quantity) where current quantity is scoped correctly (empire-wide sums all colony warehouses + current player's station holds, colony scope checks one warehouse, station scope checks one player hold). IsCritical is true iff current quantity < CriticalThreshold. Within a plan, overlapping component requirements use max (OR pooling). Across plans, requirements are summed (AND/dedicated).
 
 ### Property 8: Market sale decrements listing
 For any sell transaction linked to a listing, the listing quantity after recording equals the listing quantity before minus the transaction quantity.
 
-### Property 11: Market purchase adds to station hold
+### Property 9: Market purchase adds to station hold
 For any buy transaction at a station, the station hold quantity of the purchased item after recording equals the hold quantity before plus the transaction quantity.
 
-### Property 9: Serialization round-trip
-For all new entity types (BuildPlan, ShipTemplate, Ship, Station, MarketListing, MarketTransaction, StockTarget, SupplyChain), serializing then deserializing produces equivalent objects.
+### Property 10: Serialization round-trip
+For all new entity types (BuildPlan, ShipTemplate, Ship, Station, MarketListing, MarketTransaction, StockPlan, SupplyChain, Faction, ExternalCharacter, Asteroid, WarehouseOverflowRule, StockProfile), serializing then deserializing produces equivalent objects.
 
-### Property 10: RouteStop migration preserves destinations
+### Property 11: RouteStop migration preserves destinations
 For any existing RouteStop with ColonyUUID, after migration DestinationUUID equals ColonyUUID and DestinationType equals Colony.
+
+### Property 12: Build item status cascade monotonicity
+For any build item, the cascade processor only advances status forward (Staged < Delivering < Ready). It never sets InProgress or Completed, and never decreases the status ordinal. The result is max(currentStatus, computedStatus).
 
 ## Data Flow Analysis & In-Memory Indexing
 
@@ -3137,7 +3153,7 @@ This reduces false shortfalls — if the player already has resources at a stati
 
 ### Property-Based Tests (FsCheck)
 
-One test per correctness property (Properties 1-10 above), minimum 100 iterations each. Custom generators for BuildPlan, BuildItem, ShipTemplate, Station, MarketListing, StockPlan.
+One test per correctness property (Properties 1-12 above), minimum 100 iterations each. Custom generators for BuildPlan, BuildItem, ShipTemplate, Station, MarketListing, StockPlan.
 
 ### Unit Tests
 
