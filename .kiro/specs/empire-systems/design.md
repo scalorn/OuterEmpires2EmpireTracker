@@ -295,6 +295,193 @@ sequenceDiagram
     Note over User: 10 Reactor A still in inventory<br/>User can sell or repurpose
 ```
 
+### Flow 8: Ship Instance — Create, Configure, Load Cargo
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant SI as Ship Instance Form
+    participant ST as Ship Template
+    participant SBS as ShipBuildService
+
+    User->>SI: Create from Template
+    SI->>SI: Select template from list
+    SI->>SI: Copy hull + components from template
+    SI->>SI: Assign name, set location
+    SI-->>User: Ship created
+
+    Note over User: Later — swap a component
+    User->>SI: Select component slot
+    User->>SI: Pick new blueprint from filtered list
+    SI->>SBS: Recompute stats
+    SBS-->>SI: Updated ShipStats
+    SI-->>User: Stats panel refreshed
+
+    Note over User: Load cargo for delivery
+    User->>SI: Switch to Cargo tab
+    User->>SI: Add items to cargo hold
+    SI->>SI: Volume check (used vs capacity)
+    SI-->>User: Volume warning if over capacity
+```
+
+### Flow 9: Station — Create, Manage Holds
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant STN as Station Form
+
+    User->>STN: Create new station
+    User->>STN: Set name, type (Outpost/Station/Starbase), ownership
+    STN-->>User: Station created
+
+    Note over User: Manage inventory
+    User->>STN: Select Hold tab, pick player
+    User->>STN: Add items to hold (type, item, purity, qty)
+    STN->>STN: Update station.Holds[playerUUID]
+    STN-->>User: Hold grid refreshed
+
+    Note over User: Organize with crates
+    User->>STN: Create new crate
+    User->>STN: Select items, Move to Crate
+    STN-->>User: Items moved into crate, detail grid shows contents
+```
+
+### Flow 10: Stock Targets — Plan Creation and Order Generation
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant ST as Stock Targets Form
+    participant STS as StockTargetService
+    participant BP as Build Planner
+
+    User->>ST: Create new stock plan (or Quick Add)
+    User->>ST: Add targets (item/template, qty, scope)
+    User->>ST: Set replenishment build plan
+    ST-->>User: Plan saved
+
+    Note over User: Check stock levels
+    User->>ST: Click "Check & Generate Orders"
+    ST->>STS: CheckTargets(plans, playerUUID)
+    STS->>STS: Expand templates, check scoped inventory
+    STS->>STS: OR-pool within plan, AND across plans
+    STS-->>ST: Shortfalls returned
+    ST-->>User: Shortfall grid displayed
+
+    ST->>STS: GenerateReplenishmentItems(shortfalls)
+    STS-->>ST: Build items created in replenishment plan
+    ST-->>User: "12 items added to Restock Orders plan"
+```
+
+### Flow 11: Contacts — Factions and External Characters
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant FC as Contacts Form
+
+    User->>FC: Create faction (name, description)
+    FC-->>User: Faction created (deterministic UUID)
+
+    User->>FC: Switch to External Characters tab
+    User->>FC: Add character (name, assign to faction)
+    FC-->>User: Character created (deterministic UUID)
+
+    Note over User: Characters appear in combo lookups
+    Note over FC: Recipient, Counterparty combos<br/>merge PlayerProfiles + ExternalCharacters
+```
+
+### Flow 12: Asteroid — Create and Track Reserves
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant AF as Asteroid Form
+    participant SF as Survey Form
+
+    User->>AF: Create asteroid (name, system)
+    AF-->>User: Asteroid created (deterministic UUID)
+
+    User->>AF: Add reserves (resource, purity, max, current)
+    AF-->>User: Reserve grid populated
+
+    Note over User: Import asteroid survey
+    User->>SF: Import survey HTML (asteroid context)
+    SF->>SF: Detect asteroid, set SurveyType=Asteroid
+    SF->>SF: Link to asteroid via AsteroidUUID
+    SF-->>User: Survey imported
+
+    User->>AF: Select asteroid
+    AF-->>User: Linked Surveys grid shows survey data
+
+    Note over User: After mining
+    User->>AF: Update CurrentReserve (decrement)
+```
+
+### Flow 13: Supply Chain — Define and Monitor Pipeline
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant SC as Supply Chain Form
+    participant BG as Background Processor
+    participant DG as Delivery Gen
+
+    User->>SC: Create supply chain (name)
+    User->>SC: Add stages (Mine → Collect → Refine → Deliver)
+    User->>SC: Set thresholds, rates, routes per stage
+    SC-->>User: Chain saved, flow summary displayed
+
+    Note over BG: Background tick
+    BG->>BG: Check accumulation at Collect stage
+    BG->>BG: Station Z has 5000 (threshold 3000)
+    BG->>DG: Generate delivery on designated route
+    DG-->>BG: Plan created
+    BG-->>User: Inactivity: "Deliver unrefined Iron to Q"
+```
+
+### Flow 14: Warehouse Overflow — Colony Tab
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant CF as Colony Form (Overflow tab)
+    participant BG as Background Processor
+    participant DG as Delivery Gen
+
+    User->>CF: Switch to Overflow tab
+    User->>CF: Add rule (resource, purity, threshold, dest, route)
+    CF-->>User: Rule saved, current qty shown with color coding
+
+    Note over BG: Background tick
+    BG->>BG: Check warehouse levels vs thresholds
+    BG->>BG: Iron at 4200, threshold 3000
+    BG->>BG: Move excess: 4200 - 3000 = 1200
+    BG->>DG: Generate delivery (1200 Iron → Station Alpha)
+    DG-->>BG: Plan created on designated route
+    BG-->>User: Inactivity: "Move 1200 Iron to Station Alpha"
+```
+
+### Flow 15: Stock Profile — AND/OR Composition
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant SP as Stock Targets Form (Profiles tab)
+
+    User->>SP: Create profile (name)
+    User->>SP: Add entry: Group A = Faction Alpha Ships plan
+    User->>SP: Add entry: Group A = Faction Beta Ships plan
+    Note right of SP: Group A: OR (max across plans)
+    User->>SP: Add entry: Group B = Base Supplies plan
+    Note right of SP: Group B: AND (summed with A)
+    User->>SP: Add entry: Group C = 20k Munitions plan
+    Note right of SP: Group C: AND (summed with A+B)
+    SP-->>User: Logic summary displayed:
+    Note over SP: max(Alpha, Beta) + Base Supplies + 20k Munitions
+```
+
 ## Data Models
 
 All new models follow the existing POCO pattern: public properties with defaults, Newtonsoft.Json serialization, UUID + OwnerUUID ownership, persisted as top-level arrays in PlayerRoot.
