@@ -3019,27 +3019,44 @@ Question: Are plan targets nested inside `StockPlan.Targets` (like `BuildPlan.It
 
 Impact: Affects serialization, Init methods, cascade delete behavior, and how FormStockTargets saves data.
 
-### OQ-31: ShipComponentSlot SlotType Values (Iteration 2)
+### OQ-31: ShipComponentSlot SlotType Values (Iteration 2) — RESOLVED
 
-The Hull blueprint in BaselineData.json defines slot counts via property names like "Reactor Slots", "Cargo Pod Slots", "Main Drive Slots", "Small Weapon Mounts", "Medium Weapon Mounts", "Large Weapon Mounts", "Max Hull Plating", "Max Hull Reinforcement", "Max Hull Sealant Units", "Max Mining Lasers", "Max Mining Grapples", "GERTY Slots", etc.
+**Decision:** Weapons use three separate slot types (`WeaponSmall`, `WeaponMedium`, `WeaponLarge`). Hull modifications are separate types. The complete mapping from hull property to SlotType is defined below.
 
-Question: What are the canonical `SlotType` string values for `ShipComponentSlot`? Specifically:
-- Are weapons three separate slot types (`SmallWeapon`, `MediumWeapon`, `LargeWeapon`) or one type (`Weapon`) with a size attribute?
-- Are hull modifications (`HullPlating`, `HullReinforcement`, `HullSealant`) separate slot types or grouped?
-- What is the complete mapping from hull property name → SlotType string?
+| Hull Property | SlotType String | Max Count Source | BlueprintType IDs |
+|---|---|---|---|
+| Reactor Slots | `Reactor` | Hull property value | `Reactor` |
+| Main Drive Slots | `MainDrive` | Hull property value | `MainDrive` |
+| Cargo Pod Slots | `CargoPod` | Hull property value | `CargoPod` |
+| Fuel Tank Slots | `FuelTank` | Hull property value | `FuelTank` |
+| Jump Drive Slots | `JumpDrive` | Hull property value | `JumpDrive` |
+| Nav Comp Slots | `NavComp` | Hull property value | `NavComp` |
+| Shield Slots | `Shield` | Hull property value | `Shield` |
+| Thruster Slots | `Thruster` | Hull property value | `Thruster` |
+| Coupler Slots | `Coupler` | Hull property value | `UniversalCoupler` |
+| GERTY Slots | `GERTY` | Hull property value | `GERTYDroneRack` |
+| Scanner Slots | `Scanner` | Hull property value | `SystemObjectScanner` |
+| Small Weapon Mounts | `WeaponSmall` | Hull property value | `Beamer/Small`, `Railgun/Small`, `CoilGun/Small`, `MissileLauncher/Small`, `TorpedoLauncher/Small` |
+| Medium Weapon Mounts | `WeaponMedium` | Hull property value | `Beamer/Medium`, `Railgun/Medium`, `CoilGun/Medium`, `MissileLauncher/Medium`, `TorpedoLauncher/Medium` |
+| Large Weapon Mounts | `WeaponLarge` | Hull property value | `Beamer/Large`, `Railgun/Large`, `CoilGun/Large`, `MissileLauncherLarge`, `TorpedoLauncher/Large` |
+| Max Hull Plating | `HullPlating` | Hull property value | `HullPlating` |
+| Max Hull Reinforcement | `HullReinforcement` | Hull property value | `HullReinforcement` |
+| Max Hull Sealant Units | `HullSealant` | Hull property value | `HullSealantInjectionUnit` |
+| Max Mining Lasers | `MiningLaser` | Hull property value | `MiningLaser` |
+| Max Mining Grapples | `MiningGrapple` | Hull property value | `AsteroidGrapple` |
+| (no hull property) | `OreHopper` | `Max Allowed On Ship` on blueprint | `OreHopper` |
 
-Impact: Affects ShipTemplate validation, component installation logic, slot grid display, and ComputeStats aggregation.
+Notes:
+- Ore Hopper has no hull slot property — its max count comes from the blueprint's own "Max Allowed On Ship" property rather than the hull. Same pattern applies to any component with "Max Allowed On Ship" instead of a hull slot count.
+- `MissileLauncherLarge` has an inconsistent ID format (no slash) compared to `MissileLauncher/Medium` and `MissileLauncher/Small`. This is a BaselineData quirk, not a design choice.
+- The SlotType string is used as-is in `ShipComponentSlot.SlotType`. The mapping from BlueprintType ID to SlotType is done by a lookup table in `ShipBuildService` (or a constants class).
+- When installing a component, the service resolves the blueprint's BluePrintType to a SlotType via this mapping, then checks the hull's available count for that SlotType.
 
-### OQ-32: Weapon Slot Size Enforcement (Iteration 2)
+### OQ-32: Weapon Slot Size Enforcement (Iteration 2) — RESOLVED
 
-Weapon blueprints have a "Weapon Slot Size" property (Small, Medium, Large). The hull defines separate counts for Small/Medium/Large weapon mounts. `ShipComponentSlot` has `SlotType` and `SlotIndex` but no slot size field.
+**Decision:** Option (a) — SlotType encodes size. Weapons use `WeaponSmall`, `WeaponMedium`, `WeaponLarge` as separate slot types. The weapon blueprint's BluePrintType ID encodes the size (e.g. `Beamer/Small` → `WeaponSmall`, `Railgun/Large` → `WeaponLarge`). The mapping table above defines which BlueprintType IDs map to which SlotType. No additional `SlotSize` field is needed on `ShipComponentSlot`.
 
-Question: How does the template/ship enforce that a weapon blueprint's slot size matches the mount size? Options:
-- (a) SlotType encodes size: `SmallWeapon`, `MediumWeapon`, `LargeWeapon` as separate types.
-- (b) Add a `SlotSize` field to `ShipComponentSlot`.
-- (c) Validation reads the weapon blueprint's "Weapon Slot Size" property and checks against the hull's mount type at install time.
-
-Impact: Affects the data model, install validation, and the slot grid display in FormShipTemplate.
+Validation: When installing a weapon, the service extracts the size from the BlueprintType ID (the `/Small`, `/Medium`, `/Large` suffix, or the `Large` suffix for `MissileLauncherLarge`), maps it to the corresponding `WeaponSmall`/`WeaponMedium`/`WeaponLarge` SlotType, and checks the hull's available mount count for that size.
 
 ### OQ-33: WarehouseOverflowRule Delivery Route (Iteration 6)
 
