@@ -47,3 +47,12 @@ flowchart TD
 **REQ-BP-030** MainWindow SHALL display a "Next Process" countdown in the status bar, updated every second via a UI timer.
 **REQ-BP-031** When `LastCycleHadError` is true, the status bar text SHALL be displayed in red.
 **REQ-BP-032** MainWindow SHALL display memory usage (MB) and CPU utilization (%) in the status bar.
+
+
+## Thread Safety (Colony Lock)
+
+**REQ-BP-040** The processor SHALL acquire `Colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs)` before calling `ProcessColony()` on each colony.
+**REQ-BP-041** If the write lock times out (5000ms), the processor SHALL log a warning, skip that colony, and continue processing remaining colonies.
+**REQ-BP-042** The processor SHALL release the write lock in a finally block before firing `ColonyDataChanged` events.
+**REQ-BP-043** The processor SHALL use `PlayerContext.SnapshotColonyList()` to safely iterate colonies without holding _listLock during processing.
+**REQ-BP-044** `WriteContext()` SHALL be called outside any ColonyLock to respect lock ordering.

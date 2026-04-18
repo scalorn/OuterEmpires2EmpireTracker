@@ -109,3 +109,16 @@
 **REQ-DM-092** ReferenceReport SHALL expose a computed TotalCount property equal to the sum of FlatpackCount + ResearchingCount + ManufacturingCount + BaseBlueprintCount + ScannerCount.  
 **REQ-DM-093** ReferenceReport SHALL provide a constructor accepting five int parameters (flatpackCount, researchingCount, manufacturingCount, baseBlueprintCount, scannerCount).  
 **REQ-DM-094** ReferenceReport SHALL expose a static readonly field `Empty` that returns a ReferenceReport with all five counts set to zero.
+
+
+## Thread Safety
+
+**REQ-DM-100** ItemBag SHALL use a private `object _syncRoot` to synchronize all public method access. Write operations (AddItem, Remove, Clear) and read operations (FindByType, FindResource, CountByType, ContainsKey, Count) SHALL acquire the lock. FindByType and FindResource SHALL return defensive copies.  
+**REQ-DM-101** PropertyBag SHALL use a private `object _syncRoot` to synchronize all public method access. Write operations (setProperty, Remove, Clear) and read operations (getDecimal, getLong, getBoolean, getString, ContainsKey, Count) SHALL acquire the lock.  
+**REQ-DM-102** LockTracking SHALL use a private `object _syncRoot` to synchronize all public method access. GetLocksForProcess SHALL return a read-only copy.  
+**REQ-DM-103** Colony SHALL expose a `[JsonIgnore] ReaderWriterLockSlim ColonyLock` property (NoRecursion policy) replacing the former ProcessingLock. Constants: ReadLockTimeoutMs=1000, WriteLockTimeoutMs=5000.  
+**REQ-DM-104** PlayerContext SHALL use a private `object _listLock` to synchronize access to BindingList collections and lookup caches. WriteContext SHALL snapshot lists under _listLock then serialize outside it. SnapshotColonyList() SHALL return a copy under _listLock.  
+**REQ-DM-105** Lock ordering SHALL be: _listLock → ColonyLock → _syncRoot (never reversed). Events SHALL be fired outside all locks. WriteContext SHALL be called outside ColonyLock.  
+**REQ-DM-106** BackgroundProcessor SHALL acquire ColonyLock.TryEnterWriteLock before ProcessColony. On timeout, skip the colony and continue. Fire OnColonyDataChanged outside the lock.  
+**REQ-DM-107** UI forms reading colony data SHALL acquire ColonyLock.TryEnterReadLock, snapshot collections, release lock, then populate controls. On timeout, display stale data.  
+**REQ-DM-108** UI forms mutating colony data SHALL acquire ColonyLock.TryEnterWriteLock, mutate, release lock, then call WriteContext and fire events.
