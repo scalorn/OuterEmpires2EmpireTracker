@@ -1357,84 +1357,437 @@ This migration is safe to run on existing data — it only adds defaults and cop
 
 ### FormBuildPlanner (Iteration 1)
 
-MDI child form. Layout:
+MDI child form. Left-list / right-detail pattern with TableLayoutPanel base.
 
-- Left panel: ListBox of build plans for current player with Add/Delete buttons and filter text box.
-- Right panel:
-  - Plan details (Name, Description text boxes, Save button)
-  - Build items DataGridView (Type, Item, Quantity, Colony, Structure, Status, Recipient, Notes)
-  - Below the grid: Add Item panel (Type combo, Item combo with filter, Quantity, Target Duration for calculator, Recipient, Add button)
-  - Resource shortfall display panel (shows per-item shortfalls when an item is selected)
-  - Generate Delivery button (picks route, creates/updates delivery plan)
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ #1 - Build Planner                                                          [_][□][X]│
+├──────────────────────┬──────────────────────────────────────────────────────────────┤
+│ Filter: [__________] │ Name: [Keystone Batch 3______]  Desc: [For faction order___]│
+│                      │ [Save] [Auto-Assign] [Generate Delivery ▼]                  │
+│ ┌──────────────────┐ │                                                             │
+│ │▸ Keystone Batch 3│ │ ┌──────┬─────────────┬─────┬─────────────┬────────┬───────┐│
+│ │  Munitions Run   │ │ │ Type │ Item        │ Qty │ Colony      │Structre│Status ││
+│ │  Reactor Restock │ │ ├──────┼─────────────┼─────┼─────────────┼────────┼───────┤│
+│ │                  │ │ │ Mfg  │ Reactor Mk3 │  10 │ Alpha Prime │MfgBay1 │ Ready ││
+│ │                  │ │ │ Mfg  │ Drive Mk3   │  10 │ Alpha Prime │MfgBay2 │Staged ││
+│ │                  │ │ │ Mfg  │ Hull Clipper│  10 │ Beta Colony │MfgBay1 │InProg ││
+│ │                  │ │ │ Comm │ Fuel Cells  │  50 │ Gamma Out.  │CommFac1│Complt ││
+│ │                  │ │ │ Ship │ Keystone×10 │  10 │             │        │Staged ││
+│ │                  │ │ └──────┴─────────────┴─────┴─────────────┴────────┴───────┘│
+│ │                  │ │                                                             │
+│ │                  │ │ Add Item:                                                   │
+│ │                  │ │ Type:[Manufactory▼] Filter:[______] Item:[Reactor Mk3   ▼] │
+│ │                  │ │ Qty:[10] Target Duration:[2d 12h 0m 0s] Recipient:[______] │
+│ │                  │ │ [Add Item] [Queue Calc]                                     │
+│ │                  │ │                                                             │
+│ │                  │ │ Resource Shortfalls (Drive Mk3):                            │
+│ │                  │ │ ┌──────────────────┬─────────┬──────────┬──────────┐        │
+│ │                  │ │ │ Resource         │Required │Available │Shortfall │        │
+│ │                  │ │ ├──────────────────┼─────────┼──────────┼──────────┤        │
+│ │                  │ │ │ Refined Titanium │    500  │     320  │     180  │        │
+│ │                  │ │ │ Refined Copper   │    200  │     200  │       0  │        │
+│ │                  │ │ └──────────────────┴─────────┴──────────┴──────────┘        │
+│ └──────────────────┘ │                                                             │
+│ [New] [Delete]       │                                                             │
+└──────────────────────┴─────────────────────────────────────────────────────────────┘
+```
+
+Controls:
+- `tlpBase` (TableLayoutPanel, 2 columns: 250px fixed / fill)
+- Left: `flpSearchList` → `txtPlanFilter` (ValidatedTextBox) + `lvwPlans` (ListView) + `cmdNew` / `cmdDelete`
+- Right: `flpPlanData` → plan name/description, command buttons, `dgvBuildItems` (DataGridView), add-item panel, shortfall panel
+- `dgvBuildItems` columns: Type, Item, Qty (editable), Colony, Structure, Status, Recipient, Notes
+- Add-item panel: `cmbItemType`, `txtItemFilter`, `cmbItem` (FilteredComboBox), `txtQuantity`, `txtTargetDuration`, `txtRecipient`, `cmdAddItem`, `cmdQueueCalc`
+- Shortfall panel: `dgvShortfalls` (read-only DataGridView) — visible when a build item is selected
 
 Wiring:
 - Subscribes to CurrentPlayerChanged, ColonyDataChanged, BuildPlanDataChanged.
 - Fires BuildPlanDataChanged after saves.
-- Structure allocation uses a modal dialog with colony/structure picker, filter text box, idle-only toggle, and busy indicators.
+- Structure allocation uses a modal dialog (see below).
+
+#### Structure Allocation Dialog
+
+Modal dialog opened from the build items grid when the user clicks the Colony/Structure cell.
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ Allocate Structure                                [X]   │
+├─────────────────────────────────────────────────────────┤
+│ Item: Reactor Mk3 (10 runs)                             │
+│                                                         │
+│ Filter: [__________]  [✓] Idle structures only          │
+│                                                         │
+│ ┌───────────────────┬──────────────┬────────┬─────────┐ │
+│ │ Colony            │ Structure    │ Type   │ Status  │ │
+│ ├───────────────────┼──────────────┼────────┼─────────┤ │
+│ │ Alpha Prime       │ Mfg Bay 1   │ Mfg    │ Idle    │ │
+│ │ Alpha Prime       │ Mfg Bay 2   │ Mfg    │ Busy    │ │
+│ │ Beta Colony       │ Mfg Bay 1   │ Mfg    │ Idle    │ │
+│ │ Gamma Outpost     │ Mfg Bay 1   │ Mfg    │ Idle    │ │
+│ └───────────────────┴──────────────┴────────┴─────────┘ │
+│                                                         │
+│                              [Allocate] [Cancel]        │
+└─────────────────────────────────────────────────────────┘
+```
+
+Controls:
+- `txtStructureFilter` (ValidatedTextBox), `chkIdleOnly` (CheckBox)
+- `dgvStructures` (DataGridView, read-only) — columns: Colony, Structure, Type, Status
+- `cmdAllocate`, `cmdCancel`
 
 ### FormShipTemplate (Iteration 2)
 
-MDI child form. Layout:
+MDI child form. Left-list / right-detail pattern.
 
-- Left panel: ListBox of templates with Add/Delete and filter.
-- Right panel:
-  - Template name text box
-  - Hull selector (combo box filtered to Hull blueprints)
-  - Slot grid: one section per slot type, showing available count from hull and installed component for each slot
-  - Computed stats display (cargo capacity, mass, power)
-  - "Order Build" button → creates build items in a new or existing build plan
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ #1 - Ship Templates                                                     [_][□][X]│
+├──────────────────────┬──────────────────────────────────────────────────────────┤
+│ Filter: [__________] │ Name: [Keystone______________]                          │
+│                      │ Hull: [Filter:____] [Clipper Hull Mk3            ▼]     │
+│ ┌──────────────────┐ │                                                         │
+│ │▸ Keystone        │ │ Components:                                             │
+│ │  Vanguard        │ │ ┌────────────┬───────┬──────────────────────┬─────────┐ │
+│ │  Apollo          │ │ │ Slot Type  │ Slot# │ Blueprint            │ Actions │ │
+│ │  Mining Barge    │ │ ├────────────┼───────┼──────────────────────┼─────────┤ │
+│ │                  │ │ │ Reactor    │   0   │ Reactor Mk3          │ [Clear] │ │
+│ │                  │ │ │ Drive      │   0   │ Drive Mk3            │ [Clear] │ │
+│ │                  │ │ │ Cargo Pod  │   0   │ Cargo Pod Mk2        │ [Clear] │ │
+│ │                  │ │ │ Cargo Pod  │   1   │ Cargo Pod Mk2        │ [Clear] │ │
+│ │                  │ │ │ Fuel Tank  │   0   │ Fuel Tank Mk2        │ [Clear] │ │
+│ │                  │ │ │ Weapon     │   0   │ Laser Cannon Mk2     │ [Clear] │ │
+│ │                  │ │ │ Weapon     │   1   │ (empty)              │ [Set]   │ │
+│ │                  │ │ └────────────┴───────┴──────────────────────┴─────────┘ │
+│ │                  │ │                                                         │
+│ │                  │ │ Install: Filter:[______] [Reactor Mk3            ▼]     │
+│ │                  │ │         Slot:  [Reactor / 0  ▼]  [Install]             │
+│ │                  │ │                                                         │
+│ │                  │ │ Stats:                                                  │
+│ │                  │ │ ┌──────────────────┬────────────┐                       │
+│ │                  │ │ │ Cargo Capacity   │   2400 m³  │                       │
+│ │                  │ │ │ Total Mass       │  18500 kg  │                       │
+│ │                  │ │ │ Power Generated  │    850 MW  │                       │
+│ │                  │ │ │ Power Consumed   │    620 MW  │                       │
+│ │                  │ │ └──────────────────┴────────────┘                       │
+│ │                  │ │                                                         │
+│ │                  │ │ [Order Build ▼]                                         │
+│ └──────────────────┘ │                                                         │
+│ [New] [Delete]       │                                                         │
+├──────────────────────┴─────────────────────────────────────────────────────────┤
+│ [Save] [Delete]                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
+```
+
+Controls:
+- Left: `flpSearchList` → `txtTemplateFilter` + `lvwTemplates` (ListView) + `cmdNew` / `cmdDelete`
+- Right: `flpTemplateData` → `txtTemplateName`, hull selector (`txtHullFilter` + `cmbHull`), `dgvComponents` (DataGridView), install panel, stats panel, `cmdOrderBuild`
+- `dgvComponents` columns: SlotType, SlotIndex, Blueprint (read-only), Actions (button column)
+- Install panel: `txtComponentFilter`, `cmbComponent` (FilteredComboBox), `cmbSlot`, `cmdInstall`
+- Stats panel: `dgvStats` (read-only DataGridView or labels) — computed from hull + components via ShipBuildService.ComputeStats
+- "Order Build" opens a dialog to select/create a build plan and specify assembly location
 
 ### FormShipInstance (Iteration 2)
 
-MDI child form. Layout:
+MDI child form. Left-list / right-detail pattern.
 
-- Left panel: ListBox of ships with filter.
-- Right panel:
-  - Ship name, location display
-  - Component list (read-only, from installed components)
-  - Cargo hold display (ItemBag contents with volume used / capacity)
-  - Create from Template button
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ #1 - Ships                                                              [_][□][X]│
+├──────────────────────┬──────────────────────────────────────────────────────────┤
+│ Filter: [__________] │ Name: [ISS Endeavour_________]                          │
+│                      │ Template: Keystone          Location: Station Alpha      │
+│ ┌──────────────────┐ │                                                         │
+│ │▸ ISS Endeavour   │ │ ┌─ Components ──────────────────────────────────────┐   │
+│ │  ISS Reliant     │ │ │ ┌────────────┬───────┬──────────────────────────┐ │   │
+│ │  Mining Barge 1  │ │ │ │ Slot Type  │ Slot# │ Blueprint                │ │   │
+│ │  Mining Barge 2  │ │ │ ├────────────┼───────┼──────────────────────────┤ │   │
+│ │                  │ │ │ │ Hull       │   -   │ Clipper Hull Mk3         │ │   │
+│ │                  │ │ │ │ Reactor    │   0   │ Reactor Mk3              │ │   │
+│ │                  │ │ │ │ Drive      │   0   │ Drive Mk3                │ │   │
+│ │                  │ │ │ │ Cargo Pod  │   0   │ Cargo Pod Mk2            │ │   │
+│ │                  │ │ │ │ Cargo Pod  │   1   │ Cargo Pod Mk2            │ │   │
+│ │                  │ │ │ │ Weapon     │   0   │ Laser Cannon Mk2         │ │   │
+│ │                  │ │ │ └────────────┴───────┴──────────────────────────┘ │   │
+│ │                  │ │ │ [Swap Component ▼]                                │   │
+│ │                  │ │ └───────────────────────────────────────────────────┘   │
+│ │                  │ │                                                         │
+│ │                  │ │ ┌─ Cargo Hold (1850 / 2400 m³) ─────────────────────┐   │
+│ │                  │ │ │ ┌──────────┬──────────────────┬─────┬────────────┐│   │
+│ │                  │ │ │ │ Type     │ Item             │ Qty │ Volume     ││   │
+│ │                  │ │ │ ├──────────┼──────────────────┼─────┼────────────┤│   │
+│ │                  │ │ │ │ Resource │ Refined Titanium │ 500 │    500 m³  ││   │
+│ │                  │ │ │ │ [Crate]  │ Supply Run (12)  │   1 │    850 m³  ││   │
+│ │                  │ │ │ │ Commodty │ Fuel Cells       │  50 │    500 m³  ││   │
+│ │                  │ │ │ └──────────┴──────────────────┴─────┴────────────┘│   │
+│ │                  │ │ │ Crate Contents (Supply Run):                      │   │
+│ │                  │ │ │ ┌──────────┬──────────────────┬─────┬────────────┐│   │
+│ │                  │ │ │ │ Type     │ Item             │ Qty │ Volume     ││   │
+│ │                  │ │ │ ├──────────┼──────────────────┼─────┼────────────┤│   │
+│ │                  │ │ │ │ Resource │ Flatpack: Mfg    │   4 │    400 m³  ││   │
+│ │                  │ │ │ │ Commodty │ Fuel Cells       │  20 │    200 m³  ││   │
+│ │                  │ │ │ └──────────┴──────────────────┴─────┴────────────┘│   │
+│ │                  │ │ │ [New Crate] [Move to Crate] [Remove] [Del Crate] │   │
+│ │                  │ │ └───────────────────────────────────────────────────┘   │
+│ └──────────────────┘ │                                                         │
+│ [Create from Tmpl]   │                                                         │
+├──────────────────────┴─────────────────────────────────────────────────────────┤
+│ [Save] [Delete]                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
+```
+
+Controls:
+- Left: `flpSearchList` → `txtShipFilter` + `lvwShips` (ListView) + `cmdCreateFromTemplate`
+- Right: `flpShipData` → `txtShipName`, template/location labels, components group, cargo group
+- Components group: `dgvComponents` (read-only DataGridView), `cmdSwapComponent` (opens component picker)
+- Cargo group: volume header label, `dgvCargo` (DataGridView with crate master-detail), `dgvCrateContents` (detail grid), crate management buttons
+- Raw material hold section (visible for mining ships only): same layout as cargo with separate `dgvRawMaterials`
 
 ### FormStation (Iteration 4)
 
-MDI child form. Layout:
+MDI child form. Left-list / right-detail pattern with tabs for hold/components/munitions.
 
-- Left panel: ListBox of stations (government + player-owned) with filter.
-- Right panel:
-  - Station name, type (Outpost/Station/Starbase), ownership
-  - Component management panel (player-owned only) — slot grid like Ship Template Designer
-  - Hold inventory grid (ItemBag contents, editable)
-  - Crate detail grid below the inventory grid (master-detail pattern)
-  - Munitions hold grid (armed player-owned stations only)
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ #1 - Stations                                                           [_][□][X]│
+├──────────────────────┬──────────────────────────────────────────────────────────┤
+│ Filter: [__________] │ Name: [Station Alpha_________]                          │
+│                      │ Type: [Station     ▼]  Ownership: [Government ▼]        │
+│ ┌──────────────────┐ │                                                         │
+│ │▸ Station Alpha   │ │ ┌─ Hold ─┬─ Components ─┬─ Munitions ──────────────┐   │
+│ │  Outpost Beta    │ │ │        │              │                          │   │
+│ │  Starbase Omega  │ │ │ Player: [Captain Kirk              ▼]           │   │
+│ │  My Station      │ │ │                                                  │   │
+│ │                  │ │ │ ┌──────────┬──────────────────┬─────┐            │   │
+│ │                  │ │ │ │ Type     │ Item             │ Qty │            │   │
+│ │                  │ │ │ ├──────────┼──────────────────┼─────┤            │   │
+│ │                  │ │ │ │ Resource │ Refined Titanium │ 500 │            │   │
+│ │                  │ │ │ │ Commodty │ Reactor Mk3      │  12 │            │   │
+│ │                  │ │ │ │ [Crate]  │ Order #42 (8)    │   1 │            │   │
+│ │                  │ │ │ │ Blueprnt │ Drive Mk3        │   3 │            │   │
+│ │                  │ │ │ └──────────┴──────────────────┴─────┘            │   │
+│ │                  │ │ │                                                  │   │
+│ │                  │ │ │ Crate Contents (Order #42):                      │   │
+│ │                  │ │ │ ┌──────────┬──────────────────┬─────┐            │   │
+│ │                  │ │ │ │ Type     │ Item             │ Qty │            │   │
+│ │                  │ │ │ ├──────────┼──────────────────┼─────┤            │   │
+│ │                  │ │ │ │ Commodty │ Reactor Mk3      │   4 │            │   │
+│ │                  │ │ │ │ Commodty │ Drive Mk3        │   4 │            │   │
+│ │                  │ │ │ └──────────┴──────────────────┴─────┘            │   │
+│ │                  │ │ │                                                  │   │
+│ │                  │ │ │ Add: Type:[Resource▼] Filter:[___] [Titanium▼]  │   │
+│ │                  │ │ │      Purity:[Refined▼] Qty:[100] [Add]          │   │
+│ │                  │ │ │ [New Crate] [Move to Crate] [Remove] [Del Crate]│   │
+│ │                  │ │ └──────────────────────────────────────────────────┘   │
+│ └──────────────────┘ │                                                         │
+│ [New] [Delete]       │                                                         │
+├──────────────────────┴─────────────────────────────────────────────────────────┤
+│ [Save] [Delete]                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
+```
+
+Components tab (player-owned stations only):
+
+```
+│ ┌─ Hold ─┬─ Components ─┬─ Munitions ──────────────────────┐   │
+│ │        │              │                                  │   │
+│ │ Station Blueprint: [Outpost Mk2                      ▼] │   │
+│ │                                                          │   │
+│ │ ┌────────────┬───────┬──────────────────────┬─────────┐  │   │
+│ │ │ Slot Type  │ Slot# │ Blueprint            │ Actions │  │   │
+│ │ ├────────────┼───────┼──────────────────────┼─────────┤  │   │
+│ │ │ Reactor    │   0   │ Station Reactor Mk2  │ [Clear] │  │   │
+│ │ │ Shield     │   0   │ Shield Generator Mk1 │ [Clear] │  │   │
+│ │ │ Weapon     │   0   │ Turret Mk2           │ [Clear] │  │   │
+│ │ │ Weapon     │   1   │ (empty)              │ [Set]   │  │   │
+│ │ └────────────┴───────┴──────────────────────┴─────────┘  │   │
+│ │                                                          │   │
+│ │ Install: Filter:[______] [Shield Gen Mk2          ▼]    │   │
+│ │          Slot:  [Shield / 0  ▼]  [Install]              │   │
+│ └──────────────────────────────────────────────────────────┘   │
+```
+
+Controls:
+- Left: `flpSearchList` → `txtStationFilter` + `lvwStations` (ListView) + `cmdNew` / `cmdDelete`
+- Right: `flpStationData` → name/type/ownership fields, `tabStationDetail` (TabControl with Hold, Components, Munitions tabs)
+- Hold tab: `cmbHoldPlayer` (player selector), `dgvHold` (DataGridView, editable), `dgvCrateContents` (detail grid), add-item panel, crate buttons
+- Components tab: `cmbStationBlueprint`, `dgvStationComponents` (same pattern as ship template), install panel
+- Munitions tab: `dgvMunitions` (DataGridView) — visible only for armed player-owned stations
 
 ### Crate UI Pattern (All Inventory Views)
 
 All forms that display ItemBag contents (station holds, ship cargo, colony warehouse) use the same master-detail pattern for crates:
 
-- Main grid shows all items including crates. Crate rows display a crate icon or "[Crate]" prefix and an item count summary (e.g. "Crate: Supply Run (12 items)").
-- When a crate row is selected, a detail grid below shows the crate's contents.
+```
+┌─ Inventory ────────────────────────────────────────────────────┐
+│ ┌──────────┬──────────────────────┬─────┬────────────┐         │
+│ │ Type     │ Item                 │ Qty │ Volume     │         │
+│ ├──────────┼──────────────────────┼─────┼────────────┤         │
+│ │ Resource │ Refined Titanium     │ 500 │    500 m³  │         │
+│ │ [Crate]  │ Supply Run (12 items)│   1 │    850 m³  │  ← selected
+│ │ Commodty │ Fuel Cells           │  50 │    500 m³  │         │
+│ └──────────┴──────────────────────┴─────┴────────────┘         │
+│                                                                │
+│ Crate Contents (Supply Run):                                   │
+│ ┌──────────┬──────────────────────┬─────┬────────────┐         │
+│ │ Type     │ Item                 │ Qty │ Volume     │         │
+│ ├──────────┼──────────────────────┼─────┼────────────┤         │
+│ │ Resource │ Flatpack: Mfg Bay    │   4 │    400 m³  │         │
+│ │ Commodty │ Fuel Cells           │   8 │    200 m³  │         │
+│ │ Blueprnt │ Reactor Mk3          │   1 │     50 m³  │         │
+│ └──────────┴──────────────────────┴─────┴────────────┘         │
+│                                                                │
+│ [New Crate] [Move to Crate] [Remove from Crate] [Delete Crate]│
+└────────────────────────────────────────────────────────────────┘
+```
+
+Behavior:
+- Main grid shows all items including crates. Crate rows display "[Crate]" prefix and an item count summary (e.g. "Supply Run (12 items)").
+- When a crate row is selected, the detail grid below shows the crate's contents.
 - When a non-crate row is selected, the detail grid is hidden or shows empty.
-- Buttons: "Move to Crate" (moves selected item into the selected crate), "Remove from Crate" (moves item from crate detail back to main inventory), "New Crate", "Delete Crate" (moves contents back to main inventory first).
+- Buttons: "New Crate" (creates empty crate), "Move to Crate" (moves selected main-grid item into the selected crate), "Remove from Crate" (moves item from crate detail back to main inventory), "Delete Crate" (moves contents back to main inventory first, then removes the crate).
 - Crate rows cannot be dragged into other crate rows (no nesting).
 
-This pattern applies to: FormStation hold grid, FormShipInstance cargo grid, Colony warehouse grid (future), and any other ItemBag display.
+This pattern applies to: FormStation hold grid, FormShipInstance cargo grid, Colony warehouse grid (future), and any other ItemBag display. The crate master-detail controls are implemented as a reusable UserControl (`CrateInventoryPanel`) that can be dropped into any form.
 
 ### FormMarket (Iteration 5)
 
-MDI child form. Layout:
+MDI child form. Tabbed layout (no left-list — listings and transactions are in separate tabs).
 
-- Tab 1: Active Listings — grid of items for sale at stations with quantity and price
-- Tab 2: Transaction History — grid of buy/sell transactions, filterable by item/type/counterparty/date/station
-- Tab 3: Summary — running totals, profit/loss with pricing plan selector
-- Record Sale button on Listings tab → creates transaction, decrements listing, triggers stock target check
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ #1 - Market                                                             [_][□][X]│
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ ┌─ Listings ─┬─ Transactions ─┬─ Summary ──────────────────────────────────┐   │
+│ │                                                                          │   │
+│ │ Station: [Filter:____] [Station Alpha              ▼]                    │   │
+│ │                                                                          │   │
+│ │ ┌──────────┬──────────────────┬─────┬────────────┬──────────┐            │   │
+│ │ │ Type     │ Item             │ Qty │ Price/Unit │ Station  │            │   │
+│ │ ├──────────┼──────────────────┼─────┼────────────┼──────────┤            │   │
+│ │ │ Commodty │ Reactor Mk3      │  25 │    12,500  │ Stn Alpha│            │   │
+│ │ │ Commodty │ Drive Mk3        │  15 │     8,200  │ Stn Alpha│            │   │
+│ │ │ Blueprnt │ Hull Clipper Mk3 │   5 │    45,000  │ Stn Alpha│            │   │
+│ │ │ Resource │ Refined Titanium │ 500 │       120  │ Outpost B│            │   │
+│ │ └──────────┴──────────────────┴─────┴────────────┴──────────┘            │   │
+│ │                                                                          │   │
+│ │ Add Listing:                                                             │   │
+│ │ Type:[Commodity▼] Filter:[______] Item:[Reactor Mk3 ▼]                  │   │
+│ │ Qty:[25] Price/Unit:[12500] Station:[Station Alpha ▼]                   │   │
+│ │ [Add Listing]                                                            │   │
+│ │                                                                          │   │
+│ │ [Record Sale] [Edit] [Delete]                                            │   │
+│ └──────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                 │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ [Save]                                                                          │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+Transactions tab:
+
+```
+│ ┌─ Listings ─┬─ Transactions ─┬─ Summary ──────────────────────────────────┐   │
+│ │                                                                          │   │
+│ │ Filters: Type:[All    ▼] Item:[________] Counterparty:[________]        │   │
+│ │          Station:[All ▼] From:[________] To:[________]                  │   │
+│ │                                                                          │   │
+│ │ ┌──────┬──────────┬──────────────┬─────┬────────┬────────┬──────────┐   │   │
+│ │ │ Type │ TxnType  │ Item         │ Qty │ Price  │ Total  │Ctrparty  │   │   │
+│ │ ├──────┼──────────┼──────────────┼─────┼────────┼────────┼──────────┤   │   │
+│ │ │ Comm │ Sell     │ Reactor Mk3  │   5 │ 12,500 │ 62,500 │ Bob      │   │   │
+│ │ │ Res  │ Buy      │ Ref Titanium │ 200 │    120 │ 24,000 │ Alice    │   │   │
+│ │ │ Comm │ Sell     │ Drive Mk3    │   3 │  8,200 │ 24,600 │ Charlie  │   │   │
+│ │ └──────┴──────────┴──────────────┴─────┴────────┴────────┴──────────┘   │   │
+│ │                                                                          │   │
+│ │ [Add Transaction] [Edit] [Delete]                                        │   │
+│ └──────────────────────────────────────────────────────────────────────────┘   │
+```
+
+Summary tab:
+
+```
+│ ┌─ Listings ─┬─ Transactions ─┬─ Summary ──────────────────────────────────┐   │
+│ │                                                                          │   │
+│ │ Pricing Plan: [Filter:____] [Standard Pricing Plan           ▼]         │   │
+│ │ Date Range:   From:[________] To:[________]                             │   │
+│ │                                                                          │   │
+│ │ ┌──────────────────────────┬────────────────┐                            │   │
+│ │ │ Total Sales              │    111,100 cr   │                            │   │
+│ │ │ Total Purchases          │     24,000 cr   │                            │   │
+│ │ │ Net Profit/Loss          │  +  87,100 cr   │                            │   │
+│ │ │ Plan Valuation (Sales)   │     98,000 cr   │                            │   │
+│ │ │ Margin vs Plan           │  +  13,100 cr   │                            │   │
+│ │ └──────────────────────────┴────────────────┘                            │   │
+│ │                                                                          │   │
+│ │ Per-Item Breakdown:                                                      │   │
+│ │ ┌──────────────┬──────┬──────────┬──────────┬──────────┬────────┐        │   │
+│ │ │ Item         │ Sold │ Revenue  │PlanValue │ Margin   │ Bought │        │   │
+│ │ ├──────────────┼──────┼──────────┼──────────┼──────────┼────────┤        │   │
+│ │ │ Reactor Mk3  │    5 │   62,500 │   55,000 │  + 7,500 │      0 │        │   │
+│ │ │ Drive Mk3    │    3 │   24,600 │   21,000 │  + 3,600 │      0 │        │   │
+│ │ │ Ref Titanium │    0 │        0 │        0 │        0 │    200 │        │   │
+│ │ └──────────────┴──────┴──────────┴──────────┴──────────┴────────┘        │   │
+│ └──────────────────────────────────────────────────────────────────────────┘   │
+```
+
+Controls:
+- `tabMarket` (TabControl with Listings, Transactions, Summary tabs)
+- Listings tab: station filter, `dgvListings` (DataGridView, editable qty/price), add-listing panel, `cmdRecordSale` / `cmdEditListing` / `cmdDeleteListing`
+- Transactions tab: filter row (type, item, counterparty, station, date range), `dgvTransactions` (DataGridView), `cmdAddTransaction` / `cmdEditTransaction` / `cmdDeleteTransaction`
+- Summary tab: `cmbPricingPlan` (FilteredComboBox), date range, summary labels, `dgvBreakdown` (read-only DataGridView)
+- "Record Sale" opens a dialog to enter sale details (quantity, counterparty, notes) and auto-creates the transaction + decrements listing
 
 ### FormStockTargets (Iteration 7)
 
-MDI child form. Layout:
+MDI child form. Left-list / right-detail pattern with plans on the left and targets on the right.
 
-- Grid of stock targets: item, target quantity, scope (empire/colony/station), current quantity, shortfall
-- Add/Edit/Delete buttons
-- "Check & Generate Orders" button → runs StockTargetService, creates build items
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ #1 - Stock Targets                                                      [_][□][X]│
+├──────────────────────┬──────────────────────────────────────────────────────────┤
+│ Plans:               │ Plan: [Ship Stock for Faction Alpha___]                 │
+│ Filter: [__________] │                                                         │
+│                      │ Targets:                                                │
+│ ┌──────────────────┐ │ ┌──────────┬──────────────┬────────┬───────┬──────┬────┐│
+│ │▸ Faction Alpha   │ │ │ Type     │ Item         │ Target │ Scope │ Curr │ Δ  ││
+│ │  Faction Beta    │ │ ├──────────┼──────────────┼────────┼───────┼──────┼────┤│
+│ │  Base Supplies   │ │ │ ShipTmpl │ Keystone     │     10 │Empire │    7 │ -3 ││
+│ │  ── Standalone ──│ │ │ ShipTmpl │ Vanguard     │     10 │Empire │   10 │  0 ││
+│ │  20k Munitions   │ │ │ Commodty │ Fuel Cells   │    500 │Stn A  │  320 │-180││
+│ │                  │ │ └──────────┴──────────────┴────────┴───────┴──────┴────┘│
+│ │                  │ │                                                         │
+│ │                  │ │ Add Target:                                             │
+│ │                  │ │ Type:[ShipTemplate▼] Item:[Keystone          ▼]        │
+│ │                  │ │ Target Qty:[10] Critical:[3]                            │
+│ │                  │ │ Scope:[EmpireWide▼] Location:[                ▼]       │
+│ │                  │ │ [Add Target] [Remove Target]                            │
+│ │                  │ │                                                         │
+│ │                  │ │ Expanded Components (Keystone × 10):                    │
+│ │                  │ │ ┌──────────────────┬──────────┬──────────┬──────────┐   │
+│ │                  │ │ │ Component        │ Required │ In Stock │Shortfall │   │
+│ │                  │ │ ├──────────────────┼──────────┼──────────┼──────────┤   │
+│ │                  │ │ │ Clipper Hull Mk3 │       10 │        7 │        3 │   │
+│ │                  │ │ │ Reactor Mk3      │       10 │       12 │        0 │   │
+│ │                  │ │ │ Drive Mk3        │       10 │        8 │        2 │   │
+│ │                  │ │ │ Cargo Pod Mk2    │       20 │       15 │        5 │   │
+│ │                  │ │ └──────────────────┴──────────┴──────────┴──────────┘   │
+│ │                  │ │                                                         │
+│ │                  │ │ [Check & Generate Orders]                               │
+│ └──────────────────┘ │                                                         │
+│ [New Plan] [Delete]  │                                                         │
+├──────────────────────┴─────────────────────────────────────────────────────────┤
+│ [Save]                                                                         │
+└────────────────────────────────────────────────────────────────────────────────┘
+```
+
+Controls:
+- Left: `flpSearchList` → `txtPlanFilter` + `lvwStockPlans` (ListView, shows plans + standalone targets separated by a divider) + `cmdNewPlan` / `cmdDeletePlan`
+- Right: `flpTargetData` → plan name, `dgvTargets` (DataGridView with color-coded shortfall column: green=0, yellow=below target, red=below critical), add-target panel, expanded components panel
+- `dgvTargets` columns: Type, Item, TargetQty, CriticalThreshold, Scope, Location, CurrentQty, Shortfall
+- Add-target panel: `cmbTargetType`, `cmbTargetItem` (FilteredComboBox), `txtTargetQty`, `txtCriticalThreshold`, `cmbScope`, `cmbLocation`, `cmdAddTarget` / `cmdRemoveTarget`
+- Expanded components panel: `dgvExpandedComponents` (read-only) — visible when a ShipTemplate target is selected, shows per-component breakdown
+- "Check & Generate Orders" runs StockTargetService.CheckTargets, shows results, and creates build items for shortfalls
 
 ## Correctness Properties
 
