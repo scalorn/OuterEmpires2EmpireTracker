@@ -3119,16 +3119,16 @@ FormStockTargets shows a build plan selector combo on both the plan detail panel
 
 For delivery planning, crate contents are included in the cargo volume computation. A crate with 10 items totaling 500 m³ counts as 500 m³ toward the ship's cargo capacity, not as a single item with its own volume.
 
-### OQ-37: Station Blueprint Type (Iteration 4)
+### OQ-37: Station Blueprint Type (Iteration 4) — DEFERRED
 
-The Station model has `StationBlueprintUUID` that "defines slot counts" for player-owned stations. But BaselineData.json has no station blueprint type — only Hull for ships.
+**Decision:** Deferred until the game releases the rest of the player station features. In-game, stations use "build packages" rather than blueprints, but build packages currently have no properties (no slot counts, no stats). Until the game defines what properties a station build package has, we cannot model station slot counts or component limits.
 
-Question: How are station blueprints modeled? Options:
-- (a) Add a new `StationBlueprint` BlueprintType to BaselineData.json with slot-count properties (similar to Hull).
-- (b) Station slot counts are hardcoded per StationType (Outpost gets X reactors, Station gets Y, Starbase gets Z).
-- (c) Station blueprints are player-owned blueprints with a new BluePrintType ID, imported like ship blueprints.
-
-Impact: Affects BaselineData.json, EmpireContext, the Station model, and the FormStation Components tab.
+For now:
+- `Station.StationBlueprintUUID` remains in the model but is unused. Player-owned station component management is deferred.
+- Government stations and basic station data (name, type, ownership, holds) work without a blueprint.
+- The FormStation Components tab is deferred until the game provides build package properties. The Hold and Munitions tabs are implemented in Iteration 4; the Components tab is added when the game data is available.
+- `StationStats` computation is deferred alongside the Components tab.
+- The `StationBlueprintUUID` field and `Components` list on Station are present in the model with empty defaults so no migration is needed when the feature is eventually implemented.
 
 ### OQ-38: ExternalCharacter Name Collision (Iteration 1)
 
