@@ -1219,13 +1219,14 @@ Static service in `Services/StockTargetService.cs`.
 public static class StockTargetService
 {
     /// <summary>
-    /// Checks all stock targets and returns shortfalls.
-    /// Dedicated targets sum requirements independently.
-    /// Shared targets use max(quantity) for overlapping components.
+    /// Checks all stock plans and returns shortfalls.
+    /// Within a plan, overlapping component requirements use max(quantity) (OR pooling).
+    /// Across plans, each plan's requirements are summed (AND/dedicated).
     /// Ship template targets are expanded into component requirements.
     /// </summary>
     public static List<StockShortfall> CheckTargets(
-        IEnumerable<StockTarget> targets,
+        IEnumerable<StockPlan> plans,
+        string currentPlayerUUID,
         Func<string, Colony> colonyFinder,
         Func<string, Station> stationFinder,
         Func<string, ShipTemplate> templateFinder,
@@ -1364,7 +1365,7 @@ public void InitShips(PlayerRoot playerRoot)
 public void InitStations(PlayerRoot playerRoot)
 public void InitMarketListings(PlayerRoot playerRoot)
 public void InitMarketTransactions(PlayerRoot playerRoot)
-public void InitStockTargets(PlayerRoot playerRoot)
+public void InitStockPlans(PlayerRoot playerRoot)
 public void InitSupplyChains(PlayerRoot playerRoot)
 public void InitFactions(PlayerRoot playerRoot)
 public void InitExternalCharacters(PlayerRoot playerRoot)
@@ -1382,6 +1383,7 @@ playerRoot.Ship = ShipList.ToArray();
 playerRoot.Station = StationList.ToArray();
 playerRoot.MarketListing = MarketListingList.ToArray();
 playerRoot.MarketTransaction = MarketTransactionList.ToArray();
+playerRoot.StockPlan = StockPlanList.ToArray();
 playerRoot.SupplyChain = SupplyChainList.ToArray();
 playerRoot.Faction = FactionList.ToArray();
 playerRoot.ExternalCharacter = ExternalCharacterList.ToArray();
@@ -1413,7 +1415,7 @@ public List<Ship> GetCurrentPlayerShips()
 public List<Station> GetCurrentPlayerStations()  // Includes government stations
 public List<MarketListing> GetCurrentPlayerListings()
 public List<MarketTransaction> GetCurrentPlayerTransactions()
-public List<StockTarget> GetCurrentPlayerStockTargets()
+public List<StockPlan> GetCurrentPlayerStockPlans()
 public List<SupplyChain> GetCurrentPlayerSupplyChains()
 ```
 
@@ -2609,29 +2611,33 @@ ResourceCheckService.ComputePlanShortfalls(plan)
 #### Flow B: Stock Target Check (Iteration 7 — per background tick)
 
 ```
-StockTargetService.CheckTargets(targets)
+StockTargetService.CheckTargets(plans, currentPlayerUUID)
   │
-  ├─ for each StockTarget
+  ├─ for each StockPlan
+  │    ├─ for each StockTarget in plan.Targets
+  │    │    │
+  │    │    ├─ if ShipTemplate target:
+  │    │    │    ├─ templateFinder(target.ShipTemplateUUID)  ← ★ NEW: O(n) scan
+  │    │    │    └─ for each component in template:
+  │    │    │         └─ blueprintFinder(comp.BlueprintUUID) ← PlayerContext cache: O(1)
+  │    │    │
+  │    │    ├─ if EmpireWide scope:
+  │    │    │    ├─ for each colony in allColonies:          ← O(colonies)
+  │    │    │    │    └─ colony.Warehouse.CountByType(item)  ← ItemBag index: O(1)
+  │    │    │    └─ for each station in allStations:         ← O(stations)
+  │    │    │         └─ station.Holds[playerUUID].CountByType ← O(1) dict + O(1) index
+  │    │    │
+  │    │    ├─ if Colony scope:
+  │    │    │    └─ colonyFinder(target.LocationUUID)        ← PlayerContext cache: O(1)
+  │    │    │         └─ colony.Warehouse.CountByType(item)  ← ItemBag index: O(1)
+  │    │    │
+  │    │    └─ if Station scope:
+  │    │         └─ stationFinder(target.LocationUUID)       ← ★ NEW: O(n) scan
+  │    │              └─ station.Holds[playerUUID].CountByType ← O(1) dict + O(1) index
   │    │
-  │    ├─ if ShipTemplate target:
-  │    │    ├─ templateFinder(target.ShipTemplateUUID)  ← ★ NEW: O(n) scan
-  │    │    └─ for each component in template:
-  │    │         └─ blueprintFinder(comp.BlueprintUUID) ← PlayerContext cache: O(1)
-  │    │
-  │    ├─ if EmpireWide scope:
-  │    │    ├─ for each colony in allColonies:          ← O(colonies)
-  │    │    │    └─ colony.Warehouse.CountByType(item)  ← ItemBag index: O(1)
-  │    │    └─ for each station in allStations:         ← O(stations)
-  │    │         └─ for each hold in station.Holds:     ← O(players)
-  │    │              └─ hold.CountByType(item)         ← ItemBag index: O(1)
-  │    │
-  │    ├─ if Colony scope:
-  │    │    └─ colonyFinder(target.LocationUUID)        ← PlayerContext cache: O(1)
-  │    │         └─ colony.Warehouse.CountByType(item)  ← ItemBag index: O(1)
-  │    │
-  │    └─ if Station scope:
-  │         └─ stationFinder(target.LocationUUID)       ← ★ NEW: O(n) scan
-  │              └─ hold.CountByType(item)              ← ItemBag index: O(1)
+  │    └─ OR-pool overlapping components within this plan (max across targets)
+  │
+  ├─ AND/sum across plans (each plan's pooled requirements are dedicated)
   │
   └─ return shortfalls
 ```
@@ -2741,7 +2747,7 @@ Key = BluePrintType, Value = count of player-owned blueprints of that type. Buil
 
 #### Station Hold Player Index
 
-StockTargetService with EmpireWide scope iterates all stations and all holds. For a specific player's stock check, we only need that player's holds.
+StockTargetService with EmpireWide scope iterates all stations. Per OQ-40, only the current player's hold at each station is checked (`station.Holds[currentPlayerUUID]`), which is already O(1) dictionary lookup.
 
 | Cache | Type | Lookup Method | Invalidation | Iteration |
 |---|---|---|---|---|
