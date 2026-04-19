@@ -721,7 +721,7 @@ public class ShipComponentSlot
     public int SlotIndex { get; set; } = 0;                // Which slot of this type (0-based)
     public string BlueprintUUID { get; set; } = string.Empty;
 
-    // Damage state (Ship instances only — ignored on ShipTemplate and Station)
+    // Damage state (Ship and Station instances — ignored on ShipTemplate)
     public int CurrentHP { get; set; } = 0;       // Current health points (0 = use MaxHP from blueprint)
     public int MaxHP { get; set; } = 0;            // Max health points (0 = use Health from blueprint)
     public decimal MaxRepairPercent { get; set; } = 0m;  // Max repairable condition (0 = 100%, i.e. fully repairable)
@@ -732,7 +732,7 @@ Design decisions:
 - SlotType is a string rather than an enum because the game may add new slot types. The hull blueprint's properties define valid slot types and counts.
 - SlotIndex distinguishes multiple slots of the same type (e.g. weapon slot 0, weapon slot 1).
 - The template doesn't store computed stats — those are derived from the component blueprints at display time.
-- Damage fields (`CurrentHP`, `MaxHP`, `MaxRepairPercent`) are on ShipComponentSlot so each component tracks its own condition independently. All default to 0 meaning "undamaged" — `DefaultValueHandling.Ignore` omits them from JSON for undamaged components and templates. On ShipTemplate and Station, these fields are unused.
+- Damage fields (`CurrentHP`, `MaxHP`, `MaxRepairPercent`) are on ShipComponentSlot so each component tracks its own condition independently. All default to 0 meaning "undamaged" — `DefaultValueHandling.Ignore` omits them from JSON for undamaged components and templates. On ShipTemplate, these fields are unused (templates are blueprints, not physical instances).
 
 ### Ship
 
@@ -3347,7 +3347,7 @@ Reference counting and cascade processing both scan all build plans and their it
 | Index | Type | Purpose | Invalidation | Iteration |
 |---|---|---|---|---|
 | `_blueprintBuildItemIndex` | `Dictionary<string, List<BuildItem>>` | BlueprintUUID → build items using it | Invalidate on plan save | 1 |
-| `_colonyBuildItemIndex` | `Dictionary<string, List<BuildItem>>` | ColonyUUID → build items allocated there | Invalidate on plan save | 1 |
+| `_buildLocationBuildItemIndex` | `Dictionary<string, List<BuildItem>>` | BuildLocationUUID → build items allocated there | Invalidate on plan save | 1 |
 
 These are cross-plan indexes on PlayerContext, built lazily from all BuildPlanList items. Invalidated when any build plan is saved (via a new `InvalidateBuildItemIndexes()` method).
 
@@ -3399,7 +3399,7 @@ graph TD
 
     subgraph "Cross-Entity Indexes (under _listLock)"
         BBI[_blueprintBuildItemIndex<br/>BlueprintUUID → BuildItems]
-        CBI[_colonyBuildItemIndex<br/>ColonyUUID → BuildItems]
+        CBI[_buildLocationBuildItemIndex<br/>BuildLocationUUID → BuildItems]
     end
 
     subgraph "Per-Entity Indexes (under _syncRoot)"

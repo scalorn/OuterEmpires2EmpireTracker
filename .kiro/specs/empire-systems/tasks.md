@@ -75,7 +75,7 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [ ] 7.1 Add PlayerContext UUID caches for all new entity types
   - [ ] 7.2 Add EmpireContext _commodityNameCache
   - [ ] 7.3 Add _blueprintTypeCountCache
-  - [ ] 7.4 Add cross-entity build item indexes
+  - [ ] 7.4 Add cross-entity build item indexes (_blueprintBuildItemIndex, _buildLocationBuildItemIndex)
 
 - [ ] 8. Migration
   - [ ] 8.1 Create Migration: add empty arrays, migrate RouteStop/DeliveryPlanStop ColonyUUID, increment DataVersion
