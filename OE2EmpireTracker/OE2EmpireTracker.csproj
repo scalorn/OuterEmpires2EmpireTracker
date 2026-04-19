@@ -147,6 +147,7 @@
     <Compile Include="Services\SurveyReferenceCounter.cs" />
     <Compile Include="Services\DeliveryRouteReferenceCounter.cs" />
     <Compile Include="Services\FactionReferenceCounter.cs" />
+    <Compile Include="Services\ShipTemplateReferenceCounter.cs" />
     <Compile Include="Services\EvolutionChainService.cs" />
     <Compile Include="Services\HelpTopicRegistry.cs" />
     <Compile Include="Services\HelpRenderer.cs" />

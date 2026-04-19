@@ -26,6 +26,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdNew = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
+            this.cmdOrderBuild = new System.Windows.Forms.Button();
             this.flpDetail = new System.Windows.Forms.FlowLayoutPanel();
             this.flpName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblName = new System.Windows.Forms.Label();
@@ -112,6 +113,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             this.flpCommands.AutoSize = true;
             this.flpCommands.Controls.Add(this.cmdNew);
             this.flpCommands.Controls.Add(this.cmdDelete);
+            this.flpCommands.Controls.Add(this.cmdOrderBuild);
             this.flpCommands.Location = new System.Drawing.Point(3, 561);
             this.flpCommands.Name = "flpCommands";
             this.flpCommands.Size = new System.Drawing.Size(214, 29);
@@ -131,6 +133,14 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             this.cmdDelete.Size = new System.Drawing.Size(75, 23);
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
+            //
+            // cmdOrderBuild
+            //
+            this.cmdOrderBuild.Location = new System.Drawing.Point(165, 3);
+            this.cmdOrderBuild.Name = "cmdOrderBuild";
+            this.cmdOrderBuild.Size = new System.Drawing.Size(85, 23);
+            this.cmdOrderBuild.Text = "Order Build";
+            this.cmdOrderBuild.UseVisualStyleBackColor = true;
             //
             // flpDetail
             //
@@ -284,6 +294,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
         private System.Windows.Forms.Button cmdNew;
         private System.Windows.Forms.Button cmdDelete;
+        private System.Windows.Forms.Button cmdOrderBuild;
         private System.Windows.Forms.FlowLayoutPanel flpDetail;
         private System.Windows.Forms.FlowLayoutPanel flpName;
         private System.Windows.Forms.Label lblName;

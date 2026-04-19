@@ -136,14 +136,14 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 17.3 Implement ShipBuildService.ComputeStats (all ShipStats fields)
   - [x] 17.4 Implement ShipBuildService.ComputeStationStats
 
-- [-] 18. Ship Template Form
-  - [-] 18.1 Create FormShipTemplate MDI child
-  - [-] 18.2 Implement slot grid with component installation
-  - [-] 18.3 Implement full stats panel
-  - [ ] 18.4 Order Build button
-  - [ ] 18.5 Implement ShipTemplateReferenceCounter, Refs column, delete protection
-  - [ ] 18.6 Wire events, NLog, PERF
-  - [ ] 18.7 Add "Ship Templates" to Manage menu
+- [x] 18. Ship Template Form
+  - [x] 18.1 Create FormShipTemplate MDI child
+  - [x] 18.2 Implement slot grid with component installation
+  - [x] 18.3 Implement full stats panel
+  - [x] 18.4 Order Build button
+  - [x] 18.5 Implement ShipTemplateReferenceCounter, Refs column, delete protection
+  - [x] 18.6 Wire events, NLog, PERF
+  - [x] 18.7 Add "Ship Templates" to Manage menu
 
 - [ ] 19. Ship Instance Form
   - [ ] 19.1 Create FormShipInstance MDI child with Overview + Cargo tabs

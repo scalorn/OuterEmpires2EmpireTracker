@@ -26,7 +26,8 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             playerContext = EmpireContext.PlayerContext;
 
             lvwTemplates.View = View.Details;
-            lvwTemplates.Columns.Add("Name", 200);
+            lvwTemplates.Columns.Add("Name", 160);
+            lvwTemplates.Columns.Add("Refs", 40, HorizontalAlignment.Right);
             lvwTemplates.FullRowSelect = true;
             lvwTemplates.MultiSelect = false;
             lvwTemplates.ItemSelectionChanged += lvwTemplates_ItemSelectionChanged;
@@ -38,6 +39,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             cmdNew.Click += cmdNew_Click;
             cmdDelete.Click += cmdDelete_Click;
             cmdSave.Click += cmdSave_Click;
+            cmdOrderBuild.Click += cmdOrderBuild_Click;
 
             dgvSlots.CellValueChanged += dgvSlots_CellValueChanged;
             dgvSlots.CurrentCellDirtyStateChanged += dgvSlots_CurrentCellDirtyStateChanged;
@@ -97,9 +99,15 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 templates = templates.Where(t => t.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             templates = templates.OrderBy(t => t.Name, StringComparer.OrdinalIgnoreCase).ToList();
 
+            var refCounter = new ShipTemplateReferenceCounter(
+                playerContext.SnapshotShipList(),
+                playerContext.GetCurrentPlayerBuildPlans());
+
             foreach (var tmpl in templates)
             {
+                int refs = refCounter.CountReferences(tmpl.UUID);
                 var item = new ListViewItem(tmpl.Name) { Tag = tmpl };
+                item.SubItems.Add(refs.ToString());
                 lvwTemplates.Items.Add(item);
                 if (tmpl.UUID == selectedUUID) item.Selected = true;
             }
@@ -317,6 +325,20 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         private void cmdDelete_Click(object sender, EventArgs e)
         {
             if (_selectedTemplate == null) return;
+
+            var refCounter = new ShipTemplateReferenceCounter(
+                playerContext.SnapshotShipList(),
+                playerContext.GetCurrentPlayerBuildPlans());
+            int refs = refCounter.CountReferences(_selectedTemplate.UUID);
+            if (refs > 0)
+            {
+                MessageBox.Show(
+                    string.Format("Cannot delete template '{0}' — it is referenced by {1} ship(s) or build item(s).",
+                        _selectedTemplate.Name, refs),
+                    "Delete Blocked", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             var result = MessageBox.Show(
                 string.Format("Delete template '{0}'?", _selectedTemplate.Name),
                 "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -326,6 +348,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             _selectedTemplate = null;
             PopulateTemplateList();
             ClearForm();
+            Log.Info("Deleted template");
         }
 
         private void cmdSave_Click(object sender, EventArgs e)
@@ -344,6 +367,253 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         {
             if (_isProgrammaticUpdate > 0 || _selectedTemplate == null) return;
             _selectedTemplate.Name = txtName.Text;
+        }
+
+        // -------------------------------------------------------------------
+        // Order Build (18.4)
+        // -------------------------------------------------------------------
+
+        private void cmdOrderBuild_Click(object sender, EventArgs e)
+        {
+            if (_selectedTemplate == null) return;
+            if (string.IsNullOrEmpty(_selectedTemplate.HullBlueprintUUID))
+            {
+                MessageBox.Show("Select a hull blueprint first.", "No Hull",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Log.Info("cmdOrderBuild_Click: template={0} uuid={1}",
+                _selectedTemplate.Name, _selectedTemplate.UUID);
+
+            // Prompt for quantity
+            int quantity = ShowQuantityDialog();
+            if (quantity <= 0) return;
+
+            // Prompt for assembly station
+            var station = ShowStationPickerDialog();
+            if (station == null) return;
+
+            // Validate assembly location
+            var hullBp = playerContext.FindBlueprint(_selectedTemplate.HullBlueprintUUID);
+            if (hullBp != null)
+            {
+                decimal shipClassVal = 0m;
+                hullBp.Properties?.getDecimal("Class", 0m, out shipClassVal);
+                int shipClass = (int)shipClassVal;
+                string validationError = ShipBuildService.ValidateAssemblyLocation(shipClass, station.StationType);
+                if (validationError != null)
+                {
+                    MessageBox.Show(validationError, "Invalid Assembly Location",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
+            // Generate build items
+            var items = ShipBuildService.GenerateShipBuildItems(
+                _selectedTemplate, quantity,
+                DestinationType.Station, station.UUID,
+                uuid => playerContext.FindBlueprint(uuid),
+                uuid => 0);
+
+            if (items.Count == 0)
+            {
+                MessageBox.Show("No build items needed (all components in stock).",
+                    "Order Build", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Show plan picker
+            BuildPlan targetPlan = ShowBuildPlanPickerDialog();
+            if (targetPlan == null) return;
+
+            // Add items to plan
+            foreach (var item in items)
+            {
+                item.ShipTemplateUUID = _selectedTemplate.UUID;
+                targetPlan.Items.Add(item);
+            }
+
+            // Persist
+            if (!playerContext.BuildPlanList.Contains(targetPlan))
+                playerContext.BuildPlanList.Add(targetPlan);
+            playerContext.WriteContext();
+            playerContext.OnBuildPlanDataChanged(targetPlan.UUID);
+
+            Log.Info("cmdOrderBuild_Click: {0} items added to plan '{1}'",
+                items.Count, targetPlan.Name);
+
+            MessageBox.Show(
+                string.Format("{0} build items for {1}x '{2}' added to plan '{3}'.",
+                    items.Count, quantity, _selectedTemplate.Name, targetPlan.Name),
+                "Order Build", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private int ShowQuantityDialog()
+        {
+            using (var form = new Form())
+            {
+                form.Text = "Order Build — Quantity";
+                form.ClientSize = new System.Drawing.Size(300, 100);
+                form.FormBorderStyle = FormBorderStyle.FixedDialog;
+                form.StartPosition = FormStartPosition.CenterParent;
+                form.MaximizeBox = false;
+                form.MinimizeBox = false;
+
+                var lbl = new Label { Text = "Quantity:", Left = 15, Top = 18, Width = 60 };
+                var nud = new NumericUpDown
+                {
+                    Left = 80, Top = 15, Width = 80,
+                    Minimum = 1, Maximum = 100, Value = 1
+                };
+                var btnOk = new Button
+                {
+                    Text = "OK", Left = 120, Top = 55, Width = 75,
+                    DialogResult = DialogResult.OK
+                };
+                var btnCancel = new Button
+                {
+                    Text = "Cancel", Left = 200, Top = 55, Width = 75,
+                    DialogResult = DialogResult.Cancel
+                };
+
+                form.Controls.AddRange(new Control[] { lbl, nud, btnOk, btnCancel });
+                form.AcceptButton = btnOk;
+                form.CancelButton = btnCancel;
+
+                if (form.ShowDialog(this) != DialogResult.OK) return 0;
+                return (int)nud.Value;
+            }
+        }
+
+        private Station ShowStationPickerDialog()
+        {
+            var stations = playerContext.GetCurrentPlayerStations();
+            if (stations.Count == 0)
+            {
+                MessageBox.Show("No stations available. Create a station first.",
+                    "No Stations", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return null;
+            }
+
+            using (var form = new Form())
+            {
+                form.Text = "Order Build — Assembly Station";
+                form.ClientSize = new System.Drawing.Size(350, 120);
+                form.FormBorderStyle = FormBorderStyle.FixedDialog;
+                form.StartPosition = FormStartPosition.CenterParent;
+                form.MaximizeBox = false;
+                form.MinimizeBox = false;
+
+                var lbl = new Label { Text = "Assembly station:", Left = 15, Top = 18, Width = 100 };
+                var cmb = new ComboBox
+                {
+                    Left = 120, Top = 15, Width = 210,
+                    DropDownStyle = ComboBoxStyle.DropDownList
+                };
+                foreach (var s in stations)
+                    cmb.Items.Add(s);
+                cmb.DisplayMember = "Name";
+                if (cmb.Items.Count > 0) cmb.SelectedIndex = 0;
+
+                var btnOk = new Button
+                {
+                    Text = "OK", Left = 170, Top = 65, Width = 75,
+                    DialogResult = DialogResult.OK
+                };
+                var btnCancel = new Button
+                {
+                    Text = "Cancel", Left = 255, Top = 65, Width = 75,
+                    DialogResult = DialogResult.Cancel
+                };
+
+                form.Controls.AddRange(new Control[] { lbl, cmb, btnOk, btnCancel });
+                form.AcceptButton = btnOk;
+                form.CancelButton = btnCancel;
+
+                if (form.ShowDialog(this) != DialogResult.OK) return null;
+                return cmb.SelectedItem as Station;
+            }
+        }
+
+        private BuildPlan ShowBuildPlanPickerDialog()
+        {
+            var existingPlans = playerContext.GetCurrentPlayerBuildPlans();
+
+            using (var form = new Form())
+            {
+                form.Text = "Order Build — Select Plan";
+                form.ClientSize = new System.Drawing.Size(400, 180);
+                form.FormBorderStyle = FormBorderStyle.FixedDialog;
+                form.StartPosition = FormStartPosition.CenterParent;
+                form.MaximizeBox = false;
+                form.MinimizeBox = false;
+
+                var rbNew = new RadioButton
+                {
+                    Text = "Create new plan",
+                    Left = 15, Top = 15, Width = 360,
+                    Checked = true
+                };
+                var rbExisting = new RadioButton
+                {
+                    Text = "Add to existing plan",
+                    Left = 15, Top = 40, Width = 360
+                };
+                var cmbPlans = new ComboBox
+                {
+                    Left = 35, Top = 65, Width = 340,
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Enabled = false
+                };
+
+                foreach (var plan in existingPlans)
+                    cmbPlans.Items.Add(plan);
+                cmbPlans.DisplayMember = "Name";
+                if (cmbPlans.Items.Count > 0)
+                    cmbPlans.SelectedIndex = 0;
+
+                if (existingPlans.Count == 0)
+                    rbExisting.Enabled = false;
+
+                rbNew.CheckedChanged += (s, ev) => { cmbPlans.Enabled = !rbNew.Checked; };
+                rbExisting.CheckedChanged += (s, ev) => { cmbPlans.Enabled = rbExisting.Checked; };
+
+                var btnOk = new Button
+                {
+                    Text = "OK", Left = 210, Top = 110, Width = 75,
+                    DialogResult = DialogResult.OK
+                };
+                var btnCancel = new Button
+                {
+                    Text = "Cancel", Left = 295, Top = 110, Width = 75,
+                    DialogResult = DialogResult.Cancel
+                };
+
+                form.Controls.AddRange(new Control[] { rbNew, rbExisting, cmbPlans, btnOk, btnCancel });
+                form.AcceptButton = btnOk;
+                form.CancelButton = btnCancel;
+
+                if (form.ShowDialog(this) != DialogResult.OK)
+                    return null;
+
+                if (rbNew.Checked)
+                {
+                    string planName = string.Format("{0} - Ship Build", _selectedTemplate.Name ?? "Ship");
+                    return new BuildPlan
+                    {
+                        UUID = Guid.NewGuid().ToString(),
+                        Name = planName,
+                        OwnerUUID = playerContext.CurrentPlayerUUID,
+                        IsActive = true
+                    };
+                }
+                else
+                {
+                    return cmbPlans.SelectedItem as BuildPlan;
+                }
+            }
         }
 
         // Events
