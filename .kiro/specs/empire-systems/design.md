@@ -361,9 +361,14 @@ sequenceDiagram
     User->>ST: Set replenishment build plan
     ST-->>User: Plan saved
 
+    Note over User: Pause/resume
+    User->>ST: Toggle plan Active/Inactive
+    ST->>ST: Set plan.IsActive = false
+    Note over ST: Inactive plans skip shortfall checks
+
     Note over User: Check stock levels
     User->>ST: Click "Check & Generate Orders"
-    ST->>STS: CheckTargets(plans, playerUUID)
+    ST->>STS: CheckTargets(plans where IsActive, playerUUID)
     STS->>STS: Expand templates, check scoped inventory
     STS->>STS: OR-pool within plan, AND across plans
     STS-->>ST: Shortfalls returned
@@ -441,7 +446,13 @@ sequenceDiagram
     User->>SC: Set thresholds, rates, routes per stage
     SC-->>User: Chain saved, flow summary displayed
 
+    Note over User: Pause chain
+    User->>SC: Toggle chain Active/Inactive
+    SC->>SC: Set chain.IsActive = false
+    Note over SC: Background processor skips inactive chains
+
     Note over BG: Background tick
+    BG->>BG: Filter to IsActive chains only
     BG->>BG: Check accumulation at Collect stage
     BG->>BG: Station Z has 5000 (threshold 3000)
     BG->>DG: Generate delivery on designated route
@@ -462,7 +473,13 @@ sequenceDiagram
     User->>CF: Add rule (resource, purity, threshold, dest, route)
     CF-->>User: Rule saved, current qty shown with color coding
 
+    Note over User: Pause rule
+    User->>CF: Toggle rule Active/Inactive
+    CF->>CF: Set rule.IsActive = false
+    Note over CF: Background processor skips inactive rules
+
     Note over BG: Background tick
+    BG->>BG: Filter to IsActive rules only
     BG->>BG: Check warehouse levels vs thresholds
     BG->>BG: Iron at 4200, threshold 3000
     BG->>BG: Move excess: 4200 - 3000 = 1200
@@ -486,6 +503,12 @@ sequenceDiagram
     Note right of SP: Group B: AND (summed with A)
     User->>SP: Add entry: Group C = 20k Munitions plan
     Note right of SP: Group C: AND (summed with A+B)
+
+    Note over User: Pause profile
+    User->>SP: Toggle profile Active/Inactive
+    SP->>SP: Set profile.IsActive = false
+    Note over SP: Inactive profiles excluded from aggregation
+
     SP-->>User: Logic summary displayed:
     Note over SP: max(Alpha, Beta) + Base Supplies + 20k Munitions
 ```
@@ -1837,7 +1860,7 @@ MDI child form. Left-list / right-detail pattern with TableLayoutPanel base.
 │ #1 - Build Planner                                                          [_][□][X]│
 ├──────────────────────┬──────────────────────────────────────────────────────────────┤
 │ Filter: [__________] │ Name: [Keystone Batch 3______]  Desc: [For faction order___]│
-│                      │ [Save] [Auto-Assign] [Generate Delivery ▼]                  │
+│                      │ ☑ Active  [Save] [Auto-Assign] [Generate Delivery ▼]    │
 │ ┌──────────────────┐ │                                                             │
 │ │▸ Keystone Batch 3│ │ ┌──────┬─────────────┬─────┬─────────────┬────────┬───────┐│
 │ │  Munitions Run   │ │ │ Type │ Item        │ Qty │ Colony      │Structre│Status ││
@@ -1869,7 +1892,8 @@ MDI child form. Left-list / right-detail pattern with TableLayoutPanel base.
 Controls:
 - `tlpBase` (TableLayoutPanel, 2 columns: 250px fixed / fill)
 - Left: `flpSearchList` → `txtPlanFilter` (ValidatedTextBox) + `lvwPlans` (ListView) + `cmdNew` / `cmdDelete`
-- Right: `flpPlanData` → plan name/description, command buttons, `dgvBuildItems` (DataGridView), add-item panel, shortfall panel
+- Right: `flpPlanData` → plan name/description, `chkActive` (CheckBox, write-through to BuildPlan.IsActive), command buttons, `dgvBuildItems` (DataGridView), add-item panel, shortfall panel
+- Inactive plans: list view shows plan name in gray italic. Detail panel is read-only (all controls disabled except the Active checkbox). Shortfall panel hidden.
 - `dgvBuildItems` columns: Type, Item, Qty (editable), Colony, Structure, Status, Recipient, Notes
 - Add-item panel: `cmbItemType`, `txtItemFilter`, `cmbItem` (FilteredComboBox), `txtQuantity`, `txtTargetDuration`, `txtRecipient`, `cmdAddItem`, `cmdQueueCalc`
 - Shortfall panel: `dgvShortfalls` (read-only DataGridView) — visible when a build item is selected
@@ -2317,7 +2341,7 @@ MDI child form. Left-list / right-detail pattern with plans on the left and targ
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ #1 - Stock Targets                                                      [_][□][X]│
 ├──────────────────────┬──────────────────────────────────────────────────────────┤
-│ Filter: [__________] │ Plan: [Ship Stock for Faction Alpha___]                 │
+│ Filter: [__________] │ Plan: [Ship Stock for Faction Alpha___]  ☑ Active        │
 │                      │ Replenishment Plan: [Filter:___] [Restock Orders    ▼]  │
 │ ┌──────────────────┐ │                                                         │
 │ │▸ Faction Alpha   │ │ Targets:                                                │
@@ -2356,7 +2380,8 @@ MDI child form. Left-list / right-detail pattern with plans on the left and targ
 Controls:
 - Left: `flpSearchList` → `txtPlanFilter` + `lvwStockPlans` (ListView) + `cmdNewPlan` / `cmdQuickAdd` / `cmdDeletePlan`
 - `cmdNewPlan` creates an empty plan. `cmdQuickAdd` creates a plan with a single target in one step (prompts for item type, item, quantity, scope — names the plan after the item).
-- Right: `txtPlanName`, `cmbReplenishmentPlan` (FilteredComboBox of build plans), `dgvTargets` (DataGridView with color-coded shortfall column: green=0, yellow=below target, red=below critical), add-target panel, expanded components panel
+- Right: `txtPlanName`, `chkPlanActive` (CheckBox, write-through to StockPlan.IsActive), `cmbReplenishmentPlan` (FilteredComboBox of build plans), `dgvTargets` (DataGridView with color-coded shortfall column: green=0, yellow=below target, red=below critical), add-target panel, expanded components panel
+- Inactive plans: list view shows plan name in gray italic. "Check & Generate Orders" skips inactive plans.
 - `dgvTargets` columns: Type, Item, TargetQty, CriticalThreshold, Scope, Location, CurrentQty, Shortfall
 - Add-target panel: `cmbTargetType`, `cmbTargetItem` (FilteredComboBox), `txtTargetQty`, `txtCriticalThreshold`, `cmbScope`, `cmbLocation`, `cmdAddTarget` / `cmdRemoveTarget`
 - Expanded components panel: `dgvExpandedComponents` (read-only) — visible when a ShipTemplate target is selected, shows per-component breakdown
@@ -2484,7 +2509,7 @@ MDI child form. Left-list / right-detail pattern with a visual stage editor.
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ #1 - Supply Chains                                                      [_][□][X]│
 ├──────────────────────┬──────────────────────────────────────────────────────────┤
-│ Filter: [__________] │ Name: [Iron Pipeline__________]                         │
+│ Filter: [__________] │ Name: [Iron Pipeline__________]  ☑ Active               │
 │                      │                                                         │
 │ ┌──────────────────┐ │ Stages:                                                 │
 │ │▸ Iron Pipeline   │ │ ┌─────┬────────────┬──────────────┬──────────┬────────┐ │
@@ -2518,7 +2543,8 @@ MDI child form. Left-list / right-detail pattern with a visual stage editor.
 
 Controls:
 - Left: `flpSearchList` → `txtChainFilter` + `lvwSupplyChains` (ListView) + `cmdNew` / `cmdDelete`
-- Right: `flpChainData` → `txtChainName`, `dgvStages` (DataGridView), add/edit stage panel, flow summary label
+- Right: `flpChainData` → `txtChainName`, `chkChainActive` (CheckBox, write-through to SupplyChain.IsActive), `dgvStages` (DataGridView), add/edit stage panel, flow summary label
+- Inactive chains: list view shows chain name in gray italic. Background processor skips inactive chains entirely.
 - `dgvStages` columns: Sequence, StageType, Location, Resource (with purity), AccumulationThreshold, ProductionRatePerHour
 - Add/edit panel: `txtSequence`, `cmbStageType`, `cmbLocationType`, `cmbLocation` (FilteredComboBox — populates with colonies/stations/asteroids based on type), `cmbResource`, `cmbPurity`, `txtThreshold`, `txtRate`, `cmdAddStage` / `cmdUpdateStage` / `cmdRemoveStage`, `cmdMoveUp` / `cmdMoveDown`
 - Flow summary: read-only label showing a condensed text representation of the pipeline stages. Auto-generated from the stages list.
@@ -2533,13 +2559,13 @@ New tab on the existing FormColony, added alongside the existing Administration,
 │ │                                                                       │   │
 │ │ Rules for: Alpha Prime                                                │   │
 │ │                                                                       │   │
-│ │ ┌──────────────┬────────────┬───────────┬──────────┬────────────────┐  │   │
-│ │ │ Resource     │ Purity     │ Threshold │ Current  │ Destination    │  │   │
-│ │ ├──────────────┼────────────┼───────────┼──────────┼────────────────┤  │   │
-│ │ │ Iron         │ Refined    │     3000  │    4200  │ Station Alpha  │  │   │
-│ │ │ Copper       │ Refined    │     2000  │    1800  │ Station Alpha  │  │   │
-│ │ │ Titanium     │ Refined    │     5000  │    5100  │ Station Beta   │  │   │
-│ │ └──────────────┴────────────┴───────────┴──────────┴────────────────┘  │   │
+│ │ ┌──────────────┬────────────┬───────────┬──────────┬────────────────┬────────┐  │   │
+│ │ │ Resource     │ Purity     │ Threshold │ Current  │ Destination    │ Active │  │   │
+│ │ ├──────────────┼────────────┼───────────┼──────────┼────────────────┼────────┤  │   │
+│ │ │ Iron         │ Refined    │     3000  │    4200  │ Station Alpha  │   ☑   │  │   │
+│ │ │ Copper       │ Refined    │     2000  │    1800  │ Station Alpha  │   ☑   │  │   │
+│ │ │ Titanium     │ Refined    │     5000  │    5100  │ Station Beta   │   ☐   │  │   │
+│ │ └──────────────┴────────────┴───────────┴──────────┴────────────────┴────────┘  │   │
 │ │                                                                       │   │
 │ │ Add Rule:                                                             │   │
 │ │ Resource:[Filter:___] [Iron ▼] Purity:[Refined ▼]                    │   │
@@ -2552,7 +2578,8 @@ New tab on the existing FormColony, added alongside the existing Administration,
 
 Controls:
 - New `tabPOverflow` tab page on the existing `tabDetailedData` TabControl
-- `dgvOverflowRules` (DataGridView) — columns: Resource, Purity, Threshold, Current (read-only, from warehouse), Destination
+- `dgvOverflowRules` (DataGridView) — columns: Resource, Purity, Threshold, Current (read-only, from warehouse), Destination, Active (CheckBox column, write-through to WarehouseOverflowRule.IsActive)
+- Inactive rules: row text shown in gray. Background processor skips inactive rules.
 - Current column is color-coded: green when below threshold, yellow when within 20% of threshold, red when at or above threshold
 - Add-rule panel: `txtOverflowResourceFilter`, `cmbOverflowResource`, `cmbOverflowPurity`, `txtOverflowThreshold`, `cmbOverflowDestType`, `txtOverflowDestFilter`, `cmbOverflowDest`, `txtOverflowRouteFilter`, `cmbOverflowRoute` (FilteredComboBox of delivery routes), `cmdAddRule` / `cmdRemoveRule`
 - Rules are per-colony (ColonyUUID set automatically from the selected colony). One rule per resource+purity per colony.
@@ -2570,7 +2597,7 @@ New tab on FormStockTargets, added alongside the existing targets view. The main
 │ │                                                                          │   │
 │ │ Filter: [__________]                                                     │   │
 │ │                                                                          │   │
-│ │ ┌──────────────────────┐  Profile: [Faction Alpha Full Stock___]         │   │
+│ │ ┌──────────────────────┐  Profile: [Faction Alpha Full Stock___]  ☑ Active  │   │
 │ │ │▸ Faction Alpha Full  │                                                 │   │
 │ │ │  Light Combat Ready  │  Entries:                                       │   │
 │ │ │  Base Maintenance    │  ┌───────┬──────────┬──────────────────────────┐ │   │
@@ -2599,7 +2626,8 @@ New tab on FormStockTargets, added alongside the existing targets view. The main
 Controls:
 - The existing FormStockTargets content moves into a "Targets & Plans" tab. The new "Profiles" tab is added alongside it.
 - Profiles tab left section: `txtProfileFilter`, `lvwProfiles` (ListView), `cmdNewProfile` / `cmdDeleteProfile`
-- Profiles tab right section: `txtProfileName`, `dgvEntries` (DataGridView), add-entry panel, logic summary label
+- Profiles tab right section: `txtProfileName`, `chkProfileActive` (CheckBox, write-through to StockProfile.IsActive), `dgvEntries` (DataGridView), add-entry panel, logic summary label
+- Inactive profiles: list view shows profile name in gray italic. Excluded from stock target aggregation.
 - `dgvEntries` columns: GroupID (editable text), Type (Plan or Target), Plan/Target name (read-only, resolved from UUID)
 - Add-entry panel: `txtGroupID`, `txtEntryFilter`, `cmbEntry` (FilteredComboBox of StockPlans), `cmdAddEntry` / `cmdRemoveEntry`
 - Logic summary: read-only label auto-generated from the entries, showing the AND/OR grouping in plain language. Entries with the same GroupID are ORed (max), different GroupIDs are ANDed (summed).
