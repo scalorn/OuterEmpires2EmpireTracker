@@ -286,6 +286,25 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     location,
                     item.Notes);
                 dgvBuildItems.Rows[rowIdx].Tag = item;
+
+                // Color-code row based on build item status
+                switch (item.Status)
+                {
+                    case BuildItemStatus.Delivering:
+                        dgvBuildItems.Rows[rowIdx].DefaultCellStyle.BackColor = System.Drawing.Color.AliceBlue;
+                        break;
+                    case BuildItemStatus.Ready:
+                        dgvBuildItems.Rows[rowIdx].DefaultCellStyle.BackColor = System.Drawing.Color.Honeydew;
+                        break;
+                    case BuildItemStatus.InProgress:
+                        dgvBuildItems.Rows[rowIdx].DefaultCellStyle.BackColor = System.Drawing.Color.LemonChiffon;
+                        break;
+                    case BuildItemStatus.Completed:
+                        dgvBuildItems.Rows[rowIdx].DefaultCellStyle.BackColor = System.Drawing.Color.WhiteSmoke;
+                        dgvBuildItems.Rows[rowIdx].DefaultCellStyle.ForeColor = System.Drawing.Color.Gray;
+                        break;
+                    // Staged: default styling, no special color
+                }
             }
         }
 
