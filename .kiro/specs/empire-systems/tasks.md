@@ -191,17 +191,17 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 26.3 Update delivery execution: station hold operations, refuel stop checklist items
   - [x] 26.4 Update auto-fill to consider station inventory
 
-- [-] 27. Reference Counter Expansions (Iteration 4)
-  - [-] 27.1 Expand BlueprintReferenceCounter: Station component BlueprintUUIDs
+- [x] 27. Reference Counter Expansions (Iteration 4)
+  - [x] 27.1 Expand BlueprintReferenceCounter: Station component BlueprintUUIDs
 
-- [ ] 28. Iteration 4 Checkpoint
+- [x] 28. Iteration 4 Checkpoint
 
 ### Iteration 5: Market
 
-- [ ] 29. Market Services
-  - [ ] 29.1 Implement MarketService.RecordSale (decrement listing, create transaction with condition + faction snapshots)
-  - [ ] 29.2 Implement MarketService.RecordPurchase (add to station hold)
-  - [ ] 29.3 Implement MarketService.ComputeProfitLoss
+- [x] 29. Market Services
+  - [x] 29.1 Implement MarketService.RecordSale (decrement listing, create transaction with condition + faction snapshots)
+  - [x] 29.2 Implement MarketService.RecordPurchase (add to station hold)
+  - [x] 29.3 Implement MarketService.ComputeProfitLoss
 
 - [ ] 30. Market Form
   - [ ] 30.1 Create FormMarket MDI child: Listings tab, Transactions tab, Summary tab
