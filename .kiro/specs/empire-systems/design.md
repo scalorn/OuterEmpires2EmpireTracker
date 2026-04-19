@@ -409,8 +409,16 @@ sequenceDiagram
     Note over User: Import asteroid survey
     User->>SF: Import survey HTML (asteroid context)
     SF->>SF: Detect asteroid, set SurveyType=Asteroid
-    SF->>SF: Link to asteroid via AsteroidUUID
-    SF-->>User: Survey imported
+    SF->>SF: Compute AsteroidUUID from SystemName:AsteroidName
+    alt Asteroid exists
+        SF->>SF: Link to existing asteroid via AsteroidUUID
+    else Asteroid not found
+        SF->>SF: Auto-create Asteroid (name from PlanetName, system from SystemName)
+        SF->>SF: UUID = DeterministicUUID(SystemName:AsteroidName)
+        SF->>SF: Reserves left empty (user fills in later or from game data)
+        SF->>SF: Link survey to new asteroid via AsteroidUUID
+    end
+    SF-->>User: Survey imported (asteroid auto-created if needed)
 
     User->>AF: Select asteroid
     AF-->>User: Linked Surveys grid shows survey data
@@ -757,6 +765,7 @@ Design decisions:
 - For asteroid surveys, the actual yield per cycle = `Amount` × equipment multiplier × skill multiplier. The service layer computes this from the ship's mining laser/grapple blueprints and the player's ExtractionFocus skill level.
 - Mining cycle duration comes from the mining laser blueprint (a property on the laser). Grapple blueprints can reduce the cycle time (also a property). The service layer combines both to compute effective cycle time.
 - Asteroid surveys are imported from game HTML in a similar format to planet surveys — the parser detects the asteroid context and sets `SurveyType = Asteroid` + `AsteroidUUID`. The existing SurveyParser will be extended to handle the asteroid variant.
+- When importing an asteroid survey, if no Asteroid entity exists with the computed deterministic UUID (from SystemName:AsteroidName), one SHALL be auto-created with Name from the survey's PlanetName field and SystemName from the survey's SystemName field. Reserves are left empty — the user populates them later from in-game data or subsequent imports. This eliminates the manual step of creating the asteroid before importing its survey.
 - The Survey form can filter by SurveyType to show planet vs asteroid surveys separately.
 
 ### MarketListing
