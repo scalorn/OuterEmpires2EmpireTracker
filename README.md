@@ -33,6 +33,9 @@ Plan and track manufacturing work across your empire. Create build plans, add ma
 ### Contacts
 Track factions and external characters you interact with. Open from **Manage → Contacts**. Create factions to organize characters, then add external characters and assign them to factions. Characters appear in combo lookups across the app (Recipient, Counterparty fields). Factions with active references can't be deleted — the Refs column shows how many characters and profiles reference each faction.
 
+### Ship Templates
+Design reusable ship configurations. Open from **Manage → Ship Templates**. Pick a hull, then fill component slots (reactors, drives, weapons, cargo pods, shields, etc.) from your blueprint collection. The stats panel updates live as you install components — see mass, power balance, cargo capacity, defence ratings, and propulsion at a glance. When you're ready to build, click Order Build to generate manufacturing items for the hull and every component, feeding directly into the Build Planner.
+
 ### Pricing Plans
 Create pricing plans to assign credit values to resources and see what your commodities and manufactured items actually cost. Set base prices for Refined, S1, and S2 resources, add optional time costs (fixed per item + hourly rate), and the tracker computes rolled-up prices through the bill-of-materials chain. Create multiple plans to compare market value vs cost basis vs pessimistic estimates — whatever helps you decide if that manufacturing run is worth it.
 
