@@ -78,6 +78,10 @@ Click **Optimize** to reorder structures for optimal build sequence. The optimiz
 
 Click **Bootstrap** to automatically add a standard set of starter structures to a new colony. The colony must have a planet name set before bootstrapping.
 
+### Generate Build Plan
+
+Click **Generate Build Plan** on the Administration tab to create manufacturing orders for a colony's unstaged structures. The dialog lets you create a new plan (auto-named after the colony) or add to an existing one. The planner scans for structures that haven't been staged or built yet and creates flatpack build items for each. Open the Build Planner form to allocate, check resources, and generate deliveries.
+
 ## Warehousing Tab
 
 The Warehousing tab shows the colony's inventory of items, organized by type. Each row shows:
