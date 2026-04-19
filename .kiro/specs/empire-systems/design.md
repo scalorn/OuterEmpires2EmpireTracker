@@ -3612,6 +3612,58 @@ Every new form must:
 9. Follow the reference counting pattern (Refs column, disabled Delete button) where applicable
 10. Preserve selection state across list rebuilds
 
+### Code Quality Standards
+
+These standards apply to all new code in the empire systems implementation. They address patterns observed in the existing codebase that should be improved or maintained.
+
+#### XML Documentation
+
+- All public classes, methods, and properties on services and models SHALL have `/// <summary>` XML doc comments. The existing services (PriceCalculator, TabWarningService, SurveyImportHelper) set the standard.
+- ViewModels: public properties that wrap PropertyBag access SHALL document what they map to (e.g. `/// <summary>Maps to Properties["Built"]. Setting true also clears Staged.</summary>`).
+- Enum values SHALL have `/// <summary>` comments when the meaning isn't obvious from the name.
+
+#### Null Safety
+
+- All public service methods SHALL validate parameters and throw `ArgumentNullException` for null required parameters. The existing `LockTracking.LockItem` sets the pattern.
+- `Func<string, T>` finder delegates SHALL be null-checked at the call site, not inside the service. The service assumes non-null delegates.
+- String parameters that default to empty string SHALL use `string.IsNullOrEmpty()` checks, not null checks alone. The existing codebase is inconsistent on this — normalize to `IsNullOrEmpty`.
+
+#### Magic String/Number Elimination
+
+- All game constants (rates, intervals, thresholds, property names) SHALL be in `Constants/GameConstants.cs` or the relevant constants file. The existing pattern is good — maintain it.
+- New slot type strings (Reactor, CargoPod, FuelTank, etc.) SHALL be defined as constants in a `Constants/SlotTypes.cs` file, not as inline strings in service or form code.
+- New enum values used as dictionary keys SHALL use the `Description` attribute pattern established by `SkillName` and `SkillGroupName`.
+
+#### Method Size and Complexity
+
+- No method SHALL exceed 80 lines. Methods approaching this limit SHALL be decomposed into named helper methods. The existing colony form has some long methods from incremental development — new code should not follow that pattern.
+- Nested conditionals deeper than 3 levels SHALL be refactored into guard clauses or extracted methods.
+- LINQ chains longer than 3 operations SHALL be broken into named intermediate variables for readability.
+
+#### Naming Conventions
+
+- Services: `{Domain}Service` (e.g. `BuildPlanService`, `ResourceCheckService`). Static, stateless.
+- Reference counters: `{Entity}ReferenceCounter` with `{Entity}ReferenceReport`. Instance-based, takes collections in constructor.
+- ViewModels: `{Entity}ViewModel` (e.g. `BuildPlanViewModel`). Instance-based, wraps one entity.
+- Forms: `Form{Feature}` (e.g. `FormBuildPlanner`, `FormShipTemplate`). One form per directory.
+- Constants: `{Domain}Constants` or descriptive name (e.g. `GameConstants`, `SlotTypes`, `BlueprintTypes`).
+- Event args: `{Event}EventArgs` (e.g. `BuildPlanDataChangedEventArgs`).
+- Boolean properties: prefix with `Is`, `Has`, `Can` (e.g. `IsActive`, `HasShortfalls`, `CanDelete`).
+
+#### Defensive Coding
+
+- All `foreach` loops over collections from PlayerContext SHALL iterate a snapshot, not the live list. The `SnapshotXxxList()` pattern is established — use it.
+- All UUID lookups SHALL handle "not found" gracefully (return null or empty, log at Warn, don't throw). The existing `FindBlueprint`/`FindColony` pattern returns null on miss.
+- All `decimal` division SHALL check for zero divisor before dividing. The evolution graph already handles this (REQ-EVO-021).
+- Grid cell value reads SHALL use `?.ToString() ?? ""` pattern to handle null cells.
+
+#### Test Coverage
+
+- Every new service method SHALL have unit tests covering: happy path, empty input, null input, edge cases (zero quantity, missing references, empty collections).
+- Every new model SHALL have JSON round-trip tests (serialize → deserialize → assert equal).
+- Reference counters SHALL have tests for: zero references, single reference per source, multiple references, null/empty UUID input, self-reference exclusion where applicable.
+- ViewModels SHALL have tests for: property get/set round-trip, computed properties, validation logic.
+
 ## Error Handling
 
 | Scenario | Handling |
