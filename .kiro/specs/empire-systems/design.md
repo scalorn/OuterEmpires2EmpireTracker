@@ -526,7 +526,8 @@ public enum DestinationType
 {
     Colony,
     Station,
-    Asteroid
+    Asteroid,
+    Ship        // Future: factory ships for manufacturing/refining/research at sea
 }
 ```
 
@@ -624,7 +625,7 @@ Design decisions:
 - `Quantity` is always runs. The service layer computes total output using items-per-run from the blueprint (default 1, higher for munitions) or CommoditiesPerCycle for commodities. For ShipTemplate items, quantity is number of ships.
 - `ShipTemplateUUID` references the template for ShipTemplate items. When expanded, child Manufactory items are created with `ParentBuildItemUUID` pointing back to the template item.
 - `AssemblyLocationUUID` + `AssemblyLocationType` specify where ship components are delivered for final assembly. Only used for ShipTemplate items.
-- `BuildLocationType` + `BuildLocationUUID` specify where the item is manufactured. Defaults to Colony. The game has a planned "factory ship" feature that would allow manufacturing on ships, and player-owned stations may also gain manufacturing capability. Using DestinationType instead of a colony-specific UUID future-proofs the model — when factory ships arrive, BuildLocationType can be set to Ship (or Station) without a data migration. For now, all UI and service code only supports Colony; the allocation dialog only shows colony structures.
+- `BuildLocationType` + `BuildLocationUUID` specify where the item is built/processed. Defaults to Colony. The game has a planned "factory ship" feature that would allow manufacturing, refining, and research on ships, and player-owned stations may also gain these capabilities. Using DestinationType instead of a colony-specific UUID future-proofs the model — when factory ships arrive, BuildLocationType can be set to Ship (or Station) without a data migration. For now, all UI and service code only supports Colony; the allocation dialog only shows colony structures.
 - Status is a string enum for readable JSON.
 
 ### ShipTemplate
@@ -967,11 +968,12 @@ public class SupplyChain
 
 public enum SupplyChainStageType
 {
-    Mine,           // Colony-based mining (mining rig structure)
+    Mine,           // Structure-based mining (colony mining rig today; ship/station in future)
     AsteroidMine,   // Ship-based asteroid mining (laser + grapple)
     Collect,
-    Refine,
-    Deliver
+    Refine,         // Structure-based refining (colony refinery today; ship/station in future)
+    Deliver,
+    Research        // Structure-based research (colony lab today; ship/station in future)
 }
 
 public class SupplyChainStage
@@ -1205,6 +1207,8 @@ Logic:
 - Resolves the build location's inventory based on `BuildLocationType`: Colony → `colony.Items`, Ship → `ship.Cargo`, Station → `station.Holds[currentPlayerUUID]`. Currently only Colony is implemented; Ship and Station throw NotSupportedException until factory ships are added.
 - For Manufactory items: iterate blueprint.Resources, multiply quantity × item.Quantity, subtract location inventory stock (Refined purity for natural resources, DeterminePurity for synthetics).
 - For Commodity items: iterate commodity.ConstructionResources, multiply quantity × item.Quantity (runs), subtract inventory stock.
+- For Refining items: check raw resource availability at the build location (input purity → output purity per refining recipes).
+- For Research items: no resource shortfall — research only requires time and a research lab structure.
 - Returns only positive shortfalls (resources where need > have).
 
 ### DeliveryGenerationService (Iteration 1)
@@ -1283,19 +1287,23 @@ public static class AutoAssignService
     /// <summary>
     /// Proposes structure assignments for unallocated build items,
     /// minimizing total completion time while respecting blueprint copy limits.
-    /// Only considers structures at colonies on the specified delivery route.
+    /// Considers structures at build locations on the specified delivery route.
+    /// Currently only Colony locations are supported.
     /// </summary>
     public static List<AssignmentProposal> ProposeAssignments(
         BuildPlan plan,
         DeliveryRoute route,
         Func<string, Colony> colonyFinder,
+        Func<string, Ship> shipFinder,
+        Func<string, Station> stationFinder,
         Func<string, Blueprint> blueprintFinder);
 }
 
 public class AssignmentProposal
 {
     public string BuildItemUUID { get; set; }
-    public string ColonyUUID { get; set; }
+    public DestinationType BuildLocationType { get; set; } = DestinationType.Colony;
+    public string BuildLocationUUID { get; set; }
     public string StructureUUID { get; set; }
     public int SequenceInStructure { get; set; }
     public string Reason { get; set; }  // Why this assignment was chosen
@@ -1303,7 +1311,7 @@ public class AssignmentProposal
 ```
 
 Logic:
-1. Collect all idle manufactories and commodity factories at colonies on the delivery route.
+1. Collect all idle manufactories, refineries, research labs, and commodity factories at locations on the delivery route. Currently only colony structures; ship/station structures deferred.
 2. For each unallocated Manufactory item, count how many copies of that blueprint the player owns. That's the max parallelism.
 3. Distribute runs across min(available structures, blueprint copies), splitting quantity evenly. Remainder goes to the first structures.
 4. If more items than structures × copies, stack on existing assignments (SequenceInStructure > 0).
@@ -1941,7 +1949,7 @@ Modal dialog opened from the build items grid when the user clicks the Location/
 Controls:
 - `txtStructureFilter` (ValidatedTextBox), `chkIdleOnly` (CheckBox)
 - `dgvStructures` (DataGridView, read-only) — columns: Location, Structure, Type, Status
-- Currently only shows colony structures. When factory ships/stations are supported, the grid will also include ship and station manufacturing slots.
+- Currently only shows colony structures. When factory ships/stations are supported, the grid will also include ship and station manufacturing, refining, and research slots.
 - `cmdAllocate`, `cmdCancel`
 
 ### FormShipTemplate (Iteration 2)
@@ -2559,7 +2567,7 @@ Controls:
 - `dgvStages` columns: Sequence, StageType, Location, Resource (with purity), AccumulationThreshold, ProductionRatePerHour
 - Add/edit panel: `txtSequence`, `cmbStageType`, `cmbLocationType`, `cmbLocation` (FilteredComboBox — populates with colonies/stations/asteroids based on type), `cmbResource`, `cmbPurity`, `txtThreshold`, `txtRate`, `cmdAddStage` / `cmdUpdateStage` / `cmdRemoveStage`, `cmdMoveUp` / `cmdMoveDown`
 - Flow summary: read-only label showing a condensed text representation of the pipeline stages. Auto-generated from the stages list.
-- Stage type determines which fields are relevant: Mine/AsteroidMine stages have no threshold (they produce continuously). Collect stages have a threshold (trigger delivery when accumulated). Refine stages have a threshold. Deliver stages are the terminal destination.
+- Stage type determines which fields are relevant: Mine/AsteroidMine stages have no threshold (they produce continuously). Collect stages have a threshold (trigger delivery when accumulated). Refine stages have a threshold. Research stages track evolution progress. Deliver stages are the terminal destination. Location type can be Colony, Station, or Ship (Ship for future factory ships).
 
 ### Warehouse Overflow Rules — FormColony Tab (Iteration 6)
 
@@ -2938,11 +2946,14 @@ StockTargetService.CheckTargets(plans, currentPlayerUUID)
 AutoAssignService.ProposeAssignments(plan, route)
   │
   ├─ for each stop in route.Stops:
-  │    └─ colonyFinder(stop.DestinationUUID)            ← PlayerContext cache: O(1)
-  │         └─ for each structure in colony.Structures:  ← O(structures)
-  │              └─ blueprintFinder(struct.FlatpackBPUUID) ← PlayerContext cache: O(1)
+  │    └─ resolve location by DestinationType:
+  │         ├─ Colony: colonyFinder(stop.DestinationUUID)  ← PlayerContext cache: O(1)
+  │         │    └─ for each structure in colony.Structures:  ← O(structures)
+  │         │         └─ blueprintFinder(struct.FlatpackBPUUID) ← PlayerContext cache: O(1)
+  │         ├─ Ship: shipFinder → ship structures (future)
+  │         └─ Station: stationFinder → station structures (future)
   │
-  ├─ for each unallocated Manufactory item:
+  ├─ for each unallocated Manufactory/Refining/Research item:
   │    └─ count blueprint copies in player's collection  ← ★ NEW: O(n) scan of BlueprintList
   │
   └─ distribute across structures (optimization loop)
