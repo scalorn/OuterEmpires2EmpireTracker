@@ -114,3 +114,15 @@ Options:
 - `--stdin` — read body from stdin for very large bodies
 
 The tool writes the message to a temp file and uses `git commit -F`, bypassing all shell escaping issues. Always run backup script after.
+
+## Command Execution — Timeouts
+
+**ALWAYS set a `timeout` on `executePwsh` calls** to prevent commands from appearing to hang:
+- Build commands (MSBuild): `timeout: 120000` (2 minutes)
+- Test commands (vstest.console): `timeout: 180000` (3 minutes)
+- Backup script (oebackup.ps1): `timeout: 60000` (1 minute)
+- commit.js: `timeout: 30000` (30 seconds)
+- trxparse.js: `timeout: 10000` (10 seconds)
+- Other quick commands: `timeout: 30000` (30 seconds)
+
+Without a timeout, if a command hangs (SSH connection stalls, remote is slow), the tool waits indefinitely and the user has to manually exit the shell. Always set a timeout.
