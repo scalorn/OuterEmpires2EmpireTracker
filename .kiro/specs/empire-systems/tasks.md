@@ -97,8 +97,8 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 10.7 IsActive checkbox with gray italic styling for inactive plans
   - [x] 10.8 Wire events with BeginInvoke
   - [x] 10.9 Build item status display with color coding
-  - [-] 10.10 Implement BuildPlanReferenceCounter (counts StockPlan.ReplenishmentBuildPlanUUID), add Refs column
-  - [ ] 10.11 Add "Build Planner" to Manage menu
+  - [x] 10.10 Implement BuildPlanReferenceCounter (counts StockPlan.ReplenishmentBuildPlanUUID), add Refs column
+  - [-] 10.11 Add "Build Planner" to Manage menu
 
 - [ ] 11. Colony Admin Tab Integration
   - [ ] 11.1 Add "Generate Build Plan" button to colony Administration tab

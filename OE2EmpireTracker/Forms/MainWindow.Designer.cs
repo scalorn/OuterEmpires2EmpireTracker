@@ -52,6 +52,7 @@
             this.colonyActivityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addColonyV2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addBlueprintV2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.buildPlannerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cascadeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tileHorizontalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -154,6 +155,7 @@
             this.deliveryExecutionToolStripMenuItem,
             this.deliveryRoutesToolStripMenuItem,
             this.pricingPlansToolStripMenuItem,
+            this.buildPlannerToolStripMenuItem,
             this.addBlueprintV2ToolStripMenuItem,
             this.addColonyV2ToolStripMenuItem,
             this.managePlayerProfiles,
@@ -234,6 +236,13 @@
             this.pricingPlansToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.pricingPlansToolStripMenuItem.Text = "Pricing Plans";
             this.pricingPlansToolStripMenuItem.Click += new System.EventHandler(this.pricingPlansToolStripMenuItem_Click);
+            // 
+            // buildPlannerToolStripMenuItem
+            // 
+            this.buildPlannerToolStripMenuItem.Name = "buildPlannerToolStripMenuItem";
+            this.buildPlannerToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.buildPlannerToolStripMenuItem.Text = "Build Planner";
+            this.buildPlannerToolStripMenuItem.Click += new System.EventHandler(this.buildPlannerToolStripMenuItem_Click);
             // 
             // deliveryExecutionToolStripMenuItem
             // 
@@ -366,6 +375,7 @@
         private System.Windows.Forms.ToolStripMenuItem managePlayerProfiles;
         private System.Windows.Forms.ToolStripMenuItem deliveryRoutesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pricingPlansToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem buildPlannerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deliveryExecutionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colonyDailyBuildToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colonyActivityToolStripMenuItem;
