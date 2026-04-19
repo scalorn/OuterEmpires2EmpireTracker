@@ -944,6 +944,7 @@ public class MarketTransaction
     public decimal PricePerUnit { get; set; } = 0m;
     public decimal TotalPrice { get; set; } = 0m;
     public string Counterparty { get; set; } = string.Empty;
+    public string CounterpartyFaction { get; set; } = string.Empty;  // Faction at time of transaction (snapshot)
     public string StationUUID { get; set; } = string.Empty;
     public string Timestamp { get; set; } = string.Empty;  // ISO 8601 UTC
     public string Notes { get; set; } = string.Empty;
@@ -959,6 +960,7 @@ public class MarketTransaction
 Design decisions:
 - ListingUUID links a sell transaction to its source listing for automatic quantity decrement.
 - Condition fields are a snapshot of the item's state at the time of the transaction. This preserves the historical record even after the listing is deleted or the item changes hands. When recording a transaction from a listing, the condition is copied from the listing to the transaction.
+- CounterpartyFaction is a snapshot of the counterparty's faction name at the time of the transaction. People change factions, so the faction filter on the Transactions tab matches against this snapshot field, not the counterparty's current faction. When recording a transaction, the faction is resolved from the counterparty's current FactionUUID and stored as a string.
 - ItemReferenceID is Blueprint UUID for blueprint items, commodity name for commodities. Same pattern as DeliveryItem.BaseItemTypeID.
 - Timestamp is ISO 8601 UTC string, same pattern as colony import timestamps.
 
@@ -2536,7 +2538,7 @@ Summary tab:
 Controls:
 - `tabMarket` (TabControl with Listings, Transactions, Summary tabs)
 - Listings tab: station filter, `dgvListings` (DataGridView, editable qty/price), add-listing panel, `cmdRecordSale` / `cmdEditListing` / `cmdDeleteListing`
-- Transactions tab: filter row (type, item, counterparty, faction, station, date range), `dgvTransactions` (DataGridView with Condition column — shows percentage when non-zero), `cmdAddTransaction` / `cmdEditTransaction` / `cmdDeleteTransaction`. Faction filter matches all characters (PlayerProfiles + ExternalCharacters) belonging to the selected faction.
+- Transactions tab: filter row (type, item, counterparty, faction, station, date range), `dgvTransactions` (DataGridView with Condition column — shows percentage when non-zero), `cmdAddTransaction` / `cmdEditTransaction` / `cmdDeleteTransaction`. Faction filter matches against the `CounterpartyFaction` snapshot field on each transaction (not the counterparty's current faction).
 - Summary tab: `cmbPricingPlan` (FilteredComboBox), date range, summary labels, `dgvBreakdown` (read-only DataGridView)
 - "Record Sale" opens a dialog to enter sale details (quantity, counterparty, notes) and auto-creates the transaction + decrements listing
 
