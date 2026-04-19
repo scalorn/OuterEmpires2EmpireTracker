@@ -513,6 +513,39 @@ sequenceDiagram
     Note over SP: max(Alpha, Beta) + Base Supplies + 20k Munitions
 ```
 
+### Flow 16: Colony Plan → Build Plan Generation
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant CF as Colony Form (Admin tab)
+    participant BPS as BuildPlanService
+    participant BP as Build Planner
+    participant PC as PlayerContext
+
+    Note over User: Colony has unstaged structures<br/>(added via Bootstrap or manually,<br/>flatpacks not yet delivered)
+
+    User->>CF: Click [Generate Build Plan]
+    CF->>CF: Prompt: create new plan or add to existing?
+    alt New plan
+        CF->>CF: Auto-name: "Colony Name - Build Plan"
+    else Existing plan
+        CF->>CF: Show plan picker (filtered combo)
+    end
+
+    CF->>BPS: GenerateColonyBuildItems(colony, targetPlan)
+    BPS->>BPS: Scan colony.Structures for unstaged (not Staged, not Built)
+    BPS->>BPS: For each: create Manufactory BuildItem
+    Note right of BPS: BlueprintUUID = structure.FlatpackBlueprintUUID<br/>Quantity = 1 per structure<br/>BuildLocationType = Colony (any mfg colony)<br/>BuildLocationUUID = empty (unallocated)<br/>Status = Staged
+    BPS->>BPS: Skip structures already covered by existing items in plan
+    BPS-->>CF: Return count of items added
+
+    CF->>PC: WriteContext()
+    CF-->>User: "5 flatpack build items added to plan"
+
+    Note over User: Open Build Planner to allocate,<br/>check resources, generate deliveries
+```
+
 ## Data Models
 
 All new models follow the existing POCO pattern: public properties with defaults, Newtonsoft.Json serialization, UUID + OwnerUUID ownership, persisted as top-level arrays in PlayerRoot.
@@ -1166,10 +1199,31 @@ public static class BuildPlanService
 
     // Validate a build item (quantity >= 1, valid type)
     public static bool ValidateBuildItem(BuildItem item);
+
+    /// <summary>
+    /// Scans a colony's structures for unstaged entries (not Staged, not Built)
+    /// and generates Manufactory build items for their flatpack blueprints.
+    /// Skips structures whose FlatpackBlueprintUUID already has a matching
+    /// BuildItem in the target plan (dedup by blueprint + colony).
+    /// Items are created unallocated (empty BuildLocationUUID) so the user
+    /// can assign them to any manufacturing colony via the Build Planner.
+    /// Returns the number of items added.
+    /// </summary>
+    public static int GenerateColonyBuildItems(
+        Colony colony,
+        BuildPlan targetPlan,
+        Func<string, Blueprint> blueprintFinder);
 }
 ```
 
 Thin validation layer. Most logic lives in the form and other services.
+
+Design decisions for GenerateColonyBuildItems:
+- Unstaged structures are those where `IsStaged == false && IsBuilt == false` — they represent planned structures that need flatpacks manufactured and delivered.
+- Each unstaged structure produces one Manufactory BuildItem with `Quantity = 1`, `BlueprintUUID = structure.FlatpackBlueprintUUID`, and `ItemName` resolved from the blueprint.
+- Items are created with `BuildLocationUUID = empty` (unallocated). The user assigns them to a manufacturing colony in the Build Planner. This is intentional — the colony that needs the flatpack is rarely the colony that manufactures it.
+- Dedup: if the target plan already has a BuildItem with the same `BlueprintUUID` and the colony's UUID in the `Notes` or `Recipient` field, it's skipped. This makes the operation idempotent — running it twice doesn't double the items.
+- The colony's UUID is stored in the BuildItem's `Notes` field as `"For colony: {ColonyName} ({ColonyUUID})"` so the user can see which colony needs the flatpack. This is metadata only — it doesn't affect allocation or resource checks.
 
 ### ResourceCheckService (Iteration 1)
 
@@ -2568,6 +2622,26 @@ Controls:
 - Add/edit panel: `txtSequence`, `cmbStageType`, `cmbLocationType`, `cmbLocation` (FilteredComboBox — populates with colonies/stations/asteroids based on type), `cmbResource`, `cmbPurity`, `txtThreshold`, `txtRate`, `cmdAddStage` / `cmdUpdateStage` / `cmdRemoveStage`, `cmdMoveUp` / `cmdMoveDown`
 - Flow summary: read-only label showing a condensed text representation of the pipeline stages. Auto-generated from the stages list.
 - Stage type determines which fields are relevant: Mine/AsteroidMine stages have no threshold (they produce continuously). Collect stages have a threshold (trigger delivery when accumulated). Refine stages have a threshold. Research stages track evolution progress. Deliver stages are the terminal destination. Location type can be Colony, Station, or Ship (Ship for future factory ships).
+
+### Colony Administration Tab — Build Plan Integration (Iteration 1)
+
+The existing Administration tab on FormColonyV2 gains a "Generate Build Plan" button alongside the existing Bootstrap and Optimize buttons.
+
+```
+│ ┌─ Admin ─┬─ Structures ─┬─ Workers ─┬─ Warehousing ─┬─ Overflow ─────┐   │
+│ │                                                                       │   │
+│ │ [Bootstrap Colony] [Optimize Build Order] [Generate Build Plan]       │   │
+│ │                                                                       │   │
+│ │ ┌─────────────────────────────────────────────────────────────────┐   │   │
+│ │ │ (admin report — existing)                                       │   │   │
+│ │ └─────────────────────────────────────────────────────────────────┘   │   │
+│ └───────────────────────────────────────────────────────────────────────┘   │
+```
+
+Controls:
+- `cmdGenerateBuildPlan` — enabled when the colony has at least one unstaged, unbuilt structure. Disabled otherwise.
+- On click: prompts user to create a new build plan or select an existing one (modal dialog with plan picker). Calls `BuildPlanService.GenerateColonyBuildItems()`. Shows confirmation with count of items added.
+- The button is disabled when no colony is selected.
 
 ### Warehouse Overflow Rules — FormColony Tab (Iteration 6)
 
