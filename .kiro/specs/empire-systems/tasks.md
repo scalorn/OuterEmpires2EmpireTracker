@@ -81,8 +81,8 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 8.1 Create Migration: add empty arrays, migrate RouteStop/DeliveryPlanStop ColonyUUID, increment DataVersion
 
 - [-] 9. Build Planner Services
-  - [-] 9.1 Implement BuildPlanService (ValidatePlanName, ValidateBuildItem, GenerateColonyBuildItems)
-  - [ ] 9.2 Implement ResourceCheckService (ComputeShortfalls with BuildLocationType resolution, ComputePlanShortfalls)
+  - [x] 9.1 Implement BuildPlanService (ValidatePlanName, ValidateBuildItem, GenerateColonyBuildItems)
+  - [-] 9.2 Implement ResourceCheckService (ComputeShortfalls with BuildLocationType resolution, ComputePlanShortfalls)
   - [ ] 9.3 Implement DeliveryGenerationService (GenerateDeliveryPlan, GenerateConsolidatedDeliveryPlan, GenerateFlatpackDeliveryPlan)
   - [ ] 9.4 Implement QueueCalculator
   - [ ] 9.5 Implement AutoAssignService (ProposeAssignments with BuildLocationType + shipFinder/stationFinder)
