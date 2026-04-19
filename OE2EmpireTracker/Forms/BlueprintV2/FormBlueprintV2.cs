@@ -290,8 +290,9 @@ namespace OE2EmpireTracker
             var buildPlans = pc?.BuildPlanList as IEnumerable<BuildPlan> ?? Enumerable.Empty<BuildPlan>();
             var shipTemplates = pc?.ShipTemplateList as IEnumerable<ShipTemplate> ?? Enumerable.Empty<ShipTemplate>();
             var ships = pc?.ShipList as IEnumerable<Ship> ?? Enumerable.Empty<Ship>();
+            var stations = pc?.StationList as IEnumerable<Station> ?? Enumerable.Empty<Station>();
 
-            return new BlueprintReferenceCounter(colonies, allBlueprints, surveys, buildPlans, shipTemplates, ships);
+            return new BlueprintReferenceCounter(colonies, allBlueprints, surveys, buildPlans, shipTemplates, ships, stations);
         }
 
         /// <summary>

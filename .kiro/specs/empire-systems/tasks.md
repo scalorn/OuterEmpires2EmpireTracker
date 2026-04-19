@@ -185,14 +185,14 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 25.6 Wire events, NLog, PERF
   - [x] 25.7 Add "Stations" to Manage menu
 
-- [-] 26. Station Integration
+- [x] 26. Station Integration
   - [x] 26.1 Update FormDeliveryRoute: Station/Asteroid stop types, Purpose column, FuelEstimate display
   - [x] 26.2 Update delivery plan form for Station/Asteroid stops
   - [x] 26.3 Update delivery execution: station hold operations, refuel stop checklist items
   - [x] 26.4 Update auto-fill to consider station inventory
 
-- [ ] 27. Reference Counter Expansions (Iteration 4)
-  - [ ] 27.1 Expand BlueprintReferenceCounter: Station component BlueprintUUIDs
+- [-] 27. Reference Counter Expansions (Iteration 4)
+  - [-] 27.1 Expand BlueprintReferenceCounter: Station component BlueprintUUIDs
 
 - [ ] 28. Iteration 4 Checkpoint
 

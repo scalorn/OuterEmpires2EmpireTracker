@@ -22,7 +22,8 @@ namespace OE2EmpireTracker.Services
             IEnumerable<Survey> surveys,
             IEnumerable<BuildPlan> buildPlans = null,
             IEnumerable<ShipTemplate> shipTemplates = null,
-            IEnumerable<Ship> ships = null)
+            IEnumerable<Ship> ships = null,
+            IEnumerable<Station> stations = null)
         {
             var colonyList = colonies ?? Enumerable.Empty<Colony>();
             var bpList = allBlueprints ?? Enumerable.Empty<Blueprint>();
@@ -30,6 +31,7 @@ namespace OE2EmpireTracker.Services
             var buildPlanList = buildPlans ?? Enumerable.Empty<BuildPlan>();
             var templateList = shipTemplates ?? Enumerable.Empty<ShipTemplate>();
             var shipList = ships ?? Enumerable.Empty<Ship>();
+            var stationList = stations ?? Enumerable.Empty<Station>();
 
             _flatpackMap = new Dictionary<string, int>();
             _researchingMap = new Dictionary<string, int>();
@@ -101,6 +103,36 @@ namespace OE2EmpireTracker.Services
                     }
                 }
             }
+            // Station component blueprints (player-owned stations)
+            foreach (var station in stationList)
+            {
+                if (!string.IsNullOrEmpty(station.StationBlueprintUUID))
+                { _shipComponentMap.TryGetValue(station.StationBlueprintUUID, out int c); _shipComponentMap[station.StationBlueprintUUID] = c + 1; }
+                if (station.Components != null)
+                {
+                    foreach (var comp in station.Components)
+                    {
+                        if (!string.IsNullOrEmpty(comp.BlueprintUUID))
+                        { _shipComponentMap.TryGetValue(comp.BlueprintUUID, out int c); _shipComponentMap[comp.BlueprintUUID] = c + 1; }
+                    }
+                }
+            }
+
+            // Station component blueprints (player-owned stations)
+            foreach (var station in stationList)
+            {
+                if (!string.IsNullOrEmpty(station.StationBlueprintUUID))
+                { _shipComponentMap.TryGetValue(station.StationBlueprintUUID, out int c); _shipComponentMap[station.StationBlueprintUUID] = c + 1; }
+                if (station.Components != null)
+                {
+                    foreach (var comp in station.Components)
+                    {
+                        if (!string.IsNullOrEmpty(comp.BlueprintUUID))
+                        { _shipComponentMap.TryGetValue(comp.BlueprintUUID, out int c); _shipComponentMap[comp.BlueprintUUID] = c + 1; }
+                    }
+                }
+            }
+
         }
 
         public ReferenceReport CountReferences(string blueprintUUID)
