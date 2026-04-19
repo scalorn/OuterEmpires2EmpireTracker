@@ -193,6 +193,11 @@ namespace OE2EmpireTracker
             OpenMdiChild<Forms.Asteroid.FormAsteroid>();
         }
 
+        private void supplyChainsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenMdiChild<Forms.SupplyChain.FormSupplyChain>();
+        }
+
         private void deliveryExecutionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.DeliveryExecution.FormDeliveryExecution>();
@@ -617,6 +622,7 @@ namespace OE2EmpireTracker
             { "FormStation", (w, n) => w.OpenMdiChildWithNumber<Forms.Station.FormStation>(n) },
             { "FormMarket", (w, n) => w.OpenMdiChildWithNumber<Forms.Market.FormMarket>(n) },
             { "FormAsteroid", (w, n) => w.OpenMdiChildWithNumber<Forms.Asteroid.FormAsteroid>(n) },
+            { "FormSupplyChain", (w, n) => w.OpenMdiChildWithNumber<Forms.SupplyChain.FormSupplyChain>(n) },
         };
 
         private void RestoreOpenForms()

@@ -45,6 +45,12 @@ Manage the stations you use across the galaxy. Open from **Manage → Stations**
 ### Market
 Track your market activity. Open from **Manage → Market**. The Listings tab shows what you have for sale at each station, with condition tracking for damaged components. Record sales with one click — the listing quantity decrements and a transaction is created with condition and faction snapshots. The Transactions tab gives you a filterable history of all buys and sells (by type, item, counterparty, faction, station, date range). The Summary tab computes profit/loss totals with a per-item breakdown so you can see which items are actually making you money.
 
+### Asteroids
+Track asteroid mining sites. Open from **Manage → Asteroids**. Record resource reserves with purity and current/max amounts, and see linked surveys from your collection. When you import an asteroid survey, the tracker auto-creates the asteroid record if it doesn't exist yet. Asteroids referenced by surveys, build items, or delivery routes can't be deleted.
+
+### Supply Chains
+Model your resource pipelines from mine to market. Open from **Manage → Supply Chains**. Define a chain of stages — Mine, AsteroidMine, PickUp, Refine, Research, Deliver — each at a colony, station, asteroid, or ship. Set accumulation thresholds on stages so the background processor knows when to trigger deliveries. Assign delivery routes to threshold stages. Pause and resume chains with the Active toggle (inactive chains show grayed out in the list and are skipped by background processing). A flow summary shows the full pipeline at a glance.
+
 ### Pricing Plans
 Create pricing plans to assign credit values to resources and see what your commodities and manufactured items actually cost. Set base prices for Refined, S1, and S2 resources, add optional time costs (fixed per item + hourly rate), and the tracker computes rolled-up prices through the bill-of-materials chain. Create multiple plans to compare market value vs cost basis vs pessimistic estimates — whatever helps you decide if that manufacturing run is worth it.
 

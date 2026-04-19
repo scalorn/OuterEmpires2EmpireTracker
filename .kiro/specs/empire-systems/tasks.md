@@ -238,16 +238,16 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 35.4 Wire events, NLog, PERF
   - [x] 35.5 Add "Asteroids" to Manage menu
 
-- [ ] 36. Supply Chain Form
-  - [ ] 36.1 Create FormSupplyChain MDI child with stages grid and flow summary
-  - [ ] 36.2 Stage types: Mine, AsteroidMine, PickUp, Refine, Research, Deliver
-  - [ ] 36.3 IsActive checkbox with gray italic styling
-  - [ ] 36.4 Route selector on threshold stages
-  - [ ] 36.5 Wire events, NLog, PERF
-  - [ ] 36.6 Add "Supply Chains" to Manage menu
+- [x] 36. Supply Chain Form
+  - [x] 36.1 Create FormSupplyChain MDI child with stages grid and flow summary
+  - [x] 36.2 Stage types: Mine, AsteroidMine, PickUp, Refine, Research, Deliver
+  - [x] 36.3 IsActive checkbox with gray italic styling
+  - [x] 36.4 Route selector on threshold stages
+  - [x] 36.5 Wire events, NLog, PERF
+  - [x] 36.6 Add "Supply Chains" to Manage menu
 
-- [ ] 37. Supply Chain Service
-  - [ ] 37.1 Implement SupplyChainService.CheckThresholds (filter IsActive, resolve location inventory, return delivery requests)
+- [x] 37. Supply Chain Service
+  - [x] 37.1 Implement SupplyChainService.CheckThresholds (filter IsActive, resolve location inventory, return delivery requests)
 
 - [ ] 38. Warehouse Overflow Tab
   - [ ] 38.1 Add Overflow tab to FormColony: rules grid with Active checkbox column
