@@ -60,14 +60,30 @@ nuget restore OE2EmpireTracker.sln
 
 **ALWAYS use `.kiro/tools/fwrite.js`** for all file writing, appending, and replacing. Do NOT use the built-in `fsWrite`, `fsAppend`, or `strReplace` tools — they have size limits that cause silent failures on large content.
 
-### Write (overwrite entire file)
+### Write via temp file (preferred for large content)
+```powershell
+@"
+file content here
+"@ | Out-File -NoNewline -Encoding utf8 _content.tmp
+node .kiro/tools/fwrite.js writefile path/to/file.md _content.tmp
+```
+
+### Append via temp file (preferred for large content)
+```powershell
+@"
+content to append
+"@ | Out-File -NoNewline -Encoding utf8 _content.tmp
+node .kiro/tools/fwrite.js appendfile path/to/file.md _content.tmp
+```
+
+### Write via stdin pipe (small content only)
 ```powershell
 @"
 file content here
 "@ | node .kiro/tools/fwrite.js write path/to/file.md
 ```
 
-### Append
+### Append via stdin pipe (small content only)
 ```powershell
 @"
 content to append
@@ -84,6 +100,8 @@ new text to replace with
 "@ | Out-File -NoNewline -Encoding utf8 _new.tmp
 node .kiro/tools/fwrite.js replace path/to/file.md _old.tmp _new.tmp
 ```
+
+**IMPORTANT: For content larger than ~20 lines, ALWAYS use the temp file approach (`writefile`/`appendfile`) instead of piping through stdin.** Piping large heredocs through PowerShell stdin can cause the shell to appear to hang due to pipe buffering issues. The temp file approach avoids this entirely — write to a temp file with `Out-File`, then pass the temp file path to fwrite.js which reads it and auto-deletes it.
 
 The replace mode checks for uniqueness (fails if old string appears more than once) and auto-deletes the temp files after replacement.
 
