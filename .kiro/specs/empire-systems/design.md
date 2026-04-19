@@ -811,6 +811,11 @@ public class Station
 
     // Munitions hold for armed stations (separate from general holds)
     public ItemBag MunitionsHold { get; set; } = new ItemBag();
+
+    // Station hull damage state (player-owned stations only)
+    public int HullCurrentHP { get; set; } = 0;       // Current hull HP (0 = undamaged)
+    public int HullMaxHP { get; set; } = 0;            // Max hull HP (0 = use Health from station blueprint)
+    public decimal HullMaxRepairPercent { get; set; } = 0m;  // Max repairable condition (0 = 100%)
 }
 ```
 
@@ -823,6 +828,7 @@ Design decisions:
 - Hold is an ItemBag with no capacity limit.
 - Player-owned stations reuse the ShipComponentSlot model for installed components (reactors, shields, weapons). StationBlueprintUUID defines available slots.
 - MunitionsHold is a separate ItemBag for weapon ammunition on armed stations. Empty for government stations and unarmed player stations. DefaultValueHandling.Ignore omits it from JSON when empty.
+- Hull damage uses the same three-field pattern as Ship: `HullCurrentHP`/`HullMaxHP`/`HullMaxRepairPercent`. All default to 0 (undamaged, omitted from JSON). Station combat is a planned game feature — the model is ready for it. Component damage is already handled via ShipComponentSlot's damage fields.
 
 ### Asteroid
 
@@ -2362,14 +2368,15 @@ Components tab (player-owned stations only):
 │ │        │              │                                  │   │
 │ │ Station Blueprint: [Outpost Mk2                      ▼] │   │
 │ │                                                          │   │
-│ │ ┌────────────┬───────┬──────────────────────┬─────────┐  │   │
-│ │ │ Slot Type  │ Slot# │ Blueprint            │ Actions │  │   │
-│ │ ├────────────┼───────┼──────────────────────┼─────────┤  │   │
-│ │ │ Reactor    │   0   │ Station Reactor Mk2  │ [Clear] │  │   │
-│ │ │ Shield     │   0   │ Shield Generator Mk1 │ [Clear] │  │   │
-│ │ │ Weapon     │   0   │ Turret Mk2           │ [Clear] │  │   │
-│ │ │ Weapon     │   1   │ (empty)              │ [Set]   │  │   │
-│ │ └────────────┴───────┴──────────────────────┴─────────┘  │   │
+│ │ ┌────────────┬───────┬──────────────────────┬───────────────┬────────┬─────────┐│   │
+│ │ │ Slot Type  │ Slot# │ Blueprint            │ Condition     │ MaxRep │ Actions ││   │
+│ │ ├────────────┼───────┼──────────────────────┼───────────────┼────────┼─────────┤│   │
+│ │ │ Hull       │   -   │ Outpost Mk2          │ 76000/80000 95%│  100% │         ││   │
+│ │ │ Reactor    │   0   │ Station Reactor Mk2  │  1200/1200 100%│  100% │ [Clear] ││   │
+│ │ │ Shield     │   0   │ Shield Generator Mk1 │ 11000/12000 92%│   90% │ [Clear] ││   │
+│ │ │ Weapon     │   0   │ Turret Mk2           │   450/500   90%│  100% │ [Clear] ││   │
+│ │ │ Weapon     │   1   │ (empty)              │               │        │ [Set]   ││   │
+│ │ └────────────┴───────┴──────────────────────┴───────────────┴────────┴─────────┘│   │
 │ │                                                          │   │
 │ │ Install: Filter:[______] [Shield Gen Mk2          ▼]    │   │
 │ │          Slot:  [Shield / 0  ▼]  [Install]              │   │
@@ -2397,7 +2404,7 @@ Controls:
 - Left: `flpSearchList` → `txtStationFilter` + `lvwStations` (ListView) + `cmdNew` / `cmdDelete`
 - Right: `flpStationData` → name/type/ownership fields, `tabStationDetail` (TabControl with Hold, Components, Munitions tabs)
 - Hold tab: `dgvHold` (DataGridView, editable — scoped to current player's hold), `dgvCrateContents` (detail grid), add-item panel, crate buttons
-- Components tab: `cmbStationBlueprint`, `dgvStationComponents` (same pattern as ship template), install panel, `dgvStationStats` (read-only) — computed via ShipBuildService.ComputeStationStats
+- Components tab: `cmbStationBlueprint`, `dgvStationComponents` (columns: Slot Type, Slot#, Blueprint, Condition, MaxRepair, Actions — Condition and MaxRepair editable, hull row always first), install panel, `dgvStationStats` (read-only) — computed via ShipBuildService.ComputeStationStats
 - Munitions tab: `dgvMunitions` (DataGridView) — visible only for armed player-owned stations
 
 ### Crate UI Pattern (All Inventory Views)
