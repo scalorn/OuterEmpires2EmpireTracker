@@ -44,6 +44,13 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.colLocation = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colNotes = new System.Windows.Forms.DataGridViewTextBoxColumn();
 
+            this.lblShortfallHeader = new System.Windows.Forms.Label();
+            this.dgvShortfalls = new System.Windows.Forms.DataGridView();
+            this.colShortfallResource = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colShortfallRequired = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colShortfallAvailable = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colShortfallDeficit = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lblShortfallStatus = new System.Windows.Forms.Label();
             this.flpAddItem = new System.Windows.Forms.FlowLayoutPanel();
             this.lblAddItemHeader = new System.Windows.Forms.Label();
             this.flpAddItemRow1 = new System.Windows.Forms.FlowLayoutPanel();
@@ -76,6 +83,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItemRow2.SuspendLayout();
             this.flpAddItemRow3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBuildItems)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvShortfalls)).BeginInit();
             this.SuspendLayout();
             // 
             // flpBase
@@ -167,6 +175,9 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpDetail.Controls.Add(this.flpIsActive);
             this.flpDetail.Controls.Add(this.cmdSave);
             this.flpDetail.Controls.Add(this.dgvBuildItems);
+            this.flpDetail.Controls.Add(this.lblShortfallHeader);
+            this.flpDetail.Controls.Add(this.lblShortfallStatus);
+            this.flpDetail.Controls.Add(this.dgvShortfalls);
             this.flpDetail.Controls.Add(this.flpAddItem);
             this.flpDetail.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpDetail.Location = new System.Drawing.Point(229, 3);
@@ -310,6 +321,70 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.colNotes.Name = "colNotes";
             this.colNotes.ReadOnly = true;
             this.colNotes.Width = 200;
+            // 
+            // lblShortfallHeader
+            // 
+            this.lblShortfallHeader.AutoSize = true;
+            this.lblShortfallHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
+            this.lblShortfallHeader.Location = new System.Drawing.Point(3, 0);
+            this.lblShortfallHeader.Name = "lblShortfallHeader";
+            this.lblShortfallHeader.Size = new System.Drawing.Size(120, 13);
+            this.lblShortfallHeader.Text = "Resource Shortfalls:";
+            // 
+            // lblShortfallStatus
+            // 
+            this.lblShortfallStatus.AutoSize = true;
+            this.lblShortfallStatus.Location = new System.Drawing.Point(3, 0);
+            this.lblShortfallStatus.Name = "lblShortfallStatus";
+            this.lblShortfallStatus.Size = new System.Drawing.Size(200, 13);
+            this.lblShortfallStatus.Text = "Select a build item to check resources.";
+            this.lblShortfallStatus.ForeColor = System.Drawing.SystemColors.GrayText;
+            // 
+            // dgvShortfalls
+            // 
+            this.dgvShortfalls.AllowUserToAddRows = false;
+            this.dgvShortfalls.AllowUserToDeleteRows = false;
+            this.dgvShortfalls.AllowUserToOrderColumns = true;
+            this.dgvShortfalls.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvShortfalls.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colShortfallResource,
+            this.colShortfallRequired,
+            this.colShortfallAvailable,
+            this.colShortfallDeficit});
+            this.dgvShortfalls.Location = new System.Drawing.Point(3, 0);
+            this.dgvShortfalls.Name = "dgvShortfalls";
+            this.dgvShortfalls.ReadOnly = true;
+            this.dgvShortfalls.Size = new System.Drawing.Size(662, 120);
+            this.dgvShortfalls.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvShortfalls.Visible = false;
+            // 
+            // colShortfallResource
+            // 
+            this.colShortfallResource.HeaderText = "Resource";
+            this.colShortfallResource.Name = "colShortfallResource";
+            this.colShortfallResource.ReadOnly = true;
+            this.colShortfallResource.Width = 200;
+            // 
+            // colShortfallRequired
+            // 
+            this.colShortfallRequired.HeaderText = "Required";
+            this.colShortfallRequired.Name = "colShortfallRequired";
+            this.colShortfallRequired.ReadOnly = true;
+            this.colShortfallRequired.Width = 100;
+            // 
+            // colShortfallAvailable
+            // 
+            this.colShortfallAvailable.HeaderText = "Available";
+            this.colShortfallAvailable.Name = "colShortfallAvailable";
+            this.colShortfallAvailable.ReadOnly = true;
+            this.colShortfallAvailable.Width = 100;
+            // 
+            // colShortfallDeficit
+            // 
+            this.colShortfallDeficit.HeaderText = "Shortfall";
+            this.colShortfallDeficit.Name = "colShortfallDeficit";
+            this.colShortfallDeficit.ReadOnly = true;
+            this.colShortfallDeficit.Width = 100;
             // 
             // flpAddItem
             // 
@@ -502,6 +577,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItemRow3.ResumeLayout(false);
             this.flpAddItemRow3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBuildItems)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvShortfalls)).EndInit();
             this.ResumeLayout(false);
         }
 
@@ -533,6 +609,13 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private System.Windows.Forms.DataGridViewTextBoxColumn colStatus;
         private System.Windows.Forms.DataGridViewTextBoxColumn colLocation;
         private System.Windows.Forms.DataGridViewTextBoxColumn colNotes;
+        private System.Windows.Forms.Label lblShortfallHeader;
+        private System.Windows.Forms.Label lblShortfallStatus;
+        private System.Windows.Forms.DataGridView dgvShortfalls;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colShortfallResource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colShortfallRequired;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colShortfallAvailable;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colShortfallDeficit;
         private System.Windows.Forms.FlowLayoutPanel flpAddItem;
         private System.Windows.Forms.Label lblAddItemHeader;
         private System.Windows.Forms.FlowLayoutPanel flpAddItemRow1;
