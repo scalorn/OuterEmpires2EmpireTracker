@@ -87,6 +87,8 @@ graph TD
     FST --> SBS
     FMK --> MKS
     FSTK --> STS
+    FSCH --> SCS
+    FSTN --> SBS
 ```
 
 ## User Interaction Flows & Cascades
@@ -1730,6 +1732,46 @@ public class StockShortfall
 }
 ```
 
+### SupplyChainService (Iteration 6)
+
+Static service in `Services/SupplyChainService.cs`.
+
+```csharp
+public static class SupplyChainService
+{
+    /// <summary>
+    /// Checks all active supply chain stages for accumulation threshold breaches.
+    /// Returns a list of delivery requests for stages where accumulated quantity
+    /// exceeds the threshold.
+    /// </summary>
+    public static List<SupplyChainDeliveryRequest> CheckThresholds(
+        IEnumerable<SupplyChain> chains,
+        Func<string, Colony> colonyFinder,
+        Func<string, Station> stationFinder,
+        Func<string, Ship> shipFinder,
+        string currentPlayerUUID);
+}
+
+public class SupplyChainDeliveryRequest
+{
+    public string SupplyChainUUID { get; set; }
+    public int StageSequence { get; set; }
+    public string ResourceName { get; set; }
+    public string ResourcePurity { get; set; }
+    public int ExcessQuantity { get; set; }  // Amount above threshold
+    public string DeliveryRouteUUID { get; set; }
+    public string SourceLocationUUID { get; set; }
+    public DestinationType SourceLocationType { get; set; }
+}
+```
+
+Logic:
+- Filters to `IsActive` chains only.
+- For each PickUp/Refine/Deliver stage with `AccumulationThreshold > 0`: resolve the location, check the inventory for the stage's resource, compare against threshold.
+- Inventory resolution by LocationType: Colony → `colony.Items`, Station → `station.Holds[currentPlayerUUID]`, Ship → `ship.Cargo`.
+- If quantity > threshold, create a `SupplyChainDeliveryRequest` with `ExcessQuantity = quantity - threshold`.
+- The background processor calls this on each tick and passes the requests to `DeliveryGenerationService` to create delivery plans on the designated routes.
+
 ## Cascade Processing
 
 Market transactions, stock target checks, resource availability re-evaluation, and delivery plan updates are computationally expensive when they cascade (sale → stock target → build order → resource check → delivery plan). Running these synchronously on the UI thread would block the application.
@@ -2899,7 +2941,7 @@ The complete cross-entity reference map. Each row shows an entity, what referenc
 | Ship | DeliveryPlan.ShipUUID, BuildItem.BuildLocationUUID (when BuildLocationType=Ship, future) | ShipReferenceCounter (new) |
 | Asteroid | Survey.AsteroidUUID, SupplyChainStage.LocationUUID (when Asteroid), DeliveryRoute stops (DestinationUUID when Asteroid) | AsteroidReferenceCounter (new) |
 | Faction | PlayerProfile.FactionUUID, ExternalCharacter.FactionUUID | FactionReferenceCounter (new) |
-| BuildPlan | BuildPlan.DeliveryPlanUUID (reverse: DeliveryPlan referenced by BuildPlan) | — (BuildPlans are top-level, not referenced by other entities) |
+| BuildPlan | StockPlan.ReplenishmentBuildPlanUUID | BuildPlanReferenceCounter (new) |
 | DeliveryRoute | BuildPlan (user selects route for delivery generation), DeliveryPlan.RouteUUID, WarehouseOverflowRule.DeliveryRouteUUID, SupplyChainStage.DeliveryRouteUUID | DeliveryRouteReferenceCounter (new) |
 | DeliveryPlan | BuildPlan.DeliveryPlanUUID | DeliveryPlanReferenceCounter (new) |
 | StockPlan | StockProfileEntry.StockPlanUUID | StockPlanReferenceCounter (new) |
@@ -2968,7 +3010,8 @@ public class ShipTemplateReferenceCounter
 public class ShipReferenceCounter
 {
     public ShipReferenceCounter(
-        IEnumerable<DeliveryPlan> plans);
+        IEnumerable<DeliveryPlan> plans,
+        IEnumerable<BuildPlan> buildPlans);
 
     public ShipReferenceReport CountReferences(string shipUUID);
 }
@@ -2998,7 +3041,9 @@ public class FactionReferenceCounter
 public class DeliveryRouteReferenceCounter
 {
     public DeliveryRouteReferenceCounter(
-        IEnumerable<DeliveryPlan> plans);
+        IEnumerable<DeliveryPlan> plans,
+        IEnumerable<WarehouseOverflowRule> overflowRules,
+        IEnumerable<SupplyChain> supplyChains);
 
     public DeliveryRouteReferenceReport CountReferences(string routeUUID);
 }
@@ -3029,6 +3074,15 @@ public class MarketListingReferenceCounter
 
     public MarketListingReferenceReport CountReferences(string listingUUID);
 }
+
+// Services/BuildPlanReferenceCounter.cs
+public class BuildPlanReferenceCounter
+{
+    public BuildPlanReferenceCounter(
+        IEnumerable<StockPlan> stockPlans);
+
+    public BuildPlanReferenceReport CountReferences(string buildPlanUUID);
+}
 ```
 
 ### Form Integration
@@ -3042,7 +3096,7 @@ Every form with a Delete button must follow this pattern (from the forms steerin
 
 | Form | Entity | Reference Counter | Refs Column |
 |---|---|---|---|
-| FormBuildPlanner | BuildPlan | — (not referenced) | No |
+| FormBuildPlanner | BuildPlan | BuildPlanReferenceCounter | Yes |
 | FormShipTemplate | ShipTemplate | ShipTemplateReferenceCounter | Yes |
 | FormShipInstance | Ship | ShipReferenceCounter | Yes |
 | FormStation | Station | StationReferenceCounter | Yes |
