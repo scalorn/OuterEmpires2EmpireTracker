@@ -143,6 +143,30 @@ namespace OE2EmpireTracker.Tests.Services
             }
         }
 
+        // P6: Ship class assembly validation
+        [Test]
+        public void P6_ShipClassAssemblyValidation()
+        {
+            var rng = new Random(56);
+            var stationTypes = (StationType[])System.Enum.GetValues(typeof(StationType));
+            for (int i = 0; i < Iterations; i++)
+            {
+                int shipClass = rng.Next(2, 9); // 2-8
+                var stationType = stationTypes[rng.Next(stationTypes.Length)];
+                string result = ShipBuildService.ValidateAssemblyLocation(shipClass, stationType);
+
+                bool expectedValid;
+                if (shipClass <= 5) expectedValid = true;
+                else if (shipClass == 6) expectedValid = stationType == StationType.Station || stationType == StationType.Starbase;
+                else expectedValid = stationType == StationType.Starbase; // 7-8
+
+                if (expectedValid)
+                    Assert.That(result, Is.Null, string.Format("Iter {0}: class={1} type={2} should be valid", i, shipClass, stationType));
+                else
+                    Assert.That(result, Is.Not.Null, string.Format("Iter {0}: class={1} type={2} should be invalid", i, shipClass, stationType));
+            }
+        }
+
         private static string FormatSeconds(int totalSeconds)
         {
             int d = totalSeconds / 86400;

@@ -288,8 +288,10 @@ namespace OE2EmpireTracker
             if (ec?.GlobalBlueprintList != null) allBlueprints.AddRange(ec.GlobalBlueprintList);
             var surveys = pc?.SurveyList as IEnumerable<Survey> ?? Enumerable.Empty<Survey>();
             var buildPlans = pc?.BuildPlanList as IEnumerable<BuildPlan> ?? Enumerable.Empty<BuildPlan>();
+            var shipTemplates = pc?.ShipTemplateList as IEnumerable<ShipTemplate> ?? Enumerable.Empty<ShipTemplate>();
+            var ships = pc?.ShipList as IEnumerable<Ship> ?? Enumerable.Empty<Ship>();
 
-            return new BlueprintReferenceCounter(colonies, allBlueprints, surveys, buildPlans);
+            return new BlueprintReferenceCounter(colonies, allBlueprints, surveys, buildPlans, shipTemplates, ships);
         }
 
         /// <summary>

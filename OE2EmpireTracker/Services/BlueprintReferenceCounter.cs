@@ -14,17 +14,22 @@ namespace OE2EmpireTracker.Services
         private readonly Dictionary<string, int> _baseBlueprintMap;
         private readonly Dictionary<string, int> _scannerMap;
         private readonly Dictionary<string, int> _buildItemMap;
+        private readonly Dictionary<string, int> _shipComponentMap;
 
         public BlueprintReferenceCounter(
             IEnumerable<Colony> colonies,
             IEnumerable<Blueprint> allBlueprints,
             IEnumerable<Survey> surveys,
-            IEnumerable<BuildPlan> buildPlans = null)
+            IEnumerable<BuildPlan> buildPlans = null,
+            IEnumerable<ShipTemplate> shipTemplates = null,
+            IEnumerable<Ship> ships = null)
         {
             var colonyList = colonies ?? Enumerable.Empty<Colony>();
             var bpList = allBlueprints ?? Enumerable.Empty<Blueprint>();
             var surveyList = surveys ?? Enumerable.Empty<Survey>();
             var buildPlanList = buildPlans ?? Enumerable.Empty<BuildPlan>();
+            var templateList = shipTemplates ?? Enumerable.Empty<ShipTemplate>();
+            var shipList = ships ?? Enumerable.Empty<Ship>();
 
             _flatpackMap = new Dictionary<string, int>();
             _researchingMap = new Dictionary<string, int>();
@@ -35,20 +40,11 @@ namespace OE2EmpireTracker.Services
                 foreach (var s in colony.Structures)
                 {
                     if (!string.IsNullOrEmpty(s.FlatpackBlueprintUUID))
-                    {
-                        _flatpackMap.TryGetValue(s.FlatpackBlueprintUUID, out int c);
-                        _flatpackMap[s.FlatpackBlueprintUUID] = c + 1;
-                    }
+                    { _flatpackMap.TryGetValue(s.FlatpackBlueprintUUID, out int c); _flatpackMap[s.FlatpackBlueprintUUID] = c + 1; }
                     if (!string.IsNullOrEmpty(s.ResearchingBlueprintUUID))
-                    {
-                        _researchingMap.TryGetValue(s.ResearchingBlueprintUUID, out int c);
-                        _researchingMap[s.ResearchingBlueprintUUID] = c + 1;
-                    }
+                    { _researchingMap.TryGetValue(s.ResearchingBlueprintUUID, out int c); _researchingMap[s.ResearchingBlueprintUUID] = c + 1; }
                     if (!string.IsNullOrEmpty(s.ManufacturingBlueprintUUID))
-                    {
-                        _manufacturingMap.TryGetValue(s.ManufacturingBlueprintUUID, out int c);
-                        _manufacturingMap[s.ManufacturingBlueprintUUID] = c + 1;
-                    }
+                    { _manufacturingMap.TryGetValue(s.ManufacturingBlueprintUUID, out int c); _manufacturingMap[s.ManufacturingBlueprintUUID] = c + 1; }
                 }
             }
 
@@ -56,20 +52,14 @@ namespace OE2EmpireTracker.Services
             foreach (var b in bpList)
             {
                 if (!string.IsNullOrEmpty(b.BaseBlueprintUUID) && b.UUID != b.BaseBlueprintUUID)
-                {
-                    _baseBlueprintMap.TryGetValue(b.BaseBlueprintUUID, out int c);
-                    _baseBlueprintMap[b.BaseBlueprintUUID] = c + 1;
-                }
+                { _baseBlueprintMap.TryGetValue(b.BaseBlueprintUUID, out int c); _baseBlueprintMap[b.BaseBlueprintUUID] = c + 1; }
             }
 
             _scannerMap = new Dictionary<string, int>();
             foreach (var s in surveyList)
             {
                 if (!string.IsNullOrEmpty(s.ScannerBlueprintUUID))
-                {
-                    _scannerMap.TryGetValue(s.ScannerBlueprintUUID, out int c);
-                    _scannerMap[s.ScannerBlueprintUUID] = c + 1;
-                }
+                { _scannerMap.TryGetValue(s.ScannerBlueprintUUID, out int c); _scannerMap[s.ScannerBlueprintUUID] = c + 1; }
             }
 
             _buildItemMap = new Dictionary<string, int>();
@@ -79,9 +69,35 @@ namespace OE2EmpireTracker.Services
                 foreach (var item in plan.Items)
                 {
                     if (!string.IsNullOrEmpty(item.BlueprintUUID))
+                    { _buildItemMap.TryGetValue(item.BlueprintUUID, out int c); _buildItemMap[item.BlueprintUUID] = c + 1; }
+                }
+            }
+
+            // Ship template + ship component blueprints
+            _shipComponentMap = new Dictionary<string, int>();
+            foreach (var tmpl in templateList)
+            {
+                if (!string.IsNullOrEmpty(tmpl.HullBlueprintUUID))
+                { _shipComponentMap.TryGetValue(tmpl.HullBlueprintUUID, out int c); _shipComponentMap[tmpl.HullBlueprintUUID] = c + 1; }
+                if (tmpl.Components != null)
+                {
+                    foreach (var comp in tmpl.Components)
                     {
-                        _buildItemMap.TryGetValue(item.BlueprintUUID, out int c);
-                        _buildItemMap[item.BlueprintUUID] = c + 1;
+                        if (!string.IsNullOrEmpty(comp.BlueprintUUID))
+                        { _shipComponentMap.TryGetValue(comp.BlueprintUUID, out int c); _shipComponentMap[comp.BlueprintUUID] = c + 1; }
+                    }
+                }
+            }
+            foreach (var ship in shipList)
+            {
+                if (!string.IsNullOrEmpty(ship.HullBlueprintUUID))
+                { _shipComponentMap.TryGetValue(ship.HullBlueprintUUID, out int c); _shipComponentMap[ship.HullBlueprintUUID] = c + 1; }
+                if (ship.Components != null)
+                {
+                    foreach (var comp in ship.Components)
+                    {
+                        if (!string.IsNullOrEmpty(comp.BlueprintUUID))
+                        { _shipComponentMap.TryGetValue(comp.BlueprintUUID, out int c); _shipComponentMap[comp.BlueprintUUID] = c + 1; }
                     }
                 }
             }
@@ -98,10 +114,11 @@ namespace OE2EmpireTracker.Services
             _baseBlueprintMap.TryGetValue(blueprintUUID, out int baseBlueprintCount);
             _scannerMap.TryGetValue(blueprintUUID, out int scannerCount);
             _buildItemMap.TryGetValue(blueprintUUID, out int buildItemCount);
+            _shipComponentMap.TryGetValue(blueprintUUID, out int shipComponentCount);
 
             return new ReferenceReport(
                 flatpackCount, researchingCount, manufacturingCount,
-                baseBlueprintCount, scannerCount, buildItemCount);
+                baseBlueprintCount, scannerCount, buildItemCount, shipComponentCount);
         }
     }
 }
