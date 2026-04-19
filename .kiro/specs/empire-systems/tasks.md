@@ -172,7 +172,7 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 23.4 Add volume warning when cargo exceeds capacity
   - [x] 23.5 Implement trip splitting logic
 
-- [ ] 24. Iteration 3 Checkpoint
+- [-] 24. Iteration 3 Checkpoint
 
 ### Iteration 4: Stations
 
