@@ -546,6 +546,52 @@ sequenceDiagram
     Note over User: Open Build Planner to allocate,<br/>check resources, generate deliveries
 ```
 
+### Flow 17: Multi-Plan Consolidated Delivery
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant BP as Build Planner
+    participant RC as Resource Check
+    participant DG as Delivery Gen
+    participant DE as Delivery Execution
+
+    Note over User: Has per-colony build plans:<br/>Plan A (Colony Alpha flatpacks)<br/>Plan B (Colony Beta flatpacks)<br/>Plan C (Colony Gamma flatpacks)<br/>All items allocated to mfg colonies
+
+    rect rgb(230, 243, 255)
+    Note over User: Phase 1: Resource Delivery
+    User->>BP: Generate Delivery ▼ → Consolidated Resource Delivery
+    BP->>BP: Show plan checklist (check A, B, C)
+    BP->>RC: ComputePlanShortfalls for each selected plan
+    RC-->>BP: Shortfalls per plan
+    BP->>DG: GenerateConsolidatedDeliveryPlan(plans, route)
+    DG->>DG: Merge shortfalls by mfg colony
+    Note right of DG: Colony X needs 800 Titanium<br/>(500 from Plan A + 300 from Plan B)
+    DG-->>BP: One consolidated delivery plan
+    BP-->>User: "Resource delivery plan created"
+    User->>DE: Execute resource delivery in-game
+    end
+
+    rect rgb(255, 230, 230)
+    Note over User: Phase 2: Manufacturing
+    Note over User: Manufacture flatpacks at mfg colonies
+    User->>BP: Mark items Completed as they finish
+    end
+
+    rect rgb(230, 255, 230)
+    Note over User: Phase 3: Flatpack Delivery
+    User->>BP: Generate Delivery ▼ → Flatpack Delivery
+    BP->>BP: Show plan checklist (check A, B, C)
+    BP->>DG: GenerateFlatpackDeliveryPlan(plans, route)
+    DG->>DG: Scan Completed items, group by destination colony
+    Note right of DG: Colony Alpha gets 3 flatpacks<br/>Colony Beta gets 2 flatpacks<br/>Colony Gamma gets 4 flatpacks
+    DG-->>BP: One flatpack delivery plan
+    BP-->>User: "Flatpack delivery plan created"
+    User->>DE: Execute flatpack delivery in-game
+    User->>DE: Mark flatpacks delivered → structures staged
+    end
+```
+
 ## Data Models
 
 All new models follow the existing POCO pattern: public properties with defaults, Newtonsoft.Json serialization, UUID + OwnerUUID ownership, persisted as top-level arrays in PlayerRoot.
@@ -1273,7 +1319,7 @@ Static service in `Services/DeliveryGenerationService.cs`.
 public static class DeliveryGenerationService
 {
     /// <summary>
-    /// Creates or updates a delivery plan for a build plan's resource shortfalls.
+    /// Creates or updates a delivery plan for a single build plan's resource shortfalls.
     /// User provides the route to use. Returns the created/updated DeliveryPlan.
     /// </summary>
     public static DeliveryPlan GenerateDeliveryPlan(
@@ -1281,15 +1327,47 @@ public static class DeliveryGenerationService
         Dictionary<string, Dictionary<string, int>> shortfalls,
         Func<string, Colony> colonyFinder,
         PlayerContext playerContext);
+
+    /// <summary>
+    /// Consolidates shortfalls across multiple build plans into a single delivery plan.
+    /// Groups all resource needs by destination (manufacturing colony), merging
+    /// duplicate resources across plans. Returns one consolidated delivery plan.
+    /// </summary>
+    public static DeliveryPlan GenerateConsolidatedDeliveryPlan(
+        IEnumerable<BuildPlan> buildPlans, DeliveryRoute route,
+        Func<BuildPlan, Dictionary<string, Dictionary<string, int>>> shortfallProvider,
+        Func<string, Colony> colonyFinder,
+        PlayerContext playerContext,
+        string planName);
+
+    /// <summary>
+    /// Generates a flatpack delivery plan for completed build items.
+    /// Scans build items with Status=Completed and a destination colony in Notes,
+    /// creates drop-off items to deliver the manufactured flatpacks to their
+    /// target colonies. Groups by destination colony on the route.
+    /// </summary>
+    public static DeliveryPlan GenerateFlatpackDeliveryPlan(
+        IEnumerable<BuildPlan> buildPlans, DeliveryRoute route,
+        Func<string, Colony> colonyFinder,
+        Func<string, Blueprint> blueprintFinder,
+        PlayerContext playerContext,
+        string planName);
 }
 ```
 
 Logic:
-- Groups shortfalls by colony UUID.
-- For each colony on the route that has shortfalls, creates/updates a DeliveryPlanStop with drop-off items for each resource shortfall.
-- If buildPlan.DeliveryPlanUUID is set, finds and updates the existing plan. Otherwise creates a new one.
-- Names the plan "Build: {buildPlan.Name}".
-- Sets DestinationType = Colony on each stop (stations come in Iteration 4).
+- `GenerateDeliveryPlan` (single plan): Groups shortfalls by build location UUID. For each location on the route that has shortfalls, creates/updates a DeliveryPlanStop with drop-off items for each resource shortfall. If buildPlan.DeliveryPlanUUID is set, finds and updates the existing plan. Otherwise creates a new one. Names the plan "Build: {buildPlan.Name}". Sets DestinationType from the build item's BuildLocationType.
+- `GenerateConsolidatedDeliveryPlan` (multi-plan): Merges shortfalls from all provided build plans by destination. If Colony A needs 500 Titanium from Plan 1 and 300 Titanium from Plan 2, the consolidated plan has one stop at Colony A with 800 Titanium. Creates a new delivery plan (does not update individual build plan DeliveryPlanUUIDs). This is the "common delivery run" for resources.
+- `GenerateFlatpackDeliveryPlan` (multi-plan): After manufacturing is complete, scans for Completed build items whose Notes contain a destination colony UUID. Creates drop-off items to deliver the flatpacks from the manufacturing colony to the destination colony. This is the "flatpack delivery run" that gets the manufactured flatpacks to where they're needed.
+
+The two-phase delivery workflow for the colony planning scenario:
+1. User has per-colony build plans (generated via Flow 16 from planned colonies)
+2. User allocates items to manufacturing colonies via Auto-Assign
+3. User selects multiple plans → "Generate Consolidated Delivery" → one resource delivery plan
+4. User executes resource delivery, manufactures flatpacks in-game
+5. User marks items Completed in Build Planner
+6. User selects plans → "Generate Flatpack Delivery" → one flatpack delivery plan
+7. User executes flatpack delivery, stages structures on destination colonies
 
 ### QueueCalculator (Iteration 1)
 
@@ -1965,6 +2043,11 @@ Controls:
 - `tlpBase` (TableLayoutPanel, 2 columns: 250px fixed / fill)
 - Left: `flpSearchList` → `txtPlanFilter` (ValidatedTextBox) + `lvwPlans` (ListView) + `cmdNew` / `cmdDelete`
 - Right: `flpPlanData` → plan name/description, `chkActive` (CheckBox, write-through to BuildPlan.IsActive), command buttons, `dgvBuildItems` (DataGridView), add-item panel, shortfall panel
+- `cmdGenerateDelivery` is a dropdown button (ToolStripSplitButton style) with three options:
+  - "Resource Delivery (This Plan)" — generates delivery for the selected plan's shortfalls only
+  - "Consolidated Resource Delivery..." — prompts to select multiple plans, generates one merged delivery plan for all resource shortfalls across selected plans
+  - "Flatpack Delivery..." — prompts to select multiple plans, generates one delivery plan for completed flatpack items to their destination colonies
+- Multi-plan selection uses a checklist dialog showing all active build plans. The user checks which plans to include.
 - Inactive plans: list view shows plan name in gray italic. Detail panel is read-only (all controls disabled except the Active checkbox). Shortfall panel hidden.
 - `dgvBuildItems` columns: Type, Item, Qty (editable), Location, Structure, Status, Recipient, Notes
 - Add-item panel: `cmbItemType`, `txtItemFilter`, `cmbItem` (FilteredComboBox), `txtQuantity`, `txtTargetDuration`, `txtRecipient`, `cmdAddItem`, `cmdQueueCalc`
