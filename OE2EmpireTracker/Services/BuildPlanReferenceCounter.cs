@@ -19,7 +19,10 @@ namespace OE2EmpireTracker.Services
             foreach (var sp in list)
             {
                 if (!string.IsNullOrEmpty(sp.ReplenishmentBuildPlanUUID))
-                    _stockPlanMap[sp.ReplenishmentBuildPlanUUID] = _stockPlanMap.GetValueOrDefault(sp.ReplenishmentBuildPlanUUID) + 1;
+                {
+                    _stockPlanMap.TryGetValue(sp.ReplenishmentBuildPlanUUID, out int c);
+                    _stockPlanMap[sp.ReplenishmentBuildPlanUUID] = c + 1;
+                }
             }
         }
 

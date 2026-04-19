@@ -21,7 +21,10 @@ namespace OE2EmpireTracker.Services
             foreach (var p in planList)
             {
                 if (!string.IsNullOrEmpty(p.RouteUUID))
-                    _planMap[p.RouteUUID] = _planMap.GetValueOrDefault(p.RouteUUID) + 1;
+                {
+                    _planMap.TryGetValue(p.RouteUUID, out int c);
+                    _planMap[p.RouteUUID] = c + 1;
+                }
             }
         }
 

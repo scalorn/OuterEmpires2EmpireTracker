@@ -32,7 +32,7 @@ namespace OE2EmpireTracker.Services
                         colonyUUIDs.Add(stop.ColonyUUID);
                 }
                 foreach (var uuid in colonyUUIDs)
-                    _routeMap[uuid] = _routeMap.GetValueOrDefault(uuid) + 1;
+                    _routeMap[uuid] = (_routeMap.TryGetValue(uuid, out int _tmp) ? _tmp : 0) + 1;
             }
 
             _planMap = new Dictionary<string, int>();
@@ -46,7 +46,7 @@ namespace OE2EmpireTracker.Services
                         colonyUUIDs.Add(stop.ColonyUUID);
                 }
                 foreach (var uuid in colonyUUIDs)
-                    _planMap[uuid] = _planMap.GetValueOrDefault(uuid) + 1;
+                    _planMap[uuid] = (_planMap.TryGetValue(uuid, out int _tmp) ? _tmp : 0) + 1;
             }
 
             _buildItemMap = new Dictionary<string, int>();
@@ -57,7 +57,10 @@ namespace OE2EmpireTracker.Services
                 {
                     if (item.BuildLocationType == DestinationType.Colony
                         && !string.IsNullOrEmpty(item.BuildLocationUUID))
-                        _buildItemMap[item.BuildLocationUUID] = _buildItemMap.GetValueOrDefault(item.BuildLocationUUID) + 1;
+                    {
+                        _buildItemMap.TryGetValue(item.BuildLocationUUID, out int c);
+                        _buildItemMap[item.BuildLocationUUID] = c + 1;
+                    }
                 }
             }
         }

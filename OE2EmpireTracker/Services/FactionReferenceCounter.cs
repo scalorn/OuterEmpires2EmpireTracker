@@ -27,14 +27,20 @@ namespace OE2EmpireTracker.Services
             foreach (var ec in charList)
             {
                 if (!string.IsNullOrEmpty(ec.FactionUUID))
-                    _characterMap[ec.FactionUUID] = _characterMap.GetValueOrDefault(ec.FactionUUID) + 1;
+                {
+                    _characterMap.TryGetValue(ec.FactionUUID, out int c);
+                    _characterMap[ec.FactionUUID] = c + 1;
+                }
             }
 
             _profileMap = new Dictionary<string, int>();
             foreach (var pp in profileList)
             {
                 if (!string.IsNullOrEmpty(pp.FactionUUID))
-                    _profileMap[pp.FactionUUID] = _profileMap.GetValueOrDefault(pp.FactionUUID) + 1;
+                {
+                    _profileMap.TryGetValue(pp.FactionUUID, out int c);
+                    _profileMap[pp.FactionUUID] = c + 1;
+                }
             }
         }
 
