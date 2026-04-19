@@ -55,17 +55,18 @@ namespace OE2EmpireTracker.Forms.Survey
             lvwSurveys.Columns.Add("Refs", 35);
             lvwSurveys.ColumnClick += lvwSurveys_ColumnClick;
             lvwSurveys.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
             UpdateTitle();
 
             // Wire survey list filter
             txtSurveyFilter.TextChanged += txtSurveyFilter_TextChanged;
+            cmbResource.SelectedIndexChanged += cmbResource_SelectedIndexChanged;
 
             // Configure resource data grid
-            DataGridViewComboBoxColumn cmbResource = (DataGridViewComboBoxColumn)dgvResources.Columns["Resource"];
-            cmbResource.DisplayMember = "Name";
-            cmbResource.ValueMember = "Name";
-            cmbResource.DataSource = empireContext.BindingSourceResource;
+            DataGridViewComboBoxColumn colResource = (DataGridViewComboBoxColumn)dgvResources.Columns["Resource"];
+            colResource.DisplayMember = "Name";
+            colResource.ValueMember = "Name";
+            colResource.DataSource = empireContext.BindingSourceResource;
 
             DataGridViewComboBoxColumn cmbPurity = (DataGridViewComboBoxColumn)dgvResources.Columns["Purity"];
             cmbPurity.DisplayMember = "Name";
@@ -144,7 +145,7 @@ namespace OE2EmpireTracker.Forms.Survey
             lvwSurveys.Items.Clear();
             viewModel.Reset();
             ClearForm();
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
             UpdateTitle();
         }
 
@@ -161,7 +162,7 @@ namespace OE2EmpireTracker.Forms.Survey
             {
                 PopulateFormFromViewModel();
             }
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
         }
 
         private void OnColonyDataChanged(object sender, ColonyDataChangedEventArgs e)
@@ -174,7 +175,7 @@ namespace OE2EmpireTracker.Forms.Survey
                 return;
             }
             // Refresh list to update Refs column (miner survey assignments may have changed)
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
             UpdateDeleteButtonState();
         }
 
@@ -250,7 +251,19 @@ namespace OE2EmpireTracker.Forms.Survey
         private void txtSurveyFilter_TextChanged(object sender, EventArgs e)
         {
             lvwSurveys.Items.Clear();
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
+        }
+
+        private void cmbResource_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            lvwSurveys.Items.Clear();
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
+        }
+
+        private string GetSelectedResourceName()
+        {
+            var selected = cmbResource.SelectedItem as Models.Resource;
+            return selected?.Name ?? "";
         }
 
         private void txtPlanetName_TextChanged(object sender, EventArgs e)
@@ -338,7 +351,7 @@ namespace OE2EmpireTracker.Forms.Survey
 
             viewModel.Save();
 
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
             UpdateTitle();
         }
 
@@ -386,7 +399,7 @@ namespace OE2EmpireTracker.Forms.Survey
             if (result != DialogResult.Yes) return;
             viewModel.Delete();
             viewModel.Reset();
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
             lvwSurveys.SelectedItems.Clear();
             ClearForm();
             UpdateTitle();
@@ -531,7 +544,7 @@ namespace OE2EmpireTracker.Forms.Survey
                     importedSurvey.UUID, importedSurvey.PlanetName, importedSurvey.SurveyID);
 
                 // Refresh list view
-                PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text));
+                PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
 
                 // Select the imported survey in the list view
                 foreach (ListViewItem item in lvwSurveys.Items)

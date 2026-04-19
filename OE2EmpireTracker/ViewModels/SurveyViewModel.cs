@@ -106,13 +106,20 @@ namespace OE2EmpireTracker.ViewModels
         // List filtering
         // -----------------------------------------------------------------------
 
-        public IReadOnlyList<Survey> GetFilteredSurveys(string nameFilter)
+        public IReadOnlyList<Survey> GetFilteredSurveys(string nameFilter, string resourceFilter = "")
         {
             var list = _playerContext.GetCurrentPlayerSurveys();
             if (!string.IsNullOrEmpty(nameFilter))
             {
                 list = list
                     .Where(s => s.ExtendedName.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+            }
+            if (!string.IsNullOrEmpty(resourceFilter))
+            {
+                list = list
+                    .Where(s => s.Resources.Values.Any(r =>
+                        string.Equals(r.Resource, resourceFilter, StringComparison.OrdinalIgnoreCase)))
                     .ToList();
             }
             return list.AsReadOnly();
