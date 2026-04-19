@@ -249,9 +249,9 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
 - [x] 37. Supply Chain Service
   - [x] 37.1 Implement SupplyChainService.CheckThresholds (filter IsActive, resolve location inventory, return delivery requests)
 
-- [ ] 38. Warehouse Overflow Tab
-  - [ ] 38.1 Add Overflow tab to FormColony: rules grid with Active checkbox column
-  - [ ] 38.2 Extend BackgroundProcessor for overflow threshold checks (filter IsActive rules)
+- [x] 38. Warehouse Overflow Tab
+  - [x] 38.1 Add Overflow tab to FormColony: rules grid with Active checkbox column
+  - [x] 38.2 Extend BackgroundProcessor for overflow threshold checks (filter IsActive rules)
 
 - [ ] 39. Supply Chain Background Processing
   - [ ] 39.1 Extend BackgroundProcessor: call SupplyChainService.CheckThresholds, generate deliveries

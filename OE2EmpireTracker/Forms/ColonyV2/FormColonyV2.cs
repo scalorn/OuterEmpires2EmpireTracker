@@ -8,6 +8,7 @@ using OE2EmpireTracker.ViewModels;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -38,6 +39,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private bool _warehouseDirty = false;
         private bool _workersDirty = false;
         private bool _adminDirty = false;
+        private bool _overflowDirty = false;
 
         // Structure_Pool (8.1)
         private readonly List<ColonyStructureV2> _pool = new List<ColonyStructureV2>();
@@ -143,6 +145,16 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Wire admin refresh timer (11.1)
             timerAdminRefresh.Tick += timerAdminRefresh_Tick;
             timerAdminRefresh.Start();
+
+            // Wire overflow tab handlers (task 38)
+            cmbOverflowDestType.Items.Add(DestinationType.Colony);
+            cmbOverflowDestType.Items.Add(DestinationType.Station);
+            if (cmbOverflowDestType.Items.Count > 0) cmbOverflowDestType.SelectedIndex = 0;
+            cmbOverflowDestType.SelectedIndexChanged += cmbOverflowDestType_SelectedIndexChanged;
+            cmdAddOverflowRule.Click += cmdAddOverflowRule_Click;
+            cmdRemoveOverflowRule.Click += cmdRemoveOverflowRule_Click;
+            dgvOverflowRules.CurrentCellDirtyStateChanged += dgvOverflowRules_CurrentCellDirtyStateChanged;
+            dgvOverflowRules.CellValueChanged += dgvOverflowRules_CellValueChanged;
 
             // Wire import handlers (21.1, 21.5)
             cmdImportColony.Click += cmdImportColony_Click;
@@ -493,6 +505,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             _warehouseDirty = true;
             _workersDirty = true;
             _adminDirty = true;
+            _overflowDirty = true;
         }
 
         /// <summary>
@@ -523,6 +536,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 PopulateItemGrid();
                 _warehouseDirty = false;
             }
+            else if (tab == tabPOverflow && _overflowDirty)
+            {
+                PopulateOverflowGrid();
+                _overflowDirty = false;
+            }
         }
 
         private void tabDetailedData_SelectedIndexChanged(object sender, EventArgs e)
@@ -547,6 +565,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 PopulateItemGrid();
                 _warehouseDirty = false;
+            }
+            else if (tab == tabPOverflow && _overflowDirty)
+            {
+                PopulateOverflowGrid();
+                _overflowDirty = false;
             }
         }
 
@@ -2605,6 +2628,234 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 ctrl.Visible = checkedTypes.Count == 0 || checkedTypes.Contains(typeId);
             }
             flpStructures.ResumeLayout();
+        }
+
+        // -------------------------------------------------------------------
+        // Overflow Tab (task 38)
+        // -------------------------------------------------------------------
+
+        private void PopulateOverflowGrid()
+        {
+            var sw = Stopwatch.StartNew();
+            using var guard = new ProgrammaticUpdateGuard(this);
+            dgvOverflowRules.Rows.Clear();
+            if (selectedColony == null) return;
+
+            PopulateOverflowResourceCombo();
+            PopulateOverflowPurityCombo();
+            PopulateOverflowDestCombo();
+            PopulateOverflowRouteCombo();
+
+            var rules = playerContext.WarehouseOverflowRuleList
+                .Where(r => r.ColonyUUID == selectedColony.UUID)
+                .ToList();
+
+            foreach (var rule in rules)
+            {
+                string destName = ResolveOverflowDestName(rule.DestinationType, rule.DestinationUUID);
+                string routeName = "";
+                if (!string.IsNullOrEmpty(rule.DeliveryRouteUUID))
+                {
+                    var route = playerContext.DeliveryRouteList.FirstOrDefault(r => r.UUID == rule.DeliveryRouteUUID);
+                    routeName = route?.Name ?? rule.DeliveryRouteUUID;
+                }
+
+                int currentQty = 0;
+                if (selectedColony.Items != null)
+                {
+                    var matchingItems = selectedColony.Items.FindResource(rule.ResourceName, rule.ResourcePurity);
+                    currentQty = matchingItems.Sum(i => i.Quantity);
+                }
+
+                int rowIdx = dgvOverflowRules.Rows.Add(
+                    rule.ResourceName, rule.ResourcePurity,
+                    rule.TriggerThreshold.ToString(), currentQty.ToString(),
+                    destName, routeName, rule.IsActive);
+                dgvOverflowRules.Rows[rowIdx].Tag = rule;
+
+                var currentCell = dgvOverflowRules.Rows[rowIdx].Cells[colOverflowCurrent.Index];
+                if (currentQty >= rule.TriggerThreshold && rule.TriggerThreshold > 0)
+                    currentCell.Style.ForeColor = System.Drawing.Color.Red;
+                else if (rule.TriggerThreshold > 0 && currentQty >= rule.TriggerThreshold * 0.8)
+                    currentCell.Style.ForeColor = System.Drawing.Color.DarkGoldenrod;
+                else
+                    currentCell.Style.ForeColor = System.Drawing.Color.Green;
+
+                if (!rule.IsActive)
+                {
+                    for (int c = 0; c < dgvOverflowRules.Columns.Count; c++)
+                    {
+                        if (c != colOverflowActive.Index)
+                            dgvOverflowRules.Rows[rowIdx].Cells[c].Style.ForeColor = System.Drawing.Color.Gray;
+                    }
+                }
+            }
+            sw.Stop();
+            Log.Info("PERF PopulateOverflowGrid: {0}ms rules={1}", sw.ElapsedMilliseconds, rules.Count);
+        }
+
+        private string ResolveOverflowDestName(DestinationType destType, string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return "";
+            switch (destType)
+            {
+                case DestinationType.Colony:
+                    var col = playerContext.ColonyList.FirstOrDefault(c => c.UUID == uuid);
+                    return col?.ColonyName ?? uuid;
+                case DestinationType.Station:
+                    var stn = playerContext.StationList.FirstOrDefault(s => s.UUID == uuid);
+                    return stn?.Name ?? uuid;
+                default:
+                    return uuid;
+            }
+        }
+
+        private void PopulateOverflowResourceCombo()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            cmbOverflowResource.Items.Clear();
+            var resources = empireContext?.ResourceList;
+            if (resources != null)
+            {
+                foreach (var r in resources.OrderBy(r => r.Name))
+                    cmbOverflowResource.Items.Add(r.Name);
+            }
+            if (cmbOverflowResource.Items.Count > 0) cmbOverflowResource.SelectedIndex = 0;
+        }
+
+        private void PopulateOverflowPurityCombo()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            cmbOverflowPurity.Items.Clear();
+            foreach (var p in ResourcePurity.Purities)
+            {
+                if (p.ID != ResourcePurity.PurityEnum.None)
+                    cmbOverflowPurity.Items.Add(p.Name);
+            }
+            if (cmbOverflowPurity.Items.Count > 0) cmbOverflowPurity.SelectedIndex = 0;
+        }
+
+        private void PopulateOverflowDestCombo()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            cmbOverflowDest.DataSource = null;
+            cmbOverflowDest.Items.Clear();
+            if (cmbOverflowDestType.SelectedItem == null) return;
+            var destType = (DestinationType)cmbOverflowDestType.SelectedItem;
+            var items = new List<KeyValuePair<string, string>>();
+            switch (destType)
+            {
+                case DestinationType.Colony:
+                    foreach (var c in playerContext.ColonyList.OrderBy(c => c.ColonyName))
+                        items.Add(new KeyValuePair<string, string>(c.UUID, c.ColonyName));
+                    break;
+                case DestinationType.Station:
+                    foreach (var s in playerContext.StationList.OrderBy(s => s.Name))
+                        items.Add(new KeyValuePair<string, string>(s.UUID, s.Name));
+                    break;
+            }
+            if (items.Count > 0)
+            {
+                cmbOverflowDest.DataSource = items;
+                cmbOverflowDest.DisplayMember = "Value";
+                cmbOverflowDest.ValueMember = "Key";
+            }
+        }
+
+        private void PopulateOverflowRouteCombo()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            cmbOverflowRoute.DataSource = null;
+            cmbOverflowRoute.Items.Clear();
+            var routes = playerContext.DeliveryRouteList.OrderBy(r => r.Name).ToList();
+            var items = new List<KeyValuePair<string, string>>();
+            items.Add(new KeyValuePair<string, string>("", "(none)"));
+            foreach (var r in routes)
+                items.Add(new KeyValuePair<string, string>(r.UUID, r.Name));
+            cmbOverflowRoute.DataSource = items;
+            cmbOverflowRoute.DisplayMember = "Value";
+            cmbOverflowRoute.ValueMember = "Key";
+        }
+
+        private void cmbOverflowDestType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            PopulateOverflowDestCombo();
+        }
+
+        private void cmdAddOverflowRule_Click(object sender, EventArgs e)
+        {
+            if (selectedColony == null) return;
+            string resource = cmbOverflowResource.SelectedItem?.ToString() ?? "";
+            if (string.IsNullOrWhiteSpace(resource)) return;
+            string purity = cmbOverflowPurity.SelectedItem?.ToString() ?? "";
+            if (!int.TryParse(txtOverflowThreshold.Text.Trim(), out int threshold) || threshold <= 0)
+            {
+                MessageBox.Show("Enter a valid threshold.", "Validation",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            var destType = cmbOverflowDestType.SelectedItem is DestinationType dt ? dt : DestinationType.Station;
+            string destUUID = cmbOverflowDest.SelectedValue?.ToString() ?? "";
+            string routeUUID = cmbOverflowRoute.SelectedValue?.ToString() ?? "";
+
+            var existing = playerContext.WarehouseOverflowRuleList
+                .FirstOrDefault(r => r.ColonyUUID == selectedColony.UUID &&
+                    r.ResourceName == resource && r.ResourcePurity == purity);
+            if (existing != null)
+            {
+                MessageBox.Show("A rule for this resource and purity already exists.",
+                    "Duplicate", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var rule = new WarehouseOverflowRule
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = playerContext.CurrentPlayerUUID ?? "",
+                ColonyUUID = selectedColony.UUID,
+                ResourceName = resource,
+                ResourcePurity = purity,
+                TriggerThreshold = threshold,
+                DestinationType = destType,
+                DestinationUUID = destUUID,
+                DeliveryRouteUUID = routeUUID,
+                IsActive = true
+            };
+            playerContext.WarehouseOverflowRuleList.Add(rule);
+            playerContext.WriteContext();
+            PopulateOverflowGrid();
+            Log.Info("Added overflow rule: {0} ({1}) threshold={2}", resource, purity, threshold);
+        }
+
+        private void cmdRemoveOverflowRule_Click(object sender, EventArgs e)
+        {
+            if (selectedColony == null || dgvOverflowRules.SelectedRows.Count == 0) return;
+            var rule = dgvOverflowRules.SelectedRows[0].Tag as WarehouseOverflowRule;
+            if (rule == null) return;
+            playerContext.WarehouseOverflowRuleList.Remove(rule);
+            playerContext.WriteContext();
+            PopulateOverflowGrid();
+            Log.Info("Removed overflow rule: {0} ({1})", rule.ResourceName, rule.ResourcePurity);
+        }
+
+        private void dgvOverflowRules_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (dgvOverflowRules.IsCurrentCellDirty)
+                dgvOverflowRules.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        }
+
+        private void dgvOverflowRules_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0 || e.RowIndex < 0) return;
+            if (e.ColumnIndex != colOverflowActive.Index) return;
+            var rule = dgvOverflowRules.Rows[e.RowIndex].Tag as WarehouseOverflowRule;
+            if (rule == null) return;
+            var val = dgvOverflowRules.Rows[e.RowIndex].Cells[colOverflowActive.Index].Value;
+            rule.IsActive = val is bool b && b;
+            Log.Info("Overflow rule \"{0}\" IsActive={1}", rule.ResourceName, rule.IsActive);
+            PopulateOverflowGrid();
         }
     }
 }

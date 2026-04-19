@@ -142,5 +142,20 @@ The Colony Activity form's inactivity mode (toggle "Show Inactive") includes an 
 ## Related Topics
 
 - [Delivery Routes](delivery-routes.md) — Plan deliveries between colonies
+- [Supply Chains](supply-chains.md) — Resource pipeline modeling
+
+## Overflow Tab
+
+The Overflow tab lets you set rules for automatically moving excess resources out of a colony's warehouse. Each rule specifies:
+
+- **Resource and Purity** — Which resource to monitor
+- **Threshold** — The quantity above which overflow is triggered
+- **Destination** — Where to send the excess (a colony or station)
+- **Route** — The delivery route to use for the overflow delivery
+- **Active** — Toggle to pause/resume the rule without deleting it
+
+The Current column is color-coded: green when below threshold, yellow when within 20%, red when at or above threshold. Inactive rules are grayed out and skipped by background processing.
+
+One rule per resource+purity per colony. The background processor checks overflow rules on each tick and logs when thresholds are exceeded.
 - [Blueprints](blueprints.md) — Manage the flatpacks used to build structures
 - [Background Processing](background-processing.md) — How structure timers are processed automatically

@@ -66,6 +66,32 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.txtCommodityRequestNeedBy = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmdAddCommodityRequest = new System.Windows.Forms.Button();
             this.tabPWarehousing = new System.Windows.Forms.TabPage();
+            this.tabPOverflow = new System.Windows.Forms.TabPage();
+            this.dgvOverflowRules = new System.Windows.Forms.DataGridView();
+            this.colOverflowResource = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colOverflowPurity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colOverflowThreshold = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colOverflowCurrent = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colOverflowDest = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colOverflowRoute = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colOverflowActive = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.flpOverflowAdd = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblOverflowResource = new System.Windows.Forms.Label();
+            this.cmbOverflowResource = new System.Windows.Forms.ComboBox();
+            this.lblOverflowPurity = new System.Windows.Forms.Label();
+            this.cmbOverflowPurity = new System.Windows.Forms.ComboBox();
+            this.lblOverflowThreshold = new System.Windows.Forms.Label();
+            this.txtOverflowThreshold = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.flpOverflowAdd2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblOverflowDestType = new System.Windows.Forms.Label();
+            this.cmbOverflowDestType = new System.Windows.Forms.ComboBox();
+            this.lblOverflowDest = new System.Windows.Forms.Label();
+            this.cmbOverflowDest = new System.Windows.Forms.ComboBox();
+            this.lblOverflowRoute = new System.Windows.Forms.Label();
+            this.cmbOverflowRoute = new System.Windows.Forms.ComboBox();
+            this.flpOverflowButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdAddOverflowRule = new System.Windows.Forms.Button();
+            this.cmdRemoveOverflowRule = new System.Windows.Forms.Button();
             this.dgvItems = new System.Windows.Forms.DataGridView();
             this.colItemType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colItemName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -113,6 +139,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             ((System.ComponentModel.ISupportInitialize)(this.dgvCommodityRequests)).BeginInit();
             this.flpAddCommodityRequest.SuspendLayout();
             this.tabPWarehousing.SuspendLayout();
+            this.tabPOverflow.SuspendLayout();
+            this.flpOverflowAdd.SuspendLayout();
+            this.flpOverflowAdd2.SuspendLayout();
+            this.flpOverflowButtons.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvOverflowRules)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvItems)).BeginInit();
             this.flpAddItem.SuspendLayout();
             this.flpCommands.SuspendLayout();
@@ -286,6 +317,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.tabDetailedData.Controls.Add(this.tabPStructures);
             this.tabDetailedData.Controls.Add(this.tabPWorkers);
             this.tabDetailedData.Controls.Add(this.tabPWarehousing);
+            this.tabDetailedData.Controls.Add(this.tabPOverflow);
             this.tabDetailedData.Location = new System.Drawing.Point(2, 98);
             this.tabDetailedData.Margin = new System.Windows.Forms.Padding(2);
             this.tabDetailedData.Multiline = true;
@@ -599,6 +631,146 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.tabPWarehousing.TabIndex = 3;
             this.tabPWarehousing.Text = "Warehousing";
             this.tabPWarehousing.UseVisualStyleBackColor = true;
+            //
+            // tabPOverflow
+            //
+            this.tabPOverflow.Controls.Add(this.dgvOverflowRules);
+            this.tabPOverflow.Controls.Add(this.flpOverflowAdd);
+            this.tabPOverflow.Controls.Add(this.flpOverflowAdd2);
+            this.tabPOverflow.Controls.Add(this.flpOverflowButtons);
+            this.tabPOverflow.Location = new System.Drawing.Point(4, 22);
+            this.tabPOverflow.Name = "tabPOverflow";
+            this.tabPOverflow.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPOverflow.Size = new System.Drawing.Size(792, 324);
+            this.tabPOverflow.TabIndex = 4;
+            this.tabPOverflow.Text = "Overflow";
+            this.tabPOverflow.UseVisualStyleBackColor = true;
+            //
+            // dgvOverflowRules
+            //
+            this.dgvOverflowRules.AllowUserToAddRows = false;
+            this.dgvOverflowRules.AllowUserToDeleteRows = false;
+            this.dgvOverflowRules.AllowUserToOrderColumns = true;
+            this.dgvOverflowRules.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvOverflowRules.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colOverflowResource, this.colOverflowPurity, this.colOverflowThreshold, this.colOverflowCurrent,
+            this.colOverflowDest, this.colOverflowRoute, this.colOverflowActive});
+            this.dgvOverflowRules.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvOverflowRules.Location = new System.Drawing.Point(2, 2);
+            this.dgvOverflowRules.Name = "dgvOverflowRules";
+            this.dgvOverflowRules.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvOverflowRules.Size = new System.Drawing.Size(788, 200);
+            this.colOverflowResource.HeaderText = "Resource";
+            this.colOverflowResource.Name = "colOverflowResource";
+            this.colOverflowResource.ReadOnly = true;
+            this.colOverflowResource.Width = 120;
+            this.colOverflowPurity.HeaderText = "Purity";
+            this.colOverflowPurity.Name = "colOverflowPurity";
+            this.colOverflowPurity.ReadOnly = true;
+            this.colOverflowPurity.Width = 80;
+            this.colOverflowThreshold.HeaderText = "Threshold";
+            this.colOverflowThreshold.Name = "colOverflowThreshold";
+            this.colOverflowThreshold.ReadOnly = true;
+            this.colOverflowThreshold.Width = 80;
+            this.colOverflowCurrent.HeaderText = "Current";
+            this.colOverflowCurrent.Name = "colOverflowCurrent";
+            this.colOverflowCurrent.ReadOnly = true;
+            this.colOverflowCurrent.Width = 80;
+            this.colOverflowDest.HeaderText = "Destination";
+            this.colOverflowDest.Name = "colOverflowDest";
+            this.colOverflowDest.ReadOnly = true;
+            this.colOverflowDest.Width = 130;
+            this.colOverflowRoute.HeaderText = "Route";
+            this.colOverflowRoute.Name = "colOverflowRoute";
+            this.colOverflowRoute.ReadOnly = true;
+            this.colOverflowRoute.Width = 130;
+            this.colOverflowActive.HeaderText = "Active";
+            this.colOverflowActive.Name = "colOverflowActive";
+            this.colOverflowActive.Width = 50;
+            //
+            // flpOverflowAdd
+            //
+            this.flpOverflowAdd.AutoSize = true;
+            this.flpOverflowAdd.Controls.Add(this.lblOverflowResource);
+            this.flpOverflowAdd.Controls.Add(this.cmbOverflowResource);
+            this.flpOverflowAdd.Controls.Add(this.lblOverflowPurity);
+            this.flpOverflowAdd.Controls.Add(this.cmbOverflowPurity);
+            this.flpOverflowAdd.Controls.Add(this.lblOverflowThreshold);
+            this.flpOverflowAdd.Controls.Add(this.txtOverflowThreshold);
+            this.flpOverflowAdd.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.flpOverflowAdd.Name = "flpOverflowAdd";
+            this.flpOverflowAdd.Size = new System.Drawing.Size(788, 30);
+            this.lblOverflowResource.AutoSize = true;
+            this.lblOverflowResource.Text = "Resource:";
+            this.lblOverflowResource.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblOverflowResource.Name = "lblOverflowResource";
+            this.cmbOverflowResource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbOverflowResource.Size = new System.Drawing.Size(120, 21);
+            this.cmbOverflowResource.Name = "cmbOverflowResource";
+            this.lblOverflowPurity.AutoSize = true;
+            this.lblOverflowPurity.Text = "Purity:";
+            this.lblOverflowPurity.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblOverflowPurity.Name = "lblOverflowPurity";
+            this.cmbOverflowPurity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbOverflowPurity.Size = new System.Drawing.Size(90, 21);
+            this.cmbOverflowPurity.Name = "cmbOverflowPurity";
+            this.lblOverflowThreshold.AutoSize = true;
+            this.lblOverflowThreshold.Text = "Threshold:";
+            this.lblOverflowThreshold.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblOverflowThreshold.Name = "lblOverflowThreshold";
+            this.txtOverflowThreshold.Size = new System.Drawing.Size(70, 20);
+            this.txtOverflowThreshold.Name = "txtOverflowThreshold";
+            //
+            // flpOverflowAdd2
+            //
+            this.flpOverflowAdd2.AutoSize = true;
+            this.flpOverflowAdd2.Controls.Add(this.lblOverflowDestType);
+            this.flpOverflowAdd2.Controls.Add(this.cmbOverflowDestType);
+            this.flpOverflowAdd2.Controls.Add(this.lblOverflowDest);
+            this.flpOverflowAdd2.Controls.Add(this.cmbOverflowDest);
+            this.flpOverflowAdd2.Controls.Add(this.lblOverflowRoute);
+            this.flpOverflowAdd2.Controls.Add(this.cmbOverflowRoute);
+            this.flpOverflowAdd2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.flpOverflowAdd2.Name = "flpOverflowAdd2";
+            this.flpOverflowAdd2.Size = new System.Drawing.Size(788, 30);
+            this.lblOverflowDestType.AutoSize = true;
+            this.lblOverflowDestType.Text = "Dest Type:";
+            this.lblOverflowDestType.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblOverflowDestType.Name = "lblOverflowDestType";
+            this.cmbOverflowDestType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbOverflowDestType.Size = new System.Drawing.Size(90, 21);
+            this.cmbOverflowDestType.Name = "cmbOverflowDestType";
+            this.lblOverflowDest.AutoSize = true;
+            this.lblOverflowDest.Text = "Dest:";
+            this.lblOverflowDest.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblOverflowDest.Name = "lblOverflowDest";
+            this.cmbOverflowDest.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbOverflowDest.Size = new System.Drawing.Size(180, 21);
+            this.cmbOverflowDest.Name = "cmbOverflowDest";
+            this.lblOverflowRoute.AutoSize = true;
+            this.lblOverflowRoute.Text = "Route:";
+            this.lblOverflowRoute.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblOverflowRoute.Name = "lblOverflowRoute";
+            this.cmbOverflowRoute.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbOverflowRoute.Size = new System.Drawing.Size(180, 21);
+            this.cmbOverflowRoute.Name = "cmbOverflowRoute";
+            //
+            // flpOverflowButtons
+            //
+            this.flpOverflowButtons.AutoSize = true;
+            this.flpOverflowButtons.Controls.Add(this.cmdAddOverflowRule);
+            this.flpOverflowButtons.Controls.Add(this.cmdRemoveOverflowRule);
+            this.flpOverflowButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.flpOverflowButtons.Name = "flpOverflowButtons";
+            this.flpOverflowButtons.Size = new System.Drawing.Size(788, 29);
+            this.cmdAddOverflowRule.Size = new System.Drawing.Size(75, 23);
+            this.cmdAddOverflowRule.Text = "Add Rule";
+            this.cmdAddOverflowRule.UseVisualStyleBackColor = true;
+            this.cmdAddOverflowRule.Name = "cmdAddOverflowRule";
+            this.cmdRemoveOverflowRule.Size = new System.Drawing.Size(90, 23);
+            this.cmdRemoveOverflowRule.Text = "Remove Rule";
+            this.cmdRemoveOverflowRule.UseVisualStyleBackColor = true;
+            this.cmdRemoveOverflowRule.Name = "cmdRemoveOverflowRule";
             // 
             // dgvItems
             // 
@@ -813,6 +985,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpAddCommodityRequest.ResumeLayout(false);
             this.flpAddCommodityRequest.PerformLayout();
             this.tabPWarehousing.ResumeLayout(false);
+            this.tabPOverflow.ResumeLayout(false);
+            this.flpOverflowAdd.ResumeLayout(false);
+            this.flpOverflowAdd.PerformLayout();
+            this.flpOverflowAdd2.ResumeLayout(false);
+            this.flpOverflowAdd2.PerformLayout();
+            this.flpOverflowButtons.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvOverflowRules)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvItems)).EndInit();
             this.flpAddItem.ResumeLayout(false);
             this.flpAddItem.PerformLayout();
@@ -885,5 +1064,31 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private System.Windows.Forms.Button cmdOptimize;
         private System.Windows.Forms.Button cmdGenerateBuildPlan;
         private System.Windows.Forms.Timer timerAdminRefresh;
+        private System.Windows.Forms.TabPage tabPOverflow;
+        private System.Windows.Forms.DataGridView dgvOverflowRules;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colOverflowResource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colOverflowPurity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colOverflowThreshold;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colOverflowCurrent;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colOverflowDest;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colOverflowRoute;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colOverflowActive;
+        private System.Windows.Forms.FlowLayoutPanel flpOverflowAdd;
+        private System.Windows.Forms.Label lblOverflowResource;
+        private System.Windows.Forms.ComboBox cmbOverflowResource;
+        private System.Windows.Forms.Label lblOverflowPurity;
+        private System.Windows.Forms.ComboBox cmbOverflowPurity;
+        private System.Windows.Forms.Label lblOverflowThreshold;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtOverflowThreshold;
+        private System.Windows.Forms.FlowLayoutPanel flpOverflowAdd2;
+        private System.Windows.Forms.Label lblOverflowDestType;
+        private System.Windows.Forms.ComboBox cmbOverflowDestType;
+        private System.Windows.Forms.Label lblOverflowDest;
+        private System.Windows.Forms.ComboBox cmbOverflowDest;
+        private System.Windows.Forms.Label lblOverflowRoute;
+        private System.Windows.Forms.ComboBox cmbOverflowRoute;
+        private System.Windows.Forms.FlowLayoutPanel flpOverflowButtons;
+        private System.Windows.Forms.Button cmdAddOverflowRule;
+        private System.Windows.Forms.Button cmdRemoveOverflowRule;
     }
 }

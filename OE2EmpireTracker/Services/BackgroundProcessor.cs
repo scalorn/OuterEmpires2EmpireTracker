@@ -212,9 +212,24 @@ namespace OE2EmpireTracker.Services
                     }
                 }
 
+                // Check warehouse overflow rules (task 38.2)
+                int overflowDeliveries = 0;
+                if (!_stopping.IsSet)
+                {
+                    try
+                    {
+                        overflowDeliveries = CheckWarehouseOverflow(colonies);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Error during warehouse overflow check");
+                        hadError = true;
+                    }
+                }
+
                 bool cascadeModified = modifiedPlanUUIDs != null && modifiedPlanUUIDs.Count > 0;
 
-                if (processedCount > 0 || cascadeModified)
+                if (processedCount > 0 || cascadeModified || overflowDeliveries > 0)
                 {
                     try
                     {
@@ -367,6 +382,42 @@ namespace OE2EmpireTracker.Services
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Checks warehouse overflow rules for all colonies. For each active rule
+        /// where the colony's resource quantity exceeds the threshold, logs the
+        /// overflow. Returns the count of overflow detections.
+        /// Delivery generation will be wired in task 39.
+        /// </summary>
+        private int CheckWarehouseOverflow(List<Colony> colonies)
+        {
+            var rules = _playerContext.WarehouseOverflowRuleList;
+            if (rules == null || rules.Count == 0) return 0;
+
+            int overflowCount = 0;
+            var activeRules = rules.Where(r => r.IsActive).ToList();
+
+            foreach (var rule in activeRules)
+            {
+                var colony = colonies.FirstOrDefault(c => c.UUID == rule.ColonyUUID);
+                if (colony == null) continue;
+                if (colony.Items == null) continue;
+
+                var items = colony.Items.FindResource(rule.ResourceName, rule.ResourcePurity);
+                int currentQty = items.Sum(i => i.Quantity);
+
+                if (currentQty > rule.TriggerThreshold && rule.TriggerThreshold > 0)
+                {
+                    int excess = currentQty - rule.TriggerThreshold;
+                    Log.Info("Overflow detected: colony={0} resource={1}({2}) current={3} threshold={4} excess={5}",
+                        colony.ColonyName, rule.ResourceName, rule.ResourcePurity,
+                        currentQty, rule.TriggerThreshold, excess);
+                    overflowCount++;
+                }
+            }
+
+            return overflowCount;
         }
     }
 }
