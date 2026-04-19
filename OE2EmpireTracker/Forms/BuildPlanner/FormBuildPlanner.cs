@@ -75,7 +75,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             cmdSave.Click += cmdSave_Click;
 
             // Add Item panel wiring
-            cmbItemType.Items.AddRange(new object[] { "Manufactory", "Commodity" });
+            cmbItemType.Items.AddRange(new object[] { "Manufactory", "Commodity", "Mining", "Refining", "Research" });
             cmbItemType.SelectedIndex = 0;
             cmbItemType.SelectedIndexChanged += cmbItemType_SelectedIndexChanged;
             txtItemFilter.TextChanged += txtItemFilter_TextChanged;
@@ -85,6 +85,10 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             cmdAutoAssign.Click += cmdAutoAssign_Click;
             dgvBuildItems.CellDoubleClick += dgvBuildItems_CellDoubleClick;
             dgvBuildItems.SelectionChanged += dgvBuildItems_SelectionChanged;
+
+            // Dependency context menu wiring
+            tsmiSetDependency.Click += tsmiSetDependency_Click;
+            tsmiClearDependency.Click += tsmiClearDependency_Click;
 
             // Generate Delivery dropdown wiring
             cmdGenerateDelivery.Click += cmdGenerateDelivery_Click;
@@ -283,13 +287,24 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                         location = item.BuildLocationUUID;
                 }
 
+                // Resolve dependency name
+                string dependsOnName = "";
+                if (!string.IsNullOrEmpty(item.DependsOnUUID))
+                {
+                    var depItem = _selectedPlan.Items.FirstOrDefault(
+                        i => i.UUID == item.DependsOnUUID);
+                    dependsOnName = depItem?.ItemName ?? item.DependsOnUUID;
+                }
+
                 int rowIdx = dgvBuildItems.Rows.Add(
                     item.ItemName,
                     item.ItemType.ToString(),
                     item.Quantity,
                     item.Status.ToString(),
                     location,
-                    item.Notes);
+                    item.Notes,
+                    item.SequenceInStructure > 0 ? item.SequenceInStructure.ToString() : "",
+                    dependsOnName);
                 dgvBuildItems.Rows[rowIdx].Tag = item;
 
                 // Color-code row based on build item status
@@ -446,6 +461,33 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                         if (int.TryParse(entry.Value, out perCycle) && perCycle > 0)
                         {
                             required[entry.Key] = perCycle * item.Quantity;
+                        }
+                    }
+                }
+            }
+            else if (item.ItemType == BuildItemType.Refining)
+            {
+                var recipe = RefiningRecipes.FindByOutput(item.RefiningResource);
+                if (recipe != null)
+                {
+                    required[recipe.InputResource] = recipe.ConsumeRate * item.Quantity;
+                }
+                else if (!string.IsNullOrEmpty(item.RefiningResource))
+                {
+                    required[item.RefiningResource] = item.Quantity;
+                }
+            }
+            else if (item.ItemType == BuildItemType.Research)
+            {
+                Models.Blueprint bp = playerContext.FindBlueprint(item.BlueprintUUID);
+                if (bp?.Resources != null)
+                {
+                    foreach (var entry in bp.Resources)
+                    {
+                        int perRun;
+                        if (int.TryParse(entry.Value, out perRun) && perRun > 0)
+                        {
+                            required[entry.Key] = perRun * item.Quantity;
                         }
                     }
                 }
@@ -610,9 +652,43 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     cmbItem.Items.Add(new ItemEntry { Display = name, ID = name });
                 }
             }
+            else if (itemType == "Mining" || itemType == "Refining")
+            {
+                var resources = Resource.Resources
+                    .Where(r => r.ID != Resource.ResourceEnum.None);
+
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    resources = resources.Where(r =>
+                        r.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0);
+                }
+
+                foreach (var r in resources.OrderBy(r => r.Name))
+                {
+                    cmbItem.Items.Add(new ItemEntry { Display = r.Name, ID = r.Name });
+                }
+            }
+            else if (itemType == "Research")
+            {
+                var blueprints = playerContext.GetAllBlueprints()
+                    .Where(bp => bp.UUID != null);
+
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    blueprints = blueprints.Where(bp =>
+                        bp.ExtendedName.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0);
+                }
+
+                foreach (var bp in blueprints.OrderBy(bp => bp.ExtendedName))
+                {
+                    cmbItem.Items.Add(new ItemEntry { Display = bp.ExtendedName, ID = bp.UUID });
+                }
+            }
 
             if (cmbItem.Items.Count > 0)
                 cmbItem.SelectedIndex = 0;
+
+            UpdateMiningRefiningFieldVisibility();
         }
 
         private void cmdAddItem_Click(object sender, EventArgs e)
@@ -661,6 +737,36 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 buildItem.ItemType = BuildItemType.Commodity;
                 buildItem.CommodityName = selectedEntry.ID;
                 buildItem.ItemName = selectedEntry.Display;
+            }
+            else if (itemType == "Mining")
+            {
+                buildItem.ItemType = BuildItemType.Mining;
+                buildItem.MiningResource = selectedEntry.ID;
+                buildItem.ItemName = "Mine: " + selectedEntry.Display;
+                if (cmbSurvey.Visible && cmbSurvey.SelectedItem is ItemEntry surveyEntry
+                    && !string.IsNullOrEmpty(surveyEntry.ID))
+                {
+                    buildItem.MiningSurveyUUID = surveyEntry.ID;
+                }
+            }
+            else if (itemType == "Refining")
+            {
+                buildItem.ItemType = BuildItemType.Refining;
+                buildItem.RefiningResource = selectedEntry.ID;
+                buildItem.ItemName = "Refine: " + selectedEntry.Display;
+                if (cmbPurity.Visible && cmbPurity.SelectedItem is ItemEntry purityEntry
+                    && !string.IsNullOrEmpty(purityEntry.ID))
+                {
+                    buildItem.RefiningPurity = purityEntry.ID;
+                }
+            }
+            else if (itemType == "Research")
+            {
+                buildItem.ItemType = BuildItemType.Research;
+                buildItem.BlueprintUUID = selectedEntry.ID;
+                var bp = playerContext.GetAllBlueprints()
+                    .FirstOrDefault(b => b.UUID == selectedEntry.ID);
+                buildItem.ItemName = "Research: " + (bp?.Name ?? selectedEntry.Display);
             }
 
             if (!BuildPlanService.ValidateBuildItem(buildItem))
@@ -760,9 +866,12 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             if (buildItem == null) return;
 
             if (buildItem.ItemType != BuildItemType.Manufactory &&
-                buildItem.ItemType != BuildItemType.Commodity)
+                buildItem.ItemType != BuildItemType.Commodity &&
+                buildItem.ItemType != BuildItemType.Mining &&
+                buildItem.ItemType != BuildItemType.Refining &&
+                buildItem.ItemType != BuildItemType.Research)
             {
-                MessageBox.Show("Only Manufactory and Commodity items can be allocated to structures.",
+                MessageBox.Show("This item type cannot be allocated to structures.",
                     "Allocate", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -774,6 +883,13 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     buildItem.BuildLocationType = DestinationType.Colony;
                     buildItem.BuildLocationUUID = dlg.SelectedColonyUUID;
                     buildItem.StructureUUID = dlg.SelectedStructureUUID;
+
+                    // Set SequenceInStructure: count existing items on this structure
+                    int existingCount = _selectedPlan.Items.Count(i =>
+                        i.UUID != buildItem.UUID &&
+                        i.StructureUUID == dlg.SelectedStructureUUID &&
+                        !string.IsNullOrEmpty(i.StructureUUID));
+                    buildItem.SequenceInStructure = existingCount;
 
                     playerContext.WriteContext();
                     playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
@@ -1261,6 +1377,147 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             public string Display { get; set; }
             public string ID { get; set; }
             public override string ToString() => Display;
+        }
+
+        // -----------------------------------------------------------------------
+        // Mining/Refining Field Visibility
+        // -----------------------------------------------------------------------
+
+        private void UpdateMiningRefiningFieldVisibility()
+        {
+            string itemType = cmbItemType.SelectedItem as string ?? "";
+
+            bool isMining = itemType == "Mining";
+            bool isRefining = itemType == "Refining";
+
+            lblSurvey.Visible = isMining;
+            cmbSurvey.Visible = isMining;
+
+            lblPurity.Visible = isRefining;
+            cmbPurity.Visible = isRefining;
+
+            lblResource.Visible = false;
+            cmbResource.Visible = false;
+
+            if (isMining)
+                PopulateSurveyCombo();
+            else if (isRefining)
+                PopulatePurityCombo();
+        }
+
+
+        private void PopulateSurveyCombo()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            cmbSurvey.Items.Clear();
+            cmbSurvey.Items.Add(new ItemEntry { Display = "(none)", ID = "" });
+
+            var surveys = playerContext.GetCurrentPlayerSurveys();
+            foreach (var s in surveys.OrderBy(s => s.Name))
+                cmbSurvey.Items.Add(new ItemEntry { Display = s.Name, ID = s.UUID });
+            cmbSurvey.SelectedIndex = 0;
+        }
+
+        private void PopulatePurityCombo()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            cmbPurity.Items.Clear();
+
+            foreach (var p in ResourcePurity.Purities.Where(p => p.ID != ResourcePurity.PurityEnum.None))
+                cmbPurity.Items.Add(new ItemEntry { Display = p.Name, ID = p.Name });
+            if (cmbPurity.Items.Count > 0)
+                cmbPurity.SelectedIndex = 0;
+        }
+
+
+        // -----------------------------------------------------------------------
+        // Dependency Tracking
+        // -----------------------------------------------------------------------
+
+        private void tsmiSetDependency_Click(object sender, EventArgs e)
+        {
+            if (_selectedPlan == null || dgvBuildItems.CurrentRow == null) return;
+
+            var buildItem = dgvBuildItems.CurrentRow.Tag as BuildItem;
+            if (buildItem == null) return;
+
+            var otherItems = _selectedPlan.Items
+                .Where(i => i.UUID != buildItem.UUID)
+                .OrderBy(i => i.ItemName)
+                .ToList();
+
+            if (otherItems.Count == 0)
+            {
+                MessageBox.Show("No other items in this plan to depend on.",
+                    "Set Dependency", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            using (var form = new Form())
+            {
+                form.Text = "Set Dependency";
+                form.ClientSize = new System.Drawing.Size(350, 120);
+                form.FormBorderStyle = FormBorderStyle.FixedDialog;
+                form.StartPosition = FormStartPosition.CenterParent;
+                form.MaximizeBox = false;
+                form.MinimizeBox = false;
+
+                var lbl = new Label { Text = "Depends on:", Left = 10, Top = 12, Width = 70 };
+                var cmb = new ComboBox
+                {
+                    Left = 85, Top = 10, Width = 250,
+                    DropDownStyle = ComboBoxStyle.DropDownList
+                };
+                foreach (var item in otherItems)
+                    cmb.Items.Add(new ItemEntry { Display = item.ItemName, ID = item.UUID });
+                if (cmb.Items.Count > 0) cmb.SelectedIndex = 0;
+
+                var btnOk = new Button
+                {
+                    Text = "OK", Left = 180, Top = 70, Width = 75,
+                    DialogResult = DialogResult.OK
+                };
+                var btnCancel = new Button
+                {
+                    Text = "Cancel", Left = 265, Top = 70, Width = 75,
+                    DialogResult = DialogResult.Cancel
+                };
+
+                form.Controls.AddRange(new Control[] { lbl, cmb, btnOk, btnCancel });
+                form.AcceptButton = btnOk;
+                form.CancelButton = btnCancel;
+
+                if (form.ShowDialog(this) == DialogResult.OK && cmb.SelectedItem is ItemEntry entry)
+                {
+                    buildItem.DependsOnUUID = entry.ID;
+                    playerContext.WriteContext();
+                    playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
+                    PopulateBuildItemsGrid();
+                    Log.Info("Set dependency: '{0}' depends on '{1}'",
+                        buildItem.ItemName, entry.Display);
+                }
+            }
+        }
+
+        private void tsmiClearDependency_Click(object sender, EventArgs e)
+        {
+            if (_selectedPlan == null || dgvBuildItems.CurrentRow == null) return;
+
+            var buildItem = dgvBuildItems.CurrentRow.Tag as BuildItem;
+            if (buildItem == null) return;
+
+            if (string.IsNullOrEmpty(buildItem.DependsOnUUID))
+            {
+                MessageBox.Show("This item has no dependency set.",
+                    "Clear Dependency", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            buildItem.DependsOnUUID = string.Empty;
+            playerContext.WriteContext();
+            playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
+            PopulateBuildItemsGrid();
+            Log.Info("Cleared dependency on item '{0}'", buildItem.ItemName);
         }
 
         // -----------------------------------------------------------------------

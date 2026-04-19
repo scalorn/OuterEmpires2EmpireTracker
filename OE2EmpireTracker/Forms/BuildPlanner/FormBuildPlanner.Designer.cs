@@ -44,6 +44,17 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.colStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLocation = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colNotes = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSequence = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDependsOn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lblResource = new System.Windows.Forms.Label();
+            this.cmbResource = new System.Windows.Forms.ComboBox();
+            this.lblPurity = new System.Windows.Forms.Label();
+            this.cmbPurity = new System.Windows.Forms.ComboBox();
+            this.lblSurvey = new System.Windows.Forms.Label();
+            this.cmbSurvey = new System.Windows.Forms.ComboBox();
+            this.cmsBuildItems = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiSetDependency = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiClearDependency = new System.Windows.Forms.ToolStripMenuItem();
 
             this.lblShortfallHeader = new System.Windows.Forms.Label();
             this.dgvShortfalls = new System.Windows.Forms.DataGridView();
@@ -90,6 +101,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItemRow2.SuspendLayout();
             this.flpAddItemRow3.SuspendLayout();
             this.cmsGenerateDelivery.SuspendLayout();
+            this.cmsBuildItems.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBuildItems)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvShortfalls)).BeginInit();
             this.SuspendLayout();
@@ -281,12 +293,15 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.colQuantity,
             this.colStatus,
             this.colLocation,
-            this.colNotes});
+            this.colNotes,
+            this.colSequence,
+            this.colDependsOn});
             this.dgvBuildItems.Location = new System.Drawing.Point(3, 125);
             this.dgvBuildItems.Name = "dgvBuildItems";
             this.dgvBuildItems.ReadOnly = true;
             this.dgvBuildItems.Size = new System.Drawing.Size(662, 460);
             this.dgvBuildItems.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvBuildItems.ContextMenuStrip = this.cmsBuildItems;
             // 
             // colItemName
             // 
@@ -329,6 +344,20 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.colNotes.Name = "colNotes";
             this.colNotes.ReadOnly = true;
             this.colNotes.Width = 200;
+            // 
+            // colSequence
+            // 
+            this.colSequence.HeaderText = "Seq";
+            this.colSequence.Name = "colSequence";
+            this.colSequence.ReadOnly = true;
+            this.colSequence.Width = 40;
+            // 
+            // colDependsOn
+            // 
+            this.colDependsOn.HeaderText = "Depends On";
+            this.colDependsOn.Name = "colDependsOn";
+            this.colDependsOn.ReadOnly = true;
+            this.colDependsOn.Width = 120;
             // 
             // lblShortfallHeader
             // 
@@ -483,6 +512,12 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItemRow2.Controls.Add(this.txtQuantity);
             this.flpAddItemRow2.Controls.Add(this.lblRecipient);
             this.flpAddItemRow2.Controls.Add(this.txtRecipient);
+            this.flpAddItemRow2.Controls.Add(this.lblResource);
+            this.flpAddItemRow2.Controls.Add(this.cmbResource);
+            this.flpAddItemRow2.Controls.Add(this.lblPurity);
+            this.flpAddItemRow2.Controls.Add(this.cmbPurity);
+            this.flpAddItemRow2.Controls.Add(this.lblSurvey);
+            this.flpAddItemRow2.Controls.Add(this.cmbSurvey);
             this.flpAddItemRow2.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
             this.flpAddItemRow2.Location = new System.Drawing.Point(3, 48);
             this.flpAddItemRow2.Name = "flpAddItemRow2";
@@ -518,6 +553,60 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.txtRecipient.Location = new System.Drawing.Point(162, 3);
             this.txtRecipient.Name = "txtRecipient";
             this.txtRecipient.Size = new System.Drawing.Size(150, 20);
+            // 
+            // lblResource
+            // 
+            this.lblResource.AutoSize = true;
+            this.lblResource.Location = new System.Drawing.Point(318, 5);
+            this.lblResource.Name = "lblResource";
+            this.lblResource.Size = new System.Drawing.Size(56, 13);
+            this.lblResource.Text = "Resource:";
+            this.lblResource.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblResource.Visible = false;
+            // 
+            // cmbResource
+            // 
+            this.cmbResource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbResource.Location = new System.Drawing.Point(380, 3);
+            this.cmbResource.Name = "cmbResource";
+            this.cmbResource.Size = new System.Drawing.Size(180, 21);
+            this.cmbResource.Visible = false;
+            // 
+            // lblPurity
+            // 
+            this.lblPurity.AutoSize = true;
+            this.lblPurity.Location = new System.Drawing.Point(566, 5);
+            this.lblPurity.Name = "lblPurity";
+            this.lblPurity.Size = new System.Drawing.Size(36, 13);
+            this.lblPurity.Text = "Purity:";
+            this.lblPurity.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblPurity.Visible = false;
+            // 
+            // cmbPurity
+            // 
+            this.cmbPurity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPurity.Location = new System.Drawing.Point(608, 3);
+            this.cmbPurity.Name = "cmbPurity";
+            this.cmbPurity.Size = new System.Drawing.Size(100, 21);
+            this.cmbPurity.Visible = false;
+            // 
+            // lblSurvey
+            // 
+            this.lblSurvey.AutoSize = true;
+            this.lblSurvey.Location = new System.Drawing.Point(318, 5);
+            this.lblSurvey.Name = "lblSurvey";
+            this.lblSurvey.Size = new System.Drawing.Size(43, 13);
+            this.lblSurvey.Text = "Survey:";
+            this.lblSurvey.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSurvey.Visible = false;
+            // 
+            // cmbSurvey
+            // 
+            this.cmbSurvey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSurvey.Location = new System.Drawing.Point(367, 3);
+            this.cmbSurvey.Name = "cmbSurvey";
+            this.cmbSurvey.Size = new System.Drawing.Size(200, 21);
+            this.cmbSurvey.Visible = false;
             // 
             // flpAddItemRow3
             // 
@@ -599,6 +688,26 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.tsmiFlatpackDelivery.Size = new System.Drawing.Size(249, 22);
             this.tsmiFlatpackDelivery.Text = "Flatpack Delivery";
             // 
+            // cmsBuildItems
+            // 
+            this.cmsBuildItems.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiSetDependency,
+            this.tsmiClearDependency});
+            this.cmsBuildItems.Name = "cmsBuildItems";
+            this.cmsBuildItems.Size = new System.Drawing.Size(200, 48);
+            // 
+            // tsmiSetDependency
+            // 
+            this.tsmiSetDependency.Name = "tsmiSetDependency";
+            this.tsmiSetDependency.Size = new System.Drawing.Size(199, 22);
+            this.tsmiSetDependency.Text = "Set Dependency...";
+            // 
+            // tsmiClearDependency
+            // 
+            this.tsmiClearDependency.Name = "tsmiClearDependency";
+            this.tsmiClearDependency.Size = new System.Drawing.Size(199, 22);
+            this.tsmiClearDependency.Text = "Clear Dependency";
+            // 
             // FormBuildPlanner
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -630,6 +739,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItemRow3.ResumeLayout(false);
             this.flpAddItemRow3.PerformLayout();
             this.cmsGenerateDelivery.ResumeLayout(false);
+            this.cmsBuildItems.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvBuildItems)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvShortfalls)).EndInit();
             this.ResumeLayout(false);
@@ -694,5 +804,16 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private System.Windows.Forms.ToolStripMenuItem tsmiResourceDelivery;
         private System.Windows.Forms.ToolStripMenuItem tsmiConsolidatedDelivery;
         private System.Windows.Forms.ToolStripMenuItem tsmiFlatpackDelivery;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSequence;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDependsOn;
+        private System.Windows.Forms.Label lblResource;
+        private System.Windows.Forms.ComboBox cmbResource;
+        private System.Windows.Forms.Label lblPurity;
+        private System.Windows.Forms.ComboBox cmbPurity;
+        private System.Windows.Forms.Label lblSurvey;
+        private System.Windows.Forms.ComboBox cmbSurvey;
+        private System.Windows.Forms.ContextMenuStrip cmsBuildItems;
+        private System.Windows.Forms.ToolStripMenuItem tsmiSetDependency;
+        private System.Windows.Forms.ToolStripMenuItem tsmiClearDependency;
     }
 }

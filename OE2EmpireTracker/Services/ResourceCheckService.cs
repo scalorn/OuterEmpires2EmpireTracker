@@ -50,8 +50,19 @@ namespace OE2EmpireTracker.Services
                         item, locationInventory);
                     break;
 
-                case BuildItemType.Research:
+                case BuildItemType.Mining:
+                    // Mining produces resources — no shortfall check needed
                     shortfalls = new Dictionary<string, int>();
+                    break;
+
+                case BuildItemType.Refining:
+                    shortfalls = ComputeRefiningShortfalls(
+                        item, locationInventory);
+                    break;
+
+                case BuildItemType.Research:
+                    shortfalls = ComputeResearchShortfalls(
+                        item, locationInventory, blueprintFinder);
                     break;
 
                 default:
@@ -250,6 +261,67 @@ namespace OE2EmpireTracker.Services
             }
 
             return shortfalls;
+        }
+
+        /// <summary>
+        /// Computes shortfalls for a Refining build item.
+        /// Normal refining consumes unrefined resources at the specified purity.
+        /// Synthetic refining consumes refined resources per the recipe.
+        /// </summary>
+        private static Dictionary<string, int> ComputeRefiningShortfalls(
+            BuildItem item,
+            ItemBag locationInventory)
+        {
+            var shortfalls = new Dictionary<string, int>();
+
+            if (string.IsNullOrEmpty(item.RefiningResource))
+            {
+                Log.Warn("ComputeRefiningShortfalls: item {0} has no RefiningResource", item.UUID);
+                return shortfalls;
+            }
+
+            // Check for synthetic recipe (S1/S2 refining)
+            var recipe = RefiningRecipes.FindByOutput(item.RefiningResource);
+            if (recipe != null)
+            {
+                // Synthetic: consumes recipe.InputResource at recipe.InputPurity
+                int totalNeeded = recipe.ConsumeRate * item.Quantity;
+                string purity = recipe.InputPurity ?? GameConstants.PurityRefined;
+                int available = CountInventoryResource(
+                    locationInventory, recipe.InputResource, purity);
+
+                int shortfall = totalNeeded - available;
+                if (shortfall > 0)
+                    shortfalls[recipe.InputResource] = shortfall;
+            }
+            else
+            {
+                // Normal refining: consumes unrefined resource at specified purity
+                string purity = !string.IsNullOrEmpty(item.RefiningPurity)
+                    ? item.RefiningPurity : "High";
+                int totalNeeded = item.Quantity;
+                int available = CountInventoryResource(
+                    locationInventory, item.RefiningResource, purity);
+
+                int shortfall = totalNeeded - available;
+                if (shortfall > 0)
+                    shortfalls[item.RefiningResource] = shortfall;
+            }
+
+            return shortfalls;
+        }
+
+        /// <summary>
+        /// Computes shortfalls for a Research build item.
+        /// Research items consume blueprint resources (same as Manufactory).
+        /// </summary>
+        private static Dictionary<string, int> ComputeResearchShortfalls(
+            BuildItem item,
+            ItemBag locationInventory,
+            Func<string, Blueprint> blueprintFinder)
+        {
+            // Research uses the same resource consumption as Manufactory
+            return ComputeManufactoryShortfalls(item, locationInventory, blueprintFinder);
         }
 
         /// <summary>

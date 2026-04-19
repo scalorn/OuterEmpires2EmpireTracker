@@ -98,6 +98,30 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                             typeLabel = "Commodity";
                         }
                     }
+                    else if (_buildItem.ItemType == BuildItemType.Mining)
+                    {
+                        if (bp.BluePrintType == BlueprintTypes.MiningRig)
+                        {
+                            eligible = true;
+                            typeLabel = "Mining Rig";
+                        }
+                    }
+                    else if (_buildItem.ItemType == BuildItemType.Refining)
+                    {
+                        if (bp.BluePrintType == BlueprintTypes.Refinery)
+                        {
+                            eligible = true;
+                            typeLabel = "Refinery";
+                        }
+                    }
+                    else if (_buildItem.ItemType == BuildItemType.Research)
+                    {
+                        if (bp.BluePrintType == BlueprintTypes.ResearchLaboratory)
+                        {
+                            eligible = true;
+                            typeLabel = "Research Lab";
+                        }
+                    }
 
                     if (!eligible) continue;
 

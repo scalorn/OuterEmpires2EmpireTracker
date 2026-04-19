@@ -213,23 +213,23 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 30.7 Wire events, NLog, PERF
   - [x] 30.8 Add "Market" to Manage menu
 
-- [-] 31. Reference Counter Expansions (Iteration 5)
-  - [-] 31.1 Expand BlueprintReferenceCounter: MarketListing.ItemReferenceID
+- [x] 31. Reference Counter Expansions (Iteration 5)
+  - [x] 31.1 Expand BlueprintReferenceCounter: MarketListing.ItemReferenceID
 
-- [ ] 32. Iteration 5 Tests
-  - [ ] 32.1 Property tests: P8 (sale decrements listing), P9 (purchase adds to hold)
-  - [ ] 32.2 Unit tests: MarketService, profit/loss, MarketListingReferenceCounter
+- [x] 32. Iteration 5 Tests
+  - [x] 32.1 Property tests: P8 (sale decrements listing), P9 (purchase adds to hold)
+  - [x] 32.2 Unit tests: MarketService, profit/loss, MarketListingReferenceCounter
 
-- [ ] 33. Iteration 5 Checkpoint
+- [x] 33. Iteration 5 Checkpoint
 
 ### Iteration 6: Full Production Queue + Supply Chain + Asteroids
 
-- [ ] 34. Production Queue Extension
-  - [ ] 34.1 Enable Mining, Refining, Research BuildItemTypes in Build Planner
-  - [ ] 34.2 Add mining/refining fields to build item UI
-  - [ ] 34.3 Implement time-splitting (SequenceInStructure)
-  - [ ] 34.4 Implement dependency tracking (DependsOnUUID)
-  - [ ] 34.5 Extend ResourceCheckService for mining/refining
+- [x] 34. Production Queue Extension
+  - [x] 34.1 Enable Mining, Refining, Research BuildItemTypes in Build Planner
+  - [x] 34.2 Add mining/refining fields to build item UI
+  - [x] 34.3 Implement time-splitting (SequenceInStructure)
+  - [x] 34.4 Implement dependency tracking (DependsOnUUID)
+  - [x] 34.5 Extend ResourceCheckService for mining/refining
 
 - [ ] 35. Asteroid Form
   - [ ] 35.1 Create FormAsteroid MDI child with reserves grid and linked surveys
