@@ -558,7 +558,6 @@ sequenceDiagram
 
     Note over User: Has per-colony build plans:<br/>Plan A (Colony Alpha flatpacks)<br/>Plan B (Colony Beta flatpacks)<br/>Plan C (Colony Gamma flatpacks)<br/>All items allocated to mfg colonies
 
-    rect rgb(230, 243, 255)
     Note over User: Phase 1: Resource Delivery
     User->>BP: Generate Delivery ▼ → Consolidated Resource Delivery
     BP->>BP: Show plan checklist (check A, B, C)
@@ -570,15 +569,11 @@ sequenceDiagram
     DG-->>BP: One consolidated delivery plan
     BP-->>User: "Resource delivery plan created"
     User->>DE: Execute resource delivery in-game
-    end
 
-    rect rgb(255, 230, 230)
     Note over User: Phase 2: Manufacturing
     Note over User: Manufacture flatpacks at mfg colonies
     User->>BP: Mark items Completed as they finish
-    end
 
-    rect rgb(230, 255, 230)
     Note over User: Phase 3: Flatpack Delivery
     User->>BP: Generate Delivery ▼ → Flatpack Delivery
     BP->>BP: Show plan checklist (check A, B, C)
@@ -589,7 +584,6 @@ sequenceDiagram
     BP-->>User: "Flatpack delivery plan created"
     User->>DE: Execute flatpack delivery in-game
     User->>DE: Mark flatpacks delivered → structures staged
-    end
 ```
 
 ## Data Models
