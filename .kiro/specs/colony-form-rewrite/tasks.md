@@ -323,7 +323,7 @@ Old form stays working throughout. Service-level perf fixes benefit both forms.
   - [x] 25.10 Manual testing: structure type filter persistence across colony switch and app restart
   - [x] 25.11 Manual testing: window state persistence (position, grids, filters) across app restart
   - [x] 25.12 Manual testing: verify old FormColony still works identically
-  - [-] 25.13 Cutover: rename menu item, remove old form files (deferred until user approves)
+  - [x] 25.13 Cutover: rename menu item, remove old form files (deferred until user approves)
 
 ## Notes
 
