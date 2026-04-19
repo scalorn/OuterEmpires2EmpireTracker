@@ -122,19 +122,19 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 14.2 Expand ColonyReferenceCounter: add BuildItem.BuildLocationUUID (when Colony)
   - [x] 14.3 Implement BuildReferenceMap pattern on all reference counters
 
-- [-] 15. Iteration 1 Tests
-  - [-] 15.1 Property tests: P1-P5, P10-P12
-  - [-] 15.2 Unit tests: all Iteration 1 services, migration, reference counters
+- [x] 15. Iteration 1 Tests
+  - [x] 15.1 Property tests: P1-P5, P10-P12
+  - [x] 15.2 Unit tests: all Iteration 1 services, migration, reference counters
 
-- [ ] 16. Iteration 1 Checkpoint
+- [x] 16. Iteration 1 Checkpoint
 
 ### Iteration 2: Ships
 
-- [ ] 17. Ship Services
-  - [ ] 17.1 Implement ShipBuildService.GenerateShipBuildItems
-  - [ ] 17.2 Implement ShipBuildService.ValidateAssemblyLocation
-  - [ ] 17.3 Implement ShipBuildService.ComputeStats (all ShipStats fields)
-  - [ ] 17.4 Implement ShipBuildService.ComputeStationStats
+- [-] 17. Ship Services
+  - [-] 17.1 Implement ShipBuildService.GenerateShipBuildItems
+  - [-] 17.2 Implement ShipBuildService.ValidateAssemblyLocation
+  - [-] 17.3 Implement ShipBuildService.ComputeStats (all ShipStats fields)
+  - [-] 17.4 Implement ShipBuildService.ComputeStationStats
 
 - [ ] 18. Ship Template Form
   - [ ] 18.1 Create FormShipTemplate MDI child

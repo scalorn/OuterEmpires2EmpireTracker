@@ -157,6 +157,7 @@
     <Compile Include="Models\RefiningRecipe.cs" />
     <Compile Include="Models\BlueprintType.cs" />
     <Compile Include="Services\BuildPlanService.cs" />
+    <Compile Include="Services\ShipBuildService.cs" />
     <Compile Include="Services\ResourceCheckService.cs" />
     <Compile Include="Services\DeliveryGenerationService.cs" />
     <Compile Include="Services\QueueCalculator.cs" />
