@@ -1206,12 +1206,26 @@ Design decisions:
 The existing `RouteStop` model uses the `DestinationType` enum (defined in Shared Enums above):
 
 ```csharp
+public enum RouteStopPurpose
+{
+    Cargo,      // Normal stop — drop off / pick up items
+    Refuel,     // Refueling stop — no cargo operations, ship refuels here
+    CargoAndRefuel  // Both — drop off / pick up items AND refuel
+}
+
 public class RouteStop
 {
     [JsonConverter(typeof(StringEnumConverter))]
     public DestinationType DestinationType { get; set; } = DestinationType.Colony;
     public string DestinationUUID { get; set; } = string.Empty;
     public int Sequence { get; set; }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    [DefaultValue(RouteStopPurpose.Cargo)]
+    public RouteStopPurpose Purpose { get; set; } = RouteStopPurpose.Cargo;
+
+    // Fuel modeling (future — populated when Game API provides system coordinates)
+    public decimal FuelEstimate { get; set; } = 0m;  // Estimated fuel to reach this stop from previous (0 = unknown)
 
     // Backward compatibility: ColonyUUID is kept for deserialization of existing data.
     // New code should use DestinationUUID. Migration sets DestinationUUID = ColonyUUID
@@ -1224,6 +1238,12 @@ public class RouteStop
 Design decisions:
 - ColonyUUID is retained for backward compatibility. A migration copies ColonyUUID → DestinationUUID and sets DestinationType = Colony for existing data.
 - New code uses DestinationUUID + DestinationType exclusively.
+- `Purpose` defaults to `Cargo` for backward compatibility — existing stops are cargo stops. `DefaultValueHandling.Ignore` omits it from JSON when Cargo, so no migration needed.
+- Refuel stops appear in the route's stop list and are visible in the delivery execution form, but have no drop-off/pick-up items. They serve as waypoints where the ship refuels before continuing.
+- `CargoAndRefuel` allows a stop to serve both purposes — the ship drops off/picks up items AND refuels at the same location.
+- `FuelEstimate` is for future fuel consumption modeling. When the Game API provides system coordinates and jump distances, the service layer can compute fuel usage per leg (using `ShipStats.FuelPerJump` and the number of jumps). For now it's always 0 (unknown). The UI can display it when non-zero.
+- The delivery execution form shows refuel stops as a checklist item: "☐ Refuel at Station Alpha". The user checks it when done.
+- Route planning UI: when adding a stop, the user can set its purpose via a dropdown. The stops grid shows a Purpose column.
 
 ### DeliveryPlan Changes
 
