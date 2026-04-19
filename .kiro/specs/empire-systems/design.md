@@ -948,11 +948,17 @@ public class MarketTransaction
     public string Timestamp { get; set; } = string.Empty;  // ISO 8601 UTC
     public string Notes { get; set; } = string.Empty;
     public string ListingUUID { get; set; } = string.Empty;  // Links to the listing that was sold from
+
+    // Component condition at time of transaction (snapshot — preserved even if listing is deleted)
+    public int CurrentHP { get; set; } = 0;              // 0 = undamaged / not applicable
+    public int MaxHP { get; set; } = 0;
+    public decimal MaxRepairPercent { get; set; } = 0m;
 }
 ```
 
 Design decisions:
 - ListingUUID links a sell transaction to its source listing for automatic quantity decrement.
+- Condition fields are a snapshot of the item's state at the time of the transaction. This preserves the historical record even after the listing is deleted or the item changes hands. When recording a transaction from a listing, the condition is copied from the listing to the transaction.
 - ItemReferenceID is Blueprint UUID for blueprint items, commodity name for commodities. Same pattern as DeliveryItem.BaseItemTypeID.
 - Timestamp is ISO 8601 UTC string, same pattern as colony import timestamps.
 
