@@ -31,45 +31,45 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 4.2 Add Constants/SlotTypes.cs
   - [x] 4.3 Copy updated BaselineData.json to test project
 
-- [-] 5. Data Model Foundation
-  - [ ] 5.1 Add DestinationType enum (Colony, Station, Asteroid, Ship)
-  - [ ] 5.2 Add RouteStopPurpose enum (Cargo, Refuel, CargoAndRefuel)
-  - [ ] 5.3 Add BuildPlan model (IsActive flag included)
-  - [ ] 5.4 Add BuildItem model (BuildLocationType + BuildLocationUUID instead of ColonyUUID)
-  - [ ] 5.5 Add ShipTemplate and ShipComponentSlot (with damage fields)
-  - [ ] 5.6 Add Ship model (with hull damage fields)
-  - [ ] 5.7 Add Station model (with hull damage fields)
-  - [ ] 5.8 Add Asteroid model with AsteroidReserve list
-  - [ ] 5.9 Add MarketListing model (with condition fields)
-  - [ ] 5.10 Add MarketTransaction model (with CounterpartyFaction + condition fields)
-  - [ ] 5.11 Add StockPlan model (IsActive, ReplenishmentBuildPlanUUID)
-  - [ ] 5.12 Add StockTarget model
-  - [ ] 5.13 Add StockProfile model (IsActive)
-  - [ ] 5.14 Add SupplyChain (IsActive) and SupplyChainStage (PickUp/Research stage types)
-  - [ ] 5.15 Add WarehouseOverflowRule model (IsActive)
-  - [ ] 5.16 Add Faction model (deterministic UUID)
-  - [ ] 5.17 Add ExternalCharacter model (deterministic UUID)
-  - [ ] 5.18 Add Crate support to Item
-  - [ ] 5.19 Add damage fields to Item (CurrentHP, MaxHP, MaxRepairPercent)
-  - [ ] 5.20 Add SurveyType enum and AsteroidUUID to Survey
-  - [ ] 5.21 Add FactionUUID to PlayerProfile
-  - [ ] 5.22 Update PlayerRoot with all 13 new arrays
-  - [ ] 5.23 Update RouteStop (DestinationType, Purpose, FuelEstimate)
-  - [ ] 5.24 Update DeliveryPlanStop (DestinationType)
-  - [ ] 5.25 Add ShipUUID to DeliveryPlan
-  - [ ] 5.26 Add ShipStats class
-  - [ ] 5.27 Add StationStats class
+- [x] 5. Data Model Foundation
+  - [x] 5.1 Add DestinationType enum (Colony, Station, Asteroid, Ship)
+  - [x] 5.2 Add RouteStopPurpose enum (Cargo, Refuel, CargoAndRefuel)
+  - [x] 5.3 Add BuildPlan model (IsActive flag included)
+  - [x] 5.4 Add BuildItem model (BuildLocationType + BuildLocationUUID instead of ColonyUUID)
+  - [x] 5.5 Add ShipTemplate and ShipComponentSlot (with damage fields)
+  - [x] 5.6 Add Ship model (with hull damage fields)
+  - [x] 5.7 Add Station model (with hull damage fields)
+  - [x] 5.8 Add Asteroid model with AsteroidReserve list
+  - [x] 5.9 Add MarketListing model (with condition fields)
+  - [x] 5.10 Add MarketTransaction model (with CounterpartyFaction + condition fields)
+  - [x] 5.11 Add StockPlan model (IsActive, ReplenishmentBuildPlanUUID)
+  - [x] 5.12 Add StockTarget model
+  - [x] 5.13 Add StockProfile model (IsActive)
+  - [x] 5.14 Add SupplyChain (IsActive) and SupplyChainStage (PickUp/Research stage types)
+  - [x] 5.15 Add WarehouseOverflowRule model (IsActive)
+  - [x] 5.16 Add Faction model (deterministic UUID)
+  - [x] 5.17 Add ExternalCharacter model (deterministic UUID)
+  - [x] 5.18 Add Crate support to Item
+  - [x] 5.19 Add damage fields to Item (CurrentHP, MaxHP, MaxRepairPercent)
+  - [x] 5.20 Add SurveyType enum and AsteroidUUID to Survey
+  - [x] 5.21 Add FactionUUID to PlayerProfile
+  - [x] 5.22 Update PlayerRoot with all 13 new arrays
+  - [x] 5.23 Update RouteStop (DestinationType, Purpose, FuelEstimate)
+  - [x] 5.24 Update DeliveryPlanStop (DestinationType)
+  - [x] 5.25 Add ShipUUID to DeliveryPlan
+  - [x] 5.26 Add ShipStats class
+  - [x] 5.27 Add StationStats class
 
-- [ ] 6. PlayerContext Updates
-  - [ ] 6.1 Add 13 new List fields
-  - [ ] 6.2 Add 13 Init methods
-  - [ ] 6.3 Update WriteContext to serialize all 13 new lists
-  - [ ] 6.4 Add snapshot methods for all new lists
-  - [ ] 6.5 Add convenience methods (GetCurrentPlayerBuildPlans, etc.)
-  - [ ] 6.6 Add new events: BuildPlanDataChanged, MarketDataChanged, StationDataChanged
-  - [ ] 6.7 Add CascadeStockTargetsDirty and CascadeResourceCheckDirty runtime flags
-  - [ ] 6.8 Update CascadeDeletePlayer for all new entity types
-  - [ ] 6.9 Update CleanupOrphanedData for all new entity types
+- [-] 6. PlayerContext Updates
+  - [x] 6.1 Add 13 new List fields
+  - [x] 6.2 Add 13 Init methods
+  - [x] 6.3 Update WriteContext to serialize all 13 new lists
+  - [x] 6.4 Add snapshot methods for all new lists
+  - [x] 6.5 Add convenience methods (GetCurrentPlayerBuildPlans, etc.)
+  - [x] 6.6 Add new events: BuildPlanDataChanged, MarketDataChanged, StationDataChanged
+  - [x] 6.7 Add CascadeStockTargetsDirty and CascadeResourceCheckDirty runtime flags
+  - [x] 6.8 Update CascadeDeletePlayer for all new entity types
+  - [x] 6.9 Update CleanupOrphanedData for all new entity types
 
 - [ ] 7. In-Memory Indexing
   - [ ] 7.1 Add PlayerContext UUID caches for all new entity types
