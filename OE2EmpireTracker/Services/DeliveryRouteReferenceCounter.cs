@@ -11,11 +11,18 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public class DeliveryRouteReferenceCounter
     {
-        private readonly IEnumerable<DeliveryPlan> _plans;
+        private readonly Dictionary<string, int> _planMap;
 
         public DeliveryRouteReferenceCounter(IEnumerable<DeliveryPlan> plans)
         {
-            _plans = plans ?? Enumerable.Empty<DeliveryPlan>();
+            var planList = plans ?? Enumerable.Empty<DeliveryPlan>();
+
+            _planMap = new Dictionary<string, int>();
+            foreach (var p in planList)
+            {
+                if (!string.IsNullOrEmpty(p.RouteUUID))
+                    _planMap[p.RouteUUID] = _planMap.GetValueOrDefault(p.RouteUUID) + 1;
+            }
         }
 
         /// <summary>
@@ -26,9 +33,7 @@ namespace OE2EmpireTracker.Services
             if (string.IsNullOrEmpty(routeUUID))
                 return DeliveryRouteReferenceReport.Empty;
 
-            int planCount = _plans
-                .Count(p => p.RouteUUID == routeUUID);
-
+            _planMap.TryGetValue(routeUUID, out int planCount);
             return new DeliveryRouteReferenceReport(planCount);
         }
     }

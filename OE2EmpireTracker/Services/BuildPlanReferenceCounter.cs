@@ -9,11 +9,18 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public class BuildPlanReferenceCounter
     {
-        private readonly IEnumerable<StockPlan> _stockPlans;
+        private readonly Dictionary<string, int> _stockPlanMap;
 
         public BuildPlanReferenceCounter(IEnumerable<StockPlan> stockPlans)
         {
-            _stockPlans = stockPlans ?? Enumerable.Empty<StockPlan>();
+            var list = stockPlans ?? Enumerable.Empty<StockPlan>();
+
+            _stockPlanMap = new Dictionary<string, int>();
+            foreach (var sp in list)
+            {
+                if (!string.IsNullOrEmpty(sp.ReplenishmentBuildPlanUUID))
+                    _stockPlanMap[sp.ReplenishmentBuildPlanUUID] = _stockPlanMap.GetValueOrDefault(sp.ReplenishmentBuildPlanUUID) + 1;
+            }
         }
 
         /// <summary>
@@ -24,8 +31,8 @@ namespace OE2EmpireTracker.Services
             if (string.IsNullOrEmpty(buildPlanUUID))
                 return 0;
 
-            return _stockPlans
-                .Count(sp => sp.ReplenishmentBuildPlanUUID == buildPlanUUID);
+            _stockPlanMap.TryGetValue(buildPlanUUID, out int count);
+            return count;
         }
     }
 }

@@ -80,7 +80,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
 
             _referenceCounter = new ColonyReferenceCounter(
-                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList);
+                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList);
 
             // Configure colony list
             lvwColonies.Columns.Add("Planet", 80);
@@ -201,7 +201,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             selectedColony = new Models.Colony();
             colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
             _referenceCounter = new ColonyReferenceCounter(
-                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList);
+                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList);
             PopulateListView(playerContext.GetCurrentPlayerColonies());
             txtPlanetName.Text = "";
             txtColonyName.Text = "";
@@ -262,7 +262,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (colonies == null) return;
 
             var counter = new ColonyReferenceCounter(
-                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList);
+                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList);
 
             var viewableColonies = new Dictionary<string, ListViewItem>();
             foreach (ListViewItem item in lvwColonies.Items)
@@ -602,7 +602,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID)) return;
 
             var counter = new ColonyReferenceCounter(
-                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList);
+                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList);
             var report = counter.CountReferences(selectedColony.UUID);
             if (report.TotalCount > 0)
             {
@@ -659,7 +659,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             var counter = new ColonyReferenceCounter(
-                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList);
+                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList);
             var report = counter.CountReferences(selectedColony.UUID);
             if (report.TotalCount > 0)
             {

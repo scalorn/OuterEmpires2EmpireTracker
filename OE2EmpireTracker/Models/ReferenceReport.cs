@@ -8,23 +8,26 @@ namespace OE2EmpireTracker.Models
         public int ManufacturingCount { get; }
         public int BaseBlueprintCount { get; }
         public int ScannerCount { get; }
+        public int BuildItemCount { get; }
 
         public ReferenceReport(
             int flatpackCount,
             int researchingCount,
             int manufacturingCount,
             int baseBlueprintCount,
-            int scannerCount)
+            int scannerCount,
+            int buildItemCount = 0)
         {
             FlatpackCount = flatpackCount;
             ResearchingCount = researchingCount;
             ManufacturingCount = manufacturingCount;
             BaseBlueprintCount = baseBlueprintCount;
             ScannerCount = scannerCount;
+            BuildItemCount = buildItemCount;
             TotalCount = flatpackCount + researchingCount + manufacturingCount
-                       + baseBlueprintCount + scannerCount;
+                       + baseBlueprintCount + scannerCount + buildItemCount;
         }
 
-        public static readonly ReferenceReport Empty = new ReferenceReport(0, 0, 0, 0, 0);
+        public static readonly ReferenceReport Empty = new ReferenceReport(0, 0, 0, 0, 0, 0);
     }
 }

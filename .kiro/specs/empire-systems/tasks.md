@@ -117,10 +117,10 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 13.3 Add Refs column and delete protection
   - [x] 13.4 Add "Contacts" to Manage menu
 
-- [ ] 14. Reference Counter Expansions (Iteration 1)
-  - [ ] 14.1 Expand BlueprintReferenceCounter: add BuildItem.BlueprintUUID
-  - [ ] 14.2 Expand ColonyReferenceCounter: add BuildItem.BuildLocationUUID (when Colony)
-  - [ ] 14.3 Implement BuildReferenceMap pattern on all reference counters
+- [x] 14. Reference Counter Expansions (Iteration 1)
+  - [x] 14.1 Expand BlueprintReferenceCounter: add BuildItem.BlueprintUUID
+  - [x] 14.2 Expand ColonyReferenceCounter: add BuildItem.BuildLocationUUID (when Colony)
+  - [x] 14.3 Implement BuildReferenceMap pattern on all reference counters
 
 - [ ] 15. Iteration 1 Tests
   - [ ] 15.1 Property tests: P1-P5, P10-P12

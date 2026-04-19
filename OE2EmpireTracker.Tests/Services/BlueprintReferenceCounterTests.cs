@@ -233,5 +233,85 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(report.TotalCount, Is.EqualTo(0));
         }
+
+        // BuildItem.BlueprintUUID match
+        [Test]
+        public void CountReferences_SingleBuildItemMatch_BuildItemCountIsOne()
+        {
+            var buildPlan = new BuildPlan
+            {
+                UUID = "plan-1",
+                Items = new List<BuildItem>
+                {
+                    new BuildItem { UUID = "bi-1", BlueprintUUID = TargetUUID }
+                }
+            };
+
+            var counter = new BlueprintReferenceCounter(
+                Enumerable.Empty<Colony>(),
+                Enumerable.Empty<Bp>(),
+                Enumerable.Empty<Survey>(),
+                new[] { buildPlan });
+
+            var report = counter.CountReferences(TargetUUID);
+
+            Assert.That(report.BuildItemCount, Is.EqualTo(1));
+            Assert.That(report.TotalCount, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void CountReferences_MultipleBuildItemMatches_CountsAll()
+        {
+            var buildPlan = new BuildPlan
+            {
+                UUID = "plan-1",
+                Items = new List<BuildItem>
+                {
+                    new BuildItem { UUID = "bi-1", BlueprintUUID = TargetUUID },
+                    new BuildItem { UUID = "bi-2", BlueprintUUID = TargetUUID },
+                    new BuildItem { UUID = "bi-3", BlueprintUUID = "other-bp" }
+                }
+            };
+
+            var counter = new BlueprintReferenceCounter(
+                Enumerable.Empty<Colony>(),
+                Enumerable.Empty<Bp>(),
+                Enumerable.Empty<Survey>(),
+                new[] { buildPlan });
+
+            var report = counter.CountReferences(TargetUUID);
+
+            Assert.That(report.BuildItemCount, Is.EqualTo(2));
+            Assert.That(report.TotalCount, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void CountReferences_NoBuildPlans_BuildItemCountIsZero()
+        {
+            var counter = new BlueprintReferenceCounter(
+                Enumerable.Empty<Colony>(),
+                Enumerable.Empty<Bp>(),
+                Enumerable.Empty<Survey>());
+
+            var report = counter.CountReferences(TargetUUID);
+
+            Assert.That(report.BuildItemCount, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void CountReferences_BuildPlanWithNullItems_HandledGracefully()
+        {
+            var buildPlan = new BuildPlan { UUID = "plan-1", Items = null };
+
+            var counter = new BlueprintReferenceCounter(
+                Enumerable.Empty<Colony>(),
+                Enumerable.Empty<Bp>(),
+                Enumerable.Empty<Survey>(),
+                new[] { buildPlan });
+
+            var report = counter.CountReferences(TargetUUID);
+
+            Assert.That(report.BuildItemCount, Is.EqualTo(0));
+        }
     }
 }
