@@ -2491,15 +2491,16 @@ Transactions tab:
 │ ┌─ Listings ─┬─ Transactions ─┬─ Summary ──────────────────────────────────┐   │
 │ │                                                                          │   │
 │ │ Filters: Type:[All    ▼] Item:[________] Counterparty:[________]        │   │
-│ │          Station:[All ▼] From:[________] To:[________]                  │   │
+│ │          Station:[All ▼] Faction:[All ▼] From:[________] To:[________]  │   │
 │ │                                                                          │   │
-│ │ ┌──────┬──────────┬──────────────┬─────┬────────┬────────┬──────────┐   │   │
-│ │ │ Type │ TxnType  │ Item         │ Qty │ Price  │ Total  │Ctrparty  │   │   │
-│ │ ├──────┼──────────┼──────────────┼─────┼────────┼────────┼──────────┤   │   │
-│ │ │ Comm │ Sell     │ Reactor Mk3  │   5 │ 12,500 │ 62,500 │ Bob      │   │   │
-│ │ │ Res  │ Buy      │ Ref Titanium │ 200 │    120 │ 24,000 │ Alice    │   │   │
-│ │ │ Comm │ Sell     │ Drive Mk3    │   3 │  8,200 │ 24,600 │ Charlie  │   │   │
-│ │ └──────┴──────────┴──────────────┴─────┴────────┴────────┴──────────┘   │   │
+│ │ ┌──────┬─────────┬──────────────┬─────┬────────┬────────┬─────────┬─────┐│   │
+│ │ │ Type │ TxnType │ Item         │ Qty │ Price  │ Total  │Ctrparty │Cond ││   │
+│ │ ├──────┼─────────┼──────────────┼─────┼────────┼────────┼─────────┼─────┤│   │
+│ │ │ Part │ Sell    │ Reactor Mk3  │   1 │ 12,500 │ 12,500 │ Bob     │ 95% ││   │
+│ │ │ Comm │ Sell    │ Reactor Mk3  │   5 │ 12,500 │ 62,500 │ Bob     │     ││   │
+│ │ │ Res  │ Buy     │ Ref Titanium │ 200 │    120 │ 24,000 │ Alice   │     ││   │
+│ │ │ Comm │ Sell    │ Drive Mk3    │   3 │  8,200 │ 24,600 │ Charlie │     ││   │
+│ │ └──────┴─────────┴──────────────┴─────┴────────┴────────┴─────────┴─────┘│   │
 │ │                                                                          │   │
 │ │ [Add Transaction] [Edit] [Delete]                                        │   │
 │ └──────────────────────────────────────────────────────────────────────────┘   │
@@ -2535,7 +2536,7 @@ Summary tab:
 Controls:
 - `tabMarket` (TabControl with Listings, Transactions, Summary tabs)
 - Listings tab: station filter, `dgvListings` (DataGridView, editable qty/price), add-listing panel, `cmdRecordSale` / `cmdEditListing` / `cmdDeleteListing`
-- Transactions tab: filter row (type, item, counterparty, station, date range), `dgvTransactions` (DataGridView), `cmdAddTransaction` / `cmdEditTransaction` / `cmdDeleteTransaction`
+- Transactions tab: filter row (type, item, counterparty, faction, station, date range), `dgvTransactions` (DataGridView with Condition column — shows percentage when non-zero), `cmdAddTransaction` / `cmdEditTransaction` / `cmdDeleteTransaction`. Faction filter matches all characters (PlayerProfiles + ExternalCharacters) belonging to the selected faction.
 - Summary tab: `cmbPricingPlan` (FilteredComboBox), date range, summary labels, `dgvBreakdown` (read-only DataGridView)
 - "Record Sale" opens a dialog to enter sale details (quantity, counterparty, notes) and auto-creates the transaction + decrements listing
 
