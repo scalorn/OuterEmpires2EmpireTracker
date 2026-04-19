@@ -93,3 +93,24 @@ For small edits (under 10 lines) where you are confident the content is small, `
 - **Do NOT use `semanticRename`** — it does not work with old-style csproj / .NET Framework 4.8.1. The language server cannot resolve symbols for rename. Use manual find-and-replace via fwrite.js replace mode or `executePwsh` with grep/sed instead.
 - **Do NOT use `fsWrite` or `fsAppend`** for content larger than ~30 lines — they silently fail. Use fwrite.js instead.
 - **`strReplace` parameter ordering** — when calling `strReplace`, always provide `newStr` before `oldStr`. Providing `oldStr` first causes silent failures ("aborted" error with no message). The correct order is: `newStr`, `oldStr`, `path`.
+
+## Test Results — Use trxparse.js
+
+After running vstest.console, **always use trxparse.js** to check results instead of manually reading TRX XML:
+```powershell
+node .kiro/tools/trxparse.js
+```
+Auto-finds the most recent .trx file in TestResults/. Outputs pass/fail counts and failure details. Exit code 1 on failures.
+
+## Git Commits — Use commit.js
+
+**Always use commit.js** for git commits to avoid PowerShell quoting issues with multi-line messages:
+```powershell
+node .kiro/tools/commit.js "Summary line" "Body text" "Prompt: user said this"
+```
+Options:
+- `--files ".kiro/tools/*.js,src/file.cs"` — stage specific files instead of `git add -A`
+- `--no-add` — skip staging, only commit what's already staged
+- `--stdin` — read body from stdin for very large bodies
+
+The tool writes the message to a temp file and uses `git commit -F`, bypassing all shell escaping issues. Always run backup script after.
