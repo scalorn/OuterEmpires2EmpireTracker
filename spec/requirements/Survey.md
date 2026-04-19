@@ -10,7 +10,7 @@
 ## Survey Form — List
 
 **REQ-SRV-010** The survey form SHALL display a list of all saved surveys with UUID, PlanetName, NickName, and DateTime columns.  
-**REQ-SRV-011** The list SHALL be filterable by PlanetName and by Resource type.  
+**REQ-SRV-011** The list SHALL be filterable by PlanetName, by Resource type, by Purity, by SurveyType (Planet/Asteroid/All), and by minimum Amount per cycle/hour.  
 **REQ-SRV-012** Selecting a survey from the list SHALL populate all form fields with that survey's data.
 
 ## Survey Form — Fields
@@ -55,8 +55,8 @@ sequenceDiagram
     participant VM as SurveyViewModel
     participant PC as PlayerContext
 
-    User->>Form: Type in filter textbox / select resource filter
-    Form->>PC: Filter SurveyList by name + resource
+    User->>Form: Type in filter textbox / select resource / purity / type / min amount
+    Form->>PC: Filter SurveyList by name + resource + purity + type + min amount
     Form->>Form: Repopulate lvwSurveys
 
     User->>Form: Click survey in list
@@ -147,18 +147,18 @@ flowchart LR
 │ #1 - Manage Surveys                                                     [_][□][X] │
 ├──────────────────────────┬──────────────────────────────────────────────────┤
 │ Filter [________________]│  Planet Name    [____________________]           │
-│ Resource [▼ All        ] │  System         [____________________]           │
-│                          │  Survey ID      [____________________]           │
-│ ┌──────────────────────┐ │  Nick Name      [____________________]           │
-│ │ Survey List          │ │  Scanner BP     [filter__] [▼ Scanner Mk3    ]  │
-│ │                      │ │  Scanned By     [____________________]           │
-│ │ Helorix (SRV-1234)  │ │  Scan DateTime  [2026-04-15 14:30   ] [📅]      │
-│ │ Proxima (SRV-5678)  │ │  Sensor Abund.  [____________________]           │
-│ │ Zeh Vaz (SRV-9012)  │ │  Purity Mod.    [____________________]           │
-│ │                      │ │  Scan Level     [____________________]           │
-│ │                      │ │                                                  │
-│ │                      │ │  ┌──────────────────┬──────────┬────────┐        │
-│ │                      │ │  │ Resource         │ Purity   │ Amount │        │
+│ Type [▼ All            ] │  System         [____________________]           │
+│ Resource [▼ All        ] │  Survey ID      [____________________]           │
+│ Purity [▼ All          ] │  Nick Name      [____________________]           │
+│ Min Amount [___________] │  Scanner BP     [filter__] [▼ Scanner Mk3    ]  │
+│                          │  Scanned By     [____________________]           │
+│ ┌──────────────────────┐ │  Scan DateTime  [2026-04-15 14:30   ] [📅]      │
+│ │ Survey List          │ │  Sensor Abund.  [____________________]           │
+│ │                      │ │  Purity Mod.    [____________________]           │
+│ │ Helorix (SRV-1234)  │ │  Scan Level     [____________________]           │
+│ │ Proxima (SRV-5678)  │ │                                                  │
+│ │ Zeh Vaz (SRV-9012)  │ │  ┌──────────────────┬──────────┬────────┐        │
+│ │ ☄ Asteroid K-7 (A1) │ │  │ Resource         │ Purity   │ Amount │        │
 │ │                      │ │  ├──────────────────┼──────────┼────────┤        │
 │ │                      │ │  │ ▼ Alkali Metals  │ ▼ High   │ 125    │        │
 │ │                      │ │  │ ▼ Lanthanides    │ ▼ Medium │ 80     │        │

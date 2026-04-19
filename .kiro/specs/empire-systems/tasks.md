@@ -257,7 +257,7 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
 
 - [ ] 40. Asteroid Survey Integration
   - [ ] 40.1 Extend SurveyParser for asteroid context
-  - [ ] 40.2 Add SurveyType filter to FormSurvey
+  - [ ] 40.2 Add SurveyType, Purity, and min Amount filters to FormSurvey (Type: Planet/Asteroid/All, Purity dropdown, min Amount numeric field)
 
 - [ ] 41. Reference Counter Expansions (Iteration 6)
   - [ ] 41.1 Expand ColonyReferenceCounter: SupplyChainStage, WarehouseOverflowRule

@@ -892,7 +892,7 @@ Design decisions:
 - Mining cycle duration comes from the mining laser blueprint (a property on the laser). Grapple blueprints can reduce the cycle time (also a property). The service layer combines both to compute effective cycle time.
 - Asteroid surveys are imported from game HTML in a similar format to planet surveys — the parser detects the asteroid context and sets `SurveyType = Asteroid` + `AsteroidUUID`. The existing SurveyParser will be extended to handle the asteroid variant.
 - When importing an asteroid survey, if no Asteroid entity exists with the computed deterministic UUID (from SystemName:AsteroidName), one SHALL be auto-created with Name from the survey's PlanetName field and SystemName from the survey's SystemName field. Reserves are left empty — the user populates them later from in-game data or subsequent imports. This eliminates the manual step of creating the asteroid before importing its survey.
-- The Survey form can filter by SurveyType to show planet vs asteroid surveys separately.
+- The Survey form can filter by SurveyType (Planet/Asteroid/All), Resource, Purity, and minimum Amount per cycle/hour. The Type filter defaults to All. The min Amount filter accepts a numeric value — surveys are included only if they have at least one resource with Amount >= the threshold. For planet surveys, Amount is rate per hour; for asteroid surveys, Amount is rate per mining cycle. The filter applies uniformly regardless of unit — the user understands the context from the Type filter.
 
 ### MarketListing
 
