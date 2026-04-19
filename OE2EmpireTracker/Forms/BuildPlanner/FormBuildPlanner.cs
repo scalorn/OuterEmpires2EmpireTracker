@@ -162,6 +162,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             foreach (var plan in plans)
             {
                 var item = new ListViewItem(plan.Name) { Tag = plan };
+                if (!plan.IsActive)
+                {
+                    item.ForeColor = System.Drawing.SystemColors.GrayText;
+                    item.Font = new System.Drawing.Font(lvwPlans.Font, System.Drawing.FontStyle.Italic);
+                }
                 lvwPlans.Items.Add(item);
                 if (plan.UUID == selectedUUID)
                     item.Selected = true;
@@ -506,6 +511,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         {
             if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
             _selectedPlan.IsActive = chkIsActive.Checked;
+            PopulatePlanList();
         }
 
         // -----------------------------------------------------------------------
