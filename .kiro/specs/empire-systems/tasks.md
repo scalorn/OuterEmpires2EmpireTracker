@@ -14,13 +14,13 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 1.3 R6: Create DeliveryRouteReferenceCounter (counts DeliveryPlans, WarehouseOverflowRules, SupplyChainStages)
   - [x] 1.4 Fix FormSurvey resource filter combo — cmbResource selection is not passed to GetFilteredSurveys, only the text filter is used. Surveys should filter by both name substring and selected resource.
 
-- [-] 2. Logging and PERF Remediation
-  - [-] 2.1 R1: Add NLog Logger to FormPlayerProfile, FormAutoFill
-  - [~] 2.2 R2: Add NLog Logger to high-priority services
-  - [~] 2.3 R2: Add NLog Logger to medium-priority services
-  - [~] 2.4 R3: Add PERF timing to FormBlueprintV2
-  - [~] 2.5 R3: Add PERF timing to FormDeliveryRoute
-  - [~] 2.6 R3: Add PERF timing to remaining forms
+- [x] 2. Logging and PERF Remediation
+  - [x] 2.1 R1: Add NLog Logger to FormPlayerProfile, FormAutoFill
+  - [x] 2.2 R2: Add NLog Logger to high-priority services
+  - [x] 2.3 R2: Add NLog Logger to medium-priority services
+  - [x] 2.4 R3: Add PERF timing to FormBlueprintV2
+  - [x] 2.5 R3: Add PERF timing to FormDeliveryRoute
+  - [x] 2.6 R3: Add PERF timing to remaining forms
 
 - [ ] 3. Remediation Checkpoint
 
