@@ -24,13 +24,18 @@ namespace OE2EmpireTracker.ViewModels
 
         public IReadOnlyList<RouteStop> Stops => _route.Stops.AsReadOnly();
 
-        public void AddStop(string colonyUUID)
+        public void AddStop(string destinationUUID, DestinationType destType = DestinationType.Colony,
+            RouteStopPurpose purpose = RouteStopPurpose.Cargo)
         {
-            _route.Stops.Add(new RouteStop
+            var stop = new RouteStop
             {
-                ColonyUUID = colonyUUID,
+                ColonyUUID = destType == DestinationType.Colony ? destinationUUID : "",
+                DestinationType = destType,
+                DestinationUUID = destinationUUID,
+                Purpose = purpose,
                 Sequence = _route.Stops.Count
-            });
+            };
+            _route.Stops.Add(stop);
             RenumberStops();
         }
 

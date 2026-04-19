@@ -24,17 +24,25 @@ namespace OE2EmpireTracker.ViewModels
         }
 
         /// <summary>
-        /// Gets or creates the DeliveryPlanStop for the given colony UUID.
+        /// Gets or creates the DeliveryPlanStop for the given destination.
         /// </summary>
-        public DeliveryPlanStop GetOrCreateStop(string colonyUUID, int sequence)
+        public DeliveryPlanStop GetOrCreateStop(string colonyUUID, int sequence,
+            DestinationType destType = DestinationType.Colony, string destinationUUID = "")
         {
-            var stop = _plan.Stops.FirstOrDefault(s => s.ColonyUUID == colonyUUID);
+            // Match by DestinationUUID first if available, then fall back to ColonyUUID
+            DeliveryPlanStop stop = null;
+            if (!string.IsNullOrEmpty(destinationUUID))
+                stop = _plan.Stops.FirstOrDefault(s => s.DestinationUUID == destinationUUID);
+            if (stop == null)
+                stop = _plan.Stops.FirstOrDefault(s => s.ColonyUUID == colonyUUID && string.IsNullOrEmpty(s.DestinationUUID));
             if (stop == null)
             {
                 stop = new DeliveryPlanStop
                 {
                     ColonyUUID = colonyUUID,
-                    Sequence = sequence
+                    Sequence = sequence,
+                    DestinationType = destType,
+                    DestinationUUID = destinationUUID ?? ""
                 };
                 _plan.Stops.Add(stop);
             }
@@ -193,9 +201,11 @@ namespace OE2EmpireTracker.ViewModels
         /// <summary>
         /// Scans each stop's colony for structures with StagingResources=true,
         /// calculates resource shortfalls, and adds drop-off items for Refined resources.
+        /// When a route stop is a station, checks station holds for available inventory.
         /// </summary>
         public int AutoFillManufacturingResources(IEnumerable<RouteStop> routeStops,
-            Func<string, Colony> colonyFinder, Func<string, Blueprint> blueprintFinder)
+            Func<string, Colony> colonyFinder, Func<string, Blueprint> blueprintFinder,
+            Func<string, Station> stationFinder = null, string currentPlayerUUID = null)
         {
             int added = 0;
             foreach (var routeStop in routeStops.OrderBy(s => s.Sequence))
@@ -262,7 +272,25 @@ namespace OE2EmpireTracker.ViewModels
                     // Subtract warehouse stock of Refined resources
                     var warehouseItems = colony.Items.FindResource(need.Key, GameConstants.PurityRefined);
                     int warehouseQty = warehouseItems.Sum(i => i.Quantity);
-                    int shortfall = need.Value - warehouseQty;
+
+                    // Also check station inventory if this stop has a station nearby
+                    int stationQty = 0;
+                    if (stationFinder != null && !string.IsNullOrEmpty(currentPlayerUUID)
+                        && routeStop.DestinationType == DestinationType.Station)
+                    {
+                        var station = stationFinder(routeStop.DestinationUUID);
+                        if (station != null)
+                        {
+                            ItemBag hold;
+                            if (station.Holds.TryGetValue(currentPlayerUUID, out hold))
+                            {
+                                var stationItems = hold.FindResource(need.Key, GameConstants.PurityRefined);
+                                stationQty = stationItems.Sum(i => i.Quantity);
+                            }
+                        }
+                    }
+
+                    int shortfall = need.Value - warehouseQty - stationQty;
                     if (shortfall <= 0) continue;
 
                     AddDropOffItem(stop, ItemType.ItemTypeEnum.Resource,

@@ -45,7 +45,10 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
             cmbColony.DisplayMember = "Display";
             cmbColony.ValueMember = "UUID";
+            PopulateDestTypePicker();
+            PopulateStopPurposePicker();
             PopulateColonyPicker();
+            cmbDestType.SelectedIndexChanged += (s, ev) => PopulateColonyPicker();
 
             cmdAddStop.Click += cmdAddStop_Click;
             cmdUp.Click += cmdUp_Click;
@@ -217,27 +220,114 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         // Colony Picker
         // -----------------------------------------------------------------------
 
+        private void PopulateDestTypePicker()
+        {
+            cmbDestType.Items.Clear();
+            cmbDestType.Items.Add("Colony");
+            cmbDestType.Items.Add("Station");
+            cmbDestType.Items.Add("Asteroid");
+            cmbDestType.SelectedIndex = 0;
+        }
+
+        private void PopulateStopPurposePicker()
+        {
+            cmbStopPurpose.Items.Clear();
+            cmbStopPurpose.Items.Add("Cargo");
+            cmbStopPurpose.Items.Add("Refuel");
+            cmbStopPurpose.Items.Add("CargoAndRefuel");
+            cmbStopPurpose.SelectedIndex = 0;
+        }
+
+        private DestinationType GetSelectedDestType()
+        {
+            string sel = cmbDestType.SelectedItem as string ?? "Colony";
+            switch (sel)
+            {
+                case "Station": return DestinationType.Station;
+                case "Asteroid": return DestinationType.Asteroid;
+                default: return DestinationType.Colony;
+            }
+        }
+
+        private RouteStopPurpose GetSelectedPurpose()
+        {
+            string sel = cmbStopPurpose.SelectedItem as string ?? "Cargo";
+            switch (sel)
+            {
+                case "Refuel": return RouteStopPurpose.Refuel;
+                case "CargoAndRefuel": return RouteStopPurpose.CargoAndRefuel;
+                default: return RouteStopPurpose.Cargo;
+            }
+        }
+
         private void PopulateColonyPicker()
         {
-            var colonies = playerContext.GetCurrentPlayerColonies()
-                .OrderBy(c => c.PlanetName)
-                .ToList();
-
-            // Filter out colonies already in the route when "No Duplicates" is checked
-            if (chkPreventDuplicates.Checked)
-            {
-                var existingUUIDs = new HashSet<string>(viewModel.Stops.Select(s => s.ColonyUUID));
-                colonies = colonies.Where(c => !existingUUIDs.Contains(c.UUID)).ToList();
-            }
-
+            var destType = GetSelectedDestType();
             var items = new List<ColonyPickerItem>();
             items.Add(new ColonyPickerItem { UUID = "", Display = "" });
-            foreach (var colony in colonies)
+
+            if (destType == DestinationType.Colony)
             {
-                string display = $"{colony.PlanetName} - {colony.ColonyName}";
-                if (!string.IsNullOrEmpty(colony.SystemName))
-                    display += $" ({colony.SystemName})";
-                items.Add(new ColonyPickerItem { UUID = colony.UUID, Display = display });
+                var colonies = playerContext.GetCurrentPlayerColonies()
+                    .OrderBy(c => c.PlanetName)
+                    .ToList();
+
+                if (chkPreventDuplicates.Checked)
+                {
+                    var existingUUIDs = new HashSet<string>(viewModel.Stops
+                        .Where(s => s.DestinationType == DestinationType.Colony)
+                        .Select(s => !string.IsNullOrEmpty(s.DestinationUUID) ? s.DestinationUUID : s.ColonyUUID));
+                    colonies = colonies.Where(c => !existingUUIDs.Contains(c.UUID)).ToList();
+                }
+
+                foreach (var colony in colonies)
+                {
+                    string display = $"{colony.PlanetName} - {colony.ColonyName}";
+                    if (!string.IsNullOrEmpty(colony.SystemName))
+                        display += $" ({colony.SystemName})";
+                    items.Add(new ColonyPickerItem { UUID = colony.UUID, Display = display });
+                }
+            }
+            else if (destType == DestinationType.Station)
+            {
+                var stations = playerContext.GetCurrentPlayerStations()
+                    .OrderBy(s => s.Name)
+                    .ToList();
+
+                if (chkPreventDuplicates.Checked)
+                {
+                    var existingUUIDs = new HashSet<string>(viewModel.Stops
+                        .Where(s => s.DestinationType == DestinationType.Station)
+                        .Select(s => s.DestinationUUID));
+                    stations = stations.Where(s => !existingUUIDs.Contains(s.UUID)).ToList();
+                }
+
+                foreach (var station in stations)
+                {
+                    items.Add(new ColonyPickerItem { UUID = station.UUID, Display = station.Name });
+                }
+            }
+            else if (destType == DestinationType.Asteroid)
+            {
+                var asteroids = playerContext.SnapshotAsteroidList()
+                    .OrderBy(a => a.Name)
+                    .ToList();
+
+                if (chkPreventDuplicates.Checked)
+                {
+                    var existingUUIDs = new HashSet<string>(viewModel.Stops
+                        .Where(s => s.DestinationType == DestinationType.Asteroid)
+                        .Select(s => s.DestinationUUID));
+                    asteroids = asteroids.Where(a => !existingUUIDs.Contains(a.UUID)).ToList();
+                }
+
+                foreach (var asteroid in asteroids)
+                {
+                    string display = asteroid.Name;
+                    if (!string.IsNullOrEmpty(asteroid.SystemName))
+                        display += $" ({asteroid.SystemName})";
+                    items.Add(new ColonyPickerItem { UUID = asteroid.UUID, Display = display });
+                }
             }
 
             cmbColony.DataSource = null;
@@ -250,6 +340,26 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         {
             public string UUID { get; set; }
             public string Display { get; set; }
+        }
+
+        /// <summary>
+        /// Resolves a display name for a route stop based on its destination type.
+        /// </summary>
+        private string ResolveStopName(RouteStop stop)
+        {
+            if (stop.DestinationType == DestinationType.Station)
+            {
+                var station = playerContext.FindStation(stop.DestinationUUID);
+                return station != null ? station.Name : "(unknown station)";
+            }
+            if (stop.DestinationType == DestinationType.Asteroid)
+            {
+                var asteroid = playerContext.FindAsteroid(stop.DestinationUUID);
+                return asteroid != null ? asteroid.Name : "(unknown asteroid)";
+            }
+            string colUUID = !string.IsNullOrEmpty(stop.DestinationUUID) ? stop.DestinationUUID : stop.ColonyUUID;
+            var colony = playerContext.FindColony(colUUID);
+            return colony != null ? $"{colony.PlanetName} - {colony.ColonyName}" : "(unknown colony)";
         }
 
         // -----------------------------------------------------------------------
@@ -269,12 +379,40 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             dgvStops.Rows.Clear();
             foreach (var stop in viewModel.Stops)
             {
-                var colony = playerContext.FindColony(stop.ColonyUUID);
+                string destName = "(unknown)";
+                string planetName = "";
+                string systemName = "";
+                string destTypeStr = stop.DestinationType.ToString();
+
+                if (stop.DestinationType == DestinationType.Station)
+                {
+                    var station = playerContext.FindStation(stop.DestinationUUID);
+                    destName = station?.Name ?? "(unknown station)";
+                }
+                else if (stop.DestinationType == DestinationType.Asteroid)
+                {
+                    var asteroid = playerContext.FindAsteroid(stop.DestinationUUID);
+                    destName = asteroid?.Name ?? "(unknown asteroid)";
+                    systemName = asteroid?.SystemName ?? "";
+                }
+                else
+                {
+                    string colUUID = !string.IsNullOrEmpty(stop.DestinationUUID) ? stop.DestinationUUID : stop.ColonyUUID;
+                    var colony = playerContext.FindColony(colUUID);
+                    destName = colony?.ColonyName ?? "(unknown)";
+                    planetName = colony?.PlanetName ?? "";
+                    systemName = colony?.SystemName ?? "";
+                }
+
+                string fuelStr = stop.FuelEstimate > 0 ? stop.FuelEstimate.ToString("N1") : "";
                 int rowIndex = dgvStops.Rows.Add(
                     stop.Sequence + 1,
-                    colony?.ColonyName ?? "(unknown)",
-                    colony?.PlanetName ?? "",
-                    colony?.SystemName ?? "");
+                    destTypeStr,
+                    destName,
+                    planetName,
+                    systemName,
+                    stop.Purpose.ToString(),
+                    fuelStr);
                 dgvStops.Rows[rowIndex].Tag = stop;
             }
             sw.Stop();
@@ -307,10 +445,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void cmdAddStop_Click(object sender, EventArgs e)
         {
-            string colonyUUID = cmbColony.SelectedValue as string;
-            if (string.IsNullOrEmpty(colonyUUID)) return;
+            string destUUID = cmbColony.SelectedValue as string;
+            if (string.IsNullOrEmpty(destUUID)) return;
 
-            viewModel.AddStop(colonyUUID);
+            var destType = GetSelectedDestType();
+            var purpose = GetSelectedPurpose();
+            viewModel.AddStop(destUUID, destType, purpose);
             PopulateStopsGrid();
             if (dgvStops.Rows.Count > 0)
             {
@@ -540,11 +680,10 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                     var routeStop = dgvStops.SelectedRows[0].Tag as RouteStop;
                     if (routeStop != null)
                     {
-                        selectedPlanStop = planViewModel.GetOrCreateStop(routeStop.ColonyUUID, routeStop.Sequence);
-                        var colony = playerContext.FindColony(routeStop.ColonyUUID);
-                        lblPlanStop.Text = colony != null
-                            ? $"{colony.PlanetName} - {colony.ColonyName}"
-                            : "(unknown colony)";
+                        string stopKey = !string.IsNullOrEmpty(routeStop.DestinationUUID) ? routeStop.DestinationUUID : routeStop.ColonyUUID;
+                        selectedPlanStop = planViewModel.GetOrCreateStop(stopKey, routeStop.Sequence,
+                            routeStop.DestinationType, routeStop.DestinationUUID);
+                        lblPlanStop.Text = ResolveStopName(routeStop);
                         PopulatePlanGrids();
                     }
                 }
@@ -598,6 +737,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
                 int added = 0;
                 Func<string, Models.Colony> colonyFinder = uuid => playerContext.FindColony(uuid);
+                Func<string, Models.Station> stationFinder = uuid => playerContext.FindStation(uuid);
+                string currentPlayerUUID = playerContext.CurrentPlayerUUID;
 
                 if (dlg.IncludeCommodities)
                     added += planViewModel.AutoFillCommodities(viewModel.Stops, colonyFinder);
@@ -610,7 +751,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
                 if (dlg.IncludeResources)
                     added += planViewModel.AutoFillManufacturingResources(viewModel.Stops, colonyFinder,
-                        uuid => playerContext.FindBlueprint(uuid));
+                        uuid => playerContext.FindBlueprint(uuid), stationFinder, currentPlayerUUID);
 
                 if (dlg.IncludeWorkers)
                     added += planViewModel.AutoFillWorkers(viewModel.Stops, colonyFinder, playerContext);
@@ -728,11 +869,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             var routeStop = dgvStops.SelectedRows[0].Tag as RouteStop;
             if (routeStop == null) return;
 
-            selectedPlanStop = planViewModel.GetOrCreateStop(routeStop.ColonyUUID, routeStop.Sequence);
-            var colony = playerContext.FindColony(routeStop.ColonyUUID);
-            lblPlanStop.Text = colony != null
-                ? $"{colony.PlanetName} - {colony.ColonyName}"
-                : "(unknown colony)";
+            string stopKey = !string.IsNullOrEmpty(routeStop.DestinationUUID) ? routeStop.DestinationUUID : routeStop.ColonyUUID;
+            selectedPlanStop = planViewModel.GetOrCreateStop(stopKey, routeStop.Sequence,
+                routeStop.DestinationType, routeStop.DestinationUUID);
+
+            string stopLabel = ResolveStopName(routeStop);
+            lblPlanStop.Text = stopLabel;
             PopulatePlanGrids();
         }
 

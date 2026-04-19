@@ -24,6 +24,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         private Ship selectedShip;
         private decimal currentCargoCapacity;
         private Dictionary<DeliveryPlanStop, Button> _stopCompleteButtons = new Dictionary<DeliveryPlanStop, Button>();
+        private Dictionary<DeliveryPlanStop, CheckBox> _refuelCheckboxes = new Dictionary<DeliveryPlanStop, CheckBox>();
 
         public FormDeliveryExecution()
         {
@@ -322,6 +323,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             dgvLoadList.Rows.Clear();
             flpStops.Controls.Clear();
             _stopCompleteButtons.Clear();
+            _refuelCheckboxes.Clear();
             selectedPlan = null;
             cmdCompletePlan.Visible = false;
             cmdDeletePlan.Visible = false;
@@ -343,6 +345,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             dgvLoadList.Rows.Clear();
             flpStops.Controls.Clear();
             _stopCompleteButtons.Clear();
+            _refuelCheckboxes.Clear();
 
             if (selectedPlan == null)
             {
@@ -383,16 +386,39 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             // Update cargo volume/mass display
             UpdateCargoDisplayFromResult(cargoResult);
 
+            // Look up the route for stop purposes
+            var route = playerContext.GetCurrentPlayerRoutes()
+                .FirstOrDefault(r => r.UUID == selectedPlan.RouteUUID);
+
             // Build per-stop sections
             foreach (var stop in selectedPlan.Stops.OrderBy(s => s.Sequence))
             {
                 // Skip completed stops
                 if (stop.StopCompleted) continue;
 
-                var colony = playerContext.FindColony(stop.ColonyUUID);
-                string stopTitle = colony != null
-                    ? $"Stop {stop.Sequence + 1}: {colony.PlanetName} - {colony.ColonyName}"
-                    : $"Stop {stop.Sequence + 1}: (unknown)";
+                string stopTitle;
+                if (stop.DestinationType == DestinationType.Station)
+                {
+                    var station = playerContext.FindStation(stop.DestinationUUID);
+                    stopTitle = station != null
+                        ? $"Stop {stop.Sequence + 1}: {station.Name} [Station]"
+                        : $"Stop {stop.Sequence + 1}: (unknown station)";
+                }
+                else if (stop.DestinationType == DestinationType.Asteroid)
+                {
+                    var asteroid = playerContext.FindAsteroid(stop.DestinationUUID);
+                    stopTitle = asteroid != null
+                        ? $"Stop {stop.Sequence + 1}: {asteroid.Name} [Asteroid]"
+                        : $"Stop {stop.Sequence + 1}: (unknown asteroid)";
+                }
+                else
+                {
+                    string colUUID = !string.IsNullOrEmpty(stop.DestinationUUID) ? stop.DestinationUUID : stop.ColonyUUID;
+                    var colony = playerContext.FindColony(colUUID);
+                    stopTitle = colony != null
+                        ? $"Stop {stop.Sequence + 1}: {colony.PlanetName} - {colony.ColonyName}"
+                        : $"Stop {stop.Sequence + 1}: (unknown)";
+                }
 
                 // Header label
                 var lblStop = new Label
@@ -446,9 +472,35 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     }
                 }
 
+                // Refuel checklist item for Refuel or CargoAndRefuel stops
+                RouteStop matchingRouteStop = null;
+                if (route != null)
+                    matchingRouteStop = route.Stops.FirstOrDefault(rs => rs.Sequence == stop.Sequence);
+                bool isRefuelStop = matchingRouteStop != null &&
+                    (matchingRouteStop.Purpose == RouteStopPurpose.Refuel || matchingRouteStop.Purpose == RouteStopPurpose.CargoAndRefuel);
+
+                if (isRefuelStop)
+                {
+                    var lblRefuel = new Label { Text = "  Refuel:", AutoSize = true, Margin = new Padding(10, 2, 3, 2) };
+                    flpStops.Controls.Add(lblRefuel);
+
+                    var chkRefuel = new CheckBox
+                    {
+                        Text = "Refuel at this stop",
+                        AutoSize = true,
+                        Margin = new Padding(20, 1, 3, 1),
+                        Tag = stop
+                    };
+                    chkRefuel.CheckedChanged += RefuelItem_CheckedChanged;
+                    flpStops.Controls.Add(chkRefuel);
+                    _refuelCheckboxes[stop] = chkRefuel;
+                }
+
                 // Show "Complete Stop" button if all items at this stop are delivered
+                bool hasItems = stop.DropOff.Count > 0 || stop.PickUp.Count > 0 || isRefuelStop;
                 bool allDelivered = stop.DropOff.All(i => i.Delivered) && stop.PickUp.All(i => i.Delivered)
-                    && (stop.DropOff.Count > 0 || stop.PickUp.Count > 0);
+                    && (!isRefuelStop || (_refuelCheckboxes.TryGetValue(stop, out var refChk) && refChk.Checked))
+                    && hasItems;
                 if (allDelivered)
                 {
                     var btnComplete = new Button
@@ -478,6 +530,18 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         // Item Delivery Handling
         // -----------------------------------------------------------------------
 
+        private void RefuelItem_CheckedChanged(object sender, EventArgs e)
+        {
+            var chk = sender as CheckBox;
+            if (chk == null) return;
+
+            var stop = chk.Tag as DeliveryPlanStop;
+            if (stop == null) return;
+
+            // Update the Complete Stop button for the affected stop
+            UpdateStopCompleteButton(stop);
+        }
+
         private void DeliveryItem_CheckedChanged(object sender, EventArgs e)
         {
             var chk = sender as CheckBox;
@@ -504,6 +568,12 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             if (item.ItemType == ItemType.ItemTypeEnum.WorkDetail && selectedPlan != null)
             {
                 UpdateWorkerDelivery(item, chk.Checked);
+            }
+
+            // Station hold operations: add/remove items from station holds
+            if (selectedPlan != null)
+            {
+                UpdateStationHold(item, chk.Checked);
             }
 
             playerContext.WriteContext();
@@ -573,12 +643,105 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             playerContext.OnColonyDataChanged(stop.ColonyUUID);
         }
 
+        /// <summary>
+        /// Updates station holds when delivery items are checked at station stops.
+        /// Drop-offs add items to the station hold; pick-ups remove items.
+        /// </summary>
+        private void UpdateStationHold(DeliveryItem item, bool delivered)
+        {
+            var stop = selectedPlan.Stops.FirstOrDefault(s =>
+                s.DropOff.Contains(item) || s.PickUp.Contains(item));
+            if (stop == null || stop.DestinationType != DestinationType.Station) return;
+
+            var station = playerContext.FindStation(stop.DestinationUUID);
+            if (station == null)
+            {
+                Log.Warn("Station not found for stop {0} during hold update", stop.DestinationUUID);
+                return;
+            }
+
+            string playerUUID = playerContext.CurrentPlayerUUID;
+            if (string.IsNullOrEmpty(playerUUID)) return;
+
+            ItemBag hold;
+            if (!station.Holds.TryGetValue(playerUUID, out hold))
+            {
+                hold = new ItemBag();
+                station.Holds[playerUUID] = hold;
+            }
+
+            bool isDropOff = stop.DropOff.Contains(item);
+
+            if (isDropOff && delivered)
+            {
+                // Drop-off: add items to station hold
+                var existing = hold.FindByType(item.ItemType, item.BaseItemTypeID);
+                if (existing.Count > 0)
+                {
+                    existing[0].Quantity += item.Quantity;
+                }
+                else
+                {
+                    var newItem = new Item(item.ItemType, item.BaseItemTypeID);
+                    newItem.UUID = Guid.NewGuid().ToString();
+                    newItem.BaseItemTypeID = item.BaseItemTypeID;
+                    newItem.Name = item.Name;
+                    newItem.Quantity = item.Quantity;
+                    newItem.ResourcePurity = item.ResourcePurity;
+                    hold.AddItem(newItem);
+                }
+            }
+            else if (isDropOff && !delivered)
+            {
+                // Undo drop-off: remove items from station hold
+                var existing = hold.FindByType(item.ItemType, item.BaseItemTypeID);
+                if (existing.Count > 0)
+                {
+                    existing[0].Quantity = Math.Max(0, existing[0].Quantity - item.Quantity);
+                }
+            }
+            else if (!isDropOff && delivered)
+            {
+                // Pick-up: remove items from station hold
+                var existing = hold.FindByType(item.ItemType, item.BaseItemTypeID);
+                if (existing.Count > 0)
+                {
+                    existing[0].Quantity = Math.Max(0, existing[0].Quantity - item.Quantity);
+                }
+            }
+            else if (!isDropOff && !delivered)
+            {
+                // Undo pick-up: add items back to station hold
+                var existing = hold.FindByType(item.ItemType, item.BaseItemTypeID);
+                if (existing.Count > 0)
+                {
+                    existing[0].Quantity += item.Quantity;
+                }
+                else
+                {
+                    var newItem = new Item(item.ItemType, item.BaseItemTypeID);
+                    newItem.UUID = Guid.NewGuid().ToString();
+                    newItem.BaseItemTypeID = item.BaseItemTypeID;
+                    newItem.Name = item.Name;
+                    newItem.Quantity = item.Quantity;
+                    newItem.ResourcePurity = item.ResourcePurity;
+                    hold.AddItem(newItem);
+                }
+            }
+
+            Log.Info("Station hold updated: station={0}, player={1}, item={2}, delivered={3}, isDropOff={4}",
+                station.Name, playerUUID, item.BaseItemTypeID, delivered, isDropOff);
+        }
+
         private void UpdateStopCompleteButton(DeliveryPlanStop stop)
         {
             if (stop == null) return;
 
+            bool isRefuelStop = _refuelCheckboxes.ContainsKey(stop);
+            bool hasItems = stop.DropOff.Count > 0 || stop.PickUp.Count > 0 || isRefuelStop;
             bool allDelivered = stop.DropOff.All(i => i.Delivered) && stop.PickUp.All(i => i.Delivered)
-                && (stop.DropOff.Count > 0 || stop.PickUp.Count > 0);
+                && (!isRefuelStop || (_refuelCheckboxes.TryGetValue(stop, out var refChk) && refChk.Checked))
+                && hasItems;
 
             if (allDelivered && !_stopCompleteButtons.ContainsKey(stop))
             {

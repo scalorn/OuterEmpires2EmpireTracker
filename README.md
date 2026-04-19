@@ -39,6 +39,9 @@ Design reusable ship configurations. Open from **Manage → Ship Templates**. Pi
 ### Ships
 Track your fleet. Open from **Manage → Ships**. Create ships manually or from a template (copies the hull and all components). The Overview tab shows installed components with editable condition and max repair fields for tracking damage. The Cargo tab lets you manage what's loaded — toggle between the main cargo hold and the ore hopper (mining ships only, restricted to unrefined purities). Ships referenced by delivery plans or build items can't be deleted.
 
+### Stations
+Manage the stations you use across the galaxy. Open from **Manage → Stations**. Create government or player-owned stations with type (Outpost, Station, Starbase). The Hold tab tracks your inventory at each station with editable condition and max repair fields. Player-owned stations get a Components tab for installed equipment (same slot-based system as ships) and a Munitions tab for armed stations. Stations referenced by delivery routes, plans, or build items can't be deleted.
+
 ### Pricing Plans
 Create pricing plans to assign credit values to resources and see what your commodities and manufactured items actually cost. Set base prices for Refined, S1, and S2 resources, add optional time costs (fixed per item + hourly rate), and the tracker computes rolled-up prices through the bill-of-materials chain. Create multiple plans to compare market value vs cost basis vs pessimistic estimates — whatever helps you decide if that manufacturing run is worth it.
 

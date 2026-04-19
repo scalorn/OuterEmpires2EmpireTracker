@@ -29,9 +29,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.txtRouteName = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.dgvStops = new System.Windows.Forms.DataGridView();
             this.colSequence = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDestType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colColonyName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPlanetName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSystemName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPurpose = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colFuelEstimate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.flpAddStop = new System.Windows.Forms.FlowLayoutPanel();
             this.lblAddStop = new System.Windows.Forms.Label();
             this.cmbColony = new System.Windows.Forms.ComboBox();
@@ -40,6 +43,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.cmdDown = new System.Windows.Forms.Button();
             this.cmdRemoveStop = new System.Windows.Forms.Button();
             this.chkPreventDuplicates = new System.Windows.Forms.CheckBox();
+            this.cmbDestType = new System.Windows.Forms.ComboBox();
+            this.cmbStopPurpose = new System.Windows.Forms.ComboBox();
             this.tabRouteDetail = new System.Windows.Forms.TabControl();
             this.tabStops = new System.Windows.Forms.TabPage();
             this.tabPlan = new System.Windows.Forms.TabPage();
@@ -198,9 +203,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.dgvStops.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvStops.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colSequence,
+            this.colDestType,
             this.colColonyName,
             this.colPlanetName,
-            this.colSystemName});
+            this.colSystemName,
+            this.colPurpose,
+            this.colFuelEstimate});
             this.dgvStops.Location = new System.Drawing.Point(2, 32);
             this.dgvStops.Margin = new System.Windows.Forms.Padding(2);
             this.dgvStops.Name = "dgvStops";
@@ -217,12 +225,19 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.colSequence.ReadOnly = true;
             this.colSequence.Width = 30;
             // 
+            // colDestType
+            // 
+            this.colDestType.HeaderText = "Type";
+            this.colDestType.Name = "colDestType";
+            this.colDestType.ReadOnly = true;
+            this.colDestType.Width = 60;
+            // 
             // colColonyName
             // 
-            this.colColonyName.HeaderText = "Colony";
+            this.colColonyName.HeaderText = "Destination";
             this.colColonyName.Name = "colColonyName";
             this.colColonyName.ReadOnly = true;
-            this.colColonyName.Width = 180;
+            this.colColonyName.Width = 160;
             // 
             // colPlanetName
             // 
@@ -236,7 +251,21 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.colSystemName.HeaderText = "System";
             this.colSystemName.Name = "colSystemName";
             this.colSystemName.ReadOnly = true;
-            this.colSystemName.Width = 180;
+            this.colSystemName.Width = 120;
+            // 
+            // colPurpose
+            // 
+            this.colPurpose.HeaderText = "Purpose";
+            this.colPurpose.Name = "colPurpose";
+            this.colPurpose.ReadOnly = true;
+            this.colPurpose.Width = 90;
+            // 
+            // colFuelEstimate
+            // 
+            this.colFuelEstimate.HeaderText = "Fuel Est.";
+            this.colFuelEstimate.Name = "colFuelEstimate";
+            this.colFuelEstimate.ReadOnly = true;
+            this.colFuelEstimate.Width = 60;
             // 
             // tabRouteDetail
             // 
@@ -618,8 +647,10 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             // flpAddStop
             // 
             this.flpAddStop.Controls.Add(this.chkPreventDuplicates);
+            this.flpAddStop.Controls.Add(this.cmbDestType);
             this.flpAddStop.Controls.Add(this.lblAddStop);
             this.flpAddStop.Controls.Add(this.cmbColony);
+            this.flpAddStop.Controls.Add(this.cmbStopPurpose);
             this.flpAddStop.Controls.Add(this.cmdAddStop);
             this.flpAddStop.Controls.Add(this.cmdUp);
             this.flpAddStop.Controls.Add(this.cmdDown);
@@ -640,6 +671,13 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.chkPreventDuplicates.Text = "No Duplicates";
             this.chkPreventDuplicates.UseVisualStyleBackColor = true;
             // 
+            // cmbDestType
+            // 
+            this.cmbDestType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDestType.Location = new System.Drawing.Point(104, 3);
+            this.cmbDestType.Name = "cmbDestType";
+            this.cmbDestType.Size = new System.Drawing.Size(75, 21);
+            // 
             // lblAddStop
             // 
             this.lblAddStop.Location = new System.Drawing.Point(2, 4);
@@ -647,7 +685,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.lblAddStop.Name = "lblAddStop";
             this.lblAddStop.Size = new System.Drawing.Size(50, 17);
             this.lblAddStop.TabIndex = 0;
-            this.lblAddStop.Text = "Colony";
+            this.lblAddStop.Text = "Dest";
             this.lblAddStop.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cmbColony
@@ -655,8 +693,15 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.cmbColony.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbColony.Location = new System.Drawing.Point(57, 3);
             this.cmbColony.Name = "cmbColony";
-            this.cmbColony.Size = new System.Drawing.Size(280, 21);
+            this.cmbColony.Size = new System.Drawing.Size(250, 21);
             this.cmbColony.TabIndex = 1;
+            // 
+            // cmbStopPurpose
+            // 
+            this.cmbStopPurpose.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStopPurpose.Location = new System.Drawing.Point(313, 3);
+            this.cmbStopPurpose.Name = "cmbStopPurpose";
+            this.cmbStopPurpose.Size = new System.Drawing.Size(90, 21);
             // 
             // cmdAddStop
             // 
@@ -767,9 +812,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         private OE2EmpireTracker.Controls.ValidatedTextBox txtRouteName;
         private System.Windows.Forms.DataGridView dgvStops;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSequence;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDestType;
         private System.Windows.Forms.DataGridViewTextBoxColumn colColonyName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPlanetName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSystemName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPurpose;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colFuelEstimate;
         private System.Windows.Forms.FlowLayoutPanel flpAddStop;
         private System.Windows.Forms.Label lblAddStop;
         private System.Windows.Forms.ComboBox cmbColony;
@@ -778,6 +826,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         private System.Windows.Forms.Button cmdDown;
         private System.Windows.Forms.Button cmdRemoveStop;
         private System.Windows.Forms.CheckBox chkPreventDuplicates;
+        private System.Windows.Forms.ComboBox cmbDestType;
+        private System.Windows.Forms.ComboBox cmbStopPurpose;
         private System.Windows.Forms.TabControl tabRouteDetail;
         private System.Windows.Forms.TabPage tabStops;
         private System.Windows.Forms.TabPage tabPlan;
