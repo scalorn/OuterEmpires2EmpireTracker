@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 namespace OE2EmpireTracker.Tests.Services
 {
+    using Blueprint = OE2EmpireTracker.Models.Blueprint;
     [TestFixture]
     public class ResourceCheckServiceTests
     {

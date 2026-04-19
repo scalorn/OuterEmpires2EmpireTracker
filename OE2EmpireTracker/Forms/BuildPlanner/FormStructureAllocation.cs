@@ -76,7 +76,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 {
                     if (!structure.IsBuiltAndOnline) continue;
 
-                    Blueprint bp = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                    Models.Blueprint bp = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                     if (bp == null) continue;
 
                     bool eligible = false;

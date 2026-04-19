@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
@@ -52,7 +53,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 if (colony == null) return null;
                 var structure = colony.Structures.FirstOrDefault(s => s.UUID == structureUUID);
                 if (structure == null) return null;
-                Blueprint bp = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                Models.Blueprint bp = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (bp == null) return null;
                 return string.IsNullOrEmpty(bp.OutputItemName) ? bp.Name : bp.OutputItemName;
             };
@@ -80,6 +81,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             cmdAddItem.Click += cmdAddItem_Click;
             cmdQueueCalc.Click += cmdQueueCalc_Click;
             cmdAllocate.Click += cmdAllocate_Click;
+            cmdAutoAssign.Click += cmdAutoAssign_Click;
             dgvBuildItems.CellDoubleClick += dgvBuildItems_CellDoubleClick;
             dgvBuildItems.SelectionChanged += dgvBuildItems_SelectionChanged;
 
@@ -238,6 +240,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             cmdAddItem.Enabled = enabled;
             cmdQueueCalc.Enabled = enabled;
             cmdAllocate.Enabled = enabled;
+            cmdAutoAssign.Enabled = enabled;
             cmdGenerateDelivery.Enabled = enabled;
         }
 
@@ -388,7 +391,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             if (item.ItemType == BuildItemType.Manufactory)
             {
-                Blueprint bp = playerContext.FindBlueprint(item.BlueprintUUID);
+                Models.Blueprint bp = playerContext.FindBlueprint(item.BlueprintUUID);
                 if (bp?.Resources != null)
                 {
                     foreach (var entry in bp.Resources)
@@ -742,6 +745,156 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         }
 
         // -----------------------------------------------------------------------
+        // Auto-Assign
+        // -----------------------------------------------------------------------
+
+        private void cmdAutoAssign_Click(object sender, EventArgs e)
+        {
+            if (_selectedPlan == null)
+            {
+                MessageBox.Show("Select a build plan first.", "Auto-Assign",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var route = PickDeliveryRoute();
+            if (route == null) return;
+
+            try
+            {
+                var proposals = AutoAssignService.ProposeAssignments(
+                    _selectedPlan,
+                    route,
+                    uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
+                    uuid => (Ship)null,
+                    uuid => (Station)null,
+                    uuid => playerContext.FindBlueprint(uuid));
+
+                if (proposals.Count == 0)
+                {
+                    MessageBox.Show("No unallocated items or no eligible structures.",
+                        "Auto-Assign", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                if (ShowAutoAssignReview(proposals))
+                {
+                    ApplyAutoAssignProposals(proposals);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error during auto-assign for plan '{0}'", _selectedPlan.Name);
+                MessageBox.Show("Error during auto-assign: " + ex.Message,
+                    "Auto-Assign", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Shows a review dialog with proposed assignments. Returns true if user clicks Apply.
+        /// </summary>
+        private bool ShowAutoAssignReview(List<AssignmentProposal> proposals)
+        {
+            using (var form = new Form())
+            {
+                form.Text = "Auto-Assign Review";
+                form.ClientSize = new System.Drawing.Size(700, 400);
+                form.FormBorderStyle = FormBorderStyle.Sizable;
+                form.StartPosition = FormStartPosition.CenterParent;
+                form.MinimumSize = new System.Drawing.Size(500, 300);
+
+                var dgv = new DataGridView
+                {
+                    Dock = DockStyle.Fill,
+                    AllowUserToAddRows = false,
+                    AllowUserToDeleteRows = false,
+                    ReadOnly = true,
+                    SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                    AllowUserToOrderColumns = true
+                };
+
+                dgv.Columns.Add("colItemName", "Item Name");
+                dgv.Columns.Add("colColony", "Colony");
+                dgv.Columns.Add("colStructure", "Structure");
+                dgv.Columns.Add("colSeq", "Sequence");
+                dgv.Columns.Add("colReason", "Reason");
+
+                dgv.Columns["colItemName"].Width = 160;
+                dgv.Columns["colColony"].Width = 120;
+                dgv.Columns["colStructure"].Width = 120;
+                dgv.Columns["colSeq"].Width = 60;
+                dgv.Columns["colReason"].Width = 200;
+
+                foreach (var p in proposals)
+                {
+                    var item = _selectedPlan.Items.FirstOrDefault(i => i.UUID == p.BuildItemUUID);
+                    string itemName = item?.ItemName ?? p.BuildItemUUID;
+                    string colonyName = _colonyFinder(p.BuildLocationUUID) ?? p.BuildLocationUUID;
+                    string structureName = _structureFinder(p.BuildLocationUUID, p.StructureUUID)
+                        ?? p.StructureUUID;
+
+                    dgv.Rows.Add(itemName, colonyName, structureName,
+                        p.SequenceInStructure, p.Reason);
+                }
+
+                var pnlButtons = new FlowLayoutPanel
+                {
+                    Dock = DockStyle.Bottom,
+                    FlowDirection = FlowDirection.RightToLeft,
+                    Height = 35,
+                    Padding = new Padding(5)
+                };
+
+                var btnCancel = new Button
+                {
+                    Text = "Cancel", Width = 75,
+                    DialogResult = DialogResult.Cancel
+                };
+                var btnApply = new Button
+                {
+                    Text = "Apply", Width = 75,
+                    DialogResult = DialogResult.OK
+                };
+
+                pnlButtons.Controls.Add(btnCancel);
+                pnlButtons.Controls.Add(btnApply);
+
+                form.Controls.Add(dgv);
+                form.Controls.Add(pnlButtons);
+                form.AcceptButton = btnApply;
+                form.CancelButton = btnCancel;
+
+                return form.ShowDialog(this) == DialogResult.OK;
+            }
+        }
+
+        /// <summary>
+        /// Applies accepted auto-assign proposals to the build items.
+        /// </summary>
+        private void ApplyAutoAssignProposals(List<AssignmentProposal> proposals)
+        {
+            int applied = 0;
+            foreach (var p in proposals)
+            {
+                var item = _selectedPlan.Items.FirstOrDefault(i => i.UUID == p.BuildItemUUID);
+                if (item == null) continue;
+
+                item.BuildLocationType = p.BuildLocationType;
+                item.BuildLocationUUID = p.BuildLocationUUID;
+                item.StructureUUID = p.StructureUUID;
+                item.SequenceInStructure = p.SequenceInStructure;
+                applied++;
+            }
+
+            playerContext.WriteContext();
+            playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
+            PopulateBuildItemsGrid();
+
+            Log.Info("Auto-assign applied {0} of {1} proposals to plan '{2}'",
+                applied, proposals.Count, _selectedPlan.Name);
+        }
+
+        // -----------------------------------------------------------------------
         // Generate Delivery
         // -----------------------------------------------------------------------
 
@@ -754,7 +907,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         /// <summary>
         /// Shows a route picker dialog and returns the selected route, or null if cancelled.
         /// </summary>
-        private DeliveryRoute PickDeliveryRoute()
+        private Models.DeliveryRoute PickDeliveryRoute()
         {
             var routes = playerContext.GetCurrentPlayerRoutes();
             if (routes.Count == 0)
@@ -799,7 +952,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 form.AcceptButton = btnOk;
                 form.CancelButton = btnCancel;
 
-                if (form.ShowDialog(this) == DialogResult.OK && cmb.SelectedItem is DeliveryRoute route)
+                if (form.ShowDialog(this) == DialogResult.OK && cmb.SelectedItem is Models.DeliveryRoute route)
                     return route;
                 return null;
             }

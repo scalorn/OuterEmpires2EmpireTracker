@@ -71,6 +71,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.cmdQueueCalc = new System.Windows.Forms.Button();
             this.cmdAllocate = new System.Windows.Forms.Button();
             this.cmdGenerateDelivery = new System.Windows.Forms.Button();
+            this.cmdAutoAssign = new System.Windows.Forms.Button();
             this.cmsGenerateDelivery = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiResourceDelivery = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiConsolidatedDelivery = new System.Windows.Forms.ToolStripMenuItem();
@@ -525,6 +526,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItemRow3.Controls.Add(this.cmdQueueCalc);
             this.flpAddItemRow3.Controls.Add(this.cmdAllocate);
             this.flpAddItemRow3.Controls.Add(this.cmdGenerateDelivery);
+            this.flpAddItemRow3.Controls.Add(this.cmdAutoAssign);
             this.flpAddItemRow3.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
             this.flpAddItemRow3.Location = new System.Drawing.Point(3, 80);
             this.flpAddItemRow3.Name = "flpAddItemRow3";
@@ -561,6 +563,14 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.cmdGenerateDelivery.Size = new System.Drawing.Size(130, 23);
             this.cmdGenerateDelivery.Text = "Generate Delivery \u25BC";
             this.cmdGenerateDelivery.UseVisualStyleBackColor = true;
+            // 
+            // cmdAutoAssign
+            // 
+            this.cmdAutoAssign.Location = new System.Drawing.Point(392, 3);
+            this.cmdAutoAssign.Name = "cmdAutoAssign";
+            this.cmdAutoAssign.Size = new System.Drawing.Size(90, 23);
+            this.cmdAutoAssign.Text = "Auto-Assign";
+            this.cmdAutoAssign.UseVisualStyleBackColor = true;
             // 
             // cmsGenerateDelivery
             // 
@@ -679,6 +689,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private System.Windows.Forms.Button cmdQueueCalc;
         private System.Windows.Forms.Button cmdAllocate;
         private System.Windows.Forms.Button cmdGenerateDelivery;
+        private System.Windows.Forms.Button cmdAutoAssign;
         private System.Windows.Forms.ContextMenuStrip cmsGenerateDelivery;
         private System.Windows.Forms.ToolStripMenuItem tsmiResourceDelivery;
         private System.Windows.Forms.ToolStripMenuItem tsmiConsolidatedDelivery;
