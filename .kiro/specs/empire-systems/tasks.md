@@ -203,15 +203,15 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 29.2 Implement MarketService.RecordPurchase (add to station hold)
   - [x] 29.3 Implement MarketService.ComputeProfitLoss
 
-- [ ] 30. Market Form
-  - [ ] 30.1 Create FormMarket MDI child: Listings tab, Transactions tab, Summary tab
-  - [ ] 30.2 Listings tab: grid with condition column for damaged components
-  - [ ] 30.3 Transactions tab: filters (type, item, counterparty, faction, station, date range), grid with Condition column
-  - [ ] 30.4 Summary tab: pricing plan selector, date range, totals, per-item breakdown
-  - [ ] 30.5 Record Sale dialog with condition snapshot
-  - [ ] 30.6 Implement MarketListingReferenceCounter, Refs column
-  - [ ] 30.7 Wire events, NLog, PERF
-  - [ ] 30.8 Add "Market" to Manage menu
+- [x] 30. Market Form
+  - [x] 30.1 Create FormMarket MDI child: Listings tab, Transactions tab, Summary tab
+  - [x] 30.2 Listings tab: grid with condition column for damaged components
+  - [x] 30.3 Transactions tab: filters (type, item, counterparty, faction, station, date range), grid with Condition column
+  - [x] 30.4 Summary tab: pricing plan selector, date range, totals, per-item breakdown
+  - [x] 30.5 Record Sale dialog with condition snapshot
+  - [x] 30.6 Implement MarketListingReferenceCounter, Refs column
+  - [x] 30.7 Wire events, NLog, PERF
+  - [x] 30.8 Add "Market" to Manage menu
 
 - [ ] 31. Reference Counter Expansions (Iteration 5)
   - [ ] 31.1 Expand BlueprintReferenceCounter: MarketListing.ItemReferenceID

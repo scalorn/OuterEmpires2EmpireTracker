@@ -320,6 +320,7 @@
     <Compile Include="Services\ShipReferenceCounterTests.cs" />
     <Compile Include="Services\StationReferenceCounterTests.cs" />
     <Compile Include="Services\MarketServiceTests.cs" />
+    <Compile Include="Services\MarketListingReferenceCounterTests.cs" />
     <Compile Include="Services\ColonyImportHelperPropertyTests.cs" />
     <Compile Include="Services\ColonyImportTimestampPropertyTests.cs" />
     <Compile Include="Services\ColonyInactivityStalenessPropertyTests.cs" />

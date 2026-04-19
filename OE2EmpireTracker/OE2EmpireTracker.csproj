@@ -150,6 +150,19 @@
     <Compile Include="Services\ShipTemplateReferenceCounter.cs" />
     <Compile Include="Services\ShipReferenceCounter.cs" />
     <Compile Include="Services\StationReferenceCounter.cs" />
+    <Compile Include="Services\MarketListingReferenceCounter.cs" />
+    <Compile Include="Forms\Market\FormMarket.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Market\FormMarket.Designer.cs">
+      <DependentUpon>FormMarket.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Market\FormListingEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Market\FormRecordSale.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Station\FormStation.cs">
       <SubType>Form</SubType>
     </Compile>
