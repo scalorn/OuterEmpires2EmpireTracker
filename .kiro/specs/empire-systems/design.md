@@ -718,6 +718,11 @@ public class ShipComponentSlot
     public string SlotType { get; set; } = string.Empty;  // "Reactor", "CargoPod", "FuelTank", "Weapon", etc.
     public int SlotIndex { get; set; } = 0;                // Which slot of this type (0-based)
     public string BlueprintUUID { get; set; } = string.Empty;
+
+    // Damage state (Ship instances only — ignored on ShipTemplate and Station)
+    public int CurrentHP { get; set; } = 0;       // Current health points (0 = use MaxHP from blueprint)
+    public int MaxHP { get; set; } = 0;            // Max health points (0 = use Health from blueprint)
+    public decimal MaxRepairPercent { get; set; } = 0m;  // Max repairable condition (0 = 100%, i.e. fully repairable)
 }
 ```
 
@@ -725,6 +730,7 @@ Design decisions:
 - SlotType is a string rather than an enum because the game may add new slot types. The hull blueprint's properties define valid slot types and counts.
 - SlotIndex distinguishes multiple slots of the same type (e.g. weapon slot 0, weapon slot 1).
 - The template doesn't store computed stats — those are derived from the component blueprints at display time.
+- Damage fields (`CurrentHP`, `MaxHP`, `MaxRepairPercent`) are on ShipComponentSlot so each component tracks its own condition independently. All default to 0 meaning "undamaged" — `DefaultValueHandling.Ignore` omits them from JSON for undamaged components and templates. On ShipTemplate and Station, these fields are unused.
 
 ### Ship
 
@@ -746,6 +752,11 @@ public class Ship
     // Cargo
     public ItemBag Cargo { get; set; } = new ItemBag();
     public ItemBag Hopper { get; set; } = new ItemBag();  // Mining ships only — unrefined resources (High/Medium/Low purity)
+
+    // Hull damage state
+    public int HullCurrentHP { get; set; } = 0;       // Current hull HP (0 = use MaxHP from hull blueprint)
+    public int HullMaxHP { get; set; } = 0;            // Max hull HP (0 = use Health from hull blueprint)
+    public decimal HullMaxRepairPercent { get; set; } = 0m;  // Max repairable hull condition (0 = 100%)
 }
 ```
 
@@ -754,6 +765,12 @@ Design decisions:
 - Location uses the same DestinationType enum as route stops.
 - Cargo is an ItemBag, same as colony warehouse. Volume enforcement is in the service layer, not the model.
 - Hopper is a separate ItemBag for unrefined resources on mining ships. In-game this is called the "Hopper" (or "Ore Hopper" for the component that provides it). It can only hold resources at High, Medium, or Low purity — Refined and synthetic purities are not allowed. Capacity comes from the hull's "Raw Material Capacity" property plus the sum of installed Ore Hopper components' "Raw Material Capacity" property. Empty for non-mining ships (hulls without `Raw Material Capacity` or `Max Ore Hoppers`). The service layer enforces the purity restriction on add operations.
+- Hull and component damage uses the same three-field pattern: `CurrentHP` / `MaxHP` / `MaxRepairPercent`. All default to 0, which means "undamaged" (use blueprint Health value as max, 100% repairable). `DefaultValueHandling.Ignore` omits them from JSON when zero — undamaged ships have no damage fields in the save file.
+- `CurrentHP` is the current health points. `MaxHP` is the maximum (may differ from blueprint Health if hull plating/reinforcement modifies it). `MaxRepairPercent` is the ceiling for repairs — damage beyond this point is permanent until the component is replaced. A value of 85.5 means the component can only be repaired to 85.5% of MaxHP.
+- The hull has its own damage fields (`HullCurrentHP`, `HullMaxHP`, `HullMaxRepairPercent`) separate from components because the hull is not a ShipComponentSlot — it's the ship itself.
+- On ShipTemplate and Station, the damage fields on ShipComponentSlot are ignored (templates and stations don't take damage in the current game). `DefaultValueHandling.Ignore` keeps them out of JSON.
+- Condition percentage is computed: `(CurrentHP / MaxHP) * 100`. The UI displays both the HP fraction and the percentage. Color coding: green >= 75%, yellow >= 50%, red < 50%.
+- Future Game API integration: when the API is available, damage state can be imported directly into these fields. The manual entry UI serves as the interim solution.
 
 ### Station
 
@@ -2167,16 +2184,16 @@ MDI child form. Left-list / right-detail pattern with tabs for stats/components 
 │ │▸ ISS Endeavour   │ │ ┌─ Overview ─┬─ Cargo ─────────────────────────────┐   │
 │ │  ISS Reliant     │ │ │                                                  │   │
 │ │  Mining Barge 1  │ │ │ Components:                                      │   │
-│ │  Mining Barge 2  │ │ │ ┌────────────┬───────┬────────────────────────┐  │   │
-│ │                  │ │ │ │ Slot Type  │ Slot# │ Blueprint              │  │   │
-│ │                  │ │ │ ├────────────┼───────┼────────────────────────┤  │   │
-│ │                  │ │ │ │ Hull       │   -   │ Clipper Hull Mk3       │  │   │
-│ │                  │ │ │ │ Reactor    │   0   │ Reactor Mk3            │  │   │
-│ │                  │ │ │ │ Drive      │   0   │ Drive Mk3              │  │   │
-│ │                  │ │ │ │ Cargo Pod  │   0   │ Cargo Pod Mk2          │  │   │
-│ │                  │ │ │ │ Cargo Pod  │   1   │ Cargo Pod Mk2          │  │   │
-│ │                  │ │ │ │ Weapon     │   0   │ Laser Cannon Mk2       │  │   │
-│ │                  │ │ │ └────────────┴───────┴────────────────────────┘  │   │
+│ │  Mining Barge 2  │ │ │ ┌────────────┬───────┬──────────────────┬───────────────┬────────┐│   │
+│ │                  │ │ │ │ Slot Type  │ Slot# │ Blueprint        │ Condition     │ MaxRep ││   │
+│ │                  │ │ │ ├────────────┼───────┼──────────────────┼───────────────┼────────┤│   │
+│ │                  │ │ │ │ Hull       │   -   │ Clipper Hull Mk3 │ 14250/15000 95%│  100% ││   │
+│ │                  │ │ │ │ Reactor    │   0   │ Reactor Mk3      │   850/850  100%│  100% ││   │
+│ │                  │ │ │ │ Drive      │   0   │ Drive Mk3        │   380/400   95%│   90% ││   │
+│ │                  │ │ │ │ Cargo Pod  │   0   │ Cargo Pod Mk2    │   200/200  100%│  100% ││   │
+│ │                  │ │ │ │ Cargo Pod  │   1   │ Cargo Pod Mk2    │   200/200  100%│  100% ││   │
+│ │                  │ │ │ │ Weapon     │   0   │ Laser Cannon Mk2 │   140/180   78%│   85% ││   │
+│ │                  │ │ │ └────────────┴───────┴──────────────────┴───────────────┴────────┘│   │
 │ │                  │ │ │ [Swap Component ▼]                               │   │
 │ │                  │ │ │                                                  │   │
 │ │                  │ │ │ Stats:                                           │   │
@@ -2266,7 +2283,7 @@ Hopper view (when "Hopper" radio selected):
 Controls:
 - Left: `flpSearchList` → `txtShipFilter` + `lvwShips` (ListView) + `cmdCreateFromTemplate`
 - Right: `flpShipData` → `txtShipName`, template/location labels, `tabShipDetail` (TabControl with Overview and Cargo tabs)
-- Overview tab: `dgvComponents` (read-only DataGridView), `cmdSwapComponent` (opens component picker), `dgvStats` (read-only DataGridView) — computed via ShipBuildService.ComputeStats, same grouped layout as FormShipTemplate. Mining/scanning sections shown only when relevant components are installed.
+- Overview tab: `dgvComponents` (DataGridView — columns: Slot Type, Slot#, Blueprint, Condition, MaxRepair. Condition and MaxRepair are editable for ship instances. Condition shows CurrentHP/MaxHP and percentage, color-coded: green ≥75%, yellow ≥50%, red <50%. MaxRepair shows the max repairable percentage. Hull row is always first.), `cmdSwapComponent` (opens component picker), `dgvStats` (read-only DataGridView) — computed via ShipBuildService.ComputeStats, same grouped layout as FormShipTemplate. Mining/scanning sections shown only when relevant components are installed.
 - Cargo tab: `rbCargoHold` / `rbHopper` (RadioButtons) to switch views. Hopper radio only enabled when ship has Ore Hopper components.
   - Cargo Hold view: `dgvCargo` (DataGridView with crate master-detail), `dgvCrateContents` (detail grid), crate management buttons, volume header showing used/capacity.
   - Hopper view: `dgvHopper` (DataGridView) with columns Resource, Name, Purity, Qty, Volume. Hopper only accepts unrefined resources (High, Medium, Low purity). Add panel with resource filter/combo, purity combo (restricted to High/Medium/Low), quantity, and Add button. Volume header showing used/capacity from Ore Hopper `Raw Material Capacity`.
