@@ -347,6 +347,12 @@
     <Compile Include="Forms\BuildPlanner\FormBuildPlanner.Designer.cs">
       <DependentUpon>FormBuildPlanner.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\BuildPlanner\FormStructureAllocation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\BuildPlanner\FormStructureAllocation.Designer.cs">
+      <DependentUpon>FormStructureAllocation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\PricingPlan\FormPricingPlan.cs">
       <SubType>Form</SubType>
     </Compile>

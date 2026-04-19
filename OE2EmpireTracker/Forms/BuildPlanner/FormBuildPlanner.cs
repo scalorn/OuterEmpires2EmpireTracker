@@ -27,6 +27,12 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         /// </summary>
         private Func<string, string> _colonyFinder;
 
+        /// <summary>
+        /// Resolves a structure name from its UUID within a colony.
+        /// Returns the blueprint output name or null if not found.
+        /// </summary>
+        private Func<string, string, string> _structureFinder;
+
         public FormBuildPlanner()
         {
             InitializeComponent();
@@ -37,6 +43,18 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 var colony = playerContext.GetCurrentPlayerColonies()
                     .FirstOrDefault(c => c.UUID == uuid);
                 return colony?.ColonyName;
+            };
+
+            _structureFinder = (colonyUUID, structureUUID) =>
+            {
+                var colony = playerContext.GetCurrentPlayerColonies()
+                    .FirstOrDefault(c => c.UUID == colonyUUID);
+                if (colony == null) return null;
+                var structure = colony.Structures.FirstOrDefault(s => s.UUID == structureUUID);
+                if (structure == null) return null;
+                Blueprint bp = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                if (bp == null) return null;
+                return string.IsNullOrEmpty(bp.OutputItemName) ? bp.Name : bp.OutputItemName;
             };
 
             lvwPlans.View = View.Details;
@@ -61,6 +79,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             txtItemFilter.TextChanged += txtItemFilter_TextChanged;
             cmdAddItem.Click += cmdAddItem_Click;
             cmdQueueCalc.Click += cmdQueueCalc_Click;
+            cmdAllocate.Click += cmdAllocate_Click;
+            dgvBuildItems.CellDoubleClick += dgvBuildItems_CellDoubleClick;
 
             PopulatePlanList();
             ClearForm();
@@ -202,6 +222,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             txtRecipient.Enabled = enabled;
             cmdAddItem.Enabled = enabled;
             cmdQueueCalc.Enabled = enabled;
+            cmdAllocate.Enabled = enabled;
         }
 
         private void PopulateBuildItemsGrid()
@@ -221,7 +242,15 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 else
                 {
                     string colonyName = _colonyFinder(item.BuildLocationUUID);
-                    location = colonyName ?? item.BuildLocationUUID;
+                    string structureName = !string.IsNullOrEmpty(item.StructureUUID)
+                        ? _structureFinder(item.BuildLocationUUID, item.StructureUUID)
+                        : null;
+                    if (colonyName != null && structureName != null)
+                        location = colonyName + " / " + structureName;
+                    else if (colonyName != null)
+                        location = colonyName;
+                    else
+                        location = item.BuildLocationUUID;
                 }
 
                 int rowIdx = dgvBuildItems.Rows.Add(
@@ -498,6 +527,61 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             txtQuantity.Text = runs.ToString();
             Log.Info("Queue Calc: {0} runs for '{1}' ({2}s target)",
                 runs, selectedEntry.Display, totalSeconds);
+        }
+
+        // -----------------------------------------------------------------------
+        // Structure Allocation
+        // -----------------------------------------------------------------------
+
+        private void cmdAllocate_Click(object sender, EventArgs e)
+        {
+            OpenAllocationDialog();
+        }
+
+        private void dgvBuildItems_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            OpenAllocationDialog();
+        }
+
+        private void OpenAllocationDialog()
+        {
+            if (_selectedPlan == null) return;
+
+            if (dgvBuildItems.CurrentRow == null || dgvBuildItems.CurrentRow.Tag == null)
+            {
+                MessageBox.Show("Select a build item to allocate.", "Allocate",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var buildItem = dgvBuildItems.CurrentRow.Tag as BuildItem;
+            if (buildItem == null) return;
+
+            if (buildItem.ItemType != BuildItemType.Manufactory &&
+                buildItem.ItemType != BuildItemType.Commodity)
+            {
+                MessageBox.Show("Only Manufactory and Commodity items can be allocated to structures.",
+                    "Allocate", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            using (var dlg = new FormStructureAllocation(buildItem))
+            {
+                if (dlg.ShowDialog(this) == DialogResult.OK)
+                {
+                    buildItem.BuildLocationType = DestinationType.Colony;
+                    buildItem.BuildLocationUUID = dlg.SelectedColonyUUID;
+                    buildItem.StructureUUID = dlg.SelectedStructureUUID;
+
+                    playerContext.WriteContext();
+                    playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
+                    PopulateBuildItemsGrid();
+
+                    Log.Info("Allocated item '{0}' to colony {1} structure {2}",
+                        buildItem.ItemName, dlg.SelectedColonyUUID, dlg.SelectedStructureUUID);
+                }
+            }
         }
 
         /// <summary>

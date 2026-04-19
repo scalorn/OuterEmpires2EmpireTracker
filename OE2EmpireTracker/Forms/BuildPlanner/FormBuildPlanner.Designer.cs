@@ -61,6 +61,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItemRow3 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddItem = new System.Windows.Forms.Button();
             this.cmdQueueCalc = new System.Windows.Forms.Button();
+            this.cmdAllocate = new System.Windows.Forms.Button();
 
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
@@ -440,6 +441,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItemRow3.AutoSize = true;
             this.flpAddItemRow3.Controls.Add(this.cmdAddItem);
             this.flpAddItemRow3.Controls.Add(this.cmdQueueCalc);
+            this.flpAddItemRow3.Controls.Add(this.cmdAllocate);
             this.flpAddItemRow3.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
             this.flpAddItemRow3.Location = new System.Drawing.Point(3, 80);
             this.flpAddItemRow3.Name = "flpAddItemRow3";
@@ -460,6 +462,14 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.cmdQueueCalc.Size = new System.Drawing.Size(85, 23);
             this.cmdQueueCalc.Text = "Queue Calc";
             this.cmdQueueCalc.UseVisualStyleBackColor = true;
+            // 
+            // cmdAllocate
+            // 
+            this.cmdAllocate.Location = new System.Drawing.Point(175, 3);
+            this.cmdAllocate.Name = "cmdAllocate";
+            this.cmdAllocate.Size = new System.Drawing.Size(75, 23);
+            this.cmdAllocate.Text = "Allocate";
+            this.cmdAllocate.UseVisualStyleBackColor = true;
             // 
             // FormBuildPlanner
             // 
@@ -540,5 +550,6 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private System.Windows.Forms.FlowLayoutPanel flpAddItemRow3;
         private System.Windows.Forms.Button cmdAddItem;
         private System.Windows.Forms.Button cmdQueueCalc;
+        private System.Windows.Forms.Button cmdAllocate;
     }
 }
