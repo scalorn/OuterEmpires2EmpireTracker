@@ -517,6 +517,7 @@ public class BuildPlan
     public string OwnerUUID { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string DeliveryPlanUUID { get; set; } = string.Empty;
+    public bool IsActive { get; set; } = true;  // Inactive plans skip resource checks and delivery generation
     public List<BuildItem> Items { get; set; } = new List<BuildItem>();
 }
 ```
@@ -843,6 +844,7 @@ public class StockPlan
     public string Name { get; set; } = string.Empty;
     public string OwnerUUID { get; set; } = string.Empty;
     public string ReplenishmentBuildPlanUUID { get; set; } = string.Empty;
+    public bool IsActive { get; set; } = true;  // Inactive plans skip shortfall checks and replenishment
     public List<StockTarget> Targets { get; set; } = new List<StockTarget>();
 }
 
@@ -933,6 +935,7 @@ public class SupplyChain
     public string UUID { get; set; }
     public string Name { get; set; } = string.Empty;
     public string OwnerUUID { get; set; } = string.Empty;
+    public bool IsActive { get; set; } = true;  // Inactive chains skip background threshold checks
     public List<SupplyChainStage> Stages { get; set; } = new List<SupplyChainStage>();
 }
 
@@ -978,6 +981,7 @@ public class StockProfile
     public string UUID { get; set; }
     public string Name { get; set; } = string.Empty;
     public string OwnerUUID { get; set; } = string.Empty;
+    public bool IsActive { get; set; } = true;  // Inactive profiles skip evaluation entirely
     public List<StockProfileEntry> Entries { get; set; } = new List<StockProfileEntry>();
 }
 
@@ -1003,6 +1007,7 @@ public class WarehouseOverflowRule
 {
     public string UUID { get; set; }
     public string OwnerUUID { get; set; } = string.Empty;
+    public bool IsActive { get; set; } = true;  // Inactive rules skip overflow threshold checks
     public string ColonyUUID { get; set; } = string.Empty;       // Source colony
     public string ResourceName { get; set; } = string.Empty;
     public string ResourcePurity { get; set; } = string.Empty;
@@ -1023,6 +1028,22 @@ Design decisions:
 - TriggerThreshold is the quantity at which a delivery is generated to move the excess. The amount moved = current quantity - TriggerThreshold (leave TriggerThreshold behind, move the rest).
 - Background processor checks warehouse levels each tick and generates deliveries when thresholds are exceeded.
 - Colony warehouse capacity is tracked via the existing colony data model. A full warehouse is detectable when total item count/volume reaches the limit.
+
+### IsActive Pattern (All Automation Entities)
+
+The following entities have an `IsActive` boolean (default `true`):
+- **BuildPlan** — inactive plans are excluded from resource check cascades and delivery generation. Existing build items retain their status but no new shortfalls are computed.
+- **StockPlan** — inactive plans skip shortfall evaluation and do not trigger replenishment build items.
+- **StockProfile** — inactive profiles are excluded entirely from stock target aggregation.
+- **SupplyChain** — inactive chains are skipped by the background processor; accumulation thresholds are not checked and no deliveries are generated.
+- **WarehouseOverflowRule** — inactive rules are skipped during overflow threshold checks.
+
+Design decisions:
+- `IsActive` defaults to `true` so existing data and new entities are active by default. `DefaultValueHandling.Ignore` omits it from JSON when true, so no migration needed.
+- All service methods that iterate these entities (`ResourceCheckService`, `StockTargetService`, `SupplyChainService`, background processor overflow checks) SHALL filter to `IsActive == true` before processing.
+- The UI for each form SHALL display an Active/Inactive toggle (checkbox or button). Inactive entities should be visually distinguished (e.g. grayed text, strikethrough, or a status indicator in the list view).
+- Toggling IsActive is an immediate write-through to the data model (consistent with the write-through pattern). The next background processing tick picks up the change.
+- Inactive entities are still visible in list views (not hidden) so the user can reactivate them. A "Show Inactive" filter checkbox can optionally hide them.
 
 ### RouteStop Changes
 
