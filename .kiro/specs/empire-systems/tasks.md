@@ -87,7 +87,7 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 9.4 Implement QueueCalculator
   - [x] 9.5 Implement AutoAssignService (ProposeAssignments with BuildLocationType + shipFinder/stationFinder)
 
-- [-] 10. Build Planner Form
+- [x] 10. Build Planner Form
   - [x] 10.1 Create FormBuildPlanner MDI child: plan list, plan details, build items grid (Location column)
   - [x] 10.2 Add Item panel with Queue Calc button
   - [x] 10.3 Structure allocation dialog (Location column, future ship/station note)
@@ -98,7 +98,7 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 10.8 Wire events with BeginInvoke
   - [x] 10.9 Build item status display with color coding
   - [x] 10.10 Implement BuildPlanReferenceCounter (counts StockPlan.ReplenishmentBuildPlanUUID), add Refs column
-  - [-] 10.11 Add "Build Planner" to Manage menu
+  - [x] 10.11 Add "Build Planner" to Manage menu
 
 - [ ] 11. Colony Admin Tab Integration
   - [ ] 11.1 Add "Generate Build Plan" button to colony Administration tab
