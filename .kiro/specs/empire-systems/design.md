@@ -527,7 +527,7 @@ public enum DestinationType
     Colony,
     Station,
     Asteroid,
-    Ship        // Future: factory ships for manufacturing/refining/research at sea
+    Ship        // Future: factory ships for manufacturing/refining/research in space
 }
 ```
 
