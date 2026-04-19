@@ -391,6 +391,14 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
         {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
+
             _selectedPlan = null;
             PopulatePlanList();
             ClearForm();

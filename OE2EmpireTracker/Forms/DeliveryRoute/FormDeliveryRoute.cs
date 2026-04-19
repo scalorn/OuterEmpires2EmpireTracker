@@ -34,6 +34,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
             lvwRoutes.View = View.Details;
             lvwRoutes.Columns.Add("Name", 200);
+            lvwRoutes.Columns.Add("Refs", 45, HorizontalAlignment.Right);
             lvwRoutes.FullRowSelect = true;
             lvwRoutes.MultiSelect = false;
             lvwRoutes.ItemSelectionChanged += lvwRoutes_ItemSelectionChanged;
@@ -161,9 +162,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         {
             lvwRoutes.Items.Clear();
             var routes = viewModel.GetFilteredRoutes(txtRouteFilter.Text);
+            var counter = new DeliveryRouteReferenceCounter(playerContext.DeliveryPlanList);
             foreach (var route in routes)
             {
                 var item = new ListViewItem(route.Name);
+                string refCount = counter.CountReferences(route.UUID).TotalCount.ToString();
+                item.SubItems.Add(refCount);
                 item.Tag = route;
                 lvwRoutes.Items.Add(item);
             }
@@ -181,6 +185,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 var route = lvwRoutes.SelectedItems[0].Tag as Models.DeliveryRoute;
                 viewModel.SelectRoute(route);
                 PopulateForm();
+                UpdateDeleteButtonState();
 
                 // Load or create the delivery plan for this route
                 planViewModel = null;
@@ -366,6 +371,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         {
             ClearForm();
             lvwRoutes.SelectedItems.Clear();
+            cmdDelete.Enabled = true;
+            cmdDelete.Text = "Delete";
         }
 
         private void cmdSave_Click(object sender, EventArgs e)
@@ -392,6 +399,19 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         {
             if (string.IsNullOrEmpty(viewModel.UUID)) return;
 
+            // Defense-in-depth: re-check references even if button should be disabled
+            var counter = new DeliveryRouteReferenceCounter(playerContext.DeliveryPlanList);
+            var report = counter.CountReferences(viewModel.UUID);
+            if (report.TotalCount > 0)
+            {
+                MessageBox.Show(
+                    $"Cannot delete route '{viewModel.Name}' — it is referenced by {report.DeliveryPlanCount} plan(s).",
+                    "Route In Use",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
             var result = MessageBox.Show(
                 $"Delete route '{viewModel.Name}'?",
                 "Confirm Delete",
@@ -402,6 +422,29 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             viewModel.Delete();
             ClearForm();
             PopulateRouteList();
+        }
+
+        private void UpdateDeleteButtonState()
+        {
+            if (string.IsNullOrEmpty(viewModel.UUID))
+            {
+                cmdDelete.Enabled = true;
+                cmdDelete.Text = "Delete";
+                return;
+            }
+
+            var counter = new DeliveryRouteReferenceCounter(playerContext.DeliveryPlanList);
+            var report = counter.CountReferences(viewModel.UUID);
+            if (report.TotalCount > 0)
+            {
+                cmdDelete.Enabled = false;
+                cmdDelete.Text = $"In Use ({report.TotalCount})";
+            }
+            else
+            {
+                cmdDelete.Enabled = true;
+                cmdDelete.Text = "Delete";
+            }
         }
 
         // -----------------------------------------------------------------------

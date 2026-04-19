@@ -308,6 +308,7 @@
     <Compile Include="Services\BughuntDiagnosticTest.cs" />
     <Compile Include="Services\BlueprintReferenceCounterTests.cs" />
     <Compile Include="Services\BlueprintReferenceCounterPropertyTests.cs" />
+    <Compile Include="Services\DeliveryRouteReferenceCounterTests.cs" />
     <Compile Include="Services\ColonyImportHelperPropertyTests.cs" />
     <Compile Include="Services\ColonyImportTimestampPropertyTests.cs" />
     <Compile Include="Services\ColonyInactivityStalenessPropertyTests.cs" />
