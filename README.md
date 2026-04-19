@@ -36,6 +36,9 @@ Track factions and external characters you interact with. Open from **Manage →
 ### Ship Templates
 Design reusable ship configurations. Open from **Manage → Ship Templates**. Pick a hull, then fill component slots (reactors, drives, weapons, cargo pods, shields, etc.) from your blueprint collection. The stats panel updates live as you install components — see mass, power balance, cargo capacity, defence ratings, and propulsion at a glance. When you're ready to build, click Order Build to generate manufacturing items for the hull and every component, feeding directly into the Build Planner.
 
+### Ships
+Track your fleet. Open from **Manage → Ships**. Create ships manually or from a template (copies the hull and all components). The Overview tab shows installed components with editable condition and max repair fields for tracking damage. The Cargo tab lets you manage what's loaded — toggle between the main cargo hold and the ore hopper (mining ships only, restricted to unrefined purities). Ships referenced by delivery plans or build items can't be deleted.
+
 ### Pricing Plans
 Create pricing plans to assign credit values to resources and see what your commodities and manufactured items actually cost. Set base prices for Refined, S1, and S2 resources, add optional time costs (fixed per item + hourly rate), and the tracker computes rolled-up prices through the bill-of-materials chain. Create multiple plans to compare market value vs cost basis vs pessimistic estimates — whatever helps you decide if that manufacturing run is worth it.
 
