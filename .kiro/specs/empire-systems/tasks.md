@@ -231,12 +231,12 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 34.4 Implement dependency tracking (DependsOnUUID)
   - [x] 34.5 Extend ResourceCheckService for mining/refining
 
-- [ ] 35. Asteroid Form
-  - [ ] 35.1 Create FormAsteroid MDI child with reserves grid and linked surveys
-  - [ ] 35.2 Implement auto-create asteroid on asteroid survey import (Flow 12)
-  - [ ] 35.3 Implement AsteroidReferenceCounter, Refs column
-  - [ ] 35.4 Wire events, NLog, PERF
-  - [ ] 35.5 Add "Asteroids" to Manage menu
+- [x] 35. Asteroid Form
+  - [x] 35.1 Create FormAsteroid MDI child with reserves grid and linked surveys
+  - [x] 35.2 Implement auto-create asteroid on asteroid survey import (Flow 12)
+  - [x] 35.3 Implement AsteroidReferenceCounter, Refs column
+  - [x] 35.4 Wire events, NLog, PERF
+  - [x] 35.5 Add "Asteroids" to Manage menu
 
 - [ ] 36. Supply Chain Form
   - [ ] 36.1 Create FormSupplyChain MDI child with stages grid and flow summary

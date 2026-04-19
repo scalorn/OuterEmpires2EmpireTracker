@@ -542,6 +542,9 @@ namespace OE2EmpireTracker.Forms.Survey
                     Log.Info("New survey created via dedup: {0} ({1})", newSurvey.PlanetName, newSurvey.SurveyID);
                 }
 
+                // Auto-create asteroid if this is an asteroid survey (Flow 12)
+                SurveyImportHelper.LinkOrCreateAsteroid(importedSurvey, playerContext);
+
                 playerContext.WriteContext();
                 playerContext.OnSurveyDataChanged(importedSurvey.UUID);
 

@@ -18,6 +18,10 @@ namespace OE2EmpireTracker.Services.Migration
         private static readonly Guid DefaultSurveyNamespace =
             new Guid("b2c3d4e5-f6a7-8901-bcde-f12345678901");
 
+        // Separate namespace for asteroid UUIDs (SystemName:AsteroidName)
+        private static readonly Guid AsteroidNamespace =
+            new Guid("c3d4e5f6-a7b8-9012-cdef-234567890abc");
+
         /// <summary>
         /// Generates a deterministic UUID v5 from the blueprint's dedup key fields.
         /// Input string format: "Name|Evolution|BluePrintType|Class|TechLevel"
@@ -64,6 +68,16 @@ namespace OE2EmpireTracker.Services.Migration
         {
             string input = $"{ownerUUID ?? ""}|{planetName ?? ""}|{systemName ?? ""}";
             return GenerateV5(DefaultSurveyNamespace, input).ToString();
+        }
+
+        /// <summary>
+        /// Generates a deterministic UUID v5 for an asteroid from SystemName:AsteroidName.
+        /// Input string format: "SystemName:AsteroidName"
+        /// </summary>
+        public static string GenerateAsteroid(string systemName, string asteroidName)
+        {
+            string input = $"{systemName ?? ""}:{asteroidName ?? ""}";
+            return GenerateV5(AsteroidNamespace, input).ToString();
         }
 
         /// <summary>

@@ -11,6 +11,7 @@ using OE2EmpireTracker.Forms.BuildPlanner;
 using OE2EmpireTracker.Forms.Contacts;
 using OE2EmpireTracker.Forms.Station;
 using OE2EmpireTracker.Forms.Market;
+using OE2EmpireTracker.Forms.Asteroid;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -187,6 +188,11 @@ namespace OE2EmpireTracker
             OpenMdiChild<Forms.Market.FormMarket>();
         }
 
+        private void asteroidsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenMdiChild<Forms.Asteroid.FormAsteroid>();
+        }
+
         private void deliveryExecutionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.DeliveryExecution.FormDeliveryExecution>();
@@ -230,6 +236,7 @@ namespace OE2EmpireTracker
             shipsToolStripMenuItem.Enabled = hasPlayer;
             stationsToolStripMenuItem.Enabled = hasPlayer;
             marketToolStripMenuItem.Enabled = hasPlayer;
+            asteroidsToolStripMenuItem.Enabled = hasPlayer;
 
             // Player dropdown
             cmbCurrentPlayer.Enabled = hasPlayer;
@@ -609,6 +616,7 @@ namespace OE2EmpireTracker
             { "FormShipInstance", (w, n) => w.OpenMdiChildWithNumber<Forms.ShipInstance.FormShipInstance>(n) },
             { "FormStation", (w, n) => w.OpenMdiChildWithNumber<Forms.Station.FormStation>(n) },
             { "FormMarket", (w, n) => w.OpenMdiChildWithNumber<Forms.Market.FormMarket>(n) },
+            { "FormAsteroid", (w, n) => w.OpenMdiChildWithNumber<Forms.Asteroid.FormAsteroid>(n) },
         };
 
         private void RestoreOpenForms()

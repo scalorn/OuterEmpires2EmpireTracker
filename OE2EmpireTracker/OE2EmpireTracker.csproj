@@ -150,6 +150,7 @@
     <Compile Include="Services\ShipTemplateReferenceCounter.cs" />
     <Compile Include="Services\ShipReferenceCounter.cs" />
     <Compile Include="Services\StationReferenceCounter.cs" />
+    <Compile Include="Services\AsteroidReferenceCounter.cs" />
     <Compile Include="Services\MarketListingReferenceCounter.cs" />
     <Compile Include="Forms\Market\FormMarket.cs">
       <SubType>Form</SubType>
@@ -168,6 +169,12 @@
     </Compile>
     <Compile Include="Forms\Station\FormStation.Designer.cs">
       <DependentUpon>FormStation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Asteroid\FormAsteroid.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Asteroid\FormAsteroid.Designer.cs">
+      <DependentUpon>FormAsteroid.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ShipInstance\FormShipInstance.cs">
       <SubType>Form</SubType>

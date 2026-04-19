@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services.Migration;
 
 namespace OE2EmpireTracker.Services
 {
@@ -57,6 +58,39 @@ namespace OE2EmpireTracker.Services
             target.ScannerBlueprintUUID = source.ScannerBlueprintUUID;
             target.Resources = source.Resources;
             target.Properties = source.Properties;
+        }
+
+        /// <summary>
+        /// If the survey is an asteroid survey (SurveyType == Asteroid), computes a deterministic
+        /// AsteroidUUID from SystemName:PlanetName and auto-creates the Asteroid entity if it
+        /// doesn't already exist. Sets survey.AsteroidUUID.
+        /// </summary>
+        public static void LinkOrCreateAsteroid(Survey survey, PlayerContext playerContext)
+        {
+            if (survey.SurveyType != SurveyType.Asteroid) return;
+            if (string.IsNullOrEmpty(survey.PlanetName) || string.IsNullOrEmpty(survey.SystemName)) return;
+
+            string asteroidUUID = DeterministicUUID.GenerateAsteroid(survey.SystemName, survey.PlanetName);
+            survey.AsteroidUUID = asteroidUUID;
+
+            var existing = playerContext.AsteroidList.FirstOrDefault(a => a.UUID == asteroidUUID);
+            if (existing == null)
+            {
+                var asteroid = new Asteroid
+                {
+                    UUID = asteroidUUID,
+                    Name = survey.PlanetName,
+                    SystemName = survey.SystemName
+                };
+                playerContext.AsteroidList.Add(asteroid);
+                Log.Info("Auto-created asteroid '{0}' in system '{1}' UUID={2}",
+                    asteroid.Name, asteroid.SystemName, asteroid.UUID);
+            }
+            else
+            {
+                Log.Info("Linked survey to existing asteroid '{0}' UUID={1}",
+                    existing.Name, existing.UUID);
+            }
         }
     }
 }
