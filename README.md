@@ -30,6 +30,9 @@ Build delivery routes between colonies, then auto-fill plans based on what each 
 ### Build Planner
 Plan and track manufacturing work across your empire. Create build plans, add manufactory and commodity items, and allocate them to specific structures at your colonies. The planner checks resource availability at each colony and highlights shortfalls so you know what needs delivering before you can start. Generate delivery plans for missing resources with one click, or consolidate across multiple plans for a single delivery run. A queue calculator figures out how many runs to queue to keep a structure busy for a target duration. Auto-assign distributes items across idle structures while respecting blueprint copy limits. Pause plans with the Active toggle when you need to focus elsewhere.
 
+### Contacts
+Track factions and external characters you interact with. Open from **Manage → Contacts**. Create factions to organize characters, then add external characters and assign them to factions. Characters appear in combo lookups across the app (Recipient, Counterparty fields). Factions with active references can't be deleted — the Refs column shows how many characters and profiles reference each faction.
+
 ### Pricing Plans
 Create pricing plans to assign credit values to resources and see what your commodities and manufactured items actually cost. Set base prices for Refined, S1, and S2 resources, add optional time costs (fixed per item + hourly rate), and the tracker computes rolled-up prices through the bill-of-materials chain. Create multiple plans to compare market value vs cost basis vs pessimistic estimates — whatever helps you decide if that manufacturing run is worth it.
 
