@@ -211,7 +211,7 @@ flowchart LR
         AM2[Asteroid Y<br/>ship mines M]
     end
 
-    subgraph Collection
+    subgraph "Pick Up"
         B1[Station Z<br/>unrefined M accumulates]
     end
 
@@ -442,7 +442,7 @@ sequenceDiagram
     participant DG as Delivery Gen
 
     User->>SC: Create supply chain (name)
-    User->>SC: Add stages (Mine → Collect → Refine → Deliver)
+    User->>SC: Add stages (Mine → Pick Up → Refine → Deliver)
     User->>SC: Set thresholds, rates, routes per stage
     SC-->>User: Chain saved, flow summary displayed
 
@@ -453,7 +453,7 @@ sequenceDiagram
 
     Note over BG: Background tick
     BG->>BG: Filter to IsActive chains only
-    BG->>BG: Check accumulation at Collect stage
+    BG->>BG: Check accumulation at Pick Up stage
     BG->>BG: Station Z has 5000 (threshold 3000)
     BG->>DG: Generate delivery on designated route
     DG-->>BG: Plan created
@@ -1098,7 +1098,7 @@ public enum SupplyChainStageType
 {
     Mine,           // Structure-based mining (colony mining rig today; ship/station in future)
     AsteroidMine,   // Ship-based asteroid mining (laser + grapple)
-    Collect,
+    PickUp,
     Refine,         // Structure-based refining (colony refinery today; ship/station in future)
     Deliver,
     Research        // Structure-based research (colony lab today; ship/station in future)
@@ -1124,7 +1124,7 @@ public class SupplyChainStage
     public int AccumulationThreshold { get; set; } = 0;  // Trigger delivery when this much accumulates
     public decimal ProductionRatePerHour { get; set; } = 0m;
 
-    // Route for threshold-triggered deliveries (Collect, Refine, Deliver stages)
+    // Route for threshold-triggered deliveries (PickUp, Refine, Deliver stages)
     public string DeliveryRouteUUID { get; set; } = string.Empty;
 }
 ```
@@ -2727,13 +2727,13 @@ MDI child form. Left-list / right-detail pattern with a visual stage editor.
 │ │                  │ │ │   1 │ Mine       │ Alpha Prime  │ Iron     │        │ │
 │ │                  │ │ │   2 │ Mine       │ Beta Colony  │ Iron     │        │ │
 │ │                  │ │ │   3 │ AsteroidMn │ Asteroid K-7 │ Iron     │        │ │
-│ │                  │ │ │   4 │ Collect    │ Station Alpha│ Iron(unr)│   5000 │ │
+│ │                  │ │ │   4 │ PickUp     │ Station Alpha│ Iron(unr)│   5000 │ │
 │ │                  │ │ │   5 │ Refine     │ Gamma Colony │ Iron(ref)│   3000 │ │
 │ │                  │ │ │   6 │ Deliver    │ Station Beta │ Iron(ref)│        │ │
 │ │                  │ │ └─────┴────────────┴──────────────┴──────────┴────────┘ │
 │ │                  │ │                                                         │
 │ │                  │ │ Add/Edit Stage:                                         │
-│ │                  │ │ Seq:[4] Type:[Collect     ▼]                            │
+│ │                  │ │ Seq:[4] Type:[PickUp      ▼]                            │
 │ │                  │ │ Location Type:[Station▼] Location:[Station Alpha    ▼]  │
 │ │                  │ │ Resource:[Filter:___] [Iron ▼] Purity:[Unrefined ▼]    │
 │ │                  │ │ Threshold:[5000]  Rate/hr:[250]                         │
@@ -2741,7 +2741,7 @@ MDI child form. Left-list / right-detail pattern with a visual stage editor.
 │ │                  │ │ [▲ Move Up] [▼ Move Down]                               │
 │ │                  │ │                                                         │
 │ │                  │ │ Flow Summary:                                           │
-│ │                  │ │ Mine(3 sources) → Collect@Stn Alpha(5000) →            │
+│ │                  │ │ Mine(3 sources) → PickUp@Stn Alpha(5000) →            │
 │ │                  │ │   Refine@Gamma(3000) → Deliver@Stn Beta                │
 │ └──────────────────┘ │                                                         │
 │ [New] [Delete]       │                                                         │
@@ -2757,7 +2757,7 @@ Controls:
 - `dgvStages` columns: Sequence, StageType, Location, Resource (with purity), AccumulationThreshold, ProductionRatePerHour
 - Add/edit panel: `txtSequence`, `cmbStageType`, `cmbLocationType`, `cmbLocation` (FilteredComboBox — populates with colonies/stations/asteroids based on type), `cmbResource`, `cmbPurity`, `txtThreshold`, `txtRate`, `cmdAddStage` / `cmdUpdateStage` / `cmdRemoveStage`, `cmdMoveUp` / `cmdMoveDown`
 - Flow summary: read-only label showing a condensed text representation of the pipeline stages. Auto-generated from the stages list.
-- Stage type determines which fields are relevant: Mine/AsteroidMine stages have no threshold (they produce continuously). Collect stages have a threshold (trigger delivery when accumulated). Refine stages have a threshold. Research stages track evolution progress. Deliver stages are the terminal destination. Location type can be Colony, Station, or Ship (Ship for future factory ships).
+- Stage type determines which fields are relevant: Mine/AsteroidMine stages have no threshold (they produce continuously). PickUp stages have a threshold (trigger delivery when accumulated). Refine stages have a threshold. Research stages track evolution progress. Deliver stages are the terminal destination. Location type can be Colony, Station, or Ship (Ship for future factory ships).
 
 ### Colony Administration Tab — Build Plan Integration (Iteration 1)
 
@@ -3728,14 +3728,14 @@ For now:
 
 ### OQ-39: SupplyChain Delivery Route Selection (Iteration 6) — RESOLVED
 
-**Decision:** Consistent with OQ-33 — each `SupplyChainStage` that triggers a delivery (Collect, Refine, Deliver stages with accumulation thresholds) includes a `DeliveryRouteUUID` field. The user picks the route when defining the stage.
+**Decision:** Consistent with OQ-33 — each `SupplyChainStage` that triggers a delivery (PickUp, Refine, Deliver stages with accumulation thresholds) includes a `DeliveryRouteUUID` field. The user picks the route when defining the stage.
 
 Model change — add to `SupplyChainStage`:
 ```csharp
 public string DeliveryRouteUUID { get; set; } = string.Empty;  // Route for threshold-triggered deliveries
 ```
 
-Mine and AsteroidMine stages don't need a route (they produce at a location, they don't move resources). Collect/Refine/Deliver stages that have an `AccumulationThreshold > 0` require a route to be set. FormSupplyChain validates this on save.
+Mine and AsteroidMine stages don't need a route (they produce at a location, they don't move resources). PickUp/Refine/Deliver stages that have an `AccumulationThreshold > 0` require a route to be set. FormSupplyChain validates this on save.
 
 ### OQ-40: Resource Check Scope — Colony Warehouse Only or Also Station Holds? (Iteration 1) — RESOLVED
 
