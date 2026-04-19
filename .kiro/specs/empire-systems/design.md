@@ -3354,6 +3354,59 @@ graph TD
 
 All caches are lazy (built on first access after invalidation) and thread-safe (built under the appropriate lock). The invalidation cost is O(1) (set to null). The rebuild cost is O(n) on next access but amortized across many lookups.
 
+## Persistence Evolution Readiness
+
+The current architecture persists everything to a single JSON file (PlayerData.json) loaded entirely into memory. This works for active data but historical data (market transactions, completed delivery plans, archived build plans) will grow unbounded. The following design patterns are applied now to make a future transition to a database or service-backed persistence layer easier.
+
+### Data Access Patterns
+
+All services use `Func<string, T>` finder delegates rather than direct `PlayerContext` access. This is already the pattern for `colonyFinder`, `blueprintFinder`, `stationFinder`, `shipFinder`, `templateFinder`. When persistence moves to a database, these delegates become database queries — the service code doesn't change.
+
+Services that iterate collections (e.g. `StockTargetService.CheckTargets` taking `IEnumerable<StockPlan>`) receive the collection as a parameter rather than pulling it from a singleton. This makes the data source swappable.
+
+### UUID-Based References
+
+All cross-entity references use UUID strings, not object references. This is already the universal pattern (ColonyUUID, BlueprintUUID, StationUUID, etc.). UUIDs map directly to database primary/foreign keys with no transformation.
+
+### Separable Historical Data
+
+Market transactions and completed delivery plans are append-mostly data that grows over time. The design keeps them as separate top-level arrays in PlayerRoot (`MarketTransaction[]`, `DeliveryPlan[]`). This makes them easy to split into a separate file or database table without affecting the active data model.
+
+When the time comes, the split could be:
+- Active data (PlayerData.json): profiles, colonies, blueprints, surveys, ships, stations, active build plans, stock plans, supply chains, routes, active delivery plans
+- Historical data (separate file or database): completed delivery plans, market transactions, archived build plans
+
+### Query Patterns to Preserve
+
+The Transactions tab filter set defines the query patterns that a future database needs to support efficiently:
+- Filter by OwnerUUID (always — player-scoped)
+- Filter by TransactionType (Buy/Sell)
+- Filter by ItemName (substring match)
+- Filter by Counterparty (substring match)
+- Filter by CounterpartyFaction (exact match)
+- Filter by StationUUID (exact match)
+- Filter by date range (Timestamp between From and To)
+- Sort by any column
+
+The Summary tab adds aggregation queries:
+- Sum TotalPrice grouped by ItemName within a date range
+- Count Quantity grouped by ItemName within a date range
+
+These patterns should be documented as the minimum query interface if transactions move to a database.
+
+### Interface Extraction (Future)
+
+When the transition happens, the recommended approach is:
+1. Extract `IDataRepository` interface from PlayerContext's data access methods (FindBlueprint, FindColony, GetCurrentPlayerColonies, etc.)
+2. Create `JsonFileRepository` implementing `IDataRepository` (current behavior)
+3. Create `DatabaseRepository` implementing `IDataRepository` (new behavior)
+4. Services already take `Func<string, T>` delegates — wire them to the repository
+5. Forms already use data-change events — the repository fires the same events
+
+No service or form code changes. Only the wiring in MainWindow/startup changes.
+
+This is not implemented now — it's a design guideline. The current `Func<string, T>` delegate pattern and UUID-based references are the preparation that makes the future transition mechanical rather than architectural.
+
 ## Cross-Cutting Implementation Requirements
 
 These requirements apply to ALL new services, forms, and background processing code. They codify patterns established during the colony form optimization that must be followed consistently across the empire systems implementation.
