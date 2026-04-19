@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services.Migration;
 
@@ -8,6 +9,7 @@ namespace OE2EmpireTracker.Services
 {
     public static class ColonyImportHelper
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Searches colonies for a case-insensitive ColonyName match.
         /// Returns the matching colony, or null if none found.

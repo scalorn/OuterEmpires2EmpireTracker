@@ -1,3 +1,4 @@
+using NLog;
 using OE2EmpireTracker.Persistence;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Models;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -18,6 +20,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 {
     public partial class FormPlayerProfile : Form, IProgrammaticUpdateSource
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private int _isProgrammaticUpdate = 0;
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
@@ -160,6 +163,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         public void PopulateForm()
         {
+            var sw = Stopwatch.StartNew();
             txtPlayerName.Text = viewModel.Name;
             cmbFaction.Text = viewModel.Faction;
             txtTotalCredits.Text = viewModel.TotalCredits.ToString();
@@ -210,6 +214,8 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             {
                 skillBlockEntry.Value.CanStartTraining = !isTraining;
             }
+            sw.Stop();
+            Log.Info("PopulateForm PERF: total={0}ms", sw.ElapsedMilliseconds);
         }
 
         private void configureSkillBlockOnce(CheckBox skillGroup, PlayerSkillBlock skillBlock, SkillName skill)
@@ -293,6 +299,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private void PopulateListView(Models.PlayerProfile profileToSelect = null)
         {
+            var sw = Stopwatch.StartNew();
             var profiles = viewModel.GetFilteredProfiles(txtNameFilter.Text);
 
             lvwPlayerProfiles.Items.Clear();
@@ -309,6 +316,9 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                     item.EnsureVisible();
                 }
             }
+            sw.Stop();
+            Log.Info("PopulateListView PERF: total={0}ms items={1}",
+                sw.ElapsedMilliseconds, profiles.Count);
         }
 
         private void txtNameFilter_TextChanged(object sender, EventArgs e)

@@ -5,6 +5,7 @@ using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -126,6 +127,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void PopulateRouteDropdown()
         {
+            var sw = Stopwatch.StartNew();
             string previousUUID = cmbRoute.SelectedValue as string;
             string filter = txtRouteFilter.Text ?? "";
 
@@ -155,6 +157,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             }
 
             cmbRoute.SelectedIndexChanged += cmbRoute_SelectedIndexChanged;
+            sw.Stop();
+            Log.Info("PopulateRouteDropdown PERF: total={0}ms items={1}",
+                sw.ElapsedMilliseconds, items.Count);
         }
 
         private string _lastRouteUUID = "";
@@ -237,6 +242,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void BuildExecution()
         {
+            var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             var scrollPos = pnlExecution.AutoScrollPosition;
             this.SuspendLayout();
@@ -367,6 +373,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             // Restore scroll position
             pnlExecution.AutoScrollPosition = new Point(Math.Abs(scrollPos.X), Math.Abs(scrollPos.Y));
+            sw.Stop();
+            Log.Info("BuildExecution PERF: total={0}ms", sw.ElapsedMilliseconds);
         }
 
         // -----------------------------------------------------------------------

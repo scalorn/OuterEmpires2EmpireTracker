@@ -1,3 +1,4 @@
+using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using System;
@@ -38,6 +39,7 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public static class EvolutionChainService
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Walks baseBlueprintUUID links backward from the given blueprint
         /// to the Ev0 ancestor. Returns the chain sorted by Evolution ascending.

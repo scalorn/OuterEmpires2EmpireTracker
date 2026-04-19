@@ -1,3 +1,4 @@
+using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
@@ -14,6 +15,7 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public static class ColonyAdminReportBuilder
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         // Color palette for report sections
         private static readonly Color HeaderColor = Color.FromArgb(0, 120, 215);
         private static readonly Color CountdownColor = Color.FromArgb(200, 120, 0);

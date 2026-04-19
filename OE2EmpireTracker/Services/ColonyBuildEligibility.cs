@@ -1,3 +1,4 @@
+using NLog;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.ViewModels;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public static class ColonyBuildEligibility
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Returns true if the structure is currently staged (ready to build).
         /// IsStaged=true AND IsBuilt=false.

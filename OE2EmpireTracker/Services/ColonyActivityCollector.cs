@@ -1,3 +1,4 @@
+using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using System;
@@ -112,6 +113,8 @@ namespace OE2EmpireTracker.Services
 
     public static class ColonyActivityCollector
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Scans all provided colonies and returns ActivityRow instances for every
         /// active timer and unfulfilled commodity request.

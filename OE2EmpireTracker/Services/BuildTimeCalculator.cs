@@ -1,4 +1,5 @@
 using System;
+using NLog;
 
 namespace OE2EmpireTracker.Services
 {
@@ -9,6 +10,7 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public static class BuildTimeCalculator
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Calculates build time in seconds based on Builder skill level.
         /// Formula: 86400 * (1 - level * 0.02), minimum 1 second.

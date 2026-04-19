@@ -1,3 +1,4 @@
+using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using System;
@@ -8,6 +9,7 @@ namespace OE2EmpireTracker.Services
 {
     public static class ColonyInactivityCollector
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Scans all provided colonies and returns ActivityRow instances for every
         /// idle or underutilized production structure.

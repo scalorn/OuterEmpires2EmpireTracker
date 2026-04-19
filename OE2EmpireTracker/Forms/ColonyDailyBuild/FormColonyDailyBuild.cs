@@ -6,6 +6,7 @@ using OE2EmpireTracker.Models;
 using OE2EmpireTracker.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -81,6 +82,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
 
         private void PopulateRouteDropdown()
         {
+            var sw = Stopwatch.StartNew();
             string previousUUID = cmbRoute.SelectedValue as string;
             string filter = txtRouteFilter.Text ?? "";
 
@@ -110,6 +112,9 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
             }
 
             cmbRoute.SelectedIndexChanged += cmbRoute_SelectedIndexChanged;
+            sw.Stop();
+            Log.Info("PopulateRouteDropdown PERF: total={0}ms items={1}",
+                sw.ElapsedMilliseconds, items.Count);
         }
 
         private string _lastRouteUUID = "";
@@ -140,6 +145,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
 
         private void BuildContent(string routeUUID)
         {
+            var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             var scrollPos = pnlContent.AutoScrollPosition;
             this.SuspendLayout();
@@ -221,6 +227,8 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
             pnlContent.ResumeLayout();
             this.ResumeLayout();
             pnlContent.AutoScrollPosition = new Point(Math.Abs(scrollPos.X), Math.Abs(scrollPos.Y));
+            sw.Stop();
+            Log.Info("BuildContent PERF: total={0}ms", sw.ElapsedMilliseconds);
         }
 
         private class BuildTag

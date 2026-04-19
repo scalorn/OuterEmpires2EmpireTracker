@@ -5,6 +5,7 @@ using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -81,6 +82,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
 
         private void RefreshData()
         {
+            var sw = Stopwatch.StartNew();
             var colonies = playerContext.GetCurrentPlayerColonies();
 
             if (chkShowInactive.Checked)
@@ -92,7 +94,11 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             string prefix = Tag != null ? "#" + Tag + " - " : "";
             Text = prefix + (chkShowInactive.Checked ? "Colony Inactivity" : "Colony Activity");
 
+            long t1 = sw.ElapsedMilliseconds;
             ApplyFiltersAndPopulate();
+            sw.Stop();
+            Log.Info("RefreshData PERF: total={0}ms collect={1}ms populate={2}ms rows={3}",
+                sw.ElapsedMilliseconds, t1, sw.ElapsedMilliseconds - t1, allRows?.Count ?? 0);
         }
 
         // -----------------------------------------------------------------------

@@ -7,6 +7,7 @@ using OE2EmpireTracker.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -160,9 +161,11 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void PopulateRouteList()
         {
+            var sw = Stopwatch.StartNew();
             lvwRoutes.Items.Clear();
             var routes = viewModel.GetFilteredRoutes(txtRouteFilter.Text);
             var counter = new DeliveryRouteReferenceCounter(playerContext.DeliveryPlanList);
+            long t1 = sw.ElapsedMilliseconds;
             foreach (var route in routes)
             {
                 var item = new ListViewItem(route.Name);
@@ -171,6 +174,9 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 item.Tag = route;
                 lvwRoutes.Items.Add(item);
             }
+            sw.Stop();
+            Log.Info("PopulateRouteList PERF: total={0}ms filter={1}ms listBuild={2}ms items={3}",
+                sw.ElapsedMilliseconds, t1, sw.ElapsedMilliseconds - t1, routes.Count);
         }
 
         private void txtRouteFilter_TextChanged(object sender, EventArgs e)
@@ -258,6 +264,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void PopulateStopsGrid()
         {
+            var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvStops.Rows.Clear();
             foreach (var stop in viewModel.Stops)
@@ -270,6 +277,9 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                     colony?.SystemName ?? "");
                 dgvStops.Rows[rowIndex].Tag = stop;
             }
+            sw.Stop();
+            Log.Info("PopulateStopsGrid PERF: total={0}ms stops={1}",
+                sw.ElapsedMilliseconds, viewModel.Stops.Count);
         }
 
         private void ClearForm()
@@ -813,10 +823,11 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void PopulatePlanGrids()
         {
+            var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvDropOff.Rows.Clear();
             dgvPickUp.Rows.Clear();
-            if (selectedPlanStop == null) return;
+            if (selectedPlanStop == null) { sw.Stop(); return; }
 
             foreach (var item in selectedPlanStop.DropOff)
             {
@@ -828,6 +839,9 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 int idx = dgvPickUp.Rows.Add(item.ItemType.ToString(), item.ExtendedName, item.Quantity);
                 dgvPickUp.Rows[idx].Tag = item;
             }
+            sw.Stop();
+            Log.Info("PopulatePlanGrids PERF: total={0}ms dropOff={1} pickUp={2}",
+                sw.ElapsedMilliseconds, selectedPlanStop.DropOff.Count, selectedPlanStop.PickUp.Count);
         }
 
         private void cmdAddDropOff_Click(object sender, EventArgs e)

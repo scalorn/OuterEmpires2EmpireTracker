@@ -1,3 +1,4 @@
+using NLog;
 using OE2EmpireTracker.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ namespace OE2EmpireTracker.Services
 {
     public class ColonyReferenceCounter
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly IEnumerable<DeliveryRoute> _routes;
         private readonly IEnumerable<DeliveryPlan> _plans;
 

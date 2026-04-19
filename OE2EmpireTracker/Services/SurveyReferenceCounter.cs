@@ -1,3 +1,4 @@
+using NLog;
 using OE2EmpireTracker.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ namespace OE2EmpireTracker.Services
 {
     public class SurveyReferenceCounter
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly IEnumerable<Colony> _colonies;
 
         public SurveyReferenceCounter(IEnumerable<Colony> colonies)

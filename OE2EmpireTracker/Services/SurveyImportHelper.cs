@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
 {
     public static class SurveyImportHelper
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Searches surveys for a match by PlanetName (case-insensitive) AND SurveyID (case-insensitive).
         /// Returns the matching survey, or null if none found.

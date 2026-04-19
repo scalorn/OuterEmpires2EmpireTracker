@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using NLog;
@@ -88,6 +89,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
         private void PopulatePlanList()
         {
+            var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             string selectedUUID = _selectedPlan?.UUID;
             lvwPlans.Items.Clear();
@@ -108,6 +110,9 @@ namespace OE2EmpireTracker.Forms.PricingPlan
                 if (plan.UUID == selectedUUID)
                     item.Selected = true;
             }
+            sw.Stop();
+            Log.Info("PopulatePlanList PERF: total={0}ms items={1}",
+                sw.ElapsedMilliseconds, plans.Count);
         }
 
         private void txtPlanFilter_TextChanged(object sender, EventArgs e)
@@ -136,6 +141,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
         private void PopulateForm()
         {
+            var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             if (_selectedPlan == null) { ClearForm(); return; }
 
@@ -146,6 +152,8 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
             PopulateResourceGrid();
             SetDetailEnabled(true);
+            sw.Stop();
+            Log.Info("PopulateForm PERF: total={0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ClearForm()

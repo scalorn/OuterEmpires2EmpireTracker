@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using NLog;
 using System.Drawing;
 using System.Linq;
@@ -193,6 +194,7 @@ namespace OE2EmpireTracker.Forms.Survey
         {
             if (surveys == null) return;
 
+            var sw = Stopwatch.StartNew();
             var counter = new SurveyReferenceCounter(playerContext.ColonyList);
 
             // Track which surveys are currently in the list
@@ -246,6 +248,9 @@ namespace OE2EmpireTracker.Forms.Survey
             {
                 lvwSurveys.Items.Remove(viewableSurvey.Value);
             }
+            sw.Stop();
+            Log.Info("PopulateListView PERF: total={0}ms items={1}",
+                sw.ElapsedMilliseconds, surveys.Count);
         }
 
         private void txtSurveyFilter_TextChanged(object sender, EventArgs e)
@@ -574,6 +579,7 @@ namespace OE2EmpireTracker.Forms.Survey
         /// </summary>
         private void PopulateFormFromViewModel()
         {
+            var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             txtPlanetName.Text = viewModel.PlanetName ?? "";
             txtSystemName.Text = viewModel.SystemName ?? "";
@@ -588,6 +594,8 @@ namespace OE2EmpireTracker.Forms.Survey
             txtSensorAbundance.Text = viewModel.SensorAbundance ?? "";
             txtPurityModifier.Text = viewModel.PurityModifier ?? "";
             txtScanLevel.Text = viewModel.ScanLevel ?? "";
+
+            long t1 = sw.ElapsedMilliseconds;
 
             txtFilterScannerBlueprint.Text = "";
             cmbScannerBlueprint.SelectedItem = viewModel.FindScannerBlueprint();
@@ -604,6 +612,9 @@ namespace OE2EmpireTracker.Forms.Survey
                 row.Cells[1].Value = resource.Value.Purity;
                 row.Cells[2].Value = resource.Value.Amount;
             }
+            sw.Stop();
+            Log.Info("PopulateFormFromViewModel PERF: total={0}ms fields={1}ms grid={2}ms",
+                sw.ElapsedMilliseconds, t1, sw.ElapsedMilliseconds - t1);
         }
 
         private void UpdateTitle()

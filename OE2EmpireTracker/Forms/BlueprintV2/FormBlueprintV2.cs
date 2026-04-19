@@ -11,6 +11,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -230,6 +231,7 @@ namespace OE2EmpireTracker
         /// </summary>
         private void RefreshBlueprintList()
         {
+            var sw = Stopwatch.StartNew();
             string nameFilter = txtFilter.Text;
 
             var criteria = new BlueprintFilterCriteria();
@@ -262,9 +264,14 @@ namespace OE2EmpireTracker
                     criteria.EvolutionAndAbove = true;
             }
 
+            long t1 = sw.ElapsedMilliseconds;
             var results = viewModel.GetFilteredBlueprints(nameFilter, criteria);
+            long t2 = sw.ElapsedMilliseconds;
             PopulateListView(results);
             UpdateTitleBarCounts();
+            sw.Stop();
+            Log.Info("RefreshBlueprintList PERF: total={0}ms filter={1}ms populate={2}ms results={3}",
+                sw.ElapsedMilliseconds, t2 - t1, sw.ElapsedMilliseconds - t2, results.Count);
         }
 
         /// <summary>
@@ -291,7 +298,9 @@ namespace OE2EmpireTracker
         {
             if (blueprints == null) return;
 
+            var sw = Stopwatch.StartNew();
             var counter = CreateReferenceCounter();
+            long t1 = sw.ElapsedMilliseconds;
             lvwBlueprints.BeginUpdate();
             lvwBlueprints.Items.Clear();
 
@@ -308,6 +317,9 @@ namespace OE2EmpireTracker
             }
 
             lvwBlueprints.EndUpdate();
+            sw.Stop();
+            Log.Info("PopulateListView PERF: total={0}ms refCounter={1}ms listBuild={2}ms items={3}",
+                sw.ElapsedMilliseconds, t1, sw.ElapsedMilliseconds - t1, blueprints.Count);
         }
 
         /// <summary>
@@ -1427,6 +1439,7 @@ namespace OE2EmpireTracker
         {
             if (viewModel.Data.UUID == null) return;
 
+            var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
 
             // Identity fields
@@ -1456,13 +1469,21 @@ namespace OE2EmpireTracker
             // Global checkbox
             chkGlobalBlueprint.Checked = viewModel.IsGlobal;
 
+            long t1 = sw.ElapsedMilliseconds;
+
             // Statistics and Resources grids
             RefreshStatisticsGrid();
             PopulateResourcesGrid();
 
+            long t2 = sw.ElapsedMilliseconds;
+
             // Pricing
             PopulatePricingPlanCombo();
             UpdateCalculatedPrice();
+
+            sw.Stop();
+            Log.Info("PopulateForm PERF: total={0}ms fields={1}ms grids={2}ms pricing={3}ms",
+                sw.ElapsedMilliseconds, t1, t2 - t1, sw.ElapsedMilliseconds - t2);
         }
 
         /// <summary>
