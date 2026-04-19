@@ -193,6 +193,7 @@
     <Compile Include="Services\HelpRenderer.cs" />
     <Compile Include="Services\SurveyDateTimeParser.cs" />
     <Compile Include="Services\BackgroundProcessor.cs" />
+    <Compile Include="Services\SupplyChainService.cs" />
     <Compile Include="Models\BaselineGameConstants.cs" />
     <Compile Include="Models\ResearchTimeEntry.cs" />
     <Compile Include="Models\RefiningRecipe.cs" />

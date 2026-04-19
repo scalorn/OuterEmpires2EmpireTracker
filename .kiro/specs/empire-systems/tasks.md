@@ -253,8 +253,8 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 38.1 Add Overflow tab to FormColony: rules grid with Active checkbox column
   - [x] 38.2 Extend BackgroundProcessor for overflow threshold checks (filter IsActive rules)
 
-- [ ] 39. Supply Chain Background Processing
-  - [ ] 39.1 Extend BackgroundProcessor: call SupplyChainService.CheckThresholds, generate deliveries
+- [x] 39. Supply Chain Background Processing
+  - [x] 39.1 Extend BackgroundProcessor: call SupplyChainService.CheckThresholds, generate deliveries
 
 - [ ] 40. Asteroid Survey Integration
   - [ ] 40.1 Extend SurveyParser for asteroid context

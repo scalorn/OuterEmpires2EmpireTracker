@@ -227,9 +227,24 @@ namespace OE2EmpireTracker.Services
                     }
                 }
 
+                // Check supply chain thresholds (task 39.1)
+                int supplyChainRequests = 0;
+                if (!_stopping.IsSet)
+                {
+                    try
+                    {
+                        supplyChainRequests = CheckSupplyChainThresholds();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Error during supply chain threshold check");
+                        hadError = true;
+                    }
+                }
+
                 bool cascadeModified = modifiedPlanUUIDs != null && modifiedPlanUUIDs.Count > 0;
 
-                if (processedCount > 0 || cascadeModified || overflowDeliveries > 0)
+                if (processedCount > 0 || cascadeModified || overflowDeliveries > 0 || supplyChainRequests > 0)
                 {
                     try
                     {
@@ -418,6 +433,32 @@ namespace OE2EmpireTracker.Services
             }
 
             return overflowCount;
+        }
+
+        /// <summary>
+        /// Checks supply chain thresholds and logs delivery requests.
+        /// Returns the count of threshold breaches detected.
+        /// </summary>
+        private int CheckSupplyChainThresholds()
+        {
+            var chains = _playerContext.SupplyChainList;
+            if (chains == null || chains.Count == 0) return 0;
+
+            string currentPlayerUUID = _playerContext.CurrentPlayerUUID ?? "";
+
+            var requests = SupplyChainService.CheckThresholds(
+                chains,
+                uuid => _playerContext.ColonyList.FirstOrDefault(c => c.UUID == uuid),
+                uuid => _playerContext.StationList.FirstOrDefault(s => s.UUID == uuid),
+                uuid => _playerContext.ShipList.FirstOrDefault(s => s.UUID == uuid),
+                currentPlayerUUID);
+
+            if (requests.Count > 0)
+            {
+                Log.Info("Supply chain threshold check: {0} delivery request(s) generated", requests.Count);
+            }
+
+            return requests.Count;
         }
     }
 }
