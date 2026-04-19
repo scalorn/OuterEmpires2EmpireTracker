@@ -17,6 +17,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.flpBase = new System.Windows.Forms.FlowLayoutPanel();
             this.flpSearchList = new System.Windows.Forms.FlowLayoutPanel();
             this.flpPlanFilter = new System.Windows.Forms.FlowLayoutPanel();
@@ -69,6 +70,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.cmdAddItem = new System.Windows.Forms.Button();
             this.cmdQueueCalc = new System.Windows.Forms.Button();
             this.cmdAllocate = new System.Windows.Forms.Button();
+            this.cmdGenerateDelivery = new System.Windows.Forms.Button();
+            this.cmsGenerateDelivery = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiResourceDelivery = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiConsolidatedDelivery = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiFlatpackDelivery = new System.Windows.Forms.ToolStripMenuItem();
 
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
@@ -82,6 +88,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItemRow1.SuspendLayout();
             this.flpAddItemRow2.SuspendLayout();
             this.flpAddItemRow3.SuspendLayout();
+            this.cmsGenerateDelivery.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBuildItems)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvShortfalls)).BeginInit();
             this.SuspendLayout();
@@ -517,6 +524,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItemRow3.Controls.Add(this.cmdAddItem);
             this.flpAddItemRow3.Controls.Add(this.cmdQueueCalc);
             this.flpAddItemRow3.Controls.Add(this.cmdAllocate);
+            this.flpAddItemRow3.Controls.Add(this.cmdGenerateDelivery);
             this.flpAddItemRow3.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
             this.flpAddItemRow3.Location = new System.Drawing.Point(3, 80);
             this.flpAddItemRow3.Name = "flpAddItemRow3";
@@ -545,6 +553,41 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.cmdAllocate.Size = new System.Drawing.Size(75, 23);
             this.cmdAllocate.Text = "Allocate";
             this.cmdAllocate.UseVisualStyleBackColor = true;
+            // 
+            // cmdGenerateDelivery
+            // 
+            this.cmdGenerateDelivery.Location = new System.Drawing.Point(256, 3);
+            this.cmdGenerateDelivery.Name = "cmdGenerateDelivery";
+            this.cmdGenerateDelivery.Size = new System.Drawing.Size(130, 23);
+            this.cmdGenerateDelivery.Text = "Generate Delivery \u25BC";
+            this.cmdGenerateDelivery.UseVisualStyleBackColor = true;
+            // 
+            // cmsGenerateDelivery
+            // 
+            this.cmsGenerateDelivery.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiResourceDelivery,
+            this.tsmiConsolidatedDelivery,
+            this.tsmiFlatpackDelivery});
+            this.cmsGenerateDelivery.Name = "cmsGenerateDelivery";
+            this.cmsGenerateDelivery.Size = new System.Drawing.Size(250, 70);
+            // 
+            // tsmiResourceDelivery
+            // 
+            this.tsmiResourceDelivery.Name = "tsmiResourceDelivery";
+            this.tsmiResourceDelivery.Size = new System.Drawing.Size(249, 22);
+            this.tsmiResourceDelivery.Text = "Resource Delivery (This Plan)";
+            // 
+            // tsmiConsolidatedDelivery
+            // 
+            this.tsmiConsolidatedDelivery.Name = "tsmiConsolidatedDelivery";
+            this.tsmiConsolidatedDelivery.Size = new System.Drawing.Size(249, 22);
+            this.tsmiConsolidatedDelivery.Text = "Consolidated Resource Delivery";
+            // 
+            // tsmiFlatpackDelivery
+            // 
+            this.tsmiFlatpackDelivery.Name = "tsmiFlatpackDelivery";
+            this.tsmiFlatpackDelivery.Size = new System.Drawing.Size(249, 22);
+            this.tsmiFlatpackDelivery.Text = "Flatpack Delivery";
             // 
             // FormBuildPlanner
             // 
@@ -576,6 +619,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItemRow2.PerformLayout();
             this.flpAddItemRow3.ResumeLayout(false);
             this.flpAddItemRow3.PerformLayout();
+            this.cmsGenerateDelivery.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvBuildItems)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvShortfalls)).EndInit();
             this.ResumeLayout(false);
@@ -634,5 +678,10 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private System.Windows.Forms.Button cmdAddItem;
         private System.Windows.Forms.Button cmdQueueCalc;
         private System.Windows.Forms.Button cmdAllocate;
+        private System.Windows.Forms.Button cmdGenerateDelivery;
+        private System.Windows.Forms.ContextMenuStrip cmsGenerateDelivery;
+        private System.Windows.Forms.ToolStripMenuItem tsmiResourceDelivery;
+        private System.Windows.Forms.ToolStripMenuItem tsmiConsolidatedDelivery;
+        private System.Windows.Forms.ToolStripMenuItem tsmiFlatpackDelivery;
     }
 }

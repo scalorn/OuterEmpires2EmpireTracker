@@ -92,7 +92,7 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 10.2 Add Item panel with Queue Calc button
   - [x] 10.3 Structure allocation dialog (Location column, future ship/station note)
   - [x] 10.4 Resource shortfall display panel
-  - [ ] 10.5 Generate Delivery dropdown: Resource (This Plan), Consolidated Resource, Flatpack Delivery
+  - [x] 10.5 Generate Delivery dropdown: Resource (This Plan), Consolidated Resource, Flatpack Delivery
   - [ ] 10.6 Auto-Assign button
   - [ ] 10.7 IsActive checkbox with gray italic styling for inactive plans
   - [ ] 10.8 Wire events with BeginInvoke

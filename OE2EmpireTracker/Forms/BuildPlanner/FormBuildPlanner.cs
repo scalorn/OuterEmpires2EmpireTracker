@@ -83,6 +83,12 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             dgvBuildItems.CellDoubleClick += dgvBuildItems_CellDoubleClick;
             dgvBuildItems.SelectionChanged += dgvBuildItems_SelectionChanged;
 
+            // Generate Delivery dropdown wiring
+            cmdGenerateDelivery.Click += cmdGenerateDelivery_Click;
+            tsmiResourceDelivery.Click += tsmiResourceDelivery_Click;
+            tsmiConsolidatedDelivery.Click += tsmiConsolidatedDelivery_Click;
+            tsmiFlatpackDelivery.Click += tsmiFlatpackDelivery_Click;
+
             PopulatePlanList();
             ClearForm();
 
@@ -232,6 +238,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             cmdAddItem.Enabled = enabled;
             cmdQueueCalc.Enabled = enabled;
             cmdAllocate.Enabled = enabled;
+            cmdGenerateDelivery.Enabled = enabled;
         }
 
         private void PopulateBuildItemsGrid()
@@ -335,147 +342,6 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 {
                     dgvShortfalls.Visible = false;
                     lblShortfallStatus.Text = "\u2714 All resources available.";
-                    lblShortfallStatus.ForeColor = System.Drawing.Color.Green;
-                    return;
-                }
-
-                // Compute required and available for each shortfall resource
-                Dictionary<string, int> required = ComputeRequiredResources(buildItem);
-
-                dgvShortfalls.Visible = true;
-                lblShortfallStatus.Text = string.Format("{0} resource(s) short.", shortfalls.Count);
-                lblShortfallStatus.ForeColor = System.Drawing.Color.Red;
-
-                foreach (var entry in shortfalls.OrderBy(kv => kv.Key))
-                {
-                    int totalRequired = required.ContainsKey(entry.Key) ? required[entry.Key] : 0;
-                    int available = totalRequired - entry.Value;
-                    if (available < 0) available = 0;
-
-                    int rowIdx = dgvShortfalls.Rows.Add(
-                        entry.Key,
-                        totalRequired,
-                        available,
-                        entry.Value);
-                    dgvShortfalls.Rows[rowIdx].DefaultCellStyle.BackColor = System.Drawing.Color.MistyRose;
-                    dgvShortfalls.Rows[rowIdx].DefaultCellStyle.ForeColor = System.Drawing.Color.DarkRed;
-                }
-
-                flpDetail.PerformLayout();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error computing shortfalls for item {0}", buildItem.UUID);
-                dgvShortfalls.Visible = false;
-                lblShortfallStatus.Text = "Error checking resources.";
-                lblShortfallStatus.ForeColor = System.Drawing.Color.Red;
-            }
-        }
-
-        /// <summary>
-        /// Computes the total required resources for a build item (before comparing to inventory).
-        /// </summary>
-        private Dictionary<string, int> ComputeRequiredResources(BuildItem item)
-        {
-            var required = new Dictionary<string, int>();
-
-            if (item.ItemType == BuildItemType.Manufactory)
-            {
-                Blueprint bp = playerContext.FindBlueprint(item.BlueprintUUID);
-                if (bp?.Resources != null)
-                {
-                    foreach (var entry in bp.Resources)
-                    {
-                        int perRun;
-                        if (int.TryParse(entry.Value, out perRun) && perRun > 0)
-                        {
-                            required[entry.Key] = perRun * item.Quantity;
-                        }
-                    }
-                }
-            }
-            else if (item.ItemType == BuildItemType.Commodity)
-            {
-                Commodity commodity;
-                if (Commodity.ResourceMapByString.TryGetValue(item.CommodityName, out commodity)
-                    && commodity.ConstructionResources != null)
-                {
-                    foreach (var entry in commodity.ConstructionResources)
-                    {
-                        int perCycle;
-                        if (int.TryParse(entry.Value, out perCycle) && perCycle > 0)
-                        {
-                            required[entry.Key] = perCycle * item.Quantity;
-                        }
-                    }
-                }
-            }
-
-            return required;
-        }
-
-        // -----------------------------------------------------------------------
-        // Shortfall Display
-        // -----------------------------------------------------------------------
-
-        private void dgvBuildItems_SelectionChanged(object sender, EventArgs e)
-        {
-            if (_isProgrammaticUpdate > 0) return;
-            PopulateShortfallGrid();
-        }
-
-        private void PopulateShortfallGrid()
-        {
-            using var guard = new ProgrammaticUpdateGuard(this);
-            dgvShortfalls.Rows.Clear();
-
-            if (dgvBuildItems.CurrentRow == null || dgvBuildItems.CurrentRow.Tag == null)
-            {
-                dgvShortfalls.Visible = false;
-                lblShortfallStatus.Text = "Select a build item to check resources.";
-                lblShortfallStatus.ForeColor = System.Drawing.SystemColors.GrayText;
-                return;
-            }
-
-            var buildItem = dgvBuildItems.CurrentRow.Tag as BuildItem;
-            if (buildItem == null)
-            {
-                dgvShortfalls.Visible = false;
-                lblShortfallStatus.Text = "Select a build item to check resources.";
-                lblShortfallStatus.ForeColor = System.Drawing.SystemColors.GrayText;
-                return;
-            }
-
-            if (string.IsNullOrEmpty(buildItem.BuildLocationUUID))
-            {
-                dgvShortfalls.Visible = false;
-                lblShortfallStatus.Text = "Item not allocated — cannot check resources.";
-                lblShortfallStatus.ForeColor = System.Drawing.Color.DarkOrange;
-                return;
-            }
-
-            // Resolve the colony inventory
-            var colony = playerContext.GetCurrentPlayerColonies()
-                .FirstOrDefault(c => c.UUID == buildItem.BuildLocationUUID);
-            if (colony == null)
-            {
-                dgvShortfalls.Visible = false;
-                lblShortfallStatus.Text = "Build location not found.";
-                lblShortfallStatus.ForeColor = System.Drawing.Color.Red;
-                return;
-            }
-
-            try
-            {
-                var shortfalls = ResourceCheckService.ComputeShortfalls(
-                    buildItem,
-                    colony.Items,
-                    uuid => playerContext.FindBlueprint(uuid));
-
-                if (shortfalls.Count == 0)
-                {
-                    dgvShortfalls.Visible = false;
-                    lblShortfallStatus.Text = "✔ All resources available.";
                     lblShortfallStatus.ForeColor = System.Drawing.Color.Green;
                     return;
                 }
@@ -874,6 +740,289 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 }
             }
         }
+
+        // -----------------------------------------------------------------------
+        // Generate Delivery
+        // -----------------------------------------------------------------------
+
+        private void cmdGenerateDelivery_Click(object sender, EventArgs e)
+        {
+            cmsGenerateDelivery.Show(cmdGenerateDelivery,
+                new System.Drawing.Point(0, cmdGenerateDelivery.Height));
+        }
+
+        /// <summary>
+        /// Shows a route picker dialog and returns the selected route, or null if cancelled.
+        /// </summary>
+        private DeliveryRoute PickDeliveryRoute()
+        {
+            var routes = playerContext.GetCurrentPlayerRoutes();
+            if (routes.Count == 0)
+            {
+                MessageBox.Show("No delivery routes found. Create a route first.",
+                    "Generate Delivery", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return null;
+            }
+
+            using (var form = new Form())
+            {
+                form.Text = "Select Delivery Route";
+                form.ClientSize = new System.Drawing.Size(350, 120);
+                form.FormBorderStyle = FormBorderStyle.FixedDialog;
+                form.StartPosition = FormStartPosition.CenterParent;
+                form.MaximizeBox = false;
+                form.MinimizeBox = false;
+
+                var lbl = new Label { Text = "Route:", Left = 10, Top = 12, Width = 50 };
+                var cmb = new ComboBox
+                {
+                    Left = 65, Top = 10, Width = 270,
+                    DropDownStyle = ComboBoxStyle.DropDownList
+                };
+                foreach (var r in routes.OrderBy(r => r.Name))
+                    cmb.Items.Add(r);
+                cmb.DisplayMember = "Name";
+                if (cmb.Items.Count > 0) cmb.SelectedIndex = 0;
+
+                var btnOk = new Button
+                {
+                    Text = "OK", Left = 180, Top = 70, Width = 75,
+                    DialogResult = DialogResult.OK
+                };
+                var btnCancel = new Button
+                {
+                    Text = "Cancel", Left = 265, Top = 70, Width = 75,
+                    DialogResult = DialogResult.Cancel
+                };
+
+                form.Controls.AddRange(new Control[] { lbl, cmb, btnOk, btnCancel });
+                form.AcceptButton = btnOk;
+                form.CancelButton = btnCancel;
+
+                if (form.ShowDialog(this) == DialogResult.OK && cmb.SelectedItem is DeliveryRoute route)
+                    return route;
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Shows a plan checklist dialog and returns the selected plans, or null if cancelled.
+        /// </summary>
+        private List<BuildPlan> PickBuildPlans(string title)
+        {
+            var allPlans = playerContext.GetCurrentPlayerBuildPlans();
+            if (allPlans.Count == 0)
+            {
+                MessageBox.Show("No build plans found.", title,
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return null;
+            }
+
+            using (var form = new Form())
+            {
+                form.Text = title;
+                form.ClientSize = new System.Drawing.Size(350, 300);
+                form.FormBorderStyle = FormBorderStyle.FixedDialog;
+                form.StartPosition = FormStartPosition.CenterParent;
+                form.MaximizeBox = false;
+                form.MinimizeBox = false;
+
+                var lbl = new Label { Text = "Select plans:", Left = 10, Top = 8, Width = 330 };
+                var clb = new CheckedListBox
+                {
+                    Left = 10, Top = 28, Width = 330, Height = 220,
+                    CheckOnClick = true
+                };
+                foreach (var p in allPlans.OrderBy(p => p.Name))
+                    clb.Items.Add(p.Name, false);
+
+                var btnOk = new Button
+                {
+                    Text = "OK", Left = 180, Top = 260, Width = 75,
+                    DialogResult = DialogResult.OK
+                };
+                var btnCancel = new Button
+                {
+                    Text = "Cancel", Left = 265, Top = 260, Width = 75,
+                    DialogResult = DialogResult.Cancel
+                };
+
+                form.Controls.AddRange(new Control[] { lbl, clb, btnOk, btnCancel });
+                form.AcceptButton = btnOk;
+                form.CancelButton = btnCancel;
+
+                if (form.ShowDialog(this) != DialogResult.OK)
+                    return null;
+
+                var selected = new List<BuildPlan>();
+                var orderedPlans = allPlans.OrderBy(p => p.Name).ToList();
+                for (int i = 0; i < clb.Items.Count; i++)
+                {
+                    if (clb.GetItemChecked(i))
+                        selected.Add(orderedPlans[i]);
+                }
+
+                if (selected.Count == 0)
+                {
+                    MessageBox.Show("No plans selected.", title,
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return null;
+                }
+
+                return selected;
+            }
+        }
+
+        private void tsmiResourceDelivery_Click(object sender, EventArgs e)
+        {
+            if (_selectedPlan == null)
+            {
+                MessageBox.Show("Select a build plan first.", "Resource Delivery",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var route = PickDeliveryRoute();
+            if (route == null) return;
+
+            try
+            {
+                var shortfalls = ResourceCheckService.ComputePlanShortfalls(
+                    _selectedPlan,
+                    uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
+                    uuid => (Ship)null,
+                    uuid => (Station)null,
+                    playerContext.CurrentPlayerUUID,
+                    uuid => playerContext.FindBlueprint(uuid));
+
+                if (shortfalls.Count == 0)
+                {
+                    MessageBox.Show("No resource shortfalls found for this plan.",
+                        "Resource Delivery", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                var plan = DeliveryGenerationService.GenerateDeliveryPlan(
+                    _selectedPlan,
+                    route,
+                    shortfalls,
+                    uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
+                    playerContext);
+
+                playerContext.WriteContext();
+                playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
+                PopulateBuildItemsGrid();
+
+                MessageBox.Show(
+                    string.Format("Delivery plan '{0}' created with {1} stop(s).",
+                        plan.Name, plan.Stops.Count),
+                    "Resource Delivery", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                Log.Info("Generated resource delivery plan '{0}' ({1}) with {2} stops for plan '{3}'",
+                    plan.Name, plan.UUID, plan.Stops.Count, _selectedPlan.Name);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error generating resource delivery for plan '{0}'", _selectedPlan.Name);
+                MessageBox.Show("Error generating delivery: " + ex.Message,
+                    "Resource Delivery", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void tsmiConsolidatedDelivery_Click(object sender, EventArgs e)
+        {
+            var route = PickDeliveryRoute();
+            if (route == null) return;
+
+            var selectedPlans = PickBuildPlans("Consolidated Resource Delivery");
+            if (selectedPlans == null) return;
+
+            try
+            {
+                Func<BuildPlan, Dictionary<string, Dictionary<string, int>>> shortfallProvider = plan =>
+                    ResourceCheckService.ComputePlanShortfalls(
+                        plan,
+                        uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
+                        uuid => (Ship)null,
+                        uuid => (Station)null,
+                        playerContext.CurrentPlayerUUID,
+                        uuid => playerContext.FindBlueprint(uuid));
+
+                string planName = string.Format("Consolidated: {0}",
+                    string.Join(", ", selectedPlans.Select(p => p.Name)));
+                if (planName.Length > 80)
+                    planName = planName.Substring(0, 77) + "...";
+
+                var plan = DeliveryGenerationService.GenerateConsolidatedDeliveryPlan(
+                    selectedPlans,
+                    route,
+                    shortfallProvider,
+                    uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
+                    playerContext,
+                    planName);
+
+                playerContext.WriteContext();
+
+                MessageBox.Show(
+                    string.Format("Consolidated delivery plan '{0}' created with {1} stop(s).",
+                        plan.Name, plan.Stops.Count),
+                    "Consolidated Delivery", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                Log.Info("Generated consolidated delivery plan '{0}' ({1}) with {2} stops from {3} plans",
+                    plan.Name, plan.UUID, plan.Stops.Count, selectedPlans.Count);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error generating consolidated delivery");
+                MessageBox.Show("Error generating delivery: " + ex.Message,
+                    "Consolidated Delivery", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void tsmiFlatpackDelivery_Click(object sender, EventArgs e)
+        {
+            var route = PickDeliveryRoute();
+            if (route == null) return;
+
+            var selectedPlans = PickBuildPlans("Flatpack Delivery");
+            if (selectedPlans == null) return;
+
+            try
+            {
+                string planName = string.Format("Flatpack: {0}",
+                    string.Join(", ", selectedPlans.Select(p => p.Name)));
+                if (planName.Length > 80)
+                    planName = planName.Substring(0, 77) + "...";
+
+                var plan = DeliveryGenerationService.GenerateFlatpackDeliveryPlan(
+                    selectedPlans,
+                    route,
+                    uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
+                    uuid => playerContext.FindBlueprint(uuid),
+                    playerContext,
+                    planName);
+
+                playerContext.WriteContext();
+
+                MessageBox.Show(
+                    string.Format("Flatpack delivery plan '{0}' created with {1} stop(s).",
+                        plan.Name, plan.Stops.Count),
+                    "Flatpack Delivery", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                Log.Info("Generated flatpack delivery plan '{0}' ({1}) with {2} stops from {3} plans",
+                    plan.Name, plan.UUID, plan.Stops.Count, selectedPlans.Count);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error generating flatpack delivery");
+                MessageBox.Show("Error generating delivery: " + ex.Message,
+                    "Flatpack Delivery", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // -----------------------------------------------------------------------
+        // Utility Dialogs
+        // -----------------------------------------------------------------------
 
         /// <summary>
         /// Shows a simple input dialog and returns the user's text, or null if cancelled.
