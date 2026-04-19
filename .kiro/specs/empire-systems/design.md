@@ -590,8 +590,10 @@ public class BuildItem
     // How many
     public int Quantity { get; set; } = 0;  // Always runs (mfg runs, commodity cycles, ships, etc.)
 
-    // Where to build
-    public string ColonyUUID { get; set; } = string.Empty;
+    // Where to build (Colony today; Ship/Station in future for factory ships)
+    [JsonConverter(typeof(StringEnumConverter))]
+    public DestinationType BuildLocationType { get; set; } = DestinationType.Colony;
+    public string BuildLocationUUID { get; set; } = string.Empty;
     public string StructureUUID { get; set; } = string.Empty;
 
     // Assembly location (ShipTemplate items)
@@ -622,6 +624,7 @@ Design decisions:
 - `Quantity` is always runs. The service layer computes total output using items-per-run from the blueprint (default 1, higher for munitions) or CommoditiesPerCycle for commodities. For ShipTemplate items, quantity is number of ships.
 - `ShipTemplateUUID` references the template for ShipTemplate items. When expanded, child Manufactory items are created with `ParentBuildItemUUID` pointing back to the template item.
 - `AssemblyLocationUUID` + `AssemblyLocationType` specify where ship components are delivered for final assembly. Only used for ShipTemplate items.
+- `BuildLocationType` + `BuildLocationUUID` specify where the item is manufactured. Defaults to Colony. The game has a planned "factory ship" feature that would allow manufacturing on ships, and player-owned stations may also gain manufacturing capability. Using DestinationType instead of a colony-specific UUID future-proofs the model — when factory ships arrive, BuildLocationType can be set to Ship (or Station) without a data migration. For now, all UI and service code only supports Colony; the allocation dialog only shows colony structures.
 - Status is a string enum for readable JSON.
 
 ### ShipTemplate
@@ -1174,27 +1177,34 @@ Static service in `Services/ResourceCheckService.cs`.
 public static class ResourceCheckService
 {
     /// <summary>
-    /// Computes resource shortfalls for a build item at its allocated colony.
+    /// Computes resource shortfalls for a build item at its allocated build location.
+    /// The location's inventory (colony warehouse, ship cargo, or station hold) is checked.
+    /// Currently only Colony locations are supported.
     /// Returns a dictionary of resource name → shortfall quantity.
     /// Empty dictionary means all resources available.
     /// </summary>
     public static Dictionary<string, int> ComputeShortfalls(
-        BuildItem item, Colony colony,
+        BuildItem item, ItemBag locationInventory,
         Func<string, Blueprint> blueprintFinder);
 
     /// <summary>
     /// Computes shortfalls for all allocated items in a build plan.
     /// Returns per-item shortfall maps keyed by BuildItem UUID.
+    /// Uses BuildLocationType to resolve the correct inventory source.
     /// </summary>
     public static Dictionary<string, Dictionary<string, int>> ComputePlanShortfalls(
         BuildPlan plan, Func<string, Colony> colonyFinder,
+        Func<string, Ship> shipFinder,
+        Func<string, Station> stationFinder,
+        string currentPlayerUUID,
         Func<string, Blueprint> blueprintFinder);
 }
 ```
 
 Logic:
-- For Manufactory items: iterate blueprint.Resources, multiply quantity × item.Quantity, subtract colony warehouse stock (Refined purity for natural resources, DeterminePurity for synthetics).
-- For Commodity items: iterate commodity.ConstructionResources, multiply quantity × item.Quantity (runs), subtract warehouse stock.
+- Resolves the build location's inventory based on `BuildLocationType`: Colony → `colony.Items`, Ship → `ship.Cargo`, Station → `station.Holds[currentPlayerUUID]`. Currently only Colony is implemented; Ship and Station throw NotSupportedException until factory ships are added.
+- For Manufactory items: iterate blueprint.Resources, multiply quantity × item.Quantity, subtract location inventory stock (Refined purity for natural resources, DeterminePurity for synthetics).
+- For Commodity items: iterate commodity.ConstructionResources, multiply quantity × item.Quantity (runs), subtract inventory stock.
 - Returns only positive shortfalls (resources where need > have).
 
 ### DeliveryGenerationService (Iteration 1)
@@ -1827,7 +1837,7 @@ The existing reference counters don't account for all reference sources. These e
 Note: These new reference sources only exist after the new entity types are implemented. The counter expansion should be done as each iteration adds the referencing entity. Iteration 1 adds BuildItem → expand for BuildItem.BlueprintUUID. Iteration 2 adds ShipTemplate/Ship → expand for those. And so on.
 
 **ColonyReferenceCounter** — add counts for:
-- `BuildItem.ColonyUUID` (Iteration 1)
+- `BuildItem.BuildLocationUUID` when BuildLocationType=Colony (Iteration 1)
 - `SupplyChainStage.LocationUUID` when Colony (Iteration 6)
 - `WarehouseOverflowRule.ColonyUUID` and `.DestinationUUID` when Colony (Iteration 6)
 - `StockPlan.Targets[].LocationUUID` when Scope=Colony (Iteration 7)
@@ -1863,7 +1873,7 @@ MDI child form. Left-list / right-detail pattern with TableLayoutPanel base.
 │                      │ ☑ Active  [Save] [Auto-Assign] [Generate Delivery ▼]    │
 │ ┌──────────────────┐ │                                                             │
 │ │▸ Keystone Batch 3│ │ ┌──────┬─────────────┬─────┬─────────────┬────────┬───────┐│
-│ │  Munitions Run   │ │ │ Type │ Item        │ Qty │ Colony      │Structre│Status ││
+│ │  Munitions Run   │ │ │ Type │ Item        │ Qty │ Location    │Structre│Status ││
 │ │  Reactor Restock │ │ ├──────┼─────────────┼─────┼─────────────┼────────┼───────┤│
 │ │                  │ │ │ Mfg  │ Reactor Mk3 │  10 │ Alpha Prime │MfgBay1 │ Ready ││
 │ │                  │ │ │ Mfg  │ Drive Mk3   │  10 │ Alpha Prime │MfgBay2 │Staged ││
@@ -1894,7 +1904,7 @@ Controls:
 - Left: `flpSearchList` → `txtPlanFilter` (ValidatedTextBox) + `lvwPlans` (ListView) + `cmdNew` / `cmdDelete`
 - Right: `flpPlanData` → plan name/description, `chkActive` (CheckBox, write-through to BuildPlan.IsActive), command buttons, `dgvBuildItems` (DataGridView), add-item panel, shortfall panel
 - Inactive plans: list view shows plan name in gray italic. Detail panel is read-only (all controls disabled except the Active checkbox). Shortfall panel hidden.
-- `dgvBuildItems` columns: Type, Item, Qty (editable), Colony, Structure, Status, Recipient, Notes
+- `dgvBuildItems` columns: Type, Item, Qty (editable), Location, Structure, Status, Recipient, Notes
 - Add-item panel: `cmbItemType`, `txtItemFilter`, `cmbItem` (FilteredComboBox), `txtQuantity`, `txtTargetDuration`, `txtRecipient`, `cmdAddItem`, `cmdQueueCalc`
 - Shortfall panel: `dgvShortfalls` (read-only DataGridView) — visible when a build item is selected
 
@@ -1905,7 +1915,7 @@ Wiring:
 
 #### Structure Allocation Dialog
 
-Modal dialog opened from the build items grid when the user clicks the Colony/Structure cell.
+Modal dialog opened from the build items grid when the user clicks the Location/Structure cell.
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -1916,7 +1926,7 @@ Modal dialog opened from the build items grid when the user clicks the Colony/St
 │ Filter: [__________]  [✓] Idle structures only          │
 │                                                         │
 │ ┌───────────────────┬──────────────┬────────┬─────────┐ │
-│ │ Colony            │ Structure    │ Type   │ Status  │ │
+│ │ Location          │ Structure    │ Type   │ Status  │ │
 │ ├───────────────────┼──────────────┼────────┼─────────┤ │
 │ │ Alpha Prime       │ Mfg Bay 1   │ Mfg    │ Idle    │ │
 │ │ Alpha Prime       │ Mfg Bay 2   │ Mfg    │ Busy    │ │
@@ -1930,7 +1940,8 @@ Modal dialog opened from the build items grid when the user clicks the Colony/St
 
 Controls:
 - `txtStructureFilter` (ValidatedTextBox), `chkIdleOnly` (CheckBox)
-- `dgvStructures` (DataGridView, read-only) — columns: Colony, Structure, Type, Status
+- `dgvStructures` (DataGridView, read-only) — columns: Location, Structure, Type, Status
+- Currently only shows colony structures. When factory ships/stations are supported, the grid will also include ship and station manufacturing slots.
 - `cmdAllocate`, `cmdCancel`
 
 ### FormShipTemplate (Iteration 2)
@@ -2643,11 +2654,11 @@ The complete cross-entity reference map. Each row shows an entity, what referenc
 | Entity | Referenced By | Reference Counter |
 |---|---|---|
 | Blueprint | ColonyStructure (Flatpack, Research, Manufacturing), BuildItem.BlueprintUUID, ShipTemplate.HullBlueprintUUID, ShipTemplate.Components[].BlueprintUUID, Ship.HullBlueprintUUID, Ship.Components[].BlueprintUUID, Station.Components[].BlueprintUUID, Station.StationBlueprintUUID, Survey.ScannerBlueprintUUID, Blueprint.BaseBlueprintUUID, MarketListing.ItemReferenceID (when ItemType=Blueprint), MarketTransaction.ItemReferenceID (when ItemType=Blueprint), StockPlan.Targets[].ItemReferenceID (when ItemType=Blueprint) | BlueprintReferenceCounter (expand existing) |
-| Colony | DeliveryRoute stops (DestinationUUID), DeliveryPlan stops (DestinationUUID), BuildItem.ColonyUUID, SupplyChainStage.LocationUUID (when Colony), WarehouseOverflowRule.ColonyUUID, StockPlan.Targets[].LocationUUID (when Scope=Colony) | ColonyReferenceCounter (expand existing) |
+| Colony | DeliveryRoute stops (DestinationUUID), DeliveryPlan stops (DestinationUUID), BuildItem.BuildLocationUUID (when BuildLocationType=Colony), SupplyChainStage.LocationUUID (when Colony), WarehouseOverflowRule.ColonyUUID, StockPlan.Targets[].LocationUUID (when Scope=Colony) | ColonyReferenceCounter (expand existing) |
 | Survey | ColonyStructure.MiningSurvey, BuildItem.MiningSurveyUUID | SurveyReferenceCounter (expand existing) |
-| Station | DeliveryRoute stops (DestinationUUID when Station), DeliveryPlan stops (DestinationUUID when Station), Ship.LocationUUID (when Station), MarketListing.StationUUID, MarketTransaction.StationUUID, BuildItem.AssemblyLocationUUID (when Station), SupplyChainStage.LocationUUID (when Station), StockPlan.Targets[].LocationUUID (when Scope=Station), WarehouseOverflowRule.DestinationUUID (when Station) | StationReferenceCounter (new) |
+| Station | DeliveryRoute stops (DestinationUUID when Station), DeliveryPlan stops (DestinationUUID when Station), Ship.LocationUUID (when Station), MarketListing.StationUUID, MarketTransaction.StationUUID, BuildItem.AssemblyLocationUUID (when Station), BuildItem.BuildLocationUUID (when BuildLocationType=Station, future), SupplyChainStage.LocationUUID (when Station), StockPlan.Targets[].LocationUUID (when Scope=Station), WarehouseOverflowRule.DestinationUUID (when Station) | StationReferenceCounter (new) |
 | ShipTemplate | Ship.TemplateUUID, BuildItem.ShipTemplateUUID, StockPlan.Targets[].ShipTemplateUUID | ShipTemplateReferenceCounter (new) |
-| Ship | DeliveryPlan.ShipUUID | ShipReferenceCounter (new) |
+| Ship | DeliveryPlan.ShipUUID, BuildItem.BuildLocationUUID (when BuildLocationType=Ship, future) | ShipReferenceCounter (new) |
 | Asteroid | Survey.AsteroidUUID, SupplyChainStage.LocationUUID (when Asteroid), DeliveryRoute stops (DestinationUUID when Asteroid) | AsteroidReferenceCounter (new) |
 | Faction | PlayerProfile.FactionUUID, ExternalCharacter.FactionUUID | FactionReferenceCounter (new) |
 | BuildPlan | BuildPlan.DeliveryPlanUUID (reverse: DeliveryPlan referenced by BuildPlan) | — (BuildPlans are top-level, not referenced by other entities) |
@@ -2673,7 +2684,7 @@ The existing counters need to be expanded to cover new reference sources:
 - StockPlan.Targets[].ItemReferenceID (when ItemType = Blueprint)
 
 **ColonyReferenceCounter** — currently counts: DeliveryRoute stops, DeliveryPlan stops. Must add:
-- BuildItem.ColonyUUID (build items allocated to this colony)
+- BuildItem.BuildLocationUUID (when BuildLocationType = Colony)
 - SupplyChainStage.LocationUUID (when LocationType = Colony)
 - WarehouseOverflowRule.ColonyUUID (overflow rules for this colony)
 - WarehouseOverflowRule.DestinationUUID (when DestinationType = Colony)
@@ -2824,7 +2835,7 @@ For any blueprint with a known manufacturing time and any positive target durati
 For any positive target duration, the computed runs × CommodityCycleSeconds ≥ target duration.
 
 ### Property 4: Resource shortfall computation
-For any build item allocated to a colony with an associated delivery route, the shortfall for each resource equals max(0, required - available), where available = colony warehouse stock + current player's station hold stock at stations on the route.
+For any build item allocated to a build location (colony, ship, or station) with an associated delivery route, the shortfall for each resource equals max(0, required - available), where available = build location warehouse/hold stock + current player's station hold stock at stations on the route. Currently only Colony build locations are supported.
 
 ### Property 5: Delivery plan generation covers all shortfalls
 For any build plan with shortfalls, the generated delivery plan's drop-off items cover every shortfall quantity.
@@ -2874,9 +2885,12 @@ ResourceCheckService.ComputePlanShortfalls(plan)
   │    ├─ blueprintFinder(item.BlueprintUUID)          ← PlayerContext cache: O(1)
   │    │    └─ blueprint.Resources                      ← PropertyBag: O(n) keys
   │    │
-  │    ├─ colonyFinder(item.ColonyUUID)                ← PlayerContext cache: O(1)
-  │    │    └─ colony.Warehouse.CountByType(resource)   ← ItemBag index: O(1)
-  │    │    └─ colony.Warehouse.FindResource(res, pur)  ← ItemBag index: O(1)
+  │    ├─ resolve build location inventory:
+  │    │    ├─ if Colony: colonyFinder(item.BuildLocationUUID)  ← PlayerContext cache: O(1)
+  │    │    │    └─ colony.Warehouse.CountByType(resource)   ← ItemBag index: O(1)
+  │    │    │    └─ colony.Warehouse.FindResource(res, pur)  ← ItemBag index: O(1)
+  │    │    ├─ if Ship: shipFinder → ship.Cargo.CountByType  ← future (factory ships)
+  │    │    └─ if Station: stationFinder → hold.CountByType  ← future (station mfg)
   │    │
   │    └─ commodityFinder(item.CommodityName)          ← ★ NEW: O(n) scan of CommodityList
   │         └─ commodity.ConstructionResources          ← Dictionary: O(1)
