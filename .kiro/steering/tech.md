@@ -56,7 +56,40 @@ nuget restore OE2EmpireTracker.sln
 - Call `Reset()` on context singletons in test setup to ensure clean state
 - WinForms data binding via `BindingList<T>` and `BindingSource`
 
-## Tool Limitations
-- **Do NOT use `semanticRename`** — it does not work with old-style csproj / .NET Framework 4.8.1. The language server cannot resolve symbols for rename. Use manual find-and-replace (`strReplace` or `executePwsh` with grep/sed) instead.
+## File Writing — Use fwrite.js
+
+**ALWAYS use `.kiro/tools/fwrite.js`** for all file writing, appending, and replacing. Do NOT use the built-in `fsWrite`, `fsAppend`, or `strReplace` tools — they have size limits that cause silent failures on large content.
+
+### Write (overwrite entire file)
+```powershell
+@"
+file content here
+"@ | node .kiro/tools/fwrite.js write path/to/file.md
+```
+
+### Append
+```powershell
+@"
+content to append
+"@ | node .kiro/tools/fwrite.js append path/to/file.md
+```
+
+### Replace (single string replacement)
+```powershell
+@"
+old text to find
+"@ | Out-File -NoNewline -Encoding utf8 _old.tmp
+@"
+new text to replace with
+"@ | Out-File -NoNewline -Encoding utf8 _new.tmp
+node .kiro/tools/fwrite.js replace path/to/file.md _old.tmp _new.tmp
+```
+
+The replace mode checks for uniqueness (fails if old string appears more than once) and auto-deletes the temp files after replacement.
+
+For small edits (under 10 lines) where you are confident the content is small, `strReplace` is acceptable as a convenience. But if there is ANY doubt about size, use fwrite.js.
+
+## Other Tool Limitations
+- **Do NOT use `semanticRename`** — it does not work with old-style csproj / .NET Framework 4.8.1. The language server cannot resolve symbols for rename. Use manual find-and-replace via fwrite.js replace mode or `executePwsh` with grep/sed instead.
+- **Do NOT use `fsWrite` or `fsAppend`** for content larger than ~30 lines — they silently fail. Use fwrite.js instead.
 - **`strReplace` parameter ordering** — when calling `strReplace`, always provide `newStr` before `oldStr`. Providing `oldStr` first causes silent failures ("aborted" error with no message). The correct order is: `newStr`, `oldStr`, `path`.
-- **Large file edits** — for inserting large blocks of content (50+ lines), prefer `fsWrite` to create a temp file with the new content, then use `readFile` + `strReplace` to insert it. Or use multiple smaller `strReplace` calls. Single massive `newStr` values can be unreliable.
