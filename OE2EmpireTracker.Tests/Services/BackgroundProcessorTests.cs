@@ -743,6 +743,354 @@ namespace OE2EmpireTracker.Tests.Services
             return string.Join(", ", parts);
         }
 
+        // -----------------------------------------------------------------
+        // Cascade Processing Tests (Tasks 12.1 - 12.4)
+        // -----------------------------------------------------------------
+
+        /// <summary>
+        /// Task 12.2: TryAdvanceStatus only advances, never decreases.
+        /// For every pair of (current, target) statuses, the result should
+        /// only change if target ordinal > current ordinal.
+        /// </summary>
+        [Test]
+        public void TryAdvanceStatus_OnlyAdvances_NeverDecreases()
+        {
+            var allStatuses = (BuildItemStatus[])Enum.GetValues(typeof(BuildItemStatus));
+
+            foreach (var current in allStatuses)
+            {
+                foreach (var target in allStatuses)
+                {
+                    var item = new BuildItem { UUID = Guid.NewGuid().ToString(), Status = current };
+                    bool changed = BackgroundProcessor.TryAdvanceStatus(item, target);
+
+                    if ((int)target > (int)current)
+                    {
+                        Assert.That(changed, Is.True,
+                            $"Expected advance from {current} to {target}");
+                        Assert.That(item.Status, Is.EqualTo(target),
+                            $"Status should be {target} after advance from {current}");
+                    }
+                    else
+                    {
+                        Assert.That(changed, Is.False,
+                            $"Should not change from {current} to {target}");
+                        Assert.That(item.Status, Is.EqualTo(current),
+                            $"Status should remain {current} when target is {target}");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Task 12.1/12.4: When CascadeResourceCheckDirty is set and a Delivering
+        /// item has no shortfalls, it advances to Ready and BuildPlanDataChanged fires
+        /// outside the lock.
+        /// </summary>
+        [Test]
+        public void ProcessCascades_AdvancesDeliveringToReady_WhenNoShortfalls()
+        {
+            TestHelper.SetEmpireFilePath();
+            string tempPath = System.IO.Path.Combine(
+                System.IO.Path.GetTempPath(),
+                "BackgroundProcessorTest_Cascade1_" + Guid.NewGuid().ToString("N") + ".json");
+            PlayerContext.FilePath = tempPath;
+            var pc = PlayerContext.GetInstance();
+            var ec = EmpireContext.GetInstance();
+
+            try
+            {
+                // Create a colony with resources in its warehouse
+                var colony = new Colony();
+                colony.UUID = Guid.NewGuid().ToString();
+                colony.ColonyName = "TestColony";
+                colony.PlanetName = "TestPlanet";
+                colony.OwnerUUID = "player1";
+                pc.ColonyList.Add(colony);
+
+                // Create a build plan with a Delivering commodity item
+                var plan = new BuildPlan();
+                plan.UUID = Guid.NewGuid().ToString();
+                plan.Name = "TestPlan";
+                plan.OwnerUUID = "player1";
+                plan.IsActive = true;
+
+                var item = new BuildItem();
+                item.UUID = Guid.NewGuid().ToString();
+                item.ItemType = BuildItemType.Commodity;
+                item.CommodityName = "NonExistentCommodity"; // No construction resources = no shortfalls
+                item.Status = BuildItemStatus.Delivering;
+                item.BuildLocationType = DestinationType.Colony;
+                item.BuildLocationUUID = colony.UUID;
+                item.Quantity = 1;
+                plan.Items.Add(item);
+
+                pc.BuildPlanList.Add(plan);
+                pc.InvalidateBuildPlanCache();
+
+                // Set the cascade flag
+                pc.CascadeResourceCheckDirty = true;
+
+                // Track BuildPlanDataChanged events
+                var firedPlanUUIDs = new List<string>();
+                pc.BuildPlanDataChanged += (s, e) => firedPlanUUIDs.Add(e.BuildPlanUUID);
+
+                var processor = new BackgroundProcessor(pc);
+                processor.RunCycleOnce();
+                processor.Dispose();
+
+                // Item should have advanced to Ready
+                Assert.That(item.Status, Is.EqualTo(BuildItemStatus.Ready),
+                    "Delivering item with no shortfalls should advance to Ready");
+
+                // BuildPlanDataChanged should have fired for this plan
+                Assert.That(firedPlanUUIDs, Contains.Item(plan.UUID),
+                    "BuildPlanDataChanged should fire for modified plan");
+
+                // Flag should be cleared
+                Assert.That(pc.CascadeResourceCheckDirty, Is.False,
+                    "CascadeResourceCheckDirty should be cleared after processing");
+            }
+            finally
+            {
+                CleanupTempFiles(tempPath);
+            }
+        }
+
+        /// <summary>
+        /// Task 12.1: When CascadeStockTargetsDirty is set, it is cleared
+        /// (placeholder behavior for Iteration 7).
+        /// </summary>
+        [Test]
+        public void ProcessCascades_ClearsStockTargetsDirtyFlag()
+        {
+            TestHelper.SetEmpireFilePath();
+            string tempPath = System.IO.Path.Combine(
+                System.IO.Path.GetTempPath(),
+                "BackgroundProcessorTest_Cascade2_" + Guid.NewGuid().ToString("N") + ".json");
+            PlayerContext.FilePath = tempPath;
+            var pc = PlayerContext.GetInstance();
+            var ec = EmpireContext.GetInstance();
+
+            try
+            {
+                pc.CascadeStockTargetsDirty = true;
+
+                var processor = new BackgroundProcessor(pc);
+                processor.RunCycleOnce();
+                processor.Dispose();
+
+                Assert.That(pc.CascadeStockTargetsDirty, Is.False,
+                    "CascadeStockTargetsDirty should be cleared after processing");
+            }
+            finally
+            {
+                CleanupTempFiles(tempPath);
+            }
+        }
+
+        /// <summary>
+        /// Task 12.2: Items not in Delivering status should not be changed
+        /// by cascade processing.
+        /// </summary>
+        [Test]
+        public void ProcessCascades_DoesNotChangeNonDeliveringItems()
+        {
+            TestHelper.SetEmpireFilePath();
+            string tempPath = System.IO.Path.Combine(
+                System.IO.Path.GetTempPath(),
+                "BackgroundProcessorTest_Cascade3_" + Guid.NewGuid().ToString("N") + ".json");
+            PlayerContext.FilePath = tempPath;
+            var pc = PlayerContext.GetInstance();
+            var ec = EmpireContext.GetInstance();
+
+            try
+            {
+                var colony = new Colony();
+                colony.UUID = Guid.NewGuid().ToString();
+                colony.ColonyName = "TestColony";
+                colony.PlanetName = "TestPlanet";
+                colony.OwnerUUID = "player1";
+                pc.ColonyList.Add(colony);
+
+                var plan = new BuildPlan();
+                plan.UUID = Guid.NewGuid().ToString();
+                plan.Name = "TestPlan";
+                plan.OwnerUUID = "player1";
+                plan.IsActive = true;
+
+                // Staged item should stay Staged
+                var stagedItem = new BuildItem();
+                stagedItem.UUID = Guid.NewGuid().ToString();
+                stagedItem.ItemType = BuildItemType.Commodity;
+                stagedItem.CommodityName = "NonExistentCommodity";
+                stagedItem.Status = BuildItemStatus.Staged;
+                stagedItem.BuildLocationType = DestinationType.Colony;
+                stagedItem.BuildLocationUUID = colony.UUID;
+                stagedItem.Quantity = 1;
+                plan.Items.Add(stagedItem);
+
+                // Ready item should stay Ready
+                var readyItem = new BuildItem();
+                readyItem.UUID = Guid.NewGuid().ToString();
+                readyItem.ItemType = BuildItemType.Commodity;
+                readyItem.CommodityName = "NonExistentCommodity";
+                readyItem.Status = BuildItemStatus.Ready;
+                readyItem.BuildLocationType = DestinationType.Colony;
+                readyItem.BuildLocationUUID = colony.UUID;
+                readyItem.Quantity = 1;
+                plan.Items.Add(readyItem);
+
+                // Completed item should stay Completed
+                var completedItem = new BuildItem();
+                completedItem.UUID = Guid.NewGuid().ToString();
+                completedItem.ItemType = BuildItemType.Commodity;
+                completedItem.CommodityName = "NonExistentCommodity";
+                completedItem.Status = BuildItemStatus.Completed;
+                completedItem.BuildLocationType = DestinationType.Colony;
+                completedItem.BuildLocationUUID = colony.UUID;
+                completedItem.Quantity = 1;
+                plan.Items.Add(completedItem);
+
+                pc.BuildPlanList.Add(plan);
+                pc.InvalidateBuildPlanCache();
+                pc.CascadeResourceCheckDirty = true;
+
+                var processor = new BackgroundProcessor(pc);
+                processor.RunCycleOnce();
+                processor.Dispose();
+
+                Assert.That(stagedItem.Status, Is.EqualTo(BuildItemStatus.Staged),
+                    "Staged item should remain Staged");
+                Assert.That(readyItem.Status, Is.EqualTo(BuildItemStatus.Ready),
+                    "Ready item should remain Ready");
+                Assert.That(completedItem.Status, Is.EqualTo(BuildItemStatus.Completed),
+                    "Completed item should remain Completed");
+            }
+            finally
+            {
+                CleanupTempFiles(tempPath);
+            }
+        }
+
+        /// <summary>
+        /// Task 12.3: Start() sets both cascade dirty flags for startup cascade.
+        /// </summary>
+        [Test]
+        public void Start_SetsCascadeDirtyFlags()
+        {
+            TestHelper.SetEmpireFilePath();
+            PlayerContext.FilePath = "nonexistent_player_data.json";
+            var pc = PlayerContext.GetInstance();
+
+            pc.CascadeResourceCheckDirty = false;
+            pc.CascadeStockTargetsDirty = false;
+
+            var processor = new BackgroundProcessor(pc);
+            processor.Start();
+
+            Assert.That(pc.CascadeResourceCheckDirty, Is.True,
+                "Start() should set CascadeResourceCheckDirty");
+            Assert.That(pc.CascadeStockTargetsDirty, Is.True,
+                "Start() should set CascadeStockTargetsDirty");
+
+            processor.Dispose();
+        }
+
+        /// <summary>
+        /// Task 12.1: Inactive plans are skipped during cascade processing.
+        /// </summary>
+        [Test]
+        public void ProcessCascades_SkipsInactivePlans()
+        {
+            TestHelper.SetEmpireFilePath();
+            string tempPath = System.IO.Path.Combine(
+                System.IO.Path.GetTempPath(),
+                "BackgroundProcessorTest_Cascade5_" + Guid.NewGuid().ToString("N") + ".json");
+            PlayerContext.FilePath = tempPath;
+            var pc = PlayerContext.GetInstance();
+            var ec = EmpireContext.GetInstance();
+
+            try
+            {
+                var colony = new Colony();
+                colony.UUID = Guid.NewGuid().ToString();
+                colony.ColonyName = "TestColony";
+                colony.PlanetName = "TestPlanet";
+                colony.OwnerUUID = "player1";
+                pc.ColonyList.Add(colony);
+
+                // Inactive plan with a Delivering item
+                var plan = new BuildPlan();
+                plan.UUID = Guid.NewGuid().ToString();
+                plan.Name = "InactivePlan";
+                plan.OwnerUUID = "player1";
+                plan.IsActive = false;
+
+                var item = new BuildItem();
+                item.UUID = Guid.NewGuid().ToString();
+                item.ItemType = BuildItemType.Commodity;
+                item.CommodityName = "NonExistentCommodity";
+                item.Status = BuildItemStatus.Delivering;
+                item.BuildLocationType = DestinationType.Colony;
+                item.BuildLocationUUID = colony.UUID;
+                item.Quantity = 1;
+                plan.Items.Add(item);
+
+                pc.BuildPlanList.Add(plan);
+                pc.InvalidateBuildPlanCache();
+                pc.CascadeResourceCheckDirty = true;
+
+                var processor = new BackgroundProcessor(pc);
+                processor.RunCycleOnce();
+                processor.Dispose();
+
+                // Item should NOT have been advanced because plan is inactive
+                Assert.That(item.Status, Is.EqualTo(BuildItemStatus.Delivering),
+                    "Delivering item in inactive plan should not be advanced");
+            }
+            finally
+            {
+                CleanupTempFiles(tempPath);
+            }
+        }
+
+        /// <summary>
+        /// Task 12.1/12.4: When no cascade flags are set, no BuildPlanDataChanged
+        /// events should fire.
+        /// </summary>
+        [Test]
+        public void ProcessCascades_NoCascadeFlags_NoEvents()
+        {
+            TestHelper.SetEmpireFilePath();
+            string tempPath = System.IO.Path.Combine(
+                System.IO.Path.GetTempPath(),
+                "BackgroundProcessorTest_Cascade6_" + Guid.NewGuid().ToString("N") + ".json");
+            PlayerContext.FilePath = tempPath;
+            var pc = PlayerContext.GetInstance();
+            var ec = EmpireContext.GetInstance();
+
+            try
+            {
+                pc.CascadeResourceCheckDirty = false;
+                pc.CascadeStockTargetsDirty = false;
+
+                var firedPlanUUIDs = new List<string>();
+                pc.BuildPlanDataChanged += (s, e) => firedPlanUUIDs.Add(e.BuildPlanUUID);
+
+                var processor = new BackgroundProcessor(pc);
+                processor.RunCycleOnce();
+                processor.Dispose();
+
+                Assert.That(firedPlanUUIDs, Is.Empty,
+                    "No BuildPlanDataChanged events should fire when no cascade flags are set");
+            }
+            finally
+            {
+                CleanupTempFiles(tempPath);
+            }
+        }
+
         /// <summary>
         /// Generates a colony with structures that only have BuildCompletionTime
         /// timers (no ProcessCompletionTime). This ensures ProcessColony() can

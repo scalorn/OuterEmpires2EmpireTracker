@@ -105,11 +105,11 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 11.2 Implement plan picker dialog (new or existing plan)
   - [x] 11.3 Wire to BuildPlanService.GenerateColonyBuildItems
 
-- [ ] 12. Cascade Processing
-  - [ ] 12.1 Extend BackgroundProcessor: CascadeStockTargetsDirty and CascadeResourceCheckDirty
-  - [ ] 12.2 Implement cascade status advancement (max ordinal, never decrease)
-  - [ ] 12.3 Implement startup cascade
-  - [ ] 12.4 Fire BuildPlanDataChanged outside all locks
+- [-] 12. Cascade Processing
+  - [-] 12.1 Extend BackgroundProcessor: CascadeStockTargetsDirty and CascadeResourceCheckDirty
+  - [-] 12.2 Implement cascade status advancement (max ordinal, never decrease)
+  - [-] 12.3 Implement startup cascade
+  - [-] 12.4 Fire BuildPlanDataChanged outside all locks
 
 - [ ] 13. Contacts Form
   - [ ] 13.1 Create FormContacts MDI child: Factions tab + External Characters tab

@@ -2,6 +2,8 @@ using NLog;
 using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 
 namespace OE2EmpireTracker.Services
@@ -46,11 +48,17 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Starts the background processing timer.
+        /// Sets cascade dirty flags so the first cycle recomputes build plan statuses.
         /// </summary>
         public void Start()
         {
             if (_disposed) throw new ObjectDisposedException(nameof(BackgroundProcessor));
             if (_running) return;
+
+            // Startup cascade: mark both flags so the first tick recomputes statuses
+            _playerContext.CascadeResourceCheckDirty = true;
+            _playerContext.CascadeStockTargetsDirty = true;
+            Log.Info("BackgroundProcessor: startup cascade flags set");
 
             _stopping.Reset();
             int interval = GetTickIntervalMs();
@@ -132,6 +140,8 @@ namespace OE2EmpireTracker.Services
 
         private void ExecuteCycle()
         {
+            List<string> modifiedPlanUUIDs = null;
+
             if (!Monitor.TryEnter(_cycleLock))
             {
                 // Another cycle is already running; skip this tick
@@ -188,7 +198,23 @@ namespace OE2EmpireTracker.Services
                     }
                 }
 
-                if (processedCount > 0)
+                // Process cascade dirty flags (build plan resource checks / stock targets)
+                if (!_stopping.IsSet)
+                {
+                    try
+                    {
+                        modifiedPlanUUIDs = ProcessCascades();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Error during cascade processing");
+                        hadError = true;
+                    }
+                }
+
+                bool cascadeModified = modifiedPlanUUIDs != null && modifiedPlanUUIDs.Count > 0;
+
+                if (processedCount > 0 || cascadeModified)
                 {
                     try
                     {
@@ -200,7 +226,10 @@ namespace OE2EmpireTracker.Services
                         hadError = true;
                     }
 
-                    Log.Info("BackgroundProcessor cycle complete. Processed {0} colonies.", processedCount);
+                    if (processedCount > 0)
+                    {
+                        Log.Info("BackgroundProcessor cycle complete. Processed {0} colonies.", processedCount);
+                    }
                 }
 
                 LastCycleHadError = hadError;
@@ -214,6 +243,130 @@ namespace OE2EmpireTracker.Services
             {
                 Monitor.Exit(_cycleLock);
             }
+
+            // Fire BuildPlanDataChanged OUTSIDE the _cycleLock to prevent deadlocks
+            // with UI event handlers that might try to acquire locks.
+            if (modifiedPlanUUIDs != null)
+            {
+                foreach (var planUUID in modifiedPlanUUIDs)
+                {
+                    try
+                    {
+                        _playerContext.OnBuildPlanDataChanged(planUUID);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Error firing BuildPlanDataChanged for plan {0}", planUUID);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Processes cascade dirty flags. Checks CascadeResourceCheckDirty and
+        /// CascadeStockTargetsDirty on PlayerContext, performs the appropriate
+        /// recomputation, and clears the flags.
+        /// Returns a list of build plan UUIDs that were modified (for event firing).
+        /// </summary>
+        private List<string> ProcessCascades()
+        {
+            var modifiedPlanUUIDs = new List<string>();
+
+            bool resourceCheckDirty = _playerContext.CascadeResourceCheckDirty;
+            bool stockTargetsDirty = _playerContext.CascadeStockTargetsDirty;
+
+            if (!resourceCheckDirty && !stockTargetsDirty)
+                return modifiedPlanUUIDs;
+
+            var sw = Stopwatch.StartNew();
+
+            if (resourceCheckDirty)
+            {
+                _playerContext.CascadeResourceCheckDirty = false;
+                Log.Info("BackgroundProcessor: processing CascadeResourceCheckDirty");
+
+                var plans = _playerContext.SnapshotBuildPlanList();
+                var activePlans = plans.Where(p => p.IsActive).ToList();
+
+                foreach (var plan in activePlans)
+                {
+                    if (_stopping.IsSet) break;
+
+                    try
+                    {
+                        var shortfallMap = ResourceCheckService.ComputePlanShortfalls(
+                            plan,
+                            uuid => _playerContext.FindColony(uuid),
+                            uuid => _playerContext.FindShip(uuid),
+                            uuid => _playerContext.FindStation(uuid),
+                            _playerContext.CurrentPlayerUUID,
+                            uuid => _playerContext.FindBlueprint(uuid));
+
+                        bool planModified = false;
+
+                        foreach (var item in plan.Items)
+                        {
+                            // Only advance items that are in Delivering status
+                            if (item.Status != BuildItemStatus.Delivering)
+                                continue;
+
+                            // If no shortfalls for this item, it can advance to Ready
+                            bool hasShortfalls = shortfallMap.ContainsKey(item.UUID);
+                            if (!hasShortfalls)
+                            {
+                                if (TryAdvanceStatus(item, BuildItemStatus.Ready))
+                                {
+                                    planModified = true;
+                                    Log.Debug("BackgroundProcessor: item {0} in plan '{1}' advanced to Ready (shortfalls resolved)",
+                                        item.UUID, plan.Name);
+                                }
+                            }
+                        }
+
+                        if (planModified)
+                        {
+                            modifiedPlanUUIDs.Add(plan.UUID);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Error processing cascade resource check for plan '{0}' ({1})",
+                            plan.Name, plan.UUID);
+                    }
+                }
+            }
+
+            if (stockTargetsDirty)
+            {
+                _playerContext.CascadeStockTargetsDirty = false;
+                // Placeholder for Iteration 7 (stock targets cascade)
+                Log.Info("BackgroundProcessor: CascadeStockTargetsDirty was set (placeholder, no action taken)");
+            }
+
+            sw.Stop();
+            Log.Info("PERF BackgroundProcessor.ProcessCascades: {0} plans modified in {1}ms",
+                modifiedPlanUUIDs.Count, sw.ElapsedMilliseconds);
+
+            return modifiedPlanUUIDs;
+        }
+
+        /// <summary>
+        /// Attempts to advance a build item's status to the target status.
+        /// Status can only advance (never decrease) based on ordinal value:
+        /// Staged(0) -> Delivering(1) -> Ready(2) -> InProgress(3) -> Completed(4).
+        /// Returns true if the status was changed.
+        /// </summary>
+        public static bool TryAdvanceStatus(BuildItem item, BuildItemStatus targetStatus)
+        {
+            if (item == null) throw new ArgumentNullException(nameof(item));
+
+            if ((int)targetStatus > (int)item.Status)
+            {
+                item.Status = targetStatus;
+                return true;
+            }
+
+            return false;
         }
     }
 }
