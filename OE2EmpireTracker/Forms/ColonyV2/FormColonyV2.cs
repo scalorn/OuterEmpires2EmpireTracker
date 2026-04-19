@@ -82,7 +82,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
 
             _referenceCounter = new ColonyReferenceCounter(
-                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList);
+                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList,
+                playerContext.SupplyChainList, playerContext.WarehouseOverflowRuleList);
 
             // Configure colony list
             lvwColonies.Columns.Add("Planet", 80);

@@ -9,10 +9,25 @@ namespace OE2EmpireTracker.Services
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly IEnumerable<Colony> _colonies;
+        private readonly Dictionary<string, int> _buildItemMap;
 
-        public SurveyReferenceCounter(IEnumerable<Colony> colonies)
+        public SurveyReferenceCounter(IEnumerable<Colony> colonies, IEnumerable<BuildPlan> buildPlans = null)
         {
             _colonies = colonies ?? Enumerable.Empty<Colony>();
+
+            _buildItemMap = new Dictionary<string, int>();
+            foreach (var plan in buildPlans ?? Enumerable.Empty<BuildPlan>())
+            {
+                if (plan.Items == null) continue;
+                foreach (var item in plan.Items)
+                {
+                    if (!string.IsNullOrEmpty(item.MiningSurveyUUID))
+                    {
+                        _buildItemMap.TryGetValue(item.MiningSurveyUUID, out int c);
+                        _buildItemMap[item.MiningSurveyUUID] = c + 1;
+                    }
+                }
+            }
         }
 
         public SurveyReferenceReport CountReferences(string surveyUUID)
@@ -25,7 +40,9 @@ namespace OE2EmpireTracker.Services
                 .SelectMany(c => c.Structures)
                 .Count(s => s.MiningSurvey == surveyUUID);
 
-            return new SurveyReferenceReport(minerCount);
+            _buildItemMap.TryGetValue(surveyUUID, out int buildItemCount);
+
+            return new SurveyReferenceReport(minerCount, buildItemCount);
         }
     }
 
@@ -33,13 +50,15 @@ namespace OE2EmpireTracker.Services
     {
         public int TotalCount { get; }
         public int MinerCount { get; }
+        public int BuildItemCount { get; }
 
-        public SurveyReferenceReport(int minerCount)
+        public SurveyReferenceReport(int minerCount, int buildItemCount = 0)
         {
             MinerCount = minerCount;
-            TotalCount = minerCount;
+            BuildItemCount = buildItemCount;
+            TotalCount = minerCount + buildItemCount;
         }
 
-        public static readonly SurveyReferenceReport Empty = new SurveyReferenceReport(0);
+        public static readonly SurveyReferenceReport Empty = new SurveyReferenceReport(0, 0);
     }
 }

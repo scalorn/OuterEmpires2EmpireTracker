@@ -260,9 +260,9 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 40.1 Extend SurveyParser for asteroid context
   - [x] 40.2 Add SurveyType, Purity, and min Amount filters to FormSurvey (Type: Planet/Asteroid/All, Purity dropdown, min Amount numeric field)
 
-- [ ] 41. Reference Counter Expansions (Iteration 6)
-  - [ ] 41.1 Expand ColonyReferenceCounter: SupplyChainStage, WarehouseOverflowRule
-  - [ ] 41.2 Expand SurveyReferenceCounter: BuildItem.MiningSurveyUUID
+- [x] 41. Reference Counter Expansions (Iteration 6)
+  - [x] 41.1 Expand ColonyReferenceCounter: SupplyChainStage, WarehouseOverflowRule
+  - [x] 41.2 Expand SurveyReferenceCounter: BuildItem.MiningSurveyUUID
 
 - [ ] 42. Iteration 6 Checkpoint
 
