@@ -903,6 +903,11 @@ public class MarketListing
 
     public int Quantity { get; set; } = 0;
     public decimal PricePerUnit { get; set; } = 0m;
+
+    // Component condition (for damaged ShipPart/ShipHull/Munition listings)
+    public int CurrentHP { get; set; } = 0;              // 0 = undamaged / not applicable
+    public int MaxHP { get; set; } = 0;
+    public decimal MaxRepairPercent { get; set; } = 0m;
 }
 ```
 
@@ -1036,6 +1041,25 @@ Design decisions:
 - No nesting: validation prevents adding a Crate item to another Crate's Contents.
 - Crates have no inherent volume or mass — they are purely organizational. A crate's volume is the sum of the volumes of items inside it. A crate's mass is the sum of the masses of items inside it.
 - Ship cargo volume computation sums item volumes recursively one level deep: for each item, add its Volume; if it's a Crate, add the sum of Volume of each item in Contents instead (the crate itself contributes zero).
+
+### Item Changes (Component Damage)
+
+```csharp
+// Add to existing Item class:
+public int CurrentHP { get; set; } = 0;              // Current health points (0 = undamaged, use blueprint max)
+public int MaxHP { get; set; } = 0;                   // Max health points (0 = use Health from blueprint)
+public decimal MaxRepairPercent { get; set; } = 0m;   // Max repairable condition (0 = 100%, fully repairable)
+```
+
+Design decisions:
+- Same three-field pattern as ShipComponentSlot damage. When a component is removed from a ship, its damage state transfers to the Item in inventory. When installed on a different ship, the damage transfers back to the ShipComponentSlot.
+- Only relevant for item types that represent physical components: ShipPart, ShipHull, Munition. For all other item types (Resource, Commodity, Blueprint, Survey, WorkDetail, Flatpack, Crate), these fields are always 0 and omitted from JSON via `DefaultValueHandling.Ignore`.
+- A damaged component in a station hold or ship cargo can be sold on the market, installed on another ship, or deleted. The damage travels with the item.
+- When selling a damaged component on the market, the MarketListing should reflect the condition. MarketListing already has an ItemReferenceID — the condition is on the Item itself, not the listing. The seller sets the price accounting for damage.
+- When installing a component from inventory onto a ship: `slot.CurrentHP = item.CurrentHP`, `slot.MaxHP = item.MaxHP`, `slot.MaxRepairPercent = item.MaxRepairPercent`. The item is removed from inventory.
+- When removing a component from a ship to inventory: create Item with `CurrentHP = slot.CurrentHP`, `MaxHP = slot.MaxHP`, `MaxRepairPercent = slot.MaxRepairPercent`. The slot is cleared.
+- Inventory grids (station holds, ship cargo, colony warehouse) should show a Condition column for items where `CurrentHP > 0`. Undamaged items (all zeros) show no condition — keeps the display clean for resources and commodities.
+- `ExtendedName` for damaged components appends the condition percentage: e.g. "Reactor Mk3 (95%)" when `CurrentHP > 0 && MaxHP > 0`. Undamaged items show no suffix.
 
 ### PlayerProfile Changes
 
