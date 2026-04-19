@@ -254,6 +254,26 @@
     <Compile Include="Models\SubResource.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Resource.cs" />
+    <Compile Include="Models\Asteroid.cs" />
+    <Compile Include="Models\BuildItem.cs" />
+    <Compile Include="Models\BuildPlan.cs" />
+    <Compile Include="Models\DestinationType.cs" />
+    <Compile Include="Models\ExternalCharacter.cs" />
+    <Compile Include="Models\Faction.cs" />
+    <Compile Include="Models\MarketListing.cs" />
+    <Compile Include="Models\MarketTransaction.cs" />
+    <Compile Include="Models\RouteStopPurpose.cs" />
+    <Compile Include="Models\Ship.cs" />
+    <Compile Include="Models\ShipStats.cs" />
+    <Compile Include="Models\ShipTemplate.cs" />
+    <Compile Include="Models\Station.cs" />
+    <Compile Include="Models\StationStats.cs" />
+    <Compile Include="Models\StockPlan.cs" />
+    <Compile Include="Models\StockProfile.cs" />
+    <Compile Include="Models\StockTarget.cs" />
+    <Compile Include="Models\SupplyChain.cs" />
+    <Compile Include="Models\SurveyType.cs" />
+    <Compile Include="Models\WarehouseOverflowRule.cs" />
     <Compile Include="Forms\Blueprint\BlueprintScanner.cs" />
     <Compile Include="Forms\BlueprintV2\FormBlueprintV2.cs">
       <SubType>Form</SubType>

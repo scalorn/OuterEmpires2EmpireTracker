@@ -13,6 +13,7 @@ namespace OE2EmpireTracker.Models
         public string UUID { get; set; } = string.Empty;
         public string Name { get; set; } =  string.Empty;
         public string Faction { get; set; } = string.Empty;
+        public string FactionUUID { get; set; } = string.Empty;
         public Decimal TotalCredits { get; set; } = new Decimal(0);
 
         public PlayerRank Public { get; set; } = new PlayerRank();

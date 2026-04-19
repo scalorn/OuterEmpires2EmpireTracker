@@ -100,7 +100,14 @@ namespace OE2EmpireTracker.Models
         [DefaultValue("")]
         public string ResourcePurity { get; set; } = string.Empty;
         public decimal Volume { get; set; } = 0m;
-        
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public ItemBag Contents { get; set; }
+
+        public int CurrentHP { get; set; } = 0;
+        public int MaxHP { get; set; } = 0;
+        public decimal MaxRepairPercent { get; set; } = 0m;
+
         public Item(Models.ItemType.ItemTypeEnum itemType, string name)
         {
             this.ItemType = itemType;

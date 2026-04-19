@@ -23,7 +23,8 @@ namespace OE2EmpireTracker.Models
             Flatpack,
             Survey,
             SpaceBuildPackage,
-            Share
+            Share,
+            Crate
         }
 
         public ItemTypeEnum ID { get; set; }
@@ -52,6 +53,7 @@ namespace OE2EmpireTracker.Models
             instance.Add(new ItemType() { ID = ItemTypeEnum.Survey, Name = "Survey" });
             instance.Add(new ItemType() { ID = ItemTypeEnum.SpaceBuildPackage, Name = "SpaceBuildPackage" });
             instance.Add(new ItemType() { ID = ItemTypeEnum.Share, Name = "Share" });
+            instance.Add(new ItemType() { ID = ItemTypeEnum.Crate, Name = "Crate" });
 
             instance.Sort((x, y) => x.Name.CompareTo(y.Name));
 

@@ -1,6 +1,8 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +20,12 @@ namespace OE2EmpireTracker.Models
         public string ScannerBlueprintUUID { get; set; }
         public Dictionary<string, string> Properties { get; set; }
         public Dictionary<string, SurveyResource> Resources { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        [DefaultValue(SurveyType.Planet)]
+        public SurveyType SurveyType { get; set; } = SurveyType.Planet;
+
+        public string AsteroidUUID { get; set; } = string.Empty;
 
         [JsonIgnore]
         public override string ExtendedName

@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace OE2EmpireTracker.Models
@@ -16,6 +17,7 @@ namespace OE2EmpireTracker.Models
         public string Name { get; set; } = string.Empty;
         public string OwnerUUID { get; set; } = string.Empty;
         public string RouteUUID { get; set; } = string.Empty;
+        public string ShipUUID { get; set; } = string.Empty;
         public bool Completed { get; set; } = false;
         public List<DeliveryPlanStop> Stops { get; set; }
 
@@ -92,6 +94,12 @@ namespace OE2EmpireTracker.Models
         public bool StopCompleted { get; set; } = false;
         public List<DeliveryItem> DropOff { get; set; }
         public List<DeliveryItem> PickUp { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        [DefaultValue(DestinationType.Colony)]
+        public DestinationType DestinationType { get; set; } = DestinationType.Colony;
+
+        public string DestinationUUID { get; set; } = string.Empty;
 
         public DeliveryPlanStop()
         {

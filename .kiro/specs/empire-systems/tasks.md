@@ -22,16 +22,16 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 2.5 R3: Add PERF timing to FormDeliveryRoute
   - [x] 2.6 R3: Add PERF timing to remaining forms
 
-- [ ] 3. Remediation Checkpoint
+- [x] 3. Remediation Checkpoint
 
 ### Iteration 1: Build Planner + Data Model Foundation
 
-- [ ] 4. BaselineData Updates
-  - [ ] 4.1 Update Hull BlueprintType property list
-  - [ ] 4.2 Add Constants/SlotTypes.cs
-  - [ ] 4.3 Copy updated BaselineData.json to test project
+- [x] 4. BaselineData Updates
+  - [x] 4.1 Update Hull BlueprintType property list
+  - [x] 4.2 Add Constants/SlotTypes.cs
+  - [x] 4.3 Copy updated BaselineData.json to test project
 
-- [ ] 5. Data Model Foundation
+- [-] 5. Data Model Foundation
   - [ ] 5.1 Add DestinationType enum (Colony, Station, Asteroid, Ship)
   - [ ] 5.2 Add RouteStopPurpose enum (Cargo, Refuel, CargoAndRefuel)
   - [ ] 5.3 Add BuildPlan model (IsActive flag included)
