@@ -74,6 +74,16 @@ namespace OE2EmpireTracker.Parsers
                     ParseResource(survey, rawName, rawDetail);
                 }
 
+                // Extract max reserve values for asteroid surveys
+                XmlNodeList maxReserveNodes = doc.SelectNodes(
+                    "//div[contains(@class,'ScanDetailOutputMaxReserve')]");
+                if (maxReserveNodes != null && maxReserveNodes.Count > 0)
+                {
+                    // Max reserve presence confirms this is an asteroid survey
+                    survey.SurveyType = SurveyType.Asteroid;
+                    Log.Info("Detected asteroid survey (MaxReserve nodes found: {0})", maxReserveNodes.Count);
+                }
+
                 Log.Info("ProcessHtml: PlanetName='{0}', SystemName='{1}', SurveyID='{2}', resources extracted={3}",
                     survey.PlanetName ?? "(null)", survey.SystemName ?? "(null)",
                     survey.SurveyID ?? "(null)", survey.Resources.Count);
@@ -157,7 +167,13 @@ namespace OE2EmpireTracker.Parsers
                 purity = NormalizePurity(purity);
             }
 
-            // Extract numeric amount from "41/hour" or "36.3/hour"
+            // Detect asteroid survey by "/cycle" vs "/hour"
+            if (rawDetail.IndexOf("/cycle", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                survey.SurveyType = SurveyType.Asteroid;
+            }
+
+            // Extract numeric amount from "41/hour" or "36.3/cycle"
             string amount = new string(rawDetail.Where(c => char.IsDigit(c) || c == '.').ToArray());
             if (string.IsNullOrEmpty(amount))
                 amount = rawDetail;

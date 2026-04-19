@@ -73,6 +73,15 @@ Click the DateTime column header in the survey list to sort surveys chronologica
 
 Use the text filter at the top of the left panel to search surveys by planet name or other fields.
 
+Additional filters below the text filter:
+- **Type** — Filter by Planet, Asteroid, or All (default: All)
+- **Purity** — Filter to surveys containing a specific purity level (Low, Medium, High, etc.)
+- **Min** — Minimum amount per hour (planet) or per cycle (asteroid). Only surveys with at least one resource meeting this threshold are shown.
+
+## Asteroid Surveys
+
+Asteroid surveys are auto-detected when you import them — the parser recognizes the "/cycle" rate format and MaxReserve fields. Asteroid surveys are stored alongside planet surveys with a SurveyType of Asteroid. Use the Type filter to view only asteroid or planet surveys.
+
 ## Related Topics
 
 - [Colonies](colonies.md) — Use survey data to decide where to place colonies

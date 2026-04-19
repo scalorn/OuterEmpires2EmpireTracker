@@ -63,6 +63,24 @@ namespace OE2EmpireTracker.Forms.Survey
             txtSurveyFilter.TextChanged += txtSurveyFilter_TextChanged;
             cmbResource.SelectedIndexChanged += cmbResource_SelectedIndexChanged;
 
+            // Wire additional filters (task 40.2)
+            cmbSurveyType.Items.Add("All");
+            cmbSurveyType.Items.Add("Planet");
+            cmbSurveyType.Items.Add("Asteroid");
+            cmbSurveyType.SelectedIndex = 0;
+            cmbSurveyType.SelectedIndexChanged += cmbSurveyType_SelectedIndexChanged;
+
+            cmbPurityFilter.Items.Add("(any)");
+            foreach (var p in Models.ResourcePurity.Purities)
+            {
+                if (p.ID != Models.ResourcePurity.PurityEnum.None)
+                    cmbPurityFilter.Items.Add(p.Name);
+            }
+            cmbPurityFilter.SelectedIndex = 0;
+            cmbPurityFilter.SelectedIndexChanged += cmbPurityFilter_SelectedIndexChanged;
+
+            txtMinAmount.TextChanged += txtMinAmount_TextChanged;
+
             // Configure resource data grid
             DataGridViewComboBoxColumn colResource = (DataGridViewComboBoxColumn)dgvResources.Columns["Resource"];
             colResource.DisplayMember = "Name";
@@ -256,19 +274,69 @@ namespace OE2EmpireTracker.Forms.Survey
         private void txtSurveyFilter_TextChanged(object sender, EventArgs e)
         {
             lvwSurveys.Items.Clear();
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName(),
+                GetSelectedSurveyType(), GetSelectedPurityFilter(), GetMinAmount()));
         }
 
         private void cmbResource_SelectedIndexChanged(object sender, EventArgs e)
         {
             lvwSurveys.Items.Clear();
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName(),
+                GetSelectedSurveyType(), GetSelectedPurityFilter(), GetMinAmount()));
         }
 
         private string GetSelectedResourceName()
         {
             var selected = cmbResource.SelectedItem as Models.Resource;
             return selected?.Name ?? "";
+        }
+
+        private SurveyType? GetSelectedSurveyType()
+        {
+            string sel = cmbSurveyType.SelectedItem?.ToString() ?? "All";
+            switch (sel)
+            {
+                case "Planet": return SurveyType.Planet;
+                case "Asteroid": return SurveyType.Asteroid;
+                default: return null;
+            }
+        }
+
+        private string GetSelectedPurityFilter()
+        {
+            string sel = cmbPurityFilter.SelectedItem?.ToString() ?? "(any)";
+            return sel == "(any)" ? "" : sel;
+        }
+
+        private int GetMinAmount()
+        {
+            int.TryParse(txtMinAmount.Text.Trim(), out int val);
+            return val;
+        }
+
+        private void RefreshSurveyList()
+        {
+            lvwSurveys.Items.Clear();
+            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName(),
+                GetSelectedSurveyType(), GetSelectedPurityFilter(), GetMinAmount()));
+        }
+
+        private void cmbSurveyType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            RefreshSurveyList();
+        }
+
+        private void cmbPurityFilter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            RefreshSurveyList();
+        }
+
+        private void txtMinAmount_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            RefreshSurveyList();
         }
 
         private void txtPlanetName_TextChanged(object sender, EventArgs e)

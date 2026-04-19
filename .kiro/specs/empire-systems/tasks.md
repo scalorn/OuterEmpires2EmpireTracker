@@ -256,9 +256,9 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
 - [x] 39. Supply Chain Background Processing
   - [x] 39.1 Extend BackgroundProcessor: call SupplyChainService.CheckThresholds, generate deliveries
 
-- [ ] 40. Asteroid Survey Integration
-  - [ ] 40.1 Extend SurveyParser for asteroid context
-  - [ ] 40.2 Add SurveyType, Purity, and min Amount filters to FormSurvey (Type: Planet/Asteroid/All, Purity dropdown, min Amount numeric field)
+- [x] 40. Asteroid Survey Integration
+  - [x] 40.1 Extend SurveyParser for asteroid context
+  - [x] 40.2 Add SurveyType, Purity, and min Amount filters to FormSurvey (Type: Planet/Asteroid/All, Purity dropdown, min Amount numeric field)
 
 - [ ] 41. Reference Counter Expansions (Iteration 6)
   - [ ] 41.1 Expand ColonyReferenceCounter: SupplyChainStage, WarehouseOverflowRule

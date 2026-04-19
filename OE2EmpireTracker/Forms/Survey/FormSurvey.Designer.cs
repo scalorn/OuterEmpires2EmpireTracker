@@ -36,6 +36,13 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpResource = new System.Windows.Forms.FlowLayoutPanel();
             this.lblResource = new System.Windows.Forms.Label();
             this.cmbResource = new System.Windows.Forms.ComboBox();
+            this.flpTypeFilter = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblType = new System.Windows.Forms.Label();
+            this.cmbSurveyType = new System.Windows.Forms.ComboBox();
+            this.lblPurity = new System.Windows.Forms.Label();
+            this.cmbPurityFilter = new System.Windows.Forms.ComboBox();
+            this.lblMinAmount = new System.Windows.Forms.Label();
+            this.txtMinAmount = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.lvwSurveys = new System.Windows.Forms.ListView();
             this.flpSurveyData = new System.Windows.Forms.FlowLayoutPanel();
             this.flpSurveyDetails = new System.Windows.Forms.FlowLayoutPanel();
@@ -115,6 +122,7 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             this.flpSearchList.Controls.Add(this.flpSurveyFilter);
             this.flpSearchList.Controls.Add(this.flpResource);
+            this.flpSearchList.Controls.Add(this.flpTypeFilter);
             this.flpSearchList.Controls.Add(this.lvwSurveys);
             this.flpSearchList.Location = new System.Drawing.Point(3, 3);
             this.flpSearchList.Name = "flpSearchList";
@@ -190,6 +198,47 @@ namespace OE2EmpireTracker.Forms.Survey
             this.cmbResource.Name = "cmbResource";
             this.cmbResource.Size = new System.Drawing.Size(201, 21);
             this.cmbResource.TabIndex = 1;
+            //
+            // flpTypeFilter
+            //
+            this.flpTypeFilter.AutoSize = true;
+            this.flpTypeFilter.Controls.Add(this.lblType);
+            this.flpTypeFilter.Controls.Add(this.cmbSurveyType);
+            this.flpTypeFilter.Controls.Add(this.lblPurity);
+            this.flpTypeFilter.Controls.Add(this.cmbPurityFilter);
+            this.flpTypeFilter.Controls.Add(this.lblMinAmount);
+            this.flpTypeFilter.Controls.Add(this.txtMinAmount);
+            this.flpTypeFilter.Location = new System.Drawing.Point(2, 62);
+            this.flpTypeFilter.Margin = new System.Windows.Forms.Padding(2);
+            this.flpTypeFilter.Name = "flpTypeFilter";
+            this.flpTypeFilter.Size = new System.Drawing.Size(310, 26);
+            this.flpTypeFilter.WrapContents = false;
+            // lblType
+            this.lblType.AutoSize = true;
+            this.lblType.Text = "Type:";
+            this.lblType.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblType.Name = "lblType";
+            // cmbSurveyType
+            this.cmbSurveyType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSurveyType.Size = new System.Drawing.Size(80, 21);
+            this.cmbSurveyType.Name = "cmbSurveyType";
+            // lblPurity
+            this.lblPurity.AutoSize = true;
+            this.lblPurity.Text = "Purity:";
+            this.lblPurity.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblPurity.Name = "lblPurity";
+            // cmbPurityFilter
+            this.cmbPurityFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPurityFilter.Size = new System.Drawing.Size(70, 21);
+            this.cmbPurityFilter.Name = "cmbPurityFilter";
+            // lblMinAmount
+            this.lblMinAmount.AutoSize = true;
+            this.lblMinAmount.Text = "Min:";
+            this.lblMinAmount.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMinAmount.Name = "lblMinAmount";
+            // txtMinAmount
+            this.txtMinAmount.Size = new System.Drawing.Size(45, 20);
+            this.txtMinAmount.Name = "txtMinAmount";
             // 
             // lvwSurveys
             // 
@@ -775,6 +824,13 @@ namespace OE2EmpireTracker.Forms.Survey
         private System.Windows.Forms.FlowLayoutPanel flpResource;
         private System.Windows.Forms.Label lblResource;
         private System.Windows.Forms.ComboBox cmbResource;
+        private System.Windows.Forms.FlowLayoutPanel flpTypeFilter;
+        private System.Windows.Forms.Label lblType;
+        private System.Windows.Forms.ComboBox cmbSurveyType;
+        private System.Windows.Forms.Label lblPurity;
+        private System.Windows.Forms.ComboBox cmbPurityFilter;
+        private System.Windows.Forms.Label lblMinAmount;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtMinAmount;
         private System.Windows.Forms.ListView lvwSurveys;
         private System.Windows.Forms.FlowLayoutPanel flpSurveyData;
         private System.Windows.Forms.FlowLayoutPanel flpSurveyDetails;

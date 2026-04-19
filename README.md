@@ -54,8 +54,8 @@ Model your resource pipelines from mine to market. Open from **Manage → Supply
 ### Pricing Plans
 Create pricing plans to assign credit values to resources and see what your commodities and manufactured items actually cost. Set base prices for Refined, S1, and S2 resources, add optional time costs (fixed per item + hourly rate), and the tracker computes rolled-up prices through the bill-of-materials chain. Create multiple plans to compare market value vs cost basis vs pessimistic estimates — whatever helps you decide if that manufacturing run is worth it.
 
-### Planet Surveys
-Paste survey HTML and the tracker extracts planet name, resources, purities, and abundance data. Duplicate surveys are merged automatically. Scan dates are displayed in the game's format but stored internally as proper dates, so the survey list sorts chronologically when you click the DateTime column. Edit dates with a calendar picker — no more typos. Use surveys to plan where to drop your next colony.
+### Surveys
+Paste survey HTML and the tracker extracts planet name, resources, purities, and abundance data. Works for both planet and asteroid surveys — the parser auto-detects asteroid surveys from the "/cycle" rate format and MaxReserve fields. Duplicate surveys are merged automatically. Filter the survey list by type (Planet/Asteroid/All), resource, purity, and minimum amount per hour or cycle. Scan dates are displayed in the game's format but stored internally as proper dates, so the survey list sorts chronologically when you click the DateTime column.
 
 ### Player Profiles & Skills
 Track multiple characters with their skills, ranks, and faction. Import your profile directly from the game — copy the profile panel HTML and click Import. The tracker extracts your name, faction, credits, all three rank tracks, skill points, skill group states, individual skill levels, and training status. Skills like Builder, Extraction Focus, and Research Focus affect colony operations — the tracker accounts for them. Switch between players with a dropdown and all your data follows.

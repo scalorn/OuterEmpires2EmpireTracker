@@ -106,7 +106,8 @@ namespace OE2EmpireTracker.ViewModels
         // List filtering
         // -----------------------------------------------------------------------
 
-        public IReadOnlyList<Survey> GetFilteredSurveys(string nameFilter, string resourceFilter = "")
+        public IReadOnlyList<Survey> GetFilteredSurveys(string nameFilter, string resourceFilter = "",
+            SurveyType? typeFilter = null, string purityFilter = "", int minAmount = 0)
         {
             var list = _playerContext.GetCurrentPlayerSurveys();
             if (!string.IsNullOrEmpty(nameFilter))
@@ -120,6 +121,28 @@ namespace OE2EmpireTracker.ViewModels
                 list = list
                     .Where(s => s.Resources.Values.Any(r =>
                         string.Equals(r.Resource, resourceFilter, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+            }
+            if (typeFilter.HasValue)
+            {
+                list = list.Where(s => s.SurveyType == typeFilter.Value).ToList();
+            }
+            if (!string.IsNullOrEmpty(purityFilter))
+            {
+                list = list
+                    .Where(s => s.Resources.Values.Any(r =>
+                        string.Equals(r.Purity, purityFilter, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+            }
+            if (minAmount > 0)
+            {
+                list = list
+                    .Where(s => s.Resources.Values.Any(r =>
+                    {
+                        if (decimal.TryParse(r.Amount, out decimal amt))
+                            return amt >= minAmount;
+                        return false;
+                    }))
                     .ToList();
             }
             return list.AsReadOnly();
