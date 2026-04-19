@@ -60,6 +60,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             lvwPlans.View = View.Details;
             lvwPlans.Columns.Add("Name", 200);
+            lvwPlans.Columns.Add("Refs", 40, HorizontalAlignment.Right);
             lvwPlans.FullRowSelect = true;
             lvwPlans.MultiSelect = false;
             lvwPlans.ItemSelectionChanged += lvwPlans_ItemSelectionChanged;
@@ -160,9 +161,13 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             plans = plans.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase).ToList();
 
+            var refCounter = new BuildPlanReferenceCounter(playerContext.StockPlanList);
+
             foreach (var plan in plans)
             {
+                int refs = refCounter.CountReferences(plan.UUID);
                 var item = new ListViewItem(plan.Name) { Tag = plan };
+                item.SubItems.Add(refs > 0 ? refs.ToString() : "");
                 if (!plan.IsActive)
                 {
                     item.ForeColor = System.Drawing.SystemColors.GrayText;
@@ -473,8 +478,18 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private void cmdDelete_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null) return;
+
+            var refCounter = new BuildPlanReferenceCounter(playerContext.StockPlanList);
+            int refs = refCounter.CountReferences(_selectedPlan.UUID);
+
+            string message;
+            if (refs > 0)
+                message = string.Format("This plan is referenced by {0} stock plan(s). Delete anyway?", refs);
+            else
+                message = string.Format("Delete build plan '{0}'?", _selectedPlan.Name);
+
             var result = MessageBox.Show(
-                string.Format("Delete build plan '{0}'?", _selectedPlan.Name),
+                message,
                 "Confirm Delete",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
