@@ -154,23 +154,23 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 19.6 Wire events, NLog, PERF
   - [x] 19.7 Add "Ships" to Manage menu
 
-- [-] 20. Reference Counter Expansions (Iteration 2)
-  - [-] 20.1 Expand BlueprintReferenceCounter: ShipTemplate + Ship component BlueprintUUIDs
+- [x] 20. Reference Counter Expansions (Iteration 2)
+  - [x] 20.1 Expand BlueprintReferenceCounter: ShipTemplate + Ship component BlueprintUUIDs
 
-- [-] 21. Iteration 2 Tests
-  - [-] 21.1 Property test: P6 (ship class assembly validation)
-  - [-] 21.2 Unit tests: ShipBuildService, ComputeStats, reference counters
+- [x] 21. Iteration 2 Tests
+  - [x] 21.1 Property test: P6 (ship class assembly validation)
+  - [x] 21.2 Unit tests: ShipBuildService, ComputeStats, reference counters
 
-- [ ] 22. Iteration 2 Checkpoint
+- [x] 22. Iteration 2 Checkpoint
 
 ### Iteration 3: Ship-Aware Delivery
 
-- [ ] 23. Ship-Aware Delivery
-  - [ ] 23.1 Add ship assignment UI to delivery plan
-  - [ ] 23.2 Implement cargo volume computation (crate contents recursive one level)
-  - [ ] 23.3 Add volume/mass display on delivery execution form
-  - [ ] 23.4 Add volume warning when cargo exceeds capacity
-  - [ ] 23.5 Implement trip splitting logic
+- [x] 23. Ship-Aware Delivery
+  - [x] 23.1 Add ship assignment UI to delivery plan
+  - [x] 23.2 Implement cargo volume computation (crate contents recursive one level)
+  - [x] 23.3 Add volume/mass display on delivery execution form
+  - [x] 23.4 Add volume warning when cargo exceeds capacity
+  - [x] 23.5 Implement trip splitting logic
 
 - [ ] 24. Iteration 3 Checkpoint
 

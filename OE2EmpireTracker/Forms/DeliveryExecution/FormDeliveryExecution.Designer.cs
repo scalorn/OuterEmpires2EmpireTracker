@@ -23,6 +23,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.lblPlan = new System.Windows.Forms.Label();
             this.txtPlanFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmbPlan = new System.Windows.Forms.ComboBox();
+            this.lblShip = new System.Windows.Forms.Label();
+            this.cmbShip = new System.Windows.Forms.ComboBox();
+            this.lblShipCapacity = new System.Windows.Forms.Label();
             this.cmdCompletePlan = new System.Windows.Forms.Button();
             this.cmdDeletePlan = new System.Windows.Forms.Button();
             this.pnlExecution = new System.Windows.Forms.FlowLayoutPanel();
@@ -33,6 +36,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.colLoadExtName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLoadQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.flpStops = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblCargoVolume = new System.Windows.Forms.Label();
+            this.lblCargoMass = new System.Windows.Forms.Label();
+            this.cmdSplitTrips = new System.Windows.Forms.Button();
             this.flpBase.SuspendLayout();
             this.flpSelectors.SuspendLayout();
             this.pnlExecution.SuspendLayout();
@@ -58,6 +64,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.flpSelectors.Controls.Add(this.lblPlan);
             this.flpSelectors.Controls.Add(this.txtPlanFilter);
             this.flpSelectors.Controls.Add(this.cmbPlan);
+            this.flpSelectors.Controls.Add(this.lblShip);
+            this.flpSelectors.Controls.Add(this.cmbShip);
+            this.flpSelectors.Controls.Add(this.lblShipCapacity);
             this.flpSelectors.Controls.Add(this.cmdCompletePlan);
             this.flpSelectors.Controls.Add(this.cmdDeletePlan);
             this.flpSelectors.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
@@ -112,6 +121,32 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.cmbPlan.Name = "cmbPlan";
             this.cmbPlan.Size = new System.Drawing.Size(214, 21);
             // 
+            // lblShip
+            // 
+            this.lblShip.AutoSize = true;
+            this.lblShip.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
+            this.lblShip.Location = new System.Drawing.Point(3, 100);
+            this.lblShip.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+            this.lblShip.Name = "lblShip";
+            this.lblShip.Size = new System.Drawing.Size(30, 13);
+            this.lblShip.Text = "Ship";
+            // 
+            // cmbShip
+            // 
+            this.cmbShip.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbShip.Location = new System.Drawing.Point(3, 120);
+            this.cmbShip.Name = "cmbShip";
+            this.cmbShip.Size = new System.Drawing.Size(214, 21);
+            // 
+            // lblShipCapacity
+            // 
+            this.lblShipCapacity.AutoSize = true;
+            this.lblShipCapacity.Location = new System.Drawing.Point(3, 145);
+            this.lblShipCapacity.Margin = new System.Windows.Forms.Padding(3, 2, 3, 3);
+            this.lblShipCapacity.Name = "lblShipCapacity";
+            this.lblShipCapacity.Size = new System.Drawing.Size(100, 13);
+            this.lblShipCapacity.Text = "";
+            // 
             // cmdCompletePlan
             // 
             this.cmdCompletePlan.Location = new System.Drawing.Point(3, 98);
@@ -132,6 +167,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             // 
             this.pnlExecution.AutoScroll = true;
             this.pnlExecution.Controls.Add(this.lblLoadListHeader);
+            this.pnlExecution.Controls.Add(this.lblCargoVolume);
+            this.pnlExecution.Controls.Add(this.lblCargoMass);
+            this.pnlExecution.Controls.Add(this.cmdSplitTrips);
             this.pnlExecution.Controls.Add(this.dgvLoadList);
             this.pnlExecution.Controls.Add(this.flpStops);
             this.pnlExecution.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
@@ -151,6 +189,33 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.lblLoadListHeader.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.lblLoadListHeader.Size = new System.Drawing.Size(150, 21);
             this.lblLoadListHeader.Text = "Load Before Departure";
+            // 
+            // lblCargoVolume
+            // 
+            this.lblCargoVolume.AutoSize = true;
+            this.lblCargoVolume.Location = new System.Drawing.Point(3, 27);
+            this.lblCargoVolume.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.lblCargoVolume.Name = "lblCargoVolume";
+            this.lblCargoVolume.Size = new System.Drawing.Size(200, 13);
+            this.lblCargoVolume.Text = "";
+            // 
+            // lblCargoMass
+            // 
+            this.lblCargoMass.AutoSize = true;
+            this.lblCargoMass.Location = new System.Drawing.Point(3, 42);
+            this.lblCargoMass.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.lblCargoMass.Name = "lblCargoMass";
+            this.lblCargoMass.Size = new System.Drawing.Size(200, 13);
+            this.lblCargoMass.Text = "";
+            // 
+            // cmdSplitTrips
+            // 
+            this.cmdSplitTrips.Location = new System.Drawing.Point(3, 58);
+            this.cmdSplitTrips.Name = "cmdSplitTrips";
+            this.cmdSplitTrips.Size = new System.Drawing.Size(100, 23);
+            this.cmdSplitTrips.Text = "Split Trips";
+            this.cmdSplitTrips.UseVisualStyleBackColor = true;
+            this.cmdSplitTrips.Visible = false;
             // 
             // dgvLoadList
             // 
@@ -244,5 +309,11 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         private System.Windows.Forms.DataGridViewTextBoxColumn colLoadExtName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colLoadQty;
         private System.Windows.Forms.FlowLayoutPanel flpStops;
+        private System.Windows.Forms.Label lblShip;
+        private System.Windows.Forms.ComboBox cmbShip;
+        private System.Windows.Forms.Label lblShipCapacity;
+        private System.Windows.Forms.Label lblCargoVolume;
+        private System.Windows.Forms.Label lblCargoMass;
+        private System.Windows.Forms.Button cmdSplitTrips;
     }
 }

@@ -21,6 +21,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         private EmpireContext empireContext;
         private PlayerContext playerContext;
         private DeliveryPlan selectedPlan;
+        private Ship selectedShip;
+        private decimal currentCargoCapacity;
         private Dictionary<DeliveryPlanStop, Button> _stopCompleteButtons = new Dictionary<DeliveryPlanStop, Button>();
 
         public FormDeliveryExecution()
@@ -37,6 +39,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             cmbPlan.ValueMember = "UUID";
             cmbPlan.SelectedIndexChanged += cmbPlan_SelectedIndexChanged;
 
+            cmbShip.DisplayMember = "Display";
+            cmbShip.ValueMember = "UUID";
+            cmbShip.SelectedIndexChanged += cmbShip_SelectedIndexChanged;
+
             txtRouteFilter.TextChanged += (s, ev) => PopulateRouteDropdown();
             txtPlanFilter.TextChanged += (s, ev) =>
             {
@@ -46,8 +52,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             cmdCompletePlan.Click += cmdCompletePlan_Click;
             cmdDeletePlan.Click += cmdDeletePlan_Click;
+            cmdSplitTrips.Click += cmdSplitTrips_Click;
             cmdCompletePlan.Visible = false;
             cmdDeletePlan.Visible = false;
+            cmdSplitTrips.Visible = false;
 
             PopulateRouteDropdown();
 
@@ -112,6 +120,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             cmbRoute.Size = new Size(w, cmbRoute.Size.Height);
             txtPlanFilter.Size = new Size(w, txtPlanFilter.Size.Height);
             cmbPlan.Size = new Size(w, cmbPlan.Size.Height);
+            cmbShip.Size = new Size(w, cmbShip.Size.Height);
         }
 
         // -----------------------------------------------------------------------
@@ -220,7 +229,86 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             {
                 cmdCompletePlan.Visible = true;
                 cmdDeletePlan.Visible = true;
+                PopulateShipDropdown();
                 BuildExecution();
+            }
+        }
+
+        // -----------------------------------------------------------------------
+        // Ship Selection
+        // -----------------------------------------------------------------------
+
+        private void PopulateShipDropdown()
+        {
+            cmbShip.SelectedIndexChanged -= cmbShip_SelectedIndexChanged;
+
+            var ships = playerContext.GetCurrentPlayerShips();
+            var items = new List<DropdownItem>();
+            items.Add(new DropdownItem { UUID = "", Display = "(no ship)" });
+            foreach (var ship in ships.OrderBy(s => s.Name))
+            {
+                items.Add(new DropdownItem { UUID = ship.UUID, Display = ship.Name });
+            }
+            cmbShip.DataSource = null;
+            cmbShip.DisplayMember = "Display";
+            cmbShip.ValueMember = "UUID";
+            cmbShip.DataSource = items;
+
+            // Pre-select the ship stored on the plan
+            if (selectedPlan != null && !string.IsNullOrEmpty(selectedPlan.ShipUUID)
+                && items.Any(i => i.UUID == selectedPlan.ShipUUID))
+            {
+                cmbShip.SelectedValue = selectedPlan.ShipUUID;
+            }
+
+            cmbShip.SelectedIndexChanged += cmbShip_SelectedIndexChanged;
+            UpdateShipSelection();
+        }
+
+        private void cmbShip_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string shipUUID = cmbShip.SelectedValue as string ?? "";
+
+            // Persist ship assignment on the plan
+            if (selectedPlan != null)
+            {
+                selectedPlan.ShipUUID = shipUUID;
+                playerContext.WriteContext();
+                Log.Info("Ship '{0}' assigned to plan '{1}'", shipUUID, selectedPlan.Name);
+            }
+
+            UpdateShipSelection();
+            UpdateCargoDisplay();
+        }
+
+        private void UpdateShipSelection()
+        {
+            string shipUUID = cmbShip.SelectedValue as string ?? "";
+            selectedShip = null;
+            currentCargoCapacity = 0m;
+
+            if (!string.IsNullOrEmpty(shipUUID))
+            {
+                selectedShip = playerContext.FindShip(shipUUID);
+                if (selectedShip != null)
+                {
+                    var hullBp = playerContext.FindBlueprint(selectedShip.HullBlueprintUUID);
+                    if (hullBp != null)
+                    {
+                        var stats = ShipBuildService.ComputeStats(hullBp, selectedShip.Components,
+                            uuid => playerContext.FindBlueprint(uuid));
+                        currentCargoCapacity = stats.CargoCapacity;
+                    }
+                    lblShipCapacity.Text = string.Format("Cargo: {0:N0}", currentCargoCapacity);
+                }
+                else
+                {
+                    lblShipCapacity.Text = "";
+                }
+            }
+            else
+            {
+                lblShipCapacity.Text = "";
             }
         }
 
@@ -237,7 +325,11 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             selectedPlan = null;
             cmdCompletePlan.Visible = false;
             cmdDeletePlan.Visible = false;
+            cmdSplitTrips.Visible = false;
             lblLoadListHeader.Text = "Load Before Departure";
+            lblCargoVolume.Text = "";
+            lblCargoMass.Text = "";
+            lblCargoVolume.ForeColor = System.Drawing.SystemColors.ControlText;
         }
 
         private void BuildExecution()
@@ -266,25 +358,30 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             var loadItems = selectedPlan.CalculateLoadList();
             Log.Debug("BuildExecution: loadItems={0}", loadItems.Count);
             int totalQuantity = 0;
-            decimal totalVolume = 0m;
             foreach (var item in loadItems)
             {
                 Log.Debug("  Load: {0} x{1}", item.BaseItemTypeID, item.Quantity);
                 dgvLoadList.Rows.Add(item.ItemType.ToString(), item.BaseItemTypeID, item.ExtendedName, item.Quantity);
                 totalQuantity += item.Quantity;
-                totalVolume += item.Quantity * GetLoadItemVolume(item);
             }
+
+            // Compute volume and mass via CargoVolumeService
+            Func<string, Models.Blueprint> bpFinder = uuid => playerContext.FindBlueprint(uuid);
+            var cargoResult = CargoVolumeService.ComputeLoadVolume(loadItems, bpFinder);
 
             // Update header with totals
             if (loadItems.Count > 0)
             {
                 lblLoadListHeader.Text = string.Format("Load Before Departure -- {0} items, {1} qty, {2:N0} vol",
-                    loadItems.Count, totalQuantity, totalVolume);
+                    loadItems.Count, totalQuantity, cargoResult.TotalVolume);
             }
             else
             {
                 lblLoadListHeader.Text = "Load Before Departure";
             }
+
+            // Update cargo volume/mass display
+            UpdateCargoDisplayFromResult(cargoResult);
 
             // Build per-stop sections
             foreach (var stop in selectedPlan.Stops.OrderBy(s => s.Sequence))
@@ -655,32 +752,203 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             base.OnFormClosed(e);
         }
 
+        // -----------------------------------------------------------------------
+        // Cargo Volume / Mass Display
+        // -----------------------------------------------------------------------
+
+        private void UpdateCargoDisplay()
+        {
+            if (selectedPlan == null)
+            {
+                lblCargoVolume.Text = "";
+                lblCargoMass.Text = "";
+                cmdSplitTrips.Visible = false;
+                return;
+            }
+
+            var loadItems = selectedPlan.CalculateLoadList();
+            Func<string, Models.Blueprint> bpFinder = uuid => playerContext.FindBlueprint(uuid);
+            var cargoResult = CargoVolumeService.ComputeLoadVolume(loadItems, bpFinder);
+            UpdateCargoDisplayFromResult(cargoResult);
+        }
+
+        private void UpdateCargoDisplayFromResult(CargoVolumeService.CargoLoadResult cargoResult)
+        {
+            if (selectedShip != null && currentCargoCapacity > 0)
+            {
+                decimal pct = (cargoResult.TotalVolume / currentCargoCapacity) * 100m;
+                bool overCapacity = cargoResult.TotalVolume > currentCargoCapacity;
+
+                if (overCapacity)
+                {
+                    lblCargoVolume.Text = string.Format(
+                        "Volume: {0:N0} / {1:N0} ({2:N0}%) -- OVER CAPACITY",
+                        cargoResult.TotalVolume, currentCargoCapacity, pct);
+                    lblCargoVolume.ForeColor = Color.Red;
+                }
+                else
+                {
+                    lblCargoVolume.Text = string.Format(
+                        "Volume: {0:N0} / {1:N0} ({2:N0}%)",
+                        cargoResult.TotalVolume, currentCargoCapacity, pct);
+                    lblCargoVolume.ForeColor = SystemColors.ControlText;
+                }
+
+                lblCargoMass.Text = string.Format("Mass: {0:N0}", cargoResult.TotalMass);
+                cmdSplitTrips.Visible = overCapacity;
+            }
+            else
+            {
+                if (cargoResult.TotalVolume > 0 || cargoResult.TotalMass > 0)
+                {
+                    lblCargoVolume.Text = string.Format("Volume: {0:N0}", cargoResult.TotalVolume);
+                    lblCargoMass.Text = string.Format("Mass: {0:N0}", cargoResult.TotalMass);
+                }
+                else
+                {
+                    lblCargoVolume.Text = "";
+                    lblCargoMass.Text = "";
+                }
+                lblCargoVolume.ForeColor = SystemColors.ControlText;
+                cmdSplitTrips.Visible = false;
+            }
+        }
+
+        // -----------------------------------------------------------------------
+        // Trip Splitting
+        // -----------------------------------------------------------------------
+
+        private void cmdSplitTrips_Click(object sender, EventArgs e)
+        {
+            if (selectedPlan == null || currentCargoCapacity <= 0) return;
+
+            var loadItems = selectedPlan.CalculateLoadList();
+            Func<string, Models.Blueprint> bpFinder = uuid => playerContext.FindBlueprint(uuid);
+            var trips = CargoVolumeService.SplitIntoTrips(
+                loadItems, currentCargoCapacity, bpFinder);
+
+            if (trips.Count <= 1)
+            {
+                MessageBox.Show("Load fits in a single trip.", "Split Trips",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine(string.Format(
+                "Load will be split into {0} trips:", trips.Count));
+            sb.AppendLine();
+            for (int i = 0; i < trips.Count; i++)
+            {
+                var tripResult = CargoVolumeService.ComputeLoadVolume(
+                    trips[i], bpFinder);
+                sb.AppendLine(string.Format(
+                    "Trip {0}: {1} items, Vol: {2:N0}/{3:N0}, Mass: {4:N0}",
+                    i + 1, trips[i].Count, tripResult.TotalVolume,
+                    currentCargoCapacity, tripResult.TotalMass));
+                foreach (var item in trips[i])
+                    sb.AppendLine(string.Format(
+                        "  {0} x{1}", item.ExtendedName, item.Quantity));
+                sb.AppendLine();
+            }
+            sb.AppendLine("Accept? Creates additional delivery plans.");
+
+            var result = MessageBox.Show(sb.ToString(), "Split Trips",
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            if (result != DialogResult.OK) return;
+
+            CreateSplitTripPlans(trips);
+        }
+
+        private void CreateSplitTripPlans(List<List<DeliveryItem>> trips)
+        {
+            for (int i = 1; i < trips.Count; i++)
+            {
+                var newPlan = new DeliveryPlan
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    Name = string.Format("{0} (Trip {1})",
+                        selectedPlan.Name, i + 1),
+                    OwnerUUID = selectedPlan.OwnerUUID,
+                    RouteUUID = selectedPlan.RouteUUID,
+                    ShipUUID = selectedPlan.ShipUUID
+                };
+
+                foreach (var stop in selectedPlan.Stops
+                    .OrderBy(s => s.Sequence))
+                {
+                    var newStop = new DeliveryPlanStop
+                    {
+                        ColonyUUID = stop.ColonyUUID,
+                        Sequence = stop.Sequence,
+                        DestinationType = stop.DestinationType,
+                        DestinationUUID = stop.DestinationUUID
+                    };
+
+                    foreach (var dropItem in stop.DropOff)
+                    {
+                        var tripItem = trips[i].FirstOrDefault(t =>
+                            t.ItemType == dropItem.ItemType &&
+                            t.BaseItemTypeID == dropItem.BaseItemTypeID &&
+                            t.ResourcePurity == dropItem.ResourcePurity);
+                        if (tripItem != null && tripItem.Quantity > 0)
+                        {
+                            int qty = Math.Min(
+                                tripItem.Quantity, dropItem.Quantity);
+                            newStop.DropOff.Add(new DeliveryItem
+                            {
+                                ItemType = dropItem.ItemType,
+                                BaseItemTypeID = dropItem.BaseItemTypeID,
+                                Name = dropItem.Name,
+                                ResourcePurity = dropItem.ResourcePurity,
+                                Quantity = qty
+                            });
+                            tripItem.Quantity -= qty;
+                        }
+                    }
+
+                    foreach (var pickItem in stop.PickUp)
+                    {
+                        newStop.PickUp.Add(new DeliveryItem
+                        {
+                            ItemType = pickItem.ItemType,
+                            BaseItemTypeID = pickItem.BaseItemTypeID,
+                            Name = pickItem.Name,
+                            ResourcePurity = pickItem.ResourcePurity,
+                            Quantity = pickItem.Quantity
+                        });
+                    }
+
+                    if (newStop.DropOff.Count > 0 || newStop.PickUp.Count > 0)
+                        newPlan.Stops.Add(newStop);
+                }
+
+                playerContext.DeliveryPlanList.Add(newPlan);
+                Log.Info("Created split trip plan '{0}' (UUID={1})",
+                    newPlan.Name, newPlan.UUID);
+            }
+
+            if (!selectedPlan.Name.Contains("(Trip"))
+                selectedPlan.Name = string.Format(
+                    "{0} (Trip 1)", selectedPlan.Name);
+
+            playerContext.WriteContext();
+            playerContext.OnDeliveryDataChanged();
+
+            string routeUUID = cmbRoute.SelectedValue as string;
+            if (!string.IsNullOrEmpty(routeUUID))
+                PopulatePlanDropdown(routeUUID);
+            BuildExecution();
+        }
+
         /// <summary>
         /// Returns the per-unit cargo volume for a delivery item based on its type.
-        /// Uses the same volume constants as the colony warehouse.
+        /// Delegates to CargoVolumeService for consistency.
         /// </summary>
         private decimal GetLoadItemVolume(DeliveryItem item)
         {
-            switch (item.ItemType)
-            {
-                case ItemType.ItemTypeEnum.Resource: return 1.0m;
-                case ItemType.ItemTypeEnum.Commodity: return 10.0m;
-                case ItemType.ItemTypeEnum.WorkDetail: return 50.0m;
-                case ItemType.ItemTypeEnum.Blueprint:
-                case ItemType.ItemTypeEnum.Survey: return 0.0m;
-                default:
-                    // Manufactured items: read CargoVolumeSize from blueprint
-                    if (!string.IsNullOrEmpty(item.BaseItemTypeID))
-                    {
-                        var bp = playerContext.FindBlueprint(item.BaseItemTypeID);
-                        if (bp != null)
-                        {
-                            bp.Properties.getDecimal("Cargo Volume Size", 0, out decimal vol);
-                            return vol;
-                        }
-                    }
-                    return 0.0m;
-            }
+            Func<string, Models.Blueprint> bpFinder = uuid => playerContext.FindBlueprint(uuid);
+            return CargoVolumeService.GetItemVolume(item, bpFinder);
         }
     }
 }
