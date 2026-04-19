@@ -145,14 +145,14 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 18.6 Wire events, NLog, PERF
   - [x] 18.7 Add "Ship Templates" to Manage menu
 
-- [ ] 19. Ship Instance Form
-  - [ ] 19.1 Create FormShipInstance MDI child with Overview + Cargo tabs
-  - [ ] 19.2 Overview tab: component grid with editable Condition/MaxRepair columns, hull row first
-  - [ ] 19.3 Cargo tab: radio toggle Cargo Hold / Hopper, crate master-detail, purity restriction
-  - [ ] 19.4 Create from Template button
-  - [ ] 19.5 Implement ShipReferenceCounter (DeliveryPlan.ShipUUID + BuildItem.BuildLocationUUID), Refs column
-  - [ ] 19.6 Wire events, NLog, PERF
-  - [ ] 19.7 Add "Ships" to Manage menu
+- [x] 19. Ship Instance Form
+  - [x] 19.1 Create FormShipInstance MDI child with Overview + Cargo tabs
+  - [x] 19.2 Overview tab: component grid with editable Condition/MaxRepair columns, hull row first
+  - [x] 19.3 Cargo tab: radio toggle Cargo Hold / Hopper, crate master-detail, purity restriction
+  - [x] 19.4 Create from Template button
+  - [x] 19.5 Implement ShipReferenceCounter (DeliveryPlan.ShipUUID + BuildItem.BuildLocationUUID), Refs column
+  - [x] 19.6 Wire events, NLog, PERF
+  - [x] 19.7 Add "Ships" to Manage menu
 
 - [ ] 20. Reference Counter Expansions (Iteration 2)
   - [ ] 20.1 Expand BlueprintReferenceCounter: ShipTemplate + Ship component BlueprintUUIDs
