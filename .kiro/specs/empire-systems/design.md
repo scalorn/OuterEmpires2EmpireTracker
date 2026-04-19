@@ -2405,32 +2405,34 @@ Controls:
 All forms that display ItemBag contents (station holds, ship cargo, colony warehouse) use the same master-detail pattern for crates:
 
 ```
-┌─ Inventory ────────────────────────────────────────────────────┐
-│ ┌──────────┬──────────────────────┬─────┬────────────┐         │
-│ │ Type     │ Item                 │ Qty │ Volume     │         │
-│ ├──────────┼──────────────────────┼─────┼────────────┤         │
-│ │ Resource │ Refined Titanium     │ 500 │    500 m³  │         │
-│ │ [Crate]  │ Supply Run (12 items)│   1 │    850 m³  │  ← selected
-│ │ Commodty │ Fuel Cells           │  50 │    500 m³  │         │
-│ └──────────┴──────────────────────┴─────┴────────────┘         │
-│                                                                │
-│ Crate Contents (Supply Run):                                   │
-│ ┌──────────┬──────────────────────┬─────┬────────────┐         │
-│ │ Type     │ Item                 │ Qty │ Volume     │         │
-│ ├──────────┼──────────────────────┼─────┼────────────┤         │
-│ │ Resource │ Flatpack: Mfg Bay    │   4 │    400 m³  │         │
-│ │ Commodty │ Fuel Cells           │   8 │    200 m³  │         │
-│ │ Blueprnt │ Reactor Mk3          │   1 │     50 m³  │         │
-│ └──────────┴──────────────────────┴─────┴────────────┘         │
-│                                                                │
-│ [New Crate] [Move to Crate] [Remove from Crate] [Delete Crate]│
-└────────────────────────────────────────────────────────────────┘
+┌─ Inventory ────────────────────────────────────────────────────────────────┐
+│ ┌──────────┬──────────────────────┬─────┬────────────┬───────────┬────────┐│
+│ │ Type     │ Item                 │ Qty │ Volume     │ Condition │ MaxRep ││
+│ ├──────────┼──────────────────────┼─────┼────────────┼───────────┼────────┤│
+│ │ Resource │ Refined Titanium     │ 500 │    500 m³  │           │        ││
+│ │ [Crate]  │ Supply Run (12 items)│   1 │    850 m³  │           │        ││ ← selected
+│ │ ShipPart │ Reactor Mk3          │   1 │     50 m³  │ 380/400 95%│  90% ││
+│ │ Commodty │ Fuel Cells           │  50 │    500 m³  │           │        ││
+│ └──────────┴──────────────────────┴─────┴────────────┴───────────┴────────┘│
+│                                                                            │
+│ Crate Contents (Supply Run):                                               │
+│ ┌──────────┬──────────────────────┬─────┬────────────┬───────────┬────────┐│
+│ │ Type     │ Item                 │ Qty │ Volume     │ Condition │ MaxRep ││
+│ ├──────────┼──────────────────────┼─────┼────────────┼───────────┼────────┤│
+│ │ Resource │ Flatpack: Mfg Bay    │   4 │    400 m³  │           │        ││
+│ │ Commodty │ Fuel Cells           │   8 │    200 m³  │           │        ││
+│ │ ShipPart │ Drive Mk2            │   1 │     50 m³  │ 140/180 78%│  85% ││
+│ └──────────┴──────────────────────┴─────┴────────────┴───────────┴────────┘│
+│                                                                            │
+│ [New Crate] [Move to Crate] [Remove from Crate] [Delete Crate]            │
+└────────────────────────────────────────────────────────────────────────────┘
 ```
 
 Behavior:
 - Main grid shows all items including crates. Crate rows display "[Crate]" prefix and an item count summary (e.g. "Supply Run (12 items)").
 - When a crate row is selected, the detail grid below shows the crate's contents.
 - When a non-crate row is selected, the detail grid is hidden or shows empty.
+- Condition and MaxRepair columns are editable on any item. Clicking the Condition cell opens an inline editor for CurrentHP/MaxHP. Clicking MaxRepair edits the percentage. For items with no damage (all zeros), the cells are blank. The user can enter damage on any item type — the model supports it universally.
 - Buttons: "New Crate" (creates empty crate), "Move to Crate" (moves selected main-grid item into the selected crate), "Remove from Crate" (moves item from crate detail back to main inventory), "Delete Crate" (moves contents back to main inventory first, then removes the crate).
 - Crate rows cannot be dragged into other crate rows (no nesting).
 
