@@ -2892,13 +2892,13 @@ New tab on FormStockTargets, added alongside the existing targets view. The main
 │ │ │▸ Faction Alpha Full  │                                                 │   │
 │ │ │  Light Combat Ready  │  Entries:                                       │   │
 │ │ │  Base Maintenance    │  ┌───────┬──────────┬──────────────────────────┐ │   │
-│ │ └──────────────────────┘  │ Group │ Type     │ Plan / Target           │ │   │
-│ │ [New Profile] [Delete]    ├───────┼──────────┼──────────────────────────┤ │   │
-│ │                           │ A     │ Plan     │ Faction Alpha Ships     │ │   │
-│ │                           │ A     │ Plan     │ Faction Beta Ships      │ │   │
-│ │                           │ B     │ Plan     │ Base Supplies           │ │   │
-│ │                           │ C     │ Target   │ 20k Munitions           │ │   │
-│ │                           └───────┴──────────┴──────────────────────────┘ │   │
+│ │ └──────────────────────┘  │ Group │ Plan                             │ │   │
+│ │ [New Profile] [Delete]    ├───────┼──────────────────────────────────┤ │   │
+│ │                           │ A     │ Faction Alpha Ships              │ │   │
+│ │                           │ A     │ Faction Beta Ships               │ │   │
+│ │                           │ B     │ Base Supplies                    │ │   │
+│ │                           │ C     │ 20k Munitions                    │ │   │
+│ │                           └───────┴──────────────────────────────────┘ │   │
 │ │                                                                          │   │
 │ │  Add Entry:                                                              │   │
 │ │  Group:[A___] Type:[Plan    ▼] [Filter:___] [Faction Alpha Ships   ▼]  │   │
@@ -2919,7 +2919,7 @@ Controls:
 - Profiles tab left section: `txtProfileFilter`, `lvwProfiles` (ListView), `cmdNewProfile` / `cmdDeleteProfile`
 - Profiles tab right section: `txtProfileName`, `chkProfileActive` (CheckBox, write-through to StockProfile.IsActive), `dgvEntries` (DataGridView), add-entry panel, logic summary label
 - Inactive profiles: list view shows profile name in gray italic. Excluded from stock target aggregation.
-- `dgvEntries` columns: GroupID (editable text), Type (Plan or Target), Plan/Target name (read-only, resolved from UUID)
+- `dgvEntries` columns: GroupID (editable text), Plan name (read-only, resolved from StockPlanUUID)
 - Add-entry panel: `txtGroupID`, `txtEntryFilter`, `cmbEntry` (FilteredComboBox of StockPlans), `cmdAddEntry` / `cmdRemoveEntry`
 - Logic summary: read-only label auto-generated from the entries, showing the AND/OR grouping in plain language. Entries with the same GroupID are ORed (max), different GroupIDs are ANDed (summed).
 
