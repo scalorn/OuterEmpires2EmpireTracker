@@ -25,3 +25,9 @@
 - Do NOT use `dotnet test` — it is incompatible with this project (see tech.md)
 - Use `vstest.console` against the built test DLL when tests need to run from CLI
 - When the running app locks the exe, use `getDiagnostics` instead of building
+
+## Error Recovery and Tooling
+- **When you encounter a recurring error or friction**, stop and ask: can I write or improve a tool, script, or steering rule to prevent this from happening again? If yes, do it before retrying.
+- **When a subagent is cancelled or fails mid-task**, check what partial work was completed (files written, tests missing, commits not done). Pick up from where it left off rather than re-delegating the entire task. If the service code exists but tests don't, write the tests directly. If code exists but wasn't committed, build/test/commit directly.
+- **When delegating to subagents**, keep context files minimal. Large spec files (1000+ lines) should only be passed when the subagent genuinely needs them. Prefer passing only the files the task directly touches, plus the tasks.md. If a subagent keeps getting cancelled, reduce context and/or implement the task directly instead of re-delegating.
+- **If the same type of failure happens twice**, create a tool or steering rule to prevent it. Don't just retry the same approach.
