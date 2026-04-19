@@ -223,6 +223,7 @@
   <ItemGroup>
     <Compile Include="Services\BackgroundProcessorTests.cs" />
     <Compile Include="Services\BuildPlanServiceTests.cs" />
+    <Compile Include="Services\QueueCalculatorTests.cs" />
     <Compile Include="Services\ResourceCheckServiceTests.cs" />
     <Compile Include="Services\BuildTimeCalculatorTests.cs" />
     <Compile Include="Models\BlueprintTypeTests.cs" />

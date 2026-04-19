@@ -157,6 +157,7 @@
     <Compile Include="Services\BuildPlanService.cs" />
     <Compile Include="Services\ResourceCheckService.cs" />
     <Compile Include="Services\DeliveryGenerationService.cs" />
+    <Compile Include="Services\QueueCalculator.cs" />
     <Compile Include="Services\BuildTimeCalculator.cs" />
     <Compile Include="Services\ColonyActivityCollector.cs" />
     <Compile Include="Services\MarketBlueprintImporter.cs" />

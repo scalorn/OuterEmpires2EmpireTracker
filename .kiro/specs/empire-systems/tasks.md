@@ -83,8 +83,8 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
 - [-] 9. Build Planner Services
   - [x] 9.1 Implement BuildPlanService (ValidatePlanName, ValidateBuildItem, GenerateColonyBuildItems)
   - [x] 9.2 Implement ResourceCheckService (ComputeShortfalls with BuildLocationType resolution, ComputePlanShortfalls)
-  - [-] 9.3 Implement DeliveryGenerationService (GenerateDeliveryPlan, GenerateConsolidatedDeliveryPlan, GenerateFlatpackDeliveryPlan)
-  - [ ] 9.4 Implement QueueCalculator
+  - [x] 9.3 Implement DeliveryGenerationService (GenerateDeliveryPlan, GenerateConsolidatedDeliveryPlan, GenerateFlatpackDeliveryPlan)
+  - [x] 9.4 Implement QueueCalculator
   - [ ] 9.5 Implement AutoAssignService (ProposeAssignments with BuildLocationType + shipFinder/stationFinder)
 
 - [ ] 10. Build Planner Form
