@@ -8,6 +8,7 @@ using OE2EmpireTracker.Forms.Survey;
 using OE2EmpireTracker.Forms.ColonyActivity;
 using OE2EmpireTracker.Forms.ColonyDailyBuild;
 using OE2EmpireTracker.Forms.BuildPlanner;
+using OE2EmpireTracker.Forms.Contacts;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -159,6 +160,11 @@ namespace OE2EmpireTracker
             OpenMdiChild<FormBuildPlanner>();
         }
 
+        private void contactsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenMdiChild<FormContacts>();
+        }
+
         private void deliveryExecutionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.DeliveryExecution.FormDeliveryExecution>();
@@ -197,6 +203,7 @@ namespace OE2EmpireTracker
             colonyDailyBuildToolStripMenuItem.Enabled = hasPlayer;
             colonyActivityToolStripMenuItem.Enabled = hasPlayer;
             buildPlannerToolStripMenuItem.Enabled = hasPlayer;
+            contactsToolStripMenuItem.Enabled = hasPlayer;
 
             // Player dropdown
             cmbCurrentPlayer.Enabled = hasPlayer;
@@ -571,6 +578,7 @@ namespace OE2EmpireTracker
             { "FormColonyDailyBuild", (w, n) => w.OpenMdiChildWithNumber<FormColonyDailyBuild>(n) },
             { "FormColonyActivity", (w, n) => w.OpenMdiChildWithNumber<FormColonyActivity>(n) },
             { "FormBuildPlanner", (w, n) => w.OpenMdiChildWithNumber<FormBuildPlanner>(n) },
+            { "FormContacts", (w, n) => w.OpenMdiChildWithNumber<FormContacts>(n) },
         };
 
         private void RestoreOpenForms()

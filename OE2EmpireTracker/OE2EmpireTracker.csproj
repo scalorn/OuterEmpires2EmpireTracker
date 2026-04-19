@@ -146,6 +146,7 @@
     <Compile Include="Services\ColonyReferenceCounter.cs" />
     <Compile Include="Services\SurveyReferenceCounter.cs" />
     <Compile Include="Services\DeliveryRouteReferenceCounter.cs" />
+    <Compile Include="Services\FactionReferenceCounter.cs" />
     <Compile Include="Services\EvolutionChainService.cs" />
     <Compile Include="Services\HelpTopicRegistry.cs" />
     <Compile Include="Services\HelpRenderer.cs" />
@@ -354,6 +355,12 @@
     </Compile>
     <Compile Include="Forms\BuildPlanner\FormStructureAllocation.Designer.cs">
       <DependentUpon>FormStructureAllocation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Contacts\FormContacts.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Contacts\FormContacts.Designer.cs">
+      <DependentUpon>FormContacts.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\PricingPlan\FormPricingPlan.cs">
       <SubType>Form</SubType>

@@ -53,6 +53,7 @@
             this.addColonyV2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addBlueprintV2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buildPlannerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contactsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cascadeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tileHorizontalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -152,6 +153,7 @@
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.colonyActivityToolStripMenuItem,
             this.colonyDailyBuildToolStripMenuItem,
+            this.contactsToolStripMenuItem,
             this.deliveryExecutionToolStripMenuItem,
             this.deliveryRoutesToolStripMenuItem,
             this.pricingPlansToolStripMenuItem,
@@ -243,6 +245,13 @@
             this.buildPlannerToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.buildPlannerToolStripMenuItem.Text = "Build Planner";
             this.buildPlannerToolStripMenuItem.Click += new System.EventHandler(this.buildPlannerToolStripMenuItem_Click);
+            // 
+            // contactsToolStripMenuItem
+            // 
+            this.contactsToolStripMenuItem.Name = "contactsToolStripMenuItem";
+            this.contactsToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.contactsToolStripMenuItem.Text = "Contacts";
+            this.contactsToolStripMenuItem.Click += new System.EventHandler(this.contactsToolStripMenuItem_Click);
             // 
             // deliveryExecutionToolStripMenuItem
             // 
@@ -376,6 +385,7 @@
         private System.Windows.Forms.ToolStripMenuItem deliveryRoutesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pricingPlansToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem buildPlannerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem contactsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deliveryExecutionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colonyDailyBuildToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colonyActivityToolStripMenuItem;
