@@ -318,6 +318,7 @@
     <Compile Include="Services\FactionReferenceCounterTests.cs" />
     <Compile Include="Services\ShipTemplateReferenceCounterTests.cs" />
     <Compile Include="Services\ShipReferenceCounterTests.cs" />
+    <Compile Include="Services\StationReferenceCounterTests.cs" />
     <Compile Include="Services\ColonyImportHelperPropertyTests.cs" />
     <Compile Include="Services\ColonyImportTimestampPropertyTests.cs" />
     <Compile Include="Services\ColonyInactivityStalenessPropertyTests.cs" />

@@ -56,6 +56,7 @@
             this.contactsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.shipTemplatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.shipsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cascadeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tileHorizontalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -162,6 +163,7 @@
             this.buildPlannerToolStripMenuItem,
             this.shipTemplatesToolStripMenuItem,
             this.shipsToolStripMenuItem,
+            this.stationsToolStripMenuItem,
             this.addBlueprintV2ToolStripMenuItem,
             this.addColonyV2ToolStripMenuItem,
             this.managePlayerProfiles,
@@ -270,6 +272,13 @@
             this.shipsToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.shipsToolStripMenuItem.Text = "Ships";
             this.shipsToolStripMenuItem.Click += new System.EventHandler(this.shipsToolStripMenuItem_Click);
+            // 
+            // stationsToolStripMenuItem
+            // 
+            this.stationsToolStripMenuItem.Name = "stationsToolStripMenuItem";
+            this.stationsToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.stationsToolStripMenuItem.Text = "Stations";
+            this.stationsToolStripMenuItem.Click += new System.EventHandler(this.stationsToolStripMenuItem_Click);
             // 
             // deliveryExecutionToolStripMenuItem
             // 
@@ -406,6 +415,7 @@
         private System.Windows.Forms.ToolStripMenuItem contactsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem shipTemplatesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem shipsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stationsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deliveryExecutionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colonyDailyBuildToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colonyActivityToolStripMenuItem;

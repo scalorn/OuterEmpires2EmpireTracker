@@ -487,7 +487,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             }
         }
 
-        private Station ShowStationPickerDialog()
+        private Models.Station ShowStationPickerDialog()
         {
             var stations = playerContext.GetCurrentPlayerStations();
             if (stations.Count == 0)
@@ -533,7 +533,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 form.CancelButton = btnCancel;
 
                 if (form.ShowDialog(this) != DialogResult.OK) return null;
-                return cmb.SelectedItem as Station;
+                return cmb.SelectedItem as Models.Station;
             }
         }
 

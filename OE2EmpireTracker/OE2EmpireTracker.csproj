@@ -149,6 +149,13 @@
     <Compile Include="Services\FactionReferenceCounter.cs" />
     <Compile Include="Services\ShipTemplateReferenceCounter.cs" />
     <Compile Include="Services\ShipReferenceCounter.cs" />
+    <Compile Include="Services\StationReferenceCounter.cs" />
+    <Compile Include="Forms\Station\FormStation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Station\FormStation.Designer.cs">
+      <DependentUpon>FormStation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ShipInstance\FormShipInstance.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -213,6 +220,7 @@
     <Compile Include="Constants\RefiningRecipes.cs" />
     <Compile Include="Constants\BlueprintPropertyValidation.cs" />
     <Compile Include="Constants\GameConstants.cs" />
+    <Compile Include="Constants\SlotTypes.cs" />
     <Compile Include="Controls\DataGridViewValidatedTextBoxColumn.cs" />
     <Compile Include="Controls\ListViewItemComparer.cs" />
     <Compile Include="Controls\RtfBuilder.cs" />

@@ -172,18 +172,18 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 23.4 Add volume warning when cargo exceeds capacity
   - [x] 23.5 Implement trip splitting logic
 
-- [-] 24. Iteration 3 Checkpoint
+- [x] 24. Iteration 3 Checkpoint
 
 ### Iteration 4: Stations
 
-- [ ] 25. Station Form
-  - [ ] 25.1 Create FormStation MDI child with Hold, Components, Munitions tabs
-  - [ ] 25.2 Hold tab: inventory grid with editable Condition/MaxRepair, crate master-detail (CrateInventoryPanel)
-  - [ ] 25.3 Components tab: component grid with editable Condition/MaxRepair, hull row first
-  - [ ] 25.4 Munitions tab for armed player-owned stations
-  - [ ] 25.5 Implement StationReferenceCounter, Refs column, delete protection
-  - [ ] 25.6 Wire events, NLog, PERF
-  - [ ] 25.7 Add "Stations" to Manage menu
+- [x] 25. Station Form
+  - [x] 25.1 Create FormStation MDI child with Hold, Components, Munitions tabs
+  - [x] 25.2 Hold tab: inventory grid with editable Condition/MaxRepair, crate master-detail (CrateInventoryPanel)
+  - [x] 25.3 Components tab: component grid with editable Condition/MaxRepair, hull row first
+  - [x] 25.4 Munitions tab for armed player-owned stations
+  - [x] 25.5 Implement StationReferenceCounter, Refs column, delete protection
+  - [x] 25.6 Wire events, NLog, PERF
+  - [x] 25.7 Add "Stations" to Manage menu
 
 - [ ] 26. Station Integration
   - [ ] 26.1 Update FormDeliveryRoute: Station/Asteroid stop types, Purpose column, FuelEstimate display

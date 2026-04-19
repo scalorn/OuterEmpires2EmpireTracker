@@ -9,6 +9,7 @@ using OE2EmpireTracker.Forms.ColonyActivity;
 using OE2EmpireTracker.Forms.ColonyDailyBuild;
 using OE2EmpireTracker.Forms.BuildPlanner;
 using OE2EmpireTracker.Forms.Contacts;
+using OE2EmpireTracker.Forms.Station;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -175,6 +176,11 @@ namespace OE2EmpireTracker
             OpenMdiChild<Forms.ShipInstance.FormShipInstance>();
         }
 
+        private void stationsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenMdiChild<Forms.Station.FormStation>();
+        }
+
         private void deliveryExecutionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.DeliveryExecution.FormDeliveryExecution>();
@@ -216,6 +222,7 @@ namespace OE2EmpireTracker
             contactsToolStripMenuItem.Enabled = hasPlayer;
             shipTemplatesToolStripMenuItem.Enabled = hasPlayer;
             shipsToolStripMenuItem.Enabled = hasPlayer;
+            stationsToolStripMenuItem.Enabled = hasPlayer;
 
             // Player dropdown
             cmbCurrentPlayer.Enabled = hasPlayer;
@@ -593,6 +600,7 @@ namespace OE2EmpireTracker
             { "FormContacts", (w, n) => w.OpenMdiChildWithNumber<FormContacts>(n) },
             { "FormShipTemplate", (w, n) => w.OpenMdiChildWithNumber<Forms.ShipTemplate.FormShipTemplate>(n) },
             { "FormShipInstance", (w, n) => w.OpenMdiChildWithNumber<Forms.ShipInstance.FormShipInstance>(n) },
+            { "FormStation", (w, n) => w.OpenMdiChildWithNumber<Forms.Station.FormStation>(n) },
         };
 
         private void RestoreOpenForms()

@@ -808,7 +808,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     route,
                     uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
                     uuid => (Ship)null,
-                    uuid => (Station)null,
+                    uuid => (Models.Station)null,
                     uuid => playerContext.FindBlueprint(uuid));
 
                 if (proposals.Count == 0)
@@ -1085,7 +1085,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     _selectedPlan,
                     uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
                     uuid => (Ship)null,
-                    uuid => (Station)null,
+                    uuid => (Models.Station)null,
                     playerContext.CurrentPlayerUUID,
                     uuid => playerContext.FindBlueprint(uuid));
 
@@ -1138,7 +1138,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                         plan,
                         uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
                         uuid => (Ship)null,
-                        uuid => (Station)null,
+                        uuid => (Models.Station)null,
                         playerContext.CurrentPlayerUUID,
                         uuid => playerContext.FindBlueprint(uuid));
 
