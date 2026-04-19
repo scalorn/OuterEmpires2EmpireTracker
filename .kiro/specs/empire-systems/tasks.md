@@ -2,313 +2,329 @@
 
 ## Overview
 
-Empire Systems is implemented in 8 iterations plus a pre-iteration remediation phase. The data model is designed upfront in Iteration 1 to support all iterations without refactoring. Each iteration adds models, services, forms, and tests for its feature area. All new code follows the cross-cutting requirements (logging, PERF timing, threading, reference counting) established in the design.
+Empire Systems is implemented in 8 iterations plus a pre-iteration remediation phase. The data model is designed upfront in Iteration 1 to support all iterations without refactoring. Each iteration adds models, services, forms, and tests for its feature area. All new code follows the cross-cutting requirements (logging, PERF timing, threading, reference counting, code quality standards) established in the design.
 
 ## Tasks
 
 ### Pre-Iteration Remediation
 
 - [ ] 1. Blocking Fixes (crash/data integrity risks)
-  - [ ] 1.1 R4: Fix FormPricingPlan cross-thread bug — add InvokeRequired/BeginInvoke check to OnCurrentPlayerChanged handler
-  - [ ] 1.2 R5: Fix FormColonyActivity event leak — add `playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged` to OnFormClosed
-  - [ ] 1.3 R6: Create DeliveryRouteReferenceCounter service (counts DeliveryPlans referencing a route), add Refs column to FormDeliveryRoute ListView, disable Delete when in use
+  - [ ] 1.1 R4: Fix FormPricingPlan cross-thread bug
+  - [ ] 1.2 R5: Fix FormColonyActivity event leak
+  - [ ] 1.3 R6: Create DeliveryRouteReferenceCounter (counts DeliveryPlans, WarehouseOverflowRules, SupplyChainStages)
 
-- [ ] 2. Logging & PERF Remediation
+- [ ] 2. Logging and PERF Remediation
   - [ ] 2.1 R1: Add NLog Logger to FormPlayerProfile, FormAutoFill
-  - [ ] 2.2 R2: Add NLog Logger to high-priority services: ColonyAdminReportBuilder, ColonyActivityCollector, ColonyInactivityCollector, ColonyBuildEligibility, ColonyImportHelper, SurveyImportHelper
-  - [ ] 2.3 R2: Add NLog Logger to medium-priority services: BlueprintReferenceCounter, ColonyReferenceCounter, SurveyReferenceCounter, BuildTimeCalculator, EvolutionChainService
-  - [ ] 2.4 R3: Add PERF Stopwatch timing to FormBlueprintV2 (PopulateListView, PopulateForm, PopulateGrid)
-  - [ ] 2.5 R3: Add PERF Stopwatch timing to FormDeliveryRoute (PopulateRouteList, PopulateStops, PopulatePlanStops)
-  - [ ] 2.6 R3: Add PERF Stopwatch timing to FormSurvey, FormPlayerProfile, FormPricingPlan, FormDeliveryExecution, FormColonyActivity, FormColonyDailyBuild
+  - [ ] 2.2 R2: Add NLog Logger to high-priority services
+  - [ ] 2.3 R2: Add NLog Logger to medium-priority services
+  - [ ] 2.4 R3: Add PERF timing to FormBlueprintV2
+  - [ ] 2.5 R3: Add PERF timing to FormDeliveryRoute
+  - [ ] 2.6 R3: Add PERF timing to remaining forms
 
-- [ ] 3. Remediation Checkpoint — build passes, all existing tests pass
+- [ ] 3. Remediation Checkpoint
 
 ### Iteration 1: Build Planner + Data Model Foundation
 
 - [ ] 4. BaselineData Updates
-  - [ ] 4.1 Update Hull BlueprintType property list: add Max Ore Hoppers, Raw Material Capacity, Eng Capacity Available
-  - [ ] 4.2 Add SlotType mapping constants class (hull property → SlotType string → BlueprintType IDs, 20 slot types per OQ-31/OQ-32)
-  - [ ] 4.3 Copy updated BaselineData.json to test project TestData
+  - [ ] 4.1 Update Hull BlueprintType property list
+  - [ ] 4.2 Add Constants/SlotTypes.cs
+  - [ ] 4.3 Copy updated BaselineData.json to test project
 
 - [ ] 5. Data Model Foundation
-  - [ ] 5.1 Add DestinationType enum (Colony, Station, Asteroid)
-  - [ ] 5.2 Add BuildPlan model (UUID, Name, OwnerUUID, Description, DeliveryPlanUUID, nested List of BuildItem)
-  - [ ] 5.3 Add BuildItem model with enums (BuildItemType: Manufactory/Commodity/ShipTemplate/Mining/Refining/Research; BuildItemStatus: Staged/Delivering/Ready/InProgress/Completed) and all fields including Iteration 6 placeholders
-  - [ ] 5.4 Add ShipTemplate and ShipComponentSlot models (SlotType as string, SlotIndex, BlueprintUUID)
-  - [ ] 5.5 Add Ship model with Cargo ItemBag and Hopper ItemBag, LocationType/LocationUUID
-  - [ ] 5.6 Add Station model with StationType, StationOwnership, per-player Holds dictionary, Components list, StationBlueprintUUID, MunitionsHold
-  - [ ] 5.7 Add Asteroid model with AsteroidReserve list (ResourceName, Purity, MaxReserve, CurrentReserve, ResetTimestamp)
-  - [ ] 5.8 Add MarketListing model (StationUUID, ItemType, ItemReferenceID, Quantity, PricePerUnit)
-  - [ ] 5.9 Add MarketTransaction model (TransactionType, ListingUUID, Counterparty, Timestamp, StationUUID)
-  - [ ] 5.10 Add StockPlan model (Name, OwnerUUID, ReplenishmentBuildPlanUUID, nested List of StockTarget)
-  - [ ] 5.11 Add StockTarget model (ItemType, ItemReferenceID, ShipTemplateUUID, TargetQuantity, CriticalThreshold, Scope, LocationUUID — no OwnerUUID or StockPlanUUID per OQ-30)
-  - [ ] 5.12 Add StockProfile model with StockProfileEntry (GroupID, StockPlanUUID — no StockTargetUUID per OQ-30)
-  - [ ] 5.13 Add SupplyChain and SupplyChainStage models (StageType enum, LocationType/UUID, ResourceName/Purity, AccumulationThreshold, ProductionRatePerHour, DeliveryRouteUUID per OQ-39)
-  - [ ] 5.14 Add WarehouseOverflowRule model (ColonyUUID, ResourceName, ResourcePurity, TriggerThreshold, DestinationType/UUID, DeliveryRouteUUID per OQ-33)
-  - [ ] 5.15 Add Faction model (Name, Description — no OwnerUUID, deterministic UUID from name)
-  - [ ] 5.16 Add ExternalCharacter model (Name, FactionUUID — no OwnerUUID, deterministic UUID from name)
-  - [ ] 5.17 Add Crate support: ItemType.Crate enum value + Contents ItemBag on Item (null for non-crates, NullValueHandling.Ignore)
-  - [ ] 5.18 Add SurveyType enum (Planet, Asteroid) and AsteroidUUID to Survey model (DefaultValue Planet)
-  - [ ] 5.19 Add FactionUUID to PlayerProfile
-  - [ ] 5.20 Update PlayerRoot with all 13 new arrays
-  - [ ] 5.21 Update RouteStop: add DestinationType + DestinationUUID, keep ColonyUUID for backward compat
-  - [ ] 5.22 Update DeliveryPlanStop: add DestinationType + DestinationUUID, keep ColonyUUID for backward compat
-  - [ ] 5.23 Add ShipUUID to DeliveryPlan
-  - [ ] 5.24 Add ShipStats class (all 30+ fields: core, capacity, defence, propulsion, mining, scanning, weapons, license)
-  - [ ] 5.25 Add StationStats class (subset: core, defence, weapons)
+  - [ ] 5.1 Add DestinationType enum (Colony, Station, Asteroid, Ship)
+  - [ ] 5.2 Add RouteStopPurpose enum (Cargo, Refuel, CargoAndRefuel)
+  - [ ] 5.3 Add BuildPlan model (IsActive flag included)
+  - [ ] 5.4 Add BuildItem model (BuildLocationType + BuildLocationUUID instead of ColonyUUID)
+  - [ ] 5.5 Add ShipTemplate and ShipComponentSlot (with damage fields)
+  - [ ] 5.6 Add Ship model (with hull damage fields)
+  - [ ] 5.7 Add Station model (with hull damage fields)
+  - [ ] 5.8 Add Asteroid model with AsteroidReserve list
+  - [ ] 5.9 Add MarketListing model (with condition fields)
+  - [ ] 5.10 Add MarketTransaction model (with CounterpartyFaction + condition fields)
+  - [ ] 5.11 Add StockPlan model (IsActive, ReplenishmentBuildPlanUUID)
+  - [ ] 5.12 Add StockTarget model
+  - [ ] 5.13 Add StockProfile model (IsActive)
+  - [ ] 5.14 Add SupplyChain (IsActive) and SupplyChainStage (PickUp/Research stage types)
+  - [ ] 5.15 Add WarehouseOverflowRule model (IsActive)
+  - [ ] 5.16 Add Faction model (deterministic UUID)
+  - [ ] 5.17 Add ExternalCharacter model (deterministic UUID)
+  - [ ] 5.18 Add Crate support to Item
+  - [ ] 5.19 Add damage fields to Item (CurrentHP, MaxHP, MaxRepairPercent)
+  - [ ] 5.20 Add SurveyType enum and AsteroidUUID to Survey
+  - [ ] 5.21 Add FactionUUID to PlayerProfile
+  - [ ] 5.22 Update PlayerRoot with all 13 new arrays
+  - [ ] 5.23 Update RouteStop (DestinationType, Purpose, FuelEstimate)
+  - [ ] 5.24 Update DeliveryPlanStop (DestinationType)
+  - [ ] 5.25 Add ShipUUID to DeliveryPlan
+  - [ ] 5.26 Add ShipStats class
+  - [ ] 5.27 Add StationStats class
 
 - [ ] 6. PlayerContext Updates
-  - [ ] 6.1 Add 13 new List<T> fields (BuildPlanList through AsteroidList)
-  - [ ] 6.2 Add 13 Init methods (InitBuildPlans through InitAsteroids)
+  - [ ] 6.1 Add 13 new List fields
+  - [ ] 6.2 Add 13 Init methods
   - [ ] 6.3 Update WriteContext to serialize all 13 new lists
-  - [ ] 6.4 Add snapshot methods (SnapshotBuildPlanList, SnapshotStationList, etc.)
-  - [ ] 6.5 Add 10 convenience methods (GetCurrentPlayerBuildPlans through GetCurrentPlayerOverflowRules)
+  - [ ] 6.4 Add snapshot methods for all new lists
+  - [ ] 6.5 Add convenience methods (GetCurrentPlayerBuildPlans, etc.)
   - [ ] 6.6 Add new events: BuildPlanDataChanged, MarketDataChanged, StationDataChanged
   - [ ] 6.7 Add CascadeStockTargetsDirty and CascadeResourceCheckDirty runtime flags
-  - [ ] 6.8 Update CascadeDeletePlayer for all new entity types with OwnerUUID
+  - [ ] 6.8 Update CascadeDeletePlayer for all new entity types
   - [ ] 6.9 Update CleanupOrphanedData for all new entity types
 
 - [ ] 7. In-Memory Indexing
-  - [ ] 7.1 Add PlayerContext UUID caches: _stationCache, _shipTemplateCache, _shipCache, _buildPlanCache, _asteroidCache, _factionCache, _marketListingCache (with Find/Invalidate methods)
-  - [ ] 7.2 Add EmpireContext _commodityNameCache (FindCommodity by name)
-  - [ ] 7.3 Add _blueprintTypeCountCache (CountBlueprintsByType for auto-assign copy constraint)
-  - [ ] 7.4 Add cross-entity build item indexes: _blueprintBuildItemIndex, _colonyBuildItemIndex (with InvalidateBuildItemIndexes)
+  - [ ] 7.1 Add PlayerContext UUID caches for all new entity types
+  - [ ] 7.2 Add EmpireContext _commodityNameCache
+  - [ ] 7.3 Add _blueprintTypeCountCache
+  - [ ] 7.4 Add cross-entity build item indexes
 
 - [ ] 8. Migration
-  - [ ] 8.1 Create Migration008_EmpireSystems: add empty arrays for all new entity types, migrate RouteStop.ColonyUUID → DestinationUUID + DestinationType.Colony, migrate DeliveryPlanStop similarly, increment DataVersion
+  - [ ] 8.1 Create Migration: add empty arrays, migrate RouteStop/DeliveryPlanStop ColonyUUID, increment DataVersion
 
 - [ ] 9. Build Planner Services
-  - [ ] 9.1 Implement BuildPlanService (ValidatePlanName, ValidateBuildItem) with NLog + PERF
-  - [ ] 9.2 Implement ResourceCheckService (ComputeShortfalls, ComputePlanShortfalls) — checks colony warehouse + current player's station holds on route per OQ-40
-  - [ ] 9.3 Implement DeliveryGenerationService (GenerateDeliveryPlan) with NLog + PERF
-  - [ ] 9.4 Implement QueueCalculator (ComputeManufactoryRuns, ComputeCommodityRuns, ManufactoryRunsToItems, CommodityRunsToItems)
-  - [ ] 9.5 Implement AutoAssignService (ProposeAssignments) — uses _blueprintTypeCountCache for copy constraint
+  - [ ] 9.1 Implement BuildPlanService (ValidatePlanName, ValidateBuildItem, GenerateColonyBuildItems)
+  - [ ] 9.2 Implement ResourceCheckService (ComputeShortfalls with BuildLocationType resolution, ComputePlanShortfalls)
+  - [ ] 9.3 Implement DeliveryGenerationService (GenerateDeliveryPlan, GenerateConsolidatedDeliveryPlan, GenerateFlatpackDeliveryPlan)
+  - [ ] 9.4 Implement QueueCalculator
+  - [ ] 9.5 Implement AutoAssignService (ProposeAssignments with BuildLocationType + shipFinder/stationFinder)
 
 - [ ] 10. Build Planner Form
-  - [ ] 10.1 Create FormBuildPlanner MDI child: plan list (left), plan details + build items grid (right)
-  - [ ] 10.2 Add Item panel: type combo, item combo with filter, quantity, target duration, recipient, Queue Calc button
-  - [ ] 10.3 Structure allocation modal dialog (colony/structure picker, filter, idle-only toggle, busy indicators)
-  - [ ] 10.4 Resource shortfall display panel (per-item shortfalls grid, visible on selection)
-  - [ ] 10.5 Generate Delivery button (route picker combo, delivery plan creation/update)
-  - [ ] 10.6 Auto-Assign button (calls AutoAssignService, shows proposal for review)
-  - [ ] 10.7 Wire events: CurrentPlayerChanged, ColonyDataChanged, BuildPlanDataChanged with BeginInvoke
-  - [ ] 10.8 Implement IProgrammaticUpdateSource, NLog, PERF timing on PopulateForm/PopulateList
-  - [ ] 10.9 Build item status display with color coding, manual status transitions per OQ-34 (forward only for cascade, any direction for user)
-  - [ ] 10.10 Add "Build Planner" to Manage menu in MainWindow
+  - [ ] 10.1 Create FormBuildPlanner MDI child: plan list, plan details, build items grid (Location column)
+  - [ ] 10.2 Add Item panel with Queue Calc button
+  - [ ] 10.3 Structure allocation dialog (Location column, future ship/station note)
+  - [ ] 10.4 Resource shortfall display panel
+  - [ ] 10.5 Generate Delivery dropdown: Resource (This Plan), Consolidated Resource, Flatpack Delivery
+  - [ ] 10.6 Auto-Assign button
+  - [ ] 10.7 IsActive checkbox with gray italic styling for inactive plans
+  - [ ] 10.8 Wire events with BeginInvoke
+  - [ ] 10.9 Build item status display with color coding
+  - [ ] 10.10 Implement BuildPlanReferenceCounter (counts StockPlan.ReplenishmentBuildPlanUUID), add Refs column
+  - [ ] 10.11 Add "Build Planner" to Manage menu
 
-- [ ] 11. Cascade Processing
-  - [ ] 11.1 Extend BackgroundProcessor tick: check CascadeStockTargetsDirty → run StockTargetService, check CascadeResourceCheckDirty → run ResourceCheckService on all active plans
-  - [ ] 11.2 Implement cascade status advancement: max(currentStatus, computedStatus) per OQ-34 — never decrease ordinal
-  - [ ] 11.3 Implement startup cascade (unconditional full evaluation on app start)
-  - [ ] 11.4 Fire BuildPlanDataChanged outside all locks after cascade completes
+- [ ] 11. Colony Admin Tab Integration
+  - [ ] 11.1 Add "Generate Build Plan" button to colony Administration tab
+  - [ ] 11.2 Implement plan picker dialog (new or existing plan)
+  - [ ] 11.3 Wire to BuildPlanService.GenerateColonyBuildItems
 
-- [ ] 12. Contacts Form
-  - [ ] 12.1 Create FormContacts MDI child: Factions tab (CRUD, members grid) + External Characters tab (CRUD, faction combo)
-  - [ ] 12.2 Implement FactionReferenceCounter (counts PlayerProfile.FactionUUID + ExternalCharacter.FactionUUID references)
-  - [ ] 12.3 Add Refs column and delete protection to Factions tab
-  - [ ] 12.4 Add "Contacts" to Manage menu
+- [ ] 12. Cascade Processing
+  - [ ] 12.1 Extend BackgroundProcessor: CascadeStockTargetsDirty and CascadeResourceCheckDirty
+  - [ ] 12.2 Implement cascade status advancement (max ordinal, never decrease)
+  - [ ] 12.3 Implement startup cascade
+  - [ ] 12.4 Fire BuildPlanDataChanged outside all locks
 
-- [ ] 13. Reference Counter Expansions (Iteration 1 entities)
-  - [ ] 13.1 Expand BlueprintReferenceCounter: add BuildItem.BlueprintUUID count
-  - [ ] 13.2 Expand ColonyReferenceCounter: add BuildItem.ColonyUUID count
-  - [ ] 13.3 Implement BuildReferenceMap() pattern on all reference counters (pre-compute UUID → count map in one pass)
+- [ ] 13. Contacts Form
+  - [ ] 13.1 Create FormContacts MDI child: Factions tab + External Characters tab
+  - [ ] 13.2 Implement FactionReferenceCounter
+  - [ ] 13.3 Add Refs column and delete protection
+  - [ ] 13.4 Add "Contacts" to Manage menu
 
-- [ ] 14. Iteration 1 Tests
-  - [ ] 14.1 Property tests: build item quantity validation (P1), queue calculator manufactory (P2), queue calculator commodity (P3), resource shortfall computation with station holds (P4), delivery plan covers shortfalls (P5), serialization round-trip for all new types (P10), migration preserves destinations (P11), cascade status monotonicity (P12)
-  - [ ] 14.2 Unit tests: BuildPlanService validation, ResourceCheckService with known data, QueueCalculator edge cases, DeliveryGenerationService, AutoAssignService, Migration008, FactionReferenceCounter
+- [ ] 14. Reference Counter Expansions (Iteration 1)
+  - [ ] 14.1 Expand BlueprintReferenceCounter: add BuildItem.BlueprintUUID
+  - [ ] 14.2 Expand ColonyReferenceCounter: add BuildItem.BuildLocationUUID (when Colony)
+  - [ ] 14.3 Implement BuildReferenceMap pattern on all reference counters
 
-- [ ] 15. Iteration 1 Checkpoint — build passes, all tests pass
+- [ ] 15. Iteration 1 Tests
+  - [ ] 15.1 Property tests: P1-P5, P10-P12
+  - [ ] 15.2 Unit tests: all Iteration 1 services, migration, reference counters
+
+- [ ] 16. Iteration 1 Checkpoint
 
 ### Iteration 2: Ships
 
-- [ ] 16. Ship Services
-  - [ ] 16.1 Implement ShipBuildService.GenerateShipBuildItems (template expansion, stock check at assembly location)
-  - [ ] 16.2 Implement ShipBuildService.ValidateAssemblyLocation (class 2-5 any, 6 Station+Starbase, 7-8 Starbase only)
-  - [ ] 16.3 Implement ShipBuildService.ComputeStats (all ShipStats fields from hull + components using SlotType mapping)
-  - [ ] 16.4 Implement ShipBuildService.ComputeStationStats (StationStats subset — deferred display per OQ-37 but service ready)
+- [ ] 17. Ship Services
+  - [ ] 17.1 Implement ShipBuildService.GenerateShipBuildItems
+  - [ ] 17.2 Implement ShipBuildService.ValidateAssemblyLocation
+  - [ ] 17.3 Implement ShipBuildService.ComputeStats (all ShipStats fields)
+  - [ ] 17.4 Implement ShipBuildService.ComputeStationStats
 
-- [ ] 17. Ship Template Form
-  - [ ] 17.1 Create FormShipTemplate MDI child: template list (left), hull selector, component slot grid, install panel
-  - [ ] 17.2 Implement slot grid: one row per slot from hull properties, show installed blueprint or (empty)
-  - [ ] 17.3 Implement component installation with SlotType validation (BlueprintType → SlotType mapping)
-  - [ ] 17.4 Implement full stats panel (core, capacity, defence, propulsion, weapons, license — mining/scanning conditional)
-  - [ ] 17.5 "Order Build" button: select/create build plan, specify assembly location, generate build items
-  - [ ] 17.6 Implement ShipTemplateReferenceCounter, add Refs column and delete protection
-  - [ ] 17.7 Wire events, IProgrammaticUpdateSource, NLog, PERF timing
-  - [ ] 17.8 Add "Ship Templates" to Manage menu
+- [ ] 18. Ship Template Form
+  - [ ] 18.1 Create FormShipTemplate MDI child
+  - [ ] 18.2 Implement slot grid with component installation
+  - [ ] 18.3 Implement full stats panel
+  - [ ] 18.4 Order Build button
+  - [ ] 18.5 Implement ShipTemplateReferenceCounter, Refs column, delete protection
+  - [ ] 18.6 Wire events, NLog, PERF
+  - [ ] 18.7 Add "Ship Templates" to Manage menu
 
-- [ ] 18. Ship Instance Form
-  - [ ] 18.1 Create FormShipInstance MDI child: ship list (left), tabbed detail (Overview + Cargo)
-  - [ ] 18.2 Overview tab: component grid (read-only), swap component button, full stats panel (same as template)
-  - [ ] 18.3 Cargo tab: radio toggle Cargo Hold / Hopper, cargo hold with crate master-detail, hopper with purity restriction (High/Medium/Low only)
-  - [ ] 18.4 "Create from Template" button: copy hull + components, assign name/location
-  - [ ] 18.5 Implement ShipReferenceCounter (counts DeliveryPlan.ShipUUID), add Refs column and delete protection
-  - [ ] 18.6 Wire events, IProgrammaticUpdateSource, NLog, PERF timing
-  - [ ] 18.7 Add "Ships" to Manage menu
+- [ ] 19. Ship Instance Form
+  - [ ] 19.1 Create FormShipInstance MDI child with Overview + Cargo tabs
+  - [ ] 19.2 Overview tab: component grid with editable Condition/MaxRepair columns, hull row first
+  - [ ] 19.3 Cargo tab: radio toggle Cargo Hold / Hopper, crate master-detail, purity restriction
+  - [ ] 19.4 Create from Template button
+  - [ ] 19.5 Implement ShipReferenceCounter (DeliveryPlan.ShipUUID + BuildItem.BuildLocationUUID), Refs column
+  - [ ] 19.6 Wire events, NLog, PERF
+  - [ ] 19.7 Add "Ships" to Manage menu
 
-- [ ] 19. Reference Counter Expansions (Iteration 2 entities)
-  - [ ] 19.1 Expand BlueprintReferenceCounter: add ShipTemplate.HullBlueprintUUID, ShipTemplate.Components[].BlueprintUUID, Ship.HullBlueprintUUID, Ship.Components[].BlueprintUUID
+- [ ] 20. Reference Counter Expansions (Iteration 2)
+  - [ ] 20.1 Expand BlueprintReferenceCounter: ShipTemplate + Ship component BlueprintUUIDs
 
-- [ ] 20. Iteration 2 Tests
-  - [ ] 20.1 Property test: ship class assembly validation (P6)
-  - [ ] 20.2 Unit tests: ShipBuildService with known templates, ComputeStats, ValidateAssemblyLocation matrix, ShipTemplateReferenceCounter, ShipReferenceCounter
+- [ ] 21. Iteration 2 Tests
+  - [ ] 21.1 Property test: P6 (ship class assembly validation)
+  - [ ] 21.2 Unit tests: ShipBuildService, ComputeStats, reference counters
 
-- [ ] 21. Iteration 2 Checkpoint — build passes, all tests pass
+- [ ] 22. Iteration 2 Checkpoint
 
 ### Iteration 3: Ship-Aware Delivery
 
-- [ ] 22. Ship-Aware Delivery
-  - [ ] 22.1 Add ship assignment UI to delivery plan (ShipUUID field, ship selector combo on FormDeliveryRoute plan tab)
-  - [ ] 22.2 Implement cargo volume computation: sum item volumes, crate contents recursive one level (crate itself = 0 volume per OQ-36)
-  - [ ] 22.3 Add volume/mass display on delivery execution form (used/capacity header)
-  - [ ] 22.4 Add volume warning when cargo exceeds ship capacity (advisory, not blocking)
-  - [ ] 22.5 Implement trip splitting logic (split plan into multiple trips respecting volume limit, maintain stop order)
+- [ ] 23. Ship-Aware Delivery
+  - [ ] 23.1 Add ship assignment UI to delivery plan
+  - [ ] 23.2 Implement cargo volume computation (crate contents recursive one level)
+  - [ ] 23.3 Add volume/mass display on delivery execution form
+  - [ ] 23.4 Add volume warning when cargo exceeds capacity
+  - [ ] 23.5 Implement trip splitting logic
 
-- [ ] 23. Iteration 3 Checkpoint — build passes, all tests pass
+- [ ] 24. Iteration 3 Checkpoint
 
 ### Iteration 4: Stations
 
-- [ ] 24. Station Form
-  - [ ] 24.1 Create FormStation MDI child: station list (left), station details (name, type, ownership), tabbed detail
-  - [ ] 24.2 Hold tab: player selector combo, inventory grid with crate master-detail (reusable CrateInventoryPanel), add-item panel
-  - [ ] 24.3 Components tab: deferred per OQ-37 (station blueprint not yet available in game) — show placeholder message
-  - [ ] 24.4 Munitions tab: munitions hold grid for armed player-owned stations
-  - [ ] 24.5 Implement StationReferenceCounter (routes, plans, ships, listings, transactions, build plans, supply chains, stock plans, overflow rules), add Refs column and delete protection
-  - [ ] 24.6 Wire events, IProgrammaticUpdateSource, NLog, PERF timing
-  - [ ] 24.7 Add "Stations" to Manage menu
+- [ ] 25. Station Form
+  - [ ] 25.1 Create FormStation MDI child with Hold, Components, Munitions tabs
+  - [ ] 25.2 Hold tab: inventory grid with editable Condition/MaxRepair, crate master-detail (CrateInventoryPanel)
+  - [ ] 25.3 Components tab: component grid with editable Condition/MaxRepair, hull row first
+  - [ ] 25.4 Munitions tab for armed player-owned stations
+  - [ ] 25.5 Implement StationReferenceCounter, Refs column, delete protection
+  - [ ] 25.6 Wire events, NLog, PERF
+  - [ ] 25.7 Add "Stations" to Manage menu
 
-- [ ] 25. Station Integration
-  - [ ] 25.1 Update FormDeliveryRoute: add Station and Asteroid to stop type selector, update stop grid columns
-  - [ ] 25.2 Update delivery plan form to support Station and Asteroid stops
-  - [ ] 25.3 Update delivery execution: station hold pickups add to hold, dropoffs remove from hold
-  - [ ] 25.4 Update auto-fill to consider station inventory when computing shortfalls
+- [ ] 26. Station Integration
+  - [ ] 26.1 Update FormDeliveryRoute: Station/Asteroid stop types, Purpose column, FuelEstimate display
+  - [ ] 26.2 Update delivery plan form for Station/Asteroid stops
+  - [ ] 26.3 Update delivery execution: station hold operations, refuel stop checklist items
+  - [ ] 26.4 Update auto-fill to consider station inventory
 
-- [ ] 26. Reference Counter Expansions (Iteration 4 entities)
-  - [ ] 26.1 Expand BlueprintReferenceCounter: add Station.StationBlueprintUUID, Station.Components[].BlueprintUUID
+- [ ] 27. Reference Counter Expansions (Iteration 4)
+  - [ ] 27.1 Expand BlueprintReferenceCounter: Station component BlueprintUUIDs
 
-- [ ] 27. Iteration 4 Checkpoint — build passes, all tests pass
+- [ ] 28. Iteration 4 Checkpoint
 
 ### Iteration 5: Market
 
-- [ ] 28. Market Services
-  - [ ] 28.1 Implement MarketService.RecordSale (decrement listing, create transaction, set CascadeStockTargetsDirty)
-  - [ ] 28.2 Implement MarketService.RecordPurchase (add to station hold, set CascadeResourceCheckDirty)
-  - [ ] 28.3 Implement MarketService.ComputeProfitLoss (transaction price vs pricing plan valuation)
+- [ ] 29. Market Services
+  - [ ] 29.1 Implement MarketService.RecordSale (decrement listing, create transaction with condition + faction snapshots)
+  - [ ] 29.2 Implement MarketService.RecordPurchase (add to station hold)
+  - [ ] 29.3 Implement MarketService.ComputeProfitLoss
 
-- [ ] 29. Market Form
-  - [ ] 29.1 Create FormMarket MDI child: Listings tab (grid, add listing panel, Record Sale/Edit/Delete buttons)
-  - [ ] 29.2 Transactions tab: filter row (type, item, counterparty, station, date range), transaction grid, Add/Edit/Delete
-  - [ ] 29.3 Summary tab: pricing plan selector, date range, running totals, per-item breakdown grid
-  - [ ] 29.4 Record Sale dialog: quantity, counterparty, notes → creates transaction + decrements listing
-  - [ ] 29.5 Implement MarketListingReferenceCounter (counts MarketTransaction.ListingUUID), add Refs column and delete protection on Listings tab
-  - [ ] 29.6 Wire events, IProgrammaticUpdateSource, NLog, PERF timing
-  - [ ] 29.7 Add "Market" to Manage menu
+- [ ] 30. Market Form
+  - [ ] 30.1 Create FormMarket MDI child: Listings tab, Transactions tab, Summary tab
+  - [ ] 30.2 Listings tab: grid with condition column for damaged components
+  - [ ] 30.3 Transactions tab: filters (type, item, counterparty, faction, station, date range), grid with Condition column
+  - [ ] 30.4 Summary tab: pricing plan selector, date range, totals, per-item breakdown
+  - [ ] 30.5 Record Sale dialog with condition snapshot
+  - [ ] 30.6 Implement MarketListingReferenceCounter, Refs column
+  - [ ] 30.7 Wire events, NLog, PERF
+  - [ ] 30.8 Add "Market" to Manage menu
 
-- [ ] 30. Reference Counter Expansions (Iteration 5 entities)
-  - [ ] 30.1 Expand BlueprintReferenceCounter: add MarketListing.ItemReferenceID (when ItemType=Blueprint)
+- [ ] 31. Reference Counter Expansions (Iteration 5)
+  - [ ] 31.1 Expand BlueprintReferenceCounter: MarketListing.ItemReferenceID
 
-- [ ] 31. Iteration 5 Tests
-  - [ ] 31.1 Property tests: market sale decrements listing (P8), market purchase adds to station hold (P9)
-  - [ ] 31.2 Unit tests: MarketService edge cases, profit/loss computation, listing quantity clamped to 0, MarketListingReferenceCounter
+- [ ] 32. Iteration 5 Tests
+  - [ ] 32.1 Property tests: P8 (sale decrements listing), P9 (purchase adds to hold)
+  - [ ] 32.2 Unit tests: MarketService, profit/loss, MarketListingReferenceCounter
 
-- [ ] 32. Iteration 5 Checkpoint — build passes, all tests pass
+- [ ] 33. Iteration 5 Checkpoint
 
 ### Iteration 6: Full Production Queue + Supply Chain + Asteroids
 
-- [ ] 33. Production Queue Extension
-  - [ ] 33.1 Enable Mining, Refining, Research BuildItemTypes in Build Planner (structure allocation filters to Mining Rig, Refinery, Research Lab)
-  - [ ] 33.2 Add mining/refining fields to build item UI (MiningResource, MiningSurveyUUID, RefiningResource, RefiningPurity)
-  - [ ] 33.3 Implement time-splitting: SequenceInStructure > 0, schedule display per structure
-  - [ ] 33.4 Implement dependency tracking: DependsOnUUID, flag items with unmet prerequisites in Inactivity
-  - [ ] 33.5 Extend ResourceCheckService for mining/refining resource requirements
+- [ ] 34. Production Queue Extension
+  - [ ] 34.1 Enable Mining, Refining, Research BuildItemTypes in Build Planner
+  - [ ] 34.2 Add mining/refining fields to build item UI
+  - [ ] 34.3 Implement time-splitting (SequenceInStructure)
+  - [ ] 34.4 Implement dependency tracking (DependsOnUUID)
+  - [ ] 34.5 Extend ResourceCheckService for mining/refining
 
-- [ ] 34. Asteroid Form
-  - [ ] 34.1 Create FormAsteroid MDI child: asteroid list (left), name/system fields, reserves grid, add-reserve panel, linked surveys grid
-  - [ ] 34.2 Implement AsteroidReferenceCounter (counts Survey.AsteroidUUID, SupplyChainStage.LocationUUID, DeliveryRoute stops), add Refs column and delete protection
-  - [ ] 34.3 Wire events, IProgrammaticUpdateSource, NLog, PERF timing
-  - [ ] 34.4 Add "Asteroids" to Manage menu
+- [ ] 35. Asteroid Form
+  - [ ] 35.1 Create FormAsteroid MDI child with reserves grid and linked surveys
+  - [ ] 35.2 Implement auto-create asteroid on asteroid survey import (Flow 12)
+  - [ ] 35.3 Implement AsteroidReferenceCounter, Refs column
+  - [ ] 35.4 Wire events, NLog, PERF
+  - [ ] 35.5 Add "Asteroids" to Manage menu
 
-- [ ] 35. Supply Chain Form
-  - [ ] 35.1 Create FormSupplyChain MDI child: chain list (left), stages grid, add/edit stage panel with move up/down, flow summary label
-  - [ ] 35.2 Stage type determines relevant fields: Mine/AsteroidMine (no threshold), Collect/Refine/Deliver (threshold + route)
-  - [ ] 35.3 Route selector combo on stages with AccumulationThreshold > 0
-  - [ ] 35.4 Wire events, IProgrammaticUpdateSource, NLog, PERF timing
-  - [ ] 35.5 Add "Supply Chains" to Manage menu
+- [ ] 36. Supply Chain Form
+  - [ ] 36.1 Create FormSupplyChain MDI child with stages grid and flow summary
+  - [ ] 36.2 Stage types: Mine, AsteroidMine, PickUp, Refine, Research, Deliver
+  - [ ] 36.3 IsActive checkbox with gray italic styling
+  - [ ] 36.4 Route selector on threshold stages
+  - [ ] 36.5 Wire events, NLog, PERF
+  - [ ] 36.6 Add "Supply Chains" to Manage menu
 
-- [ ] 36. Warehouse Overflow Tab
-  - [ ] 36.1 Add Overflow tab to FormColony: rules grid (resource, purity, threshold, current with color coding, destination), add-rule panel with route selector
-  - [ ] 36.2 Extend BackgroundProcessor: check warehouse levels vs overflow thresholds, generate deliveries on designated route for excess
+- [ ] 37. Supply Chain Service
+  - [ ] 37.1 Implement SupplyChainService.CheckThresholds (filter IsActive, resolve location inventory, return delivery requests)
 
-- [ ] 37. Supply Chain Background Processing
-  - [ ] 37.1 Extend BackgroundProcessor: check accumulation at each supply chain stage, generate deliveries on designated route when threshold exceeded
+- [ ] 38. Warehouse Overflow Tab
+  - [ ] 38.1 Add Overflow tab to FormColony: rules grid with Active checkbox column
+  - [ ] 38.2 Extend BackgroundProcessor for overflow threshold checks (filter IsActive rules)
 
-- [ ] 38. Asteroid Survey Integration
-  - [ ] 38.1 Extend SurveyParser to detect asteroid context and set SurveyType=Asteroid + AsteroidUUID
-  - [ ] 38.2 Add SurveyType filter to FormSurvey (planet vs asteroid)
+- [ ] 39. Supply Chain Background Processing
+  - [ ] 39.1 Extend BackgroundProcessor: call SupplyChainService.CheckThresholds, generate deliveries
 
-- [ ] 39. Reference Counter Expansions (Iteration 6 entities)
-  - [ ] 39.1 Expand ColonyReferenceCounter: add SupplyChainStage.LocationUUID (Colony), WarehouseOverflowRule.ColonyUUID + DestinationUUID (Colony)
-  - [ ] 39.2 Expand SurveyReferenceCounter: add BuildItem.MiningSurveyUUID
-  - [ ] 39.3 Expand DeliveryRouteReferenceCounter: add WarehouseOverflowRule.DeliveryRouteUUID, SupplyChainStage.DeliveryRouteUUID
+- [ ] 40. Asteroid Survey Integration
+  - [ ] 40.1 Extend SurveyParser for asteroid context
+  - [ ] 40.2 Add SurveyType filter to FormSurvey
 
-- [ ] 40. Iteration 6 Checkpoint — build passes, all tests pass
+- [ ] 41. Reference Counter Expansions (Iteration 6)
+  - [ ] 41.1 Expand ColonyReferenceCounter: SupplyChainStage, WarehouseOverflowRule
+  - [ ] 41.2 Expand SurveyReferenceCounter: BuildItem.MiningSurveyUUID
+
+- [ ] 42. Iteration 6 Checkpoint
 
 ### Iteration 7: Fill-Level Automation (Stock Targets)
 
-- [ ] 41. Stock Target Services
-  - [ ] 41.1 Implement StockTargetService.CheckTargets (takes IEnumerable of StockPlan + currentPlayerUUID, OR-pool within plan, AND across plans, expand ship templates, check scoped inventory with current player's station holds)
-  - [ ] 41.2 Implement StockTargetService.GenerateReplenishmentItems (create build items in designated ReplenishmentBuildPlanUUID, avoid duplicates)
-  - [ ] 41.3 Integrate stock target cascade in BackgroundProcessor (CascadeStockTargetsDirty → CheckTargets → generate items → set CascadeResourceCheckDirty)
+- [ ] 43. Stock Target Services
+  - [ ] 43.1 Implement StockTargetService.CheckTargets (OR-pool within plan, AND across plans, expand templates)
+  - [ ] 43.2 Implement StockTargetService.GenerateReplenishmentItems
+  - [ ] 43.3 Integrate stock target cascade in BackgroundProcessor
 
-- [ ] 42. Stock Targets Form
-  - [ ] 42.1 Create FormStockTargets MDI child: Targets & Plans tab + Profiles tab
-  - [ ] 42.2 Targets & Plans tab: plan list (left) with New Plan/Quick Add/Delete, plan name + replenishment plan selector, targets grid with color-coded shortfall, add-target panel, expanded components panel
-  - [ ] 42.3 Quick Add button: creates single-target plan in one step (prompts for item, qty, scope, names plan after item)
-  - [ ] 42.4 "Check & Generate Orders" button: runs StockTargetService, displays shortfalls, creates build items in replenishment plan (prompts if no plan designated per OQ-35)
-  - [ ] 42.5 Profiles tab: profile list, entries grid (GroupID, Plan name), add-entry panel (GroupID + plan combo), logic summary label
-  - [ ] 42.6 Implement StockPlanReferenceCounter (counts StockProfileEntry.StockPlanUUID), add Refs column and delete protection
-  - [ ] 42.7 Wire events, IProgrammaticUpdateSource, NLog, PERF timing
-  - [ ] 42.8 Add "Stock Targets" to Manage menu
+- [ ] 44. Stock Targets Form
+  - [ ] 44.1 Create FormStockTargets MDI child: Targets and Plans tab + Profiles tab
+  - [ ] 44.2 Plans: IsActive checkbox, replenishment plan selector, targets grid, Quick Add
+  - [ ] 44.3 Check and Generate Orders button
+  - [ ] 44.4 Profiles tab: IsActive checkbox, entries grid, logic summary
+  - [ ] 44.5 Implement StockPlanReferenceCounter, Refs column
+  - [ ] 44.6 Wire events, NLog, PERF
+  - [ ] 44.7 Add "Stock Targets" to Manage menu
 
-- [ ] 43. Reference Counter Expansions (Iteration 7 entities)
-  - [ ] 43.1 Expand BlueprintReferenceCounter: add StockPlan.Targets[].ItemReferenceID (when ItemType=Blueprint)
-  - [ ] 43.2 Expand ColonyReferenceCounter: add StockPlan.Targets[].LocationUUID (when Scope=Colony)
-  - [ ] 43.3 Expand ShipTemplateReferenceCounter: add StockPlan.Targets[].ShipTemplateUUID
+- [ ] 45. Reference Counter Expansions (Iteration 7)
+  - [ ] 45.1 Expand BlueprintReferenceCounter: StockPlan targets
+  - [ ] 45.2 Expand ColonyReferenceCounter: StockPlan target LocationUUID
+  - [ ] 45.3 Expand ShipTemplateReferenceCounter: StockPlan targets
 
-- [ ] 44. Iteration 7 Tests
-  - [ ] 44.1 Property test: stock target shortfall computation with OR/AND pooling and per-player station holds (P7)
-  - [ ] 44.2 Unit tests: StockTargetService with mixed scopes, ship template expansion, OR-pool within plan, AND across plans, StockPlanReferenceCounter
+- [ ] 46. Iteration 7 Tests
+  - [ ] 46.1 Property test: P7 (stock target shortfall with OR/AND)
+  - [ ] 46.2 Unit tests: StockTargetService, StockPlanReferenceCounter
 
-- [ ] 45. Iteration 7 Checkpoint — build passes, all tests pass
+- [ ] 47. Iteration 7 Checkpoint
 
 ### Iteration 8: Delivery Auto-Fill Time Horizon
 
-- [ ] 46. Time Horizon Filter
-  - [ ] 46.1 Add time horizon parameter to flatpack auto-fill (only include structures expected to be built within window)
-  - [ ] 46.2 Add time horizon input to FormAutoFill dialog
-  - [ ] 46.3 Update AutoFillFlatpacks to filter by build completion time
-  - [ ] 46.4 Persist time horizon as a preference (carries across sessions)
+- [ ] 48. Time Horizon Filter
+  - [ ] 48.1 Add time horizon parameter to flatpack auto-fill
+  - [ ] 48.2 Add time horizon input to FormAutoFill dialog
+  - [ ] 48.3 Update AutoFillFlatpacks to filter by build completion time
+  - [ ] 48.4 Persist time horizon as a preference
 
-- [ ] 47. Iteration 8 Checkpoint — build passes, all tests pass
+- [ ] 49. Iteration 8 Checkpoint
 
 ### Final
 
-- [ ] 48. Final Integration
-  - [ ] 48.1 Full test suite passes (all property tests + all unit tests)
-  - [ ] 48.2 Verify all reference counters are wired to their forms with Refs columns and delete protection
-  - [ ] 48.3 Verify all forms have NLog, PERF timing, IProgrammaticUpdateSource, event subscribe/unsubscribe, BeginInvoke
+- [ ] 50. Final Integration
+  - [ ] 50.1 Full test suite passes
+  - [ ] 50.2 Verify all reference counters wired with Refs columns and delete protection
+  - [ ] 50.3 Verify all forms have NLog, PERF, IProgrammaticUpdateSource, events, BeginInvoke
+  - [ ] 50.4 Verify all IsActive toggles work with gray italic styling
+  - [ ] 50.5 Verify all inventory grids have editable Condition/MaxRepair columns
 
 ## Notes
 
-- Data model is built entirely in Iteration 1 to avoid refactoring. All models include fields for later iterations with empty defaults (omitted from JSON via DefaultValueHandling.Ignore).
-- Iterations can be reordered based on priorities — the data model supports all from the start.
-- Each iteration follows the pattern: models → services → forms → tests → checkpoint.
-- New entity lists use List<T> (not BindingList<T>). Thread safety via PlayerContext._listLock.
-- Lock ordering: _listLock → ColonyLock → _syncRoot. Events fired outside all locks.
-- Deterministic UUIDs for shared game-world entities (Station, Asteroid, Faction, ExternalCharacter). Random UUIDs for player-specific entities.
-- All new services must follow the Service Implementation Checklist (9 points) from the design.
-- All new forms must follow the Form Implementation Checklist (10 points) from the design.
-- Cascade status advancement uses max(currentStatus, computedStatus) — never decreases ordinal (OQ-34).
-- Station Components tab deferred until game releases build package properties (OQ-37).
-- Resource checks include current player's station holds on the delivery route (OQ-40).
-- All stock targets live inside StockPlans — no standalone targets (OQ-30). Simple targets are single-target plans.
+- Data model built entirely in Iteration 1 to avoid refactoring. All models include fields for later iterations with empty defaults.
+- BuildItem uses BuildLocationType + BuildLocationUUID (not ColonyUUID) to support future factory ships.
+- DestinationType includes Ship for future factory ship manufacturing/refining/research.
+- IsActive flag on BuildPlan, StockPlan, StockProfile, SupplyChain, WarehouseOverflowRule for pause/resume.
+- Damage tracking (CurrentHP/MaxHP/MaxRepairPercent) on ShipComponentSlot, Ship hull, Station hull, Item, MarketListing, MarketTransaction.
+- MarketTransaction snapshots CounterpartyFaction and condition at time of recording.
+- RouteStop has Purpose (Cargo/Refuel/CargoAndRefuel) and FuelEstimate for future fuel modeling.
+- SupplyChainStageType uses PickUp (not Collect) for consistency with delivery terminology.
+- Consolidated delivery generation (Flow 17) supports multi-plan resource and flatpack deliveries.
+- Colony admin tab "Generate Build Plan" button creates build items from unstaged structures (Flow 16).
+- Persistence Evolution: Func delegates on services, UUID references, separable historical data.
+- Shared Faction Database readiness: no singleton access in services, abstractable events, deterministic UUIDs.
+- Code Quality Standards: XML docs, null safety, 80-line method limit, naming conventions, defensive coding, test coverage.
+- All new services follow the Service Implementation Checklist (9 points).
+- All new forms follow the Form Implementation Checklist (10 points).
