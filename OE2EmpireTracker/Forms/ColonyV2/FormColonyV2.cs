@@ -1219,6 +1219,130 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -------------------------------------------------------------------
+        // Generate Build Plan (11.1, 11.2, 11.3)
+        // -------------------------------------------------------------------
+
+        private void cmdGenerateBuildPlan_Click(object sender, EventArgs e)
+        {
+            if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID))
+            {
+                MessageBox.Show("Select a colony first.", "No Colony",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Log.Info("cmdGenerateBuildPlan_Click: colony={0} uuid={1}",
+                selectedColony.ColonyName ?? selectedColony.PlanetName, selectedColony.UUID);
+
+            // Show plan picker dialog
+            BuildPlan targetPlan = ShowBuildPlanPickerDialog();
+            if (targetPlan == null) return;
+
+            int added = BuildPlanService.GenerateColonyBuildItems(
+                selectedColony, targetPlan, playerContext.FindBlueprint);
+
+            Log.Info("cmdGenerateBuildPlan_Click: {0} items added to plan '{1}'",
+                added, targetPlan.Name);
+
+            // Persist new/updated plan
+            if (!playerContext.BuildPlanList.Contains(targetPlan))
+                playerContext.BuildPlanList.Add(targetPlan);
+            playerContext.WriteContext();
+            playerContext.OnBuildPlanDataChanged(targetPlan.UUID);
+
+            MessageBox.Show(
+                string.Format("{0} flatpack build items added to plan '{1}'.", added, targetPlan.Name),
+                "Build Plan Generated",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+
+        /// <summary>
+        /// Shows a dialog letting the user create a new build plan or pick an existing one.
+        /// Returns the selected/created BuildPlan, or null if cancelled.
+        /// </summary>
+        private BuildPlan ShowBuildPlanPickerDialog()
+        {
+            var existingPlans = playerContext.GetCurrentPlayerBuildPlans();
+
+            using (var form = new Form())
+            {
+                form.Text = "Generate Build Plan";
+                form.ClientSize = new Size(400, 180);
+                form.FormBorderStyle = FormBorderStyle.FixedDialog;
+                form.StartPosition = FormStartPosition.CenterParent;
+                form.MaximizeBox = false;
+                form.MinimizeBox = false;
+
+                var rbNew = new RadioButton
+                {
+                    Text = "Create new plan",
+                    Left = 15, Top = 15, Width = 360,
+                    Checked = true
+                };
+                var rbExisting = new RadioButton
+                {
+                    Text = "Add to existing plan",
+                    Left = 15, Top = 40, Width = 360
+                };
+                var cmbPlans = new ComboBox
+                {
+                    Left = 35, Top = 65, Width = 340,
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Enabled = false
+                };
+
+                foreach (var plan in existingPlans)
+                    cmbPlans.Items.Add(plan);
+                cmbPlans.DisplayMember = "Name";
+                if (cmbPlans.Items.Count > 0)
+                    cmbPlans.SelectedIndex = 0;
+
+                // Disable existing option if no plans exist
+                if (existingPlans.Count == 0)
+                    rbExisting.Enabled = false;
+
+                rbNew.CheckedChanged += (s, ev) => { cmbPlans.Enabled = !rbNew.Checked; };
+                rbExisting.CheckedChanged += (s, ev) => { cmbPlans.Enabled = rbExisting.Checked; };
+
+                var btnOk = new Button
+                {
+                    Text = "OK", Left = 210, Top = 110, Width = 75,
+                    DialogResult = DialogResult.OK
+                };
+                var btnCancel = new Button
+                {
+                    Text = "Cancel", Left = 295, Top = 110, Width = 75,
+                    DialogResult = DialogResult.Cancel
+                };
+
+                form.Controls.AddRange(new Control[] { rbNew, rbExisting, cmbPlans, btnOk, btnCancel });
+                form.AcceptButton = btnOk;
+                form.CancelButton = btnCancel;
+
+                if (form.ShowDialog(this) != DialogResult.OK)
+                    return null;
+
+                if (rbNew.Checked)
+                {
+                    string planName = string.Format("{0} - Build Plan",
+                        selectedColony.ColonyName ?? selectedColony.PlanetName ?? "Colony");
+                    return new BuildPlan
+                    {
+                        UUID = Guid.NewGuid().ToString(),
+                        Name = planName,
+                        OwnerUUID = playerContext.CurrentPlayerUUID,
+                        IsActive = true
+                    };
+                }
+                else
+                {
+                    return cmbPlans.SelectedItem as BuildPlan;
+                }
+            }
+        }
+
+        // -------------------------------------------------------------------
         // Tab Warning Indicators (11.4)
         // -------------------------------------------------------------------
 

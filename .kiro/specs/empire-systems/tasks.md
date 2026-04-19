@@ -100,10 +100,10 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 10.10 Implement BuildPlanReferenceCounter (counts StockPlan.ReplenishmentBuildPlanUUID), add Refs column
   - [x] 10.11 Add "Build Planner" to Manage menu
 
-- [ ] 11. Colony Admin Tab Integration
-  - [ ] 11.1 Add "Generate Build Plan" button to colony Administration tab
-  - [ ] 11.2 Implement plan picker dialog (new or existing plan)
-  - [ ] 11.3 Wire to BuildPlanService.GenerateColonyBuildItems
+- [-] 11. Colony Admin Tab Integration
+  - [x] 11.1 Add "Generate Build Plan" button to colony Administration tab
+  - [x] 11.2 Implement plan picker dialog (new or existing plan)
+  - [x] 11.3 Wire to BuildPlanService.GenerateColonyBuildItems
 
 - [ ] 12. Cascade Processing
   - [ ] 12.1 Extend BackgroundProcessor: CascadeStockTargetsDirty and CascadeResourceCheckDirty

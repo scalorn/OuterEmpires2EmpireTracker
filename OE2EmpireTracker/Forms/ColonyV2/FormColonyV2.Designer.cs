@@ -88,6 +88,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpAdminCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdBootstrap = new System.Windows.Forms.Button();
             this.cmdOptimize = new System.Windows.Forms.Button();
+            this.cmdGenerateBuildPlan = new System.Windows.Forms.Button();
             this.components = new System.ComponentModel.Container();
             this.timerAdminRefresh = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
@@ -431,6 +432,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // 
             this.flpAdminCommands.Controls.Add(this.cmdBootstrap);
             this.flpAdminCommands.Controls.Add(this.cmdOptimize);
+            this.flpAdminCommands.Controls.Add(this.cmdGenerateBuildPlan);
             this.flpAdminCommands.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flpAdminCommands.Location = new System.Drawing.Point(2, 293);
             this.flpAdminCommands.Margin = new System.Windows.Forms.Padding(2);
@@ -460,6 +462,17 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmdOptimize.Text = "Optimize Build Order";
             this.cmdOptimize.UseVisualStyleBackColor = true;
             this.cmdOptimize.Click += new System.EventHandler(this.cmdOptimize_Click);
+            // 
+            // cmdGenerateBuildPlan
+            // 
+            this.cmdGenerateBuildPlan.AutoSize = true;
+            this.cmdGenerateBuildPlan.Location = new System.Drawing.Point(256, 3);
+            this.cmdGenerateBuildPlan.Name = "cmdGenerateBuildPlan";
+            this.cmdGenerateBuildPlan.Size = new System.Drawing.Size(120, 23);
+            this.cmdGenerateBuildPlan.TabIndex = 2;
+            this.cmdGenerateBuildPlan.Text = "Generate Build Plan";
+            this.cmdGenerateBuildPlan.UseVisualStyleBackColor = true;
+            this.cmdGenerateBuildPlan.Click += new System.EventHandler(this.cmdGenerateBuildPlan_Click);
             // 
             // timerAdminRefresh
             // 
@@ -870,6 +883,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private System.Windows.Forms.FlowLayoutPanel flpAdminCommands;
         private System.Windows.Forms.Button cmdBootstrap;
         private System.Windows.Forms.Button cmdOptimize;
+        private System.Windows.Forms.Button cmdGenerateBuildPlan;
         private System.Windows.Forms.Timer timerAdminRefresh;
     }
 }
