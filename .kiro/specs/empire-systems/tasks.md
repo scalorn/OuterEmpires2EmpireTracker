@@ -94,8 +94,8 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 10.4 Resource shortfall display panel
   - [x] 10.5 Generate Delivery dropdown: Resource (This Plan), Consolidated Resource, Flatpack Delivery
   - [x] 10.6 Auto-Assign button
-  - [-] 10.7 IsActive checkbox with gray italic styling for inactive plans
-  - [ ] 10.8 Wire events with BeginInvoke
+  - [x] 10.7 IsActive checkbox with gray italic styling for inactive plans
+  - [-] 10.8 Wire events with BeginInvoke
   - [ ] 10.9 Build item status display with color coding
   - [ ] 10.10 Implement BuildPlanReferenceCounter (counts StockPlan.ReplenishmentBuildPlanUUID), add Refs column
   - [ ] 10.11 Add "Build Planner" to Manage menu

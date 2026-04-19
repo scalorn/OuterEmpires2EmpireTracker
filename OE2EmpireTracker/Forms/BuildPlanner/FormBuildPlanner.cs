@@ -100,6 +100,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.BuildPlanDataChanged += OnBuildPlanDataChanged;
+            playerContext.ColonyDataChanged += OnColonyDataChanged;
         }
 
         // -----------------------------------------------------------------------
@@ -1264,10 +1265,28 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
         }
 
+        private void OnColonyDataChanged(object sender, ColonyDataChangedEventArgs e)
+        {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => OnColonyDataChanged(sender, e))); }
+                catch (ObjectDisposedException) { }
+                return;
+            }
+
+            // Refresh shortfall display if a colony changed that affects the selected item
+            if (_selectedPlan != null)
+            {
+                PopulateShortfallGrid();
+            }
+        }
+
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.BuildPlanDataChanged -= OnBuildPlanDataChanged;
+            playerContext.ColonyDataChanged -= OnColonyDataChanged;
             base.OnFormClosed(e);
         }
     }
