@@ -44,6 +44,24 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.colLocation = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colNotes = new System.Windows.Forms.DataGridViewTextBoxColumn();
 
+            this.flpAddItem = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblAddItemHeader = new System.Windows.Forms.Label();
+            this.flpAddItemRow1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblItemType = new System.Windows.Forms.Label();
+            this.cmbItemType = new System.Windows.Forms.ComboBox();
+            this.lblItemFilter = new System.Windows.Forms.Label();
+            this.txtItemFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.lblItem = new System.Windows.Forms.Label();
+            this.cmbItem = new System.Windows.Forms.ComboBox();
+            this.flpAddItemRow2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblQuantity = new System.Windows.Forms.Label();
+            this.txtQuantity = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.lblRecipient = new System.Windows.Forms.Label();
+            this.txtRecipient = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.flpAddItemRow3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdAddItem = new System.Windows.Forms.Button();
+            this.cmdQueueCalc = new System.Windows.Forms.Button();
+
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
             this.flpPlanFilter.SuspendLayout();
@@ -52,6 +70,10 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpPlanName.SuspendLayout();
             this.flpDescription.SuspendLayout();
             this.flpIsActive.SuspendLayout();
+            this.flpAddItem.SuspendLayout();
+            this.flpAddItemRow1.SuspendLayout();
+            this.flpAddItemRow2.SuspendLayout();
+            this.flpAddItemRow3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBuildItems)).BeginInit();
             this.SuspendLayout();
             // 
@@ -144,6 +166,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpDetail.Controls.Add(this.flpIsActive);
             this.flpDetail.Controls.Add(this.cmdSave);
             this.flpDetail.Controls.Add(this.dgvBuildItems);
+            this.flpDetail.Controls.Add(this.flpAddItem);
             this.flpDetail.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpDetail.Location = new System.Drawing.Point(229, 3);
             this.flpDetail.Name = "flpDetail";
@@ -287,6 +310,157 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.colNotes.ReadOnly = true;
             this.colNotes.Width = 200;
             // 
+            // flpAddItem
+            // 
+            this.flpAddItem.Controls.Add(this.lblAddItemHeader);
+            this.flpAddItem.Controls.Add(this.flpAddItemRow1);
+            this.flpAddItem.Controls.Add(this.flpAddItemRow2);
+            this.flpAddItem.Controls.Add(this.flpAddItemRow3);
+            this.flpAddItem.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpAddItem.Location = new System.Drawing.Point(3, 591);
+            this.flpAddItem.Name = "flpAddItem";
+            this.flpAddItem.Size = new System.Drawing.Size(662, 100);
+            this.flpAddItem.WrapContents = false;
+            // 
+            // lblAddItemHeader
+            // 
+            this.lblAddItemHeader.AutoSize = true;
+            this.lblAddItemHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
+            this.lblAddItemHeader.Location = new System.Drawing.Point(3, 0);
+            this.lblAddItemHeader.Name = "lblAddItemHeader";
+            this.lblAddItemHeader.Size = new System.Drawing.Size(60, 13);
+            this.lblAddItemHeader.Text = "Add Item:";
+            // 
+            // flpAddItemRow1
+            // 
+            this.flpAddItemRow1.AutoSize = true;
+            this.flpAddItemRow1.Controls.Add(this.lblItemType);
+            this.flpAddItemRow1.Controls.Add(this.cmbItemType);
+            this.flpAddItemRow1.Controls.Add(this.lblItemFilter);
+            this.flpAddItemRow1.Controls.Add(this.txtItemFilter);
+            this.flpAddItemRow1.Controls.Add(this.lblItem);
+            this.flpAddItemRow1.Controls.Add(this.cmbItem);
+            this.flpAddItemRow1.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
+            this.flpAddItemRow1.Location = new System.Drawing.Point(3, 16);
+            this.flpAddItemRow1.Name = "flpAddItemRow1";
+            this.flpAddItemRow1.Size = new System.Drawing.Size(656, 26);
+            // 
+            // lblItemType
+            // 
+            this.lblItemType.AutoSize = true;
+            this.lblItemType.Location = new System.Drawing.Point(3, 5);
+            this.lblItemType.Name = "lblItemType";
+            this.lblItemType.Size = new System.Drawing.Size(34, 13);
+            this.lblItemType.Text = "Type:";
+            this.lblItemType.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            // 
+            // cmbItemType
+            // 
+            this.cmbItemType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbItemType.Location = new System.Drawing.Point(43, 3);
+            this.cmbItemType.Name = "cmbItemType";
+            this.cmbItemType.Size = new System.Drawing.Size(120, 21);
+            // 
+            // lblItemFilter
+            // 
+            this.lblItemFilter.AutoSize = true;
+            this.lblItemFilter.Location = new System.Drawing.Point(169, 5);
+            this.lblItemFilter.Name = "lblItemFilter";
+            this.lblItemFilter.Size = new System.Drawing.Size(32, 13);
+            this.lblItemFilter.Text = "Filter:";
+            this.lblItemFilter.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            // 
+            // txtItemFilter
+            // 
+            this.txtItemFilter.Location = new System.Drawing.Point(207, 3);
+            this.txtItemFilter.Name = "txtItemFilter";
+            this.txtItemFilter.Size = new System.Drawing.Size(120, 20);
+            // 
+            // lblItem
+            // 
+            this.lblItem.AutoSize = true;
+            this.lblItem.Location = new System.Drawing.Point(333, 5);
+            this.lblItem.Name = "lblItem";
+            this.lblItem.Size = new System.Drawing.Size(30, 13);
+            this.lblItem.Text = "Item:";
+            this.lblItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            // 
+            // cmbItem
+            // 
+            this.cmbItem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbItem.Location = new System.Drawing.Point(369, 3);
+            this.cmbItem.Name = "cmbItem";
+            this.cmbItem.Size = new System.Drawing.Size(280, 21);
+            // 
+            // flpAddItemRow2
+            // 
+            this.flpAddItemRow2.AutoSize = true;
+            this.flpAddItemRow2.Controls.Add(this.lblQuantity);
+            this.flpAddItemRow2.Controls.Add(this.txtQuantity);
+            this.flpAddItemRow2.Controls.Add(this.lblRecipient);
+            this.flpAddItemRow2.Controls.Add(this.txtRecipient);
+            this.flpAddItemRow2.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
+            this.flpAddItemRow2.Location = new System.Drawing.Point(3, 48);
+            this.flpAddItemRow2.Name = "flpAddItemRow2";
+            this.flpAddItemRow2.Size = new System.Drawing.Size(656, 26);
+            // 
+            // lblQuantity
+            // 
+            this.lblQuantity.AutoSize = true;
+            this.lblQuantity.Location = new System.Drawing.Point(3, 5);
+            this.lblQuantity.Name = "lblQuantity";
+            this.lblQuantity.Size = new System.Drawing.Size(26, 13);
+            this.lblQuantity.Text = "Qty:";
+            this.lblQuantity.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            // 
+            // txtQuantity
+            // 
+            this.txtQuantity.Location = new System.Drawing.Point(35, 3);
+            this.txtQuantity.Name = "txtQuantity";
+            this.txtQuantity.Size = new System.Drawing.Size(60, 20);
+            this.txtQuantity.Text = "1";
+            // 
+            // lblRecipient
+            // 
+            this.lblRecipient.AutoSize = true;
+            this.lblRecipient.Location = new System.Drawing.Point(101, 5);
+            this.lblRecipient.Name = "lblRecipient";
+            this.lblRecipient.Size = new System.Drawing.Size(55, 13);
+            this.lblRecipient.Text = "Recipient:";
+            this.lblRecipient.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            // 
+            // txtRecipient
+            // 
+            this.txtRecipient.Location = new System.Drawing.Point(162, 3);
+            this.txtRecipient.Name = "txtRecipient";
+            this.txtRecipient.Size = new System.Drawing.Size(150, 20);
+            // 
+            // flpAddItemRow3
+            // 
+            this.flpAddItemRow3.AutoSize = true;
+            this.flpAddItemRow3.Controls.Add(this.cmdAddItem);
+            this.flpAddItemRow3.Controls.Add(this.cmdQueueCalc);
+            this.flpAddItemRow3.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
+            this.flpAddItemRow3.Location = new System.Drawing.Point(3, 80);
+            this.flpAddItemRow3.Name = "flpAddItemRow3";
+            this.flpAddItemRow3.Size = new System.Drawing.Size(656, 29);
+            // 
+            // cmdAddItem
+            // 
+            this.cmdAddItem.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddItem.Name = "cmdAddItem";
+            this.cmdAddItem.Size = new System.Drawing.Size(75, 23);
+            this.cmdAddItem.Text = "Add Item";
+            this.cmdAddItem.UseVisualStyleBackColor = true;
+            // 
+            // cmdQueueCalc
+            // 
+            this.cmdQueueCalc.Location = new System.Drawing.Point(84, 3);
+            this.cmdQueueCalc.Name = "cmdQueueCalc";
+            this.cmdQueueCalc.Size = new System.Drawing.Size(85, 23);
+            this.cmdQueueCalc.Text = "Queue Calc";
+            this.cmdQueueCalc.UseVisualStyleBackColor = true;
+            // 
             // FormBuildPlanner
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -309,6 +483,14 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpDescription.PerformLayout();
             this.flpIsActive.ResumeLayout(false);
             this.flpIsActive.PerformLayout();
+            this.flpAddItem.ResumeLayout(false);
+            this.flpAddItem.PerformLayout();
+            this.flpAddItemRow1.ResumeLayout(false);
+            this.flpAddItemRow1.PerformLayout();
+            this.flpAddItemRow2.ResumeLayout(false);
+            this.flpAddItemRow2.PerformLayout();
+            this.flpAddItemRow3.ResumeLayout(false);
+            this.flpAddItemRow3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBuildItems)).EndInit();
             this.ResumeLayout(false);
         }
@@ -341,5 +523,22 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private System.Windows.Forms.DataGridViewTextBoxColumn colStatus;
         private System.Windows.Forms.DataGridViewTextBoxColumn colLocation;
         private System.Windows.Forms.DataGridViewTextBoxColumn colNotes;
+        private System.Windows.Forms.FlowLayoutPanel flpAddItem;
+        private System.Windows.Forms.Label lblAddItemHeader;
+        private System.Windows.Forms.FlowLayoutPanel flpAddItemRow1;
+        private System.Windows.Forms.Label lblItemType;
+        private System.Windows.Forms.ComboBox cmbItemType;
+        private System.Windows.Forms.Label lblItemFilter;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtItemFilter;
+        private System.Windows.Forms.Label lblItem;
+        private System.Windows.Forms.ComboBox cmbItem;
+        private System.Windows.Forms.FlowLayoutPanel flpAddItemRow2;
+        private System.Windows.Forms.Label lblQuantity;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtQuantity;
+        private System.Windows.Forms.Label lblRecipient;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtRecipient;
+        private System.Windows.Forms.FlowLayoutPanel flpAddItemRow3;
+        private System.Windows.Forms.Button cmdAddItem;
+        private System.Windows.Forms.Button cmdQueueCalc;
     }
 }

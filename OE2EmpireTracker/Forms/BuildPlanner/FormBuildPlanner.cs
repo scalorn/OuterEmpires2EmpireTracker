@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using NLog;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Forms.BuildPlanner
@@ -52,6 +54,14 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             cmdDelete.Click += cmdDelete_Click;
             cmdSave.Click += cmdSave_Click;
 
+            // Add Item panel wiring
+            cmbItemType.Items.AddRange(new object[] { "Manufactory", "Commodity" });
+            cmbItemType.SelectedIndex = 0;
+            cmbItemType.SelectedIndexChanged += cmbItemType_SelectedIndexChanged;
+            txtItemFilter.TextChanged += txtItemFilter_TextChanged;
+            cmdAddItem.Click += cmdAddItem_Click;
+            cmdQueueCalc.Click += cmdQueueCalc_Click;
+
             PopulatePlanList();
             ClearForm();
 
@@ -88,10 +98,12 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         {
             int w = flpDetail.ClientSize.Width;
             int h = flpDetail.ClientSize.Height;
+            int addItemHeight = flpAddItem.Height;
             int gridHeight = h - flpPlanName.Height - flpDescription.Height
-                - flpIsActive.Height - cmdSave.Height - 30;
+                - flpIsActive.Height - cmdSave.Height - addItemHeight - 36;
             if (gridHeight < 50) gridHeight = 50;
             dgvBuildItems.Size = new System.Drawing.Size(w - 6, gridHeight);
+            flpAddItem.Size = new System.Drawing.Size(w - 6, addItemHeight);
         }
 
         // -----------------------------------------------------------------------
@@ -183,6 +195,13 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             chkIsActive.Enabled = enabled;
             cmdSave.Enabled = enabled;
             dgvBuildItems.Enabled = enabled;
+            cmbItemType.Enabled = enabled;
+            txtItemFilter.Enabled = enabled;
+            cmbItem.Enabled = enabled;
+            txtQuantity.Enabled = enabled;
+            txtRecipient.Enabled = enabled;
+            cmdAddItem.Enabled = enabled;
+            cmdQueueCalc.Enabled = enabled;
         }
 
         private void PopulateBuildItemsGrid()
@@ -298,6 +317,232 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         {
             if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
             _selectedPlan.IsActive = chkIsActive.Checked;
+        }
+
+        // -----------------------------------------------------------------------
+        // Add Item Panel
+        // -----------------------------------------------------------------------
+
+        private void cmbItemType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            PopulateItemCombo();
+        }
+
+        private void txtItemFilter_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            PopulateItemCombo();
+        }
+
+        private void PopulateItemCombo()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            cmbItem.Items.Clear();
+
+            string filter = txtItemFilter.Text.Trim();
+            string itemType = cmbItemType.SelectedItem as string ?? "";
+
+            if (itemType == "Manufactory")
+            {
+                var blueprints = playerContext.GetAllBlueprints()
+                    .Where(bp => bp.UUID != null && !bp.BluePrintType.IsFlatpack())
+                    .Where(bp =>
+                    {
+                        bool canMfg = true;
+                        bp.Properties?.getBoolean("Can Manufacture", true, out canMfg);
+                        return canMfg;
+                    });
+
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    blueprints = blueprints.Where(bp =>
+                        bp.ExtendedName.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0);
+                }
+
+                foreach (var bp in blueprints.OrderBy(bp => bp.ExtendedName))
+                {
+                    cmbItem.Items.Add(new ItemEntry { Display = bp.ExtendedName, ID = bp.UUID });
+                }
+            }
+            else if (itemType == "Commodity")
+            {
+                var commodityNames = Commodity.ResourceMapByString.Keys.AsEnumerable();
+
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    commodityNames = commodityNames.Where(n =>
+                        n.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0);
+                }
+
+                foreach (var name in commodityNames.OrderBy(n => n))
+                {
+                    cmbItem.Items.Add(new ItemEntry { Display = name, ID = name });
+                }
+            }
+
+            if (cmbItem.Items.Count > 0)
+                cmbItem.SelectedIndex = 0;
+        }
+
+        private void cmdAddItem_Click(object sender, EventArgs e)
+        {
+            if (_selectedPlan == null)
+            {
+                MessageBox.Show("Select a build plan first.", "Add Item",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string itemType = cmbItemType.SelectedItem as string ?? "";
+            var selectedEntry = cmbItem.SelectedItem as ItemEntry;
+            if (selectedEntry == null)
+            {
+                MessageBox.Show("Select an item.", "Add Item",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!int.TryParse(txtQuantity.Text.Trim(), out int quantity) || quantity < 1)
+            {
+                MessageBox.Show("Quantity must be a positive integer.", "Add Item",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var buildItem = new BuildItem
+            {
+                UUID = Guid.NewGuid().ToString(),
+                Status = BuildItemStatus.Staged,
+                Quantity = quantity,
+                Recipient = txtRecipient.Text.Trim()
+            };
+
+            if (itemType == "Manufactory")
+            {
+                buildItem.ItemType = BuildItemType.Manufactory;
+                buildItem.BlueprintUUID = selectedEntry.ID;
+                var bp = playerContext.GetAllBlueprints()
+                    .FirstOrDefault(b => b.UUID == selectedEntry.ID);
+                buildItem.ItemName = bp?.Name ?? selectedEntry.Display;
+            }
+            else if (itemType == "Commodity")
+            {
+                buildItem.ItemType = BuildItemType.Commodity;
+                buildItem.CommodityName = selectedEntry.ID;
+                buildItem.ItemName = selectedEntry.Display;
+            }
+
+            if (!BuildPlanService.ValidateBuildItem(buildItem))
+            {
+                MessageBox.Show("Invalid build item. Check type and selection.", "Validation",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            _selectedPlan.Items.Add(buildItem);
+            playerContext.WriteContext();
+            playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
+            PopulateBuildItemsGrid();
+            Log.Info("Added {0} item '{1}' x{2} to plan '{3}'",
+                buildItem.ItemType, buildItem.ItemName, buildItem.Quantity, _selectedPlan.Name);
+        }
+
+        private void cmdQueueCalc_Click(object sender, EventArgs e)
+        {
+            string itemType = cmbItemType.SelectedItem as string ?? "";
+            var selectedEntry = cmbItem.SelectedItem as ItemEntry;
+            if (selectedEntry == null)
+            {
+                MessageBox.Show("Select an item first.", "Queue Calc",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string input = ShowInputDialog("Enter target duration (e.g. 2d 12h 0m 0s):",
+                "Queue Calculator");
+            if (input == null) return;
+
+            if (!CountdownFormatParser.TryParse(input, out long totalSeconds) || totalSeconds <= 0)
+            {
+                MessageBox.Show("Could not parse duration. Use format like '2d 12h 0m 0s'.",
+                    "Queue Calc", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int runs;
+            if (itemType == "Manufactory")
+            {
+                var bp = playerContext.GetAllBlueprints()
+                    .FirstOrDefault(b => b.UUID == selectedEntry.ID);
+                if (bp == null)
+                {
+                    MessageBox.Show("Blueprint not found.", "Queue Calc",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                runs = QueueCalculator.ComputeManufactoryRuns(bp, (int)totalSeconds);
+                if (runs < 0)
+                {
+                    MessageBox.Show("Blueprint has no manufacturing time set.", "Queue Calc",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+            }
+            else
+            {
+                runs = QueueCalculator.ComputeCommodityRuns((int)totalSeconds);
+            }
+
+            txtQuantity.Text = runs.ToString();
+            Log.Info("Queue Calc: {0} runs for '{1}' ({2}s target)",
+                runs, selectedEntry.Display, totalSeconds);
+        }
+
+        /// <summary>
+        /// Shows a simple input dialog and returns the user's text, or null if cancelled.
+        /// </summary>
+        private static string ShowInputDialog(string prompt, string title)
+        {
+            using (var form = new Form())
+            {
+                form.Text = title;
+                form.ClientSize = new System.Drawing.Size(350, 120);
+                form.FormBorderStyle = FormBorderStyle.FixedDialog;
+                form.StartPosition = FormStartPosition.CenterParent;
+                form.MaximizeBox = false;
+                form.MinimizeBox = false;
+
+                var lbl = new Label { Text = prompt, Left = 10, Top = 10, Width = 330 };
+                var txt = new TextBox { Left = 10, Top = 35, Width = 330 };
+                var btnOk = new Button
+                {
+                    Text = "OK", Left = 180, Top = 70, Width = 75,
+                    DialogResult = DialogResult.OK
+                };
+                var btnCancel = new Button
+                {
+                    Text = "Cancel", Left = 265, Top = 70, Width = 75,
+                    DialogResult = DialogResult.Cancel
+                };
+
+                form.Controls.AddRange(new Control[] { lbl, txt, btnOk, btnCancel });
+                form.AcceptButton = btnOk;
+                form.CancelButton = btnCancel;
+
+                return form.ShowDialog() == DialogResult.OK ? txt.Text : null;
+            }
+        }
+
+        /// <summary>
+        /// Simple helper class for combo box items with a display name and ID.
+        /// </summary>
+        private class ItemEntry
+        {
+            public string Display { get; set; }
+            public string ID { get; set; }
+            public override string ToString() => Display;
         }
 
         // -----------------------------------------------------------------------

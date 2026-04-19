@@ -88,8 +88,8 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 9.5 Implement AutoAssignService (ProposeAssignments with BuildLocationType + shipFinder/stationFinder)
 
 - [-] 10. Build Planner Form
-  - [-] 10.1 Create FormBuildPlanner MDI child: plan list, plan details, build items grid (Location column)
-  - [ ] 10.2 Add Item panel with Queue Calc button
+  - [x] 10.1 Create FormBuildPlanner MDI child: plan list, plan details, build items grid (Location column)
+  - [x] 10.2 Add Item panel with Queue Calc button
   - [ ] 10.3 Structure allocation dialog (Location column, future ship/station note)
   - [ ] 10.4 Resource shortfall display panel
   - [ ] 10.5 Generate Delivery dropdown: Resource (This Plan), Consolidated Resource, Flatpack Delivery
