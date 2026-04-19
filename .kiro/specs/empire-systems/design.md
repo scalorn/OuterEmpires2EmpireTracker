@@ -3407,6 +3407,56 @@ No service or form code changes. Only the wiring in MainWindow/startup changes.
 
 This is not implemented now — it's a design guideline. The current `Func<string, T>` delegate pattern and UUID-based references are the preparation that makes the future transition mechanical rather than architectural.
 
+### Shared Faction Database (Future Vision)
+
+A faction may want a common database where all members see the same colonies, ships, stations, market data, build plans, and stock levels. This is a fundamentally different architecture from the current single-user JSON file. The following design principles should be followed now to avoid creating barriers to that future:
+
+**1. No static singleton access in services**
+
+Services already take `Func<string, T>` delegates and `IEnumerable<T>` parameters. This must remain the rule — no service should call `PlayerContext.getInstance()` or `EmpireContext.getInstance()` directly. The singleton is wired at the form/startup level only. This allows a `RemoteRepository` to be injected in place of the local singleton without touching service code.
+
+Design action: audit any new service code to ensure it takes data as parameters, not from singletons. This is already the pattern — just enforce it.
+
+**2. Data change events must be abstractable**
+
+Currently `PlayerContext` fires events like `ColonyDataChanged(colonyUUID)`. In a shared database, these become server-pushed notifications (WebSocket, SignalR, polling). The forms subscribe to the same event signatures regardless of source.
+
+Design action: forms should subscribe to events via an interface, not directly on `PlayerContext`. When we extract `IDataRepository`, it should include the event definitions. No code change now — just ensure new forms follow the existing named-method subscription pattern (not lambdas) so they can be rewired.
+
+**3. Optimistic concurrency on writes**
+
+The current write-through pattern assumes no conflicts — the user is the only writer. A shared database has multiple writers. The data model should support a version or timestamp field for conflict detection.
+
+Design action: add a `DataVersion` (int) field to entities that would be shared and concurrently edited. This is already present on `PlayerRoot` for file-level versioning. For entity-level concurrency, the pattern would be: read entity with version → modify → write with "update where version = N" → if conflict, reload and retry or notify user.
+
+No field additions now — this is a future concern. The important thing is that the current design doesn't create patterns that make optimistic concurrency impossible (e.g. no multi-step read-modify-write without a clear transaction boundary).
+
+**4. Ownership model supports sharing**
+
+The current `OwnerUUID` pattern scopes data to one player. In a shared faction database:
+- Colonies, ships, stations: owned by one player but visible to all faction members
+- Build plans, stock plans: could be faction-wide or player-specific
+- Market transactions: visible to all (they're at shared stations)
+- Blueprints: some shared (faction library), some private
+
+Design action: the `OwnerUUID` field already supports this — a query for "all faction data" is just "all entities where OwnerUUID is in the set of faction member UUIDs." No model change needed. The UI filtering (currently `GetCurrentPlayerColonies()`) would become `GetFactionColonies()` with a broader UUID set.
+
+**5. Deterministic UUIDs enable cross-client dedup**
+
+Stations, factions, external characters, and asteroids already use deterministic UUIDs (from name or name+system). This means two faction members who both add "Station Alpha" get the same UUID — no duplicates in the shared database. This pattern is critical for shared data and must be preserved.
+
+**6. Snapshot fields reduce join complexity**
+
+The snapshot pattern on `MarketTransaction` (CounterpartyFaction, condition fields, ItemName) means historical queries don't need to join against live entity tables. This is important for a shared database where the live data may be modified by other users between the time a transaction was recorded and when it's queried. Keep snapshotting denormalized data on historical records.
+
+**Summary of design rules for shared-database readiness:**
+- Services: parameters only, no singleton access
+- Events: named methods, subscribable via interface
+- UUIDs: deterministic where entities are shared, random where player-specific
+- Snapshots: denormalize historical records (don't rely on joins to live data)
+- Ownership: OwnerUUID already supports faction-wide queries
+- No new patterns that assume single-writer (avoid read-modify-write without clear boundaries)
+
 ## Cross-Cutting Implementation Requirements
 
 These requirements apply to ALL new services, forms, and background processing code. They codify patterns established during the colony form optimization that must be followed consistently across the empire systems implementation.
