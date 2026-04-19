@@ -29,6 +29,19 @@ namespace OE2EmpireTracker.Services
         private Dictionary<string, Colony> _colonyCache;
         private List<Blueprint> _allBlueprintsCache;
 
+        private Dictionary<string, Station> _stationCache;
+        private Dictionary<string, ShipTemplate> _shipTemplateCache;
+        private Dictionary<string, Ship> _shipCache;
+        private Dictionary<string, BuildPlan> _buildPlanCache;
+        private Dictionary<string, Asteroid> _asteroidCache;
+        private Dictionary<string, Faction> _factionCache;
+        private Dictionary<string, MarketListing> _marketListingCache;
+
+        private Dictionary<string, int> _blueprintTypeCountCache;
+
+        private Dictionary<string, List<BuildItem>> _blueprintBuildItemIndex;
+        private Dictionary<string, List<BuildItem>> _buildLocationBuildItemIndex;
+
         /// <summary>
         /// Runtime flag: set when stock targets need recalculation after a data change.
         /// Not serialized.
@@ -565,6 +578,243 @@ namespace OE2EmpireTracker.Services
         public void InvalidateColonyCache()
         {
             lock (_listLock) { _colonyCache = null; }
+        }
+
+        /// <summary>
+        /// Finds a Station by UUID using a dictionary cache for O(1) lookup.
+        /// </summary>
+        public Station FindStation(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_stationCache == null)
+                {
+                    _stationCache = new Dictionary<string, Station>();
+                    foreach (var s in StationList)
+                        if (s.UUID != null && !_stationCache.ContainsKey(s.UUID))
+                            _stationCache[s.UUID] = s;
+                }
+                _stationCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidateStationCache() { lock (_listLock) { _stationCache = null; } }
+
+        /// <summary>
+        /// Finds a ShipTemplate by UUID using a dictionary cache for O(1) lookup.
+        /// </summary>
+        public ShipTemplate FindShipTemplate(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_shipTemplateCache == null)
+                {
+                    _shipTemplateCache = new Dictionary<string, ShipTemplate>();
+                    foreach (var st in ShipTemplateList)
+                        if (st.UUID != null && !_shipTemplateCache.ContainsKey(st.UUID))
+                            _shipTemplateCache[st.UUID] = st;
+                }
+                _shipTemplateCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidateShipTemplateCache() { lock (_listLock) { _shipTemplateCache = null; } }
+
+        /// <summary>
+        /// Finds a Ship by UUID using a dictionary cache for O(1) lookup.
+        /// </summary>
+        public Ship FindShip(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_shipCache == null)
+                {
+                    _shipCache = new Dictionary<string, Ship>();
+                    foreach (var s in ShipList)
+                        if (s.UUID != null && !_shipCache.ContainsKey(s.UUID))
+                            _shipCache[s.UUID] = s;
+                }
+                _shipCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidateShipCache() { lock (_listLock) { _shipCache = null; } }
+
+        /// <summary>
+        /// Finds a BuildPlan by UUID using a dictionary cache for O(1) lookup.
+        /// </summary>
+        public BuildPlan FindBuildPlan(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_buildPlanCache == null)
+                {
+                    _buildPlanCache = new Dictionary<string, BuildPlan>();
+                    foreach (var bp in BuildPlanList)
+                        if (bp.UUID != null && !_buildPlanCache.ContainsKey(bp.UUID))
+                            _buildPlanCache[bp.UUID] = bp;
+                }
+                _buildPlanCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidateBuildPlanCache() { lock (_listLock) { _buildPlanCache = null; } }
+
+        /// <summary>
+        /// Finds an Asteroid by UUID using a dictionary cache for O(1) lookup.
+        /// </summary>
+        public Asteroid FindAsteroid(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_asteroidCache == null)
+                {
+                    _asteroidCache = new Dictionary<string, Asteroid>();
+                    foreach (var a in AsteroidList)
+                        if (a.UUID != null && !_asteroidCache.ContainsKey(a.UUID))
+                            _asteroidCache[a.UUID] = a;
+                }
+                _asteroidCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidateAsteroidCache() { lock (_listLock) { _asteroidCache = null; } }
+
+        /// <summary>
+        /// Finds a Faction by UUID using a dictionary cache for O(1) lookup.
+        /// </summary>
+        public Faction FindFaction(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_factionCache == null)
+                {
+                    _factionCache = new Dictionary<string, Faction>();
+                    foreach (var f in FactionList)
+                        if (f.UUID != null && !_factionCache.ContainsKey(f.UUID))
+                            _factionCache[f.UUID] = f;
+                }
+                _factionCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidateFactionCache() { lock (_listLock) { _factionCache = null; } }
+
+        /// <summary>
+        /// Finds a MarketListing by UUID using a dictionary cache for O(1) lookup.
+        /// </summary>
+        public MarketListing FindMarketListing(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_marketListingCache == null)
+                {
+                    _marketListingCache = new Dictionary<string, MarketListing>();
+                    foreach (var ml in MarketListingList)
+                        if (ml.UUID != null && !_marketListingCache.ContainsKey(ml.UUID))
+                            _marketListingCache[ml.UUID] = ml;
+                }
+                _marketListingCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidateMarketListingCache() { lock (_listLock) { _marketListingCache = null; } }
+
+        /// <summary>
+        /// Returns the count of blueprints with the given BluePrintType for the current player.
+        /// Used by auto-assign copy constraint.
+        /// </summary>
+        public int CountBlueprintsByType(string blueprintType)
+        {
+            lock (_listLock)
+            {
+                if (_blueprintTypeCountCache == null)
+                {
+                    _blueprintTypeCountCache = new Dictionary<string, int>();
+                    foreach (var bp in GetCurrentPlayerBlueprints())
+                    {
+                        var key = bp.BluePrintType ?? "";
+                        if (_blueprintTypeCountCache.ContainsKey(key))
+                            _blueprintTypeCountCache[key]++;
+                        else
+                            _blueprintTypeCountCache[key] = 1;
+                    }
+                }
+                return _blueprintTypeCountCache.TryGetValue(blueprintType ?? "", out var count) ? count : 0;
+            }
+        }
+
+        public void InvalidateBlueprintTypeCountCache() { lock (_listLock) { _blueprintTypeCountCache = null; } }
+
+        /// <summary>
+        /// Returns BuildItems across all plans that reference the given BlueprintUUID.
+        /// </summary>
+        public List<BuildItem> GetBuildItemsByBlueprint(string blueprintUUID)
+        {
+            if (string.IsNullOrEmpty(blueprintUUID)) return new List<BuildItem>();
+            lock (_listLock)
+            {
+                if (_blueprintBuildItemIndex == null)
+                    RebuildBuildItemIndexes();
+                _blueprintBuildItemIndex.TryGetValue(blueprintUUID, out var items);
+                return items != null ? new List<BuildItem>(items) : new List<BuildItem>();
+            }
+        }
+
+        /// <summary>
+        /// Returns BuildItems across all plans that reference the given BuildLocationUUID.
+        /// </summary>
+        public List<BuildItem> GetBuildItemsByLocation(string locationUUID)
+        {
+            if (string.IsNullOrEmpty(locationUUID)) return new List<BuildItem>();
+            lock (_listLock)
+            {
+                if (_buildLocationBuildItemIndex == null)
+                    RebuildBuildItemIndexes();
+                _buildLocationBuildItemIndex.TryGetValue(locationUUID, out var items);
+                return items != null ? new List<BuildItem>(items) : new List<BuildItem>();
+            }
+        }
+
+        public void InvalidateBuildItemIndexes() { lock (_listLock) { _blueprintBuildItemIndex = null; _buildLocationBuildItemIndex = null; } }
+
+        private void RebuildBuildItemIndexes()
+        {
+            _blueprintBuildItemIndex = new Dictionary<string, List<BuildItem>>();
+            _buildLocationBuildItemIndex = new Dictionary<string, List<BuildItem>>();
+            foreach (var plan in BuildPlanList)
+            {
+                if (plan.Items == null) continue;
+                foreach (var item in plan.Items)
+                {
+                    if (!string.IsNullOrEmpty(item.BlueprintUUID))
+                    {
+                        if (!_blueprintBuildItemIndex.ContainsKey(item.BlueprintUUID))
+                            _blueprintBuildItemIndex[item.BlueprintUUID] = new List<BuildItem>();
+                        _blueprintBuildItemIndex[item.BlueprintUUID].Add(item);
+                    }
+                    if (!string.IsNullOrEmpty(item.BuildLocationUUID))
+                    {
+                        if (!_buildLocationBuildItemIndex.ContainsKey(item.BuildLocationUUID))
+                            _buildLocationBuildItemIndex[item.BuildLocationUUID] = new List<BuildItem>();
+                        _buildLocationBuildItemIndex[item.BuildLocationUUID].Add(item);
+                    }
+                }
+            }
         }
 
         /// <summary>

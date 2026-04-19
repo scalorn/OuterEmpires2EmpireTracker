@@ -60,7 +60,7 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 5.26 Add ShipStats class
   - [x] 5.27 Add StationStats class
 
-- [-] 6. PlayerContext Updates
+- [x] 6. PlayerContext Updates
   - [x] 6.1 Add 13 new List fields
   - [x] 6.2 Add 13 Init methods
   - [x] 6.3 Update WriteContext to serialize all 13 new lists
@@ -71,14 +71,14 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 6.8 Update CascadeDeletePlayer for all new entity types
   - [x] 6.9 Update CleanupOrphanedData for all new entity types
 
-- [ ] 7. In-Memory Indexing
-  - [ ] 7.1 Add PlayerContext UUID caches for all new entity types
-  - [ ] 7.2 Add EmpireContext _commodityNameCache
-  - [ ] 7.3 Add _blueprintTypeCountCache
-  - [ ] 7.4 Add cross-entity build item indexes (_blueprintBuildItemIndex, _buildLocationBuildItemIndex)
+- [-] 7. In-Memory Indexing
+  - [x] 7.1 Add PlayerContext UUID caches for all new entity types
+  - [x] 7.2 Add EmpireContext _commodityNameCache
+  - [x] 7.3 Add _blueprintTypeCountCache
+  - [x] 7.4 Add cross-entity build item indexes (_blueprintBuildItemIndex, _buildLocationBuildItemIndex)
 
-- [ ] 8. Migration
-  - [ ] 8.1 Create Migration: add empty arrays, migrate RouteStop/DeliveryPlanStop ColonyUUID, increment DataVersion
+- [-] 8. Migration
+  - [x] 8.1 Create Migration: add empty arrays, migrate RouteStop/DeliveryPlanStop ColonyUUID, increment DataVersion
 
 - [ ] 9. Build Planner Services
   - [ ] 9.1 Implement BuildPlanService (ValidatePlanName, ValidateBuildItem, GenerateColonyBuildItems)

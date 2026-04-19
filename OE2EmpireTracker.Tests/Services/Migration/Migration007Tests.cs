@@ -94,8 +94,8 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
             MigrationRunner.Run(ec, pc);
 
-            Assert.That(ec.DataVersion, Is.EqualTo(7));
-            Assert.That(pc.DataVersion, Is.EqualTo(7));
+            Assert.That(ec.DataVersion, Is.EqualTo(MigrationRunner.CurrentVersion));
+            Assert.That(pc.DataVersion, Is.EqualTo(MigrationRunner.CurrentVersion));
         }
     }
 }

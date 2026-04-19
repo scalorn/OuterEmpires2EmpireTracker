@@ -49,6 +49,8 @@ namespace OE2EmpireTracker.Services
         public BindingList<Blueprint> GlobalBlueprintList;
         private Dictionary<string, Blueprint> _globalBlueprintCache;
         public List<Commodity> CommodityList;
+        private Dictionary<string, Commodity> _commodityNameCache;
+        private readonly object _commodityLock = new object();
 
         public static EmpireContext GetInstance()
         {
@@ -347,6 +349,34 @@ namespace OE2EmpireTracker.Services
         public void InvalidateGlobalBlueprintCache()
         {
             _globalBlueprintCache = null;
+        }
+
+        /// <summary>
+        /// Finds a Commodity by name (case-insensitive) using a dictionary cache for O(1) lookup.
+        /// </summary>
+        public Commodity FindCommodity(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return null;
+            lock (_commodityLock)
+            {
+                if (_commodityNameCache == null)
+                {
+                    _commodityNameCache = new Dictionary<string, Commodity>(StringComparer.OrdinalIgnoreCase);
+                    if (CommodityList != null)
+                    {
+                        foreach (var c in CommodityList)
+                            if (!string.IsNullOrEmpty(c.Name) && !_commodityNameCache.ContainsKey(c.Name))
+                                _commodityNameCache[c.Name] = c;
+                    }
+                }
+                _commodityNameCache.TryGetValue(name, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidateCommodityNameCache()
+        {
+            lock (_commodityLock) { _commodityNameCache = null; }
         }
 
     }
