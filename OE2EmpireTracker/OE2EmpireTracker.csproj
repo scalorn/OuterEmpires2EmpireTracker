@@ -351,6 +351,12 @@
     <Compile Include="Forms\BuildPlanner\FormBuildPlanner.Designer.cs">
       <DependentUpon>FormBuildPlanner.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ShipTemplate\FormShipTemplate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ShipTemplate\FormShipTemplate.Designer.cs">
+      <DependentUpon>FormShipTemplate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\BuildPlanner\FormStructureAllocation.cs">
       <SubType>Form</SubType>
     </Compile>

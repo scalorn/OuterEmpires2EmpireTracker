@@ -130,16 +130,16 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
 
 ### Iteration 2: Ships
 
-- [-] 17. Ship Services
-  - [-] 17.1 Implement ShipBuildService.GenerateShipBuildItems
-  - [-] 17.2 Implement ShipBuildService.ValidateAssemblyLocation
-  - [-] 17.3 Implement ShipBuildService.ComputeStats (all ShipStats fields)
-  - [-] 17.4 Implement ShipBuildService.ComputeStationStats
+- [x] 17. Ship Services
+  - [x] 17.1 Implement ShipBuildService.GenerateShipBuildItems
+  - [x] 17.2 Implement ShipBuildService.ValidateAssemblyLocation
+  - [x] 17.3 Implement ShipBuildService.ComputeStats (all ShipStats fields)
+  - [x] 17.4 Implement ShipBuildService.ComputeStationStats
 
-- [ ] 18. Ship Template Form
-  - [ ] 18.1 Create FormShipTemplate MDI child
-  - [ ] 18.2 Implement slot grid with component installation
-  - [ ] 18.3 Implement full stats panel
+- [-] 18. Ship Template Form
+  - [-] 18.1 Create FormShipTemplate MDI child
+  - [-] 18.2 Implement slot grid with component installation
+  - [-] 18.3 Implement full stats panel
   - [ ] 18.4 Order Build button
   - [ ] 18.5 Implement ShipTemplateReferenceCounter, Refs column, delete protection
   - [ ] 18.6 Wire events, NLog, PERF
