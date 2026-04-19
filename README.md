@@ -42,6 +42,9 @@ Track your fleet. Open from **Manage → Ships**. Create ships manually or from 
 ### Stations
 Manage the stations you use across the galaxy. Open from **Manage → Stations**. Create government or player-owned stations with type (Outpost, Station, Starbase). The Hold tab tracks your inventory at each station with editable condition and max repair fields. Player-owned stations get a Components tab for installed equipment (same slot-based system as ships) and a Munitions tab for armed stations. Stations referenced by delivery routes, plans, or build items can't be deleted.
 
+### Market
+Track your market activity. Open from **Manage → Market**. The Listings tab shows what you have for sale at each station, with condition tracking for damaged components. Record sales with one click — the listing quantity decrements and a transaction is created with condition and faction snapshots. The Transactions tab gives you a filterable history of all buys and sells (by type, item, counterparty, faction, station, date range). The Summary tab computes profit/loss totals with a per-item breakdown so you can see which items are actually making you money.
+
 ### Pricing Plans
 Create pricing plans to assign credit values to resources and see what your commodities and manufactured items actually cost. Set base prices for Refined, S1, and S2 resources, add optional time costs (fixed per item + hourly rate), and the tracker computes rolled-up prices through the bill-of-materials chain. Create multiple plans to compare market value vs cost basis vs pessimistic estimates — whatever helps you decide if that manufacturing run is worth it.
 

@@ -167,6 +167,52 @@ namespace OE2EmpireTracker.Tests.Services
             }
         }
 
+
+        // P8: Market sale decrements listing
+        [Test]
+        public void P8_SaleDecrementsListing()
+        {
+            var rng = new Random(58);
+            for (int i = 0; i < Iterations; i++)
+            {
+                int listingQty = rng.Next(1, 100);
+                int saleQty = rng.Next(1, listingQty + 1);
+                var listing = new MarketListing
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    OwnerUUID = "p1",
+                    ItemName = "Item_" + i,
+                    Quantity = listingQty,
+                    PricePerUnit = rng.Next(1, 1000)
+                };
+                int expectedAfter = listingQty - saleQty;
+                var tx = MarketService.RecordSale(listing, saleQty, listing.PricePerUnit, "Buyer", "Fac", "s1");
+                Assert.That(tx, Is.Not.Null);
+                Assert.That(listing.Quantity, Is.EqualTo(expectedAfter),
+                    string.Format("Iter {0}: {1} - {2} should be {3}", i, listingQty, saleQty, expectedAfter));
+            }
+        }
+
+        // P9: Market purchase adds to station hold
+        [Test]
+        public void P9_PurchaseAddsToStationHold()
+        {
+            var rng = new Random(59);
+            for (int i = 0; i < Iterations; i++)
+            {
+                int qty = rng.Next(1, 50);
+                var station = new Models.Station { UUID = "station-" + i, Name = "S" + i };
+                var tx = MarketService.RecordPurchase(
+                    ItemType.ItemTypeEnum.Resource, "Iron", "res-iron", qty,
+                    rng.Next(1, 500), station.UUID, "Seller", "Fac", "player-1",
+                    uuid => uuid == station.UUID ? station : null);
+                Assert.That(tx, Is.Not.Null);
+                Assert.That(station.Holds.ContainsKey("player-1"), Is.True);
+                Assert.That(station.Holds["player-1"].Count(), Is.EqualTo(qty),
+                    string.Format("Iter {0}: expected {1} items in hold", i, qty));
+            }
+        }
+
         private static string FormatSeconds(int totalSeconds)
         {
             int d = totalSeconds / 86400;

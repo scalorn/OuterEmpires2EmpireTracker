@@ -213,8 +213,8 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 30.7 Wire events, NLog, PERF
   - [x] 30.8 Add "Market" to Manage menu
 
-- [ ] 31. Reference Counter Expansions (Iteration 5)
-  - [ ] 31.1 Expand BlueprintReferenceCounter: MarketListing.ItemReferenceID
+- [-] 31. Reference Counter Expansions (Iteration 5)
+  - [-] 31.1 Expand BlueprintReferenceCounter: MarketListing.ItemReferenceID
 
 - [ ] 32. Iteration 5 Tests
   - [ ] 32.1 Property tests: P8 (sale decrements listing), P9 (purchase adds to hold)

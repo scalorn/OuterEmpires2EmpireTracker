@@ -23,7 +23,8 @@ namespace OE2EmpireTracker.Services
             IEnumerable<BuildPlan> buildPlans = null,
             IEnumerable<ShipTemplate> shipTemplates = null,
             IEnumerable<Ship> ships = null,
-            IEnumerable<Station> stations = null)
+            IEnumerable<Station> stations = null,
+            IEnumerable<MarketListing> marketListings = null)
         {
             var colonyList = colonies ?? Enumerable.Empty<Colony>();
             var bpList = allBlueprints ?? Enumerable.Empty<Blueprint>();
@@ -32,6 +33,7 @@ namespace OE2EmpireTracker.Services
             var templateList = shipTemplates ?? Enumerable.Empty<ShipTemplate>();
             var shipList = ships ?? Enumerable.Empty<Ship>();
             var stationList = stations ?? Enumerable.Empty<Station>();
+            var marketListingList = marketListings ?? Enumerable.Empty<MarketListing>();
 
             _flatpackMap = new Dictionary<string, int>();
             _researchingMap = new Dictionary<string, int>();
@@ -131,6 +133,14 @@ namespace OE2EmpireTracker.Services
                         { _shipComponentMap.TryGetValue(comp.BlueprintUUID, out int c); _shipComponentMap[comp.BlueprintUUID] = c + 1; }
                     }
                 }
+            }
+
+
+            // Market listing item references
+            foreach (var listing in marketListingList)
+            {
+                if (!string.IsNullOrEmpty(listing.ItemReferenceID))
+                { _shipComponentMap.TryGetValue(listing.ItemReferenceID, out int c); _shipComponentMap[listing.ItemReferenceID] = c + 1; }
             }
 
         }
