@@ -186,3 +186,9 @@ The following backlog items were implemented as part of the `empire-systems` spe
 
 ### BL-059: Manufacturing Build Queue — Auto-Create Orders from Fill Levels
 **Status: Complete** — Implemented as Stock Targets in empire-systems Iteration 7. StockPlan/StockTarget/StockProfile models, StockTargetService, FormStockTargets, cascade integration in BackgroundProcessor.
+
+### BL-073: Code Coverage Tooling
+**Dependencies:** None
+**Status: Blocked** — AltCover (both global tool and NuGet package) fails with .NET Framework 4.8.1 + NUnit + vstest.console. The global tool crashes with a CLR assertion (net8.0 runtime vs net4.8.1 assemblies). The NuGet package instruments successfully but the NUnit test adapter can't discover tests in the instrumented assemblies. OpenCover is unmaintained (last release 2021). VS Community doesn't include the Enterprise code coverage collector.
+
+Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat Code Coverage"` works natively. In the meantime, use the file-level coverage analysis tool (`node .kiro/tools/spec-coverage.js`) and the reference counter completeness tests as proxies for coverage.

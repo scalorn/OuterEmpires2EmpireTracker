@@ -318,6 +318,49 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         [Test]
+        public void SplitIntoTrips_OversizedItem_GetsOwnTrip()
+        {
+            var bp = MakeBlueprint("bigpart1", "Big Part",
+                cargoVolumeSize: 200m, mass: 1000m);
+            var finder = MakeFinder(bp);
+
+            var items = new List<DeliveryItem>
+            {
+                new DeliveryItem
+                {
+                    ItemType = ItemType.ItemTypeEnum.None,
+                    BaseItemTypeID = "bigpart1",
+                    Name = "Big Part",
+                    Quantity = 3
+                }
+            };
+            // Capacity 150, each item is 200 vol (oversized), so each gets its own trip
+            var trips = CargoVolumeService.SplitIntoTrips(
+                items, 150m, finder);
+            Assert.That(trips.Count, Is.EqualTo(3));
+            Assert.That(trips[0][0].Quantity, Is.EqualTo(1));
+            Assert.That(trips[1][0].Quantity, Is.EqualTo(1));
+            Assert.That(trips[2][0].Quantity, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void ComputeLoadVolume_SurveyItems_VolumeIsZero()
+        {
+            var items = new List<DeliveryItem>
+            {
+                new DeliveryItem
+                {
+                    ItemType = ItemType.ItemTypeEnum.Survey,
+                    BaseItemTypeID = "survey1",
+                    Name = "Planet Survey",
+                    Quantity = 3
+                }
+            };
+            var result = CargoVolumeService.ComputeLoadVolume(items, _ => null);
+            Assert.That(result.TotalVolume, Is.EqualTo(0m));
+        }
+
+        [Test]
         public void GetItemVolume_CrateType_UsesCrateVolume()
         {
             var crateBp = MakeBlueprint("crate1", "Storage Crate",
