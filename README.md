@@ -51,6 +51,9 @@ Track asteroid mining sites. Open from **Manage → Asteroids**. Record resource
 ### Supply Chains
 Model your resource pipelines from mine to market. Open from **Manage → Supply Chains**. Define a chain of stages — Mine, AsteroidMine, PickUp, Refine, Research, Deliver — each at a colony, station, asteroid, or ship. Set accumulation thresholds on stages so the background processor knows when to trigger deliveries. Assign delivery routes to threshold stages. Pause and resume chains with the Active toggle (inactive chains show grayed out in the list and are skipped by background processing). A flow summary shows the full pipeline at a glance.
 
+### Stock Targets
+Set inventory targets and let the tracker tell you what's short. Open from **Manage → Stock Targets**. Create stock plans with targets for commodities, ship parts, resources, or entire ship templates. For each target, set a quantity goal, a critical threshold, and a scope (empire-wide, specific colony, or specific station). The Check & Generate Orders button scans your inventory, highlights shortfalls with color coding (red for critical, yellow for below target), and auto-generates build items in a designated replenishment build plan. Ship template targets expand into per-component checks so you know exactly which parts are missing. Pause plans with the Active toggle — inactive plans are skipped by background processing.
+
 ### Pricing Plans
 Create pricing plans to assign credit values to resources and see what your commodities and manufactured items actually cost. Set base prices for Refined, S1, and S2 resources, add optional time costs (fixed per item + hourly rate), and the tracker computes rolled-up prices through the bill-of-materials chain. Create multiple plans to compare market value vs cost basis vs pessimistic estimates — whatever helps you decide if that manufacturing run is worth it.
 

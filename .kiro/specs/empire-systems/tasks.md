@@ -273,14 +273,14 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 43.2 Implement StockTargetService.GenerateReplenishmentItems
   - [x] 43.3 Integrate stock target cascade in BackgroundProcessor
 
-- [ ] 44. Stock Targets Form
-  - [ ] 44.1 Create FormStockTargets MDI child: Targets and Plans tab + Profiles tab
-  - [ ] 44.2 Plans: IsActive checkbox, replenishment plan selector, targets grid, Quick Add
-  - [ ] 44.3 Check and Generate Orders button
-  - [ ] 44.4 Profiles tab: IsActive checkbox, entries grid, logic summary
-  - [ ] 44.5 Implement StockPlanReferenceCounter, Refs column
-  - [ ] 44.6 Wire events, NLog, PERF
-  - [ ] 44.7 Add "Stock Targets" to Manage menu
+- [x] 44. Stock Targets Form
+  - [x] 44.1 Create FormStockTargets MDI child: Targets and Plans tab + Profiles tab
+  - [x] 44.2 Plans: IsActive checkbox, replenishment plan selector, targets grid, Quick Add
+  - [x] 44.3 Check and Generate Orders button
+  - [x] 44.4 Profiles tab: IsActive checkbox, entries grid, logic summary
+  - [x] 44.5 Implement StockPlanReferenceCounter, Refs column
+  - [x] 44.6 Wire events, NLog, PERF
+  - [x] 44.7 Add "Stock Targets" to Manage menu
 
 - [ ] 45. Reference Counter Expansions (Iteration 7)
   - [ ] 45.1 Expand BlueprintReferenceCounter: StockPlan targets
