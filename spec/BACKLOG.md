@@ -192,3 +192,55 @@ The following backlog items were implemented as part of the `empire-systems` spe
 **Status: Blocked** — AltCover (both global tool and NuGet package) fails with .NET Framework 4.8.1 + NUnit + vstest.console. The global tool crashes with a CLR assertion (net8.0 runtime vs net4.8.1 assemblies). The NuGet package instruments successfully but the NUnit test adapter can't discover tests in the instrumented assemblies. OpenCover is unmaintained (last release 2021). VS Community doesn't include the Enterprise code coverage collector.
 
 Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat Code Coverage"` works natively. In the meantime, use the file-level coverage analysis tool (`node .kiro/tools/spec-coverage.js`) and the reference counter completeness tests as proxies for coverage.
+
+## Empire-Systems Audit Gaps
+
+The following items were designed in the empire-systems spec and marked complete in tasks.md, but the UI controls were either not implemented or implemented differently than the mockup specified. Discovered during the April 2026 mockup-controls audit.
+
+### BL-074: Stock Profiles Tab on FormStockTargets
+**Dependencies:** None
+**Source:** Empire-systems Iteration 7, task 44.4
+
+The Profiles tab on FormStockTargets was designed but never built. The tab allows grouping stock plans into profiles with AND/OR logic (same GroupID = OR/max, different GroupIDs = AND/sum). The StockProfile model exists in code. The colony-overflow.md mockup also references this tab. 14 controls not implemented.
+
+### BL-075: Crate Master-Detail UI (Ship Cargo, Station Hold)
+**Dependencies:** None
+**Source:** Empire-systems Iterations 2+4, tasks 19.3 and 25.2
+
+The mockup designs a master-detail pattern where selecting a crate row shows its contents in a dgvCrateContents detail grid below. Currently FormShipInstance and FormStation show items in a flat list without crate expansion. The Crate model exists on Item. Affects: FormShipInstance Cargo tab, FormStation Hold tab, and eventually Colony warehouse.
+
+### BL-076: Ship Instance Stats and Swap Component
+**Dependencies:** None
+**Source:** Empire-systems Iteration 2, tasks 19.1-19.2
+
+FormShipInstance Overview tab is missing: (1) a stats display showing computed ship stats like FormShipTemplate has, and (2) a cmdSwapComponent button to replace installed components. ShipBuildService.ComputeStats exists — just needs UI wiring.
+
+### BL-077: Station Blueprint Selector and Stats Display
+**Dependencies:** None
+**Source:** Empire-systems Iteration 4, task 25.3
+
+FormStation Components tab is missing: (1) cmbStationBlueprint to select/change the station hull blueprint, and (2) a stats display via ShipBuildService.ComputeStationStats. The service method exists — just needs UI wiring.
+
+### BL-078: Market Pricing Plan Integration on Summary Tab
+**Dependencies:** None
+**Source:** Empire-systems Iteration 5, task 30.4
+
+FormMarket Summary tab is missing cmbPricingPlan to select a pricing plan for valuation comparison. The mockup shows Plan Valuation and Margin vs Plan in the summary. PricingPlan model and form exist. Needs: combo on Summary tab, pass selected plan to ComputeProfitLoss, display plan-based valuation alongside actual revenue.
+
+### BL-079: Build Planner Target Duration Field
+**Dependencies:** None
+**Source:** Empire-systems Iteration 1, task 10.2
+
+FormBuildPlanner add-item panel is missing txtTargetDuration for specifying a time target (e.g. "2d 12h 0m 0s") that QueueCalculator uses to compute how many runs to queue. The QueueCalculator service exists. Needs: text field in the add-item panel, parse countdown format, call QueueCalculator, populate quantity.
+
+### BL-080: Overflow and Asteroid Filter TextBoxes
+**Dependencies:** None
+**Source:** Empire-systems Iterations 6, tasks 35.1 and 38.1
+
+FormColonyV2 Overflow tab is missing FilteredComboBox filter textboxes: txtOverflowResourceFilter, txtOverflowDestFilter, txtOverflowRouteFilter. FormAsteroid is missing txtReserveResourceFilter. These are the filter text fields that pair with their respective combo boxes to enable type-ahead filtering. The combos exist but lack the filter text fields.
+
+### BL-081: Stock Targets Quick Add and Expanded Components
+**Dependencies:** None
+**Source:** Empire-systems Iteration 7, task 44.2
+
+FormStockTargets is missing: (1) cmdQuickAdd button for quickly adding common target sets, and (2) dgvExpandedComponents grid showing the expanded component breakdown of ship template targets.

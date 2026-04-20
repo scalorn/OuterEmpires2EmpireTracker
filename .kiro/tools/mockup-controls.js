@@ -60,6 +60,7 @@ const SECTION_MAP = {
                 'txtTemplateFilter': 'txtFilter',
                 'txtTemplateName': 'txtName',
                 'dgvComponents': 'dgvSlots',
+                'dgvStats': 'rtbStats',
             },
         },
         {
@@ -69,6 +70,7 @@ const SECTION_MAP = {
                 'txtShipFilter': 'txtFilter',
                 'txtShipName': 'txtName',
                 'cmdCreateFromTemplate': 'cmdFromTemplate',
+                'dgvHopper': 'dgvCargo',
             },
         },
     ],
