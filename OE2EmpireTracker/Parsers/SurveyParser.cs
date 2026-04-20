@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -190,9 +191,9 @@ namespace OE2EmpireTracker.Parsers
             if (string.IsNullOrEmpty(purity)) return purity;
             switch (purity.ToLowerInvariant())
             {
-                case "med": return "Medium";
-                case "hi": return "High";
-                case "lo": return "Low";
+                case "med": return GameConstants.PurityMedium;
+                case "hi": return GameConstants.PurityHigh;
+                case "lo": return GameConstants.PurityLow;
                 default: return purity;
             }
         }

@@ -47,7 +47,7 @@ namespace OE2EmpireTracker.Tests.Parsers
 
         private static string ExtractFragment(string clipboardData)
         {
-            return OE2EmpireTracker.Forms.Blueprint.BlueprintScanner
+            return OE2EmpireTracker.Parsers.BlueprintScanner
                 .ExtractHtmlFragmentFromClipboardData(clipboardData);
         }
 

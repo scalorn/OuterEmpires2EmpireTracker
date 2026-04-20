@@ -338,7 +338,7 @@
     <Compile Include="Models\SupplyChain.cs" />
     <Compile Include="Models\SurveyType.cs" />
     <Compile Include="Models\WarehouseOverflowRule.cs" />
-    <Compile Include="Forms\Blueprint\BlueprintScanner.cs" />
+    <Compile Include="Parsers\BlueprintScanner.cs" />
     <Compile Include="Forms\BlueprintV2\FormBlueprintV2.cs">
       <SubType>Form</SubType>
     </Compile>

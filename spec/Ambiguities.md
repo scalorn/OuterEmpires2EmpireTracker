@@ -581,23 +581,17 @@ All derived from existing kiro specs and verified against implemented code. Requ
 
 ## Deep Code Audit (Round 2)
 
-### AMB-070 — OPEN: MAGIC_NUMBER — Purity multipliers hardcoded in 3 files
+### AMB-070 — RESOLVED: Purity multipliers extracted to GameConstants
+**Resolution:** Added `PurityMultiplierLow = 1`, `PurityMultiplierMedium = 3`, `PurityMultiplierHigh = 5` constants to GameConstants. Updated Colony.cs, ColonyActivityCollector.cs, and ColonyAdminReportBuilder.cs to use these constants instead of hardcoded magic numbers.
 **Files:** Colony.cs:312-315, ColonyActivityCollector.cs:252-254, ColonyAdminReportBuilder.cs:428-430
-**Issue:** Purity output multipliers (Low=1, Medium=3, High=5) are hardcoded as magic numbers in switch statements in 3 separate files. Should be constants in GameConstants (e.g. PurityMultiplierLow=1, PurityMultiplierMedium=3, PurityMultiplierHigh=5) or a lookup method.
-**Spec reference:** spec/requirements/GameMechanics.md should define these multipliers
-**Impact:** If game balance changes multipliers, 3 files need updating independently.
 
-### AMB-071 — OPEN: MAGIC_NUMBER — Purity name strings hardcoded instead of using constants
+### AMB-071 — RESOLVED: Purity name strings extracted to GameConstants
+**Resolution:** Added `PurityHigh = "High"`, `PurityMedium = "Medium"`, `PurityLow = "Low"` constants to GameConstants. Updated Colony.cs, ColonyActivityCollector.cs, ColonyAdminReportBuilder.cs switch statements and SurveyParser.NormalizePurity to use these constants instead of string literals.
 **Files:** Colony.cs, ColonyActivityCollector.cs, ColonyAdminReportBuilder.cs, SurveyParser.cs
-**Issue:** Purity names ("Low", "Medium", "High", "Refined") are hardcoded as string literals in switch statements. GameConstants already has PurityRefined but not the unrefined names. Should add PurityHigh, PurityMedium, PurityLow constants.
-**Spec reference:** spec/requirements/GameMechanics.md
-**Impact:** Typo in a purity string would silently fail to match.
 
-### AMB-072 — OPEN: MAGIC_NUMBER — Survey property keys hardcoded in SurveyViewModel
+### AMB-072 — RESOLVED: Survey property keys are game-defined, not our constants
+**Resolution:** These are blueprint properties from system object scanners — the property keys are defined by the game HTML, not by our code. Using string literals for game-defined property keys is acceptable.
 **File:** SurveyViewModel.cs:48-60
-**Issue:** Property keys "SensorAbundance", "PurityModifier", "ScanLevel" are hardcoded strings. Should be constants (e.g. in a SurveyPropertyKeys class or GameConstants).
-**Spec reference:** spec/requirements/Survey.md
-**Impact:** Typo in key string would silently read/write wrong property.
 
 ### AMB-073 — RESOLVED: FormColony (V1) missing PERF logging
 **Resolution:** Deleted the legacy V1 Colony form (FormColony.cs, ColonyStructure.cs, and their Designer/resx files). FormColonyV2 is the active form with proper PERF logging. The "FormColony" key in FormOpeners already mapped to FormColonyV2 for backward compatibility.

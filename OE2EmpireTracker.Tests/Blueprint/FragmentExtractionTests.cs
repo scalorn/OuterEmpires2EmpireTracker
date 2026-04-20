@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using OE2EmpireTracker.Forms.Blueprint;
+using OE2EmpireTracker.Parsers;
 
 namespace OE2EmpireTracker.Tests.Blueprint
 {

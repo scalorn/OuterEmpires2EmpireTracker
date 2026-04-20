@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using OE2EmpireTracker.Forms.Blueprint;
+using OE2EmpireTracker.Parsers;
 using System.IO;
 using System.Linq;
 using System.Text;

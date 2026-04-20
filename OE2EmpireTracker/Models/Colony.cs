@@ -309,10 +309,10 @@ namespace OE2EmpireTracker.Models
             int outputMultiplier;
             switch (structure.RefiningResourcePurity)
             {
-                case "Low": outputMultiplier = 1; break;
-                case "Medium": outputMultiplier = 3; break;
-                case "High": outputMultiplier = 5; break;
-                default: outputMultiplier = 1; break;
+                case GameConstants.PurityLow: outputMultiplier = GameConstants.PurityMultiplierLow; break;
+                case GameConstants.PurityMedium: outputMultiplier = GameConstants.PurityMultiplierMedium; break;
+                case GameConstants.PurityHigh: outputMultiplier = GameConstants.PurityMultiplierHigh; break;
+                default: outputMultiplier = GameConstants.PurityMultiplierLow; break;
             }
 
             List<Item> sourceItems = Items.FindResource(structure.RefiningResource, structure.RefiningResourcePurity);

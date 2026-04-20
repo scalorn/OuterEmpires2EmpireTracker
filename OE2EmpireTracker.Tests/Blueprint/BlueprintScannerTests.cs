@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Forms.Blueprint;
+using OE2EmpireTracker.Parsers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

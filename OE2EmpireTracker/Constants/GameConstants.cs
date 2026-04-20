@@ -66,6 +66,24 @@ namespace OE2EmpireTracker.Constants
         /// <summary>Purity value for refined resources.</summary>
         public const string PurityRefined = "Refined";
 
+        /// <summary>Purity value for high-purity resources.</summary>
+        public const string PurityHigh = "High";
+
+        /// <summary>Purity value for medium-purity resources.</summary>
+        public const string PurityMedium = "Medium";
+
+        /// <summary>Purity value for low-purity resources.</summary>
+        public const string PurityLow = "Low";
+
+        /// <summary>Refining output multiplier for low-purity resources.</summary>
+        public const int PurityMultiplierLow = 1;
+
+        /// <summary>Refining output multiplier for medium-purity resources.</summary>
+        public const int PurityMultiplierMedium = 3;
+
+        /// <summary>Refining output multiplier for high-purity resources.</summary>
+        public const int PurityMultiplierHigh = 5;
+
         // --- Blueprint Property Keys ---
         // Canonical names with spaces, matching BaselineData.json type definitions
         // and BlueprintPropertyValidation. All code should use these constants

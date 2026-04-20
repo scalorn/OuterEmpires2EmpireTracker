@@ -1,7 +1,6 @@
 using Amazon.Runtime.Internal.Transform;
 using NLog;
 using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
@@ -17,7 +16,7 @@ using System.Windows.Forms;
 using System.Xml;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
-namespace OE2EmpireTracker.Forms.Blueprint
+namespace OE2EmpireTracker.Parsers
 {
     public class MarketBlueprint
     {

@@ -249,10 +249,10 @@ namespace OE2EmpireTracker.Services
         {
             switch (purity)
             {
-                case "Low": return baseRate;
-                case "Medium": return baseRate * 3;
-                case "High": return baseRate * 5;
-                default: return baseRate;
+                case GameConstants.PurityLow: return baseRate * GameConstants.PurityMultiplierLow;
+                case GameConstants.PurityMedium: return baseRate * GameConstants.PurityMultiplierMedium;
+                case GameConstants.PurityHigh: return baseRate * GameConstants.PurityMultiplierHigh;
+                default: return baseRate * GameConstants.PurityMultiplierLow;
             }
         }
 
