@@ -630,7 +630,8 @@ All derived from existing kiro specs and verified against implemented code. Requ
 **Spec reference:** Should be in spec/requirements/Architecture.md
 **Impact:** Serialization behavior is undocumented.
 
-### AMB-079 — OPEN: MISSING_SPEC — 6 model classes have no spec coverage
+### AMB-079 — RESOLVED: 6 model classes have no spec coverage
+**Resolution:** ItemProperty.cs and SubResource.cs were dead code — unused EF-style relics replaced by PropertyBag and ItemBag respectively. Deleted. The remaining 4 classes (ColonyStructureStatus, StructureStatusDelta, ColonyWorker, ResearchTimeEntry) are internal implementation details of colony processing and don't need standalone spec entries — they're covered by the colony status calculation requirements in spec/requirements/Colony.md.
 **Files:** ColonyStructureStatus.cs, StructureStatusDelta.cs, ColonyWorker.cs, ResearchTimeEntry.cs, ItemProperty.cs, SubResource.cs
 **Issue:** These supporting model classes exist in code but have no mention in spec/design/data-models.md or spec/requirements/DataModel.md.
 **Spec reference:** Should be in spec/design/data-models.md

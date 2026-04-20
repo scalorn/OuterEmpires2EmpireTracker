@@ -312,10 +312,8 @@
     <Compile Include="ViewModels\PlayerProfileViewModel.cs" />
     <Compile Include="ViewModels\SurveyViewModel.cs" />
     <Compile Include="Models\Blueprint.cs" />
-    <Compile Include="Models\ItemProperty.cs" />
     <Compile Include="Models\ItemType.cs" />
     <Compile Include="Models\PropertyBag.cs" />
-    <Compile Include="Models\SubResource.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Resource.cs" />
     <Compile Include="Models\Asteroid.cs" />
