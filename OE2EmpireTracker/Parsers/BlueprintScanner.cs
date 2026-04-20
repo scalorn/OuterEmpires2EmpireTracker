@@ -35,7 +35,7 @@ namespace OE2EmpireTracker.Parsers
         private static Dictionary<string, string> PropertyRemap = new Dictionary<string, string>()
         {
             // Meaningful remaps -- clean up game labels
-            { "Health (Hitpoints)", "Health" },
+            { "Health (Hitpoints)", BlueprintPropertyKeys.Health },
             { "Maximum Damage Repair %", "Maximum Damage Repair" },
             { "The number of crew supported", "Crew Supported" },
             { "Eng. Capacity Required", "Eng Capacity Required" },
@@ -53,7 +53,7 @@ namespace OE2EmpireTracker.Parsers
 
         private static Dictionary<string, string> BPTypeImageRemap = new Dictionary<string, string>()
         {
-            { "0f3e805217c98030f0c5.png", "Reactor" }
+            { "0f3e805217c98030f0c5.png", SlotTypes.Reactor }
         };
 
         /// <summary>

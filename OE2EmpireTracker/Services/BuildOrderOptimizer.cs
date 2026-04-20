@@ -54,7 +54,7 @@ namespace OE2EmpireTracker.Services
                 Blueprint bp = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (bp == null)
                     primaries.Add(structure);
-                else if (IsSupportStructure(bp) || bp.BluePrintType == "Flatpacks/ColonyCommandCentre")
+                else if (IsSupportStructure(bp) || bp.BluePrintType == BlueprintTypes.ColonyCommandCentre)
                     supportPool.Add(structure);
                 else
                     primaries.Add(structure);
@@ -66,7 +66,7 @@ namespace OE2EmpireTracker.Services
             var idealWorkers = new IdealColonyStructureWorkers();
 
             // Bootstrap: CC, Reactor, Hab, Hydro, Ent
-            PlaceFromPool(result, supportPool, "Flatpacks/ColonyCommandCentre");
+            PlaceFromPool(result, supportPool, BlueprintTypes.ColonyCommandCentre);
             PlaceFromPool(result, supportPool, "Flatpacks/ReactorCore");
             PlaceFromPool(result, supportPool, "Flatpacks/HabitationBlock");
             PlaceFromPool(result, supportPool, "Flatpacks/HydroponicsBay");

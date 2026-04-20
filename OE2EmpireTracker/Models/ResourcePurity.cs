@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OE2EmpireTracker.Constants;
 
 namespace OE2EmpireTracker.Models
 {
@@ -33,10 +34,10 @@ namespace OE2EmpireTracker.Models
         private static List<ResourcePurity> getPurities()
         {
             List<ResourcePurity> instance = new List<ResourcePurity>();
-            instance.Add(new ResourcePurity() { ID = PurityEnum.Refined, Name = "Refined", Refined = true });
-            instance.Add(new ResourcePurity() { ID = PurityEnum.UnrefinedHigh, Name = "High" });
-            instance.Add(new ResourcePurity() { ID = PurityEnum.UnrefinedMedium, Name = "Medium" });
-            instance.Add(new ResourcePurity() { ID = PurityEnum.UnrefinedLow, Name = "Low" });
+            instance.Add(new ResourcePurity() { ID = PurityEnum.Refined, Name = GameConstants.PurityRefined, Refined = true });
+            instance.Add(new ResourcePurity() { ID = PurityEnum.UnrefinedHigh, Name = GameConstants.PurityHigh });
+            instance.Add(new ResourcePurity() { ID = PurityEnum.UnrefinedMedium, Name = GameConstants.PurityMedium });
+            instance.Add(new ResourcePurity() { ID = PurityEnum.UnrefinedLow, Name = GameConstants.PurityLow });
 
             instance.Sort((x, y) => x.Name.CompareTo(y.Name));
 

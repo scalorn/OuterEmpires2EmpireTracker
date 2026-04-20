@@ -1,4 +1,5 @@
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -29,7 +30,7 @@ namespace OE2EmpireTracker.Services
                 return "S1";
             if (resourceName != null && resourceName.StartsWith("S2. "))
                 return "S2";
-            return "Refined";
+            return GameConstants.PurityRefined;
         }
 
         /// <summary>

@@ -52,7 +52,7 @@ namespace OE2EmpireTracker.Services
             var newStructures = new List<ColonyStructure>();
 
             // REQ-COL-096d: Fixed sequence -- Command Centre first
-            var commandCentre = FindPlayerBlueprint("Flatpacks/ColonyCommandCentre");
+            var commandCentre = FindPlayerBlueprint(BlueprintTypes.ColonyCommandCentre);
             if (commandCentre != null)
             {
                 newStructures.Add(CreateStructure(commandCentre.UUID));
@@ -155,9 +155,9 @@ namespace OE2EmpireTracker.Services
         {
             switch (purity)
             {
-                case "Low": return 1;
-                case "Medium": return 3;
-                case "High": return 5;
+                case GameConstants.PurityLow: return 1;
+                case GameConstants.PurityMedium: return 3;
+                case GameConstants.PurityHigh: return 5;
                 default: return 1;
             }
         }

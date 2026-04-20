@@ -1408,7 +1408,7 @@ namespace OE2EmpireTracker
             decimal mfgHours = 0m;
             if (viewModel.Data.Properties != null)
             {
-                viewModel.Data.Properties.getString("Manufacture Run Time", null, out string mfgTimeStr);
+                viewModel.Data.Properties.getString(BlueprintPropertyKeys.ManufactureRunTime, null, out string mfgTimeStr);
                 if (!string.IsNullOrEmpty(mfgTimeStr))
                 {
                     decimal seconds = EvolutionChainService.ParseTimeToSeconds(mfgTimeStr);

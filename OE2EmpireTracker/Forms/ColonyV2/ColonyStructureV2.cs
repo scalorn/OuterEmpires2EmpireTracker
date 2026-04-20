@@ -974,9 +974,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             switch (purity)
             {
-                case "Low": return baseRate;
-                case "Medium": return baseRate * 3;
-                case "High": return baseRate * 5;
+                case GameConstants.PurityLow: return baseRate;
+                case GameConstants.PurityMedium: return baseRate * 3;
+                case GameConstants.PurityHigh: return baseRate * 5;
                 default: return baseRate;
             }
         }
@@ -1989,7 +1989,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Parse manufacture time from blueprint properties (default 1s if absent)
             string mfgTimeStr;
-            bp.Properties.getString("Manufacture Run Time", "1s", out mfgTimeStr);
+            bp.Properties.getString(BlueprintPropertyKeys.ManufactureRunTime, "1s", out mfgTimeStr);
             if (string.IsNullOrEmpty(mfgTimeStr)) mfgTimeStr = "1s";
 
             // Normalize time format: "9 hours" -> "9h", "30 minutes" -> "30m", etc.

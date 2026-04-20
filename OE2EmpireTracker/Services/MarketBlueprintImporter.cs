@@ -42,7 +42,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private static readonly HashSet<string> ProtectedProperties = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
-            "Manufacture Run Time",
+            BlueprintPropertyKeys.ManufactureRunTime,
             GameConstants.PropPowerRequired
         };
 

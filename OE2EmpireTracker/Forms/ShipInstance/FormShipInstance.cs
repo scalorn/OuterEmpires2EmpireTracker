@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
@@ -369,9 +370,9 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 if (isHopper)
                 {
                     // Hopper: only unrefined purities
-                    cmbAddPurity.Items.Add("High");
-                    cmbAddPurity.Items.Add("Medium");
-                    cmbAddPurity.Items.Add("Low");
+                    cmbAddPurity.Items.Add(GameConstants.PurityHigh);
+                    cmbAddPurity.Items.Add(GameConstants.PurityMedium);
+                    cmbAddPurity.Items.Add(GameConstants.PurityLow);
                 }
                 else
                 {
