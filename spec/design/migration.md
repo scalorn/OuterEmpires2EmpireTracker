@@ -25,12 +25,10 @@ Entities that represent game-world objects shared across players use determinist
 
 Each deterministic entity type uses its own UUID namespace to avoid collisions.
 
-## Migration005_EmpireSystems
+## Migration008_RouteStopDestinationMigration
 
-A new migration that:
-1. Adds empty arrays for all new entity types if missing from PlayerRoot.
-2. Migrates existing RouteStop.ColonyUUID → DestinationUUID + DestinationType.Colony for all delivery routes.
-3. Migrates existing DeliveryPlanStop.ColonyUUID → DestinationUUID + DestinationType.Colony for all delivery plans.
-4. Increments DataVersion.
+A migration that:
+1. Migrates existing RouteStop.ColonyUUID → DestinationUUID + DestinationType.Colony for all delivery routes (where DestinationUUID is empty).
+2. Migrates existing DeliveryPlanStop.ColonyUUID → DestinationUUID + DestinationType.Colony for all delivery plans (where DestinationUUID is empty).
 
-This migration is safe to run on existing data — it only adds defaults and copies existing fields.
+Note: Empty arrays for new entity types are initialized by PlayerContext during deserialization (null → empty array), not by a dedicated migration. The original spec described a Migration005_EmpireSystems but the actual implementation split this across PlayerContext initialization and Migration008.

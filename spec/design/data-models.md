@@ -169,13 +169,22 @@ public class Ship
 ## Station
 
 ```csharp
-public enum StationOwnership { Government, Player }
+public enum StationType
+{
+    Outpost,
+    Station,
+    Starbase
+}
+
+public enum StationOwnership { Government, PlayerOwned }
 
 public class Station
 {
     public string UUID { get; set; }
     public string Name { get; set; } = string.Empty;
-    public string StationType { get; set; } = string.Empty;
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public StationType StationType { get; set; } = StationType.Station;
 
     [JsonConverter(typeof(StringEnumConverter))]
     public StationOwnership Ownership { get; set; } = StationOwnership.Government;

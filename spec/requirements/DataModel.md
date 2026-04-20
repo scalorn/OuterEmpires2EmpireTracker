@@ -105,10 +105,10 @@
 ## ReferenceReport
 
 **REQ-DM-090** ReferenceReport SHALL be an immutable value object in the `OE2EmpireTracker.Models` namespace. All properties SHALL be read-only, set via the constructor.  
-**REQ-DM-091** ReferenceReport SHALL expose five integer read-only properties: FlatpackCount, ResearchingCount, ManufacturingCount, BaseBlueprintCount, and ScannerCount.  
-**REQ-DM-092** ReferenceReport SHALL expose a computed TotalCount property equal to the sum of FlatpackCount + ResearchingCount + ManufacturingCount + BaseBlueprintCount + ScannerCount.  
-**REQ-DM-093** ReferenceReport SHALL provide a constructor accepting five int parameters (flatpackCount, researchingCount, manufacturingCount, baseBlueprintCount, scannerCount).  
-**REQ-DM-094** ReferenceReport SHALL expose a static readonly field `Empty` that returns a ReferenceReport with all five counts set to zero.
+**REQ-DM-091** ReferenceReport SHALL expose seven integer read-only properties: FlatpackCount, ResearchingCount, ManufacturingCount, BaseBlueprintCount, ScannerCount, BuildItemCount, and ShipComponentCount.  
+**REQ-DM-092** ReferenceReport SHALL expose a computed TotalCount property equal to the sum of all seven count properties.  
+**REQ-DM-093** ReferenceReport SHALL provide a constructor accepting seven int parameters (flatpackCount, researchingCount, manufacturingCount, baseBlueprintCount, scannerCount, buildItemCount, shipComponentCount). BuildItemCount and ShipComponentCount SHALL default to 0 for backward compatibility.  
+**REQ-DM-094** ReferenceReport SHALL expose a static readonly field `Empty` that returns a ReferenceReport with all seven counts set to zero.
 
 
 ## Thread Safety

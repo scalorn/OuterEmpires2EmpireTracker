@@ -187,7 +187,7 @@ public static class ShipBuildService
         Func<string, Station> stationFinder,
         Func<string, Blueprint> blueprintFinder);
 
-    public static string ValidateAssemblyLocation(int shipClass, Station station);
+    public static string ValidateAssemblyLocation(int shipClass, StationType stationType);
 
     public static ShipStats ComputeStats(
         Blueprint hull, IEnumerable<ShipComponentSlot> components,
@@ -208,9 +208,18 @@ Static service in `Services/MarketService.cs`.
 ```csharp
 public static class MarketService
 {
-    public static bool RecordSale(MarketTransaction transaction, List<MarketListing> listings);
-    public static void RecordPurchase(MarketTransaction transaction, Func<string, Station> stationFinder);
-    public static decimal ComputeProfitLoss(MarketTransaction transaction, PricingPlan plan, Func<string, Blueprint> blueprintFinder);
+    public static MarketTransaction RecordSale(
+        MarketListing listing, int quantitySold, decimal pricePerUnit,
+        string counterpartyName, string counterpartyFactionName, string stationUUID);
+    public static MarketTransaction RecordPurchase(
+        ItemType.ItemTypeEnum itemType, string itemName, string itemReferenceID,
+        int quantity, decimal pricePerUnit, string stationUUID,
+        string counterpartyName, string counterpartyFactionName,
+        string ownerUUID, Func<string, Station> stationFinder);
+    public static ProfitLossSummary ComputeProfitLoss(
+        IEnumerable<MarketTransaction> transactions,
+        DateTime? startDate = null, DateTime? endDate = null,
+        string itemNameFilter = null, string stationUUIDFilter = null);
 }
 ```
 
@@ -234,6 +243,7 @@ public static class StockTargetService
 public class StockShortfall
 {
     public StockTarget Target { get; set; }
+    public string PlanUUID { get; set; }
     public int CurrentQuantity { get; set; }
     public int ShortfallQuantity { get; set; }
     public bool IsCritical { get; set; }
