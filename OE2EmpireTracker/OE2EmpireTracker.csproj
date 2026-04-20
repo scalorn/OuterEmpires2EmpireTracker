@@ -194,6 +194,7 @@
     <Compile Include="Services\SurveyDateTimeParser.cs" />
     <Compile Include="Services\BackgroundProcessor.cs" />
     <Compile Include="Services\SupplyChainService.cs" />
+    <Compile Include="Services\StockTargetService.cs" />
     <Compile Include="Models\BaselineGameConstants.cs" />
     <Compile Include="Models\ResearchTimeEntry.cs" />
     <Compile Include="Models\RefiningRecipe.cs" />

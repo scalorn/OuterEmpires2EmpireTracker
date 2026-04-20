@@ -264,14 +264,14 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 41.1 Expand ColonyReferenceCounter: SupplyChainStage, WarehouseOverflowRule
   - [x] 41.2 Expand SurveyReferenceCounter: BuildItem.MiningSurveyUUID
 
-- [ ] 42. Iteration 6 Checkpoint
+- [x] 42. Iteration 6 Checkpoint
 
 ### Iteration 7: Fill-Level Automation (Stock Targets)
 
-- [ ] 43. Stock Target Services
-  - [ ] 43.1 Implement StockTargetService.CheckTargets (OR-pool within plan, AND across plans, expand templates)
-  - [ ] 43.2 Implement StockTargetService.GenerateReplenishmentItems
-  - [ ] 43.3 Integrate stock target cascade in BackgroundProcessor
+- [x] 43. Stock Target Services
+  - [x] 43.1 Implement StockTargetService.CheckTargets (OR-pool within plan, AND across plans, expand templates)
+  - [x] 43.2 Implement StockTargetService.GenerateReplenishmentItems
+  - [x] 43.3 Integrate stock target cascade in BackgroundProcessor
 
 - [ ] 44. Stock Targets Form
   - [ ] 44.1 Create FormStockTargets MDI child: Targets and Plans tab + Profiles tab

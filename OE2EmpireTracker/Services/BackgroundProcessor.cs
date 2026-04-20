@@ -369,8 +369,61 @@ namespace OE2EmpireTracker.Services
             if (stockTargetsDirty)
             {
                 _playerContext.CascadeStockTargetsDirty = false;
-                // Placeholder for Iteration 7 (stock targets cascade)
-                Log.Info("BackgroundProcessor: CascadeStockTargetsDirty was set (placeholder, no action taken)");
+                Log.Info("BackgroundProcessor: processing CascadeStockTargetsDirty");
+
+                try
+                {
+                    var stockPlans = _playerContext.StockPlanList;
+                    if (stockPlans != null && stockPlans.Count > 0)
+                    {
+                        string playerUUID = _playerContext.CurrentPlayerUUID ?? "";
+                        var colonies = _playerContext.SnapshotColonyList();
+                        var stations = _playerContext.StationList.ToList();
+
+                        var shortfalls = StockTargetService.CheckTargets(
+                            stockPlans, playerUUID,
+                            uuid => _playerContext.FindColony(uuid),
+                            uuid => _playerContext.StationList.FirstOrDefault(s => s.UUID == uuid),
+                            uuid => _playerContext.ShipTemplateList.FirstOrDefault(t => t.UUID == uuid),
+                            uuid => _playerContext.FindBlueprint(uuid),
+                            colonies, stations);
+
+                        if (shortfalls.Count > 0)
+                        {
+                            // Generate replenishment items for plans that have a replenishment build plan
+                            var plansByUUID = stockPlans.Where(p => !string.IsNullOrEmpty(p.ReplenishmentBuildPlanUUID))
+                                .ToDictionary(p => p.UUID, p => p);
+
+                            foreach (var shortfall in shortfalls)
+                            {
+                                StockPlan stockPlan;
+                                if (!plansByUUID.TryGetValue(shortfall.PlanUUID, out stockPlan)) continue;
+
+                                var buildPlan = _playerContext.BuildPlanList
+                                    .FirstOrDefault(bp => bp.UUID == stockPlan.ReplenishmentBuildPlanUUID);
+                                if (buildPlan == null) continue;
+
+                                var newItems = StockTargetService.GenerateReplenishmentItems(
+                                    new List<StockShortfall> { shortfall },
+                                    new[] { buildPlan });
+
+                                if (newItems.Count > 0)
+                                {
+                                    buildPlan.Items.AddRange(newItems);
+                                    if (!modifiedPlanUUIDs.Contains(buildPlan.UUID))
+                                        modifiedPlanUUIDs.Add(buildPlan.UUID);
+                                    _playerContext.CascadeResourceCheckDirty = true;
+                                    Log.Info("Stock target replenishment: added {0} items to plan '{1}'",
+                                        newItems.Count, buildPlan.Name);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error during stock target cascade processing");
+                }
             }
 
             sw.Stop();
