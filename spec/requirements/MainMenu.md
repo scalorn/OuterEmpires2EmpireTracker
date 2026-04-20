@@ -31,6 +31,15 @@ The MainWindow menu provides File lifecycle operations (New/Open/Save/Save As/Ex
 **REQ-MM-030** Help > About SHALL display a modal dialog with application name, version, and copyright from assembly metadata.  
 **REQ-MM-031** Help > Contents (Ctrl+F1) SHALL open the help system. F1 SHALL open context-sensitive help for the active form.
 
+## Help System
+
+**REQ-MM-040** HelpTopicRegistry SHALL map form type names to documentation file paths in docs/.  
+**REQ-MM-041** HelpRenderer SHALL convert markdown files to HTML using Markdig with embedded CSS styling.  
+**REQ-MM-042** FormHelp SHALL display a TreeView navigation panel and a WebBrowser content panel.  
+**REQ-MM-043** F1 SHALL open context-sensitive help for the active MDI child form via HelpTopicRegistry lookup.  
+**REQ-MM-044** Help → Contents (Ctrl+F1) SHALL open the help table of contents (docs/README.md).  
+**REQ-MM-045** Internal links between help pages SHALL be intercepted and navigated within the help form.
+
 ## User Interaction Flows
 
 ### File Menu Operations

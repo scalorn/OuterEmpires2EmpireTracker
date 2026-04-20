@@ -343,3 +343,11 @@ flowchart TD
 │                  │    (none)                                                │
 └──────────────────┴──────────────────────────────────────────────────────────┘
 ```
+
+## Delivery Fulfillment
+
+**REQ-DEL-090** DeliveryFulfillment.FulfillCommodity SHALL decrement the delivery item quantity and add the commodity to the destination colony's warehouse.  
+**REQ-DEL-091** DeliveryFulfillment.StageFlatpack SHALL mark the colony structure as staged and set its build sequence.  
+**REQ-DEL-092** DeliveryFulfillment.DeliverWorkers SHALL add worker details to the destination colony's assigned workers.  
+**REQ-DEL-093** Fulfillment operations SHALL be idempotent — fulfilling an already-fulfilled item SHALL have no effect.  
+**REQ-DEL-094** Station stop fulfillment SHALL update the station's hold inventory for the current player.  
