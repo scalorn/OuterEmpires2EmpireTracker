@@ -526,46 +526,55 @@ All derived from existing kiro specs and verified against implemented code. Requ
 **Code (DeliveryRoute.cs):** ColonyUUID is a plain property with no JSON attribute. Same for DeliveryPlanStop.ColonyUUID in DeliveryPlan.cs.
 **Impact:** ColonyUUID will always serialize to JSON even when null/empty, adding noise to saved data. Not a functional bug since Migration008 copies ColonyUUID → DestinationUUID, but the old field persists unnecessarily.
 
-### AMB-061 — OPEN: DeliveryPlanReferenceCounter does not exist
+### AMB-061 — RESOLVED: DeliveryPlanReferenceCounter does not exist
+**Resolution:** Created `DeliveryPlanReferenceCounter.cs` that counts `BuildPlan.DeliveryPlanUUID` references to delivery plans. Added to csproj.
 **Spec (reference-counting.md):** DeliveryPlanReferenceCounter should count BuildPlan.DeliveryPlanUUID references.
 **Code:** No DeliveryPlanReferenceCounter.cs file exists. BuildPlan.DeliveryPlanUUID references are not tracked.
 **Impact:** Delivery plans can be deleted even when referenced by build plans.
 
-### AMB-062 — OPEN: StockPlanReferenceCounter does not exist
+### AMB-062 — RESOLVED: StockPlanReferenceCounter does not exist
+**Resolution:** Created `StockPlanReferenceCounter.cs` that counts `StockProfileEntry.StockPlanUUID` references to stock plans. Added to csproj.
 **Spec (reference-counting.md):** StockPlanReferenceCounter should count StockProfileEntry.StockPlanUUID references.
 **Code:** No StockPlanReferenceCounter.cs file exists. StockProfile entries referencing stock plans are not tracked.
 **Impact:** Stock plans can be deleted even when referenced by stock profiles.
 
-### AMB-063 — OPEN: DeliveryRouteReferenceCounter incomplete
+### AMB-063 — RESOLVED: DeliveryRouteReferenceCounter incomplete
+**Resolution:** Expanded `DeliveryRouteReferenceCounter` to count `WarehouseOverflowRule.DeliveryRouteUUID` and `SupplyChainStage.DeliveryRouteUUID`. Updated report class with `OverflowRuleCount` and `SupplyChainStageCount` fields. New constructor parameters have defaults for backward compatibility.
 **Spec (reference-counting.md):** DeliveryRouteReferenceCounter should count DeliveryPlan.RouteUUID, WarehouseOverflowRule.DeliveryRouteUUID, and SupplyChainStage.DeliveryRouteUUID.
 **Code (DeliveryRouteReferenceCounter.cs):** Only counts DeliveryPlan.RouteUUID. Comment says "Will be expanded to include WarehouseOverflowRules and SupplyChainStages" but this was never done.
 **Impact:** Delivery routes can be deleted even when referenced by overflow rules or supply chain stages.
 
-### AMB-064 — OPEN: StationReferenceCounter incomplete
+### AMB-064 — RESOLVED: StationReferenceCounter incomplete
+**Resolution:** Expanded `StationReferenceCounter` to count `MarketListing.StationUUID`, `MarketTransaction.StationUUID`, `SupplyChainStage.LocationUUID` (when Station), `StockPlan.Targets[].LocationUUID` (when Station), and `WarehouseOverflowRule.DestinationUUID` (when Station). New constructor parameters have defaults for backward compatibility.
 **Spec (reference-counting.md):** StationReferenceCounter should count: RouteStops, DeliveryPlanStops, Ship.LocationUUID, MarketListing.StationUUID, MarketTransaction.StationUUID, BuildItem.AssemblyLocationUUID, SupplyChainStage.LocationUUID, StockPlan.Targets[].LocationUUID, WarehouseOverflowRule.DestinationUUID (all when Station).
 **Code (StationReferenceCounter.cs):** Only counts RouteStops, DeliveryPlanStops, BuildItem.AssemblyLocationUUID, and BuildItem.BuildLocationUUID. Missing: Ship.LocationUUID, MarketListing.StationUUID, MarketTransaction.StationUUID, SupplyChainStage.LocationUUID, StockPlan.Targets[].LocationUUID, WarehouseOverflowRule.DestinationUUID.
 **Impact:** Stations can be deleted even when referenced by ships, market listings, transactions, supply chains, stock targets, or overflow rules.
 
-### AMB-065 — OPEN: AsteroidReferenceCounter missing SupplyChainStage references
+### AMB-065 — RESOLVED: AsteroidReferenceCounter missing SupplyChainStage references
+**Resolution:** Expanded `AsteroidReferenceCounter` to count `SupplyChainStage.LocationUUID` (when Asteroid). Updated `AsteroidReferenceReport` with `SupplyChainStageCount` field. New constructor parameter has default for backward compatibility.
 **Spec (reference-counting.md):** AsteroidReferenceCounter should count SupplyChainStage.LocationUUID (when Asteroid).
 **Code (AsteroidReferenceCounter.cs):** Only counts Survey.AsteroidUUID, BuildItem.BuildLocationUUID (when Asteroid), and RouteStop (when Asteroid). Missing SupplyChainStage.
 **Impact:** Asteroids can be deleted even when referenced by supply chain stages.
 
-### AMB-066 — OPEN: ColonyReferenceCounter missing WarehouseOverflowRule.DestinationUUID
+### AMB-066 — RESOLVED: ColonyReferenceCounter missing WarehouseOverflowRule.DestinationUUID
+**Resolution:** Added `_overflowDestMap` to `ColonyReferenceCounter` that counts `WarehouseOverflowRule.DestinationUUID` when `DestinationType == Colony`. The destination count is summed into the overflow total in `CountReferences`.
 **Spec (reference-counting.md):** ColonyReferenceCounter should count WarehouseOverflowRule.DestinationUUID (when Colony) in addition to ColonyUUID.
 **Code (ColonyReferenceCounter.cs):** Only counts WarehouseOverflowRule.ColonyUUID, not DestinationUUID when DestinationType is Colony.
 **Impact:** If an overflow rule's destination is a colony (not just its source), that reference is not counted.
 
-### AMB-067 — OPEN: BlueprintReferenceCounter missing MarketTransaction.ItemReferenceID
+### AMB-067 — RESOLVED: BlueprintReferenceCounter missing MarketTransaction.ItemReferenceID
+**Resolution:** Added `marketTransactions` parameter to `BlueprintReferenceCounter` constructor and counting loop for `MarketTransaction.ItemReferenceID`.
 **Spec (reference-counting.md):** BlueprintReferenceCounter should count MarketTransaction.ItemReferenceID (when Blueprint).
 **Code (BlueprintReferenceCounter.cs):** Counts MarketListing.ItemReferenceID but not MarketTransaction.ItemReferenceID.
 **Impact:** Blueprints referenced only by market transactions (not listings) can be deleted.
 
-### AMB-068 — OPEN: BlueprintReferenceCounter duplicate station loop (bug)
-**Code (BlueprintReferenceCounter.cs):** The station component counting loop appears twice (lines ~107-120 and ~123-136), causing station blueprint references to be double-counted.
+### AMB-068 — RESOLVED: BlueprintReferenceCounter duplicate station loop (bug)
+**Resolution:** Removed the duplicate station component counting loop. Station blueprints now counted once.
+**Code (BlueprintReferenceCounter.cs):** The station component counting loop appeared twice, causing station blueprint references to be double-counted. Duplicate removed.
 **Impact:** Station component blueprint reference counts are inflated by 2x, which doesn't cause false negatives (deletion still blocked) but reports incorrect numbers.
 
-### AMB-069 — OPEN: Migration numbering mismatch
-**Spec (migration.md):** Describes Migration005_EmpireSystems for route stop migration and empty array initialization.
+### AMB-069 — RESOLVED: Migration numbering mismatch
+**Resolution:** Updated `spec/design/migration.md` to document the actual migration sequence (Migration001 through Migration008) and clarify that the original Migration005_EmpireSystems was split across PlayerContext initialization and Migration008.
+**Spec (migration.md):** Described Migration005_EmpireSystems for route stop migration and empty array initialization.
 **Code:** Migration005 is PropertyKeyCleanup. The route stop migration is Migration008_RouteStopDestinationMigration. No single migration adds empty arrays for new entity types.
 **Impact:** Spec migration numbering is outdated. The actual migration sequence diverged from the spec.

@@ -13,6 +13,7 @@ namespace OE2EmpireTracker.Services
         private readonly Dictionary<string, int> _buildItemMap;
         private readonly Dictionary<string, int> _supplyChainMap;
         private readonly Dictionary<string, int> _overflowMap;
+        private readonly Dictionary<string, int> _overflowDestMap;
         private readonly Dictionary<string, int> _stockTargetLocationMap;
 
         public ColonyReferenceCounter(
@@ -86,12 +87,19 @@ namespace OE2EmpireTracker.Services
             }
 
             _overflowMap = new Dictionary<string, int>();
+            _overflowDestMap = new Dictionary<string, int>();
             foreach (var rule in overflowRules ?? Enumerable.Empty<WarehouseOverflowRule>())
             {
                 if (!string.IsNullOrEmpty(rule.ColonyUUID))
                 {
                     _overflowMap.TryGetValue(rule.ColonyUUID, out int c);
                     _overflowMap[rule.ColonyUUID] = c + 1;
+                }
+                if (rule.DestinationType == DestinationType.Colony
+                    && !string.IsNullOrEmpty(rule.DestinationUUID))
+                {
+                    _overflowDestMap.TryGetValue(rule.DestinationUUID, out int c);
+                    _overflowDestMap[rule.DestinationUUID] = c + 1;
                 }
             }
 
@@ -120,9 +128,10 @@ namespace OE2EmpireTracker.Services
             _buildItemMap.TryGetValue(colonyUUID, out int buildItemCount);
             _supplyChainMap.TryGetValue(colonyUUID, out int supplyChainCount);
             _overflowMap.TryGetValue(colonyUUID, out int overflowCount);
+            _overflowDestMap.TryGetValue(colonyUUID, out int overflowDestCount);
             _stockTargetLocationMap.TryGetValue(colonyUUID, out int stockTargetCount);
 
-            return new ColonyReferenceReport(routeCount, planCount, buildItemCount, supplyChainCount, overflowCount + stockTargetCount);
+            return new ColonyReferenceReport(routeCount, planCount, buildItemCount, supplyChainCount, overflowCount + overflowDestCount + stockTargetCount);
         }
     }
 

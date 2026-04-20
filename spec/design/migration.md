@@ -31,4 +31,21 @@ A migration that:
 1. Migrates existing RouteStop.ColonyUUID → DestinationUUID + DestinationType.Colony for all delivery routes (where DestinationUUID is empty).
 2. Migrates existing DeliveryPlanStop.ColonyUUID → DestinationUUID + DestinationType.Colony for all delivery plans (where DestinationUUID is empty).
 
-Note: Empty arrays for new entity types are initialized by PlayerContext during deserialization (null → empty array), not by a dedicated migration. The original spec described a Migration005_EmpireSystems but the actual implementation split this across PlayerContext initialization and Migration008.
+Note: Empty arrays for new entity types are initialized by PlayerContext during deserialization (null → empty array), not by a dedicated migration.
+
+## Migration Sequence
+
+The actual migration sequence is:
+
+| Migration | Description |
+|---|---|
+| Migration001_DeterministicUUIDs | Assigns deterministic UUIDs to shared entities |
+| Migration002_ColonyDeterministicUUIDs | Assigns deterministic UUIDs to colonies |
+| Migration003_SurveyDateTimeNormalization | Normalizes survey date/time formats |
+| Migration004_ColonyImportTimestampBackfill | Backfills colony import timestamps |
+| Migration005_PropertyKeyCleanup | Cleans up blueprint property keys |
+| Migration006_DisplaySequenceJsonKey | Migrates gameSequence → displaySequence JSON key |
+| Migration007_RemoveClassFromProperties | Removes Class from blueprint properties |
+| Migration008_RouteStopDestinationMigration | Migrates RouteStop/DeliveryPlanStop ColonyUUID → DestinationUUID |
+
+The original spec described a Migration005_EmpireSystems but the actual implementation split this across PlayerContext initialization (null → empty array for new entity types) and Migration008 (route stop destination migration).

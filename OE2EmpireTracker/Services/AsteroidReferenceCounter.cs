@@ -10,13 +10,15 @@ namespace OE2EmpireTracker.Services
         public int SurveyCount { get; set; }
         public int BuildItemCount { get; set; }
         public int RouteStopCount { get; set; }
-        public int TotalCount => SurveyCount + BuildItemCount + RouteStopCount;
+        public int SupplyChainStageCount { get; set; }
+        public int TotalCount => SurveyCount + BuildItemCount + RouteStopCount + SupplyChainStageCount;
 
         public static readonly AsteroidReferenceReport Empty = new AsteroidReferenceReport();
     }
 
     /// <summary>
-    /// Counts references to an Asteroid from Surveys, BuildItems, and RouteStops.
+    /// Counts references to an Asteroid from Surveys, BuildItems, RouteStops,
+    /// and SupplyChainStages.
     /// Used to prevent deletion of asteroids that are still in use.
     /// </summary>
     public class AsteroidReferenceCounter
@@ -25,11 +27,13 @@ namespace OE2EmpireTracker.Services
         private readonly Dictionary<string, int> _surveyMap;
         private readonly Dictionary<string, int> _buildItemMap;
         private readonly Dictionary<string, int> _routeStopMap;
+        private readonly Dictionary<string, int> _supplyChainMap;
 
         public AsteroidReferenceCounter(
             IEnumerable<Survey> surveys,
             IEnumerable<BuildPlan> buildPlans,
-            IEnumerable<DeliveryRoute> routes)
+            IEnumerable<DeliveryRoute> routes,
+            IEnumerable<SupplyChain> supplyChains = null)
         {
             var surveyList = surveys ?? Enumerable.Empty<Survey>();
             var buildPlanList = buildPlans ?? Enumerable.Empty<BuildPlan>();
@@ -74,6 +78,21 @@ namespace OE2EmpireTracker.Services
                     }
                 }
             }
+
+            _supplyChainMap = new Dictionary<string, int>();
+            foreach (var chain in supplyChains ?? Enumerable.Empty<SupplyChain>())
+            {
+                if (chain.Stages == null) continue;
+                foreach (var stage in chain.Stages)
+                {
+                    if (stage.LocationType == DestinationType.Asteroid
+                        && !string.IsNullOrEmpty(stage.LocationUUID))
+                    {
+                        _supplyChainMap.TryGetValue(stage.LocationUUID, out int c);
+                        _supplyChainMap[stage.LocationUUID] = c + 1;
+                    }
+                }
+            }
         }
 
         public AsteroidReferenceReport CountReferences(string asteroidUUID)
@@ -84,12 +103,14 @@ namespace OE2EmpireTracker.Services
             _surveyMap.TryGetValue(asteroidUUID, out int surveyCount);
             _buildItemMap.TryGetValue(asteroidUUID, out int buildItemCount);
             _routeStopMap.TryGetValue(asteroidUUID, out int routeStopCount);
+            _supplyChainMap.TryGetValue(asteroidUUID, out int supplyChainCount);
 
             return new AsteroidReferenceReport
             {
                 SurveyCount = surveyCount,
                 BuildItemCount = buildItemCount,
-                RouteStopCount = routeStopCount
+                RouteStopCount = routeStopCount,
+                SupplyChainStageCount = supplyChainCount
             };
         }
     }

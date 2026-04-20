@@ -152,6 +152,8 @@
     <Compile Include="Services\StationReferenceCounter.cs" />
     <Compile Include="Services\AsteroidReferenceCounter.cs" />
     <Compile Include="Services\MarketListingReferenceCounter.cs" />
+    <Compile Include="Services\DeliveryPlanReferenceCounter.cs" />
+    <Compile Include="Services\StockPlanReferenceCounter.cs" />
     <Compile Include="Forms\Market\FormMarket.cs">
       <SubType>Form</SubType>
     </Compile>
