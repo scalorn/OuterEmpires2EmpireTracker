@@ -456,3 +456,11 @@ flowchart TD
 │ └─────────────────────────────────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
+
+## Colony Status Calculation
+
+**REQ-COL-110** ColonyStatusCalculator SHALL compute colony-wide resource totals by iterating all structures and accumulating provided/required values for Power, Habitation, Food, Entertainment, and Warehouse capacity.  
+**REQ-COL-111** ColonyStructureStatus SHALL track provided vs required pairs for each resource category, plus unallocated worker flags per worker type (BlueCollar, WhiteCollar, Specialist).  
+**REQ-COL-112** StructureStatusDelta SHALL represent the incremental resource contribution of a single structure, enabling O(1) recalculation when a single structure changes state.  
+**REQ-COL-113** ColonyWorker SHALL represent a worker slot on a structure with Structure reference, WorkerType key, and Assigned flag.  
+**REQ-COL-114** ResearchTimeEntry SHALL map evolution levels (0-14) to research durations in seconds. Data SHALL be loaded from BaselineData.json with hardcoded fallbacks in ResearchTimeLookup.  
