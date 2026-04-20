@@ -647,3 +647,26 @@ All derived from existing kiro specs and verified against implemented code. Requ
 **Issue:** GetSlotDefinitions() hardcodes slot type strings ("Reactor", "MainDrive", "CargoPod", etc.) instead of using the SlotTypes constants that already exist in Constants/SlotTypes.cs. Additionally, weapon slot names use "SmallWeapon"/"MediumWeapon"/"LargeWeapon" which don't match the SlotTypes constants "WeaponSmall"/"WeaponMedium"/"WeaponLarge" — a naming mismatch that could cause slot type lookups to fail.
 **Spec reference:** spec/design/code-standards.md (no magic strings), spec/decisions/resolved-questions.md (OQ-31, OQ-32)
 **Impact:** Typo in a slot type string would silently break component installation. Weapon slot naming mismatch may cause incorrect slot matching.
+### AMB-081 — OPEN: MAGIC_NUMBER — Item volume constants hardcoded in 3 files
+**Files:** CargoVolumeService.cs:63-65, Colony.cs (GetItemVolume), FormColonyV2.cs:2213-2219
+**Issue:** Item volume by type (Resource=1, Commodity=10, WorkDetail=50, Blueprint/Survey=0) is hardcoded in 3 separate files. Should be constants in GameConstants (e.g. VolumeResource=1m, VolumeCommodity=10m, VolumeWorkDetail=50m). Item mass values (Resource=1, Commodity=5, WorkDetail=10) in CargoVolumeService are also hardcoded.
+**Spec reference:** spec/requirements/DataModel.md REQ-DM-025 defines these values but they aren't constants
+**Impact:** If game changes item volumes, 3 files need updating independently.
+
+### AMB-082 — OPEN: MAGIC_NUMBER — Skill multiplier rates hardcoded in Colony.cs
+**File:** Colony.cs:270, 308, 376
+**Issue:** Skill multiplier rates are hardcoded: ExtractionFocus +1% per level (0.01m), RefiningFocus +2% per level (0.02m). Should be constants in GameConstants.
+**Spec reference:** spec/requirements/GameMechanics.md should define skill multiplier rates
+**Impact:** If game rebalances skill effects, multiple locations need updating.
+
+### AMB-083 — OPEN: MAGIC_STRING — DeliveryFulfillment uses "Staged" instead of GameConstants.PropStaged
+**File:** DeliveryFulfillment.cs:61
+**Issue:** structure.Properties.setProperty("Staged", ...) uses magic string instead of GameConstants.PropStaged.
+**Spec reference:** GameConstants already defines PropStaged = "Staged"
+**Impact:** Minor — typo risk. Easy fix.
+
+### AMB-084 — OPEN: MAGIC_STRING — Blueprint property keys in ShipBuildService.ComputeStats
+**File:** ShipBuildService.cs:189-221
+**Issue:** 20+ blueprint property key strings ("Mass", "Power Generated", "Cargo Capacity", "Fuel Capacity", "Health", "Energy Defence", etc.) are hardcoded. These are game-defined property names from the HTML. Same category as AMB-072 (survey property keys) — game-defined, not our constants. However, they're used in multiple places (ComputeStats and ComputeStationStats) and could benefit from a BlueprintPropertyKeys constants class.
+**Spec reference:** spec/requirements/Ships.md REQ-SHP-021
+**Impact:** Low — game-defined keys. But centralizing would prevent typos across the two stat computation methods.
