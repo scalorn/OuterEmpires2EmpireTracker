@@ -13,13 +13,15 @@ namespace OE2EmpireTracker.Services
         private readonly Dictionary<string, int> _buildItemMap;
         private readonly Dictionary<string, int> _supplyChainMap;
         private readonly Dictionary<string, int> _overflowMap;
+        private readonly Dictionary<string, int> _stockTargetLocationMap;
 
         public ColonyReferenceCounter(
             IEnumerable<DeliveryRoute> routes,
             IEnumerable<DeliveryPlan> plans,
             IEnumerable<BuildPlan> buildPlans = null,
             IEnumerable<SupplyChain> supplyChains = null,
-            IEnumerable<WarehouseOverflowRule> overflowRules = null)
+            IEnumerable<WarehouseOverflowRule> overflowRules = null,
+            IEnumerable<StockPlan> stockPlans = null)
         {
             var routeList = routes ?? Enumerable.Empty<DeliveryRoute>();
             var planList = plans ?? Enumerable.Empty<DeliveryPlan>();
@@ -92,6 +94,20 @@ namespace OE2EmpireTracker.Services
                     _overflowMap[rule.ColonyUUID] = c + 1;
                 }
             }
+
+            _stockTargetLocationMap = new Dictionary<string, int>();
+            foreach (var plan in stockPlans ?? Enumerable.Empty<StockPlan>())
+            {
+                if (plan.Targets == null) continue;
+                foreach (var target in plan.Targets)
+                {
+                    if (target.Scope == StockTargetScope.Colony && !string.IsNullOrEmpty(target.LocationUUID))
+                    {
+                        _stockTargetLocationMap.TryGetValue(target.LocationUUID, out int c);
+                        _stockTargetLocationMap[target.LocationUUID] = c + 1;
+                    }
+                }
+            }
         }
 
         public ColonyReferenceReport CountReferences(string colonyUUID)
@@ -104,8 +120,9 @@ namespace OE2EmpireTracker.Services
             _buildItemMap.TryGetValue(colonyUUID, out int buildItemCount);
             _supplyChainMap.TryGetValue(colonyUUID, out int supplyChainCount);
             _overflowMap.TryGetValue(colonyUUID, out int overflowCount);
+            _stockTargetLocationMap.TryGetValue(colonyUUID, out int stockTargetCount);
 
-            return new ColonyReferenceReport(routeCount, planCount, buildItemCount, supplyChainCount, overflowCount);
+            return new ColonyReferenceReport(routeCount, planCount, buildItemCount, supplyChainCount, overflowCount + stockTargetCount);
         }
     }
 

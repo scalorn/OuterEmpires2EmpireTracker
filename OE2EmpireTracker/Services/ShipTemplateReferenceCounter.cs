@@ -14,10 +14,12 @@ namespace OE2EmpireTracker.Services
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly Dictionary<string, int> _shipMap;
         private readonly Dictionary<string, int> _buildItemMap;
+        private readonly Dictionary<string, int> _stockTargetMap;
 
         public ShipTemplateReferenceCounter(
             IEnumerable<Ship> ships,
-            IEnumerable<BuildPlan> buildPlans)
+            IEnumerable<BuildPlan> buildPlans,
+            IEnumerable<StockPlan> stockPlans = null)
         {
             var shipList = ships ?? Enumerable.Empty<Ship>();
             var buildPlanList = buildPlans ?? Enumerable.Empty<BuildPlan>();
@@ -45,6 +47,20 @@ namespace OE2EmpireTracker.Services
                     }
                 }
             }
+
+            _stockTargetMap = new Dictionary<string, int>();
+            foreach (var plan in stockPlans ?? Enumerable.Empty<StockPlan>())
+            {
+                if (plan.Targets == null) continue;
+                foreach (var target in plan.Targets)
+                {
+                    if (!string.IsNullOrEmpty(target.ShipTemplateUUID))
+                    {
+                        _stockTargetMap.TryGetValue(target.ShipTemplateUUID, out int c);
+                        _stockTargetMap[target.ShipTemplateUUID] = c + 1;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -58,8 +74,9 @@ namespace OE2EmpireTracker.Services
 
             _shipMap.TryGetValue(templateUUID, out int shipCount);
             _buildItemMap.TryGetValue(templateUUID, out int buildItemCount);
+            _stockTargetMap.TryGetValue(templateUUID, out int stockTargetCount);
 
-            return shipCount + buildItemCount;
+            return shipCount + buildItemCount + stockTargetCount;
         }
     }
 }

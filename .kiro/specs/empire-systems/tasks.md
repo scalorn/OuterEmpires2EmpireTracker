@@ -282,16 +282,16 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 44.6 Wire events, NLog, PERF
   - [x] 44.7 Add "Stock Targets" to Manage menu
 
-- [ ] 45. Reference Counter Expansions (Iteration 7)
-  - [ ] 45.1 Expand BlueprintReferenceCounter: StockPlan targets
-  - [ ] 45.2 Expand ColonyReferenceCounter: StockPlan target LocationUUID
-  - [ ] 45.3 Expand ShipTemplateReferenceCounter: StockPlan targets
+- [x] 45. Reference Counter Expansions (Iteration 7)
+  - [x] 45.1 Expand BlueprintReferenceCounter: StockPlan targets
+  - [x] 45.2 Expand ColonyReferenceCounter: StockPlan target LocationUUID
+  - [x] 45.3 Expand ShipTemplateReferenceCounter: StockPlan targets
 
-- [ ] 46. Iteration 7 Tests
-  - [ ] 46.1 Property test: P7 (stock target shortfall with OR/AND)
-  - [ ] 46.2 Unit tests: StockTargetService, StockPlanReferenceCounter
+- [x] 46. Iteration 7 Tests
+  - [x] 46.1 Property test: P7 (stock target shortfall with OR/AND)
+  - [x] 46.2 Unit tests: StockTargetService, StockPlanReferenceCounter
 
-- [ ] 47. Iteration 7 Checkpoint
+- [x] 47. Iteration 7 Checkpoint
 
 ### Iteration 8: Delivery Auto-Fill Time Horizon
 
