@@ -52,7 +52,7 @@ namespace OE2EmpireTracker.Services
                 return;
             }
 
-            long elapsedSeconds = (long)(DateTime.UtcNow - parsed).TotalSeconds;
+            long elapsedSeconds = (long)(SystemClock.UtcNow - parsed).TotalSeconds;
             if (elapsedSeconds > 86400)
             {
                 rows.Add(new ActivityRow

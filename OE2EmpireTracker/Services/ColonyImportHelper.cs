@@ -54,7 +54,7 @@ namespace OE2EmpireTracker.Services
             {
                 target.ColonyName = source.ColonyName;
             }
-            target.LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow);
+            target.LastImportDateTime = SurveyDateTimeParser.ToIsoString(SystemClock.UtcNow);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace OE2EmpireTracker.Services
             colony.SystemName = tempColony.SystemName;
             colony.Structures = tempColony.Structures;
             colony.Commodities = tempColony.Commodities;
-            colony.LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow);
+            colony.LastImportDateTime = SurveyDateTimeParser.ToIsoString(SystemClock.UtcNow);
             return colony;
         }
 

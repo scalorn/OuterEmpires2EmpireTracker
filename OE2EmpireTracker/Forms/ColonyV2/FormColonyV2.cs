@@ -1415,11 +1415,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             ApplyTabWarning(tabPWorkers,
                 TabWarningService.EvaluateWorkerWarning(
-                    selectedColony?.Commodities, DateTime.UtcNow));
+                    selectedColony?.Commodities, SystemClock.UtcNow));
 
             ApplyTabWarning(tabPAdministration,
                 TabWarningService.EvaluateColonyImportStalenessWarning(
-                    selectedColony?.LastImportDateTime, DateTime.UtcNow));
+                    selectedColony?.LastImportDateTime, SystemClock.UtcNow));
 
             UpdateWorkerTabTitle();
             UpdateStructuresTabTitle();
@@ -1721,7 +1721,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 return;
             }
 
-            var now = DateTime.UtcNow;
+            var now = SystemClock.UtcNow;
             int activeCount = selectedColony.Commodities
                 .Count(r => !r.Fulfilled && (r.NeedBy == DateTime.MinValue || r.NeedBy > now));
             tabPWorkers.Text = activeCount > 0 ? $"Workers : {activeCount}" : "Workers";
@@ -1753,7 +1753,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             long totalSeconds = ((long)days * 24 + hours) * 3600 + minutes * 60 + seconds;
             if (totalSeconds <= 0) return null;
-            return DateTime.UtcNow.AddSeconds(totalSeconds);
+            return SystemClock.UtcNow.AddSeconds(totalSeconds);
         }
 
         /// <summary>
@@ -1763,7 +1763,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private string FormatNeedByCountdown(DateTime needBy)
         {
             if (needBy == DateTime.MinValue) return "";
-            var remaining = needBy - DateTime.UtcNow;
+            var remaining = needBy - SystemClock.UtcNow;
             if (remaining.TotalSeconds <= 0)
                 return "overdue";
 

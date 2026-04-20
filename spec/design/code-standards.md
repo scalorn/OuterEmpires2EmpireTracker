@@ -14,6 +14,7 @@ Every new service must:
 7. Never acquire locks internally — the caller is responsible for lock acquisition
 8. Accept data via constructor parameters or method arguments (dependency injection), not by reaching into singletons
 9. Return results rather than mutating shared state directly
+10. Use `SystemClock.UtcNow` instead of `DateTime.UtcNow` for all time-dependent logic (enables test clock injection)
 
 ## Form Implementation Checklist
 

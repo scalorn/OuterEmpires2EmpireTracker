@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using OE2EmpireTracker.Services;
 using System.Text.RegularExpressions;
 
 namespace OE2EmpireTracker.Models
@@ -43,14 +44,14 @@ namespace OE2EmpireTracker.Models
             {
                 if (IsRepeating && RepeatIntervalSeconds > 0)
                 {
-                    return (long)(GetNextIntervalBoundary(DateTime.UtcNow) - DateTime.UtcNow).TotalSeconds;
+                    return (long)(GetNextIntervalBoundary(SystemClock.UtcNow) - SystemClock.UtcNow).TotalSeconds;
                 }
 
-                return (long)(EndTime - DateTime.UtcNow).TotalSeconds;
+                return (long)(EndTime - SystemClock.UtcNow).TotalSeconds;
             }
             set
             {
-                var now = DateTime.UtcNow;
+                var now = SystemClock.UtcNow;
                 if (IsRepeating && RepeatIntervalSeconds > 0)
                 {
                     long remaining = value;
@@ -88,7 +89,7 @@ namespace OE2EmpireTracker.Models
                     return 0;
                 }
 
-                var elapsedSeconds = (DateTime.UtcNow - StartTime).TotalSeconds;
+                var elapsedSeconds = (SystemClock.UtcNow - StartTime).TotalSeconds;
                 if (elapsedSeconds <= 0)
                 {
                     return 0;
@@ -179,7 +180,7 @@ namespace OE2EmpireTracker.Models
             }
 
             StartTime = StartTime.AddSeconds(toConsume * RepeatIntervalSeconds);
-            EndTime = GetNextIntervalBoundary(DateTime.UtcNow);
+            EndTime = GetNextIntervalBoundary(SystemClock.UtcNow);
         }
 
         /// <summary>
@@ -194,7 +195,7 @@ namespace OE2EmpireTracker.Models
             }
 
             RepeatIntervalSeconds = intervalSeconds;
-            StartTime = DateTime.UtcNow;
+            StartTime = SystemClock.UtcNow;
             EndTime = StartTime.AddSeconds(intervalSeconds);
         }
 
@@ -222,8 +223,8 @@ namespace OE2EmpireTracker.Models
                 remaining %= RepeatIntervalSeconds;
             }
 
-            StartTime = DateTime.UtcNow.AddSeconds(remaining - RepeatIntervalSeconds);
-            EndTime = DateTime.UtcNow.AddSeconds(remaining);
+            StartTime = SystemClock.UtcNow.AddSeconds(remaining - RepeatIntervalSeconds);
+            EndTime = SystemClock.UtcNow.AddSeconds(remaining);
         }
 
         /// <summary>

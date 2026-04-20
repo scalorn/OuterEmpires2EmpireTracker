@@ -273,7 +273,7 @@ namespace OE2EmpireTracker.Services
 
             builder.Append("    Batch: ", DetailColor);
             builder.Append(ActivityRow.FormatSeconds(batchSeconds), CountdownColor);
-            DateTime batchEnd = DateTime.UtcNow.AddSeconds(batchSeconds).ToLocalTime();
+            DateTime batchEnd = SystemClock.UtcNow.AddSeconds(batchSeconds).ToLocalTime();
             builder.Append(" (" + batchEnd.ToString("HH:mm ddd") + ")", CompletionTimeColor);
             builder.Append("\n", TextColor);
         }

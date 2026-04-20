@@ -63,7 +63,7 @@ namespace OE2EmpireTracker
 
             var proc = Process.GetCurrentProcess();
             _lastCpuTime = proc.TotalProcessorTime;
-            _lastCheckTime = DateTime.UtcNow;
+            _lastCheckTime = SystemClock.UtcNow;
 
             TryAutoOpenLastFile();
             RestoreOpenForms();
@@ -267,7 +267,7 @@ namespace OE2EmpireTracker
                 return;
             }
 
-            TimeSpan remaining = next - DateTime.UtcNow;
+            TimeSpan remaining = next - SystemClock.UtcNow;
             if (remaining.TotalSeconds < 0)
                 remaining = TimeSpan.Zero;
 
@@ -293,7 +293,7 @@ namespace OE2EmpireTracker
             var proc = Process.GetCurrentProcess();
             double memMB = proc.WorkingSet64 / (1024.0 * 1024.0);
 
-            var now = DateTime.UtcNow;
+            var now = SystemClock.UtcNow;
             double cpuUsedMs = (proc.TotalProcessorTime - _lastCpuTime).TotalMilliseconds;
             double elapsedMs = (now - _lastCheckTime).TotalMilliseconds;
             double cpuPercent = elapsedMs > 0

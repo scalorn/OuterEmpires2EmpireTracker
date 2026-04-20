@@ -50,7 +50,7 @@ namespace OE2EmpireTracker.Services
                     return 0;
                 return Math.Max(0, CountDown.TimeRemaining);
             }
-            long seconds = (long)(NeedBy - DateTime.UtcNow).TotalSeconds;
+            long seconds = (long)(NeedBy - SystemClock.UtcNow).TotalSeconds;
             return Math.Max(0, seconds);
         }
 

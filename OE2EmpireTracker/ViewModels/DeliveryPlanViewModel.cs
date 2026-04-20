@@ -178,7 +178,7 @@ namespace OE2EmpireTracker.ViewModels
                     if (timeHorizonHours > 0 && structure.BuildCompletionTime != null)
                     {
                         var completionTime = structure.BuildCompletionTime.EndTime;
-                        if (completionTime > DateTime.UtcNow.AddHours(timeHorizonHours))
+                        if (completionTime > SystemClock.UtcNow.AddHours(timeHorizonHours))
                         {
                             Log.Debug("  Skipped (outside time horizon): completion={0}", completionTime);
                             continue;

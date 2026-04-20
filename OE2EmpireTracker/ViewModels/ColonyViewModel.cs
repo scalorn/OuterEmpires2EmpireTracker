@@ -138,7 +138,7 @@ namespace OE2EmpireTracker.ViewModels
         /// </summary>
         public int CleanupExpiredCommodityRequests()
         {
-            var now = DateTime.UtcNow;
+            var now = SystemClock.UtcNow;
             var expired = _colony.Commodities
                 .Where(cr => cr.Fulfilled && cr.NeedBy != DateTime.MinValue && (now - cr.NeedBy).TotalDays > 3)
                 .ToList();

@@ -71,7 +71,7 @@ namespace OE2EmpireTracker.Services
                 Counterparty = counterpartyName ?? string.Empty,
                 CounterpartyFaction = counterpartyFactionName ?? string.Empty,
                 StationUUID = stationUUID ?? string.Empty,
-                Timestamp = DateTime.UtcNow.ToString("o"),
+                Timestamp = SystemClock.UtcNow.ToString("o"),
                 ListingUUID = listing.UUID ?? string.Empty,
                 CurrentHP = listing.CurrentHP,
                 MaxHP = listing.MaxHP,
@@ -131,7 +131,7 @@ namespace OE2EmpireTracker.Services
                 Counterparty = counterpartyName ?? string.Empty,
                 CounterpartyFaction = counterpartyFactionName ?? string.Empty,
                 StationUUID = stationUUID ?? string.Empty,
-                Timestamp = DateTime.UtcNow.ToString("o")
+                Timestamp = SystemClock.UtcNow.ToString("o")
             };
 
             if (!string.IsNullOrEmpty(stationUUID) && !string.IsNullOrEmpty(ownerUUID))

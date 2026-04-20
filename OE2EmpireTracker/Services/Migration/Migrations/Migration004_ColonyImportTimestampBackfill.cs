@@ -16,7 +16,7 @@ namespace OE2EmpireTracker.Services.Migration
             {
                 if (string.IsNullOrEmpty(colony.LastImportDateTime))
                 {
-                    colony.LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow);
+                    colony.LastImportDateTime = SurveyDateTimeParser.ToIsoString(SystemClock.UtcNow);
                 }
             }
 
