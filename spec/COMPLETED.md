@@ -305,3 +305,7 @@ Comprehensive empire management feature set implemented across 8 iterations in `
 
 ### BL-074: Stock Profiles Tab on FormStockTargets
 **Status: Complete** — Implemented Profiles tab on FormStockTargets with left-list/right-detail pattern. Profile list with filter, name/active fields, entries grid (GroupID + Plan), add/remove entry panel with filtered plan combo, logic summary label showing AND/OR grouping. TabControl wraps existing Targets & Plans content alongside new Profiles tab.
+
+
+### BL-075: Crate Master-Detail UI (Ship Cargo, Station Hold)
+**Status: Complete** — Added dgvCrateContents detail grid to FormShipInstance Cargo tab and dgvHoldCrateContents to FormStation Hold tab. When a crate row is selected in the main grid, the detail grid below shows the crate's contents. Crate rows display "[Crate]" prefix with item count. Detail grid hidden when non-crate row selected.

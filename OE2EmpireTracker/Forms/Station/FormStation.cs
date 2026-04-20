@@ -46,6 +46,7 @@ namespace OE2EmpireTracker.Forms.Station
             cmdHoldRemove.Click += cmdHoldRemove_Click;
             cmbHoldType.SelectedIndexChanged += cmbHoldType_SelectedIndexChanged;
             dgvHold.CellEndEdit += dgvHold_CellEndEdit;
+            dgvHold.SelectionChanged += dgvHold_SelectionChanged;
 
             dgvComponents.CellEndEdit += dgvComponents_CellEndEdit;
 
@@ -241,15 +242,26 @@ namespace OE2EmpireTracker.Forms.Station
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvHold.Rows.Clear();
+            dgvHoldCrateContents.Rows.Clear();
+            lblHoldCrateContents.Text = "";
+            dgvHoldCrateContents.Visible = false;
+            lblHoldCrateContents.Visible = false;
             var bag = GetStationHold();
             if (bag == null) { sw.Stop(); return; }
 
             foreach (var kvp in bag.Items.OrderBy(k => k.Value.Name))
             {
                 var item = kvp.Value;
+                string typeName = item.ItemType.ToString();
+                string displayName = item.ExtendedName;
+                if (item.ItemType == ItemType.ItemTypeEnum.Crate)
+                {
+                    typeName = "[Crate]";
+                    int count = item.Contents?.Count() ?? 0;
+                    displayName = string.Format("{0} ({1} items)", item.Name, count);
+                }
                 int rowIdx = dgvHold.Rows.Add(
-                    item.ItemType.ToString(),
-                    item.ExtendedName,
+                    typeName, displayName,
                     item.ResourcePurity,
                     item.Quantity.ToString(),
                     item.CurrentHP.ToString(),
@@ -261,6 +273,40 @@ namespace OE2EmpireTracker.Forms.Station
                 dgvHold.Rows[rowIdx].Cells[colHoldQty.Index].ReadOnly = true;
             }
             sw.Stop(); Log.Info("PERF PopulateHoldGrid: {0}ms", sw.ElapsedMilliseconds);
+        }
+
+        private void dgvHold_SelectionChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (dgvHold.SelectedRows.Count == 0) { ClearHoldCrateContents(); return; }
+            var item = dgvHold.SelectedRows[0].Tag as Item;
+            if (item != null && item.ItemType == ItemType.ItemTypeEnum.Crate && item.Contents != null)
+                PopulateHoldCrateContents(item);
+            else
+                ClearHoldCrateContents();
+        }
+
+        private void PopulateHoldCrateContents(Item crate)
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            dgvHoldCrateContents.Rows.Clear();
+            lblHoldCrateContents.Text = string.Format("Crate Contents ({0}):", crate.Name);
+            lblHoldCrateContents.Visible = true;
+            dgvHoldCrateContents.Visible = true;
+            foreach (var kvp in crate.Contents.Items.OrderBy(k => k.Value.Name))
+            {
+                var item = kvp.Value;
+                dgvHoldCrateContents.Rows.Add(item.ItemType.ToString(), item.ExtendedName, item.ResourcePurity, item.Quantity.ToString());
+            }
+        }
+
+        private void ClearHoldCrateContents()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            dgvHoldCrateContents.Rows.Clear();
+            lblHoldCrateContents.Text = "";
+            lblHoldCrateContents.Visible = false;
+            dgvHoldCrateContents.Visible = false;
         }
 
         private void dgvHold_CellEndEdit(object sender, DataGridViewCellEventArgs e)

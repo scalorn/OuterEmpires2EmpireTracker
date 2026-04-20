@@ -46,6 +46,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             rbHopper.CheckedChanged += rbCargo_CheckedChanged;
             cmdAddItem.Click += cmdAddItem_Click;
             cmdRemoveItem.Click += cmdRemoveItem_Click;
+            dgvCargo.SelectionChanged += dgvCargo_SelectionChanged;
             cmbAddType.SelectedIndexChanged += cmbAddType_SelectedIndexChanged;
 
             dgvComponents.CellEndEdit += dgvComponents_CellEndEdit;
@@ -306,20 +307,62 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvCargo.Rows.Clear();
+            dgvCrateContents.Rows.Clear();
+            lblCrateContents.Text = "";
+            dgvCrateContents.Visible = false;
+            lblCrateContents.Visible = false;
             var bag = GetSelectedBag();
             if (bag == null) { sw.Stop(); return; }
 
             foreach (var kvp in bag.Items.OrderBy(k => k.Value.Name))
             {
                 var item = kvp.Value;
-                dgvCargo.Rows.Add(
-                    item.ItemType.ToString(),
-                    item.ExtendedName,
-                    item.ResourcePurity,
-                    item.Quantity.ToString());
+                string typeName = item.ItemType.ToString();
+                string displayName = item.ExtendedName;
+                if (item.ItemType == ItemType.ItemTypeEnum.Crate)
+                {
+                    typeName = "[Crate]";
+                    int count = item.Contents?.Count() ?? 0;
+                    displayName = string.Format("{0} ({1} items)", item.Name, count);
+                }
+                dgvCargo.Rows.Add(typeName, displayName, item.ResourcePurity, item.Quantity.ToString());
                 dgvCargo.Rows[dgvCargo.Rows.Count - 1].Tag = item;
             }
             sw.Stop(); Log.Info("PERF PopulateCargoGrid: {0}ms", sw.ElapsedMilliseconds);
+        }
+
+        private void dgvCargo_SelectionChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (dgvCargo.SelectedRows.Count == 0) { ClearCrateContents(); return; }
+            var item = dgvCargo.SelectedRows[0].Tag as Item;
+            if (item != null && item.ItemType == ItemType.ItemTypeEnum.Crate && item.Contents != null)
+                PopulateCrateContents(item);
+            else
+                ClearCrateContents();
+        }
+
+        private void PopulateCrateContents(Item crate)
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            dgvCrateContents.Rows.Clear();
+            lblCrateContents.Text = string.Format("Crate Contents ({0}):", crate.Name);
+            lblCrateContents.Visible = true;
+            dgvCrateContents.Visible = true;
+            foreach (var kvp in crate.Contents.Items.OrderBy(k => k.Value.Name))
+            {
+                var item = kvp.Value;
+                dgvCrateContents.Rows.Add(item.ItemType.ToString(), item.ExtendedName, item.ResourcePurity, item.Quantity.ToString());
+            }
+        }
+
+        private void ClearCrateContents()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            dgvCrateContents.Rows.Clear();
+            lblCrateContents.Text = "";
+            lblCrateContents.Visible = false;
+            dgvCrateContents.Visible = false;
         }
 
         private void PopulateAddTypeCombo()

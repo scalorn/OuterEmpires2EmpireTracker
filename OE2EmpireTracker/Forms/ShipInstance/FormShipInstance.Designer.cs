@@ -63,6 +63,12 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.txtAddQty = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmdAddItem = new System.Windows.Forms.Button();
             this.cmdRemoveItem = new System.Windows.Forms.Button();
+            this.lblCrateContents = new System.Windows.Forms.Label();
+            this.dgvCrateContents = new System.Windows.Forms.DataGridView();
+            this.colCrateType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCrateName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCratePurity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCrateQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
 
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
@@ -78,6 +84,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.flpAddItem.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvComponents)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCargo)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCrateContents)).BeginInit();
             this.SuspendLayout();
             //
             // flpBase
@@ -313,6 +320,8 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             //
             this.tabCargo.Controls.Add(this.flpCargoTop);
             this.tabCargo.Controls.Add(this.dgvCargo);
+            this.tabCargo.Controls.Add(this.lblCrateContents);
+            this.tabCargo.Controls.Add(this.dgvCrateContents);
             this.tabCargo.Controls.Add(this.flpAddItem);
             this.tabCargo.Controls.Add(this.cmdRemoveItem);
             this.tabCargo.Location = new System.Drawing.Point(4, 22);
@@ -364,7 +373,33 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.dgvCargo.Name = "dgvCargo";
             this.dgvCargo.ReadOnly = true;
             this.dgvCargo.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvCargo.Size = new System.Drawing.Size(698, 350);
+            this.dgvCargo.Size = new System.Drawing.Size(698, 200);
+            //
+            // lblCrateContents
+            //
+            this.lblCrateContents.AutoSize = true;
+            this.lblCrateContents.Location = new System.Drawing.Point(3, 235);
+            this.lblCrateContents.Name = "lblCrateContents";
+            this.lblCrateContents.Text = "";
+            this.lblCrateContents.Font = new System.Drawing.Font(this.Font, System.Drawing.FontStyle.Bold);
+            //
+            // dgvCrateContents
+            //
+            this.dgvCrateContents.AllowUserToAddRows = false;
+            this.dgvCrateContents.AllowUserToDeleteRows = false;
+            this.dgvCrateContents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvCrateContents.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colCrateType, this.colCrateName, this.colCratePurity, this.colCrateQty});
+            this.dgvCrateContents.Location = new System.Drawing.Point(3, 252);
+            this.dgvCrateContents.Name = "dgvCrateContents";
+            this.dgvCrateContents.ReadOnly = true;
+            this.dgvCrateContents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvCrateContents.Size = new System.Drawing.Size(698, 120);
+            this.dgvCrateContents.Visible = false;
+            this.colCrateType.HeaderText = "Type"; this.colCrateType.Name = "colCrateType"; this.colCrateType.ReadOnly = true; this.colCrateType.Width = 100;
+            this.colCrateName.HeaderText = "Name"; this.colCrateName.Name = "colCrateName"; this.colCrateName.ReadOnly = true; this.colCrateName.Width = 250;
+            this.colCratePurity.HeaderText = "Purity"; this.colCratePurity.Name = "colCratePurity"; this.colCratePurity.ReadOnly = true; this.colCratePurity.Width = 80;
+            this.colCrateQty.HeaderText = "Quantity"; this.colCrateQty.Name = "colCrateQty"; this.colCrateQty.ReadOnly = true; this.colCrateQty.Width = 80;
             //
             // colCargoType
             //
@@ -521,6 +556,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.tabControl.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvComponents)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCargo)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCrateContents)).EndInit();
             this.ResumeLayout(false);
         }
 
@@ -572,5 +608,11 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         private OE2EmpireTracker.Controls.ValidatedTextBox txtAddQty;
         private System.Windows.Forms.Button cmdAddItem;
         private System.Windows.Forms.Button cmdRemoveItem;
+        private System.Windows.Forms.Label lblCrateContents;
+        private System.Windows.Forms.DataGridView dgvCrateContents;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCrateType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCrateName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCratePurity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCrateQty;
     }
 }

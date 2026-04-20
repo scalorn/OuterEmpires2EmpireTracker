@@ -158,12 +158,6 @@ Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat
 
 The following items were designed in the empire-systems spec and marked complete in tasks.md, but the UI controls were either not implemented or implemented differently than the mockup specified. Discovered during the April 2026 mockup-controls audit.
 
-### BL-075: Crate Master-Detail UI (Ship Cargo, Station Hold)
-**Dependencies:** None
-**Source:** Empire-systems Iterations 2+4, tasks 19.3 and 25.2
-
-The mockup designs a master-detail pattern where selecting a crate row shows its contents in a dgvCrateContents detail grid below. Currently FormShipInstance and FormStation show items in a flat list without crate expansion. The Crate model exists on Item. Affects: FormShipInstance Cargo tab, FormStation Hold tab, and eventually Colony warehouse.
-
 ### BL-076: Ship Instance Stats and Swap Component
 **Dependencies:** None
 **Source:** Empire-systems Iteration 2, tasks 19.1-19.2

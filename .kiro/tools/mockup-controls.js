@@ -81,6 +81,7 @@ const SECTION_MAP = {
             aliases: {
                 'txtStationFilter': 'txtFilter',
                 'dgvStationStats': 'dgvStats',
+                'dgvCrateContents': 'dgvHoldCrateContents',
             },
         },
     ],

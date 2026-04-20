@@ -148,7 +148,7 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
 - [x] 19. Ship Instance Form
   - [x] 19.1 Create FormShipInstance MDI child with Overview + Cargo tabs
   - [x] 19.2 Overview tab: component grid with editable Condition/MaxRepair columns, hull row first — **stats display and cmdSwapComponent not implemented (BL-076)**
-  - [x] 19.3 Cargo tab: radio toggle Cargo Hold / Hopper, crate master-detail, purity restriction — **crate master-detail not implemented (BL-075)**
+  - [x] 19.3 Cargo tab: radio toggle Cargo Hold / Hopper, crate master-detail, purity restriction — crate master-detail implemented in BL-075
   - [x] 19.4 Create from Template button
   - [x] 19.5 Implement ShipReferenceCounter (DeliveryPlan.ShipUUID + BuildItem.BuildLocationUUID), Refs column
   - [x] 19.6 Wire events, NLog, PERF
@@ -178,7 +178,7 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
 
 - [x] 25. Station Form
   - [x] 25.1 Create FormStation MDI child with Hold, Components, Munitions tabs
-  - [x] 25.2 Hold tab: inventory grid with editable Condition/MaxRepair, crate master-detail (CrateInventoryPanel) — **crate master-detail not implemented (BL-075)**
+  - [x] 25.2 Hold tab: inventory grid with editable Condition/MaxRepair, crate master-detail (CrateInventoryPanel) — crate master-detail implemented in BL-075
   - [x] 25.3 Components tab: component grid with editable Condition/MaxRepair, hull row first — **blueprint selector and stats display not implemented (BL-077)**
   - [x] 25.4 Munitions tab for armed player-owned stations
   - [x] 25.5 Implement StationReferenceCounter, Refs column, delete protection

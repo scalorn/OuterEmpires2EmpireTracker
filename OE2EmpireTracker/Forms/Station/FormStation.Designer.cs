@@ -56,6 +56,12 @@ namespace OE2EmpireTracker.Forms.Station
             this.txtHoldQty = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmdHoldAdd = new System.Windows.Forms.Button();
             this.cmdHoldRemove = new System.Windows.Forms.Button();
+            this.lblHoldCrateContents = new System.Windows.Forms.Label();
+            this.dgvHoldCrateContents = new System.Windows.Forms.DataGridView();
+            this.colHoldCrateType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colHoldCrateName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colHoldCratePurity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colHoldCrateQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabComponents = new System.Windows.Forms.TabPage();
             this.dgvComponents = new System.Windows.Forms.DataGridView();
             this.colSlotType = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -88,6 +94,7 @@ namespace OE2EmpireTracker.Forms.Station
             this.tabMunitions.SuspendLayout();
             this.flpMunAdd.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHold)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvHoldCrateContents)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvComponents)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMunitions)).BeginInit();
             this.SuspendLayout();
@@ -255,6 +262,8 @@ namespace OE2EmpireTracker.Forms.Station
 
             // tabHold
             this.tabHold.Controls.Add(this.dgvHold);
+            this.tabHold.Controls.Add(this.lblHoldCrateContents);
+            this.tabHold.Controls.Add(this.dgvHoldCrateContents);
             this.tabHold.Controls.Add(this.flpHoldAdd);
             this.tabHold.Controls.Add(this.cmdHoldRemove);
             this.tabHold.Location = new System.Drawing.Point(4, 22);
@@ -274,7 +283,30 @@ namespace OE2EmpireTracker.Forms.Station
             this.dgvHold.Location = new System.Drawing.Point(3, 3);
             this.dgvHold.Name = "dgvHold";
             this.dgvHold.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvHold.Size = new System.Drawing.Size(698, 350);
+            this.dgvHold.Size = new System.Drawing.Size(698, 200);
+
+            // lblHoldCrateContents
+            this.lblHoldCrateContents.AutoSize = true;
+            this.lblHoldCrateContents.Location = new System.Drawing.Point(3, 235);
+            this.lblHoldCrateContents.Name = "lblHoldCrateContents";
+            this.lblHoldCrateContents.Text = "";
+            this.lblHoldCrateContents.Font = new System.Drawing.Font(this.Font, System.Drawing.FontStyle.Bold);
+            // dgvHoldCrateContents
+            this.dgvHoldCrateContents.AllowUserToAddRows = false;
+            this.dgvHoldCrateContents.AllowUserToDeleteRows = false;
+            this.dgvHoldCrateContents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvHoldCrateContents.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colHoldCrateType, this.colHoldCrateName, this.colHoldCratePurity, this.colHoldCrateQty});
+            this.dgvHoldCrateContents.Location = new System.Drawing.Point(3, 252);
+            this.dgvHoldCrateContents.Name = "dgvHoldCrateContents";
+            this.dgvHoldCrateContents.ReadOnly = true;
+            this.dgvHoldCrateContents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvHoldCrateContents.Size = new System.Drawing.Size(698, 120);
+            this.dgvHoldCrateContents.Visible = false;
+            this.colHoldCrateType.HeaderText = "Type"; this.colHoldCrateType.Name = "colHoldCrateType"; this.colHoldCrateType.ReadOnly = true; this.colHoldCrateType.Width = 100;
+            this.colHoldCrateName.HeaderText = "Name"; this.colHoldCrateName.Name = "colHoldCrateName"; this.colHoldCrateName.ReadOnly = true; this.colHoldCrateName.Width = 250;
+            this.colHoldCratePurity.HeaderText = "Purity"; this.colHoldCratePurity.Name = "colHoldCratePurity"; this.colHoldCratePurity.ReadOnly = true; this.colHoldCratePurity.Width = 80;
+            this.colHoldCrateQty.HeaderText = "Quantity"; this.colHoldCrateQty.Name = "colHoldCrateQty"; this.colHoldCrateQty.ReadOnly = true; this.colHoldCrateQty.Width = 80;
 
             // colHoldType
             this.colHoldType.HeaderText = "Type";
@@ -522,6 +554,7 @@ namespace OE2EmpireTracker.Forms.Station
             this.flpHoldAdd.PerformLayout();
             this.flpMunAdd.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHold)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvHoldCrateContents)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvComponents)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMunitions)).EndInit();
             this.ResumeLayout(false);
@@ -568,6 +601,12 @@ namespace OE2EmpireTracker.Forms.Station
         private OE2EmpireTracker.Controls.ValidatedTextBox txtHoldQty;
         private System.Windows.Forms.Button cmdHoldAdd;
         private System.Windows.Forms.Button cmdHoldRemove;
+        private System.Windows.Forms.Label lblHoldCrateContents;
+        private System.Windows.Forms.DataGridView dgvHoldCrateContents;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colHoldCrateType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colHoldCrateName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colHoldCratePurity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colHoldCrateQty;
         private System.Windows.Forms.TabPage tabComponents;
         private System.Windows.Forms.DataGridView dgvComponents;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSlotType;
