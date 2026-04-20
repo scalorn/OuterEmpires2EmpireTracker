@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "name": "Run Full Audit",
+  "description": "Runs the full audit suite (magic strings, spec coverage, PERF timing, reference counters, control wiring, mockup controls) on demand.",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "node .kiro/tools/audit.js --fix",
+    "timeout": 120
+  }
+}

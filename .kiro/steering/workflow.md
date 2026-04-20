@@ -2,7 +2,8 @@
 
 ## After Every Piece of Work
 1. **Build and test** before committing — the solution must compile and all tests must pass
-2. **Always commit** — never ask whether to commit; just do it after verifying the build/tests pass
+2. **Run audit** — `node .kiro/tools/audit.js` must report no new findings (PERF timing on small combo methods is an accepted baseline)
+3. **Always commit** — never ask whether to commit; just do it after verifying the build/tests pass
 3. **Commit** all changes with a detailed commit message describing what was done and why
 3. **Update the spec** — if the work relates to a feature or fix with a spec under `.kiro/specs/`:
    - Update **requirements.md**, **design.md**, and **tasks.md** to reflect any new or changed behavior
