@@ -147,61 +147,16 @@ All BlueprintTypes now have HTML coverage. No gaps detected (confirmed by IconPo
 
 ---
 
-## Completed (Empire Systems Spec)
-
-The following backlog items were implemented as part of the `empire-systems` spec (`.kiro/specs/empire-systems/`), which delivered 8 iterations of interconnected features.
-
-### BL-001: Delivery Routes — Phase 8: Ship Integration
-**Status: Complete** — Implemented as part of empire-systems Iteration 2-3 (Ships + Ship-Aware Delivery). Ship cargo capacity, volume computation, trip splitting, and ship assignment on delivery plans.
-
-### BL-002: Delivery Routes — Phase 9: Space Station Hubs
-**Status: Complete** — Implemented as part of empire-systems Iteration 4 (Stations). Station model with holds, components, munitions. Stations as route destinations.
-
-### BL-003: Delivery Auto-Fill — Time Horizon Parameter
-**Status: Complete** — Implemented as part of empire-systems Iteration 8. Time horizon parameter on flatpack auto-fill, persisted as user preference.
-
-### BL-011: Manufacturing Queue
-**Status: Complete** — Implemented as Build Planner in empire-systems Iteration 1. BuildPlan/BuildItem models, BuildPlanService, ResourceCheckService, DeliveryGenerationService, QueueCalculator, AutoAssignService, FormBuildPlanner MDI child.
-
-### BL-012: Ships
-**Status: Complete** — Implemented in empire-systems Iteration 2. ShipTemplate/Ship models, ShipBuildService, FormShipTemplate, FormShipInstance with Overview+Cargo tabs.
-
-### BL-013: Ship-Aware Delivery Execution
-**Status: Complete** — Implemented in empire-systems Iteration 3. Cargo volume computation, trip splitting, ship assignment UI on delivery plans.
-
-### BL-014: Stations
-**Status: Complete** — Implemented in empire-systems Iteration 4. Station model with Holds/Components/Munitions, FormStation MDI child, StationReferenceCounter.
-
-### BL-015: Station Destinations in Routes
-**Status: Complete** — Implemented in empire-systems Iteration 4. Station and asteroid stops in delivery routes and execution.
-
-### BL-017: Market
-**Status: Complete** — Implemented in empire-systems Iteration 5. MarketListing/MarketTransaction models, MarketService, FormMarket with Listings/Transactions/Summary tabs.
-
-### BL-032: Manufacturing Build Queue Calculator
-**Status: Complete** — Implemented as QueueCalculator in empire-systems Iteration 1 (Build Planner).
-
-### BL-055: Mining/Refining/Manufacturing/Research Queue System
-**Status: Complete** — Implemented as part of empire-systems Iteration 6. Mining/Refining/Research build item types in Build Planner, FormAsteroid, FormSupplyChain, SupplyChainService.
-
-### BL-059: Manufacturing Build Queue — Auto-Create Orders from Fill Levels
-**Status: Complete** — Implemented as Stock Targets in empire-systems Iteration 7. StockPlan/StockTarget/StockProfile models, StockTargetService, FormStockTargets, cascade integration in BackgroundProcessor.
 
 ### BL-073: Code Coverage Tooling
 **Dependencies:** None
-**Status: Blocked** — AltCover (both global tool and NuGet package) fails with .NET Framework 4.8.1 + NUnit + vstest.console. The global tool crashes with a CLR assertion (net8.0 runtime vs net4.8.1 assemblies). The NuGet package instruments successfully but the NUnit test adapter can't discover tests in the instrumented assemblies. OpenCover is unmaintained (last release 2021). VS Community doesn't include the Enterprise code coverage collector.
+**Status: Blocked**  AltCover (both global tool and NuGet package) fails with .NET Framework 4.8.1 + NUnit + vstest.console. The global tool crashes with a CLR assertion (net8.0 runtime vs net4.8.1 assemblies). The NuGet package instruments successfully but the NUnit test adapter can't discover tests in the instrumented assemblies. OpenCover is unmaintained (last release 2021). VS Community doesn't include the Enterprise code coverage collector.
 
 Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat Code Coverage"` works natively. In the meantime, use the file-level coverage analysis tool (`node .kiro/tools/spec-coverage.js`) and the reference counter completeness tests as proxies for coverage.
 
 ## Empire-Systems Audit Gaps
 
 The following items were designed in the empire-systems spec and marked complete in tasks.md, but the UI controls were either not implemented or implemented differently than the mockup specified. Discovered during the April 2026 mockup-controls audit.
-
-### BL-074: Stock Profiles Tab on FormStockTargets
-**Dependencies:** None
-**Source:** Empire-systems Iteration 7, task 44.4
-
-The Profiles tab on FormStockTargets was designed but never built. The tab allows grouping stock plans into profiles with AND/OR logic (same GroupID = OR/max, different GroupIDs = AND/sum). The StockProfile model exists in code. The colony-overflow.md mockup also references this tab. 14 controls not implemented.
 
 ### BL-075: Crate Master-Detail UI (Ship Cargo, Station Hold)
 **Dependencies:** None

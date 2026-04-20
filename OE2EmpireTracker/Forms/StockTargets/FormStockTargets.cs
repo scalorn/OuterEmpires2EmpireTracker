@@ -20,6 +20,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
 
         private PlayerContext playerContext;
         private StockPlan _selectedPlan;
+        private StockProfile _selectedProfile;
 
         public FormStockTargets()
         {
@@ -52,9 +53,29 @@ namespace OE2EmpireTracker.Forms.StockTargets
             PopulatePlanList();
             ClearForm();
 
+            // Profiles tab wiring
+            lvwProfiles.View = View.Details;
+            lvwProfiles.Columns.Add("Name", 140);
+            lvwProfiles.Columns.Add("Active", 50);
+            lvwProfiles.FullRowSelect = true;
+            lvwProfiles.MultiSelect = false;
+            lvwProfiles.ItemSelectionChanged += lvwProfiles_ItemSelectionChanged;
+            txtProfileFilter.TextChanged += txtProfileFilter_TextChanged;
+            txtProfileName.TextChanged += txtProfileName_TextChanged;
+            chkProfileActive.CheckedChanged += chkProfileActive_CheckedChanged;
+            cmdNewProfile.Click += cmdNewProfile_Click;
+            cmdDeleteProfile.Click += cmdDeleteProfile_Click;
+            cmdSaveProfile.Click += cmdSaveProfile_Click;
+            cmdAddEntry.Click += cmdAddEntry_Click;
+            cmdRemoveEntry.Click += cmdRemoveEntry_Click;
+            txtEntryFilter.TextChanged += txtEntryFilter_TextChanged;
+            PopulateProfileList();
+            ClearProfileForm();
+
             flpBase.Layout += flpBase_Layout;
             flpSearchList.Layout += flpSearchList_Layout;
             flpDetail.Layout += flpDetail_Layout;
+            tabProfiles.Layout += tabProfiles_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
         }
@@ -64,7 +85,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             int w = flpBase.ClientSize.Width;
             int h = flpBase.ClientSize.Height;
             flpSearchList.Size = new Size(220, h - 6);
-            flpDetail.Size = new Size(w - 232, h - 6);
+            tabMain.Size = new Size(w - 232, h - 6);
         }
         private void flpSearchList_Layout(object sender, LayoutEventArgs e)
         {
@@ -530,6 +551,267 @@ namespace OE2EmpireTracker.Forms.StockTargets
             }
         }
 
+        // === Profiles Tab ===
+
+        private void tabProfiles_Layout(object sender, LayoutEventArgs e)
+        {
+            int w = tabProfiles.ClientSize.Width;
+            int h = tabProfiles.ClientSize.Height;
+            flpProfilesTab.Size = new Size(w, h);
+            flpProfileList.Size = new Size(220, h - 6);
+            flpProfileDetail.Size = new Size(w - 232, h - 6);
+            int listH = h - 80;
+            if (listH < 50) listH = 50;
+            lvwProfiles.Size = new Size(214, listH);
+            dgvEntries.Width = flpProfileDetail.Width - 6;
+        }
+
+        private void PopulateProfileList()
+        {
+            var sw = Stopwatch.StartNew();
+            using var guard = new ProgrammaticUpdateGuard(this);
+            string selectedUUID = _selectedProfile?.UUID;
+            lvwProfiles.Items.Clear();
+
+            var profiles = playerContext.GetCurrentPlayerStockProfiles();
+            string filter = txtProfileFilter.Text.Trim();
+            if (!string.IsNullOrEmpty(filter))
+                profiles = profiles.Where(p =>
+                    p.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            profiles = profiles.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase).ToList();
+
+            foreach (var profile in profiles)
+            {
+                var item = new ListViewItem(profile.Name) { Tag = profile };
+                item.SubItems.Add(profile.IsActive ? "Yes" : "No");
+                if (!profile.IsActive)
+                {
+                    item.ForeColor = Color.Gray;
+                    item.Font = new Font(lvwProfiles.Font, FontStyle.Italic);
+                }
+                lvwProfiles.Items.Add(item);
+                if (profile.UUID == selectedUUID) item.Selected = true;
+            }
+            sw.Stop();
+            Log.Info("PERF PopulateProfileList: {0}ms items={1}", sw.ElapsedMilliseconds, profiles.Count);
+        }
+
+        private void txtProfileFilter_TextChanged(object sender, EventArgs e) { PopulateProfileList(); }
+
+        private void lvwProfiles_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (e.IsSelected && e.Item.Tag is StockProfile profile)
+            { _selectedProfile = profile; PopulateProfileForm(); }
+            else if (!e.IsSelected && lvwProfiles.SelectedItems.Count == 0)
+            { _selectedProfile = null; ClearProfileForm(); }
+        }
+
+        private void PopulateProfileForm()
+        {
+            var sw = Stopwatch.StartNew();
+            using var guard = new ProgrammaticUpdateGuard(this);
+            if (_selectedProfile == null) { ClearProfileForm(); return; }
+            txtProfileName.Text = _selectedProfile.Name;
+            chkProfileActive.Checked = _selectedProfile.IsActive;
+            PopulateEntriesGrid();
+            PopulateEntryCombo();
+            SetProfileDetailEnabled(true);
+            UpdateLogicSummary();
+            sw.Stop();
+            Log.Info("PERF PopulateProfileForm: {0}ms", sw.ElapsedMilliseconds);
+        }
+
+        private void ClearProfileForm()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            txtProfileName.Text = "";
+            chkProfileActive.Checked = true;
+            dgvEntries.Rows.Clear();
+            cmbEntry.DataSource = null;
+            cmbEntry.Items.Clear();
+            lblLogicSummary.Text = "";
+            SetProfileDetailEnabled(false);
+        }
+
+        private void SetProfileDetailEnabled(bool enabled)
+        {
+            txtProfileName.Enabled = enabled;
+            chkProfileActive.Enabled = enabled;
+            cmdSaveProfile.Enabled = enabled;
+            dgvEntries.Enabled = enabled;
+            txtGroupID.Enabled = enabled;
+            txtEntryFilter.Enabled = enabled;
+            cmbEntry.Enabled = enabled;
+            cmdAddEntry.Enabled = enabled;
+            cmdRemoveEntry.Enabled = enabled;
+        }
+
+        private void PopulateEntriesGrid()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            dgvEntries.Rows.Clear();
+            if (_selectedProfile == null) return;
+
+            foreach (var entry in _selectedProfile.Entries)
+            {
+                string planName = ResolvePlanName(entry.StockPlanUUID);
+                int rowIdx = dgvEntries.Rows.Add(entry.GroupID, planName);
+                dgvEntries.Rows[rowIdx].Tag = entry;
+            }
+        }
+
+        private string ResolvePlanName(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return "";
+            var plan = playerContext.StockPlanList.FirstOrDefault(p => p.UUID == uuid);
+            return plan?.Name ?? uuid;
+        }
+
+        private void PopulateEntryCombo()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            cmbEntry.DataSource = null;
+            cmbEntry.Items.Clear();
+
+            var plans = playerContext.GetCurrentPlayerStockPlans();
+            string filter = txtEntryFilter.Text.Trim();
+            if (!string.IsNullOrEmpty(filter))
+                plans = plans.Where(p =>
+                    p.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+
+            var items = new List<KeyValuePair<string, string>>();
+            foreach (var plan in plans.OrderBy(p => p.Name))
+                items.Add(new KeyValuePair<string, string>(plan.UUID, plan.Name));
+
+            if (items.Count > 0)
+            {
+                cmbEntry.DataSource = items;
+                cmbEntry.DisplayMember = "Value";
+                cmbEntry.ValueMember = "Key";
+            }
+        }
+
+        private void txtEntryFilter_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            PopulateEntryCombo();
+        }
+
+        private void UpdateLogicSummary()
+        {
+            if (_selectedProfile == null || _selectedProfile.Entries.Count == 0)
+            { lblLogicSummary.Text = ""; return; }
+
+            var groups = _selectedProfile.Entries
+                .GroupBy(e => e.GroupID)
+                .OrderBy(g => g.Key);
+
+            var parts = new List<string>();
+            foreach (var g in groups)
+            {
+                var names = g.Select(e => ResolvePlanName(e.StockPlanUUID)).ToList();
+                if (names.Count == 1)
+                    parts.Add(string.Format("Group {0}: {1}", g.Key, names[0]));
+                else
+                    parts.Add(string.Format("Group {0} (OR): max({1})", g.Key, string.Join(", ", names)));
+            }
+            if (parts.Count == 1)
+                lblLogicSummary.Text = "Logic: " + parts[0];
+            else
+                lblLogicSummary.Text = "Logic: " + string.Join(" + ", parts.Select(p => p));
+        }
+
+        private void cmdNewProfile_Click(object sender, EventArgs e)
+        {
+            var profile = new StockProfile
+            {
+                UUID = Guid.NewGuid().ToString(),
+                Name = "New Profile",
+                OwnerUUID = playerContext.CurrentPlayerUUID ?? "",
+                IsActive = true
+            };
+            playerContext.StockProfileList.Add(profile);
+            playerContext.WriteContext();
+            _selectedProfile = profile;
+            PopulateProfileList();
+            PopulateProfileForm();
+            Log.Info("Created new stock profile");
+        }
+
+        private void cmdDeleteProfile_Click(object sender, EventArgs e)
+        {
+            if (_selectedProfile == null) return;
+            var result = MessageBox.Show(
+                string.Format("Delete profile \"{0}\"?", _selectedProfile.Name),
+                "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result != DialogResult.Yes) return;
+            playerContext.StockProfileList.Remove(_selectedProfile);
+            playerContext.WriteContext();
+            _selectedProfile = null;
+            PopulateProfileList();
+            ClearProfileForm();
+            Log.Info("Deleted stock profile");
+        }
+
+        private void cmdSaveProfile_Click(object sender, EventArgs e)
+        {
+            if (_selectedProfile == null) return;
+            string name = txtProfileName.Text.Trim();
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                MessageBox.Show("Name cannot be empty.", "Validation",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            _selectedProfile.Name = name;
+            playerContext.WriteContext();
+            PopulateProfileList();
+            Log.Info("Saved stock profile \"{0}\"", _selectedProfile.Name);
+        }
+
+        private void txtProfileName_TextChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0 || _selectedProfile == null) return;
+            _selectedProfile.Name = txtProfileName.Text;
+        }
+
+        private void chkProfileActive_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0 || _selectedProfile == null) return;
+            _selectedProfile.IsActive = chkProfileActive.Checked;
+        }
+
+        private void cmdAddEntry_Click(object sender, EventArgs e)
+        {
+            if (_selectedProfile == null) return;
+            string planUUID = cmbEntry.SelectedValue?.ToString() ?? "";
+            if (string.IsNullOrWhiteSpace(planUUID)) return;
+            string groupID = txtGroupID.Text.Trim();
+            if (string.IsNullOrWhiteSpace(groupID)) groupID = "A";
+
+            var entry = new StockProfileEntry
+            {
+                GroupID = groupID,
+                StockPlanUUID = planUUID
+            };
+            _selectedProfile.Entries.Add(entry);
+            PopulateEntriesGrid();
+            UpdateLogicSummary();
+            Log.Info("Added profile entry: group={0} plan={1}", groupID, ResolvePlanName(planUUID));
+        }
+
+        private void cmdRemoveEntry_Click(object sender, EventArgs e)
+        {
+            if (_selectedProfile == null || dgvEntries.SelectedRows.Count == 0) return;
+            var entry = dgvEntries.SelectedRows[0].Tag as StockProfileEntry;
+            if (entry == null) return;
+            _selectedProfile.Entries.Remove(entry);
+            PopulateEntriesGrid();
+            UpdateLogicSummary();
+            Log.Info("Removed profile entry: group={0}", entry.GroupID);
+        }
+
         // Events
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
         {
@@ -539,6 +821,9 @@ namespace OE2EmpireTracker.Forms.StockTargets
             _selectedPlan = null;
             PopulatePlanList();
             ClearForm();
+            _selectedProfile = null;
+            PopulateProfileList();
+            ClearProfileForm();
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)

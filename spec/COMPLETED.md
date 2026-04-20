@@ -265,3 +265,43 @@ Layered synchronization strategy for the data model so BackgroundProcessor, Colo
 ### Empire Systems Spec (8 Iterations)
 Comprehensive empire management feature set implemented across 8 iterations in `.kiro/specs/empire-systems/`. Delivered: Build Planner (Iteration 1) with BuildPlan/BuildItem models, BuildPlanService, ResourceCheckService, DeliveryGenerationService, QueueCalculator, AutoAssignService, FormBuildPlanner; Ships (Iteration 2) with ShipTemplate/Ship models, ShipBuildService, FormShipTemplate, FormShipInstance; Ship-Aware Delivery (Iteration 3) with cargo volume computation, trip splitting, ship assignment; Stations (Iteration 4) with Station model, holds, components, munitions, FormStation, station route stops, StationReferenceCounter; Market (Iteration 5) with MarketListing/MarketTransaction models, MarketService, FormMarket; Full Production Queue + Supply Chain + Asteroids (Iteration 6) with Mining/Refining/Research in Build Planner, FormAsteroid, FormSupplyChain, SupplyChainService, Warehouse Overflow tab; Stock Targets (Iteration 7) with StockPlan/StockTarget/StockProfile models, StockTargetService, FormStockTargets, cascade integration; Delivery Auto-Fill Time Horizon (Iteration 8). Cross-cutting: Contacts form (Factions/ExternalCharacters), reference counter expansions, IsActive toggle pattern, 13 new entity types, PlayerContext updates, data migration.
 **Status: Complete** — All 8 iterations implemented. Backlog items BL-001, BL-002, BL-003, BL-011, BL-012, BL-013, BL-014, BL-015, BL-017, BL-032, BL-055, BL-059 resolved.
+
+
+### BL-001: Delivery Routes — Phase 8: Ship Integration
+**Status: Complete** — Implemented as part of empire-systems Iteration 2-3 (Ships + Ship-Aware Delivery). Ship cargo capacity, volume computation, trip splitting, and ship assignment on delivery plans.
+
+### BL-002: Delivery Routes — Phase 9: Space Station Hubs
+**Status: Complete** — Implemented as part of empire-systems Iteration 4 (Stations). Station model with holds, components, munitions. Stations as route destinations.
+
+### BL-003: Delivery Auto-Fill — Time Horizon Parameter
+**Status: Complete** — Implemented as part of empire-systems Iteration 8. Time horizon parameter on flatpack auto-fill, persisted as user preference.
+
+### BL-011: Manufacturing Queue
+**Status: Complete** — Implemented as Build Planner in empire-systems Iteration 1. BuildPlan/BuildItem models, BuildPlanService, ResourceCheckService, DeliveryGenerationService, QueueCalculator, AutoAssignService, FormBuildPlanner MDI child.
+
+### BL-012: Ships
+**Status: Complete** — Implemented in empire-systems Iteration 2. ShipTemplate/Ship models, ShipBuildService, FormShipTemplate, FormShipInstance with Overview+Cargo tabs.
+
+### BL-013: Ship-Aware Delivery Execution
+**Status: Complete** — Implemented in empire-systems Iteration 3. Cargo volume computation, trip splitting, ship assignment UI on delivery plans.
+
+### BL-014: Stations
+**Status: Complete** — Implemented in empire-systems Iteration 4. Station model with Holds/Components/Munitions, FormStation MDI child, StationReferenceCounter.
+
+### BL-015: Station Destinations in Routes
+**Status: Complete** — Implemented in empire-systems Iteration 4. Station and asteroid stops in delivery routes and execution.
+
+### BL-017: Market
+**Status: Complete** — Implemented in empire-systems Iteration 5. MarketListing/MarketTransaction models, MarketService, FormMarket with Listings/Transactions/Summary tabs.
+
+### BL-032: Manufacturing Build Queue Calculator
+**Status: Complete** — Implemented as QueueCalculator in empire-systems Iteration 1 (Build Planner).
+
+### BL-055: Mining/Refining/Manufacturing/Research Queue System
+**Status: Complete** — Implemented as part of empire-systems Iteration 6. Mining/Refining/Research build item types in Build Planner, FormAsteroid, FormSupplyChain, SupplyChainService.
+
+### BL-059: Manufacturing Build Queue — Auto-Create Orders from Fill Levels
+**Status: Complete** — Implemented as Stock Targets in empire-systems Iteration 7. StockPlan/StockTarget/StockProfile models, StockTargetService, FormStockTargets, cascade integration in BackgroundProcessor.
+
+### BL-074: Stock Profiles Tab on FormStockTargets
+**Status: Complete** — Implemented Profiles tab on FormStockTargets with left-list/right-detail pattern. Profile list with filter, name/active fields, entries grid (GroupID + Plan), add/remove entry panel with filtered plan combo, logic summary label showing AND/OR grouping. TabControl wraps existing Targets & Plans content alongside new Profiles tab.

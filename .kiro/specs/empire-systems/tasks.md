@@ -277,7 +277,7 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
   - [x] 44.1 Create FormStockTargets MDI child: Targets and Plans tab + Profiles tab
   - [x] 44.2 Plans: IsActive checkbox, replenishment plan selector, targets grid, Quick Add
   - [x] 44.3 Check and Generate Orders button
-  - [ ] 44.4 Profiles tab: IsActive checkbox, entries grid, logic summary — **NOT IMPLEMENTED (BL-074)**
+  - [x] 44.4 Profiles tab: IsActive checkbox, entries grid, logic summary — implemented in BL-074
   - [x] 44.5 Implement StockPlanReferenceCounter, Refs column
   - [x] 44.6 Wire events, NLog, PERF
   - [x] 44.7 Add "Stock Targets" to Manage menu
