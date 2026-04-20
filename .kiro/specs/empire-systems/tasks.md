@@ -295,13 +295,13 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
 
 ### Iteration 8: Delivery Auto-Fill Time Horizon
 
-- [ ] 48. Time Horizon Filter
-  - [ ] 48.1 Add time horizon parameter to flatpack auto-fill
-  - [ ] 48.2 Add time horizon input to FormAutoFill dialog
-  - [ ] 48.3 Update AutoFillFlatpacks to filter by build completion time
-  - [ ] 48.4 Persist time horizon as a preference
+- [x] 48. Time Horizon Filter
+  - [x] 48.1 Add time horizon parameter to flatpack auto-fill
+  - [x] 48.2 Add time horizon input to FormAutoFill dialog
+  - [x] 48.3 Update AutoFillFlatpacks to filter by build completion time
+  - [x] 48.4 Persist time horizon as a preference
 
-- [ ] 49. Iteration 8 Checkpoint
+- [x] 49. Iteration 8 Checkpoint
 
 ### Final
 

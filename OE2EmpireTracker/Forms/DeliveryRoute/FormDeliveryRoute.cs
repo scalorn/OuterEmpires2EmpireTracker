@@ -745,8 +745,9 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
                 if (dlg.IncludeFlatpacks)
                 {
-                    Log.Debug("AutoFill: calling AutoFillFlatpacks with {0} route stops", viewModel.Stops.Count);
-                    added += planViewModel.AutoFillFlatpacks(viewModel.Stops, colonyFinder);
+                    Log.Debug("AutoFill: calling AutoFillFlatpacks with {0} route stops, timeHorizon={1}h",
+                        viewModel.Stops.Count, dlg.TimeHorizonHours);
+                    added += planViewModel.AutoFillFlatpacks(viewModel.Stops, colonyFinder, dlg.TimeHorizonHours);
                 }
 
                 if (dlg.IncludeResources)

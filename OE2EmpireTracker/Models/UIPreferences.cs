@@ -13,6 +13,12 @@ namespace OE2EmpireTracker.Models
         public List<OpenFormEntry> OpenFormEntries { get; set; } = new List<OpenFormEntry>();
 
         public ThresholdPreferences Thresholds { get; set; } = new ThresholdPreferences();
+
+        /// <summary>
+        /// Time horizon in hours for flatpack auto-fill. 0 = include all unbuilt structures.
+        /// When > 0, only includes structures whose build will complete within this many hours.
+        /// </summary>
+        public int FlatpackTimeHorizonHours { get; set; } = 0;
     }
 
     public class ThresholdPreferences

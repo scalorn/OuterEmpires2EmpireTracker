@@ -152,7 +152,8 @@ namespace OE2EmpireTracker.ViewModels
         /// Scans each stop's colony for unbuilt+unstaged structures and adds
         /// flatpack drop-off items for each one.
         /// </summary>
-        public int AutoFillFlatpacks(IEnumerable<RouteStop> routeStops, Func<string, Colony> colonyFinder)
+        public int AutoFillFlatpacks(IEnumerable<RouteStop> routeStops, Func<string, Colony> colonyFinder,
+            int timeHorizonHours = 0)
         {
             int added = 0;
             foreach (var routeStop in routeStops.OrderBy(s => s.Sequence))
@@ -172,6 +173,17 @@ namespace OE2EmpireTracker.ViewModels
                     Log.Debug("  Structure {0}: IsBuilt={1}, IsStaged={2}, FlatpackBP={3}",
                         structure.UUID, vm.IsBuilt, vm.IsStaged, structure.FlatpackBlueprintUUID);
                     if (vm.IsBuilt || vm.IsStaged) continue;
+
+                    // Time horizon filter: skip structures that won't complete within the horizon
+                    if (timeHorizonHours > 0 && structure.BuildCompletionTime != null)
+                    {
+                        var completionTime = structure.BuildCompletionTime.EndTime;
+                        if (completionTime > DateTime.UtcNow.AddHours(timeHorizonHours))
+                        {
+                            Log.Debug("  Skipped (outside time horizon): completion={0}", completionTime);
+                            continue;
+                        }
+                    }
 
                     var blueprint = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                     if (blueprint == null) { Log.Debug("  Blueprint not found: {0}", structure.FlatpackBlueprintUUID); continue; }
