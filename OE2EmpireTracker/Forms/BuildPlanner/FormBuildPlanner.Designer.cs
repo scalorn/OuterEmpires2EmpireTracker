@@ -77,6 +77,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.txtQuantity = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.lblRecipient = new System.Windows.Forms.Label();
             this.txtRecipient = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.lblTargetDuration = new System.Windows.Forms.Label();
+            this.txtTargetDuration = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpAddItemRow3 = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddItem = new System.Windows.Forms.Button();
             this.cmdQueueCalc = new System.Windows.Forms.Button();
@@ -512,6 +514,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItemRow2.Controls.Add(this.txtQuantity);
             this.flpAddItemRow2.Controls.Add(this.lblRecipient);
             this.flpAddItemRow2.Controls.Add(this.txtRecipient);
+            this.flpAddItemRow2.Controls.Add(this.lblTargetDuration);
+            this.flpAddItemRow2.Controls.Add(this.txtTargetDuration);
             this.flpAddItemRow2.Controls.Add(this.lblResource);
             this.flpAddItemRow2.Controls.Add(this.cmbResource);
             this.flpAddItemRow2.Controls.Add(this.lblPurity);
@@ -553,6 +557,19 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.txtRecipient.Location = new System.Drawing.Point(162, 3);
             this.txtRecipient.Name = "txtRecipient";
             this.txtRecipient.Size = new System.Drawing.Size(150, 20);
+            // 
+            // lblTargetDuration
+            // 
+            this.lblTargetDuration.AutoSize = true;
+            this.lblTargetDuration.Text = "Duration:";
+            this.lblTargetDuration.Name = "lblTargetDuration";
+            this.lblTargetDuration.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            // 
+            // txtTargetDuration
+            // 
+            this.txtTargetDuration.Name = "txtTargetDuration";
+            this.txtTargetDuration.Size = new System.Drawing.Size(120, 20);
+            this.txtTargetDuration.Text = "2d 0h 0m 0s";
             // 
             // lblResource
             // 
@@ -794,6 +811,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private OE2EmpireTracker.Controls.ValidatedTextBox txtQuantity;
         private System.Windows.Forms.Label lblRecipient;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtRecipient;
+        private System.Windows.Forms.Label lblTargetDuration;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtTargetDuration;
         private System.Windows.Forms.FlowLayoutPanel flpAddItemRow3;
         private System.Windows.Forms.Button cmdAddItem;
         private System.Windows.Forms.Button cmdQueueCalc;

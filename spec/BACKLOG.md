@@ -158,12 +158,6 @@ Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat
 
 The following items were designed in the empire-systems spec and marked complete in tasks.md, but the UI controls were either not implemented or implemented differently than the mockup specified. Discovered during the April 2026 mockup-controls audit.
 
-### BL-079: Build Planner Target Duration Field
-**Dependencies:** None
-**Source:** Empire-systems Iteration 1, task 10.2
-
-FormBuildPlanner add-item panel is missing txtTargetDuration for specifying a time target (e.g. "2d 12h 0m 0s") that QueueCalculator uses to compute how many runs to queue. The QueueCalculator service exists. Needs: text field in the add-item panel, parse countdown format, call QueueCalculator, populate quantity.
-
 ### BL-080: Overflow and Asteroid Filter TextBoxes
 **Dependencies:** None
 **Source:** Empire-systems Iterations 6, tasks 35.1 and 38.1

@@ -797,9 +797,13 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 return;
             }
 
-            string input = ShowInputDialog("Enter target duration (e.g. 2d 12h 0m 0s):",
-                "Queue Calculator");
-            if (input == null) return;
+            string input = txtTargetDuration.Text.Trim();
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                MessageBox.Show("Enter a target duration (e.g. 2d 12h 0m 0s).",
+                    "Queue Calc", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             if (!CountdownFormatParser.TryParse(input, out long totalSeconds) || totalSeconds <= 0)
             {

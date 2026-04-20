@@ -321,3 +321,7 @@ Comprehensive empire management feature set implemented across 8 iterations in `
 
 ### BL-078: Market Pricing Plan Integration on Summary Tab
 **Status: Complete** — Added cmbPricingPlan (DropDownList) to FormMarket Summary tab filter row. When a pricing plan is selected and Compute is clicked, the per-item breakdown grid shows "Plan Value" and "Margin" columns computed via PriceCalculator. Total plan valuation and margin shown in the summary labels. Supports commodity pricing via ConstructionResources and resource pricing via direct lookup.
+
+
+### BL-079: Build Planner Target Duration Field
+**Status: Complete** — Added txtTargetDuration (ValidatedTextBox, default "2d 0h 0m 0s") to FormBuildPlanner add-item panel row 2. Queue Calc button now reads from this field instead of showing a modal input dialog. Parses countdown format via CountdownFormatParser, computes runs via QueueCalculator, populates quantity field.
