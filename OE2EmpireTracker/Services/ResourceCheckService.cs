@@ -298,7 +298,7 @@ namespace OE2EmpireTracker.Services
             {
                 // Normal refining: consumes unrefined resource at specified purity
                 string purity = !string.IsNullOrEmpty(item.RefiningPurity)
-                    ? item.RefiningPurity : "High";
+                    ? item.RefiningPurity : GameConstants.PurityHigh;
                 int totalNeeded = item.Quantity;
                 int available = CountInventoryResource(
                     locationInventory, item.RefiningResource, purity);
