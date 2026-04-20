@@ -578,3 +578,65 @@ All derived from existing kiro specs and verified against implemented code. Requ
 **Spec (migration.md):** Described Migration005_EmpireSystems for route stop migration and empty array initialization.
 **Code:** Migration005 is PropertyKeyCleanup. The route stop migration is Migration008_RouteStopDestinationMigration. No single migration adds empty arrays for new entity types.
 **Impact:** Spec migration numbering is outdated. The actual migration sequence diverged from the spec.
+
+## Deep Code Audit (Round 2)
+
+### AMB-070 — OPEN: MAGIC_NUMBER — Purity multipliers hardcoded in 3 files
+**Files:** Colony.cs:312-315, ColonyActivityCollector.cs:252-254, ColonyAdminReportBuilder.cs:428-430
+**Issue:** Purity output multipliers (Low=1, Medium=3, High=5) are hardcoded as magic numbers in switch statements in 3 separate files. Should be constants in GameConstants (e.g. PurityMultiplierLow=1, PurityMultiplierMedium=3, PurityMultiplierHigh=5) or a lookup method.
+**Spec reference:** spec/requirements/GameMechanics.md should define these multipliers
+**Impact:** If game balance changes multipliers, 3 files need updating independently.
+
+### AMB-071 — OPEN: MAGIC_NUMBER — Purity name strings hardcoded instead of using constants
+**Files:** Colony.cs, ColonyActivityCollector.cs, ColonyAdminReportBuilder.cs, SurveyParser.cs
+**Issue:** Purity names ("Low", "Medium", "High", "Refined") are hardcoded as string literals in switch statements. GameConstants already has PurityRefined but not the unrefined names. Should add PurityHigh, PurityMedium, PurityLow constants.
+**Spec reference:** spec/requirements/GameMechanics.md
+**Impact:** Typo in a purity string would silently fail to match.
+
+### AMB-072 — OPEN: MAGIC_NUMBER — Survey property keys hardcoded in SurveyViewModel
+**File:** SurveyViewModel.cs:48-60
+**Issue:** Property keys "SensorAbundance", "PurityModifier", "ScanLevel" are hardcoded strings. Should be constants (e.g. in a SurveyPropertyKeys class or GameConstants).
+**Spec reference:** spec/requirements/Survey.md
+**Impact:** Typo in key string would silently read/write wrong property.
+
+### AMB-073 — OPEN: MISSING_PERF — FormColony missing PERF logging
+**File:** FormColony.cs
+**Issue:** The legacy FormColony (V1) has no PERF timing on any method. FormColonyV2 has proper PERF logging. FormColony is still in the codebase and accessible.
+**Spec reference:** spec/design/code-standards.md (Form Implementation Checklist point 4)
+**Impact:** Cannot identify performance bottlenecks in the legacy form.
+
+### AMB-074 — OPEN: MISSING_SPEC — CargoVolumeService has no spec coverage
+**File:** OE2EmpireTracker/Services/CargoVolumeService.cs
+**Issue:** CargoVolumeService computes cargo volume for delivery plans and ships but has no requirements in spec/requirements/ and no mention in spec/design/services.md.
+**Spec reference:** Should be in spec/requirements/Ships.md (REQ-SHP-050 series) and spec/design/services.md
+**Impact:** Service behavior is undocumented.
+
+### AMB-075 — OPEN: MISSING_SPEC — BlueprintImportHandler has no spec coverage
+**File:** OE2EmpireTracker/Services/BlueprintImportHandler.cs
+**Issue:** BlueprintImportHandler orchestrates individual blueprint import routing but has no spec entry. The MarketBlueprintImporter is documented but this handler is not.
+**Spec reference:** Should be in spec/requirements/BlueprintProperties.md or a new BlueprintImport.md
+**Impact:** Import routing logic is undocumented.
+
+### AMB-076 — OPEN: MISSING_SPEC — ClipboardContentDetector has no spec coverage
+**File:** OE2EmpireTracker/Parsers/ClipboardContentDetector.cs
+**Issue:** ClipboardContentDetector sniffs HTML to determine content type (colony, survey, blueprint, profile, market) but has no spec entry.
+**Spec reference:** Should be in spec/requirements/Architecture.md or ColonyImport.md
+**Impact:** Content detection logic and CSS class markers are undocumented.
+
+### AMB-077 — OPEN: MISSING_SPEC — CountdownFormatParser has no spec coverage
+**File:** OE2EmpireTracker/Parsers/CountdownFormatParser.cs
+**Issue:** CountdownFormatParser converts "Xd Xh Xm Xs" strings to seconds for the Preferences form but has no spec entry.
+**Spec reference:** Should be in spec/requirements/Preferences.md
+**Impact:** Parsing rules for countdown format input are undocumented.
+
+### AMB-078 — OPEN: MISSING_SPEC — JsonSettings has no spec coverage
+**File:** OE2EmpireTracker/Services/JsonSettings.cs
+**Issue:** JsonSettings configures Newtonsoft.Json serialization (DefaultValueHandling.Ignore, NullValueHandling.Ignore) but has no spec entry.
+**Spec reference:** Should be in spec/requirements/Architecture.md
+**Impact:** Serialization behavior is undocumented.
+
+### AMB-079 — OPEN: MISSING_SPEC — 6 model classes have no spec coverage
+**Files:** ColonyStructureStatus.cs, StructureStatusDelta.cs, ColonyWorker.cs, ResearchTimeEntry.cs, ItemProperty.cs, SubResource.cs
+**Issue:** These supporting model classes exist in code but have no mention in spec/design/data-models.md or spec/requirements/DataModel.md.
+**Spec reference:** Should be in spec/design/data-models.md
+**Impact:** Data structures used by colony processing are undocumented.
