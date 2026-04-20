@@ -599,7 +599,8 @@ All derived from existing kiro specs and verified against implemented code. Requ
 **Spec reference:** spec/requirements/Survey.md
 **Impact:** Typo in key string would silently read/write wrong property.
 
-### AMB-073 — OPEN: MISSING_PERF — FormColony missing PERF logging
+### AMB-073 — RESOLVED: FormColony (V1) missing PERF logging
+**Resolution:** Deleted the legacy V1 Colony form (FormColony.cs, ColonyStructure.cs, and their Designer/resx files). FormColonyV2 is the active form with proper PERF logging. The "FormColony" key in FormOpeners already mapped to FormColonyV2 for backward compatibility.
 **File:** FormColony.cs
 **Issue:** The legacy FormColony (V1) has no PERF timing on any method. FormColonyV2 has proper PERF logging. FormColony is still in the codebase and accessible.
 **Spec reference:** spec/design/code-standards.md (Form Implementation Checklist point 4)
