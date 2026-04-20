@@ -12,3 +12,12 @@
 | [asteroids.md](asteroids.md) | FormAsteroid | 6 |
 | [supply-chains.md](supply-chains.md) | FormSupplyChain | 6 |
 | [colony-overflow.md](colony-overflow.md) | Warehouse Overflow tab (FormColony) | 6 |
+| [colony-activity.md](colony-activity.md) | FormColonyActivity | — |
+| [colony-daily-build.md](colony-daily-build.md) | FormColonyDailyBuild | — |
+| [delivery-routes.md](delivery-routes.md) | FormDeliveryRoute (Stops tab, Plan tab) | — |
+| [delivery-execution.md](delivery-execution.md) | FormDeliveryExecution | — |
+| [player-profile.md](player-profile.md) | FormPlayerProfile | — |
+| [preferences.md](preferences.md) | FormPreferences | — |
+| [pricing-plans.md](pricing-plans.md) | FormPricingPlan | — |
+| [surveys.md](surveys.md) | FormSurvey | — |
+| [blueprints.md](blueprints.md) | FormBlueprintV2 | — |
