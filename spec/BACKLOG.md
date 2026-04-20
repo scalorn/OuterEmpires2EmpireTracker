@@ -158,8 +158,3 @@ Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat
 
 The following items were designed in the empire-systems spec and marked complete in tasks.md, but the UI controls were either not implemented or implemented differently than the mockup specified. Discovered during the April 2026 mockup-controls audit.
 
-### BL-081: Stock Targets Quick Add and Expanded Components
-**Dependencies:** None
-**Source:** Empire-systems Iteration 7, task 44.2
-
-FormStockTargets is missing: (1) cmdQuickAdd button for quickly adding common target sets, and (2) dgvExpandedComponents grid showing the expanded component breakdown of ship template targets.

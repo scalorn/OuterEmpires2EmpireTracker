@@ -44,10 +44,12 @@ namespace OE2EmpireTracker.Forms.StockTargets
             cmdSave.Click += cmdSave_Click;
             cmdAddTarget.Click += cmdAddTarget_Click;
             cmdRemoveTarget.Click += cmdRemoveTarget_Click;
+            cmdQuickAdd.Click += cmdQuickAdd_Click;
             cmdCheckGenerate.Click += cmdCheckGenerate_Click;
 
             cmbScope.SelectedIndexChanged += cmbScope_SelectedIndexChanged;
             cmbTargetType.SelectedIndexChanged += cmbTargetType_SelectedIndexChanged;
+            dgvTargets.SelectionChanged += dgvTargets_SelectionChanged;
 
             PopulateTargetTypeCombos();
             PopulatePlanList();
@@ -469,6 +471,89 @@ namespace OE2EmpireTracker.Forms.StockTargets
             _selectedPlan.Targets.Remove(target);
             PopulateTargetsGrid();
             Log.Info("Removed target: {0}", target.ItemName);
+        }
+
+        private void cmdQuickAdd_Click(object sender, EventArgs e)
+        {
+            if (_selectedPlan == null) return;
+
+            // Quick Add: add common resource targets (all resources at 1000 qty, EmpireWide)
+            var resources = EmpireContext.GetInstance()?.ResourceList;
+            if (resources == null || resources.Count == 0)
+            {
+                MessageBox.Show("No resources available.", "Quick Add",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            int added = 0;
+            foreach (var r in resources.OrderBy(x => x.Name))
+            {
+                // Skip if already exists
+                if (_selectedPlan.Targets.Any(t => t.ItemName == r.Name && t.ItemType == ItemType.ItemTypeEnum.Resource))
+                    continue;
+                var target = new StockTarget
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    ItemType = ItemType.ItemTypeEnum.Resource,
+                    ItemReferenceID = r.Name,
+                    ItemName = r.Name,
+                    TargetQuantity = 1000,
+                    Scope = StockTargetScope.EmpireWide
+                };
+                _selectedPlan.Targets.Add(target);
+                added++;
+            }
+            PopulateTargetsGrid();
+            Log.Info("Quick Add: added {0} resource targets", added);
+            MessageBox.Show(string.Format("Added {0} resource target(s).", added), "Quick Add",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void dgvTargets_SelectionChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (dgvTargets.SelectedRows.Count == 0) { ClearExpandedComponents(); return; }
+            var target = dgvTargets.SelectedRows[0].Tag as StockTarget;
+            if (target != null && !string.IsNullOrEmpty(target.ShipTemplateUUID))
+                PopulateExpandedComponents(target);
+            else
+                ClearExpandedComponents();
+        }
+
+        private void PopulateExpandedComponents(StockTarget target)
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            dgvExpandedComponents.Rows.Clear();
+            var template = playerContext.ShipTemplateList.FirstOrDefault(t => t.UUID == target.ShipTemplateUUID);
+            if (template == null) { ClearExpandedComponents(); return; }
+
+            lblExpandedComponents.Text = string.Format("Components for {0} (x{1}):", template.Name, target.TargetQuantity);
+            lblExpandedComponents.Visible = true;
+            dgvExpandedComponents.Visible = true;
+
+            // Hull
+            var hullBp = playerContext.FindBlueprint(template.HullBlueprintUUID);
+            if (hullBp != null)
+                dgvExpandedComponents.Rows.Add("Hull: " + hullBp.ExtendedName, target.TargetQuantity.ToString());
+
+            // Components
+            foreach (var slot in template.Components)
+            {
+                if (string.IsNullOrEmpty(slot.BlueprintUUID)) continue;
+                var bp = playerContext.FindBlueprint(slot.BlueprintUUID);
+                string name = bp?.ExtendedName ?? slot.BlueprintUUID;
+                dgvExpandedComponents.Rows.Add(slot.SlotType + ": " + name, target.TargetQuantity.ToString());
+            }
+        }
+
+        private void ClearExpandedComponents()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            dgvExpandedComponents.Rows.Clear();
+            lblExpandedComponents.Text = "";
+            lblExpandedComponents.Visible = false;
+            dgvExpandedComponents.Visible = false;
         }
 
         private void cmdCheckGenerate_Click(object sender, EventArgs e)

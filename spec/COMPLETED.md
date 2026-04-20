@@ -329,3 +329,7 @@ Comprehensive empire management feature set implemented across 8 iterations in `
 
 ### BL-080: Overflow and Asteroid Filter TextBoxes
 **Status: Complete** — Added 4 filter textboxes that pair with combo boxes for type-ahead filtering: txtOverflowResourceFilter, txtOverflowDestFilter, txtOverflowRouteFilter on FormColonyV2 Overflow tab, and txtReserveResourceFilter on FormAsteroid. Each TextChanged event repopulates its paired combo with items matching the filter substring (case-insensitive).
+
+
+### BL-081: Stock Targets Quick Add and Expanded Components
+**Status: Complete** — Added cmdQuickAdd button to FormStockTargets that adds all resources as targets (1000 qty, EmpireWide scope, skipping duplicates). Added dgvExpandedComponents grid that shows the hull and component breakdown when a ShipTemplate target is selected in the targets grid. Selection change on dgvTargets triggers the expanded view for template targets, hidden for other types.

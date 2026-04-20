@@ -65,7 +65,12 @@ namespace OE2EmpireTracker.Forms.StockTargets
             this.flpTargetButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddTarget = new System.Windows.Forms.Button();
             this.cmdRemoveTarget = new System.Windows.Forms.Button();
+            this.cmdQuickAdd = new System.Windows.Forms.Button();
             this.cmdCheckGenerate = new System.Windows.Forms.Button();
+            this.lblExpandedComponents = new System.Windows.Forms.Label();
+            this.dgvExpandedComponents = new System.Windows.Forms.DataGridView();
+            this.colExpComponent = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colExpQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
             // Profiles tab controls
             this.flpProfilesTab = new System.Windows.Forms.FlowLayoutPanel();
             this.flpProfileList = new System.Windows.Forms.FlowLayoutPanel();
@@ -117,6 +122,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             this.flpEntryAdd.SuspendLayout();
             this.flpEntryButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTargets)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvExpandedComponents)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEntries)).BeginInit();
             this.SuspendLayout();
             // flpBase
@@ -207,6 +213,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
             this.flpDetail.Controls.Add(this.flpTargetAdd);
             this.flpDetail.Controls.Add(this.flpTargetAdd2);
             this.flpDetail.Controls.Add(this.flpTargetButtons);
+            this.flpDetail.Controls.Add(this.lblExpandedComponents);
+            this.flpDetail.Controls.Add(this.dgvExpandedComponents);
             this.flpDetail.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpDetail.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpDetail.Name = "flpDetail";
@@ -316,6 +324,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             this.flpTargetButtons.AutoSize = true;
             this.flpTargetButtons.Controls.Add(this.cmdAddTarget);
             this.flpTargetButtons.Controls.Add(this.cmdRemoveTarget);
+            this.flpTargetButtons.Controls.Add(this.cmdQuickAdd);
             this.flpTargetButtons.Controls.Add(this.cmdCheckGenerate);
             this.flpTargetButtons.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
             this.flpTargetButtons.Name = "flpTargetButtons";
@@ -323,6 +332,21 @@ namespace OE2EmpireTracker.Forms.StockTargets
             this.cmdAddTarget.Size = new System.Drawing.Size(80, 23); this.cmdAddTarget.Text = "Add Target"; this.cmdAddTarget.UseVisualStyleBackColor = true; this.cmdAddTarget.Name = "cmdAddTarget";
             this.cmdRemoveTarget.Size = new System.Drawing.Size(95, 23); this.cmdRemoveTarget.Text = "Remove Target"; this.cmdRemoveTarget.UseVisualStyleBackColor = true; this.cmdRemoveTarget.Name = "cmdRemoveTarget";
             this.cmdCheckGenerate.Size = new System.Drawing.Size(150, 23); this.cmdCheckGenerate.Text = "Check && Generate Orders"; this.cmdCheckGenerate.UseVisualStyleBackColor = true; this.cmdCheckGenerate.Name = "cmdCheckGenerate";
+            this.cmdQuickAdd.Size = new System.Drawing.Size(75, 23); this.cmdQuickAdd.Text = "Quick Add"; this.cmdQuickAdd.UseVisualStyleBackColor = true; this.cmdQuickAdd.Name = "cmdQuickAdd";
+            // lblExpandedComponents
+            this.lblExpandedComponents.AutoSize = true; this.lblExpandedComponents.Name = "lblExpandedComponents"; this.lblExpandedComponents.Text = ""; this.lblExpandedComponents.Font = new System.Drawing.Font(this.Font, System.Drawing.FontStyle.Bold);
+            // dgvExpandedComponents
+            this.dgvExpandedComponents.AllowUserToAddRows = false;
+            this.dgvExpandedComponents.AllowUserToDeleteRows = false;
+            this.dgvExpandedComponents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvExpandedComponents.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { this.colExpComponent, this.colExpQty });
+            this.dgvExpandedComponents.Name = "dgvExpandedComponents";
+            this.dgvExpandedComponents.ReadOnly = true;
+            this.dgvExpandedComponents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvExpandedComponents.Size = new System.Drawing.Size(798, 150);
+            this.dgvExpandedComponents.Visible = false;
+            this.colExpComponent.HeaderText = "Component"; this.colExpComponent.Name = "colExpComponent"; this.colExpComponent.ReadOnly = true; this.colExpComponent.Width = 300;
+            this.colExpQty.HeaderText = "Qty Needed"; this.colExpQty.Name = "colExpQty"; this.colExpQty.ReadOnly = true; this.colExpQty.Width = 80;
             // === Profiles Tab ===
             // flpProfilesTab
             this.flpProfilesTab.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -464,6 +488,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             this.flpEntryAdd.PerformLayout();
             this.flpEntryButtons.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTargets)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvExpandedComponents)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEntries)).EndInit();
             this.ResumeLayout(false);
         }
@@ -518,7 +543,12 @@ namespace OE2EmpireTracker.Forms.StockTargets
         private System.Windows.Forms.FlowLayoutPanel flpTargetButtons;
         private System.Windows.Forms.Button cmdAddTarget;
         private System.Windows.Forms.Button cmdRemoveTarget;
+        private System.Windows.Forms.Button cmdQuickAdd;
         private System.Windows.Forms.Button cmdCheckGenerate;
+        private System.Windows.Forms.Label lblExpandedComponents;
+        private System.Windows.Forms.DataGridView dgvExpandedComponents;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colExpComponent;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colExpQty;
         // Profiles tab
         private System.Windows.Forms.FlowLayoutPanel flpProfilesTab;
         private System.Windows.Forms.FlowLayoutPanel flpProfileList;
