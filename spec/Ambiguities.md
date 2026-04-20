@@ -520,7 +520,8 @@ All derived from existing kiro specs and verified against implemented code. Requ
 
 ## Code-Spec Audit Findings
 
-### AMB-060 — OPEN: RouteStop.ColonyUUID missing backward-compat JSON attribute
+### AMB-060 — RESOLVED: RouteStop.ColonyUUID missing backward-compat JSON attribute
+**Resolution:** Added `[DefaultValue("")]` and `= string.Empty` default to ColonyUUID on both RouteStop and DeliveryPlanStop. With `DefaultValueHandling.Ignore` in JsonSettings, the deprecated field is now omitted from JSON when empty.
 **Spec (data-models.md):** RouteStop.ColonyUUID should have `[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]` for backward compatibility.
 **Code (DeliveryRoute.cs):** ColonyUUID is a plain property with no JSON attribute. Same for DeliveryPlanStop.ColonyUUID in DeliveryPlan.cs.
 **Impact:** ColonyUUID will always serialize to JSON even when null/empty, adding noise to saved data. Not a functional bug since Migration008 copies ColonyUUID → DestinationUUID, but the old field persists unnecessarily.

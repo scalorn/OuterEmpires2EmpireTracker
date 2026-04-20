@@ -27,7 +27,8 @@ namespace OE2EmpireTracker.Models
     /// </summary>
     public class RouteStop
     {
-        public string ColonyUUID { get; set; }
+        [DefaultValue("")]
+        public string ColonyUUID { get; set; } = string.Empty;
         public int Sequence { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]

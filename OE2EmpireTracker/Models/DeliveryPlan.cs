@@ -89,7 +89,8 @@ namespace OE2EmpireTracker.Models
     /// </summary>
     public class DeliveryPlanStop
     {
-        public string ColonyUUID { get; set; }
+        [DefaultValue("")]
+        public string ColonyUUID { get; set; } = string.Empty;
         public int Sequence { get; set; }
         public bool StopCompleted { get; set; } = false;
         public List<DeliveryItem> DropOff { get; set; }
