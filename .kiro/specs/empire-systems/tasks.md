@@ -305,12 +305,12 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
 
 ### Final
 
-- [ ] 50. Final Integration
-  - [ ] 50.1 Full test suite passes
-  - [ ] 50.2 Verify all reference counters wired with Refs columns and delete protection
-  - [ ] 50.3 Verify all forms have NLog, PERF, IProgrammaticUpdateSource, events, BeginInvoke
-  - [ ] 50.4 Verify all IsActive toggles work with gray italic styling
-  - [ ] 50.5 Verify all inventory grids have editable Condition/MaxRepair columns
+- [x] 50. Final Integration
+  - [x] 50.1 Full test suite passes
+  - [x] 50.2 Verify all reference counters wired with Refs columns and delete protection
+  - [x] 50.3 Verify all forms have NLog, PERF, IProgrammaticUpdateSource, events, BeginInvoke
+  - [x] 50.4 Verify all IsActive toggles work with gray italic styling
+  - [x] 50.5 Verify all inventory grids have editable Condition/MaxRepair columns
 
 ## Notes
 
