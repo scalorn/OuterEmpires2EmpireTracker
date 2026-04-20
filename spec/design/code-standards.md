@@ -117,3 +117,39 @@ Lock ordering: `_listLock` → entity-level lock → `_syncRoot`. Never reversed
 - **Query patterns**: Transaction filters define minimum DB query interface.
 - **Interface extraction**: Future `IDataRepository` from PlayerContext methods.
 - **Shared faction DB**: Services take parameters (no singletons), deterministic UUIDs for dedup, snapshot fields on historical records.
+
+
+<!-- Extracted from .kiro/specs/empire-systems/design.md, lines 3721-3736 — Error Handling -->
+## Error Handling
+
+| Scenario | Handling |
+|---|---|
+| Empty/whitespace plan name | Validation rejects save, shows message |
+| Quantity < 1 | Validation rejects save, shows message |
+| Blueprint missing "Manufacture Run Time" | Calculator shows "time unknown", no computation |
+| Target duration unparseable | Calculator does nothing, no error |
+| Colony warehouse missing for allocated item | Shortfall shows all resources as needed |
+| Structure no longer exists (deleted colony) | Allocation cleared, item reverts to Staged |
+| Ship class exceeds station type limit | Assembly location rejected with message |
+| Listing quantity goes negative on sale | Clamped to 0, warning logged |
+| Stock target references deleted colony/station | Target flagged as invalid, skipped during check |
+| PlayerData missing new arrays | Init methods create empty lists, no error |
+| RouteStop has ColonyUUID but no DestinationUUID | Migration copies ColonyUUID → DestinationUUID |
+
+<!-- Extracted from .kiro/specs/empire-systems/design.md, lines 3876-3892 — Testing Strategy -->
+## Testing Strategy
+
+### Property-Based Tests (FsCheck)
+
+One test per correctness property (Properties 1-12 above), minimum 100 iterations each. Custom generators for BuildPlan, BuildItem, ShipTemplate, Station, MarketListing, StockPlan.
+
+### Unit Tests
+
+- BuildPlanService validation edge cases
+- ResourceCheckService with known blueprints and warehouse contents
+- QueueCalculator with known manufacturing times
+- ShipBuildService assembly validation matrix (all class × station type combinations)
+- MarketService sale recording and listing decrement
+- StockTargetService shortfall computation with mixed scopes
+- Migration005 on existing PlayerData with RouteStops
+- DeliveryGenerationService with known shortfalls and routes

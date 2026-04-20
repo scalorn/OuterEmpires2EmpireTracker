@@ -89,3 +89,25 @@ Controls:
 - Currently only shows colony structures. When factory ships/stations are supported, the grid will also include ship and station manufacturing, refining, and research slots.
 - `cmdAllocate`, `cmdCancel`
 
+
+
+<!-- Extracted from .kiro/specs/empire-systems/design.md, lines 2824-2843 — Colony Administration Tab Build Plan Integration -->
+### Colony Administration Tab — Build Plan Integration (Iteration 1)
+
+The existing Administration tab on FormColonyV2 gains a "Generate Build Plan" button alongside the existing Bootstrap and Optimize buttons.
+
+```
+│ ┌─ Admin ─┬─ Structures ─┬─ Workers ─┬─ Warehousing ─┬─ Overflow ─────┐   │
+│ │                                                                       │   │
+│ │ [Bootstrap Colony] [Optimize Build Order] [Generate Build Plan]       │   │
+│ │                                                                       │   │
+│ │ ┌─────────────────────────────────────────────────────────────────┐   │   │
+│ │ │ (admin report — existing)                                       │   │   │
+│ │ └─────────────────────────────────────────────────────────────────┘   │   │
+│ └───────────────────────────────────────────────────────────────────────┘   │
+```
+
+Controls:
+- `cmdGenerateBuildPlan` — enabled when the colony has at least one unstaged, unbuilt structure. Disabled otherwise.
+- On click: prompts user to create a new build plan or select an existing one (modal dialog with plan picker). Calls `BuildPlanService.GenerateColonyBuildItems()`. Shows confirmation with count of items added.
+- The button is disabled when no colony is selected.
