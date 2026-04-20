@@ -12,6 +12,11 @@ Welcome to the OE2 Empire Tracker documentation. This application helps you mana
 - [Build Planner](build-planner.md) — Manufacturing planning, resource checks, and delivery generation
 - [Pricing Plans](pricing-plans.md) — Resource pricing, cost computation, and valuation scenarios
 - [Supply Chains](supply-chains.md) — Resource pipeline modeling, stage thresholds, and automated deliveries
+- [Ships](ships.md) — Ship templates, fleet tracking, components, and cargo management
+- [Stations](stations.md) — Station inventory, components, munitions, and delivery integration
+- [Market](market.md) — Listings, sales, purchases, transactions, and profit/loss tracking
+- [Stock Targets](stock-targets.md) — Inventory goals, shortfall detection, and replenishment orders
+- [Contacts](contacts.md) — Factions, external characters, and app-wide lookups
 - [Player Profiles](player-profiles.md) — Skills, ranks, and profile management
 - [Background Processing](background-processing.md) — Automatic timer processing and status bar indicators
 - [Window State](window-state.md) — Window position persistence and MDI layout options
