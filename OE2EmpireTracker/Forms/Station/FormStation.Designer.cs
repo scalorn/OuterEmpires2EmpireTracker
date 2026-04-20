@@ -63,7 +63,11 @@ namespace OE2EmpireTracker.Forms.Station
             this.colHoldCratePurity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colHoldCrateQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabComponents = new System.Windows.Forms.TabPage();
+            this.flpBlueprintRow = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblBlueprint = new System.Windows.Forms.Label();
+            this.cmbStationBlueprint = new System.Windows.Forms.ComboBox();
             this.dgvComponents = new System.Windows.Forms.DataGridView();
+            this.rtbStationStats = new System.Windows.Forms.RichTextBox();
             this.colSlotType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colComponentName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCondition = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -91,6 +95,7 @@ namespace OE2EmpireTracker.Forms.Station
             this.tabHold.SuspendLayout();
             this.flpHoldAdd.SuspendLayout();
             this.tabComponents.SuspendLayout();
+            this.flpBlueprintRow.SuspendLayout();
             this.tabMunitions.SuspendLayout();
             this.flpMunAdd.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHold)).BeginInit();
@@ -416,7 +421,9 @@ namespace OE2EmpireTracker.Forms.Station
             this.cmdHoldRemove.Location = new System.Drawing.Point(3, 395);
 
             // tabComponents
+            this.tabComponents.Controls.Add(this.flpBlueprintRow);
             this.tabComponents.Controls.Add(this.dgvComponents);
+            this.tabComponents.Controls.Add(this.rtbStationStats);
             this.tabComponents.Location = new System.Drawing.Point(4, 22);
             this.tabComponents.Name = "tabComponents";
             this.tabComponents.Padding = new System.Windows.Forms.Padding(3);
@@ -425,17 +432,37 @@ namespace OE2EmpireTracker.Forms.Station
             this.tabComponents.Text = "Components";
             this.tabComponents.UseVisualStyleBackColor = true;
 
+            // flpBlueprintRow
+            this.flpBlueprintRow.AutoSize = true;
+            this.flpBlueprintRow.Controls.Add(this.lblBlueprint);
+            this.flpBlueprintRow.Controls.Add(this.cmbStationBlueprint);
+            this.flpBlueprintRow.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
+            this.flpBlueprintRow.Location = new System.Drawing.Point(3, 3);
+            this.flpBlueprintRow.Name = "flpBlueprintRow";
+            this.flpBlueprintRow.Size = new System.Drawing.Size(698, 27);
+            this.lblBlueprint.AutoSize = true;
+            this.lblBlueprint.Text = "Station Blueprint:";
+            this.lblBlueprint.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblBlueprint.Name = "lblBlueprint";
+            this.cmbStationBlueprint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStationBlueprint.Size = new System.Drawing.Size(300, 21);
+            this.cmbStationBlueprint.Name = "cmbStationBlueprint";
             // dgvComponents
             this.dgvComponents.AllowUserToAddRows = false;
             this.dgvComponents.AllowUserToDeleteRows = false;
             this.dgvComponents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvComponents.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colSlotType, this.colComponentName, this.colCondition, this.colMaxRepair});
-            this.dgvComponents.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvComponents.Location = new System.Drawing.Point(3, 3);
+            this.dgvComponents.Location = new System.Drawing.Point(3, 33);
             this.dgvComponents.Name = "dgvComponents";
             this.dgvComponents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvComponents.Size = new System.Drawing.Size(698, 478);
+            this.dgvComponents.Size = new System.Drawing.Size(698, 250);
+            // rtbStationStats
+            this.rtbStationStats.Location = new System.Drawing.Point(3, 289);
+            this.rtbStationStats.Name = "rtbStationStats";
+            this.rtbStationStats.ReadOnly = true;
+            this.rtbStationStats.Size = new System.Drawing.Size(698, 170);
+            this.rtbStationStats.Font = new System.Drawing.Font("Consolas", 8.25F);
 
             this.colSlotType.HeaderText = "Slot";
             this.colSlotType.Name = "colSlotType";
@@ -545,6 +572,8 @@ namespace OE2EmpireTracker.Forms.Station
             this.tabHold.ResumeLayout(false);
             this.flpHoldAdd.ResumeLayout(false);
             this.tabComponents.ResumeLayout(false);
+            this.flpBlueprintRow.ResumeLayout(false);
+            this.flpBlueprintRow.PerformLayout();
             this.tabMunitions.ResumeLayout(false);
             this.flpMunAdd.ResumeLayout(false);
             this.flpFilter.PerformLayout();
@@ -608,7 +637,11 @@ namespace OE2EmpireTracker.Forms.Station
         private System.Windows.Forms.DataGridViewTextBoxColumn colHoldCratePurity;
         private System.Windows.Forms.DataGridViewTextBoxColumn colHoldCrateQty;
         private System.Windows.Forms.TabPage tabComponents;
+        private System.Windows.Forms.FlowLayoutPanel flpBlueprintRow;
+        private System.Windows.Forms.Label lblBlueprint;
+        private System.Windows.Forms.ComboBox cmbStationBlueprint;
         private System.Windows.Forms.DataGridView dgvComponents;
+        private System.Windows.Forms.RichTextBox rtbStationStats;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSlotType;
         private System.Windows.Forms.DataGridViewTextBoxColumn colComponentName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCondition;

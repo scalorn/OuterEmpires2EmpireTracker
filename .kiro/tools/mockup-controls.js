@@ -81,7 +81,7 @@ const SECTION_MAP = {
             form: 'Station/FormStation',
             aliases: {
                 'txtStationFilter': 'txtFilter',
-                'dgvStationStats': 'dgvStats',
+                'dgvStationStats': 'rtbStationStats',
                 'dgvCrateContents': 'dgvHoldCrateContents',
             },
         },

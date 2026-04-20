@@ -158,12 +158,6 @@ Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat
 
 The following items were designed in the empire-systems spec and marked complete in tasks.md, but the UI controls were either not implemented or implemented differently than the mockup specified. Discovered during the April 2026 mockup-controls audit.
 
-### BL-077: Station Blueprint Selector and Stats Display
-**Dependencies:** None
-**Source:** Empire-systems Iteration 4, task 25.3
-
-FormStation Components tab is missing: (1) cmbStationBlueprint to select/change the station hull blueprint, and (2) a stats display via ShipBuildService.ComputeStationStats. The service method exists — just needs UI wiring.
-
 ### BL-078: Market Pricing Plan Integration on Summary Tab
 **Dependencies:** None
 **Source:** Empire-systems Iteration 5, task 30.4

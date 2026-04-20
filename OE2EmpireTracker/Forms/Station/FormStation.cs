@@ -49,6 +49,7 @@ namespace OE2EmpireTracker.Forms.Station
             dgvHold.SelectionChanged += dgvHold_SelectionChanged;
 
             dgvComponents.CellEndEdit += dgvComponents_CellEndEdit;
+            cmbStationBlueprint.SelectedIndexChanged += cmbStationBlueprint_SelectedIndexChanged;
 
             cmdMunAdd.Click += cmdMunAdd_Click;
             cmdMunRemove.Click += cmdMunRemove_Click;
@@ -149,7 +150,9 @@ namespace OE2EmpireTracker.Forms.Station
             tabComponents.Enabled = isPlayerOwned;
             UpdateMunitionsTabVisibility();
             PopulateHoldGrid();
+            PopulateStationBlueprintCombo();
             PopulateComponentsGrid();
+            RefreshStationStats();
             PopulateMunitionsGrid();
             SetDetailEnabled(true);
             sw.Stop();
@@ -164,6 +167,9 @@ namespace OE2EmpireTracker.Forms.Station
             cmbOwnership.SelectedIndex = -1;
             dgvHold.Rows.Clear();
             dgvComponents.Rows.Clear();
+            rtbStationStats.Text = "";
+            cmbStationBlueprint.DataSource = null;
+            cmbStationBlueprint.Items.Clear();
             dgvMunitions.Rows.Clear();
             SetDetailEnabled(false);
         }
@@ -456,6 +462,62 @@ namespace OE2EmpireTracker.Forms.Station
                 dgvComponents.Rows[rowIdx].Cells[colComponentName.Index].ReadOnly = true;
             }
             sw.Stop(); Log.Info("PERF PopulateComponentsGrid: {0}ms", sw.ElapsedMilliseconds);
+        }
+
+        private void PopulateStationBlueprintCombo()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            cmbStationBlueprint.DataSource = null;
+            cmbStationBlueprint.Items.Clear();
+
+            // Station hull blueprints
+            var blueprints = playerContext.GetAllBlueprints()
+                .Where(bp => !string.IsNullOrEmpty(bp.Name))
+                .OrderBy(bp => bp.ExtendedName)
+                .ToList();
+
+            var items = new List<KeyValuePair<string, string>>();
+            items.Add(new KeyValuePair<string, string>("", "(none)"));
+            foreach (var bp in blueprints)
+                items.Add(new KeyValuePair<string, string>(bp.UUID, bp.ExtendedName));
+
+            cmbStationBlueprint.DataSource = items;
+            cmbStationBlueprint.DisplayMember = "Value";
+            cmbStationBlueprint.ValueMember = "Key";
+
+            if (_selectedStation != null && !string.IsNullOrEmpty(_selectedStation.StationBlueprintUUID))
+                cmbStationBlueprint.SelectedValue = _selectedStation.StationBlueprintUUID;
+        }
+
+        private void cmbStationBlueprint_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0 || _selectedStation == null) return;
+            string uuid = cmbStationBlueprint.SelectedValue?.ToString() ?? "";
+            _selectedStation.StationBlueprintUUID = uuid;
+            PopulateComponentsGrid();
+            RefreshStationStats();
+        }
+
+        private void RefreshStationStats()
+        {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            if (_selectedStation == null) { rtbStationStats.Text = ""; sw.Stop(); return; }
+            var hullBp = playerContext.FindBlueprint(_selectedStation.StationBlueprintUUID);
+            if (hullBp == null) { rtbStationStats.Text = "No station blueprint selected."; sw.Stop(); return; }
+
+            var stats = ShipBuildService.ComputeStationStats(hullBp, _selectedStation.Components,
+                uuid => playerContext.FindBlueprint(uuid));
+
+            rtbStationStats.Text = string.Format(
+                "Mass: {0}  |  Power: {1}/{2} (Balance: {3})\n" +
+                "Health: {4}  |  Shield: {5} (Regen: {6})\n" +
+                "Defence \u2014 Energy: {7}  Kinetic: {8}  Missile: {9}\n" +
+                "Weapons \u2014 Small: {10}  Medium: {11}  Large: {12}",
+                stats.TotalMass, stats.PowerGenerated, stats.PowerConsumed, stats.PowerBalance,
+                stats.TotalHealth, stats.ShieldHitpoints, stats.ShieldRegen,
+                stats.EnergyDefence, stats.KineticDefence, stats.MissileDefence,
+                stats.SmallWeaponsInstalled, stats.MediumWeaponsInstalled, stats.LargeWeaponsInstalled);
+            sw.Stop(); Log.Info("PERF RefreshStationStats: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void dgvComponents_CellEndEdit(object sender, DataGridViewCellEventArgs e)

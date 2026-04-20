@@ -313,3 +313,7 @@ Comprehensive empire management feature set implemented across 8 iterations in `
 
 ### BL-076: Ship Instance Stats and Swap Component
 **Status: Complete** — Added rtbStats (RichTextBox) to FormShipInstance Overview tab showing computed ship stats via ShipBuildService.ComputeStats (same format as FormShipTemplate). Added cmdSwapComponent button that opens a blueprint picker dialog filtered by the selected slot's type, allowing component replacement. Stats refresh after swap.
+
+
+### BL-077: Station Blueprint Selector and Stats Display
+**Status: Complete** — Added cmbStationBlueprint (DropDownList) to FormStation Components tab for selecting/changing the station hull blueprint. Added rtbStationStats (RichTextBox) showing computed station stats via ShipBuildService.ComputeStationStats: mass, power, health, shields, defence ratings, and weapon counts. Blueprint change triggers component grid and stats refresh.
