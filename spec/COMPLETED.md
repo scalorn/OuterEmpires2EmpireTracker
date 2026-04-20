@@ -325,3 +325,7 @@ Comprehensive empire management feature set implemented across 8 iterations in `
 
 ### BL-079: Build Planner Target Duration Field
 **Status: Complete** — Added txtTargetDuration (ValidatedTextBox, default "2d 0h 0m 0s") to FormBuildPlanner add-item panel row 2. Queue Calc button now reads from this field instead of showing a modal input dialog. Parses countdown format via CountdownFormatParser, computes runs via QueueCalculator, populates quantity field.
+
+
+### BL-080: Overflow and Asteroid Filter TextBoxes
+**Status: Complete** — Added 4 filter textboxes that pair with combo boxes for type-ahead filtering: txtOverflowResourceFilter, txtOverflowDestFilter, txtOverflowRouteFilter on FormColonyV2 Overflow tab, and txtReserveResourceFilter on FormAsteroid. Each TextChanged event repopulates its paired combo with items matching the filter substring (case-insensitive).

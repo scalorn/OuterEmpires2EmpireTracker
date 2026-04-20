@@ -152,6 +152,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbOverflowDestType.Items.Add(DestinationType.Station);
             if (cmbOverflowDestType.Items.Count > 0) cmbOverflowDestType.SelectedIndex = 0;
             cmbOverflowDestType.SelectedIndexChanged += cmbOverflowDestType_SelectedIndexChanged;
+            txtOverflowResourceFilter.TextChanged += (s, ev) => { if (_isProgrammaticUpdate == 0) PopulateOverflowResourceCombo(); };
+            txtOverflowDestFilter.TextChanged += (s, ev) => { if (_isProgrammaticUpdate == 0) PopulateOverflowDestCombo(); };
+            txtOverflowRouteFilter.TextChanged += (s, ev) => { if (_isProgrammaticUpdate == 0) PopulateOverflowRouteCombo(); };
             cmdAddOverflowRule.Click += cmdAddOverflowRule_Click;
             cmdRemoveOverflowRule.Click += cmdRemoveOverflowRule_Click;
             dgvOverflowRules.CurrentCellDirtyStateChanged += dgvOverflowRules_CurrentCellDirtyStateChanged;
@@ -2724,7 +2727,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             var resources = empireContext?.ResourceList;
             if (resources != null)
             {
-                foreach (var r in resources.OrderBy(r => r.Name))
+                string filter = txtOverflowResourceFilter.Text.Trim();
+                var filtered = resources.OrderBy(r => r.Name).AsEnumerable();
+                if (!string.IsNullOrEmpty(filter))
+                    filtered = filtered.Where(r => r.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0);
+                foreach (var r in filtered)
                     cmbOverflowResource.Items.Add(r.Name);
             }
             if (cmbOverflowResource.Items.Count > 0) cmbOverflowResource.SelectedIndex = 0;
@@ -2749,16 +2756,19 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbOverflowDest.Items.Clear();
             if (cmbOverflowDestType.SelectedItem == null) return;
             var destType = (DestinationType)cmbOverflowDestType.SelectedItem;
+            string filter = txtOverflowDestFilter.Text.Trim();
             var items = new List<KeyValuePair<string, string>>();
             switch (destType)
             {
                 case DestinationType.Colony:
                     foreach (var c in playerContext.ColonyList.OrderBy(c => c.ColonyName))
-                        items.Add(new KeyValuePair<string, string>(c.UUID, c.ColonyName));
+                        if (string.IsNullOrEmpty(filter) || c.ColonyName.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                            items.Add(new KeyValuePair<string, string>(c.UUID, c.ColonyName));
                     break;
                 case DestinationType.Station:
                     foreach (var s in playerContext.StationList.OrderBy(s => s.Name))
-                        items.Add(new KeyValuePair<string, string>(s.UUID, s.Name));
+                        if (string.IsNullOrEmpty(filter) || s.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                            items.Add(new KeyValuePair<string, string>(s.UUID, s.Name));
                     break;
             }
             if (items.Count > 0)
@@ -2774,11 +2784,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbOverflowRoute.DataSource = null;
             cmbOverflowRoute.Items.Clear();
+            string filter = txtOverflowRouteFilter.Text.Trim();
             var routes = playerContext.DeliveryRouteList.OrderBy(r => r.Name).ToList();
             var items = new List<KeyValuePair<string, string>>();
             items.Add(new KeyValuePair<string, string>("", "(none)"));
             foreach (var r in routes)
-                items.Add(new KeyValuePair<string, string>(r.UUID, r.Name));
+                if (string.IsNullOrEmpty(filter) || r.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                    items.Add(new KeyValuePair<string, string>(r.UUID, r.Name));
             cmbOverflowRoute.DataSource = items;
             cmbOverflowRoute.DisplayMember = "Value";
             cmbOverflowRoute.ValueMember = "Key";

@@ -44,6 +44,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             this.flpReserveAdd = new System.Windows.Forms.FlowLayoutPanel();
             this.lblReserveResource = new System.Windows.Forms.Label();
             this.cmbReserveResource = new System.Windows.Forms.ComboBox();
+            this.txtReserveResourceFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.lblReservePurity = new System.Windows.Forms.Label();
             this.cmbReservePurity = new System.Windows.Forms.ComboBox();
             this.lblMaxReserve = new System.Windows.Forms.Label();
@@ -253,6 +254,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             // flpReserveAdd
             this.flpReserveAdd.AutoSize = true;
             this.flpReserveAdd.Controls.Add(this.lblReserveResource);
+            this.flpReserveAdd.Controls.Add(this.txtReserveResourceFilter);
             this.flpReserveAdd.Controls.Add(this.cmbReserveResource);
             this.flpReserveAdd.Controls.Add(this.lblReservePurity);
             this.flpReserveAdd.Controls.Add(this.cmbReservePurity);
@@ -273,6 +275,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             this.cmbReserveResource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbReserveResource.Size = new System.Drawing.Size(120, 21);
             this.cmbReserveResource.Name = "cmbReserveResource";
+            this.txtReserveResourceFilter.Size = new System.Drawing.Size(80, 20); this.txtReserveResourceFilter.Name = "txtReserveResourceFilter";
 
             this.lblReservePurity.AutoSize = true;
             this.lblReservePurity.Text = "Purity:";
@@ -405,6 +408,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
         private System.Windows.Forms.FlowLayoutPanel flpReserveAdd;
         private System.Windows.Forms.Label lblReserveResource;
         private System.Windows.Forms.ComboBox cmbReserveResource;
+        private OE2EmpireTracker.Controls.ValidatedTextBox txtReserveResourceFilter;
         private System.Windows.Forms.Label lblReservePurity;
         private System.Windows.Forms.ComboBox cmbReservePurity;
         private System.Windows.Forms.Label lblMaxReserve;

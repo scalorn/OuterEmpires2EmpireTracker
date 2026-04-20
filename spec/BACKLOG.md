@@ -158,12 +158,6 @@ Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat
 
 The following items were designed in the empire-systems spec and marked complete in tasks.md, but the UI controls were either not implemented or implemented differently than the mockup specified. Discovered during the April 2026 mockup-controls audit.
 
-### BL-080: Overflow and Asteroid Filter TextBoxes
-**Dependencies:** None
-**Source:** Empire-systems Iterations 6, tasks 35.1 and 38.1
-
-FormColonyV2 Overflow tab is missing FilteredComboBox filter textboxes: txtOverflowResourceFilter, txtOverflowDestFilter, txtOverflowRouteFilter. FormAsteroid is missing txtReserveResourceFilter. These are the filter text fields that pair with their respective combo boxes to enable type-ahead filtering. The combos exist but lack the filter text fields.
-
 ### BL-081: Stock Targets Quick Add and Expanded Components
 **Dependencies:** None
 **Source:** Empire-systems Iteration 7, task 44.2

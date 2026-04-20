@@ -46,6 +46,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             dgvReserves.CellEndEdit += dgvReserves_CellEndEdit;
 
             PopulateResourceCombo();
+            txtReserveResourceFilter.TextChanged += (s, ev) => PopulateResourceCombo();
             PopulatePurityCombo();
             PopulateAsteroidList();
             ClearForm();
@@ -169,7 +170,11 @@ namespace OE2EmpireTracker.Forms.Asteroid
             var resources = EmpireContext.GetInstance()?.ResourceList;
             if (resources != null)
             {
-                foreach (var r in resources.OrderBy(r => r.Name))
+                string filter = txtReserveResourceFilter.Text.Trim();
+                var filtered = resources.OrderBy(r => r.Name).AsEnumerable();
+                if (!string.IsNullOrEmpty(filter))
+                    filtered = filtered.Where(r => r.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0);
+                foreach (var r in filtered)
                     cmbReserveResource.Items.Add(r.Name);
             }
             if (cmbReserveResource.Items.Count > 0) cmbReserveResource.SelectedIndex = 0;
