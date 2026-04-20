@@ -61,3 +61,15 @@ flowchart LR
     BPV --> INT & DEC & BOOL & TIME & CMB & UNK
     INT & DEC & BOOL & TIME & CMB & UNK --> CELL
 ```
+
+## Blueprint Import Routing
+
+**REQ-BPR-040** BlueprintImportHandler.ClassifyImport SHALL classify a parsed blueprint as ResourcesOnly (resources but no properties/type), Full (has name), or NoName (fallback).  
+**REQ-BPR-041** BlueprintImportHandler.FindTarget SHALL check the selected blueprint for a match (Name+Evolution+Type) first, then fall back to dedup via FindByDedupKey. Evo0 routes to global, others to player.  
+**REQ-BPR-042** BlueprintImportHandler.MergeAndPersist SHALL update existing or create new blueprints with deterministic UUID (global) or random UUID (player), persist, and fire BlueprintDataChanged.  
+
+## Clipboard Content Detection
+
+**REQ-BPR-050** ClipboardContentDetector.Detect SHALL sniff HTML for distinctive CSS class markers to identify content type: Colony (ColonyInformation_PlanetOverview), Survey (ScanDetailOutputResourceName), Blueprint (ShipComponentProperty), PlayerProfile (ui_character_detail), MarketListing (Market_ShipComponentProperty).  
+**REQ-BPR-051** Market listing detection SHALL take priority over Survey detection to avoid false positives from ScanDetailOutputResourceName_MarketListing.  
+**REQ-BPR-052** All import handlers SHALL validate clipboard content type before parsing and show a descriptive error if the wrong type is detected.  

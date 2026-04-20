@@ -284,3 +284,43 @@ public class SupplyChainDeliveryRequest
 - Filters to `IsActive` chains only.
 - Inventory resolution: Colony → `colony.Items`, Station → `station.Holds[currentPlayerUUID]`, Ship → `ship.Cargo`.
 - ExcessQuantity = quantity - threshold.
+## CargoVolumeService
+
+Static service in Services/CargoVolumeService.cs.
+
+`csharp
+public static class CargoVolumeService
+{
+    public static CargoLoadResult ComputeLoadVolume(
+        List<DeliveryItem> loadList,
+        Func<string, Blueprint> blueprintFinder);
+
+    public static List<List<DeliveryItem>> SplitIntoTrips(
+        List<DeliveryItem> loadList,
+        decimal cargoCapacity,
+        Func<string, Blueprint> blueprintFinder);
+}
+`
+
+Logic:
+- ComputeLoadVolume sums per-item volume × quantity. Volume by type: Resource=1, Commodity=10, WorkDetail=50, Blueprint/Survey=0, manufactured items=CargoVolumeSize property from blueprint.
+- Crate items use the crate blueprint's own Cargo Volume Size (one-level, no nesting).
+- SplitIntoTrips distributes items across trips within a cargo capacity limit. Items are assigned in order; oversized items get their own trip.
+
+## BlueprintImportHandler
+
+Static service in Services/BlueprintImportHandler.cs.
+
+`csharp
+public static class BlueprintImportHandler
+{
+    public static ImportType ClassifyImport(Blueprint tempBP);
+    public static FindTargetResult FindTarget(Blueprint tempBP, Blueprint selected, PlayerContext pc, EmpireContext ec);
+    public static Blueprint MergeAndPersist(FindTargetResult findResult, Blueprint tempBP, PlayerContext pc, EmpireContext ec);
+}
+`
+
+Logic:
+- ClassifyImport: ResourcesOnly (has resources but no properties/type), Full (has name), NoName (fallback).
+- FindTarget: checks selected blueprint match first (Name+Evolution+Type), then dedup via MarketBlueprintImporter.FindByDedupKey. Routes Evo0→global, others→player.
+- MergeAndPersist: updates existing or creates new with deterministic UUID (global) or random UUID (player), persists, fires event.

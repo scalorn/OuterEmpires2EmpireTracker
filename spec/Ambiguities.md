@@ -600,31 +600,36 @@ All derived from existing kiro specs and verified against implemented code. Requ
 **Spec reference:** spec/design/code-standards.md (Form Implementation Checklist point 4)
 **Impact:** Cannot identify performance bottlenecks in the legacy form.
 
-### AMB-074 — OPEN: MISSING_SPEC — CargoVolumeService has no spec coverage
+### AMB-074 — RESOLVED: CargoVolumeService has no spec coverage
+**Resolution:** Added to spec/design/services.md and spec/requirements/Delivery.md (REQ-DEL-100 through REQ-DEL-102).
 **File:** OE2EmpireTracker/Services/CargoVolumeService.cs
 **Issue:** CargoVolumeService computes cargo volume for delivery plans and ships but has no requirements in spec/requirements/ and no mention in spec/design/services.md.
 **Spec reference:** Should be in spec/requirements/Ships.md (REQ-SHP-050 series) and spec/design/services.md
 **Impact:** Service behavior is undocumented.
 
-### AMB-075 — OPEN: MISSING_SPEC — BlueprintImportHandler has no spec coverage
+### AMB-075 — RESOLVED: BlueprintImportHandler has no spec coverage
+**Resolution:** Added to spec/design/services.md and spec/requirements/BlueprintProperties.md (REQ-BPR-040 through REQ-BPR-042).
 **File:** OE2EmpireTracker/Services/BlueprintImportHandler.cs
 **Issue:** BlueprintImportHandler orchestrates individual blueprint import routing but has no spec entry. The MarketBlueprintImporter is documented but this handler is not.
 **Spec reference:** Should be in spec/requirements/BlueprintProperties.md or a new BlueprintImport.md
 **Impact:** Import routing logic is undocumented.
 
-### AMB-076 — OPEN: MISSING_SPEC — ClipboardContentDetector has no spec coverage
+### AMB-076 — RESOLVED: ClipboardContentDetector has no spec coverage
+**Resolution:** Added to spec/requirements/BlueprintProperties.md (REQ-BPR-050 through REQ-BPR-052).
 **File:** OE2EmpireTracker/Parsers/ClipboardContentDetector.cs
 **Issue:** ClipboardContentDetector sniffs HTML to determine content type (colony, survey, blueprint, profile, market) but has no spec entry.
 **Spec reference:** Should be in spec/requirements/Architecture.md or ColonyImport.md
 **Impact:** Content detection logic and CSS class markers are undocumented.
 
-### AMB-077 — OPEN: MISSING_SPEC — CountdownFormatParser has no spec coverage
+### AMB-077 — RESOLVED: CountdownFormatParser has no spec coverage
+**Resolution:** Added to spec/requirements/Preferences.md (REQ-PRF-030 through REQ-PRF-032).
 **File:** OE2EmpireTracker/Parsers/CountdownFormatParser.cs
 **Issue:** CountdownFormatParser converts "Xd Xh Xm Xs" strings to seconds for the Preferences form but has no spec entry.
 **Spec reference:** Should be in spec/requirements/Preferences.md
 **Impact:** Parsing rules for countdown format input are undocumented.
 
-### AMB-078 — OPEN: MISSING_SPEC — JsonSettings has no spec coverage
+### AMB-078 — RESOLVED: JsonSettings has no spec coverage
+**Resolution:** Added to spec/requirements/Architecture.md (REQ-ARCH-090 through REQ-ARCH-092).
 **File:** OE2EmpireTracker/Services/JsonSettings.cs
 **Issue:** JsonSettings configures Newtonsoft.Json serialization (DefaultValueHandling.Ignore, NullValueHandling.Ignore) but has no spec entry.
 **Spec reference:** Should be in spec/requirements/Architecture.md

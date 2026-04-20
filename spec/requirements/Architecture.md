@@ -239,3 +239,9 @@ flowchart TD
 
     Note["CurrentPlayerChanged event<br/>→ all forms refresh"]
 ```
+
+## JSON Serialization
+
+**REQ-ARCH-090** JsonSettings SHALL configure Newtonsoft.Json with Formatting.Indented, DefaultValueHandling.Ignore, and NullValueHandling.Ignore.  
+**REQ-ARCH-091** All serialization call sites SHALL use JsonSettings.SerializerSettings to ensure consistent behavior.  
+**REQ-ARCH-092** DefaultValueHandling.Ignore SHALL omit fields with default values (null, empty string, false, 0) from JSON output to reduce file size.  

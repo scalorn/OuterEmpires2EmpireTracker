@@ -108,3 +108,9 @@ sequenceDiagram
 │  [OK]  [Cancel]  [Reset to Defaults]                    │
 └─────────────────────────────────────────────────────────┘
 ```
+
+## Countdown Format Parser
+
+**REQ-PRF-030** CountdownFormatParser.TryParse SHALL parse countdown format strings (e.g. "5d 0h 0m 0s", "2h 30m", "60s") back to total seconds.  
+**REQ-PRF-031** The parser SHALL accept space-separated tokens with unit suffixes (d=86400s, h=3600s, m=60s, s=1s), partial formats, any order, and reject duplicate units.  
+**REQ-PRF-032** The parser SHALL reject negative values, non-numeric tokens, and overflow conditions.  

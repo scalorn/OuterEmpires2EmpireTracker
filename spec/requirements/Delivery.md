@@ -351,3 +351,8 @@ flowchart TD
 **REQ-DEL-092** DeliveryFulfillment.DeliverWorkers SHALL add worker details to the destination colony's assigned workers.  
 **REQ-DEL-093** Fulfillment operations SHALL be idempotent — fulfilling an already-fulfilled item SHALL have no effect.  
 **REQ-DEL-094** Station stop fulfillment SHALL update the station's hold inventory for the current player.  
+## Cargo Volume
+
+**REQ-DEL-100** CargoVolumeService.ComputeLoadVolume SHALL compute total volume and mass for a delivery load list by summing per-item volume × quantity.  
+**REQ-DEL-101** Per-item volume SHALL be: Resource=1, Commodity=10, WorkDetail=50, Blueprint/Survey=0, manufactured items=CargoVolumeSize blueprint property.  
+**REQ-DEL-102** CargoVolumeService.SplitIntoTrips SHALL distribute items across trips within a cargo capacity limit, assigning items in order with oversized items getting their own trip.  
