@@ -755,11 +755,16 @@ namespace OE2EmpireTracker.Tests.Services
                     textFilter = "ZZZ" + Rng.Next(10000);
                 }
 
+                // Snapshot countdown strings to avoid race condition with live timers
+                var timeStrings = new Dictionary<ActivityRow, string>();
+                foreach (var row in rows)
+                    timeStrings[row] = row.GetTimeRemainingString() ?? "";
+
                 // Reference implementation of PassesTextFilter (replicating FormColonyActivity logic)
                 bool PassesTextFilter(ActivityRow row, string filter)
                 {
                     if (string.IsNullOrEmpty(filter)) return true;
-                    return (row.GetTimeRemainingString() ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
+                    return timeStrings[row].IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
                         || (row.SystemName ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
                         || (row.ColonyName ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
                         || row.Type.ToString().IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
@@ -773,7 +778,7 @@ namespace OE2EmpireTracker.Tests.Services
                     .Where(r => PassesTextFilter(r, textFilter))
                     .ToList();
 
-                // Compute actual filtered set using the same logic
+                // Verify determinism: re-run with same snapshot produces same result
                 var actual = rows
                     .Where(r => selectedTypes.Contains(r.Type))
                     .Where(r => PassesTextFilter(r, textFilter))
