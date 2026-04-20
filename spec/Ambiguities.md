@@ -520,51 +520,51 @@ All derived from existing kiro specs and verified against implemented code. Requ
 
 ## Code-Spec Audit Findings
 
-### MISMATCH — RouteStop.ColonyUUID missing backward-compat JSON attribute
+### AMB-060 — OPEN: RouteStop.ColonyUUID missing backward-compat JSON attribute
 **Spec (data-models.md):** RouteStop.ColonyUUID should have `[JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]` for backward compatibility.
 **Code (DeliveryRoute.cs):** ColonyUUID is a plain property with no JSON attribute. Same for DeliveryPlanStop.ColonyUUID in DeliveryPlan.cs.
 **Impact:** ColonyUUID will always serialize to JSON even when null/empty, adding noise to saved data. Not a functional bug since Migration008 copies ColonyUUID → DestinationUUID, but the old field persists unnecessarily.
 
-### CODE GAP — DeliveryPlanReferenceCounter does not exist
+### AMB-061 — OPEN: DeliveryPlanReferenceCounter does not exist
 **Spec (reference-counting.md):** DeliveryPlanReferenceCounter should count BuildPlan.DeliveryPlanUUID references.
 **Code:** No DeliveryPlanReferenceCounter.cs file exists. BuildPlan.DeliveryPlanUUID references are not tracked.
 **Impact:** Delivery plans can be deleted even when referenced by build plans.
 
-### CODE GAP — StockPlanReferenceCounter does not exist
+### AMB-062 — OPEN: StockPlanReferenceCounter does not exist
 **Spec (reference-counting.md):** StockPlanReferenceCounter should count StockProfileEntry.StockPlanUUID references.
 **Code:** No StockPlanReferenceCounter.cs file exists. StockProfile entries referencing stock plans are not tracked.
 **Impact:** Stock plans can be deleted even when referenced by stock profiles.
 
-### CODE GAP — DeliveryRouteReferenceCounter incomplete
+### AMB-063 — OPEN: DeliveryRouteReferenceCounter incomplete
 **Spec (reference-counting.md):** DeliveryRouteReferenceCounter should count DeliveryPlan.RouteUUID, WarehouseOverflowRule.DeliveryRouteUUID, and SupplyChainStage.DeliveryRouteUUID.
 **Code (DeliveryRouteReferenceCounter.cs):** Only counts DeliveryPlan.RouteUUID. Comment says "Will be expanded to include WarehouseOverflowRules and SupplyChainStages" but this was never done.
 **Impact:** Delivery routes can be deleted even when referenced by overflow rules or supply chain stages.
 
-### CODE GAP — StationReferenceCounter incomplete
+### AMB-064 — OPEN: StationReferenceCounter incomplete
 **Spec (reference-counting.md):** StationReferenceCounter should count: RouteStops, DeliveryPlanStops, Ship.LocationUUID, MarketListing.StationUUID, MarketTransaction.StationUUID, BuildItem.AssemblyLocationUUID, SupplyChainStage.LocationUUID, StockPlan.Targets[].LocationUUID, WarehouseOverflowRule.DestinationUUID (all when Station).
 **Code (StationReferenceCounter.cs):** Only counts RouteStops, DeliveryPlanStops, BuildItem.AssemblyLocationUUID, and BuildItem.BuildLocationUUID. Missing: Ship.LocationUUID, MarketListing.StationUUID, MarketTransaction.StationUUID, SupplyChainStage.LocationUUID, StockPlan.Targets[].LocationUUID, WarehouseOverflowRule.DestinationUUID.
 **Impact:** Stations can be deleted even when referenced by ships, market listings, transactions, supply chains, stock targets, or overflow rules.
 
-### CODE GAP — AsteroidReferenceCounter missing SupplyChainStage references
+### AMB-065 — OPEN: AsteroidReferenceCounter missing SupplyChainStage references
 **Spec (reference-counting.md):** AsteroidReferenceCounter should count SupplyChainStage.LocationUUID (when Asteroid).
 **Code (AsteroidReferenceCounter.cs):** Only counts Survey.AsteroidUUID, BuildItem.BuildLocationUUID (when Asteroid), and RouteStop (when Asteroid). Missing SupplyChainStage.
 **Impact:** Asteroids can be deleted even when referenced by supply chain stages.
 
-### CODE GAP — ColonyReferenceCounter missing WarehouseOverflowRule.DestinationUUID (when Colony)
+### AMB-066 — OPEN: ColonyReferenceCounter missing WarehouseOverflowRule.DestinationUUID
 **Spec (reference-counting.md):** ColonyReferenceCounter should count WarehouseOverflowRule.DestinationUUID (when Colony) in addition to ColonyUUID.
 **Code (ColonyReferenceCounter.cs):** Only counts WarehouseOverflowRule.ColonyUUID, not DestinationUUID when DestinationType is Colony.
 **Impact:** If an overflow rule's destination is a colony (not just its source), that reference is not counted.
 
-### CODE GAP — BlueprintReferenceCounter missing MarketTransaction.ItemReferenceID
+### AMB-067 — OPEN: BlueprintReferenceCounter missing MarketTransaction.ItemReferenceID
 **Spec (reference-counting.md):** BlueprintReferenceCounter should count MarketTransaction.ItemReferenceID (when Blueprint).
 **Code (BlueprintReferenceCounter.cs):** Counts MarketListing.ItemReferenceID but not MarketTransaction.ItemReferenceID.
 **Impact:** Blueprints referenced only by market transactions (not listings) can be deleted.
 
-### CODE GAP — BlueprintReferenceCounter duplicate station loop (bug)
+### AMB-068 — OPEN: BlueprintReferenceCounter duplicate station loop (bug)
 **Code (BlueprintReferenceCounter.cs):** The station component counting loop appears twice (lines ~107-120 and ~123-136), causing station blueprint references to be double-counted.
 **Impact:** Station component blueprint reference counts are inflated by 2x, which doesn't cause false negatives (deletion still blocked) but reports incorrect numbers.
 
-### MISMATCH — Migration numbering
+### AMB-069 — OPEN: Migration numbering mismatch
 **Spec (migration.md):** Describes Migration005_EmpireSystems for route stop migration and empty array initialization.
 **Code:** Migration005 is PropertyKeyCleanup. The route stop migration is Migration008_RouteStopDestinationMigration. No single migration adds empty arrays for new entity types.
 **Impact:** Spec migration numbering is outdated. The actual migration sequence diverged from the spec.
