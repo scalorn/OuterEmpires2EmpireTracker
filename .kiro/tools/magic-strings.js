@@ -3,11 +3,17 @@
  * magic-strings.js — Detect raw string/number literals that should use Constants.
  *
  * Usage:
- *   node .kiro/tools/magic-strings.js
+ *   node .kiro/tools/magic-strings.js            # strings only (default)
+ *   node .kiro/tools/magic-strings.js --numeric   # include numeric constants too
+ *   node .kiro/tools/magic-strings.js --all        # same as --numeric
  *
- * Cross-references all const string/decimal/int/long values defined in
- * OE2EmpireTracker/Constants/*.cs against all string/number literals in the
+ * Cross-references all const string values defined in
+ * OE2EmpireTracker/Constants/*.cs against all string literals in the
  * rest of the codebase. Reports raw usages that should use the constant name.
+ *
+ * Numeric matching is opt-in via --numeric because small constants (1, 3, 5)
+ * produce many false positives. When enabled, numeric matches are only flagged
+ * in specific contexts (switch cases, multiplier expressions, comparisons).
  *
  * Exit code 0 = clean, 1 = findings.
  */
@@ -123,15 +129,20 @@ function findMagicLiterals(constants, sourceFiles) {
 }
 
 // Main
-const constants = extractConstants();
+const args = process.argv.slice(2);
+const includeNumeric = args.includes('--numeric') || args.includes('--all');
+
+const allConstants = extractConstants();
+const constants = includeNumeric ? allConstants : allConstants.filter(c => c.type === 'string');
 const sourceFiles = getSourceFiles(SOURCE_DIR);
 const findings = findMagicLiterals(constants, sourceFiles);
 
+const mode = includeNumeric ? 'strings + numeric' : 'strings only';
 if (findings.length === 0) {
-    console.log('Clean — no findings');
+    console.log('Clean — no findings (' + mode + ')');
     process.exit(0);
 } else {
-    console.log('=== Magic String/Number Audit ===\n');
+    console.log('=== Magic String/Number Audit (' + mode + ') ===\n');
     findings.forEach(f => console.log(f));
     console.log('\n' + findings.length + ' findings');
     process.exit(1);
