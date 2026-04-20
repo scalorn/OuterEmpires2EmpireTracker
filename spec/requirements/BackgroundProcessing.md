@@ -57,6 +57,25 @@ flowchart TD
 **REQ-BP-043** The processor SHALL use `PlayerContext.SnapshotColonyList()` to safely iterate colonies without holding _listLock during processing.
 **REQ-BP-044** `WriteContext()` SHALL be called outside any ColonyLock to respect lock ordering.
 
+## Warehouse Overflow Checks
+
+**REQ-BP-050** On each tick, the processor SHALL evaluate all active WarehouseOverflowRules.  
+**REQ-BP-051** For each active rule, the processor SHALL check the colony's warehouse quantity for the specified resource/purity against the TriggerThreshold.  
+**REQ-BP-052** When the threshold is exceeded, the processor SHALL generate a delivery plan to move the excess (current - threshold) to the rule's destination via the designated route.  
+
+## Supply Chain Threshold Checks
+
+**REQ-BP-060** On each tick, the processor SHALL evaluate all active SupplyChains.  
+**REQ-BP-061** For each active chain, the processor SHALL check accumulation at each stage against AccumulationThreshold.  
+**REQ-BP-062** When a stage's accumulated quantity exceeds its threshold, the processor SHALL generate a delivery plan on the stage's designated route to move the excess to the next stage.  
+
+## Stock Target Cascade Processing
+
+**REQ-BP-070** When PlayerContext.CascadeStockTargetsDirty is set, the processor SHALL re-evaluate all active stock plans on the next tick.  
+**REQ-BP-071** Stock target evaluation SHALL expand template targets using live template definitions, check scoped inventory, and compute shortfalls.  
+**REQ-BP-072** When shortfalls are detected, the processor SHALL create replenishment build items in the linked build plan.  
+**REQ-BP-073** PlayerContext.CascadeResourceCheckDirty SHALL trigger re-evaluation of build plan resource checks on the next tick.
+
 ## User Interaction Flow
 
 ### Status Bar Monitoring

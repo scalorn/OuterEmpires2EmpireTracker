@@ -189,3 +189,29 @@ flowchart LR
     CBT --> AVL
     GLQ --> AVL
 ```
+
+## Empire Systems Entity Types (Iteration 1-8)
+
+The following 13 entity types were added as part of the empire-systems spec. All follow the existing POCO pattern: public properties with defaults, Newtonsoft.Json serialization, UUID + OwnerUUID ownership, persisted as top-level arrays in PlayerRoot.
+
+**REQ-DM-110** BuildPlan SHALL have UUID, Name, OwnerUUID, Description, DeliveryPlanUUID, IsActive (default true), and a nested `List<BuildItem>`.  
+**REQ-DM-111** BuildItem SHALL have UUID, ItemType (enum: Manufactory/Commodity/ShipTemplate/Mining/Refining/Research), Status (enum: Staged/Delivering/Ready/InProgress/Completed), BlueprintUUID, ItemName, CommodityName, ShipTemplateUUID, Quantity, BuildLocationType (DestinationType), BuildLocationUUID, StructureUUID, AssemblyLocationType, AssemblyLocationUUID, ParentBuildItemUUID, Recipient, Notes, SequenceInStructure, DependsOnUUID, and mining/refining fields.  
+**REQ-DM-112** ShipTemplate SHALL have UUID, Name, OwnerUUID, HullBlueprintUUID, and `List<ShipComponentSlot>`. ShipComponentSlot SHALL have SlotType (string), SlotIndex (int), BlueprintUUID, and damage fields (CurrentHP, MaxHP, MaxRepairPercent).  
+**REQ-DM-113** Ship SHALL have UUID, Name, OwnerUUID, TemplateUUID, HullBlueprintUUID, Components list, LocationType/LocationUUID, Cargo (ItemBag), Hopper (ItemBag), and hull damage fields.  
+**REQ-DM-114** Station SHALL have UUID, Name, StationType (enum: Outpost/Station/Starbase), Ownership (enum: Government/PlayerOwned), OwnerUUID, Holds (Dictionary<string, ItemBag>), Components list, StationBlueprintUUID, MunitionsHold (ItemBag), and hull damage fields.  
+**REQ-DM-115** MarketListing SHALL have UUID, OwnerUUID, StationUUID, ItemType, ItemReferenceID, ItemName, Quantity, PricePerUnit, and condition fields (CurrentHP, MaxHP, MaxRepairPercent).  
+**REQ-DM-116** MarketTransaction SHALL have UUID, OwnerUUID, TransactionType (enum: Buy/Sell), ItemType, ItemReferenceID, ItemName, Quantity, PricePerUnit, TotalPrice, Counterparty, CounterpartyFaction, StationUUID, Timestamp, Notes, ListingUUID, and condition fields.  
+**REQ-DM-117** StockPlan SHALL have UUID, Name, OwnerUUID, ReplenishmentBuildPlanUUID, IsActive (default true), and `List<StockTarget>`. StockTarget SHALL have UUID, ItemType, ItemReferenceID, ItemName, ShipTemplateUUID, TargetQuantity, CriticalThreshold, Scope (enum: EmpireWide/Colony/Station), and LocationUUID.  
+**REQ-DM-118** StockProfile SHALL have UUID, Name, OwnerUUID, IsActive (default true), and `List<StockProfileEntry>`. StockProfileEntry SHALL have GroupID and StockPlanUUID.  
+**REQ-DM-119** SupplyChain SHALL have UUID, Name, OwnerUUID, IsActive (default true), and `List<SupplyChainStage>`. SupplyChainStage SHALL have Sequence, StageType (enum), LocationType, LocationUUID, ResourceName, ResourcePurity, AccumulationThreshold, ProductionRatePerHour, and DeliveryRouteUUID.  
+**REQ-DM-120** WarehouseOverflowRule SHALL have UUID, OwnerUUID, IsActive (default true), ColonyUUID, ResourceName, ResourcePurity, TriggerThreshold, DestinationType, DestinationUUID, and DeliveryRouteUUID.  
+**REQ-DM-121** Faction SHALL have UUID (deterministic from name), Name, and Description. No OwnerUUID — factions are shared entities.  
+**REQ-DM-122** ExternalCharacter SHALL have UUID (deterministic from name), Name, and FactionUUID. No OwnerUUID — external characters are shared entities.  
+**REQ-DM-123** Asteroid SHALL have UUID (deterministic from SystemName:Name), Name, SystemName, and `List<AsteroidReserve>`. AsteroidReserve SHALL have ResourceName, Purity, MaxReserve, CurrentReserve, and ResetTimestamp.  
+**REQ-DM-124** DestinationType enum SHALL have values: Colony, Station, Asteroid, Ship.  
+**REQ-DM-125** All entities with IsActive fields SHALL default to true. `DefaultValueHandling.Ignore` SHALL omit IsActive from JSON when true.  
+**REQ-DM-126** PlayerRoot SHALL include arrays for all 13 new entity types. PlayerContext SHALL maintain List fields, Init methods, WriteContext serialization, snapshot methods, and UUID caches for each.  
+**REQ-DM-127** Item SHALL support Crate ItemType with a Contents ItemBag (null for non-crate items). No nesting — crates SHALL NOT contain other crates.  
+**REQ-DM-128** Item SHALL have damage fields (CurrentHP, MaxHP, MaxRepairPercent) for physical components (ShipPart, ShipHull, Munition). All default to 0 (undamaged, omitted from JSON).  
+**REQ-DM-129** Survey SHALL have SurveyType (enum: Planet/Asteroid, default Planet) and AsteroidUUID fields. DefaultValueHandling.Ignore SHALL omit SurveyType from JSON for planet surveys.  
+**REQ-DM-130** PlayerProfile SHALL have a FactionUUID field linking the player to a Faction.

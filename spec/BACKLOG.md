@@ -7,44 +7,17 @@ Items in the "New" section have dependency annotations. Work them in an order th
 ## Dependency Graph
 
 ```
-Activity Inactivity Mode ──── (complete)
-Manufacturing Queue ────────── (standalone)
-Pricing Plans ──────────────── (complete)
-Mass Blueprint Importer ────── (complete)
 Systems & Planets Model ────── (standalone)
-
-Ships ─────────────────┬──── Ship-Aware Delivery Execution
-                       └──── (feeds into Stations)
-
-Stations ──────────────┬──── Station Destinations in Routes
-                       └──── (depends on Ships for player-owned station components)
-
-Market ────────────────────── (depends on Pricing Plans for valuation)
-
 Systems & Planets Model ───── Route Auto-Sequencing (depends on coordinates)
 ```
 
 Suggested build order:
-1. Manufacturing Queue, Pricing Plans, Systems & Planets Model (independent, any order)
-2. Ships (enables ship-aware delivery and station components)
-3. Ship-Aware Delivery Execution (depends on Ships)
-4. Stations (depends on Ships for player-owned station features)
-5. Station Destinations in Routes (depends on Stations)
-6. Market (benefits from Pricing Plans)
-7. Route Auto-Sequencing (depends on Systems & Planets Model)
+1. Systems & Planets Model (independent)
+2. Route Auto-Sequencing (depends on Systems & Planets Model)
 
 ---
 
 ## Open (Existing)
-
-### BL-001: Delivery Routes — Phase 8: Ship Integration (REQ-DEL-070-071)
-Ship cargo capacity modeling for delivery planning. Superseded by the broader "Ships" and "Ship-Aware Delivery Execution" items below.
-
-### BL-002: Delivery Routes — Phase 9: Space Station Hubs (REQ-DEL-080-082)
-Space station hub modeling for delivery route optimization. Superseded by the broader "Stations" and "Station Destinations in Routes" items below.
-
-### BL-003: Delivery Auto-Fill — Time Horizon Parameter (REQ-DEL-061)
-Add a time horizon parameter to flatpack auto-fill so it only includes structures expected to be built within a configurable window.
 
 ### BL-005: Global Blueprint Enhancements
 From Recommendations.md #14:
@@ -62,42 +35,6 @@ From Recommendations.md #13: UI for transferring colonies/blueprints/surveys bet
 ---
 
 ## New
-
-### BL-011: Manufacturing Queue
-**Dependencies:** None
-
-A new form for recording what needs to be manufactured, for whom (any player in the game, not just tracked profiles), and in what quantity. Items in the queue can then be allocated to open manufactories, commodity factories, or research labs to be staged and worked on. Acts as a central work order system across all colonies.
-
-### BL-012: Ships
-**Dependencies:** None (but enables Ship-Aware Delivery Execution, and feeds into Stations)
-
-Introduce the concept of ships as a core data model. Includes:
-- Ship data model (name, owner, class, cargo capacity, installed components, etc.)
-- Ship Designer form for configuring ship loadouts
-- Per-character ship ownership tracking
-- Ship blueprints (already partially modeled via blueprint types with ShipClass)
-
-### BL-013: Ship-Aware Delivery Execution
-**Dependencies:** Ships (BL-012)
-
-Extend delivery execution plans to utilize specific ships. Ship cargo capacity limits how much can be picked up at each stop, which changes the planning algorithm — plans may need to be split across multiple trips or prioritized by cargo weight/volume.
-
-### BL-014: Stations
-**Dependencies:** Ships (BL-012) for player-owned station components/features
-
-Introduce the concept of stations. Stations have holds that store items. Two types:
-- Government (game-owned): fixed locations, no capacity limits currently
-- Player-owned: eventually will have features similar to ships (installable components, permissions, etc.)
-
-### BL-015: Station Destinations in Routes
-**Dependencies:** Stations (BL-014)
-
-Once stations exist, they become valid destinations in delivery routes alongside planets. Picking up and dropping off cargo at stations follows the same patterns as colony stops.
-
-### BL-017: Market
-**Dependencies:** Pricing Plans (BL-016) for valuation context
-
-Track in-game market activity: what was bought/sold, the price, and who the counterparty was. Provides a transaction history for the player's market dealings. Pricing Plans feed into understanding whether a trade was profitable.
 
 ### BL-019: Systems & Planets Model
 **Dependencies:** None (but enables Route Auto-Sequencing)
@@ -136,11 +73,6 @@ Explore whether AI can read the Discord channels for the game. Discord is often 
 ### BL-029: BaselineData.json — Separate User File with Merge Strategy
 **Dependencies:** None
 **Status: Rejected** — The split-file approach adds merge-on-load complexity, "which file wins" ambiguity, and user confusion. With deterministic UUIDs + versioned migrations + idempotent renames (see `spec/discussions/baseline-data-stability.md`), a single BaselineData.json handles upgrades cleanly without a separate user file.
-
-### BL-032: Manufacturing Build Queue Calculator
-**Dependencies:** None
-
-Add a form/feature to calculate how many items to queue that would keep a manufactory busy for at least <countdown format> time.
 
 ### BL-033: RtfBuilder Font Style Support
 **Dependencies:** None
@@ -207,18 +139,50 @@ Bug: When colonies and surveys are imported in the wrong order, duplicate defaul
 
 **Diagnostic logging added:** SetupMiners now logs a snapshot of all DEFAULT surveys for the colony's planet before and after processing (count + UUIDs). CreateOrUpdateDefaultSurvey logs the deterministic UUID it's searching for and whether a match was found. CleanupDefaultSurvey logs all DEFAULT surveys for the planet (regardless of owner) before cleanup. A `BL-050 DIAGNOSTIC` warning fires if multiple DEFAULT surveys remain after SetupMiners completes. Check the NLog output after importing colonies to reproduce.
 
-### BL-055: Mining/Refining/Manufacturing/Research Queue System
-**Dependencies:** BL-047 (Game API Integration Planning)
-
-Build an empire-wide queue system for mining, refining, manufacturing, and research operations. Should support both per-colony and empire-wide views. Designed for when the game API becomes available — queued operations can be submitted automatically. Includes priority ordering, dependency tracking (e.g. refine before manufacture), and estimated completion times.
-
-### BL-059: Manufacturing Build Queue — Auto-Create Orders from Fill Levels
-**Dependencies:** BL-011 (Manufacturing Queue)
-
-Add a feature to automatically create manufacturing orders based on target stock levels. Example: "always keep 10,000 2cm Coilgun Munitions on hand" or "always keep 2,000 Joybots on hand." The system checks current warehouse quantities across the empire and creates orders to replenish shortfalls.
-
 ---
 
 ## ~~MarketSample Coverage Gaps~~ — RESOLVED
 
 All BlueprintTypes now have HTML coverage. No gaps detected (confirmed by IconPositionExtractor coverage gap report in test output).
+
+---
+
+## Completed (Empire Systems Spec)
+
+The following backlog items were implemented as part of the `empire-systems` spec (`.kiro/specs/empire-systems/`), which delivered 8 iterations of interconnected features.
+
+### BL-001: Delivery Routes — Phase 8: Ship Integration
+**Status: Complete** — Implemented as part of empire-systems Iteration 2-3 (Ships + Ship-Aware Delivery). Ship cargo capacity, volume computation, trip splitting, and ship assignment on delivery plans.
+
+### BL-002: Delivery Routes — Phase 9: Space Station Hubs
+**Status: Complete** — Implemented as part of empire-systems Iteration 4 (Stations). Station model with holds, components, munitions. Stations as route destinations.
+
+### BL-003: Delivery Auto-Fill — Time Horizon Parameter
+**Status: Complete** — Implemented as part of empire-systems Iteration 8. Time horizon parameter on flatpack auto-fill, persisted as user preference.
+
+### BL-011: Manufacturing Queue
+**Status: Complete** — Implemented as Build Planner in empire-systems Iteration 1. BuildPlan/BuildItem models, BuildPlanService, ResourceCheckService, DeliveryGenerationService, QueueCalculator, AutoAssignService, FormBuildPlanner MDI child.
+
+### BL-012: Ships
+**Status: Complete** — Implemented in empire-systems Iteration 2. ShipTemplate/Ship models, ShipBuildService, FormShipTemplate, FormShipInstance with Overview+Cargo tabs.
+
+### BL-013: Ship-Aware Delivery Execution
+**Status: Complete** — Implemented in empire-systems Iteration 3. Cargo volume computation, trip splitting, ship assignment UI on delivery plans.
+
+### BL-014: Stations
+**Status: Complete** — Implemented in empire-systems Iteration 4. Station model with Holds/Components/Munitions, FormStation MDI child, StationReferenceCounter.
+
+### BL-015: Station Destinations in Routes
+**Status: Complete** — Implemented in empire-systems Iteration 4. Station and asteroid stops in delivery routes and execution.
+
+### BL-017: Market
+**Status: Complete** — Implemented in empire-systems Iteration 5. MarketListing/MarketTransaction models, MarketService, FormMarket with Listings/Transactions/Summary tabs.
+
+### BL-032: Manufacturing Build Queue Calculator
+**Status: Complete** — Implemented as QueueCalculator in empire-systems Iteration 1 (Build Planner).
+
+### BL-055: Mining/Refining/Manufacturing/Research Queue System
+**Status: Complete** — Implemented as part of empire-systems Iteration 6. Mining/Refining/Research build item types in Build Planner, FormAsteroid, FormSupplyChain, SupplyChainService.
+
+### BL-059: Manufacturing Build Queue — Auto-Create Orders from Fill Levels
+**Status: Complete** — Implemented as Stock Targets in empire-systems Iteration 7. StockPlan/StockTarget/StockProfile models, StockTargetService, FormStockTargets, cascade integration in BackgroundProcessor.

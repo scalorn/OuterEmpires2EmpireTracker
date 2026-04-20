@@ -108,6 +108,14 @@ stateDiagram-v2
 **REQ-COL-081** The colony list SHALL be populated from PlayerContext.ColonyList on form load.  
 **REQ-COL-082** After saving, the colony list SHALL reflect the updated PlanetName and ColonyName.
 
+## Warehouse Overflow
+
+**REQ-COL-085** The Colony form SHALL have a Warehouse Overflow tab displaying overflow rules for the selected colony.  
+**REQ-COL-086** A WarehouseOverflowRule SHALL have UUID, OwnerUUID, IsActive flag, ColonyUUID, ResourceName, ResourcePurity, TriggerThreshold, DestinationType, DestinationUUID, and DeliveryRouteUUID.  
+**REQ-COL-087** WarehouseOverflowRule.IsActive SHALL default to true. Inactive rules SHALL be skipped during overflow threshold checks.  
+**REQ-COL-088** When warehouse quantity for a resource exceeds TriggerThreshold, the excess (current - threshold) SHALL be moved via a generated delivery plan on the designated route.  
+**REQ-COL-089** The Overflow tab SHALL display current quantity vs threshold with color coding (green = below threshold, yellow = approaching, red = exceeded).
+
 ## MVVM Pattern
 
 **REQ-COL-090** All direct PropertyBag access for Built, Staged, Online, and worker assignment SHALL go through ColonyStructureViewModel, not directly from the UI.  

@@ -13,6 +13,13 @@
 **REQ-SRV-011** The list SHALL be filterable by PlanetName, by Resource type, by Purity, by SurveyType (Planet/Asteroid/All), and by minimum Amount per cycle/hour.  
 **REQ-SRV-012** Selecting a survey from the list SHALL populate all form fields with that survey's data.
 
+## Asteroid Survey Detection
+
+**REQ-SRV-015** Survey SHALL have a SurveyType enum (Planet/Asteroid) defaulting to Planet for backward compatibility.  
+**REQ-SRV-016** Survey SHALL have an AsteroidUUID field linking asteroid surveys to their Asteroid entity.  
+**REQ-SRV-017** When importing an asteroid survey, if no Asteroid entity exists with the computed deterministic UUID (from SystemName:AsteroidName), one SHALL be auto-created with Name from PlanetName and SystemName from the survey's SystemName.  
+**REQ-SRV-018** The SurveyType filter SHALL support Planet, Asteroid, and All options. The minimum Amount filter SHALL accept a numeric value and include surveys with at least one resource meeting the threshold.
+
 ## Survey Form — Fields
 
 **REQ-SRV-020** The form SHALL display and allow editing of: PlanetName, SurveyID, NickName, ScannedBy, DateTime, ScannerBlueprintUUID (via filtered combo), and scanner properties (SensorAbundanceFactor, PurityModifier, ScanLevel).  

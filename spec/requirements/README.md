@@ -27,6 +27,13 @@ Each file covers one domain. Requirements are written as verifiable statements.
 | [Preferences.md](Preferences.md) | Configurable thresholds, intervals, countdown format |
 | [PricingPlan.md](PricingPlan.md) | Pricing plans, resource prices, price calculator |
 | [SafeFileWriter.md](SafeFileWriter.md) | Atomic file write strategy (temp-then-replace) |
+| [BuildPlanner.md](BuildPlanner.md) | Build plans, build items, resource checks, delivery generation, queue calculator |
+| [Contacts.md](Contacts.md) | Factions, external characters |
+| [Market.md](Market.md) | Market listings, transactions, profit/loss |
+| [Ships.md](Ships.md) | Ship templates, ship instances, cargo, stats computation |
+| [Stations.md](Stations.md) | Station model, holds, components, munitions |
+| [StockTargets.md](StockTargets.md) | Stock plans, targets, profiles, shortfall checks, replenishment |
+| [SupplyChains.md](SupplyChains.md) | Supply chain stages, threshold checks, background processing |
 | [Survey.md](Survey.md) | Survey management and blueprint scanning |
 | [UIStatePersistence.md](UIStatePersistence.md) | Window state persistence, preferences store |
 

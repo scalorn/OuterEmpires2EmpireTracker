@@ -99,19 +99,23 @@ Colonies are on planets. Planets are in systems. Travel between systems costs ti
   - Workers: fill from ideal vs actual worker gaps
   - Manufacturing resources: fill from active manufacturing resource needs
   - Flatpacks: fill from planned/unbuilt structures
-**REQ-DEL-061** Flatpack auto-fill SHALL support a time horizon parameter (e.g. "next N days of building").
+**REQ-DEL-061** Flatpack auto-fill SHALL support a time horizon parameter (e.g. "next N days of building"). The time horizon value SHALL be persisted as a user preference so it survives application restarts.  
 **REQ-DEL-062** Auto-fill SHALL be additive — it adds to existing plan items, not replaces them.
 
-## Phase 8: Ship Integration (Future)
+## Phase 8: Ship Assignment
 
-**REQ-DEL-070** When ships are modeled, delivery plans SHALL respect cargo capacity.
-**REQ-DEL-071** Multi-route deliveries SHALL be supported when cargo exceeds single-route capacity.
+**REQ-DEL-070** DeliveryPlan SHALL have a ShipUUID field referencing the assigned ship for the delivery.  
+**REQ-DEL-071** When a ship is assigned, delivery plans SHALL respect the ship's cargo capacity. Items exceeding capacity SHALL be split across multiple trips.  
+**REQ-DEL-072** Cargo volume for a delivery plan SHALL be computed by summing Item.Volume × Quantity for all items across all stops.  
+**REQ-DEL-073** The delivery planning UI SHALL display the assigned ship and cargo volume utilization.  
 
-## Phase 9: Space Station Hub (Future)
+## Phase 9: Station, Asteroid, and Ship Stops
 
-**REQ-DEL-080** Space stations SHALL be modeled as build structures not tied to a planet.
-**REQ-DEL-081** Space stations SHALL serve as the central hub for resource storage and delivery staging.
-**REQ-DEL-082** Space stations SHALL have no storage limitations.
+**REQ-DEL-080** RouteStop SHALL support DestinationType (Colony/Station/Asteroid/Ship) and a Purpose enum (Cargo/Refuel/CargoAndRefuel).  
+**REQ-DEL-081** DeliveryPlanStop SHALL support DestinationType to match the route stop's destination type.  
+**REQ-DEL-082** Stations SHALL be valid route stops for cargo pickup and dropoff.  
+**REQ-DEL-083** Asteroids SHALL be valid route stops for resource pickup (ship mining operations).  
+**REQ-DEL-084** Delivery execution at station and asteroid stops SHALL follow the same checkbox-per-item pattern as colony stops.
 
 ## User Interaction Flows
 
