@@ -74,6 +74,8 @@ namespace OE2EmpireTracker.Forms.Market
             this.dtpSumTo = new System.Windows.Forms.DateTimePicker();
             this.lblSumStation = new System.Windows.Forms.Label();
             this.cmbSumStation = new System.Windows.Forms.ComboBox();
+            this.lblPricingPlan = new System.Windows.Forms.Label();
+            this.cmbPricingPlan = new System.Windows.Forms.ComboBox();
             this.cmdCompute = new System.Windows.Forms.Button();
             this.flpSummaryTotals = new System.Windows.Forms.FlowLayoutPanel();
             this.lblTotalSales = new System.Windows.Forms.Label();
@@ -86,6 +88,8 @@ namespace OE2EmpireTracker.Forms.Market
             this.colSumQtyBought = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSumCost = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSumNet = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSumPlanValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSumMargin = new System.Windows.Forms.DataGridViewTextBoxColumn();
 
             this.tabControl.SuspendLayout();
             this.tabListings.SuspendLayout();
@@ -233,6 +237,7 @@ namespace OE2EmpireTracker.Forms.Market
             this.flpSummaryFilters.Controls.Add(this.lblSumFrom); this.flpSummaryFilters.Controls.Add(this.dtpSumFrom);
             this.flpSummaryFilters.Controls.Add(this.lblSumTo); this.flpSummaryFilters.Controls.Add(this.dtpSumTo);
             this.flpSummaryFilters.Controls.Add(this.lblSumStation); this.flpSummaryFilters.Controls.Add(this.cmbSumStation);
+            this.flpSummaryFilters.Controls.Add(this.lblPricingPlan); this.flpSummaryFilters.Controls.Add(this.cmbPricingPlan);
             this.flpSummaryFilters.Controls.Add(this.cmdCompute);
             this.flpSummaryFilters.Location = new System.Drawing.Point(3, 3);
             this.flpSummaryFilters.Name = "flpSummaryFilters";
@@ -244,6 +249,8 @@ namespace OE2EmpireTracker.Forms.Market
             this.dtpSumTo.Format = System.Windows.Forms.DateTimePickerFormat.Short; this.dtpSumTo.Size = new System.Drawing.Size(100, 20); this.dtpSumTo.Name = "dtpSumTo"; this.dtpSumTo.Checked = false; this.dtpSumTo.ShowCheckBox = true;
             this.lblSumStation.AutoSize = true; this.lblSumStation.Text = "Station:"; this.lblSumStation.Anchor = System.Windows.Forms.AnchorStyles.Left; this.lblSumStation.Name = "lblSumStation";
             this.cmbSumStation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList; this.cmbSumStation.Size = new System.Drawing.Size(150, 21); this.cmbSumStation.Name = "cmbSumStation";
+            this.lblPricingPlan.AutoSize = true; this.lblPricingPlan.Text = "Plan:"; this.lblPricingPlan.Anchor = System.Windows.Forms.AnchorStyles.Left; this.lblPricingPlan.Name = "lblPricingPlan";
+            this.cmbPricingPlan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList; this.cmbPricingPlan.Size = new System.Drawing.Size(150, 21); this.cmbPricingPlan.Name = "cmbPricingPlan";
             this.cmdCompute.Size = new System.Drawing.Size(75, 23); this.cmdCompute.Text = "Compute"; this.cmdCompute.UseVisualStyleBackColor = true; this.cmdCompute.Name = "cmdCompute";
 
             // flpSummaryTotals
@@ -264,7 +271,7 @@ namespace OE2EmpireTracker.Forms.Market
             this.dgvSummary.AllowUserToDeleteRows = false;
             this.dgvSummary.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvSummary.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-                this.colSumItem, this.colSumQtySold, this.colSumRevenue, this.colSumQtyBought, this.colSumCost, this.colSumNet});
+                this.colSumItem, this.colSumQtySold, this.colSumRevenue, this.colSumQtyBought, this.colSumCost, this.colSumNet, this.colSumPlanValue, this.colSumMargin});
             this.dgvSummary.Location = new System.Drawing.Point(3, 64);
             this.dgvSummary.Name = "dgvSummary";
             this.dgvSummary.ReadOnly = true;
@@ -277,6 +284,8 @@ namespace OE2EmpireTracker.Forms.Market
             this.colSumQtyBought.HeaderText = "Qty Bought"; this.colSumQtyBought.Name = "colSumQtyBought"; this.colSumQtyBought.ReadOnly = true; this.colSumQtyBought.Width = 80;
             this.colSumCost.HeaderText = "Purchase Cost"; this.colSumCost.Name = "colSumCost"; this.colSumCost.ReadOnly = true; this.colSumCost.Width = 120;
             this.colSumNet.HeaderText = "Net"; this.colSumNet.Name = "colSumNet"; this.colSumNet.ReadOnly = true; this.colSumNet.Width = 100;
+            this.colSumPlanValue.HeaderText = "Plan Value"; this.colSumPlanValue.Name = "colSumPlanValue"; this.colSumPlanValue.ReadOnly = true; this.colSumPlanValue.Width = 100;
+            this.colSumMargin.HeaderText = "Margin"; this.colSumMargin.Name = "colSumMargin"; this.colSumMargin.ReadOnly = true; this.colSumMargin.Width = 100;
 
             // FormMarket
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -358,6 +367,8 @@ namespace OE2EmpireTracker.Forms.Market
         private System.Windows.Forms.DateTimePicker dtpSumTo;
         private System.Windows.Forms.Label lblSumStation;
         private System.Windows.Forms.ComboBox cmbSumStation;
+        private System.Windows.Forms.Label lblPricingPlan;
+        private System.Windows.Forms.ComboBox cmbPricingPlan;
         private System.Windows.Forms.Button cmdCompute;
         private System.Windows.Forms.FlowLayoutPanel flpSummaryTotals;
         private System.Windows.Forms.Label lblTotalSales;
@@ -370,5 +381,7 @@ namespace OE2EmpireTracker.Forms.Market
         private System.Windows.Forms.DataGridViewTextBoxColumn colSumQtyBought;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSumCost;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSumNet;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSumPlanValue;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSumMargin;
     }
 }

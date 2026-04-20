@@ -38,6 +38,7 @@ namespace OE2EmpireTracker.Forms.Market
 
             // Summary tab
             cmdCompute.Click += cmdCompute_Click;
+            PopulatePricingPlanCombo();
 
             // Events
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
@@ -260,16 +261,82 @@ namespace OE2EmpireTracker.Forms.Market
                 lblNetPL.ForeColor = System.Drawing.Color.Red;
 
             dgvSummary.Rows.Clear();
+            var plan = GetSelectedPricingPlan();
+            decimal totalPlanValue = 0m;
             foreach (var kvp in summary.ItemBreakdown.OrderBy(k => k.Key))
             {
                 var b = kvp.Value;
+                string planValueStr = "";
+                string marginStr = "";
+                if (plan != null && b.QuantitySold > 0)
+                {
+                    // Try to compute plan value for this item
+                    decimal unitPrice = 0m;
+                    var commodity = Commodity.ResourceMapByEnum.Values
+                        .FirstOrDefault(c => c.Name == b.ItemName || c.ExtendedName == b.ItemName);
+                    if (commodity != null)
+                    {
+                        var cp = PriceCalculator.ComputeCommodityPrice(plan, commodity);
+                        unitPrice = cp.Price;
+                    }
+                    else
+                    {
+                        // Try as a resource
+                        string purity = PriceCalculator.DeterminePurity(b.ItemName);
+                        if (PriceCalculator.TryGetResourcePrice(plan, b.ItemName, purity, out decimal rp))
+                            unitPrice = rp;
+                    }
+                    if (unitPrice > 0)
+                    {
+                        decimal itemPlanValue = unitPrice * b.QuantitySold;
+                        decimal margin = b.SalesRevenue - itemPlanValue;
+                        totalPlanValue += itemPlanValue;
+                        planValueStr = itemPlanValue.ToString("N2");
+                        marginStr = margin.ToString("N2");
+                    }
+                }
                 dgvSummary.Rows.Add(b.ItemName, b.QuantitySold.ToString(),
                     b.SalesRevenue.ToString("N2"), b.QuantityBought.ToString(),
-                    b.PurchaseCost.ToString("N2"), b.NetProfitLoss.ToString("N2"));
+                    b.PurchaseCost.ToString("N2"), b.NetProfitLoss.ToString("N2"),
+                    planValueStr, marginStr);
+            }
+
+            if (plan != null && totalPlanValue > 0)
+            {
+                lblNetPL.Text += string.Format("  |  Plan Value: {0:N2}  |  Margin: {1:N2}",
+                    totalPlanValue, summary.TotalSalesRevenue - totalPlanValue);
             }
             sw.Stop();
             Log.Info("PERF cmdCompute_Click: {0}ms items={1}", sw.ElapsedMilliseconds, summary.ItemBreakdown.Count);
         }
+
+        private void PopulatePricingPlanCombo()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            cmbPricingPlan.DataSource = null;
+            cmbPricingPlan.Items.Clear();
+
+            var plans = playerContext.PricingPlanList
+                .Where(p => p.OwnerUUID == playerContext.CurrentPlayerUUID)
+                .OrderBy(p => p.Name).ToList();
+
+            var items = new List<KeyValuePair<string, string>>();
+            items.Add(new KeyValuePair<string, string>("", "(none)"));
+            foreach (var plan in plans)
+                items.Add(new KeyValuePair<string, string>(plan.UUID, plan.Name));
+
+            cmbPricingPlan.DataSource = items;
+            cmbPricingPlan.DisplayMember = "Value";
+            cmbPricingPlan.ValueMember = "Key";
+        }
+
+        private Models.PricingPlan GetSelectedPricingPlan()
+        {
+            string uuid = cmbPricingPlan.SelectedValue?.ToString() ?? "";
+            if (string.IsNullOrEmpty(uuid)) return null;
+            return playerContext.PricingPlanList.FirstOrDefault(p => p.UUID == uuid);
+        }
+
         // -----------------------------------------------------------------------
         // Helpers
         // -----------------------------------------------------------------------
@@ -312,6 +379,7 @@ namespace OE2EmpireTracker.Forms.Market
             if (InvokeRequired)
             { try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); } catch (ObjectDisposedException) { } return; }
             PopulateStationCombos();
+            PopulatePricingPlanCombo();
             PopulateListingsGrid();
             PopulateTransactionsGrid();
         }

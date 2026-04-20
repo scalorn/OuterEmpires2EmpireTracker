@@ -158,12 +158,6 @@ Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat
 
 The following items were designed in the empire-systems spec and marked complete in tasks.md, but the UI controls were either not implemented or implemented differently than the mockup specified. Discovered during the April 2026 mockup-controls audit.
 
-### BL-078: Market Pricing Plan Integration on Summary Tab
-**Dependencies:** None
-**Source:** Empire-systems Iteration 5, task 30.4
-
-FormMarket Summary tab is missing cmbPricingPlan to select a pricing plan for valuation comparison. The mockup shows Plan Valuation and Margin vs Plan in the summary. PricingPlan model and form exist. Needs: combo on Summary tab, pass selected plan to ComputeProfitLoss, display plan-based valuation alongside actual revenue.
-
 ### BL-079: Build Planner Target Duration Field
 **Dependencies:** None
 **Source:** Empire-systems Iteration 1, task 10.2

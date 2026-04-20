@@ -317,3 +317,7 @@ Comprehensive empire management feature set implemented across 8 iterations in `
 
 ### BL-077: Station Blueprint Selector and Stats Display
 **Status: Complete** — Added cmbStationBlueprint (DropDownList) to FormStation Components tab for selecting/changing the station hull blueprint. Added rtbStationStats (RichTextBox) showing computed station stats via ShipBuildService.ComputeStationStats: mass, power, health, shields, defence ratings, and weapon counts. Blueprint change triggers component grid and stats refresh.
+
+
+### BL-078: Market Pricing Plan Integration on Summary Tab
+**Status: Complete** — Added cmbPricingPlan (DropDownList) to FormMarket Summary tab filter row. When a pricing plan is selected and Compute is clicked, the per-item breakdown grid shows "Plan Value" and "Margin" columns computed via PriceCalculator. Total plan valuation and margin shown in the summary labels. Supports commodity pricing via ConstructionResources and resource pricing via direct lookup.
