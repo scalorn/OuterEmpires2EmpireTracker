@@ -641,3 +641,8 @@ All derived from existing kiro specs and verified against implemented code. Requ
 **Issue:** These supporting model classes exist in code but have no mention in spec/design/data-models.md or spec/requirements/DataModel.md.
 **Spec reference:** Should be in spec/design/data-models.md
 **Impact:** Data structures used by colony processing are undocumented.
+### AMB-080 — OPEN: MAGIC_NUMBER — FormShipTemplate uses hardcoded slot type strings instead of SlotTypes constants
+**File:** OE2EmpireTracker/Forms/ShipTemplate/FormShipTemplate.cs:641-655
+**Issue:** GetSlotDefinitions() hardcodes slot type strings ("Reactor", "MainDrive", "CargoPod", etc.) instead of using the SlotTypes constants that already exist in Constants/SlotTypes.cs. Additionally, weapon slot names use "SmallWeapon"/"MediumWeapon"/"LargeWeapon" which don't match the SlotTypes constants "WeaponSmall"/"WeaponMedium"/"WeaponLarge" — a naming mismatch that could cause slot type lookups to fail.
+**Spec reference:** spec/design/code-standards.md (no magic strings), spec/decisions/resolved-questions.md (OQ-31, OQ-32)
+**Impact:** Typo in a slot type string would silently break component installation. Weapon slot naming mismatch may cause incorrect slot matching.
