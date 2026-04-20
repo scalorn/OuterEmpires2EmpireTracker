@@ -313,5 +313,47 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(report.BuildItemCount, Is.EqualTo(0));
         }
+
+        // Completeness: StockPlan.Targets[].ItemReferenceID (when Blueprint)
+        [Test]
+        public void CountReferences_StockPlanTargetItemReferenceID_Counted()
+        {
+            var stockPlan = new StockPlan
+            {
+                UUID = "sp-1",
+                Targets = new List<StockTarget>
+                {
+                    new StockTarget { ItemReferenceID = TargetUUID }
+                }
+            };
+
+            var counter = new BlueprintReferenceCounter(
+                Enumerable.Empty<Colony>(),
+                Enumerable.Empty<Bp>(),
+                Enumerable.Empty<Survey>(),
+                stockPlans: new[] { stockPlan });
+
+            var report = counter.CountReferences(TargetUUID);
+
+            Assert.That(report.StockTargetCount, Is.EqualTo(1));
+            Assert.That(report.TotalCount, Is.GreaterThan(0));
+        }
+
+        // Completeness: MarketTransaction.ItemReferenceID (when Blueprint)
+        [Test]
+        public void CountReferences_MarketTransactionItemReferenceID_Counted()
+        {
+            var tx = new MarketTransaction { UUID = "mt-1", ItemReferenceID = TargetUUID };
+
+            var counter = new BlueprintReferenceCounter(
+                Enumerable.Empty<Colony>(),
+                Enumerable.Empty<Bp>(),
+                Enumerable.Empty<Survey>(),
+                marketTransactions: new[] { tx });
+
+            var report = counter.CountReferences(TargetUUID);
+
+            Assert.That(report.TotalCount, Is.GreaterThan(0));
+        }
     }
 }

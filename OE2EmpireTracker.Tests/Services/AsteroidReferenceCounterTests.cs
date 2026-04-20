@@ -237,5 +237,30 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(report.SurveyCount, Is.EqualTo(2));
             Assert.That(report.TotalCount, Is.EqualTo(2));
         }
+
+        // Completeness: SupplyChainStage.LocationUUID (Asteroid)
+        [Test]
+        public void CountReferences_SupplyChainStageLocationAsteroid_Counted()
+        {
+            var chain = new SupplyChain
+            {
+                UUID = "sc-1",
+                Stages = new List<SupplyChainStage>
+                {
+                    new SupplyChainStage { LocationType = DestinationType.Asteroid, LocationUUID = TargetUUID }
+                }
+            };
+
+            var counter = new AsteroidReferenceCounter(
+                Enumerable.Empty<Survey>(),
+                Enumerable.Empty<BuildPlan>(),
+                Enumerable.Empty<DeliveryRoute>(),
+                new[] { chain });
+
+            var report = counter.CountReferences(TargetUUID);
+
+            Assert.That(report.SupplyChainStageCount, Is.EqualTo(1));
+            Assert.That(report.TotalCount, Is.GreaterThan(0));
+        }
     }
 }

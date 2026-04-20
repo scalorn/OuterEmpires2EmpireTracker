@@ -118,5 +118,48 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(empty.TotalCount, Is.EqualTo(0));
             Assert.That(empty.DeliveryPlanCount, Is.EqualTo(0));
         }
+
+        // Completeness: WarehouseOverflowRule.DeliveryRouteUUID
+        [Test]
+        public void CountReferences_WarehouseOverflowRuleDeliveryRouteUUID_Counted()
+        {
+            var rule = new WarehouseOverflowRule
+            {
+                UUID = "wor-1",
+                DeliveryRouteUUID = TargetUUID
+            };
+
+            var counter = new DeliveryRouteReferenceCounter(
+                Enumerable.Empty<DeliveryPlan>(),
+                new[] { rule });
+
+            var report = counter.CountReferences(TargetUUID);
+
+            Assert.That(report.OverflowRuleCount, Is.EqualTo(1));
+            Assert.That(report.TotalCount, Is.GreaterThan(0));
+        }
+
+        // Completeness: SupplyChainStage.DeliveryRouteUUID
+        [Test]
+        public void CountReferences_SupplyChainStageDeliveryRouteUUID_Counted()
+        {
+            var chain = new SupplyChain
+            {
+                UUID = "sc-1",
+                Stages = new List<SupplyChainStage>
+                {
+                    new SupplyChainStage { DeliveryRouteUUID = TargetUUID }
+                }
+            };
+
+            var counter = new DeliveryRouteReferenceCounter(
+                Enumerable.Empty<DeliveryPlan>(),
+                supplyChains: new[] { chain });
+
+            var report = counter.CountReferences(TargetUUID);
+
+            Assert.That(report.SupplyChainStageCount, Is.EqualTo(1));
+            Assert.That(report.TotalCount, Is.GreaterThan(0));
+        }
     }
 }

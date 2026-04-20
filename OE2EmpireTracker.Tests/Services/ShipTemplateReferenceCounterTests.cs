@@ -128,5 +128,26 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(counter.CountReferences(TargetUUID), Is.EqualTo(0));
         }
+
+        // Completeness: StockPlan.Targets[].ShipTemplateUUID
+        [Test]
+        public void CountReferences_StockPlanTargetShipTemplateUUID_Counted()
+        {
+            var stockPlan = new StockPlan
+            {
+                UUID = "sp-1",
+                Targets = new List<StockTarget>
+                {
+                    new StockTarget { ShipTemplateUUID = TargetUUID }
+                }
+            };
+
+            var counter = new ShipTemplateReferenceCounter(
+                Enumerable.Empty<Ship>(),
+                Enumerable.Empty<BuildPlan>(),
+                new[] { stockPlan });
+
+            Assert.That(counter.CountReferences(TargetUUID), Is.GreaterThan(0));
+        }
     }
 }

@@ -169,5 +169,93 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(report.BuildItemCount, Is.EqualTo(1));
             Assert.That(report.TotalCount, Is.EqualTo(2));
         }
+
+        // Completeness: SupplyChainStage.LocationUUID (Colony)
+        [Test]
+        public void CountReferences_SupplyChainStageLocationColony_Counted()
+        {
+            var chain = new SupplyChain
+            {
+                UUID = "sc-1",
+                Stages = new List<SupplyChainStage>
+                {
+                    new SupplyChainStage { LocationType = DestinationType.Colony, LocationUUID = TargetUUID }
+                }
+            };
+
+            var counter = new ColonyReferenceCounter(
+                Enumerable.Empty<DeliveryRoute>(),
+                Enumerable.Empty<DeliveryPlan>(),
+                supplyChains: new[] { chain });
+
+            var report = counter.CountReferences(TargetUUID);
+
+            Assert.That(report.SupplyChainCount, Is.EqualTo(1));
+            Assert.That(report.TotalCount, Is.GreaterThan(0));
+        }
+
+        // Completeness: WarehouseOverflowRule.DestinationUUID (Colony)
+        [Test]
+        public void CountReferences_WarehouseOverflowRuleDestinationColony_Counted()
+        {
+            var rule = new WarehouseOverflowRule
+            {
+                UUID = "wor-1",
+                DestinationType = DestinationType.Colony,
+                DestinationUUID = TargetUUID
+            };
+
+            var counter = new ColonyReferenceCounter(
+                Enumerable.Empty<DeliveryRoute>(),
+                Enumerable.Empty<DeliveryPlan>(),
+                overflowRules: new[] { rule });
+
+            var report = counter.CountReferences(TargetUUID);
+
+            Assert.That(report.TotalCount, Is.GreaterThan(0));
+        }
+
+        // Completeness: WarehouseOverflowRule.ColonyUUID
+        [Test]
+        public void CountReferences_WarehouseOverflowRuleColonyUUID_Counted()
+        {
+            var rule = new WarehouseOverflowRule
+            {
+                UUID = "wor-1",
+                ColonyUUID = TargetUUID
+            };
+
+            var counter = new ColonyReferenceCounter(
+                Enumerable.Empty<DeliveryRoute>(),
+                Enumerable.Empty<DeliveryPlan>(),
+                overflowRules: new[] { rule });
+
+            var report = counter.CountReferences(TargetUUID);
+
+            Assert.That(report.TotalCount, Is.GreaterThan(0));
+        }
+
+        // Completeness: StockPlan.Targets[].LocationUUID (Colony)
+        [Test]
+        public void CountReferences_StockPlanTargetLocationColony_Counted()
+        {
+            var stockPlan = new StockPlan
+            {
+                UUID = "sp-1",
+                Targets = new List<StockTarget>
+                {
+                    new StockTarget { Scope = StockTargetScope.Colony, LocationUUID = TargetUUID }
+                }
+            };
+
+            var counter = new ColonyReferenceCounter(
+                Enumerable.Empty<DeliveryRoute>(),
+                Enumerable.Empty<DeliveryPlan>(),
+                stockPlans: new[] { stockPlan });
+
+            var report = counter.CountReferences(TargetUUID);
+
+            Assert.That(report.TotalCount, Is.GreaterThan(0));
+        }
     }
 }

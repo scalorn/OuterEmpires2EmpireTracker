@@ -312,6 +312,7 @@
     <Compile Include="Services\JsonDefaultSkipTests.cs" />
     <Compile Include="Services\BughuntDiagnosticTest.cs" />
     <Compile Include="Services\BlueprintReferenceCounterTests.cs" />
+    <Compile Include="Services\ColonyReferenceCounterTests.cs" />
     <Compile Include="Services\BuildPlanReferenceCounterTests.cs" />
     <Compile Include="Services\BlueprintReferenceCounterPropertyTests.cs" />
     <Compile Include="Services\DeliveryRouteReferenceCounterTests.cs" />
@@ -319,6 +320,10 @@
     <Compile Include="Services\ShipTemplateReferenceCounterTests.cs" />
     <Compile Include="Services\ShipReferenceCounterTests.cs" />
     <Compile Include="Services\StationReferenceCounterTests.cs" />
+    <Compile Include="Services\StationReferenceCounterCompletenessTests.cs" />
+    <Compile Include="Services\SurveyReferenceCounterCompletenessTests.cs" />
+    <Compile Include="Services\DeliveryPlanReferenceCounterTests.cs" />
+    <Compile Include="Services\StockPlanReferenceCounterTests.cs" />
     <Compile Include="Services\AsteroidReferenceCounterTests.cs" />
     <Compile Include="Services\MarketServiceTests.cs" />
     <Compile Include="Services\MarketListingReferenceCounterTests.cs" />
