@@ -638,21 +638,27 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         private List<SlotDefinition> GetSlotDefinitions(Models.Blueprint hullBp)
         {
             var defs = new List<SlotDefinition>();
-            AddSlotDef(defs, hullBp, "Max Reactors", "Reactor", "Reactor");
-            AddSlotDef(defs, hullBp, "Max Main Drives", "MainDrive", "MainDrive");
-            AddSlotDef(defs, hullBp, "Max Thrusters", "Thruster", "Thruster");
-            AddSlotDef(defs, hullBp, "Max Cargo Pods", "CargoPod", "CargoPod");
-            AddSlotDef(defs, hullBp, "Max Fuel Tanks", "FuelTank", "FuelTank");
-            AddSlotDef(defs, hullBp, "Max Shields", "Shield", "Shield");
-            AddSlotDef(defs, hullBp, "Max Jump Drives", "JumpDrive", "JumpDrive");
-            AddSlotDef(defs, hullBp, "Max Small Weapons", "SmallWeapon", "SmallWeapon");
-            AddSlotDef(defs, hullBp, "Max Medium Weapons", "MediumWeapon", "MediumWeapon");
-            AddSlotDef(defs, hullBp, "Max Large Weapons", "LargeWeapon", "LargeWeapon");
-            AddSlotDef(defs, hullBp, "Max Hull Plating", "HullPlating", "HullPlating");
-            AddSlotDef(defs, hullBp, "Max Hull Reinforcement", "HullReinforcement", "HullReinforcement");
-            AddSlotDef(defs, hullBp, "Max Mining Lasers", "MiningLaser", Constants.BlueprintTypes.MiningLaser);
-            AddSlotDef(defs, hullBp, "Max Ore Hoppers", "OreHopper", Constants.BlueprintTypes.OreHopper);
-            AddSlotDef(defs, hullBp, "Max Nav Comps", "NavComp", "NavComp");
+            // Use game property names from SlotTypes.HullPropertyToSlotType
+            AddSlotDef(defs, hullBp, "Reactor Slots", Constants.SlotTypes.Reactor, Constants.SlotTypes.Reactor);
+            AddSlotDef(defs, hullBp, "Main Drive Slots", Constants.SlotTypes.MainDrive, Constants.SlotTypes.MainDrive);
+            AddSlotDef(defs, hullBp, "Thruster Slots", Constants.SlotTypes.Thruster, Constants.SlotTypes.Thruster);
+            AddSlotDef(defs, hullBp, "Cargo Pod Slots", Constants.SlotTypes.CargoPod, Constants.SlotTypes.CargoPod);
+            AddSlotDef(defs, hullBp, "Fuel Tank Slots", Constants.SlotTypes.FuelTank, Constants.SlotTypes.FuelTank);
+            AddSlotDef(defs, hullBp, "Shield Slots", Constants.SlotTypes.Shield, Constants.SlotTypes.Shield);
+            AddSlotDef(defs, hullBp, "Jump Drive Slots", Constants.SlotTypes.JumpDrive, Constants.SlotTypes.JumpDrive);
+            AddSlotDef(defs, hullBp, "Small Weapon Mounts", Constants.SlotTypes.WeaponSmall, Constants.SlotTypes.WeaponSmall);
+            AddSlotDef(defs, hullBp, "Medium Weapon Mounts", Constants.SlotTypes.WeaponMedium, Constants.SlotTypes.WeaponMedium);
+            AddSlotDef(defs, hullBp, "Large Weapon Mounts", Constants.SlotTypes.WeaponLarge, Constants.SlotTypes.WeaponLarge);
+            AddSlotDef(defs, hullBp, "Max Hull Plating", Constants.SlotTypes.HullPlating, Constants.SlotTypes.HullPlating);
+            AddSlotDef(defs, hullBp, "Max Hull Reinforcement", Constants.SlotTypes.HullReinforcement, Constants.SlotTypes.HullReinforcement);
+            AddSlotDef(defs, hullBp, "Max Hull Sealant Units", Constants.SlotTypes.HullSealant, Constants.SlotTypes.HullSealant);
+            AddSlotDef(defs, hullBp, "Max Mining Lasers", Constants.SlotTypes.MiningLaser, Constants.SlotTypes.MiningLaser);
+            AddSlotDef(defs, hullBp, "Max Mining Grapples", Constants.SlotTypes.MiningGrapple, Constants.SlotTypes.MiningGrapple);
+            AddSlotDef(defs, hullBp, "Max Ore Hoppers", Constants.SlotTypes.OreHopper, Constants.SlotTypes.OreHopper);
+            AddSlotDef(defs, hullBp, "Nav Comp Slots", Constants.SlotTypes.NavComp, Constants.SlotTypes.NavComp);
+            AddSlotDef(defs, hullBp, "Scanner Slots", Constants.SlotTypes.Scanner, Constants.SlotTypes.Scanner);
+            AddSlotDef(defs, hullBp, "Coupler Slots", Constants.SlotTypes.Coupler, Constants.SlotTypes.Coupler);
+            AddSlotDef(defs, hullBp, "GERTY Slots", Constants.SlotTypes.GERTY, Constants.SlotTypes.GERTY);
             return defs;
         }
 
