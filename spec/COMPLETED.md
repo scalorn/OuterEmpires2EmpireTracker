@@ -309,3 +309,7 @@ Comprehensive empire management feature set implemented across 8 iterations in `
 
 ### BL-075: Crate Master-Detail UI (Ship Cargo, Station Hold)
 **Status: Complete** — Added dgvCrateContents detail grid to FormShipInstance Cargo tab and dgvHoldCrateContents to FormStation Hold tab. When a crate row is selected in the main grid, the detail grid below shows the crate's contents. Crate rows display "[Crate]" prefix with item count. Detail grid hidden when non-crate row selected.
+
+
+### BL-076: Ship Instance Stats and Swap Component
+**Status: Complete** — Added rtbStats (RichTextBox) to FormShipInstance Overview tab showing computed ship stats via ShipBuildService.ComputeStats (same format as FormShipTemplate). Added cmdSwapComponent button that opens a blueprint picker dialog filtered by the selected slot's type, allowing component replacement. Stats refresh after swap.

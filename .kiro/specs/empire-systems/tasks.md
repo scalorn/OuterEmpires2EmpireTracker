@@ -147,7 +147,7 @@ Empire Systems is implemented in 8 iterations plus a pre-iteration remediation p
 
 - [x] 19. Ship Instance Form
   - [x] 19.1 Create FormShipInstance MDI child with Overview + Cargo tabs
-  - [x] 19.2 Overview tab: component grid with editable Condition/MaxRepair columns, hull row first — **stats display and cmdSwapComponent not implemented (BL-076)**
+  - [x] 19.2 Overview tab: component grid with editable Condition/MaxRepair columns, hull row first — stats display and cmdSwapComponent implemented in BL-076
   - [x] 19.3 Cargo tab: radio toggle Cargo Hold / Hopper, crate master-detail, purity restriction — crate master-detail implemented in BL-075
   - [x] 19.4 Create from Template button
   - [x] 19.5 Implement ShipReferenceCounter (DeliveryPlan.ShipUUID + BuildItem.BuildLocationUUID), Refs column

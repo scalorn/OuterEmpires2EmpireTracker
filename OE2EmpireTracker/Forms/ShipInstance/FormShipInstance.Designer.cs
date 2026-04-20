@@ -43,6 +43,8 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.colComponentName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCondition = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colMaxRepair = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cmdSwapComponent = new System.Windows.Forms.Button();
+            this.rtbStats = new System.Windows.Forms.RichTextBox();
             this.tabCargo = new System.Windows.Forms.TabPage();
             this.flpCargoTop = new System.Windows.Forms.FlowLayoutPanel();
             this.rbCargoHold = new System.Windows.Forms.RadioButton();
@@ -269,6 +271,8 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             // tabOverview
             //
             this.tabOverview.Controls.Add(this.dgvComponents);
+            this.tabOverview.Controls.Add(this.cmdSwapComponent);
+            this.tabOverview.Controls.Add(this.rtbStats);
             this.tabOverview.Location = new System.Drawing.Point(4, 22);
             this.tabOverview.Name = "tabOverview";
             this.tabOverview.Padding = new System.Windows.Forms.Padding(3);
@@ -284,11 +288,11 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.dgvComponents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvComponents.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colSlotType, this.colComponentName, this.colCondition, this.colMaxRepair});
-            this.dgvComponents.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvComponents.Dock = System.Windows.Forms.DockStyle.None;
             this.dgvComponents.Location = new System.Drawing.Point(3, 3);
             this.dgvComponents.Name = "dgvComponents";
             this.dgvComponents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvComponents.Size = new System.Drawing.Size(698, 478);
+            this.dgvComponents.Size = new System.Drawing.Size(698, 250);
             //
             // colSlotType
             //
@@ -315,6 +319,22 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.colMaxRepair.HeaderText = "Max Repair %";
             this.colMaxRepair.Name = "colMaxRepair";
             this.colMaxRepair.Width = 90;
+            //
+            // cmdSwapComponent
+            //
+            this.cmdSwapComponent.Location = new System.Drawing.Point(3, 259);
+            this.cmdSwapComponent.Name = "cmdSwapComponent";
+            this.cmdSwapComponent.Size = new System.Drawing.Size(120, 23);
+            this.cmdSwapComponent.Text = "Swap Component";
+            this.cmdSwapComponent.UseVisualStyleBackColor = true;
+            //
+            // rtbStats
+            //
+            this.rtbStats.Location = new System.Drawing.Point(3, 288);
+            this.rtbStats.Name = "rtbStats";
+            this.rtbStats.ReadOnly = true;
+            this.rtbStats.Size = new System.Drawing.Size(698, 185);
+            this.rtbStats.Font = new System.Drawing.Font("Consolas", 8.25F);
             //
             // tabCargo
             //
@@ -588,6 +608,8 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         private System.Windows.Forms.DataGridViewTextBoxColumn colComponentName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCondition;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMaxRepair;
+        private System.Windows.Forms.Button cmdSwapComponent;
+        private System.Windows.Forms.RichTextBox rtbStats;
         private System.Windows.Forms.TabPage tabCargo;
         private System.Windows.Forms.FlowLayoutPanel flpCargoTop;
         private System.Windows.Forms.RadioButton rbCargoHold;

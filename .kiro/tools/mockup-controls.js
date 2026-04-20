@@ -71,6 +71,7 @@ const SECTION_MAP = {
                 'txtShipName': 'txtName',
                 'cmdCreateFromTemplate': 'cmdFromTemplate',
                 'dgvHopper': 'dgvCargo',
+                'dgvStats': 'rtbStats',
             },
         },
     ],

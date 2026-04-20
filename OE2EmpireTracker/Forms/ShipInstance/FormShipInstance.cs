@@ -41,6 +41,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             cmdDelete.Click += cmdDelete_Click;
             cmdSave.Click += cmdSave_Click;
             cmdFromTemplate.Click += cmdFromTemplate_Click;
+            cmdSwapComponent.Click += cmdSwapComponent_Click;
 
             rbCargoHold.CheckedChanged += rbCargo_CheckedChanged;
             rbHopper.CheckedChanged += rbCargo_CheckedChanged;
@@ -142,6 +143,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             PopulateLocationUUIDCombo(_selectedShip.LocationType);
             SelectLocationUUID(_selectedShip.LocationUUID);
             PopulateOverviewGrid();
+            RefreshStats();
             PopulateCargoGrid();
             SetDetailEnabled(true);
             sw.Stop();
@@ -155,6 +157,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             cmbLocationType.SelectedIndex = -1;
             cmbLocationUUID.Items.Clear();
             dgvComponents.Rows.Clear();
+            rtbStats.Text = "";
             dgvCargo.Rows.Clear();
             SetDetailEnabled(false);
         }
@@ -284,6 +287,78 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 else if (e.ColumnIndex == colMaxRepair.Index)
                 {
                     if (decimal.TryParse(valStr, out decimal mr)) slot.MaxRepairPercent = mr;
+                }
+            }
+        }
+
+        private void RefreshStats()
+        {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            if (_selectedShip == null) { rtbStats.Text = ""; sw.Stop(); return; }
+            var hullBp = playerContext.FindBlueprint(_selectedShip.HullBlueprintUUID);
+            if (hullBp == null) { rtbStats.Text = "No hull blueprint."; sw.Stop(); return; }
+
+            var stats = ShipBuildService.ComputeStats(hullBp, _selectedShip.Components,
+                uuid => playerContext.FindBlueprint(uuid));
+
+            rtbStats.Text = string.Format(
+                "Mass: {0}  |  Power: {1}/{2} (Balance: {3})\n" +
+                "Cargo: {4}  |  Fuel: {5}  |  Hopper: {6}\n" +
+                "Health: {7}  |  Shield: {8} (Regen: {9})\n" +
+                "Defence \u2014 Energy: {10}  Kinetic: {11}  Missile: {12}\n" +
+                "Accel: {13}  |  Rotation: {14}  |  Jump: {15} (Fuel/Jump: {16})\n" +
+                "Mining Yield: {17}  |  Scan Level: {18}",
+                stats.TotalMass, stats.PowerGenerated, stats.PowerConsumed, stats.PowerBalance,
+                stats.CargoCapacity, stats.FuelCapacity, stats.HopperCapacity,
+                stats.TotalHealth, stats.ShieldHitpoints, stats.ShieldRegen,
+                stats.EnergyDefence, stats.KineticDefence, stats.MissileDefence,
+                stats.Acceleration, stats.RotationalThrust, stats.MaxJumpDistance, stats.FuelPerJump,
+                stats.MiningYield, stats.ScanLevel);
+            sw.Stop(); Log.Info("PERF RefreshStats: {0}ms", sw.ElapsedMilliseconds);
+        }
+
+        private void cmdSwapComponent_Click(object sender, EventArgs e)
+        {
+            if (_selectedShip == null || dgvComponents.SelectedRows.Count == 0) return;
+            var row = dgvComponents.SelectedRows[0];
+            if (!(row.Tag is ShipComponentSlot slot)) return;
+
+            var blueprints = playerContext.GetAllBlueprints()
+                .Where(bp => bp.BluePrintType == slot.SlotType)
+                .OrderBy(bp => bp.ExtendedName)
+                .ToList();
+
+            if (blueprints.Count == 0)
+            {
+                MessageBox.Show(string.Format("No blueprints found for slot type \"{0}\".", slot.SlotType),
+                    "No Blueprints", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var items = blueprints.Select(bp => bp.ExtendedName).ToArray();
+            using (var dlg = new Form())
+            {
+                dlg.Text = "Swap Component \u2014 " + slot.SlotType;
+                dlg.Size = new System.Drawing.Size(400, 350);
+                dlg.StartPosition = FormStartPosition.CenterParent;
+                dlg.FormBorderStyle = FormBorderStyle.FixedDialog;
+                dlg.MaximizeBox = false;
+                dlg.MinimizeBox = false;
+
+                var lb = new ListBox { Dock = DockStyle.Fill };
+                lb.Items.AddRange(items);
+                var btnOk = new Button { Text = "OK", DialogResult = DialogResult.OK, Dock = DockStyle.Bottom };
+                dlg.Controls.Add(lb);
+                dlg.Controls.Add(btnOk);
+                dlg.AcceptButton = btnOk;
+
+                if (dlg.ShowDialog(this) == DialogResult.OK && lb.SelectedIndex >= 0)
+                {
+                    var selected = blueprints[lb.SelectedIndex];
+                    slot.BlueprintUUID = selected.UUID;
+                    PopulateOverviewGrid();
+                    RefreshStats();
+                    Log.Info("Swapped component in slot {0} to {1}", slot.SlotType, selected.ExtendedName);
                 }
             }
         }

@@ -158,12 +158,6 @@ Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat
 
 The following items were designed in the empire-systems spec and marked complete in tasks.md, but the UI controls were either not implemented or implemented differently than the mockup specified. Discovered during the April 2026 mockup-controls audit.
 
-### BL-076: Ship Instance Stats and Swap Component
-**Dependencies:** None
-**Source:** Empire-systems Iteration 2, tasks 19.1-19.2
-
-FormShipInstance Overview tab is missing: (1) a stats display showing computed ship stats like FormShipTemplate has, and (2) a cmdSwapComponent button to replace installed components. ShipBuildService.ComputeStats exists — just needs UI wiring.
-
 ### BL-077: Station Blueprint Selector and Stats Display
 **Dependencies:** None
 **Source:** Empire-systems Iteration 4, task 25.3
