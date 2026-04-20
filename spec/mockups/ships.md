@@ -65,7 +65,7 @@ MDI child form. Left-list / right-detail pattern.
 
 Controls:
 - Left: `flpSearchList` â†’ `txtTemplateFilter` + `lvwTemplates` (ListView) + `cmdNew` / `cmdDelete`
-- Right: `flpTemplateData` â†’ `txtTemplateName`, hull selector (`txtHullFilter` + `cmbHull`), `dgvComponents` (DataGridView), install panel, stats panel, `cmdOrderBuild`
+- Right: `flpTemplateData` â†’ `txtTemplateName`, hull selector (`txtHullFilter` + `cmbHull`), `cmdSave`, `cmdOrderBuild`, `dgvComponents` (DataGridView), install panel, stats panel, `cmdOrderBuild`
 - `dgvComponents` columns: SlotType, SlotIndex, Blueprint (read-only), Actions (button column)
 - Install panel: `txtComponentFilter`, `cmbComponent` (FilteredComboBox), `cmbSlot`, `cmdInstall`
 - Stats panel: `dgvStats` (read-only DataGridView) â€” computed from hull + components via ShipBuildService.ComputeStats. Grouped into sections: Core (mass, power, eng capacity), Capacity (cargo, fuel, crew), Defence (health, shields, armour ratings), Propulsion (acceleration, thrust, jump), Weapons (mount counts, license). Mining and scanning sections shown only when relevant components are installed.
@@ -182,10 +182,10 @@ Hopper view (when "Hopper" radio selected):
 ```
 
 Controls:
-- Left: `flpSearchList` â†’ `txtShipFilter` + `lvwShips` (ListView) + `cmdCreateFromTemplate`
-- Right: `flpShipData` â†’ `txtShipName`, template/location labels, `tabShipDetail` (TabControl with Overview and Cargo tabs)
+- Left: `flpSearchList` â†’ `txtShipFilter` + `lvwShips` (ListView) + `cmdNew` / `cmdDelete` / `cmdCreateFromTemplate`
+- Right: `flpShipData` â†’ `txtShipName`, `cmbLocationType`, `cmbLocationUUID`, `cmdSave`, `tabShipDetail` (TabControl with Overview and Cargo tabs)
 - Overview tab: `dgvComponents` (DataGridView â€” columns: Slot Type, Slot#, Blueprint, Condition, MaxRepair. Condition and MaxRepair are editable for ship instances. Condition shows CurrentHP/MaxHP and percentage, color-coded: green â‰¥75%, yellow â‰¥50%, red <50%. MaxRepair shows the max repairable percentage. Hull row is always first.), `cmdSwapComponent` (opens component picker), `dgvStats` (read-only DataGridView) â€” computed via ShipBuildService.ComputeStats, same grouped layout as FormShipTemplate. Mining/scanning sections shown only when relevant components are installed.
 - Cargo tab: `rbCargoHold` / `rbHopper` (RadioButtons) to switch views. Hopper radio only enabled when ship has Ore Hopper components.
   - Cargo Hold view: `dgvCargo` (DataGridView with crate master-detail), `dgvCrateContents` (detail grid), crate management buttons, volume header showing used/capacity.
-  - Hopper view: `dgvHopper` (DataGridView) with columns Resource, Name, Purity, Qty, Volume. Hopper only accepts unrefined resources (High, Medium, Low purity). Add panel with resource filter/combo, purity combo (restricted to High/Medium/Low), quantity, and Add button. Volume header showing used/capacity from Ore Hopper `Raw Material Capacity`.
+  - Hopper view: `dgvHopper` (DataGridView) with columns Resource, Name, Purity, Qty, Volume. Hopper only accepts unrefined resources (High, Medium, Low purity). Add panel (`cmbAddType`, `cmbAddItem`, `cmbAddPurity`, `txtAddQty`, `cmdAddItem`, `cmdRemoveItem`) with resource filter/combo, purity combo (restricted to High/Medium/Low), quantity, and Add button. Volume header showing used/capacity from Ore Hopper `Raw Material Capacity`.
 

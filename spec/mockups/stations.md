@@ -85,10 +85,10 @@ Components tab (player-owned stations only):
 
 Controls:
 - Left: `flpSearchList` â†’ `txtStationFilter` + `lvwStations` (ListView) + `cmdNew` / `cmdDelete`
-- Right: `flpStationData` â†’ name/type/ownership fields, `tabStationDetail` (TabControl with Hold, Components, Munitions tabs)
-- Hold tab: `dgvHold` (DataGridView, editable â€” scoped to current player's hold), `dgvCrateContents` (detail grid), add-item panel, crate buttons
-- Components tab: `cmbStationBlueprint`, `dgvStationComponents` (columns: Slot Type, Slot#, Blueprint, Condition, MaxRepair, Actions â€” Condition and MaxRepair editable, hull row always first), install panel, `dgvStationStats` (read-only) â€” computed via ShipBuildService.ComputeStationStats
-- Munitions tab: `dgvMunitions` (DataGridView) â€” visible only for armed player-owned stations
+- Right: `flpStationData` â†’ `txtName`, `cmbStationType`, `cmbOwnership`, `cmdSave`, `tabStationDetail` (TabControl with Hold, Components, Munitions tabs)
+- Hold tab: `dgvHold` (DataGridView, editable â€” scoped to current player's hold), `dgvCrateContents` (detail grid), add-item panel (`cmbHoldType`, `cmbHoldItem`, `cmbHoldPurity`, `txtHoldQty`, `cmdHoldAdd`, `cmdHoldRemove`), crate buttons
+- Components tab: `cmbStationBlueprint`, `dgvComponents` (columns: Slot Type, Slot#, Blueprint, Condition, MaxRepair, Actions â€” Condition and MaxRepair editable, hull row always first), install panel, `dgvStationStats` (read-only) â€” computed via ShipBuildService.ComputeStationStats
+- Munitions tab: `dgvMunitions` (DataGridView), add panel (`cmbMunItem`, `txtMunQty`, `cmdMunAdd`, `cmdMunRemove`) â€” visible only for armed player-owned stations
 
 ### Crate UI Pattern (All Inventory Views)
 

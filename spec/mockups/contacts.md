@@ -62,8 +62,8 @@ External Characters tab:
 
 Controls:
 - `tabContacts` (TabControl with Factions and External Characters tabs)
-- Factions tab: `txtFactionFilter`, `dgvFactions` (DataGridView), name/description fields, `dgvMembers` (read-only, shows PlayerProfiles + ExternalCharacters with matching FactionUUID), `cmdNewFaction` / `cmdSaveFaction` / `cmdDeleteFaction`
-- External Characters tab: `txtCharFilter`, `dgvCharacters` (DataGridView), name field, faction combo (`txtFactionFilterChar` + `cmbFaction`), `cmdNewChar` / `cmdSaveChar` / `cmdDeleteChar`
+- Factions tab: `txtFactionFilter`, `dgvFactions` (DataGridView), `txtFactionName`, `txtFactionDescription`, `dgvMembers` (read-only, shows PlayerProfiles + ExternalCharacters with matching FactionUUID), `cmdNewFaction` / `cmdSaveFaction` / `cmdDeleteFaction`
+- External Characters tab: `txtCharFilter`, `dgvCharacters` (DataGridView), `txtCharName`, faction combo (`txtFactionFilterChar` + `cmbFaction`), `cmdNewChar` / `cmdSaveChar` / `cmdDeleteChar`
 - Factions are shared (no OwnerUUID) â€” all players see the same list. External characters are also shared.
 - Members grid is read-only and auto-populated from PlayerProfiles and ExternalCharacters that reference the selected faction.
 

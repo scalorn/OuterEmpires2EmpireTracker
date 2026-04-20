@@ -85,9 +85,9 @@ Summary tab:
 
 Controls:
 - `tabMarket` (TabControl with Listings, Transactions, Summary tabs)
-- Listings tab: station filter, `dgvListings` (DataGridView, editable qty/price), add-listing panel, `cmdRecordSale` / `cmdEditListing` / `cmdDeleteListing`
-- Transactions tab: filter row (type, item, counterparty, faction, station, date range), `dgvTransactions` (DataGridView with Condition column â€” shows percentage when non-zero), `cmdAddTransaction` / `cmdEditTransaction` / `cmdDeleteTransaction`. Faction filter matches against the `CounterpartyFaction` snapshot field on each transaction (not the counterparty's current faction).
-- Summary tab: `cmbPricingPlan` (FilteredComboBox), date range, summary labels, `dgvBreakdown` (read-only DataGridView)
+- Listings tab: station filter, `dgvListings` (DataGridView, editable qty/price), add-listing panel, `cmdListingAdd`, `cmdRecordSale` / `cmdListingEdit` / `cmdListingDelete`
+- Transactions tab: filter row (type, item, counterparty, faction, station, date range), `dgvTransactions` (DataGridView with Condition column â€” shows percentage when non-zero), `cmbTxType`, `txtTxItem`, `txtTxCounterparty`, `txtTxFaction`, `cmbTxStation`, `cmdTxApply`. Faction filter matches against the `CounterpartyFaction` snapshot field on each transaction (not the counterparty's current faction).
+- Summary tab: `cmbPricingPlan` (FilteredComboBox), date range, `cmbSumStation`, `cmdCompute`, `dgvSummary` (read-only DataGridView)
 - "Record Sale" opens a dialog to enter sale details (quantity, counterparty, notes) and auto-creates the transaction + decrements listing
 
 ### FormListingEdit

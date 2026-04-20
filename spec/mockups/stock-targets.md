@@ -51,7 +51,7 @@ Controls:
 - Right: `txtPlanName`, `chkPlanActive` (CheckBox, write-through to StockPlan.IsActive), `cmbReplenishmentPlan` (FilteredComboBox of build plans), `dgvTargets` (DataGridView with color-coded shortfall column: green=0, yellow=below target, red=below critical), add-target panel, expanded components panel
 - Inactive plans: list view shows plan name in gray italic. "Check & Generate Orders" skips inactive plans.
 - `dgvTargets` columns: Type, Item, TargetQty, CriticalThreshold, Scope, Location, CurrentQty, Shortfall
-- Add-target panel: `cmbTargetType`, `cmbTargetItem` (FilteredComboBox), `txtTargetQty`, `txtCriticalThreshold`, `cmbScope`, `cmbLocation`, `cmdAddTarget` / `cmdRemoveTarget`
+- Add-target panel: `cmbTargetType`, `cmbTargetItem` (FilteredComboBox), `txtTargetQty`, `txtCriticalThreshold`, `cmbScope`, `cmbLocation`, `cmdSave`, `cmdCheckGenerate`, `cmdAddTarget` / `cmdRemoveTarget`
 - Expanded components panel: `dgvExpandedComponents` (read-only) â€” visible when a ShipTemplate target is selected, shows per-component breakdown
 - "Check & Generate Orders" runs StockTargetService.CheckTargets, shows results, and creates build items in the designated replenishment plan
 

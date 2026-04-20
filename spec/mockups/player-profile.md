@@ -45,11 +45,14 @@ Controls:
 - Right: `flpPlayerData` (top-down, AutoScroll, WrapContents=false):
   - `flpPlayerDetails` (top-down, AutoScroll) — scrollable detail area:
     - `txtPlayerName`, `txtTotalCredits`, `txtFaction` + `cmbFaction`
-    - Rank blocks (Public/Private/Military), each with rank name, current XP, next XP fields
+    - Public Rank: `txtPublicRank`, `txtPublicRankCurXP`, `txtPublicRankNextXP`
+    - Private Rank: `txtPrivateRank`, `txtPrivateRankCurXP`, `txtPrivateRankNextXP`
+    - Military Rank: `txtMilitaryRank`, `txtMilitaryRankCurXP`, `txtMilitaryRankNextXP`
     - `txtSkillPoints` — available skill points
-    - Skill groups (ColonyDirector, ColonyFounder, ColonyOperations, Commander, Engineer, Entrepreneur, JobManagement, Researcher, Surveyor, Trader) — each is a FlowLayoutPanel containing:
-      - Group header with `CheckBox` (profession unlocked) and `Label`
-      - `PlayerSkillBlock` controls (custom UserControl with skill name, level, progress bar)
+    - Skill groups — each is a FlowLayoutPanel with a profession CheckBox and `PlayerSkillBlock` controls:
+      - `chkColonyDirector`, `chkColonyFounder`, `chkColonyOperations`
+      - `chkCommander`, `chkEngineer`, `chkEntrepeneur`
+      - `chkJobManagement`, `chkResearcher`, `chkSurveyor`, `chkTrader`
   - `flpCommands`: `cmdImport`, `cmdNew`, `cmdSave`, `cmdDelete`
 
 Satisfies: REQ-PLR-010 (player profile management), REQ-PLR-020 (skill tracking)

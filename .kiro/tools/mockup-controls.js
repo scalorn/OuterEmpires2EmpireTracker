@@ -78,6 +78,7 @@ const SECTION_MAP = {
             form: 'Station/FormStation',
             aliases: {
                 'txtStationFilter': 'txtFilter',
+                'dgvStationStats': 'dgvStats',
             },
         },
     ],
@@ -85,13 +86,6 @@ const SECTION_MAP = {
         {
             header: /^###\s+FormMarket\b/,
             form: 'Market/FormMarket',
-            aliases: {
-                'cmdEditListing': 'cmdListingEdit',
-                'cmdDeleteListing': 'cmdListingDelete',
-                'cmdAddTransaction': 'cmdTxApply',
-                'cmdEditTransaction': 'cmdTxApply',
-                'cmdDeleteTransaction': 'cmdTxApply',
-            },
         },
     ],
     'stock-targets.md': [

@@ -43,10 +43,10 @@ MDI child form. Left-list / right-detail pattern with a visual stage editor.
 
 Controls:
 - Left: `flpSearchList` â†’ `txtChainFilter` + `lvwSupplyChains` (ListView) + `cmdNew` / `cmdDelete`
-- Right: `flpChainData` â†’ `txtChainName`, `chkChainActive` (CheckBox, write-through to SupplyChain.IsActive), `dgvStages` (DataGridView), add/edit stage panel, flow summary label
+- Right: `flpChainData` â†’ `txtChainName`, `chkChainActive`, `cmdSave` (CheckBox, write-through to SupplyChain.IsActive), `dgvStages` (DataGridView), add/edit stage panel, flow summary label
 - Inactive chains: list view shows chain name in gray italic. Background processor skips inactive chains entirely.
 - `dgvStages` columns: Sequence, StageType, Location, Resource (with purity), AccumulationThreshold, ProductionRatePerHour
-- Add/edit panel: `txtSequence`, `cmbStageType`, `cmbLocationType`, `cmbLocation` (FilteredComboBox â€” populates with colonies/stations/asteroids based on type), `cmbResource`, `cmbPurity`, `txtThreshold`, `txtRate`, `cmdAddStage` / `cmdUpdateStage` / `cmdRemoveStage`, `cmdMoveUp` / `cmdMoveDown`
-- Flow summary: read-only label showing a condensed text representation of the pipeline stages. Auto-generated from the stages list.
+- Add/edit panel: `txtSequence`, `cmbStageType`, `cmbLocationType`, `cmbLocation` (FilteredComboBox â€” populates with colonies/stations/asteroids based on type), `cmbResource`, `cmbPurity`, `txtThreshold`, `txtRate`, `cmdAddStage` / `cmdUpdateStage` / `cmdRemoveStage`, `cmdMoveUp` / `cmdMoveDown`, `cmbRoute` (FilteredComboBox of delivery routes)
+- `txtFlowSummary`: read-only label showing a condensed text representation of the pipeline stages. Auto-generated from the stages list.
 - Stage type determines which fields are relevant: Mine/AsteroidMine stages have no threshold (they produce continuously). PickUp stages have a threshold (trigger delivery when accumulated). Refine stages have a threshold. Research stages track evolution progress. Deliver stages are the terminal destination. Location type can be Colony, Station, or Ship (Ship for future factory ships).
 

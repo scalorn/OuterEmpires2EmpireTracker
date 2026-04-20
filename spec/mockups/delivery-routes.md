@@ -60,7 +60,7 @@ Controls:
 - Left: `flpSearchList` → `txtRouteFilter` (ValidatedTextBox) + `lvwRoutes` (ListView)
 - Right: `flpRouteData` (top-down) → `txtRouteName` (ValidatedTextBox), `tabRouteDetail` (TabControl)
   - Stops tab: `dgvStops` (DataGridView, read-only) with columns: Sequence, DestType, ColonyName, PlanetName, SystemName, Purpose, FuelEstimate
-    - `flpAddStop`: `cmbDestType`, `cmbColony`, `cmdAddStop`, `cmdUp`/`cmdDown`, `cmdRemoveStop`, `chkPreventDuplicates`
+    - `flpAddStop`: `cmbDestType`, `cmbStopPurpose`, `cmbColony`, `cmdAddStop`, `cmdUp`/`cmdDown`, `cmdRemoveStop`, `chkPreventDuplicates`
   - Plan tab: `flpPlanContent` (top-down)
     - `flpPlanSelector`: `chkShowCompleted`, `txtPlanFilter`, `cmbPlan`, `cmdNewPlan`, `cmdDeletePlan`, `cmdExecutePlan`, `cmdAutoFill`
     - `txtPlanName`, `lblPlanStop` (bold, shows selected stop context)

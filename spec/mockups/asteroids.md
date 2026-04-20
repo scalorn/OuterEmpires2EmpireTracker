@@ -45,7 +45,7 @@ Controls:
 - Left: `flpSearchList` â†’ `txtAsteroidFilter` + `lvwAsteroids` (ListView) + `cmdNew` / `cmdDelete`
 - Right: `flpAsteroidData` â†’ `txtAsteroidName`, `txtSystemName`, `dgvReserves` (DataGridView, editable Current column), add-reserve panel, `dgvLinkedSurveys` (read-only)
 - `dgvReserves` columns: Resource, Purity, MaxReserve, CurrentReserve (editable), ResetTimestamp
-- Add-reserve panel: `txtReserveResourceFilter`, `cmbReserveResource`, `cmbReservePurity`, `txtMaxReserve`, `txtCurrentReserve`, `cmdAddReserve` / `cmdRemoveReserve`
+- Add-reserve panel: `txtReserveResourceFilter`, `cmbReserveResource`, `cmbReservePurity`, `txtMaxReserve`, `txtCurrentReserve`, `cmdAddReserve` / `cmdRemoveReserve`, `cmdSave`
 - Linked Surveys grid: read-only, auto-populated from surveys where `AsteroidUUID` matches the selected asteroid. Shows which players have surveyed this asteroid and their yield rates.
 - Asteroid UUID is deterministic from "SystemName:Name" â€” changing the name or system regenerates the UUID (with a confirmation warning).
 

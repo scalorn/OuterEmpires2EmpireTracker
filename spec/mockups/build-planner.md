@@ -42,7 +42,7 @@ MDI child form. Left-list / right-detail pattern with TableLayoutPanel base.
 Controls:
 - `tlpBase` (TableLayoutPanel, 2 columns: 250px fixed / fill)
 - Left: `flpSearchList` â†’ `txtPlanFilter` (ValidatedTextBox) + `lvwPlans` (ListView) + `cmdNew` / `cmdDelete`
-- Right: `flpPlanData` â†’ plan name/description, `chkActive` (CheckBox, write-through to BuildPlan.IsActive), command buttons, `dgvBuildItems` (DataGridView), add-item panel, shortfall panel
+- Right: `flpPlanData` â†’ `txtPlanName`, `txtDescription`, `chkActive` (CheckBox, write-through to BuildPlan.IsActive), `cmdSave`, `cmdAutoAssign`, `cmdAllocate`, `dgvBuildItems` (DataGridView), add-item panel, shortfall panel
 - `cmdGenerateDelivery` is a dropdown button (ToolStripSplitButton style) with three options:
   - "Resource Delivery (This Plan)" â€” generates delivery for the selected plan's shortfalls only
   - "Consolidated Resource Delivery..." â€” prompts to select multiple plans, generates one merged delivery plan for all resource shortfalls across selected plans
@@ -50,7 +50,7 @@ Controls:
 - Multi-plan selection uses a checklist dialog showing all active build plans. The user checks which plans to include.
 - Inactive plans: list view shows plan name in gray italic. Detail panel is read-only (all controls disabled except the Active checkbox). Shortfall panel hidden.
 - `dgvBuildItems` columns: Type, Item, Qty (editable), Location, Structure, Status, Recipient, Notes
-- Add-item panel: `cmbItemType`, `txtItemFilter`, `cmbItem` (FilteredComboBox), `txtQuantity`, `txtTargetDuration`, `txtRecipient`, `cmdAddItem`, `cmdQueueCalc`
+- Add-item panel: `cmbItemType`, `txtItemFilter`, `cmbItem`, `cmbResource`, `cmbPurity`, `cmbSurvey` (FilteredComboBox), `txtQuantity`, `txtTargetDuration`, `txtRecipient`, `cmdAddItem`, `cmdQueueCalc`
 - Shortfall panel: `dgvShortfalls` (read-only DataGridView) â€” visible when a build item is selected
 
 Wiring:
