@@ -4,7 +4,7 @@
 
 Project-level documentation, requirements, and planning.
 
-| File | Purpose |
+| File / Directory | Purpose |
 |------|---------|
 | [BACKLOG.md](BACKLOG.md) | Open features and enhancements to be worked on |
 | [Recommendations.md](Recommendations.md) | Completed issues, recommendations, and their resolutions |
@@ -12,6 +12,10 @@ Project-level documentation, requirements, and planning.
 | [Ambiguities.md](Ambiguities.md) | Open questions and ambiguities |
 | [COMPLETED.md](COMPLETED.md) | Completed work log |
 | [requirements/](requirements/) | Feature requirements documents (29 domains — see [requirements/README.md](requirements/README.md)) |
+| [design/](design/) | Empire Systems architecture, data models, services, cascade processing, migration, code standards |
+| [flows/](flows/) | User interaction flows and cascade diagrams (17 flows) |
+| [mockups/](mockups/) | Form mockups and UI control descriptions |
+| [decisions/](decisions/) | Resolved design questions (OQ-30 through OQ-40) |
 
 ## Structured Specs (`.kiro/specs/`)
 
