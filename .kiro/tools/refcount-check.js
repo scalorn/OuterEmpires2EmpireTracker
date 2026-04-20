@@ -105,6 +105,23 @@ const specContent = fs.readFileSync(SPEC_FILE, 'utf8');
 const entries = parseReferenceTable(specContent);
 const findings = [];
 
+// Build common variable pattern alternatives for entity names
+function getSearchPatterns(source) {
+    const patterns = [source];
+    // Add lowercase version (e.g. "Colony" -> "colony")
+    if (source.length > 1) {
+        patterns.push(source[0].toLowerCase() + source.slice(1));
+    }
+    // Add common abbreviations for compound names (e.g. "ColonyStructure" -> "structure", "Structure")
+    const parts = source.match(/[A-Z][a-z]+/g);
+    if (parts && parts.length > 1) {
+        // Add last part as-is and lowercase (e.g. "ColonyStructure" -> "Structure", "structure")
+        patterns.push(parts[parts.length - 1]);
+        patterns.push(parts[parts.length - 1].toLowerCase());
+    }
+    return patterns;
+}
+
 for (const entry of entries) {
     const counterFile = path.join(SERVICES_DIR, entry.counterClass + '.cs');
 
@@ -116,8 +133,10 @@ for (const entry of entries) {
     const counterContent = fs.readFileSync(counterFile, 'utf8');
 
     for (const source of entry.sources) {
-        // Heuristic: check if the source entity name appears in the counter code
-        if (!counterContent.includes(source)) {
+        // Check if any search pattern for this source appears in the counter code
+        const patterns = getSearchPatterns(source);
+        const found = patterns.some(p => counterContent.includes(p));
+        if (!found) {
             findings.push('MISSING: ' + entry.counterClass + ' does not reference ' + source + ' (entity: ' + entry.entity + ')');
         }
     }

@@ -261,10 +261,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void PopulateBuildItemsGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvBuildItems.Rows.Clear();
 
-            if (_selectedPlan == null) return;
+            if (_selectedPlan == null) { sw.Stop(); return; }
 
             foreach (var item in _selectedPlan.Items)
             {
@@ -326,6 +327,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     // Staged: default styling, no special color
                 }
             }
+            sw.Stop(); Log.Info("PERF PopulateBuildItemsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -----------------------------------------------------------------------

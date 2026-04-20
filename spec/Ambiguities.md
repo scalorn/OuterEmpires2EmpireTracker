@@ -675,20 +675,14 @@ All derived from existing kiro specs and verified against implemented code. Requ
 **Spec reference:** spec/requirements/Ships.md REQ-SHP-021
 **Impact:** Low — game-defined keys. But centralizing would prevent typos across the two stat computation methods.
 
-### AMB-085 — OPEN
-**Issue:** ~600 numeric magic numbers (1, 3, 5) used as purity multipliers across the codebase should use GameConstants.PurityMultiplierLow/Medium/High. These are integer literals in arithmetic expressions (e.g. `baseRate * 3`, `amount * 5`) that represent the refining output multipliers for Low/Medium/High purity resources.
-**Files:** Colony.cs, Commodity.cs, FormColonyV2.cs, ColonyStructureV2.cs, BackgroundProcessor.cs, ColonyStatusCalculator.cs, BuildOrderOptimizer.cs, MinerSetupHelper.cs, and ~30 other files.
-**Spec reference:** spec/design/code-standards.md (no magic numbers)
-**Impact:** Medium — if game rebalances purity multipliers, hundreds of locations need updating. However, many of these `1` literals are not purity multipliers (they're loop counters, array indices, or quantity literals). Requires careful per-line analysis to distinguish true purity multipliers from coincidental integer `1` values.
+### AMB-085 — RESOLVED
+**Resolution:** Added spec coverage for 8 classes: DataGridViewFilteredComboBoxColumn and FilteredTextComboSet in architecture.md (Custom Controls section), FormStructureAllocation in build-planner.md, ColonyStructureDataChangedEventArgs in DataChangeEvents.md, FormListingEdit and FormRecordSale in market.md, BlueprintFilterCriteria and BlueprintViewModel in data-models.md.
+**Action:** Spec files updated with class name mentions.
 
-### AMB-086 — OPEN
-**Issue:** ~6 occurrences of `3600` (seconds per hour) should use GameConstants.SecondsPerHour. Found in FormColonyV2.cs, CountdownFormatParser.cs, PlayerProfileParser.cs, EvolutionChainService.cs.
-**Files:** FormColonyV2.cs:1750, CountdownFormatParser.cs:15, PlayerProfileParser.cs:402, EvolutionChainService.cs:198
-**Spec reference:** spec/design/code-standards.md (no magic numbers)
-**Impact:** Low — value won't change, but using the constant improves readability.
+### AMB-086 — RESOLVED
+**Resolution:** Added PERF timing (Stopwatch.StartNew / sw.Stop / Log.Info) to 12 major Populate/Refresh methods that were missing it: FormBuildPlanner.PopulateBuildItemsGrid, FormColonyV2.PopulateListView, FormColonyV2.PopulateCommodityRequestGrid, FormColonyV2.PopulateItemGrid, FormMarket.PopulateStationCombos, FormPricingPlan.PopulateResourceGrid, FormShipTemplate.PopulateSlotGrid, FormShipTemplate.RefreshStats, FormShipInstance.PopulateOverviewGrid, FormShipInstance.PopulateCargoGrid, FormStation.PopulateHoldGrid, FormStation.PopulateComponentsGrid. The remaining 14 methods already had PERF timing from prior work.
+**Action:** Form files updated with timing instrumentation.
 
-### AMB-087 — OPEN
-**Issue:** 1 remaining purity string "High" in ResourceCheckService.cs:301 should use GameConstants.PurityHigh. This was not in the original 23-finding batch but was detected on re-run.
-**File:** OE2EmpireTracker/Services/ResourceCheckService.cs:301
-**Spec reference:** spec/design/code-standards.md (no magic strings)
-**Impact:** Low — single occurrence, easy fix.
+### AMB-087 — RESOLVED
+**Resolution:** Fixed 2 real reference counter gaps: (1) BlueprintReferenceCounter now counts StockPlan.Targets[].ItemReferenceID via a `_stockTargetMap` and `stockPlans` parameter. (2) StationReferenceCounter now counts Ship.LocationUUID (when LocationType == Station) via a `_shipLocationMap` and `ships` parameter. Also updated refcount-check.js to check entity name OR common variable patterns (lowercase, last compound word) to reduce false positives.
+**Action:** BlueprintReferenceCounter.cs, StationReferenceCounter.cs, ReferenceReport.cs, refcount-check.js updated.

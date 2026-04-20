@@ -179,13 +179,14 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
         private void PopulateResourceGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvResourcePrices.CellValidating -= dgvResourcePrices_CellValidating;
             dgvResourcePrices.EndEdit();
             dgvResourcePrices.Rows.Clear();
             dgvResourcePrices.CellValidating += dgvResourcePrices_CellValidating;
 
-            if (_selectedPlan == null) return;
+            if (_selectedPlan == null) { sw.Stop(); return; }
 
             foreach (var resource in Resource.Resources.OrderBy(r => r.Name))
             {
@@ -200,6 +201,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
                 int rowIdx = dgvResourcePrices.Rows.Add(resource.Name, purity, priceText);
                 dgvResourcePrices.Rows[rowIdx].Tag = key;
             }
+            sw.Stop(); Log.Info("PERF PopulateResourceGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -----------------------------------------------------------------------

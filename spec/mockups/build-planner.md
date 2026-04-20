@@ -89,6 +89,10 @@ Controls:
 - Currently only shows colony structures. When factory ships/stations are supported, the grid will also include ship and station manufacturing, refining, and research slots.
 - `cmdAllocate`, `cmdCancel`
 
+### FormStructureAllocation
+
+`FormStructureAllocation` is the modal dialog for allocating build items to colony structures. It displays a filterable grid of available structures and lets the user select one for the build item's manufacturing/research/commodity location.
+
 
 
 <!-- Extracted from .kiro/specs/empire-systems/design.md, lines 2824-2843 — Colony Administration Tab Build Plan Integration -->

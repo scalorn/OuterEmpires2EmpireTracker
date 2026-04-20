@@ -282,6 +282,7 @@ namespace OE2EmpireTracker.Forms.Market
 
         private void PopulateStationCombos()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             var stations = playerContext.GetCurrentPlayerStations()
                 .OrderBy(s => s.Name).ToList();
@@ -299,6 +300,7 @@ namespace OE2EmpireTracker.Forms.Market
             }
             cmbTxStation.SelectedIndex = 0;
             cmbSumStation.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulateStationCombos: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -----------------------------------------------------------------------

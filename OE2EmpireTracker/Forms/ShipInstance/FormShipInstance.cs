@@ -227,9 +227,10 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         // Overview tab — component grid
         private void PopulateOverviewGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvComponents.Rows.Clear();
-            if (_selectedShip == null) return;
+            if (_selectedShip == null) { sw.Stop(); return; }
 
             // Hull row first
             var hullBp = playerContext.FindBlueprint(_selectedShip.HullBlueprintUUID);
@@ -253,6 +254,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 dgvComponents.Rows[rowIdx].Cells[colSlotType.Index].ReadOnly = true;
                 dgvComponents.Rows[rowIdx].Cells[colComponentName.Index].ReadOnly = true;
             }
+            sw.Stop(); Log.Info("PERF PopulateOverviewGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void dgvComponents_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -301,10 +303,11 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
         private void PopulateCargoGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvCargo.Rows.Clear();
             var bag = GetSelectedBag();
-            if (bag == null) return;
+            if (bag == null) { sw.Stop(); return; }
 
             foreach (var kvp in bag.Items.OrderBy(k => k.Value.Name))
             {
@@ -316,6 +319,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                     item.Quantity.ToString());
                 dgvCargo.Rows[dgvCargo.Rows.Count - 1].Tag = item;
             }
+            sw.Stop(); Log.Info("PERF PopulateCargoGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateAddTypeCombo()

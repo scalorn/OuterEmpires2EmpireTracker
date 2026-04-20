@@ -90,3 +90,11 @@ Controls:
 - Summary tab: `cmbPricingPlan` (FilteredComboBox), date range, summary labels, `dgvBreakdown` (read-only DataGridView)
 - "Record Sale" opens a dialog to enter sale details (quantity, counterparty, notes) and auto-creates the transaction + decrements listing
 
+### FormListingEdit
+
+`FormListingEdit` is a modal dialog for editing an existing market listing's quantity, price, and station assignment.
+
+### FormRecordSale
+
+`FormRecordSale` is a modal dialog for recording a sale against a listing — captures quantity sold, counterparty, price, and optional notes, then creates a MarketTransaction and decrements the listing quantity.
+

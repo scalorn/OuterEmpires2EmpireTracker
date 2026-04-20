@@ -92,6 +92,11 @@ graph TD
     FSTN --> SBS
 ```
 
+## Custom Controls
+
+- `DataGridViewFilteredComboBoxColumn` — custom DataGridView column that hosts a FilteredComboBox for in-grid filtered combo selection.
+- `FilteredTextComboSet` — composite control combining a text filter TextBox with a FilteredComboBox, used for type-ahead filtering in forms.
+
 ## Layered Architecture
 
 The system follows the established layered pattern:

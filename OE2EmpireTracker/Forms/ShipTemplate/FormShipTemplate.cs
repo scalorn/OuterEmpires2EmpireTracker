@@ -195,9 +195,10 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         // Slot Grid
         private void PopulateSlotGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvSlots.Rows.Clear();
-            if (_selectedTemplate == null) return;
+            if (_selectedTemplate == null) { sw.Stop(); return; }
 
             var hullBp = playerContext.FindBlueprint(_selectedTemplate.HullBlueprintUUID);
             if (hullBp?.Properties == null) return;
@@ -238,6 +239,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     row.Tag = new SlotInfo { SlotType = def.SlotType, SlotIndex = idx };
                 }
             }
+            sw.Stop(); Log.Info("PERF PopulateSlotGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void dgvSlots_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -284,9 +286,10 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         // Stats
         private void RefreshStats()
         {
-            if (_selectedTemplate == null) { rtbStats.Text = ""; return; }
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            if (_selectedTemplate == null) { rtbStats.Text = ""; sw.Stop(); return; }
             var hullBp = playerContext.FindBlueprint(_selectedTemplate.HullBlueprintUUID);
-            if (hullBp == null) { rtbStats.Text = "Select a hull blueprint."; return; }
+            if (hullBp == null) { rtbStats.Text = "Select a hull blueprint."; sw.Stop(); return; }
 
             var stats = ShipBuildService.ComputeStats(hullBp, _selectedTemplate.Components,
                 uuid => playerContext.FindBlueprint(uuid));
@@ -304,6 +307,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 stats.EnergyDefence, stats.KineticDefence, stats.MissileDefence,
                 stats.Acceleration, stats.RotationalThrust, stats.MaxJumpDistance, stats.FuelPerJump,
                 stats.MiningYield, stats.ScanLevel);
+            sw.Stop(); Log.Info("PERF RefreshStats: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // CRUD

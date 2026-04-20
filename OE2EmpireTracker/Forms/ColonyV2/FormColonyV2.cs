@@ -273,6 +273,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void PopulateListView(List<Models.Colony> colonies)
         {
             if (colonies == null) return;
+            var sw = System.Diagnostics.Stopwatch.StartNew();
 
             var counter = new ColonyReferenceCounter(
                 playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList);
@@ -324,6 +325,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 lvwColonies.Items.Remove(remaining.Value);
             }
+            sw.Stop(); Log.Info("PERF PopulateListView: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -------------------------------------------------------------------
@@ -1481,6 +1483,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void PopulateCommodityRequestGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvCommodityRequests.CellValidating -= dgvCommodityRequests_CellValidating;
             try { dgvCommodityRequests.EndEdit(); } catch { }
@@ -1564,6 +1567,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             dgvCommodityRequests.CellValidating += dgvCommodityRequests_CellValidating;
 
             UpdateWorkerTabTitle();
+            sw.Stop(); Log.Info("PERF PopulateCommodityRequestGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void dgvCommodityRequests_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -1777,6 +1781,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void PopulateItemGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvItems.CellValidating -= dgvItems_CellValidating;
             try { dgvItems.EndEdit(); } catch { }
@@ -1848,6 +1853,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             dgvItems.CellValidating += dgvItems_CellValidating;
+            sw.Stop(); Log.Info("PERF PopulateItemGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>

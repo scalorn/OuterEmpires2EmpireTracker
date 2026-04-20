@@ -20,6 +20,8 @@
 **REQ-DCE-013** PlayerProfileDataChanged SHALL use `PlayerProfileDataChangedEventArgs` containing the player UUID.
 **REQ-DCE-014** DeliveryDataChanged and CurrentPlayerChanged SHALL use plain `EventArgs`.
 
+**REQ-DCE-015** ColonyStructureDataChanged SHALL use `ColonyStructureDataChangedEventArgs` containing the colony UUID and structure UUID, fired when an individual colony structure is modified.
+
 ## Form Subscriptions
 
 **REQ-DCE-020** All MDI child forms SHALL subscribe to relevant data change events in their constructor or load handler.

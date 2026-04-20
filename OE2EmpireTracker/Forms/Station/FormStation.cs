@@ -238,10 +238,11 @@ namespace OE2EmpireTracker.Forms.Station
 
         private void PopulateHoldGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvHold.Rows.Clear();
             var bag = GetStationHold();
-            if (bag == null) return;
+            if (bag == null) { sw.Stop(); return; }
 
             foreach (var kvp in bag.Items.OrderBy(k => k.Value.Name))
             {
@@ -259,6 +260,7 @@ namespace OE2EmpireTracker.Forms.Station
                 dgvHold.Rows[rowIdx].Cells[colHoldPurity.Index].ReadOnly = true;
                 dgvHold.Rows[rowIdx].Cells[colHoldQty.Index].ReadOnly = true;
             }
+            sw.Stop(); Log.Info("PERF PopulateHoldGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void dgvHold_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -379,10 +381,11 @@ namespace OE2EmpireTracker.Forms.Station
         // Components tab
         private void PopulateComponentsGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvComponents.Rows.Clear();
-            if (_selectedStation == null) return;
-            if (_selectedStation.Ownership != StationOwnership.PlayerOwned) return;
+            if (_selectedStation == null) { sw.Stop(); return; }
+            if (_selectedStation.Ownership != StationOwnership.PlayerOwned) { sw.Stop(); return; }
 
             // Hull row first
             var hullBp = playerContext.FindBlueprint(_selectedStation.StationBlueprintUUID);
@@ -406,6 +409,7 @@ namespace OE2EmpireTracker.Forms.Station
                 dgvComponents.Rows[rowIdx].Cells[colSlotType.Index].ReadOnly = true;
                 dgvComponents.Rows[rowIdx].Cells[colComponentName.Index].ReadOnly = true;
             }
+            sw.Stop(); Log.Info("PERF PopulateComponentsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void dgvComponents_CellEndEdit(object sender, DataGridViewCellEventArgs e)

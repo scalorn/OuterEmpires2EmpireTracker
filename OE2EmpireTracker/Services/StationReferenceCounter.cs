@@ -23,6 +23,7 @@ namespace OE2EmpireTracker.Services
         private readonly Dictionary<string, int> _supplyChainMap;
         private readonly Dictionary<string, int> _stockTargetMap;
         private readonly Dictionary<string, int> _overflowDestMap;
+        private readonly Dictionary<string, int> _shipLocationMap;
 
         public StationReferenceCounter(
             IEnumerable<DeliveryRoute> routes,
@@ -32,7 +33,8 @@ namespace OE2EmpireTracker.Services
             IEnumerable<MarketTransaction> marketTransactions = null,
             IEnumerable<SupplyChain> supplyChains = null,
             IEnumerable<StockPlan> stockPlans = null,
-            IEnumerable<WarehouseOverflowRule> overflowRules = null)
+            IEnumerable<WarehouseOverflowRule> overflowRules = null,
+            IEnumerable<Ship> ships = null)
         {
             var routeList = routes ?? Enumerable.Empty<DeliveryRoute>();
             var planList = plans ?? Enumerable.Empty<DeliveryPlan>();
@@ -150,6 +152,17 @@ namespace OE2EmpireTracker.Services
                     _overflowDestMap[rule.DestinationUUID] = c + 1;
                 }
             }
+
+            _shipLocationMap = new Dictionary<string, int>();
+            foreach (var ship in ships ?? Enumerable.Empty<Ship>())
+            {
+                if (ship.LocationType == DestinationType.Station
+                    && !string.IsNullOrEmpty(ship.LocationUUID))
+                {
+                    _shipLocationMap.TryGetValue(ship.LocationUUID, out int c);
+                    _shipLocationMap[ship.LocationUUID] = c + 1;
+                }
+            }
         }
 
         /// <summary>
@@ -169,9 +182,10 @@ namespace OE2EmpireTracker.Services
             _supplyChainMap.TryGetValue(stationUUID, out int scCount);
             _stockTargetMap.TryGetValue(stationUUID, out int stCount);
             _overflowDestMap.TryGetValue(stationUUID, out int overflowCount);
+            _shipLocationMap.TryGetValue(stationUUID, out int shipCount);
 
             return routeCount + planCount + assemblyCount + buildCount
-                 + listingCount + txCount + scCount + stCount + overflowCount;
+                 + listingCount + txCount + scCount + stCount + overflowCount + shipCount;
         }
     }
 }

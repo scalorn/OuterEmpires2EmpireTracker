@@ -15,6 +15,7 @@ namespace OE2EmpireTracker.Services
         private readonly Dictionary<string, int> _scannerMap;
         private readonly Dictionary<string, int> _buildItemMap;
         private readonly Dictionary<string, int> _shipComponentMap;
+        private readonly Dictionary<string, int> _stockTargetMap;
 
         public BlueprintReferenceCounter(
             IEnumerable<Colony> colonies,
@@ -24,7 +25,9 @@ namespace OE2EmpireTracker.Services
             IEnumerable<ShipTemplate> shipTemplates = null,
             IEnumerable<Ship> ships = null,
             IEnumerable<Station> stations = null,
-            IEnumerable<MarketListing> marketListings = null)
+            IEnumerable<MarketListing> marketListings = null,
+            IEnumerable<MarketTransaction> marketTransactions = null,
+            IEnumerable<StockPlan> stockPlans = null)
         {
             var colonyList = colonies ?? Enumerable.Empty<Colony>();
             var bpList = allBlueprints ?? Enumerable.Empty<Blueprint>();
@@ -34,6 +37,8 @@ namespace OE2EmpireTracker.Services
             var shipList = ships ?? Enumerable.Empty<Ship>();
             var stationList = stations ?? Enumerable.Empty<Station>();
             var marketListingList = marketListings ?? Enumerable.Empty<MarketListing>();
+            var marketTransactionList = marketTransactions ?? Enumerable.Empty<MarketTransaction>();
+            var stockPlanList = stockPlans ?? Enumerable.Empty<StockPlan>();
 
             _flatpackMap = new Dictionary<string, int>();
             _researchingMap = new Dictionary<string, int>();
@@ -77,7 +82,6 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
-            // Ship template + ship component blueprints
             _shipComponentMap = new Dictionary<string, int>();
             foreach (var tmpl in templateList)
             {
@@ -105,7 +109,6 @@ namespace OE2EmpireTracker.Services
                     }
                 }
             }
-            // Station component blueprints (player-owned stations)
             foreach (var station in stationList)
             {
                 if (!string.IsNullOrEmpty(station.StationBlueprintUUID))
@@ -120,29 +123,30 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
-            // Station component blueprints (player-owned stations)
-            foreach (var station in stationList)
-            {
-                if (!string.IsNullOrEmpty(station.StationBlueprintUUID))
-                { _shipComponentMap.TryGetValue(station.StationBlueprintUUID, out int c); _shipComponentMap[station.StationBlueprintUUID] = c + 1; }
-                if (station.Components != null)
-                {
-                    foreach (var comp in station.Components)
-                    {
-                        if (!string.IsNullOrEmpty(comp.BlueprintUUID))
-                        { _shipComponentMap.TryGetValue(comp.BlueprintUUID, out int c); _shipComponentMap[comp.BlueprintUUID] = c + 1; }
-                    }
-                }
-            }
-
-
-            // Market listing item references
             foreach (var listing in marketListingList)
             {
                 if (!string.IsNullOrEmpty(listing.ItemReferenceID))
                 { _shipComponentMap.TryGetValue(listing.ItemReferenceID, out int c); _shipComponentMap[listing.ItemReferenceID] = c + 1; }
             }
 
+            // MarketTransaction item references
+            foreach (var tx in marketTransactionList)
+            {
+                if (!string.IsNullOrEmpty(tx.ItemReferenceID))
+                { _shipComponentMap.TryGetValue(tx.ItemReferenceID, out int c); _shipComponentMap[tx.ItemReferenceID] = c + 1; }
+            }
+
+            // StockPlan target item references
+            _stockTargetMap = new Dictionary<string, int>();
+            foreach (var plan in stockPlanList)
+            {
+                if (plan.Targets == null) continue;
+                foreach (var target in plan.Targets)
+                {
+                    if (!string.IsNullOrEmpty(target.ItemReferenceID))
+                    { _stockTargetMap.TryGetValue(target.ItemReferenceID, out int c); _stockTargetMap[target.ItemReferenceID] = c + 1; }
+                }
+            }
         }
 
         public ReferenceReport CountReferences(string blueprintUUID)
@@ -157,10 +161,11 @@ namespace OE2EmpireTracker.Services
             _scannerMap.TryGetValue(blueprintUUID, out int scannerCount);
             _buildItemMap.TryGetValue(blueprintUUID, out int buildItemCount);
             _shipComponentMap.TryGetValue(blueprintUUID, out int shipComponentCount);
+            _stockTargetMap.TryGetValue(blueprintUUID, out int stockTargetCount);
 
             return new ReferenceReport(
                 flatpackCount, researchingCount, manufacturingCount,
-                baseBlueprintCount, scannerCount, buildItemCount, shipComponentCount);
+                baseBlueprintCount, scannerCount, buildItemCount, shipComponentCount, stockTargetCount);
         }
     }
 }

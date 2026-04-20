@@ -539,6 +539,18 @@ public string AsteroidUUID { get; set; } = string.Empty;
 - Planet and asteroid surveys share the same model. `SurveyType` defaults to Planet for backward compat.
 - For asteroid surveys, `Amount` means "rate per mining cycle" (vs "rate per hour" for planet).
 - When importing asteroid survey, auto-creates Asteroid entity if not found.
+## Filter Criteria
+
+### BlueprintFilterCriteria
+
+`BlueprintFilterCriteria` holds the current filter state for the blueprint list view — text filter, type filter, tech level filter, and evolution range. Used by FormBlueprintV2 to persist and apply list filtering.
+
+## ViewModels
+
+### BlueprintViewModel
+
+`BlueprintViewModel` is the ViewModel for FormBlueprintV2, wrapping a Blueprint model and exposing typed properties for UI binding, computed display values (ExtendedName, property summaries), and edit operations (Save, Delete, Import).
+
 ## Colony Status Calculation Models
 
 ### ColonyStructureStatus
