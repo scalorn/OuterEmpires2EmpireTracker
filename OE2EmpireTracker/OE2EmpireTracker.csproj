@@ -257,6 +257,7 @@
     <Compile Include="Constants\ResearchTimeLookup.cs" />
     <Compile Include="Constants\RefiningRecipes.cs" />
     <Compile Include="Constants\BlueprintPropertyValidation.cs" />
+    <Compile Include="Constants\BlueprintPropertyKeys.cs" />
     <Compile Include="Constants\GameConstants.cs" />
     <Compile Include="Constants\SlotTypes.cs" />
     <Compile Include="Controls\DataGridViewValidatedTextBoxColumn.cs" />

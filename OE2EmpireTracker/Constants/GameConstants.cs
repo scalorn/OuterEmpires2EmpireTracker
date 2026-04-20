@@ -109,5 +109,27 @@ namespace OE2EmpireTracker.Constants
         public const string WorkerIdBlueCollar = "BlueCollarDetail";
         public const string WorkerIdWhiteCollar = "WhiteCollarDetail";
         public const string WorkerIdSpecialist = "SpecialistDetail";
+
+        // --- Item Volume by Type (REQ-DM-025) ---
+
+        public const decimal VolumeResource = 1.0m;
+        public const decimal VolumeCommodity = 10.0m;
+        public const decimal VolumeWorkDetail = 50.0m;
+        public const decimal VolumeBlueprint = 0.0m;
+        public const decimal VolumeSurvey = 0.0m;
+
+        // --- Item Mass by Type ---
+
+        public const decimal MassResource = 1.0m;
+        public const decimal MassCommodity = 5.0m;
+        public const decimal MassWorkDetail = 10.0m;
+
+        // --- Skill Multiplier Rates (per level) ---
+
+        /// <summary>ExtractionFocus: +1% per level.</summary>
+        public const decimal ExtractionFocusRatePerLevel = 0.01m;
+
+        /// <summary>RefiningFocus: +2% per level.</summary>
+        public const decimal RefiningFocusRatePerLevel = 0.02m;
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -60,11 +61,11 @@ namespace OE2EmpireTracker.Services
         {
             switch (item.ItemType)
             {
-                case ItemType.ItemTypeEnum.Resource: return 1.0m;
-                case ItemType.ItemTypeEnum.Commodity: return 10.0m;
-                case ItemType.ItemTypeEnum.WorkDetail: return 50.0m;
+                case ItemType.ItemTypeEnum.Resource: return GameConstants.VolumeResource;
+                case ItemType.ItemTypeEnum.Commodity: return GameConstants.VolumeCommodity;
+                case ItemType.ItemTypeEnum.WorkDetail: return GameConstants.VolumeWorkDetail;
                 case ItemType.ItemTypeEnum.Blueprint:
-                case ItemType.ItemTypeEnum.Survey: return 0.0m;
+                case ItemType.ItemTypeEnum.Survey: return GameConstants.VolumeBlueprint;
                 default:
                     if (!string.IsNullOrEmpty(item.BaseItemTypeID))
                     {
@@ -78,7 +79,7 @@ namespace OE2EmpireTracker.Services
                             }
 
                             decimal vol = 0m;
-                            bp.Properties.getDecimal("Cargo Volume Size", 0, out vol);
+                            bp.Properties.getDecimal(BlueprintPropertyKeys.CargoVolumeSize, 0, out vol);
                             return vol;
                         }
                     }
@@ -93,11 +94,11 @@ namespace OE2EmpireTracker.Services
         {
             switch (item.ItemType)
             {
-                case ItemType.ItemTypeEnum.Resource: return 1.0m;
-                case ItemType.ItemTypeEnum.Commodity: return 5.0m;
-                case ItemType.ItemTypeEnum.WorkDetail: return 10.0m;
+                case ItemType.ItemTypeEnum.Resource: return GameConstants.MassResource;
+                case ItemType.ItemTypeEnum.Commodity: return GameConstants.MassCommodity;
+                case ItemType.ItemTypeEnum.WorkDetail: return GameConstants.MassWorkDetail;
                 case ItemType.ItemTypeEnum.Blueprint:
-                case ItemType.ItemTypeEnum.Survey: return 0.0m;
+                case ItemType.ItemTypeEnum.Survey: return GameConstants.VolumeBlueprint;
                 default:
                     if (!string.IsNullOrEmpty(item.BaseItemTypeID))
                     {
@@ -105,7 +106,7 @@ namespace OE2EmpireTracker.Services
                         if (bp != null)
                         {
                             decimal mass = 0m;
-                            bp.Properties.getDecimal("Mass", 0, out mass);
+                            bp.Properties.getDecimal(BlueprintPropertyKeys.Mass, 0, out mass);
                             return mass;
                         }
                     }
@@ -132,7 +133,7 @@ namespace OE2EmpireTracker.Services
         {
             // A crate's volume is its own Cargo Volume Size property
             decimal crateVol = 0m;
-            crateBp.Properties.getDecimal("Cargo Volume Size", 0, out crateVol);
+            crateBp.Properties.getDecimal(BlueprintPropertyKeys.CargoVolumeSize, 0, out crateVol);
             return crateVol;
         }
 

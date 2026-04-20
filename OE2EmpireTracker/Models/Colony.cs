@@ -267,7 +267,7 @@ namespace OE2EmpireTracker.Models
             }
 
             // ExtractionFocus: +1% per level
-            decimal extractionMultiplier = 1.0m + GetOwnerSkillLevel(SkillName.ExtractionFocus) * 0.01m;
+            decimal extractionMultiplier = 1.0m + GetOwnerSkillLevel(SkillName.ExtractionFocus) * GameConstants.ExtractionFocusRatePerLevel;
 
             while (structure.ProcessCompletionTime.IntervalsPassed > 0)
             {
@@ -305,7 +305,7 @@ namespace OE2EmpireTracker.Models
         {
             int baseRate = GameConstants.RefiningBaseRate;
             // RefiningFocus: +2% per level
-            decimal refiningMultiplier = 1.0m + GetOwnerSkillLevel(SkillName.RefiningFocus) * 0.02m;
+            decimal refiningMultiplier = 1.0m + GetOwnerSkillLevel(SkillName.RefiningFocus) * GameConstants.RefiningFocusRatePerLevel;
             int outputMultiplier;
             switch (structure.RefiningResourcePurity)
             {
@@ -373,7 +373,7 @@ namespace OE2EmpireTracker.Models
             // Per-unit cost: how many input resources per 1 output unit
             int perUnitCost = recipe.ConsumeRate / recipe.ProduceRate;
             // RefiningFocus: +2% per level
-            decimal refiningMultiplier = 1.0m + GetOwnerSkillLevel(SkillName.RefiningFocus) * 0.02m;
+            decimal refiningMultiplier = 1.0m + GetOwnerSkillLevel(SkillName.RefiningFocus) * GameConstants.RefiningFocusRatePerLevel;
 
             while (structure.ProcessCompletionTime.IntervalsPassed > 0)
             {
@@ -516,7 +516,7 @@ namespace OE2EmpireTracker.Models
                     mfgItem.Quantity = 1;
 
                     decimal vol = 0m;
-                    sourceBp.Properties.getDecimal("Cargo Volume Size", 0m, out vol);
+                    sourceBp.Properties.getDecimal(BlueprintPropertyKeys.CargoVolumeSize, 0m, out vol);
                     mfgItem.Volume = vol;
 
                     Items.AddItem(mfgItem);

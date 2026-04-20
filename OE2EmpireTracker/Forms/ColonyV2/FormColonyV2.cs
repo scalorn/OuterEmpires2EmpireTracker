@@ -2210,14 +2210,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             switch (item.ItemType)
             {
                 case Models.ItemType.ItemTypeEnum.Resource:
-                    return 1.0m;
+                    return GameConstants.VolumeResource;
                 case Models.ItemType.ItemTypeEnum.Commodity:
-                    return 10.0m;
+                    return GameConstants.VolumeCommodity;
                 case Models.ItemType.ItemTypeEnum.WorkDetail:
-                    return 50.0m;
+                    return GameConstants.VolumeWorkDetail;
                 case Models.ItemType.ItemTypeEnum.Blueprint:
                 case Models.ItemType.ItemTypeEnum.Survey:
-                    return 0.0m;
+                    return GameConstants.VolumeBlueprint;
                 default:
                     // Manufactured items: read CargoVolumeSize from blueprint
                     if (!string.IsNullOrEmpty(item.BaseItemTypeID) && playerContext != null)
@@ -2226,7 +2226,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                         if (bp != null)
                         {
                             decimal vol = 0;
-                            bp.Properties.getDecimal("Cargo Volume Size", 0, out vol);
+                            bp.Properties.getDecimal(BlueprintPropertyKeys.CargoVolumeSize, 0, out vol);
                             return vol;
                         }
                     }

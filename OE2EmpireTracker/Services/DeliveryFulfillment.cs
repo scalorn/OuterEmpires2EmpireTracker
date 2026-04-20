@@ -1,4 +1,5 @@
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using System;
 using System.Linq;
@@ -58,7 +59,7 @@ namespace OE2EmpireTracker.Services
                 return false;
             }
 
-            structure.Properties.setProperty("Staged", staged ? "True" : "False");
+            structure.Properties.setProperty(Constants.GameConstants.PropStaged, staged ? "True" : "False");
             return true;
         }
 
