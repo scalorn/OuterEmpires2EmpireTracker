@@ -283,12 +283,7 @@
     <Compile Include="Controls\DataEntryGridView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\DataGridViewFilteredComboBoxColumn.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\DataGridViewFilteredComboBoxColumn.Designer.cs">
-      <DependentUpon>DataGridViewFilteredComboBoxColumn.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Controls\DataGridViewFilteredComboBoxColumn.cs" />
     <Compile Include="Controls\FilteredComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -462,9 +457,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Controls\DataGridViewFilteredComboBoxColumn.resx">
-      <DependentUpon>DataGridViewFilteredComboBoxColumn.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controls\FilteredTextComboSet.resx">
       <DependentUpon>FilteredTextComboSet.cs</DependentUpon>
     </EmbeddedResource>

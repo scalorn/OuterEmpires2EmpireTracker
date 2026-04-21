@@ -38,7 +38,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             this.dgvSlots = new System.Windows.Forms.DataGridView();
             this.colSlotType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSlotIndex = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colComponent = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.colComponent = new OE2EmpireTracker.Controls.DataGridViewFilteredComboBoxColumn();
             this.rtbStats = new System.Windows.Forms.RichTextBox();
 
             this.flpBase.SuspendLayout();
@@ -248,7 +248,6 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             this.colComponent.HeaderText = "Component";
             this.colComponent.Name = "colComponent";
             this.colComponent.Width = 350;
-            this.colComponent.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
             //
             // rtbStats
             //
@@ -306,7 +305,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         private System.Windows.Forms.DataGridView dgvSlots;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSlotType;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSlotIndex;
-        private System.Windows.Forms.DataGridViewComboBoxColumn colComponent;
+        private OE2EmpireTracker.Controls.DataGridViewFilteredComboBoxColumn colComponent;
         private System.Windows.Forms.RichTextBox rtbStats;
     }
 }

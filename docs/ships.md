@@ -10,7 +10,7 @@ Open from **Manage → Ship Templates**.
 
 1. Click **New** to start a fresh template.
 2. Pick a **Hull** from the dropdown — this determines the available component slots.
-3. Fill the component slots from your blueprint collection. Slots are typed (reactors, drives, weapons, cargo pods, shields, etc.), so only compatible blueprints appear in each slot's dropdown.
+3. Fill the component slots from your blueprint collection. Slots are typed (reactors, drives, weapons, cargo pods, shields, etc.), so only compatible blueprints appear in each slot's dropdown. Each slot has a filtered combo box — type part of a name in the filter field to narrow the list instantly.
 4. Click **Save** to persist the template.
 
 ### Stats Panel

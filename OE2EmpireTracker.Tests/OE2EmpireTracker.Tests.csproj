@@ -291,6 +291,8 @@
     <Compile Include="Models\ThreadSafetyTests.cs" />
     <Compile Include="Controls\ValidatedTextBoxTests.cs" />
     <Compile Include="Controls\ListViewItemComparerTests.cs" />
+    <Compile Include="Controls\FilteredComboColumnPropertyTests.cs" />
+    <Compile Include="Controls\FilteredComboColumnTests.cs" />
     <Compile Include="Forms\MainMenuOverhaulTests.cs" />
     <Compile Include="Forms\GetDeleteButtonStateTests.cs" />
     <Compile Include="Forms\MdiWindowNumberPropertyTests.cs" />

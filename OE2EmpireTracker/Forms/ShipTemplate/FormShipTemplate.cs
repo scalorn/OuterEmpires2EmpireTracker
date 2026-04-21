@@ -219,17 +219,17 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     var row = dgvSlots.Rows[rowIdx];
 
                     // Populate component combo for this row
-                    var comboCell = (DataGridViewComboBoxCell)row.Cells[colComponent.Index];
-                    comboCell.Items.Clear();
+                    var comboCell = (DataGridViewFilteredComboBoxCell)row.Cells[colComponent.Index];
                     var uuidByIndex = new List<string>();
-                    comboCell.Items.Add("(empty)");
+                    var itemList = new List<string>();
+                    itemList.Add("(empty)");
                     uuidByIndex.Add("");
                     var eligibleBps = playerContext.GetAllBlueprints()
                         .Where(bp => def.BlueprintTypes.Contains(bp.BluePrintType) && bp.Class == hullClass)
                         .OrderBy(bp => bp.ExtendedName);
                     foreach (var bp in eligibleBps)
                     {
-                        comboCell.Items.Add(bp.ExtendedName);
+                        itemList.Add(bp.ExtendedName);
                         uuidByIndex.Add(bp.UUID);
                     }
 
@@ -238,19 +238,22 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                         int matchIdx = uuidByIndex.IndexOf(existing.BlueprintUUID);
                         if (matchIdx >= 0)
                         {
-                            comboCell.Value = comboCell.Items[matchIdx];
+                            comboCell.Items = itemList;
+                            comboCell.Value = itemList[matchIdx];
                         }
                         else
                         {
                             var compBp = playerContext.FindBlueprint(existing.BlueprintUUID);
                             string fallback = compBp?.ExtendedName ?? "(unknown)";
-                            comboCell.Items.Add(fallback);
+                            itemList.Add(fallback);
                             uuidByIndex.Add(existing.BlueprintUUID);
+                            comboCell.Items = itemList;
                             comboCell.Value = fallback;
                         }
                     }
                     else
                     {
+                        comboCell.Items = itemList;
                         comboCell.Value = "(empty)";
                     }
 
@@ -277,8 +280,8 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             if (info == null) return;
 
             string bpUUID = "";
-            var comboCell = (DataGridViewComboBoxCell)row.Cells[colComponent.Index];
-            int selectedIdx = comboCell.Items.IndexOf(comboCell.Value);
+            var comboCell = (DataGridViewFilteredComboBoxCell)row.Cells[colComponent.Index];
+            int selectedIdx = comboCell.Items != null ? comboCell.Items.IndexOf(comboCell.Value?.ToString()) : -1;
             if (selectedIdx > 0 && info.UUIDByIndex != null && selectedIdx < info.UUIDByIndex.Count)
                 bpUUID = info.UUIDByIndex[selectedIdx];
 
