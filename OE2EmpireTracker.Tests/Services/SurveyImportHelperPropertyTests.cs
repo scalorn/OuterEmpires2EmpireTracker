@@ -42,6 +42,16 @@ namespace OE2EmpireTracker.Tests.Services
             return new string(chars);
         }
 
+        private static Survey SetSurveyType(Survey survey, bool isAsteroid)
+        {
+            if (isAsteroid)
+            {
+                survey.SurveyType = SurveyType.Asteroid;
+                survey.AsteroidUUID = "ast-" + survey.UUID;
+            }
+            return survey;
+        }
+
         private static Gen<string> NonEmptyStringGen()
         {
             return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
@@ -56,7 +66,9 @@ namespace OE2EmpireTracker.Tests.Services
                    from scannedBy in NonEmptyStringGen()
                    from dateTime in NonEmptyStringGen()
                    from nickName in NonEmptyStringGen()
-                   select MakeSurvey(uuid, planetName, surveyId, systemName, scannedBy, dateTime, nickName);
+                   from isAsteroid in Arb.Default.Bool().Generator
+                   let survey = MakeSurvey(uuid, planetName, surveyId, systemName, scannedBy, dateTime, nickName)
+                   select SetSurveyType(survey, isAsteroid);
         }
 
         #endregion
@@ -155,6 +167,8 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"Resources.Count: expected {data.Temp.Resources.Count}, got {result.Resources.Count}");
                 var propsMatch = (result.Properties.Count == data.Temp.Properties.Count)
                     .Label($"Properties.Count: expected {data.Temp.Properties.Count}, got {result.Properties.Count}");
+                var surveyTypeMatch = (result.SurveyType == data.Temp.SurveyType)
+                    .Label($"SurveyType: expected '{data.Temp.SurveyType}', got '{result.SurveyType}'");
 
                 return uuidNonEmpty
                     .And(ownerMatch)
@@ -165,7 +179,8 @@ namespace OE2EmpireTracker.Tests.Services
                     .And(dateTimeMatch)
                     .And(scannerMatch)
                     .And(resourceMatch)
-                    .And(propsMatch);
+                    .And(propsMatch)
+                    .And(surveyTypeMatch);
             });
         }
 
@@ -216,6 +231,8 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label("Resources reference should be updated from source");
                 var propsMatch = (ReferenceEquals(data.Existing.Properties, data.Source.Properties))
                     .Label("Properties reference should be updated from source");
+                var surveyTypeMatch = (data.Existing.SurveyType == data.Source.SurveyType)
+                    .Label($"SurveyType: expected '{data.Source.SurveyType}', got '{data.Existing.SurveyType}'");
 
                 // Identity fields should be preserved
                 var uuidPreserved = (data.Existing.UUID == originalUuid)
@@ -233,6 +250,7 @@ namespace OE2EmpireTracker.Tests.Services
                     .And(scannerMatch)
                     .And(resourceMatch)
                     .And(propsMatch)
+                    .And(surveyTypeMatch)
                     .And(uuidPreserved)
                     .And(ownerPreserved)
                     .And(nickNamePreserved);

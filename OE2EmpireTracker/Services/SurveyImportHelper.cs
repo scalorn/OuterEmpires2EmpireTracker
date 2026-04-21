@@ -41,6 +41,8 @@ namespace OE2EmpireTracker.Services
             survey.ScannerBlueprintUUID = tempSurvey.ScannerBlueprintUUID;
             survey.Resources = tempSurvey.Resources;
             survey.Properties = tempSurvey.Properties;
+            survey.SurveyType = tempSurvey.SurveyType;
+            survey.AsteroidUUID = tempSurvey.AsteroidUUID;
             return survey;
         }
 
@@ -58,6 +60,8 @@ namespace OE2EmpireTracker.Services
             target.ScannerBlueprintUUID = source.ScannerBlueprintUUID;
             target.Resources = source.Resources;
             target.Properties = source.Properties;
+            target.SurveyType = source.SurveyType;
+            target.AsteroidUUID = source.AsteroidUUID;
         }
 
         /// <summary>
