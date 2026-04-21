@@ -115,9 +115,11 @@ namespace OE2EmpireTracker.Controls
         {
             var (filtered, indexMap) = ApplyFilter(_fullItems, txtFilter.Text);
             _filteredIndexMap = indexMap;
+            _suppressSelectionEvent = true;
             cmbItems.Items.Clear();
             foreach (var item in filtered)
                 cmbItems.Items.Add(item);
+            _suppressSelectionEvent = false;
             if (filtered.Count > 0 && !string.IsNullOrEmpty(txtFilter.Text))
             {
                 try { cmbItems.DroppedDown = true; } catch { }
