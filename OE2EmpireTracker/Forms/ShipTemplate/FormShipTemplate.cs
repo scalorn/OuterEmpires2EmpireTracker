@@ -220,23 +220,34 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     // Populate component combo for this row
                     var comboCell = (DataGridViewComboBoxCell)row.Cells[colComponent.Index];
                     comboCell.Items.Clear();
-                    comboCell.Items.Add("(empty)");
+                    comboCell.Items.Add(new ComponentEntry { Display = "(empty)", UUID = "" });
                     var eligibleBps = playerContext.GetAllBlueprints()
-                        .Where(bp => bp.BluePrintType == def.BlueprintType && bp.Class == hullClass)
+                        .Where(bp => def.BlueprintTypes.Contains(bp.BluePrintType) && bp.Class == hullClass)
                         .OrderBy(bp => bp.ExtendedName);
                     foreach (var bp in eligibleBps)
-                        comboCell.Items.Add(bp.ExtendedName + "|" + bp.UUID);
+                        comboCell.Items.Add(new ComponentEntry { Display = bp.ExtendedName, UUID = bp.UUID });
 
                     if (existing != null && !string.IsNullOrEmpty(existing.BlueprintUUID))
                     {
                         var compBp = playerContext.FindBlueprint(existing.BlueprintUUID);
-                        string display = (compBp?.ExtendedName ?? existing.BlueprintUUID) + "|" + existing.BlueprintUUID;
-                        if (!comboCell.Items.Contains(display)) comboCell.Items.Add(display);
-                        comboCell.Value = display;
+                        var entry = new ComponentEntry
+                        {
+                            Display = compBp?.ExtendedName ?? existing.BlueprintUUID,
+                            UUID = existing.BlueprintUUID
+                        };
+                        // Find matching item or add if not in list (e.g. class mismatch from old data)
+                        var match = comboCell.Items.OfType<ComponentEntry>().FirstOrDefault(c => c.UUID == existing.BlueprintUUID);
+                        if (match != null)
+                            comboCell.Value = match;
+                        else
+                        {
+                            comboCell.Items.Add(entry);
+                            comboCell.Value = entry;
+                        }
                     }
                     else
                     {
-                        comboCell.Value = "(empty)";
+                        comboCell.Value = comboCell.Items[0];
                     }
 
                     row.Tag = new SlotInfo { SlotType = def.SlotType, SlotIndex = idx };
@@ -261,10 +272,18 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             var info = row.Tag as SlotInfo;
             if (info == null) return;
 
-            string val = row.Cells[colComponent.Index].Value?.ToString() ?? "(empty)";
+            string val = row.Cells[colComponent.Index].Value?.ToString() ?? "";
             string bpUUID = "";
-            if (val != "(empty)" && val.Contains("|"))
-                bpUUID = val.Substring(val.LastIndexOf('|') + 1);
+            var cellValue = row.Cells[colComponent.Index].Value;
+            if (cellValue is ComponentEntry ce)
+                bpUUID = ce.UUID;
+            else if (cellValue != null)
+            {
+                // Fallback for string values (shouldn't happen but defensive)
+                string s = cellValue.ToString();
+                if (s != "(empty)" && s.Contains("|"))
+                    bpUUID = s.Substring(s.LastIndexOf('|') + 1);
+            }
 
             var existing = _selectedTemplate.Components
                 .FirstOrDefault(c => c.SlotType == info.SlotType && c.SlotIndex == info.SlotIndex);
@@ -644,41 +663,36 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         // Helpers
         private List<SlotDefinition> GetSlotDefinitions(Models.Blueprint hullBp)
         {
-            var defs = new List<SlotDefinition>();
-            // Use game property names from SlotTypes.HullPropertyToSlotType
-            AddSlotDef(defs, hullBp, "Reactor Slots", Constants.SlotTypes.Reactor, Constants.SlotTypes.Reactor);
-            AddSlotDef(defs, hullBp, "Main Drive Slots", Constants.SlotTypes.MainDrive, Constants.SlotTypes.MainDrive);
-            AddSlotDef(defs, hullBp, "Thruster Slots", Constants.SlotTypes.Thruster, Constants.SlotTypes.Thruster);
-            AddSlotDef(defs, hullBp, "Cargo Pod Slots", Constants.SlotTypes.CargoPod, Constants.SlotTypes.CargoPod);
-            AddSlotDef(defs, hullBp, "Fuel Tank Slots", Constants.SlotTypes.FuelTank, Constants.SlotTypes.FuelTank);
-            AddSlotDef(defs, hullBp, "Shield Slots", Constants.SlotTypes.Shield, Constants.SlotTypes.Shield);
-            AddSlotDef(defs, hullBp, "Jump Drive Slots", Constants.SlotTypes.JumpDrive, Constants.SlotTypes.JumpDrive);
-            AddSlotDef(defs, hullBp, "Small Weapon Mounts", Constants.SlotTypes.WeaponSmall, Constants.SlotTypes.WeaponSmall);
-            AddSlotDef(defs, hullBp, "Medium Weapon Mounts", Constants.SlotTypes.WeaponMedium, Constants.SlotTypes.WeaponMedium);
-            AddSlotDef(defs, hullBp, "Large Weapon Mounts", Constants.SlotTypes.WeaponLarge, Constants.SlotTypes.WeaponLarge);
-            AddSlotDef(defs, hullBp, "Max Hull Plating", Constants.SlotTypes.HullPlating, Constants.SlotTypes.HullPlating);
-            AddSlotDef(defs, hullBp, "Max Hull Reinforcement", Constants.SlotTypes.HullReinforcement, Constants.SlotTypes.HullReinforcement);
-            AddSlotDef(defs, hullBp, "Max Hull Sealant Units", Constants.SlotTypes.HullSealant, Constants.SlotTypes.HullSealant);
-            AddSlotDef(defs, hullBp, "Max Mining Lasers", Constants.SlotTypes.MiningLaser, Constants.SlotTypes.MiningLaser);
-            AddSlotDef(defs, hullBp, "Max Mining Grapples", Constants.SlotTypes.MiningGrapple, Constants.SlotTypes.MiningGrapple);
-            AddSlotDef(defs, hullBp, "Max Ore Hoppers", Constants.SlotTypes.OreHopper, Constants.SlotTypes.OreHopper);
-            AddSlotDef(defs, hullBp, "Nav Comp Slots", Constants.SlotTypes.NavComp, Constants.SlotTypes.NavComp);
-            AddSlotDef(defs, hullBp, "Scanner Slots", Constants.SlotTypes.Scanner, Constants.SlotTypes.Scanner);
-            AddSlotDef(defs, hullBp, "Coupler Slots", Constants.SlotTypes.Coupler, Constants.SlotTypes.Coupler);
-            AddSlotDef(defs, hullBp, "GERTY Slots", Constants.SlotTypes.GERTY, Constants.SlotTypes.GERTY);
-            return defs;
-        }
+            // Build reverse map: slot type → list of BlueprintType IDs that fit that slot
+            var slotToBpTypes = new Dictionary<string, List<string>>();
+            foreach (var kvp in Constants.SlotTypes.BlueprintTypeToSlotType)
+            {
+                if (!slotToBpTypes.ContainsKey(kvp.Value))
+                    slotToBpTypes[kvp.Value] = new List<string>();
+                slotToBpTypes[kvp.Value].Add(kvp.Key);
+            }
 
-        private void AddSlotDef(List<SlotDefinition> defs, Models.Blueprint hullBp,
-            string propName, string slotType, string blueprintType)
-        {
-            decimal maxVal;
-            if (hullBp.Properties.getDecimal(propName, 0m, out maxVal) && maxVal > 0)
-                defs.Add(new SlotDefinition { SlotType = slotType, MaxCount = (int)maxVal, BlueprintType = blueprintType });
+            var defs = new List<SlotDefinition>();
+            foreach (var kvp in Constants.SlotTypes.HullPropertyToSlotType)
+            {
+                decimal maxVal;
+                if (hullBp.Properties.getDecimal(kvp.Key, 0m, out maxVal) && maxVal > 0)
+                {
+                    slotToBpTypes.TryGetValue(kvp.Value, out var bpTypes);
+                    defs.Add(new SlotDefinition
+                    {
+                        SlotType = kvp.Value,
+                        MaxCount = (int)maxVal,
+                        BlueprintTypes = bpTypes ?? new List<string>()
+                    });
+                }
+            }
+            return defs;
         }
 
         private class HullEntry { public string Display; public string UUID; public override string ToString() => Display; }
         private class SlotInfo { public string SlotType; public int SlotIndex; }
-        private class SlotDefinition { public string SlotType; public int MaxCount; public string BlueprintType; }
+        private class SlotDefinition { public string SlotType; public int MaxCount; public List<string> BlueprintTypes; }
+        private class ComponentEntry { public string Display; public string UUID; public override string ToString() => Display; }
     }
 }
