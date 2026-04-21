@@ -9,8 +9,8 @@ MDI child form. Left-list / right-detail with rich filtering and resource grid.
 │ Surveys                                                                 [_][□][X]│
 ├─────────────────────────────┬───────────────────────────────────────────────────────┤
 │ Filter:   [______________]  │ Survey Type: [Planet         ▼]                       │
-│ Resource: [All          ▼]  │ Planet Name: [Kepler-442b________]                   │
-│ Type: [All▼] Purity:[All▼]  │ System:      [Kepler-442__________]                   │
+│ Resource: [All          ▼]  │ System:      [Kepler-442__________]                   │
+│ Type: [All▼] Purity:[All▼]  │ Planet Name: [Kepler-442b________]                   │
 │ Min Amount: [_____]         │ Survey ID:   [SVY-00142___________]                   │
 │                             │ Nickname:    [Rich Iron Site_______]                   │
 │ ┌─────────────────────────┐ │ Scanner BP:  [____] [Deep Scanner Mk3       ▼]        │
@@ -42,7 +42,7 @@ Controls:
   - `lvwSurveys` (ListView, full-row select)
 - Right: `flpSurveyData` (top-down, AutoScroll, WrapContents=false):
   - `flpSurveyDetails` (top-down) — survey identity fields:
-    - `cmbSurveyTypeEdit` (Planet/Asteroid dropdown — label changes to "Asteroid Name" when Asteroid selected), `txtPlanetName`, `txtSystemName`, `txtSurveyID`, `txtNickName`
+    - `cmbSurveyTypeEdit` (Planet/Asteroid dropdown — label changes to "Asteroid Name" when Asteroid selected), `txtSystemName`, `txtPlanetName`, `txtSurveyID`, `txtNickName`
     - `txtFilterScannerBlueprint` + `cmbScannerBlueprint` (filtered combo for scanner blueprint)
     - `txtScannedBy` — player who performed the scan
     - `txtScanDateTime` + `dtpScanDateTime` (DateTimePicker) — scan timestamp

@@ -268,8 +268,8 @@ namespace OE2EmpireTracker.Forms.Survey
             // flpSurveyDetails
             // 
             this.flpSurveyDetails.Controls.Add(this.flpSurveyTypeEdit);
-            this.flpSurveyDetails.Controls.Add(this.flpPlanetName);
             this.flpSurveyDetails.Controls.Add(this.flpSystemName);
+            this.flpSurveyDetails.Controls.Add(this.flpPlanetName);
             this.flpSurveyDetails.Controls.Add(this.flpSurveyID);
             this.flpSurveyDetails.Controls.Add(this.flpNickName);
             this.flpSurveyDetails.Controls.Add(this.flpScannerBlueprint);

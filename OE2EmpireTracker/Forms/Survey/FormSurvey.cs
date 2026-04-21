@@ -61,6 +61,13 @@ namespace OE2EmpireTracker.Forms.Survey
 
             // Wire survey list filter
             txtSurveyFilter.TextChanged += txtSurveyFilter_TextChanged;
+
+            // Populate resource filter combo
+            cmbResource.DisplayMember = "Name";
+            cmbResource.Items.Add(new Models.Resource { Name = "(all)" });
+            foreach (var r in empireContext.ResourceList)
+                cmbResource.Items.Add(r);
+            cmbResource.SelectedIndex = 0;
             cmbResource.SelectedIndexChanged += cmbResource_SelectedIndexChanged;
 
             // Wire additional filters (task 40.2)
@@ -292,7 +299,8 @@ namespace OE2EmpireTracker.Forms.Survey
         private string GetSelectedResourceName()
         {
             var selected = cmbResource.SelectedItem as Models.Resource;
-            return selected?.Name ?? "";
+            if (selected == null || selected.Name == "(all)") return "";
+            return selected.Name;
         }
 
         private SurveyType? GetSelectedSurveyType()
