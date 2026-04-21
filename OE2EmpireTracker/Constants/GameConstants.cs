@@ -84,6 +84,20 @@ namespace OE2EmpireTracker.Constants
         /// <summary>Refining output multiplier for high-purity resources.</summary>
         public const int PurityMultiplierHigh = 5;
 
+        /// <summary>
+        /// Computes the refining output rate for a given purity and base rate.
+        /// </summary>
+        public static int GetRefiningOutputRate(string purity, int baseRate)
+        {
+            switch (purity)
+            {
+                case PurityLow: return baseRate * PurityMultiplierLow;
+                case PurityMedium: return baseRate * PurityMultiplierMedium;
+                case PurityHigh: return baseRate * PurityMultiplierHigh;
+                default: return baseRate * PurityMultiplierLow;
+            }
+        }
+
         // --- Blueprint Property Keys ---
         // Canonical names with spaces, matching BaselineData.json type definitions
         // and BlueprintPropertyValidation. All code should use these constants

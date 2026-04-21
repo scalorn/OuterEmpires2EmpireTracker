@@ -390,7 +390,7 @@ namespace OE2EmpireTracker.Services
                 else
                 {
                     consumeRate = GameConstants.RefiningBaseRate;
-                    produceRate = GetRefiningOutputRate(structure.RefiningResourcePurity, consumeRate);
+                    produceRate = GameConstants.GetRefiningOutputRate(structure.RefiningResourcePurity, consumeRate);
                     outputResource = structure.RefiningResource;
                 }
 
@@ -419,17 +419,6 @@ namespace OE2EmpireTracker.Services
             }
 
             return true;
-        }
-
-        private static int GetRefiningOutputRate(string purity, int baseRate)
-        {
-            switch (purity)
-            {
-                case GameConstants.PurityLow: return baseRate * GameConstants.PurityMultiplierLow;
-                case GameConstants.PurityMedium: return baseRate * GameConstants.PurityMultiplierMedium;
-                case GameConstants.PurityHigh: return baseRate * GameConstants.PurityMultiplierHigh;
-                default: return baseRate * GameConstants.PurityMultiplierLow;
-            }
         }
     }
 }

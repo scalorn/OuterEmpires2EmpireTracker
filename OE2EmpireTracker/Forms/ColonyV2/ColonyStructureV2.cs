@@ -965,19 +965,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             else
             {
                 int baseRate = GameConstants.RefiningBaseRate;
-                int outputRate = GetRefiningOutputRate(structureData.RefiningResourcePurity, baseRate);
+                int outputRate = GameConstants.GetRefiningOutputRate(structureData.RefiningResourcePurity, baseRate);
                 rtbProgressStatus.Text = $"{baseRate}:{outputRate} {structureData.RefiningResource} ({structureData.RefiningResourcePurity})";
-            }
-        }
-
-        private static int GetRefiningOutputRate(string purity, int baseRate)
-        {
-            switch (purity)
-            {
-                case GameConstants.PurityLow: return baseRate;
-                case GameConstants.PurityMedium: return baseRate * 3;
-                case GameConstants.PurityHigh: return baseRate * 5;
-                default: return baseRate;
             }
         }
 

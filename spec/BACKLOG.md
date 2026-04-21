@@ -220,7 +220,7 @@ Both forms have identical player-changed handlers. Could extract the common patt
 Identical layout handlers. These forms share the same left-list/right-detail pattern. Could extract to a shared layout helper, though at 5 lines the benefit is marginal.
 
 ### BL-084: Duplicate — GetRefiningOutputRate (7 lines)
-**Files:** ColonyActivityCollector.cs:248 == ColonyAdminReportBuilder.cs:424
-**Status: New**
-Both services compute refining output rate identically. Extract to a shared static method on one of the services or a utility class.
+**Files:** ColonyActivityCollector.cs:248 == ColonyAdminReportBuilder.cs:424 == ColonyStructureV2.cs:973
+**Status: Done**
+Extracted to `GameConstants.GetRefiningOutputRate()`. All three copies removed. The ColonyStructureV2 copy also had magic numbers (3, 5) instead of the PurityMultiplier constants — now uses the canonical constants via the shared method.
 

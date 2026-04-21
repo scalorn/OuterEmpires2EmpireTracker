@@ -241,19 +241,8 @@ namespace OE2EmpireTracker.Services
             }
 
             int baseRate = GameConstants.RefiningBaseRate;
-            int outputRate = GetRefiningOutputRate(structure.RefiningResourcePurity, baseRate);
+            int outputRate = GameConstants.GetRefiningOutputRate(structure.RefiningResourcePurity, baseRate);
             return $"{baseRate}:{outputRate} {structure.RefiningResource} ({structure.RefiningResourcePurity})";
-        }
-
-        private static int GetRefiningOutputRate(string purity, int baseRate)
-        {
-            switch (purity)
-            {
-                case GameConstants.PurityLow: return baseRate * GameConstants.PurityMultiplierLow;
-                case GameConstants.PurityMedium: return baseRate * GameConstants.PurityMultiplierMedium;
-                case GameConstants.PurityHigh: return baseRate * GameConstants.PurityMultiplierHigh;
-                default: return baseRate * GameConstants.PurityMultiplierLow;
-            }
         }
 
         private static string GetResearchDetails(ColonyStructure structure, PlayerContext playerContext)
