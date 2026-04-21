@@ -41,7 +41,7 @@
 
 - [ ] 3. Fix for asteroid survey import not extracting and displaying max reserve data
 
-  - [-] 3.1 Add transient ParsedMaxReserves property to Survey model
+  - [x] 3.1 Add transient ParsedMaxReserves property to Survey model
     - In `OE2EmpireTracker/Models/Survey.cs`, add `[JsonIgnore] public Dictionary<string, int> ParsedMaxReserves { get; set; }`
     - This carries max reserve data from parser to import helper without affecting JSON serialization
     - _Bug_Condition: isBugCondition(input) where maxReserveNodes.Count > 0 AND no mechanism to pass reserve data from parser to import helper_
@@ -49,7 +49,7 @@
     - _Preservation: Existing Survey serialization/deserialization unchanged — property is [JsonIgnore]_
     - _Requirements: 2.1_
 
-  - [~] 3.2 Extract max reserve values in SurveyParser.ProcessHtml
+  - [-] 3.2 Extract max reserve values in SurveyParser.ProcessHtml
     - In `OE2EmpireTracker/Parsers/SurveyParser.cs`, in the `ProcessHtml` method
     - After selecting `ScanDetailOutputMaxReserve` nodes (existing code that sets SurveyType), iterate nodes in parallel with resource nodes
     - Parse each node's `InnerText` to extract the integer max reserve value (handle commas, whitespace)

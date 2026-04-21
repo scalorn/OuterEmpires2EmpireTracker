@@ -83,6 +83,30 @@ namespace OE2EmpireTracker.Parsers
                     // Max reserve presence confirms this is an asteroid survey
                     survey.SurveyType = SurveyType.Asteroid;
                     Log.Info("Detected asteroid survey (MaxReserve nodes found: {0})", maxReserveNodes.Count);
+
+                    // Extract max reserve values, iterating in parallel with resource name nodes
+                    survey.ParsedMaxReserves = new Dictionary<string, int>();
+                    int reserveCount = Math.Min(maxReserveNodes.Count, nameNodes?.Count ?? 0);
+                    for (int i = 0; i < reserveCount; i++)
+                    {
+                        string rawResName = nameNodes[i].InnerText.Trim();
+                        // Extract just the resource name (before purity parentheses), matching ParseResource logic
+                        var resMatch = Regex.Match(rawResName, @"^(.+?)\s*\((.+?)\)\s*$");
+                        string resName = resMatch.Success ? resMatch.Groups[1].Value.Trim() : rawResName;
+
+                        string rawReserve = maxReserveNodes[i].InnerText.Trim();
+                        // Strip commas and whitespace, then parse to int
+                        string cleaned = rawReserve.Replace(",", "").Trim();
+                        if (int.TryParse(cleaned, out int maxReserve))
+                        {
+                            survey.ParsedMaxReserves[resName] = maxReserve;
+                            Log.Debug("  MaxReserve: {0} = {1}", resName, maxReserve);
+                        }
+                        else
+                        {
+                            Log.Warn("  Could not parse max reserve value '{0}' for resource '{1}'", rawReserve, resName);
+                        }
+                    }
                 }
 
                 Log.Info("ProcessHtml: PlanetName='{0}', SystemName='{1}', SurveyID='{2}', resources extracted={3}",
