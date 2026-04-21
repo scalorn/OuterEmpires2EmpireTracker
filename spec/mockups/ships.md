@@ -65,9 +65,9 @@ MDI child form. Left-list / right-detail pattern.
 
 Controls:
 - Left: `flpSearchList` â†’ `txtTemplateFilter` + `lvwTemplates` (ListView) + `cmdNew` / `cmdDelete`
-- Right: `flpTemplateData` â†’ `txtTemplateName`, hull selector (`txtHullFilter` + `cmbHull`), `cmdSave`, `cmdOrderBuild`, `dgvComponents` (DataGridView), install panel, stats panel, `cmdOrderBuild`
+- Right: `flpTemplateData` â†’ `txtTemplateName`, hull selector (`cmbHull`), `cmdSave`, `cmdOrderBuild`, `dgvComponents` (DataGridView), install panel, stats panel, `cmdOrderBuild`
 - `dgvSlots` (DataGridView) columns: SlotType, SlotIndex, Blueprint (dropdown column for component selection — replaces the separate install panel in the original design), Actions (button column)
-- Install panel: **Design deviation** — component installation is done via dropdown columns in `dgvSlots` instead of a separate install panel. The mockup-designed `txtComponentFilter`, `cmbComponent`, `cmbSlot`, `cmdInstall` were not implemented
+- Install panel: **Design deviation** — component installation is done via dropdown columns in `dgvSlots` instead of a separate install panel. The mockup-designed  were not implemented
 - Stats panel: `rtbStats` (RichTextBox) — **Design deviation**: uses formatted text instead of the mockup-designed `dgvStats` DataGridView. Shows all stat groups in a compact multi-line format. Computed from hull + components via ShipBuildService.ComputeStats â€” computed from hull + components via ShipBuildService.ComputeStats. Grouped into sections: Core (mass, power, eng capacity), Capacity (cargo, fuel, crew), Defence (health, shields, armour ratings), Propulsion (acceleration, thrust, jump), Weapons (mount counts, license). Mining and scanning sections shown only when relevant components are installed.
 - "Order Build" opens a dialog to select/create a build plan and specify assembly location
 

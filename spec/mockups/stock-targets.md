@@ -98,7 +98,7 @@ New tab on FormStockTargets, added alongside the existing targets view. The main
 Controls:
 - The existing FormStockTargets content moves into a "Targets & Plans" tab. The new "Profiles" tab is added alongside it.
 - Profiles tab left section: `txtProfileFilter`, `lvwProfiles` (ListView), `cmdNewProfile` / `cmdDeleteProfile`
-- Profiles tab right section: `txtProfileName`, `chkProfileActive` (CheckBox, write-through to StockProfile.IsActive), `dgvEntries` (DataGridView), add-entry panel, logic summary label
+- Profiles tab right section: `txtProfileName`, `chkProfileActive`, `cmdSaveProfile` (CheckBox, write-through to StockProfile.IsActive), `dgvEntries` (DataGridView), add-entry panel, logic summary label
 - Inactive profiles: list view shows profile name in gray italic. Excluded from stock target aggregation.
 - `dgvEntries` columns: GroupID (editable text), Plan name (read-only, resolved from StockPlanUUID)
 - Add-entry panel: `txtGroupID`, `txtEntryFilter`, `cmbEntry` (FilteredComboBox of StockPlans), `cmdAddEntry` / `cmdRemoveEntry`
