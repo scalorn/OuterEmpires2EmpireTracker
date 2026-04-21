@@ -73,7 +73,7 @@ Encapsulate all entity lists on PlayerContext and EmpireContext behind `IReadOnl
 
 1. WHEN an entity with a UUID is added via a mutation method, THE PlayerContext SHALL insert the entity into the corresponding UUID cache dictionary using the entity UUID as the key (O(1) dictionary insert)
 2. WHEN an entity with a UUID is removed via a mutation method, THE PlayerContext SHALL remove the entity from the corresponding UUID cache dictionary using the entity UUID as the key (O(1) dictionary remove)
-3. THE PlayerContext SHALL maintain UUID caches for all entity types that currently have Find methods with dictionary caches (Blueprint, Survey, Colony, Station, ShipTemplate, Ship, BuildPlan, Asteroid, Faction, MarketListing)
+3. THE PlayerContext SHALL maintain UUID caches for all entity types that have a UUID property (Blueprint, Survey, Colony, Station, ShipTemplate, Ship, BuildPlan, Asteroid, Faction, MarketListing, PlayerProfile, DeliveryRoute, DeliveryPlan, PricingPlan, MarketTransaction, StockPlan, StockProfile, SupplyChain, WarehouseOverflowRule, ExternalCharacter)
 4. IF the UUID cache has not been initialized when a mutation method is called, THEN THE PlayerContext SHALL initialize the cache from the full list before performing the inline update
 5. THE EmpireContext SHALL apply the same inline cache maintenance for GlobalBlueprintList and CommodityList caches
 
