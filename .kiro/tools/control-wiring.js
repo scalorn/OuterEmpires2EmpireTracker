@@ -83,12 +83,13 @@ for (const form of formFiles) {
         }
     }
 
-    // Check for UUID shown as display fallback (ExtendedName ?? UUID pattern)
-    const uuidFallbackRe = /ExtendedName\s*\?\?\s*\w+\.(?:UUID|BlueprintUUID)/g;
+    // Check for UUID shown as display fallback (e.g. ExtendedName ?? slot.BlueprintUUID)
+    // Only flag when the ?? fallback is a UUID property — this means a UUID could be shown to the user
+    const uuidFallbackRe = /(?:ExtendedName|Name|Display)\s*\?\?\s*\w+\.(?:UUID|BlueprintUUID|TemplateUUID)\b/g;
     const uuidMatches = content.match(uuidFallbackRe);
     if (uuidMatches) {
         for (const m of uuidMatches) {
-            findings.push('UUID_DISPLAY: ' + form.name + ' shows UUID as fallback display: ' + m + ' (' + relPath + ')');
+            findings.push('UUID_DISPLAY: ' + form.name + ' shows UUID as fallback display: ' + m.trim() + ' (' + relPath + ')');
         }
     }
 }

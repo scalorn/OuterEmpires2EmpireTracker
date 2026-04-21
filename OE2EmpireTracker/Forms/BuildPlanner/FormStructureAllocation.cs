@@ -146,7 +146,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     rows.Add(new StructureRow
                     {
                         ColonyUUID = colony.UUID,
-                        ColonyName = colony.ColonyName ?? colony.UUID,
+                        ColonyName = colony.ColonyName ?? "(unknown)",
                         StructureUUID = structure.UUID,
                         StructureName = structureName,
                         TypeLabel = typeLabel,

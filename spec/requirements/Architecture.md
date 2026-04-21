@@ -245,3 +245,11 @@ flowchart TD
 **REQ-ARCH-090** JsonSettings SHALL configure Newtonsoft.Json with Formatting.Indented, DefaultValueHandling.Ignore, and NullValueHandling.Ignore.  
 **REQ-ARCH-091** All serialization call sites SHALL use JsonSettings.SerializerSettings to ensure consistent behavior.  
 **REQ-ARCH-092** DefaultValueHandling.Ignore SHALL omit fields with default values (null, empty string, false, 0) from JSON output to reduce file size.  
+
+## UI Display Standards
+
+**REQ-ARCH-110** UUIDs SHALL NEVER be displayed to the user in any visible UI element (grid cells, combo items, labels, list items, tooltips). UUIDs are internal identifiers only.  
+**REQ-ARCH-111** When displaying entity names, forms SHALL use `ExtendedName` (or `Name` for entities without ExtendedName). When an entity cannot be found by UUID (e.g. `FindBlueprint` returns null), the display SHALL show `"(unknown)"` — never the raw UUID string.  
+**REQ-ARCH-112** `DataGridViewComboBoxCell` items SHALL be plain strings only. Objects and structs SHALL NOT be used as combo cell items because `DataGridViewComboBoxCell` uses reference equality for validation — boxed structs create new references on every comparison, causing continuous DataError exceptions and form freezes.  
+**REQ-ARCH-113** When a `DataGridViewComboBoxCell` needs to associate a UUID with each display string, the UUID SHALL be stored in a parallel `List<string>` on the row's `Tag` object, indexed to match the combo items. The UUID is looked up by the selected item's index position.  
+**REQ-ARCH-114** Every `DataGridView` SHALL have a `DataError` event handler that logs the error at Warn level and sets `e.ThrowException = false`. Without this handler, combo cell validation errors show a modal dialog that can make the form unresponsive.
