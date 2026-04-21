@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [-] 1. Write bug condition exploration test
+- [x] 1. Write bug condition exploration test
   - **Property 1: Bug Condition** - Max Reserves Not Extracted From Asteroid Survey HTML
   - **CRITICAL**: This test MUST FAIL on unfixed code — failure confirms the bug exists
   - **DO NOT attempt to fix the test or the code when it fails**
@@ -20,7 +20,7 @@
   - Mark task complete when test is written, run, and failure is documented
   - _Requirements: 1.1, 2.1_
 
-- [~] 2. Write preservation property tests (BEFORE implementing fix)
+- [-] 2. Write preservation property tests (BEFORE implementing fix)
   - **Property 2: Preservation** - Planet Survey Import and Resource Parsing Unchanged
   - **IMPORTANT**: Follow observation-first methodology
   - Create test file `OE2EmpireTracker.Tests/Parsers/SurveyParserPreservationTests.cs`
