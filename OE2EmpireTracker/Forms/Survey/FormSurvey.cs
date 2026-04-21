@@ -361,7 +361,15 @@ namespace OE2EmpireTracker.Forms.Survey
         {
             if (_isProgrammaticUpdate > 0) return;
             if (cmbSurveyTypeEdit.SelectedItem is SurveyType st)
+            {
                 viewModel.SurveyTypeValue = st;
+                UpdateNameLabel(st);
+            }
+        }
+
+        private void UpdateNameLabel(SurveyType surveyType)
+        {
+            lblPlanetName.Text = surveyType == SurveyType.Asteroid ? "Asteroid Name" : "Planet Name";
         }
 
         private void txtSurveyID_TextChanged(object sender, EventArgs e)
@@ -449,6 +457,7 @@ namespace OE2EmpireTracker.Forms.Survey
             txtPlanetName.Text = "";
             txtSystemName.Text = "";
             cmbSurveyTypeEdit.SelectedIndex = 0;
+            UpdateNameLabel(SurveyType.Planet);
             txtSurveyID.Text = "";
             txtNickName.Text = "";
             txtScannedBy.Text = "";
@@ -673,6 +682,7 @@ namespace OE2EmpireTracker.Forms.Survey
                 if ((SurveyType)cmbSurveyTypeEdit.Items[i] == viewModel.SurveyTypeValue)
                 { cmbSurveyTypeEdit.SelectedIndex = i; break; }
             }
+            UpdateNameLabel(viewModel.SurveyTypeValue);
             txtSurveyID.Text = viewModel.SurveyID ?? "";
             txtNickName.Text = viewModel.NickName ?? "";
             txtScannedBy.Text = viewModel.ScannedBy ?? "";
