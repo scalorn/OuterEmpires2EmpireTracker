@@ -206,6 +206,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             if (hullBp?.Properties == null) return;
 
             var slotDefs = GetSlotDefinitions(hullBp);
+            int hullClass = hullBp.Class;
             foreach (var def in slotDefs)
             {
                 for (int idx = 0; idx < def.MaxCount; idx++)
@@ -221,7 +222,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     comboCell.Items.Clear();
                     comboCell.Items.Add("(empty)");
                     var eligibleBps = playerContext.GetAllBlueprints()
-                        .Where(bp => bp.BluePrintType == def.BlueprintType)
+                        .Where(bp => bp.BluePrintType == def.BlueprintType && bp.Class == hullClass)
                         .OrderBy(bp => bp.ExtendedName);
                     foreach (var bp in eligibleBps)
                         comboCell.Items.Add(bp.ExtendedName + "|" + bp.UUID);
