@@ -116,6 +116,7 @@ namespace OE2EmpireTracker.Controls
         private bool _valueChanged;
         private int _rowIndex;
         private bool _suppressFilterEvent;
+        private bool _suppressSelectionEvent;
 
         public DataGridViewFilteredComboBoxEditingControl()
         {
@@ -141,6 +142,7 @@ namespace OE2EmpireTracker.Controls
         {
             _fullItems = items ?? new List<string>();
             _suppressFilterEvent = true;
+            _suppressSelectionEvent = true;
             txtFilter.Text = string.Empty;
             _suppressFilterEvent = false;
             RebuildFilteredList();
@@ -149,6 +151,7 @@ namespace OE2EmpireTracker.Controls
                 int idx = cmbItems.Items.IndexOf(currentValue);
                 if (idx >= 0) cmbItems.SelectedIndex = idx;
             }
+            _suppressSelectionEvent = false;
         }
 
         /// <summary>
@@ -194,6 +197,7 @@ namespace OE2EmpireTracker.Controls
 
         private void CmbItems_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_suppressSelectionEvent) return;
             _valueChanged = true;
             _dataGridView?.NotifyCurrentCellDirty(true);
         }
@@ -271,10 +275,19 @@ namespace OE2EmpireTracker.Controls
 
         public void PrepareEditingControlForEdit(bool selectAll)
         {
+            // Preserve the current selection across the filter reset
+            string currentValue = cmbItems.SelectedItem?.ToString();
             _suppressFilterEvent = true;
             txtFilter.Text = string.Empty;
             _suppressFilterEvent = false;
+            _suppressSelectionEvent = true;
             RebuildFilteredList();
+            if (!string.IsNullOrEmpty(currentValue))
+            {
+                int idx = cmbItems.Items.IndexOf(currentValue);
+                if (idx >= 0) cmbItems.SelectedIndex = idx;
+            }
+            _suppressSelectionEvent = false;
             txtFilter.Focus();
         }
 

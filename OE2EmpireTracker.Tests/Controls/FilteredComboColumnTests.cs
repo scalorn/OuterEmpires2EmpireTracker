@@ -124,17 +124,17 @@ namespace OE2EmpireTracker.Tests.Controls
             using (var editor = new DataGridViewFilteredComboBoxEditingControl())
             {
                 var items = new List<string> { "Alpha", "Beta", "Gamma" };
-                editor.SetItems(items, null);
+                editor.SetItems(items, "Beta");
 
-                // Simulate typing a filter by setting items with a filter applied
                 var txtFilter = editor.Controls.OfType<TextBox>().First();
                 var combo = editor.Controls.OfType<ComboBox>().First();
 
-                // Prepare for edit should clear filter and show full list
+                // Prepare for edit should clear filter, show full list, and preserve selection
                 ((IDataGridViewEditingControl)editor).PrepareEditingControlForEdit(false);
 
                 Assert.That(txtFilter.Text, Is.EqualTo(string.Empty));
                 Assert.That(combo.Items.Count, Is.EqualTo(3));
+                Assert.That(combo.SelectedItem?.ToString(), Is.EqualTo("Beta"));
             }
         }
 
