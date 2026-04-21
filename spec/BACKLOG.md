@@ -166,6 +166,10 @@ Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat
 
 The following items were designed in the empire-systems spec and marked complete in tasks.md, but the UI controls were either not implemented or implemented differently than the mockup specified. Discovered during the April 2026 mockup-controls audit.
 
+## Empire-Systems Audit Gaps
+
+The following items were designed in the empire-systems spec and marked complete in tasks.md, but the UI controls were either not implemented or implemented differently than the mockup specified. Discovered during the April 2026 mockup-controls audit.
+
 ## Duplicate Code Findings (April 2026 Audit)
 
 Found by `dupe-code.js`. Methods with identical bodies across different classes.

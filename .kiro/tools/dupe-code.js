@@ -30,6 +30,9 @@ const KNOWN_DUPES = new Set([
     // Hull combo methods intentionally copied between FormShipTemplate and FormShipInstance (BL-081)
     'PopulateHullCombo',
     'SelectHullInCombo',
+    // Small identical layout/player-changed handlers across forms — accepted baseline (BL-082, BL-083)
+    'OnCurrentPlayerChanged',
+    'flpSearchList_Layout',
 ]);
 
 function findCsFiles(dir, results) {

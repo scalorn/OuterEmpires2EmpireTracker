@@ -371,3 +371,12 @@ Removed unused private method. Replaced by txtTargetDuration inline field (BL-07
 ### BL-079 (Audit): Dead Code — FormPlayerProfile.chkColonyOperations_Click
 Removed unwired event handler. Checkbox wiring was removed but handler left behind.
 **Status: Complete**
+
+
+### BL-082 (Audit): Duplicate — OnCurrentPlayerChanged (10 lines)
+Identical player-changed handlers across FormBuildPlanner and FormPricingPlan. Accepted as baseline — small boilerplate methods that follow the standard form pattern.
+**Status: Accepted — by design**
+
+### BL-083 (Audit): Duplicate — flpSearchList_Layout (5 lines)
+Identical layout handlers across FormBuildPlanner and FormPricingPlan. Accepted as baseline — trivial 5-line methods, not worth abstracting.
+**Status: Accepted — by design**
