@@ -66,8 +66,8 @@ namespace OE2EmpireTracker.Tests.ViewModels
         {
             var match = MakeBlueprint("Laser", "Weapon", 3, "LL", 0);
             var noMatch = MakeBlueprint("Laser", "Hull", 3, "LL", 0);
-            playerContext.BlueprintList.Add(match);
-            playerContext.BlueprintList.Add(noMatch);
+            playerContext.AddBlueprint(match);
+            playerContext.AddBlueprint(noMatch);
 
             var current = MakeBlueprint("Laser", "Weapon", 3, "LL", 1);
             var vm = CreateViewModel(current);
@@ -83,8 +83,8 @@ namespace OE2EmpireTracker.Tests.ViewModels
         {
             var match = MakeBlueprint("Pulse Laser", "Weapon", 3, "LL", 0);
             var noMatch = MakeBlueprint("Beam Laser", "Weapon", 3, "LL", 0);
-            playerContext.BlueprintList.Add(match);
-            playerContext.BlueprintList.Add(noMatch);
+            playerContext.AddBlueprint(match);
+            playerContext.AddBlueprint(noMatch);
 
             var current = MakeBlueprint("pulse laser", "Weapon", 3, "LL", 1);
             var vm = CreateViewModel(current);
@@ -100,8 +100,8 @@ namespace OE2EmpireTracker.Tests.ViewModels
         {
             var match = MakeBlueprint("Laser", "Weapon", 3, "LL", 0);
             var noMatch = MakeBlueprint("Laser", "Weapon", 5, "LL", 0);
-            playerContext.BlueprintList.Add(match);
-            playerContext.BlueprintList.Add(noMatch);
+            playerContext.AddBlueprint(match);
+            playerContext.AddBlueprint(noMatch);
 
             var current = MakeBlueprint("Laser", "Weapon", 3, "LL", 1);
             var vm = CreateViewModel(current);
@@ -117,8 +117,8 @@ namespace OE2EmpireTracker.Tests.ViewModels
         {
             var match = MakeBlueprint("Laser", "Weapon", 3, "LL", 0);
             var noMatch = MakeBlueprint("Laser", "Weapon", 3, "Milspec", 0);
-            playerContext.BlueprintList.Add(match);
-            playerContext.BlueprintList.Add(noMatch);
+            playerContext.AddBlueprint(match);
+            playerContext.AddBlueprint(noMatch);
 
             var current = MakeBlueprint("Laser", "Weapon", 3, "ll", 1);
             var vm = CreateViewModel(current);
@@ -136,10 +136,10 @@ namespace OE2EmpireTracker.Tests.ViewModels
             var evo1 = MakeBlueprint("Laser", "Weapon", 3, "LL", 1);
             var evo2 = MakeBlueprint("Laser", "Weapon", 3, "LL", 2);
             var evo3 = MakeBlueprint("Laser", "Weapon", 3, "LL", 3);
-            playerContext.BlueprintList.Add(evo0);
-            playerContext.BlueprintList.Add(evo1);
-            playerContext.BlueprintList.Add(evo2);
-            playerContext.BlueprintList.Add(evo3);
+            playerContext.AddBlueprint(evo0);
+            playerContext.AddBlueprint(evo1);
+            playerContext.AddBlueprint(evo2);
+            playerContext.AddBlueprint(evo3);
 
             var current = MakeBlueprint("Laser", "Weapon", 3, "LL", 2);
             var vm = CreateViewModel(current);
@@ -155,7 +155,7 @@ namespace OE2EmpireTracker.Tests.ViewModels
         {
             var current = MakeBlueprint("Laser", "Weapon", 3, "LL", 1, "current-uuid");
             var sameUuid = MakeBlueprint("Laser", "Weapon", 3, "LL", 0, "current-uuid");
-            playerContext.BlueprintList.Add(sameUuid);
+            playerContext.AddBlueprint(sameUuid);
 
             var vm = CreateViewModel(current);
 
@@ -174,9 +174,9 @@ namespace OE2EmpireTracker.Tests.ViewModels
             var evo0 = MakeBlueprint("Laser", "Weapon", 3, "LL", 0);
             var evo1 = MakeBlueprint("Laser", "Weapon", 3, "LL", 1);
             var evo2 = MakeBlueprint("Laser", "Weapon", 3, "LL", 2);
-            playerContext.BlueprintList.Add(evo0);
-            playerContext.BlueprintList.Add(evo1);
-            playerContext.BlueprintList.Add(evo2);
+            playerContext.AddBlueprint(evo0);
+            playerContext.AddBlueprint(evo1);
+            playerContext.AddBlueprint(evo2);
 
             var current = MakeBlueprint("Laser", "Weapon", 3, "LL", 4);
             var vm = CreateViewModel(current);
@@ -200,8 +200,8 @@ namespace OE2EmpireTracker.Tests.ViewModels
             bp1.NickName = "Alpha";
             var bp2 = MakeBlueprint("Laser", "Weapon", 3, "LL", 1);
             bp2.NickName = "Beta";
-            playerContext.BlueprintList.Add(bp1);
-            playerContext.BlueprintList.Add(bp2);
+            playerContext.AddBlueprint(bp1);
+            playerContext.AddBlueprint(bp2);
 
             var current = MakeBlueprint("Laser", "Weapon", 3, "LL", 3);
             var vm = CreateViewModel(current);
@@ -220,7 +220,7 @@ namespace OE2EmpireTracker.Tests.ViewModels
         public void Evolution0_ReturnsEmpty()
         {
             var other = MakeBlueprint("Laser", "Weapon", 3, "LL", 0);
-            playerContext.BlueprintList.Add(other);
+            playerContext.AddBlueprint(other);
 
             var current = MakeBlueprint("Laser", "Weapon", 3, "LL", 0);
             var vm = CreateViewModel(current);
@@ -234,7 +234,7 @@ namespace OE2EmpireTracker.Tests.ViewModels
         public void EmptyCurrentData_ReturnsEmpty()
         {
             var other = MakeBlueprint("Laser", "Weapon", 3, "LL", 0);
-            playerContext.BlueprintList.Add(other);
+            playerContext.AddBlueprint(other);
 
             var current = new BP { UUID = "new-bp" };
             var vm = CreateViewModel(current);
@@ -249,8 +249,8 @@ namespace OE2EmpireTracker.Tests.ViewModels
         {
             var match = MakeBlueprint("Scanner", "SystemObjectScanner", 0, null, 0);
             var alsoMatch = MakeBlueprint("Scanner", "SystemObjectScanner", 5, null, 0);
-            playerContext.BlueprintList.Add(match);
-            playerContext.BlueprintList.Add(alsoMatch);
+            playerContext.AddBlueprint(match);
+            playerContext.AddBlueprint(alsoMatch);
 
             var current = MakeBlueprint("Scanner", "SystemObjectScanner", 0, null, 1);
             var vm = CreateViewModel(current);

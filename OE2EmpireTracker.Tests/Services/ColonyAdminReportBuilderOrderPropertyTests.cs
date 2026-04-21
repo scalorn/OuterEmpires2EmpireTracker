@@ -38,7 +38,7 @@ namespace OE2EmpireTracker.Tests.Services
             var bp = new OE2EmpireTracker.Models.Blueprint(name);
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = bpType;
-            PlayerContext.GetInstance().BlueprintList.Add(bp);
+            PlayerContext.GetInstance().AddBlueprint(bp);
             return bp;
         }
 
@@ -73,7 +73,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void SectionOrdering_BuildingBeforeCommodityRequestsBeforeInactivityBeforeActivity()
         {
             var pc = PlayerContext.GetInstance();
-            pc.BlueprintList.Clear();
+            foreach (var item in pc.BlueprintList.ToList()) pc.RemoveBlueprint(item);
 
             var colony = MakeColony();
 
@@ -107,7 +107,7 @@ namespace OE2EmpireTracker.Tests.Services
             var targetBp = new OE2EmpireTracker.Models.Blueprint("TestWeapon");
             targetBp.UUID = mfgStruct.ManufacturingBlueprintUUID;
             targetBp.BluePrintType = "Beamer/Small";
-            pc.BlueprintList.Add(targetBp);
+            pc.AddBlueprint(targetBp);
 
             string rtf = ColonyAdminReportBuilder.BuildReport(colony, pc);
 

@@ -190,13 +190,13 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             playerBp.Properties.Properties["Blue Collar Detail(s)"] = "42";
             playerBp.Properties.Properties["Warehousing Capacity"] = "100";
             playerBp.Properties.Properties["Health"] = "500";
-            pc.BlueprintList.Add(playerBp);
+            pc.AddBlueprint(playerBp);
 
             // Inject old-keyed properties into a global blueprint
             var globalBp = new BpModel("GlobalBP") { UUID = Guid.NewGuid().ToString() };
             globalBp.Properties.Properties["Specialist Detail(s)"] = "7";
             globalBp.Properties.Properties["White Collar Detail(s)"] = "3";
-            ec.GlobalBlueprintList.Add(globalBp);
+            ec.AddGlobalBlueprint(globalBp);
 
             MigrationRunner.Run(ec, pc);
 

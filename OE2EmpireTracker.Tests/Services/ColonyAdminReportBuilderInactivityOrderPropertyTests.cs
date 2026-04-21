@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using NUnit.Framework;
 using OE2EmpireTracker.Constants;
@@ -40,7 +41,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void InactivityGroups_AppearInFixedOrder()
         {
             var pc = PlayerContext.GetInstance();
-            pc.BlueprintList.Clear();
+            foreach (var item in pc.BlueprintList.ToList()) pc.RemoveBlueprint(item);
 
             var colony = new Colony
             {
@@ -65,7 +66,7 @@ namespace OE2EmpireTracker.Tests.Services
                 var bp = new OE2EmpireTracker.Models.Blueprint("Idle_" + t.Replace("/", "_"));
                 bp.UUID = Guid.NewGuid().ToString();
                 bp.BluePrintType = t;
-                pc.BlueprintList.Add(bp);
+                pc.AddBlueprint(bp);
 
                 var s = new ColonyStructure();
                 s.UUID = Guid.NewGuid().ToString();

@@ -67,8 +67,8 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 var pc = PlayerContext.GetInstance();
 
                 // Clear existing data
-                ec.GlobalBlueprintList.Clear();
-                pc.ColonyList.Clear();
+                foreach (var item in ec.GlobalBlueprintList.ToList()) ec.RemoveGlobalBlueprint(item);
+                foreach (var item in pc.ColonyList.ToList()) pc.RemoveColony(item);
 
                 // Create blueprints with LegacyUUIDs (simulating post-Migration001 state)
                 var blueprints = new List<OE2EmpireTracker.Models.Blueprint>();
@@ -82,7 +82,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     bp.TechLevel = "Low";
                     bp.Class = 1;
                     blueprints.Add(bp);
-                    ec.GlobalBlueprintList.Add(bp);
+                    ec.AddGlobalBlueprint(bp);
                 }
 
                 // Create colonies with structures -- some referencing legacy UUIDs
@@ -118,7 +118,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                         structure.displaySequence = s;
                         colony.Structures.Add(structure);
                     }
-                    pc.ColonyList.Add(colony);
+                    pc.AddColony(colony);
                 }
 
                 // Act
@@ -180,9 +180,9 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 var pc = PlayerContext.GetInstance();
 
                 // Clear existing data
-                pc.ColonyList.Clear();
-                pc.DeliveryRouteList.Clear();
-                pc.DeliveryPlanList.Clear();
+                foreach (var item in pc.ColonyList.ToList()) pc.RemoveColony(item);
+                foreach (var item in pc.DeliveryRouteList.ToList()) pc.RemoveDeliveryRoute(item);
+                foreach (var item in pc.DeliveryPlanList.ToList()) pc.RemoveDeliveryPlan(item);
 
                 // Create colonies with random UUIDs
                 var originalUUIDs = new Dictionary<int, string>();
@@ -194,7 +194,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     colony.SystemName = $"System_{i}";
                     colony.OwnerUUID = "owner-1";
                     originalUUIDs[i] = colony.UUID;
-                    pc.ColonyList.Add(colony);
+                    pc.AddColony(colony);
                 }
 
                 // Act -- first migration run
@@ -285,9 +285,9 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 var pc = PlayerContext.GetInstance();
 
                 // Clear existing data
-                pc.ColonyList.Clear();
-                pc.DeliveryRouteList.Clear();
-                pc.DeliveryPlanList.Clear();
+                foreach (var item in pc.ColonyList.ToList()) pc.RemoveColony(item);
+                foreach (var item in pc.DeliveryRouteList.ToList()) pc.RemoveDeliveryRoute(item);
+                foreach (var item in pc.DeliveryPlanList.ToList()) pc.RemoveDeliveryPlan(item);
 
                 // Create colonies with random UUIDs
                 var colonyUUIDs = new List<string>();
@@ -299,7 +299,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     colony.SystemName = $"System_{i}";
                     colony.OwnerUUID = "owner-1";
                     colonyUUIDs.Add(colony.UUID);
-                    pc.ColonyList.Add(colony);
+                    pc.AddColony(colony);
                 }
 
                 // Create delivery routes referencing colony UUIDs
@@ -315,7 +315,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                         stop.Sequence = s;
                         route.Stops.Add(stop);
                     }
-                    pc.DeliveryRouteList.Add(route);
+                    pc.AddDeliveryRoute(route);
                 }
 
                 // Create delivery plans referencing colony UUIDs
@@ -333,7 +333,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                         stop.PickUp = new List<DeliveryItem>();
                         plan.Stops.Add(stop);
                     }
-                    pc.DeliveryPlanList.Add(plan);
+                    pc.AddDeliveryPlan(plan);
                 }
 
                 // Act -- first migration run

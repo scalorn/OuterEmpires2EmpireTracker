@@ -82,7 +82,7 @@ namespace OE2EmpireTracker.Services
                     Name = survey.PlanetName,
                     SystemName = survey.SystemName
                 };
-                playerContext.AsteroidList.Add(asteroid);
+                playerContext.AddAsteroid(asteroid);
                 Log.Info("Auto-created asteroid '{0}' in system '{1}' UUID={2}",
                     asteroid.Name, asteroid.SystemName, asteroid.UUID);
             }

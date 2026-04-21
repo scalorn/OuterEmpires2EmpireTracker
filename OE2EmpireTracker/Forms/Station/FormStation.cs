@@ -632,7 +632,7 @@ namespace OE2EmpireTracker.Forms.Station
                 Name = "New Station",
                 OwnerUUID = playerContext.CurrentPlayerUUID
             };
-            playerContext.StationList.Add(station);
+            playerContext.AddStation(station);
             playerContext.WriteContext();
             _selectedStation = station;
             PopulateStationList();
@@ -662,7 +662,7 @@ namespace OE2EmpireTracker.Forms.Station
                 string.Format("Delete station \"{0}\"?", _selectedStation.Name),
                 "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
-            playerContext.StationList.Remove(_selectedStation);
+            playerContext.RemoveStation(_selectedStation);
             playerContext.WriteContext();
             _selectedStation = null;
             PopulateStationList();

@@ -35,6 +35,16 @@ namespace OE2EmpireTracker.Services
         private Dictionary<string, Asteroid> _asteroidCache;
         private Dictionary<string, Faction> _factionCache;
         private Dictionary<string, MarketListing> _marketListingCache;
+        private Dictionary<string, PlayerProfile> _playerProfileCache;
+        private Dictionary<string, DeliveryRoute> _deliveryRouteCache;
+        private Dictionary<string, DeliveryPlan> _deliveryPlanCache;
+        private Dictionary<string, PricingPlan> _pricingPlanCache;
+        private Dictionary<string, MarketTransaction> _marketTransactionCache;
+        private Dictionary<string, StockPlan> _stockPlanCache;
+        private Dictionary<string, StockProfile> _stockProfileCache;
+        private Dictionary<string, SupplyChain> _supplyChainCache;
+        private Dictionary<string, WarehouseOverflowRule> _warehouseOverflowRuleCache;
+        private Dictionary<string, ExternalCharacter> _externalCharacterCache;
 
         private Dictionary<string, int> _blueprintTypeCountCache;
 
@@ -217,36 +227,56 @@ namespace OE2EmpireTracker.Services
             get
             {
                 if (string.IsNullOrEmpty(_currentPlayerUUID)) return null;
-                return PlayerProfileList.FirstOrDefault(p => p.UUID == _currentPlayerUUID);
+                return _playerProfileList.FirstOrDefault(p => p.UUID == _currentPlayerUUID);
             }
         }
 
         public int DataVersion { get; set; } = 0;
-        public List<PlayerProfile> PlayerProfileList;
+        private List<PlayerProfile> _playerProfileList;
+        public IReadOnlyList<PlayerProfile> PlayerProfileList => _playerProfileList;
         public BindingSource BindingSourcePlayerProfile;
-        public List<Blueprint> BlueprintList;
+        private List<Blueprint> _blueprintList;
+        public IReadOnlyList<Blueprint> BlueprintList => _blueprintList;
         public BindingSource BindingSourceBlueprint;
-        public List<Survey> SurveyList;
+        private List<Survey> _surveyList;
+        public IReadOnlyList<Survey> SurveyList => _surveyList;
         public BindingSource BindingSourceSurvey;
-        public List<Colony> ColonyList;
+        private List<Colony> _colonyList;
+        public IReadOnlyList<Colony> ColonyList => _colonyList;
         public BindingSource BindingSourceColony;
-        public List<DeliveryRoute> DeliveryRouteList;
-        public List<DeliveryPlan> DeliveryPlanList;
-        public List<PricingPlan> PricingPlanList;
+        private List<DeliveryRoute> _deliveryRouteList;
+        public IReadOnlyList<DeliveryRoute> DeliveryRouteList => _deliveryRouteList;
+        private List<DeliveryPlan> _deliveryPlanList;
+        public IReadOnlyList<DeliveryPlan> DeliveryPlanList => _deliveryPlanList;
+        private List<PricingPlan> _pricingPlanList;
+        public IReadOnlyList<PricingPlan> PricingPlanList => _pricingPlanList;
 
-        public List<BuildPlan> BuildPlanList = new List<BuildPlan>();
-        public List<ShipTemplate> ShipTemplateList = new List<ShipTemplate>();
-        public List<Ship> ShipList = new List<Ship>();
-        public List<Station> StationList = new List<Station>();
-        public List<MarketListing> MarketListingList = new List<MarketListing>();
-        public List<MarketTransaction> MarketTransactionList = new List<MarketTransaction>();
-        public List<StockPlan> StockPlanList = new List<StockPlan>();
-        public List<StockProfile> StockProfileList = new List<StockProfile>();
-        public List<SupplyChain> SupplyChainList = new List<SupplyChain>();
-        public List<WarehouseOverflowRule> WarehouseOverflowRuleList = new List<WarehouseOverflowRule>();
-        public List<Faction> FactionList = new List<Faction>();
-        public List<ExternalCharacter> ExternalCharacterList = new List<ExternalCharacter>();
-        public List<Asteroid> AsteroidList = new List<Asteroid>();
+        private List<BuildPlan> _buildPlanList = new List<BuildPlan>();
+        public IReadOnlyList<BuildPlan> BuildPlanList => _buildPlanList;
+        private List<ShipTemplate> _shipTemplateList = new List<ShipTemplate>();
+        public IReadOnlyList<ShipTemplate> ShipTemplateList => _shipTemplateList;
+        private List<Ship> _shipList = new List<Ship>();
+        public IReadOnlyList<Ship> ShipList => _shipList;
+        private List<Station> _stationList = new List<Station>();
+        public IReadOnlyList<Station> StationList => _stationList;
+        private List<MarketListing> _marketListingList = new List<MarketListing>();
+        public IReadOnlyList<MarketListing> MarketListingList => _marketListingList;
+        private List<MarketTransaction> _marketTransactionList = new List<MarketTransaction>();
+        public IReadOnlyList<MarketTransaction> MarketTransactionList => _marketTransactionList;
+        private List<StockPlan> _stockPlanList = new List<StockPlan>();
+        public IReadOnlyList<StockPlan> StockPlanList => _stockPlanList;
+        private List<StockProfile> _stockProfileList = new List<StockProfile>();
+        public IReadOnlyList<StockProfile> StockProfileList => _stockProfileList;
+        private List<SupplyChain> _supplyChainList = new List<SupplyChain>();
+        public IReadOnlyList<SupplyChain> SupplyChainList => _supplyChainList;
+        private List<WarehouseOverflowRule> _warehouseOverflowRuleList = new List<WarehouseOverflowRule>();
+        public IReadOnlyList<WarehouseOverflowRule> WarehouseOverflowRuleList => _warehouseOverflowRuleList;
+        private List<Faction> _factionList = new List<Faction>();
+        public IReadOnlyList<Faction> FactionList => _factionList;
+        private List<ExternalCharacter> _externalCharacterList = new List<ExternalCharacter>();
+        public IReadOnlyList<ExternalCharacter> ExternalCharacterList => _externalCharacterList;
+        private List<Asteroid> _asteroidList = new List<Asteroid>();
+        public IReadOnlyList<Asteroid> AsteroidList => _asteroidList;
 
         public IEnumerable<CountDownTimeReference> ActiveCountdowns => AllCountdownSources()
             .Where(c => c.countDownTime.TimeRemaining > 0)
@@ -332,26 +362,26 @@ namespace OE2EmpireTracker.Services
                 playerRoot = new PlayerRoot();
                 playerRoot.DataVersion = DataVersion;
                 playerRoot.CurrentPlayerUUID = _currentPlayerUUID;
-                playerRoot.PlayerProfile = PlayerProfileList.ToArray();
-                playerRoot.Blueprint = BlueprintList.ToArray();
-                playerRoot.Survey = SurveyList.ToArray();
-                playerRoot.Colony = ColonyList.ToArray();
-                playerRoot.DeliveryRoute = DeliveryRouteList.ToArray();
-                playerRoot.DeliveryPlan = DeliveryPlanList.ToArray();
-                playerRoot.PricingPlan = PricingPlanList.ToArray();
-                playerRoot.BuildPlan = BuildPlanList.ToArray();
-                playerRoot.ShipTemplate = ShipTemplateList.ToArray();
-                playerRoot.Ship = ShipList.ToArray();
-                playerRoot.Station = StationList.ToArray();
-                playerRoot.MarketListing = MarketListingList.ToArray();
-                playerRoot.MarketTransaction = MarketTransactionList.ToArray();
-                playerRoot.StockPlan = StockPlanList.ToArray();
-                playerRoot.StockProfile = StockProfileList.ToArray();
-                playerRoot.SupplyChain = SupplyChainList.ToArray();
-                playerRoot.WarehouseOverflowRule = WarehouseOverflowRuleList.ToArray();
-                playerRoot.Faction = FactionList.ToArray();
-                playerRoot.ExternalCharacter = ExternalCharacterList.ToArray();
-                playerRoot.Asteroid = AsteroidList.ToArray();
+                playerRoot.PlayerProfile = _playerProfileList.ToArray();
+                playerRoot.Blueprint = _blueprintList.ToArray();
+                playerRoot.Survey = _surveyList.ToArray();
+                playerRoot.Colony = _colonyList.ToArray();
+                playerRoot.DeliveryRoute = _deliveryRouteList.ToArray();
+                playerRoot.DeliveryPlan = _deliveryPlanList.ToArray();
+                playerRoot.PricingPlan = _pricingPlanList.ToArray();
+                playerRoot.BuildPlan = _buildPlanList.ToArray();
+                playerRoot.ShipTemplate = _shipTemplateList.ToArray();
+                playerRoot.Ship = _shipList.ToArray();
+                playerRoot.Station = _stationList.ToArray();
+                playerRoot.MarketListing = _marketListingList.ToArray();
+                playerRoot.MarketTransaction = _marketTransactionList.ToArray();
+                playerRoot.StockPlan = _stockPlanList.ToArray();
+                playerRoot.StockProfile = _stockProfileList.ToArray();
+                playerRoot.SupplyChain = _supplyChainList.ToArray();
+                playerRoot.WarehouseOverflowRule = _warehouseOverflowRuleList.ToArray();
+                playerRoot.Faction = _factionList.ToArray();
+                playerRoot.ExternalCharacter = _externalCharacterList.ToArray();
+                playerRoot.Asteroid = _asteroidList.ToArray();
             }
 
             string jsonContent = JsonConvert.SerializeObject(playerRoot, JsonSettings.SerializerSettings);
@@ -362,21 +392,21 @@ namespace OE2EmpireTracker.Services
         {
             List<PlayerProfile> list = new List<PlayerProfile>(playerRoot.PlayerProfile);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            PlayerProfileList = new List<PlayerProfile>(list);
+            _playerProfileList = new List<PlayerProfile>(list);
             // Initialize the BindingSource component
             BindingSourcePlayerProfile = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourcePlayerProfile.DataSource = PlayerProfileList;
+            BindingSourcePlayerProfile.DataSource = _playerProfileList;
         }
         public void InitBlueprints(PlayerRoot playerRoot)
         {
             List<Blueprint> list = new List<Blueprint>(playerRoot.Blueprint);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            BlueprintList = new List<Blueprint>(list);
+            _blueprintList = new List<Blueprint>(list);
             // Initialize the BindingSource component
             BindingSourceBlueprint = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceBlueprint.DataSource = BlueprintList;
+            BindingSourceBlueprint.DataSource = _blueprintList;
             InvalidateBlueprintCache();
         }
         public Blueprint FindBlueprint(string id)
@@ -388,23 +418,15 @@ namespace OE2EmpireTracker.Services
                 if (_blueprintCache == null)
                 {
                     _blueprintCache = new Dictionary<string, Blueprint>();
-                    foreach (var bp in BlueprintList)
+                    foreach (var bp in _blueprintList)
                     {
                         if (bp.UUID != null && !_blueprintCache.ContainsKey(bp.UUID))
                             _blueprintCache[bp.UUID] = bp;
                     }
                 }
 
-                if (_blueprintCache.TryGetValue(id, out var match))
-                    return match;
-
-                // Fallback: linear scan for items added after cache was built
-                var fallback = BlueprintList.FirstOrDefault(bp => bp.UUID == id);
-                if (fallback != null)
-                {
-                    _blueprintCache[id] = fallback;
-                    return fallback;
-                }
+                _blueprintCache.TryGetValue(id, out var match);
+                return match;
             }
 
             // Fall back to global blueprints outside the lock
@@ -417,16 +439,42 @@ namespace OE2EmpireTracker.Services
             InvalidateAllBlueprintsCache();
         }
 
+        public void AddBlueprint(Blueprint item)
+        {
+            lock (_listLock)
+            {
+                _blueprintList.Add(item);
+                if (_blueprintCache != null && item.UUID != null)
+                    _blueprintCache[item.UUID] = item;
+                _allBlueprintsCache = null;
+                _blueprintTypeCountCache = null;
+            }
+            BindingSourceBlueprint?.ResetBindings(false);
+        }
+
+        public void RemoveBlueprint(Blueprint item)
+        {
+            lock (_listLock)
+            {
+                _blueprintList.Remove(item);
+                if (_blueprintCache != null && item.UUID != null)
+                    _blueprintCache.Remove(item.UUID);
+                _allBlueprintsCache = null;
+                _blueprintTypeCountCache = null;
+            }
+            BindingSourceBlueprint?.ResetBindings(false);
+        }
+
         public void InitSurveys(PlayerRoot playerRoot)
         {
             List<Survey> list = new List<Survey>(playerRoot.Survey);
             list = list.OrderBy(p => p.PlanetName).ThenBy(p => p.DateTime).ToList();
 
-            SurveyList = new List<Survey>(list);
+            _surveyList = new List<Survey>(list);
             // Initialize the BindingSource component
             BindingSourceSurvey = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceSurvey.DataSource = SurveyList;
+            BindingSourceSurvey.DataSource = _surveyList;
             InvalidateSurveyCache();
         }
         public Survey FindSurvey(string id)
@@ -438,23 +486,15 @@ namespace OE2EmpireTracker.Services
                 if (_surveyCache == null)
                 {
                     _surveyCache = new Dictionary<string, Survey>();
-                    foreach (var s in SurveyList)
+                    foreach (var s in _surveyList)
                     {
                         if (s.UUID != null && !_surveyCache.ContainsKey(s.UUID))
                             _surveyCache[s.UUID] = s;
                     }
                 }
 
-                if (_surveyCache.TryGetValue(id, out var match))
-                    return match;
-
-                // Fallback: linear scan for items added after cache was built
-                var fallback = SurveyList.FirstOrDefault(s => s.UUID == id);
-                if (fallback != null)
-                {
-                    _surveyCache[id] = fallback;
-                    return fallback;
-                }
+                _surveyCache.TryGetValue(id, out var match);
+                return match;
             }
 
             return null;
@@ -465,16 +505,38 @@ namespace OE2EmpireTracker.Services
             lock (_listLock) { _surveyCache = null; }
         }
 
+        public void AddSurvey(Survey item)
+        {
+            lock (_listLock)
+            {
+                _surveyList.Add(item);
+                if (_surveyCache != null && item.UUID != null)
+                    _surveyCache[item.UUID] = item;
+            }
+            BindingSourceSurvey?.ResetBindings(false);
+        }
+
+        public void RemoveSurvey(Survey item)
+        {
+            lock (_listLock)
+            {
+                _surveyList.Remove(item);
+                if (_surveyCache != null && item.UUID != null)
+                    _surveyCache.Remove(item.UUID);
+            }
+            BindingSourceSurvey?.ResetBindings(false);
+        }
+
         public void initColonies(PlayerRoot playerRoot)
         {
             List<Colony> list = new List<Colony>(playerRoot.Colony);
             list = list.OrderBy(p => p.PlanetName).ToList();
 
-            ColonyList = new List<Colony>(list);
+            _colonyList = new List<Colony>(list);
             // Initialize the BindingSource component
             BindingSourceColony = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceColony.DataSource = ColonyList;
+            BindingSourceColony.DataSource = _colonyList;
             InvalidateColonyCache();
         }
 
@@ -482,86 +544,86 @@ namespace OE2EmpireTracker.Services
         {
             var list = new List<DeliveryRoute>(playerRoot.DeliveryRoute ?? new DeliveryRoute[0]);
             list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
-            DeliveryRouteList = new List<DeliveryRoute>(list);
+            _deliveryRouteList = new List<DeliveryRoute>(list);
         }
 
         public void InitDeliveryPlans(PlayerRoot playerRoot)
         {
             var list = new List<DeliveryPlan>(playerRoot.DeliveryPlan ?? new DeliveryPlan[0]);
             list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
-            DeliveryPlanList = new List<DeliveryPlan>(list);
+            _deliveryPlanList = new List<DeliveryPlan>(list);
         }
 
         public void InitPricingPlans(PlayerRoot playerRoot)
         {
             var list = new List<PricingPlan>(playerRoot.PricingPlan ?? new PricingPlan[0]);
             list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
-            PricingPlanList = new List<PricingPlan>(list);
+            _pricingPlanList = new List<PricingPlan>(list);
         }
 
         public void InitBuildPlans(PlayerRoot playerRoot)
         {
-            BuildPlanList = new List<BuildPlan>(playerRoot.BuildPlan ?? new BuildPlan[0]);
+            _buildPlanList = new List<BuildPlan>(playerRoot.BuildPlan ?? new BuildPlan[0]);
         }
 
         public void InitShipTemplates(PlayerRoot playerRoot)
         {
-            ShipTemplateList = new List<ShipTemplate>(playerRoot.ShipTemplate ?? new ShipTemplate[0]);
+            _shipTemplateList = new List<ShipTemplate>(playerRoot.ShipTemplate ?? new ShipTemplate[0]);
         }
 
         public void InitShips(PlayerRoot playerRoot)
         {
-            ShipList = new List<Ship>(playerRoot.Ship ?? new Ship[0]);
+            _shipList = new List<Ship>(playerRoot.Ship ?? new Ship[0]);
         }
 
         public void InitStations(PlayerRoot playerRoot)
         {
-            StationList = new List<Station>(playerRoot.Station ?? new Station[0]);
+            _stationList = new List<Station>(playerRoot.Station ?? new Station[0]);
         }
 
         public void InitMarketListings(PlayerRoot playerRoot)
         {
-            MarketListingList = new List<MarketListing>(playerRoot.MarketListing ?? new MarketListing[0]);
+            _marketListingList = new List<MarketListing>(playerRoot.MarketListing ?? new MarketListing[0]);
         }
 
         public void InitMarketTransactions(PlayerRoot playerRoot)
         {
-            MarketTransactionList = new List<MarketTransaction>(playerRoot.MarketTransaction ?? new MarketTransaction[0]);
+            _marketTransactionList = new List<MarketTransaction>(playerRoot.MarketTransaction ?? new MarketTransaction[0]);
         }
 
         public void InitStockPlans(PlayerRoot playerRoot)
         {
-            StockPlanList = new List<StockPlan>(playerRoot.StockPlan ?? new StockPlan[0]);
+            _stockPlanList = new List<StockPlan>(playerRoot.StockPlan ?? new StockPlan[0]);
         }
 
         public void InitStockProfiles(PlayerRoot playerRoot)
         {
-            StockProfileList = new List<StockProfile>(playerRoot.StockProfile ?? new StockProfile[0]);
+            _stockProfileList = new List<StockProfile>(playerRoot.StockProfile ?? new StockProfile[0]);
         }
 
         public void InitSupplyChains(PlayerRoot playerRoot)
         {
-            SupplyChainList = new List<SupplyChain>(playerRoot.SupplyChain ?? new SupplyChain[0]);
+            _supplyChainList = new List<SupplyChain>(playerRoot.SupplyChain ?? new SupplyChain[0]);
         }
 
         public void InitWarehouseOverflowRules(PlayerRoot playerRoot)
         {
-            WarehouseOverflowRuleList = new List<WarehouseOverflowRule>(playerRoot.WarehouseOverflowRule ?? new WarehouseOverflowRule[0]);
+            _warehouseOverflowRuleList = new List<WarehouseOverflowRule>(playerRoot.WarehouseOverflowRule ?? new WarehouseOverflowRule[0]);
         }
 
         public void InitFactions(PlayerRoot playerRoot)
         {
-            FactionList = new List<Faction>(playerRoot.Faction ?? new Faction[0]);
+            _factionList = new List<Faction>(playerRoot.Faction ?? new Faction[0]);
         }
 
         public void InitExternalCharacters(PlayerRoot playerRoot)
         {
-            ExternalCharacterList = new List<ExternalCharacter>(playerRoot.ExternalCharacter ?? new ExternalCharacter[0]);
+            _externalCharacterList = new List<ExternalCharacter>(playerRoot.ExternalCharacter ?? new ExternalCharacter[0]);
         }
 
         public void InitAsteroids(PlayerRoot playerRoot)
         {
-            AsteroidList = new List<Asteroid>(playerRoot.Asteroid ?? new Asteroid[0]);
+            _asteroidList = new List<Asteroid>(playerRoot.Asteroid ?? new Asteroid[0]);
         }
 
         public Colony FindColony(string id)
@@ -573,23 +635,15 @@ namespace OE2EmpireTracker.Services
                 if (_colonyCache == null)
                 {
                     _colonyCache = new Dictionary<string, Colony>();
-                    foreach (var c in ColonyList)
+                    foreach (var c in _colonyList)
                     {
                         if (c.UUID != null && !_colonyCache.ContainsKey(c.UUID))
                             _colonyCache[c.UUID] = c;
                     }
                 }
 
-                if (_colonyCache.TryGetValue(id, out var match))
-                    return match;
-
-                // Fallback: linear scan for items added after cache was built
-                var fallback = ColonyList.FirstOrDefault(c => c.UUID == id);
-                if (fallback != null)
-                {
-                    _colonyCache[id] = fallback;
-                    return fallback;
-                }
+                _colonyCache.TryGetValue(id, out var match);
+                return match;
             }
 
             return null;
@@ -598,6 +652,382 @@ namespace OE2EmpireTracker.Services
         public void InvalidateColonyCache()
         {
             lock (_listLock) { _colonyCache = null; }
+        }
+
+        public void AddColony(Colony item)
+        {
+            lock (_listLock)
+            {
+                _colonyList.Add(item);
+                if (_colonyCache != null && item.UUID != null)
+                    _colonyCache[item.UUID] = item;
+            }
+            BindingSourceColony?.ResetBindings(false);
+        }
+
+        public void RemoveColony(Colony item)
+        {
+            lock (_listLock)
+            {
+                _colonyList.Remove(item);
+                if (_colonyCache != null && item.UUID != null)
+                    _colonyCache.Remove(item.UUID);
+            }
+            BindingSourceColony?.ResetBindings(false);
+        }
+
+        // --- Task 4.1: PlayerProfile mutation methods (Pattern E: UUID cache + BindingSource) ---
+
+        public void AddPlayerProfile(PlayerProfile item)
+        {
+            lock (_listLock)
+            {
+                _playerProfileList.Add(item);
+                if (_playerProfileCache != null && item.UUID != null)
+                    _playerProfileCache[item.UUID] = item;
+            }
+            BindingSourcePlayerProfile?.ResetBindings(false);
+        }
+
+        public void RemovePlayerProfile(PlayerProfile item)
+        {
+            lock (_listLock)
+            {
+                _playerProfileList.Remove(item);
+                if (_playerProfileCache != null && item.UUID != null)
+                    _playerProfileCache.Remove(item.UUID);
+            }
+            BindingSourcePlayerProfile?.ResetBindings(false);
+        }
+
+        // --- Task 4.2: BuildPlan mutation methods (Pattern D: UUID cache + derived caches) ---
+
+        public void AddBuildPlan(BuildPlan item)
+        {
+            lock (_listLock)
+            {
+                _buildPlanList.Add(item);
+                if (_buildPlanCache != null && item.UUID != null)
+                    _buildPlanCache[item.UUID] = item;
+                _blueprintBuildItemIndex = null;
+                _buildLocationBuildItemIndex = null;
+            }
+        }
+
+        public void RemoveBuildPlan(BuildPlan item)
+        {
+            lock (_listLock)
+            {
+                _buildPlanList.Remove(item);
+                if (_buildPlanCache != null && item.UUID != null)
+                    _buildPlanCache.Remove(item.UUID);
+                _blueprintBuildItemIndex = null;
+                _buildLocationBuildItemIndex = null;
+            }
+        }
+
+        // --- Task 4.3: Pattern C mutation methods (UUID cache only) ---
+
+        public void AddStation(Station item)
+        {
+            lock (_listLock)
+            {
+                _stationList.Add(item);
+                if (_stationCache != null && item.UUID != null)
+                    _stationCache[item.UUID] = item;
+            }
+        }
+
+        public void RemoveStation(Station item)
+        {
+            lock (_listLock)
+            {
+                _stationList.Remove(item);
+                if (_stationCache != null && item.UUID != null)
+                    _stationCache.Remove(item.UUID);
+            }
+        }
+
+        public void AddShipTemplate(ShipTemplate item)
+        {
+            lock (_listLock)
+            {
+                _shipTemplateList.Add(item);
+                if (_shipTemplateCache != null && item.UUID != null)
+                    _shipTemplateCache[item.UUID] = item;
+            }
+        }
+
+        public void RemoveShipTemplate(ShipTemplate item)
+        {
+            lock (_listLock)
+            {
+                _shipTemplateList.Remove(item);
+                if (_shipTemplateCache != null && item.UUID != null)
+                    _shipTemplateCache.Remove(item.UUID);
+            }
+        }
+
+        public void AddShip(Ship item)
+        {
+            lock (_listLock)
+            {
+                _shipList.Add(item);
+                if (_shipCache != null && item.UUID != null)
+                    _shipCache[item.UUID] = item;
+            }
+        }
+
+        public void RemoveShip(Ship item)
+        {
+            lock (_listLock)
+            {
+                _shipList.Remove(item);
+                if (_shipCache != null && item.UUID != null)
+                    _shipCache.Remove(item.UUID);
+            }
+        }
+
+        public void AddAsteroid(Asteroid item)
+        {
+            lock (_listLock)
+            {
+                _asteroidList.Add(item);
+                if (_asteroidCache != null && item.UUID != null)
+                    _asteroidCache[item.UUID] = item;
+            }
+        }
+
+        public void RemoveAsteroid(Asteroid item)
+        {
+            lock (_listLock)
+            {
+                _asteroidList.Remove(item);
+                if (_asteroidCache != null && item.UUID != null)
+                    _asteroidCache.Remove(item.UUID);
+            }
+        }
+
+        public void AddFaction(Faction item)
+        {
+            lock (_listLock)
+            {
+                _factionList.Add(item);
+                if (_factionCache != null && item.UUID != null)
+                    _factionCache[item.UUID] = item;
+            }
+        }
+
+        public void RemoveFaction(Faction item)
+        {
+            lock (_listLock)
+            {
+                _factionList.Remove(item);
+                if (_factionCache != null && item.UUID != null)
+                    _factionCache.Remove(item.UUID);
+            }
+        }
+
+        public void AddMarketListing(MarketListing item)
+        {
+            lock (_listLock)
+            {
+                _marketListingList.Add(item);
+                if (_marketListingCache != null && item.UUID != null)
+                    _marketListingCache[item.UUID] = item;
+            }
+        }
+
+        public void RemoveMarketListing(MarketListing item)
+        {
+            lock (_listLock)
+            {
+                _marketListingList.Remove(item);
+                if (_marketListingCache != null && item.UUID != null)
+                    _marketListingCache.Remove(item.UUID);
+            }
+        }
+
+        // --- Task 4.4: Pattern C mutation methods for new-cache entities ---
+
+        public void AddDeliveryRoute(DeliveryRoute item)
+        {
+            lock (_listLock)
+            {
+                _deliveryRouteList.Add(item);
+                if (_deliveryRouteCache != null && item.UUID != null)
+                    _deliveryRouteCache[item.UUID] = item;
+            }
+        }
+
+        public void RemoveDeliveryRoute(DeliveryRoute item)
+        {
+            lock (_listLock)
+            {
+                _deliveryRouteList.Remove(item);
+                if (_deliveryRouteCache != null && item.UUID != null)
+                    _deliveryRouteCache.Remove(item.UUID);
+            }
+        }
+
+        public void AddDeliveryPlan(DeliveryPlan item)
+        {
+            lock (_listLock)
+            {
+                _deliveryPlanList.Add(item);
+                if (_deliveryPlanCache != null && item.UUID != null)
+                    _deliveryPlanCache[item.UUID] = item;
+            }
+        }
+
+        public void RemoveDeliveryPlan(DeliveryPlan item)
+        {
+            lock (_listLock)
+            {
+                _deliveryPlanList.Remove(item);
+                if (_deliveryPlanCache != null && item.UUID != null)
+                    _deliveryPlanCache.Remove(item.UUID);
+            }
+        }
+
+        public void AddPricingPlan(PricingPlan item)
+        {
+            lock (_listLock)
+            {
+                _pricingPlanList.Add(item);
+                if (_pricingPlanCache != null && item.UUID != null)
+                    _pricingPlanCache[item.UUID] = item;
+            }
+        }
+
+        public void RemovePricingPlan(PricingPlan item)
+        {
+            lock (_listLock)
+            {
+                _pricingPlanList.Remove(item);
+                if (_pricingPlanCache != null && item.UUID != null)
+                    _pricingPlanCache.Remove(item.UUID);
+            }
+        }
+
+        public void AddMarketTransaction(MarketTransaction item)
+        {
+            lock (_listLock)
+            {
+                _marketTransactionList.Add(item);
+                if (_marketTransactionCache != null && item.UUID != null)
+                    _marketTransactionCache[item.UUID] = item;
+            }
+        }
+
+        public void RemoveMarketTransaction(MarketTransaction item)
+        {
+            lock (_listLock)
+            {
+                _marketTransactionList.Remove(item);
+                if (_marketTransactionCache != null && item.UUID != null)
+                    _marketTransactionCache.Remove(item.UUID);
+            }
+        }
+
+        public void AddStockPlan(StockPlan item)
+        {
+            lock (_listLock)
+            {
+                _stockPlanList.Add(item);
+                if (_stockPlanCache != null && item.UUID != null)
+                    _stockPlanCache[item.UUID] = item;
+            }
+        }
+
+        public void RemoveStockPlan(StockPlan item)
+        {
+            lock (_listLock)
+            {
+                _stockPlanList.Remove(item);
+                if (_stockPlanCache != null && item.UUID != null)
+                    _stockPlanCache.Remove(item.UUID);
+            }
+        }
+
+        public void AddStockProfile(StockProfile item)
+        {
+            lock (_listLock)
+            {
+                _stockProfileList.Add(item);
+                if (_stockProfileCache != null && item.UUID != null)
+                    _stockProfileCache[item.UUID] = item;
+            }
+        }
+
+        public void RemoveStockProfile(StockProfile item)
+        {
+            lock (_listLock)
+            {
+                _stockProfileList.Remove(item);
+                if (_stockProfileCache != null && item.UUID != null)
+                    _stockProfileCache.Remove(item.UUID);
+            }
+        }
+
+        public void AddSupplyChain(SupplyChain item)
+        {
+            lock (_listLock)
+            {
+                _supplyChainList.Add(item);
+                if (_supplyChainCache != null && item.UUID != null)
+                    _supplyChainCache[item.UUID] = item;
+            }
+        }
+
+        public void RemoveSupplyChain(SupplyChain item)
+        {
+            lock (_listLock)
+            {
+                _supplyChainList.Remove(item);
+                if (_supplyChainCache != null && item.UUID != null)
+                    _supplyChainCache.Remove(item.UUID);
+            }
+        }
+
+        public void AddWarehouseOverflowRule(WarehouseOverflowRule item)
+        {
+            lock (_listLock)
+            {
+                _warehouseOverflowRuleList.Add(item);
+                if (_warehouseOverflowRuleCache != null && item.UUID != null)
+                    _warehouseOverflowRuleCache[item.UUID] = item;
+            }
+        }
+
+        public void RemoveWarehouseOverflowRule(WarehouseOverflowRule item)
+        {
+            lock (_listLock)
+            {
+                _warehouseOverflowRuleList.Remove(item);
+                if (_warehouseOverflowRuleCache != null && item.UUID != null)
+                    _warehouseOverflowRuleCache.Remove(item.UUID);
+            }
+        }
+
+        public void AddExternalCharacter(ExternalCharacter item)
+        {
+            lock (_listLock)
+            {
+                _externalCharacterList.Add(item);
+                if (_externalCharacterCache != null && item.UUID != null)
+                    _externalCharacterCache[item.UUID] = item;
+            }
+        }
+
+        public void RemoveExternalCharacter(ExternalCharacter item)
+        {
+            lock (_listLock)
+            {
+                _externalCharacterList.Remove(item);
+                if (_externalCharacterCache != null && item.UUID != null)
+                    _externalCharacterCache.Remove(item.UUID);
+            }
         }
 
         /// <summary>
@@ -611,7 +1041,7 @@ namespace OE2EmpireTracker.Services
                 if (_stationCache == null)
                 {
                     _stationCache = new Dictionary<string, Station>();
-                    foreach (var s in StationList)
+                    foreach (var s in _stationList)
                         if (s.UUID != null && !_stationCache.ContainsKey(s.UUID))
                             _stationCache[s.UUID] = s;
                 }
@@ -633,7 +1063,7 @@ namespace OE2EmpireTracker.Services
                 if (_shipTemplateCache == null)
                 {
                     _shipTemplateCache = new Dictionary<string, ShipTemplate>();
-                    foreach (var st in ShipTemplateList)
+                    foreach (var st in _shipTemplateList)
                         if (st.UUID != null && !_shipTemplateCache.ContainsKey(st.UUID))
                             _shipTemplateCache[st.UUID] = st;
                 }
@@ -655,7 +1085,7 @@ namespace OE2EmpireTracker.Services
                 if (_shipCache == null)
                 {
                     _shipCache = new Dictionary<string, Ship>();
-                    foreach (var s in ShipList)
+                    foreach (var s in _shipList)
                         if (s.UUID != null && !_shipCache.ContainsKey(s.UUID))
                             _shipCache[s.UUID] = s;
                 }
@@ -677,7 +1107,7 @@ namespace OE2EmpireTracker.Services
                 if (_buildPlanCache == null)
                 {
                     _buildPlanCache = new Dictionary<string, BuildPlan>();
-                    foreach (var bp in BuildPlanList)
+                    foreach (var bp in _buildPlanList)
                         if (bp.UUID != null && !_buildPlanCache.ContainsKey(bp.UUID))
                             _buildPlanCache[bp.UUID] = bp;
                 }
@@ -699,7 +1129,7 @@ namespace OE2EmpireTracker.Services
                 if (_asteroidCache == null)
                 {
                     _asteroidCache = new Dictionary<string, Asteroid>();
-                    foreach (var a in AsteroidList)
+                    foreach (var a in _asteroidList)
                         if (a.UUID != null && !_asteroidCache.ContainsKey(a.UUID))
                             _asteroidCache[a.UUID] = a;
                 }
@@ -721,7 +1151,7 @@ namespace OE2EmpireTracker.Services
                 if (_factionCache == null)
                 {
                     _factionCache = new Dictionary<string, Faction>();
-                    foreach (var f in FactionList)
+                    foreach (var f in _factionList)
                         if (f.UUID != null && !_factionCache.ContainsKey(f.UUID))
                             _factionCache[f.UUID] = f;
                 }
@@ -743,7 +1173,7 @@ namespace OE2EmpireTracker.Services
                 if (_marketListingCache == null)
                 {
                     _marketListingCache = new Dictionary<string, MarketListing>();
-                    foreach (var ml in MarketListingList)
+                    foreach (var ml in _marketListingList)
                         if (ml.UUID != null && !_marketListingCache.ContainsKey(ml.UUID))
                             _marketListingCache[ml.UUID] = ml;
                 }
@@ -753,6 +1183,196 @@ namespace OE2EmpireTracker.Services
         }
 
         public void InvalidateMarketListingCache() { lock (_listLock) { _marketListingCache = null; } }
+
+        public PlayerProfile FindPlayerProfile(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_playerProfileCache == null)
+                {
+                    _playerProfileCache = new Dictionary<string, PlayerProfile>();
+                    foreach (var r in _playerProfileList)
+                        if (r.UUID != null && !_playerProfileCache.ContainsKey(r.UUID))
+                            _playerProfileCache[r.UUID] = r;
+                }
+                _playerProfileCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidatePlayerProfileCache() { lock (_listLock) { _playerProfileCache = null; } }
+
+        public DeliveryRoute FindDeliveryRoute(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_deliveryRouteCache == null)
+                {
+                    _deliveryRouteCache = new Dictionary<string, DeliveryRoute>();
+                    foreach (var r in _deliveryRouteList)
+                        if (r.UUID != null && !_deliveryRouteCache.ContainsKey(r.UUID))
+                            _deliveryRouteCache[r.UUID] = r;
+                }
+                _deliveryRouteCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidateDeliveryRouteCache() { lock (_listLock) { _deliveryRouteCache = null; } }
+
+        public DeliveryPlan FindDeliveryPlan(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_deliveryPlanCache == null)
+                {
+                    _deliveryPlanCache = new Dictionary<string, DeliveryPlan>();
+                    foreach (var r in _deliveryPlanList)
+                        if (r.UUID != null && !_deliveryPlanCache.ContainsKey(r.UUID))
+                            _deliveryPlanCache[r.UUID] = r;
+                }
+                _deliveryPlanCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidateDeliveryPlanCache() { lock (_listLock) { _deliveryPlanCache = null; } }
+
+        public PricingPlan FindPricingPlan(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_pricingPlanCache == null)
+                {
+                    _pricingPlanCache = new Dictionary<string, PricingPlan>();
+                    foreach (var r in _pricingPlanList)
+                        if (r.UUID != null && !_pricingPlanCache.ContainsKey(r.UUID))
+                            _pricingPlanCache[r.UUID] = r;
+                }
+                _pricingPlanCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidatePricingPlanCache() { lock (_listLock) { _pricingPlanCache = null; } }
+
+        public MarketTransaction FindMarketTransaction(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_marketTransactionCache == null)
+                {
+                    _marketTransactionCache = new Dictionary<string, MarketTransaction>();
+                    foreach (var r in _marketTransactionList)
+                        if (r.UUID != null && !_marketTransactionCache.ContainsKey(r.UUID))
+                            _marketTransactionCache[r.UUID] = r;
+                }
+                _marketTransactionCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidateMarketTransactionCache() { lock (_listLock) { _marketTransactionCache = null; } }
+
+        public StockPlan FindStockPlan(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_stockPlanCache == null)
+                {
+                    _stockPlanCache = new Dictionary<string, StockPlan>();
+                    foreach (var r in _stockPlanList)
+                        if (r.UUID != null && !_stockPlanCache.ContainsKey(r.UUID))
+                            _stockPlanCache[r.UUID] = r;
+                }
+                _stockPlanCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidateStockPlanCache() { lock (_listLock) { _stockPlanCache = null; } }
+
+        public StockProfile FindStockProfile(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_stockProfileCache == null)
+                {
+                    _stockProfileCache = new Dictionary<string, StockProfile>();
+                    foreach (var r in _stockProfileList)
+                        if (r.UUID != null && !_stockProfileCache.ContainsKey(r.UUID))
+                            _stockProfileCache[r.UUID] = r;
+                }
+                _stockProfileCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidateStockProfileCache() { lock (_listLock) { _stockProfileCache = null; } }
+
+        public SupplyChain FindSupplyChain(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_supplyChainCache == null)
+                {
+                    _supplyChainCache = new Dictionary<string, SupplyChain>();
+                    foreach (var r in _supplyChainList)
+                        if (r.UUID != null && !_supplyChainCache.ContainsKey(r.UUID))
+                            _supplyChainCache[r.UUID] = r;
+                }
+                _supplyChainCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidateSupplyChainCache() { lock (_listLock) { _supplyChainCache = null; } }
+
+        public WarehouseOverflowRule FindWarehouseOverflowRule(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_warehouseOverflowRuleCache == null)
+                {
+                    _warehouseOverflowRuleCache = new Dictionary<string, WarehouseOverflowRule>();
+                    foreach (var r in _warehouseOverflowRuleList)
+                        if (r.UUID != null && !_warehouseOverflowRuleCache.ContainsKey(r.UUID))
+                            _warehouseOverflowRuleCache[r.UUID] = r;
+                }
+                _warehouseOverflowRuleCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidateWarehouseOverflowRuleCache() { lock (_listLock) { _warehouseOverflowRuleCache = null; } }
+
+        public ExternalCharacter FindExternalCharacter(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return null;
+            lock (_listLock)
+            {
+                if (_externalCharacterCache == null)
+                {
+                    _externalCharacterCache = new Dictionary<string, ExternalCharacter>();
+                    foreach (var r in _externalCharacterList)
+                        if (r.UUID != null && !_externalCharacterCache.ContainsKey(r.UUID))
+                            _externalCharacterCache[r.UUID] = r;
+                }
+                _externalCharacterCache.TryGetValue(id, out var match);
+                return match;
+            }
+        }
+
+        public void InvalidateExternalCharacterCache() { lock (_listLock) { _externalCharacterCache = null; } }
 
         /// <summary>
         /// Returns the count of blueprints with the given BluePrintType for the current player.
@@ -816,7 +1436,7 @@ namespace OE2EmpireTracker.Services
         {
             _blueprintBuildItemIndex = new Dictionary<string, List<BuildItem>>();
             _buildLocationBuildItemIndex = new Dictionary<string, List<BuildItem>>();
-            foreach (var plan in BuildPlanList)
+            foreach (var plan in _buildPlanList)
             {
                 if (plan.Items == null) continue;
                 foreach (var item in plan.Items)
@@ -844,7 +1464,7 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
-                return new List<Colony>(ColonyList);
+                return new List<Colony>(_colonyList);
             }
         }
 
@@ -853,7 +1473,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<BuildPlan> SnapshotBuildPlanList()
         {
-            lock (_listLock) { return new List<BuildPlan>(BuildPlanList); }
+            lock (_listLock) { return new List<BuildPlan>(_buildPlanList); }
         }
 
         /// <summary>
@@ -861,7 +1481,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<ShipTemplate> SnapshotShipTemplateList()
         {
-            lock (_listLock) { return new List<ShipTemplate>(ShipTemplateList); }
+            lock (_listLock) { return new List<ShipTemplate>(_shipTemplateList); }
         }
 
         /// <summary>
@@ -869,7 +1489,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<Ship> SnapshotShipList()
         {
-            lock (_listLock) { return new List<Ship>(ShipList); }
+            lock (_listLock) { return new List<Ship>(_shipList); }
         }
 
         /// <summary>
@@ -877,7 +1497,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<Station> SnapshotStationList()
         {
-            lock (_listLock) { return new List<Station>(StationList); }
+            lock (_listLock) { return new List<Station>(_stationList); }
         }
 
         /// <summary>
@@ -885,7 +1505,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<MarketListing> SnapshotMarketListingList()
         {
-            lock (_listLock) { return new List<MarketListing>(MarketListingList); }
+            lock (_listLock) { return new List<MarketListing>(_marketListingList); }
         }
 
         /// <summary>
@@ -893,7 +1513,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<MarketTransaction> SnapshotMarketTransactionList()
         {
-            lock (_listLock) { return new List<MarketTransaction>(MarketTransactionList); }
+            lock (_listLock) { return new List<MarketTransaction>(_marketTransactionList); }
         }
 
         /// <summary>
@@ -901,7 +1521,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<StockPlan> SnapshotStockPlanList()
         {
-            lock (_listLock) { return new List<StockPlan>(StockPlanList); }
+            lock (_listLock) { return new List<StockPlan>(_stockPlanList); }
         }
 
         /// <summary>
@@ -909,7 +1529,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<StockProfile> SnapshotStockProfileList()
         {
-            lock (_listLock) { return new List<StockProfile>(StockProfileList); }
+            lock (_listLock) { return new List<StockProfile>(_stockProfileList); }
         }
 
         /// <summary>
@@ -917,7 +1537,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<SupplyChain> SnapshotSupplyChainList()
         {
-            lock (_listLock) { return new List<SupplyChain>(SupplyChainList); }
+            lock (_listLock) { return new List<SupplyChain>(_supplyChainList); }
         }
 
         /// <summary>
@@ -925,7 +1545,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<WarehouseOverflowRule> SnapshotWarehouseOverflowRuleList()
         {
-            lock (_listLock) { return new List<WarehouseOverflowRule>(WarehouseOverflowRuleList); }
+            lock (_listLock) { return new List<WarehouseOverflowRule>(_warehouseOverflowRuleList); }
         }
 
         /// <summary>
@@ -933,7 +1553,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<Faction> SnapshotFactionList()
         {
-            lock (_listLock) { return new List<Faction>(FactionList); }
+            lock (_listLock) { return new List<Faction>(_factionList); }
         }
 
         /// <summary>
@@ -941,7 +1561,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<ExternalCharacter> SnapshotExternalCharacterList()
         {
-            lock (_listLock) { return new List<ExternalCharacter>(ExternalCharacterList); }
+            lock (_listLock) { return new List<ExternalCharacter>(_externalCharacterList); }
         }
 
         /// <summary>
@@ -949,7 +1569,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<Asteroid> SnapshotAsteroidList()
         {
-            lock (_listLock) { return new List<Asteroid>(AsteroidList); }
+            lock (_listLock) { return new List<Asteroid>(_asteroidList); }
         }
 
         // -----------------------------------------------------------------------
@@ -963,13 +1583,13 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private void MigrateOwnerUUIDs()
         {
-            if (PlayerProfileList.Count == 0) return;
+            if (_playerProfileList.Count == 0) return;
 
-            string firstPlayerUUID = PlayerProfileList[0].UUID;
+            string firstPlayerUUID = _playerProfileList[0].UUID;
             if (string.IsNullOrEmpty(firstPlayerUUID)) return;
 
             int migrated = 0;
-            foreach (var colony in ColonyList)
+            foreach (var colony in _colonyList)
             {
                 if (string.IsNullOrEmpty(colony.OwnerUUID))
                 {
@@ -977,7 +1597,7 @@ namespace OE2EmpireTracker.Services
                     migrated++;
                 }
             }
-            foreach (var blueprint in BlueprintList)
+            foreach (var blueprint in _blueprintList)
             {
                 if (string.IsNullOrEmpty(blueprint.OwnerUUID))
                 {
@@ -985,7 +1605,7 @@ namespace OE2EmpireTracker.Services
                     migrated++;
                 }
             }
-            foreach (var survey in SurveyList)
+            foreach (var survey in _surveyList)
             {
                 if (string.IsNullOrEmpty(survey.OwnerUUID))
                 {
@@ -996,7 +1616,7 @@ namespace OE2EmpireTracker.Services
 
             if (migrated > 0)
             {
-                Log.Info("Migrated {0} items to player {1}", migrated, PlayerProfileList[0].Name);
+                Log.Info("Migrated {0} items to player {1}", migrated, _playerProfileList[0].Name);
             }
         }
 
@@ -1009,38 +1629,38 @@ namespace OE2EmpireTracker.Services
             if (string.IsNullOrEmpty(playerUUID)) return;
 
             int removed = 0;
-            foreach (var colony in ColonyList.Where(c => c.OwnerUUID == playerUUID).ToList())
-            { ColonyList.Remove(colony); removed++; }
-            foreach (var bp in BlueprintList.Where(b => b.OwnerUUID == playerUUID).ToList())
-            { BlueprintList.Remove(bp); removed++; }
-            foreach (var survey in SurveyList.Where(s => s.OwnerUUID == playerUUID).ToList())
-            { SurveyList.Remove(survey); removed++; }
-            foreach (var route in DeliveryRouteList.Where(r => r.OwnerUUID == playerUUID).ToList())
-            { DeliveryRouteList.Remove(route); removed++; }
-            foreach (var plan in DeliveryPlanList.Where(p => p.OwnerUUID == playerUUID).ToList())
-            { DeliveryPlanList.Remove(plan); removed++; }
-            foreach (var pp in PricingPlanList.Where(p => p.OwnerUUID == playerUUID).ToList())
-            { PricingPlanList.Remove(pp); removed++; }
-            foreach (var bp2 in BuildPlanList.Where(b => b.OwnerUUID == playerUUID).ToList())
-            { BuildPlanList.Remove(bp2); removed++; }
-            foreach (var st in ShipTemplateList.Where(s => s.OwnerUUID == playerUUID).ToList())
-            { ShipTemplateList.Remove(st); removed++; }
-            foreach (var ship in ShipList.Where(s => s.OwnerUUID == playerUUID).ToList())
-            { ShipList.Remove(ship); removed++; }
-            foreach (var station in StationList.Where(s => s.OwnerUUID == playerUUID).ToList())
-            { StationList.Remove(station); removed++; }
-            foreach (var ml in MarketListingList.Where(m => m.OwnerUUID == playerUUID).ToList())
-            { MarketListingList.Remove(ml); removed++; }
-            foreach (var mt in MarketTransactionList.Where(m => m.OwnerUUID == playerUUID).ToList())
-            { MarketTransactionList.Remove(mt); removed++; }
-            foreach (var sp in StockPlanList.Where(s => s.OwnerUUID == playerUUID).ToList())
-            { StockPlanList.Remove(sp); removed++; }
-            foreach (var spf in StockProfileList.Where(s => s.OwnerUUID == playerUUID).ToList())
-            { StockProfileList.Remove(spf); removed++; }
-            foreach (var sc in SupplyChainList.Where(s => s.OwnerUUID == playerUUID).ToList())
-            { SupplyChainList.Remove(sc); removed++; }
-            foreach (var wor in WarehouseOverflowRuleList.Where(w => w.OwnerUUID == playerUUID).ToList())
-            { WarehouseOverflowRuleList.Remove(wor); removed++; }
+            foreach (var colony in _colonyList.Where(c => c.OwnerUUID == playerUUID).ToList())
+            { _colonyList.Remove(colony); removed++; }
+            foreach (var bp in _blueprintList.Where(b => b.OwnerUUID == playerUUID).ToList())
+            { _blueprintList.Remove(bp); removed++; }
+            foreach (var survey in _surveyList.Where(s => s.OwnerUUID == playerUUID).ToList())
+            { _surveyList.Remove(survey); removed++; }
+            foreach (var route in _deliveryRouteList.Where(r => r.OwnerUUID == playerUUID).ToList())
+            { _deliveryRouteList.Remove(route); removed++; }
+            foreach (var plan in _deliveryPlanList.Where(p => p.OwnerUUID == playerUUID).ToList())
+            { _deliveryPlanList.Remove(plan); removed++; }
+            foreach (var pp in _pricingPlanList.Where(p => p.OwnerUUID == playerUUID).ToList())
+            { _pricingPlanList.Remove(pp); removed++; }
+            foreach (var bp2 in _buildPlanList.Where(b => b.OwnerUUID == playerUUID).ToList())
+            { _buildPlanList.Remove(bp2); removed++; }
+            foreach (var st in _shipTemplateList.Where(s => s.OwnerUUID == playerUUID).ToList())
+            { _shipTemplateList.Remove(st); removed++; }
+            foreach (var ship in _shipList.Where(s => s.OwnerUUID == playerUUID).ToList())
+            { _shipList.Remove(ship); removed++; }
+            foreach (var station in _stationList.Where(s => s.OwnerUUID == playerUUID).ToList())
+            { _stationList.Remove(station); removed++; }
+            foreach (var ml in _marketListingList.Where(m => m.OwnerUUID == playerUUID).ToList())
+            { _marketListingList.Remove(ml); removed++; }
+            foreach (var mt in _marketTransactionList.Where(m => m.OwnerUUID == playerUUID).ToList())
+            { _marketTransactionList.Remove(mt); removed++; }
+            foreach (var sp in _stockPlanList.Where(s => s.OwnerUUID == playerUUID).ToList())
+            { _stockPlanList.Remove(sp); removed++; }
+            foreach (var spf in _stockProfileList.Where(s => s.OwnerUUID == playerUUID).ToList())
+            { _stockProfileList.Remove(spf); removed++; }
+            foreach (var sc in _supplyChainList.Where(s => s.OwnerUUID == playerUUID).ToList())
+            { _supplyChainList.Remove(sc); removed++; }
+            foreach (var wor in _warehouseOverflowRuleList.Where(w => w.OwnerUUID == playerUUID).ToList())
+            { _warehouseOverflowRuleList.Remove(wor); removed++; }
 
             if (removed > 0)
                 Log.Info("Cascade deleted {0} items for player {1}", removed, playerUUID);
@@ -1056,41 +1676,41 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private void CleanupOrphanedData()
         {
-            var validUUIDs = new HashSet<string>(PlayerProfileList.Select(p => p.UUID));
+            var validUUIDs = new HashSet<string>(_playerProfileList.Select(p => p.UUID));
             int removed = 0;
 
-            foreach (var colony in ColonyList.Where(c => !string.IsNullOrEmpty(c.OwnerUUID) && !validUUIDs.Contains(c.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned colony: {0} ({1}) owner={2}", colony.PlanetName, colony.ColonyName, colony.OwnerUUID); ColonyList.Remove(colony); removed++; }
-            foreach (var bp in BlueprintList.Where(b => !string.IsNullOrEmpty(b.OwnerUUID) && !validUUIDs.Contains(b.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned blueprint: {0} owner={1}", bp.ExtendedName, bp.OwnerUUID); BlueprintList.Remove(bp); removed++; }
-            foreach (var survey in SurveyList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned survey: {0} owner={1}", survey.ExtendedName, survey.OwnerUUID); SurveyList.Remove(survey); removed++; }
-            foreach (var route in DeliveryRouteList.Where(r => !string.IsNullOrEmpty(r.OwnerUUID) && !validUUIDs.Contains(r.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned route: {0} owner={1}", route.Name, route.OwnerUUID); DeliveryRouteList.Remove(route); removed++; }
-            foreach (var plan in DeliveryPlanList.Where(p => !string.IsNullOrEmpty(p.OwnerUUID) && !validUUIDs.Contains(p.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned delivery plan: {0} owner={1}", plan.Name, plan.OwnerUUID); DeliveryPlanList.Remove(plan); removed++; }
-            foreach (var pp in PricingPlanList.Where(p => !string.IsNullOrEmpty(p.OwnerUUID) && !validUUIDs.Contains(p.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned pricing plan: {0} owner={1}", pp.Name, pp.OwnerUUID); PricingPlanList.Remove(pp); removed++; }
-            foreach (var bp2 in BuildPlanList.Where(b => !string.IsNullOrEmpty(b.OwnerUUID) && !validUUIDs.Contains(b.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned build plan: {0} owner={1}", bp2.Name, bp2.OwnerUUID); BuildPlanList.Remove(bp2); removed++; }
-            foreach (var st in ShipTemplateList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned ship template: {0} owner={1}", st.Name, st.OwnerUUID); ShipTemplateList.Remove(st); removed++; }
-            foreach (var ship in ShipList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned ship: {0} owner={1}", ship.Name, ship.OwnerUUID); ShipList.Remove(ship); removed++; }
-            foreach (var station in StationList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned station: {0} owner={1}", station.Name, station.OwnerUUID); StationList.Remove(station); removed++; }
-            foreach (var ml in MarketListingList.Where(m => !string.IsNullOrEmpty(m.OwnerUUID) && !validUUIDs.Contains(m.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned market listing: {0} owner={1}", ml.UUID, ml.OwnerUUID); MarketListingList.Remove(ml); removed++; }
-            foreach (var mt in MarketTransactionList.Where(m => !string.IsNullOrEmpty(m.OwnerUUID) && !validUUIDs.Contains(m.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned market transaction: {0} owner={1}", mt.UUID, mt.OwnerUUID); MarketTransactionList.Remove(mt); removed++; }
-            foreach (var sp in StockPlanList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned stock plan: {0} owner={1}", sp.Name, sp.OwnerUUID); StockPlanList.Remove(sp); removed++; }
-            foreach (var spf in StockProfileList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned stock profile: {0} owner={1}", spf.Name, spf.OwnerUUID); StockProfileList.Remove(spf); removed++; }
-            foreach (var sc in SupplyChainList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned supply chain: {0} owner={1}", sc.Name, sc.OwnerUUID); SupplyChainList.Remove(sc); removed++; }
-            foreach (var wor in WarehouseOverflowRuleList.Where(w => !string.IsNullOrEmpty(w.OwnerUUID) && !validUUIDs.Contains(w.OwnerUUID)).ToList())
-            { Log.Warn("Removing orphaned overflow rule: {0} owner={1}", wor.UUID, wor.OwnerUUID); WarehouseOverflowRuleList.Remove(wor); removed++; }
+            foreach (var colony in _colonyList.Where(c => !string.IsNullOrEmpty(c.OwnerUUID) && !validUUIDs.Contains(c.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned colony: {0} ({1}) owner={2}", colony.PlanetName, colony.ColonyName, colony.OwnerUUID); _colonyList.Remove(colony); removed++; }
+            foreach (var bp in _blueprintList.Where(b => !string.IsNullOrEmpty(b.OwnerUUID) && !validUUIDs.Contains(b.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned blueprint: {0} owner={1}", bp.ExtendedName, bp.OwnerUUID); _blueprintList.Remove(bp); removed++; }
+            foreach (var survey in _surveyList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned survey: {0} owner={1}", survey.ExtendedName, survey.OwnerUUID); _surveyList.Remove(survey); removed++; }
+            foreach (var route in _deliveryRouteList.Where(r => !string.IsNullOrEmpty(r.OwnerUUID) && !validUUIDs.Contains(r.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned route: {0} owner={1}", route.Name, route.OwnerUUID); _deliveryRouteList.Remove(route); removed++; }
+            foreach (var plan in _deliveryPlanList.Where(p => !string.IsNullOrEmpty(p.OwnerUUID) && !validUUIDs.Contains(p.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned delivery plan: {0} owner={1}", plan.Name, plan.OwnerUUID); _deliveryPlanList.Remove(plan); removed++; }
+            foreach (var pp in _pricingPlanList.Where(p => !string.IsNullOrEmpty(p.OwnerUUID) && !validUUIDs.Contains(p.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned pricing plan: {0} owner={1}", pp.Name, pp.OwnerUUID); _pricingPlanList.Remove(pp); removed++; }
+            foreach (var bp2 in _buildPlanList.Where(b => !string.IsNullOrEmpty(b.OwnerUUID) && !validUUIDs.Contains(b.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned build plan: {0} owner={1}", bp2.Name, bp2.OwnerUUID); _buildPlanList.Remove(bp2); removed++; }
+            foreach (var st in _shipTemplateList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned ship template: {0} owner={1}", st.Name, st.OwnerUUID); _shipTemplateList.Remove(st); removed++; }
+            foreach (var ship in _shipList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned ship: {0} owner={1}", ship.Name, ship.OwnerUUID); _shipList.Remove(ship); removed++; }
+            foreach (var station in _stationList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned station: {0} owner={1}", station.Name, station.OwnerUUID); _stationList.Remove(station); removed++; }
+            foreach (var ml in _marketListingList.Where(m => !string.IsNullOrEmpty(m.OwnerUUID) && !validUUIDs.Contains(m.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned market listing: {0} owner={1}", ml.UUID, ml.OwnerUUID); _marketListingList.Remove(ml); removed++; }
+            foreach (var mt in _marketTransactionList.Where(m => !string.IsNullOrEmpty(m.OwnerUUID) && !validUUIDs.Contains(m.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned market transaction: {0} owner={1}", mt.UUID, mt.OwnerUUID); _marketTransactionList.Remove(mt); removed++; }
+            foreach (var sp in _stockPlanList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned stock plan: {0} owner={1}", sp.Name, sp.OwnerUUID); _stockPlanList.Remove(sp); removed++; }
+            foreach (var spf in _stockProfileList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned stock profile: {0} owner={1}", spf.Name, spf.OwnerUUID); _stockProfileList.Remove(spf); removed++; }
+            foreach (var sc in _supplyChainList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned supply chain: {0} owner={1}", sc.Name, sc.OwnerUUID); _supplyChainList.Remove(sc); removed++; }
+            foreach (var wor in _warehouseOverflowRuleList.Where(w => !string.IsNullOrEmpty(w.OwnerUUID) && !validUUIDs.Contains(w.OwnerUUID)).ToList())
+            { Log.Warn("Removing orphaned overflow rule: {0} owner={1}", wor.UUID, wor.OwnerUUID); _warehouseOverflowRuleList.Remove(wor); removed++; }
 
             if (removed > 0)
                 Log.Info("Cleaned up {0} orphaned items on load", removed);
@@ -1108,13 +1728,13 @@ namespace OE2EmpireTracker.Services
         private void RestoreCurrentPlayer(string savedUUID)
         {
             if (!string.IsNullOrEmpty(savedUUID) &&
-                PlayerProfileList.Any(p => p.UUID == savedUUID))
+                _playerProfileList.Any(p => p.UUID == savedUUID))
             {
                 _currentPlayerUUID = savedUUID;
             }
-            else if (PlayerProfileList.Count > 0)
+            else if (_playerProfileList.Count > 0)
             {
-                _currentPlayerUUID = PlayerProfileList[0].UUID ?? string.Empty;
+                _currentPlayerUUID = _playerProfileList[0].UUID ?? string.Empty;
             }
             Log.Info("Current player restored: {0}", _currentPlayerUUID);
         }
@@ -1124,7 +1744,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<Colony> GetCurrentPlayerColonies()
         {
-            return ColonyList.Where(c => c.OwnerUUID == _currentPlayerUUID).ToList();
+            return _colonyList.Where(c => c.OwnerUUID == _currentPlayerUUID).ToList();
         }
 
         /// <summary>
@@ -1132,7 +1752,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<Blueprint> GetCurrentPlayerBlueprints()
         {
-            return BlueprintList.Where(b => b.OwnerUUID == _currentPlayerUUID).ToList();
+            return _blueprintList.Where(b => b.OwnerUUID == _currentPlayerUUID).ToList();
         }
 
         /// <summary>
@@ -1144,7 +1764,7 @@ namespace OE2EmpireTracker.Services
         {
             if (_allBlueprintsCache == null)
             {
-                _allBlueprintsCache = new List<Blueprint>(BlueprintList);
+                _allBlueprintsCache = new List<Blueprint>(_blueprintList);
                 var ec = EmpireContext.GetInstance();
                 if (ec?.GlobalBlueprintList != null)
                     _allBlueprintsCache.AddRange(ec.GlobalBlueprintList);
@@ -1165,7 +1785,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<Survey> GetCurrentPlayerSurveys()
         {
-            return SurveyList.Where(s => s.OwnerUUID == _currentPlayerUUID).ToList();
+            return _surveyList.Where(s => s.OwnerUUID == _currentPlayerUUID).ToList();
         }
 
         /// <summary>
@@ -1173,7 +1793,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<DeliveryRoute> GetCurrentPlayerRoutes()
         {
-            return DeliveryRouteList.Where(r => r.OwnerUUID == _currentPlayerUUID).ToList();
+            return _deliveryRouteList.Where(r => r.OwnerUUID == _currentPlayerUUID).ToList();
         }
 
         /// <summary>
@@ -1181,7 +1801,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<DeliveryPlan> GetCurrentPlayerPlans()
         {
-            return DeliveryPlanList.Where(p => p.OwnerUUID == _currentPlayerUUID).ToList();
+            return _deliveryPlanList.Where(p => p.OwnerUUID == _currentPlayerUUID).ToList();
         }
 
         /// <summary>
@@ -1189,7 +1809,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<PricingPlan> GetCurrentPlayerPricingPlans()
         {
-            return PricingPlanList.Where(p => p.OwnerUUID == _currentPlayerUUID).ToList();
+            return _pricingPlanList.Where(p => p.OwnerUUID == _currentPlayerUUID).ToList();
         }
 
         /// <summary>
@@ -1197,7 +1817,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<BuildPlan> GetCurrentPlayerBuildPlans()
         {
-            lock (_listLock) { return BuildPlanList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
+            lock (_listLock) { return _buildPlanList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
         }
 
         /// <summary>
@@ -1205,7 +1825,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<ShipTemplate> GetCurrentPlayerShipTemplates()
         {
-            lock (_listLock) { return ShipTemplateList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
+            lock (_listLock) { return _shipTemplateList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
         }
 
         /// <summary>
@@ -1213,7 +1833,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<Ship> GetCurrentPlayerShips()
         {
-            lock (_listLock) { return ShipList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
+            lock (_listLock) { return _shipList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
         }
 
         /// <summary>
@@ -1224,7 +1844,7 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
-                return StationList.Where(x =>
+                return _stationList.Where(x =>
                     x.Ownership == StationOwnership.Government ||
                     x.OwnerUUID == CurrentPlayerUUID).ToList();
             }
@@ -1235,7 +1855,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<MarketListing> GetCurrentPlayerListings()
         {
-            lock (_listLock) { return MarketListingList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
+            lock (_listLock) { return _marketListingList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
         }
 
         /// <summary>
@@ -1243,7 +1863,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<MarketTransaction> GetCurrentPlayerTransactions()
         {
-            lock (_listLock) { return MarketTransactionList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
+            lock (_listLock) { return _marketTransactionList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
         }
 
         /// <summary>
@@ -1251,7 +1871,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<StockPlan> GetCurrentPlayerStockPlans()
         {
-            lock (_listLock) { return StockPlanList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
+            lock (_listLock) { return _stockPlanList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
         }
 
         /// <summary>
@@ -1259,7 +1879,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<StockProfile> GetCurrentPlayerStockProfiles()
         {
-            lock (_listLock) { return StockProfileList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
+            lock (_listLock) { return _stockProfileList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
         }
 
         /// <summary>
@@ -1267,7 +1887,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<SupplyChain> GetCurrentPlayerSupplyChains()
         {
-            lock (_listLock) { return SupplyChainList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
+            lock (_listLock) { return _supplyChainList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
         }
 
         /// <summary>
@@ -1275,14 +1895,14 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public List<WarehouseOverflowRule> GetCurrentPlayerOverflowRules()
         {
-            lock (_listLock) { return WarehouseOverflowRuleList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
+            lock (_listLock) { return _warehouseOverflowRuleList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
         }
 
 
         public List<CountDownTimeReference> AllCountdownSources()
         {
             List<CountDownTimeReference> countdowns = new List<CountDownTimeReference>();
-            foreach (var player in PlayerProfileList)
+            foreach (var player in _playerProfileList)
             {
                 if (player.Skills != null)
                 {
@@ -1300,7 +1920,7 @@ namespace OE2EmpireTracker.Services
                     }
                 }
             }
-            foreach (var colony in ColonyList)
+            foreach (var colony in _colonyList)
             {
                 if (colony.Structures != null)
                 {

@@ -513,7 +513,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 OwnerUUID = playerContext.CurrentPlayerUUID,
                 IsActive = true
             };
-            playerContext.BuildPlanList.Add(plan);
+            playerContext.AddBuildPlan(plan);
             playerContext.WriteContext();
             playerContext.OnBuildPlanDataChanged(plan.UUID);
             _selectedPlan = plan;
@@ -542,7 +542,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             if (result != DialogResult.Yes) return;
 
             string uuid = _selectedPlan.UUID;
-            playerContext.BuildPlanList.Remove(_selectedPlan);
+            playerContext.RemoveBuildPlan(_selectedPlan);
             playerContext.WriteContext();
             playerContext.OnBuildPlanDataChanged(uuid);
             _selectedPlan = null;

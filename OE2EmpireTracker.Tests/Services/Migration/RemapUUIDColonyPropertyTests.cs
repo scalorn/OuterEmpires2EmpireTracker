@@ -84,7 +84,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     colony.SystemName = $"System_{i}";
                     colony.ColonyName = $"Colony_{i}";
                     if (plant) plantedCount++;
-                    pc.ColonyList.Add(colony);
+                    pc.AddColony(colony);
                 }
 
                 // Add delivery routes with stops -- some ColonyUUID == oldUuid
@@ -102,7 +102,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                         if (plant) plantedCount++;
                         route.Stops.Add(stop);
                     }
-                    pc.DeliveryRouteList.Add(route);
+                    pc.AddDeliveryRoute(route);
                 }
 
                 // Add delivery plans with stops -- some ColonyUUID == oldUuid
@@ -122,7 +122,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                         stop.PickUp = new List<DeliveryItem>();
                         plan.Stops.Add(stop);
                     }
-                    pc.DeliveryPlanList.Add(plan);
+                    pc.AddDeliveryPlan(plan);
                 }
 
                 // Act

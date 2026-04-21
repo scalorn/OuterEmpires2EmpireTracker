@@ -212,21 +212,21 @@ namespace OE2EmpireTracker.Tests.ViewModels
             return Prop.ForAll(inputGen.ToArbitrary(), data =>
             {
                 // Clear and populate context lists
-                _playerContext.BlueprintList.Clear();
+                foreach (var item in _playerContext.BlueprintList.ToList()) _playerContext.RemoveBlueprint(item);
                 var ec = EmpireContext.GetInstance();
-                ec.GlobalBlueprintList.Clear();
+                foreach (var item in ec.GlobalBlueprintList.ToList()) ec.RemoveGlobalBlueprint(item);
 
                 foreach (var bp in data.Blueprints)
                 {
                     if (bp.OwnerUUID == "global")
                     {
                         bp.OwnerUUID = string.Empty;
-                        ec.GlobalBlueprintList.Add(bp);
+                        ec.AddGlobalBlueprint(bp);
                     }
                     else
                     {
                         _playerContext.CurrentPlayerUUID = "player-1";
-                        _playerContext.BlueprintList.Add(bp);
+                        _playerContext.AddBlueprint(bp);
                     }
                 }
 

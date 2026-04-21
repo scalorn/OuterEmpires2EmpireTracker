@@ -538,7 +538,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                 OwnerUUID = playerContext.CurrentPlayerUUID ?? "",
                 IsActive = true
             };
-            playerContext.SupplyChainList.Add(chain);
+            playerContext.AddSupplyChain(chain);
             playerContext.WriteContext();
             _selectedChain = chain;
             PopulateChainList();
@@ -553,7 +553,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                 string.Format("Delete supply chain \"{0}\"?", _selectedChain.Name),
                 "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
-            playerContext.SupplyChainList.Remove(_selectedChain);
+            playerContext.RemoveSupplyChain(_selectedChain);
             playerContext.WriteContext();
             _selectedChain = null;
             PopulateChainList();

@@ -59,7 +59,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { GameConstants.PropPowerProvided, "500" },
                 { GameConstants.PropBlueCollarDetail, "1" }
             });
-            pc.BlueprintList.Add(reactorBp);
+            pc.AddBlueprint(reactorBp);
 
             // Habitation: online, provides habitation, requires power, 1 white collar
             var habBp = MakeBlueprint("Habitation", new Dictionary<string, string>
@@ -69,7 +69,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { GameConstants.PropWhiteCollarDetail, "1" },
                 { GameConstants.PropFoodProvision, "20" }
             });
-            pc.BlueprintList.Add(habBp);
+            pc.AddBlueprint(habBp);
 
             // Mining rig: online, requires power, 1 blue collar, 1 specialist
             var minerBp = MakeBlueprint("Mining Rig", new Dictionary<string, string>
@@ -80,7 +80,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { GameConstants.PropBlueCollarDetail, "1" },
                 { GameConstants.PropSpecialistDetail, "1" }
             });
-            pc.BlueprintList.Add(minerBp);
+            pc.AddBlueprint(minerBp);
 
             var colony = new Colony();
             colony.UUID = Guid.NewGuid().ToString();
@@ -319,7 +319,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { GameConstants.PropEntertainmentProvided, "10" },
                 { GameConstants.PropWarehouseCapacity, "500" }
             });
-            PlayerContext.GetInstance().BlueprintList.Add(bp);
+            PlayerContext.GetInstance().AddBlueprint(bp);
 
             var structure = MakeStructure(bp.UUID, built: true, online: false);
             colony.Structures.Add(structure);

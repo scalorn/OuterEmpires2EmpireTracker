@@ -104,7 +104,7 @@ namespace OE2EmpireTracker.ViewModels
             if (string.IsNullOrEmpty(_profile.UUID))
             {
                 _profile.UUID = Guid.NewGuid().ToString();
-                _playerContext.PlayerProfileList.Add(_profile);
+                _playerContext.AddPlayerProfile(_profile);
             }
             _playerContext.WriteContext();
             _playerContext.OnPlayerProfilesChanged();
@@ -115,7 +115,7 @@ namespace OE2EmpireTracker.ViewModels
         {
             if (string.IsNullOrEmpty(_profile.UUID)) return;
             string deletedUUID = _profile.UUID;
-            _playerContext.PlayerProfileList.Remove(_profile);
+            _playerContext.RemovePlayerProfile(_profile);
 
             // Cascade delete: remove all data owned by this player
             _playerContext.CascadeDeletePlayer(deletedUUID);

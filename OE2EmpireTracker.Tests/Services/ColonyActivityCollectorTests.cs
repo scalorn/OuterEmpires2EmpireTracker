@@ -40,7 +40,7 @@ namespace OE2EmpireTracker.Tests.Services
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = bpType;
             bp.Evolution = evolution;
-            PlayerContext.GetInstance().BlueprintList.Add(bp);
+            PlayerContext.GetInstance().AddBlueprint(bp);
             return bp;
         }
 
@@ -54,7 +54,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 { resource, new SurveyResource(resource, purity, amount) }
             };
-            PlayerContext.GetInstance().SurveyList.Add(survey);
+            PlayerContext.GetInstance().AddSurvey(survey);
             return survey;
         }
 

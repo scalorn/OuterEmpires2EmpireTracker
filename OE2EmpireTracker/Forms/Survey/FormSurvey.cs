@@ -636,7 +636,7 @@ namespace OE2EmpireTracker.Forms.Survey
                 else
                 {
                     var newSurvey = SurveyImportHelper.CreateFromTemp(tempSurvey, playerContext.CurrentPlayerUUID);
-                    playerContext.SurveyList.Add(newSurvey);
+                    playerContext.AddSurvey(newSurvey);
                     importedSurvey = newSurvey;
                     Log.Info("New survey created via dedup: {0} ({1})", newSurvey.PlanetName, newSurvey.SurveyID);
                 }

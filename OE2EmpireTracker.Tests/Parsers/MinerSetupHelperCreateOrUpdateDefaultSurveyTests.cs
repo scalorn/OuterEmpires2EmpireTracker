@@ -24,7 +24,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             TestHelper.SetAllFilePaths();
             EmpireContext.GetInstance();
             _playerContext = EmpireContext.PlayerContext;
-            _playerContext.SurveyList.Clear();
+            foreach (var item in _playerContext.SurveyList.ToList()) _playerContext.RemoveSurvey(item);
         }
 
         [TearDown]

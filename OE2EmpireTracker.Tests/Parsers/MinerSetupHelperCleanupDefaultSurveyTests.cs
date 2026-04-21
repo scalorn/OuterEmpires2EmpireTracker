@@ -25,7 +25,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             TestHelper.SetAllFilePaths();
             _empireContext = EmpireContext.GetInstance();
             _playerContext = EmpireContext.PlayerContext;
-            _playerContext.SurveyList.Clear();
+            foreach (var item in _playerContext.SurveyList.ToList()) _playerContext.RemoveSurvey(item);
         }
 
         [TearDown]
@@ -63,7 +63,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             {
                 survey.Resources[kvp.Key] = kvp.Value;
             }
-            _playerContext.SurveyList.Add(survey);
+            _playerContext.AddSurvey(survey);
             return survey;
         }
 

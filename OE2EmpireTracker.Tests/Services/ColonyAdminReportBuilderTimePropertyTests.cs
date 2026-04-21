@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using FsCheck;
 using FsCheck.NUnit;
 using NUnit.Framework;
@@ -36,7 +37,7 @@ namespace OE2EmpireTracker.Tests.Services
             var bp = new OE2EmpireTracker.Models.Blueprint(name);
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = bpType;
-            PlayerContext.GetInstance().BlueprintList.Add(bp);
+            PlayerContext.GetInstance().AddBlueprint(bp);
             return bp;
         }
 
@@ -76,7 +77,7 @@ namespace OE2EmpireTracker.Tests.Services
             return Prop.ForAll(secondsGen.ToArbitrary(), seconds =>
             {
                 var pc = PlayerContext.GetInstance();
-                pc.BlueprintList.Clear();
+                foreach (var item in pc.BlueprintList.ToList()) pc.RemoveBlueprint(item);
 
                 var bp = CreateBlueprint(BlueprintTypes.MiningRig, "Builder");
                 var colony = MakeColony();

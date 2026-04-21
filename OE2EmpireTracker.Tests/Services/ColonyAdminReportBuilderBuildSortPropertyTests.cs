@@ -51,7 +51,7 @@ namespace OE2EmpireTracker.Tests.Services
             return Prop.ForAll(gen.ToArbitrary(), data =>
             {
                 var pc = PlayerContext.GetInstance();
-                pc.BlueprintList.Clear();
+                foreach (var item in pc.BlueprintList.ToList()) pc.RemoveBlueprint(item);
 
                 var colony = new Colony
                 {
@@ -69,7 +69,7 @@ namespace OE2EmpireTracker.Tests.Services
                     var bp = new OE2EmpireTracker.Models.Blueprint(name);
                     bp.UUID = Guid.NewGuid().ToString();
                     bp.BluePrintType = BlueprintTypes.MiningRig;
-                    pc.BlueprintList.Add(bp);
+                    pc.AddBlueprint(bp);
 
                     var s = new ColonyStructure();
                     s.UUID = Guid.NewGuid().ToString();

@@ -64,7 +64,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     bp.TechLevel = "LL";
                     bp.LegacyUUID = null;
                     originalUUIDs[name] = bp.UUID;
-                    ec.GlobalBlueprintList.Add(bp);
+                    ec.AddGlobalBlueprint(bp);
                 }
 
                 // Set DataVersion to 0 so migration runs

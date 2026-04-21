@@ -218,7 +218,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
                 Name = "New Plan",
                 OwnerUUID = playerContext.CurrentPlayerUUID
             };
-            playerContext.PricingPlanList.Add(plan);
+            playerContext.AddPricingPlan(plan);
             playerContext.WriteContext();
             playerContext.OnPricingDataChanged();
             _selectedPlan = plan;
@@ -236,7 +236,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            playerContext.PricingPlanList.Remove(_selectedPlan);
+            playerContext.RemovePricingPlan(_selectedPlan);
             playerContext.WriteContext();
             playerContext.OnPricingDataChanged();
             _selectedPlan = null;

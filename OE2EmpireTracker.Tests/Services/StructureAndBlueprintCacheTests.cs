@@ -44,7 +44,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ColonyName = "TestColony"
             };
             var bp = new Bp("Power Plant") { UUID = "bp-pp-1", OwnerUUID = "player1" };
-            _playerContext.BlueprintList.Add(bp);
+            _playerContext.AddBlueprint(bp);
             _playerContext.InvalidateBlueprintCache();
 
             colony.Structures.Add(new ColonyStructure
@@ -97,7 +97,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ColonyName = "TestColony"
             };
             var bp = new Bp("Mining Rig") { UUID = "bp-mr-1", OwnerUUID = "player1" };
-            _playerContext.BlueprintList.Add(bp);
+            _playerContext.AddBlueprint(bp);
             _playerContext.InvalidateBlueprintCache();
 
             var vm = new ColonyViewModel(colony, _playerContext);
@@ -143,10 +143,10 @@ namespace OE2EmpireTracker.Tests.Services
         public void GetAllBlueprints_ReturnsCombinedPlayerAndGlobal()
         {
             var localBp = new Bp("Local BP") { UUID = "bp-local-1", OwnerUUID = "player1" };
-            _playerContext.BlueprintList.Add(localBp);
+            _playerContext.AddBlueprint(localBp);
 
             var globalBp = new Bp("Global BP") { UUID = "bp-global-1" };
-            _empireContext.GlobalBlueprintList.Add(globalBp);
+            _empireContext.AddGlobalBlueprint(globalBp);
 
             _playerContext.InvalidateBlueprintCache();
 
@@ -173,7 +173,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             // Add a new player blueprint and explicitly invalidate the cache
             var newBp = new Bp("New BP") { UUID = "bp-new-all", OwnerUUID = "player1" };
-            _playerContext.BlueprintList.Add(newBp);
+            _playerContext.AddBlueprint(newBp);
             _playerContext.InvalidateBlueprintCache();
 
             var after = _playerContext.GetAllBlueprints();

@@ -464,7 +464,7 @@ namespace OE2EmpireTracker.Models
             // Resources intentionally empty / user imports via Blueprint Form
 
             // Add to player's blueprint list
-            pc.BlueprintList.Add(newBp);
+            pc.AddBlueprint(newBp);
 
             // Add an item to the colony warehouse
             Item bpItem = new Item(ItemType.ItemTypeEnum.Blueprint, newBp.Name);

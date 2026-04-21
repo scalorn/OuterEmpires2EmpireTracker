@@ -282,7 +282,7 @@ namespace OE2EmpireTracker.Services
                 OwnerUUID = route.OwnerUUID,
                 RouteUUID = route.UUID
             };
-            playerContext.DeliveryPlanList.Add(plan);
+            playerContext.AddDeliveryPlan(plan);
             Log.Debug("CreateNewPlan: created '{0}' ({1})", plan.Name, plan.UUID);
             return plan;
         }

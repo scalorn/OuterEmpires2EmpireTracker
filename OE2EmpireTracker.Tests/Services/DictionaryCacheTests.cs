@@ -37,7 +37,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             // Add a known blueprint
             var bp = new Bp("Test Blueprint") { UUID = "bp-001", OwnerUUID = "player1" };
-            _playerContext.BlueprintList.Add(bp);
+            _playerContext.AddBlueprint(bp);
             _playerContext.InvalidateBlueprintCache();
 
             var result = _playerContext.FindBlueprint("bp-001");
@@ -76,7 +76,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             // Add a new blueprint and invalidate
             var bp = new Bp("New BP") { UUID = "bp-new", OwnerUUID = "player1" };
-            _playerContext.BlueprintList.Add(bp);
+            _playerContext.AddBlueprint(bp);
             _playerContext.InvalidateBlueprintCache();
 
             // Should find the newly added blueprint
@@ -90,7 +90,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             // Add a blueprint only to the global list
             var globalBp = new Bp("Global BP") { UUID = "global-001" };
-            _empireContext.GlobalBlueprintList.Add(globalBp);
+            _empireContext.AddGlobalBlueprint(globalBp);
             _empireContext.InvalidateGlobalBlueprintCache();
 
             var result = _playerContext.FindBlueprint("global-001");
@@ -103,11 +103,11 @@ namespace OE2EmpireTracker.Tests.Services
         public void FindBlueprint_PrefersLocalOverGlobal()
         {
             var localBp = new Bp("Local BP") { UUID = "bp-dup", OwnerUUID = "player1" };
-            _playerContext.BlueprintList.Add(localBp);
+            _playerContext.AddBlueprint(localBp);
             _playerContext.InvalidateBlueprintCache();
 
             var globalBp = new Bp("Global BP") { UUID = "bp-dup" };
-            _empireContext.GlobalBlueprintList.Add(globalBp);
+            _empireContext.AddGlobalBlueprint(globalBp);
             _empireContext.InvalidateGlobalBlueprintCache();
 
             var result = _playerContext.FindBlueprint("bp-dup");
@@ -122,7 +122,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void FindGlobalBlueprint_ReturnsCorrectBlueprint()
         {
             var bp = new Bp("Global Test") { UUID = "gbp-001" };
-            _empireContext.GlobalBlueprintList.Add(bp);
+            _empireContext.AddGlobalBlueprint(bp);
             _empireContext.InvalidateGlobalBlueprintCache();
 
             var result = _empireContext.FindGlobalBlueprint("gbp-001");
@@ -149,7 +149,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void FindSurvey_ReturnsCorrectSurvey()
         {
             var survey = new Survey("Test Survey") { UUID = "sv-001", OwnerUUID = "player1", PlanetName = "Earth" };
-            _playerContext.SurveyList.Add(survey);
+            _playerContext.AddSurvey(survey);
             _playerContext.InvalidateSurveyCache();
 
             var result = _playerContext.FindSurvey("sv-001");
@@ -182,7 +182,7 @@ namespace OE2EmpireTracker.Tests.Services
             _playerContext.FindSurvey("trigger-cache");
 
             var survey = new Survey("New Survey") { UUID = "sv-new", OwnerUUID = "player1", PlanetName = "Mars" };
-            _playerContext.SurveyList.Add(survey);
+            _playerContext.AddSurvey(survey);
             _playerContext.InvalidateSurveyCache();
 
             var result = _playerContext.FindSurvey("sv-new");
@@ -196,7 +196,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void FindColony_ReturnsCorrectColony()
         {
             var colony = new Colony { UUID = "col-001", OwnerUUID = "player1", PlanetName = "Venus", ColonyName = "Base Alpha" };
-            _playerContext.ColonyList.Add(colony);
+            _playerContext.AddColony(colony);
             _playerContext.InvalidateColonyCache();
 
             var result = _playerContext.FindColony("col-001");
@@ -230,7 +230,7 @@ namespace OE2EmpireTracker.Tests.Services
             _playerContext.FindColony("trigger-cache");
 
             var colony = new Colony { UUID = "col-new", OwnerUUID = "player1", PlanetName = "Jupiter", ColonyName = "Base Beta" };
-            _playerContext.ColonyList.Add(colony);
+            _playerContext.AddColony(colony);
             _playerContext.InvalidateColonyCache();
 
             var result = _playerContext.FindColony("col-new");
@@ -248,9 +248,9 @@ namespace OE2EmpireTracker.Tests.Services
             var survey = new Survey("DeleteMe Survey") { UUID = "sv-del", OwnerUUID = playerUUID, PlanetName = "X" };
             var colony = new Colony { UUID = "col-del", OwnerUUID = playerUUID, PlanetName = "X", ColonyName = "X" };
 
-            _playerContext.BlueprintList.Add(bp);
-            _playerContext.SurveyList.Add(survey);
-            _playerContext.ColonyList.Add(colony);
+            _playerContext.AddBlueprint(bp);
+            _playerContext.AddSurvey(survey);
+            _playerContext.AddColony(colony);
             _playerContext.InvalidateBlueprintCache();
             _playerContext.InvalidateSurveyCache();
             _playerContext.InvalidateColonyCache();

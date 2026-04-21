@@ -104,7 +104,7 @@ namespace OE2EmpireTracker.Tests.Services
             for (int i = 0; i < iterations; i++)
             {
                 // Clear colony list for this iteration
-                pc.ColonyList.Clear();
+                foreach (var item in pc.ColonyList.ToList()) pc.RemoveColony(item);
 
                 // Generate 2-8 colonies with mixed owners
                 int colonyCount = rng.Next(2, 9);
@@ -124,7 +124,7 @@ namespace OE2EmpireTracker.Tests.Services
                         colony.Structures.Add(structure);
                     }
 
-                    pc.ColonyList.Add(colony);
+                    pc.AddColony(colony);
                 }
 
                 // Collect the set of expired colony UUIDs for each player selection
@@ -207,14 +207,14 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 for (int i = 0; i < iterations; i++)
                 {
-                    pc.ColonyList.Clear();
+                    foreach (var item in pc.ColonyList.ToList()) pc.RemoveColony(item);
 
                     // Generate 1-8 colonies with random build-only timer states
                     int colonyCount = rng.Next(1, 9);
                     for (int c = 0; c < colonyCount; c++)
                     {
                         var colony = GenerateColonyWithBuildTimersOnly(rng);
-                        pc.ColonyList.Add(colony);
+                        pc.AddColony(colony);
                     }
 
                     // Record which colonies have expired timers BEFORE the cycle
@@ -302,14 +302,14 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 for (int i = 0; i < iterations; i++)
                 {
-                    pc.ColonyList.Clear();
+                    foreach (var item in pc.ColonyList.ToList()) pc.RemoveColony(item);
 
                     // Generate 1-8 colonies with random build-only timer states
                     int colonyCount = rng.Next(1, 9);
                     for (int c = 0; c < colonyCount; c++)
                     {
                         var colony = GenerateColonyWithBuildTimersOnly(rng);
-                        pc.ColonyList.Add(colony);
+                        pc.AddColony(colony);
                     }
 
                     // Determine expected: colonies with expired timers, preserving order
@@ -401,14 +401,14 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 for (int i = 0; i < iterations; i++)
                 {
-                    pc.ColonyList.Clear();
+                    foreach (var item in pc.ColonyList.ToList()) pc.RemoveColony(item);
 
                     // Generate 0-8 colonies with random build-only timer states
                     int colonyCount = rng.Next(0, 9);
                     for (int c = 0; c < colonyCount; c++)
                     {
                         var colony = GenerateColonyWithBuildTimersOnly(rng);
-                        pc.ColonyList.Add(colony);
+                        pc.AddColony(colony);
                     }
 
                     // Determine if any colonies have expired timers
@@ -492,7 +492,7 @@ namespace OE2EmpireTracker.Tests.Services
 
                     for (int c = 0; c < cycleCount; c++)
                     {
-                        pc.ColonyList.Clear();
+                        foreach (var item in pc.ColonyList.ToList()) pc.RemoveColony(item);
 
                         if (shouldError[c])
                         {
@@ -513,7 +513,7 @@ namespace OE2EmpireTracker.Tests.Services
                             // Add a null entry to force NullReferenceException during iteration
                             errorColony.Structures.Add(null);
 
-                            pc.ColonyList.Add(errorColony);
+                            pc.AddColony(errorColony);
                         }
                         else
                         {
@@ -531,7 +531,7 @@ namespace OE2EmpireTracker.Tests.Services
                                 safeColony.UUID = Guid.NewGuid().ToString();
                                 safeColony.ColonyName = "SafeColony";
                                 safeColony.PlanetName = "SafePlanet";
-                                pc.ColonyList.Add(safeColony);
+                                pc.AddColony(safeColony);
                             }
                             else
                             {
@@ -547,7 +547,7 @@ namespace OE2EmpireTracker.Tests.Services
                                 buildStructure.ProcessCompletionTime = null;
                                 buildColony.Structures.Add(buildStructure);
 
-                                pc.ColonyList.Add(buildColony);
+                                pc.AddColony(buildColony);
                             }
                         }
 
@@ -806,7 +806,7 @@ namespace OE2EmpireTracker.Tests.Services
                 colony.ColonyName = "TestColony";
                 colony.PlanetName = "TestPlanet";
                 colony.OwnerUUID = "player1";
-                pc.ColonyList.Add(colony);
+                pc.AddColony(colony);
 
                 // Create a build plan with a Delivering commodity item
                 var plan = new BuildPlan();
@@ -825,7 +825,7 @@ namespace OE2EmpireTracker.Tests.Services
                 item.Quantity = 1;
                 plan.Items.Add(item);
 
-                pc.BuildPlanList.Add(plan);
+                pc.AddBuildPlan(plan);
                 pc.InvalidateBuildPlanCache();
 
                 // Set the cascade flag
@@ -911,7 +911,7 @@ namespace OE2EmpireTracker.Tests.Services
                 colony.ColonyName = "TestColony";
                 colony.PlanetName = "TestPlanet";
                 colony.OwnerUUID = "player1";
-                pc.ColonyList.Add(colony);
+                pc.AddColony(colony);
 
                 var plan = new BuildPlan();
                 plan.UUID = Guid.NewGuid().ToString();
@@ -952,7 +952,7 @@ namespace OE2EmpireTracker.Tests.Services
                 completedItem.Quantity = 1;
                 plan.Items.Add(completedItem);
 
-                pc.BuildPlanList.Add(plan);
+                pc.AddBuildPlan(plan);
                 pc.InvalidateBuildPlanCache();
                 pc.CascadeResourceCheckDirty = true;
 
@@ -1018,7 +1018,7 @@ namespace OE2EmpireTracker.Tests.Services
                 colony.ColonyName = "TestColony";
                 colony.PlanetName = "TestPlanet";
                 colony.OwnerUUID = "player1";
-                pc.ColonyList.Add(colony);
+                pc.AddColony(colony);
 
                 // Inactive plan with a Delivering item
                 var plan = new BuildPlan();
@@ -1037,7 +1037,7 @@ namespace OE2EmpireTracker.Tests.Services
                 item.Quantity = 1;
                 plan.Items.Add(item);
 
-                pc.BuildPlanList.Add(plan);
+                pc.AddBuildPlan(plan);
                 pc.InvalidateBuildPlanCache();
                 pc.CascadeResourceCheckDirty = true;
 

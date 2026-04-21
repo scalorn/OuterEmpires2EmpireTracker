@@ -4,6 +4,7 @@ using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Services.Migration;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {
@@ -23,7 +24,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             TestHelper.SetAllFilePaths();
             EmpireContext.GetInstance();
             _playerContext = EmpireContext.PlayerContext;
-            _playerContext.SurveyList.Clear();
+            foreach (var item in _playerContext.SurveyList.ToList()) _playerContext.RemoveSurvey(item);
         }
 
         [TearDown]
@@ -80,7 +81,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             // Arrange
             var colony = CreateColony("owner-1", "Alpha Prime", "Sol");
             var realSurvey = CreateSurvey("real-1", "Alpha Prime", "SURV-001", "Iron", "Medium", "120");
-            _playerContext.SurveyList.Add(realSurvey);
+            _playerContext.AddSurvey(realSurvey);
 
             var structure = CreateMiningRig("rig-1", "Iron", "Medium", "real-1");
 
@@ -103,8 +104,8 @@ namespace OE2EmpireTracker.Tests.Parsers
             string defaultUUID = DeterministicUUID.GenerateDefaultSurvey("owner-1", "Alpha Prime", "Sol");
             var defaultSurvey = CreateSurvey(defaultUUID, "Alpha Prime", "DEFAULT", "Iron", "Medium", "100");
             var realSurvey = CreateSurvey("real-1", "Alpha Prime", "SURV-001", "Iron", "Medium", "130");
-            _playerContext.SurveyList.Add(defaultSurvey);
-            _playerContext.SurveyList.Add(realSurvey);
+            _playerContext.AddSurvey(defaultSurvey);
+            _playerContext.AddSurvey(realSurvey);
 
             var structure = CreateMiningRig("rig-1", "Iron", "Medium", defaultUUID);
 
@@ -126,8 +127,8 @@ namespace OE2EmpireTracker.Tests.Parsers
             var colony = CreateColony("owner-1", "Alpha Prime", "Sol");
             var survey1 = CreateSurvey("s1", "Alpha Prime", "SURV-001", "Iron", "Medium", "100");
             var survey2 = CreateSurvey("s2", "Alpha Prime", "SURV-002", "Iron", "Medium", "150");
-            _playerContext.SurveyList.Add(survey1);
-            _playerContext.SurveyList.Add(survey2);
+            _playerContext.AddSurvey(survey1);
+            _playerContext.AddSurvey(survey2);
 
             var structure = CreateMiningRig("rig-1", "Iron", "Medium");
 
@@ -170,7 +171,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             // Arrange: structure references a survey UUID that no longer exists
             var colony = CreateColony("owner-1", "Alpha Prime", "Sol");
             var realSurvey = CreateSurvey("real-2", "Alpha Prime", "SURV-002", "Iron", "Medium", "200");
-            _playerContext.SurveyList.Add(realSurvey);
+            _playerContext.AddSurvey(realSurvey);
 
             var structure = CreateMiningRig("rig-1", "Iron", "Medium", "deleted-survey-uuid");
 
@@ -192,7 +193,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             var colony = CreateColony("owner-1", "Alpha Prime", "Sol");
             string defaultUUID = DeterministicUUID.GenerateDefaultSurvey("owner-1", "Alpha Prime", "Sol");
             var defaultSurvey = CreateSurvey(defaultUUID, "Alpha Prime", "DEFAULT", "Iron", "Medium", "100");
-            _playerContext.SurveyList.Add(defaultSurvey);
+            _playerContext.AddSurvey(defaultSurvey);
 
             var structure = CreateMiningRig("rig-1", "Iron", "Medium", defaultUUID);
 

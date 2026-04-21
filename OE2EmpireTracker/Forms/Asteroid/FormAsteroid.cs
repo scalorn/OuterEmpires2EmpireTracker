@@ -309,7 +309,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
                 UUID = Guid.NewGuid().ToString(),
                 Name = "New Asteroid"
             };
-            playerContext.AsteroidList.Add(asteroid);
+            playerContext.AddAsteroid(asteroid);
             playerContext.WriteContext();
             _selectedAsteroid = asteroid;
             PopulateAsteroidList();
@@ -339,7 +339,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
                 string.Format("Delete asteroid \"{0}\"?", _selectedAsteroid.Name),
                 "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
-            playerContext.AsteroidList.Remove(_selectedAsteroid);
+            playerContext.RemoveAsteroid(_selectedAsteroid);
             playerContext.WriteContext();
             _selectedAsteroid = null;
             PopulateAsteroidList();

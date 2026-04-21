@@ -120,7 +120,10 @@ namespace OE2EmpireTracker.Services
                     {
                         bp.OwnerUUID = playerContext.CurrentPlayerUUID;
                     }
-                    targetList.Add(bp);
+                    if (isGlobal)
+                        empireContext.AddGlobalBlueprint(bp);
+                    else
+                        playerContext.AddBlueprint(bp);
                     entry.Action = ImportAction.Created;
                     entry.UUID = bp.UUID;
                     Log.Info("Created {0} blueprint: {1} Ev{2} {3} C{4} TL={5} UUID={6}",
@@ -152,7 +155,7 @@ namespace OE2EmpireTracker.Services
         }
 
         internal static Models.Blueprint FindByDedupKey(
-            IList<Models.Blueprint> list,
+            IEnumerable<Models.Blueprint> list,
             Models.Blueprint bp)
         {
             if (list == null) return null;

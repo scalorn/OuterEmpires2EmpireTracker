@@ -213,7 +213,7 @@ namespace OE2EmpireTracker.Forms.Contacts
                 Name = "New Faction",
                 Description = ""
             };
-            playerContext.FactionList.Add(faction);
+            playerContext.AddFaction(faction);
             playerContext.WriteContext();
             _selectedFaction = faction;
             PopulateFactionList();
@@ -248,7 +248,7 @@ namespace OE2EmpireTracker.Forms.Contacts
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            playerContext.FactionList.Remove(_selectedFaction);
+            playerContext.RemoveFaction(_selectedFaction);
             playerContext.WriteContext();
             _selectedFaction = null;
             PopulateFactionList();
@@ -444,7 +444,7 @@ namespace OE2EmpireTracker.Forms.Contacts
                 Name = "New Character",
                 FactionUUID = ""
             };
-            playerContext.ExternalCharacterList.Add(character);
+            playerContext.AddExternalCharacter(character);
             playerContext.WriteContext();
             _selectedCharacter = character;
             PopulateCharacterList();
@@ -462,7 +462,7 @@ namespace OE2EmpireTracker.Forms.Contacts
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            playerContext.ExternalCharacterList.Remove(_selectedCharacter);
+            playerContext.RemoveExternalCharacter(_selectedCharacter);
             playerContext.WriteContext();
             _selectedCharacter = null;
             PopulateCharacterList();

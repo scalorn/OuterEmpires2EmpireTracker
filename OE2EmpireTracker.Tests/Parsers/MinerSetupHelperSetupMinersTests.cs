@@ -27,7 +27,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             TestHelper.SetAllFilePaths();
             _empireContext = EmpireContext.GetInstance();
             _playerContext = EmpireContext.PlayerContext;
-            _playerContext.SurveyList.Clear();
+            foreach (var item in _playerContext.SurveyList.ToList()) _playerContext.RemoveSurvey(item);
         }
 
         [TearDown]
@@ -95,7 +95,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             colony.Structures.Add(miner);
 
             var realSurvey = CreateRealSurvey("survey-1", "Alpha Prime", "SURV-001", "Iron", "Medium", "120");
-            _playerContext.SurveyList.Add(realSurvey);
+            _playerContext.AddSurvey(realSurvey);
 
             var maxRates = new Dictionary<string, decimal> { { "rig-1", 120m } };
 
@@ -164,7 +164,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             // Arrange
             var colony = CreateColony("owner-1", "Gamma", "Vega");
             var realSurvey = CreateRealSurvey("survey-1", "Gamma", "SURV-001", "Copper", "Low", "80");
-            _playerContext.SurveyList.Add(realSurvey);
+            _playerContext.AddSurvey(realSurvey);
 
             var miner = CreateMiningRig("rig-1", "Copper", "Low");
             miner.MiningSurvey = "survey-1"; // already assigned from previous import
@@ -245,7 +245,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             colony.Structures.Add(goldMiner);
 
             var ironSurvey = CreateRealSurvey("s-iron", "Zeta", "SURV-001", "Iron", "Medium", "100");
-            _playerContext.SurveyList.Add(ironSurvey);
+            _playerContext.AddSurvey(ironSurvey);
             // No real survey for Gold -- will fall back to default
 
             var maxRates = new Dictionary<string, decimal>
@@ -296,7 +296,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             };
             defaultSurvey.Resources["Iron"] = new SurveyResource("Iron", "Medium", "100");
             defaultSurvey.Resources["Copper"] = new SurveyResource("Copper", "High", "50");
-            _playerContext.SurveyList.Add(defaultSurvey);
+            _playerContext.AddSurvey(defaultSurvey);
 
             // Only Iron miner exists -- Copper is stale
             var ironMiner = CreateMiningRig("rig-iron", "Iron", "Medium");

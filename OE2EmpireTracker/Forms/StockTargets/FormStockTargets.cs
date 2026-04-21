@@ -367,7 +367,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 OwnerUUID = playerContext.CurrentPlayerUUID ?? "",
                 IsActive = true
             };
-            playerContext.StockPlanList.Add(plan);
+            playerContext.AddStockPlan(plan);
             playerContext.WriteContext();
             _selectedPlan = plan;
             PopulatePlanList();
@@ -382,7 +382,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 string.Format("Delete stock plan \"{0}\"?", _selectedPlan.Name),
                 "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
-            playerContext.StockPlanList.Remove(_selectedPlan);
+            playerContext.RemoveStockPlan(_selectedPlan);
             playerContext.WriteContext();
             _selectedPlan = null;
             PopulatePlanList();
@@ -832,7 +832,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 OwnerUUID = playerContext.CurrentPlayerUUID ?? "",
                 IsActive = true
             };
-            playerContext.StockProfileList.Add(profile);
+            playerContext.AddStockProfile(profile);
             playerContext.WriteContext();
             _selectedProfile = profile;
             PopulateProfileList();
@@ -847,7 +847,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 string.Format("Delete profile \"{0}\"?", _selectedProfile.Name),
                 "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
-            playerContext.StockProfileList.Remove(_selectedProfile);
+            playerContext.RemoveStockProfile(_selectedProfile);
             playerContext.WriteContext();
             _selectedProfile = null;
             PopulateProfileList();

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -60,8 +61,8 @@ namespace OE2EmpireTracker.Tests.Services
             empireContext = EmpireContext.GetInstance();
             playerContext = PlayerContext.GetInstance();
 
-            empireContext.GlobalBlueprintList.Clear();
-            playerContext.BlueprintList.Clear();
+            foreach (var item in empireContext.GlobalBlueprintList.ToList()) empireContext.RemoveGlobalBlueprint(item);
+            foreach (var item in playerContext.BlueprintList.ToList()) playerContext.RemoveBlueprint(item);
             playerContext.CurrentPlayerUUID = TestPlayerUUID;
         }
 
@@ -94,7 +95,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void FindTarget_SelectedMatch_ExactTypeMatch()
         {
             var selected = MakeBlueprint("AMX-SS Reactor Core", "sel-uuid-1", "Reactor", 2);
-            empireContext.GlobalBlueprintList.Add(selected);
+            empireContext.AddGlobalBlueprint(selected);
 
             var incoming = MakeBlueprint("AMX-SS Reactor Core", null, "Reactor", 2);
 
@@ -115,7 +116,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var selected = MakeBlueprint("Mining Laser", "sel-uuid-2", null, 0);
             selected.BluePrintType = null;
-            empireContext.GlobalBlueprintList.Add(selected);
+            empireContext.AddGlobalBlueprint(selected);
 
             var incoming = MakeBlueprint("Mining Laser", null, "MiningLaser", 0);
 
@@ -134,7 +135,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void FindTarget_SelectedMatch_PlayerBlueprint_IsGlobalFalse()
         {
             var selected = MakeBlueprint("Fighter Hull", "sel-uuid-3", "Hull", 3);
-            playerContext.BlueprintList.Add(selected);
+            playerContext.AddBlueprint(selected);
 
             var incoming = MakeBlueprint("Fighter Hull", null, "Hull", 3);
 
@@ -153,7 +154,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void FindTarget_NoSelectedMatch_NameDiffers()
         {
             var selected = MakeBlueprint("Reactor Core", "sel-uuid-4", "Reactor", 0);
-            empireContext.GlobalBlueprintList.Add(selected);
+            empireContext.AddGlobalBlueprint(selected);
 
             var incoming = MakeBlueprint("Shield Generator", null, "Shield", 0);
 
@@ -171,7 +172,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void FindTarget_NoSelectedMatch_EvolutionDiffers()
         {
             var selected = MakeBlueprint("AMX-SS Reactor Core", "sel-uuid-5", "Reactor", 0);
-            empireContext.GlobalBlueprintList.Add(selected);
+            empireContext.AddGlobalBlueprint(selected);
 
             var incoming = MakeBlueprint("AMX-SS Reactor Core", null, "Reactor", 3);
 
@@ -187,7 +188,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void FindTarget_NoSelectedMatch_TypeDiffers()
         {
             var selected = MakeBlueprint("Reactor Core", "sel-uuid-6", "Reactor", 0);
-            empireContext.GlobalBlueprintList.Add(selected);
+            empireContext.AddGlobalBlueprint(selected);
 
             var incoming = MakeBlueprint("Reactor Core", null, "Shield", 0);
 
@@ -226,10 +227,10 @@ namespace OE2EmpireTracker.Tests.Services
         public void FindTarget_DedupMatch_GlobalList_Evo0()
         {
             var selected = MakeBlueprint("Unrelated Blueprint", "sel-uuid-10", "Hull", 5);
-            playerContext.BlueprintList.Add(selected);
+            playerContext.AddBlueprint(selected);
 
             var existing = MakeBlueprint("AMX-SS Reactor Core", "dedup-uuid-1", "Reactor", 0, 1, null);
-            empireContext.GlobalBlueprintList.Add(existing);
+            empireContext.AddGlobalBlueprint(existing);
 
             var incoming = MakeBlueprint("AMX-SS Reactor Core", null, "Reactor", 0, 1, null);
 
@@ -249,10 +250,10 @@ namespace OE2EmpireTracker.Tests.Services
         public void FindTarget_DedupMatch_PlayerList_EvoNonZero()
         {
             var selected = MakeBlueprint("Unrelated Blueprint", "sel-uuid-11", "Hull", 0);
-            empireContext.GlobalBlueprintList.Add(selected);
+            empireContext.AddGlobalBlueprint(selected);
 
             var existing = MakeBlueprint("Fighter Hull", "dedup-uuid-2", "Hull", 3, 2, "MilSpec");
-            playerContext.BlueprintList.Add(existing);
+            playerContext.AddBlueprint(existing);
 
             var incoming = MakeBlueprint("Fighter Hull", null, "Hull", 3, 2, "MilSpec");
 
@@ -276,7 +277,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void FindTarget_NoMatch_ReturnsNullTarget()
         {
             var selected = MakeBlueprint("Unrelated Blueprint", "sel-uuid-20", "Hull", 0);
-            empireContext.GlobalBlueprintList.Add(selected);
+            empireContext.AddGlobalBlueprint(selected);
 
             var incoming = MakeBlueprint("Brand New Reactor", null, "Reactor", 0, 1, null);
 
@@ -295,7 +296,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void FindTarget_NoMatch_PlayerRoute_ReturnsNullTarget()
         {
             var selected = MakeBlueprint("Unrelated Blueprint", "sel-uuid-21", "Hull", 0);
-            empireContext.GlobalBlueprintList.Add(selected);
+            empireContext.AddGlobalBlueprint(selected);
 
             var incoming = MakeBlueprint("Brand New Shield", null, "Shield", 5, 3, "MilSpec");
 
@@ -314,10 +315,10 @@ namespace OE2EmpireTracker.Tests.Services
         public void FindTarget_NoMatch_PartialDedupKey_DifferentEvolution()
         {
             var selected = MakeBlueprint("Unrelated Blueprint", "sel-uuid-22", "Hull", 0);
-            empireContext.GlobalBlueprintList.Add(selected);
+            empireContext.AddGlobalBlueprint(selected);
 
             var existing = MakeBlueprint("AMX-SS Reactor Core", "existing-uuid", "Reactor", 0, 1, null);
-            empireContext.GlobalBlueprintList.Add(existing);
+            empireContext.AddGlobalBlueprint(existing);
 
             // Same name but different evolution
             var incoming = MakeBlueprint("AMX-SS Reactor Core", null, "Reactor", 3, 1, null);

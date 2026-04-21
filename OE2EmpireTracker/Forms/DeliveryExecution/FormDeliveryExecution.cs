@@ -846,7 +846,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            playerContext.DeliveryPlanList.Remove(selectedPlan);
+            playerContext.RemoveDeliveryPlan(selectedPlan);
             playerContext.WriteContext();
             playerContext.OnDeliveryDataChanged();
             Log.Info("Delivery plan '{0}' deleted", selectedPlan.Name);
@@ -1091,7 +1091,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                         newPlan.Stops.Add(newStop);
                 }
 
-                playerContext.DeliveryPlanList.Add(newPlan);
+                playerContext.AddDeliveryPlan(newPlan);
                 Log.Info("Created split trip plan '{0}' (UUID={1})",
                     newPlan.Name, newPlan.UUID);
             }

@@ -321,7 +321,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 Name = "New Template",
                 OwnerUUID = playerContext.CurrentPlayerUUID
             };
-            playerContext.ShipTemplateList.Add(tmpl);
+            playerContext.AddShipTemplate(tmpl);
             playerContext.WriteContext();
             _selectedTemplate = tmpl;
             PopulateTemplateList();
@@ -349,7 +349,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 string.Format("Delete template '{0}'?", _selectedTemplate.Name),
                 "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
-            playerContext.ShipTemplateList.Remove(_selectedTemplate);
+            playerContext.RemoveShipTemplate(_selectedTemplate);
             playerContext.WriteContext();
             _selectedTemplate = null;
             PopulateTemplateList();
@@ -443,7 +443,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
             // Persist
             if (!playerContext.BuildPlanList.Contains(targetPlan))
-                playerContext.BuildPlanList.Add(targetPlan);
+                playerContext.AddBuildPlan(targetPlan);
             playerContext.WriteContext();
             playerContext.OnBuildPlanDataChanged(targetPlan.UUID);
 

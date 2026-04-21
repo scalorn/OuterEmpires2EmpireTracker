@@ -66,7 +66,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     bp.Class = 1;
                     bp.TechLevel = "LL";
                     bp.UUID = DeterministicUUID.Generate(name, 0, "Hull", 1, "LL");
-                    ec.GlobalBlueprintList.Add(bp);
+                    ec.AddGlobalBlueprint(bp);
                 }
 
                 // Create rename entries that rename existing blueprints

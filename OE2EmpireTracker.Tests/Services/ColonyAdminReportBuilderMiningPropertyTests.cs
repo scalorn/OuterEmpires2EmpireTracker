@@ -39,7 +39,7 @@ namespace OE2EmpireTracker.Tests.Services
             var bp = new OE2EmpireTracker.Models.Blueprint(name);
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = bpType;
-            PlayerContext.GetInstance().BlueprintList.Add(bp);
+            PlayerContext.GetInstance().AddBlueprint(bp);
             return bp;
         }
 
@@ -49,7 +49,7 @@ namespace OE2EmpireTracker.Tests.Services
             var survey = new Survey("TestSurvey_" + Guid.NewGuid().ToString().Substring(0, 6));
             survey.UUID = Guid.NewGuid().ToString();
             survey.Resources[resource] = new SurveyResource(resource, purity, amount);
-            pc.SurveyList.Add(survey);
+            pc.AddSurvey(survey);
             return survey;
         }
 
@@ -101,8 +101,8 @@ namespace OE2EmpireTracker.Tests.Services
             return Prop.ForAll(gen.ToArbitrary(), data =>
             {
                 var pc = PlayerContext.GetInstance();
-                pc.BlueprintList.Clear();
-                pc.SurveyList.Clear();
+                foreach (var item in pc.BlueprintList.ToList()) pc.RemoveBlueprint(item);
+                foreach (var item in pc.SurveyList.ToList()) pc.RemoveSurvey(item);
 
                 string resource = "Halogen";
                 string purity = "High";

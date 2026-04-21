@@ -87,7 +87,7 @@ namespace OE2EmpireTracker.Forms.Market
                 Quantity = 1,
                 PricePerUnit = 0m
             };
-            playerContext.MarketListingList.Add(listing);
+            playerContext.AddMarketListing(listing);
             playerContext.InvalidateMarketListingCache();
             playerContext.WriteContext();
             playerContext.OnMarketDataChanged();
@@ -134,7 +134,7 @@ namespace OE2EmpireTracker.Forms.Market
                 "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            playerContext.MarketListingList.Remove(listing);
+            playerContext.RemoveMarketListing(listing);
             playerContext.InvalidateMarketListingCache();
             playerContext.WriteContext();
             playerContext.OnMarketDataChanged();
@@ -165,7 +165,7 @@ namespace OE2EmpireTracker.Forms.Market
                         return;
                     }
 
-                    playerContext.MarketTransactionList.Add(tx);
+                    playerContext.AddMarketTransaction(tx);
                     playerContext.WriteContext();
                     playerContext.OnMarketDataChanged();
                     Log.Info("Recorded sale: {0}x '{1}' at {2}/unit", dlg.SaleQuantity, listing.ItemName, dlg.SalePricePerUnit);

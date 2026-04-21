@@ -794,7 +794,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 OwnerUUID = playerContext.CurrentPlayerUUID,
                 RouteUUID = viewModel.UUID
             };
-            playerContext.DeliveryPlanList.Add(plan);
+            playerContext.AddDeliveryPlan(plan);
             playerContext.WriteContext();
 
             PopulatePlanDropdown();
@@ -812,7 +812,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            playerContext.DeliveryPlanList.Remove(planViewModel.Data);
+            playerContext.RemoveDeliveryPlan(planViewModel.Data);
             playerContext.WriteContext();
             planViewModel = null;
             selectedPlanStop = null;

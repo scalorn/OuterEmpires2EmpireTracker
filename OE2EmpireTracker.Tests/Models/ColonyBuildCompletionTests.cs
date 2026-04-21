@@ -176,7 +176,7 @@ namespace OE2EmpireTracker.Tests.Models
             var bp = new OE2EmpireTracker.Models.Blueprint("TestMiningRig");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.MiningRig;
-            playerContext.BlueprintList.Add(bp);
+            playerContext.AddBlueprint(bp);
 
             // Create a survey
             var survey = new Survey();
@@ -187,7 +187,7 @@ namespace OE2EmpireTracker.Tests.Models
             {
                 { "TestOre", new SurveyResource { Resource = "TestOre", Purity = "Low", Amount = "50" } }
             };
-            playerContext.SurveyList.Add(survey);
+            playerContext.AddSurvey(survey);
 
             var structure = new ColonyStructure();
             structure.UUID = Guid.NewGuid().ToString();

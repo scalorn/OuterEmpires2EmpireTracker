@@ -522,7 +522,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 {
                     // Create new profile with generated UUID
                     tempProfile.UUID = Guid.NewGuid().ToString();
-                    playerContext.PlayerProfileList.Add(tempProfile);
+                    playerContext.AddPlayerProfile(tempProfile);
                     viewModel.SelectProfile(tempProfile);
                 }
 

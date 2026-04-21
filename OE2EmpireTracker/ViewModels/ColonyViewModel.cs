@@ -164,7 +164,7 @@ namespace OE2EmpireTracker.ViewModels
         {
             EnsureUUID();
             if (!_playerContext.ColonyList.Contains(_colony))
-                _playerContext.ColonyList.Add(_colony);
+                _playerContext.AddColony(_colony);
             _playerContext.WriteContext();
             _playerContext.OnColonyDataChanged(_colony.UUID);
         }

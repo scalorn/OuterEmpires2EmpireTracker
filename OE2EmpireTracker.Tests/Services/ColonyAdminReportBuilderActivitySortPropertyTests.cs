@@ -50,7 +50,7 @@ namespace OE2EmpireTracker.Tests.Services
             return Prop.ForAll(gen.ToArbitrary(), data =>
             {
                 var pc = PlayerContext.GetInstance();
-                pc.BlueprintList.Clear();
+                foreach (var item in pc.BlueprintList.ToList()) pc.RemoveBlueprint(item);
 
                 var colony = new Colony
                 {
@@ -69,12 +69,12 @@ namespace OE2EmpireTracker.Tests.Services
                     var bp = new OE2EmpireTracker.Models.Blueprint(name);
                     bp.UUID = Guid.NewGuid().ToString();
                     bp.BluePrintType = BlueprintTypes.Manufactory;
-                    pc.BlueprintList.Add(bp);
+                    pc.AddBlueprint(bp);
 
                     var targetBp = new OE2EmpireTracker.Models.Blueprint("Target" + i);
                     targetBp.UUID = Guid.NewGuid().ToString();
                     targetBp.BluePrintType = "Beamer/Small";
-                    pc.BlueprintList.Add(targetBp);
+                    pc.AddBlueprint(targetBp);
 
                     var s = new ColonyStructure();
                     s.UUID = Guid.NewGuid().ToString();

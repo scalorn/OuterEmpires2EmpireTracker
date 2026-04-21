@@ -154,10 +154,10 @@ namespace OE2EmpireTracker.Services
                 if (!findResult.IsGlobal)
                     tempBP.OwnerUUID = pc.CurrentPlayerUUID;
 
-                var targetList = findResult.IsGlobal
-                    ? ec.GlobalBlueprintList
-                    : pc.BlueprintList;
-                targetList.Add(tempBP);
+                if (findResult.IsGlobal)
+                    ec.AddGlobalBlueprint(tempBP);
+                else
+                    pc.AddBlueprint(tempBP);
                 importedBP = tempBP;
                 Log.Info("New blueprint created: {0} Ev{1} {2} -> {3}",
                     importedBP.Name, importedBP.Evolution, importedBP.BluePrintType,

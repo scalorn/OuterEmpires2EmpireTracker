@@ -63,14 +63,14 @@ namespace OE2EmpireTracker.Tests.Models
                 { GameConstants.PropPowerProvided, "500" },
                 { GameConstants.PropBlueCollarDetail, "1" }
             });
-            pc.BlueprintList.Add(reactorBp);
+            pc.AddBlueprint(reactorBp);
 
             var minerBp = MakeBlueprint("Mining Rig", new Dictionary<string, string>
             {
                 { GameConstants.PropPowerRequired, "75" },
                 { GameConstants.PropBlueCollarDetail, "1" }
             });
-            pc.BlueprintList.Add(minerBp);
+            pc.AddBlueprint(minerBp);
 
             var colony = new Colony();
             colony.UUID = Guid.NewGuid().ToString();
@@ -110,7 +110,7 @@ namespace OE2EmpireTracker.Tests.Models
             // Validates: Requirements 1.3, 1.5, 9.1, 12.1
             var colony = BuildColonyWithExpiredTimer();
             var pc = PlayerContext.GetInstance();
-            pc.ColonyList.Add(colony);
+            pc.AddColony(colony);
 
             Exception thread1Exception = null;
             Exception thread2Exception = null;
@@ -244,7 +244,7 @@ namespace OE2EmpireTracker.Tests.Models
 
             result1.Clear(); // Modify the returned list
 
-            // Get the list again — should be unchanged
+            // Get the list again Ã¢â‚¬â€ should be unchanged
             var result2 = bag.FindByType(ItemType.ItemTypeEnum.Resource, "Iron");
             Assert.That(result2.Count, Is.EqualTo(2), "Modifying returned list should not affect ItemBag");
         }
@@ -362,7 +362,7 @@ namespace OE2EmpireTracker.Tests.Models
 
             var locks = tracking.GetLocksForProcess(processUUID);
 
-            // Verify it's read-only — attempting to cast and modify should fail
+            // Verify it's read-only Ã¢â‚¬â€ attempting to cast and modify should fail
             Assert.That(locks, Is.InstanceOf<System.Collections.ObjectModel.ReadOnlyCollection<ItemLock>>());
             Assert.That(locks.Count, Is.EqualTo(2));
 
@@ -533,12 +533,12 @@ namespace OE2EmpireTracker.Tests.Models
             // Validates: Requirements 11.3
             var pc = PlayerContext.GetInstance();
 
-            // Create colony A — locked, with expired timer
+            // Create colony A Ã¢â‚¬â€ locked, with expired timer
             var bpA = MakeBlueprint("Power Plant", new Dictionary<string, string>
             {
                 { GameConstants.PropPowerProvided, "100" }
             });
-            pc.BlueprintList.Add(bpA);
+            pc.AddBlueprint(bpA);
 
             var colonyA = new Colony();
             colonyA.UUID = Guid.NewGuid().ToString();
@@ -549,14 +549,14 @@ namespace OE2EmpireTracker.Tests.Models
             structA.BuildCompletionTime.StartTime = DateTime.UtcNow.AddMinutes(-10);
             structA.BuildCompletionTime.EndTime = DateTime.UtcNow.AddMinutes(-5);
             colonyA.Structures.Add(structA);
-            pc.ColonyList.Add(colonyA);
+            pc.AddColony(colonyA);
 
-            // Create colony B — not locked, with expired timer
+            // Create colony B Ã¢â‚¬â€ not locked, with expired timer
             var bpB = MakeBlueprint("Power Plant", new Dictionary<string, string>
             {
                 { GameConstants.PropPowerProvided, "200" }
             });
-            pc.BlueprintList.Add(bpB);
+            pc.AddBlueprint(bpB);
 
             var colonyB = new Colony();
             colonyB.UUID = Guid.NewGuid().ToString();
@@ -567,7 +567,7 @@ namespace OE2EmpireTracker.Tests.Models
             structB.BuildCompletionTime.StartTime = DateTime.UtcNow.AddMinutes(-10);
             structB.BuildCompletionTime.EndTime = DateTime.UtcNow.AddMinutes(-5);
             colonyB.Structures.Add(structB);
-            pc.ColonyList.Add(colonyB);
+            pc.AddColony(colonyB);
 
             // Hold write lock on colony A to simulate contention
             colonyA.ColonyLock.EnterWriteLock();

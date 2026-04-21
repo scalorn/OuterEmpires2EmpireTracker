@@ -658,7 +658,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             try
             {
-                playerContext.ColonyList.Remove(selectedColony);
+                playerContext.RemoveColony(selectedColony);
             }
             finally
             {
@@ -1286,7 +1286,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Persist new/updated plan
             if (!playerContext.BuildPlanList.Contains(targetPlan))
-                playerContext.BuildPlanList.Add(targetPlan);
+                playerContext.AddBuildPlan(targetPlan);
             playerContext.WriteContext();
             playerContext.OnBuildPlanDataChanged(targetPlan.UUID);
 
@@ -2480,7 +2480,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 else
                 {
                     var newColony = ColonyImportHelper.CreateFromTemp(tempColony, playerContext.CurrentPlayerUUID);
-                    playerContext.ColonyList.Add(newColony);
+                    playerContext.AddColony(newColony);
                     selectedColony = newColony;
 
                     Log.Info("New colony created via dedup: {0} ({1} structures, {2} commodity requests)",
@@ -2876,7 +2876,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 DeliveryRouteUUID = routeUUID,
                 IsActive = true
             };
-            playerContext.WarehouseOverflowRuleList.Add(rule);
+            playerContext.AddWarehouseOverflowRule(rule);
             playerContext.WriteContext();
             PopulateOverflowGrid();
             Log.Info("Added overflow rule: {0} ({1}) threshold={2}", resource, purity, threshold);
@@ -2887,7 +2887,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (selectedColony == null || dgvOverflowRules.SelectedRows.Count == 0) return;
             var rule = dgvOverflowRules.SelectedRows[0].Tag as WarehouseOverflowRule;
             if (rule == null) return;
-            playerContext.WarehouseOverflowRuleList.Remove(rule);
+            playerContext.RemoveWarehouseOverflowRule(rule);
             playerContext.WriteContext();
             PopulateOverflowGrid();
             Log.Info("Removed overflow rule: {0} ({1})", rule.ResourceName, rule.ResourcePurity);

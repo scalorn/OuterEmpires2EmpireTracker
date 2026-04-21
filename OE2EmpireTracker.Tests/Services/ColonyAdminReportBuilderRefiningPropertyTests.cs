@@ -38,7 +38,7 @@ namespace OE2EmpireTracker.Tests.Services
             var bp = new OE2EmpireTracker.Models.Blueprint(name);
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = bpType;
-            PlayerContext.GetInstance().BlueprintList.Add(bp);
+            PlayerContext.GetInstance().AddBlueprint(bp);
             return bp;
         }
 
@@ -93,7 +93,7 @@ namespace OE2EmpireTracker.Tests.Services
             return Prop.ForAll(gen.ToArbitrary(), data =>
             {
                 var pc = PlayerContext.GetInstance();
-                pc.BlueprintList.Clear();
+                foreach (var item in pc.BlueprintList.ToList()) pc.RemoveBlueprint(item);
 
                 string resource = "Calcium";
                 string purity = Purities[data.PurityIndex];

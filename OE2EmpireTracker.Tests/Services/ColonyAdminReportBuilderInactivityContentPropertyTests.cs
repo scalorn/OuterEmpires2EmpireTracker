@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
@@ -39,7 +40,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void InactivityRows_ContainHeaderAndDetails()
         {
             var pc = PlayerContext.GetInstance();
-            pc.BlueprintList.Clear();
+            foreach (var item in pc.BlueprintList.ToList()) pc.RemoveBlueprint(item);
 
             var colony = new Colony
             {
@@ -53,7 +54,7 @@ namespace OE2EmpireTracker.Tests.Services
             var bp = new OE2EmpireTracker.Models.Blueprint("TestMiner");
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = BlueprintTypes.MiningRig;
-            pc.BlueprintList.Add(bp);
+            pc.AddBlueprint(bp);
 
             var s = new ColonyStructure();
             s.UUID = Guid.NewGuid().ToString();

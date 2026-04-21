@@ -63,8 +63,8 @@ namespace OE2EmpireTracker.Tests.Services
             empireContext = EmpireContext.GetInstance();
             playerContext = PlayerContext.GetInstance();
 
-            empireContext.GlobalBlueprintList.Clear();
-            playerContext.BlueprintList.Clear();
+            foreach (var item in empireContext.GlobalBlueprintList.ToList()) empireContext.RemoveGlobalBlueprint(item);
+            foreach (var item in playerContext.BlueprintList.ToList()) playerContext.RemoveBlueprint(item);
             playerContext.CurrentPlayerUUID = TestPlayerUUID;
         }
 
@@ -100,7 +100,7 @@ namespace OE2EmpireTracker.Tests.Services
             existing.Properties.setProperty("Power Output", "1200");
             existing.Properties.setProperty("Efficiency", "85");
             existing.Properties.setProperty("Weight", "50");
-            empireContext.GlobalBlueprintList.Add(existing);
+            empireContext.AddGlobalBlueprint(existing);
 
             var incoming = new BpModel("AMX-SS Reactor Core");
             incoming.BluePrintType = "Reactor";
@@ -108,7 +108,7 @@ namespace OE2EmpireTracker.Tests.Services
             incoming.Properties = new PropertyBag();
             incoming.Properties.setProperty("Power Output", "1500"); // overwrite
             incoming.Properties.setProperty("Durability", "200");    // new key
-            // "Efficiency" and "Weight" not in incoming — should be preserved
+            // "Efficiency" and "Weight" not in incoming Ã¢â‚¬â€ should be preserved
 
             var findResult = new BlueprintImportHandler.FindTargetResult
             {
@@ -141,12 +141,12 @@ namespace OE2EmpireTracker.Tests.Services
             var existing = MakeBlueprint("Fighter Hull", "existing-uuid-2", "Hull", 3);
             existing.Properties.setProperty("Health", "500");
             existing.Properties.setProperty("Armor", "300");
-            playerContext.BlueprintList.Add(existing);
+            playerContext.AddBlueprint(existing);
 
             var incoming = new BpModel("Fighter Hull");
             incoming.BluePrintType = "Hull";
             incoming.Evolution = 3;
-            incoming.Properties = new PropertyBag(); // empty — no properties
+            incoming.Properties = new PropertyBag(); // empty Ã¢â‚¬â€ no properties
             incoming.Resources = new Dictionary<string, string>();
 
             var findResult = new BlueprintImportHandler.FindTargetResult
@@ -172,7 +172,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var existing = MakeBlueprint("Shield Gen", "existing-uuid-3", "Shield", 0);
             existing.Properties.setProperty("Shield Strength", "800");
-            empireContext.GlobalBlueprintList.Add(existing);
+            empireContext.AddGlobalBlueprint(existing);
 
             var incoming = new BpModel("Shield Gen");
             incoming.BluePrintType = "Shield";
@@ -280,7 +280,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { "Copper", "200" },
                 { "Gold", "50" }
             };
-            empireContext.GlobalBlueprintList.Add(existing);
+            empireContext.AddGlobalBlueprint(existing);
 
             var incoming = new BpModel("AMX-SS Reactor Core");
             incoming.BluePrintType = "Reactor";
@@ -290,7 +290,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { "Iron", "600" },     // overwrite
                 { "Titanium", "100" }  // new key
             };
-            // "Copper" and "Gold" not in incoming — should be preserved
+            // "Copper" and "Gold" not in incoming Ã¢â‚¬â€ should be preserved
 
             var findResult = new BlueprintImportHandler.FindTargetResult
             {
@@ -320,7 +320,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { "Iron", "300" },
                 { "Silicon", "150" }
             };
-            empireContext.GlobalBlueprintList.Add(existing);
+            empireContext.AddGlobalBlueprint(existing);
 
             var incoming = new BpModel("Mining Laser");
             incoming.BluePrintType = "MiningLaser";

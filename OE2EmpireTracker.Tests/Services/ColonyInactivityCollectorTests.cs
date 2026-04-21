@@ -47,7 +47,7 @@ namespace OE2EmpireTracker.Tests.Services
             bp.UUID = Guid.NewGuid().ToString();
             bp.BluePrintType = bpType;
             bp.Evolution = evolution;
-            PlayerContext.GetInstance().BlueprintList.Add(bp);
+            PlayerContext.GetInstance().AddBlueprint(bp);
             return bp;
         }
 
@@ -104,7 +104,7 @@ namespace OE2EmpireTracker.Tests.Services
             for (int iteration = 0; iteration < 100; iteration++)
             {
                 // Reset blueprints each iteration to avoid accumulation
-                pc.BlueprintList.Clear();
+                foreach (var item in pc.BlueprintList.ToList()) pc.RemoveBlueprint(item);
 
                 var colony = MakeColony("Sys_" + iteration, "Col_" + iteration);
                 int expectedIdleCount = 0;
@@ -199,7 +199,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             for (int iteration = 0; iteration < 100; iteration++)
             {
-                pc.BlueprintList.Clear();
+                foreach (var item in pc.BlueprintList.ToList()) pc.RemoveBlueprint(item);
 
                 var testCase = testCases[iteration % testCases.Length];
                 bool hasWorkItem = iteration % 2 == 0;
@@ -248,7 +248,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             for (int iteration = 0; iteration < 100; iteration++)
             {
-                pc.BlueprintList.Clear();
+                foreach (var item in pc.BlueprintList.ToList()) pc.RemoveBlueprint(item);
 
                 string bpType = ProductionBlueprintTypes[iteration % ProductionBlueprintTypes.Length];
                 int gameSeq = Rng.Next(1, 50);
@@ -623,7 +623,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 profile.GetSkill(SkillName.ExtractionFocus).Level = extractionFocusLevel;
             }
-            pc.PlayerProfileList.Add(profile);
+            pc.AddPlayerProfile(profile);
             return profile;
         }
 
@@ -633,7 +633,7 @@ namespace OE2EmpireTracker.Tests.Services
             var survey = new Survey("TestSurvey_" + Guid.NewGuid().ToString().Substring(0, 6));
             survey.UUID = Guid.NewGuid().ToString();
             survey.Resources[resource] = new SurveyResource(resource, purity, amount);
-            pc.SurveyList.Add(survey);
+            pc.AddSurvey(survey);
             return survey;
         }
 

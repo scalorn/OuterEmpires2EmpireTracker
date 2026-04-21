@@ -622,7 +622,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                         MaxRepairPercent = c.MaxRepairPercent
                     }).ToList()
                 };
-                playerContext.ShipList.Add(ship);
+                playerContext.AddShip(ship);
                 playerContext.WriteContext();
                 _selectedShip = ship;
                 PopulateShipList();
@@ -640,7 +640,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 Name = "New Ship",
                 OwnerUUID = playerContext.CurrentPlayerUUID
             };
-            playerContext.ShipList.Add(ship);
+            playerContext.AddShip(ship);
             playerContext.WriteContext();
             _selectedShip = ship;
             PopulateShipList();
@@ -669,7 +669,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 string.Format("Delete ship \"{0}\"?", _selectedShip.Name),
                 "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
-            playerContext.ShipList.Remove(_selectedShip);
+            playerContext.RemoveShip(_selectedShip);
             playerContext.WriteContext();
             _selectedShip = null;
             PopulateShipList();

@@ -81,7 +81,7 @@ namespace OE2EmpireTracker
             var current = playerContext.CurrentPlayer;
             if (current != null)
             {
-                int idx = playerContext.PlayerProfileList.IndexOf(current);
+                int idx = playerContext.PlayerProfileList.ToList().IndexOf(current);
                 if (idx >= 0) cmbCurrentPlayer.SelectedIndex = idx;
             }
             else if (cmbCurrentPlayer.Items.Count > 0)

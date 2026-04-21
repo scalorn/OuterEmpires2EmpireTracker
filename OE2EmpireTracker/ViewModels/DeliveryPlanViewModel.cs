@@ -112,7 +112,7 @@ namespace OE2EmpireTracker.ViewModels
         {
             if (!_playerContext.DeliveryPlanList.Contains(_plan))
             {
-                _playerContext.DeliveryPlanList.Add(_plan);
+                _playerContext.AddDeliveryPlan(_plan);
             }
             _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();

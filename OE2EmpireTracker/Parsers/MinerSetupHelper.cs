@@ -377,7 +377,7 @@ namespace OE2EmpireTracker.Parsers
 
             foreach (var dup in duplicates)
             {
-                playerContext.SurveyList.Remove(dup);
+                playerContext.RemoveSurvey(dup);
                 Log.Info("Removed duplicate default survey {0} for planet {1} (correct UUID is {2})",
                     dup.UUID, colony.PlanetName, defaultUUID);
             }
@@ -416,7 +416,7 @@ namespace OE2EmpireTracker.Parsers
             // If no resources remain, remove the default survey entirely
             if (defaultSurvey.Resources.Count == 0)
             {
-                playerContext.SurveyList.Remove(defaultSurvey);
+                playerContext.RemoveSurvey(defaultSurvey);
                 Log.Info("Removed empty default survey {0} for colony {1}",
                     defaultUUID, colony.PlanetName);
             }
@@ -486,7 +486,7 @@ namespace OE2EmpireTracker.Parsers
                 };
                 defaultSurvey.Resources[resourceName] =
                     new SurveyResource(resourceName, purity, amount);
-                playerContext.SurveyList.Add(defaultSurvey);
+                playerContext.AddSurvey(defaultSurvey);
                 Log.Info("Created default survey {0} for colony {1} with resource {2} ({3}) amount={4}",
                     uuid, colony.PlanetName, resourceName, purity, amount);
             }

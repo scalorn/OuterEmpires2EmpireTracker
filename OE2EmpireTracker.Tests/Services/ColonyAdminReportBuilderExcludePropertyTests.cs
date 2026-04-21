@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using NUnit.Framework;
 using OE2EmpireTracker.Constants;
@@ -39,7 +40,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void ActivitySection_ExcludesBuildingAndCommodityRequestRows()
         {
             var pc = PlayerContext.GetInstance();
-            pc.BlueprintList.Clear();
+            foreach (var item in pc.BlueprintList.ToList()) pc.RemoveBlueprint(item);
 
             var colony = new Colony
             {
@@ -53,7 +54,7 @@ namespace OE2EmpireTracker.Tests.Services
             var buildBp = new OE2EmpireTracker.Models.Blueprint("BuildingStruct");
             buildBp.UUID = Guid.NewGuid().ToString();
             buildBp.BluePrintType = BlueprintTypes.MiningRig;
-            pc.BlueprintList.Add(buildBp);
+            pc.AddBlueprint(buildBp);
 
             var buildStruct = new ColonyStructure();
             buildStruct.UUID = Guid.NewGuid().ToString();
@@ -75,13 +76,13 @@ namespace OE2EmpireTracker.Tests.Services
             var resBp = new OE2EmpireTracker.Models.Blueprint("ResearchLab");
             resBp.UUID = Guid.NewGuid().ToString();
             resBp.BluePrintType = BlueprintTypes.ResearchLaboratory;
-            pc.BlueprintList.Add(resBp);
+            pc.AddBlueprint(resBp);
 
             var researchBp = new OE2EmpireTracker.Models.Blueprint("ResearchTarget");
             researchBp.UUID = Guid.NewGuid().ToString();
             researchBp.BluePrintType = "Beamer/Small";
             researchBp.Evolution = 3;
-            pc.BlueprintList.Add(researchBp);
+            pc.AddBlueprint(researchBp);
 
             var resStruct = new ColonyStructure();
             resStruct.UUID = Guid.NewGuid().ToString();

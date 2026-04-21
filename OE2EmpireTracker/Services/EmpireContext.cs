@@ -29,25 +29,45 @@ namespace OE2EmpireTracker.Services
         public static string FilePath { get; set; } = "BaselineData.json";
 
         public static PlayerContext PlayerContext;
-        public List<BlueprintType> BlueprintTypeList;
+
+        // Task 6.1: Private backing fields with IReadOnlyList<T> properties
+        private List<BlueprintType> _blueprintTypeList;
+        public IReadOnlyList<BlueprintType> BlueprintTypeList => _blueprintTypeList;
         public BindingSource BindingSourceBlueprintType;
-        public List<ShipClass> ShipClassList;
+
+        private List<ShipClass> _shipClassList;
+        public IReadOnlyList<ShipClass> ShipClassList => _shipClassList;
         public BindingSource BindingSourceShipClass;
-        public List<TechLevel> TechLevelList;
+
+        private List<TechLevel> _techLevelList;
+        public IReadOnlyList<TechLevel> TechLevelList => _techLevelList;
         public BindingSource BindingSourceTechLevel;
-        public List<string> EvolutionList;
+
+        private List<string> _evolutionList;
+        public IReadOnlyList<string> EvolutionList => _evolutionList;
         public BindingSource BindingSourceEvolution;
-        public List<Resource> ResourceList;
+
+        private List<Resource> _resourceList;
+        public IReadOnlyList<Resource> ResourceList => _resourceList;
         public BindingSource BindingSourceResource;
-        public List<ResourceGroup> ResourceGroupList;
+
+        private List<ResourceGroup> _resourceGroupList;
+        public IReadOnlyList<ResourceGroup> ResourceGroupList => _resourceGroupList;
         public BindingSource BindingSourceResourceGroup;
-        public List<ResourcePurity> ResourcePurityList;
+
+        private List<ResourcePurity> _resourcePurityList;
+        public IReadOnlyList<ResourcePurity> ResourcePurityList => _resourcePurityList;
         public BindingSource BindingSourceResourcePurity;
+
         public int DataVersion { get; set; } = 0;
         public BaselineGameConstants GameConstants { get; set; }
-        public List<Blueprint> GlobalBlueprintList;
+
+        private List<Blueprint> _globalBlueprintList;
+        public IReadOnlyList<Blueprint> GlobalBlueprintList => _globalBlueprintList;
         private Dictionary<string, Blueprint> _globalBlueprintCache;
-        public List<Commodity> CommodityList;
+
+        private List<Commodity> _commodityList;
+        public IReadOnlyList<Commodity> CommodityList => _commodityList;
         private Dictionary<string, Commodity> _commodityNameCache;
         private readonly object _commodityLock = new object();
 
@@ -125,11 +145,11 @@ namespace OE2EmpireTracker.Services
             BaselineRoot baselineRoot = new BaselineRoot();
             baselineRoot.DataVersion = DataVersion;
             baselineRoot.GameConstants = GameConstants;
-            baselineRoot.ShipClass = ShipClassList.ToArray();
-            baselineRoot.BlueprintType = BlueprintTypeList.ToArray();
-            baselineRoot.Blueprint = GlobalBlueprintList.ToArray();
-            baselineRoot.TechLevel = TechLevelList.ToArray();
-            baselineRoot.Commodity = CommodityList?.ToArray();
+            baselineRoot.ShipClass = _shipClassList.ToArray();
+            baselineRoot.BlueprintType = _blueprintTypeList.ToArray();
+            baselineRoot.Blueprint = _globalBlueprintList.ToArray();
+            baselineRoot.TechLevel = _techLevelList.ToArray();
+            baselineRoot.Commodity = _commodityList?.ToArray();
             baselineRoot.RefiningRecipe = new List<RefiningRecipe>(RefiningRecipes.Recipes).ToArray();
             baselineRoot.ResearchTime = new List<ResearchTimeEntry>(ResearchTimeLookup.ResearchTimes).ToArray();
             string jsonContent = JsonConvert.SerializeObject(baselineRoot, JsonSettings.SerializerSettings);
@@ -140,11 +160,11 @@ namespace OE2EmpireTracker.Services
         {
             List<BlueprintType> list = new List<BlueprintType>(baselineRoot.BlueprintType);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            BlueprintTypeList = new List<BlueprintType>(list);
+            _blueprintTypeList = new List<BlueprintType>(list);
             // Initialize the BindingSource component
             BindingSourceBlueprintType = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceBlueprintType.DataSource = BlueprintTypeList;
+            BindingSourceBlueprintType.DataSource = _blueprintTypeList;
         }
 
         public BlueprintType FindBlueprintType(string id)
@@ -172,12 +192,12 @@ namespace OE2EmpireTracker.Services
 
         public void InitShipClasses(BaselineRoot baselineRoot)
         {
-            ShipClassList = new List<ShipClass>(baselineRoot.ShipClass);
+            _shipClassList = new List<ShipClass>(baselineRoot.ShipClass);
 
             // Initialize the BindingSource component
             BindingSourceShipClass = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceShipClass.DataSource = ShipClassList;
+            BindingSourceShipClass.DataSource = _shipClassList;
         }
 
         public ShipClass FindShipClass(int id)
@@ -196,11 +216,11 @@ namespace OE2EmpireTracker.Services
         {
             List<TechLevel> list = new List<TechLevel>(baselineRoot.TechLevel);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            TechLevelList = new List<TechLevel>(list);
+            _techLevelList = new List<TechLevel>(list);
             // Initialize the BindingSource component
             BindingSourceTechLevel = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceTechLevel.DataSource = TechLevelList;
+            BindingSourceTechLevel.DataSource = _techLevelList;
         }
         public TechLevel FindTechLevel(string id)
         {
@@ -221,11 +241,11 @@ namespace OE2EmpireTracker.Services
             {
                 list.Add(evo.ToString());
             }
-            EvolutionList = new List<string>(list);
+            _evolutionList = new List<string>(list);
             // Initialize the BindingSource component
             BindingSourceEvolution = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceEvolution.DataSource = EvolutionList;
+            BindingSourceEvolution.DataSource = _evolutionList;
         }
         public string FindEvolution(int id)
         {
@@ -243,43 +263,43 @@ namespace OE2EmpireTracker.Services
         {
             List<Resource> list = new List<Resource>(Resource.Resources);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            ResourceList = new List<Resource>(list);
+            _resourceList = new List<Resource>(list);
             // Initialize the BindingSource component
             BindingSourceResource = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceResource.DataSource = ResourceList;
+            BindingSourceResource.DataSource = _resourceList;
         }
         public void InitResourceGroups(BaselineRoot baselineRoot)
         {
             List<ResourceGroup> list = new List<ResourceGroup>(ResourceGroup.Groups);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            ResourceGroupList = new List<ResourceGroup>(list);
+            _resourceGroupList = new List<ResourceGroup>(list);
             // Initialize the BindingSource component
             BindingSourceResourceGroup = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceResourceGroup.DataSource = ResourceGroupList;
+            BindingSourceResourceGroup.DataSource = _resourceGroupList;
         }
         public void InitResourcePurities(BaselineRoot baselineRoot)
         {
             List<ResourcePurity> list = new List<ResourcePurity>(ResourcePurity.Purities);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            ResourcePurityList = new List<ResourcePurity>(list);
+            _resourcePurityList = new List<ResourcePurity>(list);
             BindingSourceResourcePurity = new BindingSource();
-            BindingSourceResourcePurity.DataSource = ResourcePurityList;
+            BindingSourceResourcePurity.DataSource = _resourcePurityList;
         }
 
         public void InitCommodities(BaselineRoot baselineRoot)
         {
             if (baselineRoot.Commodity != null && baselineRoot.Commodity.Length > 0)
             {
-                CommodityList = new List<Commodity>(baselineRoot.Commodity);
-                Commodity.SetCommodities(CommodityList);
-                Log.Info("Loaded {0} commodities from baseline data", CommodityList.Count);
+                _commodityList = new List<Commodity>(baselineRoot.Commodity);
+                Commodity.SetCommodities(_commodityList);
+                Log.Info("Loaded {0} commodities from baseline data", _commodityList.Count);
             }
             else
             {
-                CommodityList = new List<Commodity>(Commodity.Commodities);
-                Log.Info("Using hardcoded commodity list ({0} commodities)", CommodityList.Count);
+                _commodityList = new List<Commodity>(Commodity.Commodities);
+                Log.Info("Using hardcoded commodity list ({0} commodities)", _commodityList.Count);
             }
         }
 
@@ -315,9 +335,9 @@ namespace OE2EmpireTracker.Services
         {
             var list = new List<Blueprint>(baselineRoot.Blueprint ?? new Blueprint[0]);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            GlobalBlueprintList = new List<Blueprint>(list);
+            _globalBlueprintList = new List<Blueprint>(list);
             InvalidateGlobalBlueprintCache();
-            Log.Info("Loaded {0} global blueprints", GlobalBlueprintList.Count);
+            Log.Info("Loaded {0} global blueprints", _globalBlueprintList.Count);
         }
 
         /// <summary>
@@ -326,12 +346,12 @@ namespace OE2EmpireTracker.Services
         public Blueprint FindGlobalBlueprint(string id)
         {
             if (string.IsNullOrEmpty(id)) return null;
-            if (GlobalBlueprintList == null) return null;
+            if (_globalBlueprintList == null) return null;
 
             if (_globalBlueprintCache == null)
             {
                 _globalBlueprintCache = new Dictionary<string, Blueprint>();
-                foreach (var bp in GlobalBlueprintList)
+                foreach (var bp in _globalBlueprintList)
                 {
                     if (bp.UUID != null && !_globalBlueprintCache.ContainsKey(bp.UUID))
                         _globalBlueprintCache[bp.UUID] = bp;
@@ -360,9 +380,9 @@ namespace OE2EmpireTracker.Services
                 if (_commodityNameCache == null)
                 {
                     _commodityNameCache = new Dictionary<string, Commodity>(StringComparer.OrdinalIgnoreCase);
-                    if (CommodityList != null)
+                    if (_commodityList != null)
                     {
-                        foreach (var c in CommodityList)
+                        foreach (var c in _commodityList)
                             if (!string.IsNullOrEmpty(c.Name) && !_commodityNameCache.ContainsKey(c.Name))
                                 _commodityNameCache[c.Name] = c;
                     }
@@ -375,6 +395,130 @@ namespace OE2EmpireTracker.Services
         public void InvalidateCommodityNameCache()
         {
             lock (_commodityLock) { _commodityNameCache = null; }
+        }
+
+        // ── Task 6.2: Mutation methods for GlobalBlueprint (UUID cache, no BindingSource) ──
+
+        public void AddGlobalBlueprint(Blueprint item)
+        {
+            _globalBlueprintList.Add(item);
+            if (_globalBlueprintCache != null && item.UUID != null)
+                _globalBlueprintCache[item.UUID] = item;
+        }
+
+        public void RemoveGlobalBlueprint(Blueprint item)
+        {
+            _globalBlueprintList.Remove(item);
+            if (_globalBlueprintCache != null && item.UUID != null)
+                _globalBlueprintCache.Remove(item.UUID);
+        }
+
+        // ── Task 6.3: Mutation methods for Commodity (name cache with _commodityLock) ──
+
+        public void AddCommodity(Commodity item)
+        {
+            lock (_commodityLock)
+            {
+                _commodityList.Add(item);
+                if (_commodityNameCache != null && !string.IsNullOrEmpty(item.Name))
+                    _commodityNameCache[item.Name] = item;
+            }
+        }
+
+        public void RemoveCommodity(Commodity item)
+        {
+            lock (_commodityLock)
+            {
+                _commodityList.Remove(item);
+                if (_commodityNameCache != null && !string.IsNullOrEmpty(item.Name))
+                    _commodityNameCache.Remove(item.Name);
+            }
+        }
+
+        // ── Task 6.4: Mutation methods for BindingSource-only lists ──
+
+        public void AddBlueprintType(BlueprintType item)
+        {
+            _blueprintTypeList.Add(item);
+            BindingSourceBlueprintType?.ResetBindings(false);
+        }
+
+        public void RemoveBlueprintType(BlueprintType item)
+        {
+            _blueprintTypeList.Remove(item);
+            BindingSourceBlueprintType?.ResetBindings(false);
+        }
+
+        public void AddShipClass(ShipClass item)
+        {
+            _shipClassList.Add(item);
+            BindingSourceShipClass?.ResetBindings(false);
+        }
+
+        public void RemoveShipClass(ShipClass item)
+        {
+            _shipClassList.Remove(item);
+            BindingSourceShipClass?.ResetBindings(false);
+        }
+
+        public void AddTechLevel(TechLevel item)
+        {
+            _techLevelList.Add(item);
+            BindingSourceTechLevel?.ResetBindings(false);
+        }
+
+        public void RemoveTechLevel(TechLevel item)
+        {
+            _techLevelList.Remove(item);
+            BindingSourceTechLevel?.ResetBindings(false);
+        }
+
+        public void AddEvolution(string item)
+        {
+            _evolutionList.Add(item);
+            BindingSourceEvolution?.ResetBindings(false);
+        }
+
+        public void RemoveEvolution(string item)
+        {
+            _evolutionList.Remove(item);
+            BindingSourceEvolution?.ResetBindings(false);
+        }
+
+        public void AddResource(Resource item)
+        {
+            _resourceList.Add(item);
+            BindingSourceResource?.ResetBindings(false);
+        }
+
+        public void RemoveResource(Resource item)
+        {
+            _resourceList.Remove(item);
+            BindingSourceResource?.ResetBindings(false);
+        }
+
+        public void AddResourceGroup(ResourceGroup item)
+        {
+            _resourceGroupList.Add(item);
+            BindingSourceResourceGroup?.ResetBindings(false);
+        }
+
+        public void RemoveResourceGroup(ResourceGroup item)
+        {
+            _resourceGroupList.Remove(item);
+            BindingSourceResourceGroup?.ResetBindings(false);
+        }
+
+        public void AddResourcePurity(ResourcePurity item)
+        {
+            _resourcePurityList.Add(item);
+            BindingSourceResourcePurity?.ResetBindings(false);
+        }
+
+        public void RemoveResourcePurity(ResourcePurity item)
+        {
+            _resourcePurityList.Remove(item);
+            BindingSourceResourcePurity?.ResetBindings(false);
         }
 
     }

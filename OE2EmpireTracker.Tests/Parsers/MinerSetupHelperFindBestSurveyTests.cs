@@ -4,6 +4,7 @@ using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {
@@ -25,7 +26,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             _playerContext = EmpireContext.PlayerContext;
 
             // Clear existing surveys so tests start clean
-            _playerContext.SurveyList.Clear();
+            foreach (var item in _playerContext.SurveyList.ToList()) _playerContext.RemoveSurvey(item);
         }
 
         [TearDown]
@@ -59,8 +60,8 @@ namespace OE2EmpireTracker.Tests.Parsers
             // Arrange: two real surveys with different amounts
             var survey1 = CreateSurvey("s1", "Alpha Prime", "SURV-001", "Iron", "Medium", "100");
             var survey2 = CreateSurvey("s2", "Alpha Prime", "SURV-002", "Iron", "Medium", "150");
-            _playerContext.SurveyList.Add(survey1);
-            _playerContext.SurveyList.Add(survey2);
+            _playerContext.AddSurvey(survey1);
+            _playerContext.AddSurvey(survey2);
 
             // Act: maxRate 140 is closer to 150 than to 100
             var result = MinerSetupHelper.FindBestSurvey("Alpha Prime", "Iron", "Medium", 140m, _playerContext);
@@ -77,9 +78,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             var survey1 = CreateSurvey("s1", "Beta Colony", "SURV-010", "Copper", "High", "200");
             var survey2 = CreateSurvey("s2", "Beta Colony", "SURV-011", "Copper", "High", "350");
             var survey3 = CreateSurvey("s3", "Beta Colony", "SURV-012", "Copper", "High", "275");
-            _playerContext.SurveyList.Add(survey1);
-            _playerContext.SurveyList.Add(survey2);
-            _playerContext.SurveyList.Add(survey3);
+            _playerContext.AddSurvey(survey1);
+            _playerContext.AddSurvey(survey2);
+            _playerContext.AddSurvey(survey3);
 
             // Act: maxRate 0 means select highest
             var result = MinerSetupHelper.FindBestSurvey("Beta Colony", "Copper", "High", 0m, _playerContext);
@@ -94,7 +95,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             // Arrange: survey for a different planet
             var survey = CreateSurvey("s1", "Gamma World", "SURV-020", "Gold", "Low", "50");
-            _playerContext.SurveyList.Add(survey);
+            _playerContext.AddSurvey(survey);
 
             // Act: search for a planet with no surveys
             var result = MinerSetupHelper.FindBestSurvey("Delta Station", "Gold", "Low", 50m, _playerContext);
@@ -109,8 +110,8 @@ namespace OE2EmpireTracker.Tests.Parsers
             // Arrange: one DEFAULT survey and one real survey
             var defaultSurvey = CreateSurvey("d1", "Epsilon", "DEFAULT", "Silver", "Medium", "500");
             var realSurvey = CreateSurvey("r1", "Epsilon", "SURV-030", "Silver", "Medium", "100");
-            _playerContext.SurveyList.Add(defaultSurvey);
-            _playerContext.SurveyList.Add(realSurvey);
+            _playerContext.AddSurvey(defaultSurvey);
+            _playerContext.AddSurvey(realSurvey);
 
             // Act: even though DEFAULT has amount 500 closer to maxRate 480, it should be excluded
             var result = MinerSetupHelper.FindBestSurvey("Epsilon", "Silver", "Medium", 480m, _playerContext);
@@ -125,7 +126,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             // Arrange: only a DEFAULT survey
             var defaultSurvey = CreateSurvey("d1", "Zeta", "DEFAULT", "Titanium", "High", "300");
-            _playerContext.SurveyList.Add(defaultSurvey);
+            _playerContext.AddSurvey(defaultSurvey);
 
             // Act
             var result = MinerSetupHelper.FindBestSurvey("Zeta", "Titanium", "High", 300m, _playerContext);
@@ -139,7 +140,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             // Arrange
             var survey = CreateSurvey("s1", "Alpha Prime", "SURV-040", "Iron", "Low", "80");
-            _playerContext.SurveyList.Add(survey);
+            _playerContext.AddSurvey(survey);
 
             // Act: search with different casing
             var result = MinerSetupHelper.FindBestSurvey("alpha prime", "Iron", "Low", 80m, _playerContext);
@@ -154,7 +155,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             // Arrange
             var survey = CreateSurvey("s1", "Theta", "SURV-050", "Iron", "Medium", "120");
-            _playerContext.SurveyList.Add(survey);
+            _playerContext.AddSurvey(survey);
 
             // Act: search with different casing for resource and purity
             var result = MinerSetupHelper.FindBestSurvey("Theta", "iron", "medium", 120m, _playerContext);
@@ -169,7 +170,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             // Arrange: survey has Iron but we search for Copper
             var survey = CreateSurvey("s1", "Kappa", "SURV-060", "Iron", "High", "200");
-            _playerContext.SurveyList.Add(survey);
+            _playerContext.AddSurvey(survey);
 
             // Act
             var result = MinerSetupHelper.FindBestSurvey("Kappa", "Copper", "High", 200m, _playerContext);
@@ -183,7 +184,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             // Arrange: survey has Medium purity but we search for High
             var survey = CreateSurvey("s1", "Lambda", "SURV-070", "Iron", "Medium", "200");
-            _playerContext.SurveyList.Add(survey);
+            _playerContext.AddSurvey(survey);
 
             // Act
             var result = MinerSetupHelper.FindBestSurvey("Lambda", "Iron", "High", 200m, _playerContext);

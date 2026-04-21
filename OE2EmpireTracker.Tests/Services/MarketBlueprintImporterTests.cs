@@ -65,8 +65,8 @@ namespace OE2EmpireTracker.Tests.Services
             playerContext = PlayerContext.GetInstance();
 
             // Clear any existing blueprints from both lists
-            empireContext.GlobalBlueprintList.Clear();
-            playerContext.BlueprintList.Clear();
+            foreach (var item in empireContext.GlobalBlueprintList.ToList()) empireContext.RemoveGlobalBlueprint(item);
+            foreach (var item in playerContext.BlueprintList.ToList()) playerContext.RemoveBlueprint(item);
 
             // Set a current player for player blueprint tests
             playerContext.CurrentPlayerUUID = TestPlayerUUID;
@@ -232,7 +232,7 @@ namespace OE2EmpireTracker.Tests.Services
             existing.Class = 1;
             existing.TechLevel = null;
             existing.Properties.setProperty("Health", "50");
-            empireContext.GlobalBlueprintList.Add(existing);
+            empireContext.AddGlobalBlueprint(existing);
 
             // Import one with matching dedup key but different property value
             var list = new List<MarketBlueprint>
@@ -275,7 +275,7 @@ namespace OE2EmpireTracker.Tests.Services
             existing.Properties.setProperty("Health", "50");
             existing.Properties.setProperty("Manufacture Run Time", "3600");
             existing.Properties.setProperty("Power Required", "100");
-            empireContext.GlobalBlueprintList.Add(existing);
+            empireContext.AddGlobalBlueprint(existing);
 
             // Import with matching dedup key -- incoming does NOT have protected properties
             var list = new List<MarketBlueprint>
@@ -321,7 +321,7 @@ namespace OE2EmpireTracker.Tests.Services
             existing.Evolution = 0;
             existing.Class = 1;
             existing.Properties.setProperty("Health", "50");
-            empireContext.GlobalBlueprintList.Add(existing);
+            empireContext.AddGlobalBlueprint(existing);
 
             var list = new List<MarketBlueprint>
             {
@@ -405,8 +405,8 @@ namespace OE2EmpireTracker.Tests.Services
             for (int trial = 0; trial < 50; trial++)
             {
                 // Reset state for each trial
-                empireContext.GlobalBlueprintList.Clear();
-                playerContext.BlueprintList.Clear();
+                foreach (var item in empireContext.GlobalBlueprintList.ToList()) empireContext.RemoveGlobalBlueprint(item);
+                foreach (var item in playerContext.BlueprintList.ToList()) playerContext.RemoveBlueprint(item);
                 playerContext.CurrentPlayerUUID = TestPlayerUUID;
 
                 var rng = new Random(trial * 7);
@@ -438,7 +438,7 @@ namespace OE2EmpireTracker.Tests.Services
             }
         }
 
-        private void AssertNoDuplicateKeys(List<BpModel> list, string storageName, int trial)
+        private void AssertNoDuplicateKeys(IEnumerable<BpModel> list, string storageName, int trial)
         {
             var keys = list.Select(bp => $"{bp.Name}|{bp.Evolution}|{bp.BluePrintType}|{bp.Class}|{bp.TechLevel}").ToList();
             var distinct = keys.Distinct().ToList();
@@ -457,8 +457,8 @@ namespace OE2EmpireTracker.Tests.Services
         {
             for (int trial = 0; trial < 50; trial++)
             {
-                empireContext.GlobalBlueprintList.Clear();
-                playerContext.BlueprintList.Clear();
+                foreach (var item in empireContext.GlobalBlueprintList.ToList()) empireContext.RemoveGlobalBlueprint(item);
+                foreach (var item in playerContext.BlueprintList.ToList()) playerContext.RemoveBlueprint(item);
                 playerContext.CurrentPlayerUUID = TestPlayerUUID;
 
                 var rng = new Random(trial * 13);
@@ -511,7 +511,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             for (int trial = 0; trial < 50; trial++)
             {
-                empireContext.GlobalBlueprintList.Clear();
+                foreach (var item in empireContext.GlobalBlueprintList.ToList()) empireContext.RemoveGlobalBlueprint(item);
                 playerContext.CurrentPlayerUUID = TestPlayerUUID;
 
                 var rng = new Random(trial * 17);
@@ -535,7 +535,7 @@ namespace OE2EmpireTracker.Tests.Services
                 existing.Properties.setProperty("Health", "50");
                 existing.Properties.setProperty("Manufacture Run Time", "MRT_" + trial);
                 existing.Properties.setProperty("Power Required", "PR_" + trial);
-                empireContext.GlobalBlueprintList.Add(existing);
+                empireContext.AddGlobalBlueprint(existing);
 
                 // Import with matching dedup key -- incoming has different non-protected props
                 var incoming = MakeMarketBlueprint(name, "Government", bpType, evolution, cls, techLevel,
@@ -579,8 +579,8 @@ namespace OE2EmpireTracker.Tests.Services
         {
             for (int trial = 0; trial < 50; trial++)
             {
-                empireContext.GlobalBlueprintList.Clear();
-                playerContext.BlueprintList.Clear();
+                foreach (var item in empireContext.GlobalBlueprintList.ToList()) empireContext.RemoveGlobalBlueprint(item);
+                foreach (var item in playerContext.BlueprintList.ToList()) playerContext.RemoveBlueprint(item);
                 playerContext.CurrentPlayerUUID = TestPlayerUUID;
 
                 var rng = new Random(trial * 23);
@@ -902,8 +902,8 @@ namespace OE2EmpireTracker.Tests.Services
             foreach (var file in sampleFiles)
             {
                 // Reset state for each file
-                empireContext.GlobalBlueprintList.Clear();
-                playerContext.BlueprintList.Clear();
+                foreach (var item in empireContext.GlobalBlueprintList.ToList()) empireContext.RemoveGlobalBlueprint(item);
+                foreach (var item in playerContext.BlueprintList.ToList()) playerContext.RemoveBlueprint(item);
                 playerContext.CurrentPlayerUUID = TestPlayerUUID;
 
                 string fileName = Path.GetFileName(file);

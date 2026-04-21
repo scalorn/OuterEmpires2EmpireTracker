@@ -112,7 +112,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                         ? data.OldUuid : Guid.NewGuid().ToString();
                     bp.BaseBlueprintUUID = ((data.PlantMask >> (bitIndex++ % 7)) & 1) == 1
                         ? data.OldUuid : null;
-                    ec.GlobalBlueprintList.Add(bp);
+                    ec.AddGlobalBlueprint(bp);
                 }
 
                 // Add synthetic player blueprints
@@ -123,7 +123,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                         ? data.OldUuid : Guid.NewGuid().ToString();
                     bp.BaseBlueprintUUID = ((data.PlantMask >> (bitIndex++ % 7)) & 1) == 1
                         ? data.OldUuid : null;
-                    pc.BlueprintList.Add(bp);
+                    pc.AddBlueprint(bp);
                 }
 
                 // Add synthetic colonies with structures
@@ -147,7 +147,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                         colony.Structures.Add(cs);
                     }
 
-                    pc.ColonyList.Add(colony);
+                    pc.AddColony(colony);
                 }
 
                 // Act
