@@ -221,40 +221,40 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     // Populate component combo for this row
                     var comboCell = (DataGridViewComboBoxCell)row.Cells[colComponent.Index];
                     comboCell.Items.Clear();
-                    comboCell.ValueType = typeof(ComponentEntry);
-                    comboCell.Items.Add(new ComponentEntry { Display = "(empty)", UUID = "" });
+                    var uuidByIndex = new List<string>();
+                    comboCell.Items.Add("(empty)");
+                    uuidByIndex.Add("");
                     var eligibleBps = playerContext.GetAllBlueprints()
                         .Where(bp => def.BlueprintTypes.Contains(bp.BluePrintType) && bp.Class == hullClass)
                         .OrderBy(bp => bp.ExtendedName);
                     foreach (var bp in eligibleBps)
-                        comboCell.Items.Add(new ComponentEntry { Display = bp.ExtendedName, UUID = bp.UUID });
+                    {
+                        comboCell.Items.Add(bp.ExtendedName);
+                        uuidByIndex.Add(bp.UUID);
+                    }
 
                     if (existing != null && !string.IsNullOrEmpty(existing.BlueprintUUID))
                     {
-                        bool found = false;
-                        foreach (ComponentEntry item in comboCell.Items)
+                        int matchIdx = uuidByIndex.IndexOf(existing.BlueprintUUID);
+                        if (matchIdx >= 0)
                         {
-                            if (item.UUID == existing.BlueprintUUID)
-                            { comboCell.Value = item; found = true; break; }
+                            comboCell.Value = comboCell.Items[matchIdx];
                         }
-                        if (!found)
+                        else
                         {
                             var compBp = playerContext.FindBlueprint(existing.BlueprintUUID);
-                            var fallback = new ComponentEntry
-                            {
-                                Display = compBp?.ExtendedName ?? existing.BlueprintUUID,
-                                UUID = existing.BlueprintUUID
-                            };
+                            string fallback = compBp?.ExtendedName ?? existing.BlueprintUUID;
                             comboCell.Items.Add(fallback);
+                            uuidByIndex.Add(existing.BlueprintUUID);
                             comboCell.Value = fallback;
                         }
                     }
                     else
                     {
-                        comboCell.Value = comboCell.Items[0];
+                        comboCell.Value = "(empty)";
                     }
 
-                    row.Tag = new SlotInfo { SlotType = def.SlotType, SlotIndex = idx };
+                    row.Tag = new SlotInfo { SlotType = def.SlotType, SlotIndex = idx, UUIDByIndex = uuidByIndex };
                 }
             }
             sw.Stop(); Log.Info("PERF PopulateSlotGrid: {0}ms", sw.ElapsedMilliseconds);
@@ -277,9 +277,10 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             if (info == null) return;
 
             string bpUUID = "";
-            var cellValue = row.Cells[colComponent.Index].Value;
-            if (cellValue is ComponentEntry ce && !string.IsNullOrEmpty(ce.UUID))
-                bpUUID = ce.UUID;
+            var comboCell = (DataGridViewComboBoxCell)row.Cells[colComponent.Index];
+            int selectedIdx = comboCell.Items.IndexOf(comboCell.Value);
+            if (selectedIdx > 0 && info.UUIDByIndex != null && selectedIdx < info.UUIDByIndex.Count)
+                bpUUID = info.UUIDByIndex[selectedIdx];
 
             var existing = _selectedTemplate.Components
                 .FirstOrDefault(c => c.SlotType == info.SlotType && c.SlotIndex == info.SlotIndex);
@@ -693,13 +694,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         }
 
         private class HullEntry { public string Display; public string UUID; public override string ToString() => Display; }
-        private class SlotInfo { public string SlotType; public int SlotIndex; }
+        private class SlotInfo { public string SlotType; public int SlotIndex; public List<string> UUIDByIndex; }
         private class SlotDefinition { public string SlotType; public int MaxCount; public List<string> BlueprintTypes; }
-        private struct ComponentEntry
-        {
-            public string Display;
-            public string UUID;
-            public override string ToString() => Display;
-        }
     }
 }
