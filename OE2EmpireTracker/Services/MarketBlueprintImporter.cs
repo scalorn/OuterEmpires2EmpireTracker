@@ -152,7 +152,7 @@ namespace OE2EmpireTracker.Services
         }
 
         internal static Models.Blueprint FindByDedupKey(
-            System.ComponentModel.BindingList<Models.Blueprint> list,
+            IList<Models.Blueprint> list,
             Models.Blueprint bp)
         {
             if (list == null) return null;

@@ -238,7 +238,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             return Prop.ForAll(gen.ToArbitrary(), data =>
             {
-                var bindingList = new BindingList<BpModel>(data.List);
+                var bindingList = new List<BpModel>(data.List);
                 var result = MarketBlueprintImporter.FindByDedupKey(bindingList, data.Search);
 
                 if (result != null)

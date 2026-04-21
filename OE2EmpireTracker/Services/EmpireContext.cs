@@ -8,7 +8,6 @@ using OE2EmpireTracker.Models;
 using Sgml;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
@@ -30,23 +29,23 @@ namespace OE2EmpireTracker.Services
         public static string FilePath { get; set; } = "BaselineData.json";
 
         public static PlayerContext PlayerContext;
-        public BindingList<BlueprintType> BlueprintTypeList;
+        public List<BlueprintType> BlueprintTypeList;
         public BindingSource BindingSourceBlueprintType;
-        public BindingList<ShipClass> ShipClassList;
+        public List<ShipClass> ShipClassList;
         public BindingSource BindingSourceShipClass;
-        public BindingList<TechLevel> TechLevelList;
+        public List<TechLevel> TechLevelList;
         public BindingSource BindingSourceTechLevel;
-        public BindingList<string> EvolutionList;
+        public List<string> EvolutionList;
         public BindingSource BindingSourceEvolution;
-        public BindingList<Resource> ResourceList;
+        public List<Resource> ResourceList;
         public BindingSource BindingSourceResource;
-        public BindingList<ResourceGroup> ResourceGroupList;
+        public List<ResourceGroup> ResourceGroupList;
         public BindingSource BindingSourceResourceGroup;
-        public BindingList<ResourcePurity> ResourcePurityList;
+        public List<ResourcePurity> ResourcePurityList;
         public BindingSource BindingSourceResourcePurity;
         public int DataVersion { get; set; } = 0;
         public BaselineGameConstants GameConstants { get; set; }
-        public BindingList<Blueprint> GlobalBlueprintList;
+        public List<Blueprint> GlobalBlueprintList;
         private Dictionary<string, Blueprint> _globalBlueprintCache;
         public List<Commodity> CommodityList;
         private Dictionary<string, Commodity> _commodityNameCache;
@@ -141,7 +140,7 @@ namespace OE2EmpireTracker.Services
         {
             List<BlueprintType> list = new List<BlueprintType>(baselineRoot.BlueprintType);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            BlueprintTypeList = new BindingList<BlueprintType>(list);
+            BlueprintTypeList = new List<BlueprintType>(list);
             // Initialize the BindingSource component
             BindingSourceBlueprintType = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -173,7 +172,7 @@ namespace OE2EmpireTracker.Services
 
         public void InitShipClasses(BaselineRoot baselineRoot)
         {
-            ShipClassList = new BindingList<ShipClass>(baselineRoot.ShipClass);
+            ShipClassList = new List<ShipClass>(baselineRoot.ShipClass);
 
             // Initialize the BindingSource component
             BindingSourceShipClass = new BindingSource();
@@ -197,7 +196,7 @@ namespace OE2EmpireTracker.Services
         {
             List<TechLevel> list = new List<TechLevel>(baselineRoot.TechLevel);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            TechLevelList = new BindingList<TechLevel>(list);
+            TechLevelList = new List<TechLevel>(list);
             // Initialize the BindingSource component
             BindingSourceTechLevel = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -222,7 +221,7 @@ namespace OE2EmpireTracker.Services
             {
                 list.Add(evo.ToString());
             }
-            EvolutionList = new BindingList<string>(list);
+            EvolutionList = new List<string>(list);
             // Initialize the BindingSource component
             BindingSourceEvolution = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -244,7 +243,7 @@ namespace OE2EmpireTracker.Services
         {
             List<Resource> list = new List<Resource>(Resource.Resources);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            ResourceList = new BindingList<Resource>(list);
+            ResourceList = new List<Resource>(list);
             // Initialize the BindingSource component
             BindingSourceResource = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -254,7 +253,7 @@ namespace OE2EmpireTracker.Services
         {
             List<ResourceGroup> list = new List<ResourceGroup>(ResourceGroup.Groups);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            ResourceGroupList = new BindingList<ResourceGroup>(list);
+            ResourceGroupList = new List<ResourceGroup>(list);
             // Initialize the BindingSource component
             BindingSourceResourceGroup = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -264,7 +263,7 @@ namespace OE2EmpireTracker.Services
         {
             List<ResourcePurity> list = new List<ResourcePurity>(ResourcePurity.Purities);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            ResourcePurityList = new BindingList<ResourcePurity>(list);
+            ResourcePurityList = new List<ResourcePurity>(list);
             BindingSourceResourcePurity = new BindingSource();
             BindingSourceResourcePurity.DataSource = ResourcePurityList;
         }
@@ -316,8 +315,7 @@ namespace OE2EmpireTracker.Services
         {
             var list = new List<Blueprint>(baselineRoot.Blueprint ?? new Blueprint[0]);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            GlobalBlueprintList = new BindingList<Blueprint>(list);
-            GlobalBlueprintList.ListChanged += (s, e) => InvalidateGlobalBlueprintCache();
+            GlobalBlueprintList = new List<Blueprint>(list);
             InvalidateGlobalBlueprintCache();
             Log.Info("Loaded {0} global blueprints", GlobalBlueprintList.Count);
         }

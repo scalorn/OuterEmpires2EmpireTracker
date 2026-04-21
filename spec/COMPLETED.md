@@ -4,6 +4,10 @@ Items moved here from BACKLOG.md after implementation, plus completed specs that
 
 ---
 
+### BL-069: Migrate Existing BindingList Fields to List on PlayerContext
+Replaced all `BindingList<T>` fields with `List<T>` on PlayerContext and EmpireContext for consistency with newer entity lists. Removed `ListChanged` auto-invalidation handlers; added fallback linear scans to `FindBlueprint`, `FindSurvey`, and `FindColony` so cache misses from post-cache additions self-heal. Added explicit cache invalidation to `CleanupOrphanedData`. Updated `FindByDedupKey` signature to `IList<T>`, fixed `FilteredComboBox` cast, updated test helpers.
+**Status: Complete**
+
 ### BL-004: Commodity Fulfillment Unit Tests
 Optional task from commodity-delivery-loop spec (task 5.2). Extract fulfillment logic from the Form handler into a testable static helper and add unit tests.
 **Status: Complete** — Extracted `DeliveryFulfillment` static helper with `FulfillCommodity`, `StageFlatpack`, `DeliverWorkers`. 17 unit tests covering all three operations.

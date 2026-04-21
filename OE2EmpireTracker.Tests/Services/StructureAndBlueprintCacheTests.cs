@@ -171,10 +171,10 @@ namespace OE2EmpireTracker.Tests.Services
             var before = _playerContext.GetAllBlueprints();
             int countBefore = before.Count;
 
-            // Add a new player blueprint — ListChanged fires, which calls InvalidateBlueprintCache,
-            // which calls InvalidateAllBlueprintsCache
+            // Add a new player blueprint and explicitly invalidate the cache
             var newBp = new Bp("New BP") { UUID = "bp-new-all", OwnerUUID = "player1" };
             _playerContext.BlueprintList.Add(newBp);
+            _playerContext.InvalidateBlueprintCache();
 
             var after = _playerContext.GetAllBlueprints();
 

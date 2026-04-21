@@ -438,7 +438,7 @@ namespace OE2EmpireTracker.Tests.Services
             }
         }
 
-        private void AssertNoDuplicateKeys(BindingList<BpModel> list, string storageName, int trial)
+        private void AssertNoDuplicateKeys(List<BpModel> list, string storageName, int trial)
         {
             var keys = list.Select(bp => $"{bp.Name}|{bp.Evolution}|{bp.BluePrintType}|{bp.Class}|{bp.TechLevel}").ToList();
             var distinct = keys.Distinct().ToList();

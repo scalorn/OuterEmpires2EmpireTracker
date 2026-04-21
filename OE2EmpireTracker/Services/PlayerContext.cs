@@ -5,7 +5,6 @@ using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services.Migration;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -223,17 +222,17 @@ namespace OE2EmpireTracker.Services
         }
 
         public int DataVersion { get; set; } = 0;
-        public BindingList<PlayerProfile> PlayerProfileList;
+        public List<PlayerProfile> PlayerProfileList;
         public BindingSource BindingSourcePlayerProfile;
-        public BindingList<Blueprint> BlueprintList;
+        public List<Blueprint> BlueprintList;
         public BindingSource BindingSourceBlueprint;
-        public BindingList<Survey> SurveyList;
+        public List<Survey> SurveyList;
         public BindingSource BindingSourceSurvey;
-        public BindingList<Colony> ColonyList;
+        public List<Colony> ColonyList;
         public BindingSource BindingSourceColony;
-        public BindingList<DeliveryRoute> DeliveryRouteList;
-        public BindingList<DeliveryPlan> DeliveryPlanList;
-        public BindingList<PricingPlan> PricingPlanList;
+        public List<DeliveryRoute> DeliveryRouteList;
+        public List<DeliveryPlan> DeliveryPlanList;
+        public List<PricingPlan> PricingPlanList;
 
         public List<BuildPlan> BuildPlanList = new List<BuildPlan>();
         public List<ShipTemplate> ShipTemplateList = new List<ShipTemplate>();
@@ -363,7 +362,7 @@ namespace OE2EmpireTracker.Services
         {
             List<PlayerProfile> list = new List<PlayerProfile>(playerRoot.PlayerProfile);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            PlayerProfileList = new BindingList<PlayerProfile>(list);
+            PlayerProfileList = new List<PlayerProfile>(list);
             // Initialize the BindingSource component
             BindingSourcePlayerProfile = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -373,8 +372,7 @@ namespace OE2EmpireTracker.Services
         {
             List<Blueprint> list = new List<Blueprint>(playerRoot.Blueprint);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            BlueprintList = new BindingList<Blueprint>(list);
-            BlueprintList.ListChanged += (s, e) => InvalidateBlueprintCache();
+            BlueprintList = new List<Blueprint>(list);
             // Initialize the BindingSource component
             BindingSourceBlueprint = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -399,6 +397,14 @@ namespace OE2EmpireTracker.Services
 
                 if (_blueprintCache.TryGetValue(id, out var match))
                     return match;
+
+                // Fallback: linear scan for items added after cache was built
+                var fallback = BlueprintList.FirstOrDefault(bp => bp.UUID == id);
+                if (fallback != null)
+                {
+                    _blueprintCache[id] = fallback;
+                    return fallback;
+                }
             }
 
             // Fall back to global blueprints outside the lock
@@ -416,8 +422,7 @@ namespace OE2EmpireTracker.Services
             List<Survey> list = new List<Survey>(playerRoot.Survey);
             list = list.OrderBy(p => p.PlanetName).ThenBy(p => p.DateTime).ToList();
 
-            SurveyList = new BindingList<Survey>(list);
-            SurveyList.ListChanged += (s, e) => InvalidateSurveyCache();
+            SurveyList = new List<Survey>(list);
             // Initialize the BindingSource component
             BindingSourceSurvey = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -442,6 +447,14 @@ namespace OE2EmpireTracker.Services
 
                 if (_surveyCache.TryGetValue(id, out var match))
                     return match;
+
+                // Fallback: linear scan for items added after cache was built
+                var fallback = SurveyList.FirstOrDefault(s => s.UUID == id);
+                if (fallback != null)
+                {
+                    _surveyCache[id] = fallback;
+                    return fallback;
+                }
             }
 
             return null;
@@ -457,8 +470,7 @@ namespace OE2EmpireTracker.Services
             List<Colony> list = new List<Colony>(playerRoot.Colony);
             list = list.OrderBy(p => p.PlanetName).ToList();
 
-            ColonyList = new BindingList<Colony>(list);
-            ColonyList.ListChanged += (s, e) => InvalidateColonyCache();
+            ColonyList = new List<Colony>(list);
             // Initialize the BindingSource component
             BindingSourceColony = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -470,21 +482,21 @@ namespace OE2EmpireTracker.Services
         {
             var list = new List<DeliveryRoute>(playerRoot.DeliveryRoute ?? new DeliveryRoute[0]);
             list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
-            DeliveryRouteList = new BindingList<DeliveryRoute>(list);
+            DeliveryRouteList = new List<DeliveryRoute>(list);
         }
 
         public void InitDeliveryPlans(PlayerRoot playerRoot)
         {
             var list = new List<DeliveryPlan>(playerRoot.DeliveryPlan ?? new DeliveryPlan[0]);
             list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
-            DeliveryPlanList = new BindingList<DeliveryPlan>(list);
+            DeliveryPlanList = new List<DeliveryPlan>(list);
         }
 
         public void InitPricingPlans(PlayerRoot playerRoot)
         {
             var list = new List<PricingPlan>(playerRoot.PricingPlan ?? new PricingPlan[0]);
             list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
-            PricingPlanList = new BindingList<PricingPlan>(list);
+            PricingPlanList = new List<PricingPlan>(list);
         }
 
         public void InitBuildPlans(PlayerRoot playerRoot)
@@ -570,6 +582,14 @@ namespace OE2EmpireTracker.Services
 
                 if (_colonyCache.TryGetValue(id, out var match))
                     return match;
+
+                // Fallback: linear scan for items added after cache was built
+                var fallback = ColonyList.FirstOrDefault(c => c.UUID == id);
+                if (fallback != null)
+                {
+                    _colonyCache[id] = fallback;
+                    return fallback;
+                }
             }
 
             return null;
@@ -1074,6 +1094,10 @@ namespace OE2EmpireTracker.Services
 
             if (removed > 0)
                 Log.Info("Cleaned up {0} orphaned items on load", removed);
+
+            InvalidateBlueprintCache();
+            InvalidateSurveyCache();
+            InvalidateColonyCache();
         }
 
         /// <summary>

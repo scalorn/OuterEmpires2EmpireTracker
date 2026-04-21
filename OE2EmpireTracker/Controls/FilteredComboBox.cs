@@ -2,7 +2,6 @@
 using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,7 +30,7 @@ namespace OE2EmpireTracker.Controls
             }
             else
             {
-                BindingList<BlueprintType> blueprintTypes = (BindingList < BlueprintType > ) unfilteredList.DataSource;
+                List<BlueprintType> blueprintTypes = (List<BlueprintType>) unfilteredList.DataSource;
                 var filteredList = blueprintTypes
                     .Where(item => item.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
