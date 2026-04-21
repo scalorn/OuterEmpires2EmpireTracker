@@ -166,35 +166,6 @@ Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat
 
 The following items were designed in the empire-systems spec and marked complete in tasks.md, but the UI controls were either not implemented or implemented differently than the mockup specified. Discovered during the April 2026 mockup-controls audit.
 
-## Dead Code Findings (April 2026 Audit)
-
-Found by `dead-code.js`. Private methods with no references outside their declaration.
-
-### BL-075: Dead Code — FormColonyV2.AcquireStructureControl
-**File:** OE2EmpireTracker/Forms/ColonyV2/FormColonyV2.cs:711
-**Status: New**
-Private method never called. Likely leftover from a refactor. Review and remove if confirmed dead.
-
-### BL-076: Dead Code — FormColonyV2.ReturnAllToPool
-**File:** OE2EmpireTracker/Forms/ColonyV2/FormColonyV2.cs:727
-**Status: New**
-Private method never called. May have been superseded by a different pool management approach. Review and remove if confirmed dead.
-
-### BL-077: Dead Code — FormDeliveryExecution.GetLoadItemVolume
-**File:** OE2EmpireTracker/Forms/DeliveryExecution/FormDeliveryExecution.cs:1115
-**Status: New**
-Private method never called. Possibly planned for volume calculations that were implemented differently. Review and remove if confirmed dead.
-
-### BL-078: Dead Code — FormBuildPlanner.ShowInputDialog
-**File:** OE2EmpireTracker/Forms/BuildPlanner/FormBuildPlanner.cs:1349
-**Status: New**
-Private method never called. Generic input dialog helper that may have been replaced by a more specific approach. Review and remove if confirmed dead.
-
-### BL-079: Dead Code — FormPlayerProfile.chkColonyOperations_Click
-**File:** OE2EmpireTracker/Forms/PlayerProfile/FormPlayerProfile.cs:251
-**Status: New**
-Event handler never wired. The checkbox may have been removed from the Designer but the handler left behind. Review and remove if confirmed dead.
-
 ## Duplicate Code Findings (April 2026 Audit)
 
 Found by `dupe-code.js`. Methods with identical bodies across different classes.

@@ -250,12 +250,6 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             PopulateForm();
         }
 
-        private void chkColonyOperations_Click(object sender, EventArgs e)
-        {
-            viewModel.SetSkillGroup(SkillGroupName.ColonyOperations, chkColonyOperations.Checked);
-            PopulateForm();
-        }
-
         private void chkCommander_Click(object sender, EventArgs e)
         {
             viewModel.SetSkillGroup(SkillGroupName.Commander, chkCommander.Checked);

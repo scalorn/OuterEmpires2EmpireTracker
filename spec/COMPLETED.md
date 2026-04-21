@@ -350,3 +350,24 @@ Intentionally copied per the ship-form-overhaul spec. Both forms need identical 
 ### BL-084 (Audit): Duplicate — GetRefiningOutputRate (7 lines)
 Extracted to `GameConstants.GetRefiningOutputRate()`. Removed three private copies from ColonyActivityCollector, ColonyAdminReportBuilder, and ColonyStructureV2. The ColonyStructureV2 copy also had magic numbers instead of PurityMultiplier constants.
 **Status: Complete**
+
+
+### BL-075 (Audit): Dead Code — FormColonyV2.AcquireStructureControl
+Removed unused private method. Leftover from structure pool refactor.
+**Status: Complete**
+
+### BL-076 (Audit): Dead Code — FormColonyV2.ReturnAllToPool
+Removed unused private method. Superseded by different pool management approach.
+**Status: Complete**
+
+### BL-077 (Audit): Dead Code — FormDeliveryExecution.GetLoadItemVolume
+Removed unused private method. Volume calculation delegated to CargoVolumeService elsewhere.
+**Status: Complete**
+
+### BL-078 (Audit): Dead Code — FormBuildPlanner.ShowInputDialog
+Removed unused private method. Replaced by txtTargetDuration inline field (BL-079).
+**Status: Complete**
+
+### BL-079 (Audit): Dead Code — FormPlayerProfile.chkColonyOperations_Click
+Removed unwired event handler. Checkbox wiring was removed but handler left behind.
+**Status: Complete**

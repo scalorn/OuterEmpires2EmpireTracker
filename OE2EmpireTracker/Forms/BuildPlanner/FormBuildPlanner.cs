@@ -1345,41 +1345,6 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         // -----------------------------------------------------------------------
 
         /// <summary>
-        /// Shows a simple input dialog and returns the user's text, or null if cancelled.
-        /// </summary>
-        private static string ShowInputDialog(string prompt, string title)
-        {
-            using (var form = new Form())
-            {
-                form.Text = title;
-                form.ClientSize = new System.Drawing.Size(350, 120);
-                form.FormBorderStyle = FormBorderStyle.FixedDialog;
-                form.StartPosition = FormStartPosition.CenterParent;
-                form.MaximizeBox = false;
-                form.MinimizeBox = false;
-
-                var lbl = new Label { Text = prompt, Left = 10, Top = 10, Width = 330 };
-                var txt = new TextBox { Left = 10, Top = 35, Width = 330 };
-                var btnOk = new Button
-                {
-                    Text = "OK", Left = 180, Top = 70, Width = 75,
-                    DialogResult = DialogResult.OK
-                };
-                var btnCancel = new Button
-                {
-                    Text = "Cancel", Left = 265, Top = 70, Width = 75,
-                    DialogResult = DialogResult.Cancel
-                };
-
-                form.Controls.AddRange(new Control[] { lbl, txt, btnOk, btnCancel });
-                form.AcceptButton = btnOk;
-                form.CancelButton = btnCancel;
-
-                return form.ShowDialog() == DialogResult.OK ? txt.Text : null;
-            }
-        }
-
-        /// <summary>
         /// Simple helper class for combo box items with a display name and ID.
         /// </summary>
         private class ItemEntry

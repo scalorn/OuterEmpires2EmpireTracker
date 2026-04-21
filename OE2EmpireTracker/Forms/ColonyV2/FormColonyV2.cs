@@ -707,36 +707,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -------------------------------------------------------------------
-        // Structure_Pool (8.1)
-        // -------------------------------------------------------------------
-
-        private ColonyStructureV2 AcquireStructureControl()
-        {
-            if (_poolInUse < _pool.Count)
-            {
-                var ctrl = _pool[_poolInUse];
-                _poolInUse++;
-                ctrl.Visible = true;
-                return ctrl;
-            }
-            var newCtrl = new ColonyStructureV2();
-            newCtrl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
-            _pool.Add(newCtrl);
-            _poolInUse++;
-            return newCtrl;
-        }
-
-        private void ReturnAllToPool()
-        {
-            for (int i = 0; i < _poolInUse; i++)
-            {
-                _pool[i].Visible = false;
-                _pool[i].Reset();
-            }
-            _poolInUse = 0;
-        }
-
-        // -------------------------------------------------------------------
         // Structure panel population (8.2)
         // -------------------------------------------------------------------
 

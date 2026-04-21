@@ -1075,15 +1075,5 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 PopulatePlanDropdown(routeUUID);
             BuildExecution();
         }
-
-        /// <summary>
-        /// Returns the per-unit cargo volume for a delivery item based on its type.
-        /// Delegates to CargoVolumeService for consistency.
-        /// </summary>
-        private decimal GetLoadItemVolume(DeliveryItem item)
-        {
-            Func<string, Models.Blueprint> bpFinder = uuid => playerContext.FindBlueprint(uuid);
-            return CargoVolumeService.GetItemVolume(item, bpFinder);
-        }
     }
 }
