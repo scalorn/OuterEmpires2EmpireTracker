@@ -44,6 +44,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             dgvSlots.CellValueChanged += dgvSlots_CellValueChanged;
             dgvSlots.CurrentCellDirtyStateChanged += dgvSlots_CurrentCellDirtyStateChanged;
             dgvSlots.DataError += dgvSlots_DataError;
+            dgvSlots.CellClick += dgvSlots_CellClick;
 
             PopulateHullCombo();
             PopulateTemplateList();
@@ -309,6 +310,15 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         {
             Log.Warn("dgvSlots DataError at [{0},{1}]: {2}", e.RowIndex, e.ColumnIndex, e.Exception?.Message);
             e.ThrowException = false;
+        }
+
+        private void dgvSlots_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            if (e.ColumnIndex == colComponent.Index)
+            {
+                dgvSlots.BeginEdit(true);
+            }
         }
 
         // Stats

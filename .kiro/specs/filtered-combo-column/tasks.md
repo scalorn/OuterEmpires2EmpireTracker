@@ -126,7 +126,7 @@ Replace the existing stub `DataGridViewFilteredComboBoxColumn` (UserControl + De
     - Keep the existing UUID lookup via `SlotInfo.UUIDByIndex[selectedIdx]` unchanged
     - _Requirements: 7.3_
 
-- [-] 7. Final checkpoint — Verify full integration
+- [x] 7. Final checkpoint — Verify full integration
   - Build the solution and run all tests via vstest.console
   - Ensure all tests pass, ask the user if questions arise
 

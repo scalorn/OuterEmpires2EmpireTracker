@@ -227,7 +227,8 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             this.dgvSlots.Location = new System.Drawing.Point(3, 97);
             this.dgvSlots.Name = "dgvSlots";
             this.dgvSlots.Size = new System.Drawing.Size(662, 300);
-            this.dgvSlots.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvSlots.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvSlots.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             //
             // colSlotType
             //
