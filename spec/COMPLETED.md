@@ -337,3 +337,16 @@ Comprehensive empire management feature set implemented across 8 iterations in `
 
 ### BL-081: Stock Targets Quick Add and Expanded Components
 **Status: Complete** — Added cmdQuickAdd button to FormStockTargets that adds all resources as targets (1000 qty, EmpireWide scope, skipping duplicates). Added dgvExpandedComponents grid that shows the hull and component breakdown when a ShipTemplate target is selected in the targets grid. Selection change on dgvTargets triggers the expanded view for template targets, hidden for other types.
+
+
+### BL-080 (Audit): Duplicate — PopulateRouteDropdown (31 lines)
+Extracted to `RouteDropdownHelper.Populate()` in `OE2EmpireTracker/Controls/RouteDropdownHelper.cs`. Both FormColonyDailyBuild and FormDeliveryExecution now call the shared helper. Dead `DropdownItem` class removed from FormColonyDailyBuild.
+**Status: Complete**
+
+### BL-081 (Audit): Duplicate — PopulateHullCombo / SelectHullInCombo
+Intentionally copied per the ship-form-overhaul spec. Both forms need identical hull combo logic but operate on different selected objects. Added to KNOWN_DUPES in dupe-code.js.
+**Status: Accepted — by design**
+
+### BL-084 (Audit): Duplicate — GetRefiningOutputRate (7 lines)
+Extracted to `GameConstants.GetRefiningOutputRate()`. Removed three private copies from ColonyActivityCollector, ColonyAdminReportBuilder, and ColonyStructureV2. The ColonyStructureV2 copy also had magic numbers instead of PurityMultiplier constants.
+**Status: Complete**
