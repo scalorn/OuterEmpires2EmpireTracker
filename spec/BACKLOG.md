@@ -201,8 +201,8 @@ Found by `dupe-code.js`. Methods with identical bodies across different classes.
 
 ### BL-080: Duplicate — PopulateRouteDropdown (31 lines)
 **Files:** FormColonyDailyBuild.cs:83 == FormDeliveryExecution.cs:138
-**Status: New**
-Largest duplicate. Both forms populate a delivery route dropdown identically. Extract to a shared helper method or utility class.
+**Status: Done**
+Extracted to `RouteDropdownHelper.Populate()` in `OE2EmpireTracker/Controls/RouteDropdownHelper.cs`. Both forms now call the shared helper. Dead `DropdownItem` class removed from FormColonyDailyBuild.
 
 ### BL-081: Duplicate — PopulateHullCombo / SelectHullInCombo
 **Files:** FormShipInstance.cs == FormShipTemplate.cs (14 + 6 lines)

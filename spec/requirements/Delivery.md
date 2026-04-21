@@ -317,6 +317,8 @@ flowchart TD
 
 ### FormDeliveryExecution
 
+Route dropdown population is shared with FormColonyDailyBuild via `RouteDropdownHelper.Populate()` in `OE2EmpireTracker/Controls/RouteDropdownHelper.cs`.
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ #1 - Delivery Execution                                                 [_][□][X] │

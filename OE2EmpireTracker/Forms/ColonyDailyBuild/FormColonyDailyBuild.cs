@@ -69,12 +69,6 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
         // Route Selection
         // -----------------------------------------------------------------------
 
-        private class DropdownItem
-        {
-            public string UUID { get; set; }
-            public string Display { get; set; }
-        }
-
         private void txtRouteFilter_TextChanged(object sender, EventArgs e)
         {
             PopulateRouteDropdown();
@@ -82,40 +76,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
 
         private void PopulateRouteDropdown()
         {
-            var sw = Stopwatch.StartNew();
-            string previousUUID = cmbRoute.SelectedValue as string;
-            string filter = txtRouteFilter.Text ?? "";
-
-            cmbRoute.SelectedIndexChanged -= cmbRoute_SelectedIndexChanged;
-
-            var routes = playerContext.GetCurrentPlayerRoutes();
-            var items = new List<DropdownItem>();
-            items.Add(new DropdownItem { UUID = "", Display = "" });
-            foreach (var route in routes.OrderBy(r => r.Name))
-            {
-                if (!string.IsNullOrEmpty(filter) && route.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0)
-                    continue;
-                items.Add(new DropdownItem { UUID = route.UUID, Display = route.Name });
-            }
-            cmbRoute.DataSource = null;
-            cmbRoute.DisplayMember = "Display";
-            cmbRoute.ValueMember = "UUID";
-            cmbRoute.DataSource = items;
-            if (!string.IsNullOrEmpty(previousUUID) && items.Any(i => i.UUID == previousUUID))
-            {
-                cmbRoute.SelectedValue = previousUUID;
-                _lastRouteUUID = previousUUID;
-            }
-            else
-            {
-                _lastRouteUUID = "";
-            }
-
-            cmbRoute.SelectedIndexChanged += cmbRoute_SelectedIndexChanged;
-            sw.Stop();
-            Log.Info("PopulateRouteDropdown PERF: total={0}ms items={1}",
-                sw.ElapsedMilliseconds, items.Count);
-            sw.Stop(); Log.Info("PERF PopulateRouteDropdown: {0}ms", sw.ElapsedMilliseconds);
+            _lastRouteUUID = RouteDropdownHelper.Populate(cmbRoute, playerContext.GetCurrentPlayerRoutes(), txtRouteFilter.Text ?? "", cmbRoute.SelectedValue as string, cmbRoute_SelectedIndexChanged);
         }
 
         private string _lastRouteUUID = "";
