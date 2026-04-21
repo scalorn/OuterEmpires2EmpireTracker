@@ -453,10 +453,12 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             {
                 if (existing == null)
                 {
-                    existing = new ShipComponentSlot { SlotType = info.SlotType, SlotIndex = info.SlotIndex };
+                    existing = new ShipComponentSlot { SlotType = info.SlotType, SlotIndex = info.SlotIndex, CurrentHP = 100, MaxRepairPercent = 100m };
                     _selectedShip.Components.Add(existing);
                 }
                 existing.BlueprintUUID = bpUUID;
+                row.Cells[colCondition.Index].Value = existing.CurrentHP.ToString();
+                row.Cells[colMaxRepair.Index].Value = existing.MaxRepairPercent.ToString();
             }
             RefreshStats();
         }

@@ -176,7 +176,7 @@ The component grid upgrade replaces the read-only text column with `DataGridView
 2. For each slot definition and index, it creates a row. The `colComponent` cell (`DataGridViewFilteredComboBoxCell`) gets a per-cell item list of eligible blueprints (filtered by slot type and hull class), plus `"(empty)"` as the first entry.
 3. Each row's `Tag` is a `SlotInfo` with `UUIDByIndex` — a parallel list mapping combo index to blueprint UUID (index 0 = `""` for empty).
 4. The hull row is first, with component cell set to the hull's `ExtendedName` and marked read-only.
-5. `dgvComponents_CellValueChanged` handles combo selection: reads the selected display name, finds its index in `SlotInfo.UUIDByIndex`, and updates or removes the component slot.
+5. `dgvComponents_CellValueChanged` handles combo selection: reads the selected display name, finds its index in `SlotInfo.UUIDByIndex`, and updates or removes the component slot. New slots default to `CurrentHP = 100` and `MaxRepairPercent = 100`. The grid cells are updated to reflect these defaults.
 6. `dgvComponents_CellEndEdit` continues to handle Condition and MaxRepair edits for all rows.
 
 ### Layout Changes

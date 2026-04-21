@@ -122,7 +122,7 @@ Overhaul `FormShipInstance` to align with `FormShipTemplate` by relocating butto
     - Wire `cmdSave.Click` in constructor if not already wired via flpCommands relocation
     - _Requirements: 7.1, 7.2_
 
-- [-] 8. Final checkpoint — Full build and verify
+- [x] 8. Final checkpoint — Full build and verify
   - Ensure all diagnostics pass and the form compiles cleanly, ask the user if questions arise.
 
 ## Notes

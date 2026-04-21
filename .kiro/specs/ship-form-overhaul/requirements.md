@@ -66,7 +66,7 @@ Overhaul FormShipInstance to align its layout, controls, and interaction pattern
 2. THE Component_Grid SHALL include a Slot Type column (read-only), a Slot Index column (read-only), the Component_Column (editable filtered combo), the Condition_Column (editable), and the MaxRepair_Column (editable).
 3. WHEN the Component_Grid is populated, THE Ship_Form SHALL set each component cell's item list to the eligible blueprint `ExtendedName` strings for that slot type and hull class, plus an "(empty)" entry as the first item.
 4. WHEN the user selects a component via the filtered combo, THE Ship_Form SHALL resolve the selected display name to a UUID using the parallel UUID list on the row's Slot_Info Tag.
-5. WHEN the user selects a component, THE Ship_Form SHALL update the ship's component slot and refresh the Stats_Box.
+5. WHEN the user selects a component, THE Ship_Form SHALL update the ship's component slot, set Condition to 100 and MaxRepair to 100 for new slots, and refresh the Stats_Box.
 6. WHEN the user selects "(empty)", THE Ship_Form SHALL remove the component from that slot.
 7. THE Component_Grid SHALL include a hull row as the first row with the hull name displayed in the Component_Column (read-only, not editable via the combo).
 
