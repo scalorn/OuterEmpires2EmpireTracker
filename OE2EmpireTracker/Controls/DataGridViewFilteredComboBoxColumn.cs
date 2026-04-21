@@ -103,101 +103,18 @@ namespace OE2EmpireTracker.Controls
     }
 
     /// <summary>
-    /// The editing control — a UserControl with TextBox + ComboBox that implements IDataGridViewEditingControl.
-    /// Provides contains-match filtering of the item list.
+    /// Grid editing control — extends FilteredTextComboSet with IDataGridViewEditingControl.
+    /// All filtering logic lives in the base class; this adds only the grid plumbing.
     /// </summary>
-    public class DataGridViewFilteredComboBoxEditingControl : UserControl, IDataGridViewEditingControl
+    public class DataGridViewFilteredComboBoxEditingControl : FilteredTextComboSet, IDataGridViewEditingControl
     {
-        private TextBox txtFilter;
-        private ComboBox cmbItems;
-        private List<string> _fullItems = new List<string>();
-        private List<int> _filteredIndexMap = new List<int>();
         private DataGridView _dataGridView;
         private bool _valueChanged;
         private int _rowIndex;
-        private bool _suppressFilterEvent;
-        private bool _suppressSelectionEvent;
 
-        public DataGridViewFilteredComboBoxEditingControl()
+        protected override void OnSelectedItemChanged()
         {
-            txtFilter = new TextBox { Dock = DockStyle.None, BorderStyle = BorderStyle.None };
-            cmbItems = new ComboBox { Dock = DockStyle.None, DropDownStyle = ComboBoxStyle.DropDownList, FlatStyle = FlatStyle.Flat };
-
-            Controls.Add(txtFilter);
-            Controls.Add(cmbItems);
-
-            txtFilter.TextChanged += TxtFilter_TextChanged;
-            cmbItems.SelectedIndexChanged += CmbItems_SelectedIndexChanged;
-        }
-
-        protected override void OnLayout(LayoutEventArgs e)
-        {
-            base.OnLayout(e);
-            int filterWidth = (int)(Width * 0.35);
-            txtFilter.SetBounds(0, 0, filterWidth, Height);
-            cmbItems.SetBounds(filterWidth, 0, Width - filterWidth, Height);
-        }
-
-        public void SetItems(List<string> items, string currentValue)
-        {
-            _fullItems = items ?? new List<string>();
-            _suppressFilterEvent = true;
-            _suppressSelectionEvent = true;
-            txtFilter.Text = string.Empty;
-            _suppressFilterEvent = false;
-            RebuildFilteredList();
-            if (!string.IsNullOrEmpty(currentValue))
-            {
-                int idx = cmbItems.Items.IndexOf(currentValue);
-                if (idx >= 0) cmbItems.SelectedIndex = idx;
-            }
-            _suppressSelectionEvent = false;
-        }
-
-        /// <summary>
-        /// Filters the full item list using case-insensitive contains-match.
-        /// Returns the filtered items and an index map back to the full list.
-        /// </summary>
-        public static (List<string> filtered, List<int> indexMap) ApplyFilter(List<string> fullItems, string filter)
-        {
-            var filtered = new List<string>();
-            var indexMap = new List<int>();
-            if (fullItems == null) return (filtered, indexMap);
-
-            for (int i = 0; i < fullItems.Count; i++)
-            {
-                string item = fullItems[i] ?? string.Empty;
-                if (string.IsNullOrEmpty(filter) || item.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
-                {
-                    filtered.Add(fullItems[i]);
-                    indexMap.Add(i);
-                }
-            }
-            return (filtered, indexMap);
-        }
-
-        private void RebuildFilteredList()
-        {
-            var (filtered, indexMap) = ApplyFilter(_fullItems, txtFilter.Text);
-            _filteredIndexMap = indexMap;
-            cmbItems.Items.Clear();
-            foreach (var item in filtered)
-                cmbItems.Items.Add(item);
-            if (filtered.Count > 0 && !string.IsNullOrEmpty(txtFilter.Text))
-            {
-                try { cmbItems.DroppedDown = true; } catch { }
-            }
-        }
-
-        private void TxtFilter_TextChanged(object sender, EventArgs e)
-        {
-            if (_suppressFilterEvent) return;
-            RebuildFilteredList();
-        }
-
-        private void CmbItems_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_suppressSelectionEvent) return;
+            base.OnSelectedItemChanged();
             _valueChanged = true;
             _dataGridView?.NotifyCurrentCellDirty(true);
         }
@@ -239,10 +156,7 @@ namespace OE2EmpireTracker.Controls
 
         public void ApplyCellStyleToEditingControl(DataGridViewCellStyle dataGridViewCellStyle)
         {
-            txtFilter.Font = dataGridViewCellStyle.Font;
-            txtFilter.ForeColor = dataGridViewCellStyle.ForeColor;
-            cmbItems.Font = dataGridViewCellStyle.Font;
-            cmbItems.ForeColor = dataGridViewCellStyle.ForeColor;
+            ApplyStyle(dataGridViewCellStyle.Font, dataGridViewCellStyle.ForeColor);
         }
 
         public bool EditingControlWantsInputKey(Keys keyData, bool dataGridViewWantsInputKey)
@@ -275,19 +189,7 @@ namespace OE2EmpireTracker.Controls
 
         public void PrepareEditingControlForEdit(bool selectAll)
         {
-            // Preserve the current selection across the filter reset
-            string currentValue = cmbItems.SelectedItem?.ToString();
-            _suppressFilterEvent = true;
-            txtFilter.Text = string.Empty;
-            _suppressFilterEvent = false;
-            _suppressSelectionEvent = true;
-            RebuildFilteredList();
-            if (!string.IsNullOrEmpty(currentValue))
-            {
-                int idx = cmbItems.Items.IndexOf(currentValue);
-                if (idx >= 0) cmbItems.SelectedIndex = idx;
-            }
-            _suppressSelectionEvent = false;
+            ResetFilter();
             txtFilter.Focus();
         }
 

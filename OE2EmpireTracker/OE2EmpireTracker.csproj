@@ -287,12 +287,7 @@
     <Compile Include="Controls\FilteredComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\FilteredTextComboSet.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\FilteredTextComboSet.Designer.cs">
-      <DependentUpon>FilteredTextComboSet.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Controls\FilteredTextComboSet.cs" />
     <Compile Include="Controls\ValidatedTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -457,9 +452,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Controls\FilteredTextComboSet.resx">
-      <DependentUpon>FilteredTextComboSet.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\DeliveryRoute\FormDeliveryRoute.resx">
       <DependentUpon>FormDeliveryRoute.cs</DependentUpon>
     </EmbeddedResource>

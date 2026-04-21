@@ -13,16 +13,21 @@ The first consumer is `FormShipTemplate`'s component slot grid, replacing the cu
 The control consists of three classes in `OE2EmpireTracker.Controls`, mirroring the pattern from `DataGridViewValidatedTextBoxColumn`:
 
 ```
+FilteredTextComboSet : UserControl
+    ├── TextBox txtFilter  (left, ~35% width)
+    └── ComboBox cmbItems  (right, ~65% width)
+
+DataGridViewFilteredComboBoxEditingControl : FilteredTextComboSet, IDataGridViewEditingControl
+    (adds only grid editing plumbing — no filtering logic)
+
 DataGridViewFilteredComboBoxColumn : DataGridViewColumn
     └── CellTemplate: DataGridViewFilteredComboBoxCell
 
 DataGridViewFilteredComboBoxCell : DataGridViewCell
     └── EditType: DataGridViewFilteredComboBoxEditingControl
-
-DataGridViewFilteredComboBoxEditingControl : UserControl, IDataGridViewEditingControl
-    ├── TextBox txtFilter  (left, ~35% width)
-    └── ComboBox cmbItems  (right, ~65% width)
 ```
+
+`FilteredTextComboSet` is the standalone base control that can be used directly on any form. `DataGridViewFilteredComboBoxEditingControl` extends it with `IDataGridViewEditingControl` for use inside a DataGridView.
 
 
 ```mermaid
