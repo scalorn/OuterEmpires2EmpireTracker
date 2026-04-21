@@ -51,8 +51,9 @@ namespace OE2EmpireTracker.Controls
 
         public FilteredTextComboSet()
         {
-            txtFilter = new TextBox { Dock = DockStyle.None, BorderStyle = BorderStyle.None };
+            txtFilter = new TextBox { Dock = DockStyle.None, BorderStyle = BorderStyle.FixedSingle };
             cmbItems = new ComboBox { Dock = DockStyle.None, DropDownStyle = ComboBoxStyle.DropDownList, FlatStyle = FlatStyle.Flat };
+            BorderStyle = BorderStyle.FixedSingle;
 
             Controls.Add(txtFilter);
             Controls.Add(cmbItems);

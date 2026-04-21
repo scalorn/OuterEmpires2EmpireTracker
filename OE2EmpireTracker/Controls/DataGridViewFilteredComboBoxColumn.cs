@@ -112,6 +112,13 @@ namespace OE2EmpireTracker.Controls
         private bool _valueChanged;
         private int _rowIndex;
 
+        public DataGridViewFilteredComboBoxEditingControl()
+        {
+            // Strip borders for inline grid editing — the cell provides the border
+            BorderStyle = BorderStyle.None;
+            txtFilter.BorderStyle = BorderStyle.None;
+        }
+
         protected override void OnSelectedItemChanged()
         {
             base.OnSelectedItemChanged();
