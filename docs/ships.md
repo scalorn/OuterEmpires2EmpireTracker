@@ -44,10 +44,11 @@ You can create ships two ways:
 
 The Overview tab shows all installed components in a grid. Each row has:
 
-- **Component name and slot**
+- **Slot type and index** — identifies which slot the component occupies
+- **Component** — select components inline using a filtered combo box. Type part of a name to narrow the list, just like the template form. Select "(empty)" to remove a component.
 - **Condition** — current condition (editable). Track battle damage or wear over time.
 - **Max Repair** — the maximum condition the component can be repaired to (editable). Some damage is permanent.
-- **Hull Damage** — shown at the top, tracks damage to the ship's hull itself.
+- **Hull row** — shown at the top, tracks the hull's condition and max repair. The hull name is read-only.
 
 ### Cargo Tab
 

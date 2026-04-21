@@ -20,6 +20,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
         private PlayerContext playerContext;
         private Ship _selectedShip;
+        private List<string> _hullUUIDs = new List<string>();
 
         public FormShipInstance()
         {
@@ -41,8 +42,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             cmdDelete.Click += cmdDelete_Click;
             cmdSave.Click += cmdSave_Click;
             cmdFromTemplate.Click += cmdFromTemplate_Click;
-            cmdSwapComponent.Click += cmdSwapComponent_Click;
-
+            cmbHull.SelectedItemChanged += cmbHull_SelectedItemChanged;
             rbCargoHold.CheckedChanged += rbCargo_CheckedChanged;
             rbHopper.CheckedChanged += rbCargo_CheckedChanged;
             cmdAddItem.Click += cmdAddItem_Click;
@@ -51,8 +51,13 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             cmbAddType.SelectedIndexChanged += cmbAddType_SelectedIndexChanged;
 
             dgvComponents.CellEndEdit += dgvComponents_CellEndEdit;
+            dgvComponents.CellValueChanged += dgvComponents_CellValueChanged;
+            dgvComponents.CurrentCellDirtyStateChanged += dgvComponents_CurrentCellDirtyStateChanged;
+            dgvComponents.DataError += dgvComponents_DataError;
+            dgvComponents.CellClick += dgvComponents_CellClick;
 
             PopulateLocationTypeCombo();
+            PopulateHullCombo();
             PopulateAddTypeCombo();
             PopulateShipList();
             ClearForm();
@@ -77,7 +82,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         {
             int w2 = flpSearchList.ClientSize.Width;
             int h = flpSearchList.ClientSize.Height;
-            int listHeight = h - flpFilter.Height - flpCommands.Height - 18;
+            int listHeight = h - flpFilter.Height - 12;
             if (listHeight < 50) listHeight = 50;
             lvwShips.Size = new System.Drawing.Size(w2 - 6, listHeight);
         }
@@ -86,7 +91,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         {
             int w2 = flpDetail.ClientSize.Width;
             int h = flpDetail.ClientSize.Height;
-            int tabHeight = h - flpName.Height - flpLocation.Height - cmdSave.Height - 24;
+            int tabHeight = h - flpName.Height - flpHull.Height - flpLocation.Height - flpCommands.Height - 30;
             if (tabHeight < 100) tabHeight = 100;
             tabControl.Size = new System.Drawing.Size(w2 - 6, tabHeight);
         }
@@ -139,6 +144,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             using var guard = new ProgrammaticUpdateGuard(this);
             if (_selectedShip == null) { ClearForm(); return; }
             txtName.Text = _selectedShip.Name;
+            SelectHullInCombo(_selectedShip.HullBlueprintUUID);
             SelectLocationType(_selectedShip.LocationType);
             PopulateLocationUUIDCombo(_selectedShip.LocationType);
             SelectLocationUUID(_selectedShip.LocationUUID);
@@ -154,6 +160,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         {
             using var guard = new ProgrammaticUpdateGuard(this);
             txtName.Text = "";
+            cmbHull.SetItems(cmbHull.Items, null);
             cmbLocationType.SelectedIndex = -1;
             cmbLocationUUID.Items.Clear();
             dgvComponents.Rows.Clear();
@@ -165,6 +172,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         private void SetDetailEnabled(bool enabled)
         {
             txtName.Enabled = enabled;
+            cmbHull.Enabled = enabled;
             cmbLocationType.Enabled = enabled;
             cmbLocationUUID.Enabled = enabled;
             cmdSave.Enabled = enabled;
@@ -232,6 +240,75 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             cmbLocationUUID.SelectedIndex = -1;
         }
 
+        // Hull Combo
+        private void PopulateHullCombo()
+        {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            using var guard = new ProgrammaticUpdateGuard(this);
+            var names = new List<string>();
+            _hullUUIDs = new List<string>();
+            var hulls = playerContext.GetAllBlueprints()
+                .Where(bp => bp.BluePrintType == "Hull")
+                .OrderBy(bp => bp.ExtendedName);
+            foreach (var bp in hulls)
+            {
+                names.Add(bp.ExtendedName);
+                _hullUUIDs.Add(bp.UUID);
+            }
+            cmbHull.SetItems(names, null);
+            sw.Stop(); Log.Info("PERF PopulateHullCombo: {0}ms", sw.ElapsedMilliseconds);
+        }
+
+        private void SelectHullInCombo(string hullUUID)
+        {
+            if (string.IsNullOrEmpty(hullUUID)) { cmbHull.SetItems(cmbHull.Items, null); return; }
+            int idx = _hullUUIDs.IndexOf(hullUUID);
+            if (idx >= 0)
+                cmbHull.SetItems(cmbHull.Items, cmbHull.Items[idx]);
+            else
+                cmbHull.SetItems(cmbHull.Items, null);
+        }
+
+        private void cmbHull_SelectedItemChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0 || _selectedShip == null) return;
+            int idx = cmbHull.SelectedFullIndex;
+            string uuid = (idx >= 0 && idx < _hullUUIDs.Count) ? _hullUUIDs[idx] : "";
+            _selectedShip.HullBlueprintUUID = uuid;
+            _selectedShip.Components.Clear();
+            PopulateOverviewGrid();
+            RefreshStats();
+        }
+
+        // Hull Combo — GetSlotDefinitions
+        private List<SlotDefinition> GetSlotDefinitions(Blueprint hullBp)
+        {
+            var slotToBpTypes = new Dictionary<string, List<string>>();
+            foreach (var kvp in SlotTypes.BlueprintTypeToSlotType)
+            {
+                if (!slotToBpTypes.ContainsKey(kvp.Value))
+                    slotToBpTypes[kvp.Value] = new List<string>();
+                slotToBpTypes[kvp.Value].Add(kvp.Key);
+            }
+
+            var defs = new List<SlotDefinition>();
+            foreach (var kvp in SlotTypes.HullPropertyToSlotType)
+            {
+                decimal maxVal;
+                if (hullBp.Properties.getDecimal(kvp.Key, 0m, out maxVal) && maxVal > 0)
+                {
+                    slotToBpTypes.TryGetValue(kvp.Value, out var bpTypes);
+                    defs.Add(new SlotDefinition
+                    {
+                        SlotType = kvp.Value,
+                        MaxCount = (int)maxVal,
+                        BlueprintTypes = bpTypes ?? new List<string>()
+                    });
+                }
+            }
+            return defs;
+        }
+
         // Overview tab — component grid
         private void PopulateOverviewGrid()
         {
@@ -240,27 +317,76 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             dgvComponents.Rows.Clear();
             if (_selectedShip == null) { sw.Stop(); return; }
 
-            // Hull row first
             var hullBp = playerContext.FindBlueprint(_selectedShip.HullBlueprintUUID);
             string hullName = hullBp?.ExtendedName ?? "(no hull)";
-            int hullRow = dgvComponents.Rows.Add("Hull", hullName,
+
+            // Hull row (first row, component cell read-only)
+            int hullRow = dgvComponents.Rows.Add("Hull", "", hullName,
                 _selectedShip.HullCurrentHP.ToString(),
                 _selectedShip.HullMaxRepairPercent.ToString());
             dgvComponents.Rows[hullRow].Tag = "hull";
             dgvComponents.Rows[hullRow].Cells[colSlotType.Index].ReadOnly = true;
-            dgvComponents.Rows[hullRow].Cells[colComponentName.Index].ReadOnly = true;
+            dgvComponents.Rows[hullRow].Cells[colComponent.Index].ReadOnly = true;
 
-            // Component rows
-            foreach (var slot in _selectedShip.Components)
+            if (hullBp?.Properties == null) { sw.Stop(); Log.Info("PERF PopulateOverviewGrid: {0}ms", sw.ElapsedMilliseconds); return; }
+
+            var slotDefs = GetSlotDefinitions(hullBp);
+            int hullClass = hullBp.Class;
+            foreach (var def in slotDefs)
             {
-                var compBp = playerContext.FindBlueprint(slot.BlueprintUUID);
-                string compName = compBp?.ExtendedName ?? "(unknown)";
-                int rowIdx = dgvComponents.Rows.Add(slot.SlotType, compName,
-                    slot.CurrentHP.ToString(),
-                    slot.MaxRepairPercent.ToString());
-                dgvComponents.Rows[rowIdx].Tag = slot;
-                dgvComponents.Rows[rowIdx].Cells[colSlotType.Index].ReadOnly = true;
-                dgvComponents.Rows[rowIdx].Cells[colComponentName.Index].ReadOnly = true;
+                for (int idx = 0; idx < def.MaxCount; idx++)
+                {
+                    var existing = _selectedShip.Components
+                        .FirstOrDefault(c => c.SlotType == def.SlotType && c.SlotIndex == idx);
+
+                    int rowIdx = dgvComponents.Rows.Add(def.SlotType, idx.ToString());
+                    var row = dgvComponents.Rows[rowIdx];
+                    row.Cells[colSlotType.Index].ReadOnly = true;
+                    row.Cells[colSlotIndex.Index].ReadOnly = true;
+
+                    // Populate component combo for this row
+                    var comboCell = (DataGridViewFilteredComboBoxCell)row.Cells[colComponent.Index];
+                    var uuidByIndex = new List<string>();
+                    var itemList = new List<string>();
+                    itemList.Add("(empty)");
+                    uuidByIndex.Add("");
+                    var eligibleBps = playerContext.GetAllBlueprints()
+                        .Where(bp => def.BlueprintTypes.Contains(bp.BluePrintType) && bp.Class == hullClass)
+                        .OrderBy(bp => bp.ExtendedName);
+                    foreach (var bp in eligibleBps)
+                    {
+                        itemList.Add(bp.ExtendedName);
+                        uuidByIndex.Add(bp.UUID);
+                    }
+
+                    if (existing != null && !string.IsNullOrEmpty(existing.BlueprintUUID))
+                    {
+                        int matchIdx = uuidByIndex.IndexOf(existing.BlueprintUUID);
+                        if (matchIdx >= 0)
+                        {
+                            comboCell.Items = itemList;
+                            comboCell.Value = itemList[matchIdx];
+                        }
+                        else
+                        {
+                            var compBp = playerContext.FindBlueprint(existing.BlueprintUUID);
+                            string fallback = compBp?.ExtendedName ?? "(unknown)";
+                            itemList.Add(fallback);
+                            uuidByIndex.Add(existing.BlueprintUUID);
+                            comboCell.Items = itemList;
+                            comboCell.Value = fallback;
+                        }
+                        row.Cells[colCondition.Index].Value = existing.CurrentHP.ToString();
+                        row.Cells[colMaxRepair.Index].Value = existing.MaxRepairPercent.ToString();
+                    }
+                    else
+                    {
+                        comboCell.Items = itemList;
+                        comboCell.Value = "(empty)";
+                    }
+
+                    row.Tag = new SlotInfo { SlotType = def.SlotType, SlotIndex = idx, UUIDByIndex = uuidByIndex };
+                }
             }
             sw.Stop(); Log.Info("PERF PopulateOverviewGrid: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -282,17 +408,75 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                     if (decimal.TryParse(valStr, out decimal mr)) _selectedShip.HullMaxRepairPercent = mr;
                 }
             }
-            else if (row.Tag is ShipComponentSlot slot)
+            else if (row.Tag is SlotInfo info)
             {
-                if (e.ColumnIndex == colCondition.Index)
+                var slot = _selectedShip.Components
+                    .FirstOrDefault(c => c.SlotType == info.SlotType && c.SlotIndex == info.SlotIndex);
+                if (slot != null)
                 {
-                    if (int.TryParse(valStr, out int hp)) slot.CurrentHP = hp;
-                }
-                else if (e.ColumnIndex == colMaxRepair.Index)
-                {
-                    if (decimal.TryParse(valStr, out decimal mr)) slot.MaxRepairPercent = mr;
+                    if (e.ColumnIndex == colCondition.Index)
+                    {
+                        if (int.TryParse(valStr, out int hp)) slot.CurrentHP = hp;
+                    }
+                    else if (e.ColumnIndex == colMaxRepair.Index)
+                    {
+                        if (decimal.TryParse(valStr, out decimal mr)) slot.MaxRepairPercent = mr;
+                    }
                 }
             }
+        }
+
+        private void dgvComponents_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0 || e.RowIndex < 0) return;
+            if (e.ColumnIndex != colComponent.Index) return;
+            if (_selectedShip == null) return;
+
+            var row = dgvComponents.Rows[e.RowIndex];
+            var info = row.Tag as SlotInfo;
+            if (info == null) return;
+
+            string bpUUID = "";
+            var comboCell = (DataGridViewFilteredComboBoxCell)row.Cells[colComponent.Index];
+            int selectedIdx = comboCell.Items != null ? comboCell.Items.IndexOf(comboCell.Value?.ToString()) : -1;
+            if (selectedIdx > 0 && info.UUIDByIndex != null && selectedIdx < info.UUIDByIndex.Count)
+                bpUUID = info.UUIDByIndex[selectedIdx];
+
+            var existing = _selectedShip.Components
+                .FirstOrDefault(c => c.SlotType == info.SlotType && c.SlotIndex == info.SlotIndex);
+
+            if (string.IsNullOrEmpty(bpUUID))
+            {
+                if (existing != null) _selectedShip.Components.Remove(existing);
+            }
+            else
+            {
+                if (existing == null)
+                {
+                    existing = new ShipComponentSlot { SlotType = info.SlotType, SlotIndex = info.SlotIndex };
+                    _selectedShip.Components.Add(existing);
+                }
+                existing.BlueprintUUID = bpUUID;
+            }
+            RefreshStats();
+        }
+
+        private void dgvComponents_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (dgvComponents.IsCurrentCellDirty)
+                dgvComponents.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        }
+
+        private void dgvComponents_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            Log.Error("dgvComponents DataError at [{0},{1}]: {2}", e.RowIndex, e.ColumnIndex, e.Exception?.Message);
+            e.ThrowException = false;
+        }
+
+        private void dgvComponents_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex == colComponent.Index)
+                dgvComponents.BeginEdit(true);
         }
 
         private void RefreshStats()
@@ -319,52 +503,6 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 stats.Acceleration, stats.RotationalThrust, stats.MaxJumpDistance, stats.FuelPerJump,
                 stats.MiningYield, stats.ScanLevel);
             sw.Stop(); Log.Info("PERF RefreshStats: {0}ms", sw.ElapsedMilliseconds);
-        }
-
-        private void cmdSwapComponent_Click(object sender, EventArgs e)
-        {
-            if (_selectedShip == null || dgvComponents.SelectedRows.Count == 0) return;
-            var row = dgvComponents.SelectedRows[0];
-            if (!(row.Tag is ShipComponentSlot slot)) return;
-
-            var blueprints = playerContext.GetAllBlueprints()
-                .Where(bp => bp.BluePrintType == slot.SlotType)
-                .OrderBy(bp => bp.ExtendedName)
-                .ToList();
-
-            if (blueprints.Count == 0)
-            {
-                MessageBox.Show(string.Format("No blueprints found for slot type \"{0}\".", slot.SlotType),
-                    "No Blueprints", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            var items = blueprints.Select(bp => bp.ExtendedName).ToArray();
-            using (var dlg = new Form())
-            {
-                dlg.Text = "Swap Component \u2014 " + slot.SlotType;
-                dlg.Size = new System.Drawing.Size(400, 350);
-                dlg.StartPosition = FormStartPosition.CenterParent;
-                dlg.FormBorderStyle = FormBorderStyle.FixedDialog;
-                dlg.MaximizeBox = false;
-                dlg.MinimizeBox = false;
-
-                var lb = new ListBox { Dock = DockStyle.Fill };
-                lb.Items.AddRange(items);
-                var btnOk = new Button { Text = "OK", DialogResult = DialogResult.OK, Dock = DockStyle.Bottom };
-                dlg.Controls.Add(lb);
-                dlg.Controls.Add(btnOk);
-                dlg.AcceptButton = btnOk;
-
-                if (dlg.ShowDialog(this) == DialogResult.OK && lb.SelectedIndex >= 0)
-                {
-                    var selected = blueprints[lb.SelectedIndex];
-                    slot.BlueprintUUID = selected.UUID;
-                    PopulateOverviewGrid();
-                    RefreshStats();
-                    Log.Info("Swapped component in slot {0} to {1}", slot.SlotType, selected.ExtendedName);
-                }
-            }
         }
 
         // Cargo tab
@@ -634,8 +772,18 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         // CRUD
         private void cmdNew_Click(object sender, EventArgs e)
         {
-            // Ships always need a hull — route through the template picker
-            cmdFromTemplate_Click(sender, e);
+            var ship = new Ship
+            {
+                UUID = Guid.NewGuid().ToString(),
+                Name = "New Ship",
+                OwnerUUID = playerContext.CurrentPlayerUUID
+            };
+            playerContext.AddShip(ship);
+            playerContext.WriteContext();
+            _selectedShip = ship;
+            PopulateShipList();
+            PopulateForm();
+            Log.Info("Created blank ship \"{0}\"", ship.Name);
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
@@ -694,6 +842,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             if (InvokeRequired)
             { try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); } catch (ObjectDisposedException) { } return; }
             _selectedShip = null;
+            PopulateHullCombo();
             PopulateShipList();
             ClearForm();
         }
@@ -703,6 +852,10 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             base.OnFormClosed(e);
         }
+
+        // Inner classes for component grid
+        private class SlotInfo { public string SlotType; public int SlotIndex; public List<string> UUIDByIndex; }
+        private class SlotDefinition { public string SlotType; public int MaxCount; public List<string> BlueprintTypes; }
 
         // Helpers
         private class LocationEntry { public string Display; public string UUID; public override string ToString() => Display; }

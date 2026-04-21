@@ -25,25 +25,28 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.lvwShips = new System.Windows.Forms.ListView();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdNew = new System.Windows.Forms.Button();
+            this.cmdSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cmdFromTemplate = new System.Windows.Forms.Button();
             this.flpDetail = new System.Windows.Forms.FlowLayoutPanel();
             this.flpName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblName = new System.Windows.Forms.Label();
             this.txtName = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.flpHull = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblHull = new System.Windows.Forms.Label();
+            this.cmbHull = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.flpLocation = new System.Windows.Forms.FlowLayoutPanel();
             this.lblLocation = new System.Windows.Forms.Label();
             this.cmbLocationType = new System.Windows.Forms.ComboBox();
             this.cmbLocationUUID = new System.Windows.Forms.ComboBox();
-            this.cmdSave = new System.Windows.Forms.Button();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabOverview = new System.Windows.Forms.TabPage();
             this.dgvComponents = new System.Windows.Forms.DataGridView();
             this.colSlotType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colComponentName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSlotIndex = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colComponent = new OE2EmpireTracker.Controls.DataGridViewFilteredComboBoxColumn();
             this.colCondition = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colMaxRepair = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cmdSwapComponent = new System.Windows.Forms.Button();
             this.rtbStats = new System.Windows.Forms.RichTextBox();
             this.tabCargo = new System.Windows.Forms.TabPage();
             this.flpCargoTop = new System.Windows.Forms.FlowLayoutPanel();
@@ -78,6 +81,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.flpCommands.SuspendLayout();
             this.flpDetail.SuspendLayout();
             this.flpName.SuspendLayout();
+            this.flpHull.SuspendLayout();
             this.flpLocation.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabOverview.SuspendLayout();
@@ -99,11 +103,10 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.flpBase.Size = new System.Drawing.Size(950, 620);
             this.flpBase.WrapContents = false;
             //
-            // flpSearchList
+            // flpSearchList — Task 1.3: only flpFilter + lvwShips (flpCommands moved to flpDetail)
             //
             this.flpSearchList.Controls.Add(this.flpFilter);
             this.flpSearchList.Controls.Add(this.lvwShips);
-            this.flpSearchList.Controls.Add(this.flpCommands);
             this.flpSearchList.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpSearchList.Location = new System.Drawing.Point(3, 3);
             this.flpSearchList.Name = "flpSearchList";
@@ -142,50 +145,60 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.lvwShips.Location = new System.Drawing.Point(3, 35);
             this.lvwShips.MultiSelect = false;
             this.lvwShips.Name = "lvwShips";
-            this.lvwShips.Size = new System.Drawing.Size(214, 520);
+            this.lvwShips.Size = new System.Drawing.Size(214, 573);
             this.lvwShips.UseCompatibleStateImageBehavior = false;
             this.lvwShips.View = System.Windows.Forms.View.Details;
             //
-            // flpCommands
+            // flpCommands — Task 1.3: now includes cmdSave, order: New, Save, Delete, From Template
             //
             this.flpCommands.AutoSize = true;
             this.flpCommands.Controls.Add(this.cmdNew);
+            this.flpCommands.Controls.Add(this.cmdSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
             this.flpCommands.Controls.Add(this.cmdFromTemplate);
             this.flpCommands.Location = new System.Drawing.Point(3, 561);
             this.flpCommands.Name = "flpCommands";
-            this.flpCommands.Size = new System.Drawing.Size(214, 29);
+            this.flpCommands.Size = new System.Drawing.Size(712, 29);
             //
             // cmdNew
             //
             this.cmdNew.Location = new System.Drawing.Point(3, 3);
             this.cmdNew.Name = "cmdNew";
-            this.cmdNew.Size = new System.Drawing.Size(55, 23);
+            this.cmdNew.Size = new System.Drawing.Size(75, 23);
             this.cmdNew.Text = "New";
             this.cmdNew.UseVisualStyleBackColor = true;
             //
+            // cmdSave — Task 1.3: moved into flpCommands
+            //
+            this.cmdSave.Location = new System.Drawing.Point(84, 3);
+            this.cmdSave.Name = "cmdSave";
+            this.cmdSave.Size = new System.Drawing.Size(75, 23);
+            this.cmdSave.Text = "Save";
+            this.cmdSave.UseVisualStyleBackColor = true;
+            //
             // cmdDelete
             //
-            this.cmdDelete.Location = new System.Drawing.Point(64, 3);
+            this.cmdDelete.Location = new System.Drawing.Point(165, 3);
             this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(55, 23);
+            this.cmdDelete.Size = new System.Drawing.Size(75, 23);
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
             //
             // cmdFromTemplate
             //
-            this.cmdFromTemplate.Location = new System.Drawing.Point(125, 3);
+            this.cmdFromTemplate.Location = new System.Drawing.Point(246, 3);
             this.cmdFromTemplate.Name = "cmdFromTemplate";
-            this.cmdFromTemplate.Size = new System.Drawing.Size(85, 23);
+            this.cmdFromTemplate.Size = new System.Drawing.Size(95, 23);
             this.cmdFromTemplate.Text = "From Template";
             this.cmdFromTemplate.UseVisualStyleBackColor = true;
             //
-            // flpDetail
+            // flpDetail — Task 1.3: child order: flpName, flpHull, flpLocation, tabControl, flpCommands
             //
             this.flpDetail.Controls.Add(this.flpName);
+            this.flpDetail.Controls.Add(this.flpHull);
             this.flpDetail.Controls.Add(this.flpLocation);
-            this.flpDetail.Controls.Add(this.cmdSave);
             this.flpDetail.Controls.Add(this.tabControl);
+            this.flpDetail.Controls.Add(this.flpCommands);
             this.flpDetail.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpDetail.Location = new System.Drawing.Point(229, 3);
             this.flpDetail.Name = "flpDetail";
@@ -217,6 +230,31 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(300, 20);
             //
+            // flpHull — Task 1.1: new hull row
+            //
+            this.flpHull.AutoSize = true;
+            this.flpHull.Controls.Add(this.lblHull);
+            this.flpHull.Controls.Add(this.cmbHull);
+            this.flpHull.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
+            this.flpHull.Location = new System.Drawing.Point(3, 35);
+            this.flpHull.Name = "flpHull";
+            this.flpHull.Size = new System.Drawing.Size(712, 27);
+            //
+            // lblHull
+            //
+            this.lblHull.AutoSize = true;
+            this.lblHull.Location = new System.Drawing.Point(3, 5);
+            this.lblHull.Name = "lblHull";
+            this.lblHull.Size = new System.Drawing.Size(30, 13);
+            this.lblHull.Text = "Hull:";
+            this.lblHull.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            //
+            // cmbHull
+            //
+            this.cmbHull.Location = new System.Drawing.Point(39, 3);
+            this.cmbHull.Name = "cmbHull";
+            this.cmbHull.Size = new System.Drawing.Size(350, 25);
+            //
             // flpLocation
             //
             this.flpLocation.AutoSize = true;
@@ -224,7 +262,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.flpLocation.Controls.Add(this.cmbLocationType);
             this.flpLocation.Controls.Add(this.cmbLocationUUID);
             this.flpLocation.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
-            this.flpLocation.Location = new System.Drawing.Point(3, 35);
+            this.flpLocation.Location = new System.Drawing.Point(3, 68);
             this.flpLocation.Name = "flpLocation";
             this.flpLocation.Size = new System.Drawing.Size(712, 27);
             //
@@ -251,47 +289,39 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.cmbLocationUUID.Name = "cmbLocationUUID";
             this.cmbLocationUUID.Size = new System.Drawing.Size(250, 21);
             //
-            // cmdSave
-            //
-            this.cmdSave.Location = new System.Drawing.Point(3, 68);
-            this.cmdSave.Name = "cmdSave";
-            this.cmdSave.Size = new System.Drawing.Size(75, 23);
-            this.cmdSave.Text = "Save";
-            this.cmdSave.UseVisualStyleBackColor = true;
-            //
             // tabControl
             //
             this.tabControl.Controls.Add(this.tabOverview);
             this.tabControl.Controls.Add(this.tabCargo);
-            this.tabControl.Location = new System.Drawing.Point(3, 97);
+            this.tabControl.Location = new System.Drawing.Point(3, 101);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(712, 510);
+            this.tabControl.Size = new System.Drawing.Size(712, 454);
             //
-            // tabOverview
+            // tabOverview — Task 1.4: cmdSwapComponent removed
             //
             this.tabOverview.Controls.Add(this.dgvComponents);
-            this.tabOverview.Controls.Add(this.cmdSwapComponent);
             this.tabOverview.Controls.Add(this.rtbStats);
             this.tabOverview.Location = new System.Drawing.Point(4, 22);
             this.tabOverview.Name = "tabOverview";
             this.tabOverview.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOverview.Size = new System.Drawing.Size(704, 484);
+            this.tabOverview.Size = new System.Drawing.Size(704, 428);
             this.tabOverview.TabIndex = 0;
             this.tabOverview.Text = "Overview";
             this.tabOverview.UseVisualStyleBackColor = true;
             //
-            // dgvComponents
+            // dgvComponents — Task 1.2: new columns, CellSelect mode, EditOnEnter
             //
             this.dgvComponents.AllowUserToAddRows = false;
             this.dgvComponents.AllowUserToDeleteRows = false;
             this.dgvComponents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvComponents.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colSlotType, this.colComponentName, this.colCondition, this.colMaxRepair});
+            this.colSlotType, this.colSlotIndex, this.colComponent, this.colCondition, this.colMaxRepair});
             this.dgvComponents.Dock = System.Windows.Forms.DockStyle.None;
             this.dgvComponents.Location = new System.Drawing.Point(3, 3);
             this.dgvComponents.Name = "dgvComponents";
-            this.dgvComponents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvComponents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvComponents.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.dgvComponents.Size = new System.Drawing.Size(698, 250);
             //
             // colSlotType
@@ -301,12 +331,18 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.colSlotType.ReadOnly = true;
             this.colSlotType.Width = 120;
             //
-            // colComponentName
+            // colSlotIndex — Task 1.2: new slot index column
             //
-            this.colComponentName.HeaderText = "Component";
-            this.colComponentName.Name = "colComponentName";
-            this.colComponentName.ReadOnly = true;
-            this.colComponentName.Width = 250;
+            this.colSlotIndex.HeaderText = "#";
+            this.colSlotIndex.Name = "colSlotIndex";
+            this.colSlotIndex.ReadOnly = true;
+            this.colSlotIndex.Width = 40;
+            //
+            // colComponent — Task 1.2: replaces colComponentName
+            //
+            this.colComponent.HeaderText = "Component";
+            this.colComponent.Name = "colComponent";
+            this.colComponent.Width = 300;
             //
             // colCondition
             //
@@ -320,20 +356,12 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.colMaxRepair.Name = "colMaxRepair";
             this.colMaxRepair.Width = 90;
             //
-            // cmdSwapComponent
-            //
-            this.cmdSwapComponent.Location = new System.Drawing.Point(3, 259);
-            this.cmdSwapComponent.Name = "cmdSwapComponent";
-            this.cmdSwapComponent.Size = new System.Drawing.Size(120, 23);
-            this.cmdSwapComponent.Text = "Swap Component";
-            this.cmdSwapComponent.UseVisualStyleBackColor = true;
-            //
             // rtbStats
             //
-            this.rtbStats.Location = new System.Drawing.Point(3, 288);
+            this.rtbStats.Location = new System.Drawing.Point(3, 259);
             this.rtbStats.Name = "rtbStats";
             this.rtbStats.ReadOnly = true;
-            this.rtbStats.Size = new System.Drawing.Size(698, 185);
+            this.rtbStats.Size = new System.Drawing.Size(698, 160);
             this.rtbStats.Font = new System.Drawing.Font("Consolas", 8.25F);
             //
             // tabCargo
@@ -347,7 +375,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.tabCargo.Location = new System.Drawing.Point(4, 22);
             this.tabCargo.Name = "tabCargo";
             this.tabCargo.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCargo.Size = new System.Drawing.Size(704, 484);
+            this.tabCargo.Size = new System.Drawing.Size(704, 428);
             this.tabCargo.TabIndex = 1;
             this.tabCargo.Text = "Cargo";
             this.tabCargo.UseVisualStyleBackColor = true;
@@ -564,6 +592,8 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.flpDetail.PerformLayout();
             this.flpName.ResumeLayout(false);
             this.flpName.PerformLayout();
+            this.flpHull.ResumeLayout(false);
+            this.flpHull.PerformLayout();
             this.flpLocation.ResumeLayout(false);
             this.flpLocation.PerformLayout();
             this.flpCargoTop.ResumeLayout(false);
@@ -590,25 +620,28 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         private System.Windows.Forms.ListView lvwShips;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
         private System.Windows.Forms.Button cmdNew;
+        private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Button cmdFromTemplate;
         private System.Windows.Forms.FlowLayoutPanel flpDetail;
         private System.Windows.Forms.FlowLayoutPanel flpName;
         private System.Windows.Forms.Label lblName;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtName;
+        private System.Windows.Forms.FlowLayoutPanel flpHull;
+        private System.Windows.Forms.Label lblHull;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbHull;
         private System.Windows.Forms.FlowLayoutPanel flpLocation;
         private System.Windows.Forms.Label lblLocation;
         private System.Windows.Forms.ComboBox cmbLocationType;
         private System.Windows.Forms.ComboBox cmbLocationUUID;
-        private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabOverview;
         private System.Windows.Forms.DataGridView dgvComponents;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSlotType;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colComponentName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSlotIndex;
+        private OE2EmpireTracker.Controls.DataGridViewFilteredComboBoxColumn colComponent;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCondition;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMaxRepair;
-        private System.Windows.Forms.Button cmdSwapComponent;
         private System.Windows.Forms.RichTextBox rtbStats;
         private System.Windows.Forms.TabPage tabCargo;
         private System.Windows.Forms.FlowLayoutPanel flpCargoTop;
