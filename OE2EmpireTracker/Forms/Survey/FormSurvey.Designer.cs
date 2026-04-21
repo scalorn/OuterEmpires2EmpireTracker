@@ -52,6 +52,9 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpSystemName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSystemName = new System.Windows.Forms.Label();
             this.txtSystemName = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.flpSurveyTypeEdit = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblSurveyTypeEdit = new System.Windows.Forms.Label();
+            this.cmbSurveyTypeEdit = new System.Windows.Forms.ComboBox();
             this.flpSurveyID = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSurveyID = new System.Windows.Forms.Label();
             this.txtSurveyID = new OE2EmpireTracker.Controls.ValidatedTextBox();
@@ -266,6 +269,7 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             this.flpSurveyDetails.Controls.Add(this.flpPlanetName);
             this.flpSurveyDetails.Controls.Add(this.flpSystemName);
+            this.flpSurveyDetails.Controls.Add(this.flpSurveyTypeEdit);
             this.flpSurveyDetails.Controls.Add(this.flpSurveyID);
             this.flpSurveyDetails.Controls.Add(this.flpNickName);
             this.flpSurveyDetails.Controls.Add(this.flpScannerBlueprint);
@@ -347,6 +351,26 @@ namespace OE2EmpireTracker.Forms.Survey
             this.txtSystemName.Name = "txtSystemName";
             this.txtSystemName.Size = new System.Drawing.Size(200, 20);
             this.txtSystemName.TabIndex = 0;
+            // 
+            // flpSurveyTypeEdit
+            // 
+            this.flpSurveyTypeEdit.AutoSize = true;
+            this.flpSurveyTypeEdit.Controls.Add(this.lblSurveyTypeEdit);
+            this.flpSurveyTypeEdit.Controls.Add(this.cmbSurveyTypeEdit);
+            this.flpSurveyTypeEdit.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
+            this.flpSurveyTypeEdit.Margin = new System.Windows.Forms.Padding(2);
+            this.flpSurveyTypeEdit.Name = "flpSurveyTypeEdit";
+            this.flpSurveyTypeEdit.Size = new System.Drawing.Size(400, 26);
+            this.lblSurveyTypeEdit.AutoSize = true;
+            this.lblSurveyTypeEdit.Location = new System.Drawing.Point(3, 5);
+            this.lblSurveyTypeEdit.Name = "lblSurveyTypeEdit";
+            this.lblSurveyTypeEdit.Size = new System.Drawing.Size(100, 13);
+            this.lblSurveyTypeEdit.Text = "Survey Type:";
+            this.lblSurveyTypeEdit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cmbSurveyTypeEdit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSurveyTypeEdit.Location = new System.Drawing.Point(107, 3);
+            this.cmbSurveyTypeEdit.Name = "cmbSurveyTypeEdit";
+            this.cmbSurveyTypeEdit.Size = new System.Drawing.Size(120, 21);
             // 
             // flpSurveyID
             // 
@@ -840,6 +864,9 @@ namespace OE2EmpireTracker.Forms.Survey
         private System.Windows.Forms.FlowLayoutPanel flpSystemName;
         private System.Windows.Forms.Label lblSystemName;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtSystemName;
+        private System.Windows.Forms.FlowLayoutPanel flpSurveyTypeEdit;
+        private System.Windows.Forms.Label lblSurveyTypeEdit;
+        private System.Windows.Forms.ComboBox cmbSurveyTypeEdit;
         private System.Windows.Forms.FlowLayoutPanel flpScannerBlueprint;
         private System.Windows.Forms.Label lblScannerBlueprint;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtFilterScannerBlueprint;

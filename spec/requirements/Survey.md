@@ -22,7 +22,7 @@
 
 ## Survey Form — Fields
 
-**REQ-SRV-020** The form SHALL display and allow editing of: PlanetName, SurveyID, NickName, ScannedBy, DateTime, ScannerBlueprintUUID (via filtered combo), and scanner properties (SensorAbundanceFactor, PurityModifier, ScanLevel).  
+**REQ-SRV-020** The form SHALL display and allow editing of: PlanetName, SystemName, SurveyType (Planet/Asteroid dropdown), SurveyID, NickName, ScannedBy, DateTime, ScannerBlueprintUUID (via filtered combo), and scanner properties (SensorAbundanceFactor, PurityModifier, ScanLevel).  
 **REQ-SRV-021** The scanner blueprint combo SHALL be filtered to SystemObjectScanner blueprint type only.  
 **REQ-SRV-022** The scanner blueprint filter textbox SHALL re-filter the combo on every keystroke.
 

@@ -41,7 +41,7 @@ Controls:
   - `lvwSurveys` (ListView, full-row select)
 - Right: `flpSurveyData` (top-down, AutoScroll, WrapContents=false):
   - `flpSurveyDetails` (top-down) — survey identity fields:
-    - `txtPlanetName`, `txtSystemName`, `txtSurveyID`, `txtNickName`
+    - `txtPlanetName`, `txtSystemName`, `cmbSurveyTypeEdit` (Planet/Asteroid dropdown), `txtSurveyID`, `txtNickName`
     - `txtFilterScannerBlueprint` + `cmbScannerBlueprint` (filtered combo for scanner blueprint)
     - `txtScannedBy` — player who performed the scan
     - `txtScanDateTime` + `dtpScanDateTime` (DateTimePicker) — scan timestamp

@@ -38,6 +38,7 @@ namespace OE2EmpireTracker.ViewModels
         public string DisplayDateTime => SurveyDateTimeParser.FormatForDisplay(_survey.DateTime);
         public string ScannerBlueprintUUID { get => _survey.ScannerBlueprintUUID; set => _survey.ScannerBlueprintUUID = value; }
         public string UUID => _survey.UUID;
+        public SurveyType SurveyTypeValue { get => _survey.SurveyType; set => _survey.SurveyType = value; }
 
         // -----------------------------------------------------------------------
         // Properties (sensor readings)

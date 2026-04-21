@@ -95,6 +95,10 @@ namespace OE2EmpireTracker.Forms.Survey
             // Wire write-through handlers
             txtPlanetName.TextChanged += txtPlanetName_TextChanged;
             txtSystemName.TextChanged += txtSystemName_TextChanged;
+            cmbSurveyTypeEdit.Items.Add(SurveyType.Planet);
+            cmbSurveyTypeEdit.Items.Add(SurveyType.Asteroid);
+            cmbSurveyTypeEdit.SelectedIndex = 0;
+            cmbSurveyTypeEdit.SelectedIndexChanged += cmbSurveyTypeEdit_SelectedIndexChanged;
             txtSurveyID.TextChanged += txtSurveyID_TextChanged;
             txtNickName.TextChanged += txtNickName_TextChanged;
             txtScannedBy.TextChanged += txtScannedBy_TextChanged;
@@ -353,6 +357,13 @@ namespace OE2EmpireTracker.Forms.Survey
             viewModel.SystemName = txtSystemName.Text;
         }
 
+        private void cmbSurveyTypeEdit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            if (cmbSurveyTypeEdit.SelectedItem is SurveyType st)
+                viewModel.SurveyTypeValue = st;
+        }
+
         private void txtSurveyID_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
@@ -437,6 +448,7 @@ namespace OE2EmpireTracker.Forms.Survey
 
             txtPlanetName.Text = "";
             txtSystemName.Text = "";
+            cmbSurveyTypeEdit.SelectedIndex = 0;
             txtSurveyID.Text = "";
             txtNickName.Text = "";
             txtScannedBy.Text = "";
@@ -656,6 +668,11 @@ namespace OE2EmpireTracker.Forms.Survey
             using var guard = new ProgrammaticUpdateGuard(this);
             txtPlanetName.Text = viewModel.PlanetName ?? "";
             txtSystemName.Text = viewModel.SystemName ?? "";
+            for (int i = 0; i < cmbSurveyTypeEdit.Items.Count; i++)
+            {
+                if ((SurveyType)cmbSurveyTypeEdit.Items[i] == viewModel.SurveyTypeValue)
+                { cmbSurveyTypeEdit.SelectedIndex = i; break; }
+            }
             txtSurveyID.Text = viewModel.SurveyID ?? "";
             txtNickName.Text = viewModel.NickName ?? "";
             txtScannedBy.Text = viewModel.ScannedBy ?? "";
