@@ -152,6 +152,14 @@ All BlueprintTypes now have HTML coverage. No gaps detected (confirmed by IconPo
 **Dependencies:** None
 **Status: Blocked**  AltCover (both global tool and NuGet package) fails with .NET Framework 4.8.1 + NUnit + vstest.console. The global tool crashes with a CLR assertion (net8.0 runtime vs net4.8.1 assemblies). The NuGet package instruments successfully but the NUnit test adapter can't discover tests in the instrumented assemblies. OpenCover is unmaintained (last release 2021). VS Community doesn't include the Enterprise code coverage collector.
 
+### BL-074: Immutable Data Model — Mutation Through Interface Only
+**Dependencies:** BL-069 (done), readonly-list-encapsulation spec (in progress)
+**Status: New**
+
+Before we can move to a database or SOA we need to protect the data model from in-memory editing and make all mutation go through an interface. Currently entity POCOs (Blueprint, Colony, Survey, etc.) have public setters on all properties — any code can mutate any field at any time without going through a controlled path. This makes it impossible to track dirty state, emit change events, or swap the persistence layer.
+
+Phase 1 (readonly-list-encapsulation) protects the *collections* — you can't add/remove entities without going through PlayerContext. Phase 2 (this item) protects the *entities themselves* — you can't mutate a Blueprint's Name or a Colony's OwnerUUID without going through a controlled update path. This likely means read-only public properties with internal/private setters, plus Update methods or a unit-of-work pattern that tracks changes and persists them atomically.
+
 Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat Code Coverage"` works natively. In the meantime, use the file-level coverage analysis tool (`node .kiro/tools/spec-coverage.js`) and the reference counter completeness tests as proxies for coverage.
 
 ## Empire-Systems Audit Gaps
