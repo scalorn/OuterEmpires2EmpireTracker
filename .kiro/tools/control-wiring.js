@@ -6,10 +6,17 @@
  *   node .kiro/tools/control-wiring.js
  *
  * For each Form*.cs, checks:
+ *
+ * Universal checks (all forms including dialogs):
+ * - DataError handler on grids with combo columns (REQ-ARCH-114)
+ * - No UUID shown as display fallback (REQ-ARCH-111)
+ *
+ * Full form checks (excludes DIALOG_FORMS):
  * - IProgrammaticUpdateSource implementation
  * - NLog Logger declaration
  * - CurrentPlayerChanged subscription
  * - OnFormClosed event unsubscription
+ * - _isProgrammaticUpdate field
  *
  * Exit code 0 = clean, 1 = findings.
  */
@@ -18,7 +25,11 @@ const fs = require('fs');
 const path = require('path');
 
 const FORMS_DIR = path.join('OE2EmpireTracker', 'Forms');
-const TRIVIAL_FORMS = [
+
+// Dialog forms: modal popups that don't need IProgrammaticUpdateSource,
+// CurrentPlayerChanged, or OnFormClosed. Still checked for DataError
+// handlers and UUID display.
+const DIALOG_FORMS = [
     'FormAbout', 'FormHelp', 'FormAutoFill', 'FormPreferences',
     'FormListingEdit', 'FormRecordSale', 'FormStructureAllocation'
 ];
@@ -33,8 +44,7 @@ function findFormFiles(dir, results) {
         } else if (entry.isFile() && entry.name.startsWith('Form') && entry.name.endsWith('.cs')) {
             if (/\.Designer\.cs$/.test(entry.name)) continue;
             const formName = entry.name.replace('.cs', '');
-            if (TRIVIAL_FORMS.includes(formName)) continue;
-            results.push({ path: fullPath, name: formName });
+            results.push({ path: fullPath, name: formName, isDialog: DIALOG_FORMS.includes(formName) });
         }
     }
     return results;
@@ -47,30 +57,7 @@ for (const form of formFiles) {
     const content = fs.readFileSync(form.path, 'utf8');
     const relPath = path.relative('.', form.path).replace(/\\/g, '/');
 
-    // Check IProgrammaticUpdateSource
-    if (!content.includes('IProgrammaticUpdateSource')) {
-        findings.push('MISSING: ' + form.name + ' does not implement IProgrammaticUpdateSource (' + relPath + ')');
-    }
-
-    // Check NLog Logger
-    if (!content.includes('LogManager.GetCurrentClassLogger()')) {
-        findings.push('MISSING: ' + form.name + ' has no NLog Logger (' + relPath + ')');
-    }
-
-    // Check CurrentPlayerChanged subscription
-    if (!content.includes('CurrentPlayerChanged')) {
-        findings.push('MISSING: ' + form.name + ' does not subscribe to CurrentPlayerChanged (' + relPath + ')');
-    }
-
-    // Check OnFormClosed
-    if (!content.includes('OnFormClosed')) {
-        findings.push('MISSING: ' + form.name + ' does not override OnFormClosed (' + relPath + ')');
-    }
-
-    // Check _isProgrammaticUpdate field
-    if (!content.includes('_isProgrammaticUpdate')) {
-        findings.push('MISSING: ' + form.name + ' has no _isProgrammaticUpdate field (' + relPath + ')');
-    }
+    // === Universal checks (all forms) ===
 
     // Check DataError handler on grids with combo columns
     const designerPath = form.path.replace('.cs', '.Designer.cs');
@@ -83,14 +70,32 @@ for (const form of formFiles) {
         }
     }
 
-    // Check for UUID shown as display fallback (e.g. ExtendedName ?? slot.BlueprintUUID)
-    // Only flag when the ?? fallback is a UUID property — this means a UUID could be shown to the user
+    // Check for UUID shown as display fallback
     const uuidFallbackRe = /(?:ExtendedName|Name|Display)\s*\?\?\s*\w+\.(?:UUID|BlueprintUUID|TemplateUUID)\b/g;
     const uuidMatches = content.match(uuidFallbackRe);
     if (uuidMatches) {
         for (const m of uuidMatches) {
             findings.push('UUID_DISPLAY: ' + form.name + ' shows UUID as fallback display: ' + m.trim() + ' (' + relPath + ')');
         }
+    }
+
+    // === Full form checks (skip for dialog forms) ===
+    if (form.isDialog) continue;
+
+    if (!content.includes('IProgrammaticUpdateSource')) {
+        findings.push('MISSING: ' + form.name + ' does not implement IProgrammaticUpdateSource (' + relPath + ')');
+    }
+    if (!content.includes('LogManager.GetCurrentClassLogger()')) {
+        findings.push('MISSING: ' + form.name + ' has no NLog Logger (' + relPath + ')');
+    }
+    if (!content.includes('CurrentPlayerChanged')) {
+        findings.push('MISSING: ' + form.name + ' does not subscribe to CurrentPlayerChanged (' + relPath + ')');
+    }
+    if (!content.includes('OnFormClosed')) {
+        findings.push('MISSING: ' + form.name + ' does not override OnFormClosed (' + relPath + ')');
+    }
+    if (!content.includes('_isProgrammaticUpdate')) {
+        findings.push('MISSING: ' + form.name + ' has no _isProgrammaticUpdate field (' + relPath + ')');
     }
 }
 
