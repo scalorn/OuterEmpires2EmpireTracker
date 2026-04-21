@@ -166,3 +166,61 @@ Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat
 
 The following items were designed in the empire-systems spec and marked complete in tasks.md, but the UI controls were either not implemented or implemented differently than the mockup specified. Discovered during the April 2026 mockup-controls audit.
 
+## Dead Code Findings (April 2026 Audit)
+
+Found by `dead-code.js`. Private methods with no references outside their declaration.
+
+### BL-075: Dead Code — FormColonyV2.AcquireStructureControl
+**File:** OE2EmpireTracker/Forms/ColonyV2/FormColonyV2.cs:711
+**Status: New**
+Private method never called. Likely leftover from a refactor. Review and remove if confirmed dead.
+
+### BL-076: Dead Code — FormColonyV2.ReturnAllToPool
+**File:** OE2EmpireTracker/Forms/ColonyV2/FormColonyV2.cs:727
+**Status: New**
+Private method never called. May have been superseded by a different pool management approach. Review and remove if confirmed dead.
+
+### BL-077: Dead Code — FormDeliveryExecution.GetLoadItemVolume
+**File:** OE2EmpireTracker/Forms/DeliveryExecution/FormDeliveryExecution.cs:1115
+**Status: New**
+Private method never called. Possibly planned for volume calculations that were implemented differently. Review and remove if confirmed dead.
+
+### BL-078: Dead Code — FormBuildPlanner.ShowInputDialog
+**File:** OE2EmpireTracker/Forms/BuildPlanner/FormBuildPlanner.cs:1349
+**Status: New**
+Private method never called. Generic input dialog helper that may have been replaced by a more specific approach. Review and remove if confirmed dead.
+
+### BL-079: Dead Code — FormPlayerProfile.chkColonyOperations_Click
+**File:** OE2EmpireTracker/Forms/PlayerProfile/FormPlayerProfile.cs:251
+**Status: New**
+Event handler never wired. The checkbox may have been removed from the Designer but the handler left behind. Review and remove if confirmed dead.
+
+## Duplicate Code Findings (April 2026 Audit)
+
+Found by `dupe-code.js`. Methods with identical bodies across different classes.
+
+### BL-080: Duplicate — PopulateRouteDropdown (31 lines)
+**Files:** FormColonyDailyBuild.cs:83 == FormDeliveryExecution.cs:138
+**Status: New**
+Largest duplicate. Both forms populate a delivery route dropdown identically. Extract to a shared helper method or utility class.
+
+### BL-081: Duplicate — PopulateHullCombo / SelectHullInCombo
+**Files:** FormShipInstance.cs == FormShipTemplate.cs (14 + 6 lines)
+**Status: Accepted — by design**
+These were intentionally copied per the ship-form-overhaul spec. Both forms need identical hull combo logic but operate on different selected objects (_selectedShip vs _selectedTemplate). Extracting would require a shared base class or interface, adding complexity for minimal gain. Accept as baseline.
+
+### BL-082: Duplicate — OnCurrentPlayerChanged (10 lines)
+**Files:** FormBuildPlanner.cs:1541 == FormPricingPlan.cs:404
+**Status: New**
+Both forms have identical player-changed handlers. Could extract the common pattern to a base form class or helper.
+
+### BL-083: Duplicate — flpSearchList_Layout (5 lines)
+**Files:** FormBuildPlanner.cs:123 == FormPricingPlan.cs:68
+**Status: New**
+Identical layout handlers. These forms share the same left-list/right-detail pattern. Could extract to a shared layout helper, though at 5 lines the benefit is marginal.
+
+### BL-084: Duplicate — GetRefiningOutputRate (7 lines)
+**Files:** ColonyActivityCollector.cs:248 == ColonyAdminReportBuilder.cs:424
+**Status: New**
+Both services compute refining output rate identically. Extract to a shared static method on one of the services or a utility class.
+

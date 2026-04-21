@@ -27,8 +27,9 @@ const MIN_BODY_LINES = 5;
 // Methods that are intentionally duplicated across forms (copied by design)
 // Format: "MethodName" — these are excluded from findings
 const KNOWN_DUPES = new Set([
-    // Inner classes copied between FormShipTemplate and FormShipInstance by design
-    // (SlotInfo, SlotDefinition are one-liners, won't hit MIN_BODY_LINES anyway)
+    // Hull combo methods intentionally copied between FormShipTemplate and FormShipInstance (BL-081)
+    'PopulateHullCombo',
+    'SelectHullInCombo',
 ]);
 
 function findCsFiles(dir, results) {
