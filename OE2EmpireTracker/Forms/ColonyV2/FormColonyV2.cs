@@ -1486,13 +1486,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             filteredList.Insert(0, new Models.Commodity());
 
-            var bindingList = new BindingSource();
-            bindingList.DataSource = filteredList;
+            var filteredSource = new BindingSource();
+            filteredSource.DataSource = filteredList;
 
             cmbCommodityRequest.DataSource = null;
             cmbCommodityRequest.DisplayMember = "ExtendedName";
             cmbCommodityRequest.ValueMember = "Name";
-            cmbCommodityRequest.DataSource = bindingList;
+            cmbCommodityRequest.DataSource = filteredSource;
         }
 
         private void PopulateCommodityRequestGrid()

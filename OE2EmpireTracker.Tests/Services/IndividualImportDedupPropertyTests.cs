@@ -224,7 +224,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Property 3: FindByDedupKey returns the correct match or null.
-        /// For any BindingList of blueprints and any search blueprint, FindByDedupKey shall
+        /// For any list of blueprints and any search blueprint, FindByDedupKey shall
         /// return a blueprint whose Name, Evolution, BluePrintType, Class, and TechLevel all
         /// match exactly (case-sensitive for strings), or null if no such blueprint exists.
         /// **Validates: Requirements 4.2**
@@ -238,8 +238,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             return Prop.ForAll(gen.ToArbitrary(), data =>
             {
-                var bindingList = new List<BpModel>(data.List);
-                var result = MarketBlueprintImporter.FindByDedupKey(bindingList, data.Search);
+                var list = new List<BpModel>(data.List);
+                var result = MarketBlueprintImporter.FindByDedupKey(list, data.Search);
 
                 if (result != null)
                 {

@@ -214,9 +214,9 @@ namespace OE2EmpireTracker.Forms.Survey
             string searchText = txtFilterScannerBlueprint.Text;
             var filteredList = viewModel.GetFilteredScannerBlueprints(searchText);
 
-            BindingSource filteredItemsBindingList = new BindingSource();
-            filteredItemsBindingList.DataSource = filteredList;
-            cmbScannerBlueprint.DataSource = filteredItemsBindingList;
+            BindingSource filteredSource = new BindingSource();
+            filteredSource.DataSource = filteredList;
+            cmbScannerBlueprint.DataSource = filteredSource;
         }
 
         void PopulateListView(IReadOnlyList<OE2EmpireTracker.Models.Survey> surveys)

@@ -22,11 +22,11 @@ namespace OE2EmpireTracker.Controls
                 return;
             }
             string searchText = this.Text;
-            BindingSource filteredItemsBindingList = unfilteredList;
+            BindingSource filteredSource = unfilteredList;
 
             if (string.IsNullOrEmpty(searchText))
             {
-                filteredItemsBindingList = unfilteredList;
+                filteredSource = unfilteredList;
             }
             else
             {
@@ -34,13 +34,13 @@ namespace OE2EmpireTracker.Controls
                 var filteredList = blueprintTypes
                     .Where(item => item.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
-                filteredItemsBindingList = new BindingSource();
+                filteredSource = new BindingSource();
                 // Set the in-memory list as the DataSource for the BindingSource
-                filteredItemsBindingList.DataSource = filteredList;
+                filteredSource.DataSource = filteredList;
             }
 
             //this.SelectedIndex = -1;
-            this.DataSource = filteredItemsBindingList;
+            this.DataSource = filteredSource;
             //this.SelectedIndex = -1;
 
             changingText = true;
