@@ -634,18 +634,8 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         // CRUD
         private void cmdNew_Click(object sender, EventArgs e)
         {
-            var ship = new Ship
-            {
-                UUID = Guid.NewGuid().ToString(),
-                Name = "New Ship",
-                OwnerUUID = playerContext.CurrentPlayerUUID
-            };
-            playerContext.AddShip(ship);
-            playerContext.WriteContext();
-            _selectedShip = ship;
-            PopulateShipList();
-            PopulateForm();
-            Log.Info("Created new ship");
+            // Ships always need a hull — route through the template picker
+            cmdFromTemplate_Click(sender, e);
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
