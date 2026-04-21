@@ -19,6 +19,7 @@ namespace OE2EmpireTracker.Controls
         private List<int> _filteredIndexMap = new List<int>();
         private bool _suppressFilterEvent;
         protected bool _suppressSelectionEvent;
+        protected bool _isEditing;
 
         /// <summary>
         /// Fires when the user selects an item in the combo box.
@@ -60,14 +61,48 @@ namespace OE2EmpireTracker.Controls
 
             txtFilter.TextChanged += TxtFilter_TextChanged;
             cmbItems.SelectedIndexChanged += CmbItems_SelectedIndexChanged;
+
+            txtFilter.Enter += (s, ev) => EnterEditMode();
+            cmbItems.Enter += (s, ev) => EnterEditMode();
+            txtFilter.Leave += (s, ev) => BeginInvoke(new Action(CheckLeaveEditMode));
+            cmbItems.Leave += (s, ev) => BeginInvoke(new Action(CheckLeaveEditMode));
+
+            // Start in display mode — combo full-width, filter hidden
+            txtFilter.Visible = false;
+        }
+
+        private void EnterEditMode()
+        {
+            if (_isEditing) return;
+            _isEditing = true;
+            txtFilter.Visible = true;
+            PerformLayout();
+            ResetFilter();
+            txtFilter.Focus();
+        }
+
+        private void CheckLeaveEditMode()
+        {
+            if (IsDisposed) return;
+            if (txtFilter.Focused || cmbItems.Focused) return;
+            _isEditing = false;
+            txtFilter.Visible = false;
+            PerformLayout();
         }
 
         protected override void OnLayout(LayoutEventArgs e)
         {
             base.OnLayout(e);
-            int filterWidth = (int)(Width * 0.35);
-            txtFilter.SetBounds(0, 0, filterWidth, Height);
-            cmbItems.SetBounds(filterWidth, 0, Width - filterWidth, Height);
+            if (_isEditing)
+            {
+                int filterWidth = (int)(Width * 0.35);
+                txtFilter.SetBounds(0, 0, filterWidth, Height);
+                cmbItems.SetBounds(filterWidth, 0, Width - filterWidth, Height);
+            }
+            else
+            {
+                cmbItems.SetBounds(0, 0, Width, Height);
+            }
         }
 
         /// <summary>

@@ -117,6 +117,9 @@ namespace OE2EmpireTracker.Controls
             // Strip borders for inline grid editing — the cell provides the border
             BorderStyle = BorderStyle.None;
             txtFilter.BorderStyle = BorderStyle.None;
+            // Always show filter in grid mode — the grid handles focus
+            _isEditing = true;
+            txtFilter.Visible = true;
         }
 
         protected override void OnSelectedItemChanged()
