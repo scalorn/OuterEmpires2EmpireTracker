@@ -174,7 +174,7 @@ Tasks are ordered so each builds on the previous and leaves the solution in a co
   - Build the solution — all `.Add()`/`.Remove()` calls on `IReadOnlyList<T>` properties should now be gone
   - Run `getDiagnostics` on any files that had compile errors
 
-- [ ] 12. Migrate callers — test project
+- [x] 12. Migrate callers — test project
   - [x] 12.1 Migrate test setup code that adds entities to PlayerContext lists
     - Find all `.Add(` calls on PlayerContext list properties in `OE2EmpireTracker.Tests/`
     - Replace with corresponding `Add{Entity}()` calls
@@ -188,17 +188,17 @@ Tasks are ordered so each builds on the previous and leaves the solution in a co
     - Replace with corresponding `Remove{Entity}()` calls
     - _Requirements: 11.1, 11.2, 11.3, 11.4_
 
-- [ ] 13. Final verification and audit
-  - [~] 13.1 Grep check — verify no remaining direct list mutations outside context classes
+- [x] 13. Final verification and audit
+  - [x] 13.1 Grep check — verify no remaining direct list mutations outside context classes
     - Search for `\.{ListName}\.Add\(` and `\.{ListName}\.Remove\(` across all `.cs` files
     - Only hits should be inside PlayerContext.cs and EmpireContext.cs
     - _Requirements: 9.1, 9.2, 11.1, 11.2_
-  - [~] 13.2 Full build and test suite
+  - [x] 13.2 Full build and test suite
     - Build the solution with MSBuild
     - Run all tests via vstest.console
     - Verify zero compile errors and all tests pass
     - _Requirements: 1.2, 2.2, 8.3_
-  - [~] 13.3 Write unit tests for edge cases
+  - [x] 13.3 Write unit tests for edge cases
     - Null UUID handling (add entity with null UUID, verify Find returns null)
     - Remove non-existent item (verify no exception, list unchanged)
     - BindingSource count reflects mutations (add/remove, verify count)

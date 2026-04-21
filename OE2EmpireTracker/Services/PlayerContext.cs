@@ -425,8 +425,8 @@ namespace OE2EmpireTracker.Services
                     }
                 }
 
-                _blueprintCache.TryGetValue(id, out var match);
-                return match;
+                if (_blueprintCache.TryGetValue(id, out var match))
+                    return match;
             }
 
             // Fall back to global blueprints outside the lock
@@ -496,8 +496,6 @@ namespace OE2EmpireTracker.Services
                 _surveyCache.TryGetValue(id, out var match);
                 return match;
             }
-
-            return null;
         }
 
         public void InvalidateSurveyCache()
@@ -645,8 +643,6 @@ namespace OE2EmpireTracker.Services
                 _colonyCache.TryGetValue(id, out var match);
                 return match;
             }
-
-            return null;
         }
 
         public void InvalidateColonyCache()
