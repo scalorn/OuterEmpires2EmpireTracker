@@ -23,6 +23,14 @@ Rules and patterns learned from building forms in this project. Follow these whe
 - Apply this pattern in save handlers that iterate grid rows, and in any method that clears/repopulates a grid.
 - Use `Rows.Add()` return value for the new row index. Do NOT use `RowCount - 2` unless `AllowUserToAddRows = true`.
 - For grids with `DataGridViewCheckBoxColumn`: wire `CurrentCellDirtyStateChanged` to call `CommitEdit(DataGridViewDataErrorContexts.Commit)` so that `CellValueChanged` fires immediately on checkbox click instead of waiting for the user to leave the row.
+- **Every DataGridView MUST have a `DataError` handler** that logs the error and sets `e.ThrowException = false`. Without this, combo cell validation errors show a modal dialog that can make the form unresponsive. Pattern: `dgv.DataError += (s, ev) => { Log.Warn("dgv DataError at [{0},{1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message); ev.ThrowException = false; };`
+
+## DataGridViewComboBoxCell/Column
+
+- **NEVER use objects or structs as combo cell items.** `DataGridViewComboBoxCell` uses reference equality for validation. Structs get boxed on every comparison, creating new references that never match. Objects require exact reference identity. Both cause continuous DataError exceptions that flood the log and freeze the form.
+- **Always use plain strings as combo items.** For items that need an associated ID (e.g. blueprint UUID), store a parallel `List<string>` of IDs on the row's `Tag` (via a helper class), indexed to match the combo items. Look up the ID by the selected item's index position.
+- When using `DataSource` binding (e.g. BindingSource), set `DisplayMember` and `ValueMember` to string property names. The ValueMember value is what gets stored as the cell value.
+- **Never show raw UUIDs to the user.** When displaying entity names, use `ExtendedName` or `Name`. If the entity is not found (FindBlueprint returns null), use `"(unknown)"` as the fallback, never the UUID string.
 
 ## ComboBox / Dropdown Binding
 

@@ -126,6 +126,9 @@ namespace OE2EmpireTracker
             colResource.ValueMember = "Name";
             colResource.DataSource = empireContext.BindingSourceResource;
 
+            dgvResources.DataError += (s, ev) => { Log.Warn("dgvResources DataError at [{0},{1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message); ev.ThrowException = false; };
+            dgvStatistics.DataError += (s, ev) => { Log.Warn("dgvStatistics DataError at [{0},{1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message); ev.ThrowException = false; };
+
             // Wire resources grid events
             dgvResources.CellValueChanged += dgvResources_CellValueChanged;
             dgvResources.CellValidating += dgvResources_CellValidating;

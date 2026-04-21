@@ -463,7 +463,7 @@ namespace OE2EmpireTracker.Forms.Station
             foreach (var slot in _selectedStation.Components)
             {
                 var compBp = playerContext.FindBlueprint(slot.BlueprintUUID);
-                string compName = compBp?.ExtendedName ?? slot.BlueprintUUID;
+                string compName = compBp?.ExtendedName ?? "(unknown)";
                 int rowIdx = dgvComponents.Rows.Add(slot.SlotType, compName,
                     slot.CurrentHP.ToString(),
                     slot.MaxRepairPercent.ToString());

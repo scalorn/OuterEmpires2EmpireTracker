@@ -71,6 +71,26 @@ for (const form of formFiles) {
     if (!content.includes('_isProgrammaticUpdate')) {
         findings.push('MISSING: ' + form.name + ' has no _isProgrammaticUpdate field (' + relPath + ')');
     }
+
+    // Check DataError handler on grids with combo columns
+    const designerPath = form.path.replace('.cs', '.Designer.cs');
+    if (fs.existsSync(designerPath)) {
+        const designerContent = fs.readFileSync(designerPath, 'utf8');
+        if (designerContent.includes('DataGridViewComboBoxColumn') || content.includes('DataGridViewComboBoxCell')) {
+            if (!content.includes('DataError')) {
+                findings.push('MISSING: ' + form.name + ' has combo columns but no DataError handler (' + relPath + ')');
+            }
+        }
+    }
+
+    // Check for UUID shown as display fallback (ExtendedName ?? UUID pattern)
+    const uuidFallbackRe = /ExtendedName\s*\?\?\s*\w+\.(?:UUID|BlueprintUUID)/g;
+    const uuidMatches = content.match(uuidFallbackRe);
+    if (uuidMatches) {
+        for (const m of uuidMatches) {
+            findings.push('UUID_DISPLAY: ' + form.name + ' shows UUID as fallback display: ' + m + ' (' + relPath + ')');
+        }
+    }
 }
 
 if (findings.length === 0) {

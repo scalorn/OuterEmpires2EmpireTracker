@@ -60,6 +60,8 @@ For each Form*.cs:
 - [ ] Every form subscribes to CurrentPlayerChanged and refreshes on player switch (automated: control-wiring.js)
 - [ ] Every form unsubscribes from events in OnFormClosed (automated: control-wiring.js)
 - [ ] Every form has NLog Logger (automated: control-wiring.js)
+- [ ] Every DataGridView with combo columns has a DataError handler (automated: control-wiring.js)
+- [ ] No UUID shown as display fallback — use ExtendedName or "(unknown)" (automated: control-wiring.js)
 - [ ] Key methods have PERF timing (automated: perf-check.js)
 - [ ] Every control listed in the mockup exists in the Designer.cs (automated: mockup-controls.js)
 - [ ] Every control in the Designer.cs is documented in the mockup (automated: mockup-controls.js)

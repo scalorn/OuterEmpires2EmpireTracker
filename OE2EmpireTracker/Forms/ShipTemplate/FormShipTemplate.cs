@@ -243,7 +243,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                         else
                         {
                             var compBp = playerContext.FindBlueprint(existing.BlueprintUUID);
-                            string fallback = compBp?.ExtendedName ?? existing.BlueprintUUID;
+                            string fallback = compBp?.ExtendedName ?? "(unknown)";
                             comboCell.Items.Add(fallback);
                             uuidByIndex.Add(existing.BlueprintUUID);
                             comboCell.Value = fallback;

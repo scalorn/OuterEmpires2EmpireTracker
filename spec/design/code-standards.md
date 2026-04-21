@@ -103,6 +103,9 @@ Lock ordering: `_listLock` → entity-level lock → `_syncRoot`. Never reversed
 - All UUID lookups SHALL handle "not found" gracefully.
 - All `decimal` division SHALL check for zero divisor.
 - Grid cell reads SHALL use `?.ToString() ?? ""` pattern.
+- Entity name display SHALL use `ExtendedName` or `Name`, never raw UUIDs. When an entity is not found (e.g. `FindBlueprint` returns null), display `"(unknown)"` as the fallback.
+- Every `DataGridView` SHALL have a `DataError` handler that logs the error and sets `e.ThrowException = false`.
+- `DataGridViewComboBoxCell` items SHALL be plain strings only — never objects or structs (boxing breaks reference equality, causing continuous DataError exceptions and form freezes).
 
 ### Test Coverage
 - Every service method: happy path, empty input, null input, edge cases.

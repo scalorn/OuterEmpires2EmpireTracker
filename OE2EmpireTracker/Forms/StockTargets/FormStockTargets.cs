@@ -553,7 +553,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             {
                 if (string.IsNullOrEmpty(slot.BlueprintUUID)) continue;
                 var bp = playerContext.FindBlueprint(slot.BlueprintUUID);
-                string name = bp?.ExtendedName ?? slot.BlueprintUUID;
+                string name = bp?.ExtendedName ?? "(unknown)";
                 dgvExpandedComponents.Rows.Add(slot.SlotType + ": " + name, target.TargetQuantity.ToString());
             }
             sw.Stop(); Log.Info("PERF PopulateExpandedComponents: {0}ms", sw.ElapsedMilliseconds);
