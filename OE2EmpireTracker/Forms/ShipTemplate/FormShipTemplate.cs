@@ -43,6 +43,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
             dgvSlots.CellValueChanged += dgvSlots_CellValueChanged;
             dgvSlots.CurrentCellDirtyStateChanged += dgvSlots_CurrentCellDirtyStateChanged;
+            dgvSlots.DataError += dgvSlots_DataError;
 
             PopulateHullCombo();
             PopulateTemplateList();
@@ -220,45 +221,40 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     // Populate component combo for this row
                     var comboCell = (DataGridViewComboBoxCell)row.Cells[colComponent.Index];
                     comboCell.Items.Clear();
-                    comboCell.Items.Add("(empty)");
-                    var nameToUUID = new Dictionary<string, string>();
+                    comboCell.ValueType = typeof(ComponentEntry);
+                    comboCell.Items.Add(new ComponentEntry { Display = "(empty)", UUID = "" });
                     var eligibleBps = playerContext.GetAllBlueprints()
                         .Where(bp => def.BlueprintTypes.Contains(bp.BluePrintType) && bp.Class == hullClass)
                         .OrderBy(bp => bp.ExtendedName);
                     foreach (var bp in eligibleBps)
-                    {
-                        string display = bp.ExtendedName;
-                        // Handle duplicate display names by appending UUID suffix
-                        if (nameToUUID.ContainsKey(display))
-                            display = display + " [" + bp.UUID.Substring(0, 8) + "]";
-                        nameToUUID[display] = bp.UUID;
-                        comboCell.Items.Add(display);
-                    }
+                        comboCell.Items.Add(new ComponentEntry { Display = bp.ExtendedName, UUID = bp.UUID });
 
                     if (existing != null && !string.IsNullOrEmpty(existing.BlueprintUUID))
                     {
-                        // Find the display name for the existing component
-                        var displayName = nameToUUID.FirstOrDefault(kvp => kvp.Value == existing.BlueprintUUID).Key;
-                        if (displayName != null)
+                        bool found = false;
+                        foreach (ComponentEntry item in comboCell.Items)
                         {
-                            comboCell.Value = displayName;
+                            if (item.UUID == existing.BlueprintUUID)
+                            { comboCell.Value = item; found = true; break; }
                         }
-                        else
+                        if (!found)
                         {
-                            // Component not in eligible list (class mismatch from old data)
                             var compBp = playerContext.FindBlueprint(existing.BlueprintUUID);
-                            string fallback = compBp?.ExtendedName ?? existing.BlueprintUUID;
-                            nameToUUID[fallback] = existing.BlueprintUUID;
+                            var fallback = new ComponentEntry
+                            {
+                                Display = compBp?.ExtendedName ?? existing.BlueprintUUID,
+                                UUID = existing.BlueprintUUID
+                            };
                             comboCell.Items.Add(fallback);
                             comboCell.Value = fallback;
                         }
                     }
                     else
                     {
-                        comboCell.Value = "(empty)";
+                        comboCell.Value = comboCell.Items[0];
                     }
 
-                    row.Tag = new SlotInfo { SlotType = def.SlotType, SlotIndex = idx, NameToUUID = nameToUUID };
+                    row.Tag = new SlotInfo { SlotType = def.SlotType, SlotIndex = idx };
                 }
             }
             sw.Stop(); Log.Info("PERF PopulateSlotGrid: {0}ms", sw.ElapsedMilliseconds);
@@ -280,10 +276,10 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             var info = row.Tag as SlotInfo;
             if (info == null) return;
 
-            string val = row.Cells[colComponent.Index].Value?.ToString() ?? "(empty)";
             string bpUUID = "";
-            if (val != "(empty)" && info.NameToUUID != null)
-                info.NameToUUID.TryGetValue(val, out bpUUID);
+            var cellValue = row.Cells[colComponent.Index].Value;
+            if (cellValue is ComponentEntry ce && !string.IsNullOrEmpty(ce.UUID))
+                bpUUID = ce.UUID;
 
             var existing = _selectedTemplate.Components
                 .FirstOrDefault(c => c.SlotType == info.SlotType && c.SlotIndex == info.SlotIndex);
@@ -303,6 +299,12 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             }
 
             RefreshStats();
+        }
+
+        private void dgvSlots_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            Log.Warn("dgvSlots DataError at [{0},{1}]: {2}", e.RowIndex, e.ColumnIndex, e.Exception?.Message);
+            e.ThrowException = false;
         }
 
         // Stats
@@ -691,7 +693,13 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         }
 
         private class HullEntry { public string Display; public string UUID; public override string ToString() => Display; }
-        private class SlotInfo { public string SlotType; public int SlotIndex; public Dictionary<string, string> NameToUUID; }
+        private class SlotInfo { public string SlotType; public int SlotIndex; }
         private class SlotDefinition { public string SlotType; public int MaxCount; public List<string> BlueprintTypes; }
+        private struct ComponentEntry
+        {
+            public string Display;
+            public string UUID;
+            public override string ToString() => Display;
+        }
     }
 }
