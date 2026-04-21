@@ -20,7 +20,7 @@
   - Mark task complete when test is written, run, and failure is documented
   - _Requirements: 1.1, 2.1_
 
-- [-] 2. Write preservation property tests (BEFORE implementing fix)
+- [x] 2. Write preservation property tests (BEFORE implementing fix)
   - **Property 2: Preservation** - Planet Survey Import and Resource Parsing Unchanged
   - **IMPORTANT**: Follow observation-first methodology
   - Create test file `OE2EmpireTracker.Tests/Parsers/SurveyParserPreservationTests.cs`
@@ -41,7 +41,7 @@
 
 - [ ] 3. Fix for asteroid survey import not extracting and displaying max reserve data
 
-  - [~] 3.1 Add transient ParsedMaxReserves property to Survey model
+  - [-] 3.1 Add transient ParsedMaxReserves property to Survey model
     - In `OE2EmpireTracker/Models/Survey.cs`, add `[JsonIgnore] public Dictionary<string, int> ParsedMaxReserves { get; set; }`
     - This carries max reserve data from parser to import helper without affecting JSON serialization
     - _Bug_Condition: isBugCondition(input) where maxReserveNodes.Count > 0 AND no mechanism to pass reserve data from parser to import helper_

@@ -261,8 +261,7 @@
     <Compile Include="Models\ThresholdPreferencesTests.cs" />
     <Compile Include="Models\UIPreferencesTests.cs" />
     <Compile Include="Parsers\SurveyParserTests.cs" />
-    <!-- Temporarily excluded: references ParsedMaxReserves which doesn't exist yet -->
-    <!-- <Compile Include="Parsers\SurveyParserMaxReserveTests.cs" /> -->
+    <Compile Include="Parsers\SurveyParserMaxReserveTests.cs" />
     <Compile Include="Parsers\SurveyParserPreservationTests.cs" />
     <Compile Include="Parsers\SurveyParserIdempotencyTests.cs" />
     <Compile Include="Parsers\PlayerProfileParserPropertyTests.cs" />

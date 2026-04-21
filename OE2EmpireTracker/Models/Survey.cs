@@ -28,6 +28,9 @@ namespace OE2EmpireTracker.Models
         public string AsteroidUUID { get; set; } = string.Empty;
 
         [JsonIgnore]
+        public Dictionary<string, int> ParsedMaxReserves { get; set; }
+
+        [JsonIgnore]
         public override string ExtendedName
         {
             get
