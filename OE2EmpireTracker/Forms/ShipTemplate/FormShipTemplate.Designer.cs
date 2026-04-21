@@ -25,6 +25,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             this.lvwTemplates = new System.Windows.Forms.ListView();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdNew = new System.Windows.Forms.Button();
+            this.cmdSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cmdOrderBuild = new System.Windows.Forms.Button();
             this.flpDetail = new System.Windows.Forms.FlowLayoutPanel();
@@ -65,7 +66,6 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             //
             this.flpSearchList.Controls.Add(this.flpFilter);
             this.flpSearchList.Controls.Add(this.lvwTemplates);
-            this.flpSearchList.Controls.Add(this.flpCommands);
             this.flpSearchList.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpSearchList.Location = new System.Drawing.Point(3, 3);
             this.flpSearchList.Name = "flpSearchList";
@@ -104,7 +104,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             this.lvwTemplates.Location = new System.Drawing.Point(3, 35);
             this.lvwTemplates.MultiSelect = false;
             this.lvwTemplates.Name = "lvwTemplates";
-            this.lvwTemplates.Size = new System.Drawing.Size(214, 520);
+            this.lvwTemplates.Size = new System.Drawing.Size(214, 555);
             this.lvwTemplates.UseCompatibleStateImageBehavior = false;
             this.lvwTemplates.View = System.Windows.Forms.View.Details;
             //
@@ -112,11 +112,12 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             //
             this.flpCommands.AutoSize = true;
             this.flpCommands.Controls.Add(this.cmdNew);
+            this.flpCommands.Controls.Add(this.cmdSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
             this.flpCommands.Controls.Add(this.cmdOrderBuild);
             this.flpCommands.Location = new System.Drawing.Point(3, 561);
             this.flpCommands.Name = "flpCommands";
-            this.flpCommands.Size = new System.Drawing.Size(214, 29);
+            this.flpCommands.Size = new System.Drawing.Size(662, 29);
             //
             // cmdNew
             //
@@ -146,9 +147,9 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             //
             this.flpDetail.Controls.Add(this.flpName);
             this.flpDetail.Controls.Add(this.flpHull);
-            this.flpDetail.Controls.Add(this.cmdSave);
             this.flpDetail.Controls.Add(this.dgvSlots);
             this.flpDetail.Controls.Add(this.rtbStats);
+            this.flpDetail.Controls.Add(this.flpCommands);
             this.flpDetail.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpDetail.Location = new System.Drawing.Point(229, 3);
             this.flpDetail.Name = "flpDetail";
@@ -207,7 +208,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             //
             // cmdSave
             //
-            this.cmdSave.Location = new System.Drawing.Point(3, 68);
+            this.cmdSave.Location = new System.Drawing.Point(84, 3);
             this.cmdSave.Name = "cmdSave";
             this.cmdSave.Size = new System.Drawing.Size(75, 23);
             this.cmdSave.Text = "Save";
@@ -223,7 +224,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             this.colSlotType,
             this.colSlotIndex,
             this.colComponent});
-            this.dgvSlots.Location = new System.Drawing.Point(3, 97);
+            this.dgvSlots.Location = new System.Drawing.Point(3, 68);
             this.dgvSlots.Name = "dgvSlots";
             this.dgvSlots.Size = new System.Drawing.Size(662, 300);
             this.dgvSlots.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
