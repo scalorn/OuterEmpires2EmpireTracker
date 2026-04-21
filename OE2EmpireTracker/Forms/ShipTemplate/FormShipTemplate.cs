@@ -19,6 +19,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
         private PlayerContext playerContext;
         private Models.ShipTemplate _selectedTemplate;
+        private List<string> _hullUUIDs = new List<string>();
 
         public FormShipTemplate()
         {
@@ -34,7 +35,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
             txtFilter.TextChanged += txtFilter_TextChanged;
             txtName.TextChanged += txtName_TextChanged;
-            cmbHull.SelectedIndexChanged += cmbHull_SelectedIndexChanged;
+            cmbHull.SelectedItemChanged += cmbHull_SelectedItemChanged;
 
             cmdNew.Click += cmdNew_Click;
             cmdDelete.Click += cmdDelete_Click;
@@ -147,7 +148,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         {
             using var guard = new ProgrammaticUpdateGuard(this);
             txtName.Text = "";
-            cmbHull.SelectedIndex = -1;
+            cmbHull.SetItems(cmbHull.Items, null);
             dgvSlots.Rows.Clear();
             rtbStats.Text = "";
             SetDetailEnabled(false);
@@ -166,31 +167,36 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            cmbHull.Items.Clear();
+            var names = new List<string>();
+            _hullUUIDs = new List<string>();
             var hulls = playerContext.GetAllBlueprints()
                 .Where(bp => bp.BluePrintType == "Hull")
                 .OrderBy(bp => bp.ExtendedName);
             foreach (var bp in hulls)
-                cmbHull.Items.Add(new HullEntry { Display = bp.ExtendedName, UUID = bp.UUID });
+            {
+                names.Add(bp.ExtendedName);
+                _hullUUIDs.Add(bp.UUID);
+            }
+            cmbHull.SetItems(names, null);
             sw.Stop(); Log.Info("PERF PopulateHullCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void SelectHullInCombo(string hullUUID)
         {
-            if (string.IsNullOrEmpty(hullUUID)) { cmbHull.SelectedIndex = -1; return; }
-            for (int i = 0; i < cmbHull.Items.Count; i++)
-            {
-                if (cmbHull.Items[i] is HullEntry he && he.UUID == hullUUID)
-                { cmbHull.SelectedIndex = i; return; }
-            }
-            cmbHull.SelectedIndex = -1;
+            if (string.IsNullOrEmpty(hullUUID)) { cmbHull.SetItems(cmbHull.Items, null); return; }
+            int idx = _hullUUIDs.IndexOf(hullUUID);
+            if (idx >= 0)
+                cmbHull.SetItems(cmbHull.Items, cmbHull.Items[idx]);
+            else
+                cmbHull.SetItems(cmbHull.Items, null);
         }
 
-        private void cmbHull_SelectedIndexChanged(object sender, EventArgs e)
+        private void cmbHull_SelectedItemChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedTemplate == null) return;
-            var entry = cmbHull.SelectedItem as HullEntry;
-            _selectedTemplate.HullBlueprintUUID = entry?.UUID ?? "";
+            int idx = cmbHull.SelectedFullIndex;
+            string uuid = (idx >= 0 && idx < _hullUUIDs.Count) ? _hullUUIDs[idx] : "";
+            _selectedTemplate.HullBlueprintUUID = uuid;
             _selectedTemplate.Components.Clear();
             PopulateSlotGrid();
             RefreshStats();
@@ -706,7 +712,6 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             return defs;
         }
 
-        private class HullEntry { public string Display; public string UUID; public override string ToString() => Display; }
         private class SlotInfo { public string SlotType; public int SlotIndex; public List<string> UUIDByIndex; }
         private class SlotDefinition { public string SlotType; public int MaxCount; public List<string> BlueprintTypes; }
     }

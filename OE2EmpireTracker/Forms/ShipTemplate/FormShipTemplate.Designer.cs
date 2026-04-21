@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             this.txtName = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpHull = new System.Windows.Forms.FlowLayoutPanel();
             this.lblHull = new System.Windows.Forms.Label();
-            this.cmbHull = new System.Windows.Forms.ComboBox();
+            this.cmbHull = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.cmdSave = new System.Windows.Forms.Button();
             this.dgvSlots = new System.Windows.Forms.DataGridView();
             this.colSlotType = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -201,10 +201,9 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             //
             // cmbHull
             //
-            this.cmbHull.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbHull.Location = new System.Drawing.Point(39, 3);
             this.cmbHull.Name = "cmbHull";
-            this.cmbHull.Size = new System.Drawing.Size(350, 21);
+            this.cmbHull.Size = new System.Drawing.Size(350, 25);
             //
             // cmdSave
             //
@@ -301,7 +300,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         private OE2EmpireTracker.Controls.ValidatedTextBox txtName;
         private System.Windows.Forms.FlowLayoutPanel flpHull;
         private System.Windows.Forms.Label lblHull;
-        private System.Windows.Forms.ComboBox cmbHull;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbHull;
         private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.DataGridView dgvSlots;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSlotType;
