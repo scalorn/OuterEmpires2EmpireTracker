@@ -65,7 +65,7 @@ if (sw.ElapsedMilliseconds > 5)
 
 Lock ordering: `_listLock` → entity-level lock → `_syncRoot`. Never reversed.
 
-- **New entity lists**: `lock(_listLock)` → snapshot → release → iterate snapshot.
+- **New entity lists**: All mutations go through `Add{Entity}`/`Remove{Entity}` methods which acquire `_listLock` internally. Read-only access via `IReadOnlyList<T>` properties is safe for single reads. Multi-step reads should use Snapshot methods.
 - **Station/Ship holds**: Use ItemBag thread-safe API. Never hold `_listLock` while iterating ItemBag.
 - **Background cascade**: Snapshot lists at start. Use `TryEnterReadLock(1000ms)` / `TryEnterWriteLock(5000ms)`. Fire events outside all locks.
 - **Form threading**: Named event handlers, `BeginInvoke` with `ObjectDisposedException` catch, `CancellationTokenSource` for background work, unsubscribe in `OnFormClosed`.
@@ -109,6 +109,90 @@ Lock ordering: `_listLock` → entity-level lock → `_syncRoot`. Never reversed
 - Every model: JSON round-trip tests.
 - Reference counters: zero refs, single ref, multiple refs, null UUID.
 - ViewModels: property round-trip, computed properties, validation.
+
+## Persistence Evolution Readiness
+
+## Entity List Encapsulation Pattern
+
+All entity lists on PlayerContext and EmpireContext follow a mandatory encapsulation pattern. This pattern SHALL be used for any new entity list added in the future.
+
+### Pattern
+
+```csharp
+// Private backing field
+private List<T> _entityList;
+
+// Public read-only property (zero-cost — IReadOnlyList is an interface List<T> implements)
+public IReadOnlyList<T> EntityList => _entityList;
+
+// UUID cache (lazy-init, nullable)
+private Dictionary<string, T> _entityCache;
+
+// Mutation methods — the ONLY way external code can modify the list
+public void AddEntity(T item)
+{
+    lock (_listLock)
+    {
+        _entityList.Add(item);
+        if (_entityCache != null && item.UUID != null)
+            _entityCache[item.UUID] = item;
+        // Invalidate derived caches if applicable
+    }
+    BindingSourceEntity?.ResetBindings(false); // if entity has a BindingSource
+}
+
+public void RemoveEntity(T item)
+{
+    lock (_listLock)
+    {
+        _entityList.Remove(item);
+        if (_entityCache != null && item.UUID != null)
+            _entityCache.Remove(item.UUID);
+        // Invalidate derived caches if applicable
+    }
+    BindingSourceEntity?.ResetBindings(false); // if entity has a BindingSource
+}
+
+// Find method — lazy-init cache, O(1) lookup, no fallback linear scan
+public T FindEntity(string id)
+{
+    if (string.IsNullOrEmpty(id)) return null;
+    lock (_listLock)
+    {
+        if (_entityCache == null)
+        {
+            _entityCache = new Dictionary<string, T>();
+            foreach (var e in _entityList)
+                if (e.UUID != null && !_entityCache.ContainsKey(e.UUID))
+                    _entityCache[e.UUID] = e;
+        }
+        _entityCache.TryGetValue(id, out var match);
+        return match;
+    }
+}
+
+// Invalidate method — for bulk operations (Init, CascadeDelete)
+public void InvalidateEntityCache() { lock (_listLock) { _entityCache = null; } }
+```
+
+### Mutation Method Variants
+
+| Pattern | Lock | UUID Cache | BindingSource | Derived Caches | Example |
+|---|---|---|---|---|---|
+| A | `_listLock` | Yes | Yes | Yes | Blueprint |
+| B | `_listLock` | Yes | Yes | No | Survey, Colony, PlayerProfile |
+| C | `_listLock` | Yes | No | No | Station, Ship, DeliveryRoute |
+| D | `_listLock` | Yes | No | Yes | BuildPlan |
+| E | `_commodityLock` | Yes (by name) | No | No | Commodity |
+| F | None | No | Yes | No | BlueprintType, ShipClass, TechLevel |
+
+### Rules
+
+- External code SHALL NEVER call `.Add()`, `.Remove()`, or `.Clear()` on a context list property
+- Internal code (Init, CascadeDeletePlayer, CleanupOrphanedData) MAY access the backing field directly
+- `ResetBindings(false)` SHALL be called outside the lock to avoid UI thread deadlocks
+- Find methods SHALL NOT have fallback linear scans — the cache is always correct because all mutations go through Add/Remove methods
+- New entity lists MUST follow this pattern from the start
 
 ## Persistence Evolution Readiness
 

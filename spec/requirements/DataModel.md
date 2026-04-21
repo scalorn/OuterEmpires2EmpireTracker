@@ -117,7 +117,7 @@
 **REQ-DM-101** PropertyBag SHALL use a private `object _syncRoot` to synchronize all public method access. Write operations (setProperty, Remove, Clear) and read operations (getDecimal, getLong, getBoolean, getString, ContainsKey, Count) SHALL acquire the lock.  
 **REQ-DM-102** LockTracking SHALL use a private `object _syncRoot` to synchronize all public method access. GetLocksForProcess SHALL return a read-only copy.  
 **REQ-DM-103** Colony SHALL expose a `[JsonIgnore] ReaderWriterLockSlim ColonyLock` property (NoRecursion policy) replacing the former ProcessingLock. Constants: ReadLockTimeoutMs=1000, WriteLockTimeoutMs=5000.  
-**REQ-DM-104** PlayerContext SHALL use a private `object _listLock` to synchronize access to BindingList collections and lookup caches. WriteContext SHALL snapshot lists under _listLock then serialize outside it. SnapshotColonyList() SHALL return a copy under _listLock.  
+**REQ-DM-104** PlayerContext SHALL use a private `object _listLock` to synchronize access to entity list backing fields and lookup caches. WriteContext SHALL snapshot lists under _listLock then serialize outside it. SnapshotColonyList() SHALL return a copy under _listLock.  
 **REQ-DM-105** Lock ordering SHALL be: _listLock → ColonyLock → _syncRoot (never reversed). Events SHALL be fired outside all locks. WriteContext SHALL be called outside ColonyLock.  
 **REQ-DM-106** BackgroundProcessor SHALL acquire ColonyLock.TryEnterWriteLock before ProcessColony. On timeout, skip the colony and continue. Fire OnColonyDataChanged outside the lock.  
 **REQ-DM-107** UI forms reading colony data SHALL acquire ColonyLock.TryEnterReadLock, snapshot collections, release lock, then populate controls. On timeout, display stale data.  
@@ -210,8 +210,20 @@ The following 13 entity types were added as part of the empire-systems spec. All
 **REQ-DM-123** Asteroid SHALL have UUID (deterministic from SystemName:Name), Name, SystemName, and `List<AsteroidReserve>`. AsteroidReserve SHALL have ResourceName, Purity, MaxReserve, CurrentReserve, and ResetTimestamp.  
 **REQ-DM-124** DestinationType enum SHALL have values: Colony, Station, Asteroid, Ship.  
 **REQ-DM-125** All entities with IsActive fields SHALL default to true. `DefaultValueHandling.Ignore` SHALL omit IsActive from JSON when true.  
-**REQ-DM-126** PlayerRoot SHALL include arrays for all 13 new entity types. PlayerContext SHALL maintain List fields, Init methods, WriteContext serialization, snapshot methods, and UUID caches for each.  
+**REQ-DM-126** PlayerRoot SHALL include arrays for all 13 new entity types. PlayerContext SHALL maintain private `List<T>` backing fields exposed as `IReadOnlyList<T>` properties, Init methods, WriteContext serialization, snapshot methods, UUID caches, and dedicated `Add{Entity}`/`Remove{Entity}` mutation methods for each. EmpireContext SHALL follow the same pattern for its 9 entity lists.  
 **REQ-DM-127** Item SHALL support Crate ItemType with a Contents ItemBag (null for non-crate items). No nesting — crates SHALL NOT contain other crates.  
 **REQ-DM-128** Item SHALL have damage fields (CurrentHP, MaxHP, MaxRepairPercent) for physical components (ShipPart, ShipHull, Munition). All default to 0 (undamaged, omitted from JSON).  
 **REQ-DM-129** Survey SHALL have SurveyType (enum: Planet/Asteroid, default Planet) and AsteroidUUID fields. DefaultValueHandling.Ignore SHALL omit SurveyType from JSON for planet surveys.  
 **REQ-DM-130** PlayerProfile SHALL have a FactionUUID field linking the player to a Faction.
+
+## Read-Only List Encapsulation
+
+**REQ-DM-140** Every entity list on PlayerContext and EmpireContext SHALL be stored as a private `List<T>` backing field and exposed as a public `IReadOnlyList<T>` property. External code SHALL NOT be able to call `.Add()`, `.Remove()`, `.Clear()`, or any other mutating method on the public property.  
+**REQ-DM-141** PlayerContext and EmpireContext SHALL provide dedicated `Add{Entity}({Entity} item)` and `Remove{Entity}({Entity} item)` mutation methods for each entity list. All list mutations by external code SHALL go through these methods.  
+**REQ-DM-142** Mutation methods on PlayerContext SHALL acquire `_listLock` before modifying the backing list. The lock scope SHALL cover the list mutation, inline UUID cache update, and derived cache invalidation.  
+**REQ-DM-143** When an entity with a non-null UUID is added via a mutation method, the method SHALL insert the entity into the corresponding UUID cache dictionary inline (O(1)). When removed, the method SHALL remove it from the cache inline (O(1)). If the cache is null (not yet built), the inline update SHALL be skipped.  
+**REQ-DM-144** Mutation methods for entity types with an associated BindingSource SHALL call `BindingSource?.ResetBindings(false)` outside the lock to notify bound UI controls.  
+**REQ-DM-145** Mutation methods for Blueprint SHALL additionally invalidate `_allBlueprintsCache` and `_blueprintTypeCountCache`. Mutation methods for BuildPlan SHALL additionally invalidate `_blueprintBuildItemIndex` and `_buildLocationBuildItemIndex`. These derived cache invalidations SHALL occur within the same lock scope as the list mutation.  
+**REQ-DM-146** Find methods (FindBlueprint, FindSurvey, FindColony, etc.) SHALL return results from the UUID cache dictionary lookup only, without fallback linear scans. FindBlueprint SHALL fall back to `EmpireContext.FindGlobalBlueprint` when the local cache misses.  
+**REQ-DM-147** Invalidate methods (InvalidateBlueprintCache, etc.) SHALL remain available for bulk operations during Init and CascadeDeletePlayer. During normal operation, inline cache maintenance via mutation methods SHALL be the primary cache update path.  
+**REQ-DM-148** Any new entity list added to PlayerContext or EmpireContext in the future SHALL follow this same pattern: private backing field, IReadOnlyList property, Add/Remove mutation methods with inline cache maintenance, and a Find method with lazy-init UUID cache.

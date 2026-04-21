@@ -493,6 +493,8 @@ public string ColonyUUID { get; set; }  // Backward compat
 
 ## PlayerRoot Changes
 
+PlayerRoot is the serialization container. PlayerContext exposes all entity lists as `IReadOnlyList<T>` properties backed by private `List<T>` fields. All mutations go through dedicated `Add{Entity}`/`Remove{Entity}` methods that maintain UUID caches inline.
+
 ```csharp
 public class PlayerRoot
 {
@@ -523,6 +525,19 @@ public class PlayerRoot
     public Asteroid[] Asteroid { get; set; }
 }
 ```
+
+### PlayerContext List Encapsulation
+
+Each entity list on PlayerContext follows this pattern:
+
+```
+private List<T> _entityList;                          // private backing field
+public IReadOnlyList<T> EntityList => _entityList;    // read-only public property
+public void AddEntity(T item) { ... }                 // controlled mutation + inline cache update
+public void RemoveEntity(T item) { ... }              // controlled mutation + inline cache update
+```
+
+All 20 PlayerContext lists and all 9 EmpireContext lists follow this pattern. See `spec/design/code-standards.md` for the full pattern specification and mutation method variants.
 
 ## Asteroid Surveys (Survey Model Extension)
 

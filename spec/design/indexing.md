@@ -5,7 +5,7 @@
 
 The project uses two indexing patterns established during colony form optimization:
 
-1. **PlayerContext UUID caches** — `Dictionary<string, T>` built lazily on first lookup, invalidated on mutation. Used for `FindBlueprint`, `FindSurvey`, `FindColony`. Pattern: `lock(_listLock)` → check if null → build from list → lookup. Invalidated by `InvalidateXxxCache()` after list mutations.
+1. **PlayerContext UUID caches** — `Dictionary<string, T>` built lazily on first lookup, maintained inline by `Add{Entity}`/`Remove{Entity}` mutation methods. Pattern: `lock(_listLock)` → check if null → build from list → lookup. Inline maintenance: Add inserts into cache (O(1)), Remove deletes from cache (O(1)). Invalidated by `InvalidateXxxCache()` for bulk operations (Init, CascadeDelete). All entity lists are exposed as `IReadOnlyList<T>` properties backed by private `List<T>` fields — external code cannot bypass the mutation methods.
 
 2. **ItemBag secondary indexes** — `_typeIndex` (ItemType+BaseItemTypeID → items) and `_resourceIndex` (ItemType+BaseItemTypeID+Purity → items) built lazily inside `_syncRoot`, invalidated on AddItem/Remove/Clear. Enables O(1) lookup for `FindByType`, `FindResource`, `CountByType` instead of O(n) scans.
 
@@ -148,15 +148,25 @@ Based on the data flow analysis, these lookups are on hot paths (background tick
 
 | Cache | Type | Lookup Method | Invalidation | Iteration |
 |---|---|---|---|---|
-| `_stationCache` | `Dictionary<string, Station>` | `FindStation(uuid)` | `InvalidateStationCache()` | 4 |
-| `_shipTemplateCache` | `Dictionary<string, ShipTemplate>` | `FindShipTemplate(uuid)` | `InvalidateShipTemplateCache()` | 2 |
-| `_shipCache` | `Dictionary<string, Ship>` | `FindShip(uuid)` | `InvalidateShipCache()` | 2 |
-| `_buildPlanCache` | `Dictionary<string, BuildPlan>` | `FindBuildPlan(uuid)` | `InvalidateBuildPlanCache()` | 1 |
-| `_asteroidCache` | `Dictionary<string, Asteroid>` | `FindAsteroid(uuid)` | `InvalidateAsteroidCache()` | 6 |
-| `_factionCache` | `Dictionary<string, Faction>` | `FindFaction(uuid)` | `InvalidateFactionCache()` | 1 |
-| `_marketListingCache` | `Dictionary<string, MarketListing>` | `FindMarketListing(uuid)` | `InvalidateMarketListingCache()` | 5 |
+| `_stationCache` | `Dictionary<string, Station>` | `FindStation(uuid)` | Inline via `AddStation`/`RemoveStation` + `InvalidateStationCache()` | 4 |
+| `_shipTemplateCache` | `Dictionary<string, ShipTemplate>` | `FindShipTemplate(uuid)` | Inline via `AddShipTemplate`/`RemoveShipTemplate` + `InvalidateShipTemplateCache()` | 2 |
+| `_shipCache` | `Dictionary<string, Ship>` | `FindShip(uuid)` | Inline via `AddShip`/`RemoveShip` + `InvalidateShipCache()` | 2 |
+| `_buildPlanCache` | `Dictionary<string, BuildPlan>` | `FindBuildPlan(uuid)` | Inline via `AddBuildPlan`/`RemoveBuildPlan` + `InvalidateBuildPlanCache()` | 1 |
+| `_asteroidCache` | `Dictionary<string, Asteroid>` | `FindAsteroid(uuid)` | Inline via `AddAsteroid`/`RemoveAsteroid` + `InvalidateAsteroidCache()` | 6 |
+| `_factionCache` | `Dictionary<string, Faction>` | `FindFaction(uuid)` | Inline via `AddFaction`/`RemoveFaction` + `InvalidateFactionCache()` | 1 |
+| `_marketListingCache` | `Dictionary<string, MarketListing>` | `FindMarketListing(uuid)` | Inline via `AddMarketListing`/`RemoveMarketListing` + `InvalidateMarketListingCache()` | 5 |
+| `_playerProfileCache` | `Dictionary<string, PlayerProfile>` | `FindPlayerProfile(uuid)` | Inline via `AddPlayerProfile`/`RemovePlayerProfile` + `InvalidatePlayerProfileCache()` | — |
+| `_deliveryRouteCache` | `Dictionary<string, DeliveryRoute>` | `FindDeliveryRoute(uuid)` | Inline via `AddDeliveryRoute`/`RemoveDeliveryRoute` + `InvalidateDeliveryRouteCache()` | — |
+| `_deliveryPlanCache` | `Dictionary<string, DeliveryPlan>` | `FindDeliveryPlan(uuid)` | Inline via `AddDeliveryPlan`/`RemoveDeliveryPlan` + `InvalidateDeliveryPlanCache()` | — |
+| `_pricingPlanCache` | `Dictionary<string, PricingPlan>` | `FindPricingPlan(uuid)` | Inline via `AddPricingPlan`/`RemovePricingPlan` + `InvalidatePricingPlanCache()` | — |
+| `_marketTransactionCache` | `Dictionary<string, MarketTransaction>` | `FindMarketTransaction(uuid)` | Inline via `AddMarketTransaction`/`RemoveMarketTransaction` + `InvalidateMarketTransactionCache()` | — |
+| `_stockPlanCache` | `Dictionary<string, StockPlan>` | `FindStockPlan(uuid)` | Inline via `AddStockPlan`/`RemoveStockPlan` + `InvalidateStockPlanCache()` | — |
+| `_stockProfileCache` | `Dictionary<string, StockProfile>` | `FindStockProfile(uuid)` | Inline via `AddStockProfile`/`RemoveStockProfile` + `InvalidateStockProfileCache()` | — |
+| `_supplyChainCache` | `Dictionary<string, SupplyChain>` | `FindSupplyChain(uuid)` | Inline via `AddSupplyChain`/`RemoveSupplyChain` + `InvalidateSupplyChainCache()` | — |
+| `_warehouseOverflowRuleCache` | `Dictionary<string, WarehouseOverflowRule>` | `FindWarehouseOverflowRule(uuid)` | Inline via `AddWarehouseOverflowRule`/`RemoveWarehouseOverflowRule` + `InvalidateWarehouseOverflowRuleCache()` | — |
+| `_externalCharacterCache` | `Dictionary<string, ExternalCharacter>` | `FindExternalCharacter(uuid)` | Inline via `AddExternalCharacter`/`RemoveExternalCharacter` + `InvalidateExternalCharacterCache()` | — |
 
-All follow the existing pattern: lazy build under `_listLock`, invalidate on list mutation.
+All caches are maintained inline by mutation methods (O(1) insert/remove) and rebuilt lazily on first access after bulk invalidation.
 
 ### EmpireContext Commodity Index
 
@@ -239,8 +249,22 @@ graph TD
         AC[_asteroidCache<br/>UUID → Asteroid]
         FC[_factionCache<br/>UUID → Faction]
         MLC[_marketListingCache<br/>UUID → MarketListing]
-        CMC[_commodityNameCache<br/>Name → Commodity]
+        PPC[_playerProfileCache<br/>UUID → PlayerProfile]
+        DRC[_deliveryRouteCache<br/>UUID → DeliveryRoute]
+        DPC[_deliveryPlanCache<br/>UUID → DeliveryPlan]
+        PRC[_pricingPlanCache<br/>UUID → PricingPlan]
+        MTC[_marketTransactionCache<br/>UUID → MarketTransaction]
+        SPC[_stockPlanCache<br/>UUID → StockPlan]
+        SPFC[_stockProfileCache<br/>UUID → StockProfile]
+        SCC[_supplyChainCache<br/>UUID → SupplyChain]
+        WORC[_warehouseOverflowRuleCache<br/>UUID → WarehouseOverflowRule]
+        ECC[_externalCharacterCache<br/>UUID → ExternalCharacter]
         BTCC[_blueprintTypeCountCache<br/>Type → Count]
+    end
+
+    subgraph "EmpireContext Caches"
+        CMC[_commodityNameCache<br/>Name → Commodity]
+        GBC[_globalBlueprintCache<br/>UUID → Blueprint]
     end
 
     subgraph "Cross-Entity Indexes (under _listLock)"
@@ -253,17 +277,28 @@ graph TD
         RI["ItemBag._resourceIndex<br/>(Type,BaseID,Purity) → Items"]
     end
 
-    MUT[List Mutation] -->|invalidate| BC
-    MUT -->|invalidate| SC
-    MUT -->|invalidate| CC
-    MUT -->|invalidate| STC
-    MUT -->|invalidate| SHC
-    MUT -->|invalidate| SHTC
-    MUT -->|invalidate| BPC
-    MUT -->|invalidate| AC
-    MUT -->|invalidate| FC
-    MUT -->|invalidate| MLC
-    MUT -->|invalidate| CMC
+    MUT[Add/Remove Mutation Methods] -->|inline update| BC
+    MUT -->|inline update| SC
+    MUT -->|inline update| CC
+    MUT -->|inline update| STC
+    MUT -->|inline update| SHC
+    MUT -->|inline update| SHTC
+    MUT -->|inline update| BPC
+    MUT -->|inline update| AC
+    MUT -->|inline update| FC
+    MUT -->|inline update| MLC
+    MUT -->|inline update| PPC
+    MUT -->|inline update| DRC
+    MUT -->|inline update| DPC
+    MUT -->|inline update| PRC
+    MUT -->|inline update| MTC
+    MUT -->|inline update| SPC
+    MUT -->|inline update| SPFC
+    MUT -->|inline update| SCC
+    MUT -->|inline update| WORC
+    MUT -->|inline update| ECC
+    MUT -->|inline update| CMC
+    MUT -->|inline update| GBC
     MUT -->|invalidate| BTCC
     MUT -->|invalidate| BBI
     MUT -->|invalidate| CBI
@@ -272,4 +307,4 @@ graph TD
     IMUT -->|invalidate| RI
 ```
 
-All caches are lazy (built on first access after invalidation) and thread-safe (built under the appropriate lock). The invalidation cost is O(1) (set to null). The rebuild cost is O(n) on next access but amortized across many lookups.
+All UUID caches are maintained inline by mutation methods (O(1) insert/remove on Add/Remove) and rebuilt lazily on first access after bulk invalidation. Derived caches (type counts, build item indexes) are invalidated (set to null) by mutation methods and rebuilt lazily. All operations are thread-safe under the appropriate lock.
