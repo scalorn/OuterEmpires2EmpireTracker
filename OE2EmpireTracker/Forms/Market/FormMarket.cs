@@ -312,6 +312,7 @@ namespace OE2EmpireTracker.Forms.Market
 
         private void PopulatePricingPlanCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbPricingPlan.DataSource = null;
             cmbPricingPlan.Items.Clear();
@@ -328,6 +329,7 @@ namespace OE2EmpireTracker.Forms.Market
             cmbPricingPlan.DataSource = items;
             cmbPricingPlan.DisplayMember = "Value";
             cmbPricingPlan.ValueMember = "Key";
+            sw.Stop(); Log.Info("PERF PopulatePricingPlanCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private Models.PricingPlan GetSelectedPricingPlan()

@@ -166,6 +166,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
         // Combo helpers
         private void PopulateResourceCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             cmbReserveResource.Items.Clear();
             var resources = EmpireContext.GetInstance()?.ResourceList;
             if (resources != null)
@@ -178,10 +179,12 @@ namespace OE2EmpireTracker.Forms.Asteroid
                     cmbReserveResource.Items.Add(r.Name);
             }
             if (cmbReserveResource.Items.Count > 0) cmbReserveResource.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulateResourceCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulatePurityCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             cmbReservePurity.Items.Clear();
             foreach (var p in ResourcePurity.Purities)
             {
@@ -189,11 +192,13 @@ namespace OE2EmpireTracker.Forms.Asteroid
                     cmbReservePurity.Items.Add(p.Name);
             }
             if (cmbReservePurity.Items.Count > 0) cmbReservePurity.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulatePurityCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // Reserves grid
         private void PopulateReservesGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvReserves.Rows.Clear();
             if (_selectedAsteroid == null) return;
@@ -211,6 +216,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
                 dgvReserves.Rows[rowIdx].Cells[colPurity.Index].ReadOnly = true;
                 dgvReserves.Rows[rowIdx].Cells[colMaxReserve.Index].ReadOnly = true;
             }
+            sw.Stop(); Log.Info("PERF PopulateReservesGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void dgvReserves_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -268,6 +274,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
         // Linked Surveys grid
         private void PopulateLinkedSurveys()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvLinkedSurveys.Rows.Clear();
             if (_selectedAsteroid == null) return;
@@ -291,6 +298,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
                     }
                 }
             }
+            sw.Stop(); Log.Info("PERF PopulateLinkedSurveys: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // CRUD

@@ -146,6 +146,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             sw.Stop();
             Log.Info("PopulateFactionList PERF: total={0}ms items={1}",
                 sw.ElapsedMilliseconds, factions.Count);
+            sw.Stop(); Log.Info("PERF PopulateFactionList: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void txtFactionFilter_TextChanged(object sender, EventArgs e)
@@ -182,6 +183,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             SetFactionDetailEnabled(true);
             sw.Stop();
             Log.Info("PopulateFactionForm PERF: total={0}ms", sw.ElapsedMilliseconds);
+            sw.Stop(); Log.Info("PERF PopulateFactionForm: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ClearFactionForm()
@@ -325,6 +327,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             sw.Stop();
             Log.Info("PopulateCharacterList PERF: total={0}ms items={1}",
                 sw.ElapsedMilliseconds, characters.Count);
+            sw.Stop(); Log.Info("PERF PopulateCharacterList: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void txtCharFilter_TextChanged(object sender, EventArgs e)
@@ -380,6 +383,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             SetCharDetailEnabled(true);
             sw.Stop();
             Log.Info("PopulateCharacterForm PERF: total={0}ms", sw.ElapsedMilliseconds);
+            sw.Stop(); Log.Info("PERF PopulateCharacterForm: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ClearCharacterForm()
@@ -400,6 +404,7 @@ namespace OE2EmpireTracker.Forms.Contacts
 
         private void PopulateCharFactionCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             string selectedUUID = null;
             if (cmbCharFaction.SelectedItem is FactionComboItem selected)
@@ -425,6 +430,7 @@ namespace OE2EmpireTracker.Forms.Contacts
                     }
                 }
             }
+            sw.Stop(); Log.Info("PERF PopulateCharFactionCombo: {0}ms", sw.ElapsedMilliseconds);
         }
         // -----------------------------------------------------------------------
         // Character CRUD

@@ -115,6 +115,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
             sw.Stop();
             Log.Info("PopulateRouteDropdown PERF: total={0}ms items={1}",
                 sw.ElapsedMilliseconds, items.Count);
+            sw.Stop(); Log.Info("PERF PopulateRouteDropdown: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private string _lastRouteUUID = "";

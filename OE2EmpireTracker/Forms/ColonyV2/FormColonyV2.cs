@@ -481,6 +481,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void PopulateForm()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
 
             if (selectedColony == null) return;
@@ -503,6 +504,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             pfSw.Stop();
             Log.Info("V2.PopulateForm PERF: total={0}ms identity={1}ms activeTab={2}ms",
                 pfSw.ElapsedMilliseconds, t0, pfSw.ElapsedMilliseconds - t0);
+            sw.Stop(); Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void MarkAllTabsDirty()
@@ -521,6 +523,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         /// </summary>
         private void PopulateActiveTab()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             var tab = tabDetailedData.SelectedTab;
             if (tab == tabPStructures && _structuresDirty)
             {
@@ -547,6 +550,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 PopulateOverflowGrid();
                 _overflowDirty = false;
             }
+            sw.Stop(); Log.Info("PERF PopulateActiveTab: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void tabDetailedData_SelectedIndexChanged(object sender, EventArgs e)
@@ -863,6 +867,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             sw.Stop();
             Log.Info("V2.PopulateStructures PERF: total={0}ms pool={1}ms updateData={2}ms(x{3}) reset={4}ms layout={5}ms visible={6}/{3}",
                 sw.ElapsedMilliseconds, t1 - t0, updateDataTotal, needed, resetTotal, t3 - t2, visibleCount);
+            sw.Stop(); Log.Info("PERF PopulateStructures: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -------------------------------------------------------------------
@@ -871,6 +876,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void PopulateFlatpackCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             string searchText = txtFilterFlatpack.Text;
             var filteredList = new List<Models.Blueprint>(playerContext.GetAllBlueprints());
 
@@ -896,6 +902,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbFlatpacks.DisplayMember = "ExtendedName";
             cmbFlatpacks.ValueMember = "UUID";
             cmbFlatpacks.DataSource = bs;
+            sw.Stop(); Log.Info("PERF PopulateFlatpackCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void txtFilterFlatpack_TextChanged(object sender, EventArgs e)
@@ -1002,6 +1009,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void RefreshStatusSummary()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             var status = colonyViewModel.Calculator.finalActualStatus;
             if (status == null)
             {
@@ -1012,6 +1020,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             var builder = new RtfBuilder();
             ColonyStatusCalculator.PopulateStatus(builder, status);
             rtbStatusSummary.Rtf = builder.ToRtf();
+            sw.Stop(); Log.Info("PERF RefreshStatusSummary: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -------------------------------------------------------------------
@@ -1105,6 +1114,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void RefreshAdminReport()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID))
             {
                 rtbAdminReport.Rtf = "";
@@ -1141,6 +1151,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             arSw.Stop();
             if (arSw.ElapsedMilliseconds > 10)
                 Log.Info("V2.RefreshAdminReport PERF: {0}ms", arSw.ElapsedMilliseconds);
+            sw.Stop(); Log.Info("PERF RefreshAdminReport: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void timerAdminRefresh_Tick(object sender, EventArgs e)
@@ -1864,6 +1875,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         /// </summary>
         private void RefreshItemGridLocks()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             foreach (DataGridViewRow row in dgvItems.Rows)
             {
                 Item item = row.Tag as Item;
@@ -1873,6 +1885,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     : 0;
                 row.Cells[2].Value = lockedQty;
             }
+            sw.Stop(); Log.Info("PERF RefreshItemGridLocks: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -------------------------------------------------------------------
@@ -1963,6 +1976,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void PopulateItemWithResources()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             string searchText = txtItemFilter.Text;
             List<Resource> filteredList = new List<Resource>(Models.Resource.Resources);
             if (!string.IsNullOrEmpty(searchText))
@@ -1981,10 +1995,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbItem.DisplayMember = "Name";
             cmbItem.ValueMember = "Name";
             cmbItem.DataSource = bs;
+            sw.Stop(); Log.Info("PERF PopulateItemWithResources: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateItemWithCommodities()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             string searchText = txtItemFilter.Text;
             List<Commodity> filteredList = new List<Commodity>(Models.Commodity.Commodities);
             if (!string.IsNullOrEmpty(searchText))
@@ -2003,10 +2019,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbItem.DisplayMember = "ExtendedName";
             cmbItem.ValueMember = "Name";
             cmbItem.DataSource = bs;
+            sw.Stop(); Log.Info("PERF PopulateItemWithCommodities: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateItemWithWorkerDetails()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             string searchText = txtItemFilter.Text;
             List<WorkerDetail> filteredList = new List<WorkerDetail>(Models.WorkerDetail.WorkerDetails);
             if (!string.IsNullOrEmpty(searchText))
@@ -2025,10 +2043,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbItem.DisplayMember = "Name";
             cmbItem.ValueMember = "ID";
             cmbItem.DataSource = bs;
+            sw.Stop(); Log.Info("PERF PopulateItemWithWorkerDetails: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateItemWithSurveys()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             string searchText = txtItemFilter.Text;
             List<Models.Survey> filteredList = new List<Models.Survey>(playerContext.SurveyList);
             if (!string.IsNullOrEmpty(searchText))
@@ -2048,10 +2068,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbItem.DisplayMember = "ExtendedName";
             cmbItem.ValueMember = "UUID";
             cmbItem.DataSource = bs;
+            sw.Stop(); Log.Info("PERF PopulateItemWithSurveys: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateItemWithBlueprints()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             string searchText = txtItemFilter.Text;
             List<Models.Blueprint> filteredList = new List<Models.Blueprint>(playerContext.GetAllBlueprints());
             if (!string.IsNullOrEmpty(searchText))
@@ -2070,10 +2092,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbItem.DisplayMember = "ExtendedName";
             cmbItem.ValueMember = "UUID";
             cmbItem.DataSource = bs;
+            sw.Stop(); Log.Info("PERF PopulateItemWithBlueprints: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateItemWithBlueprintsByOutputType(Models.ItemType.ItemTypeEnum outputType)
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             string searchText = txtItemFilter.Text;
             string outputTypeName = outputType.ToString();
 
@@ -2102,6 +2126,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbItem.DisplayMember = "ExtendedName";
             cmbItem.ValueMember = "UUID";
             cmbItem.DataSource = bs;
+            sw.Stop(); Log.Info("PERF PopulateItemWithBlueprintsByOutputType: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -------------------------------------------------------------------
@@ -2559,11 +2584,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         /// </summary>
         private void PopulateStructureTypeFilter()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             if (!_structureTypesPopulated)
             {
                 _structureTypesPopulated = true;
                 BuildStructureTypeList();
             }
+            sw.Stop(); Log.Info("PERF PopulateStructureTypeFilter: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -2722,6 +2749,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void PopulateOverflowResourceCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbOverflowResource.Items.Clear();
             var resources = empireContext?.ResourceList;
@@ -2735,10 +2763,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     cmbOverflowResource.Items.Add(r.Name);
             }
             if (cmbOverflowResource.Items.Count > 0) cmbOverflowResource.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulateOverflowResourceCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateOverflowPurityCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbOverflowPurity.Items.Clear();
             foreach (var p in ResourcePurity.Purities)
@@ -2747,10 +2777,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     cmbOverflowPurity.Items.Add(p.Name);
             }
             if (cmbOverflowPurity.Items.Count > 0) cmbOverflowPurity.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulateOverflowPurityCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateOverflowDestCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbOverflowDest.DataSource = null;
             cmbOverflowDest.Items.Clear();
@@ -2777,10 +2809,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 cmbOverflowDest.DisplayMember = "Value";
                 cmbOverflowDest.ValueMember = "Key";
             }
+            sw.Stop(); Log.Info("PERF PopulateOverflowDestCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateOverflowRouteCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbOverflowRoute.DataSource = null;
             cmbOverflowRoute.Items.Clear();
@@ -2794,6 +2828,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbOverflowRoute.DataSource = items;
             cmbOverflowRoute.DisplayMember = "Value";
             cmbOverflowRoute.ValueMember = "Key";
+            sw.Stop(); Log.Info("PERF PopulateOverflowRouteCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void cmbOverflowDestType_SelectedIndexChanged(object sender, EventArgs e)

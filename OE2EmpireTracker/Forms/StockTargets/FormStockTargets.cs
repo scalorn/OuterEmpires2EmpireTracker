@@ -191,6 +191,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
         // Combo helpers
         private void PopulateTargetTypeCombos()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             cmbTargetType.Items.Clear();
             cmbTargetType.Items.Add("Commodity");
             cmbTargetType.Items.Add("ShipPart");
@@ -203,10 +204,12 @@ namespace OE2EmpireTracker.Forms.StockTargets
             foreach (var val in Enum.GetValues(typeof(StockTargetScope)))
                 cmbScope.Items.Add(val);
             if (cmbScope.Items.Count > 0) cmbScope.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulateTargetTypeCombos: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateReplenishmentCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbReplenishmentPlan.DataSource = null;
             cmbReplenishmentPlan.Items.Clear();
@@ -223,10 +226,12 @@ namespace OE2EmpireTracker.Forms.StockTargets
 
             if (_selectedPlan != null && !string.IsNullOrEmpty(_selectedPlan.ReplenishmentBuildPlanUUID))
                 cmbReplenishmentPlan.SelectedValue = _selectedPlan.ReplenishmentBuildPlanUUID;
+            sw.Stop(); Log.Info("PERF PopulateReplenishmentCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateTargetItemCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbTargetItem.DataSource = null;
             cmbTargetItem.Items.Clear();
@@ -266,10 +271,12 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 cmbTargetItem.DisplayMember = "Value";
                 cmbTargetItem.ValueMember = "Key";
             }
+            sw.Stop(); Log.Info("PERF PopulateTargetItemCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateLocationCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbTargetLocation.DataSource = null;
             cmbTargetLocation.Items.Clear();
@@ -296,6 +303,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 cmbTargetLocation.DisplayMember = "Value";
                 cmbTargetLocation.ValueMember = "Key";
             }
+            sw.Stop(); Log.Info("PERF PopulateLocationCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void cmbScope_SelectedIndexChanged(object sender, EventArgs e)
@@ -312,6 +320,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
         // Targets grid
         private void PopulateTargetsGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvTargets.Rows.Clear();
             if (_selectedPlan == null) return;
@@ -329,6 +338,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                     target.Scope.ToString(), locationName, "", "");
                 dgvTargets.Rows[rowIdx].Tag = target;
             }
+            sw.Stop(); Log.Info("PERF PopulateTargetsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private string ResolveLocationName(StockTargetScope scope, string uuid)
@@ -523,6 +533,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
 
         private void PopulateExpandedComponents(StockTarget target)
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvExpandedComponents.Rows.Clear();
             var template = playerContext.ShipTemplateList.FirstOrDefault(t => t.UUID == target.ShipTemplateUUID);
@@ -545,6 +556,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 string name = bp?.ExtendedName ?? slot.BlueprintUUID;
                 dgvExpandedComponents.Rows.Add(slot.SlotType + ": " + name, target.TargetQuantity.ToString());
             }
+            sw.Stop(); Log.Info("PERF PopulateExpandedComponents: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ClearExpandedComponents()
@@ -734,6 +746,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
 
         private void PopulateEntriesGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvEntries.Rows.Clear();
             if (_selectedProfile == null) return;
@@ -744,6 +757,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 int rowIdx = dgvEntries.Rows.Add(entry.GroupID, planName);
                 dgvEntries.Rows[rowIdx].Tag = entry;
             }
+            sw.Stop(); Log.Info("PERF PopulateEntriesGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private string ResolvePlanName(string uuid)
@@ -755,6 +769,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
 
         private void PopulateEntryCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbEntry.DataSource = null;
             cmbEntry.Items.Clear();
@@ -775,6 +790,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 cmbEntry.DisplayMember = "Value";
                 cmbEntry.ValueMember = "Key";
             }
+            sw.Stop(); Log.Info("PERF PopulateEntryCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void txtEntryFilter_TextChanged(object sender, EventArgs e)

@@ -99,6 +99,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             sw.Stop();
             Log.Info("RefreshData PERF: total={0}ms collect={1}ms populate={2}ms rows={3}",
                 sw.ElapsedMilliseconds, t1, sw.ElapsedMilliseconds - t1, allRows?.Count ?? 0);
+            sw.Stop(); Log.Info("PERF RefreshData: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -----------------------------------------------------------------------

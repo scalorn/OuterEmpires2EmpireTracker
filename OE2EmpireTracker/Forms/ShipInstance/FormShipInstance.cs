@@ -174,10 +174,12 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         // Location combos
         private void PopulateLocationTypeCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbLocationType.Items.Clear();
             foreach (DestinationType dt in Enum.GetValues(typeof(DestinationType)))
                 cmbLocationType.Items.Add(dt);
+            sw.Stop(); Log.Info("PERF PopulateLocationTypeCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void SelectLocationType(DestinationType dt)
@@ -202,6 +204,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
         private void PopulateLocationUUIDCombo(DestinationType dt)
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbLocationUUID.Items.Clear();
             switch (dt)
@@ -215,6 +218,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                         cmbLocationUUID.Items.Add(new LocationEntry { Display = s.Name, UUID = s.UUID });
                     break;
             }
+            sw.Stop(); Log.Info("PERF PopulateLocationUUIDCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void SelectLocationUUID(string uuid)
@@ -419,6 +423,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
         private void PopulateCrateContents(Item crate)
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvCrateContents.Rows.Clear();
             lblCrateContents.Text = string.Format("Crate Contents ({0}):", crate.Name);
@@ -429,6 +434,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 var item = kvp.Value;
                 dgvCrateContents.Rows.Add(item.ItemType.ToString(), item.ExtendedName, item.ResourcePurity, item.Quantity.ToString());
             }
+            sw.Stop(); Log.Info("PERF PopulateCrateContents: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ClearCrateContents()
@@ -442,6 +448,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
         private void PopulateAddTypeCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             cmbAddType.Items.Clear();
             cmbAddType.Items.Add(ItemType.ItemTypeEnum.Resource);
             cmbAddType.Items.Add(ItemType.ItemTypeEnum.Commodity);
@@ -449,6 +456,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             cmbAddType.Items.Add(ItemType.ItemTypeEnum.Crate);
             cmbAddType.Items.Add(ItemType.ItemTypeEnum.Munition);
             cmbAddType.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulateAddTypeCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void cmbAddType_SelectedIndexChanged(object sender, EventArgs e)
@@ -460,6 +468,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
         private void PopulateAddItemCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             cmbAddItem.Items.Clear();
             if (!(cmbAddType.SelectedItem is ItemType.ItemTypeEnum selectedType)) return;
 
@@ -478,6 +487,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                     cmbAddItem.Items.Add(c.ExtendedName);
             }
             if (cmbAddItem.Items.Count > 0) cmbAddItem.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulateAddItemCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void UpdatePurityComboForHopper()

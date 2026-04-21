@@ -170,6 +170,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             sw.Stop();
             Log.Info("PopulateRouteDropdown PERF: total={0}ms items={1}",
                 sw.ElapsedMilliseconds, items.Count);
+            sw.Stop(); Log.Info("PERF PopulateRouteDropdown: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private string _lastRouteUUID = "";
@@ -191,6 +192,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void PopulatePlanDropdown(string routeUUID)
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             string previousUUID = cmbPlan.SelectedValue as string;
             string filter = txtPlanFilter.Text ?? "";
             var plans = playerContext.GetCurrentPlayerPlans()
@@ -211,6 +213,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             cmbPlan.DataSource = items;
             if (!string.IsNullOrEmpty(previousUUID) && items.Any(i => i.UUID == previousUUID))
                 cmbPlan.SelectedValue = previousUUID;
+            sw.Stop(); Log.Info("PERF PopulatePlanDropdown: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void cmbPlan_SelectedIndexChanged(object sender, EventArgs e)
@@ -241,6 +244,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void PopulateShipDropdown()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             cmbShip.SelectedIndexChanged -= cmbShip_SelectedIndexChanged;
 
             var ships = playerContext.GetCurrentPlayerShips();
@@ -264,6 +268,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             cmbShip.SelectedIndexChanged += cmbShip_SelectedIndexChanged;
             UpdateShipSelection();
+            sw.Stop(); Log.Info("PERF PopulateShipDropdown: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void cmbShip_SelectedIndexChanged(object sender, EventArgs e)

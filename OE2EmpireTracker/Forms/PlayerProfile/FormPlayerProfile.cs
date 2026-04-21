@@ -216,6 +216,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             }
             sw.Stop();
             Log.Info("PopulateForm PERF: total={0}ms", sw.ElapsedMilliseconds);
+            sw.Stop(); Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void configureSkillBlockOnce(CheckBox skillGroup, PlayerSkillBlock skillBlock, SkillName skill)
@@ -319,6 +320,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             sw.Stop();
             Log.Info("PopulateListView PERF: total={0}ms items={1}",
                 sw.ElapsedMilliseconds, profiles.Count);
+            sw.Stop(); Log.Info("PERF PopulateListView: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void txtNameFilter_TextChanged(object sender, EventArgs e)

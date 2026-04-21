@@ -342,6 +342,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void PopulateShortfallGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvShortfalls.Rows.Clear();
 
@@ -427,6 +428,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 lblShortfallStatus.Text = "Error checking resources.";
                 lblShortfallStatus.ForeColor = System.Drawing.Color.Red;
             }
+            sw.Stop(); Log.Info("PERF PopulateShortfallGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -611,6 +613,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void PopulateItemCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbItem.Items.Clear();
 
@@ -691,6 +694,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 cmbItem.SelectedIndex = 0;
 
             UpdateMiningRefiningFieldVisibility();
+            sw.Stop(); Log.Info("PERF PopulateItemCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void cmdAddItem_Click(object sender, EventArgs e)
@@ -1414,6 +1418,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void PopulateSurveyCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbSurvey.Items.Clear();
             cmbSurvey.Items.Add(new ItemEntry { Display = "(none)", ID = "" });
@@ -1422,10 +1427,12 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             foreach (var s in surveys.OrderBy(s => s.Name))
                 cmbSurvey.Items.Add(new ItemEntry { Display = s.Name, ID = s.UUID });
             cmbSurvey.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulateSurveyCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulatePurityCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbPurity.Items.Clear();
 
@@ -1433,6 +1440,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 cmbPurity.Items.Add(new ItemEntry { Display = p.Name, ID = p.Name });
             if (cmbPurity.Items.Count > 0)
                 cmbPurity.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulatePurityCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
 

@@ -271,6 +271,7 @@ namespace OE2EmpireTracker
             sw.Stop();
             Log.Info("RefreshBlueprintList PERF: total={0}ms filter={1}ms populate={2}ms results={3}",
                 sw.ElapsedMilliseconds, t2 - t1, sw.ElapsedMilliseconds - t2, results.Count);
+            sw.Stop(); Log.Info("PERF RefreshBlueprintList: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -325,6 +326,7 @@ namespace OE2EmpireTracker
             sw.Stop();
             Log.Info("PopulateListView PERF: total={0}ms refCounter={1}ms listBuild={2}ms items={3}",
                 sw.ElapsedMilliseconds, t1, sw.ElapsedMilliseconds - t1, blueprints.Count);
+            sw.Stop(); Log.Info("PERF PopulateListView: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -856,6 +858,7 @@ namespace OE2EmpireTracker
         /// </summary>
         private void RefreshStatisticsGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             var bt = cmbBlueprintType.SelectedItem as BlueprintType;
             string[] definedProps = bt?.Properties ?? Array.Empty<string>();
 
@@ -885,6 +888,7 @@ namespace OE2EmpireTracker
             }
 
             PopulateStatisticsValues();
+            sw.Stop(); Log.Info("PERF RefreshStatisticsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -893,6 +897,7 @@ namespace OE2EmpireTracker
         /// </summary>
         private void RebuildStatisticsGrid(string[] definedProps, string[] extraProps)
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
 
             dgvStatistics.CellValidating -= dgvStatistics_CellValidating;
@@ -935,6 +940,7 @@ namespace OE2EmpireTracker
             }
 
             dgvStatistics.CellValidating += dgvStatistics_CellValidating;
+            sw.Stop(); Log.Info("PERF RebuildStatisticsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -969,6 +975,7 @@ namespace OE2EmpireTracker
         /// </summary>
         private void PopulateStatisticsValues()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
 
             Log.Info("PopulateStatisticsValues: rows={0} blueprint='{1}' bagCount={2}",
@@ -1006,6 +1013,7 @@ namespace OE2EmpireTracker
                     row.Cells["CurrentValue"].Value = value;
                 }
             }
+            sw.Stop(); Log.Info("PERF PopulateStatisticsValues: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -1083,6 +1091,7 @@ namespace OE2EmpireTracker
         /// </summary>
         private void PopulateResourcesGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
 
             dgvResources.CellValidating -= dgvResources_CellValidating;
@@ -1097,6 +1106,7 @@ namespace OE2EmpireTracker
                 row.Cells["Resource"].Value = resource.Key;
                 row.Cells["Amount"].Value = resource.Value;
             }
+            sw.Stop(); Log.Info("PERF PopulateResourcesGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -1191,6 +1201,7 @@ namespace OE2EmpireTracker
         /// </summary>
         private void RefreshEvolutionGraph()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             if (viewModel == null)
             {
                 ClearEvolutionGraph();
@@ -1327,6 +1338,7 @@ namespace OE2EmpireTracker
 
                 colorIndex++;
             }
+            sw.Stop(); Log.Info("PERF RefreshEvolutionGraph: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -1349,6 +1361,7 @@ namespace OE2EmpireTracker
         /// </summary>
         private void PopulatePricingPlanCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             string selectedUUID = cmbPricingPlan.SelectedValue as string;
             cmbPricingPlan.DataSource = null;
@@ -1367,6 +1380,7 @@ namespace OE2EmpireTracker
                 cmbPricingPlan.SelectedValue = selectedUUID;
             else
                 cmbPricingPlan.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulatePricingPlanCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -1489,6 +1503,7 @@ namespace OE2EmpireTracker
             sw.Stop();
             Log.Info("PopulateForm PERF: total={0}ms fields={1}ms grids={2}ms pricing={3}ms",
                 sw.ElapsedMilliseconds, t1, t2 - t1, sw.ElapsedMilliseconds - t2);
+            sw.Stop(); Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>

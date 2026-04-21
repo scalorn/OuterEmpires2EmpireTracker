@@ -113,6 +113,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             sw.Stop();
             Log.Info("PopulatePlanList PERF: total={0}ms items={1}",
                 sw.ElapsedMilliseconds, plans.Count);
+            sw.Stop(); Log.Info("PERF PopulatePlanList: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void txtPlanFilter_TextChanged(object sender, EventArgs e)
@@ -154,6 +155,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             SetDetailEnabled(true);
             sw.Stop();
             Log.Info("PopulateForm PERF: total={0}ms", sw.ElapsedMilliseconds);
+            sw.Stop(); Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ClearForm()

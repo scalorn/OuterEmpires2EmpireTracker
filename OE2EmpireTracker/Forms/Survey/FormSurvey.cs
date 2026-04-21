@@ -316,9 +316,11 @@ namespace OE2EmpireTracker.Forms.Survey
 
         private void RefreshSurveyList()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             lvwSurveys.Items.Clear();
             PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName(),
                 GetSelectedSurveyType(), GetSelectedPurityFilter(), GetMinAmount()));
+            sw.Stop(); Log.Info("PERF RefreshSurveyList: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void cmbSurveyType_SelectedIndexChanged(object sender, EventArgs e)
@@ -686,6 +688,7 @@ namespace OE2EmpireTracker.Forms.Survey
             sw.Stop();
             Log.Info("PopulateFormFromViewModel PERF: total={0}ms fields={1}ms grid={2}ms",
                 sw.ElapsedMilliseconds, t1, sw.ElapsedMilliseconds - t1);
+            sw.Stop(); Log.Info("PERF PopulateFormFromViewModel: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void UpdateTitle()

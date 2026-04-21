@@ -195,6 +195,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         // Combo helpers
         private void PopulateStageTypeCombos()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             cmbStageType.Items.Clear();
             foreach (var val in Enum.GetValues(typeof(SupplyChainStageType)))
                 cmbStageType.Items.Add(val);
@@ -206,10 +207,12 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             cmbLocationType.Items.Add(DestinationType.Asteroid);
             cmbLocationType.Items.Add(DestinationType.Ship);
             if (cmbLocationType.Items.Count > 0) cmbLocationType.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulateStageTypeCombos: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateResourceCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             cmbResource.Items.Clear();
             var resources = EmpireContext.GetInstance()?.ResourceList;
             if (resources != null)
@@ -218,10 +221,12 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                     cmbResource.Items.Add(r.Name);
             }
             if (cmbResource.Items.Count > 0) cmbResource.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulateResourceCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulatePurityCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             cmbPurity.Items.Clear();
             foreach (var p in ResourcePurity.Purities)
             {
@@ -229,10 +234,12 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                     cmbPurity.Items.Add(p.Name);
             }
             if (cmbPurity.Items.Count > 0) cmbPurity.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulatePurityCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateLocationCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbLocation.DataSource = null;
             cmbLocation.Items.Clear();
@@ -267,10 +274,12 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                 cmbLocation.DisplayMember = "Value";
                 cmbLocation.ValueMember = "Key";
             }
+            sw.Stop(); Log.Info("PERF PopulateLocationCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateRouteCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbRoute.DataSource = null;
             cmbRoute.Items.Clear();
@@ -284,6 +293,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             cmbRoute.DataSource = items;
             cmbRoute.DisplayMember = "Value";
             cmbRoute.ValueMember = "Key";
+            sw.Stop(); Log.Info("PERF PopulateRouteCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void cmbLocationType_SelectedIndexChanged(object sender, EventArgs e)
@@ -294,6 +304,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         // Stages grid
         private void PopulateStagesGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvStages.Rows.Clear();
             if (_selectedChain == null) return;
@@ -318,6 +329,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                     routeName);
                 dgvStages.Rows[rowIdx].Tag = stage;
             }
+            sw.Stop(); Log.Info("PERF PopulateStagesGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private string ResolveLocationName(DestinationType locType, string uuid)
@@ -360,6 +372,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
 
         private void PopulateStageEditFromStage(SupplyChainStage stage)
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             txtSequence.Text = stage.Sequence.ToString();
             cmbStageType.SelectedItem = stage.StageType;
@@ -388,6 +401,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             PopulateRouteCombo();
             if (!string.IsNullOrEmpty(stage.DeliveryRouteUUID))
                 cmbRoute.SelectedValue = stage.DeliveryRouteUUID;
+            sw.Stop(); Log.Info("PERF PopulateStageEditFromStage: {0}ms", sw.ElapsedMilliseconds);
         }
         // Stage CRUD
         private SupplyChainStage BuildStageFromPanel()

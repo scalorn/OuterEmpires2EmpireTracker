@@ -186,18 +186,22 @@ namespace OE2EmpireTracker.Forms.Station
         // Combo helpers
         private void PopulateStationTypeCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbStationType.Items.Clear();
             foreach (StationType st in Enum.GetValues(typeof(StationType)))
                 cmbStationType.Items.Add(st);
+            sw.Stop(); Log.Info("PERF PopulateStationTypeCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateOwnershipCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbOwnership.Items.Clear();
             foreach (StationOwnership so in Enum.GetValues(typeof(StationOwnership)))
                 cmbOwnership.Items.Add(so);
+            sw.Stop(); Log.Info("PERF PopulateOwnershipCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void SelectComboEnum<T>(ComboBox cmb, T value)
@@ -294,6 +298,7 @@ namespace OE2EmpireTracker.Forms.Station
 
         private void PopulateHoldCrateContents(Item crate)
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvHoldCrateContents.Rows.Clear();
             lblHoldCrateContents.Text = string.Format("Crate Contents ({0}):", crate.Name);
@@ -304,6 +309,7 @@ namespace OE2EmpireTracker.Forms.Station
                 var item = kvp.Value;
                 dgvHoldCrateContents.Rows.Add(item.ItemType.ToString(), item.ExtendedName, item.ResourcePurity, item.Quantity.ToString());
             }
+            sw.Stop(); Log.Info("PERF PopulateHoldCrateContents: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ClearHoldCrateContents()
@@ -334,6 +340,7 @@ namespace OE2EmpireTracker.Forms.Station
 
         private void PopulateHoldTypeCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             cmbHoldType.Items.Clear();
             cmbHoldType.Items.Add(ItemType.ItemTypeEnum.Resource);
             cmbHoldType.Items.Add(ItemType.ItemTypeEnum.Commodity);
@@ -341,6 +348,7 @@ namespace OE2EmpireTracker.Forms.Station
             cmbHoldType.Items.Add(ItemType.ItemTypeEnum.Crate);
             cmbHoldType.Items.Add(ItemType.ItemTypeEnum.Munition);
             cmbHoldType.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulateHoldTypeCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void cmbHoldType_SelectedIndexChanged(object sender, EventArgs e)
@@ -352,6 +360,7 @@ namespace OE2EmpireTracker.Forms.Station
 
         private void PopulateHoldItemCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             cmbHoldItem.Items.Clear();
             if (!(cmbHoldType.SelectedItem is ItemType.ItemTypeEnum selectedType)) return;
 
@@ -370,6 +379,7 @@ namespace OE2EmpireTracker.Forms.Station
                     cmbHoldItem.Items.Add(c.ExtendedName);
             }
             if (cmbHoldItem.Items.Count > 0) cmbHoldItem.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulateHoldItemCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void UpdateHoldPurityCombo()
@@ -466,6 +476,7 @@ namespace OE2EmpireTracker.Forms.Station
 
         private void PopulateStationBlueprintCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbStationBlueprint.DataSource = null;
             cmbStationBlueprint.Items.Clear();
@@ -487,6 +498,7 @@ namespace OE2EmpireTracker.Forms.Station
 
             if (_selectedStation != null && !string.IsNullOrEmpty(_selectedStation.StationBlueprintUUID))
                 cmbStationBlueprint.SelectedValue = _selectedStation.StationBlueprintUUID;
+            sw.Stop(); Log.Info("PERF PopulateStationBlueprintCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void cmbStationBlueprint_SelectedIndexChanged(object sender, EventArgs e)
@@ -564,6 +576,7 @@ namespace OE2EmpireTracker.Forms.Station
 
         private void PopulateMunitionsGrid()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvMunitions.Rows.Clear();
             if (_selectedStation == null) return;
@@ -575,6 +588,7 @@ namespace OE2EmpireTracker.Forms.Station
                 int rowIdx = dgvMunitions.Rows.Add(item.ExtendedName, item.Quantity.ToString());
                 dgvMunitions.Rows[rowIdx].Tag = item;
             }
+            sw.Stop(); Log.Info("PERF PopulateMunitionsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void cmdMunAdd_Click(object sender, EventArgs e)

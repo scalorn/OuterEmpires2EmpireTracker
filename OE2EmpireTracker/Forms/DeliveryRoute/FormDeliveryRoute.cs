@@ -180,6 +180,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             sw.Stop();
             Log.Info("PopulateRouteList PERF: total={0}ms filter={1}ms listBuild={2}ms items={3}",
                 sw.ElapsedMilliseconds, t1, sw.ElapsedMilliseconds - t1, routes.Count);
+            sw.Stop(); Log.Info("PERF PopulateRouteList: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void txtRouteFilter_TextChanged(object sender, EventArgs e)
@@ -222,20 +223,24 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void PopulateDestTypePicker()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             cmbDestType.Items.Clear();
             cmbDestType.Items.Add("Colony");
             cmbDestType.Items.Add("Station");
             cmbDestType.Items.Add("Asteroid");
             cmbDestType.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulateDestTypePicker: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateStopPurposePicker()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             cmbStopPurpose.Items.Clear();
             cmbStopPurpose.Items.Add("Cargo");
             cmbStopPurpose.Items.Add("Refuel");
             cmbStopPurpose.Items.Add("CargoAndRefuel");
             cmbStopPurpose.SelectedIndex = 0;
+            sw.Stop(); Log.Info("PERF PopulateStopPurposePicker: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private DestinationType GetSelectedDestType()
@@ -262,6 +267,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void PopulateColonyPicker()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             var destType = GetSelectedDestType();
             var items = new List<ColonyPickerItem>();
             items.Add(new ColonyPickerItem { UUID = "", Display = "" });
@@ -334,6 +340,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             cmbColony.DisplayMember = "Display";
             cmbColony.ValueMember = "UUID";
             cmbColony.DataSource = items;
+            sw.Stop(); Log.Info("PERF PopulateColonyPicker: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private class ColonyPickerItem
@@ -418,6 +425,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             sw.Stop();
             Log.Info("PopulateStopsGrid PERF: total={0}ms stops={1}",
                 sw.ElapsedMilliseconds, viewModel.Stops.Count);
+            sw.Stop(); Log.Info("PERF PopulateStopsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ClearForm()
@@ -613,6 +621,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void PopulatePlanDropdown()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             string routeUUID = viewModel.UUID;
             if (string.IsNullOrEmpty(routeUUID))
             {
@@ -652,6 +661,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             {
                 cmbPlan.SelectedValue = previousUUID;
             }
+            sw.Stop(); Log.Info("PERF PopulatePlanDropdown: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void cmbPlan_SelectedIndexChanged(object sender, EventArgs e)
@@ -881,6 +891,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void PopulateItemTypeCombos()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             IReadOnlyList<ItemType> itemTypes = Models.ItemType.ItemTypes;
             cmbDropItemType.DataSource = new List<ItemType>(itemTypes);
             cmbDropItemType.DisplayMember = "Name";
@@ -888,10 +899,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             cmbPickItemType.DataSource = new List<ItemType>(itemTypes);
             cmbPickItemType.DisplayMember = "Name";
             cmbPickItemType.ValueMember = "ID";
+            sw.Stop(); Log.Info("PERF PopulateItemTypeCombos: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulatePurityCombos()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             var purities = new List<Models.ResourcePurity>(Models.ResourcePurity.Purities);
             cmbDropPurity.DataSource = new List<Models.ResourcePurity>(purities);
             cmbDropPurity.DisplayMember = "Name";
@@ -899,6 +912,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             cmbPickPurity.DataSource = new List<Models.ResourcePurity>(purities);
             cmbPickPurity.DisplayMember = "Name";
             cmbPickPurity.ValueMember = "Name";
+            sw.Stop(); Log.Info("PERF PopulatePurityCombos: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void UpdatePurityVisibility(ComboBox typeCombo, ComboBox purityCombo)
@@ -909,6 +923,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void PopulateItemPicker(ComboBox typeCombo, ValidatedTextBox filterBox, ComboBox itemCombo)
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             var itemType = typeCombo.SelectedItem as ItemType;
             if (itemType == null) return;
 
@@ -924,6 +939,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             itemCombo.DisplayMember = "Display";
             itemCombo.ValueMember = "ID";
             itemCombo.DataSource = items;
+            sw.Stop(); Log.Info("PERF PopulateItemPicker: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private List<ItemPickerEntry> GetItemsForType(ItemType.ItemTypeEnum typeEnum)
@@ -985,6 +1001,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             sw.Stop();
             Log.Info("PopulatePlanGrids PERF: total={0}ms dropOff={1} pickUp={2}",
                 sw.ElapsedMilliseconds, selectedPlanStop.DropOff.Count, selectedPlanStop.PickUp.Count);
+            sw.Stop(); Log.Info("PERF PopulatePlanGrids: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void cmdAddDropOff_Click(object sender, EventArgs e)

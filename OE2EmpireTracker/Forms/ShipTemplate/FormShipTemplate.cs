@@ -162,6 +162,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         // Hull Combo
         private void PopulateHullCombo()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbHull.Items.Clear();
             var hulls = playerContext.GetAllBlueprints()
@@ -169,6 +170,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 .OrderBy(bp => bp.ExtendedName);
             foreach (var bp in hulls)
                 cmbHull.Items.Add(new HullEntry { Display = bp.ExtendedName, UUID = bp.UUID });
+            sw.Stop(); Log.Info("PERF PopulateHullCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void SelectHullInCombo(string hullUUID)
