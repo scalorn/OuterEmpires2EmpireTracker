@@ -261,6 +261,7 @@
     <Compile Include="Models\ThresholdPreferencesTests.cs" />
     <Compile Include="Models\UIPreferencesTests.cs" />
     <Compile Include="Parsers\SurveyParserTests.cs" />
+    <Compile Include="Parsers\SurveyParserMaxReserveTests.cs" />
     <Compile Include="Parsers\SurveyParserIdempotencyTests.cs" />
     <Compile Include="Parsers\PlayerProfileParserPropertyTests.cs" />
     <Compile Include="Parsers\PlayerProfileParserTests.cs" />
