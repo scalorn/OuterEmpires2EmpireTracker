@@ -427,5 +427,106 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             Assert.That(ParseQuogar().Resources.Keys.Any(k => k.Contains("Unknown")), Is.False);
         }
+
+        // -----------------------------------------------------------------------
+        // AsteroidSurveySample -- full integration from external file (asteroid)
+        // -----------------------------------------------------------------------
+
+        private Survey ParseAsteroidSurvey()
+        {
+            string clipboardData = LoadTestData("AsteroidSurveySample.html");
+            string html = ExtractFragment(clipboardData);
+            var survey = new Survey();
+            _parser.ProcessHtml(survey, html);
+            return survey;
+        }
+
+        [Test]
+        public void AsteroidSurvey_ExtractsPlanetName()
+        {
+            Assert.That(ParseAsteroidSurvey().PlanetName, Is.EqualTo("AST-DH-CA14"));
+        }
+
+        [Test]
+        public void AsteroidSurvey_ExtractsSystemName()
+        {
+            Assert.That(ParseAsteroidSurvey().SystemName, Is.EqualTo("Dal Halcyion"));
+        }
+
+        [Test]
+        public void AsteroidSurvey_ExtractsSurveyID()
+        {
+            Assert.That(ParseAsteroidSurvey().SurveyID, Is.EqualTo("B6CE913"));
+        }
+
+        [Test]
+        public void AsteroidSurvey_ExtractsDateTime()
+        {
+            Assert.That(ParseAsteroidSurvey().DateTime, Is.EqualTo("2026-04-18T01:09:00Z"));
+        }
+
+        [Test]
+        public void AsteroidSurvey_ExtractsScannedBy()
+        {
+            Assert.That(ParseAsteroidSurvey().ScannedBy, Is.EqualTo("Scalorn Scorpus"));
+        }
+
+        [Test]
+        public void AsteroidSurvey_DetectsAsteroidType()
+        {
+            Assert.That(ParseAsteroidSurvey().SurveyType, Is.EqualTo(SurveyType.Asteroid));
+        }
+
+        [Test]
+        public void AsteroidSurvey_HasFiveResources()
+        {
+            Assert.That(ParseAsteroidSurvey().Resources.Count, Is.EqualTo(5));
+        }
+
+        [Test]
+        public void AsteroidSurvey_NobleGases_CorrectValues()
+        {
+            var r = ParseAsteroidSurvey().Resources["Noble Gases"];
+            Assert.That(r.Purity, Is.EqualTo("High"));
+            Assert.That(r.Amount, Is.EqualTo("23.1"));
+        }
+
+        [Test]
+        public void AsteroidSurvey_HeavyNobleGases_CorrectValues()
+        {
+            var r = ParseAsteroidSurvey().Resources["Heavy Noble Gases"];
+            Assert.That(r.Purity, Is.EqualTo("High"));
+            Assert.That(r.Amount, Is.EqualTo("23.1"));
+        }
+
+        [Test]
+        public void AsteroidSurvey_AlkaliOrganics_CorrectValues()
+        {
+            var r = ParseAsteroidSurvey().Resources["Alkali Organics"];
+            Assert.That(r.Purity, Is.EqualTo("High"));
+            Assert.That(r.Amount, Is.EqualTo("19.8"));
+        }
+
+        [Test]
+        public void AsteroidSurvey_StrongAlkaliOrganics_CorrectValues()
+        {
+            var r = ParseAsteroidSurvey().Resources["Strong Alkali Organics"];
+            Assert.That(r.Purity, Is.EqualTo("High"));
+            Assert.That(r.Amount, Is.EqualTo("19.8"));
+        }
+
+        [Test]
+        public void AsteroidSurvey_SuperheavyExotics_CorrectValues()
+        {
+            var r = ParseAsteroidSurvey().Resources["Superheavy Exotics"];
+            Assert.That(r.Purity, Is.EqualTo("High"));
+            Assert.That(r.Amount, Is.EqualTo("19.8"));
+        }
+
+        [Test]
+        public void AsteroidSurvey_SkipsUnknownTrace()
+        {
+            Assert.That(ParseAsteroidSurvey().Resources.Keys.Any(k => k.Contains("Unknown")), Is.False);
+        }
     }
 }
