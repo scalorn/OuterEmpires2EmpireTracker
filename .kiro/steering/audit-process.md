@@ -15,6 +15,8 @@ These run automatically via the post-task-audit hook:
 4. **Reference Counters** (refcount-check.js) — Every source in spec/design/reference-counting.md is counted by the corresponding counter.
 5. **Control Wiring** (control-wiring.js) — Every form implements IProgrammaticUpdateSource, has NLog Logger, subscribes to CurrentPlayerChanged, and unsubscribes in OnFormClosed.
 6. **Mockup Controls** (mockup-controls.js) — Cross-references mockup control names against Designer.cs files. Supports section-level mapping (multi-form mockups), alias maps (mockup name → code name), and partial-form sections (e.g. colony-overflow.md covers only the Overflow tab). Findings are genuine gaps: "IN MOCKUP NOT CODE" = designed but not yet implemented, "IN CODE NOT MOCKUP" = implemented but not documented in mockup.
+7. **Dead Code** (dead-code.js) — Finds private methods that are never referenced outside their declaration line. Scans all .cs files (excluding Designer.cs) and checks each private method name appears at least twice in its declaring file or once in any other file. Known framework methods (Dispose, InitializeComponent, etc.) are excluded.
+8. **Duplicate Code** (dupe-code.js) — Finds methods with identical normalized bodies across different classes. Extracts method bodies, strips whitespace and comments, hashes them, and reports matches across different classes. Only methods with 5+ lines are checked. Intentionally copied methods can be added to the KNOWN_DUPES set.
 
 ## Manual Audit Checklist
 

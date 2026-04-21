@@ -21,6 +21,8 @@ const tools = [
     { name: 'Reference Counters', script: 'refcount-check.js' },
     { name: 'Control Wiring', script: 'control-wiring.js' },
     { name: 'Mockup Controls', script: 'mockup-controls.js' },
+    { name: 'Dead Code', script: 'dead-code.js' },
+    { name: 'Duplicate Code', script: 'dupe-code.js' },
 ];
 
 let totalFindings = 0;
