@@ -1,191 +1,61 @@
 <!-- Extracted from .kiro/specs/empire-systems/design.md -->
 # Ship Mockups
 
-### FormShipTemplate (Iteration 2)
+### FormShipTemplate (Iteration 3)
 
 MDI child form. Left-list / right-detail pattern.
 
 ```
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ #1 - Ship Templates                                                     [_][â–¡][X]â”‚
-â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
-â”‚ Filter: [__________] â”‚ Name: [Keystone______________]                          â”‚
-â”‚                      â”‚ Hull: [Filter:____] [Clipper Hull Mk3            â–¼]     â”‚
-â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”‚                                                         â”‚
-â”‚ â”‚â–¸ Keystone        â”‚ â”‚ Components:                                             â”‚
-â”‚ â”‚  Vanguard        â”‚ â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”‚
-â”‚ â”‚  Apollo          â”‚ â”‚ â”‚ Slot Type  â”‚ Slot# â”‚ Blueprint            â”‚ Actions â”‚ â”‚
-â”‚ â”‚  Mining Barge    â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤ â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Reactor    â”‚   0   â”‚ Reactor Mk3          â”‚ [Clear] â”‚ â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Drive      â”‚   0   â”‚ Drive Mk3            â”‚ [Clear] â”‚ â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Cargo Pod  â”‚   0   â”‚ Cargo Pod Mk2        â”‚ [Clear] â”‚ â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Cargo Pod  â”‚   1   â”‚ Cargo Pod Mk2        â”‚ [Clear] â”‚ â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Fuel Tank  â”‚   0   â”‚ Fuel Tank Mk2        â”‚ [Clear] â”‚ â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Weapon     â”‚   0   â”‚ Laser Cannon Mk2     â”‚ [Clear] â”‚ â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Weapon     â”‚   1   â”‚ (empty)              â”‚ [Set]   â”‚ â”‚
-â”‚ â”‚                  â”‚ â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â”‚
-â”‚ â”‚                  â”‚ â”‚                                                         â”‚
-â”‚ â”‚                  â”‚ â”‚ Install: Filter:[______] [Reactor Mk3            â–¼]     â”‚
-â”‚ â”‚                  â”‚ â”‚         Slot:  [Reactor / 0  â–¼]  [Install]             â”‚
-â”‚ â”‚                  â”‚ â”‚                                                         â”‚
-â”‚ â”‚                  â”‚ â”‚ Stats:                                                  â”‚
-â”‚ â”‚                  â”‚ â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Total Mass           â”‚  18500 kg  â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Power Generated      â”‚    850 MW  â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Power Consumed       â”‚    620 MW  â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Power Balance        â”‚  + 230 MW  â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Eng Capacity Used    â”‚   1200     â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Cargo Capacity       â”‚   2400 mÂ³  â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Fuel Capacity        â”‚    800 mÂ³  â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Crew Supported       â”‚      12    â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Total Health         â”‚  15000 HP  â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Shield HP            â”‚   5000     â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Shield Regen         â”‚     25/s   â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Energy Defence       â”‚    120     â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Kinetic Defence      â”‚     85     â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Missile Defence      â”‚     60     â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Acceleration         â”‚    4.2 m/sÂ²â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Rotational Thrust    â”‚    3.8     â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Max Jump Distance    â”‚     12 AU  â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Weapons (S/M/L)      â”‚   1/1/0    â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ License              â”‚ Combat Lv3 â”‚                   â”‚
-â”‚ â”‚                  â”‚ â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                   â”‚
-â”‚ â”‚                  â”‚ â”‚                                                         â”‚
-â”‚ â”‚                  â”‚ â”‚ [Order Build â–¼]                                         â”‚
-â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â”‚                                                         â”‚
-â”‚ [New] [Delete]       â”‚                                                         â”‚
-â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
-â”‚ [Save] [Delete]                                                                â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
++---------------------------------------------------------------------------------+
+| #1 - Ship Templates                                                     [_][X] |
++----------------------+----------------------------------------------------------+
+| Filter: [__________] | Name: [Keystone______________]                          |
+|                      | Hull: [Clipper Hull Mk3                            v]   |
+| +------------------+ |       (on focus: [Filter:____] [Clipper Hull Mk3  v])   |
+| |> Keystone        | |                                                         |
+| |  Vanguard        | | +------------+-------+------------------------------+   |
+| |  Apollo          | | | Slot Type  | Slot# | Component                    |   |
+| |  Mining Barge    | | +------------+-------+------------------------------+   |
+| |                  | | | Reactor    |   0   | Reactor Mk3                  |   |
+| |                  | | | Drive      |   0   | Drive Mk3                    |   |
+| |                  | | | Cargo Pod  |   0   | Cargo Pod Mk2                |   |
+| |                  | | | Cargo Pod  |   1   | Cargo Pod Mk2                |   |
+| |                  | | | Fuel Tank  |   0   | Fuel Tank Mk2                |   |
+| |                  | | | Weapon     |   0   | Laser Cannon Mk2             |   |
+| |                  | | | Weapon     |   1   | (empty)                      |   |
+| |                  | | +------------+-------+------------------------------+   |
+| |                  | |                                                         |
+| |                  | | Stats:                                                  |
+| |                  | | Mass: 18500  |  Power: 850/620 (Balance: +230)          |
+| |                  | | Cargo: 2400  |  Fuel: 800  |  Hopper: 0                |
+| |                  | | Health: 15000  |  Shield: 5000 (Regen: 25)             |
+| |                  | | Defence -- Energy: 120  Kinetic: 85  Missile: 60       |
+| |                  | | Accel: 4.2  |  Rotation: 3.8  |  Jump: 12             |
+| |                  | | Mining Yield: 0  |  Scan Level: 0                      |
+| |                  | |                                                         |
+| |                  | | [New] [Save] [Delete] [Order Build]                     |
+| +------------------+ |                                                         |
++----------------------+----------------------------------------------------------+
 ```
 
 Controls:
-- Left: `flpSearchList` â†’ `txtTemplateFilter` + `lvwTemplates` (ListView) + `cmdNew` / `cmdDelete`
-- Right: `flpTemplateData` â†’ `txtTemplateName`, hull selector (`cmbHull`), `cmdSave`, `cmdOrderBuild`, `dgvComponents` (DataGridView), install panel, stats panel, `cmdOrderBuild`
-- `dgvSlots` (DataGridView) columns: SlotType, SlotIndex, Blueprint (dropdown column for component selection — replaces the separate install panel in the original design), Actions (button column)
-- Install panel: **Design deviation** — component installation is done via dropdown columns in `dgvSlots` instead of a separate install panel. The mockup-designed  were not implemented
-- Stats panel: `rtbStats` (RichTextBox) — **Design deviation**: uses formatted text instead of the mockup-designed `dgvStats` DataGridView. Shows all stat groups in a compact multi-line format. Computed from hull + components via ShipBuildService.ComputeStats â€” computed from hull + components via ShipBuildService.ComputeStats. Grouped into sections: Core (mass, power, eng capacity), Capacity (cargo, fuel, crew), Defence (health, shields, armour ratings), Propulsion (acceleration, thrust, jump), Weapons (mount counts, license). Mining and scanning sections shown only when relevant components are installed.
+- Left: `flpSearchList` -> `txtFilter` (ValidatedTextBox) + `lvwTemplates` (ListView)
+- Right: `flpDetail` -> `txtName` (ValidatedTextBox), `cmbHull` (FilteredTextComboSet), `dgvSlots` (DataGridView), `rtbStats` (RichTextBox), `flpCommands` (New/Save/Delete/Order Build)
+- `dgvSlots` columns: SlotType (text, read-only), SlotIndex (text, read-only), Component (`DataGridViewFilteredComboBoxColumn` -- inline filter TextBox + ComboBox on cell edit)
+- Component column uses `DataGridViewFilteredComboBoxCell` with per-cell item lists. UUID resolution via parallel `SlotInfo.UUIDByIndex` on row Tag.
+- Hull combo uses `FilteredTextComboSet` with parallel `_hullUUIDs` list for UUID resolution. Shows full-width combo when unfocused, splits into filter + combo on focus.
+- Stats panel: `rtbStats` (RichTextBox) -- computed from hull + components via ShipBuildService.ComputeStats. Shows all stat groups in compact multi-line format.
+- Buttons at bottom of detail panel in `flpCommands`: `cmdNew`, `cmdSave`, `cmdDelete`, `cmdOrderBuild`
 - "Order Build" opens a dialog to select/create a build plan and specify assembly location
 
 ### FormShipInstance (Iteration 2)
 
 MDI child form. Left-list / right-detail pattern with tabs for stats/components and cargo/holds.
 
-```
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ #1 - Ships                                                              [_][â–¡][X]â”‚
-â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
-â”‚ Filter: [__________] â”‚ Name: [ISS Endeavour_________]                          â”‚
-â”‚                      â”‚ Template: Keystone          Location: Station Alpha      â”‚
-â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”‚                                                         â”‚
-â”‚ â”‚â–¸ ISS Endeavour   â”‚ â”‚ â”Œâ”€ Overview â”€â”¬â”€ Cargo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”‚
-â”‚ â”‚  ISS Reliant     â”‚ â”‚ â”‚                                                  â”‚   â”‚
-â”‚ â”‚  Mining Barge 1  â”‚ â”‚ â”‚ Components:                                      â”‚   â”‚
-â”‚ â”‚  Mining Barge 2  â”‚ â”‚ â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Slot Type  â”‚ Slot# â”‚ Blueprint        â”‚ Condition     â”‚ MaxRep â”‚â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”¤â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Hull       â”‚   -   â”‚ Clipper Hull Mk3 â”‚ 14250/15000 95%â”‚  100% â”‚â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Reactor    â”‚   0   â”‚ Reactor Mk3      â”‚   850/850  100%â”‚  100% â”‚â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Drive      â”‚   0   â”‚ Drive Mk3        â”‚   380/400   95%â”‚   90% â”‚â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Cargo Pod  â”‚   0   â”‚ Cargo Pod Mk2    â”‚   200/200  100%â”‚  100% â”‚â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Cargo Pod  â”‚   1   â”‚ Cargo Pod Mk2    â”‚   200/200  100%â”‚  100% â”‚â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Weapon     â”‚   0   â”‚ Laser Cannon Mk2 â”‚   140/180   78%â”‚   85% â”‚â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”˜â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ [Swap Component â–¼]                               â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚                                                  â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ Stats:                                           â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Total Mass           â”‚  18500 kg  â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Power Generated      â”‚    850 MW  â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Power Consumed       â”‚    620 MW  â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Power Balance        â”‚  + 230 MW  â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Eng Capacity Used    â”‚   1200     â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Cargo Capacity       â”‚   2400 mÂ³  â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Fuel Capacity        â”‚    800 mÂ³  â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Crew Supported       â”‚      12    â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Total Health         â”‚  15000 HP  â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Shield HP            â”‚   5000     â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Shield Regen         â”‚     25/s   â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Energy Defence       â”‚    120     â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Kinetic Defence      â”‚     85     â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Missile Defence      â”‚     60     â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Acceleration         â”‚    4.2 m/sÂ²â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Rotational Thrust    â”‚    3.8     â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Max Jump Distance    â”‚     12 AU  â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ Weapons (S/M/L)      â”‚   1/1/0    â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â”‚ License              â”‚ Combat Lv3 â”‚            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜            â”‚   â”‚
-â”‚ â”‚                  â”‚ â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜   â”‚
-â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â”‚                                                         â”‚
-â”‚ [Create from Tmpl]   â”‚                                                         â”‚
-â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
-â”‚ [Save] [Delete]                                                                â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-```
-
-Cargo tab:
-
-```
-â”‚ â”Œâ”€ Overview â”€â”¬â”€ Cargo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”‚
-â”‚ â”‚                                                                      â”‚   â”‚
-â”‚ â”‚ View: (â—) Cargo Hold  ( ) Hopper                                    â”‚   â”‚
-â”‚ â”‚                                                                      â”‚   â”‚
-â”‚ â”‚ â”Œâ”€ Cargo Hold (1850 / 2400 mÂ³) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”‚   â”‚
-â”‚ â”‚ â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”             â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â”‚ Type     â”‚ Item             â”‚ Qty â”‚ Volume     â”‚             â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤             â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â”‚ Resource â”‚ Refined Titanium â”‚ 500 â”‚    500 mÂ³  â”‚             â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â”‚ [Crate]  â”‚ Supply Run (12)  â”‚   1 â”‚    850 mÂ³  â”‚             â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â”‚ Commodty â”‚ Fuel Cells       â”‚  50 â”‚    500 mÂ³  â”‚             â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜             â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ Crate Contents (Supply Run):                                   â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”             â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â”‚ Type     â”‚ Item             â”‚ Qty â”‚ Volume     â”‚             â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤             â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â”‚ Resource â”‚ Flatpack: Mfg    â”‚   4 â”‚    400 mÂ³  â”‚             â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â”‚ Commodty â”‚ Fuel Cells       â”‚  20 â”‚    200 mÂ³  â”‚             â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜             â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ [New Crate] [Move to Crate] [Remove from Crate] [Delete Crate]â”‚   â”‚   â”‚
-â”‚ â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜â”‚   â”‚   â”‚
-â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜   â”‚
-```
-
-Hopper view (when "Hopper" radio selected):
-
-```
-â”‚ â”Œâ”€ Overview â”€â”¬â”€ Cargo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”‚
-â”‚ â”‚                                                                      â”‚   â”‚
-â”‚ â”‚ View: ( ) Cargo Hold  (â—) Hopper                                    â”‚   â”‚
-â”‚ â”‚                                                                      â”‚   â”‚
-â”‚ â”‚ â”Œâ”€ Hopper (2200 / 5000 mÂ³) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”‚   â”‚
-â”‚ â”‚ â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â”‚ Resource â”‚ Name             â”‚ Purity â”‚ Qty â”‚ Volume     â”‚    â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤    â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â”‚ Resource â”‚ Iron             â”‚ High   â”‚ 400 â”‚    600 mÂ³  â”‚    â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â”‚ Resource â”‚ Iron             â”‚ Medium â”‚ 300 â”‚    450 mÂ³  â”‚    â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â”‚ Resource â”‚ Copper           â”‚ High   â”‚ 200 â”‚    400 mÂ³  â”‚    â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â”‚ Resource â”‚ Copper           â”‚ Low    â”‚ 500 â”‚    750 mÂ³  â”‚    â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚                                                                â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚ Add: Resource:[Filter:___] [Iron              â–¼]               â”‚   â”‚   â”‚
-â”‚ â”‚ â”‚      Purity: [High   â–¼]  Qty:[100]  [Add]                     â”‚   â”‚   â”‚
-â”‚ â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜â”‚   â”‚   â”‚
-â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜   â”‚
-```
-
 Controls:
-- Left: `flpSearchList` â†’ `txtShipFilter` + `lvwShips` (ListView) + `cmdNew` / `cmdDelete` / `cmdCreateFromTemplate`
-- Right: `flpShipData` â†’ `txtShipName`, `cmbLocationType`, `cmbLocationUUID`, `cmdSave`, `tabShipDetail` (TabControl with Overview and Cargo tabs)
-- Overview tab: `dgvComponents` (DataGridView â€” columns: Slot Type, Slot#, Blueprint, Condition, MaxRepair. Condition and MaxRepair are editable for ship instances. Condition shows CurrentHP/MaxHP and percentage, color-coded: green â‰¥75%, yellow â‰¥50%, red <50%. MaxRepair shows the max repairable percentage. Hull row is always first.), `cmdSwapComponent` (opens component picker), `dgvStats` (read-only DataGridView) â€” computed via ShipBuildService.ComputeStats, same grouped layout as FormShipTemplate. Mining/scanning sections shown only when relevant components are installed.
+- Left: `flpSearchList` -> `txtShipFilter` + `lvwShips` (ListView) + `cmdNew` / `cmdDelete` / `cmdCreateFromTemplate`
+- Right: `flpShipData` -> `txtShipName`, `cmbLocationType`, `cmbLocationUUID`, `cmdSave`, `tabShipDetail` (TabControl with Overview and Cargo tabs)
+- Overview tab: `dgvComponents` (DataGridView -- columns: Slot Type, Slot#, Blueprint, Condition, MaxRepair. Condition and MaxRepair are editable for ship instances. Condition shows CurrentHP/MaxHP and percentage, color-coded: green >=75%, yellow >=50%, red <50%. MaxRepair shows the max repairable percentage. Hull row is always first.), `cmdSwapComponent` (opens component picker), `dgvStats` (read-only DataGridView) -- computed via ShipBuildService.ComputeStats, same grouped layout as FormShipTemplate. Mining/scanning sections shown only when relevant components are installed.
 - Cargo tab: `rbCargoHold` / `rbHopper` (RadioButtons) to switch views. Hopper radio only enabled when ship has Ore Hopper components.
-  - Cargo Hold view: `dgvCargo` (DataGridView — flat item list, no crate master-detail yet). **Design deviation**: `dgvCrateContents` crate detail grid not yet implemented (see BL-075), crate management buttons, volume header showing used/capacity.
+  - Cargo Hold view: `dgvCargo` (DataGridView -- flat item list, no crate master-detail yet). **Design deviation**: `dgvCrateContents` crate detail grid not yet implemented (see BL-075), crate management buttons, volume header showing used/capacity.
   - Hopper view: **Design deviation**: uses the same `dgvCargo` grid with radio toggle instead of a separate `dgvHopper` grid with columns Resource, Name, Purity, Qty, Volume. Hopper only accepts unrefined resources (High, Medium, Low purity). Add panel (`cmbAddType`, `cmbAddItem`, `cmbAddPurity`, `txtAddQty`, `cmdAddItem`, `cmdRemoveItem`) with resource filter/combo, purity combo (restricted to High/Medium/Low), quantity, and Add button. Volume header showing used/capacity from Ore Hopper `Raw Material Capacity`.
-
