@@ -12,8 +12,12 @@
 4. **Update the spec** — if the work relates to a feature or fix with a spec under `spec`:
    - Update any relevant spec files to reflect any new or changed behavior
    - Spec updates must be included in the same commit as the code changes, not in a separate commit
-5. Do not leave uncommitted changes at the end of a task
-6. **Run backup script** after every commit: `D:\projects\OuterEmpires2\OE2EmpireTracker\oebackup.ps1`
+5. **Update mockups** — if the work changes any form's layout, controls, or behavior:
+   - Update the corresponding mockup in `spec/mockups/` in the same commit as the code changes
+   - If a control is added, removed, renamed, or repositioned, the mockup ASCII wireframe and control list must reflect it
+   - If no mockup exists for the form, create one
+6. Do not leave uncommitted changes at the end of a task
+7. **Run backup script** after every commit: `D:\projects\OuterEmpires2\OE2EmpireTracker\oebackup.ps1`
 
 ## Commit Messages
 - First line: concise summary of the change
