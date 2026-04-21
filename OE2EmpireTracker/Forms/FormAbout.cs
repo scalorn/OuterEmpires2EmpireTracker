@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -30,6 +31,21 @@ namespace OE2EmpireTracker.Forms
         private void btnOK_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void lnkGame_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://outerempires.net/");
+        }
+
+        private void lnkKiro_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://kiro.dev/");
+        }
+
+        private void lnkGitHub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://github.com/scalorn/OuterEmpires2EmpireTracker");
         }
     }
 }
