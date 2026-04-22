@@ -60,6 +60,8 @@ namespace OE2EmpireTracker.Models
         public ResourceEnum ID { get; set; }
         public string Name { get; set; }
 
+        public override string ToString() => Name ?? "";
+
         private static List<Resource> _resources = GetResources();
         private static Dictionary<ResourceEnum, Resource> _resourceMapByEnum;
         private static Dictionary<string, Resource> _resourceMapByString;
