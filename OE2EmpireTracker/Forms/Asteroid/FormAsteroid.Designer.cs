@@ -147,13 +147,13 @@ namespace OE2EmpireTracker.Forms.Asteroid
             // flpDetail
             this.flpDetail.Controls.Add(this.flpName);
             this.flpDetail.Controls.Add(this.flpSystem);
-            this.flpDetail.Controls.Add(this.cmdSave);
             this.flpDetail.Controls.Add(this.lblReserves);
             this.flpDetail.Controls.Add(this.dgvReserves);
             this.flpDetail.Controls.Add(this.flpReserveAdd);
             this.flpDetail.Controls.Add(this.cmdRemoveReserve);
             this.flpDetail.Controls.Add(this.lblLinkedSurveys);
             this.flpDetail.Controls.Add(this.dgvLinkedSurveys);
+            this.flpDetail.Controls.Add(this.cmdSave);
             this.flpDetail.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpDetail.Location = new System.Drawing.Point(229, 3);
             this.flpDetail.Name = "flpDetail";
