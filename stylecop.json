@@ -1,0 +1,20 @@
+{
+  "settings": {
+    "documentationRules": {
+      "companyName": "OE2EmpireTracker",
+      "documentInterfaces": false,
+      "documentExposedElements": false,
+      "documentInternalElements": false,
+      "documentPrivateElements": false,
+      "documentPrivateFields": false
+    },
+    "orderingRules": {
+      "usingDirectivesPlacement": "outsideNamespace",
+      "systemUsingDirectivesFirst": true
+    },
+    "namingRules": {
+      "allowCommonHungarianPrefixes": true,
+      "allowedHungarianPrefixes": [ "cmd", "btn", "txt", "lbl", "cmb", "dgv", "lvw", "flp", "dtp", "chk", "rtb", "col" ]
+    }
+  }
+}

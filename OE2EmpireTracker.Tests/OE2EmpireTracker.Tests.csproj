@@ -537,4 +537,11 @@
   <Import Project="..\packages\Microsoft.Testing.Platform.2.1.0\build\netstandard2.0\Microsoft.Testing.Platform.targets" Condition="Exists('..\packages\Microsoft.Testing.Platform.2.1.0\build\netstandard2.0\Microsoft.Testing.Platform.targets')" />
   <Import Project="..\packages\Microsoft.Testing.Platform.MSBuild.2.1.0\build\Microsoft.Testing.Platform.MSBuild.targets" Condition="Exists('..\packages\Microsoft.Testing.Platform.MSBuild.2.1.0\build\Microsoft.Testing.Platform.MSBuild.targets')" />
   <Import Project="..\packages\NUnit3TestAdapter.6.2.0\build\net462\NUnit3TestAdapter.targets" Condition="Exists('..\packages\NUnit3TestAdapter.6.2.0\build\net462\NUnit3TestAdapter.targets')" />
+  <ItemGroup>
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="..\stylecop.json" />
+  </ItemGroup>
 </Project>
