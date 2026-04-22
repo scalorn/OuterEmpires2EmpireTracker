@@ -77,7 +77,7 @@
     - _Preservation: No changes to existing SurveyViewModel properties or behavior_
     - _Requirements: 2.3_
 
-  - [-] 3.5 Add MaxReserve column and populate in FormSurvey
+  - [x] 3.5 Add MaxReserve column and populate in FormSurvey
     - In `OE2EmpireTracker/Forms/Survey/FormSurvey.cs`
     - Add a read-only "Max Reserve" column to `dgvResources` (programmatically in constructor or Designer)
     - In `PopulateFormFromViewModel`, after populating resource rows, call `viewModel.FindLinkedAsteroid()`
@@ -88,7 +88,7 @@
     - _Preservation: Planet survey form display unchanged — no asteroid-specific information shown_
     - _Requirements: 2.3, 3.4_
 
-  - [~] 3.6 Verify bug condition exploration test now passes
+  - [-] 3.6 Verify bug condition exploration test now passes
     - **Property 1: Expected Behavior** - Max Reserves Extracted and Stored
     - **IMPORTANT**: Re-run the SAME test from task 1 — do NOT write a new test
     - The test from task 1 encodes the expected behavior from design

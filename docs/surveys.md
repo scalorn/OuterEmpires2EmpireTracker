@@ -50,6 +50,7 @@ The resource grid at the bottom of the form shows all resources found in the sur
 | Resource | The resource type (e.g., Iron, Copper, Titanium) |
 | Purity | The purity level of the resource deposit |
 | Amount | The estimated quantity available |
+| Max Reserve | For asteroid surveys, the maximum reserve amount for each resource. Empty for planet surveys. |
 
 You can manually add or edit resource rows if needed.
 
@@ -80,7 +81,7 @@ Additional filters below the text filter:
 
 ## Asteroid Surveys
 
-Asteroid surveys are auto-detected when you import them — the parser recognizes the "/cycle" rate format and MaxReserve fields. Asteroid surveys are stored alongside planet surveys with a SurveyType of Asteroid. Use the Type filter to view only asteroid or planet surveys.
+Asteroid surveys are auto-detected when you import them — the parser recognizes the "/cycle" rate format and MaxReserve fields. When imported, the tracker extracts each resource's max reserve value and stores it on the linked asteroid entity. The Max Reserve column in the resource grid shows these values so you can see how much of each resource the asteroid holds. Asteroid surveys are stored alongside planet surveys with a SurveyType of Asteroid. Use the Type filter to view only asteroid or planet surveys.
 
 ## Related Topics
 

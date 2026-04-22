@@ -95,8 +95,8 @@ namespace OE2EmpireTracker.Parsers
                         string resName = resMatch.Success ? resMatch.Groups[1].Value.Trim() : rawResName;
 
                         string rawReserve = maxReserveNodes[i].InnerText.Trim();
-                        // Strip commas and whitespace, then parse to int
-                        string cleaned = rawReserve.Replace(",", "").Trim();
+                        // Strip "Max Reserve:" label prefix, commas, and whitespace, then parse to int
+                        string cleaned = Regex.Replace(rawReserve, @"^[^0-9]*", "").Replace(",", "").Trim();
                         if (int.TryParse(cleaned, out int maxReserve))
                         {
                             survey.ParsedMaxReserves[resName] = maxReserve;
