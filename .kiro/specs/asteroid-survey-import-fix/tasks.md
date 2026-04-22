@@ -59,7 +59,7 @@
     - _Preservation: Existing resource name/purity/amount parsing in ParseResource unchanged; planet surveys unaffected_
     - _Requirements: 2.1, 3.2, 3.3_
 
-  - [-] 3.3 Populate Asteroid.Reserves in SurveyImportHelper.LinkOrCreateAsteroid
+  - [x] 3.3 Populate Asteroid.Reserves in SurveyImportHelper.LinkOrCreateAsteroid
     - In `OE2EmpireTracker/Services/SurveyImportHelper.cs`, in the `LinkOrCreateAsteroid` method
     - After creating or finding the asteroid, read `survey.ParsedMaxReserves`
     - For each entry, find matching `SurveyResource` in `survey.Resources` to get purity
@@ -70,7 +70,7 @@
     - _Preservation: Planet surveys (no ParsedMaxReserves) skip reserve population entirely_
     - _Requirements: 2.1, 2.2, 3.1_
 
-  - [~] 3.4 Add FindLinkedAsteroid method to SurveyViewModel
+  - [-] 3.4 Add FindLinkedAsteroid method to SurveyViewModel
     - In `OE2EmpireTracker/ViewModels/SurveyViewModel.cs`
     - Add method `FindLinkedAsteroid()` that returns the `Asteroid` entity from `PlayerContext` using `_survey.AsteroidUUID`, or null if not an asteroid survey
     - _Expected_Behavior: Returns linked Asteroid when AsteroidUUID is set, null otherwise_

@@ -104,6 +104,16 @@ namespace OE2EmpireTracker.ViewModels
         }
 
         // -----------------------------------------------------------------------
+        // Asteroid lookup
+        // -----------------------------------------------------------------------
+
+        public Asteroid FindLinkedAsteroid()
+        {
+            if (string.IsNullOrEmpty(_survey.AsteroidUUID)) return null;
+            return _playerContext.AsteroidList.FirstOrDefault(a => a.UUID == _survey.AsteroidUUID);
+        }
+
+        // -----------------------------------------------------------------------
         // List filtering
         // -----------------------------------------------------------------------
 
