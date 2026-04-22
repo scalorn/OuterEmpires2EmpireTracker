@@ -145,6 +145,31 @@ namespace OE2EmpireTracker.Services
         public event EventHandler<PlayerProfileDataChangedEventArgs> PlayerProfileDataChanged;
 
         /// <summary>
+        /// Fired when ship template data is modified (created, updated, or deleted).
+        /// </summary>
+        public event EventHandler<ShipTemplateDataChangedEventArgs> ShipTemplateDataChanged;
+
+        /// <summary>
+        /// Fired when ship instance data is modified (created, updated, or deleted).
+        /// </summary>
+        public event EventHandler<ShipDataChangedEventArgs> ShipDataChanged;
+
+        /// <summary>
+        /// Fired when stock plan or stock profile data is modified.
+        /// </summary>
+        public event EventHandler<StockDataChangedEventArgs> StockDataChanged;
+
+        /// <summary>
+        /// Fired when supply chain data is modified.
+        /// </summary>
+        public event EventHandler<SupplyChainDataChangedEventArgs> SupplyChainDataChanged;
+
+        /// <summary>
+        /// Fired when external character (contacts) data is modified.
+        /// </summary>
+        public event EventHandler<ContactDataChangedEventArgs> ContactDataChanged;
+
+        /// <summary>
         /// Notifies subscribers that the player profile list has changed.
         /// </summary>
         public void OnPlayerProfilesChanged()
@@ -230,6 +255,46 @@ namespace OE2EmpireTracker.Services
         public void OnAsteroidDataChanged(string asteroidUUID)
         {
             AsteroidDataChanged?.Invoke(this, new AsteroidDataChangedEventArgs(asteroidUUID));
+        }
+
+        /// <summary>
+        /// Notifies subscribers that ship template data has changed externally.
+        /// </summary>
+        public void OnShipTemplateDataChanged(string shipTemplateUUID)
+        {
+            ShipTemplateDataChanged?.Invoke(this, new ShipTemplateDataChangedEventArgs(shipTemplateUUID));
+        }
+
+        /// <summary>
+        /// Notifies subscribers that ship instance data has changed externally.
+        /// </summary>
+        public void OnShipDataChanged(string shipUUID)
+        {
+            ShipDataChanged?.Invoke(this, new ShipDataChangedEventArgs(shipUUID));
+        }
+
+        /// <summary>
+        /// Notifies subscribers that stock plan/profile data has changed externally.
+        /// </summary>
+        public void OnStockDataChanged(string stockPlanUUID)
+        {
+            StockDataChanged?.Invoke(this, new StockDataChangedEventArgs(stockPlanUUID));
+        }
+
+        /// <summary>
+        /// Notifies subscribers that supply chain data has changed externally.
+        /// </summary>
+        public void OnSupplyChainDataChanged(string supplyChainUUID)
+        {
+            SupplyChainDataChanged?.Invoke(this, new SupplyChainDataChangedEventArgs(supplyChainUUID));
+        }
+
+        /// <summary>
+        /// Notifies subscribers that contact (external character) data has changed externally.
+        /// </summary>
+        public void OnContactDataChanged(string characterUUID)
+        {
+            ContactDataChanged?.Invoke(this, new ContactDataChangedEventArgs(characterUUID));
         }
 
         /// <summary>
@@ -2051,6 +2116,36 @@ namespace OE2EmpireTracker.Services
     {
         public string AsteroidUUID { get; }
         public AsteroidDataChangedEventArgs(string asteroidUUID) { AsteroidUUID = asteroidUUID; }
+    }
+
+    public class ShipTemplateDataChangedEventArgs : EventArgs
+    {
+        public string ShipTemplateUUID { get; }
+        public ShipTemplateDataChangedEventArgs(string uuid) { ShipTemplateUUID = uuid; }
+    }
+
+    public class ShipDataChangedEventArgs : EventArgs
+    {
+        public string ShipUUID { get; }
+        public ShipDataChangedEventArgs(string uuid) { ShipUUID = uuid; }
+    }
+
+    public class StockDataChangedEventArgs : EventArgs
+    {
+        public string StockPlanUUID { get; }
+        public StockDataChangedEventArgs(string uuid) { StockPlanUUID = uuid; }
+    }
+
+    public class SupplyChainDataChangedEventArgs : EventArgs
+    {
+        public string SupplyChainUUID { get; }
+        public SupplyChainDataChangedEventArgs(string uuid) { SupplyChainUUID = uuid; }
+    }
+
+    public class ContactDataChangedEventArgs : EventArgs
+    {
+        public string CharacterUUID { get; }
+        public ContactDataChangedEventArgs(string uuid) { CharacterUUID = uuid; }
     }
 
 }
