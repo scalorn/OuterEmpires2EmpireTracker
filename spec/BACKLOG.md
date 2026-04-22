@@ -1,5 +1,7 @@
 # Feature Backlog
 
+**Next available ID: BL-081** (check COMPLETED.md before assigning — IDs are shared across both files)
+
 Open features and enhancements to be worked on.
 
 Items in the "New" section have dependency annotations. Work them in an order that respects the dependency chain.
@@ -120,7 +122,7 @@ The FindBlueprint dictionary cache (colony-form-rewrite Req 24.1) fixes the inne
 - `GetAllBlueprints()` allocates a new merged list (700+ entries) on every call. Called by FindBlueprintByType, CreateStructure, CreateStructureByType. Now cached via Req 24.6.
 - `TakeFromPool` and `PlaceFromPool` call FindBlueprint per pool candidate — linear scan of pool × FindBlueprint per element. Pool is typically small (< 20) so not critical, but benefits from the dictionary cache.
 
-### BL-075: Blueprint Cost Evolution Graph
+### BL-080: Blueprint Cost Evolution Graph
 **Dependencies:** None
 
 Add a cost evolution graph to the Blueprint form, similar to the existing evolution graph but plotting the estimated cost of each blueprint at each evolution level. Cost is computed using a selected pricing plan — sum of (resource quantity × resource price) for each resource in the blueprint, plus any time-based costs from the plan. The graph shows how total manufacturing cost changes as the blueprint evolves, helping players decide which evolution to manufacture based on cost efficiency. Requires a pricing plan selector dropdown on the graph panel. Reuse the charting infrastructure from the evolution graph (System.Windows.Forms.DataVisualization.Charting).
