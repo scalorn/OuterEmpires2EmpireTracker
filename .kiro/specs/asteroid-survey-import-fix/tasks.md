@@ -88,7 +88,7 @@
     - _Preservation: Planet survey form display unchanged — no asteroid-specific information shown_
     - _Requirements: 2.3, 3.4_
 
-  - [-] 3.6 Verify bug condition exploration test now passes
+  - [x] 3.6 Verify bug condition exploration test now passes
     - **Property 1: Expected Behavior** - Max Reserves Extracted and Stored
     - **IMPORTANT**: Re-run the SAME test from task 1 — do NOT write a new test
     - The test from task 1 encodes the expected behavior from design
@@ -97,7 +97,7 @@
     - **EXPECTED OUTCOME**: Test PASSES (confirms bug is fixed)
     - _Requirements: 2.1, 2.2_
 
-  - [~] 3.7 Verify preservation tests still pass
+  - [-] 3.7 Verify preservation tests still pass
     - **Property 2: Preservation** - Planet Survey Import and Resource Parsing Unchanged
     - **IMPORTANT**: Re-run the SAME tests from task 2 — do NOT write new tests
     - Run preservation property tests from step 2
