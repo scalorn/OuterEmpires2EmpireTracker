@@ -210,6 +210,7 @@ namespace OE2EmpireTracker.Tests.Models
                             {
                                 designName = designName.Substring(0, designName.Length - " Flatpack".Length);
                             }
+
                             if (!oldLookup.ContainsKey(designName))
                                 oldLookup[designName] = bp.UUID;
                             if (!oldLookup.ContainsKey(bp.Name))

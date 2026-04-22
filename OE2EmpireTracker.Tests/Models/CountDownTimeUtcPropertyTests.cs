@@ -9,12 +9,12 @@ namespace OE2EmpireTracker.Tests.Models
 {
     /// <summary>
     /// Feature: colony-import-timestamp, Property 7: CountDownTime uses UTC consistently
-    /// 
+    ///
     /// For any CountDownTime initialized via StartRepeating or TimeRemaining setter using
     /// DateTime.UtcNow, the TimeRemaining getter (which also uses DateTime.UtcNow internally)
     /// should return a value within 1 second of the expected remaining time. The StartTime and
     /// EndTime stored on the object should have Kind == DateTimeKind.Utc (or be DateTime.MinValue).
-    /// 
+    ///
     /// **Validates: Requirements 8.2**
     /// </summary>
     [TestFixture]
@@ -55,7 +55,7 @@ namespace OE2EmpireTracker.Tests.Models
 
         /// <summary>
         /// Feature: colony-import-timestamp, Property 7: CountDownTime uses UTC consistently
-        /// 
+        ///
         /// Sub-property 7a: StartRepeating(intervalSeconds) sets StartTime and EndTime with UTC kind,
         /// and TimeRemaining is within 1 second of the interval.
         /// **Validates: Requirements 8.2**
@@ -81,7 +81,7 @@ namespace OE2EmpireTracker.Tests.Models
 
         /// <summary>
         /// Feature: colony-import-timestamp, Property 7: CountDownTime uses UTC consistently
-        /// 
+        ///
         /// Sub-property 7b: StartRepeating(intervalSeconds, secondsUntilNext) sets UTC times
         /// and TimeRemaining is within 1 second of secondsUntilNext.
         /// **Validates: Requirements 8.2**
@@ -111,7 +111,7 @@ namespace OE2EmpireTracker.Tests.Models
 
         /// <summary>
         /// Feature: colony-import-timestamp, Property 7: CountDownTime uses UTC consistently
-        /// 
+        ///
         /// Sub-property 7c: TimeRemaining setter sets StartTime and EndTime with UTC kind,
         /// and the getter returns a value within 1 second of what was set.
         /// **Validates: Requirements 8.2**
@@ -137,7 +137,7 @@ namespace OE2EmpireTracker.Tests.Models
 
         /// <summary>
         /// Feature: colony-import-timestamp, Property 7: CountDownTime uses UTC consistently
-        /// 
+        ///
         /// Sub-property 7d: Default constructor sets StartTime and EndTime to DateTime.MinValue.
         /// **Validates: Requirements 8.2**
         /// </summary>

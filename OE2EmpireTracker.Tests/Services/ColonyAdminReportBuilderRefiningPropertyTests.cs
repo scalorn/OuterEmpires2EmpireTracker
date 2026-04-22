@@ -141,6 +141,7 @@ namespace OE2EmpireTracker.Tests.Services
                 count++;
                 index += pattern.Length;
             }
+
             return count;
         }
     }

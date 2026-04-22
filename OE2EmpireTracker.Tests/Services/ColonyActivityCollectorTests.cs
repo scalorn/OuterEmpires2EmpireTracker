@@ -144,6 +144,7 @@ namespace OE2EmpireTracker.Tests.Services
                             structure.ProcessCompletionTime = MakeExpiredTimer();
                             // Expired -- should NOT produce a row
                         }
+
                         // timerState == 0: no timers
 
                         colony.Structures.Add(structure);
@@ -282,6 +283,7 @@ namespace OE2EmpireTracker.Tests.Services
                 else if (part.EndsWith("s"))
                     total += long.Parse(part.TrimEnd('s'));
             }
+
             return total;
         }
 
@@ -337,7 +339,7 @@ namespace OE2EmpireTracker.Tests.Services
                 if (bpType == BlueprintTypes.MiningRig)
                 {
                     string resource = "Ore_" + iteration;
-                    string purity = new[] { "Low", "Medium", "High" }[Rng.Next(3)];
+                    string purity = (new[] { "Low", "Medium", "High" })[Rng.Next(3)];
                     string amount = Rng.Next(1, 500).ToString();
                     var survey = CreateSurvey(resource, purity, amount);
                     structure.MiningSurvey = survey.UUID;
@@ -356,7 +358,7 @@ namespace OE2EmpireTracker.Tests.Services
                     if (iteration % 2 == 0)
                     {
                         string resource = "Mineral_" + iteration;
-                        string purity = new[] { "Low", "Medium", "High" }[Rng.Next(3)];
+                        string purity = (new[] { "Low", "Medium", "High" })[Rng.Next(3)];
                         structure.RefiningResource = resource;
                         structure.RefiningResourcePurity = purity;
 
@@ -374,6 +376,7 @@ namespace OE2EmpireTracker.Tests.Services
                             case "High": outputRate = baseRate * 5; break;
                             default: outputRate = baseRate; break;
                         }
+
                         Assert.That(rows[0].ProcessDetails, Is.EqualTo($"{baseRate}:{outputRate} {resource} ({purity})"));
                     }
                     else
@@ -840,6 +843,7 @@ namespace OE2EmpireTracker.Tests.Services
                             CountDown = MakeActiveTimer(Rng.Next(0, 864000))
                         };
                     }
+
                     rows.Add(row);
                 }
 

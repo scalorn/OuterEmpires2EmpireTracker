@@ -204,10 +204,12 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     incoming.Properties.setProperty("IncomingProp" + i, "ival" + i);
                 }
+
                 if (data.IncomingHasMfg)
                 {
                     incoming.Properties.setProperty("Manufacture Run Time", "incoming_mfg");
                 }
+
                 if (data.IncomingHasPwr)
                 {
                     incoming.Properties.setProperty("Power Required", "incoming_pwr");
@@ -259,6 +261,7 @@ namespace OE2EmpireTracker.Tests.Services
                         break;
                     }
                 }
+
                 var propsPresent = incomingPropsOk
                     .Label("Not all non-protected incoming properties are present");
 

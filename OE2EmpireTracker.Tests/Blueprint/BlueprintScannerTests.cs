@@ -756,6 +756,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
                 {
                     TestContext.WriteLine($"  {bp.Name} (Ev{bp.Evolution}, Class {bp.Class})");
                 }
+
                 if (group.Value.Count > 3)
                     TestContext.WriteLine($"  ... and {group.Value.Count - 3} more");
 
@@ -768,6 +769,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
                         if (!key.StartsWith("_")) allProps.Add(key);
                     }
                 }
+
                 if (allProps.Count > 0)
                 {
                     TestContext.WriteLine($"  Properties ({allProps.Count}): {string.Join(", ", allProps)}");

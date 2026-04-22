@@ -38,6 +38,7 @@ namespace OE2EmpireTracker.Tests.Services
                     BlueprintUUID = uuid
                 });
             }
+
             return t;
         }
 

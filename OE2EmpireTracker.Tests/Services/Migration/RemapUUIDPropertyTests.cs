@@ -45,11 +45,13 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 if (bp.UUID != null) uuids.Add(bp.UUID);
                 if (bp.BaseBlueprintUUID != null) uuids.Add(bp.BaseBlueprintUUID);
             }
+
             foreach (var bp in pc.BlueprintList)
             {
                 if (bp.UUID != null) uuids.Add(bp.UUID);
                 if (bp.BaseBlueprintUUID != null) uuids.Add(bp.BaseBlueprintUUID);
             }
+
             foreach (var colony in pc.ColonyList)
             {
                 foreach (var s in colony.Structures)

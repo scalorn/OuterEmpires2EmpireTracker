@@ -64,6 +64,7 @@ namespace OE2EmpireTracker.Tests.Services
                 var key = PriceCalculator.MakeResourceKey(resources[i], purity);
                 plan.ResourcePrices[key] = prices[i];
             }
+
             return plan;
         }
 
@@ -82,7 +83,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Feature: pricing-plans, Property 7: Purity determination produces only Refined, S1, or S2
-        /// 
+        ///
         /// For any resource name string, DeterminePurity returns exactly one of "Refined", "S1", or "S2".
         /// **Validates: Requirements 2.6**
         /// </summary>
@@ -120,7 +121,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Feature: pricing-plans, Property 2: Non-negative decimal validation
-        /// 
+        ///
         /// For any decimal value, it should be accepted as a price if and only if it is >= 0.
         /// **Validates: Requirements 1.8, 2.3, 2.4**
         /// </summary>
@@ -142,7 +143,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Feature: pricing-plans, Property 6: Zero price is valid, absent entry is incomplete
-        /// 
+        ///
         /// If a plan contains an explicit entry with value 0 for a resource, TryGetResourcePrice
         /// returns true with price 0. If the plan has no entry, TryGetResourcePrice returns false.
         /// **Validates: Requirements 6.2, 6.3**
@@ -179,7 +180,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Feature: pricing-plans, Property 3: Commodity price is sum of input quantities times Refined prices
-        /// 
+        ///
         /// For any PricingPlan and Commodity, the computed price equals the sum of
         /// (quantity × plan price) for each resource that has a price entry.
         /// **Validates: Requirements 3.1, 3.3**
@@ -220,7 +221,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Feature: pricing-plans, Property 4: Completeness flag matches input coverage
-        /// 
+        ///
         /// IsComplete is true iff every input resource has a corresponding entry in the plan.
         /// **Validates: Requirements 3.2, 3.4, 4.4, 6.1**
         /// </summary>
@@ -254,7 +255,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Feature: pricing-plans, Property 5: Blueprint price equals resource cost plus time costs
-        /// 
+        ///
         /// For any PricingPlan, Blueprint, and non-negative hours, the computed price equals
         /// resourceCost + FixedCostPerItem + (HourlyCostRate × hours).
         /// **Validates: Requirements 4.1, 4.2, 4.3, 4.6**

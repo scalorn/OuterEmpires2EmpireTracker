@@ -162,8 +162,10 @@ namespace OE2EmpireTracker.Tests.Services
 
                 // Count check: exactly one row per expected stale colony
                 if (stalenessRows.Count != expectedStaleColonies.Count)
+                {
                     return false.Label(
                         $"Expected {expectedStaleColonies.Count} staleness rows but got {stalenessRows.Count}");
+                }
 
                 // Verify each staleness row matches its source colony
                 for (int i = 0; i < expectedStaleColonies.Count; i++)
@@ -172,20 +174,28 @@ namespace OE2EmpireTracker.Tests.Services
                     var row = stalenessRows[i];
 
                     if (row.ColonyName != colony.ColonyName)
+                    {
                         return false.Label(
                             $"Row {i}: ColonyName mismatch: expected '{colony.ColonyName}', got '{row.ColonyName}'");
+                    }
 
                     if (row.SystemName != colony.SystemName)
+                    {
                         return false.Label(
                             $"Row {i}: SystemName mismatch: expected '{colony.SystemName}', got '{row.SystemName}'");
+                    }
 
                     if (row.SourceName != "Colony Import")
+                    {
                         return false.Label(
                             $"Row {i}: SourceName should be 'Colony Import', got '{row.SourceName}'");
+                    }
 
                     if (!row.ProcessDetails.EndsWith(" since last import"))
+                    {
                         return false.Label(
                             $"Row {i}: ProcessDetails should end with ' since last import', got '{row.ProcessDetails}'");
+                    }
                 }
 
                 return true.Label("All staleness rows correct");

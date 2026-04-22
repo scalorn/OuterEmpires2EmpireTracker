@@ -81,6 +81,7 @@ namespace OE2EmpireTracker.Tests.Persistence
                     {
                         combo.Items.Add(item);
                     }
+
                     var selectedIndex = data.Items.Count > 0
                         ? Math.Abs(data.Items.Count.GetHashCode()) % data.Items.Count
                         : 0;
@@ -106,6 +107,7 @@ namespace OE2EmpireTracker.Tests.Persistence
                         {
                             combo2.Items.Add(item);
                         }
+
                         // combo2 starts at default (SelectedIndex = -1 or 0)
 
                         var checkBox2 = new CheckBox { Name = checkName, Checked = !data.IsChecked };
@@ -161,6 +163,7 @@ namespace OE2EmpireTracker.Tests.Persistence
                     {
                         combo.Items.Add("SavedItem_" + i);
                     }
+
                     // Select the last item -- its index will be out of range in the smaller new list
                     combo.SelectedIndex = data.SavedItemCount - 1;
 

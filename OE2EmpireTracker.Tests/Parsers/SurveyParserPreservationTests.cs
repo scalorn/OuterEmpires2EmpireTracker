@@ -83,6 +83,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                 survey.SurveyType = SurveyType.Asteroid;
                 survey.AsteroidUUID = "ast-" + uuid;
             }
+
             return survey;
         }
 
@@ -313,6 +314,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                 sb.AppendFormat("<div class=\"div_block ui_text_lightgrey ScanDetailOutputResourceName\">{0} ({1})</div> ", res.Item1, res.Item2);
                 sb.AppendFormat("<div class=\"div_block ui_text_blue_light ScanDetailOutputResourceDetail\">{0}/hour</div>", res.Item3);
             }
+
             sb.Append("</div></div></div>");
             return sb.ToString();
         }

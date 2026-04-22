@@ -12,10 +12,10 @@ namespace OE2EmpireTracker.Tests.Services
 {
     /// <summary>
     /// Feature: pricing-plans, Property 8: Serialization round-trip
-    /// 
+    ///
     /// For any valid PricingPlan object, serializing to JSON with JsonSettings.SerializerSettings
     /// and then deserializing back should produce an equivalent object.
-    /// 
+    ///
     /// **Validates: Requirements 5.4**
     /// </summary>
     [TestFixture]
@@ -65,6 +65,7 @@ namespace OE2EmpireTracker.Tests.Services
                 var key = PriceCalculator.MakeResourceKey(resources[i], purity);
                 plan.ResourcePrices[key] = prices[i];
             }
+
             return plan;
         }
 

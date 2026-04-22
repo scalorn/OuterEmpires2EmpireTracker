@@ -102,6 +102,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                         if (plant) plantedCount++;
                         route.Stops.Add(stop);
                     }
+
                     pc.AddDeliveryRoute(route);
                 }
 
@@ -122,6 +123,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                         stop.PickUp = new List<DeliveryItem>();
                         plan.Stops.Add(stop);
                     }
+
                     pc.AddDeliveryPlan(plan);
                 }
 

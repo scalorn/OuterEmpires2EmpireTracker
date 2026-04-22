@@ -142,6 +142,7 @@ namespace OE2EmpireTracker.Tests.Services
                             expiredUUIDs.Add(colony.UUID);
                         }
                     }
+
                     expiredSetsByPlayer.Add(expiredUUIDs);
                 }
 
@@ -155,6 +156,7 @@ namespace OE2EmpireTracker.Tests.Services
                         expiredForUnknownPlayer.Add(colony.UUID);
                     }
                 }
+
                 expiredSetsByPlayer.Add(expiredForUnknownPlayer);
 
                 // All sets must be identical
@@ -235,6 +237,7 @@ namespace OE2EmpireTracker.Tests.Services
                     {
                         actualProcessed.Add(e.ColonyUUID);
                     }
+
                     pc.ColonyDataChanged += handler;
 
                     try
@@ -740,6 +743,7 @@ namespace OE2EmpireTracker.Tests.Services
                     : $"Process(TR={st.ProcessCompletionTime.TimeRemaining}, IP={st.ProcessCompletionTime.IntervalsPassed}, Repeating={st.ProcessCompletionTime.IsRepeating})";
                 parts.Add($"[S{s}: {buildInfo}, {processInfo}]");
             }
+
             return string.Join(", ", parts);
         }
 

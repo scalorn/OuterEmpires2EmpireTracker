@@ -7,10 +7,10 @@ namespace OE2EmpireTracker.Tests.Forms
 {
     /// <summary>
     /// Feature: pricing-plans, Property 1: Whitespace plan names are rejected
-    /// 
+    ///
     /// For any string composed entirely of whitespace (including empty string),
     /// the validation should reject it as a plan name.
-    /// 
+    ///
     /// **Validates: Requirements 1.6**
     /// </summary>
     [TestFixture]
@@ -42,7 +42,7 @@ namespace OE2EmpireTracker.Tests.Forms
 
         /// <summary>
         /// Feature: pricing-plans, Property 1: Whitespace plan names are rejected
-        /// 
+        ///
         /// For any whitespace-only string, string.IsNullOrWhiteSpace returns true,
         /// which means the save handler would reject it.
         /// **Validates: Requirements 1.6**
@@ -58,7 +58,7 @@ namespace OE2EmpireTracker.Tests.Forms
                 bool isRejected = string.IsNullOrWhiteSpace(name);
 
                 return isRejected
-                    .Label($"Whitespace name '{name?.Replace("\n","\\n").Replace("\t","\\t")}' was not rejected");
+                    .Label($"Whitespace name '{name?.Replace("\n", "\\n").Replace("\t", "\\t")}' was not rejected");
             });
         }
 

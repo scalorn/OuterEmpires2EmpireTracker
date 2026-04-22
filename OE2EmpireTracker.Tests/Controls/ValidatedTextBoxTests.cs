@@ -441,15 +441,15 @@ namespace OE2EmpireTracker.Tests.Controls
         {
             var textBox = new ValidatedTextBox();
 
-            //TODO: FIXME: We don't expose an event that fires when the text is invalid.
+            // TODO: FIXME: We don't expose an event that fires when the text is invalid.
             // That is a feature that should be added.
-            //bool wasChanged = false;
-            //_ = textBox.PropertyChanged += (sender, e) =>
-            //{
-            //    if (e.PropertyName == "IsValid") wasChanged = true;
-            //};
+            // bool wasChanged = false;
+            // _ = textBox.PropertyChanged += (sender, e) =>
+            // {
+            //     if (e.PropertyName == "IsValid") wasChanged = true;
+            // };
 
-            //textBox.IsValid = false;
+            // textBox.IsValid = false;
             // The backcolor should be updated through validation logic
         }
 
@@ -514,6 +514,6 @@ namespace OE2EmpireTracker.Tests.Controls
         // Helper method for PropertyChanged event
         // -----------------------------------------------------------------------
 
-        //private bool _wasPropertyChanged = false;
+        // private bool _wasPropertyChanged = false;
     }
 }

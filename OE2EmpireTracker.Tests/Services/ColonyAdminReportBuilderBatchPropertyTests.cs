@@ -84,8 +84,7 @@ namespace OE2EmpireTracker.Tests.Services
                       from interval in intervalGen
                       from remaining in remainingGen
                       from isCommodity in isCommodityGen
-                      // Ensure completed < qty - 1 so there are remaining cycles
-                      from completed in Gen.Choose(0, Math.Max(0, qty - 2))
+                      from completed in Gen.Choose(0, Math.Max(0, qty - 2)) // Ensure completed < qty - 1 so there are remaining cycles
                       select new { Quantity = qty, Interval = interval, Remaining = remaining, IsCommodity = isCommodity, Completed = completed };
 
             return Prop.ForAll(gen.ToArbitrary(), data =>

@@ -115,9 +115,11 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                             structure.FlatpackBlueprintUUID = blueprints[bpIdx].UUID;
                             expectedMappings[$"{c}_{s}"] = blueprints[bpIdx].UUID;
                         }
+
                         structure.displaySequence = s;
                         colony.Structures.Add(structure);
                     }
+
                     pc.AddColony(colony);
                 }
 
@@ -140,6 +142,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                             break;
                         }
                     }
+
                     if (!allRemapped) break;
                 }
 
@@ -215,6 +218,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                         failMsg = $"Colony {i}: UUID expected '{expectedDeterministic}', got '{colony.UUID}'";
                         break;
                     }
+
                     if (colony.LegacyUUID != originalUUIDs[i])
                     {
                         firstRunOk = false;
@@ -315,6 +319,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                         stop.Sequence = s;
                         route.Stops.Add(stop);
                     }
+
                     pc.AddDeliveryRoute(route);
                 }
 
@@ -333,6 +338,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                         stop.PickUp = new List<DeliveryItem>();
                         plan.Stops.Add(stop);
                     }
+
                     pc.AddDeliveryPlan(plan);
                 }
 

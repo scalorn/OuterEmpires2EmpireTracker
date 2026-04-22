@@ -49,6 +49,7 @@ namespace OE2EmpireTracker.Tests.Forms
                 try { if (File.Exists(f + ".bak")) File.Delete(f + ".bak"); } catch { }
                 try { if (File.Exists(f + ".tmp")) File.Delete(f + ".tmp"); } catch { }
             }
+
             _tempFiles.Clear();
 
             if (Directory.Exists(_testDir))
@@ -416,7 +417,7 @@ namespace OE2EmpireTracker.Tests.Forms
                 }
                 else
                 {
-                    // If it didn't throw, the invalid JSON was parsed as something -- 
+                    // If it didn't throw, the invalid JSON was parsed as something --
                     // just verify we can still access the context without crashing
                     Assert.That(PlayerContext.GetInstance(), Is.Not.Null,
                         $"Iteration {iteration}: PlayerContext should still be accessible");

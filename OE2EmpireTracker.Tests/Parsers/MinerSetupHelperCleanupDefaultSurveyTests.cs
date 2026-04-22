@@ -63,6 +63,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             {
                 survey.Resources[kvp.Key] = kvp.Value;
             }
+
             _playerContext.AddSurvey(survey);
             return survey;
         }

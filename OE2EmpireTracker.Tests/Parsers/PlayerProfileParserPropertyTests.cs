@@ -138,8 +138,8 @@ namespace OE2EmpireTracker.Tests.Parsers
             // Generator for a non-empty alphabetic name (1--20 chars)
             var nameGen = Gen.Choose(1, 20).SelectMany(len =>
                 Gen.ArrayOf(len, Gen.Elements<char>(
-                    'A','B','C','D','E','F','G','H','I','J','K','L','M',
-                    'a','b','c','d','e','f','g','h','i','j','k','l','m'))
+                    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+                    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm'))
                 .Select(chars => new string(chars)))
                 .Where(s => !string.IsNullOrEmpty(s));
 
@@ -206,7 +206,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             var existingListGen = Gen.Choose(0, 5).SelectMany(count =>
                 Gen.ArrayOf(count, Gen.Choose(1, 10).SelectMany(len =>
                     Gen.ArrayOf(len, Gen.Elements<char>(
-                        'A','B','C','D','E','F','G','H','I','J','K','L','M'))
+                        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'))
                     .Select(chars => new string(chars))))
                 .Select(names =>
                 {
@@ -223,6 +223,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                             });
                         }
                     }
+
                     return list;
                 }));
 

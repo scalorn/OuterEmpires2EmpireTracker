@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using OE2EmpireTracker.Tests;
 
-
 namespace OE2EmpireTracker.Tests.Models
 {
     [TestFixture]
@@ -471,6 +470,7 @@ namespace OE2EmpireTracker.Tests.Models
             {
                 profile.GetSkill(kvp.Key).Level = kvp.Value;
             }
+
             PlayerContext.GetInstance().AddPlayerProfile(profile);
             return profile;
         }

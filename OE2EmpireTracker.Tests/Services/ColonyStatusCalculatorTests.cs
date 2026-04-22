@@ -17,6 +17,7 @@ namespace OE2EmpireTracker.Tests.Services
             TestHelper.SetEmpireFilePath();
             EmpireContext.Reset();
         }
+
         // -----------------------------------------------------------------------
         // Test helpers
         // -----------------------------------------------------------------------
@@ -33,6 +34,7 @@ namespace OE2EmpireTracker.Tests.Services
                 foreach (var kv in properties)
                     bp.Properties.setProperty(kv.Key, kv.Value);
             }
+
             return bp;
         }
 
@@ -726,6 +728,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 total += item.Quantity * item.Volume;
             }
+
             Assert.That(total, Is.EqualTo(150.0m));
         }
     }

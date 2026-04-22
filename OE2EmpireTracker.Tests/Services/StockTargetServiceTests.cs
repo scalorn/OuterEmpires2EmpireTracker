@@ -25,6 +25,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Quantity = qty
                 });
             }
+
             return colony;
         }
 
@@ -42,6 +43,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Quantity = qty
                 });
             }
+
             station.Holds[playerUUID] = hold;
             return station;
         }

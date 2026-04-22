@@ -97,6 +97,7 @@ namespace OE2EmpireTracker.Tests.Services
                 // Default: at least one property so it's not treated as unexpanded
                 bp.Properties.setProperty("Health", "100");
             }
+
             if (resources != null)
                 bp.Resources = resources;
             return new MarketBlueprint { Blueprint = bp, SellerName = seller };
@@ -867,6 +868,7 @@ namespace OE2EmpireTracker.Tests.Services
                             Assert.That(bp.Name, Does.Not.EndWith($"({tl})"),
                                 $"Blueprint '{bp.Name}' should have TechLevel '{tl}' extracted in {Path.GetFileName(file)}");
                         }
+
                         noTechLevelCount++;
                     }
                 }
@@ -922,6 +924,7 @@ namespace OE2EmpireTracker.Tests.Services
                     propCounts[bp.UUID] = bp.Properties.Count;
                     resCounts[bp.UUID] = bp.Resources.Count;
                 }
+
                 foreach (var bp in playerContext.BlueprintList)
                 {
                     propCounts[bp.UUID] = bp.Properties.Count;

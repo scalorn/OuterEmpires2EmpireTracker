@@ -494,10 +494,12 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     TestContext.WriteLine($"  STALE:   {typeId}  (has IconPosition but no HTML coverage)");
                 }
+
                 foreach (string typeId in missingTypes)
                 {
                     TestContext.WriteLine($"  MISSING: {typeId}  (null IconPosition -- never characterized)");
                 }
+
                 TestContext.WriteLine("");
             }
 
@@ -509,10 +511,12 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     TestContext.WriteLine($"  STALE:   {typeId}  (has IconPosition but no HTML coverage)");
                 }
+
                 foreach (string typeId in missingCommodityVariants)
                 {
                     TestContext.WriteLine($"  MISSING: {typeId}  (null IconPosition -- never characterized)");
                 }
+
                 TestContext.WriteLine("");
             }
 

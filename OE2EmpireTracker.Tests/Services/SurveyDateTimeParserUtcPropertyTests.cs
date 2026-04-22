@@ -9,12 +9,12 @@ namespace OE2EmpireTracker.Tests.Services
 {
     /// <summary>
     /// Feature: colony-import-timestamp, Property 6: SurveyDateTimeParser stores UTC and displays local
-    /// 
+    ///
     /// For any valid UTC DateTime, ToIsoString should produce a string ending with Z.
     /// Parsing that string back via TryParseIso should produce a DateTime with Kind == DateTimeKind.Utc
     /// and the same value. FormatForDisplay should convert to local time before formatting, so the
     /// game-format output reflects the user's timezone.
-    /// 
+    ///
     /// **Validates: Requirements 7.3, 7.4, 7.5, 7.6**
     /// </summary>
     [TestFixture]
@@ -42,7 +42,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Feature: colony-import-timestamp, Property 6: SurveyDateTimeParser stores UTC and displays local
-        /// 
+        ///
         /// Sub-property 6a: ToIsoString produces a string ending with Z for any UTC DateTime.
         /// **Validates: Requirements 7.3, 7.4**
         /// </summary>
@@ -60,7 +60,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Feature: colony-import-timestamp, Property 6: SurveyDateTimeParser stores UTC and displays local
-        /// 
+        ///
         /// Sub-property 6b: Round-trip through ToIsoString then TryParseIso preserves UTC kind and value.
         /// **Validates: Requirements 7.3, 7.4, 7.5**
         /// </summary>
@@ -85,7 +85,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Feature: colony-import-timestamp, Property 6: SurveyDateTimeParser stores UTC and displays local
-        /// 
+        ///
         /// Sub-property 6c: FormatForDisplay converts UTC to local time before formatting.
         /// The game-format output should match ToGameFormat applied to the local-time equivalent.
         /// **Validates: Requirements 7.5, 7.6**

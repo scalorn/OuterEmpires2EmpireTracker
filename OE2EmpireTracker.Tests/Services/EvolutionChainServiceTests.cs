@@ -187,6 +187,7 @@ namespace OE2EmpireTracker.Tests.Services
                                     int secs = values[i].Value + i * 60;
                                     bp.Properties.setProperty(propName, $"{secs}s");
                                 }
+
                                 // Non-numeric properties: set string values (should be filtered out)
                                 else if (propType == PropertyValueType.CheckBox ||
                                          propType == PropertyValueType.Boolean)

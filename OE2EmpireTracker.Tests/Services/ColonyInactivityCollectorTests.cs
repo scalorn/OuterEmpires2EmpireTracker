@@ -135,6 +135,7 @@ namespace OE2EmpireTracker.Tests.Services
                         // Idle with work item assigned but no timer
                         AssignWorkItem(structure, bpType);
                     }
+
                     // state 0: no work item, no timer -- idle
                     // state 2: not built -- should not appear
                     // state 3: not online -- should not appear
@@ -623,6 +624,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 profile.GetSkill(SkillName.ExtractionFocus).Level = extractionFocusLevel;
             }
+
             pc.AddPlayerProfile(profile);
             return profile;
         }

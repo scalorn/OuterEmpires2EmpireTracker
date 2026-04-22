@@ -118,6 +118,7 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     incoming.Properties.setProperty("IncomingProp" + i, "val" + i);
                 }
+
                 incoming.Resources = new Dictionary<string, string>();
                 for (int i = 0; i < data.ResCount; i++)
                 {
@@ -155,6 +156,7 @@ namespace OE2EmpireTracker.Tests.Services
                         break;
                     }
                 }
+
                 var propsPresent = incomingPropsPresent
                     .Label("Not all incoming non-protected properties are present");
 
@@ -298,6 +300,7 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     temp.Properties.setProperty("Prop" + i, "val" + i);
                 }
+
                 for (int i = 0; i < data.ResCount; i++)
                 {
                     temp.Resources["Res" + i] = "qty" + i;

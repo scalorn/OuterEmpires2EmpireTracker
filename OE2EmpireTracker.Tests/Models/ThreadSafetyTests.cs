@@ -40,6 +40,7 @@ namespace OE2EmpireTracker.Tests.Models
                 foreach (var kv in properties)
                     bp.Properties.setProperty(kv.Key, kv.Value);
             }
+
             return bp;
         }
 

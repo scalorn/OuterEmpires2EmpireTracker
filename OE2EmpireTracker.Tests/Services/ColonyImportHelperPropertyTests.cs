@@ -34,6 +34,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 chars[i] = rng.Next(2) == 0 ? char.ToUpper(chars[i]) : char.ToLower(chars[i]);
             }
+
             return new string(chars);
         }
 
@@ -234,6 +235,7 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     data.Temp.Structures.Add(new ColonyStructure());
                 }
+
                 for (int i = 0; i < data.CommodityCount; i++)
                 {
                     data.Temp.Commodities.Add(new CommodityRequested { Name = "Commodity" + i });

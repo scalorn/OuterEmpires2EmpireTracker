@@ -39,6 +39,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 chars[i] = rng.Next(2) == 0 ? char.ToUpper(chars[i]) : char.ToLower(chars[i]);
             }
+
             return new string(chars);
         }
 
@@ -49,6 +50,7 @@ namespace OE2EmpireTracker.Tests.Services
                 survey.SurveyType = SurveyType.Asteroid;
                 survey.AsteroidUUID = "ast-" + survey.UUID;
             }
+
             return survey;
         }
 
@@ -143,6 +145,7 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     data.Temp.Resources["Resource" + i] = new SurveyResource("Resource" + i, "High", (10 + i).ToString());
                 }
+
                 data.Temp.Properties["TestProp"] = "TestValue";
 
                 var result = SurveyImportHelper.CreateFromTemp(data.Temp, data.OwnerUuid);

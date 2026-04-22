@@ -111,3 +111,26 @@ dotnet_diagnostic.SA1601.severity = none
 dotnet_diagnostic.SA1400.severity = none
 dotnet_diagnostic.SA1306.severity = none
 generated_code = true
+
+# --- Test project: relax rules that conflict with test patterns ---
+[OE2EmpireTracker.Tests/**/*.cs]
+# SA1124: Regions are used for test organization (Arrange/Act/Assert, test categories)
+dotnet_diagnostic.SA1124.severity = none
+# SA1117/SA1116/SA1118: Multi-line parameter calls are common in test setup with many params
+dotnet_diagnostic.SA1117.severity = none
+dotnet_diagnostic.SA1116.severity = none
+dotnet_diagnostic.SA1118.severity = none
+# SA1009: FsCheck LINQ query style uses trailing closing parens
+dotnet_diagnostic.SA1009.severity = none
+# SA1122: "" is clearer than string.Empty in test assertions
+dotnet_diagnostic.SA1122.severity = none
+# SA1111: Closing paren placement in multi-line FsCheck queries
+dotnet_diagnostic.SA1111.severity = none
+# SA1500: Compact brace style in test lambda expressions
+dotnet_diagnostic.SA1500.severity = none
+# SA1119: Extra parentheses for clarity in test assertions
+dotnet_diagnostic.SA1119.severity = none
+# SA1407: Arithmetic precedence — explicit in test calculations
+dotnet_diagnostic.SA1407.severity = none
+# SA1519: Multi-line foreach/if with Assert.That — braces omitted for readability in tests
+dotnet_diagnostic.SA1519.severity = none

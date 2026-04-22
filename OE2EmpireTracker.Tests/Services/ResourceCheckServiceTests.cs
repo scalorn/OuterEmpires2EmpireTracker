@@ -22,6 +22,7 @@ namespace OE2EmpireTracker.Tests.Services
                 foreach (var kvp in resources)
                     bp.Resources[kvp.Key] = kvp.Value;
             }
+
             return bp;
         }
 
@@ -39,6 +40,7 @@ namespace OE2EmpireTracker.Tests.Services
                 };
                 bag.AddItem(item);
             }
+
             return bag;
         }
 

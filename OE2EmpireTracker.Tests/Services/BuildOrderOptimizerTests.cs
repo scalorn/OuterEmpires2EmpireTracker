@@ -82,8 +82,10 @@ namespace OE2EmpireTracker.Tests.Services
                         $"Ent={current.EntertainmentRequired}/{current.EntertainmentProvided}");
                     return i;
                 }
+
                 prev = current;
             }
+
             return -1;
         }
 
@@ -103,7 +105,6 @@ namespace OE2EmpireTracker.Tests.Services
                    blueprintType == "Flatpacks/HydroponicsBay" ||
                    blueprintType == "Flatpacks/EntertainmentCentreFlatpack";
         }
-
 
         // -----------------------------------------------------------------------
         // Test: Colony matching user's scenario
@@ -161,6 +162,7 @@ namespace OE2EmpireTracker.Tests.Services
                     break;
                 }
             }
+
             Assert.That(firstPrimaryPos, Is.GreaterThan(0), "Should have at least one primary");
 
             // Verify no deficits from the first primary onwards
@@ -200,6 +202,7 @@ namespace OE2EmpireTracker.Tests.Services
                             $"Food={current.FoodRequired}/{current.FoodProvision} " +
                             $"Ent={current.EntertainmentRequired}/{current.EntertainmentProvided}");
                     }
+
                     prev = current;
                 }
             }

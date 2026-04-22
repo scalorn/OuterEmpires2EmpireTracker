@@ -45,6 +45,7 @@ namespace OE2EmpireTracker.Tests.Forms
                     {
                         points.Add((evLevels[i], pArr[i]));
                     }
+
                     return points;
                 });
             });

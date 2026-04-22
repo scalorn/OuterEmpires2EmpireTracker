@@ -313,6 +313,7 @@ namespace OE2EmpireTracker.Tests.Services
                     if (item.BaseItemTypeID == "Steel") totalSteel += item.Quantity;
                 }
             }
+
             Assert.That(totalIron, Is.EqualTo(80));
             Assert.That(totalSteel, Is.EqualTo(5));
         }

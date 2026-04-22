@@ -125,6 +125,7 @@ namespace OE2EmpireTracker.Tests.Services
                 if (!bag.Items.ContainsKey(item.UUID))
                     bag.Items[item.UUID] = item;
             }
+
             return bag;
         }
 
