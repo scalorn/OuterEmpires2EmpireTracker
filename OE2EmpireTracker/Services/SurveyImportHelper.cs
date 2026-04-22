@@ -78,22 +78,46 @@ namespace OE2EmpireTracker.Services
             survey.AsteroidUUID = asteroidUUID;
 
             var existing = playerContext.AsteroidList.FirstOrDefault(a => a.UUID == asteroidUUID);
+            Asteroid targetAsteroid;
             if (existing == null)
             {
-                var asteroid = new Asteroid
+                targetAsteroid = new Asteroid
                 {
                     UUID = asteroidUUID,
                     Name = survey.PlanetName,
                     SystemName = survey.SystemName
                 };
-                playerContext.AddAsteroid(asteroid);
+                playerContext.AddAsteroid(targetAsteroid);
                 Log.Info("Auto-created asteroid '{0}' in system '{1}' UUID={2}",
-                    asteroid.Name, asteroid.SystemName, asteroid.UUID);
+                    targetAsteroid.Name, targetAsteroid.SystemName, targetAsteroid.UUID);
             }
             else
             {
+                targetAsteroid = existing;
                 Log.Info("Linked survey to existing asteroid '{0}' UUID={1}",
                     existing.Name, existing.UUID);
+            }
+
+            if (survey.ParsedMaxReserves != null && survey.ParsedMaxReserves.Count > 0)
+            {
+                var reserves = new List<AsteroidReserve>();
+                foreach (var kvp in survey.ParsedMaxReserves)
+                {
+                    string purity = string.Empty;
+                    SurveyResource res;
+                    if (survey.Resources != null && survey.Resources.TryGetValue(kvp.Key, out res))
+                    {
+                        purity = res.Purity;
+                    }
+                    reserves.Add(new AsteroidReserve
+                    {
+                        ResourceName = kvp.Key,
+                        Purity = purity,
+                        MaxReserve = kvp.Value
+                    });
+                }
+                targetAsteroid.Reserves = reserves;
+                Log.Info("Populated {0} reserves on asteroid '{1}'", reserves.Count, targetAsteroid.Name);
             }
         }
     }

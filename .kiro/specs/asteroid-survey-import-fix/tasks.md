@@ -49,7 +49,7 @@
     - _Preservation: Existing Survey serialization/deserialization unchanged — property is [JsonIgnore]_
     - _Requirements: 2.1_
 
-  - [-] 3.2 Extract max reserve values in SurveyParser.ProcessHtml
+  - [x] 3.2 Extract max reserve values in SurveyParser.ProcessHtml
     - In `OE2EmpireTracker/Parsers/SurveyParser.cs`, in the `ProcessHtml` method
     - After selecting `ScanDetailOutputMaxReserve` nodes (existing code that sets SurveyType), iterate nodes in parallel with resource nodes
     - Parse each node's `InnerText` to extract the integer max reserve value (handle commas, whitespace)
@@ -59,7 +59,7 @@
     - _Preservation: Existing resource name/purity/amount parsing in ParseResource unchanged; planet surveys unaffected_
     - _Requirements: 2.1, 3.2, 3.3_
 
-  - [~] 3.3 Populate Asteroid.Reserves in SurveyImportHelper.LinkOrCreateAsteroid
+  - [-] 3.3 Populate Asteroid.Reserves in SurveyImportHelper.LinkOrCreateAsteroid
     - In `OE2EmpireTracker/Services/SurveyImportHelper.cs`, in the `LinkOrCreateAsteroid` method
     - After creating or finding the asteroid, read `survey.ParsedMaxReserves`
     - For each entry, find matching `SurveyResource` in `survey.Resources` to get purity
