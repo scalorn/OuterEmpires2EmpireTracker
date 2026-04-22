@@ -70,14 +70,14 @@
     - _Preservation: Planet surveys (no ParsedMaxReserves) skip reserve population entirely_
     - _Requirements: 2.1, 2.2, 3.1_
 
-  - [-] 3.4 Add FindLinkedAsteroid method to SurveyViewModel
+  - [x] 3.4 Add FindLinkedAsteroid method to SurveyViewModel
     - In `OE2EmpireTracker/ViewModels/SurveyViewModel.cs`
     - Add method `FindLinkedAsteroid()` that returns the `Asteroid` entity from `PlayerContext` using `_survey.AsteroidUUID`, or null if not an asteroid survey
     - _Expected_Behavior: Returns linked Asteroid when AsteroidUUID is set, null otherwise_
     - _Preservation: No changes to existing SurveyViewModel properties or behavior_
     - _Requirements: 2.3_
 
-  - [~] 3.5 Add MaxReserve column and populate in FormSurvey
+  - [-] 3.5 Add MaxReserve column and populate in FormSurvey
     - In `OE2EmpireTracker/Forms/Survey/FormSurvey.cs`
     - Add a read-only "Max Reserve" column to `dgvResources` (programmatically in constructor or Designer)
     - In `PopulateFormFromViewModel`, after populating resource rows, call `viewModel.FindLinkedAsteroid()`

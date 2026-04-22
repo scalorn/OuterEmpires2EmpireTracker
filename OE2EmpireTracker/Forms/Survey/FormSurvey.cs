@@ -101,6 +101,14 @@ namespace OE2EmpireTracker.Forms.Survey
 
             dgvResources.DataError += (s, ev) => { Log.Warn("dgvResources DataError at [{0},{1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message); ev.ThrowException = false; };
 
+            // Add read-only Max Reserve column (programmatic — not in Designer)
+            var colMaxReserve = new DataGridViewTextBoxColumn();
+            colMaxReserve.HeaderText = "Max Reserve";
+            colMaxReserve.Name = "MaxReserve";
+            colMaxReserve.ReadOnly = true;
+            colMaxReserve.Width = 100;
+            dgvResources.Columns.Add(colMaxReserve);
+
             // Wire write-through handlers
             txtPlanetName.TextChanged += txtPlanetName_TextChanged;
             txtSystemName.TextChanged += txtSystemName_TextChanged;
@@ -721,6 +729,27 @@ namespace OE2EmpireTracker.Forms.Survey
                 row.Cells[0].Value = resource.Key;
                 row.Cells[1].Value = resource.Value.Purity;
                 row.Cells[2].Value = resource.Value.Amount;
+            }
+
+            // Populate Max Reserve column from linked asteroid (asteroid surveys only)
+            var linkedAsteroid = viewModel.FindLinkedAsteroid();
+            if (linkedAsteroid != null && linkedAsteroid.Reserves != null && linkedAsteroid.Reserves.Count > 0)
+            {
+                foreach (DataGridViewRow row in dgvResources.Rows)
+                {
+                    if (row.IsNewRow) continue;
+                    string resName = row.Cells[0].Value as string;
+                    string resPurity = row.Cells[1].Value as string;
+                    if (string.IsNullOrEmpty(resName)) continue;
+
+                    var reserve = linkedAsteroid.Reserves.FirstOrDefault(r =>
+                        string.Equals(r.ResourceName, resName, StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(r.Purity, resPurity, StringComparison.OrdinalIgnoreCase));
+                    if (reserve != null)
+                    {
+                        row.Cells["MaxReserve"].Value = reserve.MaxReserve.ToString("N0");
+                    }
+                }
             }
             sw.Stop();
             Log.Info("PopulateFormFromViewModel PERF: total={0}ms fields={1}ms grid={2}ms",
