@@ -56,6 +56,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             flpDetail.Layout += flpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+            playerContext.AsteroidDataChanged += OnAsteroidDataChanged;
         }
         // Layout
         private void flpBase_Layout(object sender, LayoutEventArgs e)
@@ -383,9 +384,20 @@ namespace OE2EmpireTracker.Forms.Asteroid
             ClearForm();
         }
 
+        private void OnAsteroidDataChanged(object sender, AsteroidDataChangedEventArgs e)
+        {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            { try { BeginInvoke(new Action(() => OnAsteroidDataChanged(sender, e))); } catch (ObjectDisposedException) { } return; }
+            PopulateAsteroidList();
+            if (_selectedAsteroid != null && _selectedAsteroid.UUID == e.AsteroidUUID)
+                PopulateForm();
+        }
+
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.AsteroidDataChanged -= OnAsteroidDataChanged;
             base.OnFormClosed(e);
         }
     }

@@ -43,6 +43,7 @@ namespace OE2EmpireTracker.Services
             survey.Properties = tempSurvey.Properties;
             survey.SurveyType = tempSurvey.SurveyType;
             survey.AsteroidUUID = tempSurvey.AsteroidUUID;
+            survey.ParsedMaxReserves = tempSurvey.ParsedMaxReserves;
             return survey;
         }
 
@@ -62,6 +63,7 @@ namespace OE2EmpireTracker.Services
             target.Properties = source.Properties;
             target.SurveyType = source.SurveyType;
             target.AsteroidUUID = source.AsteroidUUID;
+            target.ParsedMaxReserves = source.ParsedMaxReserves;
         }
 
         /// <summary>
@@ -119,6 +121,8 @@ namespace OE2EmpireTracker.Services
                 targetAsteroid.Reserves = reserves;
                 Log.Info("Populated {0} reserves on asteroid '{1}'", reserves.Count, targetAsteroid.Name);
             }
+
+            playerContext.OnAsteroidDataChanged(targetAsteroid.UUID);
         }
     }
 }

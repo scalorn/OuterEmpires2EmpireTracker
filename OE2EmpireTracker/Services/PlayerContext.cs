@@ -135,6 +135,11 @@ namespace OE2EmpireTracker.Services
         public event EventHandler StationDataChanged;
 
         /// <summary>
+        /// Fired when asteroid data is modified (created, updated, or deleted).
+        /// </summary>
+        public event EventHandler<AsteroidDataChangedEventArgs> AsteroidDataChanged;
+
+        /// <summary>
         /// Fired when a player profile is modified externally (e.g. skill training completion).
         /// </summary>
         public event EventHandler<PlayerProfileDataChangedEventArgs> PlayerProfileDataChanged;
@@ -217,6 +222,14 @@ namespace OE2EmpireTracker.Services
         public void OnStationDataChanged()
         {
             StationDataChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Notifies subscribers that asteroid data has changed externally.
+        /// </summary>
+        public void OnAsteroidDataChanged(string asteroidUUID)
+        {
+            AsteroidDataChanged?.Invoke(this, new AsteroidDataChangedEventArgs(asteroidUUID));
         }
 
         /// <summary>
@@ -2032,6 +2045,12 @@ namespace OE2EmpireTracker.Services
     {
         public string BuildPlanUUID { get; }
         public BuildPlanDataChangedEventArgs(string uuid) { BuildPlanUUID = uuid; }
+    }
+
+    public class AsteroidDataChangedEventArgs : EventArgs
+    {
+        public string AsteroidUUID { get; }
+        public AsteroidDataChangedEventArgs(string asteroidUUID) { AsteroidUUID = asteroidUUID; }
     }
 
 }

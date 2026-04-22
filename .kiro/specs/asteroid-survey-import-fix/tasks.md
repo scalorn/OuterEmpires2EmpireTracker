@@ -105,6 +105,6 @@
     - Confirm all tests still pass after fix (no regressions)
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-- [-] 4. Checkpoint — Ensure all tests pass
+- [x] 4. Checkpoint — Ensure all tests pass
   - Build the solution and run all tests
   - Ensure all tests pass, ask the user if questions arise

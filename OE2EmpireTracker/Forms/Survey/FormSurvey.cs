@@ -463,7 +463,7 @@ namespace OE2EmpireTracker.Forms.Survey
 
             viewModel.Save();
 
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
+            RefreshSurveyList();
             UpdateTitle();
         }
 
@@ -661,7 +661,7 @@ namespace OE2EmpireTracker.Forms.Survey
                     importedSurvey.UUID, importedSurvey.PlanetName, importedSurvey.SurveyID);
 
                 // Refresh list view
-                PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
+                RefreshSurveyList();
 
                 // Select the imported survey in the list view
                 foreach (ListViewItem item in lvwSurveys.Items)
