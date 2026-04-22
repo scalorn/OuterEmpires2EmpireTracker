@@ -39,7 +39,7 @@
   - Mark task complete when tests are written, run, and passing on unfixed code
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-- [ ] 3. Fix for asteroid survey import not extracting and displaying max reserve data
+- [x] 3. Fix for asteroid survey import not extracting and displaying max reserve data
 
   - [x] 3.1 Add transient ParsedMaxReserves property to Survey model
     - In `OE2EmpireTracker/Models/Survey.cs`, add `[JsonIgnore] public Dictionary<string, int> ParsedMaxReserves { get; set; }`
@@ -97,7 +97,7 @@
     - **EXPECTED OUTCOME**: Test PASSES (confirms bug is fixed)
     - _Requirements: 2.1, 2.2_
 
-  - [-] 3.7 Verify preservation tests still pass
+  - [x] 3.7 Verify preservation tests still pass
     - **Property 2: Preservation** - Planet Survey Import and Resource Parsing Unchanged
     - **IMPORTANT**: Re-run the SAME tests from task 2 — do NOT write new tests
     - Run preservation property tests from step 2
@@ -105,6 +105,6 @@
     - Confirm all tests still pass after fix (no regressions)
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-- [~] 4. Checkpoint — Ensure all tests pass
+- [-] 4. Checkpoint — Ensure all tests pass
   - Build the solution and run all tests
   - Ensure all tests pass, ask the user if questions arise
