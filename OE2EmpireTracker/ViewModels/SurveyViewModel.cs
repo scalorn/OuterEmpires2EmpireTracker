@@ -124,7 +124,8 @@ namespace OE2EmpireTracker.ViewModels
             if (!string.IsNullOrEmpty(nameFilter))
             {
                 list = list
-                    .Where(s => s.ExtendedName.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Where(s => s.ExtendedName.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0
+                             || (s.SystemName != null && s.SystemName.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0))
                     .ToList();
             }
             if (!string.IsNullOrEmpty(resourceFilter))

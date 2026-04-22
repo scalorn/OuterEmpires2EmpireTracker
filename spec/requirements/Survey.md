@@ -9,8 +9,8 @@
 
 ## Survey Form — List
 
-**REQ-SRV-010** The survey form SHALL display a list of all saved surveys with UUID, PlanetName, NickName, and DateTime columns.  
-**REQ-SRV-011** The list SHALL be filterable by PlanetName, by Resource type, by Purity, by SurveyType (Planet/Asteroid/All), and by minimum Amount per cycle/hour.  
+**REQ-SRV-010** The survey form SHALL display a list of all saved surveys with UUID, SystemName, PlanetName, NickName, and DateTime columns.  
+**REQ-SRV-011** The list SHALL be filterable by PlanetName or SystemName, by Resource type, by Purity, by SurveyType (Planet/Asteroid/All), and by minimum Amount per cycle/hour.  
 **REQ-SRV-012** Selecting a survey from the list SHALL populate all form fields with that survey's data.
 
 ## Asteroid Survey Detection

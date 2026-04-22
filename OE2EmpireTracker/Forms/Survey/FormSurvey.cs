@@ -30,7 +30,7 @@ namespace OE2EmpireTracker.Forms.Survey
         private EmpireContext empireContext;
         private PlayerContext playerContext;
         private SurveyViewModel viewModel;
-        private int _sortColumn = 1; // PlanetName
+        private int _sortColumn = 2; // PlanetName
         private SortOrder _sortOrder = SortOrder.Ascending;
 
         public FormSurvey()
@@ -49,6 +49,7 @@ namespace OE2EmpireTracker.Forms.Survey
             // Set up survey list view with columns
             lvwSurveys.View = View.Details;
             lvwSurveys.Columns.Add("UUID", 0);
+            lvwSurveys.Columns.Add("System", 70);
             lvwSurveys.Columns.Add("PlanetName", 100);
             lvwSurveys.Columns.Add("SurveyID", 70);
             lvwSurveys.Columns.Add("NickName", 100);
@@ -251,6 +252,7 @@ namespace OE2EmpireTracker.Forms.Survey
                 if (!found)
                 {
                     item = new ListViewItem(survey.UUID);
+                    item.SubItems.Add(survey.SystemName);
                     item.SubItems.Add(survey.PlanetName);
                     item.SubItems.Add(survey.SurveyID);
                     item.SubItems.Add(survey.NickName);
@@ -260,13 +262,14 @@ namespace OE2EmpireTracker.Forms.Survey
                 }
                 else
                 {
-                    item.SubItems[1].Text = survey.PlanetName;
-                    item.SubItems[2].Text = survey.SurveyID;
-                    item.SubItems[3].Text = survey.NickName;
-                    item.SubItems[4].Text = SurveyDateTimeParser.FormatForDisplay(survey.DateTime);
-                    item.SubItems[4].Tag = survey.DateTime;
-                    if (item.SubItems.Count > 5)
-                        item.SubItems[5].Text = refCount;
+                    item.SubItems[1].Text = survey.SystemName;
+                    item.SubItems[2].Text = survey.PlanetName;
+                    item.SubItems[3].Text = survey.SurveyID;
+                    item.SubItems[4].Text = survey.NickName;
+                    item.SubItems[5].Text = SurveyDateTimeParser.FormatForDisplay(survey.DateTime);
+                    item.SubItems[5].Tag = survey.DateTime;
+                    if (item.SubItems.Count > 6)
+                        item.SubItems[6].Text = refCount;
                     else
                         item.SubItems.Add(refCount);
                 }
