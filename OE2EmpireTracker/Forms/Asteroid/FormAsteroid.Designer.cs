@@ -83,7 +83,6 @@ namespace OE2EmpireTracker.Forms.Asteroid
             // flpSearchList
             this.flpSearchList.Controls.Add(this.flpFilter);
             this.flpSearchList.Controls.Add(this.lvwAsteroids);
-            this.flpSearchList.Controls.Add(this.flpCommands);
             this.flpSearchList.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpSearchList.Location = new System.Drawing.Point(3, 3);
             this.flpSearchList.Name = "flpSearchList";
@@ -125,10 +124,11 @@ namespace OE2EmpireTracker.Forms.Asteroid
             // flpCommands
             this.flpCommands.AutoSize = true;
             this.flpCommands.Controls.Add(this.cmdNew);
+            this.flpCommands.Controls.Add(this.cmdSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
             this.flpCommands.Location = new System.Drawing.Point(3, 561);
             this.flpCommands.Name = "flpCommands";
-            this.flpCommands.Size = new System.Drawing.Size(214, 29);
+            this.flpCommands.Size = new System.Drawing.Size(712, 29);
 
             // cmdNew
             this.cmdNew.Location = new System.Drawing.Point(3, 3);
@@ -153,7 +153,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             this.flpDetail.Controls.Add(this.cmdRemoveReserve);
             this.flpDetail.Controls.Add(this.lblLinkedSurveys);
             this.flpDetail.Controls.Add(this.dgvLinkedSurveys);
-            this.flpDetail.Controls.Add(this.cmdSave);
+            this.flpDetail.Controls.Add(this.flpCommands);
             this.flpDetail.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpDetail.Location = new System.Drawing.Point(229, 3);
             this.flpDetail.Name = "flpDetail";

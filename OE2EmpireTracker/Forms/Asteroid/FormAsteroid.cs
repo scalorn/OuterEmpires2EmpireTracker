@@ -71,7 +71,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
         {
             int w = flpSearchList.ClientSize.Width;
             int h = flpSearchList.ClientSize.Height;
-            int listHeight = h - flpFilter.Height - flpCommands.Height - 18;
+            int listHeight = h - flpFilter.Height - 12;
             if (listHeight < 50) listHeight = 50;
             lvwAsteroids.Size = new System.Drawing.Size(w - 6, listHeight);
         }
