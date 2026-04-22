@@ -20,6 +20,19 @@
 **REQ-SRV-017** When importing an asteroid survey, if no Asteroid entity exists with the computed deterministic UUID (from SystemName:AsteroidName), one SHALL be auto-created with Name from PlanetName and SystemName from the survey's SystemName.  
 **REQ-SRV-018** The SurveyType filter SHALL support Planet, Asteroid, and All options. The minimum Amount filter SHALL accept a numeric value and include surveys with at least one resource meeting the threshold.
 
+### Asteroid Max Reserve Extraction
+
+**REQ-SRV-060** When importing an asteroid survey whose HTML contains `ScanDetailOutputMaxReserve` nodes, the parser SHALL extract each resource's max reserve integer value (stripping commas and label prefixes) and store them in a transient `ParsedMaxReserves` dictionary keyed by resource name.  
+**REQ-SRV-061** `SurveyImportHelper.CreateFromTemp` and `MergeData` SHALL copy `ParsedMaxReserves` from the source survey so the data survives through the import pipeline.  
+**REQ-SRV-062** `SurveyImportHelper.LinkOrCreateAsteroid` SHALL populate the linked Asteroid's `Reserves` list from `survey.ParsedMaxReserves`, matching each resource to its purity from `survey.Resources`. On re-import, reserves SHALL be replaced with the latest parsed data.  
+**REQ-SRV-063** `LinkOrCreateAsteroid` SHALL fire `PlayerContext.OnAsteroidDataChanged` after creating or updating an asteroid, so open asteroid forms refresh.
+
+### Asteroid Max Reserve Display
+
+**REQ-SRV-064** The survey form's resource grid SHALL include a read-only "Max Reserve" column.  
+**REQ-SRV-065** When displaying an asteroid survey, `PopulateFormFromViewModel` SHALL look up the linked asteroid via `SurveyViewModel.FindLinkedAsteroid()` and populate the Max Reserve column by matching each resource row to an `AsteroidReserve` by resource name and purity. Values SHALL be formatted with thousands separators.  
+**REQ-SRV-066** For planet surveys, the Max Reserve column SHALL remain empty.
+
 ## Survey Form — Fields
 
 **REQ-SRV-020** The form SHALL display and allow editing of: PlanetName, SystemName, SurveyType (Planet/Asteroid dropdown), SurveyID, NickName, ScannedBy, DateTime, ScannerBlueprintUUID (via filtered combo), and scanner properties (SensorAbundanceFactor, PurityModifier, ScanLevel).  
@@ -28,7 +41,7 @@
 
 ## Survey Form — Resources Grid
 
-**REQ-SRV-030** The resources grid SHALL have three columns: Resource (combo), Purity (combo), Amount (text).  
+**REQ-SRV-030** The resources grid SHALL have four columns: Resource (combo), Purity (combo), Amount (text), Max Reserve (text, read-only).  
 **REQ-SRV-031** The Resource combo SHALL be populated from the empire context resource list.  
 **REQ-SRV-032** The Purity combo SHALL be populated from the resource purity list.  
 **REQ-SRV-033** When a survey is selected, the grid SHALL be cleared and repopulated from the survey's Resources dictionary.
@@ -164,14 +177,14 @@ flowchart LR
 │ │                      │ │  Purity Mod.    [____________________]           │
 │ │ Helorix (SRV-1234)  │ │  Scan Level     [____________________]           │
 │ │ Proxima (SRV-5678)  │ │                                                  │
-│ │ Zeh Vaz (SRV-9012)  │ │  ┌──────────────────┬──────────┬────────┐        │
-│ │ ☄ Asteroid K-7 (A1) │ │  │ Resource         │ Purity   │ Amount │        │
-│ │                      │ │  ├──────────────────┼──────────┼────────┤        │
-│ │                      │ │  │ ▼ Alkali Metals  │ ▼ High   │ 125    │        │
-│ │                      │ │  │ ▼ Lanthanides    │ ▼ Medium │ 80     │        │
-│ │                      │ │  │ ▼ Noble Gases    │ ▼ Low    │ 200    │        │
-│ │                      │ │  │                  │          │        │        │
-│ │                      │ │  └──────────────────┴──────────┴────────┘        │
+│ │ Zeh Vaz (SRV-9012)  │ │  ┌──────────────────┬──────────┬────────┬─────────────┐
+│ │ ☄ Asteroid K-7 (A1) │ │  │ Resource         │ Purity   │ Amount │ Max Reserve │
+│ │                      │ │  ├──────────────────┼──────────┼────────┼─────────────┤
+│ │                      │ │  │ ▼ Alkali Metals  │ ▼ High   │ 125    │       7,123 │
+│ │                      │ │  │ ▼ Lanthanides    │ ▼ Medium │ 80     │       6,998 │
+│ │                      │ │  │ ▼ Noble Gases    │ ▼ Low    │ 200    │             │
+│ │                      │ │  │                  │          │        │             │
+│ │                      │ │  └──────────────────┴──────────┴────────┴─────────────┘
 │ └──────────────────────┘ │                                                  │
 │                          │  [New] [Save] [Delete] [Import]                  │
 └──────────────────────────┴──────────────────────────────────────────────────┘

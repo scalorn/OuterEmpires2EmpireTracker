@@ -20,14 +20,14 @@ MDI child form. Left-list / right-detail with rich filtering and resource grid.
 │ │  Barnard-c (SVY-055)   │ │ Purity Mod:  [1.2____]                                │
 │ │                         │ │ Scan Level:  [3______]                                │
 │ │                         │ │                                                      │
-│ │                         │ │ ┌──────────────────┬──────────┬──────────┐            │
-│ │                         │ │ │ Resource         │ Purity   │ Amount   │            │
-│ │                         │ │ ├──────────────────┼──────────┼──────────┤            │
-│ │                         │ │ │ Iron             │ High     │    12000 │            │
-│ │                         │ │ │ Copper           │ Medium   │     8500 │            │
-│ │                         │ │ │ Titanium         │ Low      │     3200 │            │
-│ │                         │ │ │ Silicon          │ High     │     9800 │            │
-│ │                         │ │ └──────────────────┴──────────┴──────────┘            │
+│ │                         │ │ ┌──────────────────┬──────────┬──────────┬─────────────┐│
+│ │                         │ │ │ Resource         │ Purity   │ Amount   │ Max Reserve ││
+│ │                         │ │ ├──────────────────┼──────────┼──────────┼─────────────┤│
+│ │                         │ │ │ Iron             │ High     │    12000 │       7,123 ││
+│ │                         │ │ │ Copper           │ Medium   │     8500 │       6,998 ││
+│ │                         │ │ │ Titanium         │ Low      │     3200 │       6,420 ││
+│ │                         │ │ │ Silicon          │ High     │     9800 │             ││
+│ │                         │ │ └──────────────────┴──────────┴──────────┴─────────────┘│
 │ │                         │ │                                                      │
 │ └─────────────────────────┘ │ [New] [Save] [Delete] [Import]                       │
 └─────────────────────────────┴───────────────────────────────────────────────────────┘
@@ -51,6 +51,7 @@ Controls:
     - `Resource` (ComboBoxColumn) — resource name
     - `Purity` (ComboBoxColumn) — purity level
     - `Amount` (ValidatedTextBoxColumn) — quantity
+    - `MaxReserve` (TextBoxColumn, read-only) — max reserve from linked asteroid (asteroid surveys only; empty for planet surveys)
   - `flpCommands`: `cmdNew`, `btnSave`, `cmdDelete`, `cmdImport`
 
 Satisfies: REQ-SRV-010 (survey management), REQ-SRV-020 (survey import)
