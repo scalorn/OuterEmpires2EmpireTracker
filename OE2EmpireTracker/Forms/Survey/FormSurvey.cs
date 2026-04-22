@@ -57,7 +57,7 @@ namespace OE2EmpireTracker.Forms.Survey
             lvwSurveys.Columns.Add("Refs", 35);
             lvwSurveys.ColumnClick += lvwSurveys_ColumnClick;
             lvwSurveys.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
+            RefreshSurveyList();
             UpdateTitle();
 
             // Wire survey list filter
@@ -186,7 +186,7 @@ namespace OE2EmpireTracker.Forms.Survey
             lvwSurveys.Items.Clear();
             viewModel.Reset();
             ClearForm();
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
+            RefreshSurveyList();
             UpdateTitle();
         }
 
@@ -203,7 +203,7 @@ namespace OE2EmpireTracker.Forms.Survey
             {
                 PopulateFormFromViewModel();
             }
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
+            RefreshSurveyList();
         }
 
         private void OnColonyDataChanged(object sender, ColonyDataChangedEventArgs e)
@@ -216,7 +216,7 @@ namespace OE2EmpireTracker.Forms.Survey
                 return;
             }
             // Refresh list to update Refs column (miner survey assignments may have changed)
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
+            RefreshSurveyList();
             UpdateDeleteButtonState();
         }
 
@@ -516,7 +516,7 @@ namespace OE2EmpireTracker.Forms.Survey
             if (result != DialogResult.Yes) return;
             viewModel.Delete();
             viewModel.Reset();
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName()));
+            RefreshSurveyList();
             lvwSurveys.SelectedItems.Clear();
             ClearForm();
             UpdateTitle();
