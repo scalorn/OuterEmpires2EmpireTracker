@@ -17,11 +17,56 @@ namespace OE2EmpireTracker.Services
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private readonly object _listLock = new object();
-
         private static PlayerContext _instance;
 
+        private readonly object _listLock = new object();
+
         private string _currentPlayerUUID = string.Empty;
+
+        private Dictionary<string, Blueprint> _blueprintCache;
+        private Dictionary<string, Survey> _surveyCache;
+        private Dictionary<string, Colony> _colonyCache;
+        private List<Blueprint> _allBlueprintsCache;
+        private Dictionary<string, Station> _stationCache;
+        private Dictionary<string, ShipTemplate> _shipTemplateCache;
+        private Dictionary<string, Ship> _shipCache;
+        private Dictionary<string, BuildPlan> _buildPlanCache;
+        private Dictionary<string, Asteroid> _asteroidCache;
+        private Dictionary<string, Faction> _factionCache;
+        private Dictionary<string, MarketListing> _marketListingCache;
+        private Dictionary<string, PlayerProfile> _playerProfileCache;
+        private Dictionary<string, DeliveryRoute> _deliveryRouteCache;
+        private Dictionary<string, DeliveryPlan> _deliveryPlanCache;
+        private Dictionary<string, PricingPlan> _pricingPlanCache;
+        private Dictionary<string, MarketTransaction> _marketTransactionCache;
+        private Dictionary<string, StockPlan> _stockPlanCache;
+        private Dictionary<string, StockProfile> _stockProfileCache;
+        private Dictionary<string, SupplyChain> _supplyChainCache;
+        private Dictionary<string, WarehouseOverflowRule> _warehouseOverflowRuleCache;
+        private Dictionary<string, ExternalCharacter> _externalCharacterCache;
+        private Dictionary<string, int> _blueprintTypeCountCache;
+        private Dictionary<string, List<BuildItem>> _blueprintBuildItemIndex;
+        private Dictionary<string, List<BuildItem>> _buildLocationBuildItemIndex;
+        private List<PlayerProfile> _playerProfileList;
+        private List<Blueprint> _blueprintList;
+        private List<Survey> _surveyList;
+        private List<Colony> _colonyList;
+        private List<DeliveryRoute> _deliveryRouteList;
+        private List<DeliveryPlan> _deliveryPlanList;
+        private List<PricingPlan> _pricingPlanList;
+        private List<BuildPlan> _buildPlanList = new List<BuildPlan>();
+        private List<ShipTemplate> _shipTemplateList = new List<ShipTemplate>();
+        private List<Ship> _shipList = new List<Ship>();
+        private List<Station> _stationList = new List<Station>();
+        private List<MarketListing> _marketListingList = new List<MarketListing>();
+        private List<MarketTransaction> _marketTransactionList = new List<MarketTransaction>();
+        private List<StockPlan> _stockPlanList = new List<StockPlan>();
+        private List<StockProfile> _stockProfileList = new List<StockProfile>();
+        private List<SupplyChain> _supplyChainList = new List<SupplyChain>();
+        private List<WarehouseOverflowRule> _warehouseOverflowRuleList = new List<WarehouseOverflowRule>();
+        private List<Faction> _factionList = new List<Faction>();
+        private List<ExternalCharacter> _externalCharacterList = new List<ExternalCharacter>();
+        private List<Asteroid> _asteroidList = new List<Asteroid>();
 
         /// <summary>
         /// UUID of the currently selected player. Forms filter data by this value.
@@ -51,94 +96,6 @@ namespace OE2EmpireTracker.Services
                 return _playerProfileList.FirstOrDefault(p => p.UUID == _currentPlayerUUID);
             }
         }
-
-        private Dictionary<string, Blueprint> _blueprintCache;
-
-        private Dictionary<string, Survey> _surveyCache;
-
-        private Dictionary<string, Colony> _colonyCache;
-
-        private List<Blueprint> _allBlueprintsCache;
-
-        private Dictionary<string, Station> _stationCache;
-
-        private Dictionary<string, ShipTemplate> _shipTemplateCache;
-
-        private Dictionary<string, Ship> _shipCache;
-
-        private Dictionary<string, BuildPlan> _buildPlanCache;
-
-        private Dictionary<string, Asteroid> _asteroidCache;
-
-        private Dictionary<string, Faction> _factionCache;
-
-        private Dictionary<string, MarketListing> _marketListingCache;
-
-        private Dictionary<string, PlayerProfile> _playerProfileCache;
-
-        private Dictionary<string, DeliveryRoute> _deliveryRouteCache;
-
-        private Dictionary<string, DeliveryPlan> _deliveryPlanCache;
-
-        private Dictionary<string, PricingPlan> _pricingPlanCache;
-
-        private Dictionary<string, MarketTransaction> _marketTransactionCache;
-
-        private Dictionary<string, StockPlan> _stockPlanCache;
-
-        private Dictionary<string, StockProfile> _stockProfileCache;
-
-        private Dictionary<string, SupplyChain> _supplyChainCache;
-
-        private Dictionary<string, WarehouseOverflowRule> _warehouseOverflowRuleCache;
-
-        private Dictionary<string, ExternalCharacter> _externalCharacterCache;
-
-        private Dictionary<string, int> _blueprintTypeCountCache;
-
-        private Dictionary<string, List<BuildItem>> _blueprintBuildItemIndex;
-
-        private Dictionary<string, List<BuildItem>> _buildLocationBuildItemIndex;
-
-        private List<PlayerProfile> _playerProfileList;
-
-        private List<Blueprint> _blueprintList;
-
-        private List<Survey> _surveyList;
-
-        private List<Colony> _colonyList;
-
-        private List<DeliveryRoute> _deliveryRouteList;
-
-        private List<DeliveryPlan> _deliveryPlanList;
-
-        private List<PricingPlan> _pricingPlanList;
-
-        private List<BuildPlan> _buildPlanList = new List<BuildPlan>();
-
-        private List<ShipTemplate> _shipTemplateList = new List<ShipTemplate>();
-
-        private List<Ship> _shipList = new List<Ship>();
-
-        private List<Station> _stationList = new List<Station>();
-
-        private List<MarketListing> _marketListingList = new List<MarketListing>();
-
-        private List<MarketTransaction> _marketTransactionList = new List<MarketTransaction>();
-
-        private List<StockPlan> _stockPlanList = new List<StockPlan>();
-
-        private List<StockProfile> _stockProfileList = new List<StockProfile>();
-
-        private List<SupplyChain> _supplyChainList = new List<SupplyChain>();
-
-        private List<WarehouseOverflowRule> _warehouseOverflowRuleList = new List<WarehouseOverflowRule>();
-
-        private List<Faction> _factionList = new List<Faction>();
-
-        private List<ExternalCharacter> _externalCharacterList = new List<ExternalCharacter>();
-
-        private List<Asteroid> _asteroidList = new List<Asteroid>();
 
         private PlayerContext() : base()
         {

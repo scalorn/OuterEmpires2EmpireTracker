@@ -26,6 +26,11 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             InitializeComponent();
         }
 
+        [Browsable(true)]
+        [Category("Action")]
+        [Description("Invoked when skill training starts or ends")]
+        public event EventHandler TrainingStatusChanged;
+
         [Category("Skill Data")]
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -62,11 +67,6 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 PopulateForm();
             }
         }
-
-        [Browsable(true)]
-        [Category("Action")]
-        [Description("Invoked when skill training starts or ends")]
-        public event EventHandler TrainingStatusChanged;
 
         public CheckBox SkillGroupCheckbox { get; set; }
 
