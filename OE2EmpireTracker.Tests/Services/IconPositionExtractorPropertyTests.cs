@@ -96,21 +96,6 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// Computes the coverage gap: BlueprintType Ids present in baselineTypeIds
-        /// but absent from extractedTypeIds. This is the pure logic that
-        /// ProduceCoverageGapReport uses internally.
-        /// </summary>
-        private static HashSet<string> ComputeCoverageGap(
-            IEnumerable<string> baselineTypeIds,
-            IEnumerable<string> extractedTypeIds)
-        {
-            var covered = new HashSet<string>(extractedTypeIds, StringComparer.Ordinal);
-            return new HashSet<string>(
-                baselineTypeIds.Where(id => !covered.Contains(id)),
-                StringComparer.Ordinal);
-        }
-
-        /// <summary>
         /// Property 4: Coverage gap detection completeness.
         /// For any set of BlueprintTypes in BaselineData and any set of extracted icons,
         /// the coverage gap report should list exactly those BlueprintType Ids that appear
@@ -192,6 +177,21 @@ namespace OE2EmpireTracker.Tests.Services
                     .And(noneInExtracted)
                     .Label("No gap Id should be in extracted set");
             });
+        }
+
+        /// <summary>
+        /// Computes the coverage gap: BlueprintType Ids present in baselineTypeIds
+        /// but absent from extractedTypeIds. This is the pure logic that
+        /// ProduceCoverageGapReport uses internally.
+        /// </summary>
+        private static HashSet<string> ComputeCoverageGap(
+            IEnumerable<string> baselineTypeIds,
+            IEnumerable<string> extractedTypeIds)
+        {
+            var covered = new HashSet<string>(extractedTypeIds, StringComparer.Ordinal);
+            return new HashSet<string>(
+                baselineTypeIds.Where(id => !covered.Contains(id)),
+                StringComparer.Ordinal);
         }
     }
 }

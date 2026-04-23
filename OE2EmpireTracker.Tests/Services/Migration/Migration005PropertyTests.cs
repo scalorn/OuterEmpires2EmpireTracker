@@ -97,7 +97,8 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                           Properties = new PropertyBag()
                       };
 
-            return Prop.ForAll(gen.Select(bp =>
+            return Prop.ForAll(
+                gen.Select(bp =>
             {
                 bp.Properties.Properties["Health"] = "100";
                 bp.Properties.Properties["Power"] = "200";

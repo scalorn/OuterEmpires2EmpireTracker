@@ -73,6 +73,12 @@ namespace OE2EmpireTracker.Forms.Contacts
 
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            base.OnFormClosed(e);
+        }
+
         // -----------------------------------------------------------------------
         // Layout
         // -----------------------------------------------------------------------
@@ -568,12 +574,6 @@ namespace OE2EmpireTracker.Forms.Contacts
             ClearFactionForm();
             PopulateCharacterList();
             ClearCharacterForm();
-        }
-
-        protected override void OnFormClosed(FormClosedEventArgs e)
-        {
-            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
-            base.OnFormClosed(e);
         }
 
         // -----------------------------------------------------------------------

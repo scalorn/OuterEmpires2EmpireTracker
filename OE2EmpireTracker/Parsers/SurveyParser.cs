@@ -17,6 +17,106 @@ namespace OE2EmpireTracker.Parsers
     public class SurveyParser
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
+        /// Parses the description line to extract DateTime and ScannedBy.
+        /// Expected format: "A detailed survey report taken on {date} by {name}"
+        /// </summary>
+        public static void ParseDescription(Survey survey, string descText)
+        {
+            // Matches both "taken on {date} by {name}" and "generated on {date} by {name}"
+            var match = Regex.Match(descText, @"(?:taken|generated)\s+on\s+(.+?)\s+by\s+(.+)$", RegexOptions.IgnoreCase);
+            if (match.Success)
+            {
+                string rawDate = match.Groups[1].Value.Trim();
+                if (SurveyDateTimeParser.TryParseGameFormat(rawDate, out DateTime parsed))
+                    survey.DateTime = SurveyDateTimeParser.ToIsoString(parsed);
+                else
+                    survey.DateTime = rawDate; // preserve unparseable values
+                survey.ScannedBy = match.Groups[2].Value.Trim();
+            }
+        }
+
+        /// <summary>
+        /// Parses the title line to extract PlanetName, SystemName, and optionally SurveyID.
+        /// Expected format: "PlanetName, SystemName (SurveyID)" or just "PlanetName"
+        /// </summary>
+        public static void ParseTitle(Survey survey, string titleText)
+        {
+            if (string.IsNullOrEmpty(titleText)) return;
+
+            // Try "PlanetName, SystemName (SurveyID)"
+            var m = Regex.Match(titleText, @"^(.+?),\s*(.+?)\s*\((.+?)\)\s*$");
+            if (m.Success)
+            {
+                survey.PlanetName = m.Groups[1].Value.Trim();
+                survey.SystemName = m.Groups[2].Value.Trim();
+                survey.SurveyID = m.Groups[3].Value.Trim();
+                return;
+            }
+
+            // Fallback: use the whole title as planet name
+            survey.PlanetName = titleText;
+        }
+
+        /// <summary>
+        /// Parses a resource name like "Post-Trans Metals (Low Purity)" and a detail
+        /// like "41/hour" into a SurveyResource and adds it to the survey.
+        /// </summary>
+        public static void ParseResource(Survey survey, string rawName, string rawDetail)
+        {
+            // Skip unknown/trace entries
+            if (rawName.Contains("Unknown") || rawDetail.Contains("?"))
+                return;
+
+            // Extract resource name and purity from "ResourceName (Purity)"
+            string resourceName = rawName;
+            string purity = string.Empty;
+            var m = Regex.Match(rawName, @"^(.+?)\s*\((.+?)\)\s*$");
+            if (m.Success)
+            {
+                resourceName = m.Groups[1].Value.Trim();
+                purity = m.Groups[2].Value.Trim();
+                // Normalize purity: "High Purity" -> "High", "Low Purity" -> "Low", "Med Purity" -> "Medium"
+                if (purity.EndsWith(" Purity", StringComparison.OrdinalIgnoreCase))
+                {
+                    purity = purity.Substring(0, purity.Length - " Purity".Length).Trim();
+                }
+
+                // Normalize abbreviations
+                purity = NormalizePurity(purity);
+            }
+
+            // Detect asteroid survey by "/cycle" vs "/hour"
+            if (rawDetail.IndexOf("/cycle", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                survey.SurveyType = SurveyType.Asteroid;
+            }
+
+            // Extract numeric amount from "41/hour" or "36.3/cycle"
+            string amount = new string(rawDetail.Where(c => char.IsDigit(c) || c == '.').ToArray());
+            if (string.IsNullOrEmpty(amount))
+                amount = rawDetail;
+
+            var resource = new SurveyResource(resourceName, purity, amount);
+            survey.Resources[resourceName] = resource;
+        }
+
+        /// <summary>
+        /// Normalizes purity abbreviations to match ResourcePurity.Name values.
+        /// </summary>
+        public static string NormalizePurity(string purity)
+        {
+            if (string.IsNullOrEmpty(purity)) return purity;
+            switch (purity.ToLowerInvariant())
+            {
+                case "med": return GameConstants.PurityMedium;
+                case "hi": return GameConstants.PurityHigh;
+                case "lo": return GameConstants.PurityLow;
+                default: return purity;
+            }
+        }
+
         /// <summary>
         /// Parses an HTML fragment from the game's survey clipboard data and populates
         /// the given Survey object with extracted data.
@@ -125,105 +225,6 @@ namespace OE2EmpireTracker.Parsers
             catch (Exception ex)
             {
                 Log.Error(ex, "Error parsing survey HTML fragment");
-            }
-        }
-
-        /// <summary>
-        /// Parses the description line to extract DateTime and ScannedBy.
-        /// Expected format: "A detailed survey report taken on {date} by {name}"
-        /// </summary>
-        public static void ParseDescription(Survey survey, string descText)
-        {
-            // Matches both "taken on {date} by {name}" and "generated on {date} by {name}"
-            var match = Regex.Match(descText, @"(?:taken|generated)\s+on\s+(.+?)\s+by\s+(.+)$", RegexOptions.IgnoreCase);
-            if (match.Success)
-            {
-                string rawDate = match.Groups[1].Value.Trim();
-                if (SurveyDateTimeParser.TryParseGameFormat(rawDate, out DateTime parsed))
-                    survey.DateTime = SurveyDateTimeParser.ToIsoString(parsed);
-                else
-                    survey.DateTime = rawDate; // preserve unparseable values
-                survey.ScannedBy = match.Groups[2].Value.Trim();
-            }
-        }
-
-        /// <summary>
-        /// Parses the title line to extract PlanetName, SystemName, and optionally SurveyID.
-        /// Expected format: "PlanetName, SystemName (SurveyID)" or just "PlanetName"
-        /// </summary>
-        public static void ParseTitle(Survey survey, string titleText)
-        {
-            if (string.IsNullOrEmpty(titleText)) return;
-
-            // Try "PlanetName, SystemName (SurveyID)"
-            var m = Regex.Match(titleText, @"^(.+?),\s*(.+?)\s*\((.+?)\)\s*$");
-            if (m.Success)
-            {
-                survey.PlanetName = m.Groups[1].Value.Trim();
-                survey.SystemName = m.Groups[2].Value.Trim();
-                survey.SurveyID = m.Groups[3].Value.Trim();
-                return;
-            }
-
-            // Fallback: use the whole title as planet name
-            survey.PlanetName = titleText;
-        }
-
-        /// <summary>
-        /// Parses a resource name like "Post-Trans Metals (Low Purity)" and a detail
-        /// like "41/hour" into a SurveyResource and adds it to the survey.
-        /// </summary>
-        public static void ParseResource(Survey survey, string rawName, string rawDetail)
-        {
-            // Skip unknown/trace entries
-            if (rawName.Contains("Unknown") || rawDetail.Contains("?"))
-                return;
-
-            // Extract resource name and purity from "ResourceName (Purity)"
-            string resourceName = rawName;
-            string purity = string.Empty;
-            var m = Regex.Match(rawName, @"^(.+?)\s*\((.+?)\)\s*$");
-            if (m.Success)
-            {
-                resourceName = m.Groups[1].Value.Trim();
-                purity = m.Groups[2].Value.Trim();
-                // Normalize purity: "High Purity" -> "High", "Low Purity" -> "Low", "Med Purity" -> "Medium"
-                if (purity.EndsWith(" Purity", StringComparison.OrdinalIgnoreCase))
-                {
-                    purity = purity.Substring(0, purity.Length - " Purity".Length).Trim();
-                }
-
-                // Normalize abbreviations
-                purity = NormalizePurity(purity);
-            }
-
-            // Detect asteroid survey by "/cycle" vs "/hour"
-            if (rawDetail.IndexOf("/cycle", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                survey.SurveyType = SurveyType.Asteroid;
-            }
-
-            // Extract numeric amount from "41/hour" or "36.3/cycle"
-            string amount = new string(rawDetail.Where(c => char.IsDigit(c) || c == '.').ToArray());
-            if (string.IsNullOrEmpty(amount))
-                amount = rawDetail;
-
-            var resource = new SurveyResource(resourceName, purity, amount);
-            survey.Resources[resourceName] = resource;
-        }
-
-        /// <summary>
-        /// Normalizes purity abbreviations to match ResourcePurity.Name values.
-        /// </summary>
-        public static string NormalizePurity(string purity)
-        {
-            if (string.IsNullOrEmpty(purity)) return purity;
-            switch (purity.ToLowerInvariant())
-            {
-                case "med": return GameConstants.PurityMedium;
-                case "hi": return GameConstants.PurityHigh;
-                case "lo": return GameConstants.PurityLow;
-                default: return purity;
             }
         }
 

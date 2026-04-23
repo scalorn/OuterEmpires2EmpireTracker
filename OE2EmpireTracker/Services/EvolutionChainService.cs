@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using NLog;
@@ -7,32 +7,6 @@ using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
 {
-    /// <summary>
-    /// Describes a single line segment between two consecutive data points
-    /// in an evolution graph series.
-    /// </summary>
-    public class SegmentInfo
-    {
-        public (int Evolution, decimal Percent) From { get; set; }
-        public (int Evolution, decimal Percent) To { get; set; }
-
-        /// <summary>
-        /// True when the evolution levels differ by more than 1 (gap -> dashed line).
-        /// False when consecutive (solid line).
-        /// </summary>
-        public bool IsGap { get; set; }
-    }
-
-    public class EvolutionGraphData
-    {
-        /// <summary>Property name -> list of (evolutionLevel, percentageValue) points.</summary>
-        public Dictionary<string, List<(int Evolution, decimal Percent)>> Series { get; set; }
-            = new Dictionary<string, List<(int Evolution, decimal Percent)>>();
-
-        /// <summary>True when no numeric properties changed across the chain.</summary>
-        public bool NoChanges { get; set; }
-    }
-
     /// <summary>
     /// Pure-logic service for resolving blueprint evolution chains
     /// and preparing graph data. No UI dependencies.
@@ -208,5 +182,31 @@ namespace OE2EmpireTracker.Services
                 return val;
             }
         }
+    }
+
+    /// <summary>
+    /// Describes a single line segment between two consecutive data points
+    /// in an evolution graph series.
+    /// </summary>
+    public class SegmentInfo
+    {
+        public (int Evolution, decimal Percent) From { get; set; }
+        public (int Evolution, decimal Percent) To { get; set; }
+
+        /// <summary>
+        /// True when the evolution levels differ by more than 1 (gap -> dashed line).
+        /// False when consecutive (solid line).
+        /// </summary>
+        public bool IsGap { get; set; }
+    }
+
+    public class EvolutionGraphData
+    {
+        /// <summary>Property name -> list of (evolutionLevel, percentageValue) points.</summary>
+        public Dictionary<string, List<(int Evolution, decimal Percent)>> Series { get; set; }
+            = new Dictionary<string, List<(int Evolution, decimal Percent)>>();
+
+        /// <summary>True when no numeric properties changed across the chain.</summary>
+        public bool NoChanges { get; set; }
     }
 }

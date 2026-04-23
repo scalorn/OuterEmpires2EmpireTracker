@@ -163,13 +163,14 @@ namespace OE2EmpireTracker.Tests.Services
                 HashSet<string> referenceSet = expiredSetsByPlayer[0];
                 for (int p = 1; p < expiredSetsByPlayer.Count; p++)
                 {
+                    string message = $"Mismatch at iteration {i} (seed={seed}). " +
+                        $"Expired set differs when CurrentPlayerUUID changes. " +
+                        $"Reference count={referenceSet.Count}, Set[{p}] count={expiredSetsByPlayer[p].Count}. " +
+                        $"ColonyCount={colonyCount}";
                     Assert.That(
                         expiredSetsByPlayer[p],
                         Is.EquivalentTo(referenceSet),
-                        $"Mismatch at iteration {i} (seed={seed}). " +
-                        $"Expired set differs when CurrentPlayerUUID changes. " +
-                        $"Reference count={referenceSet.Count}, Set[{p}] count={expiredSetsByPlayer[p].Count}. " +
-                        $"ColonyCount={colonyCount}");
+                        message);
                 }
             }
         }
@@ -253,13 +254,14 @@ namespace OE2EmpireTracker.Tests.Services
                         pc.ColonyDataChanged -= handler;
                     }
 
+                    string message = $"Mismatch at iteration {i} (seed={seed}). " +
+                        $"Expected {expectedProcessed.Count} colonies processed, got {actualProcessed.Count}. " +
+                        $"Expected: [{string.Join(", ", expectedProcessed)}], " +
+                        $"Actual: [{string.Join(", ", actualProcessed)}]";
                     Assert.That(
                         actualProcessed,
                         Is.EquivalentTo(expectedProcessed),
-                        $"Mismatch at iteration {i} (seed={seed}). " +
-                        $"Expected {expectedProcessed.Count} colonies processed, got {actualProcessed.Count}. " +
-                        $"Expected: [{string.Join(", ", expectedProcessed)}], " +
-                        $"Actual: [{string.Join(", ", actualProcessed)}]");
+                        message);
                 }
             }
             finally

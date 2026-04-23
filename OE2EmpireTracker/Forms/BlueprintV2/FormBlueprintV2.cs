@@ -168,20 +168,6 @@ namespace OE2EmpireTracker
         // Delete Protection (Task 2.8)
         // -----------------------------------------------------------------------
 
-        /// <summary>
-        /// Returns the enabled state and text for the delete button based on reference count.
-        /// </summary>
-        internal static (bool enabled, string text) GetDeleteButtonState(ReferenceReport report)
-        {
-            if (report == null)
-                return (false, "Delete");
-
-            if (report.TotalCount > 0)
-                return (false, $"In Use ({report.TotalCount})");
-
-            return (true, "Delete");
-        }
-
         // -----------------------------------------------------------------------
         // Dynamic Title Bar (Task 2.9)
         // -----------------------------------------------------------------------
@@ -197,6 +183,20 @@ namespace OE2EmpireTracker
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
 
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        /// <summary>
+        /// Returns the enabled state and text for the delete button based on reference count.
+        /// </summary>
+        internal static (bool enabled, string text) GetDeleteButtonState(ReferenceReport report)
+        {
+            if (report == null)
+                return (false, "Delete");
+
+            if (report.TotalCount > 0)
+                return (false, $"In Use ({report.TotalCount})");
+
+            return (true, "Delete");
+        }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {

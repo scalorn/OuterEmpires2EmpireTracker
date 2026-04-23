@@ -68,35 +68,6 @@ namespace OE2EmpireTracker.Services
         private List<ExternalCharacter> _externalCharacterList = new List<ExternalCharacter>();
         private List<Asteroid> _asteroidList = new List<Asteroid>();
 
-        /// <summary>
-        /// UUID of the currently selected player. Forms filter data by this value.
-        /// </summary>
-        public string CurrentPlayerUUID
-        {
-            get => _currentPlayerUUID;
-            set
-            {
-                if (_currentPlayerUUID != value)
-                {
-                    _currentPlayerUUID = value ?? string.Empty;
-                    Log.Info("Current player changed to {0}", _currentPlayerUUID);
-                    CurrentPlayerChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Returns the PlayerProfile for the currently selected player, or null.
-        /// </summary>
-        public PlayerProfile CurrentPlayer
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_currentPlayerUUID)) return null;
-                return _playerProfileList.FirstOrDefault(p => p.UUID == _currentPlayerUUID);
-            }
-        }
-
         private PlayerContext() : base()
         {
             _instance = this;
@@ -236,6 +207,35 @@ namespace OE2EmpireTracker.Services
         public event EventHandler<ContactDataChangedEventArgs> ContactDataChanged;
 
         public static string FilePath { get; set; } = "PlayerData.json";
+
+        /// <summary>
+        /// UUID of the currently selected player. Forms filter data by this value.
+        /// </summary>
+        public string CurrentPlayerUUID
+        {
+            get => _currentPlayerUUID;
+            set
+            {
+                if (_currentPlayerUUID != value)
+                {
+                    _currentPlayerUUID = value ?? string.Empty;
+                    Log.Info("Current player changed to {0}", _currentPlayerUUID);
+                    CurrentPlayerChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the PlayerProfile for the currently selected player, or null.
+        /// </summary>
+        public PlayerProfile CurrentPlayer
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_currentPlayerUUID)) return null;
+                return _playerProfileList.FirstOrDefault(p => p.UUID == _currentPlayerUUID);
+            }
+        }
 
         /// <summary>
         /// Runtime flag: set when stock targets need recalculation after a data change.

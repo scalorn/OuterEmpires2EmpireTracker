@@ -11,36 +11,6 @@ using OE2EmpireTracker.Models;
 namespace OE2EmpireTracker.Services
 {
     /// <summary>
-    /// Proposed assignment of a build item to a specific structure.
-    /// Returned by <see cref="AutoAssignService.ProposeAssignments"/>
-    /// for user review before applying.
-    /// </summary>
-    public class AssignmentProposal
-    {
-        /// <summary>UUID of the build item being assigned.</summary>
-        public string BuildItemUUID { get; set; }
-
-        /// <summary>Type of the build location (Colony, Ship, Station).</summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public DestinationType BuildLocationType { get; set; } = DestinationType.Colony;
-
-        /// <summary>UUID of the build location (colony, ship, or station).</summary>
-        public string BuildLocationUUID { get; set; }
-
-        /// <summary>UUID of the structure within the location.</summary>
-        public string StructureUUID { get; set; }
-
-        /// <summary>
-        /// Sequence position when multiple items share a structure.
-        /// 0 = first/only item; higher values run after earlier items complete.
-        /// </summary>
-        public int SequenceInStructure { get; set; }
-
-        /// <summary>Human-readable reason for this assignment choice.</summary>
-        public string Reason { get; set; } = string.Empty;
-    }
-
-    /// <summary>
     /// Stateless service that proposes structure assignments for unallocated
     /// build items, minimizing total completion time while respecting
     /// blueprint copy limits. Currently only Colony locations are supported.
@@ -388,5 +358,35 @@ namespace OE2EmpireTracker.Services
             public string StructureUUID { get; set; }
             public string BlueprintType { get; set; }
         }
+    }
+
+    /// <summary>
+    /// Proposed assignment of a build item to a specific structure.
+    /// Returned by <see cref="AutoAssignService.ProposeAssignments"/>
+    /// for user review before applying.
+    /// </summary>
+    public class AssignmentProposal
+    {
+        /// <summary>UUID of the build item being assigned.</summary>
+        public string BuildItemUUID { get; set; }
+
+        /// <summary>Type of the build location (Colony, Ship, Station).</summary>
+        [JsonConverter(typeof(StringEnumConverter))]
+        public DestinationType BuildLocationType { get; set; } = DestinationType.Colony;
+
+        /// <summary>UUID of the build location (colony, ship, or station).</summary>
+        public string BuildLocationUUID { get; set; }
+
+        /// <summary>UUID of the structure within the location.</summary>
+        public string StructureUUID { get; set; }
+
+        /// <summary>
+        /// Sequence position when multiple items share a structure.
+        /// 0 = first/only item; higher values run after earlier items complete.
+        /// </summary>
+        public int SequenceInStructure { get; set; }
+
+        /// <summary>Human-readable reason for this assignment choice.</summary>
+        public string Reason { get; set; } = string.Empty;
     }
 }

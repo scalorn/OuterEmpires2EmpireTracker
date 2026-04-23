@@ -16,28 +16,6 @@ namespace OE2EmpireTracker.Services
         Skipped
     }
 
-    public class ImportResultEntry
-    {
-        public string Name { get; set; }
-        public int Evolution { get; set; }
-        public string BluePrintType { get; set; }
-        public int Class { get; set; }
-        public string TechLevel { get; set; }
-        public string SellerName { get; set; }
-        public ImportAction Action { get; set; }
-        public string UUID { get; set; }
-        public string SkipReason { get; set; }
-        public string Storage { get; set; }
-    }
-
-    public class ImportResult
-    {
-        public List<ImportResultEntry> Entries { get; set; } = new List<ImportResultEntry>();
-        public int CreatedCount => Entries.Count(e => e.Action == ImportAction.Created);
-        public int UpdatedCount => Entries.Count(e => e.Action == ImportAction.Updated);
-        public int SkippedCount => Entries.Count(e => e.Action == ImportAction.Skipped);
-    }
-
     public static class MarketBlueprintImporter
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
@@ -342,5 +320,27 @@ namespace OE2EmpireTracker.Services
             if (!string.IsNullOrEmpty(incoming.Name))
                 existing.Name = incoming.Name;
         }
+    }
+
+    public class ImportResultEntry
+    {
+        public string Name { get; set; }
+        public int Evolution { get; set; }
+        public string BluePrintType { get; set; }
+        public int Class { get; set; }
+        public string TechLevel { get; set; }
+        public string SellerName { get; set; }
+        public ImportAction Action { get; set; }
+        public string UUID { get; set; }
+        public string SkipReason { get; set; }
+        public string Storage { get; set; }
+    }
+
+    public class ImportResult
+    {
+        public List<ImportResultEntry> Entries { get; set; } = new List<ImportResultEntry>();
+        public int CreatedCount => Entries.Count(e => e.Action == ImportAction.Created);
+        public int UpdatedCount => Entries.Count(e => e.Action == ImportAction.Updated);
+        public int SkippedCount => Entries.Count(e => e.Action == ImportAction.Skipped);
     }
 }

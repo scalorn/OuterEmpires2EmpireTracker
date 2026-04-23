@@ -125,9 +125,7 @@ namespace OE2EmpireTracker.Tests.ViewModels
                 Tuple.Create(1, Gen.Constant((int?)null)),
                 Tuple.Create(2, Gen.Choose(0, 5).Select(x => (int?)x)));
 
-            var criteriaGen = Gen.Frequency(
-                Tuple.Create(1, Gen.Constant((BlueprintFilterCriteria)null)),
-                Tuple.Create(4, from bpType in nullableTypeGen
+            var criteriaQuery = from bpType in nullableTypeGen
                                 from shipClass in nullableClassGen
                                 from tech in nullableTechGen
                                 from evo in nullableEvoGen
@@ -139,7 +137,11 @@ namespace OE2EmpireTracker.Tests.ViewModels
                                     TechLevelName = tech,
                                     Evolution = evo,
                                     EvolutionAndAbove = evo.HasValue && evoAndAbove
-                                }));
+                                };
+
+            var criteriaGen = Gen.Frequency(
+                Tuple.Create(1, Gen.Constant((BlueprintFilterCriteria)null)),
+                Tuple.Create(4, criteriaQuery));
 
             var inputGen = from bps in bpListGen
                            from text in textFilterGen

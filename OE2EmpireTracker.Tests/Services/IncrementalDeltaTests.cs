@@ -10,70 +10,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class IncrementalDeltaTests
     {
-        /// <summary>
-        /// Builds a colony with a reactor, habitation, and mining rig, adds blueprints to PlayerContext,
-        /// and returns (colony, blueprints dictionary keyed by structure UUID).
-        /// </summary>
-        private (Colony colony, Dictionary<string, OE2EmpireTracker.Models.Blueprint> blueprints) BuildTestColony()
-        {
-            var pc = PlayerContext.GetInstance();
-
-            // Reactor: online, provides power, requires 1 blue collar
-            var reactorBp = MakeBlueprint("Power Plant", new Dictionary<string, string>
-            {
-                { GameConstants.PropPowerProvided, "500" },
-                { GameConstants.PropBlueCollarDetail, "1" }
-            });
-            pc.AddBlueprint(reactorBp);
-
-            // Habitation: online, provides habitation, requires power, 1 white collar
-            var habBp = MakeBlueprint("Habitation", new Dictionary<string, string>
-            {
-                { GameConstants.PropPowerRequired, "50" },
-                { GameConstants.PropHabitationProvision, "100" },
-                { GameConstants.PropWhiteCollarDetail, "1" },
-                { GameConstants.PropFoodProvision, "20" }
-            });
-            pc.AddBlueprint(habBp);
-
-            // Mining rig: online, requires power, 1 blue collar, 1 specialist
-            var minerBp = MakeBlueprint("Mining Rig", new Dictionary<string, string>
-            {
-                { GameConstants.PropPowerRequired, "75" },
-                { GameConstants.PropEntertainmentProvided, "10" },
-                { GameConstants.PropWarehouseCapacity, "2000" },
-                { GameConstants.PropBlueCollarDetail, "1" },
-                { GameConstants.PropSpecialistDetail, "1" }
-            });
-            pc.AddBlueprint(minerBp);
-
-            var colony = new Colony();
-            colony.UUID = Guid.NewGuid().ToString();
-
-            var reactor = MakeStructure(reactorBp.UUID, built: true, online: true);
-            reactor.AssignedWorkers.SetProperty("BlueCollar1", true);
-
-            var hab = MakeStructure(habBp.UUID, built: true, online: true);
-            hab.AssignedWorkers.SetProperty("WhiteCollar1", true);
-
-            var miner = MakeStructure(minerBp.UUID, built: true, online: true);
-            miner.AssignedWorkers.SetProperty("BlueCollar1", true);
-            miner.AssignedWorkers.SetProperty("Specialist1", true);
-
-            colony.Structures.Add(reactor);
-            colony.Structures.Add(hab);
-            colony.Structures.Add(miner);
-
-            var blueprints = new Dictionary<string, OE2EmpireTracker.Models.Blueprint>
-            {
-                { reactor.UUID, reactorBp },
-                { hab.UUID, habBp },
-                { miner.UUID, minerBp }
-            };
-
-            return (colony, blueprints);
-        }
-
         [OneTimeSetUp]
         public void FixtureSetUp()
         {
@@ -377,6 +313,70 @@ namespace OE2EmpireTracker.Tests.Services
             s.Properties.SetProperty(GameConstants.PropOnline, online);
             s.Properties.SetProperty(GameConstants.PropStaged, staged);
             return s;
+        }
+
+        /// <summary>
+        /// Builds a colony with a reactor, habitation, and mining rig, adds blueprints to PlayerContext,
+        /// and returns (colony, blueprints dictionary keyed by structure UUID).
+        /// </summary>
+        private (Colony colony, Dictionary<string, OE2EmpireTracker.Models.Blueprint> blueprints) BuildTestColony()
+        {
+            var pc = PlayerContext.GetInstance();
+
+            // Reactor: online, provides power, requires 1 blue collar
+            var reactorBp = MakeBlueprint("Power Plant", new Dictionary<string, string>
+            {
+                { GameConstants.PropPowerProvided, "500" },
+                { GameConstants.PropBlueCollarDetail, "1" }
+            });
+            pc.AddBlueprint(reactorBp);
+
+            // Habitation: online, provides habitation, requires power, 1 white collar
+            var habBp = MakeBlueprint("Habitation", new Dictionary<string, string>
+            {
+                { GameConstants.PropPowerRequired, "50" },
+                { GameConstants.PropHabitationProvision, "100" },
+                { GameConstants.PropWhiteCollarDetail, "1" },
+                { GameConstants.PropFoodProvision, "20" }
+            });
+            pc.AddBlueprint(habBp);
+
+            // Mining rig: online, requires power, 1 blue collar, 1 specialist
+            var minerBp = MakeBlueprint("Mining Rig", new Dictionary<string, string>
+            {
+                { GameConstants.PropPowerRequired, "75" },
+                { GameConstants.PropEntertainmentProvided, "10" },
+                { GameConstants.PropWarehouseCapacity, "2000" },
+                { GameConstants.PropBlueCollarDetail, "1" },
+                { GameConstants.PropSpecialistDetail, "1" }
+            });
+            pc.AddBlueprint(minerBp);
+
+            var colony = new Colony();
+            colony.UUID = Guid.NewGuid().ToString();
+
+            var reactor = MakeStructure(reactorBp.UUID, built: true, online: true);
+            reactor.AssignedWorkers.SetProperty("BlueCollar1", true);
+
+            var hab = MakeStructure(habBp.UUID, built: true, online: true);
+            hab.AssignedWorkers.SetProperty("WhiteCollar1", true);
+
+            var miner = MakeStructure(minerBp.UUID, built: true, online: true);
+            miner.AssignedWorkers.SetProperty("BlueCollar1", true);
+            miner.AssignedWorkers.SetProperty("Specialist1", true);
+
+            colony.Structures.Add(reactor);
+            colony.Structures.Add(hab);
+            colony.Structures.Add(miner);
+
+            var blueprints = new Dictionary<string, OE2EmpireTracker.Models.Blueprint>
+            {
+                { reactor.UUID, reactorBp },
+                { hab.UUID, habBp },
+                { miner.UUID, minerBp }
+            };
+
+            return (colony, blueprints);
         }
     }
 }
