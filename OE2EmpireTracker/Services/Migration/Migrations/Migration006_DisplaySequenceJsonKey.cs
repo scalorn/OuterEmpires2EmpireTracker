@@ -25,7 +25,8 @@ namespace OE2EmpireTracker.Services.Migration
             foreach (var colony in pc.ColonyList)
                 structureCount += colony.Structures.Count;
 
-            Log.Info("Migration006: DisplaySequence JSON key rename applied to {0} structure(s) on next save",
+            Log.Info(
+                "Migration006: DisplaySequence JSON key rename applied to {0} structure(s) on next save",
                 structureCount);
         }
     }

@@ -304,7 +304,8 @@ namespace OE2EmpireTracker.Tests.Services
                 { bp2.UUID, bp2 }
             };
 
-            var colony = CreateTestColony("Alpha",
+            var colony = CreateTestColony(
+                "Alpha",
                 CreateStructure("bp-1", false, false),
                 CreateStructure("bp-2", false, false));
 
@@ -327,7 +328,8 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void GenerateColonyBuildItems_StagedStructure_Skipped()
         {
-            var colony = CreateTestColony("Beta",
+            var colony = CreateTestColony(
+                "Beta",
                 CreateStructure("bp-1", true, false));
 
             var plan = new BuildPlan { UUID = Guid.NewGuid().ToString() };
@@ -342,7 +344,8 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void GenerateColonyBuildItems_BuiltStructure_Skipped()
         {
-            var colony = CreateTestColony("Gamma",
+            var colony = CreateTestColony(
+                "Gamma",
                 CreateStructure("bp-1", false, true));
 
             var plan = new BuildPlan { UUID = Guid.NewGuid().ToString() };
@@ -358,7 +361,8 @@ namespace OE2EmpireTracker.Tests.Services
         public void GenerateColonyBuildItems_DuplicateBlueprint_SkippedOnSecondRun()
         {
             var bp1 = CreateBlueprint("bp-1", "Reactor Flatpack");
-            var colony = CreateTestColony("Delta",
+            var colony = CreateTestColony(
+                "Delta",
                 CreateStructure("bp-1", false, false));
 
             var plan = new BuildPlan { UUID = Guid.NewGuid().ToString() };
@@ -396,7 +400,8 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void GenerateColonyBuildItems_BlueprintNotFound_UsesUnknownName()
         {
-            var colony = CreateTestColony("Zeta",
+            var colony = CreateTestColony(
+                "Zeta",
                 CreateStructure("bp-missing", false, false));
 
             var plan = new BuildPlan { UUID = Guid.NewGuid().ToString() };
@@ -412,10 +417,11 @@ namespace OE2EmpireTracker.Tests.Services
         public void GenerateColonyBuildItems_MixedStructures_OnlyUnstagedUnbuilt()
         {
             var bp = CreateBlueprint("bp-1", "Flatpack A");
-            var colony = CreateTestColony("Eta",
-                CreateStructure("bp-1", false, false),  // unstaged, unbuilt -> added
-                CreateStructure("bp-2", true, false),   // staged -> skipped
-                CreateStructure("bp-3", false, true),   // built -> skipped
+            var colony = CreateTestColony(
+                "Eta",
+                CreateStructure("bp-1", false, false),
+                CreateStructure("bp-2", true, false),
+                CreateStructure("bp-3", false, true),
                 CreateStructure("bp-4", true, true));    // both -> skipped
 
             var plan = new BuildPlan { UUID = Guid.NewGuid().ToString() };

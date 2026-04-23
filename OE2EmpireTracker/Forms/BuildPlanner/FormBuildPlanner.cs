@@ -184,8 +184,10 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
 
             sw.Stop();
-            Log.Info("PERF PopulatePlanList: total={0}ms items={1}",
-                sw.ElapsedMilliseconds, plans.Count);
+            Log.Info(
+                "PERF PopulatePlanList: total={0}ms items={1}",
+                sw.ElapsedMilliseconds,
+                plans.Count);
         }
 
         private void TxtPlanFilter_TextChanged(object sender, EventArgs e)
@@ -216,7 +218,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedPlan == null) { ClearForm(); return; }
+            if (_selectedPlan == null)
+            {
+                ClearForm();
+                return;
+            }
 
             txtPlanName.Text = _selectedPlan.Name;
             txtDescription.Text = _selectedPlan.Description;
@@ -267,7 +273,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvBuildItems.Rows.Clear();
 
-            if (_selectedPlan == null) { sw.Stop(); return; }
+            if (_selectedPlan == null)
+            {
+                sw.Stop();
+                return;
+            }
 
             foreach (var item in _selectedPlan.Items)
             {
@@ -330,7 +340,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 }
             }
 
-            sw.Stop(); Log.Info("PERF PopulateBuildItemsGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateBuildItemsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -----------------------------------------------------------------------
@@ -432,7 +443,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 lblShortfallStatus.ForeColor = System.Drawing.Color.Red;
             }
 
-            sw.Stop(); Log.Info("PERF PopulateShortfallGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateShortfallGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -562,8 +574,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             string name = txtPlanName.Text.Trim();
             if (string.IsNullOrWhiteSpace(name))
             {
-                MessageBox.Show("Plan name cannot be empty.", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Plan name cannot be empty.",
+                    "Validation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -699,15 +714,19 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 cmbItem.SelectedIndex = 0;
 
             UpdateMiningRefiningFieldVisibility();
-            sw.Stop(); Log.Info("PERF PopulateItemCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateItemCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void CmdAddItem_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null)
             {
-                MessageBox.Show("Select a build plan first.", "Add Item",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Select a build plan first.",
+                    "Add Item",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -715,15 +734,21 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             var selectedEntry = cmbItem.SelectedItem as ItemEntry;
             if (selectedEntry == null)
             {
-                MessageBox.Show("Select an item.", "Add Item",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Select an item.",
+                    "Add Item",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
             if (!int.TryParse(txtQuantity.Text.Trim(), out int quantity) || quantity < 1)
             {
-                MessageBox.Show("Quantity must be a positive integer.", "Add Item",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Quantity must be a positive integer.",
+                    "Add Item",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -782,8 +807,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             if (!BuildPlanService.ValidateBuildItem(buildItem))
             {
-                MessageBox.Show("Invalid build item. Check type and selection.", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Invalid build item. Check type and selection.",
+                    "Validation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -791,8 +819,12 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             playerContext.WriteContext();
             playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
             PopulateBuildItemsGrid();
-            Log.Info("Added {0} item '{1}' x{2} to plan '{3}'",
-                buildItem.ItemType, buildItem.ItemName, buildItem.Quantity, _selectedPlan.Name);
+            Log.Info(
+                "Added {0} item '{1}' x{2} to plan '{3}'",
+                buildItem.ItemType,
+                buildItem.ItemName,
+                buildItem.Quantity,
+                _selectedPlan.Name);
         }
 
         private void CmdQueueCalc_Click(object sender, EventArgs e)
@@ -801,23 +833,32 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             var selectedEntry = cmbItem.SelectedItem as ItemEntry;
             if (selectedEntry == null)
             {
-                MessageBox.Show("Select an item first.", "Queue Calc",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Select an item first.",
+                    "Queue Calc",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
             string input = txtTargetDuration.Text.Trim();
             if (string.IsNullOrWhiteSpace(input))
             {
-                MessageBox.Show("Enter a target duration (e.g. 2d 12h 0m 0s).",
-                    "Queue Calc", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Enter a target duration (e.g. 2d 12h 0m 0s).",
+                    "Queue Calc",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
             if (!CountdownFormatParser.TryParse(input, out long totalSeconds) || totalSeconds <= 0)
             {
-                MessageBox.Show("Could not parse duration. Use format like '2d 12h 0m 0s'.",
-                    "Queue Calc", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Could not parse duration. Use format like '2d 12h 0m 0s'.",
+                    "Queue Calc",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -828,16 +869,22 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     .FirstOrDefault(b => b.UUID == selectedEntry.ID);
                 if (bp == null)
                 {
-                    MessageBox.Show("Blueprint not found.", "Queue Calc",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        "Blueprint not found.",
+                        "Queue Calc",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
                     return;
                 }
 
                 runs = QueueCalculator.ComputeManufactoryRuns(bp, (int)totalSeconds);
                 if (runs < 0)
                 {
-                    MessageBox.Show("Blueprint has no manufacturing time set.", "Queue Calc",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        "Blueprint has no manufacturing time set.",
+                        "Queue Calc",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                     return;
                 }
             }
@@ -847,8 +894,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
 
             txtQuantity.Text = runs.ToString();
-            Log.Info("Queue Calc: {0} runs for '{1}' ({2}s target)",
-                runs, selectedEntry.Display, totalSeconds);
+            Log.Info(
+                "Queue Calc: {0} runs for '{1}' ({2}s target)",
+                runs,
+                selectedEntry.Display,
+                totalSeconds);
         }
 
         // -----------------------------------------------------------------------
@@ -872,8 +922,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             if (dgvBuildItems.CurrentRow == null || dgvBuildItems.CurrentRow.Tag == null)
             {
-                MessageBox.Show("Select a build item to allocate.", "Allocate",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Select a build item to allocate.",
+                    "Allocate",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -886,8 +939,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 buildItem.ItemType != BuildItemType.Refining &&
                 buildItem.ItemType != BuildItemType.Research)
             {
-                MessageBox.Show("This item type cannot be allocated to structures.",
-                    "Allocate", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "This item type cannot be allocated to structures.",
+                    "Allocate",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -910,8 +966,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
                     PopulateBuildItemsGrid();
 
-                    Log.Info("Allocated item '{0}' to colony {1} structure {2}",
-                        buildItem.ItemName, dlg.SelectedColonyUUID, dlg.SelectedStructureUUID);
+                    Log.Info(
+                        "Allocated item '{0}' to colony {1} structure {2}",
+                        buildItem.ItemName,
+                        dlg.SelectedColonyUUID,
+                        dlg.SelectedStructureUUID);
                 }
             }
         }
@@ -924,8 +983,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         {
             if (_selectedPlan == null)
             {
-                MessageBox.Show("Select a build plan first.", "Auto-Assign",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Select a build plan first.",
+                    "Auto-Assign",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -944,8 +1006,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
                 if (proposals.Count == 0)
                 {
-                    MessageBox.Show("No unallocated items or no eligible structures.",
-                        "Auto-Assign", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        "No unallocated items or no eligible structures.",
+                        "Auto-Assign",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                     return;
                 }
 
@@ -957,8 +1022,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             catch (Exception ex)
             {
                 Log.Error(ex, "Error during auto-assign for plan '{0}'", _selectedPlan.Name);
-                MessageBox.Show("Error during auto-assign: " + ex.Message,
-                    "Auto-Assign", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "Error during auto-assign: " + ex.Message,
+                    "Auto-Assign",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -1005,8 +1073,12 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     string structureName = _structureFinder(p.BuildLocationUUID, p.StructureUUID)
                         ?? p.StructureUUID;
 
-                    dgv.Rows.Add(itemName, colonyName, structureName,
-                        p.SequenceInStructure, p.Reason);
+                    dgv.Rows.Add(
+                        itemName,
+                        colonyName,
+                        structureName,
+                        p.SequenceInStructure,
+                        p.Reason);
                 }
 
                 var pnlButtons = new FlowLayoutPanel
@@ -1063,8 +1135,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
             PopulateBuildItemsGrid();
 
-            Log.Info("Auto-assign applied {0} of {1} proposals to plan '{2}'",
-                applied, proposals.Count, _selectedPlan.Name);
+            Log.Info(
+                "Auto-assign applied {0} of {1} proposals to plan '{2}'",
+                applied,
+                proposals.Count,
+                _selectedPlan.Name);
         }
 
         // -----------------------------------------------------------------------
@@ -1073,7 +1148,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void CmdGenerateDelivery_Click(object sender, EventArgs e)
         {
-            cmsGenerateDelivery.Show(cmdGenerateDelivery,
+            cmsGenerateDelivery.Show(
+                cmdGenerateDelivery,
                 new System.Drawing.Point(0, cmdGenerateDelivery.Height));
         }
 
@@ -1085,8 +1161,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             var routes = playerContext.GetCurrentPlayerRoutes();
             if (routes.Count == 0)
             {
-                MessageBox.Show("No delivery routes found. Create a route first.",
-                    "Generate Delivery", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "No delivery routes found. Create a route first.",
+                    "Generate Delivery",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return null;
             }
 
@@ -1141,8 +1220,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             var allPlans = playerContext.GetCurrentPlayerBuildPlans();
             if (allPlans.Count == 0)
             {
-                MessageBox.Show("No build plans found.", title,
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "No build plans found.",
+                    title,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return null;
             }
 
@@ -1194,8 +1276,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
                 if (selected.Count == 0)
                 {
-                    MessageBox.Show("No plans selected.", title,
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        "No plans selected.",
+                        title,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
                     return null;
                 }
 
@@ -1207,8 +1292,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         {
             if (_selectedPlan == null)
             {
-                MessageBox.Show("Select a build plan first.", "Resource Delivery",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Select a build plan first.",
+                    "Resource Delivery",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -1227,8 +1315,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
                 if (shortfalls.Count == 0)
                 {
-                    MessageBox.Show("No resource shortfalls found for this plan.",
-                        "Resource Delivery", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        "No resource shortfalls found for this plan.",
+                        "Resource Delivery",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                     return;
                 }
 
@@ -1244,18 +1335,27 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 PopulateBuildItemsGrid();
 
                 MessageBox.Show(
-                    string.Format("Delivery plan '{0}' created with {1} stop(s).",
-                        plan.Name, plan.Stops.Count),
+                    string.Format(
+                        "Delivery plan '{0}' created with {1} stop(s).",
+                        plan.Name,
+                        plan.Stops.Count),
                     "Resource Delivery", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                Log.Info("Generated resource delivery plan '{0}' ({1}) with {2} stops for plan '{3}'",
-                    plan.Name, plan.UUID, plan.Stops.Count, _selectedPlan.Name);
+                Log.Info(
+                    "Generated resource delivery plan '{0}' ({1}) with {2} stops for plan '{3}'",
+                    plan.Name,
+                    plan.UUID,
+                    plan.Stops.Count,
+                    _selectedPlan.Name);
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Error generating resource delivery for plan '{0}'", _selectedPlan.Name);
-                MessageBox.Show("Error generating delivery: " + ex.Message,
-                    "Resource Delivery", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "Error generating delivery: " + ex.Message,
+                    "Resource Delivery",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -1278,7 +1378,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                         playerContext.CurrentPlayerUUID,
                         uuid => playerContext.FindBlueprint(uuid));
 
-                string planName = string.Format("Consolidated: {0}",
+                string planName = string.Format(
+                    "Consolidated: {0}",
                     string.Join(", ", selectedPlans.Select(p => p.Name)));
                 if (planName.Length > 80)
                     planName = planName.Substring(0, 77) + "...";
@@ -1294,18 +1395,27 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 playerContext.WriteContext();
 
                 MessageBox.Show(
-                    string.Format("Consolidated delivery plan '{0}' created with {1} stop(s).",
-                        plan.Name, plan.Stops.Count),
+                    string.Format(
+                        "Consolidated delivery plan '{0}' created with {1} stop(s).",
+                        plan.Name,
+                        plan.Stops.Count),
                     "Consolidated Delivery", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                Log.Info("Generated consolidated delivery plan '{0}' ({1}) with {2} stops from {3} plans",
-                    plan.Name, plan.UUID, plan.Stops.Count, selectedPlans.Count);
+                Log.Info(
+                    "Generated consolidated delivery plan '{0}' ({1}) with {2} stops from {3} plans",
+                    plan.Name,
+                    plan.UUID,
+                    plan.Stops.Count,
+                    selectedPlans.Count);
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Error generating consolidated delivery");
-                MessageBox.Show("Error generating delivery: " + ex.Message,
-                    "Consolidated Delivery", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "Error generating delivery: " + ex.Message,
+                    "Consolidated Delivery",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -1319,7 +1429,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             try
             {
-                string planName = string.Format("Flatpack: {0}",
+                string planName = string.Format(
+                    "Flatpack: {0}",
                     string.Join(", ", selectedPlans.Select(p => p.Name)));
                 if (planName.Length > 80)
                     planName = planName.Substring(0, 77) + "...";
@@ -1335,18 +1446,27 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 playerContext.WriteContext();
 
                 MessageBox.Show(
-                    string.Format("Flatpack delivery plan '{0}' created with {1} stop(s).",
-                        plan.Name, plan.Stops.Count),
+                    string.Format(
+                        "Flatpack delivery plan '{0}' created with {1} stop(s).",
+                        plan.Name,
+                        plan.Stops.Count),
                     "Flatpack Delivery", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                Log.Info("Generated flatpack delivery plan '{0}' ({1}) with {2} stops from {3} plans",
-                    plan.Name, plan.UUID, plan.Stops.Count, selectedPlans.Count);
+                Log.Info(
+                    "Generated flatpack delivery plan '{0}' ({1}) with {2} stops from {3} plans",
+                    plan.Name,
+                    plan.UUID,
+                    plan.Stops.Count,
+                    selectedPlans.Count);
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Error generating flatpack delivery");
-                MessageBox.Show("Error generating delivery: " + ex.Message,
-                    "Flatpack Delivery", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "Error generating delivery: " + ex.Message,
+                    "Flatpack Delivery",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -1401,7 +1521,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             foreach (var s in surveys.OrderBy(s => s.Name))
                 cmbSurvey.Items.Add(new ItemEntry { Display = s.Name, ID = s.UUID });
             cmbSurvey.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulateSurveyCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateSurveyCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulatePurityCombo()
@@ -1414,7 +1535,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 cmbPurity.Items.Add(new ItemEntry { Display = p.Name, ID = p.Name });
             if (cmbPurity.Items.Count > 0)
                 cmbPurity.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulatePurityCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulatePurityCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -----------------------------------------------------------------------
@@ -1435,8 +1557,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             if (otherItems.Count == 0)
             {
-                MessageBox.Show("No other items in this plan to depend on.",
-                    "Set Dependency", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "No other items in this plan to depend on.",
+                    "Set Dependency",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -1482,8 +1607,10 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     playerContext.WriteContext();
                     playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
                     PopulateBuildItemsGrid();
-                    Log.Info("Set dependency: '{0}' depends on '{1}'",
-                        buildItem.ItemName, entry.Display);
+                    Log.Info(
+                        "Set dependency: '{0}' depends on '{1}'",
+                        buildItem.ItemName,
+                        entry.Display);
                 }
             }
         }
@@ -1497,8 +1624,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             if (string.IsNullOrEmpty(buildItem.DependsOnUUID))
             {
-                MessageBox.Show("This item has no dependency set.",
-                    "Clear Dependency", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "This item has no dependency set.",
+                    "Clear Dependency",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -1518,8 +1648,13 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 
@@ -1533,8 +1668,13 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnBuildPlanDataChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnBuildPlanDataChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 
@@ -1550,8 +1690,13 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnColonyDataChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnColonyDataChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 

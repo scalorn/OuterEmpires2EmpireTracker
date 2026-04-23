@@ -26,8 +26,12 @@ namespace OE2EmpireTracker.Services.Migration
         /// Generates a deterministic UUID v5 from the blueprint's dedup key fields.
         /// Input string format: "Name|Evolution|BluePrintType|Class|TechLevel"
         /// </summary>
-        public static string Generate(string name, int evolution,
-            string blueprintType, int cls, string techLevel)
+        public static string Generate(
+            string name,
+            int evolution,
+            string blueprintType,
+            int cls,
+            string techLevel)
         {
             string input = $"{name ?? string.Empty}|{evolution}|{blueprintType ?? string.Empty}|{cls}|{techLevel ?? string.Empty}";
             return GenerateV5(Namespace, input).ToString();
@@ -38,8 +42,12 @@ namespace OE2EmpireTracker.Services.Migration
         /// </summary>
         public static string Generate(Blueprint bp)
         {
-            return Generate(bp.Name, bp.Evolution, bp.BluePrintType,
-                bp.Class, bp.TechLevel);
+            return Generate(
+                bp.Name,
+                bp.Evolution,
+                bp.BluePrintType,
+                bp.Class,
+                bp.TechLevel);
         }
 
         /// <summary>
@@ -95,8 +103,12 @@ namespace OE2EmpireTracker.Services.Migration
 
             using (var sha1 = SHA1.Create())
             {
-                sha1.TransformBlock(namespaceBytes, 0, namespaceBytes.Length,
-                    null, 0);
+                sha1.TransformBlock(
+                    namespaceBytes,
+                    0,
+                    namespaceBytes.Length,
+                    null,
+                    0);
                 sha1.TransformFinalBlock(nameBytes, 0, nameBytes.Length);
                 hash = sha1.Hash;
             }

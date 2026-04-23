@@ -141,7 +141,8 @@ namespace OE2EmpireTracker.Tests.Parsers
             var structure = colony.Structures[0];
             Assert.That(structure.ProcessCompletionTime, Is.Not.Null);
             Assert.That(structure.ProcessCompletionTime.IsRepeating, Is.True);
-            Assert.That(structure.ProcessCompletionTime.RepeatIntervalSeconds,
+            Assert.That(
+                structure.ProcessCompletionTime.RepeatIntervalSeconds,
                 Is.EqualTo(GameConstants.SecondsPerHour));
 
             // Timer should be aligned to next hour boundary

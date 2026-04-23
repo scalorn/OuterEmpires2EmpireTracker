@@ -147,8 +147,12 @@ namespace OE2EmpireTracker.Services
         public int SupplyChainCount { get; }
         public int OverflowCount { get; }
 
-        public ColonyReferenceReport(int routeCount, int planCount, int buildItemCount = 0,
-            int supplyChainCount = 0, int overflowCount = 0)
+        public ColonyReferenceReport(
+            int routeCount,
+            int planCount,
+            int buildItemCount = 0,
+            int supplyChainCount = 0,
+            int overflowCount = 0)
         {
             RouteCount = routeCount;
             PlanCount = planCount;

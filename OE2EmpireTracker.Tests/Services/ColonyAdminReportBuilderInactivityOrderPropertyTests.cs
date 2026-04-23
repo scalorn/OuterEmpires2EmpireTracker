@@ -94,7 +94,9 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 int idx = rtf.IndexOf(header, StringComparison.Ordinal);
                 if (idx < 0) continue; // group may be empty
-                Assert.That(idx, Is.GreaterThan(lastIdx),
+                Assert.That(
+                    idx,
+                    Is.GreaterThan(lastIdx),
                     $"'{header}' should appear after previous group");
                 lastIdx = idx;
             }

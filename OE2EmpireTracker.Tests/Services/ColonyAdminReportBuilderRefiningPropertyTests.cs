@@ -42,8 +42,11 @@ namespace OE2EmpireTracker.Tests.Services
             return bp;
         }
 
-        private static ColonyStructure MakeActiveRefiner(string blueprintUUID, int gameSeq,
-            string resource, string purity)
+        private static ColonyStructure MakeActiveRefiner(
+            string blueprintUUID,
+            int gameSeq,
+            string resource,
+            string purity)
         {
             var structure = new ColonyStructure();
             structure.UUID = Guid.NewGuid().ToString();

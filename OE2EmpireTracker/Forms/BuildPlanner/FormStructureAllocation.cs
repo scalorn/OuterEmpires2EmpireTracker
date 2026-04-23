@@ -171,8 +171,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
 
             cmdAllocate.Enabled = dgvStructures.Rows.Count > 0;
-            Log.Debug("PopulateGrid: {0} eligible structures for {1} item '{2}'",
-                rows.Count, _buildItem.ItemType, _buildItem.ItemName);
+            Log.Debug(
+                "PopulateGrid: {0} eligible structures for {1} item '{2}'",
+                rows.Count,
+                _buildItem.ItemType,
+                _buildItem.ItemName);
         }
 
         private void CmdAllocate_Click(object sender, EventArgs e)
@@ -190,8 +193,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         {
             if (dgvStructures.CurrentRow == null || dgvStructures.CurrentRow.Tag == null)
             {
-                MessageBox.Show("Select a structure to allocate.", "Allocate",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Select a structure to allocate.",
+                    "Allocate",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -199,8 +205,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             SelectedColonyUUID = row.ColonyUUID;
             SelectedStructureUUID = row.StructureUUID;
 
-            Log.Info("Allocated item '{0}' to colony '{1}' structure '{2}'",
-                _buildItem.ItemName, row.ColonyName, row.StructureName);
+            Log.Info(
+                "Allocated item '{0}' to colony '{1}' structure '{2}'",
+                _buildItem.ItemName,
+                row.ColonyName,
+                row.StructureName);
 
             DialogResult = DialogResult.OK;
             Close();

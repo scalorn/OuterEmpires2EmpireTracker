@@ -83,7 +83,9 @@ namespace OE2EmpireTracker.Services
                 return false;
 
             string[] formats = { "yyyy-MM-ddTHH:mm:ssZ", "yyyy-MM-ddTHH:mm:ss" };
-            return DateTime.TryParseExact(input, formats,
+            return DateTime.TryParseExact(
+                input,
+                formats,
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
                 out result);

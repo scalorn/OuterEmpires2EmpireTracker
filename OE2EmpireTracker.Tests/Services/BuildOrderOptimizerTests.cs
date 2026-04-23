@@ -145,7 +145,9 @@ namespace OE2EmpireTracker.Tests.Services
 
             // Verify: CC is first
             var firstBp = playerContext.FindBlueprint(result[0].FlatpackBlueprintUUID);
-            Assert.That(firstBp.BluePrintType, Is.EqualTo("Flatpacks/ColonyCommandCentre"),
+            Assert.That(
+                firstBp.BluePrintType,
+                Is.EqualTo("Flatpacks/ColonyCommandCentre"),
                 "Colony Command Centre must be first");
 
             // Verify: no deficits at any position where a primary appears.
@@ -195,12 +197,10 @@ namespace OE2EmpireTracker.Tests.Services
                                        current.FoodRequired > current.FoodProvision ||
                                        current.EntertainmentRequired > current.EntertainmentProvided;
 
-                        Assert.That(deficit, Is.False,
-                            $"Deficit at [{i}] {bp?.ExtendedName}: " +
-                            $"Pwr={current.PowerRequired}/{current.PowerProvided} " +
-                            $"Hab={current.HabitationRequired}/{current.HabitationProvision} " +
-                            $"Food={current.FoodRequired}/{current.FoodProvision} " +
-                            $"Ent={current.EntertainmentRequired}/{current.EntertainmentProvided}");
+                        Assert.That(
+                            deficit,
+                            Is.False,
+                            $"Deficit at [{i}] {bp?.ExtendedName}: " + $"Pwr={current.PowerRequired}/{current.PowerProvided} " + $"Hab={current.HabitationRequired}/{current.HabitationProvision} " + $"Food={current.FoodRequired}/{current.FoodProvision} " + $"Ent={current.EntertainmentRequired}/{current.EntertainmentProvided}");
                     }
 
                     prev = current;
@@ -233,7 +233,9 @@ namespace OE2EmpireTracker.Tests.Services
             // because the bootstrap provides enough for 1 primary
             int deficitPos = FindFirstDeficit(result);
             // Only CC at [0] may have entertainment deficit
-            Assert.That(deficitPos, Is.EqualTo(-1).Or.EqualTo(0),
+            Assert.That(
+                deficitPos,
+                Is.EqualTo(-1).Or.EqualTo(0),
                 $"Unexpected deficit at position {deficitPos}");
         }
     }

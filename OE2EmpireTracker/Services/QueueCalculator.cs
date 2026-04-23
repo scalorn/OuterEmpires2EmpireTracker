@@ -40,7 +40,8 @@ namespace OE2EmpireTracker.Services
 
             if (targetDurationSeconds <= 0)
             {
-                Log.Warn("ComputeManufactoryRuns: targetDurationSeconds={0} is not positive",
+                Log.Warn(
+                    "ComputeManufactoryRuns: targetDurationSeconds={0} is not positive",
                     targetDurationSeconds);
                 sw.Stop();
                 Log.Debug("PERF ComputeManufactoryRuns: {0}ms", sw.ElapsedMilliseconds);
@@ -52,7 +53,8 @@ namespace OE2EmpireTracker.Services
                 !blueprint.Properties.GetString(BlueprintPropertyKeys.ManufactureRunTime, string.Empty, out mfgTimeStr) ||
                 string.IsNullOrWhiteSpace(mfgTimeStr))
             {
-                Log.Info("ComputeManufactoryRuns: blueprint '{0}' has no Manufacture Run Time",
+                Log.Info(
+                    "ComputeManufactoryRuns: blueprint '{0}' has no Manufacture Run Time",
                     blueprint.Name);
                 sw.Stop();
                 Log.Debug("PERF ComputeManufactoryRuns: {0}ms", sw.ElapsedMilliseconds);
@@ -62,8 +64,10 @@ namespace OE2EmpireTracker.Services
             decimal mfgSeconds = EvolutionChainService.ParseTimeToSeconds(mfgTimeStr);
             if (mfgSeconds <= 0m)
             {
-                Log.Warn("ComputeManufactoryRuns: parsed manufacturing time is {0}s for '{1}'",
-                    mfgSeconds, blueprint.Name);
+                Log.Warn(
+                    "ComputeManufactoryRuns: parsed manufacturing time is {0}s for '{1}'",
+                    mfgSeconds,
+                    blueprint.Name);
                 sw.Stop();
                 Log.Debug("PERF ComputeManufactoryRuns: {0}ms", sw.ElapsedMilliseconds);
                 return -1;
@@ -72,8 +76,13 @@ namespace OE2EmpireTracker.Services
             int runs = (int)Math.Ceiling((decimal)targetDurationSeconds / mfgSeconds);
 
             sw.Stop();
-            Log.Info("PERF ComputeManufactoryRuns: {0} runs for '{1}' ({2}s target, {3}s per run) in {4}ms",
-                runs, blueprint.Name, targetDurationSeconds, mfgSeconds, sw.ElapsedMilliseconds);
+            Log.Info(
+                "PERF ComputeManufactoryRuns: {0} runs for '{1}' ({2}s target, {3}s per run) in {4}ms",
+                runs,
+                blueprint.Name,
+                targetDurationSeconds,
+                mfgSeconds,
+                sw.ElapsedMilliseconds);
             return runs;
         }
 
@@ -89,7 +98,8 @@ namespace OE2EmpireTracker.Services
 
             if (targetDurationSeconds <= 0)
             {
-                Log.Warn("ComputeCommodityRuns: targetDurationSeconds={0} is not positive",
+                Log.Warn(
+                    "ComputeCommodityRuns: targetDurationSeconds={0} is not positive",
                     targetDurationSeconds);
                 sw.Stop();
                 Log.Debug("PERF ComputeCommodityRuns: {0}ms", sw.ElapsedMilliseconds);
@@ -108,8 +118,12 @@ namespace OE2EmpireTracker.Services
             int runs = (int)Math.Ceiling((decimal)targetDurationSeconds / cycleSeconds);
 
             sw.Stop();
-            Log.Info("PERF ComputeCommodityRuns: {0} runs ({1}s target, {2}s per cycle) in {3}ms",
-                runs, targetDurationSeconds, cycleSeconds, sw.ElapsedMilliseconds);
+            Log.Info(
+                "PERF ComputeCommodityRuns: {0} runs ({1}s target, {2}s per cycle) in {3}ms",
+                runs,
+                targetDurationSeconds,
+                cycleSeconds,
+                sw.ElapsedMilliseconds);
             return runs;
         }
 
@@ -137,8 +151,11 @@ namespace OE2EmpireTracker.Services
             }
 
             int total = runs * itemsPerRun;
-            Log.Debug("ManufactoryRunsToItems: {0} runs x {1} items/run = {2} total",
-                runs, itemsPerRun, total);
+            Log.Debug(
+                "ManufactoryRunsToItems: {0} runs x {1} items/run = {2} total",
+                runs,
+                itemsPerRun,
+                total);
             return total;
         }
 
@@ -155,8 +172,11 @@ namespace OE2EmpireTracker.Services
 
             int perCycle = GameConstants.CommoditiesPerCycle;
             int total = runs * perCycle;
-            Log.Debug("CommodityRunsToItems: {0} runs x {1} per cycle = {2} total",
-                runs, perCycle, total);
+            Log.Debug(
+                "CommodityRunsToItems: {0} runs x {1} per cycle = {2} total",
+                runs,
+                perCycle,
+                total);
             return total;
         }
     }

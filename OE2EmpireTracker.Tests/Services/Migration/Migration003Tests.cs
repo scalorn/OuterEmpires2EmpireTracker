@@ -93,7 +93,9 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         public void MigrateDateTime_GarbageString_ProducesValidIso()
         {
             string result = MigrateDateTime("not-a-date");
-            Assert.That(SurveyDateTimeParser.TryParseIso(result, out _), Is.True,
+            Assert.That(
+                SurveyDateTimeParser.TryParseIso(result, out _),
+                Is.True,
                 $"Expected valid ISO output, got: '{result}'");
         }
 
@@ -101,7 +103,9 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         public void MigrateDateTime_RandomSymbols_ProducesValidIso()
         {
             string result = MigrateDateTime("abc123!@#");
-            Assert.That(SurveyDateTimeParser.TryParseIso(result, out _), Is.True,
+            Assert.That(
+                SurveyDateTimeParser.TryParseIso(result, out _),
+                Is.True,
                 $"Expected valid ISO output, got: '{result}'");
         }
 
@@ -110,7 +114,9 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         {
             // Feb 30 is invalid -- should fall through to DateTime.Now fallback
             string result = MigrateDateTime("2024-02-30T12:00:00");
-            Assert.That(SurveyDateTimeParser.TryParseIso(result, out _), Is.True,
+            Assert.That(
+                SurveyDateTimeParser.TryParseIso(result, out _),
+                Is.True,
                 $"Expected valid ISO output, got: '{result}'");
         }
 
@@ -118,7 +124,9 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         public void MigrateDateTime_Null_ProducesValidIso()
         {
             string result = MigrateDateTime(null);
-            Assert.That(SurveyDateTimeParser.TryParseIso(result, out _), Is.True,
+            Assert.That(
+                SurveyDateTimeParser.TryParseIso(result, out _),
+                Is.True,
                 $"Expected valid ISO output, got: '{result}'");
         }
 
@@ -126,7 +134,9 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         public void MigrateDateTime_Empty_ProducesValidIso()
         {
             string result = MigrateDateTime(string.Empty);
-            Assert.That(SurveyDateTimeParser.TryParseIso(result, out _), Is.True,
+            Assert.That(
+                SurveyDateTimeParser.TryParseIso(result, out _),
+                Is.True,
                 $"Expected valid ISO output, got: '{result}'");
         }
 
@@ -138,7 +148,9 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             string formatted = dt.ToString("G", System.Globalization.CultureInfo.InvariantCulture);
 
             string result = MigrateDateTime(formatted);
-            Assert.That(SurveyDateTimeParser.TryParseIso(result, out _), Is.True,
+            Assert.That(
+                SurveyDateTimeParser.TryParseIso(result, out _),
+                Is.True,
                 $"Expected valid ISO output from common format '{formatted}', got: '{result}'");
         }
     }

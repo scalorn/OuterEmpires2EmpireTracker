@@ -81,8 +81,10 @@ namespace OE2EmpireTracker.Services
         public int OverflowRuleCount { get; }
         public int SupplyChainStageCount { get; }
 
-        public DeliveryRouteReferenceReport(int deliveryPlanCount,
-            int overflowRuleCount = 0, int supplyChainStageCount = 0)
+        public DeliveryRouteReferenceReport(
+            int deliveryPlanCount,
+            int overflowRuleCount = 0,
+            int supplyChainStageCount = 0)
         {
             DeliveryPlanCount = deliveryPlanCount;
             OverflowRuleCount = overflowRuleCount;

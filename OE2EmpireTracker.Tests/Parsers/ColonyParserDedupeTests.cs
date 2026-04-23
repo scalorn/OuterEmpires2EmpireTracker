@@ -81,7 +81,9 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             // First, parse M1 into a fresh colony to discover the structure set
             var reference = ParseM1Fresh();
-            Assert.That(reference.Structures.Count, Is.EqualTo(43),
+            Assert.That(
+                reference.Structures.Count,
+                Is.EqualTo(43),
                 "Baseline: M1 should have 43 structures");
 
             // Group by FlatpackBlueprintUUID to get counts per blueprint type
@@ -105,7 +107,9 @@ namespace OE2EmpireTracker.Tests.Parsers
                 }
             }
 
-            Assert.That(colony.Structures.Count, Is.EqualTo(43),
+            Assert.That(
+                colony.Structures.Count,
+                Is.EqualTo(43),
                 "Pre-import: manual structures should match M1 count");
 
             // Now import M1 HTML -- on fixed code, structures should merge (count stays 43)
@@ -115,9 +119,10 @@ namespace OE2EmpireTracker.Tests.Parsers
             string html = ExtractFragment(clipboardData);
             _parser.ProcessHtml(colony, html, _empireContext);
 
-            Assert.That(colony.Structures.Count, Is.EqualTo(43),
-                $"After import: expected 43 structures (merged), but got {colony.Structures.Count}. " +
-                "Bug: manual structures (DisplaySequence=0) were not matched to parsed buildings.");
+            Assert.That(
+                colony.Structures.Count,
+                Is.EqualTo(43),
+                $"After import: expected 43 structures (merged), but got {colony.Structures.Count}. " + "Bug: manual structures (DisplaySequence=0) were not matched to parsed buildings.");
         }
 
         // -------------------------------------------------------------------
@@ -139,7 +144,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             int miningRigCountInM1 = reference.Structures
                 .Count(s => s.FlatpackBlueprintUUID == miningRigUUID);
 
-            Assert.That(miningRigCountInM1, Is.GreaterThan(0),
+            Assert.That(
+                miningRigCountInM1,
+                Is.GreaterThan(0),
                 "M1 should have at least one Mining Rig");
 
             // Create a colony with 1 manually-added Mining Rig (DisplaySequence=0)
@@ -163,10 +170,10 @@ namespace OE2EmpireTracker.Tests.Parsers
             int miningRigCountAfterImport = colony.Structures
                 .Count(s => s.FlatpackBlueprintUUID == miningRigUUID);
 
-            Assert.That(miningRigCountAfterImport, Is.EqualTo(miningRigCountInM1),
-                $"After import: expected {miningRigCountInM1} Mining Rigs (merged), " +
-                $"but got {miningRigCountAfterImport}. " +
-                "Bug: manual Mining Rig (DisplaySequence=0) was not matched to parsed Mining Rig.");
+            Assert.That(
+                miningRigCountAfterImport,
+                Is.EqualTo(miningRigCountInM1),
+                $"After import: expected {miningRigCountInM1} Mining Rigs (merged), " + $"but got {miningRigCountAfterImport}. " + "Bug: manual Mining Rig (DisplaySequence=0) was not matched to parsed Mining Rig.");
         }
 
         // -------------------------------------------------------------------
@@ -180,7 +187,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             // Should produce exactly 43 structures on both fixed and unfixed code
             var colony = ParseM1Fresh();
 
-            Assert.That(colony.Structures.Count, Is.EqualTo(43),
+            Assert.That(
+                colony.Structures.Count,
+                Is.EqualTo(43),
                 "Control: importing M1 into empty colony should produce 43 structures");
         }
 
@@ -205,7 +214,9 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void Preservation_M1_EmptyColonyImport_StructureCount()
         {
             var colony = ParseM1Fresh();
-            Assert.That(colony.Structures.Count, Is.EqualTo(43),
+            Assert.That(
+                colony.Structures.Count,
+                Is.EqualTo(43),
                 "M1 import into empty colony should produce 43 structures");
         }
 
@@ -215,7 +226,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             var colony = ParseM1Fresh();
             foreach (var s in colony.Structures)
             {
-                Assert.That(s.FlatpackBlueprintUUID, Is.Not.Null.And.Not.Empty,
+                Assert.That(
+                    s.FlatpackBlueprintUUID,
+                    Is.Not.Null.And.Not.Empty,
                     $"Structure with DisplaySequence={s.DisplaySequence} should have a FlatpackBlueprintUUID");
             }
         }
@@ -226,7 +239,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             var colony = ParseM1Fresh();
             foreach (var s in colony.Structures)
             {
-                Assert.That(s.DisplaySequence, Is.GreaterThan(0),
+                Assert.That(
+                    s.DisplaySequence,
+                    Is.GreaterThan(0),
                     $"Structure with UUID={s.UUID} should have DisplaySequence > 0");
             }
         }
@@ -237,7 +252,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             var colony = ParseM1Fresh();
             foreach (var s in colony.Structures)
             {
-                Assert.That(s.Properties.Count, Is.GreaterThan(0),
+                Assert.That(
+                    s.Properties.Count,
+                    Is.GreaterThan(0),
                     $"Structure DisplaySequence={s.DisplaySequence} should have at least one property");
             }
         }
@@ -250,12 +267,16 @@ namespace OE2EmpireTracker.Tests.Parsers
                 .Where(s => !string.IsNullOrEmpty(s.MiningSurveyResource))
                 .ToList();
 
-            Assert.That(miningRigs.Count, Is.GreaterThan(0),
+            Assert.That(
+                miningRigs.Count,
+                Is.GreaterThan(0),
                 "M1 should have at least one structure with mining resource info");
 
             foreach (var rig in miningRigs)
             {
-                Assert.That(rig.MiningSurveyResource, Is.Not.Null.And.Not.Empty,
+                Assert.That(
+                    rig.MiningSurveyResource,
+                    Is.Not.Null.And.Not.Empty,
                     $"Mining rig DisplaySequence={rig.DisplaySequence} should have MiningSurveyResource");
             }
         }
@@ -268,7 +289,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             var miningRigs = colony.Structures
                 .Where(s => !string.IsNullOrEmpty(s.MiningSurveyResource))
                 .ToList();
-            Assert.That(miningRigs.Count, Is.GreaterThan(0),
+            Assert.That(
+                miningRigs.Count,
+                Is.GreaterThan(0),
                 "M1 should have at least one mining rig");
 
             // Tamper: clear mining resource on all rigs to simulate stale data
@@ -287,7 +310,9 @@ namespace OE2EmpireTracker.Tests.Parsers
                 .Where(s => !string.IsNullOrEmpty(s.MiningSurveyResource))
                 .ToList();
 
-            Assert.That(rigsAfter.Count, Is.EqualTo(miningRigs.Count),
+            Assert.That(
+                rigsAfter.Count,
+                Is.EqualTo(miningRigs.Count),
                 "After reimport, all mining rigs should have their resource restored");
         }
 
@@ -311,7 +336,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             string html = ExtractFragment(clipboardData);
             _parser.ProcessHtml(colony, html, _empireContext);
 
-            Assert.That(miningRigs[0].MiningSurveyResource, Is.EqualTo(originalResource),
+            Assert.That(
+                miningRigs[0].MiningSurveyResource,
+                Is.EqualTo(originalResource),
                 "After reimport, mining resource should be overwritten by game value");
         }
 
@@ -323,7 +350,9 @@ namespace OE2EmpireTracker.Tests.Parsers
                 .Where(s => s.AssignedWorkers.Count > 0)
                 .ToList();
 
-            Assert.That(withWorkers.Count, Is.GreaterThan(0),
+            Assert.That(
+                withWorkers.Count,
+                Is.GreaterThan(0),
                 "M1 should have at least one structure with worker assignments");
         }
 
@@ -344,7 +373,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             int countAfterFirst = colony.Structures.Count;
 
             _parser.ProcessHtml(colony, html, _empireContext);
-            Assert.That(colony.Structures.Count, Is.EqualTo(countAfterFirst),
+            Assert.That(
+                colony.Structures.Count,
+                Is.EqualTo(countAfterFirst),
                 "M1 idempotency: structure count should not change after second import");
         }
 
@@ -367,7 +398,9 @@ namespace OE2EmpireTracker.Tests.Parsers
                 .OrderBy(u => u)
                 .ToList();
 
-            Assert.That(afterUUIDs, Is.EqualTo(snapshotUUIDs),
+            Assert.That(
+                afterUUIDs,
+                Is.EqualTo(snapshotUUIDs),
                 "M1 idempotency: FlatpackBlueprintUUIDs should be identical after second import");
         }
 
@@ -390,7 +423,9 @@ namespace OE2EmpireTracker.Tests.Parsers
                 .OrderBy(g => g)
                 .ToList();
 
-            Assert.That(afterSeqs, Is.EqualTo(snapshotSeqs),
+            Assert.That(
+                afterSeqs,
+                Is.EqualTo(snapshotSeqs),
                 "M1 idempotency: DisplaySequence values should be identical after second import");
         }
 
@@ -409,7 +444,9 @@ namespace OE2EmpireTracker.Tests.Parsers
 
             _parser.ProcessHtml(colony, html, _empireContext);
 
-            Assert.That(colony.Structures.Count, Is.GreaterThan(0),
+            Assert.That(
+                colony.Structures.Count,
+                Is.GreaterThan(0),
                 "VI-1 import should create at least one structure via workers fallback");
         }
 
@@ -426,7 +463,9 @@ namespace OE2EmpireTracker.Tests.Parsers
                 .Where(s => !string.IsNullOrEmpty(s.FlatpackBlueprintUUID))
                 .ToList();
 
-            Assert.That(withUUIDs.Count, Is.GreaterThan(0),
+            Assert.That(
+                withUUIDs.Count,
+                Is.GreaterThan(0),
                 "VI-1 workers fallback should produce structures with FlatpackBlueprintUUIDs");
         }
 
@@ -445,7 +484,9 @@ namespace OE2EmpireTracker.Tests.Parsers
 
             _parser.ProcessHtml(colony, html, _empireContext);
 
-            Assert.That(colony.Commodities.Count, Is.GreaterThan(0),
+            Assert.That(
+                colony.Commodities.Count,
+                Is.GreaterThan(0),
                 "M2-2 import should produce commodity demands");
         }
 
@@ -460,9 +501,13 @@ namespace OE2EmpireTracker.Tests.Parsers
 
             foreach (var c in colony.Commodities)
             {
-                Assert.That(c.Name, Is.Not.Null.And.Not.Empty,
+                Assert.That(
+                    c.Name,
+                    Is.Not.Null.And.Not.Empty,
                     "Each commodity demand should have a name");
-                Assert.That(c.Requested, Is.GreaterThan(0),
+                Assert.That(
+                    c.Requested,
+                    Is.GreaterThan(0),
                     $"Commodity '{c.Name}' should have Requested > 0");
             }
         }
@@ -500,9 +545,10 @@ namespace OE2EmpireTracker.Tests.Parsers
                 int countAfterFirst = colony.Structures.Count;
 
                 _parser.ProcessHtml(colony, html, _empireContext);
-                Assert.That(colony.Structures.Count, Is.EqualTo(countAfterFirst),
-                    $"[{filename}] Structure count changed after re-import: " +
-                    $"first={countAfterFirst}, second={colony.Structures.Count}");
+                Assert.That(
+                    colony.Structures.Count,
+                    Is.EqualTo(countAfterFirst),
+                    $"[{filename}] Structure count changed after re-import: " + $"first={countAfterFirst}, second={colony.Structures.Count}");
             }
         }
 
@@ -530,7 +576,9 @@ namespace OE2EmpireTracker.Tests.Parsers
                     .OrderBy(u => u)
                     .ToList();
 
-                Assert.That(afterUUIDs, Is.EqualTo(snapshotUUIDs),
+                Assert.That(
+                    afterUUIDs,
+                    Is.EqualTo(snapshotUUIDs),
                     $"[{filename}] FlatpackBlueprintUUIDs changed after re-import");
             }
         }
@@ -570,12 +618,16 @@ namespace OE2EmpireTracker.Tests.Parsers
                         .ToList())
                     .ToList();
 
-                Assert.That(afterProps.Count, Is.EqualTo(snapshot.Count),
+                Assert.That(
+                    afterProps.Count,
+                    Is.EqualTo(snapshot.Count),
                     $"[{filename}] Structure count changed after re-import");
 
                 for (int i = 0; i < snapshot.Count; i++)
                 {
-                    Assert.That(afterProps[i], Is.EqualTo(snapshot[i]),
+                    Assert.That(
+                        afterProps[i],
+                        Is.EqualTo(snapshot[i]),
                         $"[{filename}] Properties changed at structure index {i} after re-import");
                 }
             }
@@ -623,22 +675,31 @@ namespace OE2EmpireTracker.Tests.Parsers
                     .OrderBy(c => c.Name)
                     .ToList();
 
-                Assert.That(afterCommodities.Count, Is.EqualTo(snapshot.Count),
-                    $"[{filename}] Commodity count changed after re-import: " +
-                    $"first={snapshot.Count}, second={afterCommodities.Count}");
+                Assert.That(
+                    afterCommodities.Count,
+                    Is.EqualTo(snapshot.Count),
+                    $"[{filename}] Commodity count changed after re-import: " + $"first={snapshot.Count}, second={afterCommodities.Count}");
 
                 for (int i = 0; i < snapshot.Count; i++)
                 {
-                    Assert.That(afterCommodities[i].Name, Is.EqualTo(snapshot[i].Name),
+                    Assert.That(
+                        afterCommodities[i].Name,
+                        Is.EqualTo(snapshot[i].Name),
                         $"[{filename}] Commodity name mismatch at index {i}");
-                    Assert.That(afterCommodities[i].Requested, Is.EqualTo(snapshot[i].Requested),
+                    Assert.That(
+                        afterCommodities[i].Requested,
+                        Is.EqualTo(snapshot[i].Requested),
                         $"[{filename}] Requested mismatch for '{snapshot[i].Name}'");
-                    Assert.That(afterCommodities[i].Fulfilled, Is.EqualTo(snapshot[i].Fulfilled),
+                    Assert.That(
+                        afterCommodities[i].Fulfilled,
+                        Is.EqualTo(snapshot[i].Fulfilled),
                         $"[{filename}] Fulfilled mismatch for '{snapshot[i].Name}'");
                 }
             }
 
-            Assert.That(filesWithCommodities, Is.GreaterThan(0),
+            Assert.That(
+                filesWithCommodities,
+                Is.GreaterThan(0),
                 "At least one colony file should have commodity demands for this test to be meaningful");
         }
     }

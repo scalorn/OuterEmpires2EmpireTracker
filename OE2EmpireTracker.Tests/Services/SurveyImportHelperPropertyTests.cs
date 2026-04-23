@@ -12,8 +12,13 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class SurveyImportHelperPropertyTests
     {
-        private static Survey MakeSurvey(string uuid, string planetName, string surveyId,
-            string systemName = "System", string scannedBy = "Scanner", string dateTime = "2025-01-01",
+        private static Survey MakeSurvey(
+            string uuid,
+            string planetName,
+            string surveyId,
+            string systemName = "System",
+            string scannedBy = "Scanner",
+            string dateTime = "2025-01-01",
             string nickName = "")
         {
             var survey = new Survey();

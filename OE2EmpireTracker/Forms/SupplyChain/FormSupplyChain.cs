@@ -127,9 +127,15 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is Models.SupplyChain chain)
-            { _selectedChain = chain; PopulateForm(); }
+            {
+                _selectedChain = chain;
+                PopulateForm();
+            }
             else if (!e.IsSelected && lvwChains.SelectedItems.Count == 0)
-            { _selectedChain = null; ClearForm(); }
+            {
+                _selectedChain = null;
+                ClearForm();
+            }
         }
 
         // Form Population
@@ -137,7 +143,12 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedChain == null) { ClearForm(); return; }
+            if (_selectedChain == null)
+            {
+                ClearForm();
+                return;
+            }
+
             txtChainName.Text = _selectedChain.Name;
             chkActive.Checked = _selectedChain.IsActive;
             PopulateStagesGrid();
@@ -212,7 +223,8 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             cmbLocationType.Items.Add(DestinationType.Asteroid);
             cmbLocationType.Items.Add(DestinationType.Ship);
             if (cmbLocationType.Items.Count > 0) cmbLocationType.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulateStageTypeCombos: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateStageTypeCombos: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateResourceCombo()
@@ -227,7 +239,8 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             }
 
             if (cmbResource.Items.Count > 0) cmbResource.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulateResourceCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateResourceCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulatePurityCombo()
@@ -241,7 +254,8 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             }
 
             if (cmbPurity.Items.Count > 0) cmbPurity.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulatePurityCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulatePurityCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateLocationCombo()
@@ -282,7 +296,8 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                 cmbLocation.ValueMember = "Key";
             }
 
-            sw.Stop(); Log.Info("PERF PopulateLocationCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateLocationCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateRouteCombo()
@@ -301,7 +316,8 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             cmbRoute.DataSource = items;
             cmbRoute.DisplayMember = "Value";
             cmbRoute.ValueMember = "Key";
-            sw.Stop(); Log.Info("PERF PopulateRouteCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateRouteCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void CmbLocationType_SelectedIndexChanged(object sender, EventArgs e)
@@ -339,7 +355,8 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                 dgvStages.Rows[rowIdx].Tag = stage;
             }
 
-            sw.Stop(); Log.Info("PERF PopulateStagesGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateStagesGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private string ResolveLocationName(DestinationType locType, string uuid)
@@ -397,13 +414,19 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             for (int i = 0; i < cmbResource.Items.Count; i++)
             {
                 if (cmbResource.Items[i].ToString() == stage.ResourceName)
-                { cmbResource.SelectedIndex = i; break; }
+                {
+                    cmbResource.SelectedIndex = i;
+                    break;
+                }
             }
 
             for (int i = 0; i < cmbPurity.Items.Count; i++)
             {
                 if (cmbPurity.Items[i].ToString() == stage.ResourcePurity)
-                { cmbPurity.SelectedIndex = i; break; }
+                {
+                    cmbPurity.SelectedIndex = i;
+                    break;
+                }
             }
 
             txtThreshold.Text = stage.AccumulationThreshold > 0 ? stage.AccumulationThreshold.ToString() : string.Empty;
@@ -412,7 +435,8 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             PopulateRouteCombo();
             if (!string.IsNullOrEmpty(stage.DeliveryRouteUUID))
                 cmbRoute.SelectedValue = stage.DeliveryRouteUUID;
-            sw.Stop(); Log.Info("PERF PopulateStageEditFromStage: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateStageEditFromStage: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // Stage CRUD
@@ -524,7 +548,10 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         private void UpdateFlowSummary()
         {
             if (_selectedChain == null || _selectedChain.Stages.Count == 0)
-            { txtFlowSummary.Text = string.Empty; return; }
+            {
+                txtFlowSummary.Text = string.Empty;
+                return;
+            }
 
             var sorted = _selectedChain.Stages.OrderBy(s => s.Sequence).ToList();
             var parts = new List<string>();
@@ -566,7 +593,9 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             if (_selectedChain == null) return;
             var result = MessageBox.Show(
                 string.Format("Delete supply chain \"{0}\"?", _selectedChain.Name),
-                "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
             playerContext.RemoveSupplyChain(_selectedChain);
             playerContext.WriteContext();
@@ -582,8 +611,11 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             string name = txtChainName.Text.Trim();
             if (string.IsNullOrWhiteSpace(name))
             {
-                MessageBox.Show("Name cannot be empty.", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Name cannot be empty.",
+                    "Validation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -597,8 +629,10 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                         stage.StageType == SupplyChainStageType.Deliver)
                     {
                         MessageBox.Show(
-                            string.Format("Stage {0} ({1}) has a threshold but no delivery route assigned.",
-                                stage.Sequence, stage.StageType),
+                            string.Format(
+                                "Stage {0} ({1}) has a threshold but no delivery route assigned.",
+                                stage.Sequence,
+                                stage.StageType),
                             "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
@@ -629,7 +663,13 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         {
             if (IsDisposed) return;
             if (InvokeRequired)
-            { try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); } catch (ObjectDisposedException) { } return; }
+            {
+                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                } catch (ObjectDisposedException)
+                {
+                }
+                return;
+            }
             _selectedChain = null;
             PopulateChainList();
             ClearForm();

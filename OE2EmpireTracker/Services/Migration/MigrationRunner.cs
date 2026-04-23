@@ -46,8 +46,11 @@ namespace OE2EmpireTracker.Services.Migration
 
             int baselineVersion = ec.DataVersion;
             int playerVersion = pc.DataVersion;
-            Log.Info("Migration check: baseline v{0}, player v{1}, target v{2}",
-                baselineVersion, playerVersion, CurrentVersion);
+            Log.Info(
+                "Migration check: baseline v{0}, player v{1}, target v{2}",
+                baselineVersion,
+                playerVersion,
+                CurrentVersion);
 
             for (int v = Math.Min(baselineVersion, playerVersion) + 1;
                  v <= CurrentVersion; v++)

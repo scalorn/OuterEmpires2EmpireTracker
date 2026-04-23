@@ -176,8 +176,12 @@ namespace OE2EmpireTracker.Services
 
         // ----- Activity Section -----
 
-        private static bool RenderActivitySection(RtfBuilder builder, List<ActivityRow> rows,
-            Colony colony, PlayerContext playerContext, bool needsLeadingNewline)
+        private static bool RenderActivitySection(
+            RtfBuilder builder,
+            List<ActivityRow> rows,
+            Colony colony,
+            PlayerContext playerContext,
+            bool needsLeadingNewline)
         {
             // Split into non-repeating (Manufacturing, CommodityManufacturing, Research)
             // and repeating (Mining, Refining) which get aggregated
@@ -194,12 +198,27 @@ namespace OE2EmpireTracker.Services
             bool anyRendered = false;
 
             // Non-repeating activity rows by type
-            anyRendered |= RenderNonRepeatingGroup(builder, nonRepeating,
-                ActivityType.Manufacturing, "Manufacturing", colony, needsLeadingNewline || anyRendered);
-            anyRendered |= RenderNonRepeatingGroup(builder, nonRepeating,
-                ActivityType.CommodityManufacturing, "Commodity Manufacturing", colony, needsLeadingNewline || anyRendered);
-            anyRendered |= RenderNonRepeatingGroup(builder, nonRepeating,
-                ActivityType.Research, "Research", colony, needsLeadingNewline || anyRendered);
+            anyRendered |= RenderNonRepeatingGroup(
+                builder,
+                nonRepeating,
+                ActivityType.Manufacturing,
+                "Manufacturing",
+                colony,
+                needsLeadingNewline || anyRendered);
+            anyRendered |= RenderNonRepeatingGroup(
+                builder,
+                nonRepeating,
+                ActivityType.CommodityManufacturing,
+                "Commodity Manufacturing",
+                colony,
+                needsLeadingNewline || anyRendered);
+            anyRendered |= RenderNonRepeatingGroup(
+                builder,
+                nonRepeating,
+                ActivityType.Research,
+                "Research",
+                colony,
+                needsLeadingNewline || anyRendered);
 
             // Aggregated mining
             anyRendered |= RenderMiningAggregation(builder, colony, playerContext, needsLeadingNewline || anyRendered);
@@ -210,8 +229,13 @@ namespace OE2EmpireTracker.Services
             return anyRendered;
         }
 
-        private static bool RenderNonRepeatingGroup(RtfBuilder builder, List<ActivityRow> allRows,
-            ActivityType type, string header, Colony colony, bool needsLeadingNewline)
+        private static bool RenderNonRepeatingGroup(
+            RtfBuilder builder,
+            List<ActivityRow> allRows,
+            ActivityType type,
+            string header,
+            Colony colony,
+            bool needsLeadingNewline)
         {
             var rows = allRows.Where(r => r.Type == type).ToList();
             if (rows.Count == 0) return false;
@@ -303,8 +327,11 @@ namespace OE2EmpireTracker.Services
 
         // ----- Mining Aggregation -----
 
-        private static bool RenderMiningAggregation(RtfBuilder builder, Colony colony,
-            PlayerContext playerContext, bool needsLeadingNewline)
+        private static bool RenderMiningAggregation(
+            RtfBuilder builder,
+            Colony colony,
+            PlayerContext playerContext,
+            bool needsLeadingNewline)
         {
             if (colony.Structures == null) return false;
 
@@ -367,8 +394,11 @@ namespace OE2EmpireTracker.Services
 
         // ----- Refining Aggregation -----
 
-        private static bool RenderRefiningAggregation(RtfBuilder builder, Colony colony,
-            PlayerContext playerContext, bool needsLeadingNewline)
+        private static bool RenderRefiningAggregation(
+            RtfBuilder builder,
+            Colony colony,
+            PlayerContext playerContext,
+            bool needsLeadingNewline)
         {
             if (colony.Structures == null) return false;
 

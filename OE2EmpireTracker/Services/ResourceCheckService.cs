@@ -66,15 +66,20 @@ namespace OE2EmpireTracker.Services
                     break;
 
                 default:
-                    Log.Debug("ComputeShortfalls: unsupported item type {0}, returning empty",
+                    Log.Debug(
+                        "ComputeShortfalls: unsupported item type {0}, returning empty",
                         item.ItemType);
                     shortfalls = new Dictionary<string, int>();
                     break;
             }
 
             sw.Stop();
-            Log.Debug("PERF ComputeShortfalls: {0} item UUID={1}, {2} shortfalls in {3}ms",
-                item.ItemType, item.UUID, shortfalls.Count, sw.ElapsedMilliseconds);
+            Log.Debug(
+                "PERF ComputeShortfalls: {0} item UUID={1}, {2} shortfalls in {3}ms",
+                item.ItemType,
+                item.UUID,
+                shortfalls.Count,
+                sw.ElapsedMilliseconds);
             return shortfalls;
         }
 
@@ -117,8 +122,11 @@ namespace OE2EmpireTracker.Services
 
                 if (inventory == null)
                 {
-                    Log.Warn("ComputePlanShortfalls: could not resolve inventory for item {0} at {1}:{2}",
-                        item.UUID, item.BuildLocationType, item.BuildLocationUUID);
+                    Log.Warn(
+                        "ComputePlanShortfalls: could not resolve inventory for item {0} at {1}:{2}",
+                        item.UUID,
+                        item.BuildLocationType,
+                        item.BuildLocationUUID);
                     continue;
                 }
 
@@ -130,8 +138,13 @@ namespace OE2EmpireTracker.Services
             }
 
             sw.Stop();
-            Log.Info("PERF ComputePlanShortfalls: plan '{0}' ({1}), {2}/{3} items have shortfalls in {4}ms",
-                plan.Name, plan.UUID, result.Count, plan.Items.Count, sw.ElapsedMilliseconds);
+            Log.Info(
+                "PERF ComputePlanShortfalls: plan '{0}' ({1}), {2}/{3} items have shortfalls in {4}ms",
+                plan.Name,
+                plan.UUID,
+                result.Count,
+                plan.Items.Count,
+                sw.ElapsedMilliseconds);
             return result;
         }
 
@@ -152,7 +165,8 @@ namespace OE2EmpireTracker.Services
                     var colony = colonyFinder(item.BuildLocationUUID);
                     if (colony == null)
                     {
-                        Log.Warn("ResolveLocationInventory: colony {0} not found",
+                        Log.Warn(
+                            "ResolveLocationInventory: colony {0} not found",
                             item.BuildLocationUUID);
                         return null;
                     }
@@ -168,7 +182,8 @@ namespace OE2EmpireTracker.Services
                         "Station build locations are not yet supported.");
 
                 default:
-                    Log.Warn("ResolveLocationInventory: unknown location type {0}",
+                    Log.Warn(
+                        "ResolveLocationInventory: unknown location type {0}",
                         item.BuildLocationType);
                     return null;
             }
@@ -188,8 +203,10 @@ namespace OE2EmpireTracker.Services
             Blueprint bp = blueprintFinder(item.BlueprintUUID);
             if (bp == null)
             {
-                Log.Warn("ComputeManufactoryShortfalls: blueprint {0} not found for item {1}",
-                    item.BlueprintUUID, item.UUID);
+                Log.Warn(
+                    "ComputeManufactoryShortfalls: blueprint {0} not found for item {1}",
+                    item.BlueprintUUID,
+                    item.UUID);
                 return shortfalls;
             }
 
@@ -233,8 +250,10 @@ namespace OE2EmpireTracker.Services
             if (!Commodity.ResourceMapByString.TryGetValue(
                     item.CommodityName, out commodity))
             {
-                Log.Warn("ComputeCommodityShortfalls: commodity '{0}' not found for item {1}",
-                    item.CommodityName, item.UUID);
+                Log.Warn(
+                    "ComputeCommodityShortfalls: commodity '{0}' not found for item {1}",
+                    item.CommodityName,
+                    item.UUID);
                 return shortfalls;
             }
 

@@ -24,7 +24,9 @@ namespace OE2EmpireTracker.ViewModels
 
         public IReadOnlyList<RouteStop> Stops => _route.Stops.AsReadOnly();
 
-        public void AddStop(string destinationUUID, DestinationType destType = DestinationType.Colony,
+        public void AddStop(
+            string destinationUUID,
+            DestinationType destType = DestinationType.Colony,
             RouteStopPurpose purpose = RouteStopPurpose.Cargo)
         {
             var stop = new RouteStop

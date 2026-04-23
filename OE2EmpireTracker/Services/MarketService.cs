@@ -48,8 +48,11 @@ namespace OE2EmpireTracker.Services
 
             if (quantitySold > listing.Quantity)
             {
-                Log.Warn("RecordSale: quantity {0} exceeds listing availability {1} for listing {2}",
-                    quantitySold, listing.Quantity, listing.UUID);
+                Log.Warn(
+                    "RecordSale: quantity {0} exceeds listing availability {1} for listing {2}",
+                    quantitySold,
+                    listing.Quantity,
+                    listing.UUID);
                 sw.Stop();
                 Log.Info("PERF RecordSale: rejected in {0}ms", sw.ElapsedMilliseconds);
                 return null;
@@ -79,8 +82,12 @@ namespace OE2EmpireTracker.Services
             };
 
             sw.Stop();
-            Log.Info("PERF RecordSale: recorded sale of {0}x '{1}' at {2}/unit in {3}ms",
-                quantitySold, listing.ItemName, pricePerUnit, sw.ElapsedMilliseconds);
+            Log.Info(
+                "PERF RecordSale: recorded sale of {0}x '{1}' at {2}/unit in {3}ms",
+                quantitySold,
+                listing.ItemName,
+                pricePerUnit,
+                sw.ElapsedMilliseconds);
 
             return transaction;
         }
@@ -157,8 +164,11 @@ namespace OE2EmpireTracker.Services
                         hold.AddItem(item);
                     }
 
-                    Log.Debug("RecordPurchase: added {0} items to station {1} hold for player {2}",
-                        quantity, stationUUID, ownerUUID);
+                    Log.Debug(
+                        "RecordPurchase: added {0} items to station {1} hold for player {2}",
+                        quantity,
+                        stationUUID,
+                        ownerUUID);
                 }
                 else
                 {
@@ -167,8 +177,12 @@ namespace OE2EmpireTracker.Services
             }
 
             sw.Stop();
-            Log.Info("PERF RecordPurchase: recorded purchase of {0}x '{1}' at {2}/unit in {3}ms",
-                quantity, itemName, pricePerUnit, sw.ElapsedMilliseconds);
+            Log.Info(
+                "PERF RecordPurchase: recorded purchase of {0}x '{1}' at {2}/unit in {3}ms",
+                quantity,
+                itemName,
+                pricePerUnit,
+                sw.ElapsedMilliseconds);
 
             return transaction;
         }
@@ -229,8 +243,11 @@ namespace OE2EmpireTracker.Services
             }
 
             sw.Stop();
-            Log.Info("PERF ComputeProfitLoss: computed over {0} item(s), net={1} in {2}ms",
-                summary.ItemBreakdown.Count, summary.NetProfitLoss, sw.ElapsedMilliseconds);
+            Log.Info(
+                "PERF ComputeProfitLoss: computed over {0} item(s), net={1} in {2}ms",
+                summary.ItemBreakdown.Count,
+                summary.NetProfitLoss,
+                sw.ElapsedMilliseconds);
 
             return summary;
         }

@@ -66,10 +66,10 @@ namespace OE2EmpireTracker.Tests.Services
                 bool expected = ManualHasExpiredTimers(colony);
                 bool actual = colony.HasExpiredTimers();
 
-                Assert.That(actual, Is.EqualTo(expected),
-                    $"Mismatch at iteration {i} (seed={seed}). " +
-                    $"StructureCount={structureCount}, Expected={expected}, Actual={actual}. " +
-                    FormatColonyState(colony));
+                Assert.That(
+                    actual,
+                    Is.EqualTo(expected),
+                    $"Mismatch at iteration {i} (seed={seed}). " + $"StructureCount={structureCount}, Expected={expected}, Actual={actual}. " + FormatColonyState(colony));
             }
         }
 
@@ -347,16 +347,16 @@ namespace OE2EmpireTracker.Tests.Services
                     }
 
                     // Verify exact count: N expired colonies => exactly N events
-                    Assert.That(firedUUIDs.Count, Is.EqualTo(expectedUUIDs.Count),
-                        $"Event count mismatch at iteration {i} (seed={seed}). " +
-                        $"Expected {expectedUUIDs.Count} events, got {firedUUIDs.Count}. " +
-                        $"ColonyCount={colonyCount}");
+                    Assert.That(
+                        firedUUIDs.Count,
+                        Is.EqualTo(expectedUUIDs.Count),
+                        $"Event count mismatch at iteration {i} (seed={seed}). " + $"Expected {expectedUUIDs.Count} events, got {firedUUIDs.Count}. " + $"ColonyCount={colonyCount}");
 
                     // Verify each fired UUID matches an expected UUID (same set)
-                    Assert.That(firedUUIDs, Is.EquivalentTo(expectedUUIDs),
-                        $"UUID set mismatch at iteration {i} (seed={seed}). " +
-                        $"Expected UUIDs: [{string.Join(", ", expectedUUIDs)}], " +
-                        $"Fired UUIDs: [{string.Join(", ", firedUUIDs)}]");
+                    Assert.That(
+                        firedUUIDs,
+                        Is.EquivalentTo(expectedUUIDs),
+                        $"UUID set mismatch at iteration {i} (seed={seed}). " + $"Expected UUIDs: [{string.Join(", ", expectedUUIDs)}], " + $"Fired UUIDs: [{string.Join(", ", firedUUIDs)}]");
                 }
             }
             finally
@@ -428,17 +428,17 @@ namespace OE2EmpireTracker.Tests.Services
 
                     if (anyExpired)
                     {
-                        Assert.That(fileWritten, Is.True,
-                            $"Iteration {i} (seed={seed}): colonies had expired timers but " +
-                            $"WriteContext() was not called (file not written). " +
-                            $"ColonyCount={colonyCount}");
+                        Assert.That(
+                            fileWritten,
+                            Is.True,
+                            $"Iteration {i} (seed={seed}): colonies had expired timers but " + $"WriteContext() was not called (file not written). " + $"ColonyCount={colonyCount}");
                     }
                     else
                     {
-                        Assert.That(fileWritten, Is.False,
-                            $"Iteration {i} (seed={seed}): no colonies had expired timers but " +
-                            $"WriteContext() was called (file was written). " +
-                            $"ColonyCount={colonyCount}");
+                        Assert.That(
+                            fileWritten,
+                            Is.False,
+                            $"Iteration {i} (seed={seed}): no colonies had expired timers but " + $"WriteContext() was called (file was written). " + $"ColonyCount={colonyCount}");
                     }
                 }
             }
@@ -555,7 +555,10 @@ namespace OE2EmpireTracker.Tests.Services
                         }
 
                         // Attach a named handler to avoid event leak
-                        void OnColonyDataChangedIgnore(object sender, ColonyDataChangedEventArgs e) { }
+                        void OnColonyDataChangedIgnore(object sender, ColonyDataChangedEventArgs e)
+                        {
+                        }
+
                         pc.ColonyDataChanged += OnColonyDataChangedIgnore;
 
                         try
@@ -567,10 +570,10 @@ namespace OE2EmpireTracker.Tests.Services
                             pc.ColonyDataChanged -= OnColonyDataChangedIgnore;
                         }
 
-                        Assert.That(processor.LastCycleHadError, Is.EqualTo(shouldError[c]),
-                            $"Iteration {i}, cycle {c} (seed={seed}). " +
-                            $"Expected LastCycleHadError={shouldError[c]} but got {processor.LastCycleHadError}. " +
-                            $"Cycle sequence: [{string.Join(", ", shouldError.Select(e => e ? "error" : "success"))}]");
+                        Assert.That(
+                            processor.LastCycleHadError,
+                            Is.EqualTo(shouldError[c]),
+                            $"Iteration {i}, cycle {c} (seed={seed}). " + $"Expected LastCycleHadError={shouldError[c]} but got {processor.LastCycleHadError}. " + $"Cycle sequence: [{string.Join(", ", shouldError.Select(e => e ? "error" : "success"))}]");
                     }
 
                     processor.Dispose();
@@ -771,16 +774,24 @@ namespace OE2EmpireTracker.Tests.Services
 
                     if ((int)target > (int)current)
                     {
-                        Assert.That(changed, Is.True,
+                        Assert.That(
+                            changed,
+                            Is.True,
                             $"Expected advance from {current} to {target}");
-                        Assert.That(item.Status, Is.EqualTo(target),
+                        Assert.That(
+                            item.Status,
+                            Is.EqualTo(target),
                             $"Status should be {target} after advance from {current}");
                     }
                     else
                     {
-                        Assert.That(changed, Is.False,
+                        Assert.That(
+                            changed,
+                            Is.False,
                             $"Should not change from {current} to {target}");
-                        Assert.That(item.Status, Is.EqualTo(current),
+                        Assert.That(
+                            item.Status,
+                            Is.EqualTo(current),
                             $"Status should remain {current} when target is {target}");
                     }
                 }
@@ -845,15 +856,21 @@ namespace OE2EmpireTracker.Tests.Services
                 processor.Dispose();
 
                 // Item should have advanced to Ready
-                Assert.That(item.Status, Is.EqualTo(BuildItemStatus.Ready),
+                Assert.That(
+                    item.Status,
+                    Is.EqualTo(BuildItemStatus.Ready),
                     "Delivering item with no shortfalls should advance to Ready");
 
                 // BuildPlanDataChanged should have fired for this plan
-                Assert.That(firedPlanUUIDs, Contains.Item(plan.UUID),
+                Assert.That(
+                    firedPlanUUIDs,
+                    Contains.Item(plan.UUID),
                     "BuildPlanDataChanged should fire for modified plan");
 
                 // Flag should be cleared
-                Assert.That(pc.CascadeResourceCheckDirty, Is.False,
+                Assert.That(
+                    pc.CascadeResourceCheckDirty,
+                    Is.False,
                     "CascadeResourceCheckDirty should be cleared after processing");
             }
             finally
@@ -885,7 +902,9 @@ namespace OE2EmpireTracker.Tests.Services
                 processor.RunCycleOnce();
                 processor.Dispose();
 
-                Assert.That(pc.CascadeStockTargetsDirty, Is.False,
+                Assert.That(
+                    pc.CascadeStockTargetsDirty,
+                    Is.False,
                     "CascadeStockTargetsDirty should be cleared after processing");
             }
             finally
@@ -965,11 +984,17 @@ namespace OE2EmpireTracker.Tests.Services
                 processor.RunCycleOnce();
                 processor.Dispose();
 
-                Assert.That(stagedItem.Status, Is.EqualTo(BuildItemStatus.Staged),
+                Assert.That(
+                    stagedItem.Status,
+                    Is.EqualTo(BuildItemStatus.Staged),
                     "Staged item should remain Staged");
-                Assert.That(readyItem.Status, Is.EqualTo(BuildItemStatus.Ready),
+                Assert.That(
+                    readyItem.Status,
+                    Is.EqualTo(BuildItemStatus.Ready),
                     "Ready item should remain Ready");
-                Assert.That(completedItem.Status, Is.EqualTo(BuildItemStatus.Completed),
+                Assert.That(
+                    completedItem.Status,
+                    Is.EqualTo(BuildItemStatus.Completed),
                     "Completed item should remain Completed");
             }
             finally
@@ -994,9 +1019,13 @@ namespace OE2EmpireTracker.Tests.Services
             var processor = new BackgroundProcessor(pc);
             processor.Start();
 
-            Assert.That(pc.CascadeResourceCheckDirty, Is.True,
+            Assert.That(
+                pc.CascadeResourceCheckDirty,
+                Is.True,
                 "Start() should set CascadeResourceCheckDirty");
-            Assert.That(pc.CascadeStockTargetsDirty, Is.True,
+            Assert.That(
+                pc.CascadeStockTargetsDirty,
+                Is.True,
                 "Start() should set CascadeStockTargetsDirty");
 
             processor.Dispose();
@@ -1051,7 +1080,9 @@ namespace OE2EmpireTracker.Tests.Services
                 processor.Dispose();
 
                 // Item should NOT have been advanced because plan is inactive
-                Assert.That(item.Status, Is.EqualTo(BuildItemStatus.Delivering),
+                Assert.That(
+                    item.Status,
+                    Is.EqualTo(BuildItemStatus.Delivering),
                     "Delivering item in inactive plan should not be advanced");
             }
             finally
@@ -1087,7 +1118,9 @@ namespace OE2EmpireTracker.Tests.Services
                 processor.RunCycleOnce();
                 processor.Dispose();
 
-                Assert.That(firedPlanUUIDs, Is.Empty,
+                Assert.That(
+                    firedPlanUUIDs,
+                    Is.Empty,
                     "No BuildPlanDataChanged events should fire when no cascade flags are set");
             }
             finally

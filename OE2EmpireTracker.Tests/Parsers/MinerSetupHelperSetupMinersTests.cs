@@ -66,8 +66,13 @@ namespace OE2EmpireTracker.Tests.Parsers
             };
         }
 
-        private Survey CreateRealSurvey(string uuid, string planetName, string surveyId,
-            string resourceName, string purity, string amount)
+        private Survey CreateRealSurvey(
+            string uuid,
+            string planetName,
+            string surveyId,
+            string resourceName,
+            string purity,
+            string amount)
         {
             return new Survey("Test Survey")
             {
@@ -113,7 +118,8 @@ namespace OE2EmpireTracker.Tests.Parsers
             // Assert: timer started
             Assert.That(miner.ProcessCompletionTime, Is.Not.Null);
             Assert.That(miner.ProcessCompletionTime.IsRepeating, Is.True);
-            Assert.That(miner.ProcessCompletionTime.RepeatIntervalSeconds,
+            Assert.That(
+                miner.ProcessCompletionTime.RepeatIntervalSeconds,
                 Is.EqualTo(GameConstants.SecondsPerHour));
         }
 

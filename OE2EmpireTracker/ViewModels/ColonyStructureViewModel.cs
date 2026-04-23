@@ -28,19 +28,34 @@ namespace OE2EmpireTracker.ViewModels
 
         public bool IsBuilt
         {
-            get { bool v; _structure.Properties.GetBoolean(GameConstants.PropBuilt, false, out v); return v; }
+            get
+            {
+                bool v;
+                _structure.Properties.GetBoolean(GameConstants.PropBuilt, false, out v);
+                return v;
+            }
             set { _structure.Properties.SetProperty(GameConstants.PropBuilt, value); }
         }
 
         public bool IsStaged
         {
-            get { bool v; _structure.Properties.GetBoolean(GameConstants.PropStaged, false, out v); return v; }
+            get
+            {
+                bool v;
+                _structure.Properties.GetBoolean(GameConstants.PropStaged, false, out v);
+                return v;
+            }
             set { _structure.Properties.SetProperty(GameConstants.PropStaged, value); }
         }
 
         public bool IsOnline
         {
-            get { bool v; _structure.Properties.GetBoolean(GameConstants.PropOnline, false, out v); return v; }
+            get
+            {
+                bool v;
+                _structure.Properties.GetBoolean(GameConstants.PropOnline, false, out v);
+                return v;
+            }
             set { _structure.Properties.SetProperty(GameConstants.PropOnline, value); }
         }
 

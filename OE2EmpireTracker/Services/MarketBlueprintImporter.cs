@@ -110,8 +110,15 @@ namespace OE2EmpireTracker.Services
                     UpdateExisting(existing, bp);
                     entry.Action = ImportAction.Updated;
                     entry.UUID = existing.UUID;
-                    Log.Info("Updated {0} blueprint: {1} Ev{2} {3} C{4} TL={5} UUID={6}",
-                        entry.Storage, bp.Name, bp.Evolution, bp.BluePrintType, bp.Class, bp.TechLevel, existing.UUID);
+                    Log.Info(
+                        "Updated {0} blueprint: {1} Ev{2} {3} C{4} TL={5} UUID={6}",
+                        entry.Storage,
+                        bp.Name,
+                        bp.Evolution,
+                        bp.BluePrintType,
+                        bp.Class,
+                        bp.TechLevel,
+                        existing.UUID);
 
                     if (isGlobal) globalChanged = true;
                     else playerChanged = true;
@@ -132,8 +139,15 @@ namespace OE2EmpireTracker.Services
                         playerContext.AddBlueprint(bp);
                     entry.Action = ImportAction.Created;
                     entry.UUID = bp.UUID;
-                    Log.Info("Created {0} blueprint: {1} Ev{2} {3} C{4} TL={5} UUID={6}",
-                        entry.Storage, bp.Name, bp.Evolution, bp.BluePrintType, bp.Class, bp.TechLevel, bp.UUID);
+                    Log.Info(
+                        "Created {0} blueprint: {1} Ev{2} {3} C{4} TL={5} UUID={6}",
+                        entry.Storage,
+                        bp.Name,
+                        bp.Evolution,
+                        bp.BluePrintType,
+                        bp.Class,
+                        bp.TechLevel,
+                        bp.UUID);
 
                     if (isGlobal) globalChanged = true;
                     else playerChanged = true;
@@ -155,8 +169,11 @@ namespace OE2EmpireTracker.Services
                 Log.Info("Persisted player blueprint changes");
             }
 
-            Log.Info("Import complete: {0} created, {1} updated, {2} skipped",
-                result.CreatedCount, result.UpdatedCount, result.SkippedCount);
+            Log.Info(
+                "Import complete: {0} created, {1} updated, {2} skipped",
+                result.CreatedCount,
+                result.UpdatedCount,
+                result.SkippedCount);
 
             return result;
         }
@@ -256,8 +273,12 @@ namespace OE2EmpireTracker.Services
             // that only extracts 1 property) from wiping out a full property set.
             if (incoming.Properties != null && incoming.Properties.Count > 0)
             {
-                Log.Info("UpdateExisting: merging properties ({0} incoming into {1} existing) for {2} (hashcode={3})",
-                    incoming.Properties.Count, existing.Properties?.Count ?? 0, existing.Name, existing.GetHashCode());
+                Log.Info(
+                    "UpdateExisting: merging properties ({0} incoming into {1} existing) for {2} (hashcode={3})",
+                    incoming.Properties.Count,
+                    existing.Properties?.Count ?? 0,
+                    existing.Name,
+                    existing.GetHashCode());
 
                 if (existing.Properties == null)
                     existing.Properties = new PropertyBag();
@@ -277,16 +298,21 @@ namespace OE2EmpireTracker.Services
             }
             else
             {
-                Log.Info("UpdateExisting: incoming has no properties, preserving existing ({0} props) for {1}",
-                    existing.Properties?.Count ?? 0, existing.Name);
+                Log.Info(
+                    "UpdateExisting: incoming has no properties, preserving existing ({0} props) for {1}",
+                    existing.Properties?.Count ?? 0,
+                    existing.Name);
             }
 
             // Merge resources -- add/overwrite incoming keys but preserve existing keys
             // not present in incoming. Same rationale as properties.
             if (incoming.Resources != null && incoming.Resources.Count > 0)
             {
-                Log.Info("UpdateExisting: merging resources ({0} incoming into {1} existing) for {2}",
-                    incoming.Resources.Count, existing.Resources?.Count ?? 0, existing.Name);
+                Log.Info(
+                    "UpdateExisting: merging resources ({0} incoming into {1} existing) for {2}",
+                    incoming.Resources.Count,
+                    existing.Resources?.Count ?? 0,
+                    existing.Name);
 
                 if (existing.Resources == null)
                     existing.Resources = new Dictionary<string, string>();
@@ -298,8 +324,10 @@ namespace OE2EmpireTracker.Services
             }
             else
             {
-                Log.Info("UpdateExisting: incoming has no resources, preserving existing ({0} resources) for {1}",
-                    existing.Resources?.Count ?? 0, existing.Name);
+                Log.Info(
+                    "UpdateExisting: incoming has no resources, preserving existing ({0} resources) for {1}",
+                    existing.Resources?.Count ?? 0,
+                    existing.Name);
             }
 
             // Overwrite non-protected scalar fields from incoming, but only if the

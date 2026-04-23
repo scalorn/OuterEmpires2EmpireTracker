@@ -30,7 +30,8 @@ namespace OE2EmpireTracker.Tests.Parsers
             // Assert
             Assert.That(structure.ProcessCompletionTime, Is.Not.Null);
             Assert.That(structure.ProcessCompletionTime.IsRepeating, Is.True);
-            Assert.That(structure.ProcessCompletionTime.RepeatIntervalSeconds,
+            Assert.That(
+                structure.ProcessCompletionTime.RepeatIntervalSeconds,
                 Is.EqualTo(GameConstants.SecondsPerHour));
         }
 
@@ -127,7 +128,8 @@ namespace OE2EmpireTracker.Tests.Parsers
 
             // Assert
             Assert.That(structure.ProcessCompletionTime, Is.Not.Null);
-            Assert.That(structure.ProcessCompletionTime.RepeatIntervalSeconds,
+            Assert.That(
+                structure.ProcessCompletionTime.RepeatIntervalSeconds,
                 Is.EqualTo(3600));
         }
     }

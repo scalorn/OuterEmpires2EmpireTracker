@@ -238,8 +238,15 @@ namespace OE2EmpireTracker.Tests.Services
             // Import one with matching dedup key but different property value
             var list = new List<MarketBlueprint>
             {
-                MakeMarketBlueprint("AMX-SS Reactor Core", "Government", "Reactor", 0, 1, null,
-                    new Dictionary<string, string> { { "Health", "200" } })
+                MakeMarketBlueprint(
+                    "AMX-SS Reactor Core",
+                    "Government",
+                    "Reactor",
+                    0,
+                    1,
+                    null,
+                    new Dictionary<string,
+                    string> { { "Health", "200" } })
             };
 
             var result = MarketBlueprintImporter.Import(list, playerContext, empireContext);
@@ -281,8 +288,15 @@ namespace OE2EmpireTracker.Tests.Services
             // Import with matching dedup key -- incoming does NOT have protected properties
             var list = new List<MarketBlueprint>
             {
-                MakeMarketBlueprint("AMX-SS Reactor Core", "Government", "Reactor", 0, 1, null,
-                    new Dictionary<string, string> { { "Health", "200" }, { "Damage", "50" } })
+                MakeMarketBlueprint(
+                    "AMX-SS Reactor Core",
+                    "Government",
+                    "Reactor",
+                    0,
+                    1,
+                    null,
+                    new Dictionary<string,
+                    string> { { "Health", "200" }, { "Damage", "50" } })
             };
 
             var result = MarketBlueprintImporter.Import(list, playerContext, empireContext);
@@ -443,9 +457,10 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var keys = list.Select(bp => $"{bp.Name}|{bp.Evolution}|{bp.BluePrintType}|{bp.Class}|{bp.TechLevel}").ToList();
             var distinct = keys.Distinct().ToList();
-            Assert.That(keys.Count, Is.EqualTo(distinct.Count),
-                $"Duplicate dedup keys found in {storageName} storage on trial {trial}: " +
-                string.Join(", ", keys.GroupBy(k => k).Where(g => g.Count() > 1).Select(g => g.Key)));
+            Assert.That(
+                keys.Count,
+                Is.EqualTo(distinct.Count),
+                $"Duplicate dedup keys found in {storageName} storage on trial {trial}: " + string.Join(", ", keys.GroupBy(k => k).Where(g => g.Count() > 1).Select(g => g.Key)));
         }
 
         /// <summary>
@@ -481,20 +496,30 @@ namespace OE2EmpireTracker.Tests.Services
 
                     if (expectGlobal)
                     {
-                        Assert.That(entry.Storage, Is.EqualTo("Global"),
+                        Assert.That(
+                            entry.Storage,
+                            Is.EqualTo("Global"),
                             $"Trial {trial}: '{entry.Name}' Ev{entry.Evolution} seller='{entry.SellerName}' should route to Global");
                         var found = empireContext.GlobalBlueprintList.FirstOrDefault(b => b.UUID == entry.UUID);
-                        Assert.That(found, Is.Not.Null,
+                        Assert.That(
+                            found,
+                            Is.Not.Null,
                             $"Trial {trial}: Global blueprint '{entry.Name}' not found in GlobalBlueprintList");
                     }
                     else
                     {
-                        Assert.That(entry.Storage, Is.EqualTo("Player"),
+                        Assert.That(
+                            entry.Storage,
+                            Is.EqualTo("Player"),
                             $"Trial {trial}: Non-Government seller '{entry.Name}' Ev{entry.Evolution} should route to Player");
                         var found = playerContext.BlueprintList.FirstOrDefault(b => b.UUID == entry.UUID);
-                        Assert.That(found, Is.Not.Null,
+                        Assert.That(
+                            found,
+                            Is.Not.Null,
                             $"Trial {trial}: Player blueprint '{entry.Name}' not found in BlueprintList");
-                        Assert.That(found.OwnerUUID, Is.EqualTo(TestPlayerUUID),
+                        Assert.That(
+                            found.OwnerUUID,
+                            Is.EqualTo(TestPlayerUUID),
                             $"Trial {trial}: Player blueprint '{entry.Name}' should have OwnerUUID set");
                     }
                 }
@@ -539,33 +564,54 @@ namespace OE2EmpireTracker.Tests.Services
                 empireContext.AddGlobalBlueprint(existing);
 
                 // Import with matching dedup key -- incoming has different non-protected props
-                var incoming = MakeMarketBlueprint(name, "Government", bpType, evolution, cls, techLevel,
-                    new Dictionary<string, string> { { "Health", "999" }, { "Damage", "42" } });
+                var incoming = MakeMarketBlueprint(
+                    name,
+                    "Government",
+                    bpType,
+                    evolution,
+                    cls,
+                    techLevel,
+                    new Dictionary<string,
+                    string> { { "Health", "999" }, { "Damage", "42" } });
 
                 MarketBlueprintImporter.Import(
                     new List<MarketBlueprint> { incoming }, playerContext, empireContext);
 
                 var updated = empireContext.GlobalBlueprintList[0];
 
-                Assert.That(updated.UUID, Is.EqualTo("protected-uuid-" + trial),
+                Assert.That(
+                    updated.UUID,
+                    Is.EqualTo("protected-uuid-" + trial),
                     $"Trial {trial}: UUID must be preserved");
-                Assert.That(updated.OwnerUUID, Is.EqualTo("protected-owner-" + trial),
+                Assert.That(
+                    updated.OwnerUUID,
+                    Is.EqualTo("protected-owner-" + trial),
                     $"Trial {trial}: OwnerUUID must be preserved");
-                Assert.That(updated.NickName, Is.EqualTo("Nick" + trial),
+                Assert.That(
+                    updated.NickName,
+                    Is.EqualTo("Nick" + trial),
                     $"Trial {trial}: NickName must be preserved");
-                Assert.That(updated.CopyCost, Is.EqualTo(1000 + trial),
+                Assert.That(
+                    updated.CopyCost,
+                    Is.EqualTo(1000 + trial),
                     $"Trial {trial}: CopyCost must be preserved");
-                Assert.That(updated.Description, Is.EqualTo("Desc" + trial),
+                Assert.That(
+                    updated.Description,
+                    Is.EqualTo("Desc" + trial),
                     $"Trial {trial}: Description must be preserved");
 
                 string mrt;
                 updated.Properties.GetString("Manufacture Run Time", null, out mrt);
-                Assert.That(mrt, Is.EqualTo("MRT_" + trial),
+                Assert.That(
+                    mrt,
+                    Is.EqualTo("MRT_" + trial),
                     $"Trial {trial}: Manufacture Run Time must be preserved");
 
                 string pr;
                 updated.Properties.GetString("Power Required", null, out pr);
-                Assert.That(pr, Is.EqualTo("PR_" + trial),
+                Assert.That(
+                    pr,
+                    Is.EqualTo("PR_" + trial),
                     $"Trial {trial}: Power Required must be preserved");
             }
         }
@@ -600,9 +646,13 @@ namespace OE2EmpireTracker.Tests.Services
                 var result = MarketBlueprintImporter.Import(blueprints, playerContext, empireContext);
 
                 int total = result.CreatedCount + result.UpdatedCount + result.SkippedCount;
-                Assert.That(total, Is.EqualTo(blueprints.Count),
+                Assert.That(
+                    total,
+                    Is.EqualTo(blueprints.Count),
                     $"Trial {trial}: created({result.CreatedCount}) + updated({result.UpdatedCount}) + skipped({result.SkippedCount}) = {total} != input count {blueprints.Count}");
-                Assert.That(result.Entries.Count, Is.EqualTo(blueprints.Count),
+                Assert.That(
+                    result.Entries.Count,
+                    Is.EqualTo(blueprints.Count),
                     $"Trial {trial}: Entries count should match input count");
             }
         }
@@ -635,23 +685,32 @@ namespace OE2EmpireTracker.Tests.Services
 
             var result = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
 
-            Assert.That(result.CreatedCount, Is.GreaterThan(0),
+            Assert.That(
+                result.CreatedCount,
+                Is.GreaterThan(0),
                 "Should create at least one blueprint from reactor sample");
             // Created + Updated + Skipped should account for all entries
-            Assert.That(result.CreatedCount + result.UpdatedCount + result.SkippedCount,
+            Assert.That(
+                result.CreatedCount + result.UpdatedCount + result.SkippedCount,
                 Is.EqualTo(parsed.Count),
                 "Total result entries should match parsed count");
             // Total blueprints across both storages should match created count
             int totalStored = empireContext.GlobalBlueprintList.Count + playerContext.BlueprintList.Count;
-            Assert.That(totalStored, Is.EqualTo(result.CreatedCount),
+            Assert.That(
+                totalStored,
+                Is.EqualTo(result.CreatedCount),
                 "Total stored blueprints should match created count (first import, no prior data)");
 
             // Every stored blueprint should have properties and a name
             foreach (var bp in empireContext.GlobalBlueprintList.Concat(playerContext.BlueprintList))
             {
-                Assert.That(bp.Name, Is.Not.Null.And.Not.Empty,
+                Assert.That(
+                    bp.Name,
+                    Is.Not.Null.And.Not.Empty,
                     "Each blueprint should have a name");
-                Assert.That(bp.Properties.Count, Is.GreaterThan(0),
+                Assert.That(
+                    bp.Properties.Count,
+                    Is.GreaterThan(0),
                     $"Blueprint '{bp.Name}' should have properties");
             }
         }
@@ -678,16 +737,24 @@ namespace OE2EmpireTracker.Tests.Services
             parsed = ParseHtml(html);
             var result2 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
 
-            Assert.That(empireContext.GlobalBlueprintList.Count, Is.EqualTo(countAfterFirst),
+            Assert.That(
+                empireContext.GlobalBlueprintList.Count,
+                Is.EqualTo(countAfterFirst),
                 "Blueprint count should not change after second import");
-            Assert.That(result2.CreatedCount, Is.EqualTo(0),
+            Assert.That(
+                result2.CreatedCount,
+                Is.EqualTo(0),
                 "Second import should create zero new blueprints");
-            Assert.That(result2.UpdatedCount + result2.SkippedCount, Is.EqualTo(parsed.Count),
+            Assert.That(
+                result2.UpdatedCount + result2.SkippedCount,
+                Is.EqualTo(parsed.Count),
                 "All entries on second import should be Updated or Skipped");
             // All non-skipped entries should be Updated
             foreach (var entry in result2.Entries.Where(e => e.Action != ImportAction.Skipped))
             {
-                Assert.That(entry.Action, Is.EqualTo(ImportAction.Updated),
+                Assert.That(
+                    entry.Action,
+                    Is.EqualTo(ImportAction.Updated),
                     $"Blueprint '{entry.Name}' should be Updated on second import, was {entry.Action}");
             }
 
@@ -695,13 +762,19 @@ namespace OE2EmpireTracker.Tests.Services
             parsed = ParseHtml(html);
             var result3 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
 
-            Assert.That(empireContext.GlobalBlueprintList.Count, Is.EqualTo(countAfterFirst),
+            Assert.That(
+                empireContext.GlobalBlueprintList.Count,
+                Is.EqualTo(countAfterFirst),
                 "Blueprint count should not change after third import");
-            Assert.That(result3.CreatedCount, Is.EqualTo(0),
+            Assert.That(
+                result3.CreatedCount,
+                Is.EqualTo(0),
                 "Third import should create zero new blueprints");
             foreach (var entry in result3.Entries.Where(e => e.Action != ImportAction.Skipped))
             {
-                Assert.That(entry.Action, Is.EqualTo(ImportAction.Updated),
+                Assert.That(
+                    entry.Action,
+                    Is.EqualTo(ImportAction.Updated),
                     $"Blueprint '{entry.Name}' should be Updated on third import, was {entry.Action}");
             }
         }
@@ -734,9 +807,13 @@ namespace OE2EmpireTracker.Tests.Services
             // Verify property counts unchanged
             foreach (var bp in empireContext.GlobalBlueprintList)
             {
-                Assert.That(propCountsAfterFirst.ContainsKey(bp.UUID), Is.True,
+                Assert.That(
+                    propCountsAfterFirst.ContainsKey(bp.UUID),
+                    Is.True,
                     $"Blueprint '{bp.Name}' UUID should be stable across imports");
-                Assert.That(bp.Properties.Count, Is.EqualTo(propCountsAfterFirst[bp.UUID]),
+                Assert.That(
+                    bp.Properties.Count,
+                    Is.EqualTo(propCountsAfterFirst[bp.UUID]),
                     $"Blueprint '{bp.Name}' property count changed from {propCountsAfterFirst[bp.UUID]} to {bp.Properties.Count} after 3 imports");
             }
         }
@@ -769,9 +846,13 @@ namespace OE2EmpireTracker.Tests.Services
             // Verify resource counts unchanged
             foreach (var bp in empireContext.GlobalBlueprintList)
             {
-                Assert.That(resCountsAfterFirst.ContainsKey(bp.UUID), Is.True,
+                Assert.That(
+                    resCountsAfterFirst.ContainsKey(bp.UUID),
+                    Is.True,
                     $"Blueprint '{bp.Name}' UUID should be stable across imports");
-                Assert.That(bp.Resources.Count, Is.EqualTo(resCountsAfterFirst[bp.UUID]),
+                Assert.That(
+                    bp.Resources.Count,
+                    Is.EqualTo(resCountsAfterFirst[bp.UUID]),
                     $"Blueprint '{bp.Name}' resource count changed from {resCountsAfterFirst[bp.UUID]} to {bp.Resources.Count} after 3 imports");
             }
         }
@@ -790,20 +871,28 @@ namespace OE2EmpireTracker.Tests.Services
             var result1 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
             int countAfterFirst = empireContext.GlobalBlueprintList.Count;
 
-            Assert.That(result1.CreatedCount, Is.GreaterThan(0),
+            Assert.That(
+                result1.CreatedCount,
+                Is.GreaterThan(0),
                 "First weapon import should create blueprints");
 
             // Second import
             parsed = ParseHtml(html);
             var result2 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
 
-            Assert.That(empireContext.GlobalBlueprintList.Count, Is.EqualTo(countAfterFirst),
+            Assert.That(
+                empireContext.GlobalBlueprintList.Count,
+                Is.EqualTo(countAfterFirst),
                 "Weapon blueprint count should not change after second import");
-            Assert.That(result2.CreatedCount, Is.EqualTo(0),
+            Assert.That(
+                result2.CreatedCount,
+                Is.EqualTo(0),
                 "Second weapon import should create zero new blueprints");
             foreach (var entry in result2.Entries.Where(e => e.Action != ImportAction.Skipped))
             {
-                Assert.That(entry.Action, Is.EqualTo(ImportAction.Updated),
+                Assert.That(
+                    entry.Action,
+                    Is.EqualTo(ImportAction.Updated),
                     $"Weapon blueprint '{entry.Name}' should be Updated on second import, was {entry.Action}");
             }
 
@@ -812,9 +901,10 @@ namespace OE2EmpireTracker.Tests.Services
                 .Select(bp => $"{bp.Name}|{bp.Evolution}|{bp.BluePrintType}|{bp.Class}|{bp.TechLevel}")
                 .ToList();
             var distinct = keys.Distinct().ToList();
-            Assert.That(keys.Count, Is.EqualTo(distinct.Count),
-                "No duplicate dedup keys should exist after 2 weapon imports: " +
-                string.Join(", ", keys.GroupBy(k => k).Where(g => g.Count() > 1).Select(g => g.Key)));
+            Assert.That(
+                keys.Count,
+                Is.EqualTo(distinct.Count),
+                "No duplicate dedup keys should exist after 2 weapon imports: " + string.Join(", ", keys.GroupBy(k => k).Where(g => g.Count() > 1).Select(g => g.Key)));
         }
 
         /// <summary>
@@ -853,10 +943,14 @@ namespace OE2EmpireTracker.Tests.Services
                     if (bp.TechLevel != null)
                     {
                         // TechLevel should be a known value
-                        Assert.That(knownTechLevels.Contains(bp.TechLevel), Is.True,
+                        Assert.That(
+                            knownTechLevels.Contains(bp.TechLevel),
+                            Is.True,
                             $"Blueprint '{bp.Name}' has unknown TechLevel '{bp.TechLevel}' in {Path.GetFileName(file)}");
                         // Name should NOT contain the TechLevel in parentheses
-                        Assert.That(bp.Name, Does.Not.EndWith($"({bp.TechLevel})"),
+                        Assert.That(
+                            bp.Name,
+                            Does.Not.EndWith($"({bp.TechLevel})"),
                             $"Blueprint name '{bp.Name}' should have TechLevel stripped in {Path.GetFileName(file)}");
                         techLevelCount++;
                     }
@@ -865,7 +959,9 @@ namespace OE2EmpireTracker.Tests.Services
                         // Name should not end with a known TechLevel in parentheses
                         foreach (var tl in knownTechLevels)
                         {
-                            Assert.That(bp.Name, Does.Not.EndWith($"({tl})"),
+                            Assert.That(
+                                bp.Name,
+                                Does.Not.EndWith($"({tl})"),
                                 $"Blueprint '{bp.Name}' should have TechLevel '{tl}' extracted in {Path.GetFileName(file)}");
                         }
 
@@ -875,9 +971,13 @@ namespace OE2EmpireTracker.Tests.Services
             }
 
             // Sanity: we should find at least some blueprints with TechLevel
-            Assert.That(techLevelCount, Is.GreaterThan(0),
+            Assert.That(
+                techLevelCount,
+                Is.GreaterThan(0),
                 "Should find at least one blueprint with a known TechLevel across all sample files");
-            Assert.That(noTechLevelCount, Is.GreaterThan(0),
+            Assert.That(
+                noTechLevelCount,
+                Is.GreaterThan(0),
                 "Should find at least one blueprint without TechLevel across all sample files");
 
             TestContext.WriteLine($"TechLevel extraction: {techLevelCount} with TechLevel, {noTechLevelCount} without");
@@ -936,15 +1036,21 @@ namespace OE2EmpireTracker.Tests.Services
                 var result2 = MarketBlueprintImporter.Import(parsed2, playerContext, empireContext);
                 int countAfterSecond = empireContext.GlobalBlueprintList.Count + playerContext.BlueprintList.Count;
 
-                Assert.That(countAfterSecond, Is.EqualTo(countAfterFirst),
+                Assert.That(
+                    countAfterSecond,
+                    Is.EqualTo(countAfterFirst),
                     $"[{fileName}] Blueprint count changed from {countAfterFirst} to {countAfterSecond} after second import");
-                Assert.That(result2.CreatedCount, Is.EqualTo(0),
+                Assert.That(
+                    result2.CreatedCount,
+                    Is.EqualTo(0),
                     $"[{fileName}] Second import should create zero new blueprints, created {result2.CreatedCount}");
 
                 // All non-skipped entries should be Updated
                 foreach (var entry in result2.Entries.Where(e => e.Action != ImportAction.Skipped))
                 {
-                    Assert.That(entry.Action, Is.EqualTo(ImportAction.Updated),
+                    Assert.That(
+                        entry.Action,
+                        Is.EqualTo(ImportAction.Updated),
                         $"[{fileName}] Blueprint '{entry.Name}' should be Updated on second import, was {entry.Action}");
                 }
 
@@ -953,9 +1059,13 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     if (propCounts.ContainsKey(bp.UUID))
                     {
-                        Assert.That(bp.Properties.Count, Is.EqualTo(propCounts[bp.UUID]),
+                        Assert.That(
+                            bp.Properties.Count,
+                            Is.EqualTo(propCounts[bp.UUID]),
                             $"[{fileName}] Blueprint '{bp.Name}' property count changed after second import");
-                        Assert.That(bp.Resources.Count, Is.EqualTo(resCounts[bp.UUID]),
+                        Assert.That(
+                            bp.Resources.Count,
+                            Is.EqualTo(resCounts[bp.UUID]),
                             $"[{fileName}] Blueprint '{bp.Name}' resource count changed after second import");
                     }
                 }
@@ -982,24 +1092,34 @@ namespace OE2EmpireTracker.Tests.Services
             string html = LoadTestData("MarketSampleOreHopper.html");
             var parsed = ParseHtml(html);
 
-            Assert.That(parsed.Count, Is.GreaterThan(0),
+            Assert.That(
+                parsed.Count,
+                Is.GreaterThan(0),
                 "Should parse at least one blueprint from OreHopper sample");
 
             var oreHoppers = parsed
                 .Where(mb => mb.Blueprint.Name.IndexOf("Ore Hopper", StringComparison.OrdinalIgnoreCase) >= 0)
                 .ToList();
 
-            Assert.That(oreHoppers.Count, Is.GreaterThan(0),
+            Assert.That(
+                oreHoppers.Count,
+                Is.GreaterThan(0),
                 "Should find at least one blueprint with 'Ore Hopper' in the name");
 
             foreach (var mb in oreHoppers)
             {
                 var bp = mb.Blueprint;
-                Assert.That(bp.Name, Is.Not.Null.And.Not.Empty,
+                Assert.That(
+                    bp.Name,
+                    Is.Not.Null.And.Not.Empty,
                     "OreHopper blueprint should have a name");
-                Assert.That(bp.BluePrintType, Is.EqualTo("OreHopper"),
+                Assert.That(
+                    bp.BluePrintType,
+                    Is.EqualTo("OreHopper"),
                     $"OreHopper blueprint '{bp.Name}' should be reclassified to BluePrintType 'OreHopper'");
-                Assert.That(bp.Properties.Count, Is.GreaterThan(0),
+                Assert.That(
+                    bp.Properties.Count,
+                    Is.GreaterThan(0),
                     $"OreHopper blueprint '{bp.Name}' should have populated properties");
 
                 TestContext.WriteLine($"OreHopper: '{bp.Name}' -- BluePrintType={bp.BluePrintType}, " +
@@ -1022,7 +1142,9 @@ namespace OE2EmpireTracker.Tests.Services
             var result1 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
             int countAfterFirst = empireContext.GlobalBlueprintList.Count + playerContext.BlueprintList.Count;
 
-            Assert.That(result1.CreatedCount, Is.GreaterThan(0),
+            Assert.That(
+                result1.CreatedCount,
+                Is.GreaterThan(0),
                 "First OreHopper import should create blueprints");
 
             // Second import -- re-parse to get fresh objects
@@ -1030,15 +1152,21 @@ namespace OE2EmpireTracker.Tests.Services
             var result2 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
             int countAfterSecond = empireContext.GlobalBlueprintList.Count + playerContext.BlueprintList.Count;
 
-            Assert.That(countAfterSecond, Is.EqualTo(countAfterFirst),
+            Assert.That(
+                countAfterSecond,
+                Is.EqualTo(countAfterFirst),
                 "OreHopper blueprint count should not change after second import");
-            Assert.That(result2.CreatedCount, Is.EqualTo(0),
+            Assert.That(
+                result2.CreatedCount,
+                Is.EqualTo(0),
                 "Second OreHopper import should create zero new blueprints");
 
             // All non-skipped entries should be Updated
             foreach (var entry in result2.Entries.Where(e => e.Action != ImportAction.Skipped))
             {
-                Assert.That(entry.Action, Is.EqualTo(ImportAction.Updated),
+                Assert.That(
+                    entry.Action,
+                    Is.EqualTo(ImportAction.Updated),
                     $"OreHopper blueprint '{entry.Name}' should be Updated on second import, was {entry.Action}");
             }
 
@@ -1058,7 +1186,9 @@ namespace OE2EmpireTracker.Tests.Services
             string html = LoadTestData("MarketSampleAllFlatpacks.html");
             var parsed = ParseHtml(html);
 
-            Assert.That(parsed.Count, Is.GreaterThan(0),
+            Assert.That(
+                parsed.Count,
+                Is.GreaterThan(0),
                 "Should parse at least one blueprint from AllFlatpacks sample");
 
             // Known commodity industry display names that should appear as flatpack names
@@ -1085,7 +1215,9 @@ namespace OE2EmpireTracker.Tests.Services
                 .Where(mb => knownIndustryNames.Contains(mb.Blueprint.Name))
                 .ToList();
 
-            Assert.That(commodityIndustryBlueprints.Count, Is.GreaterThan(0),
+            Assert.That(
+                commodityIndustryBlueprints.Count,
+                Is.GreaterThan(0),
                 "Should find at least one commodity industry flatpack in AllFlatpacks sample");
 
             // Each commodity industry blueprint should have a per-industry BlueprintType
@@ -1093,9 +1225,13 @@ namespace OE2EmpireTracker.Tests.Services
             foreach (var mb in commodityIndustryBlueprints)
             {
                 var bp = mb.Blueprint;
-                Assert.That(bp.BluePrintType, Is.Not.Null.And.Not.Empty,
+                Assert.That(
+                    bp.BluePrintType,
+                    Is.Not.Null.And.Not.Empty,
                     $"Commodity industry blueprint '{bp.Name}' should have a resolved BluePrintType");
-                Assert.That(bp.BluePrintType, Does.StartWith("Flatpacks/CommodityFactory/"),
+                Assert.That(
+                    bp.BluePrintType,
+                    Does.StartWith("Flatpacks/CommodityFactory/"),
                     $"Commodity industry blueprint '{bp.Name}' should have per-industry BluePrintType, got '{bp.BluePrintType}'");
 
                 foundTypes.Add(bp.BluePrintType);
@@ -1103,7 +1239,9 @@ namespace OE2EmpireTracker.Tests.Services
             }
 
             // Should have resolved multiple distinct per-industry types
-            Assert.That(foundTypes.Count, Is.GreaterThan(1),
+            Assert.That(
+                foundTypes.Count,
+                Is.GreaterThan(1),
                 "Should resolve multiple distinct per-industry CommodityFactory types");
 
             TestContext.WriteLine($"Found {foundTypes.Count} distinct per-industry CommodityFactory types");
@@ -1124,7 +1262,9 @@ namespace OE2EmpireTracker.Tests.Services
             var result1 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
             int countAfterFirst = empireContext.GlobalBlueprintList.Count + playerContext.BlueprintList.Count;
 
-            Assert.That(result1.CreatedCount, Is.GreaterThan(0),
+            Assert.That(
+                result1.CreatedCount,
+                Is.GreaterThan(0),
                 "First AllFlatpacks import should create blueprints");
 
             // Second import -- re-parse to get fresh objects
@@ -1132,15 +1272,21 @@ namespace OE2EmpireTracker.Tests.Services
             var result2 = MarketBlueprintImporter.Import(parsed, playerContext, empireContext);
             int countAfterSecond = empireContext.GlobalBlueprintList.Count + playerContext.BlueprintList.Count;
 
-            Assert.That(countAfterSecond, Is.EqualTo(countAfterFirst),
+            Assert.That(
+                countAfterSecond,
+                Is.EqualTo(countAfterFirst),
                 "AllFlatpacks blueprint count should not change after second import");
-            Assert.That(result2.CreatedCount, Is.EqualTo(0),
+            Assert.That(
+                result2.CreatedCount,
+                Is.EqualTo(0),
                 "Second AllFlatpacks import should create zero new blueprints");
 
             // All non-skipped entries should be Updated
             foreach (var entry in result2.Entries.Where(e => e.Action != ImportAction.Skipped))
             {
-                Assert.That(entry.Action, Is.EqualTo(ImportAction.Updated),
+                Assert.That(
+                    entry.Action,
+                    Is.EqualTo(ImportAction.Updated),
                     $"AllFlatpacks blueprint '{entry.Name}' should be Updated on second import, was {entry.Action}");
             }
 

@@ -45,8 +45,12 @@ namespace OE2EmpireTracker.Tests.Services
                    select BuildPlan(name.Get, fixedCost, hourlyCost, selectedResources.ToArray(), prices.ToArray());
         }
 
-        private static PricingPlan BuildPlan(string name, decimal fixedCost, decimal hourlyCost,
-            string[] resources, decimal[] prices)
+        private static PricingPlan BuildPlan(
+            string name,
+            decimal fixedCost,
+            decimal hourlyCost,
+            string[] resources,
+            decimal[] prices)
         {
             var plan = new PricingPlan
             {

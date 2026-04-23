@@ -11,8 +11,11 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class ResourceCheckServiceTests
     {
-        private Blueprint CreateBlueprint(string uuid, string name,
-            Dictionary<string, string> resources)
+        private Blueprint CreateBlueprint(
+            string uuid,
+            string name,
+            Dictionary<string,
+            string> resources)
         {
             var bp = new Blueprint(name) { UUID = uuid };
             if (resources != null)
@@ -43,7 +46,9 @@ namespace OE2EmpireTracker.Tests.Services
             return bag;
         }
 
-        private BuildItem CreateManufactoryItem(string bpUUID, int quantity,
+        private BuildItem CreateManufactoryItem(
+            string bpUUID,
+            int quantity,
             string locationUUID = "")
         {
             return new BuildItem
@@ -57,7 +62,9 @@ namespace OE2EmpireTracker.Tests.Services
             };
         }
 
-        private BuildItem CreateCommodityItem(string commodityName, int quantity,
+        private BuildItem CreateCommodityItem(
+            string commodityName,
+            int quantity,
             string locationUUID = "")
         {
             return new BuildItem

@@ -109,9 +109,13 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(afterSecond.Count, Is.EqualTo(snapshot.Count));
             for (int i = 0; i < snapshot.Count; i++)
             {
-                Assert.That(afterSecond[i].FlatpackBlueprintUUID, Is.EqualTo(snapshot[i].FlatpackBlueprintUUID),
+                Assert.That(
+                    afterSecond[i].FlatpackBlueprintUUID,
+                    Is.EqualTo(snapshot[i].FlatpackBlueprintUUID),
                     $"FlatpackBlueprintUUID mismatch at index {i}");
-                Assert.That(afterSecond[i].DisplaySequence, Is.EqualTo(snapshot[i].DisplaySequence),
+                Assert.That(
+                    afterSecond[i].DisplaySequence,
+                    Is.EqualTo(snapshot[i].DisplaySequence),
                     $"displaySequence mismatch at index {i}");
             }
         }
@@ -175,11 +179,17 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(afterSecond.Count, Is.EqualTo(snapshot.Count));
             for (int i = 0; i < snapshot.Count; i++)
             {
-                Assert.That(afterSecond[i].Name, Is.EqualTo(snapshot[i].Name),
+                Assert.That(
+                    afterSecond[i].Name,
+                    Is.EqualTo(snapshot[i].Name),
                     $"Commodity name mismatch at index {i}");
-                Assert.That(afterSecond[i].Requested, Is.EqualTo(snapshot[i].Requested),
+                Assert.That(
+                    afterSecond[i].Requested,
+                    Is.EqualTo(snapshot[i].Requested),
                     $"Requested mismatch for {snapshot[i].Name}");
-                Assert.That(afterSecond[i].Fulfilled, Is.EqualTo(snapshot[i].Fulfilled),
+                Assert.That(
+                    afterSecond[i].Fulfilled,
+                    Is.EqualTo(snapshot[i].Fulfilled),
                     $"Fulfilled mismatch for {snapshot[i].Name}");
             }
         }
@@ -212,7 +222,9 @@ namespace OE2EmpireTracker.Tests.Parsers
                 int countAfterFirst = colony.Structures.Count;
 
                 _parser.ProcessHtml(colony, html, _empireContext);
-                Assert.That(colony.Structures.Count, Is.EqualTo(countAfterFirst),
+                Assert.That(
+                    colony.Structures.Count,
+                    Is.EqualTo(countAfterFirst),
                     $"Structure count changed after second parse of {filename}");
             }
         }
@@ -243,14 +255,20 @@ namespace OE2EmpireTracker.Tests.Parsers
                     .OrderBy(s => s.DisplaySequence)
                     .ToList();
 
-                Assert.That(afterSecond.Count, Is.EqualTo(snapshot.Count),
+                Assert.That(
+                    afterSecond.Count,
+                    Is.EqualTo(snapshot.Count),
                     $"Structure count changed after second parse of {filename}");
 
                 for (int i = 0; i < snapshot.Count; i++)
                 {
-                    Assert.That(afterSecond[i].FlatpackBlueprintUUID, Is.EqualTo(snapshot[i].FlatpackBlueprintUUID),
+                    Assert.That(
+                        afterSecond[i].FlatpackBlueprintUUID,
+                        Is.EqualTo(snapshot[i].FlatpackBlueprintUUID),
                         $"FlatpackBlueprintUUID mismatch in {filename} at index {i}");
-                    Assert.That(afterSecond[i].DisplaySequence, Is.EqualTo(snapshot[i].DisplaySequence),
+                    Assert.That(
+                        afterSecond[i].DisplaySequence,
+                        Is.EqualTo(snapshot[i].DisplaySequence),
                         $"displaySequence mismatch in {filename} at index {i}");
                 }
             }
@@ -278,11 +296,15 @@ namespace OE2EmpireTracker.Tests.Parsers
                 int countAfterFirst = colony.Commodities.Count;
 
                 _parser.ProcessHtml(colony, html, _empireContext);
-                Assert.That(colony.Commodities.Count, Is.EqualTo(countAfterFirst),
+                Assert.That(
+                    colony.Commodities.Count,
+                    Is.EqualTo(countAfterFirst),
                     $"Commodity count changed after second parse of {filename}");
             }
 
-            Assert.That(filesWithCommodities, Is.GreaterThan(0),
+            Assert.That(
+                filesWithCommodities,
+                Is.GreaterThan(0),
                 "At least one colony file should have commodity demands");
         }
 
@@ -319,21 +341,31 @@ namespace OE2EmpireTracker.Tests.Parsers
                     .OrderBy(c => c.Name)
                     .ToList();
 
-                Assert.That(afterSecond.Count, Is.EqualTo(snapshot.Count),
+                Assert.That(
+                    afterSecond.Count,
+                    Is.EqualTo(snapshot.Count),
                     $"Commodity count changed after second parse of {filename}");
 
                 for (int i = 0; i < snapshot.Count; i++)
                 {
-                    Assert.That(afterSecond[i].Name, Is.EqualTo(snapshot[i].Name),
+                    Assert.That(
+                        afterSecond[i].Name,
+                        Is.EqualTo(snapshot[i].Name),
                         $"Commodity name mismatch in {filename} at index {i}");
-                    Assert.That(afterSecond[i].Requested, Is.EqualTo(snapshot[i].Requested),
+                    Assert.That(
+                        afterSecond[i].Requested,
+                        Is.EqualTo(snapshot[i].Requested),
                         $"Requested mismatch in {filename} for {snapshot[i].Name}");
-                    Assert.That(afterSecond[i].Fulfilled, Is.EqualTo(snapshot[i].Fulfilled),
+                    Assert.That(
+                        afterSecond[i].Fulfilled,
+                        Is.EqualTo(snapshot[i].Fulfilled),
                         $"Fulfilled mismatch in {filename} for {snapshot[i].Name}");
                 }
             }
 
-            Assert.That(filesWithCommodities, Is.GreaterThan(0),
+            Assert.That(
+                filesWithCommodities,
+                Is.GreaterThan(0),
                 "At least one colony file should have commodity demands");
         }
     }

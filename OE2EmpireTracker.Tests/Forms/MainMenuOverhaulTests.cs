@@ -45,16 +45,42 @@ namespace OE2EmpireTracker.Tests.Forms
 
             foreach (var f in _tempFiles)
             {
-                try { if (File.Exists(f)) File.Delete(f); } catch { }
-                try { if (File.Exists(f + ".bak")) File.Delete(f + ".bak"); } catch { }
-                try { if (File.Exists(f + ".tmp")) File.Delete(f + ".tmp"); } catch { }
+                try
+                {
+                    if (File.Exists(f)) File.Delete(f);
+                }
+                catch
+                {
+                }
+
+                try
+                {
+                    if (File.Exists(f + ".bak")) File.Delete(f + ".bak");
+                }
+                catch
+                {
+                }
+
+                try
+                {
+                    if (File.Exists(f + ".tmp")) File.Delete(f + ".tmp");
+                }
+                catch
+                {
+                }
             }
 
             _tempFiles.Clear();
 
             if (Directory.Exists(_testDir))
             {
-                try { Directory.Delete(_testDir, true); } catch { }
+                try
+                {
+                    Directory.Delete(_testDir, true);
+                }
+                catch
+                {
+                }
             }
         }
 
@@ -235,7 +261,9 @@ namespace OE2EmpireTracker.Tests.Forms
 
                 var pc = PlayerContext.GetInstance();
                 // Verify data was loaded (sanity check)
-                Assert.That(pc.PlayerProfileList.Count, Is.GreaterThan(0),
+                Assert.That(
+                    pc.PlayerProfileList.Count,
+                    Is.GreaterThan(0),
                     $"Iteration {iteration}: data should be loaded before reset");
 
                 // Act: simulate File -> New logic
@@ -246,19 +274,33 @@ namespace OE2EmpireTracker.Tests.Forms
                 pc = PlayerContext.GetInstance();
 
                 // Assert: all lists empty, CurrentPlayerUUID empty
-                Assert.That(pc.PlayerProfileList, Is.Empty,
+                Assert.That(
+                    pc.PlayerProfileList,
+                    Is.Empty,
                     $"Iteration {iteration}: PlayerProfileList should be empty after New");
-                Assert.That(pc.BlueprintList, Is.Empty,
+                Assert.That(
+                    pc.BlueprintList,
+                    Is.Empty,
                     $"Iteration {iteration}: BlueprintList should be empty after New");
-                Assert.That(pc.SurveyList, Is.Empty,
+                Assert.That(
+                    pc.SurveyList,
+                    Is.Empty,
                     $"Iteration {iteration}: SurveyList should be empty after New");
-                Assert.That(pc.ColonyList, Is.Empty,
+                Assert.That(
+                    pc.ColonyList,
+                    Is.Empty,
                     $"Iteration {iteration}: ColonyList should be empty after New");
-                Assert.That(pc.DeliveryRouteList, Is.Empty,
+                Assert.That(
+                    pc.DeliveryRouteList,
+                    Is.Empty,
                     $"Iteration {iteration}: DeliveryRouteList should be empty after New");
-                Assert.That(pc.DeliveryPlanList, Is.Empty,
+                Assert.That(
+                    pc.DeliveryPlanList,
+                    Is.Empty,
                     $"Iteration {iteration}: DeliveryPlanList should be empty after New");
-                Assert.That(pc.CurrentPlayerUUID, Is.EqualTo(string.Empty),
+                Assert.That(
+                    pc.CurrentPlayerUUID,
+                    Is.EqualTo(string.Empty),
                     $"Iteration {iteration}: CurrentPlayerUUID should be empty after New");
 
                 // Cleanup for next iteration
@@ -302,17 +344,29 @@ namespace OE2EmpireTracker.Tests.Forms
                 pc = PlayerContext.GetInstance();
 
                 // Assert: same counts and UUIDs
-                Assert.That(pc.PlayerProfileList.Count, Is.EqualTo(expectedProfiles),
+                Assert.That(
+                    pc.PlayerProfileList.Count,
+                    Is.EqualTo(expectedProfiles),
                     $"Iteration {iteration}: profile count mismatch after round-trip");
-                Assert.That(pc.BlueprintList.Count, Is.EqualTo(expectedBlueprints),
+                Assert.That(
+                    pc.BlueprintList.Count,
+                    Is.EqualTo(expectedBlueprints),
                     $"Iteration {iteration}: blueprint count mismatch after round-trip");
-                Assert.That(pc.SurveyList.Count, Is.EqualTo(expectedSurveys),
+                Assert.That(
+                    pc.SurveyList.Count,
+                    Is.EqualTo(expectedSurveys),
                     $"Iteration {iteration}: survey count mismatch after round-trip");
-                Assert.That(pc.ColonyList.Count, Is.EqualTo(expectedColonies),
+                Assert.That(
+                    pc.ColonyList.Count,
+                    Is.EqualTo(expectedColonies),
                     $"Iteration {iteration}: colony count mismatch after round-trip");
-                Assert.That(pc.DeliveryRouteList.Count, Is.EqualTo(expectedRoutes),
+                Assert.That(
+                    pc.DeliveryRouteList.Count,
+                    Is.EqualTo(expectedRoutes),
                     $"Iteration {iteration}: route count mismatch after round-trip");
-                Assert.That(pc.DeliveryPlanList.Count, Is.EqualTo(expectedPlans),
+                Assert.That(
+                    pc.DeliveryPlanList.Count,
+                    Is.EqualTo(expectedPlans),
                     $"Iteration {iteration}: plan count mismatch after round-trip");
 
                 var actualProfileUUIDs = pc.PlayerProfileList.Select(p => p.UUID).OrderBy(u => u).ToList();
@@ -320,13 +374,21 @@ namespace OE2EmpireTracker.Tests.Forms
                 var actualSurveyUUIDs = pc.SurveyList.Select(s => s.UUID).OrderBy(u => u).ToList();
                 var actualColonyUUIDs = pc.ColonyList.Select(c => c.UUID).OrderBy(u => u).ToList();
 
-                Assert.That(actualProfileUUIDs, Is.EqualTo(expectedProfileUUIDs),
+                Assert.That(
+                    actualProfileUUIDs,
+                    Is.EqualTo(expectedProfileUUIDs),
                     $"Iteration {iteration}: profile UUIDs mismatch after round-trip");
-                Assert.That(actualBlueprintUUIDs, Is.EqualTo(expectedBlueprintUUIDs),
+                Assert.That(
+                    actualBlueprintUUIDs,
+                    Is.EqualTo(expectedBlueprintUUIDs),
                     $"Iteration {iteration}: blueprint UUIDs mismatch after round-trip");
-                Assert.That(actualSurveyUUIDs, Is.EqualTo(expectedSurveyUUIDs),
+                Assert.That(
+                    actualSurveyUUIDs,
+                    Is.EqualTo(expectedSurveyUUIDs),
                     $"Iteration {iteration}: survey UUIDs mismatch after round-trip");
-                Assert.That(actualColonyUUIDs, Is.EqualTo(expectedColonyUUIDs),
+                Assert.That(
+                    actualColonyUUIDs,
+                    Is.EqualTo(expectedColonyUUIDs),
                     $"Iteration {iteration}: colony UUIDs mismatch after round-trip");
 
                 // Cleanup for next iteration
@@ -388,24 +450,38 @@ namespace OE2EmpireTracker.Tests.Forms
                     pc = PlayerContext.GetInstance();
 
                     // Assert: state matches what we had before the invalid load attempt
-                    Assert.That(pc.PlayerProfileList.Count, Is.EqualTo(expectedProfiles),
+                    Assert.That(
+                        pc.PlayerProfileList.Count,
+                        Is.EqualTo(expectedProfiles),
                         $"Iteration {iteration}: profile count should be preserved after invalid file");
-                    Assert.That(pc.BlueprintList.Count, Is.EqualTo(expectedBlueprints),
+                    Assert.That(
+                        pc.BlueprintList.Count,
+                        Is.EqualTo(expectedBlueprints),
                         $"Iteration {iteration}: blueprint count should be preserved after invalid file");
-                    Assert.That(pc.SurveyList.Count, Is.EqualTo(expectedSurveys),
+                    Assert.That(
+                        pc.SurveyList.Count,
+                        Is.EqualTo(expectedSurveys),
                         $"Iteration {iteration}: survey count should be preserved after invalid file");
-                    Assert.That(pc.ColonyList.Count, Is.EqualTo(expectedColonies),
+                    Assert.That(
+                        pc.ColonyList.Count,
+                        Is.EqualTo(expectedColonies),
                         $"Iteration {iteration}: colony count should be preserved after invalid file");
-                    Assert.That(pc.DeliveryRouteList.Count, Is.EqualTo(expectedRoutes),
+                    Assert.That(
+                        pc.DeliveryRouteList.Count,
+                        Is.EqualTo(expectedRoutes),
                         $"Iteration {iteration}: route count should be preserved after invalid file");
-                    Assert.That(pc.DeliveryPlanList.Count, Is.EqualTo(expectedPlans),
+                    Assert.That(
+                        pc.DeliveryPlanList.Count,
+                        Is.EqualTo(expectedPlans),
                         $"Iteration {iteration}: plan count should be preserved after invalid file");
                 }
                 else
                 {
                     // If it didn't throw, the invalid JSON was parsed as something --
                     // just verify we can still access the context without crashing
-                    Assert.That(PlayerContext.GetInstance(), Is.Not.Null,
+                    Assert.That(
+                        PlayerContext.GetInstance(),
+                        Is.Not.Null,
                         $"Iteration {iteration}: PlayerContext should still be accessible");
                 }
 
@@ -437,28 +513,44 @@ namespace OE2EmpireTracker.Tests.Forms
                 var pc = PlayerContext.GetInstance();
 
                 // Assert: data equivalence -- same counts as original root
-                Assert.That(pc.PlayerProfileList.Count, Is.EqualTo(root.PlayerProfile.Length),
+                Assert.That(
+                    pc.PlayerProfileList.Count,
+                    Is.EqualTo(root.PlayerProfile.Length),
                     $"Iteration {iteration}: profile count mismatch after auto-open");
-                Assert.That(pc.BlueprintList.Count, Is.EqualTo(root.Blueprint.Length),
+                Assert.That(
+                    pc.BlueprintList.Count,
+                    Is.EqualTo(root.Blueprint.Length),
                     $"Iteration {iteration}: blueprint count mismatch after auto-open");
-                Assert.That(pc.SurveyList.Count, Is.EqualTo(root.Survey.Length),
+                Assert.That(
+                    pc.SurveyList.Count,
+                    Is.EqualTo(root.Survey.Length),
                     $"Iteration {iteration}: survey count mismatch after auto-open");
-                Assert.That(pc.ColonyList.Count, Is.EqualTo(root.Colony.Length),
+                Assert.That(
+                    pc.ColonyList.Count,
+                    Is.EqualTo(root.Colony.Length),
                     $"Iteration {iteration}: colony count mismatch after auto-open");
-                Assert.That(pc.DeliveryRouteList.Count, Is.EqualTo(root.DeliveryRoute.Length),
+                Assert.That(
+                    pc.DeliveryRouteList.Count,
+                    Is.EqualTo(root.DeliveryRoute.Length),
                     $"Iteration {iteration}: route count mismatch after auto-open");
-                Assert.That(pc.DeliveryPlanList.Count, Is.EqualTo(root.DeliveryPlan.Length),
+                Assert.That(
+                    pc.DeliveryPlanList.Count,
+                    Is.EqualTo(root.DeliveryPlan.Length),
                     $"Iteration {iteration}: plan count mismatch after auto-open");
 
                 // Verify UUIDs match
                 var expectedProfileUUIDs = root.PlayerProfile.Select(p => p.UUID).OrderBy(u => u).ToList();
                 var actualProfileUUIDs = pc.PlayerProfileList.Select(p => p.UUID).OrderBy(u => u).ToList();
-                Assert.That(actualProfileUUIDs, Is.EqualTo(expectedProfileUUIDs),
+                Assert.That(
+                    actualProfileUUIDs,
+                    Is.EqualTo(expectedProfileUUIDs),
                     $"Iteration {iteration}: profile UUIDs mismatch after auto-open");
 
                 var expectedColonyUUIDs = root.Colony.Select(c => c.UUID).OrderBy(u => u).ToList();
                 var actualColonyUUIDs = pc.ColonyList.Select(c => c.UUID).OrderBy(u => u).ToList();
-                Assert.That(actualColonyUUIDs, Is.EqualTo(expectedColonyUUIDs),
+                Assert.That(
+                    actualColonyUUIDs,
+                    Is.EqualTo(expectedColonyUUIDs),
                     $"Iteration {iteration}: colony UUIDs mismatch after auto-open");
 
                 // Cleanup for next iteration
@@ -498,12 +590,16 @@ namespace OE2EmpireTracker.Tests.Forms
                 for (int i = 0; i < sorted.Count - 1; i++)
                 {
                     int cmp = string.Compare(sorted[i], sorted[i + 1], StringComparison.OrdinalIgnoreCase);
-                    Assert.That(cmp, Is.LessThanOrEqualTo(0),
+                    Assert.That(
+                        cmp,
+                        Is.LessThanOrEqualTo(0),
                         $"Iteration {iteration}: '{sorted[i]}' should come before '{sorted[i + 1]}' alphabetically");
                 }
 
                 // Also verify the sorted result matches the known correct order
-                Assert.That(sorted, Is.EqualTo(menuLabels),
+                Assert.That(
+                    sorted,
+                    Is.EqualTo(menuLabels),
                     $"Iteration {iteration}: sorted labels should match expected alphabetical order");
             }
         }
@@ -545,7 +641,9 @@ namespace OE2EmpireTracker.Tests.Forms
                         actualOrder.Add(item.Text);
                 }
 
-                Assert.That(actualOrder, Is.EqualTo(expectedOrder.ToList()),
+                Assert.That(
+                    actualOrder,
+                    Is.EqualTo(expectedOrder.ToList()),
                     "File menu items should be in order: New, Open, Save, Save As, separator, Exit");
             }
         }
@@ -557,7 +655,9 @@ namespace OE2EmpireTracker.Tests.Forms
             // The Designer sets editToolStripMenuItem.Text = "Manage"
             string expected = "Manage";
             string actual = "Manage"; // From Designer: this.editToolStripMenuItem.Text = "Manage";
-            Assert.That(actual, Is.EqualTo(expected),
+            Assert.That(
+                actual,
+                Is.EqualTo(expected),
                 "Top-level menu should be labeled 'Manage'");
         }
 
@@ -566,7 +666,9 @@ namespace OE2EmpireTracker.Tests.Forms
         {
             string expected = "Manage Surveys";
             string actual = "Manage Surveys"; // From Designer: this.addSurveyToolStripMenuItem.Text = "Manage Surveys";
-            Assert.That(actual, Is.EqualTo(expected),
+            Assert.That(
+                actual,
+                Is.EqualTo(expected),
                 "Survey menu item should be labeled 'Manage Surveys'");
         }
 
@@ -575,7 +677,9 @@ namespace OE2EmpireTracker.Tests.Forms
         {
             string expected = "Manage Colonies";
             string actual = "Manage Colonies"; // From Designer: this.addColonyToolStripMenuItem.Text = "Manage Colonies";
-            Assert.That(actual, Is.EqualTo(expected),
+            Assert.That(
+                actual,
+                Is.EqualTo(expected),
                 "Colony menu item should be labeled 'Manage Colonies'");
         }
 
@@ -584,7 +688,9 @@ namespace OE2EmpireTracker.Tests.Forms
         {
             string expected = "Manage Blueprints";
             string actual = "Manage Blueprints"; // From Designer: this.addBlueprintToolStripMenuItem.Text = "Manage Blueprints";
-            Assert.That(actual, Is.EqualTo(expected),
+            Assert.That(
+                actual,
+                Is.EqualTo(expected),
                 "Blueprint menu item should be labeled 'Manage Blueprints'");
         }
 
@@ -608,7 +714,9 @@ namespace OE2EmpireTracker.Tests.Forms
             for (int i = 0; i < manageItems.Length - 1; i++)
             {
                 int cmp = string.Compare(manageItems[i], manageItems[i + 1], StringComparison.OrdinalIgnoreCase);
-                Assert.That(cmp, Is.LessThan(0),
+                Assert.That(
+                    cmp,
+                    Is.LessThan(0),
                     $"'{manageItems[i]}' should come before '{manageItems[i + 1]}' alphabetically");
             }
         }
@@ -627,9 +735,13 @@ namespace OE2EmpireTracker.Tests.Forms
             else
                 actualTitle = "OE2 Empire Tracker";
 
-            Assert.That(actualTitle, Is.EqualTo(expectedTitle),
+            Assert.That(
+                actualTitle,
+                Is.EqualTo(expectedTitle),
                 "Title bar should show 'OE2 Empire Tracker - filename' when a file is loaded");
-            Assert.That(actualTitle, Does.Contain("MyEmpire.json"),
+            Assert.That(
+                actualTitle,
+                Does.Contain("MyEmpire.json"),
                 "Title bar should contain the file name");
         }
 
@@ -645,7 +757,9 @@ namespace OE2EmpireTracker.Tests.Forms
             else
                 actualTitle = "OE2 Empire Tracker";
 
-            Assert.That(actualTitle, Is.EqualTo("OE2 Empire Tracker"),
+            Assert.That(
+                actualTitle,
+                Is.EqualTo("OE2 Empire Tracker"),
                 "Title bar should show 'OE2 Empire Tracker' when no file is loaded (after New)");
         }
 
@@ -657,7 +771,9 @@ namespace OE2EmpireTracker.Tests.Forms
             string lastPath = string.Empty;
             bool shouldAutoOpen = !string.IsNullOrEmpty(lastPath);
 
-            Assert.That(shouldAutoOpen, Is.False,
+            Assert.That(
+                shouldAutoOpen,
+                Is.False,
                 "When no LastOpenedPath is stored, auto-open should not attempt to load a file");
         }
 
@@ -669,7 +785,9 @@ namespace OE2EmpireTracker.Tests.Forms
             string lastPath = Path.Combine(_testDir, "nonexistent_file_" + Guid.NewGuid() + ".json");
             bool fileExists = File.Exists(lastPath);
 
-            Assert.That(fileExists, Is.False,
+            Assert.That(
+                fileExists,
+                Is.False,
                 "Test precondition: file should not exist");
 
             // Simulate the clearing logic from TryAutoOpenLastFile
@@ -679,7 +797,9 @@ namespace OE2EmpireTracker.Tests.Forms
                 clearedPath = string.Empty; // This is what TryAutoOpenLastFile does
             }
 
-            Assert.That(clearedPath, Is.EqualTo(string.Empty),
+            Assert.That(
+                clearedPath,
+                Is.EqualTo(string.Empty),
                 "When stored file doesn't exist, LastOpenedPath should be cleared to empty");
         }
     }

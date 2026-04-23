@@ -47,7 +47,9 @@ namespace OE2EmpireTracker.Tests.Models
         public void WorkerDetails_AllNamedEntriesHaveNonEmptyName()
         {
             foreach (var w in WorkerDetail.WorkerDetails.Where(w => !string.IsNullOrEmpty(w.ID)))
-                Assert.That(string.IsNullOrEmpty(w.Name), Is.False,
+                Assert.That(
+                    string.IsNullOrEmpty(w.Name),
+                    Is.False,
                     $"WorkerDetail with ID '{w.ID}' has empty Name");
         }
 
@@ -55,16 +57,20 @@ namespace OE2EmpireTracker.Tests.Models
         public void WorkerDetails_NoDuplicateIDs()
         {
             var ids = WorkerDetail.WorkerDetails.Select(w => w.ID).ToList();
-            Assert.That(ids.Count, Is.EqualTo(ids.Distinct().Count()),
-                    "Duplicate WorkerDetail IDs found");
+            Assert.That(
+                ids.Count,
+                Is.EqualTo(ids.Distinct().Count()),
+                "Duplicate WorkerDetail IDs found");
         }
 
         [Test]
         public void WorkerDetails_NoDuplicateNames()
         {
             var names = WorkerDetail.WorkerDetails.Select(w => w.Name).ToList();
-            Assert.That(names.Count, Is.EqualTo(names.Distinct().Count()),
-                    "Duplicate WorkerDetail Names found");
+            Assert.That(
+                names.Count,
+                Is.EqualTo(names.Distinct().Count()),
+                "Duplicate WorkerDetail Names found");
         }
 
         // -----------------------------------------------------------------------
@@ -75,7 +81,9 @@ namespace OE2EmpireTracker.Tests.Models
         public void WorkerDetailMapByID_ContainsAllIDs()
         {
             foreach (var w in WorkerDetail.WorkerDetails)
-                Assert.That(WorkerDetail.WorkerDetailMapByID.ContainsKey(w.ID), Is.True,
+                Assert.That(
+                    WorkerDetail.WorkerDetailMapByID.ContainsKey(w.ID),
+                    Is.True,
                     $"WorkerDetailMapByID missing key '{w.ID}'");
         }
 
@@ -101,7 +109,9 @@ namespace OE2EmpireTracker.Tests.Models
         public void WorkerDetailMapByName_ContainsAllNames()
         {
             foreach (var w in WorkerDetail.WorkerDetails)
-                Assert.That(WorkerDetail.WorkerDetailMapByName.ContainsKey(w.Name), Is.True,
+                Assert.That(
+                    WorkerDetail.WorkerDetailMapByName.ContainsKey(w.Name),
+                    Is.True,
                     $"WorkerDetailMapByName missing key '{w.Name}'");
         }
 
@@ -130,7 +140,9 @@ namespace OE2EmpireTracker.Tests.Models
             {
                 string name = WorkerDetail.WorkerDetailMapByID[w.ID].Name;
                 string roundTrippedID = WorkerDetail.WorkerDetailMapByName[name].ID;
-                Assert.That(roundTrippedID, Is.EqualTo(w.ID),
+                Assert.That(
+                    roundTrippedID,
+                    Is.EqualTo(w.ID),
                     $"Round-trip failed for ID '{w.ID}'");
             }
         }

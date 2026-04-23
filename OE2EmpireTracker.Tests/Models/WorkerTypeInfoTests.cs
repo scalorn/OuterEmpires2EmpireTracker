@@ -76,7 +76,9 @@ namespace OE2EmpireTracker.Tests.Models
         {
             foreach (var wt in WorkerDetail.WorkerTypes)
             {
-                Assert.That(WorkerDetail.WorkerDetailMapByID.ContainsKey(wt.DetailKey), Is.True,
+                Assert.That(
+                    WorkerDetail.WorkerDetailMapByID.ContainsKey(wt.DetailKey),
+                    Is.True,
                     $"DetailKey '{wt.DetailKey}' not found in WorkerDetailMapByID");
             }
         }

@@ -61,8 +61,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
             // Plan tab wiring
             PopulateItemTypeCombos();
-            cmbDropItemType.SelectedIndexChanged += (s, ev) => { PopulateItemPicker(cmbDropItemType, txtDropFilter, cmbDropItem); UpdatePurityVisibility(cmbDropItemType, cmbDropPurity); };
-            cmbPickItemType.SelectedIndexChanged += (s, ev) => { PopulateItemPicker(cmbPickItemType, txtPickFilter, cmbPickItem); UpdatePurityVisibility(cmbPickItemType, cmbPickPurity); };
+            cmbDropItemType.SelectedIndexChanged += (s, ev) => { PopulateItemPicker(cmbDropItemType, txtDropFilter, cmbDropItem);
+            UpdatePurityVisibility(cmbDropItemType, cmbDropPurity);
+            };
+            cmbPickItemType.SelectedIndexChanged += (s, ev) => { PopulateItemPicker(cmbPickItemType, txtPickFilter, cmbPickItem);
+            UpdatePurityVisibility(cmbPickItemType, cmbPickPurity);
+            };
             txtDropFilter.TextChanged += (s, ev) => PopulateItemPicker(cmbDropItemType, txtDropFilter, cmbDropItem);
             txtPickFilter.TextChanged += (s, ev) => PopulateItemPicker(cmbPickItemType, txtPickFilter, cmbPickItem);
             cmdAddDropOff.Click += CmdAddDropOff_Click;
@@ -179,9 +183,14 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             }
 
             sw.Stop();
-            Log.Info("PopulateRouteList PERF: total={0}ms filter={1}ms listBuild={2}ms items={3}",
-                sw.ElapsedMilliseconds, t1, sw.ElapsedMilliseconds - t1, routes.Count);
-            sw.Stop(); Log.Info("PERF PopulateRouteList: {0}ms", sw.ElapsedMilliseconds);
+            Log.Info(
+                "PopulateRouteList PERF: total={0}ms filter={1}ms listBuild={2}ms items={3}",
+                sw.ElapsedMilliseconds,
+                t1,
+                sw.ElapsedMilliseconds - t1,
+                routes.Count);
+            sw.Stop();
+            Log.Info("PERF PopulateRouteList: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void TxtRouteFilter_TextChanged(object sender, EventArgs e)
@@ -230,7 +239,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             cmbDestType.Items.Add("Station");
             cmbDestType.Items.Add("Asteroid");
             cmbDestType.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulateDestTypePicker: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateDestTypePicker: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateStopPurposePicker()
@@ -241,7 +251,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             cmbStopPurpose.Items.Add("Refuel");
             cmbStopPurpose.Items.Add("CargoAndRefuel");
             cmbStopPurpose.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulateStopPurposePicker: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateStopPurposePicker: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private DestinationType GetSelectedDestType()
@@ -341,7 +352,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             cmbColony.DisplayMember = "Display";
             cmbColony.ValueMember = "UUID";
             cmbColony.DataSource = items;
-            sw.Stop(); Log.Info("PERF PopulateColonyPicker: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateColonyPicker: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private class ColonyPickerItem
@@ -427,9 +439,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             }
 
             sw.Stop();
-            Log.Info("PopulateStopsGrid PERF: total={0}ms stops={1}",
-                sw.ElapsedMilliseconds, viewModel.Stops.Count);
-            sw.Stop(); Log.Info("PERF PopulateStopsGrid: {0}ms", sw.ElapsedMilliseconds);
+            Log.Info(
+                "PopulateStopsGrid PERF: total={0}ms stops={1}",
+                sw.ElapsedMilliseconds,
+                viewModel.Stops.Count);
+            sw.Stop();
+            Log.Info("PERF PopulateStopsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ClearForm()
@@ -668,7 +683,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 cmbPlan.SelectedValue = previousUUID;
             }
 
-            sw.Stop(); Log.Info("PERF PopulatePlanDropdown: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulatePlanDropdown: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void CmbPlan_SelectedIndexChanged(object sender, EventArgs e)
@@ -698,8 +714,11 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                     if (routeStop != null)
                     {
                         string stopKey = !string.IsNullOrEmpty(routeStop.DestinationUUID) ? routeStop.DestinationUUID : routeStop.ColonyUUID;
-                        selectedPlanStop = planViewModel.GetOrCreateStop(stopKey, routeStop.Sequence,
-                            routeStop.DestinationType, routeStop.DestinationUUID);
+                        selectedPlanStop = planViewModel.GetOrCreateStop(
+                            stopKey,
+                            routeStop.Sequence,
+                            routeStop.DestinationType,
+                            routeStop.DestinationUUID);
                         lblPlanStop.Text = ResolveStopName(routeStop);
                         PopulatePlanGrids();
                     }
@@ -762,14 +781,20 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
                 if (dlg.IncludeFlatpacks)
                 {
-                    Log.Debug("AutoFill: calling AutoFillFlatpacks with {0} route stops, timeHorizon={1}h",
-                        viewModel.Stops.Count, dlg.TimeHorizonHours);
+                    Log.Debug(
+                        "AutoFill: calling AutoFillFlatpacks with {0} route stops, timeHorizon={1}h",
+                        viewModel.Stops.Count,
+                        dlg.TimeHorizonHours);
                     added += planViewModel.AutoFillFlatpacks(viewModel.Stops, colonyFinder, dlg.TimeHorizonHours);
                 }
 
                 if (dlg.IncludeResources)
-                    added += planViewModel.AutoFillManufacturingResources(viewModel.Stops, colonyFinder,
-                        uuid => playerContext.FindBlueprint(uuid), stationFinder, currentPlayerUUID);
+                    added += planViewModel.AutoFillManufacturingResources(
+                        viewModel.Stops,
+                        colonyFinder,
+                        uuid => playerContext.FindBlueprint(uuid),
+                        stationFinder,
+                        currentPlayerUUID);
 
                 if (dlg.IncludeWorkers)
                     added += planViewModel.AutoFillWorkers(viewModel.Stops, colonyFinder, playerContext);
@@ -778,8 +803,11 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 {
                     planViewModel.Save();
                     PopulatePlanGrids();
-                    MessageBox.Show($"{added} items added to the delivery plan.", "Auto-Fill Complete",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        $"{added} items added to the delivery plan.",
+                        "Auto-Fill Complete",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                 }
             }
         }
@@ -889,8 +917,11 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             if (routeStop == null) return;
 
             string stopKey = !string.IsNullOrEmpty(routeStop.DestinationUUID) ? routeStop.DestinationUUID : routeStop.ColonyUUID;
-            selectedPlanStop = planViewModel.GetOrCreateStop(stopKey, routeStop.Sequence,
-                routeStop.DestinationType, routeStop.DestinationUUID);
+            selectedPlanStop = planViewModel.GetOrCreateStop(
+                stopKey,
+                routeStop.Sequence,
+                routeStop.DestinationType,
+                routeStop.DestinationUUID);
 
             string stopLabel = ResolveStopName(routeStop);
             lblPlanStop.Text = stopLabel;
@@ -907,7 +938,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             cmbPickItemType.DataSource = new List<ItemType>(itemTypes);
             cmbPickItemType.DisplayMember = "Name";
             cmbPickItemType.ValueMember = "ID";
-            sw.Stop(); Log.Info("PERF PopulateItemTypeCombos: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateItemTypeCombos: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulatePurityCombos()
@@ -920,7 +952,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             cmbPickPurity.DataSource = new List<Models.ResourcePurity>(purities);
             cmbPickPurity.DisplayMember = "Name";
             cmbPickPurity.ValueMember = "Name";
-            sw.Stop(); Log.Info("PERF PopulatePurityCombos: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulatePurityCombos: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void UpdatePurityVisibility(ComboBox typeCombo, ComboBox purityCombo)
@@ -948,7 +981,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             itemCombo.DisplayMember = "Display";
             itemCombo.ValueMember = "ID";
             itemCombo.DataSource = items;
-            sw.Stop(); Log.Info("PERF PopulateItemPicker: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateItemPicker: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private List<ItemPickerEntry> GetItemsForType(ItemType.ItemTypeEnum typeEnum)
@@ -996,7 +1030,11 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvDropOff.Rows.Clear();
             dgvPickUp.Rows.Clear();
-            if (selectedPlanStop == null) { sw.Stop(); return; }
+            if (selectedPlanStop == null)
+            {
+                sw.Stop();
+                return;
+            }
 
             foreach (var item in selectedPlanStop.DropOff)
             {
@@ -1011,9 +1049,13 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             }
 
             sw.Stop();
-            Log.Info("PopulatePlanGrids PERF: total={0}ms dropOff={1} pickUp={2}",
-                sw.ElapsedMilliseconds, selectedPlanStop.DropOff.Count, selectedPlanStop.PickUp.Count);
-            sw.Stop(); Log.Info("PERF PopulatePlanGrids: {0}ms", sw.ElapsedMilliseconds);
+            Log.Info(
+                "PopulatePlanGrids PERF: total={0}ms dropOff={1} pickUp={2}",
+                sw.ElapsedMilliseconds,
+                selectedPlanStop.DropOff.Count,
+                selectedPlanStop.PickUp.Count);
+            sw.Stop();
+            Log.Info("PERF PopulatePlanGrids: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void CmdAddDropOff_Click(object sender, EventArgs e)
@@ -1033,7 +1075,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             int.TryParse(txtDropQty.Text, out qty);
             if (qty <= 0) qty = 1;
 
-            planViewModel.AddDropOffItem(selectedPlanStop, itemType.ID, entry.ID, entry.Display, qty,
+            planViewModel.AddDropOffItem(
+                selectedPlanStop,
+                itemType.ID,
+                entry.ID,
+                entry.Display,
+                qty,
                 itemType.ID == ItemType.ItemTypeEnum.Resource ? (cmbDropPurity.SelectedItem as Models.ResourcePurity)?.Name ?? string.Empty : string.Empty);
             PopulatePlanGrids();
         }
@@ -1054,7 +1101,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             int.TryParse(txtPickQty.Text, out qty);
             if (qty <= 0) qty = 1;
 
-            planViewModel.AddPickUpItem(selectedPlanStop, itemType.ID, entry.ID, entry.Display, qty,
+            planViewModel.AddPickUpItem(
+                selectedPlanStop,
+                itemType.ID,
+                entry.ID,
+                entry.Display,
+                qty,
                 itemType.ID == ItemType.ItemTypeEnum.Resource ? (cmbPickPurity.SelectedItem as Models.ResourcePurity)?.Name ?? string.Empty : string.Empty);
             PopulatePlanGrids();
         }
@@ -1088,8 +1140,13 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 
@@ -1103,8 +1160,13 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnDeliveryDataChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnDeliveryDataChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 

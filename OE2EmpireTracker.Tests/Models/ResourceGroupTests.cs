@@ -31,7 +31,9 @@ namespace OE2EmpireTracker.Tests.Models
         public void Groups_AllNonNoneEntriesHaveNonEmptyName()
         {
             foreach (var g in ResourceGroup.Groups.Where(g => g.ID != RGE.None))
-                Assert.That(string.IsNullOrEmpty(g.Name), Is.False,
+                Assert.That(
+                    string.IsNullOrEmpty(g.Name),
+                    Is.False,
                     $"ResourceGroup with ID '{g.ID}' has empty Name");
         }
 
@@ -39,16 +41,20 @@ namespace OE2EmpireTracker.Tests.Models
         public void Groups_NoDuplicateIDs()
         {
             var ids = ResourceGroup.Groups.Select(g => g.ID).ToList();
-            Assert.That(ids.Count, Is.EqualTo(ids.Distinct().Count()),
-                    "Duplicate ResourceGroup IDs found");
+            Assert.That(
+                ids.Count,
+                Is.EqualTo(ids.Distinct().Count()),
+                "Duplicate ResourceGroup IDs found");
         }
 
         [Test]
         public void Groups_NoDuplicateNames()
         {
             var names = ResourceGroup.Groups.Select(g => g.Name).ToList();
-            Assert.That(names.Count, Is.EqualTo(names.Distinct().Count()),
-                    "Duplicate ResourceGroup Names found");
+            Assert.That(
+                names.Count,
+                Is.EqualTo(names.Distinct().Count()),
+                "Duplicate ResourceGroup Names found");
         }
 
         [Test]
@@ -57,7 +63,9 @@ namespace OE2EmpireTracker.Tests.Models
             var allEnums = Enum.GetValues(typeof(RGE)).Cast<RGE>();
             var listIDs = ResourceGroup.Groups.Select(g => g.ID).ToList();
             foreach (var e in allEnums)
-                Assert.That(listIDs.Contains(e), Is.True,
+                Assert.That(
+                    listIDs.Contains(e),
+                    Is.True,
                     $"Groups list missing enum value {e}");
         }
 
@@ -66,7 +74,9 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var nonNone = ResourceGroup.Groups.Where(g => g.ID != RGE.None).ToList();
             for (int i = 1; i < nonNone.Count; i++)
-                Assert.That(string.Compare(nonNone[i - 1].Name, nonNone[i].Name, StringComparison.Ordinal), Is.LessThanOrEqualTo(0),
+                Assert.That(
+                    string.Compare(nonNone[i - 1].Name, nonNone[i].Name, StringComparison.Ordinal),
+                    Is.LessThanOrEqualTo(0),
                     $"Groups not sorted: '{nonNone[i - 1].Name}' before '{nonNone[i].Name}'");
         }
 
@@ -86,7 +96,9 @@ namespace OE2EmpireTracker.Tests.Models
             var nonSynthetic = ResourceGroup.Groups
                 .Where(g => g.ID != RGE.None && g.ID != RGE.Synthetic);
             foreach (var g in nonSynthetic)
-                Assert.That(g.Synthetic, Is.False,
+                Assert.That(
+                    g.Synthetic,
+                    Is.False,
                     $"ResourceGroup '{g.Name}' should not be Synthetic");
         }
 
@@ -99,7 +111,9 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var allEnums = Enum.GetValues(typeof(RGE)).Cast<RGE>();
             foreach (var e in allEnums)
-                Assert.That(ResourceGroup.ResourceGroupMapByEnum.ContainsKey(e), Is.True,
+                Assert.That(
+                    ResourceGroup.ResourceGroupMapByEnum.ContainsKey(e),
+                    Is.True,
                     $"ResourceGroupMapByEnum missing key {e}");
         }
 
@@ -125,7 +139,9 @@ namespace OE2EmpireTracker.Tests.Models
         public void ResourceGroupMapByString_ContainsAllGroupNames()
         {
             foreach (var g in ResourceGroup.Groups)
-                Assert.That(ResourceGroup.ResourceGroupMapByString.ContainsKey(g.Name), Is.True,
+                Assert.That(
+                    ResourceGroup.ResourceGroupMapByString.ContainsKey(g.Name),
+                    Is.True,
                     $"ResourceGroupMapByString missing key '{g.Name}'");
         }
 
@@ -155,7 +171,9 @@ namespace OE2EmpireTracker.Tests.Models
             {
                 string name = ResourceGroup.ResourceGroupMapByEnum[e].Name;
                 RGE roundTripped = ResourceGroup.ResourceGroupMapByString[name].ID;
-                Assert.That(roundTripped, Is.EqualTo(e),
+                Assert.That(
+                    roundTripped,
+                    Is.EqualTo(e),
                     $"Round-trip failed for {e}");
             }
         }

@@ -69,9 +69,13 @@ namespace OE2EmpireTracker.Forms.Market
                 int refs = refCounter.CountReferences(listing.UUID);
 
                 int rowIdx = dgvListings.Rows.Add(
-                    stationName, listing.ItemName, listing.ItemType.ToString(),
-                    listing.Quantity.ToString(), listing.PricePerUnit.ToString("N2"),
-                    condition, refs.ToString());
+                    stationName,
+                    listing.ItemName,
+                    listing.ItemType.ToString(),
+                    listing.Quantity.ToString(),
+                    listing.PricePerUnit.ToString("N2"),
+                    condition,
+                    refs.ToString());
                 dgvListings.Rows[rowIdx].Tag = listing;
             }
 
@@ -126,15 +130,19 @@ namespace OE2EmpireTracker.Forms.Market
             if (refs > 0)
             {
                 MessageBox.Show(
-                    string.Format("Cannot delete listing \"{0}\" \u2014 it is referenced by {1} transaction(s).",
-                        listing.ItemName, refs),
+                    string.Format(
+                        "Cannot delete listing \"{0}\" \u2014 it is referenced by {1} transaction(s).",
+                        listing.ItemName,
+                        refs),
                     "Delete Blocked", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             var result = MessageBox.Show(
                 string.Format("Delete listing \"{0}\"?", listing.ItemName),
-                "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
             playerContext.RemoveMarketListing(listing);
@@ -163,8 +171,11 @@ namespace OE2EmpireTracker.Forms.Market
 
                     if (tx == null)
                     {
-                        MessageBox.Show("Sale quantity exceeds listing availability.",
-                            "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(
+                            "Sale quantity exceeds listing availability.",
+                            "Validation",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
                         return;
                     }
 
@@ -226,10 +237,16 @@ namespace OE2EmpireTracker.Forms.Market
                     dateStr = parsed.ToLocalTime().ToString("yyyy-MM-dd HH:mm");
 
                 dgvTransactions.Rows.Add(
-                    dateStr, tx.TransactionType.ToString(), tx.ItemName,
-                    tx.Quantity.ToString(), tx.PricePerUnit.ToString("N2"),
-                    tx.TotalPrice.ToString("N2"), tx.Counterparty,
-                    tx.CounterpartyFaction, stationName, condition);
+                    dateStr,
+                    tx.TransactionType.ToString(),
+                    tx.ItemName,
+                    tx.Quantity.ToString(),
+                    tx.PricePerUnit.ToString("N2"),
+                    tx.TotalPrice.ToString("N2"),
+                    tx.Counterparty,
+                    tx.CounterpartyFaction,
+                    stationName,
+                    condition);
             }
 
             sw.Stop();
@@ -302,16 +319,23 @@ namespace OE2EmpireTracker.Forms.Market
                     }
                 }
 
-                dgvSummary.Rows.Add(b.ItemName, b.QuantitySold.ToString(),
-                    b.SalesRevenue.ToString("N2"), b.QuantityBought.ToString(),
-                    b.PurchaseCost.ToString("N2"), b.NetProfitLoss.ToString("N2"),
-                    planValueStr, marginStr);
+                dgvSummary.Rows.Add(
+                    b.ItemName,
+                    b.QuantitySold.ToString(),
+                    b.SalesRevenue.ToString("N2"),
+                    b.QuantityBought.ToString(),
+                    b.PurchaseCost.ToString("N2"),
+                    b.NetProfitLoss.ToString("N2"),
+                    planValueStr,
+                    marginStr);
             }
 
             if (plan != null && totalPlanValue > 0)
             {
-                lblNetPL.Text += string.Format("  |  Plan Value: {0:N2}  |  Margin: {1:N2}",
-                    totalPlanValue, summary.TotalSalesRevenue - totalPlanValue);
+                lblNetPL.Text += string.Format(
+                    "  |  Plan Value: {0:N2}  |  Margin: {1:N2}",
+                    totalPlanValue,
+                    summary.TotalSalesRevenue - totalPlanValue);
             }
 
             sw.Stop();
@@ -337,7 +361,8 @@ namespace OE2EmpireTracker.Forms.Market
             cmbPricingPlan.DataSource = items;
             cmbPricingPlan.DisplayMember = "Value";
             cmbPricingPlan.ValueMember = "Key";
-            sw.Stop(); Log.Info("PERF PopulatePricingPlanCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulatePricingPlanCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private Models.PricingPlan GetSelectedPricingPlan()
@@ -372,13 +397,15 @@ namespace OE2EmpireTracker.Forms.Market
             foreach (var s in stations)
             {
                 var entry = new StationEntry { Display = s.Name, UUID = s.UUID };
+
                 cmbTxStation.Items.Add(entry);
                 cmbSumStation.Items.Add(entry);
             }
 
             cmbTxStation.SelectedIndex = 0;
             cmbSumStation.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulateStationCombos: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateStationCombos: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -----------------------------------------------------------------------
@@ -388,7 +415,13 @@ namespace OE2EmpireTracker.Forms.Market
         {
             if (IsDisposed) return;
             if (InvokeRequired)
-            { try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); } catch (ObjectDisposedException) { } return; }
+            {
+                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                } catch (ObjectDisposedException)
+                {
+                }
+                return;
+            }
             PopulateStationCombos();
             PopulatePricingPlanCombo();
             PopulateListingsGrid();
@@ -399,7 +432,13 @@ namespace OE2EmpireTracker.Forms.Market
         {
             if (IsDisposed) return;
             if (InvokeRequired)
-            { try { BeginInvoke(new Action(() => OnMarketDataChanged(sender, e))); } catch (ObjectDisposedException) { } return; }
+            {
+                try { BeginInvoke(new Action(() => OnMarketDataChanged(sender, e)));
+                } catch (ObjectDisposedException)
+                {
+                }
+                return;
+            }
             PopulateListingsGrid();
             PopulateTransactionsGrid();
         }

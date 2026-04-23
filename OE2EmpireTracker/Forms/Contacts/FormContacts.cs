@@ -147,9 +147,12 @@ namespace OE2EmpireTracker.Forms.Contacts
             }
 
             sw.Stop();
-            Log.Info("PopulateFactionList PERF: total={0}ms items={1}",
-                sw.ElapsedMilliseconds, factions.Count);
-            sw.Stop(); Log.Info("PERF PopulateFactionList: {0}ms", sw.ElapsedMilliseconds);
+            Log.Info(
+                "PopulateFactionList PERF: total={0}ms items={1}",
+                sw.ElapsedMilliseconds,
+                factions.Count);
+            sw.Stop();
+            Log.Info("PERF PopulateFactionList: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void TxtFactionFilter_TextChanged(object sender, EventArgs e)
@@ -180,14 +183,19 @@ namespace OE2EmpireTracker.Forms.Contacts
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedFaction == null) { ClearFactionForm(); return; }
+            if (_selectedFaction == null)
+            {
+                ClearFactionForm();
+                return;
+            }
 
             txtFactionName.Text = _selectedFaction.Name;
             txtFactionDescription.Text = _selectedFaction.Description;
             SetFactionDetailEnabled(true);
             sw.Stop();
             Log.Info("PopulateFactionForm PERF: total={0}ms", sw.ElapsedMilliseconds);
-            sw.Stop(); Log.Info("PERF PopulateFactionForm: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateFactionForm: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ClearFactionForm()
@@ -334,9 +342,12 @@ namespace OE2EmpireTracker.Forms.Contacts
             }
 
             sw.Stop();
-            Log.Info("PopulateCharacterList PERF: total={0}ms items={1}",
-                sw.ElapsedMilliseconds, characters.Count);
-            sw.Stop(); Log.Info("PERF PopulateCharacterList: {0}ms", sw.ElapsedMilliseconds);
+            Log.Info(
+                "PopulateCharacterList PERF: total={0}ms items={1}",
+                sw.ElapsedMilliseconds,
+                characters.Count);
+            sw.Stop();
+            Log.Info("PERF PopulateCharacterList: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void TxtCharFilter_TextChanged(object sender, EventArgs e)
@@ -367,7 +378,11 @@ namespace OE2EmpireTracker.Forms.Contacts
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedCharacter == null) { ClearCharacterForm(); return; }
+            if (_selectedCharacter == null)
+            {
+                ClearCharacterForm();
+                return;
+            }
 
             txtCharName.Text = _selectedCharacter.Name;
             PopulateCharFactionCombo();
@@ -392,7 +407,8 @@ namespace OE2EmpireTracker.Forms.Contacts
             SetCharDetailEnabled(true);
             sw.Stop();
             Log.Info("PopulateCharacterForm PERF: total={0}ms", sw.ElapsedMilliseconds);
-            sw.Stop(); Log.Info("PERF PopulateCharacterForm: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateCharacterForm: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ClearCharacterForm()
@@ -440,7 +456,8 @@ namespace OE2EmpireTracker.Forms.Contacts
                 }
             }
 
-            sw.Stop(); Log.Info("PERF PopulateCharFactionCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateCharFactionCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -----------------------------------------------------------------------
@@ -533,8 +550,13 @@ namespace OE2EmpireTracker.Forms.Contacts
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 

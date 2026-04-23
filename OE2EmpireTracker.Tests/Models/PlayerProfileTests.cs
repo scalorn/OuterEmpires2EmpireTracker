@@ -241,7 +241,9 @@ namespace OE2EmpireTracker.Tests.Models
         public void SkillName_AllValues_HaveNonEmptyDisplayName()
         {
             foreach (SkillName s in System.Enum.GetValues(typeof(SkillName)))
-                Assert.That(string.IsNullOrEmpty(s.ToDisplayName()), Is.False,
+                Assert.That(
+                    string.IsNullOrEmpty(s.ToDisplayName()),
+                    Is.False,
                     $"SkillName.{s} has empty display name");
         }
 
@@ -249,7 +251,9 @@ namespace OE2EmpireTracker.Tests.Models
         public void SkillGroupName_AllValues_HaveNonEmptyDisplayName()
         {
             foreach (SkillGroupName g in System.Enum.GetValues(typeof(SkillGroupName)))
-                Assert.That(string.IsNullOrEmpty(g.ToDisplayName()), Is.False,
+                Assert.That(
+                    string.IsNullOrEmpty(g.ToDisplayName()),
+                    Is.False,
                     $"SkillGroupName.{g} has empty display name");
         }
     }

@@ -246,7 +246,8 @@ namespace OE2EmpireTracker.Tests.Services
         public void AutoFillCommodities_UnfulfilledCommodity_AddsDropOffItem()
         {
             var vm = CreateViewModel();
-            var colony = CreateColonyWithCommodities("c1",
+            var colony = CreateColonyWithCommodities(
+                "c1",
                 new CommodityRequested { Name = "Steel Plates", Requested = 50, Delivered = 0, Fulfilled = false });
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
@@ -265,7 +266,8 @@ namespace OE2EmpireTracker.Tests.Services
         public void AutoFillCommodities_PartiallyDelivered_AddsShortfall()
         {
             var vm = CreateViewModel();
-            var colony = CreateColonyWithCommodities("c1",
+            var colony = CreateColonyWithCommodities(
+                "c1",
                 new CommodityRequested { Name = "Steel Plates", Requested = 100, Delivered = 30, Fulfilled = false });
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
@@ -279,7 +281,8 @@ namespace OE2EmpireTracker.Tests.Services
         public void AutoFillCommodities_FulfilledCommodity_Skipped()
         {
             var vm = CreateViewModel();
-            var colony = CreateColonyWithCommodities("c1",
+            var colony = CreateColonyWithCommodities(
+                "c1",
                 new CommodityRequested { Name = "Steel Plates", Requested = 50, Delivered = 50, Fulfilled = true });
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
@@ -292,7 +295,8 @@ namespace OE2EmpireTracker.Tests.Services
         public void AutoFillCommodities_ZeroShortfall_Skipped()
         {
             var vm = CreateViewModel();
-            var colony = CreateColonyWithCommodities("c1",
+            var colony = CreateColonyWithCommodities(
+                "c1",
                 new CommodityRequested { Name = "Steel Plates", Requested = 50, Delivered = 50, Fulfilled = false });
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
@@ -305,7 +309,8 @@ namespace OE2EmpireTracker.Tests.Services
         public void AutoFillCommodities_MissingColony_SkipsStop()
         {
             var vm = CreateViewModel();
-            var colony = CreateColonyWithCommodities("c2",
+            var colony = CreateColonyWithCommodities(
+                "c2",
                 new CommodityRequested { Name = "Steel Plates", Requested = 50, Delivered = 0, Fulfilled = false });
             var stops = new[]
             {
@@ -326,7 +331,8 @@ namespace OE2EmpireTracker.Tests.Services
             var stop = vm.GetOrCreateStop("c1", 0);
             vm.AddDropOffItem(stop, ItemType.ItemTypeEnum.Resource, "Iron", "Iron", 100, "High");
 
-            var colony = CreateColonyWithCommodities("c1",
+            var colony = CreateColonyWithCommodities(
+                "c1",
                 new CommodityRequested { Name = "Steel Plates", Requested = 50, Delivered = 0, Fulfilled = false });
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
@@ -345,7 +351,8 @@ namespace OE2EmpireTracker.Tests.Services
             var stop = vm.GetOrCreateStop("c1", 0);
             vm.AddPickUpItem(stop, ItemType.ItemTypeEnum.Resource, "Iron", "Iron", 200);
 
-            var colony = CreateColonyWithCommodities("c1",
+            var colony = CreateColonyWithCommodities(
+                "c1",
                 new CommodityRequested { Name = "Steel Plates", Requested = 50, Delivered = 0, Fulfilled = false });
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
@@ -371,10 +378,12 @@ namespace OE2EmpireTracker.Tests.Services
         public void AutoFillCommodities_MultipleStops_MixedCommodities()
         {
             var vm = CreateViewModel();
-            var colony1 = CreateColonyWithCommodities("c1",
+            var colony1 = CreateColonyWithCommodities(
+                "c1",
                 new CommodityRequested { Name = "Steel Plates", Requested = 50, Delivered = 0, Fulfilled = false },
                 new CommodityRequested { Name = "Copper Wire", Requested = 30, Delivered = 30, Fulfilled = true });
-            var colony2 = CreateColonyWithCommodities("c2",
+            var colony2 = CreateColonyWithCommodities(
+                "c2",
                 new CommodityRequested { Name = "Glass Panels", Requested = 20, Delivered = 5, Fulfilled = false });
             var stops = new[]
             {
@@ -445,7 +454,8 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var bp = CreateTestBlueprint("bp1", "Habitat");
             var vm = CreateViewModel();
-            var colony = CreateColonyWithStructures("c1",
+            var colony = CreateColonyWithStructures(
+                "c1",
                 MakeStructure("bp1", built: true, staged: false));
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
@@ -459,7 +469,8 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var bp = CreateTestBlueprint("bp2", "Refinery");
             var vm = CreateViewModel();
-            var colony = CreateColonyWithStructures("c1",
+            var colony = CreateColonyWithStructures(
+                "c1",
                 MakeStructure("bp2", built: false, staged: true));
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
@@ -473,7 +484,8 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var bp = CreateTestBlueprint("bp-unbuilt", "Habitat");
             var vm = CreateViewModel();
-            var colony = CreateColonyWithStructures("c1",
+            var colony = CreateColonyWithStructures(
+                "c1",
                 MakeStructure("bp-unbuilt", built: false, staged: false));
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
@@ -492,7 +504,8 @@ namespace OE2EmpireTracker.Tests.Services
         {
             CreateTestBlueprint("bp-stack", "Refinery");
             var vm = CreateViewModel();
-            var colony = CreateColonyWithStructures("c1",
+            var colony = CreateColonyWithStructures(
+                "c1",
                 MakeStructure("bp-stack", built: false, staged: false),
                 MakeStructure("bp-stack", built: false, staged: false),
                 MakeStructure("bp-stack", built: false, staged: false));
@@ -514,9 +527,10 @@ namespace OE2EmpireTracker.Tests.Services
             CreateTestBlueprint("bp-b", "Refinery");
             CreateTestBlueprint("bp-c", "Habitat");
             var vm = CreateViewModel();
-            var colony = CreateColonyWithStructures("c1",
-                MakeStructure("bp-a", built: true, staged: false),   // built -- skip
-                MakeStructure("bp-b", built: false, staged: true),   // staged -- skip
+            var colony = CreateColonyWithStructures(
+                "c1",
+                MakeStructure("bp-a", built: true, staged: false),
+                MakeStructure("bp-b", built: false, staged: true),
                 MakeStructure("bp-c", built: false, staged: false)); // unbuilt+unstaged -- add
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
@@ -538,7 +552,8 @@ namespace OE2EmpireTracker.Tests.Services
             var stop = vm.GetOrCreateStop("c1", 0);
             vm.AddDropOffItem(stop, ItemType.ItemTypeEnum.Resource, "Iron", "Iron", 100, "High");
 
-            var colony = CreateColonyWithStructures("c1",
+            var colony = CreateColonyWithStructures(
+                "c1",
                 MakeStructure("bp-d", built: false, staged: false));
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
@@ -564,7 +579,8 @@ namespace OE2EmpireTracker.Tests.Services
         public void AutoFillFlatpacks_MissingBlueprint_SkipsStructure()
         {
             var vm = CreateViewModel();
-            var colony = CreateColonyWithStructures("c1",
+            var colony = CreateColonyWithStructures(
+                "c1",
                 MakeStructure("nonexistent-bp", built: false, staged: false));
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
@@ -626,7 +642,8 @@ namespace OE2EmpireTracker.Tests.Services
             var colony = new Colony { UUID = "c1" };
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillManufacturingResources(stops,
+            int added = vm.AutoFillManufacturingResources(
+                stops,
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
@@ -639,8 +656,11 @@ namespace OE2EmpireTracker.Tests.Services
             var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg-shortfall", BluePrintType = "Flatpacks/Manufactory" };
             playerContext.AddBlueprint(flatpackBp);
 
-            CreateManufactoryBlueprint("mfg-bp-shortfall", "Widget",
-                new Dictionary<string, string> { { "Iron", "5" }, { "Copper", "3" } });
+            CreateManufactoryBlueprint(
+                "mfg-bp-shortfall",
+                "Widget",
+                new Dictionary<string,
+                string> { { "Iron", "5" }, { "Copper", "3" } });
 
             var vm = CreateViewModel();
             var structure = MakeStagingManufactory("fp-mfg-shortfall", "mfg-bp-shortfall", 2); // needs 10 Iron, 6 Copper
@@ -659,7 +679,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillManufacturingResources(stops,
+            int added = vm.AutoFillManufacturingResources(
+                stops,
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
@@ -680,8 +701,11 @@ namespace OE2EmpireTracker.Tests.Services
             var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg-purity", BluePrintType = "Flatpacks/Manufactory" };
             playerContext.AddBlueprint(flatpackBp);
 
-            CreateManufactoryBlueprint("mfg-bp-purity", "Gadget",
-                new Dictionary<string, string> { { "Iron", "3" }, { "Copper", "2" } });
+            CreateManufactoryBlueprint(
+                "mfg-bp-purity",
+                "Gadget",
+                new Dictionary<string,
+                string> { { "Iron", "3" }, { "Copper", "2" } });
 
             var vm = CreateViewModel();
             var structure = MakeStagingManufactory("fp-mfg-purity", "mfg-bp-purity", 1);
@@ -689,7 +713,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillManufacturingResources(stops,
+            int added = vm.AutoFillManufacturingResources(
+                stops,
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
@@ -697,7 +722,9 @@ namespace OE2EmpireTracker.Tests.Services
             var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
             foreach (var item in stop.DropOff)
             {
-                Assert.That(item.ResourcePurity, Is.EqualTo("Refined"),
+                Assert.That(
+                    item.ResourcePurity,
+                    Is.EqualTo("Refined"),
                     $"Resource '{item.BaseItemTypeID}' should have Refined purity");
                 Assert.That(item.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Resource));
             }
@@ -711,8 +738,11 @@ namespace OE2EmpireTracker.Tests.Services
             playerContext.AddBlueprint(flatpackBp);
 
             // Create the manufacturing target blueprint with resources
-            var mfgBp = CreateManufactoryBlueprint("mfg-bp1", "Widget",
-                new Dictionary<string, string> { { "Iron", "5" } });
+            var mfgBp = CreateManufactoryBlueprint(
+                "mfg-bp1",
+                "Widget",
+                new Dictionary<string,
+                string> { { "Iron", "5" } });
 
             var vm = CreateViewModel();
             var structure = MakeStagingManufactory("fp-mfg1", "mfg-bp1", 2); // needs 10 Iron
@@ -731,7 +761,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillManufacturingResources(stops,
+            int added = vm.AutoFillManufacturingResources(
+                stops,
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
@@ -744,8 +775,11 @@ namespace OE2EmpireTracker.Tests.Services
             var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg2", BluePrintType = "Flatpacks/Manufactory" };
             playerContext.AddBlueprint(flatpackBp);
 
-            CreateManufactoryBlueprint("mfg-bp2", "Gadget",
-                new Dictionary<string, string> { { "Iron", "5" }, { "Copper", "3" } });
+            CreateManufactoryBlueprint(
+                "mfg-bp2",
+                "Gadget",
+                new Dictionary<string,
+                string> { { "Iron", "5" }, { "Copper", "3" } });
 
             var vm = CreateViewModel();
             var structure = MakeStagingManufactory("fp-mfg2", "mfg-bp2", 2); // needs 10 Iron, 6 Copper
@@ -764,7 +798,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillManufacturingResources(stops,
+            int added = vm.AutoFillManufacturingResources(
+                stops,
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
@@ -786,8 +821,11 @@ namespace OE2EmpireTracker.Tests.Services
             var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg3", BluePrintType = "Flatpacks/Manufactory" };
             playerContext.AddBlueprint(flatpackBp);
 
-            CreateManufactoryBlueprint("mfg-bp3", "Part",
-                new Dictionary<string, string> { { "Iron", "2" } });
+            CreateManufactoryBlueprint(
+                "mfg-bp3",
+                "Part",
+                new Dictionary<string,
+                string> { { "Iron", "2" } });
 
             var vm = CreateViewModel();
             var s1 = MakeStagingManufactory("fp-mfg3", "mfg-bp3", 3); // needs 6 Iron
@@ -796,7 +834,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillManufacturingResources(stops,
+            int added = vm.AutoFillManufacturingResources(
+                stops,
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
@@ -818,7 +857,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillManufacturingResources(stops,
+            int added = vm.AutoFillManufacturingResources(
+                stops,
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
@@ -838,8 +878,11 @@ namespace OE2EmpireTracker.Tests.Services
             var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg4", BluePrintType = "Flatpacks/Manufactory" };
             playerContext.AddBlueprint(flatpackBp);
 
-            CreateManufactoryBlueprint("mfg-bp4", "Thing",
-                new Dictionary<string, string> { { "Iron", "5" } });
+            CreateManufactoryBlueprint(
+                "mfg-bp4",
+                "Thing",
+                new Dictionary<string,
+                string> { { "Iron", "5" } });
 
             var vm = CreateViewModel();
             var structure = MakeStagingManufactory("fp-mfg4", "mfg-bp4", 0); // qty = 0
@@ -847,7 +890,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillManufacturingResources(stops,
+            int added = vm.AutoFillManufacturingResources(
+                stops,
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
@@ -860,8 +904,11 @@ namespace OE2EmpireTracker.Tests.Services
             var flatpackBp = new OE2EmpireTracker.Models.Blueprint("Manufactory") { UUID = "fp-mfg5", BluePrintType = "Flatpacks/Manufactory" };
             playerContext.AddBlueprint(flatpackBp);
 
-            CreateManufactoryBlueprint("mfg-bp5", "Gizmo",
-                new Dictionary<string, string> { { "Iron", "1" } });
+            CreateManufactoryBlueprint(
+                "mfg-bp5",
+                "Gizmo",
+                new Dictionary<string,
+                string> { { "Iron", "1" } });
 
             var vm = CreateViewModel();
             var stop = vm.GetOrCreateStop("c1", 0);
@@ -872,7 +919,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            vm.AutoFillManufacturingResources(stops,
+            vm.AutoFillManufacturingResources(
+                stops,
                 uuid => uuid == "c1" ? colony : null,
                 uuid => playerContext.FindBlueprint(uuid));
 
@@ -885,8 +933,13 @@ namespace OE2EmpireTracker.Tests.Services
         // Validates: Requirements 10.1, 10.2, 10.3, 10.4
         // -----------------------------------------------------------------------
 
-        private OE2EmpireTracker.Models.Blueprint CreateBlueprintWithWorkers(string uuid, string name, string bpType,
-            int blueCollar = 0, int whiteCollar = 0, int specialist = 0)
+        private OE2EmpireTracker.Models.Blueprint CreateBlueprintWithWorkers(
+            string uuid,
+            string name,
+            string bpType,
+            int blueCollar = 0,
+            int whiteCollar = 0,
+            int specialist = 0)
         {
             var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, BluePrintType = bpType };
             if (blueCollar > 0) bp.Properties.SetProperty(GameConstants.PropBlueCollarDetail, blueCollar.ToString());
@@ -925,8 +978,10 @@ namespace OE2EmpireTracker.Tests.Services
 
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillWorkers(stops,
-                uuid => uuid == "c1" ? colony : null, playerContext);
+            int added = vm.AutoFillWorkers(
+                stops,
+                uuid => uuid == "c1" ? colony : null,
+                playerContext);
 
             Assert.That(added, Is.EqualTo(0));
         }
@@ -934,8 +989,12 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void AutoFillWorkers_PartialStaffing_CorrectGap()
         {
-            var bp = CreateBlueprintWithWorkers("bp-w2", "Factory", "Flatpacks/Factory",
-                blueCollar: 2, whiteCollar: 1);
+            var bp = CreateBlueprintWithWorkers(
+                "bp-w2",
+                "Factory",
+                "Flatpacks/Factory",
+                blueCollar: 2,
+                whiteCollar: 1);
             var vm = CreateViewModel();
             // Assign 1 of 2 blue collar, 0 of 1 white collar
             var structure = MakeBuiltOnlineStructure("bp-w2", blueAssigned: 1, whiteAssigned: 0);
@@ -943,8 +1002,10 @@ namespace OE2EmpireTracker.Tests.Services
 
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillWorkers(stops,
-                uuid => uuid == "c1" ? colony : null, playerContext);
+            int added = vm.AutoFillWorkers(
+                stops,
+                uuid => uuid == "c1" ? colony : null,
+                playerContext);
 
             Assert.That(added, Is.EqualTo(2)); // 1 BlueCollar gap + 1 WhiteCollar gap
             var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
@@ -965,8 +1026,10 @@ namespace OE2EmpireTracker.Tests.Services
             var colony = new Colony { UUID = "c1" };
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillWorkers(stops,
-                uuid => uuid == "c1" ? colony : null, playerContext);
+            int added = vm.AutoFillWorkers(
+                stops,
+                uuid => uuid == "c1" ? colony : null,
+                playerContext);
 
             Assert.That(added, Is.EqualTo(0));
         }
@@ -984,8 +1047,10 @@ namespace OE2EmpireTracker.Tests.Services
 
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            vm.AutoFillWorkers(stops,
-                uuid => uuid == "c1" ? colony : null, playerContext);
+            vm.AutoFillWorkers(
+                stops,
+                uuid => uuid == "c1" ? colony : null,
+                playerContext);
 
             Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("Iron"));
             Assert.That(stop.DropOff.Count >= 2, Is.True);

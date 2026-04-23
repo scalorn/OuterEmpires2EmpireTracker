@@ -136,14 +136,20 @@ namespace OE2EmpireTracker.Services
             // Lock unallocated workers against the colony
             LockUnallocatedWorkers(previousStatus);
 
-            Log.Info("CalculateBuilt ACTUAL: colony={0} structures={1} Power={2}/{3} Hab={4}/{5} Food={6}/{7} Ent={8}/{9} WH={10}/{11}",
+            Log.Info(
+                "CalculateBuilt ACTUAL: colony={0} structures={1} Power={2}/{3} Hab={4}/{5} Food={6}/{7} Ent={8}/{9} WH={10}/{11}",
                 colony.ColonyName ?? colony.PlanetName ?? colony.UUID,
                 colony.Structures.Count,
-                FinalActualStatus.PowerProvided, FinalActualStatus.PowerRequired,
-                FinalActualStatus.HabitationProvision, FinalActualStatus.HabitationRequired,
-                FinalActualStatus.FoodProvision, FinalActualStatus.FoodRequired,
-                FinalActualStatus.EntertainmentProvided, FinalActualStatus.EntertainmentRequired,
-                FinalActualStatus.WarehouseCapacity, FinalActualStatus.WarehouseRequired);
+                FinalActualStatus.PowerProvided,
+                FinalActualStatus.PowerRequired,
+                FinalActualStatus.HabitationProvision,
+                FinalActualStatus.HabitationRequired,
+                FinalActualStatus.FoodProvision,
+                FinalActualStatus.FoodRequired,
+                FinalActualStatus.EntertainmentProvided,
+                FinalActualStatus.EntertainmentRequired,
+                FinalActualStatus.WarehouseCapacity,
+                FinalActualStatus.WarehouseRequired);
         }
 
         public void CalculateIdeal()
@@ -163,14 +169,20 @@ namespace OE2EmpireTracker.Services
             FinalIdealStatus = previousStatus;
             FinalIdealStatus.WarehouseRequired = CalculateWarehouseRequired();
 
-            Log.Info("CalculateIdeal IDEAL: colony={0} structures={1} Power={2}/{3} Hab={4}/{5} Food={6}/{7} Ent={8}/{9} WH={10}/{11}",
+            Log.Info(
+                "CalculateIdeal IDEAL: colony={0} structures={1} Power={2}/{3} Hab={4}/{5} Food={6}/{7} Ent={8}/{9} WH={10}/{11}",
                 colony.ColonyName ?? colony.PlanetName ?? colony.UUID,
                 colony.Structures.Count,
-                FinalIdealStatus.PowerProvided, FinalIdealStatus.PowerRequired,
-                FinalIdealStatus.HabitationProvision, FinalIdealStatus.HabitationRequired,
-                FinalIdealStatus.FoodProvision, FinalIdealStatus.FoodRequired,
-                FinalIdealStatus.EntertainmentProvided, FinalIdealStatus.EntertainmentRequired,
-                FinalIdealStatus.WarehouseCapacity, FinalIdealStatus.WarehouseRequired);
+                FinalIdealStatus.PowerProvided,
+                FinalIdealStatus.PowerRequired,
+                FinalIdealStatus.HabitationProvision,
+                FinalIdealStatus.HabitationRequired,
+                FinalIdealStatus.FoodProvision,
+                FinalIdealStatus.FoodRequired,
+                FinalIdealStatus.EntertainmentProvided,
+                FinalIdealStatus.EntertainmentRequired,
+                FinalIdealStatus.WarehouseCapacity,
+                FinalIdealStatus.WarehouseRequired);
         }
 
         private decimal CalculateWarehouseRequired()
@@ -401,7 +413,9 @@ namespace OE2EmpireTracker.Services
             }
         }
 
-        private void LockWorkerType(ColonyStructure structure, Models.Blueprint flatpackBlueprint,
+        private void LockWorkerType(
+            ColonyStructure structure,
+            Models.Blueprint flatpackBlueprint,
             Models.WorkerTypeInfo wt)
         {
             if (!flatpackBlueprint.Properties.ContainsKey(wt.PropertyKey)) return;
@@ -417,8 +431,11 @@ namespace OE2EmpireTracker.Services
                 if (assigned)
                 {
                     EnsureWorkerItemExists(wt.DetailKey);
-                    colony.Locks.LockItem(structure.UUID,
-                        Models.ItemType.ItemTypeEnum.WorkDetail, wt.DetailKey, 1);
+                    colony.Locks.LockItem(
+                        structure.UUID,
+                        Models.ItemType.ItemTypeEnum.WorkDetail,
+                        wt.DetailKey,
+                        1);
                 }
             }
         }
@@ -430,22 +447,31 @@ namespace OE2EmpireTracker.Services
             if (finalStatus.UnallocatedBlueCollarPresent)
             {
                 EnsureWorkerItemExists(GameConstants.WorkerIdBlueCollar);
-                colony.Locks.LockItem(colony.UUID,
-                    Models.ItemType.ItemTypeEnum.WorkDetail, GameConstants.WorkerIdBlueCollar, 1);
+                colony.Locks.LockItem(
+                    colony.UUID,
+                    Models.ItemType.ItemTypeEnum.WorkDetail,
+                    GameConstants.WorkerIdBlueCollar,
+                    1);
             }
 
             if (finalStatus.UnallocatedWhiteCollarPresent)
             {
                 EnsureWorkerItemExists(GameConstants.WorkerIdWhiteCollar);
-                colony.Locks.LockItem(colony.UUID,
-                    Models.ItemType.ItemTypeEnum.WorkDetail, GameConstants.WorkerIdWhiteCollar, 1);
+                colony.Locks.LockItem(
+                    colony.UUID,
+                    Models.ItemType.ItemTypeEnum.WorkDetail,
+                    GameConstants.WorkerIdWhiteCollar,
+                    1);
             }
 
             if (finalStatus.UnallocatedSpecialistPresent)
             {
                 EnsureWorkerItemExists(GameConstants.WorkerIdSpecialist);
-                colony.Locks.LockItem(colony.UUID,
-                    Models.ItemType.ItemTypeEnum.WorkDetail, GameConstants.WorkerIdSpecialist, 1);
+                colony.Locks.LockItem(
+                    colony.UUID,
+                    Models.ItemType.ItemTypeEnum.WorkDetail,
+                    GameConstants.WorkerIdSpecialist,
+                    1);
             }
         }
 
@@ -501,8 +527,11 @@ namespace OE2EmpireTracker.Services
                     colony.Items.AddItem(resourceItem);
                 }
 
-                colony.Locks.LockItem(structure.UUID,
-                    Models.ItemType.ItemTypeEnum.Resource, resourceName, totalToLock);
+                colony.Locks.LockItem(
+                    structure.UUID,
+                    Models.ItemType.ItemTypeEnum.Resource,
+                    resourceName,
+                    totalToLock);
             }
         }
 
@@ -540,8 +569,11 @@ namespace OE2EmpireTracker.Services
                     colony.Items.AddItem(resourceItem);
                 }
 
-                colony.Locks.LockItem(structure.UUID,
-                    Models.ItemType.ItemTypeEnum.Resource, resourceName, totalToLock);
+                colony.Locks.LockItem(
+                    structure.UUID,
+                    Models.ItemType.ItemTypeEnum.Resource,
+                    resourceName,
+                    totalToLock);
             }
         }
 
@@ -567,8 +599,11 @@ namespace OE2EmpireTracker.Services
                 colony.Items.AddItem(flatpackItem);
             }
 
-            colony.Locks.LockItem(structure.UUID,
-                Models.ItemType.ItemTypeEnum.Flatpack, structure.FlatpackBlueprintUUID, 1);
+            colony.Locks.LockItem(
+                structure.UUID,
+                Models.ItemType.ItemTypeEnum.Flatpack,
+                structure.FlatpackBlueprintUUID,
+                1);
         }
 
         public void CalculateBuilt(ColonyStructure structure, ColonyStructureStatus prevStatus, ColonyStructureStatus status, IColonyStructureWorkers workerSource, Models.Blueprint flatpackBlueprint)
@@ -683,10 +718,17 @@ namespace OE2EmpireTracker.Services
             // Diagnostic: log per-structure worker accumulation
             var bp = flatpackBlueprint;
             string bpName = bp?.ExtendedName ?? structure.FlatpackBlueprintUUID ?? "?";
-            Log.Info("CalcBuilt structure [{0}] built={1} staged={2} online={3} workers={4} unalloc={5} " +
-                "habProv={6} habReq={7} prevHabReq={8} bpType={9}",
-                bpName, built, staged, online, colonyWorkers.Count, unallocatedWorkersAdded,
-                status.HabitationProvision, status.HabitationRequired, builtHabitationRequired,
+            Log.Info(
+                "CalcBuilt structure [{0}] built={1} staged={2} online={3} workers={4} unalloc={5} " + "habProv={6} habReq={7} prevHabReq={8} bpType={9}",
+                bpName,
+                built,
+                staged,
+                online,
+                colonyWorkers.Count,
+                unallocatedWorkersAdded,
+                status.HabitationProvision,
+                status.HabitationRequired,
+                builtHabitationRequired,
                 bp?.BluePrintType ?? "null");
 
             status.WarehouseCapacity = builtWarehouseCapacity;
@@ -706,21 +748,36 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public static void PopulateStatus(RtfBuilder builder, ColonyStructureStatus status)
         {
-            AppendStatus(builder, "Power:",
+            AppendStatus(
+                builder,
+                "Power:",
                 status.PowerRequired > status.PowerProvided ? Color.Red : Color.Green,
-                status.PowerRequired, status.PowerProvided);
-            AppendStatus(builder, " Habitation: ",
+                status.PowerRequired,
+                status.PowerProvided);
+            AppendStatus(
+                builder,
+                " Habitation: ",
                 status.HabitationProvision < status.HabitationRequired ? Color.Red : Color.Green,
-                status.HabitationRequired, status.HabitationProvision);
-            AppendStatus(builder, " Food: ",
+                status.HabitationRequired,
+                status.HabitationProvision);
+            AppendStatus(
+                builder,
+                " Food: ",
                 status.FoodProvision < status.FoodRequired ? Color.Red : Color.Green,
-                status.FoodRequired, status.FoodProvision);
-            AppendStatus(builder, " Entertainment: ",
+                status.FoodRequired,
+                status.FoodProvision);
+            AppendStatus(
+                builder,
+                " Entertainment: ",
                 status.EntertainmentProvided < status.EntertainmentRequired ? Color.Red : Color.Green,
-                status.EntertainmentRequired, status.EntertainmentProvided);
-            AppendStatus(builder, " Warehouse: ",
+                status.EntertainmentRequired,
+                status.EntertainmentProvided);
+            AppendStatus(
+                builder,
+                " Warehouse: ",
                 status.WarehouseCapacity < status.WarehouseRequired ? Color.Red : Color.Green,
-                status.WarehouseRequired, status.WarehouseCapacity);
+                status.WarehouseRequired,
+                status.WarehouseCapacity);
         }
 
         private static void AppendStatus(RtfBuilder builder, string name, Color color, decimal required, decimal provided)

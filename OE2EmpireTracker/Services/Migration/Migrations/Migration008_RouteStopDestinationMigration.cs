@@ -52,8 +52,10 @@ namespace OE2EmpireTracker.Services.Migration
                 }
             }
 
-            Log.Info("Migration008: migrated {0} route stops and {1} delivery plan stops to DestinationUUID",
-                migratedRouteStops, migratedPlanStops);
+            Log.Info(
+                "Migration008: migrated {0} route stops and {1} delivery plan stops to DestinationUUID",
+                migratedRouteStops,
+                migratedPlanStops);
         }
     }
 }

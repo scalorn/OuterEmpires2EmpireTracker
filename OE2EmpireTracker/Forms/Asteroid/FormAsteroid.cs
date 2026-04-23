@@ -127,9 +127,15 @@ namespace OE2EmpireTracker.Forms.Asteroid
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is Models.Asteroid asteroid)
-            { _selectedAsteroid = asteroid; PopulateForm(); }
+            {
+                _selectedAsteroid = asteroid;
+                PopulateForm();
+            }
             else if (!e.IsSelected && lvwAsteroids.SelectedItems.Count == 0)
-            { _selectedAsteroid = null; ClearForm(); }
+            {
+                _selectedAsteroid = null;
+                ClearForm();
+            }
         }
 
         // Form Population
@@ -137,7 +143,12 @@ namespace OE2EmpireTracker.Forms.Asteroid
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedAsteroid == null) { ClearForm(); return; }
+            if (_selectedAsteroid == null)
+            {
+                ClearForm();
+                return;
+            }
+
             txtAsteroidName.Text = _selectedAsteroid.Name;
             txtSystemName.Text = _selectedAsteroid.SystemName;
             PopulateReservesGrid();
@@ -184,7 +195,8 @@ namespace OE2EmpireTracker.Forms.Asteroid
             }
 
             if (cmbReserveResource.Items.Count > 0) cmbReserveResource.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulateResourceCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateResourceCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulatePurityCombo()
@@ -198,7 +210,8 @@ namespace OE2EmpireTracker.Forms.Asteroid
             }
 
             if (cmbReservePurity.Items.Count > 0) cmbReservePurity.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulatePurityCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulatePurityCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // Reserves grid
@@ -223,7 +236,8 @@ namespace OE2EmpireTracker.Forms.Asteroid
                 dgvReserves.Rows[rowIdx].Cells[colMaxReserve.Index].ReadOnly = true;
             }
 
-            sw.Stop(); Log.Info("PERF PopulateReservesGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateReservesGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void DgvReserves_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -251,8 +265,11 @@ namespace OE2EmpireTracker.Forms.Asteroid
             string purity = cmbReservePurity.SelectedItem?.ToString() ?? string.Empty;
             if (!int.TryParse(txtMaxReserve.Text.Trim(), out int maxReserve) || maxReserve <= 0)
             {
-                MessageBox.Show("Enter a valid max reserve.", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Enter a valid max reserve.",
+                    "Validation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -309,7 +326,8 @@ namespace OE2EmpireTracker.Forms.Asteroid
                 }
             }
 
-            sw.Stop(); Log.Info("PERF PopulateLinkedSurveys: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateLinkedSurveys: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // CRUD
@@ -341,15 +359,19 @@ namespace OE2EmpireTracker.Forms.Asteroid
             if (report.TotalCount > 0)
             {
                 MessageBox.Show(
-                    string.Format("Cannot delete asteroid \"{0}\" \u2014 it is referenced by {1} survey(s), build item(s), or route stop(s).",
-                        _selectedAsteroid.Name, report.TotalCount),
+                    string.Format(
+                        "Cannot delete asteroid \"{0}\" \u2014 it is referenced by {1} survey(s), build item(s), or route stop(s).",
+                        _selectedAsteroid.Name,
+                        report.TotalCount),
                     "Delete Blocked", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             var result = MessageBox.Show(
                 string.Format("Delete asteroid \"{0}\"?", _selectedAsteroid.Name),
-                "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
             playerContext.RemoveAsteroid(_selectedAsteroid);
             playerContext.WriteContext();
@@ -364,7 +386,10 @@ namespace OE2EmpireTracker.Forms.Asteroid
             if (_selectedAsteroid == null) return;
             string name = txtAsteroidName.Text.Trim();
             if (string.IsNullOrWhiteSpace(name))
-            { MessageBox.Show("Name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            {
+                MessageBox.Show("Name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             _selectedAsteroid.Name = name;
             _selectedAsteroid.SystemName = txtSystemName.Text.Trim();
             playerContext.WriteContext();
@@ -389,7 +414,13 @@ namespace OE2EmpireTracker.Forms.Asteroid
         {
             if (IsDisposed) return;
             if (InvokeRequired)
-            { try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); } catch (ObjectDisposedException) { } return; }
+            {
+                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                } catch (ObjectDisposedException)
+                {
+                }
+                return;
+            }
             _selectedAsteroid = null;
             PopulateAsteroidList();
             ClearForm();
@@ -399,7 +430,13 @@ namespace OE2EmpireTracker.Forms.Asteroid
         {
             if (IsDisposed) return;
             if (InvokeRequired)
-            { try { BeginInvoke(new Action(() => OnAsteroidDataChanged(sender, e))); } catch (ObjectDisposedException) { } return; }
+            {
+                try { BeginInvoke(new Action(() => OnAsteroidDataChanged(sender, e)));
+                } catch (ObjectDisposedException)
+                {
+                }
+                return;
+            }
             PopulateAsteroidList();
             if (_selectedAsteroid != null && _selectedAsteroid.UUID == e.AsteroidUUID)
                 PopulateForm();

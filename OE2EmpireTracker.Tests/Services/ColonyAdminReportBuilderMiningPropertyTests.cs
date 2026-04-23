@@ -53,8 +53,11 @@ namespace OE2EmpireTracker.Tests.Services
             return survey;
         }
 
-        private static ColonyStructure MakeActiveMiner(string blueprintUUID, int gameSeq,
-            string surveyUUID, string surveyResource)
+        private static ColonyStructure MakeActiveMiner(
+            string blueprintUUID,
+            int gameSeq,
+            string surveyUUID,
+            string surveyResource)
         {
             var structure = new ColonyStructure();
             structure.UUID = Guid.NewGuid().ToString();

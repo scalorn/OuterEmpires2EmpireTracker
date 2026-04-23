@@ -97,9 +97,14 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             long t1 = sw.ElapsedMilliseconds;
             ApplyFiltersAndPopulate();
             sw.Stop();
-            Log.Info("RefreshData PERF: total={0}ms collect={1}ms populate={2}ms rows={3}",
-                sw.ElapsedMilliseconds, t1, sw.ElapsedMilliseconds - t1, allRows?.Count ?? 0);
-            sw.Stop(); Log.Info("PERF RefreshData: {0}ms", sw.ElapsedMilliseconds);
+            Log.Info(
+                "RefreshData PERF: total={0}ms collect={1}ms populate={2}ms rows={3}",
+                sw.ElapsedMilliseconds,
+                t1,
+                sw.ElapsedMilliseconds - t1,
+                allRows?.Count ?? 0);
+            sw.Stop();
+            Log.Info("PERF RefreshData: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -----------------------------------------------------------------------
@@ -224,8 +229,13 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 
@@ -237,8 +247,13 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnColonyDataChanged(sender, args))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnColonyDataChanged(sender, args)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 

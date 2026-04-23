@@ -15,12 +15,24 @@ namespace OE2EmpireTracker.Models
         /// </summary>
         public static readonly WorkerTypeInfo[] WorkerTypes = new[]
         {
-            new WorkerTypeInfo(GameConstants.WorkerIdBlueCollar, "BlueCollar", "Blue Collar",
-                GameConstants.PropBlueCollarDetail, GameConstants.PropUnassignedBlueCollarDetail),
-            new WorkerTypeInfo(GameConstants.WorkerIdWhiteCollar, "WhiteCollar", "White Collar",
-                GameConstants.PropWhiteCollarDetail, GameConstants.PropUnassignedWhiteCollarDetail),
-            new WorkerTypeInfo(GameConstants.WorkerIdSpecialist, "Specialist", "Specialist",
-                GameConstants.PropSpecialistDetail, GameConstants.PropUnassignedSpecialistDetail),
+            new WorkerTypeInfo(
+                GameConstants.WorkerIdBlueCollar,
+                "BlueCollar",
+                "Blue Collar",
+                GameConstants.PropBlueCollarDetail,
+                GameConstants.PropUnassignedBlueCollarDetail),
+            new WorkerTypeInfo(
+                GameConstants.WorkerIdWhiteCollar,
+                "WhiteCollar",
+                "White Collar",
+                GameConstants.PropWhiteCollarDetail,
+                GameConstants.PropUnassignedWhiteCollarDetail),
+            new WorkerTypeInfo(
+                GameConstants.WorkerIdSpecialist,
+                "Specialist",
+                "Specialist",
+                GameConstants.PropSpecialistDetail,
+                GameConstants.PropUnassignedSpecialistDetail),
         };
 
         private static readonly List<WorkerDetail> _workerDetails = GetWorkerDetails();
@@ -76,8 +88,12 @@ namespace OE2EmpireTracker.Models
         /// <summary>Blueprint property key for unassigned workers (e.g. "Unassigned Blue Collar Detail"). With spaces, matches JSON data.</summary>
         public string UnassignedPropertyKey { get; }
 
-        public WorkerTypeInfo(string detailKey, string workerPrefix, string displayName,
-            string propertyKey, string unassignedPropertyKey)
+        public WorkerTypeInfo(
+            string detailKey,
+            string workerPrefix,
+            string displayName,
+            string propertyKey,
+            string unassignedPropertyKey)
         {
             DetailKey = detailKey;
             WorkerPrefix = workerPrefix;

@@ -100,8 +100,12 @@ namespace OE2EmpireTracker.Services
             // Append to colony (REQ-COL-096f: don't remove existing)
             colony.Structures.AddRange(newStructures);
 
-            Log.Info("Bootstrap added {0} structures to colony {1} ({2} resources from {3} surveys)",
-                newStructures.Count, colony.PlanetName, bestResources.Count, surveys.Count);
+            Log.Info(
+                "Bootstrap added {0} structures to colony {1} ({2} resources from {3} surveys)",
+                newStructures.Count,
+                colony.PlanetName,
+                bestResources.Count,
+                surveys.Count);
 
             // REQ-COL-096e: Run build order optimization
             var optimizer = new BuildOrderOptimizer(_playerContext);

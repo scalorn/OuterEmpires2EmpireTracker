@@ -43,7 +43,13 @@ namespace OE2EmpireTracker.Tests.Services
         public void TearDown()
         {
             EmpireContext.Reset();
-            try { Directory.Delete(_tempDir, true); } catch { }
+            try
+            {
+                Directory.Delete(_tempDir, true);
+            }
+            catch
+            {
+            }
         }
 
         private PlayerContext FreshPlayerContext()

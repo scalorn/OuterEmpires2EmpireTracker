@@ -125,10 +125,23 @@ namespace OE2EmpireTracker.Tests.Services
         public Property CoverageGapDetection_EqualsSetDifference()
         {
             // Generate a pool of type-Id-like strings, then split into baseline and extracted
-            var idGen = from prefix in Gen.Elements("Hull", "Reactor", "Shield", "Flatpacks/MiningRig",
-                            "Flatpacks/CommodityFactory/Agridome", "MainDrive", "JumpDrive",
-                            "NavComp", "Thrusters", "FuelTank", "CargoPod", "OreHopper",
-                            "MiningLaser", "HullPlating", "Weapon", "Munition")
+            var idGen = from prefix in Gen.Elements(
+                "Hull",
+                "Reactor",
+                "Shield",
+                "Flatpacks/MiningRig",
+                "Flatpacks/CommodityFactory/Agridome",
+                "MainDrive",
+                "JumpDrive",
+                "NavComp",
+                "Thrusters",
+                "FuelTank",
+                "CargoPod",
+                "OreHopper",
+                "MiningLaser",
+                "HullPlating",
+                "Weapon",
+                "Munition")
                         from suffix in Gen.Choose(0, 9)
                         select $"{prefix}-{suffix}";
 

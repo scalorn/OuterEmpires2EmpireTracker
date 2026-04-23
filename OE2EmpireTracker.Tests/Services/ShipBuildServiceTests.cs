@@ -10,8 +10,11 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class ShipBuildServiceTests
     {
-        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string uuid, string name,
-            Dictionary<string, decimal> props = null)
+        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(
+            string uuid,
+            string name,
+            Dictionary<string,
+            decimal> props = null)
         {
             var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, Properties = new PropertyBag() };
             if (props != null)
@@ -49,8 +52,13 @@ namespace OE2EmpireTracker.Tests.Services
         public void GenerateShipBuildItems_NullTemplate_Throws()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                ShipBuildService.GenerateShipBuildItems(null, 1,
-                    DestinationType.Station, "s1", id => null, null));
+                ShipBuildService.GenerateShipBuildItems(
+                    null,
+                    1,
+                    DestinationType.Station,
+                    "s1",
+                    id => null,
+                    null));
         }
 
         [Test]
@@ -170,7 +178,9 @@ namespace OE2EmpireTracker.Tests.Services
                 new ShipComponentSlot { SlotType = "Reactor", BlueprintUUID = "reactor-1" }
             };
 
-            var stats = ShipBuildService.ComputeStats(hull, components,
+            var stats = ShipBuildService.ComputeStats(
+                hull,
+                components,
                 id => id == "reactor-1" ? reactor : null);
 
             Assert.That(stats.TotalMass, Is.EqualTo(120m));

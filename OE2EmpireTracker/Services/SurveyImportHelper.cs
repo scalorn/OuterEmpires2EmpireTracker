@@ -91,14 +91,19 @@ namespace OE2EmpireTracker.Services
                 };
 
                 playerContext.AddAsteroid(targetAsteroid);
-                Log.Info("Auto-created asteroid '{0}' in system '{1}' UUID={2}",
-                    targetAsteroid.Name, targetAsteroid.SystemName, targetAsteroid.UUID);
+                Log.Info(
+                    "Auto-created asteroid '{0}' in system '{1}' UUID={2}",
+                    targetAsteroid.Name,
+                    targetAsteroid.SystemName,
+                    targetAsteroid.UUID);
             }
             else
             {
                 targetAsteroid = existing;
-                Log.Info("Linked survey to existing asteroid '{0}' UUID={1}",
-                    existing.Name, existing.UUID);
+                Log.Info(
+                    "Linked survey to existing asteroid '{0}' UUID={1}",
+                    existing.Name,
+                    existing.UUID);
             }
 
             if (survey.ParsedMaxReserves != null && survey.ParsedMaxReserves.Count > 0)

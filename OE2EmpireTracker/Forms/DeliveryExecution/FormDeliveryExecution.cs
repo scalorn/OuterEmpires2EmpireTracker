@@ -182,7 +182,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             cmbPlan.DataSource = items;
             if (!string.IsNullOrEmpty(previousUUID) && items.Any(i => i.UUID == previousUUID))
                 cmbPlan.SelectedValue = previousUUID;
-            sw.Stop(); Log.Info("PERF PopulatePlanDropdown: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulatePlanDropdown: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void CmbPlan_SelectedIndexChanged(object sender, EventArgs e)
@@ -238,7 +239,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             cmbShip.SelectedIndexChanged += CmbShip_SelectedIndexChanged;
             UpdateShipSelection();
-            sw.Stop(); Log.Info("PERF PopulateShipDropdown: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateShipDropdown: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void CmbShip_SelectedIndexChanged(object sender, EventArgs e)
@@ -271,7 +273,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     var hullBp = playerContext.FindBlueprint(selectedShip.HullBlueprintUUID);
                     if (hullBp != null)
                     {
-                        var stats = ShipBuildService.ComputeStats(hullBp, selectedShip.Components,
+                        var stats = ShipBuildService.ComputeStats(
+                            hullBp,
+                            selectedShip.Components,
                             uuid => playerContext.FindBlueprint(uuid));
                         currentCargoCapacity = stats.CargoCapacity;
                     }
@@ -351,8 +355,11 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             // Update header with totals
             if (loadItems.Count > 0)
             {
-                lblLoadListHeader.Text = string.Format("Load Before Departure -- {0} items, {1} qty, {2:N0} vol",
-                    loadItems.Count, totalQuantity, cargoResult.TotalVolume);
+                lblLoadListHeader.Text = string.Format(
+                    "Load Before Departure -- {0} items, {1} qty, {2:N0} vol",
+                    loadItems.Count,
+                    totalQuantity,
+                    cargoResult.TotalVolume);
             }
             else
             {
@@ -710,8 +717,13 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 }
             }
 
-            Log.Info("Station hold updated: station={0}, player={1}, item={2}, delivered={3}, isDropOff={4}",
-                station.Name, playerUUID, item.BaseItemTypeID, delivered, isDropOff);
+            Log.Info(
+                "Station hold updated: station={0}, player={1}, item={2}, delivered={3}, isDropOff={4}",
+                station.Name,
+                playerUUID,
+                item.BaseItemTypeID,
+                delivered,
+                isDropOff);
         }
 
         private void UpdateStopCompleteButton(DeliveryPlanStop stop)
@@ -853,8 +865,13 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 
@@ -867,8 +884,13 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnDeliveryDataChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnDeliveryDataChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 
@@ -978,8 +1000,11 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             if (trips.Count <= 1)
             {
-                MessageBox.Show("Load fits in a single trip.", "Split Trips",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "Load fits in a single trip.",
+                    "Split Trips",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -1003,8 +1028,11 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             sb.AppendLine("Accept? Creates additional delivery plans.");
 
-            var result = MessageBox.Show(sb.ToString(), "Split Trips",
-                MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            var result = MessageBox.Show(
+                sb.ToString(),
+                "Split Trips",
+                MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Question);
             if (result != DialogResult.OK) return;
 
             CreateSplitTripPlans(trips);
@@ -1017,8 +1045,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 var newPlan = new DeliveryPlan
                 {
                     UUID = Guid.NewGuid().ToString(),
-                    Name = string.Format("{0} (Trip {1})",
-                        selectedPlan.Name, i + 1),
+                    Name = string.Format(
+                        "{0} (Trip {1})",
+                        selectedPlan.Name,
+                        i + 1),
                     OwnerUUID = selectedPlan.OwnerUUID,
                     RouteUUID = selectedPlan.RouteUUID,
                     ShipUUID = selectedPlan.ShipUUID
@@ -1074,8 +1104,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 }
 
                 playerContext.AddDeliveryPlan(newPlan);
-                Log.Info("Created split trip plan '{0}' (UUID={1})",
-                    newPlan.Name, newPlan.UUID);
+                Log.Info(
+                    "Created split trip plan '{0}' (UUID={1})",
+                    newPlan.Name,
+                    newPlan.UUID);
             }
 
             if (!selectedPlan.Name.Contains("(Trip"))

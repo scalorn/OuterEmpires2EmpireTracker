@@ -97,7 +97,9 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             var colony = ParseM1();
             int matched = colony.Structures.Count(s => !string.IsNullOrEmpty(s.FlatpackBlueprintUUID));
-            Assert.That(matched, Is.EqualTo(colony.Structures.Count),
+            Assert.That(
+                matched,
+                Is.EqualTo(colony.Structures.Count),
                 "All structures should have a matching flatpack blueprint UUID");
         }
 
@@ -147,7 +149,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             });
 
             Assert.That(miningRig, Is.Not.Null, "Should have a Mining Rig");
-            Assert.That(miningRig.MiningSurveyResource, Is.Not.Null.And.Not.Empty,
+            Assert.That(
+                miningRig.MiningSurveyResource,
+                Is.Not.Null.And.Not.Empty,
                 "Mining Rig should have a resource assigned");
         }
 
@@ -157,7 +161,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             var colony = ParseM1();
             foreach (var s in colony.Structures)
             {
-                Assert.That(s.DisplaySequence, Is.GreaterThan(0),
+                Assert.That(
+                    s.DisplaySequence,
+                    Is.GreaterThan(0),
                     "Each structure should have a non-zero game sequence (BuildingID)");
             }
         }
@@ -170,7 +176,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             foreach (var s in colony.Structures)
             {
                 // Built and Online are always set, plus building attributes
-                Assert.That(s.Properties.Count, Is.GreaterThan(2),
+                Assert.That(
+                    s.Properties.Count,
+                    Is.GreaterThan(2),
                     "Structure should have building attributes beyond Built/Online");
             }
         }
@@ -192,7 +200,9 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void M2_2_ParsesCommodityDemands()
         {
             var colony = ParseM2_2();
-            Assert.That(colony.Commodities.Count, Is.GreaterThan(0),
+            Assert.That(
+                colony.Commodities.Count,
+                Is.GreaterThan(0),
                 "Should have at least one commodity demand");
         }
 
@@ -225,7 +235,9 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             var colony = ParseM2();
             // Non-local colony should still get system name from the location bar
-            Assert.That(colony.SystemName, Is.Not.Null.And.Not.Empty,
+            Assert.That(
+                colony.SystemName,
+                Is.Not.Null.And.Not.Empty,
                 "System name should be extracted from location bar for non-local colonies");
         }
 
@@ -246,7 +258,9 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void VI1_ParsesStructuresFromWorkersFallback()
         {
             var colony = ParseVI1();
-            Assert.That(colony.Structures.Count, Is.GreaterThan(0),
+            Assert.That(
+                colony.Structures.Count,
+                Is.GreaterThan(0),
                 "Should parse structures from colony-workers fallback");
         }
 
@@ -273,7 +287,9 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             var colony = ParseVI1();
             int matched = colony.Structures.Count(s => !string.IsNullOrEmpty(s.FlatpackBlueprintUUID));
-            Assert.That(matched, Is.EqualTo(colony.Structures.Count),
+            Assert.That(
+                matched,
+                Is.EqualTo(colony.Structures.Count),
                 "All structures from workers fallback should have flatpack UUIDs");
         }
 

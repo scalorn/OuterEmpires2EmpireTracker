@@ -349,8 +349,10 @@ namespace OE2EmpireTracker.Services
                                 if (TryAdvanceStatus(item, BuildItemStatus.Ready))
                                 {
                                     planModified = true;
-                                    Log.Debug("BackgroundProcessor: item {0} in plan '{1}' advanced to Ready (shortfalls resolved)",
-                                        item.UUID, plan.Name);
+                                    Log.Debug(
+                                        "BackgroundProcessor: item {0} in plan '{1}' advanced to Ready (shortfalls resolved)",
+                                        item.UUID,
+                                        plan.Name);
                                 }
                             }
                         }
@@ -362,8 +364,11 @@ namespace OE2EmpireTracker.Services
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(ex, "Error processing cascade resource check for plan '{0}' ({1})",
-                            plan.Name, plan.UUID);
+                        Log.Error(
+                            ex,
+                            "Error processing cascade resource check for plan '{0}' ({1})",
+                            plan.Name,
+                            plan.UUID);
                     }
                 }
             }
@@ -415,8 +420,10 @@ namespace OE2EmpireTracker.Services
                                     if (!modifiedPlanUUIDs.Contains(buildPlan.UUID))
                                         modifiedPlanUUIDs.Add(buildPlan.UUID);
                                     _playerContext.CascadeResourceCheckDirty = true;
-                                    Log.Info("Stock target replenishment: added {0} items to plan '{1}'",
-                                        newItems.Count, buildPlan.Name);
+                                    Log.Info(
+                                        "Stock target replenishment: added {0} items to plan '{1}'",
+                                        newItems.Count,
+                                        buildPlan.Name);
                                 }
                             }
                         }
@@ -429,8 +436,10 @@ namespace OE2EmpireTracker.Services
             }
 
             sw.Stop();
-            Log.Info("PERF BackgroundProcessor.ProcessCascades: {0} plans modified in {1}ms",
-                modifiedPlanUUIDs.Count, sw.ElapsedMilliseconds);
+            Log.Info(
+                "PERF BackgroundProcessor.ProcessCascades: {0} plans modified in {1}ms",
+                modifiedPlanUUIDs.Count,
+                sw.ElapsedMilliseconds);
 
             return modifiedPlanUUIDs;
         }
@@ -480,9 +489,14 @@ namespace OE2EmpireTracker.Services
                 if (currentQty > rule.TriggerThreshold && rule.TriggerThreshold > 0)
                 {
                     int excess = currentQty - rule.TriggerThreshold;
-                    Log.Info("Overflow detected: colony={0} resource={1}({2}) current={3} threshold={4} excess={5}",
-                        colony.ColonyName, rule.ResourceName, rule.ResourcePurity,
-                        currentQty, rule.TriggerThreshold, excess);
+                    Log.Info(
+                        "Overflow detected: colony={0} resource={1}({2}) current={3} threshold={4} excess={5}",
+                        colony.ColonyName,
+                        rule.ResourceName,
+                        rule.ResourcePurity,
+                        currentQty,
+                        rule.TriggerThreshold,
+                        excess);
                     overflowCount++;
                 }
             }

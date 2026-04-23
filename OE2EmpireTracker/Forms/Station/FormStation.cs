@@ -133,9 +133,15 @@ namespace OE2EmpireTracker.Forms.Station
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is Models.Station station)
-            { _selectedStation = station; PopulateForm(); }
+            {
+                _selectedStation = station;
+                PopulateForm();
+            }
             else if (!e.IsSelected && lvwStations.SelectedItems.Count == 0)
-            { _selectedStation = null; ClearForm(); }
+            {
+                _selectedStation = null;
+                ClearForm();
+            }
         }
 
         // Form Population
@@ -143,7 +149,12 @@ namespace OE2EmpireTracker.Forms.Station
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedStation == null) { ClearForm(); return; }
+            if (_selectedStation == null)
+            {
+                ClearForm();
+                return;
+            }
+
             txtName.Text = _selectedStation.Name;
             SelectComboEnum(cmbStationType, _selectedStation.StationType);
             SelectComboEnum(cmbOwnership, _selectedStation.Ownership);
@@ -192,7 +203,8 @@ namespace OE2EmpireTracker.Forms.Station
             cmbStationType.Items.Clear();
             foreach (StationType st in Enum.GetValues(typeof(StationType)))
                 cmbStationType.Items.Add(st);
-            sw.Stop(); Log.Info("PERF PopulateStationTypeCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateStationTypeCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateOwnershipCombo()
@@ -202,7 +214,8 @@ namespace OE2EmpireTracker.Forms.Station
             cmbOwnership.Items.Clear();
             foreach (StationOwnership so in Enum.GetValues(typeof(StationOwnership)))
                 cmbOwnership.Items.Add(so);
-            sw.Stop(); Log.Info("PERF PopulateOwnershipCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateOwnershipCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void SelectComboEnum<T>(ComboBox cmb, T value)
@@ -210,7 +223,10 @@ namespace OE2EmpireTracker.Forms.Station
             for (int i = 0; i < cmb.Items.Count; i++)
             {
                 if (cmb.Items[i] is T v && v.Equals(value))
-                { cmb.SelectedIndex = i; return; }
+                {
+                    cmb.SelectedIndex = i;
+                    return;
+                }
             }
 
             cmb.SelectedIndex = -1;
@@ -260,7 +276,11 @@ namespace OE2EmpireTracker.Forms.Station
             dgvHoldCrateContents.Visible = false;
             lblHoldCrateContents.Visible = false;
             var bag = GetStationHold();
-            if (bag == null) { sw.Stop(); return; }
+            if (bag == null)
+            {
+                sw.Stop();
+                return;
+            }
 
             foreach (var kvp in bag.Items.OrderBy(k => k.Value.Name))
             {
@@ -287,13 +307,19 @@ namespace OE2EmpireTracker.Forms.Station
                 dgvHold.Rows[rowIdx].Cells[colHoldQty.Index].ReadOnly = true;
             }
 
-            sw.Stop(); Log.Info("PERF PopulateHoldGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateHoldGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void DgvHold_SelectionChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            if (dgvHold.SelectedRows.Count == 0) { ClearHoldCrateContents(); return; }
+            if (dgvHold.SelectedRows.Count == 0)
+            {
+                ClearHoldCrateContents();
+                return;
+            }
+
             var item = dgvHold.SelectedRows[0].Tag as Item;
             if (item != null && item.ItemType == ItemType.ItemTypeEnum.Crate && item.Contents != null)
                 PopulateHoldCrateContents(item);
@@ -315,7 +341,8 @@ namespace OE2EmpireTracker.Forms.Station
                 dgvHoldCrateContents.Rows.Add(item.ItemType.ToString(), item.ExtendedName, item.ResourcePurity, item.Quantity.ToString());
             }
 
-            sw.Stop(); Log.Info("PERF PopulateHoldCrateContents: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateHoldCrateContents: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ClearHoldCrateContents()
@@ -354,7 +381,8 @@ namespace OE2EmpireTracker.Forms.Station
             cmbHoldType.Items.Add(ItemType.ItemTypeEnum.Crate);
             cmbHoldType.Items.Add(ItemType.ItemTypeEnum.Munition);
             cmbHoldType.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulateHoldTypeCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateHoldTypeCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void CmbHoldType_SelectedIndexChanged(object sender, EventArgs e)
@@ -386,7 +414,8 @@ namespace OE2EmpireTracker.Forms.Station
             }
 
             if (cmbHoldItem.Items.Count > 0) cmbHoldItem.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulateHoldItemCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateHoldItemCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void UpdateHoldPurityCombo()
@@ -420,8 +449,11 @@ namespace OE2EmpireTracker.Forms.Station
             if (string.IsNullOrWhiteSpace(itemName)) return;
             if (!int.TryParse(txtHoldQty.Text.Trim(), out int qty) || qty <= 0)
             {
-                MessageBox.Show("Enter a valid quantity.", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Enter a valid quantity.",
+                    "Validation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -456,13 +488,23 @@ namespace OE2EmpireTracker.Forms.Station
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvComponents.Rows.Clear();
-            if (_selectedStation == null) { sw.Stop(); return; }
-            if (_selectedStation.Ownership != StationOwnership.PlayerOwned) { sw.Stop(); return; }
+            if (_selectedStation == null)
+            {
+                sw.Stop();
+                return;
+            }
+            if (_selectedStation.Ownership != StationOwnership.PlayerOwned)
+            {
+                sw.Stop();
+                return;
+            }
 
             // Hull row first
             var hullBp = playerContext.FindBlueprint(_selectedStation.StationBlueprintUUID);
             string hullName = hullBp?.ExtendedName ?? "(no hull)";
-            int hullRow = dgvComponents.Rows.Add("Hull", hullName,
+            int hullRow = dgvComponents.Rows.Add(
+                "Hull",
+                hullName,
                 _selectedStation.HullCurrentHP.ToString(),
                 _selectedStation.HullMaxRepairPercent.ToString());
             dgvComponents.Rows[hullRow].Tag = "hull";
@@ -474,7 +516,9 @@ namespace OE2EmpireTracker.Forms.Station
             {
                 var compBp = playerContext.FindBlueprint(slot.BlueprintUUID);
                 string compName = compBp?.ExtendedName ?? "(unknown)";
-                int rowIdx = dgvComponents.Rows.Add(slot.SlotType, compName,
+                int rowIdx = dgvComponents.Rows.Add(
+                    slot.SlotType,
+                    compName,
                     slot.CurrentHP.ToString(),
                     slot.MaxRepairPercent.ToString());
                 dgvComponents.Rows[rowIdx].Tag = slot;
@@ -482,7 +526,8 @@ namespace OE2EmpireTracker.Forms.Station
                 dgvComponents.Rows[rowIdx].Cells[colComponentName.Index].ReadOnly = true;
             }
 
-            sw.Stop(); Log.Info("PERF PopulateComponentsGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateComponentsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateStationBlueprintCombo()
@@ -509,7 +554,8 @@ namespace OE2EmpireTracker.Forms.Station
 
             if (_selectedStation != null && !string.IsNullOrEmpty(_selectedStation.StationBlueprintUUID))
                 cmbStationBlueprint.SelectedValue = _selectedStation.StationBlueprintUUID;
-            sw.Stop(); Log.Info("PERF PopulateStationBlueprintCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateStationBlueprintCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void CmbStationBlueprint_SelectedIndexChanged(object sender, EventArgs e)
@@ -524,11 +570,23 @@ namespace OE2EmpireTracker.Forms.Station
         private void RefreshStationStats()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            if (_selectedStation == null) { rtbStationStats.Text = string.Empty; sw.Stop(); return; }
+            if (_selectedStation == null)
+            {
+                rtbStationStats.Text = string.Empty;
+                sw.Stop();
+                return;
+            }
             var hullBp = playerContext.FindBlueprint(_selectedStation.StationBlueprintUUID);
-            if (hullBp == null) { rtbStationStats.Text = "No station blueprint selected."; sw.Stop(); return; }
+            if (hullBp == null)
+            {
+                rtbStationStats.Text = "No station blueprint selected.";
+                sw.Stop();
+                return;
+            }
 
-            var stats = ShipBuildService.ComputeStationStats(hullBp, _selectedStation.Components,
+            var stats = ShipBuildService.ComputeStationStats(
+                hullBp,
+                _selectedStation.Components,
                 uuid => playerContext.FindBlueprint(uuid));
 
             rtbStationStats.Text = string.Format(
@@ -540,7 +598,8 @@ namespace OE2EmpireTracker.Forms.Station
                 stats.TotalHealth, stats.ShieldHitpoints, stats.ShieldRegen,
                 stats.EnergyDefence, stats.KineticDefence, stats.MissileDefence,
                 stats.SmallWeaponsInstalled, stats.MediumWeaponsInstalled, stats.LargeWeaponsInstalled);
-            sw.Stop(); Log.Info("PERF RefreshStationStats: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF RefreshStationStats: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void DgvComponents_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -576,7 +635,11 @@ namespace OE2EmpireTracker.Forms.Station
         // Munitions tab
         private void UpdateMunitionsTabVisibility()
         {
-            if (_selectedStation == null) { tabMunitions.Enabled = false; return; }
+            if (_selectedStation == null)
+            {
+                tabMunitions.Enabled = false;
+                return;
+            }
             bool isPlayerOwned = _selectedStation.Ownership == StationOwnership.PlayerOwned;
             bool hasWeapons = _selectedStation.Components.Any(c =>
                 c.SlotType == OE2EmpireTracker.Constants.SlotTypes.WeaponSmall ||
@@ -600,7 +663,8 @@ namespace OE2EmpireTracker.Forms.Station
                 dgvMunitions.Rows[rowIdx].Tag = item;
             }
 
-            sw.Stop(); Log.Info("PERF PopulateMunitionsGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateMunitionsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void CmdMunAdd_Click(object sender, EventArgs e)
@@ -610,8 +674,11 @@ namespace OE2EmpireTracker.Forms.Station
             if (string.IsNullOrWhiteSpace(itemName)) return;
             if (!int.TryParse(txtMunQty.Text.Trim(), out int qty) || qty <= 0)
             {
-                MessageBox.Show("Enter a valid quantity.", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Enter a valid quantity.",
+                    "Validation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -667,15 +734,19 @@ namespace OE2EmpireTracker.Forms.Station
             if (refs > 0)
             {
                 MessageBox.Show(
-                    string.Format("Cannot delete station \"{0}\" \u2014 it is referenced by {1} route stop(s), delivery plan(s), or build item(s).",
-                        _selectedStation.Name, refs),
+                    string.Format(
+                        "Cannot delete station \"{0}\" \u2014 it is referenced by {1} route stop(s), delivery plan(s), or build item(s).",
+                        _selectedStation.Name,
+                        refs),
                     "Delete Blocked", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             var result = MessageBox.Show(
                 string.Format("Delete station \"{0}\"?", _selectedStation.Name),
-                "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
             playerContext.RemoveStation(_selectedStation);
             playerContext.WriteContext();
@@ -690,7 +761,10 @@ namespace OE2EmpireTracker.Forms.Station
             if (_selectedStation == null) return;
             string name = txtName.Text.Trim();
             if (string.IsNullOrWhiteSpace(name))
-            { MessageBox.Show("Name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            {
+                MessageBox.Show("Name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             _selectedStation.Name = name;
             playerContext.WriteContext();
             PopulateStationList();
@@ -708,7 +782,13 @@ namespace OE2EmpireTracker.Forms.Station
         {
             if (IsDisposed) return;
             if (InvokeRequired)
-            { try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); } catch (ObjectDisposedException) { } return; }
+            {
+                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                } catch (ObjectDisposedException)
+                {
+                }
+                return;
+            }
             _selectedStation = null;
             PopulateStationList();
             ClearForm();

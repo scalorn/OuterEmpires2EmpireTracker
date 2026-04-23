@@ -78,7 +78,9 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void ProcessHtml_AsteroidSurvey_ParsedMaxReservesIsNotNull()
         {
             var survey = ParseAsteroidSurvey();
-            Assert.That(survey.ParsedMaxReserves, Is.Not.Null,
+            Assert.That(
+                survey.ParsedMaxReserves,
+                Is.Not.Null,
                 "ParsedMaxReserves should be populated when HTML contains ScanDetailOutputMaxReserve nodes");
         }
 
@@ -94,7 +96,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(survey.ParsedMaxReserves, Is.Not.Null);
             // The HTML has 5 MaxReserve nodes but only 4 have numeric values;
             // the 5th (Superheavy Exotics) has an empty value
-            Assert.That(survey.ParsedMaxReserves.Count, Is.GreaterThanOrEqualTo(4),
+            Assert.That(
+                survey.ParsedMaxReserves.Count,
+                Is.GreaterThanOrEqualTo(4),
                 "Should have at least 4 parsed max reserve entries");
         }
 
@@ -149,9 +153,13 @@ namespace OE2EmpireTracker.Tests.Parsers
             // Find the created asteroid
             var asteroid = _playerContext.AsteroidList.FirstOrDefault(a => a.UUID == survey.AsteroidUUID);
             Assert.That(asteroid, Is.Not.Null, "Asteroid should be created");
-            Assert.That(asteroid.Reserves, Is.Not.Empty,
+            Assert.That(
+                asteroid.Reserves,
+                Is.Not.Empty,
                 "Asteroid.Reserves should be populated from survey.ParsedMaxReserves");
-            Assert.That(asteroid.Reserves.Count, Is.EqualTo(3),
+            Assert.That(
+                asteroid.Reserves.Count,
+                Is.EqualTo(3),
                 "Asteroid should have one reserve per parsed max reserve entry");
         }
 

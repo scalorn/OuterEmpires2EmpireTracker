@@ -215,12 +215,16 @@ namespace OE2EmpireTracker.Tests.Models
             colony.ProcessColony();
 
             var alkali = colony.Items.FindResource("Alkali Organics", GameConstants.PurityRefined);
-            Assert.That(alkali.Count, Is.EqualTo(0),
-                    "Depleted resource should be removed from warehouse");
+            Assert.That(
+                alkali.Count,
+                Is.EqualTo(0),
+                "Depleted resource should be removed from warehouse");
 
             var acidic = colony.Items.FindResource("Strong Acidic Inorganics", GameConstants.PurityRefined);
-            Assert.That(acidic.Count, Is.EqualTo(0),
-                    "Depleted resource should be removed from warehouse");
+            Assert.That(
+                acidic.Count,
+                Is.EqualTo(0),
+                "Depleted resource should be removed from warehouse");
         }
 
         // -----------------------------------------------------------------------
@@ -385,8 +389,10 @@ namespace OE2EmpireTracker.Tests.Models
 
             // Resources should be created with 0 quantity
             var alkali = colony.Items.FindResource("Alkali Organics", GameConstants.PurityRefined);
-            Assert.That(alkali.Count, Is.EqualTo(1),
-                    "Resource item should be created");
+            Assert.That(
+                alkali.Count,
+                Is.EqualTo(1),
+                "Resource item should be created");
             Assert.That(alkali[0].Quantity, Is.EqualTo(0));
         }
 

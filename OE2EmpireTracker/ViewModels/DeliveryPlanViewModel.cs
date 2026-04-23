@@ -26,8 +26,11 @@ namespace OE2EmpireTracker.ViewModels
         /// <summary>
         /// Gets or creates the DeliveryPlanStop for the given destination.
         /// </summary>
-        public DeliveryPlanStop GetOrCreateStop(string colonyUUID, int sequence,
-            DestinationType destType = DestinationType.Colony, string destinationUUID = "")
+        public DeliveryPlanStop GetOrCreateStop(
+            string colonyUUID,
+            int sequence,
+            DestinationType destType = DestinationType.Colony,
+            string destinationUUID = "")
         {
             // Match by DestinationUUID first if available, then fall back to ColonyUUID
             DeliveryPlanStop stop = null;
@@ -51,8 +54,13 @@ namespace OE2EmpireTracker.ViewModels
             return stop;
         }
 
-        public void AddDropOffItem(DeliveryPlanStop stop, ItemType.ItemTypeEnum itemType,
-            string baseItemTypeID, string name, int quantity, string resourcePurity = "")
+        public void AddDropOffItem(
+            DeliveryPlanStop stop,
+            ItemType.ItemTypeEnum itemType,
+            string baseItemTypeID,
+            string name,
+            int quantity,
+            string resourcePurity = "")
         {
             stop.DropOff.Add(new DeliveryItem
             {
@@ -64,8 +72,13 @@ namespace OE2EmpireTracker.ViewModels
             });
         }
 
-        public void AddPickUpItem(DeliveryPlanStop stop, ItemType.ItemTypeEnum itemType,
-            string baseItemTypeID, string name, int quantity, string resourcePurity = "")
+        public void AddPickUpItem(
+            DeliveryPlanStop stop,
+            ItemType.ItemTypeEnum itemType,
+            string baseItemTypeID,
+            string name,
+            int quantity,
+            string resourcePurity = "")
         {
             stop.PickUp.Add(new DeliveryItem
             {
@@ -157,14 +170,21 @@ namespace OE2EmpireTracker.ViewModels
         /// Scans each stop's colony for unbuilt+unstaged structures and adds
         /// flatpack drop-off items for each one.
         /// </summary>
-        public int AutoFillFlatpacks(IEnumerable<RouteStop> routeStops, Func<string, Colony> colonyFinder,
+        public int AutoFillFlatpacks(
+            IEnumerable<RouteStop> routeStops,
+            Func<string,
+            Colony> colonyFinder,
             int timeHorizonHours = 0)
         {
             int added = 0;
             foreach (var routeStop in routeStops.OrderBy(s => s.Sequence))
             {
                 var colony = colonyFinder(routeStop.ColonyUUID);
-                if (colony == null) { Log.Debug("AutoFillFlatpacks: colony not found for {0}", routeStop.ColonyUUID); continue; }
+                if (colony == null)
+                {
+                    Log.Debug("AutoFillFlatpacks: colony not found for {0}", routeStop.ColonyUUID);
+                    continue;
+                }
 
                 Log.Debug("AutoFillFlatpacks: colony {0} has {1} structures", colony.ColonyName, colony.Structures.Count);
 
@@ -175,8 +195,12 @@ namespace OE2EmpireTracker.ViewModels
                 foreach (var structure in colony.Structures)
                 {
                     var vm = new ColonyStructureViewModel(structure, _playerContext);
-                    Log.Debug("  Structure {0}: IsBuilt={1}, IsStaged={2}, FlatpackBP={3}",
-                        structure.UUID, vm.IsBuilt, vm.IsStaged, structure.FlatpackBlueprintUUID);
+                    Log.Debug(
+                        "  Structure {0}: IsBuilt={1}, IsStaged={2}, FlatpackBP={3}",
+                        structure.UUID,
+                        vm.IsBuilt,
+                        vm.IsStaged,
+                        structure.FlatpackBlueprintUUID);
                     if (vm.IsBuilt || vm.IsStaged) continue;
 
                     // Time horizon filter: skip structures that won't complete within the horizon
@@ -191,7 +215,11 @@ namespace OE2EmpireTracker.ViewModels
                     }
 
                     var blueprint = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
-                    if (blueprint == null) { Log.Debug("  Blueprint not found: {0}", structure.FlatpackBlueprintUUID); continue; }
+                    if (blueprint == null)
+                    {
+                        Log.Debug("  Blueprint not found: {0}", structure.FlatpackBlueprintUUID);
+                        continue;
+                    }
 
                     string bpUUID = structure.FlatpackBlueprintUUID;
                     int count = 0;
@@ -205,8 +233,12 @@ namespace OE2EmpireTracker.ViewModels
                 var stop = GetOrCreateStop(routeStop.ColonyUUID, routeStop.Sequence);
                 foreach (var entry in flatpackCounts)
                 {
-                    AddDropOffItem(stop, ItemType.ItemTypeEnum.Flatpack,
-                        entry.Key, flatpackNames[entry.Key], entry.Value);
+                    AddDropOffItem(
+                        stop,
+                        ItemType.ItemTypeEnum.Flatpack,
+                        entry.Key,
+                        flatpackNames[entry.Key],
+                        entry.Value);
                     added++;
                     Log.Debug("  Added flatpack: {0} x{1}", flatpackNames[entry.Key], entry.Value);
                 }
@@ -221,9 +253,15 @@ namespace OE2EmpireTracker.ViewModels
         /// calculates resource shortfalls, and adds drop-off items for Refined resources.
         /// When a route stop is a station, checks station holds for available inventory.
         /// </summary>
-        public int AutoFillManufacturingResources(IEnumerable<RouteStop> routeStops,
-            Func<string, Colony> colonyFinder, Func<string, Blueprint> blueprintFinder,
-            Func<string, Station> stationFinder = null, string currentPlayerUUID = null)
+        public int AutoFillManufacturingResources(
+            IEnumerable<RouteStop> routeStops,
+            Func<string,
+            Colony> colonyFinder,
+            Func<string,
+            Blueprint> blueprintFinder,
+            Func<string,
+            Station> stationFinder = null,
+            string currentPlayerUUID = null)
         {
             int added = 0;
             foreach (var routeStop in routeStops.OrderBy(s => s.Sequence))
@@ -311,8 +349,13 @@ namespace OE2EmpireTracker.ViewModels
                     int shortfall = need.Value - warehouseQty - stationQty;
                     if (shortfall <= 0) continue;
 
-                    AddDropOffItem(stop, ItemType.ItemTypeEnum.Resource,
-                        need.Key, need.Key, shortfall, GameConstants.PurityRefined);
+                    AddDropOffItem(
+                        stop,
+                        ItemType.ItemTypeEnum.Resource,
+                        need.Key,
+                        need.Key,
+                        shortfall,
+                        GameConstants.PurityRefined);
                     added++;
                 }
             }
@@ -324,8 +367,11 @@ namespace OE2EmpireTracker.ViewModels
         /// Computes ideal vs actual worker gaps per colony and adds
         /// drop-off items for worker shortfalls.
         /// </summary>
-        public int AutoFillWorkers(IEnumerable<RouteStop> routeStops,
-            Func<string, Colony> colonyFinder, PlayerContext playerContext)
+        public int AutoFillWorkers(
+            IEnumerable<RouteStop> routeStops,
+            Func<string,
+            Colony> colonyFinder,
+            PlayerContext playerContext)
         {
             int added = 0;
             foreach (var routeStop in routeStops.OrderBy(s => s.Sequence))
@@ -377,8 +423,12 @@ namespace OE2EmpireTracker.ViewModels
                     if (!WorkerDetail.WorkerDetailMapByID.TryGetValue(wt.DetailKey, out workerDetail))
                         continue;
 
-                    AddDropOffItem(stop, ItemType.ItemTypeEnum.WorkDetail,
-                        wt.DetailKey, workerDetail.Name, gap);
+                    AddDropOffItem(
+                        stop,
+                        ItemType.ItemTypeEnum.WorkDetail,
+                        wt.DetailKey,
+                        workerDetail.Name,
+                        gap);
                     added++;
                 }
             }

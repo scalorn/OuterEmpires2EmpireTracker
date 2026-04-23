@@ -145,9 +145,15 @@ namespace OE2EmpireTracker.Forms.StockTargets
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is StockPlan plan)
-            { _selectedPlan = plan; PopulateForm(); }
+            {
+                _selectedPlan = plan;
+                PopulateForm();
+            }
             else if (!e.IsSelected && lvwPlans.SelectedItems.Count == 0)
-            { _selectedPlan = null; ClearForm(); }
+            {
+                _selectedPlan = null;
+                ClearForm();
+            }
         }
 
         // Form Population
@@ -155,7 +161,12 @@ namespace OE2EmpireTracker.Forms.StockTargets
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedPlan == null) { ClearForm(); return; }
+            if (_selectedPlan == null)
+            {
+                ClearForm();
+                return;
+            }
+
             txtPlanName.Text = _selectedPlan.Name;
             chkActive.Checked = _selectedPlan.IsActive;
             PopulateReplenishmentCombo();
@@ -210,7 +221,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
             foreach (var val in Enum.GetValues(typeof(StockTargetScope)))
                 cmbScope.Items.Add(val);
             if (cmbScope.Items.Count > 0) cmbScope.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulateTargetTypeCombos: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateTargetTypeCombos: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateReplenishmentCombo()
@@ -232,7 +244,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
 
             if (_selectedPlan != null && !string.IsNullOrEmpty(_selectedPlan.ReplenishmentBuildPlanUUID))
                 cmbReplenishmentPlan.SelectedValue = _selectedPlan.ReplenishmentBuildPlanUUID;
-            sw.Stop(); Log.Info("PERF PopulateReplenishmentCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateReplenishmentCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateTargetItemCombo()
@@ -278,7 +291,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 cmbTargetItem.ValueMember = "Key";
             }
 
-            sw.Stop(); Log.Info("PERF PopulateTargetItemCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateTargetItemCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateLocationCombo()
@@ -311,7 +325,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 cmbTargetLocation.ValueMember = "Key";
             }
 
-            sw.Stop(); Log.Info("PERF PopulateLocationCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateLocationCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void CmbScope_SelectedIndexChanged(object sender, EventArgs e)
@@ -348,7 +363,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 dgvTargets.Rows[rowIdx].Tag = target;
             }
 
-            sw.Stop(); Log.Info("PERF PopulateTargetsGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateTargetsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private string ResolveLocationName(StockTargetScope scope, string uuid)
@@ -391,7 +407,9 @@ namespace OE2EmpireTracker.Forms.StockTargets
             if (_selectedPlan == null) return;
             var result = MessageBox.Show(
                 string.Format("Delete stock plan \"{0}\"?", _selectedPlan.Name),
-                "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
             playerContext.RemoveStockPlan(_selectedPlan);
             playerContext.WriteContext();
@@ -407,8 +425,11 @@ namespace OE2EmpireTracker.Forms.StockTargets
             string name = txtPlanName.Text.Trim();
             if (string.IsNullOrWhiteSpace(name))
             {
-                MessageBox.Show("Name cannot be empty.", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Name cannot be empty.",
+                    "Validation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -447,8 +468,11 @@ namespace OE2EmpireTracker.Forms.StockTargets
             if (string.IsNullOrWhiteSpace(itemKey)) return;
             if (!int.TryParse(txtTargetQty.Text.Trim(), out int qty) || qty <= 0)
             {
-                MessageBox.Show("Enter a valid target quantity.", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Enter a valid target quantity.",
+                    "Validation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -506,8 +530,11 @@ namespace OE2EmpireTracker.Forms.StockTargets
             var resources = EmpireContext.GetInstance()?.ResourceList;
             if (resources == null || resources.Count == 0)
             {
-                MessageBox.Show("No resources available.", "Quick Add",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "No resources available.",
+                    "Quick Add",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -533,14 +560,21 @@ namespace OE2EmpireTracker.Forms.StockTargets
 
             PopulateTargetsGrid();
             Log.Info("Quick Add: added {0} resource targets", added);
-            MessageBox.Show(string.Format("Added {0} resource target(s).", added), "Quick Add",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(
+                string.Format("Added {0} resource target(s).", added),
+                "Quick Add",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
         }
 
         private void DgvTargets_SelectionChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            if (dgvTargets.SelectedRows.Count == 0) { ClearExpandedComponents(); return; }
+            if (dgvTargets.SelectedRows.Count == 0)
+            {
+                ClearExpandedComponents();
+                return;
+            }
             var target = dgvTargets.SelectedRows[0].Tag as StockTarget;
             if (target != null && !string.IsNullOrEmpty(target.ShipTemplateUUID))
                 PopulateExpandedComponents(target);
@@ -554,7 +588,11 @@ namespace OE2EmpireTracker.Forms.StockTargets
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvExpandedComponents.Rows.Clear();
             var template = playerContext.ShipTemplateList.FirstOrDefault(t => t.UUID == target.ShipTemplateUUID);
-            if (template == null) { ClearExpandedComponents(); return; }
+            if (template == null)
+            {
+                ClearExpandedComponents();
+                return;
+            }
 
             lblExpandedComponents.Text = string.Format("Components for {0} (x{1}):", template.Name, target.TargetQuantity);
             lblExpandedComponents.Visible = true;
@@ -574,7 +612,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 dgvExpandedComponents.Rows.Add(slot.SlotType + ": " + name, target.TargetQuantity.ToString());
             }
 
-            sw.Stop(); Log.Info("PERF PopulateExpandedComponents: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateExpandedComponents: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ClearExpandedComponents()
@@ -627,15 +666,19 @@ namespace OE2EmpireTracker.Forms.StockTargets
 
             if (shortfalls.Count == 0)
             {
-                MessageBox.Show("All targets are met.", "Stock Check",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "All targets are met.",
+                    "Stock Check",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
             // Generate replenishment items if a build plan is assigned
             if (string.IsNullOrEmpty(_selectedPlan.ReplenishmentBuildPlanUUID))
             {
-                MessageBox.Show(string.Format("{0} shortfall(s) found but no replenishment plan assigned.",
+                MessageBox.Show(string.Format(
+                    "{0} shortfall(s) found but no replenishment plan assigned.",
                     shortfalls.Count), "Stock Check", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -644,8 +687,11 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 .FirstOrDefault(bp => bp.UUID == _selectedPlan.ReplenishmentBuildPlanUUID);
             if (buildPlan == null)
             {
-                MessageBox.Show("Replenishment build plan not found.", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "Replenishment build plan not found.",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
                 return;
             }
 
@@ -655,14 +701,19 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 buildPlan.Items.AddRange(newItems);
                 playerContext.WriteContext();
                 playerContext.CascadeResourceCheckDirty = true;
-                MessageBox.Show(string.Format("Generated {0} build item(s) in plan \"{1}\".",
-                    newItems.Count, buildPlan.Name), "Orders Generated",
+                MessageBox.Show(string.Format(
+                    "Generated {0} build item(s) in plan \"{1}\".",
+                    newItems.Count,
+                    buildPlan.Name), "Orders Generated",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                MessageBox.Show("All shortfalls already have pending build items.", "Stock Check",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "All shortfalls already have pending build items.",
+                    "Stock Check",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
         }
 
@@ -719,16 +770,26 @@ namespace OE2EmpireTracker.Forms.StockTargets
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is StockProfile profile)
-            { _selectedProfile = profile; PopulateProfileForm(); }
+            {
+                _selectedProfile = profile;
+                PopulateProfileForm();
+            }
             else if (!e.IsSelected && lvwProfiles.SelectedItems.Count == 0)
-            { _selectedProfile = null; ClearProfileForm(); }
+            {
+                _selectedProfile = null;
+                ClearProfileForm();
+            }
         }
 
         private void PopulateProfileForm()
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedProfile == null) { ClearProfileForm(); return; }
+            if (_selectedProfile == null)
+            {
+                ClearProfileForm();
+                return;
+            }
             txtProfileName.Text = _selectedProfile.Name;
             chkProfileActive.Checked = _selectedProfile.IsActive;
             PopulateEntriesGrid();
@@ -778,7 +839,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 dgvEntries.Rows[rowIdx].Tag = entry;
             }
 
-            sw.Stop(); Log.Info("PERF PopulateEntriesGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateEntriesGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private string ResolvePlanName(string uuid)
@@ -812,7 +874,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 cmbEntry.ValueMember = "Key";
             }
 
-            sw.Stop(); Log.Info("PERF PopulateEntryCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateEntryCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void TxtEntryFilter_TextChanged(object sender, EventArgs e)
@@ -824,7 +887,10 @@ namespace OE2EmpireTracker.Forms.StockTargets
         private void UpdateLogicSummary()
         {
             if (_selectedProfile == null || _selectedProfile.Entries.Count == 0)
-            { lblLogicSummary.Text = string.Empty; return; }
+            {
+                lblLogicSummary.Text = string.Empty;
+                return;
+            }
 
             var groups = _selectedProfile.Entries
                 .GroupBy(e => e.GroupID)
@@ -869,7 +935,9 @@ namespace OE2EmpireTracker.Forms.StockTargets
             if (_selectedProfile == null) return;
             var result = MessageBox.Show(
                 string.Format("Delete profile \"{0}\"?", _selectedProfile.Name),
-                "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
             playerContext.RemoveStockProfile(_selectedProfile);
             playerContext.WriteContext();
@@ -885,8 +953,11 @@ namespace OE2EmpireTracker.Forms.StockTargets
             string name = txtProfileName.Text.Trim();
             if (string.IsNullOrWhiteSpace(name))
             {
-                MessageBox.Show("Name cannot be empty.", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Name cannot be empty.",
+                    "Validation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -944,7 +1015,13 @@ namespace OE2EmpireTracker.Forms.StockTargets
         {
             if (IsDisposed) return;
             if (InvokeRequired)
-            { try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); } catch (ObjectDisposedException) { } return; }
+            {
+                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                } catch (ObjectDisposedException)
+                {
+                }
+                return;
+            }
             _selectedPlan = null;
             PopulatePlanList();
             ClearForm();

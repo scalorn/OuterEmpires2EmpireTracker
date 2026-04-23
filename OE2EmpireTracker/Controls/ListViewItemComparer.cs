@@ -33,7 +33,8 @@ namespace OE2EmpireTracker.Controls
             if (subItemX.Tag != null && subItemY.Tag != null)
             {
                 int tagResult = string.Compare(
-                    subItemX.Tag.ToString(), subItemY.Tag.ToString(),
+                    subItemX.Tag.ToString(),
+                    subItemY.Tag.ToString(),
                     StringComparison.OrdinalIgnoreCase);
                 return _order == SortOrder.Descending ? -tagResult : tagResult;
             }

@@ -68,8 +68,12 @@ namespace OE2EmpireTracker.Services
             }
 
             sw.Stop();
-            Log.Info("PERF GenerateShipBuildItems: {0} items for {1}x '{2}' in {3}ms",
-                items.Count, quantity, template.Name, sw.ElapsedMilliseconds);
+            Log.Info(
+                "PERF GenerateShipBuildItems: {0} items for {1}x '{2}' in {3}ms",
+                items.Count,
+                quantity,
+                template.Name,
+                sw.ElapsedMilliseconds);
             return items;
         }
 

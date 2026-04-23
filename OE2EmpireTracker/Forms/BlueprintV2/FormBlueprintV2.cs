@@ -126,8 +126,12 @@ namespace OE2EmpireTracker
             colResource.ValueMember = "Name";
             colResource.DataSource = empireContext.BindingSourceResource;
 
-            dgvResources.DataError += (s, ev) => { Log.Warn("dgvResources DataError at [{0}, {1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message); ev.ThrowException = false; };
-            dgvStatistics.DataError += (s, ev) => { Log.Warn("dgvStatistics DataError at [{0}, {1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message); ev.ThrowException = false; };
+            dgvResources.DataError += (s, ev) => { Log.Warn("dgvResources DataError at [{0}, {1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message);
+            ev.ThrowException = false;
+            };
+            dgvStatistics.DataError += (s, ev) => { Log.Warn("dgvStatistics DataError at [{0}, {1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message);
+            ev.ThrowException = false;
+            };
 
             // Wire resources grid events
             dgvResources.CellValueChanged += DgvResources_CellValueChanged;
@@ -272,9 +276,14 @@ namespace OE2EmpireTracker
             PopulateListView(results);
             UpdateTitleBarCounts();
             sw.Stop();
-            Log.Info("RefreshBlueprintList PERF: total={0}ms filter={1}ms populate={2}ms results={3}",
-                sw.ElapsedMilliseconds, t2 - t1, sw.ElapsedMilliseconds - t2, results.Count);
-            sw.Stop(); Log.Info("PERF RefreshBlueprintList: {0}ms", sw.ElapsedMilliseconds);
+            Log.Info(
+                "RefreshBlueprintList PERF: total={0}ms filter={1}ms populate={2}ms results={3}",
+                sw.ElapsedMilliseconds,
+                t2 - t1,
+                sw.ElapsedMilliseconds - t2,
+                results.Count);
+            sw.Stop();
+            Log.Info("PERF RefreshBlueprintList: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -327,9 +336,14 @@ namespace OE2EmpireTracker
 
             lvwBlueprints.EndUpdate();
             sw.Stop();
-            Log.Info("PopulateListView PERF: total={0}ms refCounter={1}ms listBuild={2}ms items={3}",
-                sw.ElapsedMilliseconds, t1, sw.ElapsedMilliseconds - t1, blueprints.Count);
-            sw.Stop(); Log.Info("PERF PopulateListView: {0}ms", sw.ElapsedMilliseconds);
+            Log.Info(
+                "PopulateListView PERF: total={0}ms refCounter={1}ms listBuild={2}ms items={3}",
+                sw.ElapsedMilliseconds,
+                t1,
+                sw.ElapsedMilliseconds - t1,
+                blueprints.Count);
+            sw.Stop();
+            Log.Info("PERF PopulateListView: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -419,8 +433,11 @@ namespace OE2EmpireTracker
             // Validate name
             if (string.IsNullOrWhiteSpace(viewModel.Name))
             {
-                MessageBox.Show("Blueprint name is required.", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Blueprint name is required.",
+                    "Validation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 txtName.Focus();
                 return;
             }
@@ -459,8 +476,11 @@ namespace OE2EmpireTracker
         {
             if (!Clipboard.ContainsText(TextDataFormat.Html))
             {
-                MessageBox.Show("No HTML found on clipboard. Copy the blueprint page from the game first.",
-                    "Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "No HTML found on clipboard. Copy the blueprint page from the game first.",
+                    "Import",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -475,8 +495,11 @@ namespace OE2EmpireTracker
                     detected != ClipboardContentDetector.ContentType.Unknown)
                 {
                     string found = ClipboardContentDetector.GetDescription(detected);
-                    MessageBox.Show($"The clipboard contains {found}, not blueprint data.\n\nCopy the blueprint page from the game browser first.",
-                        "Wrong Content", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        $"The clipboard contains {found}, not blueprint data.\n\nCopy the blueprint page from the game browser first.",
+                        "Wrong Content",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                     return;
                 }
 
@@ -517,8 +540,10 @@ namespace OE2EmpireTracker
                     RefreshBlueprintList();
                     SelectBlueprintInList(viewModel.Data.UUID);
                     PopulateForm();
-                    Log.Info("Resources-only import merged into selected blueprint: {0} UUID={1}",
-                        viewModel.Data.Name, viewModel.Data.UUID);
+                    Log.Info(
+                        "Resources-only import merged into selected blueprint: {0} UUID={1}",
+                        viewModel.Data.Name,
+                        viewModel.Data.UUID);
                     return;
                 }
 
@@ -568,8 +593,11 @@ namespace OE2EmpireTracker
             catch (Exception ex)
             {
                 Log.Error(ex, "Error importing blueprint from clipboard");
-                MessageBox.Show("Failed to import blueprint: " + ex.Message,
-                    "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "Failed to import blueprint: " + ex.Message,
+                    "Import Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -581,8 +609,11 @@ namespace OE2EmpireTracker
         {
             if (!Clipboard.ContainsText(TextDataFormat.Html))
             {
-                MessageBox.Show("No market HTML found on clipboard.",
-                    "Import Market", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "No market HTML found on clipboard.",
+                    "Import Market",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -590,8 +621,11 @@ namespace OE2EmpireTracker
             string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(clipboardData);
             if (string.IsNullOrEmpty(html) || html.StartsWith("ERROR:"))
             {
-                MessageBox.Show("No market HTML found on clipboard.",
-                    "Import Market", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "No market HTML found on clipboard.",
+                    "Import Market",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -601,8 +635,11 @@ namespace OE2EmpireTracker
                 detected != ClipboardContentDetector.ContentType.Unknown)
             {
                 string found = ClipboardContentDetector.GetDescription(detected);
-                MessageBox.Show($"The clipboard contains {found}, not market listing data.\n\nCopy the market page from the game browser first.",
-                    "Wrong Content", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    $"The clipboard contains {found}, not market listing data.\n\nCopy the market page from the game browser first.",
+                    "Wrong Content",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -611,8 +648,11 @@ namespace OE2EmpireTracker
             var parsed = scanner.ProcessMarketHtml(html);
             if (parsed == null || parsed.Count == 0)
             {
-                MessageBox.Show("No blueprint listings found in clipboard data.",
-                    "Import Market", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "No blueprint listings found in clipboard data.",
+                    "Import Market",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -675,8 +715,11 @@ namespace OE2EmpireTracker
                 sb.AppendLine($"Unknown properties detected ({unknownPropWarnings.Count}) — details in the log.");
             }
 
-            MessageBox.Show(sb.ToString(), "Import Market Results",
-                MessageBoxButtons.OK, unknownPropWarnings.Count > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+            MessageBox.Show(
+                sb.ToString(),
+                "Import Market Results",
+                MessageBoxButtons.OK,
+                unknownPropWarnings.Count > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
 
             // Notify if player blueprints changed
             bool playerChanged = result.Entries.Any(e2 =>
@@ -870,8 +913,11 @@ namespace OE2EmpireTracker
             var bt = cmbBlueprintType.SelectedItem as BlueprintType;
             string[] definedProps = bt?.Properties ?? Array.Empty<string>();
 
-            Log.Info("RefreshStatisticsGrid: blueprint='{0}' type='{1}' definedProps={2} bagCount={3}",
-                viewModel.Data.Name ?? "(null)", bt?.Id ?? "(null)", definedProps.Length,
+            Log.Info(
+                "RefreshStatisticsGrid: blueprint='{0}' type='{1}' definedProps={2} bagCount={3}",
+                viewModel.Data.Name ?? "(null)",
+                bt?.Id ?? "(null)",
+                definedProps.Length,
                 viewModel.Data.Properties?.Count ?? 0);
 
             // Find extra properties in PropertyBag not in the type definition
@@ -886,8 +932,11 @@ namespace OE2EmpireTracker
 
             string gridKey = (bt?.Id ?? string.Empty) + "|" + string.Join(", ", extraProps);
 
-            Log.Info("RefreshStatisticsGrid: gridKey='{0}' cachedKey='{1}' rebuild={2}",
-                gridKey, _cachedGridKey ?? "(null)", gridKey != _cachedGridKey);
+            Log.Info(
+                "RefreshStatisticsGrid: gridKey='{0}' cachedKey='{1}' rebuild={2}",
+                gridKey,
+                _cachedGridKey ?? "(null)",
+                gridKey != _cachedGridKey);
 
             if (gridKey != _cachedGridKey)
             {
@@ -896,7 +945,8 @@ namespace OE2EmpireTracker
             }
 
             PopulateStatisticsValues();
-            sw.Stop(); Log.Info("PERF RefreshStatisticsGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF RefreshStatisticsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -909,7 +959,13 @@ namespace OE2EmpireTracker
             using var guard = new ProgrammaticUpdateGuard(this);
 
             dgvStatistics.CellValidating -= DgvStatistics_CellValidating;
-            try { dgvStatistics.EndEdit(); } catch { }
+            try
+            {
+                dgvStatistics.EndEdit();
+            }
+            catch
+            {
+            }
             dgvStatistics.Rows.Clear();
             dgvStatistics.Columns.Clear();
 
@@ -943,14 +999,17 @@ namespace OE2EmpireTracker
             // Add rows for extra/unknown properties (logged at WARN)
             foreach (string property in extraProps)
             {
-                Log.Warn("Extra property '{0}' on '{1}' (not in {2} type definition)",
-                    property, viewModel.Data.Name ?? "(new)",
+                Log.Warn(
+                    "Extra property '{0}' on '{1}' (not in {2} type definition)",
+                    property,
+                    viewModel.Data.Name ?? "(new)",
                     (cmbBlueprintType.SelectedItem as BlueprintType)?.Id ?? "unknown");
                 AddStatisticsRow(property);
             }
 
             dgvStatistics.CellValidating += DgvStatistics_CellValidating;
-            sw.Stop(); Log.Info("PERF RebuildStatisticsGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF RebuildStatisticsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -988,16 +1047,21 @@ namespace OE2EmpireTracker
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
 
-            Log.Info("PopulateStatisticsValues: rows={0} blueprint='{1}' bagCount={2}",
-                dgvStatistics.Rows.Count, viewModel.Data.Name ?? "(null)",
+            Log.Info(
+                "PopulateStatisticsValues: rows={0} blueprint='{1}' bagCount={2}",
+                dgvStatistics.Rows.Count,
+                viewModel.Data.Name ?? "(null)",
                 viewModel.Data.Properties?.Count ?? 0);
 
             // Dump actual bag keys for diagnosis
             if (viewModel.Data.Properties?.Count > 0)
             {
                 foreach (var kvp in viewModel.Data.Properties.Properties)
-                    Log.Info("  BAG KEY: [{0}] = '{1}' (len={2}, chars={3})",
-                        kvp.Key, kvp.Value, kvp.Key.Length,
+                    Log.Info(
+                        "  BAG KEY: [{0}] = '{1}' (len={2}, chars={3})",
+                        kvp.Key,
+                        kvp.Value,
+                        kvp.Key.Length,
                         string.Join(", ", kvp.Key.Select(c => ((int)c).ToString("X4"))));
             }
 
@@ -1009,8 +1073,11 @@ namespace OE2EmpireTracker
                 viewModel.GetProperty(property, string.Empty, out string value);
                 if (value == null) value = string.Empty;
 
-                Log.Info("PopulateStatisticsValues: '{0}' = '{1}' (from bag: {2})",
-                    property, value, viewModel.Data.Properties.ContainsKey(property));
+                Log.Info(
+                    "PopulateStatisticsValues: '{0}' = '{1}' (from bag: {2})",
+                    property,
+                    value,
+                    viewModel.Data.Properties.ContainsKey(property));
 
                 var propType = BlueprintPropertyValidation.GetPropertyType(property);
                 if (propType == PropertyValueType.CheckBox)
@@ -1024,7 +1091,8 @@ namespace OE2EmpireTracker
                 }
             }
 
-            sw.Stop(); Log.Info("PERF PopulateStatisticsValues: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateStatisticsValues: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -1106,7 +1174,13 @@ namespace OE2EmpireTracker
             using var guard = new ProgrammaticUpdateGuard(this);
 
             dgvResources.CellValidating -= DgvResources_CellValidating;
-            try { dgvResources.EndEdit(); } catch { }
+            try
+            {
+                dgvResources.EndEdit();
+            }
+            catch
+            {
+            }
             dgvResources.Rows.Clear();
             dgvResources.CellValidating += DgvResources_CellValidating;
 
@@ -1118,7 +1192,8 @@ namespace OE2EmpireTracker
                 row.Cells["Amount"].Value = resource.Value;
             }
 
-            sw.Stop(); Log.Info("PERF PopulateResourcesGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateResourcesGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -1198,7 +1273,13 @@ namespace OE2EmpireTracker
         private void ClearResourcesGrid()
         {
             dgvResources.CellValidating -= DgvResources_CellValidating;
-            try { dgvResources.EndEdit(); } catch { }
+            try
+            {
+                dgvResources.EndEdit();
+            }
+            catch
+            {
+            }
             dgvResources.Rows.Clear();
             dgvResources.CellValidating += DgvResources_CellValidating;
         }
@@ -1355,7 +1436,8 @@ namespace OE2EmpireTracker
                 colorIndex++;
             }
 
-            sw.Stop(); Log.Info("PERF RefreshEvolutionGraph: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF RefreshEvolutionGraph: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -1397,7 +1479,8 @@ namespace OE2EmpireTracker
                 cmbPricingPlan.SelectedValue = selectedUUID;
             else
                 cmbPricingPlan.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulatePricingPlanCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulatePricingPlanCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -1518,9 +1601,14 @@ namespace OE2EmpireTracker
             UpdateCalculatedPrice();
 
             sw.Stop();
-            Log.Info("PopulateForm PERF: total={0}ms fields={1}ms grids={2}ms pricing={3}ms",
-                sw.ElapsedMilliseconds, t1, t2 - t1, sw.ElapsedMilliseconds - t2);
-            sw.Stop(); Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
+            Log.Info(
+                "PopulateForm PERF: total={0}ms fields={1}ms grids={2}ms pricing={3}ms",
+                sw.ElapsedMilliseconds,
+                t1,
+                t2 - t1,
+                sw.ElapsedMilliseconds - t2);
+            sw.Stop();
+            Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -1549,7 +1637,13 @@ namespace OE2EmpireTracker
 
             // Clear grids
             dgvStatistics.CellValidating -= DgvStatistics_CellValidating;
-            try { dgvStatistics.EndEdit(); } catch { }
+            try
+            {
+                dgvStatistics.EndEdit();
+            }
+            catch
+            {
+            }
             dgvStatistics.Rows.Clear();
             dgvStatistics.Columns.Clear();
             dgvStatistics.CellValidating += DgvStatistics_CellValidating;
@@ -1571,8 +1665,13 @@ namespace OE2EmpireTracker
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnBlueprintDataChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnBlueprintDataChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 
@@ -1590,8 +1689,13 @@ namespace OE2EmpireTracker
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 
@@ -1607,8 +1711,13 @@ namespace OE2EmpireTracker
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnPricingDataChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnPricingDataChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 

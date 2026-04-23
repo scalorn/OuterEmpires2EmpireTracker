@@ -260,7 +260,8 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void CheckTargets_ShipTemplateTarget_ReturnsMinAcrossComponents()
         {
-            var colony = MakeColony("col-1",
+            var colony = MakeColony(
+                "col-1",
                 (ItemType.ItemTypeEnum.ShipHull, "hull-bp", 5),
                 (ItemType.ItemTypeEnum.ShipPart, "reactor-bp", 3),
                 (ItemType.ItemTypeEnum.ShipPart, "drive-bp", 10));

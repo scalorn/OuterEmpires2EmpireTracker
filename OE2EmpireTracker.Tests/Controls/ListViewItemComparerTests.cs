@@ -149,7 +149,9 @@ namespace OE2EmpireTracker.Tests.Controls
             var itemZ = CreateItem(1, "Z-display", "AAA");
 
             int result = comparer.Compare(itemA, itemZ);
-            Assert.That(result, Is.GreaterThan(0),
+            Assert.That(
+                result,
+                Is.GreaterThan(0),
                 "Tag-based comparison should take precedence: 'ZZZ' > 'AAA' regardless of display text");
         }
 
@@ -164,7 +166,9 @@ namespace OE2EmpireTracker.Tests.Controls
             var newer = CreateItem(1, "19FEB26-08:41p", "2026-02-19T20:41:00");
 
             int result = comparer.Compare(older, newer);
-            Assert.That(result, Is.LessThan(0),
+            Assert.That(
+                result,
+                Is.LessThan(0),
                 "ISO tag should sort 2024 before 2026, even though display text '27JUL' > '19FEB'");
         }
 

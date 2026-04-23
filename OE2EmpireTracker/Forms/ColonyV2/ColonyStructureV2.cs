@@ -248,20 +248,29 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 flpColonyStructure.ResumeLayout(false);
                 this.ResumeLayout();
                 udSw.Stop();
-                Log.Debug("V2.UpdateData PERF: {0} rtf={1}ms workers={2}ms building total={3}ms",
-                    bpName, tRtf, tWorkers - tRtf, udSw.ElapsedMilliseconds);
-                Log.Debug("V2.UpdateData LAYOUT [{0}]: " +
-                    "Header={1} vis={2} | Status={3} vis={4} | Workers={5} vis={6} | " +
-                    "Survey={7} vis={8} | Selection={9} vis={10} | Mfg={11} vis={12} | " +
-                    "Cmds={13} vis={14} | flpCS.Size={15}",
+                Log.Debug(
+                    "V2.UpdateData PERF: {0} rtf={1}ms workers={2}ms building total={3}ms",
                     bpName,
-                    flpHeader.Location, flpHeader.Visible,
-                    rtbStatus.Location, rtbStatus.Visible,
-                    flpWorkers.Location, flpWorkers.Visible,
-                    flpSurveySelection.Location, flpSurveySelection.Visible,
-                    flpSelection.Location, flpSelection.Visible,
-                    flpManufacturing.Location, flpManufacturing.Visible,
-                    flpStructureCommands.Location, flpStructureCommands.Visible,
+                    tRtf,
+                    tWorkers - tRtf,
+                    udSw.ElapsedMilliseconds);
+                Log.Debug(
+                    "V2.UpdateData LAYOUT [{0}]: " + "Header={1} vis={2} | Status={3} vis={4} | Workers={5} vis={6} | " + "Survey={7} vis={8} | Selection={9} vis={10} | Mfg={11} vis={12} | " + "Cmds={13} vis={14} | flpCS.Size={15}",
+                    bpName,
+                    flpHeader.Location,
+                    flpHeader.Visible,
+                    rtbStatus.Location,
+                    rtbStatus.Visible,
+                    flpWorkers.Location,
+                    flpWorkers.Visible,
+                    flpSurveySelection.Location,
+                    flpSurveySelection.Visible,
+                    flpSelection.Location,
+                    flpSelection.Visible,
+                    flpManufacturing.Location,
+                    flpManufacturing.Visible,
+                    flpStructureCommands.Location,
+                    flpStructureCommands.Visible,
                     flpColonyStructure.Size);
                 return;
             }
@@ -299,26 +308,36 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             udSw.Stop();
             if (udSw.ElapsedMilliseconds > 5)
             {
-                Log.Debug("V2.UpdateData PERF: {0} rtf={1}ms workers={2}ms controls={3}ms total={4}ms",
-                    bpName, tRtf, tWorkers - tRtf, tControls - tWorkers, udSw.ElapsedMilliseconds);
+                Log.Debug(
+                    "V2.UpdateData PERF: {0} rtf={1}ms workers={2}ms controls={3}ms total={4}ms",
+                    bpName,
+                    tRtf,
+                    tWorkers - tRtf,
+                    tControls - tWorkers,
+                    udSw.ElapsedMilliseconds);
             }
 
             flpColonyStructure.ResumeLayout(false);
             this.ResumeLayout();
 
             // Diagnostic: log panel positions and visibility
-            Log.Debug("V2.UpdateData LAYOUT [{0}]: " +
-                "Header={1} vis={2} | Status={3} vis={4} | Workers={5} vis={6} | " +
-                "Survey={7} vis={8} | Selection={9} vis={10} | Mfg={11} vis={12} | " +
-                "Cmds={13} vis={14} | flpCS.Size={15}",
+            Log.Debug(
+                "V2.UpdateData LAYOUT [{0}]: " + "Header={1} vis={2} | Status={3} vis={4} | Workers={5} vis={6} | " + "Survey={7} vis={8} | Selection={9} vis={10} | Mfg={11} vis={12} | " + "Cmds={13} vis={14} | flpCS.Size={15}",
                 bpName,
-                flpHeader.Location, flpHeader.Visible,
-                rtbStatus.Location, rtbStatus.Visible,
-                flpWorkers.Location, flpWorkers.Visible,
-                flpSurveySelection.Location, flpSurveySelection.Visible,
-                flpSelection.Location, flpSelection.Visible,
-                flpManufacturing.Location, flpManufacturing.Visible,
-                flpStructureCommands.Location, flpStructureCommands.Visible,
+                flpHeader.Location,
+                flpHeader.Visible,
+                rtbStatus.Location,
+                rtbStatus.Visible,
+                flpWorkers.Location,
+                flpWorkers.Visible,
+                flpSurveySelection.Location,
+                flpSurveySelection.Visible,
+                flpSelection.Location,
+                flpSelection.Visible,
+                flpManufacturing.Location,
+                flpManufacturing.Visible,
+                flpStructureCommands.Location,
+                flpStructureCommands.Visible,
                 flpColonyStructure.Size);
         }
 
@@ -338,23 +357,35 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (structureData.Statuses.TryGetValue(GameConstants.StatusActual, out var actual))
             {
                 sb.Append("Actual: ");
-                sb.AppendFormat("Power:{0}/{1} Hab:{2}/{3} Food:{4}/{5} Ent:{6}/{7} WH:{8}/{9}",
-                    actual.PowerRequired, actual.PowerProvided,
-                    actual.HabitationRequired, actual.HabitationProvision,
-                    actual.FoodRequired, actual.FoodProvision,
-                    actual.EntertainmentRequired, actual.EntertainmentProvided,
-                    actual.WarehouseRequired, actual.WarehouseCapacity);
+                sb.AppendFormat(
+                    "Power:{0}/{1} Hab:{2}/{3} Food:{4}/{5} Ent:{6}/{7} WH:{8}/{9}",
+                    actual.PowerRequired,
+                    actual.PowerProvided,
+                    actual.HabitationRequired,
+                    actual.HabitationProvision,
+                    actual.FoodRequired,
+                    actual.FoodProvision,
+                    actual.EntertainmentRequired,
+                    actual.EntertainmentProvided,
+                    actual.WarehouseRequired,
+                    actual.WarehouseCapacity);
             }
 
             if (structureData.Statuses.TryGetValue(GameConstants.StatusIdeal, out var ideal))
             {
                 sb.Append("\nIdeal:  ");
-                sb.AppendFormat("Power:{0}/{1} Hab:{2}/{3} Food:{4}/{5} Ent:{6}/{7} WH:{8}/{9}",
-                    ideal.PowerRequired, ideal.PowerProvided,
-                    ideal.HabitationRequired, ideal.HabitationProvision,
-                    ideal.FoodRequired, ideal.FoodProvision,
-                    ideal.EntertainmentRequired, ideal.EntertainmentProvided,
-                    ideal.WarehouseRequired, ideal.WarehouseCapacity);
+                sb.AppendFormat(
+                    "Power:{0}/{1} Hab:{2}/{3} Food:{4}/{5} Ent:{6}/{7} WH:{8}/{9}",
+                    ideal.PowerRequired,
+                    ideal.PowerProvided,
+                    ideal.HabitationRequired,
+                    ideal.HabitationProvision,
+                    ideal.FoodRequired,
+                    ideal.FoodProvision,
+                    ideal.EntertainmentRequired,
+                    ideal.EntertainmentProvided,
+                    ideal.WarehouseRequired,
+                    ideal.WarehouseCapacity);
             }
 
             return sb.ToString();
@@ -504,7 +535,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             using var guard = new ProgrammaticUpdateGuard(this);
             var structureData = ViewModel.Data;
-            Log.Debug("V2.HandleMiningRigControls: survey={0} resource={1} process={2}",
+            Log.Debug(
+                "V2.HandleMiningRigControls: survey={0} resource={1} process={2}",
                 structureData.MiningSurvey ?? "(none)",
                 structureData.MiningSurveyResource ?? "(none)",
                 structureData.ProcessCompletionTime != null ? "active" : "idle");
@@ -748,7 +780,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             using var guard = new ProgrammaticUpdateGuard(this);
             var structureData = ViewModel.Data;
-            Log.Debug("V2.HandleRefineryControls: resource={0} purity={1} process={2}",
+            Log.Debug(
+                "V2.HandleRefineryControls: resource={0} purity={1} process={2}",
                 structureData.RefiningResource ?? "(none)",
                 structureData.RefiningResourcePurity ?? "(none)",
                 structureData.ProcessCompletionTime != null ? "active" : "idle");
@@ -978,7 +1011,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             using var guard = new ProgrammaticUpdateGuard(this);
             var structureData = ViewModel.Data;
-            Log.Debug("V2.HandleResearchLabControls: blueprintUUID={0} process={1}",
+            Log.Debug(
+                "V2.HandleResearchLabControls: blueprintUUID={0} process={1}",
                 structureData.ResearchingBlueprintUUID ?? "(none)",
                 structureData.ProcessCompletionTime != null ? "active" : "idle");
 
@@ -1001,7 +1035,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 if (string.IsNullOrEmpty(structureData.ResearchingBlueprintUUID)
                     || _playerContext.FindBlueprint(structureData.ResearchingBlueprintUUID) == null)
                 {
-                    Log.Warn("ResearchLab {0}: clearing orphaned research state (blueprint={1})",
+                    Log.Warn(
+                        "ResearchLab {0}: clearing orphaned research state (blueprint={1})",
                         structureData.UUID,
                         structureData.ResearchingBlueprintUUID ?? "(null)");
                     structureData.ProcessCompletionTime = null;
@@ -1133,7 +1168,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             using var guard = new ProgrammaticUpdateGuard(this);
             var structureData = ViewModel.Data;
-            Log.Debug("V2.HandleManufactoryControls: blueprintUUID={0} qty={1} process={2}",
+            Log.Debug(
+                "V2.HandleManufactoryControls: blueprintUUID={0} qty={1} process={2}",
                 structureData.ManufacturingBlueprintUUID ?? "(none)",
                 structureData.ManufacturingQuantity,
                 structureData.ProcessCompletionTime != null ? "active" : "idle");
@@ -1157,7 +1193,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 if (string.IsNullOrEmpty(structureData.ManufacturingBlueprintUUID)
                     || _playerContext.FindBlueprint(structureData.ManufacturingBlueprintUUID) == null)
                 {
-                    Log.Warn("Manufactory {0}: clearing orphaned manufacturing state (blueprint={1})",
+                    Log.Warn(
+                        "Manufactory {0}: clearing orphaned manufacturing state (blueprint={1})",
                         structureData.UUID,
                         structureData.ManufacturingBlueprintUUID ?? "(null)");
                     structureData.ProcessCompletionTime = null;
@@ -1313,7 +1350,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             using var guard = new ProgrammaticUpdateGuard(this);
             var structureData = ViewModel.Data;
-            Log.Debug("V2.HandleCommodityFactoryControls: commodity={0} qty={1} process={2}",
+            Log.Debug(
+                "V2.HandleCommodityFactoryControls: commodity={0} qty={1} process={2}",
                 structureData.ManufacturingCommodityName ?? "(none)",
                 structureData.ManufacturingQuantity,
                 structureData.ProcessCompletionTime != null ? "active" : "idle");
@@ -1336,7 +1374,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 // Clear orphaned state when commodity name is null
                 if (string.IsNullOrEmpty(structureData.ManufacturingCommodityName))
                 {
-                    Log.Warn("CommodityFactory {0}: clearing orphaned ProcessCompletionTime (no ManufacturingCommodityName)",
+                    Log.Warn(
+                        "CommodityFactory {0}: clearing orphaned ProcessCompletionTime (no ManufacturingCommodityName)",
                         structureData.UUID);
                     structureData.ProcessCompletionTime = null;
                     structureData.ManufacturingQuantity = 0;
@@ -1558,7 +1597,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 _workerCheckboxes[i].Tag = null;
             }
 
-            if (ViewModel == null) { flpWorkers.ResumeLayout(false); return; }
+            if (ViewModel == null)
+            {
+                flpWorkers.ResumeLayout(false);
+                return;
+            }
 
             int controlIndex = 0;
 
@@ -1803,8 +1846,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             else if (_blueprint.BluePrintType == BlueprintTypes.Refinery)
             {
                 string key = cmbSelection.SelectedValue as string;
-                Log.Debug("V2.CmbSelection_SelectedIndexChanged: type=Refinery old={0}|{1} new={2}",
-                    structureData.RefiningResource ?? "(none)", structureData.RefiningResourcePurity ?? "(none)", key ?? "(none)");
+                Log.Debug(
+                    "V2.CmbSelection_SelectedIndexChanged: type=Refinery old={0}|{1} new={2}",
+                    structureData.RefiningResource ?? "(none)",
+                    structureData.RefiningResourcePurity ?? "(none)",
+                    key ?? "(none)");
                 if (!string.IsNullOrEmpty(key) && key.Contains("|"))
                 {
                     string[] parts = key.Split('|');
@@ -1820,23 +1866,29 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
             {
                 string uuid = cmbSelection.SelectedValue as string;
-                Log.Debug("V2.CmbSelection_SelectedIndexChanged: type=ResearchLab old={0} new={1}",
-                    structureData.ResearchingBlueprintUUID ?? "(none)", uuid ?? "(none)");
+                Log.Debug(
+                    "V2.CmbSelection_SelectedIndexChanged: type=ResearchLab old={0} new={1}",
+                    structureData.ResearchingBlueprintUUID ?? "(none)",
+                    uuid ?? "(none)");
                 structureData.ResearchingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
             }
             else if (_blueprint.BluePrintType == BlueprintTypes.Manufactory)
             {
                 string uuid = cmbSelection.SelectedValue as string;
-                Log.Debug("V2.CmbSelection_SelectedIndexChanged: type=Manufactory old={0} new={1}",
-                    structureData.ManufacturingBlueprintUUID ?? "(none)", uuid ?? "(none)");
+                Log.Debug(
+                    "V2.CmbSelection_SelectedIndexChanged: type=Manufactory old={0} new={1}",
+                    structureData.ManufacturingBlueprintUUID ?? "(none)",
+                    uuid ?? "(none)");
                 structureData.ManufacturingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
                 structureData.ManufacturingCompleted = 0;
             }
             else if (_blueprint.BluePrintType.IsCommodityFactory())
             {
                 string name = cmbSelection.SelectedValue as string;
-                Log.Debug("V2.CmbSelection_SelectedIndexChanged: type=CommodityFactory old={0} new={1}",
-                    structureData.ManufacturingCommodityName ?? "(none)", name ?? "(none)");
+                Log.Debug(
+                    "V2.CmbSelection_SelectedIndexChanged: type=CommodityFactory old={0} new={1}",
+                    structureData.ManufacturingCommodityName ?? "(none)",
+                    name ?? "(none)");
                 structureData.ManufacturingCommodityName = string.IsNullOrEmpty(name) ? null : name;
                 structureData.ManufacturingCompleted = 0;
             }
@@ -2110,8 +2162,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             try
             {
-                Log.Debug("V2.CmdDone_Click: type=Process structure={0} bpType={1}",
-                    structureData.UUID, _blueprint?.BluePrintType ?? "(none)");
+                Log.Debug(
+                    "V2.CmdDone_Click: type=Process structure={0} bpType={1}",
+                    structureData.UUID,
+                    _blueprint?.BluePrintType ?? "(none)");
                 if (structureData.ProcessCompletionTime != null)
                 {
                     if (structureData.ProcessCompletionTime.IsRepeating &&

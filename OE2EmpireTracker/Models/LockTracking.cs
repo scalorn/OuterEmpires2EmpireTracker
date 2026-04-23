@@ -201,8 +201,12 @@ namespace OE2EmpireTracker.Models
             writer.WriteEndObject();
         }
 
-        public override LockTracking ReadJson(JsonReader reader, Type objectType,
-            LockTracking existingValue, bool hasExistingValue, JsonSerializer serializer)
+        public override LockTracking ReadJson(
+            JsonReader reader,
+            Type objectType,
+            LockTracking existingValue,
+            bool hasExistingValue,
+            JsonSerializer serializer)
         {
             var tracking = existingValue ?? new LockTracking();
 

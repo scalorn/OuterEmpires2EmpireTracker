@@ -8,8 +8,11 @@ namespace OE2EmpireTracker.Services.Migration
         /// Walks all UUID references across the data model and replaces
         /// oldUUID with newUUID. No-op if oldUUID is not found anywhere.
         /// </summary>
-        public static void Remap(EmpireContext ec, PlayerContext pc,
-            string oldUUID, string newUUID)
+        public static void Remap(
+            EmpireContext ec,
+            PlayerContext pc,
+            string oldUUID,
+            string newUUID)
         {
             // Blueprint.UUID (global + player)
             foreach (var bp in ec.GlobalBlueprintList)

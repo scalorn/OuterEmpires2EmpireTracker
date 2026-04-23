@@ -55,8 +55,10 @@ namespace OE2EmpireTracker.Services
                 s.FlatpackBlueprintUUID == flatpackBlueprintUUID);
             if (structure == null)
             {
-                Log.Warn("No matching ColonyStructure with FlatpackBlueprintUUID '{0}' on colony {1}",
-                    flatpackBlueprintUUID, colony.ColonyName);
+                Log.Warn(
+                    "No matching ColonyStructure with FlatpackBlueprintUUID '{0}' on colony {1}",
+                    flatpackBlueprintUUID,
+                    colony.ColonyName);
                 return false;
             }
 

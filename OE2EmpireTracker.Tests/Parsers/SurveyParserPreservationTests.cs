@@ -65,9 +65,16 @@ namespace OE2EmpireTracker.Tests.Parsers
                    select survey;
         }
 
-        private static Survey MakeSurvey(string uuid, string ownerUuid, string planetName,
-            string surveyId, string systemName, string scannedBy, string dateTime,
-            string nickName, bool isAsteroid)
+        private static Survey MakeSurvey(
+            string uuid,
+            string ownerUuid,
+            string planetName,
+            string surveyId,
+            string systemName,
+            string scannedBy,
+            string dateTime,
+            string nickName,
+            bool isAsteroid)
         {
             var survey = new Survey();
             survey.UUID = uuid;
@@ -101,7 +108,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             var survey = new Survey();
             _parser.ProcessHtml(survey, html);
 
-            Assert.That(survey.SurveyType, Is.EqualTo(SurveyType.Planet),
+            Assert.That(
+                survey.SurveyType,
+                Is.EqualTo(SurveyType.Planet),
                 "Planet survey should remain SurveyType.Planet");
         }
 
@@ -133,7 +142,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             var survey = new Survey();
             _parser.ProcessHtml(survey, html);
 
-            Assert.That(survey.SurveyType, Is.EqualTo(SurveyType.Planet),
+            Assert.That(
+                survey.SurveyType,
+                Is.EqualTo(SurveyType.Planet),
                 "Planet survey should remain SurveyType.Planet");
         }
 
@@ -222,7 +233,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             var survey = new Survey();
             _parser.ProcessHtml(survey, html);
 
-            Assert.That(survey.SurveyType, Is.EqualTo(SurveyType.Asteroid),
+            Assert.That(
+                survey.SurveyType,
+                Is.EqualTo(SurveyType.Asteroid),
                 "Asteroid survey should be detected as SurveyType.Asteroid");
         }
 
@@ -233,7 +246,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             var survey = new Survey();
             SurveyParser.ParseResource(survey, "Noble Gases (High Purity)", "23.1/cycle");
 
-            Assert.That(survey.SurveyType, Is.EqualTo(SurveyType.Asteroid),
+            Assert.That(
+                survey.SurveyType,
+                Is.EqualTo(SurveyType.Asteroid),
                 "/cycle rate unit should set SurveyType to Asteroid");
             Assert.That(survey.Resources["Noble Gases"].Amount, Is.EqualTo("23.1"));
         }
@@ -296,14 +311,23 @@ namespace OE2EmpireTracker.Tests.Parsers
                    select frac > 0 ? string.Format("{0}.{1}", whole, frac) : whole.ToString();
         }
 
-        private static string BuildPlanetSurveyHtml(string planetName, string systemName,
-            string surveyId, string scannedBy, List<Tuple<string, string, string>> resources)
+        private static string BuildPlanetSurveyHtml(
+            string planetName,
+            string systemName,
+            string surveyId,
+            string scannedBy,
+            List<Tuple<string,
+            string,
+            string>> resources)
         {
             var sb = new System.Text.StringBuilder();
             sb.Append("<div class=\"SmallSlideOut_FormSection\"><span> </span>");
             sb.Append("<div class=\"SmallSlideOut_Form_Row_NameOfItem_Section\">");
-            sb.AppendFormat("<div class=\"SmallSlideOut_Form_Row_Text_Bold\">{0}, {1} ({2})</div>",
-                planetName, systemName, surveyId);
+            sb.AppendFormat(
+                "<div class=\"SmallSlideOut_Form_Row_Text_Bold\">{0}, {1} ({2})</div>",
+                planetName,
+                systemName,
+                surveyId);
             sb.Append("<div class=\"SmallSlideOut_Form_Row_Description SmallSlideOut_Form_Row_Description_Small\">");
             sb.AppendFormat("A detailed survey report taken on 01JAN25-12:00p by {0}</div>", scannedBy);
             sb.Append("</div></div>");
@@ -324,11 +348,9 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             // **Validates: Requirements 3.1**
             var gen = from resourceCount in Gen.Choose(1, 6)
-                      from resources in Gen.ListOf(resourceCount,
-                          from name in ResourceNameGen()
-                          from purity in PurityGen()
-                          from amount in AmountGen()
-                          select Tuple.Create(name, purity, amount))
+                      from resources in Gen.ListOf(
+                          resourceCount,
+                          from name in ResourceNameGen() from purity in PurityGen() from amount in AmountGen() select Tuple.Create(name, purity, amount))
                       from planetName in NonEmptyStringGen()
                       from systemName in NonEmptyStringGen()
                       from surveyId in NonEmptyStringGen()

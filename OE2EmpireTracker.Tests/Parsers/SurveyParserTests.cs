@@ -41,7 +41,8 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void ParseDescription_ExtractsDateTimeAndScannedBy()
         {
             var survey = new Survey();
-            SurveyParser.ParseDescription(survey,
+            SurveyParser.ParseDescription(
+                survey,
                 "A detailed survey report taken on 27JUL24-11:44p by Scalorn Scorpus");
 
             Assert.That(survey.DateTime, Is.EqualTo("2024-07-27T23:44:00Z"));
@@ -52,7 +53,8 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void ParseDescription_GeneratedOn_ExtractsDateTimeAndScannedBy()
         {
             var survey = new Survey();
-            SurveyParser.ParseDescription(survey,
+            SurveyParser.ParseDescription(
+                survey,
                 "Survey report generated on 19FEB26-08:41p by Scalorn Scorpus");
 
             Assert.That(survey.DateTime, Is.EqualTo("2026-02-19T20:41:00Z"));

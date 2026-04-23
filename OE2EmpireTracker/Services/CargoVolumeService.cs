@@ -48,8 +48,11 @@ namespace OE2EmpireTracker.Services
                 result.TotalMass += item.Quantity * unitMass;
             }
 
-            Log.Debug("ComputeLoadVolume: {0} items, totalVol={1:N0}, totalMass={2:N0}",
-                loadList.Count, result.TotalVolume, result.TotalMass);
+            Log.Debug(
+                "ComputeLoadVolume: {0} items, totalVol={1:N0}, totalMass={2:N0}",
+                loadList.Count,
+                result.TotalVolume,
+                result.TotalMass);
             return result;
         }
 
@@ -218,8 +221,11 @@ namespace OE2EmpireTracker.Services
             if (currentTrip.Count > 0)
                 trips.Add(currentTrip);
 
-            Log.Info("SplitIntoTrips: {0} items split into {1} trips (capacity={2:N0})",
-                loadList.Count, trips.Count, cargoCapacity);
+            Log.Info(
+                "SplitIntoTrips: {0} items split into {1} trips (capacity={2:N0})",
+                loadList.Count,
+                trips.Count,
+                cargoCapacity);
             return trips;
         }
     }

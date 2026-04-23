@@ -63,8 +63,12 @@ namespace OE2EmpireTracker.Services
             UpdateItemStatusToDelivering(buildPlan, shortfalls);
 
             sw.Stop();
-            Log.Info("PERF GenerateDeliveryPlan: plan '{0}' ({1}), {2} stops in {3}ms",
-                plan.Name, plan.UUID, plan.Stops.Count, sw.ElapsedMilliseconds);
+            Log.Info(
+                "PERF GenerateDeliveryPlan: plan '{0}' ({1}), {2} stops in {3}ms",
+                plan.Name,
+                plan.UUID,
+                plan.Stops.Count,
+                sw.ElapsedMilliseconds);
             return plan;
         }
 
@@ -106,8 +110,12 @@ namespace OE2EmpireTracker.Services
             RebuildStopsFromShortfalls(plan, route, mergedByLocation, colonyFinder);
 
             sw.Stop();
-            Log.Info("PERF GenerateConsolidatedDeliveryPlan: '{0}' ({1}), {2} stops in {3}ms",
-                plan.Name, plan.UUID, plan.Stops.Count, sw.ElapsedMilliseconds);
+            Log.Info(
+                "PERF GenerateConsolidatedDeliveryPlan: '{0}' ({1}), {2} stops in {3}ms",
+                plan.Name,
+                plan.UUID,
+                plan.Stops.Count,
+                sw.ElapsedMilliseconds);
             return plan;
         }
 
@@ -151,8 +159,12 @@ namespace OE2EmpireTracker.Services
             BuildFlatpackStops(plan, route, flatpacksByDestination, colonyFinder);
 
             sw.Stop();
-            Log.Info("PERF GenerateFlatpackDeliveryPlan: '{0}' ({1}), {2} stops in {3}ms",
-                plan.Name, plan.UUID, plan.Stops.Count, sw.ElapsedMilliseconds);
+            Log.Info(
+                "PERF GenerateFlatpackDeliveryPlan: '{0}' ({1}), {2} stops in {3}ms",
+                plan.Name,
+                plan.UUID,
+                plan.Stops.Count,
+                sw.ElapsedMilliseconds);
             return plan;
         }
 
@@ -253,8 +265,10 @@ namespace OE2EmpireTracker.Services
                     .FirstOrDefault(p => p.UUID == existingPlanUUID);
                 if (existing != null)
                 {
-                    Log.Debug("FindOrCreatePlan: updating existing plan '{0}' ({1})",
-                        existing.Name, existing.UUID);
+                    Log.Debug(
+                        "FindOrCreatePlan: updating existing plan '{0}' ({1})",
+                        existing.Name,
+                        existing.UUID);
                     existing.Name = planName;
                     existing.RouteUUID = route.UUID;
                     existing.Stops.Clear();

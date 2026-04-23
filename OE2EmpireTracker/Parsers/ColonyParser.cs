@@ -150,8 +150,11 @@ namespace OE2EmpireTracker.Parsers
                 }
             }
 
-            Log.Info("ParsePlanetOverview: PlanetName='{0}', SystemName='{1}', ColonyName='{2}'",
-                colony.PlanetName ?? "(null)", colony.SystemName ?? "(null)", colony.ColonyName ?? "(null)");
+            Log.Info(
+                "ParsePlanetOverview: PlanetName='{0}', SystemName='{1}', ColonyName='{2}'",
+                colony.PlanetName ?? "(null)",
+                colony.SystemName ?? "(null)",
+                colony.ColonyName ?? "(null)");
 
             // Fallback: system name from the top location bar
             if (string.IsNullOrEmpty(colony.SystemName))
@@ -230,8 +233,10 @@ namespace OE2EmpireTracker.Parsers
                             if (bp != null && bp.BluePrintType == BlueprintTypes.Refinery)
                             {
                                 parsed.RefiningResource = parsed.MiningSurveyResource;
-                                Log.Debug("Refinery {0}: set RefiningResource='{1}' from MiningSurveyResource",
-                                    parsed.FlatpackBlueprintUUID, parsed.RefiningResource);
+                                Log.Debug(
+                                    "Refinery {0}: set RefiningResource='{1}' from MiningSurveyResource",
+                                    parsed.FlatpackBlueprintUUID,
+                                    parsed.RefiningResource);
                             }
                         }
 
@@ -371,8 +376,11 @@ namespace OE2EmpireTracker.Parsers
                     mergeIndex++;
                 }
 
-                Log.Info("Colony structures merge: {0} updated, {1} added (total: {2})",
-                    updated, added, colony.Structures.Count);
+                Log.Info(
+                    "Colony structures merge: {0} updated, {1} added (total: {2})",
+                    updated,
+                    added,
+                    colony.Structures.Count);
 
                 // Only run setup helpers for real imports (colony has an OwnerUUID).
                 // Temp parses (ParseClipboardToTemp) create colonies with no OwnerUUID
@@ -437,8 +445,10 @@ namespace OE2EmpireTracker.Parsers
             // Update refining resource from game (set by parser for refinery structures)
             if (!string.IsNullOrEmpty(parsed.RefiningResource))
             {
-                Log.Info("MergeStructure: carrying RefiningResource='{0}' from parsed to existing structure {1}",
-                    parsed.RefiningResource, existing.UUID);
+                Log.Info(
+                    "MergeStructure: carrying RefiningResource='{0}' from parsed to existing structure {1}",
+                    parsed.RefiningResource,
+                    existing.UUID);
                 existing.RefiningResource = parsed.RefiningResource;
             }
 
@@ -585,9 +595,10 @@ namespace OE2EmpireTracker.Parsers
                 }
             }
 
-            Log.Debug("ParseBuilding: designName='{0}', BuildingID={1}, online={2}, maxRate={3}, " +
-                "MiningSurveyResource='{4}', RefiningResourcePurity='{5}', RefiningResource='{6}', FlatpackBP='{7}'",
-                designName, structure.BuildingID,
+            Log.Debug(
+                "ParseBuilding: designName='{0}', BuildingID={1}, online={2}, maxRate={3}, " + "MiningSurveyResource='{4}', RefiningResourcePurity='{5}', RefiningResource='{6}', FlatpackBP='{7}'",
+                designName,
+                structure.BuildingID,
                 structure.Properties.ContainsKey(GameConstants.PropOnline) ? structure.Properties.Properties[GameConstants.PropOnline] : "?",
                 maxRate,
                 structure.MiningSurveyResource ?? "(null)",
@@ -624,7 +635,9 @@ namespace OE2EmpireTracker.Parsers
                 structure.MiningSurveyResource = match.Groups[1].Value.Trim();
                 string qualifier = match.Groups[2].Value.Trim();
 
-                var purityMatch = Regex.Match(qualifier, @"(Low|Medium|High|Med|Hi|Lo)\s*Purity",
+                var purityMatch = Regex.Match(
+                    qualifier,
+                    @"(Low|Medium|High|Med|Hi|Lo)\s*Purity",
                     RegexOptions.IgnoreCase);
                 if (purityMatch.Success)
                 {
@@ -726,8 +739,10 @@ namespace OE2EmpireTracker.Parsers
                     }
                 }
 
-                Log.Info("Colony structures merge from workers: {0} added (total: {1})",
-                    added, colony.Structures.Count);
+                Log.Info(
+                    "Colony structures merge from workers: {0} added (total: {1})",
+                    added,
+                    colony.Structures.Count);
             }
             catch (Exception ex)
             {
@@ -785,8 +800,11 @@ namespace OE2EmpireTracker.Parsers
                     DateTime needBy = DateTime.MinValue;
                     if (!string.IsNullOrEmpty(requiredByStr))
                     {
-                        DateTime.TryParse(requiredByStr, null,
-                            System.Globalization.DateTimeStyles.RoundtripKind, out needBy);
+                        DateTime.TryParse(
+                            requiredByStr,
+                            null,
+                            System.Globalization.DateTimeStyles.RoundtripKind,
+                            out needBy);
                     }
 
                     if (string.IsNullOrEmpty(name)) continue;
@@ -836,8 +854,11 @@ namespace OE2EmpireTracker.Parsers
                     }
                 }
 
-                Log.Info("Colony commodity demands merge: {0} updated, {1} added (total: {2})",
-                    updated, added, colony.Commodities.Count);
+                Log.Info(
+                    "Colony commodity demands merge: {0} updated, {1} added (total: {2})",
+                    updated,
+                    added,
+                    colony.Commodities.Count);
             }
             catch (Exception ex)
             {

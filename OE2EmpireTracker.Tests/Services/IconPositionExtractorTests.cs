@@ -542,7 +542,9 @@ namespace OE2EmpireTracker.Tests.Services
                     $"  {icon.IconPosition} -> {typeLabel} ({icon.BlueprintName}) [{icon.SourceFile}]");
             }
 
-            Assert.That(icons, Is.Not.Empty,
+            Assert.That(
+                icons,
+                Is.Not.Empty,
                 "Expected at least one icon extracted from MarketSample HTML files");
         }
 
@@ -556,12 +558,16 @@ namespace OE2EmpireTracker.Tests.Services
         {
             // 1. Extract all icons from every MarketSample*.html file
             var extracted = ExtractIconsFromAllSamples();
-            Assert.That(extracted, Is.Not.Empty,
+            Assert.That(
+                extracted,
+                Is.Not.Empty,
                 "Expected at least one icon extracted from MarketSample HTML files");
 
             // 2. Compare extracted positions against BaselineData and apply updates
             var baselineRoot = CompareAndUpdateBaselineData(extracted);
-            Assert.That(baselineRoot, Is.Not.Null,
+            Assert.That(
+                baselineRoot,
+                Is.Not.Null,
                 "CompareAndUpdateBaselineData should return a non-null JObject");
 
             // 3. Ensure all 14 per-industry CommodityFactory entries exist

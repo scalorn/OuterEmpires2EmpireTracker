@@ -9,8 +9,11 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class CargoVolumeServiceTests
     {
-        private OE2EmpireTracker.Models.Blueprint MakeBlueprint(string uuid, string name,
-            decimal cargoVolumeSize = 0m, decimal mass = 0m,
+        private OE2EmpireTracker.Models.Blueprint MakeBlueprint(
+            string uuid,
+            string name,
+            decimal cargoVolumeSize = 0m,
+            decimal mass = 0m,
             string bpType = "Component")
         {
             var bp = new OE2EmpireTracker.Models.Blueprint(name)
@@ -135,8 +138,11 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ComputeLoadVolume_ManufacturedItem_UsesBlueprint()
         {
-            var bp = MakeBlueprint("reactor1", "Reactor",
-                cargoVolumeSize: 25m, mass: 100m);
+            var bp = MakeBlueprint(
+                "reactor1",
+                "Reactor",
+                cargoVolumeSize: 25m,
+                mass: 100m);
             var finder = MakeFinder(bp);
 
             var items = new List<DeliveryItem>
@@ -158,8 +164,11 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ComputeLoadVolume_MixedItems_SumsCorrectly()
         {
-            var bp = MakeBlueprint("flatpack1", "Flatpack",
-                cargoVolumeSize: 200m, mass: 500m);
+            var bp = MakeBlueprint(
+                "flatpack1",
+                "Flatpack",
+                cargoVolumeSize: 200m,
+                mass: 500m);
             var finder = MakeFinder(bp);
 
             var items = new List<DeliveryItem>
@@ -333,8 +342,11 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void SplitIntoTrips_OversizedItem_GetsOwnTrip()
         {
-            var bp = MakeBlueprint("bigpart1", "Big Part",
-                cargoVolumeSize: 200m, mass: 1000m);
+            var bp = MakeBlueprint(
+                "bigpart1",
+                "Big Part",
+                cargoVolumeSize: 200m,
+                mass: 1000m);
             var finder = MakeFinder(bp);
 
             var items = new List<DeliveryItem>
@@ -378,8 +390,12 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void GetItemVolume_CrateType_UsesCrateVolume()
         {
-            var crateBp = MakeBlueprint("crate1", "Storage Crate",
-                cargoVolumeSize: 500m, mass: 50m, bpType: "Crate");
+            var crateBp = MakeBlueprint(
+                "crate1",
+                "Storage Crate",
+                cargoVolumeSize: 500m,
+                mass: 50m,
+                bpType: "Crate");
             var finder = MakeFinder(crateBp);
 
             var item = new DeliveryItem

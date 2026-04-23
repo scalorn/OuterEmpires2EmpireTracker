@@ -117,8 +117,12 @@ namespace OE2EmpireTracker.ViewModels
         // List filtering
         // -----------------------------------------------------------------------
 
-        public IReadOnlyList<Survey> GetFilteredSurveys(string nameFilter, string resourceFilter = "",
-            SurveyType? typeFilter = null, string purityFilter = "", int minAmount = 0)
+        public IReadOnlyList<Survey> GetFilteredSurveys(
+            string nameFilter,
+            string resourceFilter = "",
+            SurveyType? typeFilter = null,
+            string purityFilter = "",
+            int minAmount = 0)
         {
             var list = _playerContext.GetCurrentPlayerSurveys();
             if (!string.IsNullOrEmpty(nameFilter))

@@ -41,12 +41,22 @@ namespace OE2EmpireTracker.Tests.Services
                    from resourceCount in Gen.Choose(0, SampleResourceNames.Length)
                    from selectedResources in Gen.Shuffle(SampleResourceNames).Select(a => a.Take(resourceCount))
                    from prices in Gen.ListOf(resourceCount, NonNegativeDecimalGen())
-                   select BuildPlan(name.Get, desc ?? string.Empty, fixedCost, hourlyCost,
-                       selectedResources.ToArray(), prices.ToArray());
+                   select BuildPlan(
+                       name.Get,
+                       desc ?? string.Empty,
+                       fixedCost,
+                       hourlyCost,
+                       selectedResources.ToArray(),
+                       prices.ToArray());
         }
 
-        private static PricingPlan BuildPlan(string name, string desc, decimal fixedCost, decimal hourlyCost,
-            string[] resources, decimal[] prices)
+        private static PricingPlan BuildPlan(
+            string name,
+            string desc,
+            decimal fixedCost,
+            decimal hourlyCost,
+            string[] resources,
+            decimal[] prices)
         {
             var plan = new PricingPlan
             {

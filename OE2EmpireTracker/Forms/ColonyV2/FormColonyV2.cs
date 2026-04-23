@@ -169,12 +169,19 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             playerContext.ColonyDataChanged += OnColonyDataChanged;
 
             // Diagnostic: log splitter state after construction
-            Log.Info("V2.Constructor: splitMain.SplitterDistance={0} SplitterWidth={1} Panel1.Width={2} Panel2.Width={3} " +
-                "splitMain.Width={4} splitMain.Orientation={5} IsSplitterFixed={6} Panel1MinSize={7} Panel1.BorderStyle={8} " +
-                "splitMain.BackColor={9} Panel1.BackColor={10}",
-                splitMain.SplitterDistance, splitMain.SplitterWidth, splitMain.Panel1.Width, splitMain.Panel2.Width,
-                splitMain.Width, splitMain.Orientation, splitMain.IsSplitterFixed, splitMain.Panel1MinSize,
-                splitMain.Panel1.BorderStyle, splitMain.BackColor, splitMain.Panel1.BackColor);
+            Log.Info(
+                "V2.Constructor: splitMain.SplitterDistance={0} SplitterWidth={1} Panel1.Width={2} Panel2.Width={3} " + "splitMain.Width={4} splitMain.Orientation={5} IsSplitterFixed={6} Panel1MinSize={7} Panel1.BorderStyle={8} " + "splitMain.BackColor={9} Panel1.BackColor={10}",
+                splitMain.SplitterDistance,
+                splitMain.SplitterWidth,
+                splitMain.Panel1.Width,
+                splitMain.Panel2.Width,
+                splitMain.Width,
+                splitMain.Orientation,
+                splitMain.IsSplitterFixed,
+                splitMain.Panel1MinSize,
+                splitMain.Panel1.BorderStyle,
+                splitMain.BackColor,
+                splitMain.Panel1.BackColor);
 
             this.Shown += FormColonyV2_Shown;
 
@@ -205,8 +212,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 
@@ -232,8 +244,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnColonyDataChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnColonyDataChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 
@@ -330,7 +347,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 lvwColonies.Items.Remove(remaining.Value);
             }
 
-            sw.Stop(); Log.Info("PERF PopulateListView: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateListView: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -------------------------------------------------------------------
@@ -412,7 +430,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 int generation = Interlocked.Increment(ref _calcGeneration);
 
                 selectedColony = lvwColonies.SelectedItems[0].Tag as Models.Colony;
-                Log.Debug("V2.LvwColonies_ItemSelectionChanged: colony={0} uuid={1}",
+                Log.Debug(
+                    "V2.LvwColonies_ItemSelectionChanged: colony={0} uuid={1}",
                     selectedColony?.ColonyName ?? selectedColony?.PlanetName ?? "(null)",
                     selectedColony?.UUID ?? "(null)");
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
@@ -470,8 +489,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                             UpdateTitle();
                         }));
                     }
-                    catch (ObjectDisposedException) { /* form closed */ }
-                    catch (InvalidOperationException) { /* handle not created */ }
+                    catch (ObjectDisposedException)
+                    {
+                        /* form closed */
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        /* handle not created */
+                    }
                 });
             }
         }
@@ -507,9 +532,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             PopulateActiveTab();
 
             pfSw.Stop();
-            Log.Info("V2.PopulateForm PERF: total={0}ms identity={1}ms activeTab={2}ms",
-                pfSw.ElapsedMilliseconds, t0, pfSw.ElapsedMilliseconds - t0);
-            sw.Stop(); Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
+            Log.Info(
+                "V2.PopulateForm PERF: total={0}ms identity={1}ms activeTab={2}ms",
+                pfSw.ElapsedMilliseconds,
+                t0,
+                pfSw.ElapsedMilliseconds - t0);
+            sw.Stop();
+            Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void MarkAllTabsDirty()
@@ -556,7 +585,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 _overflowDirty = false;
             }
 
-            sw.Stop(); Log.Info("PERF PopulateActiveTab: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateActiveTab: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void TabDetailedData_SelectedIndexChanged(object sender, EventArgs e)
@@ -743,7 +773,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     checkedTypes.Add((string)item.Tag);
             }
 
-            Log.Info("V2.PopulateStructures: structureCount={0} filterActive={1} filterTypes={2}",
+            Log.Info(
+                "V2.PopulateStructures: structureCount={0} filterActive={1} filterTypes={2}",
                 selectedColony.Structures?.Count ?? 0,
                 checkedTypes.Count > 0,
                 checkedTypes.Count > 0 ? string.Join(", ", checkedTypes) : "(none)");
@@ -845,9 +876,17 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             RefreshStatusSummary();
 
             sw.Stop();
-            Log.Info("V2.PopulateStructures PERF: total={0}ms pool={1}ms updateData={2}ms(x{3}) reset={4}ms layout={5}ms visible={6}/{3}",
-                sw.ElapsedMilliseconds, t1 - t0, updateDataTotal, needed, resetTotal, t3 - t2, visibleCount);
-            sw.Stop(); Log.Info("PERF PopulateStructures: {0}ms", sw.ElapsedMilliseconds);
+            Log.Info(
+                "V2.PopulateStructures PERF: total={0}ms pool={1}ms updateData={2}ms(x{3}) reset={4}ms layout={5}ms visible={6}/{3}",
+                sw.ElapsedMilliseconds,
+                t1 - t0,
+                updateDataTotal,
+                needed,
+                resetTotal,
+                t3 - t2,
+                visibleCount);
+            sw.Stop();
+            Log.Info("PERF PopulateStructures: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -------------------------------------------------------------------
@@ -882,7 +921,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbFlatpacks.DisplayMember = "ExtendedName";
             cmbFlatpacks.ValueMember = "UUID";
             cmbFlatpacks.DataSource = bs;
-            sw.Stop(); Log.Info("PERF PopulateFlatpackCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateFlatpackCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void TxtFilterFlatpack_TextChanged(object sender, EventArgs e)
@@ -934,8 +974,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (_isProgrammaticUpdate > 0) return;
 
             var ctrl = sender as ColonyStructureV2;
-            Log.Debug("V2.Structures_ColonyStructureDataChanged: structural={0} sender={1}",
-                e.IsStructural, ctrl?.ViewModel?.Data?.UUID ?? "(unknown)");
+            Log.Debug(
+                "V2.Structures_ColonyStructureDataChanged: structural={0} sender={1}",
+                e.IsStructural,
+                ctrl?.ViewModel?.Data?.UUID ?? "(unknown)");
 
             if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
             {
@@ -1002,7 +1044,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             var builder = new RtfBuilder();
             ColonyStatusCalculator.PopulateStatus(builder, status);
             rtbStatusSummary.Rtf = builder.ToRtf();
-            sw.Stop(); Log.Info("PERF RefreshStatusSummary: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF RefreshStatusSummary: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -------------------------------------------------------------------
@@ -1025,12 +1068,20 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void FormColonyV2_Shown(object sender, EventArgs e)
         {
-            Log.Info("V2.Shown: splitMain.SplitterDistance={0} SplitterWidth={1} Panel1.Width={2} Panel2.Width={3} " +
-                "splitMain.Width={4} splitMain.Height={5} SplitterRect={6} IsSplitterFixed={7} " +
-                "Panel1.BorderStyle={8} Panel1.Visible={9} Panel2.Visible={10} splitMain.Visible={11}",
-                splitMain.SplitterDistance, splitMain.SplitterWidth, splitMain.Panel1.Width, splitMain.Panel2.Width,
-                splitMain.Width, splitMain.Height, splitMain.SplitterRectangle, splitMain.IsSplitterFixed,
-                splitMain.Panel1.BorderStyle, splitMain.Panel1.Visible, splitMain.Panel2.Visible, splitMain.Visible);
+            Log.Info(
+                "V2.Shown: splitMain.SplitterDistance={0} SplitterWidth={1} Panel1.Width={2} Panel2.Width={3} " + "splitMain.Width={4} splitMain.Height={5} SplitterRect={6} IsSplitterFixed={7} " + "Panel1.BorderStyle={8} Panel1.Visible={9} Panel2.Visible={10} splitMain.Visible={11}",
+                splitMain.SplitterDistance,
+                splitMain.SplitterWidth,
+                splitMain.Panel1.Width,
+                splitMain.Panel2.Width,
+                splitMain.Width,
+                splitMain.Height,
+                splitMain.SplitterRectangle,
+                splitMain.IsSplitterFixed,
+                splitMain.Panel1.BorderStyle,
+                splitMain.Panel1.Visible,
+                splitMain.Panel2.Visible,
+                splitMain.Visible);
 
             // Auto-select the first colony if none is selected (e.g. first open, no saved selection)
             // Clear any restored filter first so the full list is visible
@@ -1137,7 +1188,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             arSw.Stop();
             if (arSw.ElapsedMilliseconds > 10)
                 Log.Info("V2.RefreshAdminReport PERF: {0}ms", arSw.ElapsedMilliseconds);
-            sw.Stop(); Log.Info("PERF RefreshAdminReport: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF RefreshAdminReport: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void TimerAdminRefresh_Tick(object sender, EventArgs e)
@@ -1201,7 +1253,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             if (selectedColony == null) return;
 
-            Log.Info("CmdOptimize_Click: colony={0} structureCount={1} filterActive={2}",
+            Log.Info(
+                "CmdOptimize_Click: colony={0} structureCount={1} filterActive={2}",
                 selectedColony.ColonyName ?? selectedColony.PlanetName,
                 selectedColony.Structures?.Count ?? 0,
                 lvwStructureTypes.CheckedItems.Count > 0);
@@ -1217,13 +1270,16 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 var optimizer = new BuildOrderOptimizer(playerContext);
                 var optimized = optimizer.Optimize(selectedColony);
 
-                Log.Info("CmdOptimize_Click: optimizer returned {0} structures (input was {1})",
-                    optimized.Count, selectedColony.Structures.Count);
+                Log.Info(
+                    "CmdOptimize_Click: optimizer returned {0} structures (input was {1})",
+                    optimized.Count,
+                    selectedColony.Structures.Count);
 
                 selectedColony.Structures.Clear();
                 selectedColony.Structures.AddRange(optimized);
 
-                Log.Info("CmdOptimize_Click: colony now has {0} structures after replace",
+                Log.Info(
+                    "CmdOptimize_Click: colony now has {0} structures after replace",
                     selectedColony.Structures.Count);
 
                 // Refresh via structural change pattern
@@ -1254,13 +1310,18 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID))
             {
-                MessageBox.Show("Select a colony first.", "No Colony",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Select a colony first.",
+                    "No Colony",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
-            Log.Info("CmdGenerateBuildPlan_Click: colony={0} uuid={1}",
-                selectedColony.ColonyName ?? selectedColony.PlanetName, selectedColony.UUID);
+            Log.Info(
+                "CmdGenerateBuildPlan_Click: colony={0} uuid={1}",
+                selectedColony.ColonyName ?? selectedColony.PlanetName,
+                selectedColony.UUID);
 
             // Show plan picker dialog
             BuildPlan targetPlan = ShowBuildPlanPickerDialog();
@@ -1269,8 +1330,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             int added = BuildPlanService.GenerateColonyBuildItems(
                 selectedColony, targetPlan, playerContext.FindBlueprint);
 
-            Log.Info("CmdGenerateBuildPlan_Click: {0} items added to plan '{1}'",
-                added, targetPlan.Name);
+            Log.Info(
+                "CmdGenerateBuildPlan_Click: {0} items added to plan '{1}'",
+                added,
+                targetPlan.Name);
 
             // Persist new/updated plan
             if (!playerContext.BuildPlanList.Contains(targetPlan))
@@ -1356,7 +1419,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
                 if (rbNew.Checked)
                 {
-                    string planName = string.Format("{0} - Build Plan",
+                    string planName = string.Format(
+                        "{0} - Build Plan",
                         selectedColony.ColonyName ?? selectedColony.PlanetName ?? "Colony");
                     return new BuildPlan
                     {
@@ -1416,16 +1480,17 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void UpdateTabWarnings()
         {
             int structureCount = selectedColony?.Structures?.Count ?? 0;
-            ApplyTabWarning(tabPStructures,
+            ApplyTabWarning(
+                tabPStructures,
                 TabWarningService.EvaluateStructureWarning(structureCount));
 
-            ApplyTabWarning(tabPWorkers,
-                TabWarningService.EvaluateWorkerWarning(
-                    selectedColony?.Commodities, SystemClock.UtcNow));
+            ApplyTabWarning(
+                tabPWorkers,
+                TabWarningService.EvaluateWorkerWarning( selectedColony?.Commodities, SystemClock.UtcNow));
 
-            ApplyTabWarning(tabPAdministration,
-                TabWarningService.EvaluateColonyImportStalenessWarning(
-                    selectedColony?.LastImportDateTime, SystemClock.UtcNow));
+            ApplyTabWarning(
+                tabPAdministration,
+                TabWarningService.EvaluateColonyImportStalenessWarning( selectedColony?.LastImportDateTime, SystemClock.UtcNow));
 
             UpdateWorkerTabTitle();
             UpdateStructuresTabTitle();
@@ -1493,7 +1558,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvCommodityRequests.CellValidating -= DgvCommodityRequests_CellValidating;
-            try { dgvCommodityRequests.EndEdit(); } catch { }
+            try
+            {
+                dgvCommodityRequests.EndEdit();
+            }
+            catch
+            {
+            }
 
             // Auto-cleanup expired fulfilled requests (19.6)
             int cleaned = colonyViewModel.CleanupExpiredCommodityRequests();
@@ -1574,7 +1645,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             dgvCommodityRequests.CellValidating += DgvCommodityRequests_CellValidating;
 
             UpdateWorkerTabTitle();
-            sw.Stop(); Log.Info("PERF PopulateCommodityRequestGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateCommodityRequestGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void DgvCommodityRequests_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -1753,7 +1825,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private DateTime? ParseCountdownToDateTime(string text)
         {
             if (string.IsNullOrWhiteSpace(text)) return null;
-            var match = Regex.Match(text.Trim(),
+            var match = Regex.Match(
+                text.Trim(),
                 @"^(?:(\d+)d\s*)?(?:(\d+)h\s*)?(?:(\d+)m\s*)?(?:(\d+)s)?$");
             if (!match.Success) return null;
             if (!match.Groups[1].Success && !match.Groups[2].Success && !match.Groups[3].Success && !match.Groups[4].Success)
@@ -1797,7 +1870,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvItems.CellValidating -= DgvItems_CellValidating;
-            try { dgvItems.EndEdit(); } catch { }
+            try
+            {
+                dgvItems.EndEdit();
+            }
+            catch
+            {
+            }
 
             // Snapshot items under read lock
             List<KeyValuePair<string, Item>> itemsSnapshot;
@@ -1866,7 +1945,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             dgvItems.CellValidating += DgvItems_CellValidating;
-            sw.Stop(); Log.Info("PERF PopulateItemGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateItemGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -1885,7 +1965,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 row.Cells[2].Value = lockedQty;
             }
 
-            sw.Stop(); Log.Info("PERF RefreshItemGridLocks: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF RefreshItemGridLocks: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -------------------------------------------------------------------
@@ -1995,7 +2076,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbItem.DisplayMember = "Name";
             cmbItem.ValueMember = "Name";
             cmbItem.DataSource = bs;
-            sw.Stop(); Log.Info("PERF PopulateItemWithResources: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateItemWithResources: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateItemWithCommodities()
@@ -2019,7 +2101,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbItem.DisplayMember = "ExtendedName";
             cmbItem.ValueMember = "Name";
             cmbItem.DataSource = bs;
-            sw.Stop(); Log.Info("PERF PopulateItemWithCommodities: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateItemWithCommodities: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateItemWithWorkerDetails()
@@ -2043,7 +2126,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbItem.DisplayMember = "Name";
             cmbItem.ValueMember = "ID";
             cmbItem.DataSource = bs;
-            sw.Stop(); Log.Info("PERF PopulateItemWithWorkerDetails: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateItemWithWorkerDetails: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateItemWithSurveys()
@@ -2069,7 +2153,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbItem.DisplayMember = "ExtendedName";
             cmbItem.ValueMember = "UUID";
             cmbItem.DataSource = bs;
-            sw.Stop(); Log.Info("PERF PopulateItemWithSurveys: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateItemWithSurveys: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateItemWithBlueprints()
@@ -2094,7 +2179,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbItem.DisplayMember = "ExtendedName";
             cmbItem.ValueMember = "UUID";
             cmbItem.DataSource = bs;
-            sw.Stop(); Log.Info("PERF PopulateItemWithBlueprints: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateItemWithBlueprints: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateItemWithBlueprintsByOutputType(Models.ItemType.ItemTypeEnum outputType)
@@ -2129,7 +2215,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbItem.DisplayMember = "ExtendedName";
             cmbItem.ValueMember = "UUID";
             cmbItem.DataSource = bs;
-            sw.Stop(); Log.Info("PERF PopulateItemWithBlueprintsByOutputType: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateItemWithBlueprintsByOutputType: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -------------------------------------------------------------------
@@ -2410,15 +2497,21 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             Log.Debug("V2.CmdImportColony_Click: starting import");
             if (!Clipboard.ContainsText(TextDataFormat.Html))
             {
-                MessageBox.Show("No HTML content found on the clipboard.\n\nCopy colony data from the game browser first.",
-                    "No HTML", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "No HTML content found on the clipboard.\n\nCopy colony data from the game browser first.",
+                    "No HTML",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
             if (string.IsNullOrEmpty(playerContext.CurrentPlayerUUID))
             {
-                MessageBox.Show("No player selected. Select a player profile first.",
-                    "No Player", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "No player selected. Select a player profile first.",
+                    "No Player",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -2431,8 +2524,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 if (detected != ClipboardContentDetector.ContentType.Colony)
                 {
                     string found = ClipboardContentDetector.GetDescription(detected);
-                    MessageBox.Show($"The clipboard contains {found}, not colony data.\n\nCopy the colony page from the game browser first.",
-                        "Wrong Content", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        $"The clipboard contains {found}, not colony data.\n\nCopy the colony page from the game browser first.",
+                        "Wrong Content",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                     return;
                 }
 
@@ -2442,8 +2538,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 if (tempColony == null)
                     return;
 
-                Log.Info("Colony temp parse complete: PlanetName='{0}', SystemName='{1}', {2} structures",
-                    tempColony.PlanetName ?? "(null)", tempColony.SystemName ?? "(null)", tempColony.Structures.Count);
+                Log.Info(
+                    "Colony temp parse complete: PlanetName='{0}', SystemName='{1}', {2} structures",
+                    tempColony.PlanetName ?? "(null)",
+                    tempColony.SystemName ?? "(null)",
+                    tempColony.Structures.Count);
 
                 if (string.IsNullOrEmpty(tempColony.PlanetName))
                 {
@@ -2458,15 +2557,19 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
                     PopulateForm();
 
-                    Log.Info("Colony imported from clipboard (fallback): {0} ({1} structures, {2} commodity requests)",
-                        selectedColony.PlanetName, selectedColony.Structures.Count, selectedColony.Commodities.Count);
+                    Log.Info(
+                        "Colony imported from clipboard (fallback): {0} ({1} structures, {2} commodity requests)",
+                        selectedColony.PlanetName,
+                        selectedColony.Structures.Count,
+                        selectedColony.Commodities.Count);
                     return;
                 }
 
                 var existingColony = ColonyImportHelper.FindByPlanet(
                     playerContext.GetCurrentPlayerColonies(), tempColony.PlanetName, tempColony.SystemName);
 
-                Log.Info("Colony dedup: {0} for planet '{1}'",
+                Log.Info(
+                    "Colony dedup: {0} for planet '{1}'",
                     existingColony != null ? "found existing colony UUID=" + existingColony.UUID : "no existing colony, creating new",
                     tempColony.PlanetName);
 
@@ -2482,8 +2585,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
                     selectedColony = existingColony;
 
-                    Log.Info("Colony updated via dedup: {0} ({1} structures, {2} commodity requests)",
-                        existingColony.ColonyName, existingColony.Structures.Count, existingColony.Commodities.Count);
+                    Log.Info(
+                        "Colony updated via dedup: {0} ({1} structures, {2} commodity requests)",
+                        existingColony.ColonyName,
+                        existingColony.Structures.Count,
+                        existingColony.Commodities.Count);
                 }
                 else
                 {
@@ -2491,8 +2597,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     playerContext.AddColony(newColony);
                     selectedColony = newColony;
 
-                    Log.Info("New colony created via dedup: {0} ({1} structures, {2} commodity requests)",
-                        newColony.ColonyName, newColony.Structures.Count, newColony.Commodities.Count);
+                    Log.Info(
+                        "New colony created via dedup: {0} ({1} structures, {2} commodity requests)",
+                        newColony.ColonyName,
+                        newColony.Structures.Count,
+                        newColony.Commodities.Count);
                 }
 
                 playerContext.WriteContext();
@@ -2519,8 +2628,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             catch (Exception ex)
             {
                 Log.Error(ex, "Error importing colony from clipboard");
-                MessageBox.Show("Failed to import colony: " + ex.Message,
-                    "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "Failed to import colony: " + ex.Message,
+                    "Import Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -2528,8 +2640,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             if (!Clipboard.ContainsText(TextDataFormat.Html))
             {
-                MessageBox.Show("No HTML content found on the clipboard.\n\nCopy colony data from the game browser first.",
-                    "No HTML", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "No HTML content found on the clipboard.\n\nCopy colony data from the game browser first.",
+                    "No HTML",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -2549,14 +2664,20 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 {
                     File.WriteAllText(dlg.FileName, clipboardData, System.Text.Encoding.UTF8);
                     Log.Info("Clipboard HTML saved to {0} ({1} bytes)", dlg.FileName, clipboardData.Length);
-                    MessageBox.Show("Clipboard HTML saved to:\n" + dlg.FileName,
-                        "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        "Clipboard HTML saved to:\n" + dlg.FileName,
+                        "Saved",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
                     Log.Error(ex, "Error saving clipboard HTML to {0}", dlg.FileName);
-                    MessageBox.Show("Failed to save: " + ex.Message,
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        "Failed to save: " + ex.Message,
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                 }
             }
         }
@@ -2599,7 +2720,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 BuildStructureTypeList();
             }
 
-            sw.Stop(); Log.Info("PERF PopulateStructureTypeFilter: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateStructureTypeFilter: {0}ms", sw.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -2775,7 +2897,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             if (cmbOverflowResource.Items.Count > 0) cmbOverflowResource.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulateOverflowResourceCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateOverflowResourceCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateOverflowPurityCombo()
@@ -2790,7 +2913,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             if (cmbOverflowPurity.Items.Count > 0) cmbOverflowPurity.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulateOverflowPurityCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateOverflowPurityCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateOverflowDestCombo()
@@ -2824,7 +2948,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 cmbOverflowDest.ValueMember = "Key";
             }
 
-            sw.Stop(); Log.Info("PERF PopulateOverflowDestCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateOverflowDestCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateOverflowRouteCombo()
@@ -2843,7 +2968,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbOverflowRoute.DataSource = items;
             cmbOverflowRoute.DisplayMember = "Value";
             cmbOverflowRoute.ValueMember = "Key";
-            sw.Stop(); Log.Info("PERF PopulateOverflowRouteCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateOverflowRouteCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void CmbOverflowDestType_SelectedIndexChanged(object sender, EventArgs e)
@@ -2860,8 +2986,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             string purity = cmbOverflowPurity.SelectedItem?.ToString() ?? string.Empty;
             if (!int.TryParse(txtOverflowThreshold.Text.Trim(), out int threshold) || threshold <= 0)
             {
-                MessageBox.Show("Enter a valid threshold.", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Enter a valid threshold.",
+                    "Validation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -2874,8 +3003,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     r.ResourceName == resource && r.ResourcePurity == purity);
             if (existing != null)
             {
-                MessageBox.Show("A rule for this resource and purity already exists.",
-                    "Duplicate", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "A rule for this resource and purity already exists.",
+                    "Duplicate",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 

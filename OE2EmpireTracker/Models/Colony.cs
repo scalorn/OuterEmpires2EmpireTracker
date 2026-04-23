@@ -106,8 +106,10 @@ namespace OE2EmpireTracker.Models
 
                 if (!isManufactory && !string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID))
                 {
-                    Log.Warn("Clearing orphaned ManufacturingBlueprintUUID on {0} (type={1})",
-                        structure.UUID, bp.BluePrintType);
+                    Log.Warn(
+                        "Clearing orphaned ManufacturingBlueprintUUID on {0} (type={1})",
+                        structure.UUID,
+                        bp.BluePrintType);
                     structure.ManufacturingBlueprintUUID = null;
                     structure.ManufacturingQuantity = 0;
                     structure.ManufacturingCompleted = 0;
@@ -118,8 +120,10 @@ namespace OE2EmpireTracker.Models
                 if (isManufactory && !string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID)
                     && pc.FindBlueprint(structure.ManufacturingBlueprintUUID) == null)
                 {
-                    Log.Warn("Clearing ManufacturingBlueprintUUID on {0} (blueprint {1} not found)",
-                        structure.UUID, structure.ManufacturingBlueprintUUID);
+                    Log.Warn(
+                        "Clearing ManufacturingBlueprintUUID on {0} (blueprint {1} not found)",
+                        structure.UUID,
+                        structure.ManufacturingBlueprintUUID);
                     structure.ManufacturingBlueprintUUID = null;
                     structure.ManufacturingQuantity = 0;
                     structure.ManufacturingCompleted = 0;
@@ -130,8 +134,10 @@ namespace OE2EmpireTracker.Models
 
                 if (!isCommodityFactory && !string.IsNullOrEmpty(structure.ManufacturingCommodityName))
                 {
-                    Log.Warn("Clearing orphaned ManufacturingCommodityName on {0} (type={1})",
-                        structure.UUID, bp.BluePrintType);
+                    Log.Warn(
+                        "Clearing orphaned ManufacturingCommodityName on {0} (type={1})",
+                        structure.UUID,
+                        bp.BluePrintType);
                     structure.ManufacturingCommodityName = null;
                     structure.ManufacturingQuantity = 0;
                     structure.ManufacturingCompleted = 0;
@@ -140,16 +146,20 @@ namespace OE2EmpireTracker.Models
 
                 if (!isResearchLab && !string.IsNullOrEmpty(structure.ResearchingBlueprintUUID))
                 {
-                    Log.Warn("Clearing orphaned ResearchingBlueprintUUID on {0} (type={1})",
-                        structure.UUID, bp.BluePrintType);
+                    Log.Warn(
+                        "Clearing orphaned ResearchingBlueprintUUID on {0} (type={1})",
+                        structure.UUID,
+                        bp.BluePrintType);
                     structure.ResearchingBlueprintUUID = null;
                 }
 
                 if (isResearchLab && !string.IsNullOrEmpty(structure.ResearchingBlueprintUUID)
                     && pc.FindBlueprint(structure.ResearchingBlueprintUUID) == null)
                 {
-                    Log.Warn("Clearing ResearchingBlueprintUUID on {0} (blueprint {1} not found)",
-                        structure.UUID, structure.ResearchingBlueprintUUID);
+                    Log.Warn(
+                        "Clearing ResearchingBlueprintUUID on {0} (blueprint {1} not found)",
+                        structure.UUID,
+                        structure.ResearchingBlueprintUUID);
                     structure.ResearchingBlueprintUUID = null;
                     if (structure.ProcessCompletionTime != null)
                         structure.ProcessCompletionTime = null;
@@ -202,8 +212,10 @@ namespace OE2EmpireTracker.Models
                     Blueprint bp = pc.FindBlueprint(structure.FlatpackBlueprintUUID);
                     if (bp == null)
                     {
-                        Log.Warn("ProcessColony: blueprint not found for structure {0} (FlatpackBP={1}), skipping",
-                            structure.UUID, structure.FlatpackBlueprintUUID ?? "(null)");
+                        Log.Warn(
+                            "ProcessColony: blueprint not found for structure {0} (FlatpackBP={1}), skipping",
+                            structure.UUID,
+                            structure.FlatpackBlueprintUUID ?? "(null)");
                         continue;
                     }
 
@@ -241,8 +253,10 @@ namespace OE2EmpireTracker.Models
             Survey survey = PlayerContext.GetInstance().FindSurvey(structure.MiningSurvey);
             if (survey == null)
             {
-                Log.Warn("ProcessMiningRig: survey {0} not found for structure {1}, skipping",
-                    structure.MiningSurvey ?? "(null)", structure.UUID);
+                Log.Warn(
+                    "ProcessMiningRig: survey {0} not found for structure {1}, skipping",
+                    structure.MiningSurvey ?? "(null)",
+                    structure.UUID);
                 return;
             }
 
@@ -250,8 +264,11 @@ namespace OE2EmpireTracker.Models
             if (string.IsNullOrEmpty(structure.MiningSurveyResource) ||
                 !survey.Resources.TryGetValue(structure.MiningSurveyResource, out surveyResource))
             {
-                Log.Warn("ProcessMiningRig: resource '{0}' not found in survey {1} for structure {2}, skipping",
-                    structure.MiningSurveyResource ?? "(null)", structure.MiningSurvey, structure.UUID);
+                Log.Warn(
+                    "ProcessMiningRig: resource '{0}' not found in survey {1} for structure {2}, skipping",
+                    structure.MiningSurveyResource ?? "(null)",
+                    structure.MiningSurvey,
+                    structure.UUID);
                 return;
             }
 

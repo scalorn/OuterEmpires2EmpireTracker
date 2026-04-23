@@ -105,8 +105,11 @@ namespace OE2EmpireTracker.Services
             Log.Info("Loading baseline data from {0}", FilePath);
             string jsonContent = File.ReadAllText(FilePath);
             BaselineRoot baselineRoot = JsonConvert.DeserializeObject<BaselineRoot>(jsonContent);
-            Log.Info("Baseline data loaded: {0} blueprint types, {1} ship classes, {2} tech levels",
-                baselineRoot.BlueprintType?.Length ?? 0, baselineRoot.ShipClass?.Length ?? 0, baselineRoot.TechLevel?.Length ?? 0);
+            Log.Info(
+                "Baseline data loaded: {0} blueprint types, {1} ship classes, {2} tech levels",
+                baselineRoot.BlueprintType?.Length ?? 0,
+                baselineRoot.ShipClass?.Length ?? 0,
+                baselineRoot.TechLevel?.Length ?? 0);
 
             DataVersion = baselineRoot.DataVersion;
             GameConstants = baselineRoot.GameConstants ?? new BaselineGameConstants();
@@ -410,7 +413,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateCommodityNameCache()
         {
-            lock (_commodityLock) { _commodityNameCache = null; }
+            lock (_commodityLock)
+            {
+                _commodityNameCache = null;
+            }
         }
 
         // ── Task 6.2: Mutation methods for GlobalBlueprint (UUID cache, no BindingSource) ──

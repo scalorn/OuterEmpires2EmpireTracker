@@ -242,8 +242,12 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
             playerContext.WriteContext();
             playerContext.OnColonyDataChanged(colony.UUID);
 
-            Log.Info("Build started on {0} - {1}, structure {2}, {3}s",
-                colony.PlanetName, colony.ColonyName, structure.UUID, buildSeconds);
+            Log.Info(
+                "Build started on {0} - {1}, structure {2}, {3}s",
+                colony.PlanetName,
+                colony.ColonyName,
+                structure.UUID,
+                buildSeconds);
 
             // Remove the colony panel from the display
             var panel = pnlContent.Controls.OfType<FlowLayoutPanel>()
@@ -264,8 +268,13 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 
@@ -278,8 +287,13 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnColonyDataChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnColonyDataChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 

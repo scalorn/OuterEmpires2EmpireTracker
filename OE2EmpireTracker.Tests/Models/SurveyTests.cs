@@ -142,10 +142,14 @@ namespace OE2EmpireTracker.Tests.Models
             };
 
             string name = survey.ExtendedName;
-            Assert.That(name.IndexOf("Alpha Prime") < name.IndexOf("(S-001)"), Is.True,
-                    "PlanetName before SurveyID");
-            Assert.That(name.IndexOf("(S-001)") < name.IndexOf("[Good One]"), Is.True,
-                    "SurveyID before NickName");
+            Assert.That(
+                name.IndexOf("Alpha Prime") < name.IndexOf("(S-001)"),
+                Is.True,
+                "PlanetName before SurveyID");
+            Assert.That(
+                name.IndexOf("(S-001)") < name.IndexOf("[Good One]"),
+                Is.True,
+                "SurveyID before NickName");
         }
 
         // -----------------------------------------------------------------------

@@ -29,8 +29,10 @@ namespace OE2EmpireTracker.Parsers
             int timersStarted = 0;
             int warehouseResourcesCreated = 0;
 
-            Log.Info("SetupRefineries starting for colony {0}: {1} structures to scan",
-                colony.PlanetName, colony.Structures.Count);
+            Log.Info(
+                "SetupRefineries starting for colony {0}: {1} structures to scan",
+                colony.PlanetName,
+                colony.Structures.Count);
 
             foreach (var structure in colony.Structures)
             {
@@ -43,7 +45,8 @@ namespace OE2EmpireTracker.Parsers
                         !string.IsNullOrEmpty(structure.RefiningResourcePurity) ||
                         !string.IsNullOrEmpty(structure.MiningSurveyResource))
                     {
-                        Log.Debug("Skipped structure {0} (FlatpackBP={1}): RefiningResource='{2}', RefiningResourcePurity='{3}', MiningSurveyResource='{4}'",
+                        Log.Debug(
+                            "Skipped structure {0} (FlatpackBP={1}): RefiningResource='{2}', RefiningResourcePurity='{3}', MiningSurveyResource='{4}'",
                             structure.UUID,
                             structure.FlatpackBlueprintUUID ?? "(null)",
                             structure.RefiningResource ?? "(null)",
@@ -54,7 +57,8 @@ namespace OE2EmpireTracker.Parsers
                     continue;
                 }
 
-                Log.Info("Processing refinery {0} (FlatpackBP={1}): RefiningResource='{2}', RefiningResourcePurity='{3}'",
+                Log.Info(
+                    "Processing refinery {0} (FlatpackBP={1}): RefiningResource='{2}', RefiningResourcePurity='{3}'",
                     structure.UUID,
                     structure.FlatpackBlueprintUUID ?? "(null)",
                     structure.RefiningResource,
@@ -71,7 +75,8 @@ namespace OE2EmpireTracker.Parsers
                 // Step b: Check if built and online (Req 8.3)
                 if (!structure.IsBuiltAndOnline)
                 {
-                    Log.Info("Skipped timer for refinery {0}: not built or not online",
+                    Log.Info(
+                        "Skipped timer for refinery {0}: not built or not online",
                         structure.UUID);
                     continue;
                 }
@@ -92,8 +97,11 @@ namespace OE2EmpireTracker.Parsers
                 }
             }
 
-            Log.Info("SetupRefineries complete for colony {0}: {1} timers started, {2} warehouse resources created",
-                colony.PlanetName, timersStarted, warehouseResourcesCreated);
+            Log.Info(
+                "SetupRefineries complete for colony {0}: {1} timers started, {2} warehouse resources created",
+                colony.PlanetName,
+                timersStarted,
+                warehouseResourcesCreated);
         }
     }
 }

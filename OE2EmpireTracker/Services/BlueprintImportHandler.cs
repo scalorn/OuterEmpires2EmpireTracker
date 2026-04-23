@@ -43,10 +43,17 @@ namespace OE2EmpireTracker.Services
         public static void LogParsedBlueprint(Blueprint tempBP)
         {
             Log.Info("=== Individual Blueprint Import ===");
-            Log.Info("  Parsed: name='{0}' evo={1} type='{2}' class={3} tech='{4}'",
-                tempBP.Name, tempBP.Evolution, tempBP.BluePrintType, tempBP.Class, tempBP.TechLevel);
-            Log.Info("  Parsed: {0} properties, {1} resources",
-                tempBP.Properties?.Count ?? 0, tempBP.Resources?.Count ?? 0);
+            Log.Info(
+                "  Parsed: name='{0}' evo={1} type='{2}' class={3} tech='{4}'",
+                tempBP.Name,
+                tempBP.Evolution,
+                tempBP.BluePrintType,
+                tempBP.Class,
+                tempBP.TechLevel);
+            Log.Info(
+                "  Parsed: {0} properties, {1} resources",
+                tempBP.Properties?.Count ?? 0,
+                tempBP.Resources?.Count ?? 0);
             if (tempBP.Properties != null)
                 foreach (var prop in tempBP.Properties.Properties)
                     Log.Info("    prop: {0} = {1}", prop.Key, prop.Value);
@@ -74,9 +81,14 @@ namespace OE2EmpireTracker.Services
             Blueprint tempBP, Blueprint selected,
             PlayerContext pc, EmpireContext ec)
         {
-            Log.Info("  Selected blueprint: name='{0}' evo={1} type='{2}' class={3} tech='{4}' UUID={5}",
-                selected.Name, selected.Evolution, selected.BluePrintType,
-                selected.Class, selected.TechLevel, selected.UUID ?? "(null)");
+            Log.Info(
+                "  Selected blueprint: name='{0}' evo={1} type='{2}' class={3} tech='{4}' UUID={5}",
+                selected.Name,
+                selected.Evolution,
+                selected.BluePrintType,
+                selected.Class,
+                selected.TechLevel,
+                selected.UUID ?? "(null)");
 
             // Relaxed match: Name + Evolution required.
             // BluePrintType matches if equal OR if the existing has no type.
@@ -88,8 +100,11 @@ namespace OE2EmpireTracker.Services
                 && !string.IsNullOrEmpty(tempBP.Name)
                 && nameMatch && evoMatch && typeMatch;
 
-            Log.Info("  Selected match check: name={0} evo={1} type={2} hasUUID={3} hasName={4} => {5}",
-                nameMatch, evoMatch, typeMatch,
+            Log.Info(
+                "  Selected match check: name={0} evo={1} type={2} hasUUID={3} hasName={4} => {5}",
+                nameMatch,
+                evoMatch,
+                typeMatch,
                 !string.IsNullOrEmpty(selected.UUID),
                 !string.IsNullOrEmpty(tempBP.Name),
                 selectedMatch);
@@ -108,16 +123,21 @@ namespace OE2EmpireTracker.Services
             // No selected match — route via market logic
             bool hasCurrentPlayer = !string.IsNullOrEmpty(pc.CurrentPlayerUUID);
             bool globalRoute = MarketBlueprintImporter.IsGlobalRoute(tempBP.Evolution, hasCurrentPlayer);
-            Log.Info("  No selected match -- routing: isGlobal={0} (evo={1}, hasPlayer={2})",
-                globalRoute, tempBP.Evolution, hasCurrentPlayer);
+            Log.Info(
+                "  No selected match -- routing: isGlobal={0} (evo={1}, hasPlayer={2})",
+                globalRoute,
+                tempBP.Evolution,
+                hasCurrentPlayer);
 
             var targetList = globalRoute
                 ? ec.GlobalBlueprintList
                 : pc.BlueprintList;
 
             var existing = MarketBlueprintImporter.FindByDedupKey(targetList, tempBP);
-            Log.Info("  FindByDedupKey in {0} list ({1} blueprints): {2}",
-                globalRoute ? "global" : "player", targetList.Count,
+            Log.Info(
+                "  FindByDedupKey in {0} list ({1} blueprints): {2}",
+                globalRoute ? "global" : "player",
+                targetList.Count,
                 existing != null ? $"MATCH UUID={existing.UUID}" : "NO MATCH");
 
             return new FindTargetResult
@@ -142,9 +162,12 @@ namespace OE2EmpireTracker.Services
             {
                 MarketBlueprintImporter.UpdateExisting(findResult.Target, tempBP);
                 importedBP = findResult.Target;
-                Log.Info("Blueprint updated via dedup ({0}): {1} Ev{2} {3}",
+                Log.Info(
+                    "Blueprint updated via dedup ({0}): {1} Ev{2} {3}",
                     findResult.IsSelectedMatch ? "selected match" : "list match",
-                    importedBP.Name, importedBP.Evolution, importedBP.BluePrintType);
+                    importedBP.Name,
+                    importedBP.Evolution,
+                    importedBP.BluePrintType);
             }
             else
             {
@@ -159,15 +182,21 @@ namespace OE2EmpireTracker.Services
                 else
                     pc.AddBlueprint(tempBP);
                 importedBP = tempBP;
-                Log.Info("New blueprint created: {0} Ev{1} {2} -> {3}",
-                    importedBP.Name, importedBP.Evolution, importedBP.BluePrintType,
+                Log.Info(
+                    "New blueprint created: {0} Ev{1} {2} -> {3}",
+                    importedBP.Name,
+                    importedBP.Evolution,
+                    importedBP.BluePrintType,
                     findResult.IsGlobal ? "Global" : "Player");
             }
 
             // Persist
-            Log.Info("Pre-save: {0} UUID={1} props={2} resources={3}",
-                importedBP.Name, importedBP.UUID,
-                importedBP.Properties?.Count ?? 0, importedBP.Resources?.Count ?? 0);
+            Log.Info(
+                "Pre-save: {0} UUID={1} props={2} resources={3}",
+                importedBP.Name,
+                importedBP.UUID,
+                importedBP.Properties?.Count ?? 0,
+                importedBP.Resources?.Count ?? 0);
 
             if (findResult.IsGlobal)
                 ec.WriteContext();

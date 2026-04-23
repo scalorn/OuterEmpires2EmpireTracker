@@ -59,7 +59,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
 
             _scanner.ProcessHtml(bp, html);
 
-            Assert.That(bp.BluePrintType, Is.EqualTo("JumpDrive"),
+            Assert.That(
+                bp.BluePrintType,
+                Is.EqualTo("JumpDrive"),
                 "Should resolve BlueprintType from icon position in the HTML");
         }
 
@@ -108,7 +110,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
 
             _scanner.ProcessHtml(bp, html);
 
-            Assert.That(bp.Properties.Count, Is.GreaterThan(0),
+            Assert.That(
+                bp.Properties.Count,
+                Is.GreaterThan(0),
                 "Should extract at least one property from the Statistics tab");
         }
 
@@ -137,7 +141,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
 
             _scanner.ProcessHtml(bp, html);
 
-            Assert.That(bp.Resources.Count, Is.GreaterThan(0),
+            Assert.That(
+                bp.Resources.Count,
+                Is.GreaterThan(0),
                 "Should extract at least one resource from the Resources tab");
         }
 
@@ -162,7 +168,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
 
             _scanner.ProcessHtml(bp, html);
 
-            Assert.That(bp.Resources.ContainsKey("Heavy Noble Gases"), Is.True,
+            Assert.That(
+                bp.Resources.ContainsKey("Heavy Noble Gases"),
+                Is.True,
                 "Should contain 'Heavy Noble Gases' resource");
             Assert.That(bp.Resources["Heavy Noble Gases"], Is.EqualTo("6835"));
         }
@@ -181,7 +189,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
             string htmlStats = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(rawStats);
             _scanner.ProcessHtml(bp, htmlStats);
 
-            Assert.That(bp.BluePrintType, Is.EqualTo("JumpDrive"),
+            Assert.That(
+                bp.BluePrintType,
+                Is.EqualTo("JumpDrive"),
                 "After Stats import, BlueprintType should be JumpDrive");
 
             // Second import: Resources page (adds resources, should NOT clear type)
@@ -189,11 +199,17 @@ namespace OE2EmpireTracker.Tests.Blueprint
             string htmlRes = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(rawRes);
             _scanner.ProcessHtml(bp, htmlRes);
 
-            Assert.That(bp.BluePrintType, Is.EqualTo("JumpDrive"),
+            Assert.That(
+                bp.BluePrintType,
+                Is.EqualTo("JumpDrive"),
                 "After Resources import, BlueprintType should still be JumpDrive");
-            Assert.That(bp.Resources.Count, Is.GreaterThan(0),
+            Assert.That(
+                bp.Resources.Count,
+                Is.GreaterThan(0),
                 "Resources should be populated after second import");
-            Assert.That(bp.Properties.Count, Is.GreaterThan(0),
+            Assert.That(
+                bp.Properties.Count,
+                Is.GreaterThan(0),
                 "Properties from Stats import should still be present");
         }
 
@@ -224,7 +240,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
             var bpClean = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bpClean, rawExtracted);
 
-            Assert.That(bpClean.Name, Is.EqualTo("WSMS-LL Jump Drive"),
+            Assert.That(
+                bpClean.Name,
+                Is.EqualTo("WSMS-LL Jump Drive"),
                 "Extracted fragment should produce the correct name");
         }
     }

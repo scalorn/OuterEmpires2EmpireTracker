@@ -133,9 +133,15 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is Ship ship)
-            { _selectedShip = ship; PopulateForm(); }
+            {
+                _selectedShip = ship;
+                PopulateForm();
+            }
             else if (!e.IsSelected && lvwShips.SelectedItems.Count == 0)
-            { _selectedShip = null; ClearForm(); }
+            {
+                _selectedShip = null;
+                ClearForm();
+            }
         }
 
         // Form Population
@@ -143,7 +149,12 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedShip == null) { ClearForm(); return; }
+            if (_selectedShip == null)
+            {
+                ClearForm();
+                return;
+            }
+
             txtName.Text = _selectedShip.Name;
             SelectHullInCombo(_selectedShip.HullBlueprintUUID);
             SelectLocationType(_selectedShip.LocationType);
@@ -188,7 +199,8 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             cmbLocationType.Items.Clear();
             foreach (DestinationType dt in Enum.GetValues(typeof(DestinationType)))
                 cmbLocationType.Items.Add(dt);
-            sw.Stop(); Log.Info("PERF PopulateLocationTypeCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateLocationTypeCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void SelectLocationType(DestinationType dt)
@@ -196,7 +208,10 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             for (int i = 0; i < cmbLocationType.Items.Count; i++)
             {
                 if ((DestinationType)cmbLocationType.Items[i] == dt)
-                { cmbLocationType.SelectedIndex = i; return; }
+                {
+                    cmbLocationType.SelectedIndex = i;
+                    return;
+                }
             }
 
             cmbLocationType.SelectedIndex = -1;
@@ -229,16 +244,25 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                     break;
             }
 
-            sw.Stop(); Log.Info("PERF PopulateLocationUUIDCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateLocationUUIDCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void SelectLocationUUID(string uuid)
         {
-            if (string.IsNullOrEmpty(uuid)) { cmbLocationUUID.SelectedIndex = -1; return; }
+            if (string.IsNullOrEmpty(uuid))
+            {
+                cmbLocationUUID.SelectedIndex = -1;
+                return;
+            }
+
             for (int i = 0; i < cmbLocationUUID.Items.Count; i++)
             {
                 if (cmbLocationUUID.Items[i] is LocationEntry le && le.UUID == uuid)
-                { cmbLocationUUID.SelectedIndex = i; return; }
+                {
+                    cmbLocationUUID.SelectedIndex = i;
+                    return;
+                }
             }
 
             cmbLocationUUID.SelectedIndex = -1;
@@ -261,12 +285,18 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             }
 
             cmbHull.SetItems(names, null);
-            sw.Stop(); Log.Info("PERF PopulateHullCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateHullCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void SelectHullInCombo(string hullUUID)
         {
-            if (string.IsNullOrEmpty(hullUUID)) { cmbHull.SetItems(cmbHull.Items, null); return; }
+            if (string.IsNullOrEmpty(hullUUID))
+            {
+                cmbHull.SetItems(cmbHull.Items, null);
+                return;
+            }
+
             int idx = _hullUUIDs.IndexOf(hullUUID);
             if (idx >= 0)
                 cmbHull.SetItems(cmbHull.Items, cmbHull.Items[idx]);
@@ -321,20 +351,32 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvComponents.Rows.Clear();
-            if (_selectedShip == null) { sw.Stop(); return; }
+            if (_selectedShip == null)
+            {
+                sw.Stop();
+                return;
+            }
 
             var hullBp = playerContext.FindBlueprint(_selectedShip.HullBlueprintUUID);
             string hullName = hullBp?.ExtendedName ?? "(no hull)";
 
             // Hull row (first row, component cell read-only)
-            int hullRow = dgvComponents.Rows.Add("Hull", string.Empty, hullName,
+            int hullRow = dgvComponents.Rows.Add(
+                "Hull",
+                string.Empty,
+                hullName,
                 _selectedShip.HullCurrentHP.ToString(),
                 _selectedShip.HullMaxRepairPercent.ToString());
             dgvComponents.Rows[hullRow].Tag = "hull";
             dgvComponents.Rows[hullRow].Cells[colSlotType.Index].ReadOnly = true;
             dgvComponents.Rows[hullRow].Cells[colComponent.Index].ReadOnly = true;
 
-            if (hullBp?.Properties == null) { sw.Stop(); Log.Info("PERF PopulateOverviewGrid: {0}ms", sw.ElapsedMilliseconds); return; }
+            if (hullBp?.Properties == null)
+            {
+                sw.Stop();
+                Log.Info("PERF PopulateOverviewGrid: {0}ms", sw.ElapsedMilliseconds);
+                return;
+            }
 
             var slotDefs = GetSlotDefinitions(hullBp);
             int hullClass = hullBp.Class;
@@ -396,7 +438,8 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 }
             }
 
-            sw.Stop(); Log.Info("PERF PopulateOverviewGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateOverviewGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void DgvComponents_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -494,11 +537,23 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         private void RefreshStats()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            if (_selectedShip == null) { rtbStats.Text = string.Empty; sw.Stop(); return; }
+            if (_selectedShip == null)
+            {
+                rtbStats.Text = string.Empty;
+                sw.Stop();
+                return;
+            }
             var hullBp = playerContext.FindBlueprint(_selectedShip.HullBlueprintUUID);
-            if (hullBp == null) { rtbStats.Text = "No hull blueprint."; sw.Stop(); return; }
+            if (hullBp == null)
+            {
+                rtbStats.Text = "No hull blueprint.";
+                sw.Stop();
+                return;
+            }
 
-            var stats = ShipBuildService.ComputeStats(hullBp, _selectedShip.Components,
+            var stats = ShipBuildService.ComputeStats(
+                hullBp,
+                _selectedShip.Components,
                 uuid => playerContext.FindBlueprint(uuid));
 
             rtbStats.Text = string.Format(
@@ -514,7 +569,8 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 stats.EnergyDefence, stats.KineticDefence, stats.MissileDefence,
                 stats.Acceleration, stats.RotationalThrust, stats.MaxJumpDistance, stats.FuelPerJump,
                 stats.MiningYield, stats.ScanLevel);
-            sw.Stop(); Log.Info("PERF RefreshStats: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF RefreshStats: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // Cargo tab
@@ -541,7 +597,11 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             dgvCrateContents.Visible = false;
             lblCrateContents.Visible = false;
             var bag = GetSelectedBag();
-            if (bag == null) { sw.Stop(); return; }
+            if (bag == null)
+            {
+                sw.Stop();
+                return;
+            }
 
             foreach (var kvp in bag.Items.OrderBy(k => k.Value.Name))
             {
@@ -559,13 +619,18 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 dgvCargo.Rows[dgvCargo.Rows.Count - 1].Tag = item;
             }
 
-            sw.Stop(); Log.Info("PERF PopulateCargoGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateCargoGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void DgvCargo_SelectionChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            if (dgvCargo.SelectedRows.Count == 0) { ClearCrateContents(); return; }
+            if (dgvCargo.SelectedRows.Count == 0)
+            {
+                ClearCrateContents();
+                return;
+            }
             var item = dgvCargo.SelectedRows[0].Tag as Item;
             if (item != null && item.ItemType == ItemType.ItemTypeEnum.Crate && item.Contents != null)
                 PopulateCrateContents(item);
@@ -587,7 +652,8 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 dgvCrateContents.Rows.Add(item.ItemType.ToString(), item.ExtendedName, item.ResourcePurity, item.Quantity.ToString());
             }
 
-            sw.Stop(); Log.Info("PERF PopulateCrateContents: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateCrateContents: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ClearCrateContents()
@@ -609,7 +675,8 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             cmbAddType.Items.Add(ItemType.ItemTypeEnum.Crate);
             cmbAddType.Items.Add(ItemType.ItemTypeEnum.Munition);
             cmbAddType.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulateAddTypeCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateAddTypeCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void CmbAddType_SelectedIndexChanged(object sender, EventArgs e)
@@ -641,7 +708,8 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             }
 
             if (cmbAddItem.Items.Count > 0) cmbAddItem.SelectedIndex = 0;
-            sw.Stop(); Log.Info("PERF PopulateAddItemCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateAddItemCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void UpdatePurityComboForHopper()
@@ -688,8 +756,11 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             if (string.IsNullOrWhiteSpace(itemName)) return;
             if (!int.TryParse(txtAddQty.Text.Trim(), out int qty) || qty <= 0)
             {
-                MessageBox.Show("Enter a valid quantity.", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Enter a valid quantity.",
+                    "Validation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -705,8 +776,11 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
             bag.AddItem(newItem);
             PopulateCargoGrid();
-            Log.Info("Added cargo item: {0} x{1} to {2}",
-                itemName, qty, rbHopper.Checked ? "Hopper" : "Cargo");
+            Log.Info(
+                "Added cargo item: {0} x{1} to {2}",
+                itemName,
+                qty,
+                rbHopper.Checked ? "Hopper" : "Cargo");
         }
 
         private void CmdRemoveItem_Click(object sender, EventArgs e)
@@ -726,8 +800,11 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             var templates = playerContext.GetCurrentPlayerShipTemplates();
             if (templates.Count == 0)
             {
-                MessageBox.Show("No ship templates available. Create a template first.",
-                    "No Templates", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "No ship templates available. Create a template first.",
+                    "No Templates",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -818,15 +895,19 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             if (refs > 0)
             {
                 MessageBox.Show(
-                    string.Format("Cannot delete ship \"{0}\" — it is referenced by {1} delivery plan(s) or build item(s).",
-                        _selectedShip.Name, refs),
+                    string.Format(
+                        "Cannot delete ship \"{0}\" — it is referenced by {1} delivery plan(s) or build item(s).",
+                        _selectedShip.Name,
+                        refs),
                     "Delete Blocked", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             var result = MessageBox.Show(
                 string.Format("Delete ship \"{0}\"?", _selectedShip.Name),
-                "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
             playerContext.RemoveShip(_selectedShip);
             playerContext.WriteContext();
@@ -841,7 +922,10 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             if (_selectedShip == null) return;
             string name = txtName.Text.Trim();
             if (string.IsNullOrWhiteSpace(name))
-            { MessageBox.Show("Name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            {
+                MessageBox.Show("Name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             _selectedShip.Name = name;
             if (cmbLocationUUID.SelectedItem is LocationEntry le)
                 _selectedShip.LocationUUID = le.UUID;
@@ -861,7 +945,13 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         {
             if (IsDisposed) return;
             if (InvokeRequired)
-            { try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); } catch (ObjectDisposedException) { } return; }
+            {
+                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                } catch (ObjectDisposedException)
+                {
+                }
+                return;
+            }
             _selectedShip = null;
             PopulateHullCombo();
             PopulateShipList();

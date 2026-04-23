@@ -58,9 +58,13 @@ namespace OE2EmpireTracker.Tests.Parsers
             foreach (SkillName s in Enum.GetValues(typeof(SkillName)))
             {
                 string displayName = s.ToDisplayName();
-                Assert.That(lookup.ContainsKey(displayName), Is.True,
+                Assert.That(
+                    lookup.ContainsKey(displayName),
+                    Is.True,
                     $"Display name '{displayName}' for {s} not found in reverse lookup");
-                Assert.That(lookup[displayName], Is.EqualTo(s),
+                Assert.That(
+                    lookup[displayName],
+                    Is.EqualTo(s),
                     $"Round-trip failed for {s}: display name '{displayName}' mapped to {lookup[displayName]}");
             }
         }
@@ -83,9 +87,13 @@ namespace OE2EmpireTracker.Tests.Parsers
             foreach (SkillGroupName g in Enum.GetValues(typeof(SkillGroupName)))
             {
                 string displayName = g.ToDisplayName();
-                Assert.That(lookup.ContainsKey(displayName), Is.True,
+                Assert.That(
+                    lookup.ContainsKey(displayName),
+                    Is.True,
                     $"Display name '{displayName}' for {g} not found in reverse lookup");
-                Assert.That(lookup[displayName], Is.EqualTo(g),
+                Assert.That(
+                    lookup[displayName],
+                    Is.EqualTo(g),
                     $"Round-trip failed for {g}: display name '{displayName}' mapped to {lookup[displayName]}");
             }
         }

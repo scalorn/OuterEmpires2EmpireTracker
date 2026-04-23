@@ -66,8 +66,10 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
-            Log.Info("CheckTargets: {0} active plans, {1} shortfalls found",
-                activePlans.Count, shortfalls.Count);
+            Log.Info(
+                "CheckTargets: {0} active plans, {1} shortfalls found",
+                activePlans.Count,
+                shortfalls.Count);
             return shortfalls;
         }
 
@@ -120,8 +122,10 @@ namespace OE2EmpireTracker.Services
                 existingKeys.Add(key);
             }
 
-            Log.Info("GenerateReplenishmentItems: {0} items generated from {1} shortfalls",
-                items.Count, shortfalls.Count);
+            Log.Info(
+                "GenerateReplenishmentItems: {0} items generated from {1} shortfalls",
+                items.Count,
+                shortfalls.Count);
             return items;
         }
 
@@ -139,14 +143,25 @@ namespace OE2EmpireTracker.Services
             // (the bottleneck determines how many complete ships we can build)
             if (!string.IsNullOrEmpty(target.ShipTemplateUUID))
             {
-                return CountShipTemplateStock(target, currentPlayerUUID,
-                    colonyFinder, stationFinder, templateFinder, blueprintFinder,
-                    allColonies, allStations);
+                return CountShipTemplateStock(
+                    target,
+                    currentPlayerUUID,
+                    colonyFinder,
+                    stationFinder,
+                    templateFinder,
+                    blueprintFinder,
+                    allColonies,
+                    allStations);
             }
 
             // For simple item targets, count directly
-            return CountItemStock(target, currentPlayerUUID,
-                colonyFinder, stationFinder, allColonies, allStations);
+            return CountItemStock(
+                target,
+                currentPlayerUUID,
+                colonyFinder,
+                stationFinder,
+                allColonies,
+                allStations);
         }
 
         private static int CountItemStock(
@@ -226,8 +241,13 @@ namespace OE2EmpireTracker.Services
                     LocationUUID = target.LocationUUID
                 };
 
-                int hullCount = CountItemStock(hullTarget, currentPlayerUUID,
-                    colonyFinder, stationFinder, allColonies, allStations);
+                int hullCount = CountItemStock(
+                    hullTarget,
+                    currentPlayerUUID,
+                    colonyFinder,
+                    stationFinder,
+                    allColonies,
+                    allStations);
                 if (hullCount < minAvailable) minAvailable = hullCount;
             }
 
@@ -243,8 +263,13 @@ namespace OE2EmpireTracker.Services
                     LocationUUID = target.LocationUUID
                 };
 
-                int compCount = CountItemStock(compTarget, currentPlayerUUID,
-                    colonyFinder, stationFinder, allColonies, allStations);
+                int compCount = CountItemStock(
+                    compTarget,
+                    currentPlayerUUID,
+                    colonyFinder,
+                    stationFinder,
+                    allColonies,
+                    allStations);
                 if (compCount < minAvailable) minAvailable = compCount;
             }
 

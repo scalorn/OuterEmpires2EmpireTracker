@@ -110,8 +110,11 @@ namespace OE2EmpireTracker.Parsers
 
             // Tooltip format is like "#11,982,019.28" -- strip # and commas, parse as decimal
             string cleaned = tooltip.Replace("#", string.Empty).Replace(",", string.Empty).Trim();
-            if (decimal.TryParse(cleaned, System.Globalization.NumberStyles.Any,
-                System.Globalization.CultureInfo.InvariantCulture, out decimal credits))
+            if (decimal.TryParse(
+                cleaned,
+                System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out decimal credits))
             {
                 profile.TotalCredits = credits;
             }
@@ -420,8 +423,11 @@ namespace OE2EmpireTracker.Parsers
             // If there's a decimal point, parse as decimal first then truncate to long
             if (cleaned.Contains("."))
             {
-                if (decimal.TryParse(cleaned, System.Globalization.NumberStyles.Any,
-                    System.Globalization.CultureInfo.InvariantCulture, out decimal decVal))
+                if (decimal.TryParse(
+                    cleaned,
+                    System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out decimal decVal))
                     return (long)decVal;
                 return 0;
             }

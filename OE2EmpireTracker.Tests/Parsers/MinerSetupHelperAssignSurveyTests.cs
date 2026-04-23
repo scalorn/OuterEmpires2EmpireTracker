@@ -56,8 +56,13 @@ namespace OE2EmpireTracker.Tests.Parsers
             };
         }
 
-        private Survey CreateSurvey(string uuid, string planetName, string surveyId,
-            string resourceName, string purity, string amount)
+        private Survey CreateSurvey(
+            string uuid,
+            string planetName,
+            string surveyId,
+            string resourceName,
+            string purity,
+            string amount)
         {
             var survey = new Survey("Test Survey")
             {

@@ -85,7 +85,8 @@ namespace OE2EmpireTracker.Services
             var unallocated = CollectUnallocatedItems(plan);
             if (unallocated.Count == 0)
             {
-                Log.Info("ProposeAssignments: no unallocated items in plan '{0}'",
+                Log.Info(
+                    "ProposeAssignments: no unallocated items in plan '{0}'",
                     plan.Name);
                 sw.Stop();
                 Log.Debug("PERF ProposeAssignments: {0}ms", sw.ElapsedMilliseconds);
@@ -99,8 +100,11 @@ namespace OE2EmpireTracker.Services
             AssignCommodityItems(unallocated, structures, proposals);
 
             sw.Stop();
-            Log.Info("PERF ProposeAssignments: {0} proposals for plan '{1}' in {2}ms",
-                proposals.Count, plan.Name, sw.ElapsedMilliseconds);
+            Log.Info(
+                "PERF ProposeAssignments: {0} proposals for plan '{1}' in {2}ms",
+                proposals.Count,
+                plan.Name,
+                sw.ElapsedMilliseconds);
             return proposals;
         }
 
@@ -143,7 +147,8 @@ namespace OE2EmpireTracker.Services
             {
                 if (stop.DestinationType != DestinationType.Colony)
                 {
-                    Log.Debug("CollectEligibleStructures: skipping non-colony stop {0}",
+                    Log.Debug(
+                        "CollectEligibleStructures: skipping non-colony stop {0}",
                         stop.DestinationUUID);
                     continue;
                 }
@@ -158,7 +163,8 @@ namespace OE2EmpireTracker.Services
                 Colony colony = colonyFinder(colonyUUID);
                 if (colony == null)
                 {
-                    Log.Warn("CollectEligibleStructures: colony {0} not found",
+                    Log.Warn(
+                        "CollectEligibleStructures: colony {0} not found",
                         colonyUUID);
                     continue;
                 }
@@ -192,8 +198,10 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
-            Log.Debug("CollectEligibleStructures: {0} manufactories, {1} commodity factories",
-                result.Manufactories.Count, result.CommodityFactories.Count);
+            Log.Debug(
+                "CollectEligibleStructures: {0} manufactories, {1} commodity factories",
+                result.Manufactories.Count,
+                result.CommodityFactories.Count);
             return result;
         }
 
@@ -276,7 +284,8 @@ namespace OE2EmpireTracker.Services
                     int seq = structureLoad[target.StructureUUID];
 
                     string reason = copyCount < structures.Manufactories.Count
-                        ? string.Format("Blueprint has {0} copies; limited to {0} parallel structures",
+                        ? string.Format(
+                            "Blueprint has {0} copies; limited to {0} parallel structures",
                             copyCount)
                         : string.Format("Assigned to least-loaded structure (seq {0})", seq);
 

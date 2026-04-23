@@ -124,11 +124,20 @@ namespace OE2EmpireTracker.Tests.Models
                     barrier.Wait();
                     if (colony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs))
                     {
-                        try { colony.ProcessColony(); }
-                        finally { colony.ColonyLock.ExitWriteLock(); }
+                        try
+                        {
+                            colony.ProcessColony();
+                        }
+                        finally
+                        {
+                            colony.ColonyLock.ExitWriteLock();
+                        }
                     }
                 }
-                catch (Exception ex) { thread1Exception = ex; }
+                catch (Exception ex)
+                {
+                    thread1Exception = ex;
+                }
             });
 
             var t2 = new Thread(() =>
@@ -143,10 +152,16 @@ namespace OE2EmpireTracker.Tests.Models
                             var calc = new ColonyStatusCalculator(colony);
                             calc.CalculateBuilt();
                         }
-                        finally { colony.ColonyLock.ExitWriteLock(); }
+                        finally
+                        {
+                            colony.ColonyLock.ExitWriteLock();
+                        }
                     }
                 }
-                catch (Exception ex) { thread2Exception = ex; }
+                catch (Exception ex)
+                {
+                    thread2Exception = ex;
+                }
             });
 
             t1.Start();
@@ -205,7 +220,10 @@ namespace OE2EmpireTracker.Tests.Models
                     }
                     catch (Exception ex)
                     {
-                        lock (exLock) { exceptions.Add(ex); }
+                        lock (exLock)
+                        {
+                            exceptions.Add(ex);
+                        }
                     }
                 });
             }
@@ -285,7 +303,10 @@ namespace OE2EmpireTracker.Tests.Models
                     }
                     catch (Exception ex)
                     {
-                        lock (exLock) { exceptions.Add(ex); }
+                        lock (exLock)
+                        {
+                            exceptions.Add(ex);
+                        }
                     }
                 });
             }
@@ -333,7 +354,10 @@ namespace OE2EmpireTracker.Tests.Models
                     }
                     catch (Exception ex)
                     {
-                        lock (exLock) { exceptions.Add(ex); }
+                        lock (exLock)
+                        {
+                            exceptions.Add(ex);
+                        }
                     }
                 });
             }
@@ -411,12 +435,16 @@ namespace OE2EmpireTracker.Tests.Models
                 }
             }
 
-            Assert.That(executedGeneration, Is.EqualTo(totalSwitches),
+            Assert.That(
+                executedGeneration,
+                Is.EqualTo(totalSwitches),
                 "Only the final generation's callback should execute");
 
             // Verify all previous CTS tokens are cancelled
             // (we only kept the last one un-cancelled)
-            Assert.That(finalCts.IsCancellationRequested, Is.False,
+            Assert.That(
+                finalCts.IsCancellationRequested,
+                Is.False,
                 "The final CancellationTokenSource should not be cancelled");
         }
 

@@ -110,9 +110,12 @@ namespace OE2EmpireTracker.Parsers
                     }
                 }
 
-                Log.Info("ProcessHtml: PlanetName='{0}', SystemName='{1}', SurveyID='{2}', resources extracted={3}",
-                    survey.PlanetName ?? "(null)", survey.SystemName ?? "(null)",
-                    survey.SurveyID ?? "(null)", survey.Resources.Count);
+                Log.Info(
+                    "ProcessHtml: PlanetName='{0}', SystemName='{1}', SurveyID='{2}', resources extracted={3}",
+                    survey.PlanetName ?? "(null)",
+                    survey.SystemName ?? "(null)",
+                    survey.SurveyID ?? "(null)",
+                    survey.Resources.Count);
                 foreach (var kvp in survey.Resources)
                 {
                     var r = kvp.Value;

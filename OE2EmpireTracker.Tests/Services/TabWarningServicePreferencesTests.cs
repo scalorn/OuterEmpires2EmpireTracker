@@ -43,8 +43,8 @@ namespace OE2EmpireTracker.Tests.Services
         {
             // Generate valid yellow < red threshold pairs (both positive)
             var genYellow = Gen.Choose(1, 100);
-            var genThresholds = genYellow.SelectMany(yellow =>
-                Gen.Choose(yellow + 1, yellow + 100),
+            var genThresholds = genYellow.SelectMany(
+                yellow => Gen.Choose(yellow + 1, yellow + 100),
                 (yellow, red) => new { Yellow = yellow, Red = red });
             var genCount = Gen.Choose(0, 200);
 
@@ -88,8 +88,8 @@ namespace OE2EmpireTracker.Tests.Services
             // Generate valid threshold pairs: yellow > red, both positive (in seconds)
             // Use ranges that produce meaningful time windows (1 hour to 10 days)
             var genRedSeconds = Gen.Choose(3600, 432000).Select(i => (long)i);
-            var genThresholds = genRedSeconds.SelectMany(red =>
-                Gen.Choose((int)red + 3600, (int)red + 432000).Select(i => (long)i),
+            var genThresholds = genRedSeconds.SelectMany(
+                red => Gen.Choose((int)red + 3600, (int)red + 432000).Select(i => (long)i),
                 (red, yellow) => new { YellowSeconds = yellow, RedSeconds = red });
 
             // Generate a due window offset in seconds relative to "now"
@@ -157,8 +157,8 @@ namespace OE2EmpireTracker.Tests.Services
             // Generate valid threshold pairs: yellow < red, both positive (in seconds)
             // Use ranges from 1 hour to 15 days
             var genYellowSeconds = Gen.Choose(3600, 864000).Select(i => (long)i);
-            var genThresholds = genYellowSeconds.SelectMany(yellow =>
-                Gen.Choose((int)yellow + 3600, (int)yellow + 864000).Select(i => (long)i),
+            var genThresholds = genYellowSeconds.SelectMany(
+                yellow => Gen.Choose((int)yellow + 3600, (int)yellow + 864000).Select(i => (long)i),
                 (yellow, red) => new { YellowSeconds = yellow, RedSeconds = red });
 
             // Generate elapsed seconds from 0 to 20 days

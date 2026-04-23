@@ -68,7 +68,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void IndividualBlueprintImport_AssetTabStats_ExtractsBlueprintType()
         {
             var bp = ParseAssetTabStats();
-            Assert.That(bp.BluePrintType, Is.EqualTo("JumpDrive"),
+            Assert.That(
+                bp.BluePrintType,
+                Is.EqualTo("JumpDrive"),
                 "Should resolve BlueprintType from icon position in the HTML");
         }
 
@@ -97,7 +99,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void IndividualBlueprintImport_AssetTabStats_ExtractsProperties()
         {
             var bp = ParseAssetTabStats();
-            Assert.That(bp.Properties.Count, Is.GreaterThan(0),
+            Assert.That(
+                bp.Properties.Count,
+                Is.GreaterThan(0),
                 "Should extract at least one property from the Statistics tab");
         }
 
@@ -116,7 +120,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void IndividualBlueprintImport_AssetTabResources_ExtractsResources()
         {
             var bp = ParseAssetTabResources();
-            Assert.That(bp.Resources.Count, Is.GreaterThan(0),
+            Assert.That(
+                bp.Resources.Count,
+                Is.GreaterThan(0),
                 "Should extract at least one resource from the Resources tab");
         }
 
@@ -157,11 +163,17 @@ namespace OE2EmpireTracker.Tests.Blueprint
             string htmlRes = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(rawRes);
             _scanner.ProcessHtml(bp, htmlRes);
 
-            Assert.That(bp.BluePrintType, Is.EqualTo("JumpDrive"),
+            Assert.That(
+                bp.BluePrintType,
+                Is.EqualTo("JumpDrive"),
                 "BlueprintType should still be JumpDrive after Resources import");
-            Assert.That(bp.Resources.Count, Is.GreaterThan(0),
+            Assert.That(
+                bp.Resources.Count,
+                Is.GreaterThan(0),
                 "Resources should be populated after second import");
-            Assert.That(bp.Properties.Count, Is.GreaterThan(0),
+            Assert.That(
+                bp.Properties.Count,
+                Is.GreaterThan(0),
                 "Properties from Stats import should still be present");
         }
     }

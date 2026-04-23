@@ -49,7 +49,9 @@ namespace OE2EmpireTracker.Controls
 
         public override object DefaultNewRowValue => string.Empty;
 
-        public override void InitializeEditingControl(int rowIndex, object initialFormattedValue,
+        public override void InitializeEditingControl(
+            int rowIndex,
+            object initialFormattedValue,
             DataGridViewCellStyle dataGridViewCellStyle)
         {
             base.InitializeEditingControl(rowIndex, initialFormattedValue, dataGridViewCellStyle);

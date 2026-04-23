@@ -174,27 +174,37 @@ namespace OE2EmpireTracker.Tests.Services
 
                 var rows = ColonyActivityCollector.CollectActivities(colonies, pc);
 
-                Assert.That(rows.Count, Is.EqualTo(expectedStructureRows + expectedCommodityRows),
+                Assert.That(
+                    rows.Count,
+                    Is.EqualTo(expectedStructureRows + expectedCommodityRows),
                     $"Iteration {iteration}: row count mismatch");
 
                 // Verify types match
                 var actualTypes = rows.Select(r => r.Type).ToList();
-                Assert.That(actualTypes.Count, Is.EqualTo(expectedTypes.Count),
+                Assert.That(
+                    actualTypes.Count,
+                    Is.EqualTo(expectedTypes.Count),
                     $"Iteration {iteration}: type count mismatch");
 
                 for (int i = 0; i < expectedTypes.Count; i++)
                 {
-                    Assert.That(actualTypes[i], Is.EqualTo(expectedTypes[i]),
-                    $"Iteration {iteration}, row {i}: type mismatch");
+                    Assert.That(
+                        actualTypes[i],
+                        Is.EqualTo(expectedTypes[i]),
+                        $"Iteration {iteration}, row {i}: type mismatch");
                 }
 
                 // Verify SystemName and ColonyName match owning colony
                 foreach (var row in rows)
                 {
-                    Assert.That(row.SystemName, Is.Not.Null,
-                    $"Iteration {iteration}: SystemName null");
-                    Assert.That(row.ColonyName, Is.Not.Null,
-                    $"Iteration {iteration}: ColonyName null");
+                    Assert.That(
+                        row.SystemName,
+                        Is.Not.Null,
+                        $"Iteration {iteration}: SystemName null");
+                    Assert.That(
+                        row.ColonyName,
+                        Is.Not.Null,
+                        $"Iteration {iteration}: ColonyName null");
                 }
             }
         }
@@ -226,14 +236,20 @@ namespace OE2EmpireTracker.Tests.Services
 
                 if (needBy <= DateTime.UtcNow)
                 {
-                    Assert.That(actualSeconds, Is.EqualTo(0),
-                    $"Iteration {iteration}: past NeedBy should return 0");
-                    Assert.That(row.GetTimeRemainingString(), Is.EqualTo("0s"),
-                    $"Iteration {iteration}: past NeedBy should display '0s'");
+                    Assert.That(
+                        actualSeconds,
+                        Is.EqualTo(0),
+                        $"Iteration {iteration}: past NeedBy should return 0");
+                    Assert.That(
+                        row.GetTimeRemainingString(),
+                        Is.EqualTo("0s"),
+                        $"Iteration {iteration}: past NeedBy should display '0s'");
                 }
                 else
                 {
-                    Assert.That(Math.Abs(actualSeconds - expectedSeconds), Is.LessThanOrEqualTo(2),
+                    Assert.That(
+                        Math.Abs(actualSeconds - expectedSeconds),
+                        Is.LessThanOrEqualTo(2),
                         $"Iteration {iteration}: seconds remaining off by more than 2s");
                 }
             }
@@ -264,7 +280,9 @@ namespace OE2EmpireTracker.Tests.Services
                 long formattedSeconds = ParseTimeString(formatted);
                 long cdtSeconds = ParseTimeString(cdtString);
 
-                Assert.That(Math.Abs(formattedSeconds - cdtSeconds), Is.LessThanOrEqualTo(1),
+                Assert.That(
+                    Math.Abs(formattedSeconds - cdtSeconds),
+                    Is.LessThanOrEqualTo(1),
                     $"Iteration {iteration}: FormatSeconds({seconds})='{formatted}' vs CDT='{cdtString}' differ by more than 1s");
             }
         }
@@ -325,8 +343,10 @@ namespace OE2EmpireTracker.Tests.Services
                     colony.Structures.Add(structure);
 
                     var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-                    Assert.That(rows.Count, Is.EqualTo(1),
-                    $"Iteration {iteration}: expected 1 row");
+                    Assert.That(
+                        rows.Count,
+                        Is.EqualTo(1),
+                        $"Iteration {iteration}: expected 1 row");
                     Assert.That(rows[0].Type, Is.EqualTo(ActivityType.Building));
                     Assert.That(rows[0].SourceName, Is.EqualTo($"#{gameSeq} {bp.ExtendedName}"));
                     Assert.That(rows[0].ProcessDetails, Is.EqualTo("Building"));
@@ -644,8 +664,10 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(structure);
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
-            Assert.That(rows.Count, Is.EqualTo(1),
-                    "Should produce exactly one row (Building takes priority)");
+            Assert.That(
+                rows.Count,
+                Is.EqualTo(1),
+                "Should produce exactly one row (Building takes priority)");
             Assert.That(rows[0].Type, Is.EqualTo(ActivityType.Building));
             Assert.That(rows[0].ProcessDetails, Is.EqualTo("Building"));
         }
@@ -803,12 +825,16 @@ namespace OE2EmpireTracker.Tests.Services
                     .Where(r => PassesTextFilter(r, textFilter))
                     .ToList();
 
-                Assert.That(actual.Count, Is.EqualTo(expected.Count),
+                Assert.That(
+                    actual.Count,
+                    Is.EqualTo(expected.Count),
                     $"Iteration {iteration}: filtered count mismatch (types={string.Join(", ", selectedTypes)}, text='{textFilter}')");
 
                 for (int i = 0; i < expected.Count; i++)
                 {
-                    Assert.That(actual[i], Is.SameAs(expected[i]),
+                    Assert.That(
+                        actual[i],
+                        Is.SameAs(expected[i]),
                         $"Iteration {iteration}, index {i}: row reference mismatch");
                 }
             }
@@ -871,7 +897,9 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     long prev = sorted[i - 1].GetSecondsRemaining();
                     long curr = sorted[i].GetSecondsRemaining();
-                    Assert.That(curr, Is.GreaterThanOrEqualTo(prev),
+                    Assert.That(
+                        curr,
+                        Is.GreaterThanOrEqualTo(prev),
                         $"Iteration {iteration}, index {i}: sort order violated ({prev} > {curr})");
                 }
             }

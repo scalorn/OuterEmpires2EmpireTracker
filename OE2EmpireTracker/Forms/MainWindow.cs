@@ -272,16 +272,26 @@ namespace OE2EmpireTracker
                 remaining = TimeSpan.Zero;
 
             if (remaining.Days > 0)
-                toolStripNextProcess.Text = string.Format("Next Process: {0}d {1}h {2}m {3}s",
-                    remaining.Days, remaining.Hours, remaining.Minutes, remaining.Seconds);
+                toolStripNextProcess.Text = string.Format(
+                    "Next Process: {0}d {1}h {2}m {3}s",
+                    remaining.Days,
+                    remaining.Hours,
+                    remaining.Minutes,
+                    remaining.Seconds);
             else if (remaining.Hours > 0)
-                toolStripNextProcess.Text = string.Format("Next Process: {0}h {1}m {2}s",
-                    remaining.Hours, remaining.Minutes, remaining.Seconds);
+                toolStripNextProcess.Text = string.Format(
+                    "Next Process: {0}h {1}m {2}s",
+                    remaining.Hours,
+                    remaining.Minutes,
+                    remaining.Seconds);
             else if (remaining.Minutes > 0)
-                toolStripNextProcess.Text = string.Format("Next Process: {0}m {1}s",
-                    remaining.Minutes, remaining.Seconds);
+                toolStripNextProcess.Text = string.Format(
+                    "Next Process: {0}m {1}s",
+                    remaining.Minutes,
+                    remaining.Seconds);
             else
-                toolStripNextProcess.Text = string.Format("Next Process: {0}s",
+                toolStripNextProcess.Text = string.Format(
+                    "Next Process: {0}s",
                     remaining.Seconds);
 
             if (_backgroundProcessor.LastCycleHadError)
@@ -359,8 +369,11 @@ namespace OE2EmpireTracker
             catch (Exception ex)
             {
                 Log.Error(ex, "Error during File -> New");
-                MessageBox.Show("An error occurred while creating a new file: " + ex.Message,
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "An error occurred while creating a new file: " + ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -383,8 +396,11 @@ namespace OE2EmpireTracker
                 catch (Exception ex)
                 {
                     Log.Error(ex, "Error opening file {0}", dlg.FileName);
-                    MessageBox.Show("Failed to open file: " + ex.Message,
-                        "Open Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        "Failed to open file: " + ex.Message,
+                        "Open Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                 }
             }
         }
@@ -402,8 +418,11 @@ namespace OE2EmpireTracker
                 catch (Exception ex)
                 {
                     Log.Error(ex, "Error saving file {0}", _lastOpenedPath);
-                    MessageBox.Show("Failed to save file: " + ex.Message,
-                        "Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        "Failed to save file: " + ex.Message,
+                        "Save Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                 }
             }
             else
@@ -419,8 +438,11 @@ namespace OE2EmpireTracker
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show("Are you sure you want to exit?",
-                "Confirm Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var result = MessageBox.Show(
+                "Are you sure you want to exit?",
+                "Confirm Exit",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
                 this.Close();
@@ -549,8 +571,11 @@ namespace OE2EmpireTracker
                 catch (Exception ex)
                 {
                     Log.Error(ex, "Error saving file {0}", dlg.FileName);
-                    MessageBox.Show("Failed to save file: " + ex.Message,
-                        "Save As Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        "Failed to save file: " + ex.Message,
+                        "Save As Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                     return false;
                 }
             }

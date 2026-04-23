@@ -51,8 +51,11 @@ namespace OE2EmpireTracker.Tests.Services
             return bp;
         }
 
-        private static ColonyStructure MakeStructure(string blueprintUUID, int gameSeq,
-            bool built = true, bool online = true)
+        private static ColonyStructure MakeStructure(
+            string blueprintUUID,
+            int gameSeq,
+            bool built = true,
+            bool online = true)
         {
             var structure = new ColonyStructure();
             structure.UUID = Guid.NewGuid().ToString();
@@ -151,13 +154,17 @@ namespace OE2EmpireTracker.Tests.Services
 
                 var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
 
-                Assert.That(rows.Count, Is.EqualTo(expectedIdleCount),
+                Assert.That(
+                    rows.Count,
+                    Is.EqualTo(expectedIdleCount),
                     $"Iteration {iteration}: expected {expectedIdleCount} idle rows, got {rows.Count}");
 
                 // Verify no active structures appear
                 foreach (var row in rows)
                 {
-                    Assert.That(row.CountDown, Is.Null,
+                    Assert.That(
+                        row.CountDown,
+                        Is.Null,
                         $"Iteration {iteration}: inactivity row should have null CountDown");
                 }
             }
@@ -218,11 +225,15 @@ namespace OE2EmpireTracker.Tests.Services
 
                 var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
 
-                Assert.That(rows.Count, Is.EqualTo(1),
+                Assert.That(
+                    rows.Count,
+                    Is.EqualTo(1),
                     $"Iteration {iteration}: expected 1 row for {testCase.BpType}");
 
                 string expectedDetails = hasWorkItem ? testCase.IdleDetails : testCase.NoWorkDetails;
-                Assert.That(rows[0].ProcessDetails, Is.EqualTo(expectedDetails),
+                Assert.That(
+                    rows[0].ProcessDetails,
+                    Is.EqualTo(expectedDetails),
                     $"Iteration {iteration}: ProcessDetails mismatch for {testCase.BpType} (hasWork={hasWorkItem})");
             }
         }
@@ -265,27 +276,39 @@ namespace OE2EmpireTracker.Tests.Services
 
                 var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
 
-                Assert.That(rows.Count, Is.EqualTo(1),
+                Assert.That(
+                    rows.Count,
+                    Is.EqualTo(1),
                     $"Iteration {iteration}: expected 1 row");
 
                 var row = rows[0];
 
                 // Type must map correctly
-                Assert.That(row.Type, Is.EqualTo(typeMap[bpType]),
+                Assert.That(
+                    row.Type,
+                    Is.EqualTo(typeMap[bpType]),
                     $"Iteration {iteration}: Type mismatch for {bpType}");
 
                 // SystemName and ColonyName must match
-                Assert.That(row.SystemName, Is.EqualTo(systemName),
+                Assert.That(
+                    row.SystemName,
+                    Is.EqualTo(systemName),
                     $"Iteration {iteration}: SystemName mismatch");
-                Assert.That(row.ColonyName, Is.EqualTo(colonyName),
+                Assert.That(
+                    row.ColonyName,
+                    Is.EqualTo(colonyName),
                     $"Iteration {iteration}: ColonyName mismatch");
 
                 // SourceName must follow "#{DisplaySequence} {blueprint.ExtendedName}" format
-                Assert.That(row.SourceName, Is.EqualTo($"#{gameSeq} {bp.ExtendedName}"),
+                Assert.That(
+                    row.SourceName,
+                    Is.EqualTo($"#{gameSeq} {bp.ExtendedName}"),
                     $"Iteration {iteration}: SourceName mismatch");
 
                 // CountDown must be null
-                Assert.That(row.CountDown, Is.Null,
+                Assert.That(
+                    row.CountDown,
+                    Is.Null,
                     $"Iteration {iteration}: CountDown should be null");
             }
         }
@@ -640,8 +663,11 @@ namespace OE2EmpireTracker.Tests.Services
             return survey;
         }
 
-        private ColonyStructure MakeActiveMiner(string blueprintUUID, int gameSeq,
-            string surveyUUID, string surveyResource)
+        private ColonyStructure MakeActiveMiner(
+            string blueprintUUID,
+            int gameSeq,
+            string surveyUUID,
+            string surveyResource)
         {
             var structure = MakeStructure(blueprintUUID, gameSeq);
             structure.ProcessCompletionTime = MakeActiveRepeatingTimer(3600);
@@ -650,8 +676,11 @@ namespace OE2EmpireTracker.Tests.Services
             return structure;
         }
 
-        private ColonyStructure MakeActiveRefiner(string blueprintUUID, int gameSeq,
-            string resource, string purity)
+        private ColonyStructure MakeActiveRefiner(
+            string blueprintUUID,
+            int gameSeq,
+            string resource,
+            string purity)
         {
             var structure = MakeStructure(blueprintUUID, gameSeq);
             structure.ProcessCompletionTime = MakeActiveRepeatingTimer(3600);
@@ -905,7 +934,9 @@ namespace OE2EmpireTracker.Tests.Services
             var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
             var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
 
-            Assert.That(underutilized.Count, Is.EqualTo(0),
+            Assert.That(
+                underutilized.Count,
+                Is.EqualTo(0),
                 "No refiners should be underutilized when warehouse has sufficient stockpile");
         }
 
@@ -934,7 +965,9 @@ namespace OE2EmpireTracker.Tests.Services
             var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
             var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
 
-            Assert.That(underutilized.Count, Is.GreaterThan(0),
+            Assert.That(
+                underutilized.Count,
+                Is.GreaterThan(0),
                 "Refiners should still be flagged when warehouse has insufficient stockpile");
         }
 
@@ -962,7 +995,9 @@ namespace OE2EmpireTracker.Tests.Services
             var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
             var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
 
-            Assert.That(underutilized.Count, Is.EqualTo(0),
+            Assert.That(
+                underutilized.Count,
+                Is.EqualTo(0),
                 "Synthetic refiner should be exempt with 1250 units in warehouse");
         }
 
@@ -989,7 +1024,9 @@ namespace OE2EmpireTracker.Tests.Services
             var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
             var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
 
-            Assert.That(underutilized.Count, Is.EqualTo(1),
+            Assert.That(
+                underutilized.Count,
+                Is.EqualTo(1),
                 "Synthetic refiner should still be flagged with insufficient warehouse stockpile");
         }
     }

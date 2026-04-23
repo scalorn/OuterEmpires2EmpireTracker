@@ -31,7 +31,9 @@ namespace OE2EmpireTracker.Tests.Models
         public void Classes_AllNonNoneEntriesHaveNonEmptyName()
         {
             foreach (var c in ResourceClass.Classes.Where(c => c.ID != RCE.None))
-                Assert.That(string.IsNullOrEmpty(c.Name), Is.False,
+                Assert.That(
+                    string.IsNullOrEmpty(c.Name),
+                    Is.False,
                     $"ResourceClass with ID '{c.ID}' has empty Name");
         }
 
@@ -39,16 +41,20 @@ namespace OE2EmpireTracker.Tests.Models
         public void Classes_NoDuplicateIDs()
         {
             var ids = ResourceClass.Classes.Select(c => c.ID).ToList();
-            Assert.That(ids.Count, Is.EqualTo(ids.Distinct().Count()),
-                    "Duplicate ResourceClass IDs found");
+            Assert.That(
+                ids.Count,
+                Is.EqualTo(ids.Distinct().Count()),
+                "Duplicate ResourceClass IDs found");
         }
 
         [Test]
         public void Classes_NoDuplicateNames()
         {
             var names = ResourceClass.Classes.Select(c => c.Name).ToList();
-            Assert.That(names.Count, Is.EqualTo(names.Distinct().Count()),
-                    "Duplicate ResourceClass Names found");
+            Assert.That(
+                names.Count,
+                Is.EqualTo(names.Distinct().Count()),
+                "Duplicate ResourceClass Names found");
         }
 
         [Test]
@@ -57,7 +63,9 @@ namespace OE2EmpireTracker.Tests.Models
             var allEnums = Enum.GetValues(typeof(RCE)).Cast<RCE>();
             var listIDs = ResourceClass.Classes.Select(c => c.ID).ToList();
             foreach (var e in allEnums)
-                Assert.That(listIDs.Contains(e), Is.True,
+                Assert.That(
+                    listIDs.Contains(e),
+                    Is.True,
                     $"Classes list missing enum value {e}");
         }
 
@@ -66,7 +74,9 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var nonNone = ResourceClass.Classes.Where(c => c.ID != RCE.None).ToList();
             for (int i = 1; i < nonNone.Count; i++)
-                Assert.That(string.Compare(nonNone[i - 1].Name, nonNone[i].Name, StringComparison.Ordinal), Is.LessThanOrEqualTo(0),
+                Assert.That(
+                    string.Compare(nonNone[i - 1].Name, nonNone[i].Name, StringComparison.Ordinal),
+                    Is.LessThanOrEqualTo(0),
                     $"Classes not sorted: '{nonNone[i - 1].Name}' before '{nonNone[i].Name}'");
         }
 
@@ -79,7 +89,9 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var allEnums = Enum.GetValues(typeof(RCE)).Cast<RCE>();
             foreach (var e in allEnums)
-                Assert.That(ResourceClass.ClassMapByEnum.ContainsKey(e), Is.True,
+                Assert.That(
+                    ResourceClass.ClassMapByEnum.ContainsKey(e),
+                    Is.True,
                     $"ClassMapByEnum missing key {e}");
         }
 
@@ -107,7 +119,9 @@ namespace OE2EmpireTracker.Tests.Models
         public void ClassMapByString_ContainsAllClassNames()
         {
             foreach (var c in ResourceClass.Classes)
-                Assert.That(ResourceClass.ClassMapByString.ContainsKey(c.Name), Is.True,
+                Assert.That(
+                    ResourceClass.ClassMapByString.ContainsKey(c.Name),
+                    Is.True,
                     $"ClassMapByString missing key '{c.Name}'");
         }
 
@@ -139,7 +153,9 @@ namespace OE2EmpireTracker.Tests.Models
             {
                 string name = ResourceClass.ClassMapByEnum[e].Name;
                 RCE roundTripped = ResourceClass.ClassMapByString[name].ID;
-                Assert.That(roundTripped, Is.EqualTo(e),
+                Assert.That(
+                    roundTripped,
+                    Is.EqualTo(e),
                     $"Round-trip failed for {e}");
             }
         }

@@ -45,65 +45,92 @@ namespace OE2EmpireTracker.Forms
             // Parse structure count fields as integers
             if (!int.TryParse(txtStructureYellow.Text.Trim(), out int structureYellow) || structureYellow <= 0)
             {
-                MessageBox.Show("Structure Count Yellow threshold must be a positive integer.",
-                    "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Structure Count Yellow threshold must be a positive integer.",
+                    "Validation Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
             if (!int.TryParse(txtStructureRed.Text.Trim(), out int structureRed) || structureRed <= 0)
             {
-                MessageBox.Show("Structure Count Red threshold must be a positive integer.",
-                    "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Structure Count Red threshold must be a positive integer.",
+                    "Validation Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
             // Parse time-based fields via CountdownFormatParser
             if (!CountdownFormatParser.TryParse(txtWorkerYellow.Text.Trim(), out long workerYellow))
             {
-                MessageBox.Show("Worker Request Yellow threshold must be a valid countdown format (e.g. \"2d 0h 0m 0s\").",
-                    "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Worker Request Yellow threshold must be a valid countdown format (e.g. \"2d 0h 0m 0s\").",
+                    "Validation Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
             if (!CountdownFormatParser.TryParse(txtWorkerRed.Text.Trim(), out long workerRed))
             {
-                MessageBox.Show("Worker Request Red threshold must be a valid countdown format (e.g. \"1d 0h 0m 0s\").",
-                    "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Worker Request Red threshold must be a valid countdown format (e.g. \"1d 0h 0m 0s\").",
+                    "Validation Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
             if (!CountdownFormatParser.TryParse(txtColonyImportYellow.Text.Trim(), out long colonyImportYellow))
             {
-                MessageBox.Show("Colony Import Staleness Yellow threshold must be a valid countdown format (e.g. \"5d 0h 0m 0s\").",
-                    "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Colony Import Staleness Yellow threshold must be a valid countdown format (e.g. \"5d 0h 0m 0s\").",
+                    "Validation Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
             if (!CountdownFormatParser.TryParse(txtColonyImportRed.Text.Trim(), out long colonyImportRed))
             {
-                MessageBox.Show("Colony Import Staleness Red threshold must be a valid countdown format (e.g. \"6d 0h 0m 0s\").",
-                    "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Colony Import Staleness Red threshold must be a valid countdown format (e.g. \"6d 0h 0m 0s\").",
+                    "Validation Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
             if (!CountdownFormatParser.TryParse(txtBackgroundInterval.Text.Trim(), out long backgroundInterval))
             {
-                MessageBox.Show("Background Processing Interval must be a valid countdown format (e.g. \"1m 0s\").",
-                    "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Background Processing Interval must be a valid countdown format (e.g. \"1m 0s\").",
+                    "Validation Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
             if (!CountdownFormatParser.TryParse(txtAdminRefresh.Text.Trim(), out long adminRefresh))
             {
-                MessageBox.Show("Admin Refresh Interval must be a valid countdown format (e.g. \"1m 0s\").",
-                    "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Admin Refresh Interval must be a valid countdown format (e.g. \"1m 0s\").",
+                    "Validation Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
             if (!CountdownFormatParser.TryParse(txtCountdownRefresh.Text.Trim(), out long countdownRefresh))
             {
-                MessageBox.Show("Countdown Refresh Rate must be a valid countdown format (e.g. \"1s\").",
-                    "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Countdown Refresh Rate must be a valid countdown format (e.g. \"1s\").",
+                    "Validation Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 

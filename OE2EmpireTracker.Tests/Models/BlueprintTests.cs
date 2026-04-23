@@ -168,14 +168,22 @@ namespace OE2EmpireTracker.Tests.Models
 
             string name = bp.ExtendedName;
             // Order: C{Class} Ev({Evolution}) Name (TechLevel) [NickName]
-            Assert.That(name.IndexOf("C2") < name.IndexOf("Ev(3)"), Is.True,
-                    "Class before Evolution");
-            Assert.That(name.IndexOf("Ev(3)") < name.IndexOf("Cannon"), Is.True,
-                    "Evolution before Name");
-            Assert.That(name.IndexOf("Cannon") < name.IndexOf("(MilSpec)"), Is.True,
-                    "Name before TechLevel");
-            Assert.That(name.IndexOf("(MilSpec)") < name.IndexOf("[Big Gun]"), Is.True,
-                    "TechLevel before NickName");
+            Assert.That(
+                name.IndexOf("C2") < name.IndexOf("Ev(3)"),
+                Is.True,
+                "Class before Evolution");
+            Assert.That(
+                name.IndexOf("Ev(3)") < name.IndexOf("Cannon"),
+                Is.True,
+                "Evolution before Name");
+            Assert.That(
+                name.IndexOf("Cannon") < name.IndexOf("(MilSpec)"),
+                Is.True,
+                "Name before TechLevel");
+            Assert.That(
+                name.IndexOf("(MilSpec)") < name.IndexOf("[Big Gun]"),
+                Is.True,
+                "TechLevel before NickName");
         }
 
         [Test]

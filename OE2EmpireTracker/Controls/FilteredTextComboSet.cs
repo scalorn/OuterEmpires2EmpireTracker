@@ -159,7 +159,13 @@ namespace OE2EmpireTracker.Controls
             SuppressSelectionEvent = false;
             if (filtered.Count > 0 && !string.IsNullOrEmpty(TxtFilter.Text))
             {
-                try { CmbItems.DroppedDown = true; } catch { }
+                try
+                {
+                    CmbItems.DroppedDown = true;
+                }
+                catch
+                {
+                }
             }
         }
 

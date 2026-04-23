@@ -125,9 +125,15 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is Models.ShipTemplate tmpl)
-            { _selectedTemplate = tmpl; PopulateForm(); }
+            {
+                _selectedTemplate = tmpl;
+                PopulateForm();
+            }
             else if (!e.IsSelected && lvwTemplates.SelectedItems.Count == 0)
-            { _selectedTemplate = null; ClearForm(); }
+            {
+                _selectedTemplate = null;
+                ClearForm();
+            }
         }
 
         // Form Population
@@ -135,7 +141,12 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedTemplate == null) { ClearForm(); return; }
+            if (_selectedTemplate == null)
+            {
+                ClearForm();
+                return;
+            }
+
             txtName.Text = _selectedTemplate.Name;
             SelectHullInCombo(_selectedTemplate.HullBlueprintUUID);
             PopulateSlotGrid();
@@ -180,12 +191,18 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             }
 
             cmbHull.SetItems(names, null);
-            sw.Stop(); Log.Info("PERF PopulateHullCombo: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateHullCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void SelectHullInCombo(string hullUUID)
         {
-            if (string.IsNullOrEmpty(hullUUID)) { cmbHull.SetItems(cmbHull.Items, null); return; }
+            if (string.IsNullOrEmpty(hullUUID))
+            {
+                cmbHull.SetItems(cmbHull.Items, null);
+                return;
+            }
+
             int idx = _hullUUIDs.IndexOf(hullUUID);
             if (idx >= 0)
                 cmbHull.SetItems(cmbHull.Items, cmbHull.Items[idx]);
@@ -210,7 +227,11 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvSlots.Rows.Clear();
-            if (_selectedTemplate == null) { sw.Stop(); return; }
+            if (_selectedTemplate == null)
+            {
+                sw.Stop();
+                return;
+            }
 
             var hullBp = playerContext.FindBlueprint(_selectedTemplate.HullBlueprintUUID);
             if (hullBp?.Properties == null) return;
@@ -270,7 +291,8 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 }
             }
 
-            sw.Stop(); Log.Info("PERF PopulateSlotGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateSlotGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void DgvSlots_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -335,11 +357,24 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         private void RefreshStats()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            if (_selectedTemplate == null) { rtbStats.Text = string.Empty; sw.Stop(); return; }
-            var hullBp = playerContext.FindBlueprint(_selectedTemplate.HullBlueprintUUID);
-            if (hullBp == null) { rtbStats.Text = "Select a hull blueprint."; sw.Stop(); return; }
+            if (_selectedTemplate == null)
+            {
+                rtbStats.Text = string.Empty;
+                sw.Stop();
+                return;
+            }
 
-            var stats = ShipBuildService.ComputeStats(hullBp, _selectedTemplate.Components,
+            var hullBp = playerContext.FindBlueprint(_selectedTemplate.HullBlueprintUUID);
+            if (hullBp == null)
+            {
+                rtbStats.Text = "Select a hull blueprint.";
+                sw.Stop();
+                return;
+            }
+
+            var stats = ShipBuildService.ComputeStats(
+                hullBp,
+                _selectedTemplate.Components,
                 uuid => playerContext.FindBlueprint(uuid));
 
             rtbStats.Text = string.Format(
@@ -355,7 +390,8 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 stats.EnergyDefence, stats.KineticDefence, stats.MissileDefence,
                 stats.Acceleration, stats.RotationalThrust, stats.MaxJumpDistance, stats.FuelPerJump,
                 stats.MiningYield, stats.ScanLevel);
-            sw.Stop(); Log.Info("PERF RefreshStats: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF RefreshStats: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // CRUD
@@ -386,15 +422,19 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             if (refs > 0)
             {
                 MessageBox.Show(
-                    string.Format("Cannot delete template '{0}' — it is referenced by {1} ship(s) or build item(s).",
-                        _selectedTemplate.Name, refs),
+                    string.Format(
+                        "Cannot delete template '{0}' — it is referenced by {1} ship(s) or build item(s).",
+                        _selectedTemplate.Name,
+                        refs),
                     "Delete Blocked", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             var result = MessageBox.Show(
                 string.Format("Delete template '{0}'?", _selectedTemplate.Name),
-                "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
             playerContext.RemoveShipTemplate(_selectedTemplate);
             playerContext.WriteContext();
@@ -409,7 +449,10 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             if (_selectedTemplate == null) return;
             string name = txtName.Text.Trim();
             if (string.IsNullOrWhiteSpace(name))
-            { MessageBox.Show("Name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            {
+                MessageBox.Show("Name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             _selectedTemplate.Name = name;
             playerContext.WriteContext();
             PopulateTemplateList();
@@ -431,13 +474,18 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             if (_selectedTemplate == null) return;
             if (string.IsNullOrEmpty(_selectedTemplate.HullBlueprintUUID))
             {
-                MessageBox.Show("Select a hull blueprint first.", "No Hull",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "Select a hull blueprint first.",
+                    "No Hull",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
-            Log.Info("CmdOrderBuild_Click: template={0} uuid={1}",
-                _selectedTemplate.Name, _selectedTemplate.UUID);
+            Log.Info(
+                "CmdOrderBuild_Click: template={0} uuid={1}",
+                _selectedTemplate.Name,
+                _selectedTemplate.UUID);
 
             // Prompt for quantity
             int quantity = ShowQuantityDialog();
@@ -457,8 +505,11 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 string validationError = ShipBuildService.ValidateAssemblyLocation(shipClass, station.StationType);
                 if (validationError != null)
                 {
-                    MessageBox.Show(validationError, "Invalid Assembly Location",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        validationError,
+                        "Invalid Assembly Location",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
                     return;
                 }
             }
@@ -472,8 +523,11 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
             if (items.Count == 0)
             {
-                MessageBox.Show("No build items needed (all components in stock).",
-                    "Order Build", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "No build items needed (all components in stock).",
+                    "Order Build",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -494,12 +548,18 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             playerContext.WriteContext();
             playerContext.OnBuildPlanDataChanged(targetPlan.UUID);
 
-            Log.Info("CmdOrderBuild_Click: {0} items added to plan '{1}'",
-                items.Count, targetPlan.Name);
+            Log.Info(
+                "CmdOrderBuild_Click: {0} items added to plan '{1}'",
+                items.Count,
+                targetPlan.Name);
 
             MessageBox.Show(
-                string.Format("{0} build items for {1}x '{2}' added to plan '{3}'.",
-                    items.Count, quantity, _selectedTemplate.Name, targetPlan.Name),
+                string.Format(
+                    "{0} build items for {1}x '{2}' added to plan '{3}'.",
+                    items.Count,
+                    quantity,
+                    _selectedTemplate.Name,
+                    targetPlan.Name),
                 "Order Build", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -547,8 +607,11 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             var stations = playerContext.GetCurrentPlayerStations();
             if (stations.Count == 0)
             {
-                MessageBox.Show("No stations available. Create a station first.",
-                    "No Stations", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "No stations available. Create a station first.",
+                    "No Stations",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return null;
             }
 
@@ -681,7 +744,13 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         {
             if (IsDisposed) return;
             if (InvokeRequired)
-            { try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); } catch (ObjectDisposedException) { } return; }
+            {
+                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                } catch (ObjectDisposedException)
+                {
+                }
+                return;
+            }
             _selectedTemplate = null;
             PopulateHullCombo();
             PopulateTemplateList();

@@ -17,7 +17,9 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 long expected = Math.Max(1, (long)(86400.0 * (1.0 - level * 0.02)));
                 long actual = BuildTimeCalculator.Calculate(level);
-                Assert.That(actual, Is.EqualTo(expected),
+                Assert.That(
+                    actual,
+                    Is.EqualTo(expected),
                     $"BuildTimeCalculator.Calculate({level}) should return {expected} but got {actual}");
             }
         }
@@ -46,7 +48,9 @@ namespace OE2EmpireTracker.Tests.Services
             for (int level = 0; level <= 100; level++)
             {
                 long result = BuildTimeCalculator.Calculate(level);
-                Assert.That(result, Is.GreaterThanOrEqualTo(1),
+                Assert.That(
+                    result,
+                    Is.GreaterThanOrEqualTo(1),
                     $"Calculate({level}) returned {result}, expected >= 1");
             }
         }

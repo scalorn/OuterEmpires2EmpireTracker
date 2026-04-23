@@ -143,8 +143,10 @@ namespace OE2EmpireTracker.Services
 
                 // Step C: Place the primary
                 result.Add(primary);
-                Log.Info("Placed primary '{0}' at [{1}]",
-                    primaryBp?.ExtendedName ?? primary.FlatpackBlueprintUUID, result.Count - 1);
+                Log.Info(
+                    "Placed primary '{0}' at [{1}]",
+                    primaryBp?.ExtendedName ?? primary.FlatpackBlueprintUUID,
+                    result.Count - 1);
             }
 
             // Append leftover support, fixing deficits as needed
@@ -182,8 +184,11 @@ namespace OE2EmpireTracker.Services
         /// has no deficits. The target status represents the state AFTER some future
         /// structure (e.g. a primary) that isn't in the result list yet.
         /// </summary>
-        private void FixDeficits(List<ColonyStructure> result, List<ColonyStructure> pool,
-            ColonyStructureStatus targetStatus, IColonyStructureWorkers workers)
+        private void FixDeficits(
+            List<ColonyStructure> result,
+            List<ColonyStructure> pool,
+            ColonyStructureStatus targetStatus,
+            IColonyStructureWorkers workers)
         {
             // Keep placing support until the result list has enough resources
             // to satisfy the target status (which includes a future primary).
@@ -217,8 +222,11 @@ namespace OE2EmpireTracker.Services
         /// Places a support structure for the given deficit type. If placing it
         /// would cause a new deficit, places the prerequisite first.
         /// </summary>
-        private void PlaceSupportSafe(List<ColonyStructure> result, List<ColonyStructure> pool,
-            string deficitType, IColonyStructureWorkers workers)
+        private void PlaceSupportSafe(
+            List<ColonyStructure> result,
+            List<ColonyStructure> pool,
+            string deficitType,
+            IColonyStructureWorkers workers)
         {
             // Get the support structure from pool or create it
             ColonyStructure support = TakeFromPool(pool, deficitType);
@@ -387,14 +395,21 @@ namespace OE2EmpireTracker.Services
             return prev;
         }
 
-        private ColonyStructureStatus SimulateOneMore(ColonyStructureStatus prev,
-            ColonyStructure structure, Blueprint blueprint, IColonyStructureWorkers workers)
+        private ColonyStructureStatus SimulateOneMore(
+            ColonyStructureStatus prev,
+            ColonyStructure structure,
+            Blueprint blueprint,
+            IColonyStructureWorkers workers)
         {
             var calculator = new ColonyStatusCalculator(new Colony());
             var current = new ColonyStructureStatus();
             // structure can be null for look-ahead simulation with just a blueprint
-            calculator.CalculateBuilt(structure ?? new ColonyStructure { UUID = Guid.NewGuid().ToString() },
-                prev, current, workers, blueprint);
+            calculator.CalculateBuilt(
+                structure ?? new ColonyStructure { UUID = Guid.NewGuid().ToString() },
+                prev,
+                current,
+                workers,
+                blueprint);
             return current;
         }
 

@@ -38,11 +38,17 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
             MigrationRunner.Run(ec, pc);
 
-            Assert.That(bp.Properties.ContainsKey("Class"), Is.False,
+            Assert.That(
+                bp.Properties.ContainsKey("Class"),
+                Is.False,
                 "Class should be removed from PropertyBag");
-            Assert.That(bp.Properties.ContainsKey("Health"), Is.True,
+            Assert.That(
+                bp.Properties.ContainsKey("Health"),
+                Is.True,
                 "Other properties should be untouched");
-            Assert.That(bp.Class, Is.EqualTo(3),
+            Assert.That(
+                bp.Class,
+                Is.EqualTo(3),
                 "Blueprint.Class should retain its value");
         }
 
@@ -61,7 +67,9 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             MigrationRunner.Run(ec, pc);
 
             Assert.That(bp.Properties.ContainsKey("Class"), Is.False);
-            Assert.That(bp.Class, Is.EqualTo(7),
+            Assert.That(
+                bp.Class,
+                Is.EqualTo(7),
                 "Blueprint.Class should be set from PropertyBag value when it was 0");
         }
 

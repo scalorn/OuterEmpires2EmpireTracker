@@ -41,8 +41,13 @@ namespace OE2EmpireTracker.Services.Migration
         public int Class { get; }
         public string TechLevel { get; }
 
-        public RenameEntry(string oldName, string newName,
-            int evolution, string blueprintType, int cls, string techLevel)
+        public RenameEntry(
+            string oldName,
+            string newName,
+            int evolution,
+            string blueprintType,
+            int cls,
+            string techLevel)
         {
             OldName = oldName;
             NewName = newName;

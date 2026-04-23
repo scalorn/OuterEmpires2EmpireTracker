@@ -136,8 +136,10 @@ namespace OE2EmpireTracker.Services
             if (blueprintFinder == null) throw new ArgumentNullException(nameof(blueprintFinder));
 
             var sw = Stopwatch.StartNew();
-            Log.Debug("GenerateColonyBuildItems: scanning colony '{0}' ({1})",
-                colony.ColonyName, colony.UUID);
+            Log.Debug(
+                "GenerateColonyBuildItems: scanning colony '{0}' ({1})",
+                colony.ColonyName,
+                colony.UUID);
 
             int added = 0;
             var existingBlueprintUUIDs = BuildExistingBlueprintSet(targetPlan, colony.UUID);
@@ -145,16 +147,23 @@ namespace OE2EmpireTracker.Services
             foreach (var structure in colony.Structures)
             {
                 if (IsUnstagedUnbuilt(structure) &&
-                    TryCreateBuildItem(structure, colony, targetPlan,
-                        blueprintFinder, existingBlueprintUUIDs))
+                    TryCreateBuildItem(
+                        structure,
+                        colony,
+                        targetPlan,
+                        blueprintFinder,
+                        existingBlueprintUUIDs))
                 {
                     added++;
                 }
             }
 
             sw.Stop();
-            Log.Info("PERF GenerateColonyBuildItems: {0} items added for colony '{1}' in {2}ms",
-                added, colony.ColonyName, sw.ElapsedMilliseconds);
+            Log.Info(
+                "PERF GenerateColonyBuildItems: {0} items added for colony '{1}' in {2}ms",
+                added,
+                colony.ColonyName,
+                sw.ElapsedMilliseconds);
             return added;
         }
 
@@ -209,15 +218,18 @@ namespace OE2EmpireTracker.Services
         {
             if (string.IsNullOrEmpty(structure.FlatpackBlueprintUUID))
             {
-                Log.Warn("GenerateColonyBuildItems: structure {0} has no FlatpackBlueprintUUID, skipping",
+                Log.Warn(
+                    "GenerateColonyBuildItems: structure {0} has no FlatpackBlueprintUUID, skipping",
                     structure.UUID);
                 return false;
             }
 
             if (existingBlueprintUUIDs.Contains(structure.FlatpackBlueprintUUID))
             {
-                Log.Debug("GenerateColonyBuildItems: blueprint {0} already in plan for colony {1}, skipping",
-                    structure.FlatpackBlueprintUUID, colony.UUID);
+                Log.Debug(
+                    "GenerateColonyBuildItems: blueprint {0} already in plan for colony {1}, skipping",
+                    structure.FlatpackBlueprintUUID,
+                    colony.UUID);
                 return false;
             }
 

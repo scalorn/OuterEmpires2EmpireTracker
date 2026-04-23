@@ -112,9 +112,12 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             }
 
             sw.Stop();
-            Log.Info("PopulatePlanList PERF: total={0}ms items={1}",
-                sw.ElapsedMilliseconds, plans.Count);
-            sw.Stop(); Log.Info("PERF PopulatePlanList: {0}ms", sw.ElapsedMilliseconds);
+            Log.Info(
+                "PopulatePlanList PERF: total={0}ms items={1}",
+                sw.ElapsedMilliseconds,
+                plans.Count);
+            sw.Stop();
+            Log.Info("PERF PopulatePlanList: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void TxtPlanFilter_TextChanged(object sender, EventArgs e)
@@ -145,7 +148,11 @@ namespace OE2EmpireTracker.Forms.PricingPlan
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedPlan == null) { ClearForm(); return; }
+            if (_selectedPlan == null)
+            {
+                ClearForm();
+                return;
+            }
 
             txtPlanName.Text = _selectedPlan.Name;
             txtDescription.Text = _selectedPlan.Description;
@@ -156,7 +163,8 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             SetDetailEnabled(true);
             sw.Stop();
             Log.Info("PopulateForm PERF: total={0}ms", sw.ElapsedMilliseconds);
-            sw.Stop(); Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ClearForm()
@@ -189,7 +197,11 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             dgvResourcePrices.Rows.Clear();
             dgvResourcePrices.CellValidating += DgvResourcePrices_CellValidating;
 
-            if (_selectedPlan == null) { sw.Stop(); return; }
+            if (_selectedPlan == null)
+            {
+                sw.Stop();
+                return;
+            }
 
             foreach (var resource in Resource.Resources.OrderBy(r => r.Name))
             {
@@ -206,7 +218,8 @@ namespace OE2EmpireTracker.Forms.PricingPlan
                 dgvResourcePrices.Rows[rowIdx].Tag = key;
             }
 
-            sw.Stop(); Log.Info("PERF PopulateResourceGrid: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateResourceGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -----------------------------------------------------------------------
@@ -412,8 +425,13 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
                 return;
             }
 

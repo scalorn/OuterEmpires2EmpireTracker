@@ -43,7 +43,13 @@ namespace OE2EmpireTracker.Tests.Services
         {
             EmpireContext.Reset();
             PlayerContext.Reset();
-            try { Directory.Delete(_tempDir, true); } catch { }
+            try
+            {
+                Directory.Delete(_tempDir, true);
+            }
+            catch
+            {
+            }
         }
 
         [Test]

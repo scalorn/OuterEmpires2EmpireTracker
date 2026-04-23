@@ -57,9 +57,14 @@ namespace OE2EmpireTracker.Services
                             SourceLocationUUID = stage.LocationUUID,
                             SourceLocationType = stage.LocationType
                         });
-                        Log.Info("Supply chain threshold exceeded: chain={0} stage={1} resource={2}({3}) qty={4} threshold={5}",
-                            chain.Name, stage.Sequence, stage.ResourceName, stage.ResourcePurity,
-                            qty, stage.AccumulationThreshold);
+                        Log.Info(
+                            "Supply chain threshold exceeded: chain={0} stage={1} resource={2}({3}) qty={4} threshold={5}",
+                            chain.Name,
+                            stage.Sequence,
+                            stage.ResourceName,
+                            stage.ResourcePurity,
+                            qty,
+                            stage.AccumulationThreshold);
                     }
                 }
             }

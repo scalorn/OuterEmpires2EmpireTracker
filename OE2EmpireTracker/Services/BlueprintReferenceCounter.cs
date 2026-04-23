@@ -49,11 +49,22 @@ namespace OE2EmpireTracker.Services
                 foreach (var s in colony.Structures)
                 {
                     if (!string.IsNullOrEmpty(s.FlatpackBlueprintUUID))
-                    { _flatpackMap.TryGetValue(s.FlatpackBlueprintUUID, out int c); _flatpackMap[s.FlatpackBlueprintUUID] = c + 1; }
+                    {
+                        _flatpackMap.TryGetValue(s.FlatpackBlueprintUUID, out int c);
+                        _flatpackMap[s.FlatpackBlueprintUUID] = c + 1;
+                    }
+
                     if (!string.IsNullOrEmpty(s.ResearchingBlueprintUUID))
-                    { _researchingMap.TryGetValue(s.ResearchingBlueprintUUID, out int c); _researchingMap[s.ResearchingBlueprintUUID] = c + 1; }
+                    {
+                        _researchingMap.TryGetValue(s.ResearchingBlueprintUUID, out int c);
+                        _researchingMap[s.ResearchingBlueprintUUID] = c + 1;
+                    }
+
                     if (!string.IsNullOrEmpty(s.ManufacturingBlueprintUUID))
-                    { _manufacturingMap.TryGetValue(s.ManufacturingBlueprintUUID, out int c); _manufacturingMap[s.ManufacturingBlueprintUUID] = c + 1; }
+                    {
+                        _manufacturingMap.TryGetValue(s.ManufacturingBlueprintUUID, out int c);
+                        _manufacturingMap[s.ManufacturingBlueprintUUID] = c + 1;
+                    }
                 }
             }
 
@@ -61,14 +72,20 @@ namespace OE2EmpireTracker.Services
             foreach (var b in bpList)
             {
                 if (!string.IsNullOrEmpty(b.BaseBlueprintUUID) && b.UUID != b.BaseBlueprintUUID)
-                { _baseBlueprintMap.TryGetValue(b.BaseBlueprintUUID, out int c); _baseBlueprintMap[b.BaseBlueprintUUID] = c + 1; }
+                {
+                    _baseBlueprintMap.TryGetValue(b.BaseBlueprintUUID, out int c);
+                    _baseBlueprintMap[b.BaseBlueprintUUID] = c + 1;
+                }
             }
 
             _scannerMap = new Dictionary<string, int>();
             foreach (var s in surveyList)
             {
                 if (!string.IsNullOrEmpty(s.ScannerBlueprintUUID))
-                { _scannerMap.TryGetValue(s.ScannerBlueprintUUID, out int c); _scannerMap[s.ScannerBlueprintUUID] = c + 1; }
+                {
+                    _scannerMap.TryGetValue(s.ScannerBlueprintUUID, out int c);
+                    _scannerMap[s.ScannerBlueprintUUID] = c + 1;
+                }
             }
 
             _buildItemMap = new Dictionary<string, int>();
@@ -78,7 +95,10 @@ namespace OE2EmpireTracker.Services
                 foreach (var item in plan.Items)
                 {
                     if (!string.IsNullOrEmpty(item.BlueprintUUID))
-                    { _buildItemMap.TryGetValue(item.BlueprintUUID, out int c); _buildItemMap[item.BlueprintUUID] = c + 1; }
+                    {
+                        _buildItemMap.TryGetValue(item.BlueprintUUID, out int c);
+                        _buildItemMap[item.BlueprintUUID] = c + 1;
+                    }
                 }
             }
 
@@ -86,13 +106,20 @@ namespace OE2EmpireTracker.Services
             foreach (var tmpl in templateList)
             {
                 if (!string.IsNullOrEmpty(tmpl.HullBlueprintUUID))
-                { _shipComponentMap.TryGetValue(tmpl.HullBlueprintUUID, out int c); _shipComponentMap[tmpl.HullBlueprintUUID] = c + 1; }
+                {
+                    _shipComponentMap.TryGetValue(tmpl.HullBlueprintUUID, out int c);
+                    _shipComponentMap[tmpl.HullBlueprintUUID] = c + 1;
+                }
+
                 if (tmpl.Components != null)
                 {
                     foreach (var comp in tmpl.Components)
                     {
                         if (!string.IsNullOrEmpty(comp.BlueprintUUID))
-                        { _shipComponentMap.TryGetValue(comp.BlueprintUUID, out int c); _shipComponentMap[comp.BlueprintUUID] = c + 1; }
+                        {
+                            _shipComponentMap.TryGetValue(comp.BlueprintUUID, out int c);
+                            _shipComponentMap[comp.BlueprintUUID] = c + 1;
+                        }
                     }
                 }
             }
@@ -100,13 +127,20 @@ namespace OE2EmpireTracker.Services
             foreach (var ship in shipList)
             {
                 if (!string.IsNullOrEmpty(ship.HullBlueprintUUID))
-                { _shipComponentMap.TryGetValue(ship.HullBlueprintUUID, out int c); _shipComponentMap[ship.HullBlueprintUUID] = c + 1; }
+                {
+                    _shipComponentMap.TryGetValue(ship.HullBlueprintUUID, out int c);
+                    _shipComponentMap[ship.HullBlueprintUUID] = c + 1;
+                }
+
                 if (ship.Components != null)
                 {
                     foreach (var comp in ship.Components)
                     {
                         if (!string.IsNullOrEmpty(comp.BlueprintUUID))
-                        { _shipComponentMap.TryGetValue(comp.BlueprintUUID, out int c); _shipComponentMap[comp.BlueprintUUID] = c + 1; }
+                        {
+                            _shipComponentMap.TryGetValue(comp.BlueprintUUID, out int c);
+                            _shipComponentMap[comp.BlueprintUUID] = c + 1;
+                        }
                     }
                 }
             }
@@ -114,13 +148,20 @@ namespace OE2EmpireTracker.Services
             foreach (var station in stationList)
             {
                 if (!string.IsNullOrEmpty(station.StationBlueprintUUID))
-                { _shipComponentMap.TryGetValue(station.StationBlueprintUUID, out int c); _shipComponentMap[station.StationBlueprintUUID] = c + 1; }
+                {
+                    _shipComponentMap.TryGetValue(station.StationBlueprintUUID, out int c);
+                    _shipComponentMap[station.StationBlueprintUUID] = c + 1;
+                }
+
                 if (station.Components != null)
                 {
                     foreach (var comp in station.Components)
                     {
                         if (!string.IsNullOrEmpty(comp.BlueprintUUID))
-                        { _shipComponentMap.TryGetValue(comp.BlueprintUUID, out int c); _shipComponentMap[comp.BlueprintUUID] = c + 1; }
+                        {
+                            _shipComponentMap.TryGetValue(comp.BlueprintUUID, out int c);
+                            _shipComponentMap[comp.BlueprintUUID] = c + 1;
+                        }
                     }
                 }
             }
@@ -128,14 +169,20 @@ namespace OE2EmpireTracker.Services
             foreach (var listing in marketListingList)
             {
                 if (!string.IsNullOrEmpty(listing.ItemReferenceID))
-                { _shipComponentMap.TryGetValue(listing.ItemReferenceID, out int c); _shipComponentMap[listing.ItemReferenceID] = c + 1; }
+                {
+                    _shipComponentMap.TryGetValue(listing.ItemReferenceID, out int c);
+                    _shipComponentMap[listing.ItemReferenceID] = c + 1;
+                }
             }
 
             // MarketTransaction item references
             foreach (var tx in marketTransactionList)
             {
                 if (!string.IsNullOrEmpty(tx.ItemReferenceID))
-                { _shipComponentMap.TryGetValue(tx.ItemReferenceID, out int c); _shipComponentMap[tx.ItemReferenceID] = c + 1; }
+                {
+                    _shipComponentMap.TryGetValue(tx.ItemReferenceID, out int c);
+                    _shipComponentMap[tx.ItemReferenceID] = c + 1;
+                }
             }
 
             // StockPlan target item references
@@ -146,7 +193,10 @@ namespace OE2EmpireTracker.Services
                 foreach (var target in plan.Targets)
                 {
                     if (!string.IsNullOrEmpty(target.ItemReferenceID))
-                    { _stockTargetMap.TryGetValue(target.ItemReferenceID, out int c); _stockTargetMap[target.ItemReferenceID] = c + 1; }
+                    {
+                        _stockTargetMap.TryGetValue(target.ItemReferenceID, out int c);
+                        _stockTargetMap[target.ItemReferenceID] = c + 1;
+                    }
                 }
             }
         }

@@ -262,7 +262,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
 
             Assert.That(bp.Description, Is.EqualTo("Reactor that generates power for the ship"));
             Assert.That(bp.Class, Is.EqualTo(6));
-            Assert.That(bp.Properties.ContainsKey("Class"), Is.False,
+            Assert.That(
+                bp.Properties.ContainsKey("Class"),
+                Is.False,
                 "Class should be extracted to Blueprint.Class and removed from PropertyBag");
 
             string manuTime;
@@ -480,7 +482,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
             var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, html);
 
-            Assert.That(bp.Resources.Count, Is.EqualTo(0),
+            Assert.That(
+                bp.Resources.Count,
+                Is.EqualTo(0),
                 "Statistics page should not contain resources");
         }
 
@@ -537,7 +541,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
             string html = LoadTestData("BlueprintMarketHulls.html");
             var results = _scanner.ProcessMarketHtml(html);
 
-            Assert.That(results.Count, Is.GreaterThanOrEqualTo(4),
+            Assert.That(
+                results.Count,
+                Is.GreaterThanOrEqualTo(4),
                 "Should extract at least 4 blueprints from market listing");
 
             // Log what we got for exploration
@@ -570,13 +576,19 @@ namespace OE2EmpireTracker.Tests.Blueprint
             foreach (var mb in results)
             {
                 var bp = mb.Blueprint;
-                Assert.That(bp.Properties.Count, Is.GreaterThan(0),
+                Assert.That(
+                    bp.Properties.Count,
+                    Is.GreaterThan(0),
                     $"Blueprint '{bp.Name}' should have properties");
 
                 // All hull blueprints should have Class extracted to Blueprint.Class
-                Assert.That(bp.Class, Is.GreaterThan(0),
+                Assert.That(
+                    bp.Class,
+                    Is.GreaterThan(0),
                     $"Blueprint '{bp.Name}' should have Class > 0");
-                Assert.That(bp.Properties.ContainsKey("Class"), Is.False,
+                Assert.That(
+                    bp.Properties.ContainsKey("Class"),
+                    Is.False,
                     $"Blueprint '{bp.Name}' should not have Class in PropertyBag (extracted to Blueprint.Class)");
             }
         }
@@ -590,13 +602,17 @@ namespace OE2EmpireTracker.Tests.Blueprint
             foreach (var mb in results)
             {
                 var bp = mb.Blueprint;
-                Assert.That(bp.Resources.Count, Is.GreaterThan(0),
+                Assert.That(
+                    bp.Resources.Count,
+                    Is.GreaterThan(0),
                     $"Blueprint '{bp.Name}' should have resources");
 
                 // All resource quantities should be numeric
                 foreach (var kvp in bp.Resources)
                 {
-                    Assert.That(int.TryParse(kvp.Value, out _), Is.True,
+                    Assert.That(
+                        int.TryParse(kvp.Value, out _),
+                        Is.True,
                         $"Resource '{kvp.Key}' on '{bp.Name}' should have numeric quantity, got '{kvp.Value}'");
                 }
             }
@@ -613,13 +629,17 @@ namespace OE2EmpireTracker.Tests.Blueprint
             // Wear and Tear Rate should be stripped of % (decimal normalization)
             string wearRate;
             first.Properties.GetString("Wear and Tear Rate", null, out wearRate);
-            Assert.That(wearRate, Does.Not.Contain("%"),
+            Assert.That(
+                wearRate,
+                Does.Not.Contain("%"),
                 "Wear and Tear Rate should have % stripped by decimal normalization");
 
             // Maximum Damage Repair should be stripped of %
             string dmgRepair;
             first.Properties.GetString("Maximum Damage Repair", null, out dmgRepair);
-            Assert.That(dmgRepair, Does.Not.Contain("%"),
+            Assert.That(
+                dmgRepair,
+                Does.Not.Contain("%"),
                 "Maximum Damage Repair should have % stripped by decimal normalization");
         }
 
@@ -635,7 +655,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
                 var bp = mb.Blueprint;
                 if (bp.Properties.Count > 0) // skip unexpanded listings
                 {
-                    Assert.That(bp.BluePrintType, Is.EqualTo("Hull"),
+                    Assert.That(
+                        bp.BluePrintType,
+                        Is.EqualTo("Hull"),
                         $"Blueprint '{bp.Name}' should be type Hull");
                 }
             }

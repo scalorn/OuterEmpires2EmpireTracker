@@ -314,7 +314,8 @@ namespace OE2EmpireTracker.Tests.Parsers
             var skill = profile.GetSkill(SkillName.ContractManagement);
             // 22 days, 9 hours = (22*24 + 9) * 3600 = 537 * 3600 = 1933200 seconds
             // Allow +/-5s tolerance because TimeRemaining is computed from DateTime.UtcNow
-            Assert.That(skill.CompletionTime.TimeRemaining,
+            Assert.That(
+                skill.CompletionTime.TimeRemaining,
                 Is.InRange(1933200L - 5, 1933200L));
         }
 

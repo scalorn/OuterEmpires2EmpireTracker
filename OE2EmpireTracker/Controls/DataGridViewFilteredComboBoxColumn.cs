@@ -48,7 +48,9 @@ namespace OE2EmpireTracker.Controls
 
         public override object DefaultNewRowValue => string.Empty;
 
-        public override void InitializeEditingControl(int rowIndex, object initialFormattedValue,
+        public override void InitializeEditingControl(
+            int rowIndex,
+            object initialFormattedValue,
             DataGridViewCellStyle dataGridViewCellStyle)
         {
             base.InitializeEditingControl(rowIndex, initialFormattedValue, dataGridViewCellStyle);
@@ -71,9 +73,17 @@ namespace OE2EmpireTracker.Controls
             return clone;
         }
 
-        protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds,
-            int rowIndex, DataGridViewElementStates cellState, object value, object formattedValue,
-            string errorText, DataGridViewCellStyle cellStyle, DataGridViewAdvancedBorderStyle advancedBorderStyle,
+        protected override void Paint(
+            Graphics graphics,
+            Rectangle clipBounds,
+            Rectangle cellBounds,
+            int rowIndex,
+            DataGridViewElementStates cellState,
+            object value,
+            object formattedValue,
+            string errorText,
+            DataGridViewCellStyle cellStyle,
+            DataGridViewAdvancedBorderStyle advancedBorderStyle,
             DataGridViewPaintParts paintParts)
         {
             if ((paintParts & DataGridViewPaintParts.Background) != 0)
@@ -95,9 +105,13 @@ namespace OE2EmpireTracker.Controls
                         cellBounds.Y + cellStyle.Padding.Top,
                         cellBounds.Width - cellStyle.Padding.Horizontal - 4,
                         cellBounds.Height - cellStyle.Padding.Vertical);
-                    TextRenderer.DrawText(graphics, text, cellStyle.Font, textBounds,
-                        cellStyle.ForeColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter |
-                        TextFormatFlags.EndEllipsis | TextFormatFlags.SingleLine);
+                    TextRenderer.DrawText(
+                        graphics,
+                        text,
+                        cellStyle.Font,
+                        textBounds,
+                        cellStyle.ForeColor,
+                        TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.SingleLine);
                 }
             }
         }

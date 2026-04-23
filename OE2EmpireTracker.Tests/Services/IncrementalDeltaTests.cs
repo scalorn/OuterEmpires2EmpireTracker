@@ -131,7 +131,9 @@ namespace OE2EmpireTracker.Tests.Services
 
             foreach (var structure in colony.Structures)
             {
-                Assert.That(structure.StatusDelta, Is.Not.Null,
+                Assert.That(
+                    structure.StatusDelta,
+                    Is.Not.Null,
                     $"Structure {structure.UUID} should have a non-null StatusDelta after CalculateBuilt()");
             }
         }
@@ -169,25 +171,43 @@ namespace OE2EmpireTracker.Tests.Services
                 unalloc += d.UnallocatedCount;
             }
 
-            Assert.That(calc.FinalActualStatus.PowerProvided, Is.EqualTo(powerProv).Within(0.01m),
+            Assert.That(
+                calc.FinalActualStatus.PowerProvided,
+                Is.EqualTo(powerProv).Within(0.01m),
                 "PowerProvided mismatch");
-            Assert.That(calc.FinalActualStatus.PowerRequired, Is.EqualTo(powerReq).Within(0.01m),
+            Assert.That(
+                calc.FinalActualStatus.PowerRequired,
+                Is.EqualTo(powerReq).Within(0.01m),
                 "PowerRequired mismatch");
-            Assert.That(calc.FinalActualStatus.HabitationProvision, Is.EqualTo(habProv).Within(0.01m),
+            Assert.That(
+                calc.FinalActualStatus.HabitationProvision,
+                Is.EqualTo(habProv).Within(0.01m),
                 "HabitationProvision mismatch");
-            Assert.That(calc.FinalActualStatus.FoodProvision, Is.EqualTo(foodProv).Within(0.01m),
+            Assert.That(
+                calc.FinalActualStatus.FoodProvision,
+                Is.EqualTo(foodProv).Within(0.01m),
                 "FoodProvision mismatch");
-            Assert.That(calc.FinalActualStatus.EntertainmentProvided, Is.EqualTo(entProv).Within(0.01m),
+            Assert.That(
+                calc.FinalActualStatus.EntertainmentProvided,
+                Is.EqualTo(entProv).Within(0.01m),
                 "EntertainmentProvided mismatch");
-            Assert.That(calc.FinalActualStatus.WarehouseCapacity, Is.EqualTo(whCap).Within(0.01m),
+            Assert.That(
+                calc.FinalActualStatus.WarehouseCapacity,
+                Is.EqualTo(whCap).Within(0.01m),
                 "WarehouseCapacity mismatch");
 
             int totalPeople = workers + unalloc;
-            Assert.That(calc.FinalActualStatus.HabitationRequired, Is.EqualTo((decimal)totalPeople).Within(0.01m),
+            Assert.That(
+                calc.FinalActualStatus.HabitationRequired,
+                Is.EqualTo((decimal)totalPeople).Within(0.01m),
                 "HabitationRequired mismatch");
-            Assert.That(calc.FinalActualStatus.FoodRequired, Is.EqualTo((decimal)totalPeople).Within(0.01m),
+            Assert.That(
+                calc.FinalActualStatus.FoodRequired,
+                Is.EqualTo((decimal)totalPeople).Within(0.01m),
                 "FoodRequired mismatch");
-            Assert.That(calc.FinalActualStatus.EntertainmentRequired, Is.EqualTo((decimal)(totalPeople * 2)).Within(0.01m),
+            Assert.That(
+                calc.FinalActualStatus.EntertainmentRequired,
+                Is.EqualTo((decimal)(totalPeople * 2)).Within(0.01m),
                 "EntertainmentRequired mismatch");
         }
 
@@ -224,23 +244,41 @@ namespace OE2EmpireTracker.Tests.Services
             var calc2 = new ColonyStatusCalculator(colony);
             calc2.CalculateBuilt();
 
-            Assert.That(incPowerProv, Is.EqualTo(calc2.FinalActualStatus.PowerProvided).Within(0.01m),
+            Assert.That(
+                incPowerProv,
+                Is.EqualTo(calc2.FinalActualStatus.PowerProvided).Within(0.01m),
                 "PowerProvided mismatch after RecalculateStructure");
-            Assert.That(incPowerReq, Is.EqualTo(calc2.FinalActualStatus.PowerRequired).Within(0.01m),
+            Assert.That(
+                incPowerReq,
+                Is.EqualTo(calc2.FinalActualStatus.PowerRequired).Within(0.01m),
                 "PowerRequired mismatch after RecalculateStructure");
-            Assert.That(incHabProv, Is.EqualTo(calc2.FinalActualStatus.HabitationProvision).Within(0.01m),
+            Assert.That(
+                incHabProv,
+                Is.EqualTo(calc2.FinalActualStatus.HabitationProvision).Within(0.01m),
                 "HabitationProvision mismatch after RecalculateStructure");
-            Assert.That(incFoodProv, Is.EqualTo(calc2.FinalActualStatus.FoodProvision).Within(0.01m),
+            Assert.That(
+                incFoodProv,
+                Is.EqualTo(calc2.FinalActualStatus.FoodProvision).Within(0.01m),
                 "FoodProvision mismatch after RecalculateStructure");
-            Assert.That(incEntProv, Is.EqualTo(calc2.FinalActualStatus.EntertainmentProvided).Within(0.01m),
+            Assert.That(
+                incEntProv,
+                Is.EqualTo(calc2.FinalActualStatus.EntertainmentProvided).Within(0.01m),
                 "EntertainmentProvided mismatch after RecalculateStructure");
-            Assert.That(incWhCap, Is.EqualTo(calc2.FinalActualStatus.WarehouseCapacity).Within(0.01m),
+            Assert.That(
+                incWhCap,
+                Is.EqualTo(calc2.FinalActualStatus.WarehouseCapacity).Within(0.01m),
                 "WarehouseCapacity mismatch after RecalculateStructure");
-            Assert.That(incHabReq, Is.EqualTo(calc2.FinalActualStatus.HabitationRequired).Within(0.01m),
+            Assert.That(
+                incHabReq,
+                Is.EqualTo(calc2.FinalActualStatus.HabitationRequired).Within(0.01m),
                 "HabitationRequired mismatch after RecalculateStructure");
-            Assert.That(incFoodReq, Is.EqualTo(calc2.FinalActualStatus.FoodRequired).Within(0.01m),
+            Assert.That(
+                incFoodReq,
+                Is.EqualTo(calc2.FinalActualStatus.FoodRequired).Within(0.01m),
                 "FoodRequired mismatch after RecalculateStructure");
-            Assert.That(incEntReq, Is.EqualTo(calc2.FinalActualStatus.EntertainmentRequired).Within(0.01m),
+            Assert.That(
+                incEntReq,
+                Is.EqualTo(calc2.FinalActualStatus.EntertainmentRequired).Within(0.01m),
                 "EntertainmentRequired mismatch after RecalculateStructure");
         }
 
@@ -271,11 +309,17 @@ namespace OE2EmpireTracker.Tests.Services
             var calc2 = new ColonyStatusCalculator(colony);
             calc2.CalculateBuilt();
 
-            Assert.That(incHabReq, Is.EqualTo(calc2.FinalActualStatus.HabitationRequired).Within(0.01m),
+            Assert.That(
+                incHabReq,
+                Is.EqualTo(calc2.FinalActualStatus.HabitationRequired).Within(0.01m),
                 "HabitationRequired mismatch after worker unassign");
-            Assert.That(incFoodReq, Is.EqualTo(calc2.FinalActualStatus.FoodRequired).Within(0.01m),
+            Assert.That(
+                incFoodReq,
+                Is.EqualTo(calc2.FinalActualStatus.FoodRequired).Within(0.01m),
                 "FoodRequired mismatch after worker unassign");
-            Assert.That(incEntReq, Is.EqualTo(calc2.FinalActualStatus.EntertainmentRequired).Within(0.01m),
+            Assert.That(
+                incEntReq,
+                Is.EqualTo(calc2.FinalActualStatus.EntertainmentRequired).Within(0.01m),
                 "EntertainmentRequired mismatch after worker unassign");
         }
 

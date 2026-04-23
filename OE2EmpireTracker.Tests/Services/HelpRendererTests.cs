@@ -21,9 +21,13 @@ namespace OE2EmpireTracker.Tests.Services
             foreach (var (displayName, fileName) in topics)
             {
                 var html = HelpRenderer.RenderTopic(fileName);
-                Assert.That(html, Is.Not.Null,
+                Assert.That(
+                    html,
+                    Is.Not.Null,
                     $"RenderTopic returned null for topic '{displayName}' ({fileName})");
-                Assert.That(html, Is.Not.Empty,
+                Assert.That(
+                    html,
+                    Is.Not.Empty,
                     $"RenderTopic returned empty string for topic '{displayName}' ({fileName})");
             }
         }

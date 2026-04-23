@@ -28,21 +28,33 @@ namespace OE2EmpireTracker.Forms.Market
             this.StartPosition = FormStartPosition.CenterParent;
 
             int y = 10;
-            AddLabel(string.Format("Available: {0}", listing.Quantity), 10, y); y += 25;
+            AddLabel(string.Format("Available: {0}", listing.Quantity), 10, y);
+            y += 25;
             string condStr = listing.MaxHP > 0
                 ? string.Format("Condition: {0:F0}%", (listing.CurrentHP * 100.0 / listing.MaxHP))
                 : "Condition: N/A";
-            AddLabel(condStr, 10, y); y += 25;
-            AddLabel("Quantity:", 10, y); txtQuantity = AddTextBox(130, y, 100); y += 30;
-            AddLabel("Price/Unit:", 10, y); txtPricePerUnit = AddTextBox(130, y, 100);
-            txtPricePerUnit.Text = listing.PricePerUnit.ToString(); y += 30;
-            AddLabel("Counterparty:", 10, y); txtCounterparty = AddTextBox(130, y, 180); y += 30;
-            AddLabel("Counterparty Faction:", 10, y); txtCounterpartyFaction = AddTextBox(130, y, 180); y += 35;
+            AddLabel(condStr, 10, y);
+            y += 25;
+            AddLabel("Quantity:", 10, y);
+            txtQuantity = AddTextBox(130, y, 100);
+            y += 30;
+            AddLabel("Price/Unit:", 10, y);
+            txtPricePerUnit = AddTextBox(130, y, 100);
+            txtPricePerUnit.Text = listing.PricePerUnit.ToString();
+            y += 30;
+            AddLabel("Counterparty:", 10, y);
+            txtCounterparty = AddTextBox(130, y, 180);
+            y += 30;
+            AddLabel("Counterparty Faction:", 10, y);
+            txtCounterpartyFaction = AddTextBox(130, y, 180);
+            y += 35;
 
             cmdOK = new Button { Text = "Record Sale", Left = 80, Top = y, Width = 90, DialogResult = DialogResult.OK };
             cmdCancel = new Button { Text = "Cancel", Left = 180, Top = y, Width = 75, DialogResult = DialogResult.Cancel };
-            this.Controls.Add(cmdOK); this.Controls.Add(cmdCancel);
-            this.AcceptButton = cmdOK; this.CancelButton = cmdCancel;
+            this.Controls.Add(cmdOK);
+            this.Controls.Add(cmdCancel);
+            this.AcceptButton = cmdOK;
+            this.CancelButton = cmdCancel;
 
             cmdOK.Click += (s, ev) =>
             {
@@ -70,13 +82,15 @@ namespace OE2EmpireTracker.Forms.Market
         private Label AddLabel(string text, int x, int y)
         {
             var lbl = new Label { Text = text, Left = x, Top = y + 3, AutoSize = true };
-            this.Controls.Add(lbl); return lbl;
+            this.Controls.Add(lbl);
+            return lbl;
         }
 
         private TextBox AddTextBox(int x, int y, int w)
         {
             var txt = new TextBox { Left = x, Top = y, Width = w };
-            this.Controls.Add(txt); return txt;
+            this.Controls.Add(txt);
+            return txt;
         }
     }
 }

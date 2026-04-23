@@ -38,8 +38,13 @@ namespace OE2EmpireTracker.Tests.Parsers
         /// <summary>
         /// Helper to create a survey with a single resource entry.
         /// </summary>
-        private Survey CreateSurvey(string uuid, string planetName, string surveyId,
-            string resourceName, string purity, string amount)
+        private Survey CreateSurvey(
+            string uuid,
+            string planetName,
+            string surveyId,
+            string resourceName,
+            string purity,
+            string amount)
         {
             var survey = new Survey("Test Survey")
             {

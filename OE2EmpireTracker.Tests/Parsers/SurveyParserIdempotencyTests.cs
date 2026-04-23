@@ -90,11 +90,17 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(afterSecond.Count, Is.EqualTo(snapshot.Count));
             for (int i = 0; i < snapshot.Count; i++)
             {
-                Assert.That(afterSecond[i].Resource, Is.EqualTo(snapshot[i].Resource),
+                Assert.That(
+                    afterSecond[i].Resource,
+                    Is.EqualTo(snapshot[i].Resource),
                     $"Resource name mismatch at index {i}");
-                Assert.That(afterSecond[i].Purity, Is.EqualTo(snapshot[i].Purity),
+                Assert.That(
+                    afterSecond[i].Purity,
+                    Is.EqualTo(snapshot[i].Purity),
                     $"Purity mismatch for {snapshot[i].Resource}");
-                Assert.That(afterSecond[i].Amount, Is.EqualTo(snapshot[i].Amount),
+                Assert.That(
+                    afterSecond[i].Amount,
+                    Is.EqualTo(snapshot[i].Amount),
                     $"Amount mismatch for {snapshot[i].Resource}");
             }
         }
@@ -123,11 +129,15 @@ namespace OE2EmpireTracker.Tests.Parsers
                 _parser.ProcessHtml(survey, html);
                 int countAfterFirst = survey.Resources.Count;
 
-                Assert.That(countAfterFirst, Is.GreaterThan(0),
+                Assert.That(
+                    countAfterFirst,
+                    Is.GreaterThan(0),
                     $"{filename} should produce at least one resource");
 
                 _parser.ProcessHtml(survey, html);
-                Assert.That(survey.Resources.Count, Is.EqualTo(countAfterFirst),
+                Assert.That(
+                    survey.Resources.Count,
+                    Is.EqualTo(countAfterFirst),
                     $"Resource count changed after second parse of {filename}");
             }
         }
@@ -159,16 +169,24 @@ namespace OE2EmpireTracker.Tests.Parsers
                     .OrderBy(r => r.Resource)
                     .ToList();
 
-                Assert.That(afterSecond.Count, Is.EqualTo(snapshot.Count),
+                Assert.That(
+                    afterSecond.Count,
+                    Is.EqualTo(snapshot.Count),
                     $"Resource count changed after second parse of {filename}");
 
                 for (int i = 0; i < snapshot.Count; i++)
                 {
-                    Assert.That(afterSecond[i].Resource, Is.EqualTo(snapshot[i].Resource),
+                    Assert.That(
+                        afterSecond[i].Resource,
+                        Is.EqualTo(snapshot[i].Resource),
                         $"Resource name mismatch in {filename} at index {i}");
-                    Assert.That(afterSecond[i].Purity, Is.EqualTo(snapshot[i].Purity),
+                    Assert.That(
+                        afterSecond[i].Purity,
+                        Is.EqualTo(snapshot[i].Purity),
                         $"Purity mismatch in {filename} for {snapshot[i].Resource}");
-                    Assert.That(afterSecond[i].Amount, Is.EqualTo(snapshot[i].Amount),
+                    Assert.That(
+                        afterSecond[i].Amount,
+                        Is.EqualTo(snapshot[i].Amount),
                         $"Amount mismatch in {filename} for {snapshot[i].Resource}");
                 }
             }

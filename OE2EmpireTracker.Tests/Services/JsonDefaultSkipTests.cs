@@ -261,8 +261,21 @@ namespace OE2EmpireTracker.Tests.Services
             from resCount in Gen.Choose(0, 3)
             from resKeys in Gen.ListOf(resCount, GenNonEmptyString())
             from resVals in Gen.ListOf(resCount, GenShortString())
-            select BuildBlueprint(uuid, name, owner, baseUuid, bpType, evo,
-                techLevel, cls, cost, nick, desc, props, resKeys, resVals);
+            select BuildBlueprint(
+                uuid,
+                name,
+                owner,
+                baseUuid,
+                bpType,
+                evo,
+                techLevel,
+                cls,
+                cost,
+                nick,
+                desc,
+                props,
+                resKeys,
+                resVals);
 
         private static OE2EmpireTracker.Models.Blueprint BuildBlueprint(
             string uuid, string name, string owner, string baseUuid,
@@ -323,8 +336,21 @@ namespace OE2EmpireTracker.Tests.Services
             from resCount in Gen.Choose(0, 2)
             from resKeys in Gen.ListOf(resCount, GenNonEmptyString())
             from resVals in Gen.ListOf(resCount, GenSurveyResource())
-            select BuildSurvey(uuid, owner, scanned, dt, planet, system,
-                surveyId, scannerUuid, nick, desc, propKeys, propVals, resKeys, resVals);
+            select BuildSurvey(
+                uuid,
+                owner,
+                scanned,
+                dt,
+                planet,
+                system,
+                surveyId,
+                scannerUuid,
+                nick,
+                desc,
+                propKeys,
+                propVals,
+                resKeys,
+                resVals);
 
         private static Survey BuildSurvey(
             string uuid, string owner, string scanned, string dt,
@@ -575,8 +601,11 @@ namespace OE2EmpireTracker.Tests.Services
             return fcs;
         }
 
-        private static void MergeDictionary<T>(Dictionary<string, T> dict,
-            IEnumerable<string> keys, IEnumerable<T> vals)
+        private static void MergeDictionary<T>(
+            Dictionary<string,
+            T> dict,
+            IEnumerable<string> keys,
+            IEnumerable<T> vals)
         {
             var kArr = keys.Distinct().ToArray();
             var vArr = vals.ToArray();
@@ -952,11 +981,14 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void Settings_ConfiguredCorrectly()
         {
-            Assert.That(JsonSettings.SerializerSettings.DefaultValueHandling,
+            Assert.That(
+                JsonSettings.SerializerSettings.DefaultValueHandling,
                 Is.EqualTo(DefaultValueHandling.Ignore));
-            Assert.That(JsonSettings.SerializerSettings.NullValueHandling,
+            Assert.That(
+                JsonSettings.SerializerSettings.NullValueHandling,
                 Is.EqualTo(NullValueHandling.Ignore));
-            Assert.That(JsonSettings.SerializerSettings.Formatting,
+            Assert.That(
+                JsonSettings.SerializerSettings.Formatting,
                 Is.EqualTo(Formatting.Indented));
         }
 

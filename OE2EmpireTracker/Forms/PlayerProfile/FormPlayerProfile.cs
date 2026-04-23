@@ -111,8 +111,14 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnPlayerProfileDataChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnPlayerProfileDataChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
+
                 return;
             }
 
@@ -129,8 +135,14 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
+
                 return;
             }
 
@@ -220,7 +232,8 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
             sw.Stop();
             Log.Info("PopulateForm PERF: total={0}ms", sw.ElapsedMilliseconds);
-            sw.Stop(); Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ConfigureSkillBlockOnce(CheckBox skillGroup, PlayerSkillBlock skillBlock, SkillName skill)
@@ -317,9 +330,12 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             }
 
             sw.Stop();
-            Log.Info("PopulateListView PERF: total={0}ms items={1}",
-                sw.ElapsedMilliseconds, profiles.Count);
-            sw.Stop(); Log.Info("PERF PopulateListView: {0}ms", sw.ElapsedMilliseconds);
+            Log.Info(
+                "PopulateListView PERF: total={0}ms items={1}",
+                sw.ElapsedMilliseconds,
+                profiles.Count);
+            sw.Stop();
+            Log.Info("PERF PopulateListView: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void TxtNameFilter_TextChanged(object sender, EventArgs e)
@@ -477,8 +493,11 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             {
                 if (!System.Windows.Forms.Clipboard.ContainsText(TextDataFormat.Html))
                 {
-                    MessageBox.Show("No profile data found on the clipboard.\n\nCopy the profile panel from the game first.",
-                        "Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        "No profile data found on the clipboard.\n\nCopy the profile panel from the game first.",
+                        "Import",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                     return;
                 }
 
@@ -490,8 +509,11 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                     detected != Parsers.ClipboardContentDetector.ContentType.Unknown)
                 {
                     string found = Parsers.ClipboardContentDetector.GetDescription(detected);
-                    MessageBox.Show($"The clipboard contains {found}, not player profile data.\n\nCopy the profile panel from the game first.",
-                        "Wrong Content", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        $"The clipboard contains {found}, not player profile data.\n\nCopy the profile panel from the game first.",
+                        "Wrong Content",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                     return;
                 }
 
@@ -502,8 +524,11 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
                 if (string.IsNullOrEmpty(tempProfile.Name))
                 {
-                    MessageBox.Show("Could not extract a player name from the clipboard data.",
-                        "Import", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        "Could not extract a player name from the clipboard data.",
+                        "Import",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -533,8 +558,11 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Import failed: {ex.Message}", "Import Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"Import failed: {ex.Message}",
+                    "Import Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 

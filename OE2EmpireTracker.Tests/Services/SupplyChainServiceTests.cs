@@ -47,7 +47,10 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var result = SupplyChainService.CheckThresholds(
                 Enumerable.Empty<SupplyChain>(),
-                _ => null, _ => null, _ => null, PlayerUUID);
+                _ => null,
+                _ => null,
+                _ => null,
+                PlayerUUID);
 
             Assert.That(result, Is.Empty);
         }

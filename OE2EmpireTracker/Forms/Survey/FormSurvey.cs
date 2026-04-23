@@ -101,7 +101,9 @@ namespace OE2EmpireTracker.Forms.Survey
             cmbPurity.ValueMember = "Name";
             cmbPurity.DataSource = empireContext.BindingSourceResourcePurity;
 
-            dgvResources.DataError += (s, ev) => { Log.Warn("dgvResources DataError at [{0}, {1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message); ev.ThrowException = false; };
+            dgvResources.DataError += (s, ev) => { Log.Warn("dgvResources DataError at [{0}, {1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message);
+            ev.ThrowException = false;
+            };
 
             // Add read-only Max Reserve column (programmatic — not in Designer)
             var colMaxReserve = new DataGridViewTextBoxColumn();
@@ -181,8 +183,14 @@ namespace OE2EmpireTracker.Forms.Survey
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
+
                 return;
             }
 
@@ -198,8 +206,14 @@ namespace OE2EmpireTracker.Forms.Survey
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnSurveyDataChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnSurveyDataChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
+
                 return;
             }
 
@@ -216,8 +230,14 @@ namespace OE2EmpireTracker.Forms.Survey
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnColonyDataChanged(sender, e))); }
-                catch (ObjectDisposedException) { }
+                try
+                {
+                    BeginInvoke(new Action(() => OnColonyDataChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
+
                 return;
             }
 
@@ -299,22 +319,32 @@ namespace OE2EmpireTracker.Forms.Survey
             }
 
             sw.Stop();
-            Log.Info("PopulateListView PERF: total={0}ms items={1}",
-                sw.ElapsedMilliseconds, surveys.Count);
+            Log.Info(
+                "PopulateListView PERF: total={0}ms items={1}",
+                sw.ElapsedMilliseconds,
+                surveys.Count);
         }
 
         private void TxtSurveyFilter_TextChanged(object sender, EventArgs e)
         {
             lvwSurveys.Items.Clear();
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName(),
-                GetSelectedSurveyType(), GetSelectedPurityFilter(), GetMinAmount()));
+            PopulateListView(viewModel.GetFilteredSurveys(
+                txtSurveyFilter.Text,
+                GetSelectedResourceName(),
+                GetSelectedSurveyType(),
+                GetSelectedPurityFilter(),
+                GetMinAmount()));
         }
 
         private void CmbResource_SelectedIndexChanged(object sender, EventArgs e)
         {
             lvwSurveys.Items.Clear();
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName(),
-                GetSelectedSurveyType(), GetSelectedPurityFilter(), GetMinAmount()));
+            PopulateListView(viewModel.GetFilteredSurveys(
+                txtSurveyFilter.Text,
+                GetSelectedResourceName(),
+                GetSelectedSurveyType(),
+                GetSelectedPurityFilter(),
+                GetMinAmount()));
         }
 
         private string GetSelectedResourceName()
@@ -351,9 +381,14 @@ namespace OE2EmpireTracker.Forms.Survey
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             lvwSurveys.Items.Clear();
-            PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName(),
-                GetSelectedSurveyType(), GetSelectedPurityFilter(), GetMinAmount()));
-            sw.Stop(); Log.Info("PERF RefreshSurveyList: {0}ms", sw.ElapsedMilliseconds);
+            PopulateListView(viewModel.GetFilteredSurveys(
+                txtSurveyFilter.Text,
+                GetSelectedResourceName(),
+                GetSelectedSurveyType(),
+                GetSelectedPurityFilter(),
+                GetMinAmount()));
+            sw.Stop();
+            Log.Info("PERF RefreshSurveyList: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void CmbSurveyType_SelectedIndexChanged(object sender, EventArgs e)
@@ -455,7 +490,13 @@ namespace OE2EmpireTracker.Forms.Survey
         private void BtnSave_Click(object sender, EventArgs e)
         {
             dgvResources.CellValidating -= DgvResources_CellValidating;
-            try { dgvResources.EndEdit(); } catch { }
+            try
+            {
+                dgvResources.EndEdit();
+            }
+            catch
+            {
+            }
             dgvResources.CellValidating += DgvResources_CellValidating;
 
             // Map resources from grid
@@ -498,7 +539,13 @@ namespace OE2EmpireTracker.Forms.Survey
 
             cmbScannerBlueprint.SelectedItem = null;
             dgvResources.CellValidating -= DgvResources_CellValidating;
-            try { dgvResources.EndEdit(); } catch { }
+            try
+            {
+                dgvResources.EndEdit();
+            }
+            catch
+            {
+            }
             dgvResources.Rows.Clear();
             dgvResources.CellValidating += DgvResources_CellValidating;
         }
@@ -578,7 +625,8 @@ namespace OE2EmpireTracker.Forms.Survey
                 return;
             }
 
-            if (!System.Text.RegularExpressions.Regex.IsMatch(value,
+            if (!System.Text.RegularExpressions.Regex.IsMatch(
+                value,
                 OE2EmpireTracker.Constants.BlueprintPropertyValidation.DecimalPattern))
             {
                 e.Cancel = true;
@@ -596,15 +644,21 @@ namespace OE2EmpireTracker.Forms.Survey
         {
             if (!Clipboard.ContainsText(TextDataFormat.Html))
             {
-                MessageBox.Show("No HTML content found on the clipboard.\n\nCopy survey data from the game browser first.",
-                    "No HTML", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "No HTML content found on the clipboard.\n\nCopy survey data from the game browser first.",
+                    "No HTML",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
             if (string.IsNullOrEmpty(playerContext.CurrentPlayerUUID))
             {
-                MessageBox.Show("No player selected. Select a player profile first.",
-                    "No Player", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "No player selected. Select a player profile first.",
+                    "No Player",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -618,8 +672,11 @@ namespace OE2EmpireTracker.Forms.Survey
                     detected != Parsers.ClipboardContentDetector.ContentType.Unknown)
                 {
                     string found = Parsers.ClipboardContentDetector.GetDescription(detected);
-                    MessageBox.Show($"The clipboard contains {found}, not survey data.\n\nCopy the survey page from the game browser first.",
-                        "Wrong Content", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        $"The clipboard contains {found}, not survey data.\n\nCopy the survey page from the game browser first.",
+                        "Wrong Content",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                     return;
                 }
 
@@ -642,9 +699,11 @@ namespace OE2EmpireTracker.Forms.Survey
                 var existingSurvey = SurveyImportHelper.FindByKey(
                     playerContext.GetCurrentPlayerSurveys(), tempSurvey.PlanetName, tempSurvey.SurveyID);
 
-                Log.Info("Survey dedup: {0} for planet '{1}', surveyID '{2}'",
+                Log.Info(
+                    "Survey dedup: {0} for planet '{1}', surveyID '{2}'",
                     existingSurvey != null ? "found existing survey UUID=" + existingSurvey.UUID : "no existing survey, creating new",
-                    tempSurvey.PlanetName, tempSurvey.SurveyID);
+                    tempSurvey.PlanetName,
+                    tempSurvey.SurveyID);
 
                 OE2EmpireTracker.Models.Survey importedSurvey;
 
@@ -668,8 +727,11 @@ namespace OE2EmpireTracker.Forms.Survey
                 playerContext.WriteContext();
                 playerContext.OnSurveyDataChanged(importedSurvey.UUID);
 
-                Log.Info("Survey import complete: UUID={0}, PlanetName='{1}', SurveyID='{2}'",
-                    importedSurvey.UUID, importedSurvey.PlanetName, importedSurvey.SurveyID);
+                Log.Info(
+                    "Survey import complete: UUID={0}, PlanetName='{1}', SurveyID='{2}'",
+                    importedSurvey.UUID,
+                    importedSurvey.PlanetName,
+                    importedSurvey.SurveyID);
 
                 // Refresh list view
                 RefreshSurveyList();
@@ -691,8 +753,11 @@ namespace OE2EmpireTracker.Forms.Survey
             catch (Exception ex)
             {
                 Log.Error(ex, "Error importing survey from clipboard");
-                MessageBox.Show("Failed to import survey: " + ex.Message,
-                    "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "Failed to import survey: " + ex.Message,
+                    "Import Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -709,7 +774,10 @@ namespace OE2EmpireTracker.Forms.Survey
             for (int i = 0; i < cmbSurveyTypeEdit.Items.Count; i++)
             {
                 if ((SurveyType)cmbSurveyTypeEdit.Items[i] == viewModel.SurveyTypeValue)
-                { cmbSurveyTypeEdit.SelectedIndex = i; break; }
+                {
+                    cmbSurveyTypeEdit.SelectedIndex = i;
+                    break;
+                }
             }
 
             UpdateNameLabel(viewModel.SurveyTypeValue);
@@ -731,7 +799,13 @@ namespace OE2EmpireTracker.Forms.Survey
             cmbScannerBlueprint.SelectedItem = viewModel.FindScannerBlueprint();
 
             dgvResources.CellValidating -= DgvResources_CellValidating;
-            try { dgvResources.EndEdit(); } catch { }
+            try
+            {
+                dgvResources.EndEdit();
+            }
+            catch
+            {
+            }
             dgvResources.Rows.Clear();
             dgvResources.CellValidating += DgvResources_CellValidating;
             foreach (KeyValuePair<string, SurveyResource> resource in viewModel.GetResources())
@@ -765,9 +839,13 @@ namespace OE2EmpireTracker.Forms.Survey
             }
 
             sw.Stop();
-            Log.Info("PopulateFormFromViewModel PERF: total={0}ms fields={1}ms grid={2}ms",
-                sw.ElapsedMilliseconds, t1, sw.ElapsedMilliseconds - t1);
-            sw.Stop(); Log.Info("PERF PopulateFormFromViewModel: {0}ms", sw.ElapsedMilliseconds);
+            Log.Info(
+                "PopulateFormFromViewModel PERF: total={0}ms fields={1}ms grid={2}ms",
+                sw.ElapsedMilliseconds,
+                t1,
+                sw.ElapsedMilliseconds - t1);
+            sw.Stop();
+            Log.Info("PERF PopulateFormFromViewModel: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void UpdateTitle()
