@@ -23,8 +23,7 @@ namespace OE2EmpireTracker.Tests.Persistence
             return Gen.Elements(
                 "cmbFilterType", "cmbFilterClass", "cmbFilterTechLevel",
                 "cmbFilterEvolution", "chkEvolutionAndAbove", "cmbStatus",
-                "cmbCategory", "cmbRegion", "chkActive", "chkVisible"
-           );
+                "cmbCategory", "cmbRegion", "chkActive", "chkVisible");
         }
 
         private static Gen<string> ComboItemGen()
@@ -32,8 +31,7 @@ namespace OE2EmpireTracker.Tests.Persistence
             return Gen.Elements(
                 string.Empty, "All", "Hull", "Shield", "Reactor", "Main Drive",
                 "Weapon", "Flatpack", "LL", "ML", "HL", "Milspec",
-                "Class 1", "Class 2", "Class 3", "Evo 0", "Evo 1"
-           );
+                "Class 1", "Class 2", "Class 3", "Evo 0", "Evo 1");
         }
 
         /// <summary>

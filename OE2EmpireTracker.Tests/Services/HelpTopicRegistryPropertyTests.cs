@@ -43,8 +43,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             var inputGen = Gen.Frequency(
                 Tuple.Create(3, Arb.Generate<NonNull<string>>().Select(s => s.Get)),
-                Tuple.Create(2, Gen.Elements(knownKeys))
-           );
+                Tuple.Create(2, Gen.Elements(knownKeys)));
 
             return Prop.ForAll(inputGen.ToArbitrary(), input =>
             {

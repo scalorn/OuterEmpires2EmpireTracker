@@ -150,8 +150,7 @@ namespace OE2EmpireTracker.Tests.Services
                     var chainGen = Gen.Sequence(
                         Enumerable.Range(0, chainLen).Select(idx =>
                             Gen.Choose(1, 1000).Select(val => new { Index = idx, Value = val })
-                       )
-                   );
+                      ));
 
                     return chainGen.Select(chainValues =>
                     {
@@ -199,8 +198,7 @@ namespace OE2EmpireTracker.Tests.Services
 
                         return new { Chain = chain, SelectedProps = selectedProps };
                     });
-                })
-           );
+                }));
 
             return Prop.ForAll(testDataGen.ToArbitrary(), testData =>
             {
@@ -314,12 +312,10 @@ namespace OE2EmpireTracker.Tests.Services
                                         UnchangedProps = unchangedProps,
                                         ChangedProps = changedProps
                                     };
-                                })
-                           );
+                                }));
                         });
                     });
-                })
-           );
+                }));
 
             return Prop.ForAll(testDataGen.ToArbitrary(), testData =>
             {
@@ -408,8 +404,7 @@ namespace OE2EmpireTracker.Tests.Services
                             RawValues = rawValues,
                             ChainLen = chainLen
                         };
-                    })
-               );
+                    }));
             });
 
             return Prop.ForAll(testDataGen.ToArbitrary(), testData =>

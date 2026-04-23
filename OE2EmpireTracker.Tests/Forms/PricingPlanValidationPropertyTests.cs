@@ -30,8 +30,7 @@ namespace OE2EmpireTracker.Tests.Forms
                 Gen.Constant(" \t\n "),
                 Gen.Choose(1, 10).SelectMany(len =>
                     Gen.ListOf(len, Gen.Elements(' ', '\t', '\n', '\r'))
-                       .Select(chars => new string(chars.ToArray())))
-           );
+                       .Select(chars => new string(chars.ToArray()))));
         }
 
         /// <summary>

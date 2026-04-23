@@ -44,8 +44,7 @@ namespace OE2EmpireTracker.Tests.Constants
                 Arb.Generate<NonNull<string>>()
                     .Select(s => s.Get)
                     .Where(s => !s.StartsWith(Prefix, StringComparison.OrdinalIgnoreCase)
-                             || s.Length <= Prefix.Length)
-           );
+                             || s.Length <= Prefix.Length));
         }
 
         /// <summary>

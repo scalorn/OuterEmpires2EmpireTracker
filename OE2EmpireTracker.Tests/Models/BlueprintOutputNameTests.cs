@@ -94,8 +94,7 @@ namespace OE2EmpireTracker.Tests.Models
             return Gen.Frequency(
                 Tuple.Create(4, GenFlatpackWithSuffix()),
                 Tuple.Create(3, GenNonFlatpackOrNoSuffix()),
-                Tuple.Create(1, GenNullOrEmptyName())
-           );
+                Tuple.Create(1, GenNullOrEmptyName()));
         }
 
         // -- Property 1: Suffix stripping round-trip --

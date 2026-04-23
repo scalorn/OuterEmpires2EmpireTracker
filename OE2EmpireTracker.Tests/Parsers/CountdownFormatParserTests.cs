@@ -160,8 +160,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                 Gen.Elements("d", "h", "m", "s", "5", "0", "x"),
 
                 // Tokens with non-numeric prefixes
-                Gen.Elements("abcd", "xxh", "??m", "!!s", "1.5d", "2.0h", "3, 5m")
-           );
+                Gen.Elements("abcd", "xxh", "??m", "!!s", "1.5d", "2.0h", "3, 5m"));
 
             return Prop.ForAll(invalidGen.ToArbitrary(), input =>
             {

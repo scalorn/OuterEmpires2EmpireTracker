@@ -93,8 +93,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Arb.Generate<string>(),
                 Gen.Constant("S1. Something"),
                 Gen.Constant("S2. Something"),
-                Gen.Constant("Regular Resource")
-           );
+                Gen.Constant("Regular Resource"));
 
             return Prop.ForAll(nameGen.ToArbitrary(), name =>
             {
