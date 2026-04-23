@@ -35,8 +35,8 @@ namespace OE2EmpireTracker
         private int _isProgrammaticUpdate = 0;
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
-        EmpireContext context = null;
-        PlayerContext playerContext = null;
+        private EmpireContext context = null;
+        private PlayerContext playerContext = null;
         private BackgroundProcessor _backgroundProcessor;
         private string _lastOpenedPath;
 
@@ -103,7 +103,7 @@ namespace OE2EmpireTracker
             }
         }
 
-        internal T OpenMdiChild<T>() where T : Form, new ()
+        internal T OpenMdiChild<T>() where T : Form, new()
         {
             string formTypeKey = typeof(T).Name;
             var usedNumbers = this.MdiChildren
@@ -116,7 +116,7 @@ namespace OE2EmpireTracker
             return OpenMdiChildWithNumber<T>(windowNumber);
         }
 
-        internal T OpenMdiChildWithNumber<T>(int windowNumber) where T : Form, new ()
+        internal T OpenMdiChildWithNumber<T>(int windowNumber) where T : Form, new()
         {
             string formTypeKey = typeof(T).Name;
             T form = new T();

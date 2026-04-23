@@ -32,7 +32,7 @@ namespace OE2EmpireTracker.Models
 
         private static List<ResourceClass> GetClasses()
         {
-            List < ResourceClass> instance = new List<ResourceClass>();
+            List<ResourceClass> instance = new List<ResourceClass>();
             instance.Add(new ResourceClass() { ID = ResourceClassEnum.CommonElements, Name = "Common Elements" });
             instance.Add(new ResourceClass() { ID = ResourceClassEnum.UncommonElements, Name = "Uncommon Elements" });
             instance.Add(new ResourceClass() { ID = ResourceClassEnum.RareElements, Name = "Rare Elements" });

@@ -25,7 +25,7 @@ namespace OE2EmpireTracker.Models
 
         [Required]
         [DefaultValue("")]
-        public virtual string Name { get; set; }= string.Empty;
+        public virtual string Name { get; set; } = string.Empty;
 
         [JsonIgnore]
         public virtual string ExtendedName {
@@ -99,7 +99,7 @@ namespace OE2EmpireTracker.Models
 
         [Required]
         [DefaultValue("")]
-        public virtual string NickName { get; set; }= string.Empty;
+        public virtual string NickName { get; set; } = string.Empty;
         [Required]
         [DefaultValue("")]
         public virtual string Description { get; set; } = string.Empty;

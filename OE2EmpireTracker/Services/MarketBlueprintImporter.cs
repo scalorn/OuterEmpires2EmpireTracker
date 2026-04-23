@@ -9,7 +9,12 @@ using OE2EmpireTracker.Services.Migration;
 
 namespace OE2EmpireTracker.Services
 {
-    public enum ImportAction { Created, Updated, Skipped }
+    public enum ImportAction
+    {
+        Created,
+        Updated,
+        Skipped
+    }
 
     public class ImportResultEntry
     {

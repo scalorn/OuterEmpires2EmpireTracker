@@ -14,10 +14,10 @@ using Amazon.Runtime.Documents;
 using Newtonsoft.Json;
 using NLog;
 using Sgml;
-using static OE2EmpireTracker.Models.Resource;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
+using static OE2EmpireTracker.Models.Resource;
 
 namespace OE2EmpireTracker.Models
 {
@@ -2664,4 +2664,3 @@ namespace OE2EmpireTracker.Models
         }
     }
 }
-

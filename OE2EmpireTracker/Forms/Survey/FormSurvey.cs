@@ -236,7 +236,7 @@ namespace OE2EmpireTracker.Forms.Survey
             cmbScannerBlueprint.DataSource = filteredSource;
         }
 
-        void PopulateListView(IReadOnlyList<OE2EmpireTracker.Models.Survey> surveys)
+        private void PopulateListView(IReadOnlyList<OE2EmpireTracker.Models.Survey> surveys)
         {
             if (surveys == null) return;
 

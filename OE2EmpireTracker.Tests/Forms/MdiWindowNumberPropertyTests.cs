@@ -20,7 +20,7 @@ namespace OE2EmpireTracker.Tests.Forms
         /// Given a set of currently used window numbers, returns the lowest positive
         /// integer not in the set.
         /// </summary>
-        static int FindLowestUnused(HashSet<int> used)
+        private static int FindLowestUnused(HashSet<int> used)
         {
             int n = 1;
             while (used.Contains(n)) n++;

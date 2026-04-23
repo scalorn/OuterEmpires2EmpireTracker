@@ -122,20 +122,20 @@ namespace OE2EmpireTracker.Parsers
                 doc.Load(sgmlReader);
 
                 // Extract title / evolution / tech level / description
-                XmlNode iconBaseNode = doc.SelectSingleNode("//div[contains(@class,'ui_icon_base')]");
-                XmlNode titleNode = doc.SelectSingleNode("//div[contains(@class,'SmallSlideOut_Form_Row_Text_Bold')]");
+                XmlNode iconBaseNode = doc.SelectSingleNode("// div[contains(@class,'ui_icon_base')]");
+                XmlNode titleNode = doc.SelectSingleNode("// div[contains(@class,'SmallSlideOut_Form_Row_Text_Bold')]");
                 // Scope EvolutionNumber search to inside the title node so we don't
                 // accidentally pick an empty evolution div from the asset-tab blueprint
                 // list that appears earlier in the DOM.
-                XmlNode evoNode = titleNode?.SelectSingleNode(".//div[contains(@class,'EvolutionNumber')]")
-                                  ?? doc.SelectSingleNode("//div[contains(@class,'EvolutionNumber')]");
-                XmlNode descNode = doc.SelectSingleNode("//div[contains(@class,'SmallSlideOut_Form_Row_Description')]");
+                XmlNode evoNode = titleNode?.SelectSingleNode(".// div[contains(@class,'EvolutionNumber')]")
+                                  ?? doc.SelectSingleNode("// div[contains(@class,'EvolutionNumber')]");
+                XmlNode descNode = doc.SelectSingleNode("// div[contains(@class,'SmallSlideOut_Form_Row_Description')]");
 
-                XmlNodeList nameNodes = doc.SelectNodes("//div[contains(@class,'ScanDetailOutputResourceName')]");
-                XmlNodeList detailNodes = doc.SelectNodes("//div[contains(@class,'ScanDetailOutputResourceDetail')]");
+                XmlNodeList nameNodes = doc.SelectNodes("// div[contains(@class,'ScanDetailOutputResourceName')]");
+                XmlNodeList detailNodes = doc.SelectNodes("// div[contains(@class,'ScanDetailOutputResourceDetail')]");
 
                 // Parse stats/properties from the statistics page
-                XmlNodeList propNodes = doc.SelectNodes("//div[contains(@class,'ShipComponentProperty')]");
+                XmlNodeList propNodes = doc.SelectNodes("// div[contains(@class,'ShipComponentProperty')]");
 
                 // Populate blueprint name, evolution, techlevel and description if available
                 try
@@ -261,18 +261,18 @@ namespace OE2EmpireTracker.Parsers
                         }
                         else
                         {
-                            //blueprint.Properties.Clear();
+                            // blueprint.Properties.Clear();
                         }
 
                         foreach (XmlNode prop in propNodes)
                         {
                             // Each ShipComponentProperty contains two divs: label and value
-                            XmlNode labelNode = prop.SelectSingleNode(".//div[contains(@class,'CargoInfoDialogue')]");
-                            XmlNode valueNode = prop.SelectSingleNode(".//div[contains(@class,'div_block') and contains(@class,'ui_text_blue_light')]");
+                            XmlNode labelNode = prop.SelectSingleNode(".// div[contains(@class,'CargoInfoDialogue')]");
+                            XmlNode valueNode = prop.SelectSingleNode(".// div[contains(@class,'div_block') and contains(@class,'ui_text_blue_light')]");
                             if (labelNode == null || valueNode == null)
                             {
                                 // Fallback: try first and second child divs
-                                var childDivs = prop.SelectNodes(".//div");
+                                var childDivs = prop.SelectNodes(".// div");
                                 if (childDivs != null && childDivs.Count >= 2)
                                 {
                                     labelNode = childDivs[0];
@@ -322,7 +322,7 @@ namespace OE2EmpireTracker.Parsers
                 }
                 else
                 {
-                    //blueprint.Resources.Clear();
+                    // blueprint.Resources.Clear();
                 }
 
                 int count = Math.Min(nameNodes?.Count ?? 0, detailNodes?.Count ?? 0);
@@ -378,7 +378,7 @@ namespace OE2EmpireTracker.Parsers
                 // 2. MarketListingRowDetail -- contains expanded stats and resources
                 // They are siblings in the table, not nested.
 
-                XmlNodeList allRows = doc.SelectNodes("//tr");
+                XmlNodeList allRows = doc.SelectNodes("// tr");
                 if (allRows == null) return results;
 
                 for (int i = 0; i < allRows.Count; i++)
@@ -389,7 +389,7 @@ namespace OE2EmpireTracker.Parsers
                         continue;
 
                     // This is a listing row -- extract name and evolution
-                    XmlNode nameNode = row.SelectSingleNode(".//div[contains(@class,'MarketListingRowDetailDescription')]");
+                    XmlNode nameNode = row.SelectSingleNode(".// div[contains(@class,'MarketListingRowDetailDescription')]");
                     if (nameNode == null) continue;
 
                     // Name is the direct text of the div, not including nested spans (which contain seller info like "Government")
@@ -409,7 +409,7 @@ namespace OE2EmpireTracker.Parsers
 
                     // Extract seller name from <span class="ui_text_light_grey"> inside the name div
                     string sellerName = string.Empty;
-                    XmlNode sellerSpan = nameNode.SelectSingleNode(".//span[contains(@class,'ui_text_light_grey')]");
+                    XmlNode sellerSpan = nameNode.SelectSingleNode(".// span[contains(@class,'ui_text_light_grey')]");
                     if (sellerSpan != null)
                     {
                         sellerName = sellerSpan.InnerText.Trim();
@@ -432,7 +432,7 @@ namespace OE2EmpireTracker.Parsers
                     bp.UUID = System.Guid.NewGuid().ToString();
                     bp.TechLevel = techLevel;
 
-                    XmlNode evoNode = row.SelectSingleNode(".//div[contains(@class,'EvolutionNumber')]");
+                    XmlNode evoNode = row.SelectSingleNode(".// div[contains(@class,'EvolutionNumber')]");
                     if (evoNode != null && int.TryParse(evoNode.InnerText.Trim(), out int evo))
                     {
                         bp.Evolution = evo;
@@ -444,13 +444,13 @@ namespace OE2EmpireTracker.Parsers
                     if (detailRow != null && detailClass.Contains("MarketListingRowDetail"))
                     {
                         // Extract properties from Market_ShipComponentProperty divs
-                        XmlNodeList propNodes = detailRow.SelectNodes(".//div[contains(@class,'Market_ShipComponentProperty')]");
+                        XmlNodeList propNodes = detailRow.SelectNodes(".// div[contains(@class,'Market_ShipComponentProperty')]");
                         if (propNodes != null)
                         {
                             foreach (XmlNode prop in propNodes)
                             {
-                                XmlNode labelNode = prop.SelectSingleNode(".//div[contains(@class,'Market_ShipComponentProperty_Label')]");
-                                XmlNode valueNode = prop.SelectSingleNode(".//div[contains(@class,'ui_text_blue_light')]");
+                                XmlNode labelNode = prop.SelectSingleNode(".// div[contains(@class,'Market_ShipComponentProperty_Label')]");
+                                XmlNode valueNode = prop.SelectSingleNode(".// div[contains(@class,'ui_text_blue_light')]");
                                 if (labelNode == null || valueNode == null) continue;
 
                                 string key = labelNode.InnerText.Trim();
@@ -477,8 +477,8 @@ namespace OE2EmpireTracker.Parsers
                         }
 
                         // Extract resources
-                        XmlNodeList resNameNodes = detailRow.SelectNodes(".//div[contains(@class,'ScanDetailOutputResourceName_MarketListing')]");
-                        XmlNodeList resDetailNodes = detailRow.SelectNodes(".//div[contains(@class,'ScanDetailOutputResourceDetail')]");
+                        XmlNodeList resNameNodes = detailRow.SelectNodes(".// div[contains(@class,'ScanDetailOutputResourceName_MarketListing')]");
+                        XmlNodeList resDetailNodes = detailRow.SelectNodes(".// div[contains(@class,'ScanDetailOutputResourceDetail')]");
                         int resCount = Math.Min(resNameNodes?.Count ?? 0, resDetailNodes?.Count ?? 0);
                         for (int r = 0; r < resCount; r++)
                         {
@@ -490,7 +490,7 @@ namespace OE2EmpireTracker.Parsers
                         }
 
                         // Extract blueprint type icon -- sprite position from ui_icon_base background
-                        XmlNode iconNode = detailRow.SelectSingleNode(".//div[contains(@class,'MarketListingRowDetailIcon')]//div[contains(@class,'ui_icon_base')]");
+                        XmlNode iconNode = detailRow.SelectSingleNode(".// div[contains(@class,'MarketListingRowDetailIcon')]// div[contains(@class,'ui_icon_base')]");
                         if (iconNode != null)
                         {
                             string style = iconNode.Attributes?["style"]?.Value ?? string.Empty;
@@ -549,7 +549,7 @@ namespace OE2EmpireTracker.Parsers
         ///
         /// The method extracts the content between these markers to isolate just the selected fragment.
         ///
-        /// Reference: https://msdn.microsoft.com/en-us/library/aa767917(v=vs.85).aspx
+        /// Reference: https:// msdn.microsoft.com/en-us/library/aa767917(v=vs.85).aspx
         ///
         /// TODO: Current implementation assumes 10-digit indices which may be brittle for non-standard cases.
         /// More flexible parsing should be implemented to handle edge cases.

@@ -52,12 +52,12 @@ namespace OE2EmpireTracker.Models
         [JsonIgnore]
         public StructureStatusDelta StatusDelta { get; set; }
 
-        DateTime Completion { get; set; }
+        private DateTime Completion { get; set; }
         public string CurrentAttitude { get; set; } = string.Empty;
         public int ContentmentIndex { get; set; }
 
         public int WageLevel { get; set; }
-        DateTime WageAdjustmentTime { get; set; }
+        private DateTime WageAdjustmentTime { get; set; }
 
         public ColonyStructure() : base()
         {

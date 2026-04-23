@@ -584,7 +584,7 @@ namespace OE2EmpireTracker.Services
             decimal builtEntertainmentRequired = prevStatus.EntertainmentRequired;
             decimal builtWarehouseCapacity = prevStatus.WarehouseCapacity;
             decimal builtWarehouseRequired = prevStatus.WarehouseRequired;
-            List <ColonyWorker> colonyWorkers = new List<ColonyWorker>();
+            List<ColonyWorker> colonyWorkers = new List<ColonyWorker>();
             var needUnallocated = new Dictionary<string, bool>();
             foreach (var wt in Models.WorkerDetail.WorkerTypes)
                 needUnallocated[wt.DetailKey] = false;
