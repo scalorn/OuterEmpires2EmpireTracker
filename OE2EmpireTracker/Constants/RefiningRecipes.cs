@@ -1,6 +1,6 @@
-using OE2EmpireTracker.Models;
 using System.Collections.Generic;
 using System.Linq;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Constants
 {

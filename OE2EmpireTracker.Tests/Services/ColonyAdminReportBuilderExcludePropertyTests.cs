@@ -1,6 +1,6 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;

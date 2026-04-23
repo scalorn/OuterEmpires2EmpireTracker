@@ -1,9 +1,9 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -28,6 +28,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Name = "TestTemplate",
                 HullBlueprintUUID = hullUUID
             };
+
             int idx = 0;
             foreach (var uuid in componentUUIDs)
             {

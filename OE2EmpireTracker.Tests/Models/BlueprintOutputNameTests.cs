@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Tests.Models
                 .SelectMany(t => Gen.Choose(0, 5), (t, cls) => new { t.baseName, t.suffix, t.bpType, cls })
                 .SelectMany(t => Gen.Choose(0, 5), (t, evo) => new { t.baseName, t.suffix, t.bpType, t.cls, evo })
                 .SelectMany(t => Gen.Elements(TechLevels), (t, tech) => new { t.baseName, t.suffix, t.bpType, t.cls, t.evo, tech })
-                .SelectMany(t => Gen.OneOf(Gen.Constant((string)null), Gen.Constant(""), Gen.Constant("MyNick")), (t, nick) => new { t.baseName, t.suffix, t.bpType, t.cls, t.evo, t.tech, nick })
+                .SelectMany(t => Gen.OneOf(Gen.Constant((string)null), Gen.Constant(string.Empty), Gen.Constant("MyNick")), (t, nick) => new { t.baseName, t.suffix, t.bpType, t.cls, t.evo, t.tech, nick })
                 .SelectMany(t => Gen.OneOf(Gen.Constant((string)null), Gen.Constant(Guid.NewGuid().ToString())), (t, uuid) =>
                 {
                     var bp = new OE2EmpireTracker.Models.Blueprint();
@@ -60,7 +60,7 @@ namespace OE2EmpireTracker.Tests.Models
                 .SelectMany(t => Gen.Choose(0, 5), (t, cls) => new { t.name, t.bpType, cls })
                 .SelectMany(t => Gen.Choose(0, 5), (t, evo) => new { t.name, t.bpType, t.cls, evo })
                 .SelectMany(t => Gen.Elements(TechLevels), (t, tech) => new { t.name, t.bpType, t.cls, t.evo, tech })
-                .SelectMany(t => Gen.OneOf(Gen.Constant((string)null), Gen.Constant(""), Gen.Constant("MyNick")), (t, nick) => new { t.name, t.bpType, t.cls, t.evo, t.tech, nick })
+                .SelectMany(t => Gen.OneOf(Gen.Constant((string)null), Gen.Constant(string.Empty), Gen.Constant("MyNick")), (t, nick) => new { t.name, t.bpType, t.cls, t.evo, t.tech, nick })
                 .SelectMany(t => Gen.OneOf(Gen.Constant((string)null), Gen.Constant(Guid.NewGuid().ToString())), (t, uuid) =>
                 {
                     var bp = new OE2EmpireTracker.Models.Blueprint();
@@ -77,7 +77,7 @@ namespace OE2EmpireTracker.Tests.Models
 
         private static Gen<OE2EmpireTracker.Models.Blueprint> GenNullOrEmptyName()
         {
-            return Gen.OneOf(Gen.Constant((string)null), Gen.Constant(""))
+            return Gen.OneOf(Gen.Constant((string)null), Gen.Constant(string.Empty))
                 .SelectMany(name => Gen.OneOf(Gen.Elements(FlatpackTypes), Gen.Elements(NonFlatpackTypes)), (name, bpType) => new { name, bpType })
                 .Select(t =>
                 {
@@ -95,7 +95,7 @@ namespace OE2EmpireTracker.Tests.Models
                 Tuple.Create(4, GenFlatpackWithSuffix()),
                 Tuple.Create(3, GenNonFlatpackOrNoSuffix()),
                 Tuple.Create(1, GenNullOrEmptyName())
-            );
+           );
         }
 
         // -- Property 1: Suffix stripping round-trip --
@@ -332,7 +332,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void OutputItemName_NameIsJustFlatpackSuffix_ReturnsEmptyString()
         {
             var bp = new OE2EmpireTracker.Models.Blueprint(" Flatpack") { BluePrintType = "Flatpacks/MiningRig" };
-            Assert.That(bp.OutputItemName, Is.EqualTo(""));
+            Assert.That(bp.OutputItemName, Is.EqualTo(string.Empty));
         }
 
         [Test]
@@ -346,14 +346,14 @@ namespace OE2EmpireTracker.Tests.Models
         public void OutputItemName_NullName_ReturnsEmptyString()
         {
             var bp = new OE2EmpireTracker.Models.Blueprint() { Name = null, BluePrintType = "Flatpacks/MiningRig" };
-            Assert.That(bp.OutputItemName, Is.EqualTo(""));
+            Assert.That(bp.OutputItemName, Is.EqualTo(string.Empty));
         }
 
         [Test]
         public void OutputItemName_EmptyName_ReturnsEmptyString()
         {
-            var bp = new OE2EmpireTracker.Models.Blueprint("") { BluePrintType = "Flatpacks/MiningRig" };
-            Assert.That(bp.OutputItemName, Is.EqualTo(""));
+            var bp = new OE2EmpireTracker.Models.Blueprint(string.Empty) { BluePrintType = "Flatpacks/MiningRig" };
+            Assert.That(bp.OutputItemName, Is.EqualTo(string.Empty));
         }
 
         [Test]
@@ -371,6 +371,7 @@ namespace OE2EmpireTracker.Tests.Models
                 BluePrintType = "Flatpacks/MiningRig",
                 UUID = Guid.NewGuid().ToString()
             };
+
             Assert.That(bp.ExtendedName, Does.Contain("Mining Rig Flatpack"));
         }
     }

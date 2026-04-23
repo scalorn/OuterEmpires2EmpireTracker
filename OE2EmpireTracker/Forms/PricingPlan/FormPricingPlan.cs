@@ -110,6 +110,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
                 if (plan.UUID == selectedUUID)
                     item.Selected = true;
             }
+
             sw.Stop();
             Log.Info("PopulatePlanList PERF: total={0}ms items={1}",
                 sw.ElapsedMilliseconds, plans.Count);
@@ -148,8 +149,8 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
             txtPlanName.Text = _selectedPlan.Name;
             txtDescription.Text = _selectedPlan.Description;
-            txtFixedCost.Text = _selectedPlan.FixedCostPerItem == 0m ? "" : _selectedPlan.FixedCostPerItem.ToString();
-            txtHourlyCost.Text = _selectedPlan.HourlyCostRate == 0m ? "" : _selectedPlan.HourlyCostRate.ToString();
+            txtFixedCost.Text = _selectedPlan.FixedCostPerItem == 0m ? string.Empty : _selectedPlan.FixedCostPerItem.ToString();
+            txtHourlyCost.Text = _selectedPlan.HourlyCostRate == 0m ? string.Empty : _selectedPlan.HourlyCostRate.ToString();
 
             PopulateResourceGrid();
             SetDetailEnabled(true);
@@ -161,10 +162,10 @@ namespace OE2EmpireTracker.Forms.PricingPlan
         private void ClearForm()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
-            txtPlanName.Text = "";
-            txtDescription.Text = "";
-            txtFixedCost.Text = "";
-            txtHourlyCost.Text = "";
+            txtPlanName.Text = string.Empty;
+            txtDescription.Text = string.Empty;
+            txtFixedCost.Text = string.Empty;
+            txtHourlyCost.Text = string.Empty;
             dgvResourcePrices.Rows.Clear();
             SetDetailEnabled(false);
         }
@@ -194,15 +195,17 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             {
                 string purity = PriceCalculator.DeterminePurity(resource.Name);
                 string key = PriceCalculator.MakeResourceKey(resource.Name, purity);
-                string priceText = "";
+                string priceText = string.Empty;
                 decimal price;
                 if (_selectedPlan.ResourcePrices.TryGetValue(key, out price))
                 {
                     priceText = price.ToString();
                 }
+
                 int rowIdx = dgvResourcePrices.Rows.Add(resource.Name, purity, priceText);
                 dgvResourcePrices.Rows[rowIdx].Tag = key;
             }
+
             sw.Stop(); Log.Info("PERF PopulateResourceGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -218,6 +221,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
                 Name = "New Plan",
                 OwnerUUID = playerContext.CurrentPlayerUUID
             };
+
             playerContext.AddPricingPlan(plan);
             playerContext.WriteContext();
             playerContext.OnPricingDataChanged();
@@ -359,13 +363,15 @@ namespace OE2EmpireTracker.Forms.PricingPlan
                 dgvResourcePrices.Rows[e.RowIndex].ErrorText = "Price must be a valid number.";
                 return;
             }
+
             if (parsed < 0m)
             {
                 e.Cancel = true;
                 dgvResourcePrices.Rows[e.RowIndex].ErrorText = "Price cannot be negative.";
                 return;
             }
-            dgvResourcePrices.Rows[e.RowIndex].ErrorText = "";
+
+            dgvResourcePrices.Rows[e.RowIndex].ErrorText = string.Empty;
         }
 
         private void dgvResourcePrices_CellValueChanged(object sender, DataGridViewCellEventArgs e)

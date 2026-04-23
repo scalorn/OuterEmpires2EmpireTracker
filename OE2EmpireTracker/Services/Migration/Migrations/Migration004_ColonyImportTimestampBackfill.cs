@@ -1,7 +1,7 @@
+using System;
 using NLog;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System;
 
 namespace OE2EmpireTracker.Services.Migration
 {

@@ -30,6 +30,7 @@ namespace OE2EmpireTracker.Controls
                 idx = _colorTable.Count - 1;
                 _colorIndex[color] = idx;
             }
+
             return idx;
         }
 
@@ -53,6 +54,7 @@ namespace OE2EmpireTracker.Controls
             {
                 header.Append($@"\red{c.R}\green{c.G}\blue{c.B};");
             }
+
             header.Append('}');
             header.Append(_sb);
             header.Append('}');

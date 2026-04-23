@@ -1,5 +1,5 @@
-using OE2EmpireTracker.Constants;
 using System.Collections.Generic;
+using OE2EmpireTracker.Constants;
 
 namespace OE2EmpireTracker.Models
 {
@@ -50,7 +50,7 @@ namespace OE2EmpireTracker.Models
         {
             return new List<WorkerDetail>
             {
-                new WorkerDetail { ID = "",   Name = ""   },
+                new WorkerDetail { ID = string.Empty,   Name = string.Empty   },
                 new WorkerDetail { ID = GameConstants.WorkerIdBlueCollar,   Name = GameConstants.PropBlueCollarDetail   },
                 new WorkerDetail { ID = GameConstants.WorkerIdWhiteCollar,  Name = GameConstants.PropWhiteCollarDetail  },
                 new WorkerDetail { ID = GameConstants.WorkerIdSpecialist,   Name = GameConstants.PropSpecialistDetail   },

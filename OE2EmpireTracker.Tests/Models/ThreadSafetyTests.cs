@@ -1,11 +1,11 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using NUnit.Framework;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Tests.Models
 {
@@ -207,6 +207,7 @@ namespace OE2EmpireTracker.Tests.Models
                     {
                         lock (exLock) { exceptions.Add(ex); }
                     }
+
                 });
             }
 
@@ -287,6 +288,7 @@ namespace OE2EmpireTracker.Tests.Models
                     {
                         lock (exLock) { exceptions.Add(ex); }
                     }
+
                 });
             }
 
@@ -335,6 +337,7 @@ namespace OE2EmpireTracker.Tests.Models
                     {
                         lock (exLock) { exceptions.Add(ex); }
                     }
+
                 });
             }
 
@@ -457,6 +460,7 @@ namespace OE2EmpireTracker.Tests.Models
                     {
                         colony.ColonyLock.ExitReadLock();
                     }
+
                 });
 
                 readThread.Start();
@@ -509,6 +513,7 @@ namespace OE2EmpireTracker.Tests.Models
                     {
                         colony.ColonyLock.ExitWriteLock();
                     }
+
                 });
 
                 writeThread.Start();

@@ -1,7 +1,7 @@
-using NLog;
-using OE2EmpireTracker.Models;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
 {
@@ -38,6 +38,7 @@ namespace OE2EmpireTracker.Services
                     if (!string.IsNullOrEmpty(stop.ColonyUUID))
                         colonyUUIDs.Add(stop.ColonyUUID);
                 }
+
                 foreach (var uuid in colonyUUIDs)
                     _routeMap[uuid] = (_routeMap.TryGetValue(uuid, out int _tmp) ? _tmp : 0) + 1;
             }
@@ -52,6 +53,7 @@ namespace OE2EmpireTracker.Services
                     if (!string.IsNullOrEmpty(stop.ColonyUUID))
                         colonyUUIDs.Add(stop.ColonyUUID);
                 }
+
                 foreach (var uuid in colonyUUIDs)
                     _planMap[uuid] = (_planMap.TryGetValue(uuid, out int _tmp) ? _tmp : 0) + 1;
             }
@@ -95,6 +97,7 @@ namespace OE2EmpireTracker.Services
                     _overflowMap.TryGetValue(rule.ColonyUUID, out int c);
                     _overflowMap[rule.ColonyUUID] = c + 1;
                 }
+
                 if (rule.DestinationType == DestinationType.Colony
                     && !string.IsNullOrEmpty(rule.DestinationUUID))
                 {

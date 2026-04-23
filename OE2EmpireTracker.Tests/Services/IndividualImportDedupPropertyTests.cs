@@ -22,17 +22,17 @@ namespace OE2EmpireTracker.Tests.Services
                 "Alpha", "Beta", "Gamma", "Delta", "Hull", "Shield", "Reactor",
                 "Drive", "Weapon", "Cargo", "Nav", "Fuel", "Thruster", "Laser",
                 "Drone", "Plating", "Coupler", "Scanner", "Grapple", "Hopper"
-            );
+           );
         }
 
         private static Gen<string> TechLevelGen()
         {
-            return Gen.Elements("LL", "ML", "HL", "Milspec", "Civilian", "");
+            return Gen.Elements("LL", "ML", "HL", "Milspec", "Civilian", string.Empty);
         }
 
         private static Gen<string> BluePrintTypeGen()
         {
-            return Gen.Elements("Hull", "Shield", "Reactor", "Main Drive", "Weapon", "Flatpack", "");
+            return Gen.Elements("Hull", "Shield", "Reactor", "Main Drive", "Weapon", "Flatpack", string.Empty);
         }
 
         private static Gen<BpModel> BlueprintGen()
@@ -217,6 +217,7 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     return result.Label($"Evo {data.Evolution} without player should be global (true), got {result}");
                 }
+
             });
         }
 
@@ -268,6 +269,7 @@ namespace OE2EmpireTracker.Tests.Services
                     return (!anyMatch)
                         .Label("FindByDedupKey returned null but a matching blueprint exists in the list");
                 }
+
             });
         }
 

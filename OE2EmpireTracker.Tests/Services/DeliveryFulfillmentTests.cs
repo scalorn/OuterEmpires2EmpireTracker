@@ -1,8 +1,8 @@
 using System;
 using NUnit.Framework;
-using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -59,7 +59,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void FulfillCommodity_EmptyName_ReturnsFalse()
         {
             var colony = new Colony();
-            var result = DeliveryFulfillment.FulfillCommodity(colony, "", true);
+            var result = DeliveryFulfillment.FulfillCommodity(colony, string.Empty, true);
             Assert.That(result, Is.False);
         }
 

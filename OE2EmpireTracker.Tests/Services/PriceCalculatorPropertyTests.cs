@@ -58,6 +58,7 @@ namespace OE2EmpireTracker.Tests.Services
                 FixedCostPerItem = fixedCost,
                 HourlyCostRate = hourlyCost
             };
+
             for (int i = 0; i < resources.Length && i < prices.Length; i++)
             {
                 var purity = PriceCalculator.DeterminePurity(resources[i]);
@@ -95,7 +96,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Gen.Constant("S1. Something"),
                 Gen.Constant("S2. Something"),
                 Gen.Constant("Regular Resource")
-            );
+           );
 
             return Prop.ForAll(nameGen.ToArbitrary(), name =>
             {

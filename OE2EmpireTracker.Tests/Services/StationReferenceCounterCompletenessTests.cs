@@ -1,8 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -27,6 +27,7 @@ namespace OE2EmpireTracker.Tests.Services
                     new RouteStop { DestinationType = DestinationType.Station, DestinationUUID = TargetUUID }
                 }
             };
+
             var counter = new StationReferenceCounter(
                 new[] { route },
                 Enumerable.Empty<DeliveryPlan>(),
@@ -46,6 +47,7 @@ namespace OE2EmpireTracker.Tests.Services
                     new DeliveryPlanStop { DestinationType = DestinationType.Station, DestinationUUID = TargetUUID }
                 }
             };
+
             var counter = new StationReferenceCounter(
                 Enumerable.Empty<DeliveryRoute>(),
                 new[] { plan },
@@ -63,6 +65,7 @@ namespace OE2EmpireTracker.Tests.Services
                 LocationType = DestinationType.Station,
                 LocationUUID = TargetUUID
             };
+
             var counter = new StationReferenceCounter(
                 Enumerable.Empty<DeliveryRoute>(),
                 Enumerable.Empty<DeliveryPlan>(),
@@ -114,6 +117,7 @@ namespace OE2EmpireTracker.Tests.Services
                     }
                 }
             };
+
             var counter = new StationReferenceCounter(
                 Enumerable.Empty<DeliveryRoute>(),
                 Enumerable.Empty<DeliveryPlan>(),
@@ -133,6 +137,7 @@ namespace OE2EmpireTracker.Tests.Services
                     new SupplyChainStage { LocationType = DestinationType.Station, LocationUUID = TargetUUID }
                 }
             };
+
             var counter = new StationReferenceCounter(
                 Enumerable.Empty<DeliveryRoute>(),
                 Enumerable.Empty<DeliveryPlan>(),
@@ -153,6 +158,7 @@ namespace OE2EmpireTracker.Tests.Services
                     new StockTarget { Scope = StockTargetScope.Station, LocationUUID = TargetUUID }
                 }
             };
+
             var counter = new StationReferenceCounter(
                 Enumerable.Empty<DeliveryRoute>(),
                 Enumerable.Empty<DeliveryPlan>(),
@@ -171,6 +177,7 @@ namespace OE2EmpireTracker.Tests.Services
                 DestinationType = DestinationType.Station,
                 DestinationUUID = TargetUUID
             };
+
             var counter = new StationReferenceCounter(
                 Enumerable.Empty<DeliveryRoute>(),
                 Enumerable.Empty<DeliveryPlan>(),

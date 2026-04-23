@@ -1,7 +1,7 @@
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace OE2EmpireTracker.Models
 {
@@ -194,8 +194,10 @@ namespace OE2EmpireTracker.Models
                     writer.WritePropertyName(item.Key.ToString());
                     writer.WriteValue(item.Value);
                 }
+
                 writer.WriteEndObject();
             }
+
             writer.WriteEndObject();
         }
 

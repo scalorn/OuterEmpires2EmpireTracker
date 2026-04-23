@@ -1,6 +1,6 @@
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
-using System.Linq;
 using CG = OE2EmpireTracker.Models.CommodityGroup;
 using CI = OE2EmpireTracker.Models.CommodityIndustry;
 
@@ -95,7 +95,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void ExtendedName_EmptyNameReturnsEmpty()
         {
             var commodity = new Commodity();
-            Assert.That(commodity.ExtendedName, Is.EqualTo(""));
+            Assert.That(commodity.ExtendedName, Is.EqualTo(string.Empty));
         }
 
         [Test]

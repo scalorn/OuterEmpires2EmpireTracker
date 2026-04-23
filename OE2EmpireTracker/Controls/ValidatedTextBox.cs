@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace OE2EmpireTracker.Controls
@@ -21,7 +21,7 @@ namespace OE2EmpireTracker.Controls
         private bool _autoFormat = true;
         private Regex _validationRegex;
         private string _validationErrorPattern;
-        private string _errorMessage = "";
+        private string _errorMessage = string.Empty;
         private bool _isValid = true;
         private bool _hasExternalError = false;
         private Color _validColor = Color.White;
@@ -34,7 +34,7 @@ namespace OE2EmpireTracker.Controls
             get => _validationRegex?.ToString();
             set
             {
-                _validationErrorPattern = value ?? "";
+                _validationErrorPattern = value ?? string.Empty;
                 var options = RegexOptions.IgnoreCase | RegexOptions.Compiled;
                 _validationRegex = new Regex(_validationErrorPattern, options);
 
@@ -42,6 +42,7 @@ namespace OE2EmpireTracker.Controls
                 {
                     _debounceTimer.Dispose();
                 }
+
                 _debounceTimer = new Timer();
                 _debounceTimer.Interval = 300;
                 _debounceTimer.Tick += DebounceTick;
@@ -88,9 +89,10 @@ namespace OE2EmpireTracker.Controls
             {
                 Font = new Font(form.Font.Name, 10);
             }
+
             Enabled = true;
             TabIndex = 1;
-            //SizeMode = Mode.Single;
+            // SizeMode = Mode.Single;
         }
 
         protected override void OnTextChanged(EventArgs e)
@@ -117,7 +119,7 @@ namespace OE2EmpireTracker.Controls
         {
             Clear();
             IsValid = true;
-            _errorMessage = "";
+            _errorMessage = string.Empty;
         }
 
         protected override void OnGotFocus(EventArgs e)
@@ -132,7 +134,7 @@ namespace OE2EmpireTracker.Controls
         protected override void OnLostFocus(EventArgs e)
         {
             base.OnLostFocus(e);
-            if (_hasExternalError || (!IsValid && ErrorMessage != ""))
+            if (_hasExternalError || (!IsValid && ErrorMessage != string.Empty))
             {
                 Focus();
             }
@@ -150,7 +152,7 @@ namespace OE2EmpireTracker.Controls
             if (AllowSpaces && (match != null && match.Success))
             {
                 IsValid = true;
-                ErrorMessage = "";
+                ErrorMessage = string.Empty;
                 BackColor = ValidColor;
             }
             else if (ValidationPattern != null)
@@ -183,10 +185,10 @@ namespace OE2EmpireTracker.Controls
         public new void Clear()
         {
             base.Clear();
-            Text = "";
+            Text = string.Empty;
             IsValid = true;
             BackColor = ValidColor;
-            ErrorMessage = "";
+            ErrorMessage = string.Empty;
         }
 
         public void SetError(string message)
@@ -200,7 +202,7 @@ namespace OE2EmpireTracker.Controls
 
         public void ClearError()
         {
-            _errorMessage = "";
+            _errorMessage = string.Empty;
             _isValid = true;
             _hasExternalError = false;
             BackColor = ValidColor;
@@ -216,6 +218,7 @@ namespace OE2EmpireTracker.Controls
             {
                 return false;
             }
+
             return !allowedChars.Contains(c);
         }
     }

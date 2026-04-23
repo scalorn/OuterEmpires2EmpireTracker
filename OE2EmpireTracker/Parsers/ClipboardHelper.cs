@@ -15,7 +15,7 @@ namespace OE2EmpireTracker.Parsers
         public static string ExtractHtmlFragment(string htmlDataString)
         {
             // HTML Clipboard Format:
-            // (https://msdn.microsoft.com/en-us/library/aa767917(v=vs.85).aspx)
+            // (https:// msdn.microsoft.com/en-us/library/aa767917(v=vs.85).aspx)
             // Prefer marker-based extraction -- encoding-safe and avoids byte-offset mismatch
             const string startMarker = "<!--StartFragment-->";
             const string endMarker = "<!--EndFragment-->";
@@ -35,7 +35,7 @@ namespace OE2EmpireTracker.Parsers
                 return "ERROR: Unrecognized html header";
             }
 
-            startFragmentIndex = Int32.Parse(htmlDataString.Substring(startFragmentIndex + "StartFragment:".Length, 10));
+            startFragmentIndex = int.Parse(htmlDataString.Substring(startFragmentIndex + "StartFragment:".Length, 10));
             if (startFragmentIndex < 0 || startFragmentIndex > htmlDataString.Length)
             {
                 return "ERROR: Unrecognized html header";
@@ -47,7 +47,7 @@ namespace OE2EmpireTracker.Parsers
                 return "ERROR: Unrecognized html header";
             }
 
-            endFragmentIndex = Int32.Parse(htmlDataString.Substring(endFragmentIndex + "EndFragment:".Length, 10));
+            endFragmentIndex = int.Parse(htmlDataString.Substring(endFragmentIndex + "EndFragment:".Length, 10));
             if (endFragmentIndex > htmlDataString.Length)
             {
                 endFragmentIndex = htmlDataString.Length;

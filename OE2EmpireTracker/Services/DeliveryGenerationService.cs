@@ -282,6 +282,7 @@ namespace OE2EmpireTracker.Services
                 OwnerUUID = route.OwnerUUID,
                 RouteUUID = route.UUID
             };
+
             playerContext.AddDeliveryPlan(plan);
             Log.Debug("CreateNewPlan: created '{0}' ({1})", plan.Name, plan.UUID);
             return plan;
@@ -361,6 +362,7 @@ namespace OE2EmpireTracker.Services
                     ResourcePurity = purity,
                     Quantity = kvp.Value
                 };
+
                 planStop.DropOff.Add(deliveryItem);
             }
         }
@@ -476,6 +478,7 @@ namespace OE2EmpireTracker.Services
                         Name = fp.ItemName,
                         Quantity = fp.Quantity
                     };
+
                     planStop.DropOff.Add(deliveryItem);
                 }
 

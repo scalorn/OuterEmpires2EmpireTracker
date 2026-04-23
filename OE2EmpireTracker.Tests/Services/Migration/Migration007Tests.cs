@@ -1,9 +1,8 @@
+using System;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Services.Migration;
-using System;
-
 using BpModel = OE2EmpireTracker.Models.Blueprint;
 
 namespace OE2EmpireTracker.Tests.Services.Migration

@@ -1,14 +1,14 @@
-using NLog;
-using OE2EmpireTracker.Persistence;
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Controls;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using NLog;
+using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Persistence;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Forms.DeliveryExecution
 {
@@ -132,19 +132,19 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         {
             public string UUID { get; set; }
             public string Display { get; set; }
-            public override string ToString() => Display ?? "";
+            public override string ToString() => Display ?? string.Empty;
         }
 
         private void PopulateRouteDropdown()
         {
-            _lastRouteUUID = RouteDropdownHelper.Populate(cmbRoute, playerContext.GetCurrentPlayerRoutes(), txtRouteFilter.Text ?? "", cmbRoute.SelectedValue as string, cmbRoute_SelectedIndexChanged);
+            _lastRouteUUID = RouteDropdownHelper.Populate(cmbRoute, playerContext.GetCurrentPlayerRoutes(), txtRouteFilter.Text ?? string.Empty, cmbRoute.SelectedValue as string, cmbRoute_SelectedIndexChanged);
         }
 
-        private string _lastRouteUUID = "";
+        private string _lastRouteUUID = string.Empty;
 
         private void cmbRoute_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string routeUUID = cmbRoute.SelectedValue as string ?? "";
+            string routeUUID = cmbRoute.SelectedValue as string ?? string.Empty;
             if (routeUUID == _lastRouteUUID) return; // Route didn't change
             _lastRouteUUID = routeUUID;
 
@@ -154,6 +154,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 ClearExecution();
                 return;
             }
+
             PopulatePlanDropdown(routeUUID);
         }
 
@@ -161,19 +162,20 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             string previousUUID = cmbPlan.SelectedValue as string;
-            string filter = txtPlanFilter.Text ?? "";
+            string filter = txtPlanFilter.Text ?? string.Empty;
             var plans = playerContext.GetCurrentPlayerPlans()
                 .Where(p => p.RouteUUID == routeUUID && !p.Completed)
-                .Where(p => string.IsNullOrEmpty(filter) || (p.Name ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                .Where(p => string.IsNullOrEmpty(filter) || (p.Name ?? string.Empty).IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
                 .OrderBy(p => p.Name)
                 .ToList();
 
             var items = new List<DropdownItem>();
-            items.Add(new DropdownItem { UUID = "", Display = "" });
+            items.Add(new DropdownItem { UUID = string.Empty, Display = string.Empty });
             foreach (var plan in plans)
             {
                 items.Add(new DropdownItem { UUID = plan.UUID, Display = plan.Name });
             }
+
             cmbPlan.DataSource = null;
             cmbPlan.DisplayMember = "Display";
             cmbPlan.ValueMember = "UUID";
@@ -216,11 +218,12 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             var ships = playerContext.GetCurrentPlayerShips();
             var items = new List<DropdownItem>();
-            items.Add(new DropdownItem { UUID = "", Display = "(no ship)" });
+            items.Add(new DropdownItem { UUID = string.Empty, Display = "(no ship)" });
             foreach (var ship in ships.OrderBy(s => s.Name))
             {
                 items.Add(new DropdownItem { UUID = ship.UUID, Display = ship.Name });
             }
+
             cmbShip.DataSource = null;
             cmbShip.DisplayMember = "Display";
             cmbShip.ValueMember = "UUID";
@@ -240,7 +243,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void cmbShip_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string shipUUID = cmbShip.SelectedValue as string ?? "";
+            string shipUUID = cmbShip.SelectedValue as string ?? string.Empty;
 
             // Persist ship assignment on the plan
             if (selectedPlan != null)
@@ -256,7 +259,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void UpdateShipSelection()
         {
-            string shipUUID = cmbShip.SelectedValue as string ?? "";
+            string shipUUID = cmbShip.SelectedValue as string ?? string.Empty;
             selectedShip = null;
             currentCargoCapacity = 0m;
 
@@ -272,16 +275,17 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                             uuid => playerContext.FindBlueprint(uuid));
                         currentCargoCapacity = stats.CargoCapacity;
                     }
+
                     lblShipCapacity.Text = string.Format("Cargo: {0:N0}", currentCargoCapacity);
                 }
                 else
                 {
-                    lblShipCapacity.Text = "";
+                    lblShipCapacity.Text = string.Empty;
                 }
             }
             else
             {
-                lblShipCapacity.Text = "";
+                lblShipCapacity.Text = string.Empty;
             }
         }
 
@@ -301,8 +305,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             cmdDeletePlan.Visible = false;
             cmdSplitTrips.Visible = false;
             lblLoadListHeader.Text = "Load Before Departure";
-            lblCargoVolume.Text = "";
-            lblCargoMass.Text = "";
+            lblCargoVolume.Text = string.Empty;
+            lblCargoMass.Text = string.Empty;
             lblCargoVolume.ForeColor = System.Drawing.SystemColors.ControlText;
         }
 
@@ -400,6 +404,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     AutoSize = true,
                     Margin = new Padding(3, 10, 3, 3)
                 };
+
                 flpStops.Controls.Add(lblStop);
 
                 // Drop-off items
@@ -418,6 +423,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                             Margin = new Padding(20, 1, 3, 1),
                             Tag = item
                         };
+
                         chk.CheckedChanged += DeliveryItem_CheckedChanged;
                         flpStops.Controls.Add(chk);
                     }
@@ -439,6 +445,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                             Margin = new Padding(20, 1, 3, 1),
                             Tag = item
                         };
+
                         chk.CheckedChanged += DeliveryItem_CheckedChanged;
                         flpStops.Controls.Add(chk);
                     }
@@ -463,6 +470,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                         Margin = new Padding(20, 1, 3, 1),
                         Tag = stop
                     };
+
                     chkRefuel.CheckedChanged += RefuelItem_CheckedChanged;
                     flpStops.Controls.Add(chkRefuel);
                     _refuelCheckboxes[stop] = chkRefuel;
@@ -482,6 +490,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                         Margin = new Padding(20, 3, 3, 3),
                         Tag = stop
                     };
+
                     btnComplete.Click += CompleteStop_Click;
                     flpStops.Controls.Add(btnComplete);
                     _stopCompleteButtons[stop] = btnComplete;
@@ -727,6 +736,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     Margin = new Padding(20, 3, 3, 3),
                     Tag = stop
                 };
+
                 btnComplete.Click += CompleteStop_Click;
 
                 flpStops.Controls.Add(btnComplete);
@@ -765,6 +775,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 else if (ctrl.Tag == stop)
                     lastIndex = i;
             }
+
             return lastIndex;
         }
 
@@ -833,6 +844,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 foreach (var item in stop.PickUp)
                     if (!item.Delivered) return false;
             }
+
             return true;
         }
 
@@ -845,6 +857,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 catch (ObjectDisposedException) { }
                 return;
             }
+
             PopulateRouteDropdown();
             ClearExecution();
         }
@@ -895,8 +908,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         {
             if (selectedPlan == null)
             {
-                lblCargoVolume.Text = "";
-                lblCargoMass.Text = "";
+                lblCargoVolume.Text = string.Empty;
+                lblCargoMass.Text = string.Empty;
                 cmdSplitTrips.Visible = false;
                 return;
             }
@@ -941,9 +954,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 }
                 else
                 {
-                    lblCargoVolume.Text = "";
-                    lblCargoMass.Text = "";
+                    lblCargoVolume.Text = string.Empty;
+                    lblCargoMass.Text = string.Empty;
                 }
+
                 lblCargoVolume.ForeColor = SystemColors.ControlText;
                 cmdSplitTrips.Visible = false;
             }
@@ -986,6 +1000,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                         "  {0} x{1}", item.ExtendedName, item.Quantity));
                 sb.AppendLine();
             }
+
             sb.AppendLine("Accept? Creates additional delivery plans.");
 
             var result = MessageBox.Show(sb.ToString(), "Split Trips",

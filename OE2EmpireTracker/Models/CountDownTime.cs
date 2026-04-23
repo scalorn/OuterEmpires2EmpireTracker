@@ -1,6 +1,6 @@
 using System;
-using OE2EmpireTracker.Services;
 using System.Text.RegularExpressions;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Models
 {
@@ -49,6 +49,7 @@ namespace OE2EmpireTracker.Models
 
                 return (long)(EndTime - SystemClock.UtcNow).TotalSeconds;
             }
+
             set
             {
                 var now = SystemClock.UtcNow;
@@ -145,6 +146,7 @@ namespace OE2EmpireTracker.Models
 
                 return timeString;
             }
+
             set
             {
                 var match = Regex.Match(value, @"(?:(\d+)d\s*)?(?:(\d+)h\s*)?(?:(\d+)m\s*)?(?:(\d+)s)?");

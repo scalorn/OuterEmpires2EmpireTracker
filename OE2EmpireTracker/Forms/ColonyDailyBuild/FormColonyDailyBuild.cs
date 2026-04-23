@@ -1,15 +1,15 @@
-using NLog;
-using OE2EmpireTracker.Persistence;
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Controls;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using NLog;
+using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Persistence;
+using OE2EmpireTracker.Services;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Forms.ColonyDailyBuild
 {
@@ -76,14 +76,14 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
 
         private void PopulateRouteDropdown()
         {
-            _lastRouteUUID = RouteDropdownHelper.Populate(cmbRoute, playerContext.GetCurrentPlayerRoutes(), txtRouteFilter.Text ?? "", cmbRoute.SelectedValue as string, cmbRoute_SelectedIndexChanged);
+            _lastRouteUUID = RouteDropdownHelper.Populate(cmbRoute, playerContext.GetCurrentPlayerRoutes(), txtRouteFilter.Text ?? string.Empty, cmbRoute.SelectedValue as string, cmbRoute_SelectedIndexChanged);
         }
 
-        private string _lastRouteUUID = "";
+        private string _lastRouteUUID = string.Empty;
 
         private void cmbRoute_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string routeUUID = cmbRoute.SelectedValue as string ?? "";
+            string routeUUID = cmbRoute.SelectedValue as string ?? string.Empty;
             if (routeUUID == _lastRouteUUID) return;
             _lastRouteUUID = routeUUID;
 
@@ -92,6 +92,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
                 ClearContent();
                 return;
             }
+
             BuildContent(routeUUID);
         }
 
@@ -153,6 +154,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
                     AutoSize = true,
                     Margin = new Padding(3, 3, 3, 1)
                 };
+
                 pnlColony.Controls.Add(lblColony);
 
                 var flpRow = new FlowLayoutPanel
@@ -170,6 +172,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
                     AutoSize = true,
                     Margin = new Padding(10, 5, 3, 3)
                 };
+
                 flpRow.Controls.Add(lblBlueprint);
 
                 var btnBuild = new Button
@@ -179,6 +182,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
                     Margin = new Padding(6, 3, 3, 3),
                     Tag = new BuildTag { ColonyUUID = colony.UUID, StructureUUID = staged.UUID }
                 };
+
                 btnBuild.Click += btnBuild_Click;
                 flpRow.Controls.Add(btnBuild);
 
@@ -264,6 +268,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
                 catch (ObjectDisposedException) { }
                 return;
             }
+
             PopulateRouteDropdown();
             ClearContent();
         }
@@ -277,6 +282,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
                 catch (ObjectDisposedException) { }
                 return;
             }
+
             string routeUUID = cmbRoute.SelectedValue as string;
             if (!string.IsNullOrEmpty(routeUUID))
                 BuildContent(routeUUID);

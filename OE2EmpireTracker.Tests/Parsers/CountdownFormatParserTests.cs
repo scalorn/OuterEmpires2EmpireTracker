@@ -50,7 +50,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         [Test]
         public void TryParse_EmptyString_ReturnsFalse()
         {
-            bool result = CountdownFormatParser.TryParse("", out long totalSeconds);
+            bool result = CountdownFormatParser.TryParse(string.Empty, out long totalSeconds);
             Assert.That(result, Is.False);
             Assert.That(totalSeconds, Is.EqualTo(0L));
         }
@@ -137,7 +137,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             var invalidGen = Gen.OneOf(
                 // Empty and whitespace strings
-                Gen.Elements("", " ", "  ", "\t", "\n", "   \t  "),
+                Gen.Elements(string.Empty, " ", "  ", "\t", "\n", "   \t  "),
 
                 // Strings with unrecognized suffixes
                 Gen.Choose(0, 999).SelectMany(n =>
@@ -162,8 +162,8 @@ namespace OE2EmpireTracker.Tests.Parsers
                 Gen.Elements("d", "h", "m", "s", "5", "0", "x"),
 
                 // Tokens with non-numeric prefixes
-                Gen.Elements("abcd", "xxh", "??m", "!!s", "1.5d", "2.0h", "3,5m")
-            );
+                Gen.Elements("abcd", "xxh", "??m", "!!s", "1.5d", "2.0h", "3, 5m")
+           );
 
             return Prop.ForAll(invalidGen.ToArbitrary(), input =>
             {

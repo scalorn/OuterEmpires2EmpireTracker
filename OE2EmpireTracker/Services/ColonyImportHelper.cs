@@ -35,7 +35,7 @@ namespace OE2EmpireTracker.Services
 
             return colonies.FirstOrDefault(c =>
                 string.Equals(c.PlanetName, planetName, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(c.SystemName ?? "", systemName ?? "", StringComparison.OrdinalIgnoreCase));
+                string.Equals(c.SystemName ?? string.Empty, systemName ?? string.Empty, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -54,6 +54,7 @@ namespace OE2EmpireTracker.Services
             {
                 target.ColonyName = source.ColonyName;
             }
+
             target.LastImportDateTime = SurveyDateTimeParser.ToIsoString(SystemClock.UtcNow);
         }
 

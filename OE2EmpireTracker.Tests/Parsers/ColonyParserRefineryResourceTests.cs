@@ -1,3 +1,4 @@
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -5,7 +6,6 @@ using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {
@@ -59,6 +59,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             {
                 ["buildings"] = new JArray(buildings)
             };
+
             return root.ToString();
         }
 

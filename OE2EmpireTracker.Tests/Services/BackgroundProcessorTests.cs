@@ -1,9 +1,9 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 // Feature: background-processing, Property 1: HasExpiredTimers predicate correctness
 // Feature: background-processing, Property 2: All-player colony scanning
@@ -607,6 +607,7 @@ namespace OE2EmpireTracker.Tests.Services
                 basePath + ".tmp",
                 basePath + ".bak"
             };
+
             foreach (string path in paths)
             {
                 if (System.IO.File.Exists(path))

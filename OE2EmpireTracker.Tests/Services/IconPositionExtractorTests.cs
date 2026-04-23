@@ -1,14 +1,14 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NUnit.Framework;
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Parsers;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
+using OE2EmpireTracker.Services;
 using static OE2EmpireTracker.Models.CommodityIndustry;
 
 namespace OE2EmpireTracker.Tests.Services
@@ -272,6 +272,7 @@ namespace OE2EmpireTracker.Tests.Services
                             ["IconPosition"] = icon.IconPosition,
                             ["OutputItemType"] = "ShipPart"
                         };
+
                         blueprintTypes.Add(newEntry);
                         addedCount++;
                         TestContext.WriteLine(
@@ -306,7 +307,7 @@ namespace OE2EmpireTracker.Tests.Services
                     ["Properties"] = new JArray(icon.PropertyNames.ToArray()),
                     ["ResearchableProperties"] = new JArray(),
                     ["IconPosition"] = icon.IconPosition,
-                    ["OutputItemType"] = ""
+                    ["OutputItemType"] = string.Empty
                 };
 
                 blueprintTypes.Add(newEntry);
@@ -477,14 +478,14 @@ namespace OE2EmpireTracker.Tests.Services
             }
 
             // 5. Log the Coverage Gap Report
-            TestContext.WriteLine("");
+            TestContext.WriteLine(string.Empty);
             TestContext.WriteLine("========================================");
             TestContext.WriteLine("       COVERAGE GAP REPORT");
             TestContext.WriteLine("========================================");
             TestContext.WriteLine($"Total BlueprintTypes in BaselineData: {allTypeIds.Count}");
             TestContext.WriteLine($"Types with HTML coverage: {coveredTypeIds.Count}");
             TestContext.WriteLine($"Types without HTML coverage: {uncoveredTypes.Count}");
-            TestContext.WriteLine("");
+            TestContext.WriteLine(string.Empty);
 
             // 6. List non-CommodityFactory uncovered types
             if (staleTypes.Count > 0 || missingTypes.Count > 0)
@@ -500,7 +501,7 @@ namespace OE2EmpireTracker.Tests.Services
                     TestContext.WriteLine($"  MISSING: {typeId}  (null IconPosition -- never characterized)");
                 }
 
-                TestContext.WriteLine("");
+                TestContext.WriteLine(string.Empty);
             }
 
             // 7. Separately list CommodityFactory variants
@@ -517,7 +518,7 @@ namespace OE2EmpireTracker.Tests.Services
                     TestContext.WriteLine($"  MISSING: {typeId}  (null IconPosition -- never characterized)");
                 }
 
-                TestContext.WriteLine("");
+                TestContext.WriteLine(string.Empty);
             }
 
             if (uncoveredTypes.Count == 0)

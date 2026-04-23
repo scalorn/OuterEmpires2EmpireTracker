@@ -1,10 +1,10 @@
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Models;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.ViewModels
 {
@@ -42,10 +42,12 @@ namespace OE2EmpireTracker.ViewModels
                     ColonyUUID = colonyUUID,
                     Sequence = sequence,
                     DestinationType = destType,
-                    DestinationUUID = destinationUUID ?? ""
+                    DestinationUUID = destinationUUID ?? string.Empty
                 };
+
                 _plan.Stops.Add(stop);
             }
+
             return stop;
         }
 
@@ -105,6 +107,7 @@ namespace OE2EmpireTracker.ViewModels
                 OwnerUUID = playerContext.CurrentPlayerUUID,
                 RouteUUID = routeUUID
             };
+
             return new DeliveryPlanViewModel(plan, playerContext);
         }
 
@@ -114,6 +117,7 @@ namespace OE2EmpireTracker.ViewModels
             {
                 _playerContext.AddDeliveryPlan(_plan);
             }
+
             _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
         }
@@ -145,6 +149,7 @@ namespace OE2EmpireTracker.ViewModels
                     added++;
                 }
             }
+
             return added;
         }
 
@@ -206,6 +211,7 @@ namespace OE2EmpireTracker.ViewModels
                     Log.Debug("  Added flatpack: {0} x{1}", flatpackNames[entry.Key], entry.Value);
                 }
             }
+
             Log.Debug("AutoFillFlatpacks: total added={0}", added);
             return added;
         }
@@ -310,6 +316,7 @@ namespace OE2EmpireTracker.ViewModels
                     added++;
                 }
             }
+
             return added;
         }
 
@@ -375,6 +382,7 @@ namespace OE2EmpireTracker.ViewModels
                     added++;
                 }
             }
+
             return added;
         }
     }

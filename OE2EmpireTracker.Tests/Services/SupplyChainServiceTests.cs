@@ -1,9 +1,9 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -167,7 +167,7 @@ namespace OE2EmpireTracker.Tests.Services
                     {
                         Sequence = 1,
                         AccumulationThreshold = 10,
-                        DeliveryRouteUUID = "",
+                        DeliveryRouteUUID = string.Empty,
                         LocationType = DestinationType.Colony,
                         LocationUUID = "col-1",
                         ResourceName = "Iron",

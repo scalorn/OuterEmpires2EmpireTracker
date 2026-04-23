@@ -1,7 +1,7 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Controls;
 using System.Threading;
 using System.Windows.Forms;
+using NUnit.Framework;
+using OE2EmpireTracker.Controls;
 
 namespace OE2EmpireTracker.Tests.Controls
 {
@@ -19,7 +19,7 @@ namespace OE2EmpireTracker.Tests.Controls
             var item = new ListViewItem("row");
             // Pad SubItems up to the target column index
             for (int i = 1; i <= columnIndex; i++)
-                item.SubItems.Add("");
+                item.SubItems.Add(string.Empty);
 
             item.SubItems[columnIndex].Text = text;
             item.SubItems[columnIndex].Tag = tag;

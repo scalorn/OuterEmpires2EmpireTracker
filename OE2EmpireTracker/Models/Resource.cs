@@ -1,4 +1,3 @@
-using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using OE2EmpireTracker.Services;
 using static OE2EmpireTracker.Models.ResourcePurity;
 
 namespace OE2EmpireTracker.Models
@@ -60,7 +60,7 @@ namespace OE2EmpireTracker.Models
         public ResourceEnum ID { get; set; }
         public string Name { get; set; }
 
-        public override string ToString() => Name ?? "";
+        public override string ToString() => Name ?? string.Empty;
 
         private static List<Resource> _resources = GetResources();
         private static Dictionary<ResourceEnum, Resource> _resourceMapByEnum;
@@ -316,7 +316,7 @@ namespace OE2EmpireTracker.Models
             instance.Sort((x, y) => x.Name.CompareTo(y.Name));
 
             // Make sure the blank none entry is first.
-            instance.Insert(0, new Resource() { ID = ResourceEnum.None, Name = "", ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.None });
+            instance.Insert(0, new Resource() { ID = ResourceEnum.None, Name = string.Empty, ResourceGroup = Models.ResourceGroup.ResourceGroupEnum.None });
 
             _resourceMapByEnum = new Dictionary<ResourceEnum, Resource>();
             _resourceMapByString = new Dictionary<string, Resource>();

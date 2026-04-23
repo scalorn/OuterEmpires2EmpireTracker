@@ -1,9 +1,9 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -28,7 +28,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void CountReferences_EmptyUUID_ReturnsZero()
         {
             var counter = new MarketListingReferenceCounter(Enumerable.Empty<MarketTransaction>());
-            Assert.That(counter.CountReferences(""), Is.EqualTo(0));
+            Assert.That(counter.CountReferences(string.Empty), Is.EqualTo(0));
         }
 
         [Test]
@@ -38,6 +38,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 new MarketTransaction { UUID = "tx-1", ListingUUID = "listing-1" }
             };
+
             var counter = new MarketListingReferenceCounter(transactions);
             Assert.That(counter.CountReferences("listing-1"), Is.EqualTo(1));
         }
@@ -51,6 +52,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new MarketTransaction { UUID = "tx-2", ListingUUID = "listing-1" },
                 new MarketTransaction { UUID = "tx-3", ListingUUID = "listing-2" }
             };
+
             var counter = new MarketListingReferenceCounter(transactions);
             Assert.That(counter.CountReferences("listing-1"), Is.EqualTo(2));
             Assert.That(counter.CountReferences("listing-2"), Is.EqualTo(1));
@@ -63,6 +65,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 new MarketTransaction { UUID = "tx-1", ListingUUID = "listing-1" }
             };
+
             var counter = new MarketListingReferenceCounter(transactions);
             Assert.That(counter.CountReferences("listing-999"), Is.EqualTo(0));
         }
@@ -79,9 +82,10 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var transactions = new List<MarketTransaction>
             {
-                new MarketTransaction { UUID = "tx-1", ListingUUID = "" },
+                new MarketTransaction { UUID = "tx-1", ListingUUID = string.Empty },
                 new MarketTransaction { UUID = "tx-2", ListingUUID = "listing-1" }
             };
+
             var counter = new MarketListingReferenceCounter(transactions);
             Assert.That(counter.CountReferences("listing-1"), Is.EqualTo(1));
         }

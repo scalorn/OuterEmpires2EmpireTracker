@@ -1,11 +1,3 @@
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Controls;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Parsers;
-using OE2EmpireTracker.Persistence;
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.ViewModels;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,6 +8,14 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using NLog;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
+using OE2EmpireTracker.Persistence;
+using OE2EmpireTracker.Services;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Forms.ColonyV2
 {
@@ -219,9 +219,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             _referenceCounter = new ColonyReferenceCounter(
                 playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList);
             PopulateListView(playerContext.GetCurrentPlayerColonies());
-            txtPlanetName.Text = "";
-            txtColonyName.Text = "";
-            txtSystemName.Text = "";
+            txtPlanetName.Text = string.Empty;
+            txtColonyName.Text = string.Empty;
+            txtSystemName.Text = string.Empty;
             MarkAllTabsDirty();
             UpdateTabWarnings();
             UpdateTitle();
@@ -236,6 +236,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 catch (ObjectDisposedException) { }
                 return;
             }
+
             if (_isProgrammaticUpdate > 0) return;
             Log.Debug("V2.OnColonyDataChanged: colonyUUID={0}", e.ColonyUUID);
             if (selectedColony != null && selectedColony.UUID == e.ColonyUUID)
@@ -328,6 +329,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 lvwColonies.Items.Remove(remaining.Value);
             }
+
             sw.Stop(); Log.Info("PERF PopulateListView: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -342,10 +344,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (!string.IsNullOrEmpty(filter))
             {
                 colonies = colonies
-                    .Where(c => (c.PlanetName ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
-                             || (c.ColonyName ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Where(c => (c.PlanetName ?? string.Empty).IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
+                             || (c.ColonyName ?? string.Empty).IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
             }
+
             lvwColonies.Items.Clear();
             PopulateListView(colonies);
             lvwColonies.Sort();
@@ -356,9 +359,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 using var guard = new ProgrammaticUpdateGuard(this);
                 selectedColony = new Models.Colony();
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
-                txtPlanetName.Text = "";
-                txtColonyName.Text = "";
-                txtSystemName.Text = "";
+                txtPlanetName.Text = string.Empty;
+                txtColonyName.Text = string.Empty;
+                txtSystemName.Text = string.Empty;
                 MarkAllTabsDirty();
                 UpdateDeleteButtonState();
             }
@@ -377,6 +380,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 _sortColumn = e.Column;
                 _sortOrder = SortOrder.Ascending;
             }
+
             lvwColonies.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
             lvwColonies.Sort();
         }
@@ -418,7 +422,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 {
                     txtPlanetName.Text = colonyViewModel.PlanetName;
                     txtColonyName.Text = colonyViewModel.ColonyName;
-                    txtSystemName.Text = colonyViewModel.Data.SystemName ?? "";
+                    txtSystemName.Text = colonyViewModel.Data.SystemName ?? string.Empty;
                 }
 
                 // Show "Calculating..." indicator
@@ -437,6 +441,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                         Log.Warn("Background calc: write lock timeout on colony {0}", colony.UUID);
                         return;
                     }
+
                     try
                     {
                         if (cts.IsCancellationRequested) return;
@@ -492,7 +497,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             txtPlanetName.Text = colonyViewModel.PlanetName;
             txtColonyName.Text = colonyViewModel.ColonyName;
-            txtSystemName.Text = colonyViewModel.Data.SystemName ?? "";
+            txtSystemName.Text = colonyViewModel.Data.SystemName ?? string.Empty;
 
             long t0 = pfSw.ElapsedMilliseconds;
 
@@ -550,6 +555,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 PopulateOverflowGrid();
                 _overflowDirty = false;
             }
+
             sw.Stop(); Log.Info("PERF PopulateActiveTab: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -592,9 +598,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             using var guard = new ProgrammaticUpdateGuard(this);
             selectedColony = new Models.Colony();
             colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
-            txtPlanetName.Text = "";
-            txtColonyName.Text = "";
-            txtSystemName.Text = "";
+            txtPlanetName.Text = string.Empty;
+            txtColonyName.Text = string.Empty;
+            txtSystemName.Text = string.Empty;
             lvwColonies.SelectedItems.Clear();
             MarkAllTabsDirty();
             UpdateDeleteButtonState();
@@ -609,12 +615,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 Log.Warn("cmdSave_Click: write lock timeout on colony {0}", selectedColony.UUID);
                 return;
             }
+
             try
             {
                 if (string.IsNullOrEmpty(colonyViewModel.Data.OwnerUUID))
                 {
                     colonyViewModel.Data.OwnerUUID = playerContext.CurrentPlayerUUID;
                 }
+
                 colonyViewModel.Save();
             }
             finally
@@ -656,6 +664,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 Log.Warn("cmdDelete_Click: write lock timeout on colony {0}", selectedColony.UUID);
                 return;
             }
+
             try
             {
                 playerContext.RemoveColony(selectedColony);
@@ -671,9 +680,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             using var guard = new ProgrammaticUpdateGuard(this);
             selectedColony = new Models.Colony();
             colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
-            txtPlanetName.Text = "";
-            txtColonyName.Text = "";
-            txtSystemName.Text = "";
+            txtPlanetName.Text = string.Empty;
+            txtColonyName.Text = string.Empty;
+            txtSystemName.Text = string.Empty;
             MarkAllTabsDirty();
 
             // Refresh list
@@ -737,7 +746,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             Log.Info("V2.PopulateStructures: structureCount={0} filterActive={1} filterTypes={2}",
                 selectedColony.Structures?.Count ?? 0,
                 checkedTypes.Count > 0,
-                checkedTypes.Count > 0 ? string.Join(",", checkedTypes) : "(none)");
+                checkedTypes.Count > 0 ? string.Join(", ", checkedTypes) : "(none)");
 
             flpStructures.SuspendLayout();
 
@@ -793,7 +802,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 {
                     var vm = structureVMs[i];
                     var bp = playerContext.FindBlueprint(vm.Data.FlatpackBlueprintUUID);
-                    string typeId = bp?.BluePrintType ?? "";
+                    string typeId = bp?.BluePrintType ?? string.Empty;
 
                     ctrl.ViewModel = vm;
                     ctrl.Colony = selectedColony;
@@ -818,6 +827,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     }
                 }
             }
+
             _poolInUse = needed;
 
             // Count visible structures for logging
@@ -894,6 +904,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 Log.Warn("cmdAddFlatpack_Click: write lock timeout on colony {0}", selectedColony.UUID);
                 return;
             }
+
             try
             {
                 colonyViewModel.AddStructure(uuid);
@@ -931,6 +942,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 Log.Warn("structures_ColonyStructureDataChanged: write lock timeout on colony {0}", selectedColony.UUID);
                 return;
             }
+
             try
             {
                 if (e.IsStructural)
@@ -983,7 +995,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             var status = colonyViewModel.Calculator.finalActualStatus;
             if (status == null)
             {
-                rtbStatusSummary.Text = "";
+                rtbStatusSummary.Text = string.Empty;
                 return;
             }
 
@@ -1026,10 +1038,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 using (var guard = new ProgrammaticUpdateGuard(this))
                 {
-                    txtColonyFilter.Text = "";
+                    txtColonyFilter.Text = string.Empty;
                 }
+
                 txtColonyFilter_TextChanged(this, EventArgs.Empty);
             }
+
             if (lvwColonies.SelectedItems.Count == 0 && lvwColonies.Items.Count > 0)
             {
                 lvwColonies.Items[0].Selected = true;
@@ -1046,6 +1060,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 e.Graphics.FillRectangle(brush, rect);
             }
+
             // Draw grip dots in the center
             int midX = rect.X + rect.Width / 2;
             int midY = rect.Y + rect.Height / 2;
@@ -1087,7 +1102,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             var sw = System.Diagnostics.Stopwatch.StartNew();
             if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID))
             {
-                rtbAdminReport.Rtf = "";
+                rtbAdminReport.Rtf = string.Empty;
                 return;
             }
 
@@ -1112,12 +1127,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 }
 
                 string rtf = ColonyAdminReportBuilder.BuildReport(selectedColony, playerContext);
-                rtbAdminReport.Rtf = string.IsNullOrEmpty(rtf) ? "" : rtf;
+                rtbAdminReport.Rtf = string.IsNullOrEmpty(rtf) ? string.Empty : rtf;
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Error building admin report");
             }
+
             arSw.Stop();
             if (arSw.ElapsedMilliseconds > 10)
                 Log.Info("V2.RefreshAdminReport PERF: {0}ms", arSw.ElapsedMilliseconds);
@@ -1155,6 +1171,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 Log.Warn("cmdBootstrap_Click: write lock timeout on colony {0}", selectedColony.UUID);
                 return;
             }
+
             try
             {
                 var bootstrap = new ColonyBootstrap(playerContext);
@@ -1194,6 +1211,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 Log.Warn("cmdOptimize_Click: write lock timeout on colony {0}", selectedColony.UUID);
                 return;
             }
+
             try
             {
                 var optimizer = new BuildOrderOptimizer(playerContext);
@@ -1290,11 +1308,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     Left = 15, Top = 15, Width = 360,
                     Checked = true
                 };
+
                 var rbExisting = new RadioButton
                 {
                     Text = "Add to existing plan",
                     Left = 15, Top = 40, Width = 360
                 };
+
                 var cmbPlans = new ComboBox
                 {
                     Left = 35, Top = 65, Width = 340,
@@ -1320,6 +1340,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     Text = "OK", Left = 210, Top = 110, Width = 75,
                     DialogResult = DialogResult.OK
                 };
+
                 var btnCancel = new Button
                 {
                     Text = "Cancel", Left = 295, Top = 110, Width = 75,
@@ -1373,6 +1394,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     tab.BackColor = SystemColors.Control;
                     break;
             }
+
             tabDetailedData.Invalidate();
         }
 
@@ -1454,6 +1476,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     .OrderBy(c => c.ExtendedName)
                     .ToList();
             }
+
             filteredList.Insert(0, new Models.Commodity());
 
             var filteredSource = new BindingSource();
@@ -1579,6 +1602,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     request.Requested = value;
                 playerContext.WriteContext();
             }
+
             // Column 2 = Fulfilled (checkbox) (19.4)
             else if (e.ColumnIndex == 2)
             {
@@ -1592,10 +1616,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 // Refresh to update strikethrough
                 PopulateCommodityRequestGrid();
             }
+
             // Column 3 = NeedBy (countdown format) (19.3)
             else if (e.ColumnIndex == 3)
             {
-                string text = row.Cells[3].Value?.ToString() ?? "";
+                string text = row.Cells[3].Value?.ToString() ?? string.Empty;
                 DateTime? parsed = ParseCountdownToDateTime(text);
                 if (parsed.HasValue)
                 {
@@ -1619,9 +1644,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 {
                     dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = 0;
                     dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
-                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "";
+                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = string.Empty;
                     return;
                 }
+
                 if (!int.TryParse(value, out _))
                 {
                     e.Cancel = true;
@@ -1631,9 +1657,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 else
                 {
                     dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
-                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "";
+                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = string.Empty;
                 }
             }
+
             // Column 3 = NeedBy (countdown format)
             else if (e.ColumnIndex == 3)
             {
@@ -1641,9 +1668,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 if (string.IsNullOrEmpty(value))
                 {
                     dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
-                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "";
+                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = string.Empty;
                     return;
                 }
+
                 if (ParseCountdownToDateTime(value) == null)
                 {
                     e.Cancel = true;
@@ -1653,7 +1681,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 else
                 {
                     dgvCommodityRequests.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
-                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = "";
+                    dgvCommodityRequests.Rows[e.RowIndex].ErrorText = string.Empty;
                 }
             }
         }
@@ -1684,6 +1712,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 if (request != null)
                     colonyViewModel.RemoveCommodityRequest(request);
             }
+
             PopulateCommodityRequestGrid();
             UpdateTabWarnings();
 
@@ -1746,12 +1775,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         /// </summary>
         private string FormatNeedByCountdown(DateTime needBy)
         {
-            if (needBy == DateTime.MinValue) return "";
+            if (needBy == DateTime.MinValue) return string.Empty;
             var remaining = needBy - SystemClock.UtcNow;
             if (remaining.TotalSeconds <= 0)
                 return "overdue";
 
-            string result = "";
+            string result = string.Empty;
             if (remaining.Days > 0) result += $"{remaining.Days}d ";
             if (remaining.Hours > 0 || remaining.Days > 0) result += $"{remaining.Hours}h ";
             if (remaining.Minutes > 0 || remaining.Hours > 0 || remaining.Days > 0) result += $"{remaining.Minutes}m";
@@ -1855,6 +1884,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     : 0;
                 row.Cells[2].Value = lockedQty;
             }
+
             sw.Stop(); Log.Info("PERF RefreshItemGridLocks: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -2029,6 +2059,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     .OrderBy(s => s.PlanetName)
                     .ToList();
             }
+
             filteredList.Insert(0, new Models.Survey());
 
             var bs = new BindingSource();
@@ -2052,6 +2083,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     .Where(b => b.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
             }
+
             filteredList.Sort((x, y) => x.ExtendedName.CompareTo(y.ExtendedName));
             filteredList.Insert(0, new Models.Blueprint());
 
@@ -2086,6 +2118,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     .Where(b => b.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
             }
+
             filteredList.Sort((x, y) => x.ExtendedName.CompareTo(y.ExtendedName));
             filteredList.Insert(0, new Models.Blueprint());
 
@@ -2119,6 +2152,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     item.BaseItemTypeID = resource.Name;
                     item.Name = resource.Name;
                 }
+
                 Models.ResourcePurity purity = cmbPurity.SelectedItem as Models.ResourcePurity;
                 if (purity != null)
                     item.ResourcePurity = purity.Name;
@@ -2191,6 +2225,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 Log.Warn("cmdAddItem_Click: write lock timeout on colony {0}", selectedColony.UUID);
                 return;
             }
+
             try
             {
                 colonyViewModel.AddItem(item);
@@ -2234,6 +2269,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                             return vol;
                         }
                     }
+
                     return 0.0m;
             }
         }
@@ -2252,6 +2288,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 Log.Warn("dgvItems_KeyDown: write lock timeout on colony {0}", selectedColony.UUID);
                 return;
             }
+
             try
             {
                 foreach (DataGridViewRow row in dgvItems.SelectedRows)
@@ -2271,6 +2308,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                                 MessageBoxIcon.Warning);
                             continue;
                         }
+
                         colonyViewModel.RemoveItem(item.UUID);
                     }
                 }
@@ -2332,7 +2370,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 dgvItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = 0;
                 dgvItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
-                dgvItems.Rows[e.RowIndex].ErrorText = "";
+                dgvItems.Rows[e.RowIndex].ErrorText = string.Empty;
                 return;
             }
 
@@ -2345,7 +2383,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             else
             {
                 dgvItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
-                dgvItems.Rows[e.RowIndex].ErrorText = "";
+                dgvItems.Rows[e.RowIndex].ErrorText = string.Empty;
             }
         }
 
@@ -2560,6 +2598,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 _structureTypesPopulated = true;
                 BuildStructureTypeList();
             }
+
             sw.Stop(); Log.Info("PERF PopulateStructureTypeFilter: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -2631,9 +2670,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 var ctrl = _pool[i];
                 if (ctrl.ViewModel == null) continue;
                 var bp = playerContext.FindBlueprint(ctrl.ViewModel.Data.FlatpackBlueprintUUID);
-                string typeId = bp?.BluePrintType ?? "";
+                string typeId = bp?.BluePrintType ?? string.Empty;
                 ctrl.Visible = checkedTypes.Count == 0 || checkedTypes.Contains(typeId);
             }
+
             flpStructures.ResumeLayout();
         }
 
@@ -2660,7 +2700,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             foreach (var rule in rules)
             {
                 string destName = ResolveOverflowDestName(rule.DestinationType, rule.DestinationUUID);
-                string routeName = "";
+                string routeName = string.Empty;
                 if (!string.IsNullOrEmpty(rule.DeliveryRouteUUID))
                 {
                     var route = playerContext.DeliveryRouteList.FirstOrDefault(r => r.UUID == rule.DeliveryRouteUUID);
@@ -2697,13 +2737,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     }
                 }
             }
+
             sw.Stop();
             Log.Info("PERF PopulateOverflowGrid: {0}ms rules={1}", sw.ElapsedMilliseconds, rules.Count);
         }
 
         private string ResolveOverflowDestName(DestinationType destType, string uuid)
         {
-            if (string.IsNullOrEmpty(uuid)) return "";
+            if (string.IsNullOrEmpty(uuid)) return string.Empty;
             switch (destType)
             {
                 case DestinationType.Colony:
@@ -2732,6 +2773,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 foreach (var r in filtered)
                     cmbOverflowResource.Items.Add(r.Name);
             }
+
             if (cmbOverflowResource.Items.Count > 0) cmbOverflowResource.SelectedIndex = 0;
             sw.Stop(); Log.Info("PERF PopulateOverflowResourceCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -2746,6 +2788,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 if (p.ID != ResourcePurity.PurityEnum.None)
                     cmbOverflowPurity.Items.Add(p.Name);
             }
+
             if (cmbOverflowPurity.Items.Count > 0) cmbOverflowPurity.SelectedIndex = 0;
             sw.Stop(); Log.Info("PERF PopulateOverflowPurityCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -2773,12 +2816,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                             items.Add(new KeyValuePair<string, string>(s.UUID, s.Name));
                     break;
             }
+
             if (items.Count > 0)
             {
                 cmbOverflowDest.DataSource = items;
                 cmbOverflowDest.DisplayMember = "Value";
                 cmbOverflowDest.ValueMember = "Key";
             }
+
             sw.Stop(); Log.Info("PERF PopulateOverflowDestCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -2791,7 +2836,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             string filter = txtOverflowRouteFilter.Text.Trim();
             var routes = playerContext.DeliveryRouteList.OrderBy(r => r.Name).ToList();
             var items = new List<KeyValuePair<string, string>>();
-            items.Add(new KeyValuePair<string, string>("", "(none)"));
+            items.Add(new KeyValuePair<string, string>(string.Empty, "(none)"));
             foreach (var r in routes)
                 if (string.IsNullOrEmpty(filter) || r.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
                     items.Add(new KeyValuePair<string, string>(r.UUID, r.Name));
@@ -2810,18 +2855,19 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void cmdAddOverflowRule_Click(object sender, EventArgs e)
         {
             if (selectedColony == null) return;
-            string resource = cmbOverflowResource.SelectedItem?.ToString() ?? "";
+            string resource = cmbOverflowResource.SelectedItem?.ToString() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(resource)) return;
-            string purity = cmbOverflowPurity.SelectedItem?.ToString() ?? "";
+            string purity = cmbOverflowPurity.SelectedItem?.ToString() ?? string.Empty;
             if (!int.TryParse(txtOverflowThreshold.Text.Trim(), out int threshold) || threshold <= 0)
             {
                 MessageBox.Show("Enter a valid threshold.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
             var destType = cmbOverflowDestType.SelectedItem is DestinationType dt ? dt : DestinationType.Station;
-            string destUUID = cmbOverflowDest.SelectedValue?.ToString() ?? "";
-            string routeUUID = cmbOverflowRoute.SelectedValue?.ToString() ?? "";
+            string destUUID = cmbOverflowDest.SelectedValue?.ToString() ?? string.Empty;
+            string routeUUID = cmbOverflowRoute.SelectedValue?.ToString() ?? string.Empty;
 
             var existing = playerContext.WarehouseOverflowRuleList
                 .FirstOrDefault(r => r.ColonyUUID == selectedColony.UUID &&
@@ -2836,7 +2882,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             var rule = new WarehouseOverflowRule
             {
                 UUID = Guid.NewGuid().ToString(),
-                OwnerUUID = playerContext.CurrentPlayerUUID ?? "",
+                OwnerUUID = playerContext.CurrentPlayerUUID ?? string.Empty,
                 ColonyUUID = selectedColony.UUID,
                 ResourceName = resource,
                 ResourcePurity = purity,
@@ -2846,6 +2892,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 DeliveryRouteUUID = routeUUID,
                 IsActive = true
             };
+
             playerContext.AddWarehouseOverflowRule(rule);
             playerContext.WriteContext();
             PopulateOverflowGrid();

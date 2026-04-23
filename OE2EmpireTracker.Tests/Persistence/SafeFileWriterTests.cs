@@ -1,6 +1,6 @@
+using System.IO;
 using NUnit.Framework;
 using OE2EmpireTracker.Persistence;
-using System.IO;
 
 namespace OE2EmpireTracker.Tests.Persistence
 {
@@ -104,9 +104,9 @@ namespace OE2EmpireTracker.Tests.Persistence
         public void WriteAllText_EmptyContent_WritesEmptyFile()
         {
             var path = TestFile();
-            SafeFileWriter.WriteAllText(path, "");
+            SafeFileWriter.WriteAllText(path, string.Empty);
 
-            Assert.That(File.ReadAllText(path), Is.EqualTo(""));
+            Assert.That(File.ReadAllText(path), Is.EqualTo(string.Empty));
         }
 
         [Test]

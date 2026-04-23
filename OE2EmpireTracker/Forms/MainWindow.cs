@@ -1,22 +1,9 @@
-using OE2EmpireTracker.Persistence;
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Forms;
-using OE2EmpireTracker.Forms.ColonyV2;
-using OE2EmpireTracker.Forms.PlayerProfile;
-using OE2EmpireTracker.Forms.Survey;
-using OE2EmpireTracker.Forms.ColonyActivity;
-using OE2EmpireTracker.Forms.ColonyDailyBuild;
-using OE2EmpireTracker.Forms.BuildPlanner;
-using OE2EmpireTracker.Forms.Contacts;
-using OE2EmpireTracker.Forms.Station;
-using OE2EmpireTracker.Forms.Market;
-using OE2EmpireTracker.Forms.Asteroid;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -24,7 +11,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using OE2EmpireTracker.Controls;
-using System.Diagnostics;
+using OE2EmpireTracker.Forms;
+using OE2EmpireTracker.Forms.Asteroid;
+using OE2EmpireTracker.Forms.BuildPlanner;
+using OE2EmpireTracker.Forms.ColonyActivity;
+using OE2EmpireTracker.Forms.ColonyDailyBuild;
+using OE2EmpireTracker.Forms.ColonyV2;
+using OE2EmpireTracker.Forms.Contacts;
+using OE2EmpireTracker.Forms.Market;
+using OE2EmpireTracker.Forms.PlayerProfile;
+using OE2EmpireTracker.Forms.Station;
+using OE2EmpireTracker.Forms.Survey;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Persistence;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker
 {
@@ -103,7 +103,7 @@ namespace OE2EmpireTracker
             }
         }
 
-        internal T OpenMdiChild<T>() where T : Form, new()
+        internal T OpenMdiChild<T>() where T : Form, new ()
         {
             string formTypeKey = typeof(T).Name;
             var usedNumbers = this.MdiChildren
@@ -116,7 +116,7 @@ namespace OE2EmpireTracker
             return OpenMdiChildWithNumber<T>(windowNumber);
         }
 
-        internal T OpenMdiChildWithNumber<T>(int windowNumber) where T : Form, new()
+        internal T OpenMdiChildWithNumber<T>(int windowNumber) where T : Form, new ()
         {
             string formTypeKey = typeof(T).Name;
             T form = new T();
@@ -455,6 +455,7 @@ namespace OE2EmpireTracker
                 new FormHelp(topic).ShowDialog(this);
                 return true;
             }
+
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
@@ -598,6 +599,7 @@ namespace OE2EmpireTracker
                     WindowNumber = windowNumber
                 });
             }
+
             // Sort by type then window number so restore order is deterministic
             entries.Sort((a, b) =>
             {

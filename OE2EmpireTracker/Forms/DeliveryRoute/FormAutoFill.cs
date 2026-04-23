@@ -1,6 +1,6 @@
+using System.Windows.Forms;
 using NLog;
 using OE2EmpireTracker.Services;
-using System.Windows.Forms;
 
 namespace OE2EmpireTracker.Forms.DeliveryRoute
 {
@@ -38,6 +38,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 store.Preferences.FlatpackTimeHorizonHours = TimeHorizonHours;
                 store.Save();
             }
+
             base.OnFormClosed(e);
         }
     }

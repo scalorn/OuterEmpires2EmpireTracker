@@ -27,6 +27,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { "Iron", "500" },
                 { "Copper", "200" }
             };
+
             bp.BluePrintType = null;
             bp.Class = 0;
             bp.TechLevel = null;
@@ -66,7 +67,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void ClassifyImport_NoName_EmptyName()
         {
             var bp = new BpModel();
-            bp.Name = "";
+            bp.Name = string.Empty;
             bp.BluePrintType = "Hull";
             bp.Class = 1;
             bp.TechLevel = "Standard";

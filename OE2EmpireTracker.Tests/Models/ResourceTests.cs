@@ -1,7 +1,7 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Models;
 using System;
 using System.Linq;
+using NUnit.Framework;
+using OE2EmpireTracker.Models;
 using RE = OE2EmpireTracker.Models.Resource.ResourceEnum;
 
 namespace OE2EmpireTracker.Tests.Models

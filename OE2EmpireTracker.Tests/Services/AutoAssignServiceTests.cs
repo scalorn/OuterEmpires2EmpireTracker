@@ -21,6 +21,7 @@ namespace OE2EmpireTracker.Tests.Services
                 UUID = uuid,
                 ColonyName = name
             };
+
             colony.Structures.AddRange(structures);
             return colony;
         }
@@ -65,6 +66,7 @@ namespace OE2EmpireTracker.Tests.Services
                 UUID = "route-1",
                 Name = "Test Route"
             };
+
             int seq = 0;
             foreach (var uuid in colonyUUIDs)
             {
@@ -76,6 +78,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Sequence = seq++
                 });
             }
+
             return route;
         }
 
@@ -494,6 +497,7 @@ namespace OE2EmpireTracker.Tests.Services
                 UUID = "struct-1",
                 FlatpackBlueprintUUID = "mfg-bp"
             };
+
             structure.Properties.setProperty(GameConstants.PropBuilt, false);
             structure.Properties.setProperty(GameConstants.PropOnline, false);
 

@@ -60,6 +60,7 @@ namespace OE2EmpireTracker.Services
                         Log.Warn("ValidateBuildItem: Manufactory item missing BlueprintUUID");
                         return false;
                     }
+
                     break;
 
                 case BuildItemType.Commodity:
@@ -68,6 +69,7 @@ namespace OE2EmpireTracker.Services
                         Log.Warn("ValidateBuildItem: Commodity item missing CommodityName");
                         return false;
                     }
+
                     break;
 
                 case BuildItemType.ShipTemplate:
@@ -76,6 +78,7 @@ namespace OE2EmpireTracker.Services
                         Log.Warn("ValidateBuildItem: ShipTemplate item missing ShipTemplateUUID");
                         return false;
                     }
+
                     break;
 
                 case BuildItemType.Mining:
@@ -84,6 +87,7 @@ namespace OE2EmpireTracker.Services
                         Log.Warn("ValidateBuildItem: Mining item missing MiningResource");
                         return false;
                     }
+
                     break;
 
                 case BuildItemType.Refining:
@@ -92,6 +96,7 @@ namespace OE2EmpireTracker.Services
                         Log.Warn("ValidateBuildItem: Refining item missing RefiningResource");
                         return false;
                     }
+
                     break;
 
                 case BuildItemType.Research:
@@ -100,6 +105,7 @@ namespace OE2EmpireTracker.Services
                         Log.Warn("ValidateBuildItem: Research item missing BlueprintUUID");
                         return false;
                     }
+
                     break;
             }
 
@@ -170,6 +176,7 @@ namespace OE2EmpireTracker.Services
                     set.Add(item.BlueprintUUID);
                 }
             }
+
             return set;
         }
 

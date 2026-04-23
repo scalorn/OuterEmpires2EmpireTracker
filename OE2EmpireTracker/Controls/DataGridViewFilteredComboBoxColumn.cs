@@ -81,6 +81,7 @@ namespace OE2EmpireTracker.Controls
                 using (var brush = new SolidBrush(cellStyle.BackColor))
                     graphics.FillRectangle(brush, cellBounds);
             }
+
             if ((paintParts & DataGridViewPaintParts.Border) != 0)
                 PaintBorder(graphics, clipBounds, cellBounds, cellStyle, advancedBorderStyle);
 

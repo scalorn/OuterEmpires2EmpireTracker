@@ -1,7 +1,7 @@
-using Markdig;
-using NLog;
 using System.IO;
 using System.Reflection;
+using Markdig;
+using NLog;
 
 namespace OE2EmpireTracker.Services
 {
@@ -28,6 +28,7 @@ namespace OE2EmpireTracker.Services
                 margin: 16px 24px;
                 max-width: 960px;
             }
+
             h1 { font-size: 1.8em; border-bottom: 1px solid #ccc; padding-bottom: 6px; margin-top: 24px; }
             h2 { font-size: 1.4em; border-bottom: 1px solid #eee; padding-bottom: 4px; margin-top: 20px; }
             h3 { font-size: 1.15em; margin-top: 16px; }
@@ -40,6 +41,7 @@ namespace OE2EmpireTracker.Services
                 font-family: Consolas, 'Courier New', monospace;
                 font-size: 0.92em;
             }
+
             pre {
                 background: #f4f4f4;
                 padding: 12px;
@@ -49,17 +51,20 @@ namespace OE2EmpireTracker.Services
                 font-size: 0.92em;
                 line-height: 1.45;
             }
+
             pre code { background: none; padding: 0; }
             table {
                 border-collapse: collapse;
                 width: 100%;
                 margin: 12px 0;
             }
+
             th, td {
                 border: 1px solid #ddd;
                 padding: 8px 12px;
                 text-align: left;
             }
+
             th { background: #f0f0f0; font-weight: 600; }
             tr:nth-child(even) { background: #fafafa; }
             blockquote {
@@ -68,6 +73,7 @@ namespace OE2EmpireTracker.Services
                 padding: 4px 16px;
                 color: #555;
             }
+
             ul, ol { padding-left: 28px; }
             li { margin-bottom: 4px; }
             hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
@@ -78,7 +84,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public static string RenderMarkdown(string markdownContent)
         {
-            string htmlBody = Markdown.ToHtml(markdownContent ?? "", Pipeline);
+            string htmlBody = Markdown.ToHtml(markdownContent ?? string.Empty, Pipeline);
             return $"<html><head><style>{CssStyle}</style></head><body>{htmlBody}</body></html>";
         }
 

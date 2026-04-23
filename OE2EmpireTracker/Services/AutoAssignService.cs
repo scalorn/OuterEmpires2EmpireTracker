@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using NLog;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 
@@ -123,6 +123,7 @@ namespace OE2EmpireTracker.Services
                     items.Add(item);
                 }
             }
+
             Log.Debug("CollectUnallocatedItems: {0} unallocated items", items.Count);
             return items;
         }

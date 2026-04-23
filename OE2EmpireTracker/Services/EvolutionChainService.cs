@@ -1,9 +1,9 @@
-using NLog;
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using NLog;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
 {
@@ -167,7 +167,7 @@ namespace OE2EmpireTracker.Services
             if (propType == PropertyValueType.Time)
             {
                 string strVal;
-                bp.Properties.getString(propName, "", out strVal);
+                bp.Properties.getString(propName, string.Empty, out strVal);
                 return ParseTimeToSeconds(strVal);
             }
             else

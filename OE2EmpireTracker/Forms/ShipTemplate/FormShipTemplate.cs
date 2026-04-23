@@ -114,6 +114,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 lvwTemplates.Items.Add(item);
                 if (tmpl.UUID == selectedUUID) item.Selected = true;
             }
+
             sw.Stop();
             Log.Info("PERF PopulateTemplateList: {0}ms items={1}", sw.ElapsedMilliseconds, templates.Count);
         }
@@ -147,10 +148,10 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         private void ClearForm()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
-            txtName.Text = "";
+            txtName.Text = string.Empty;
             cmbHull.SetItems(cmbHull.Items, null);
             dgvSlots.Rows.Clear();
-            rtbStats.Text = "";
+            rtbStats.Text = string.Empty;
             SetDetailEnabled(false);
         }
 
@@ -177,6 +178,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 names.Add(bp.ExtendedName);
                 _hullUUIDs.Add(bp.UUID);
             }
+
             cmbHull.SetItems(names, null);
             sw.Stop(); Log.Info("PERF PopulateHullCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -195,7 +197,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         {
             if (_isProgrammaticUpdate > 0 || _selectedTemplate == null) return;
             int idx = cmbHull.SelectedFullIndex;
-            string uuid = (idx >= 0 && idx < _hullUUIDs.Count) ? _hullUUIDs[idx] : "";
+            string uuid = (idx >= 0 && idx < _hullUUIDs.Count) ? _hullUUIDs[idx] : string.Empty;
             _selectedTemplate.HullBlueprintUUID = uuid;
             _selectedTemplate.Components.Clear();
             PopulateSlotGrid();
@@ -230,7 +232,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     var uuidByIndex = new List<string>();
                     var itemList = new List<string>();
                     itemList.Add("(empty)");
-                    uuidByIndex.Add("");
+                    uuidByIndex.Add(string.Empty);
                     var eligibleBps = playerContext.GetAllBlueprints()
                         .Where(bp => def.BlueprintTypes.Contains(bp.BluePrintType) && bp.Class == hullClass)
                         .OrderBy(bp => bp.ExtendedName);
@@ -267,6 +269,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     row.Tag = new SlotInfo { SlotType = def.SlotType, SlotIndex = idx, UUIDByIndex = uuidByIndex };
                 }
             }
+
             sw.Stop(); Log.Info("PERF PopulateSlotGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -286,7 +289,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             var info = row.Tag as SlotInfo;
             if (info == null) return;
 
-            string bpUUID = "";
+            string bpUUID = string.Empty;
             var comboCell = (DataGridViewFilteredComboBoxCell)row.Cells[colComponent.Index];
             int selectedIdx = comboCell.Items != null ? comboCell.Items.IndexOf(comboCell.Value?.ToString()) : -1;
             if (selectedIdx > 0 && info.UUIDByIndex != null && selectedIdx < info.UUIDByIndex.Count)
@@ -306,6 +309,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     existing = new ShipComponentSlot { SlotType = info.SlotType, SlotIndex = info.SlotIndex };
                     _selectedTemplate.Components.Add(existing);
                 }
+
                 existing.BlueprintUUID = bpUUID;
             }
 
@@ -314,7 +318,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
         private void dgvSlots_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
-            Log.Warn("dgvSlots DataError at [{0},{1}]: {2}", e.RowIndex, e.ColumnIndex, e.Exception?.Message);
+            Log.Warn("dgvSlots DataError at [{0}, {1}]: {2}", e.RowIndex, e.ColumnIndex, e.Exception?.Message);
             e.ThrowException = false;
         }
 
@@ -331,7 +335,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         private void RefreshStats()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            if (_selectedTemplate == null) { rtbStats.Text = ""; sw.Stop(); return; }
+            if (_selectedTemplate == null) { rtbStats.Text = string.Empty; sw.Stop(); return; }
             var hullBp = playerContext.FindBlueprint(_selectedTemplate.HullBlueprintUUID);
             if (hullBp == null) { rtbStats.Text = "Select a hull blueprint."; sw.Stop(); return; }
 
@@ -363,6 +367,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 Name = "New Template",
                 OwnerUUID = playerContext.CurrentPlayerUUID
             };
+
             playerContext.AddShipTemplate(tmpl);
             playerContext.WriteContext();
             _selectedTemplate = tmpl;
@@ -515,11 +520,13 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     Left = 80, Top = 15, Width = 80,
                     Minimum = 1, Maximum = 100, Value = 1
                 };
+
                 var btnOk = new Button
                 {
                     Text = "OK", Left = 120, Top = 55, Width = 75,
                     DialogResult = DialogResult.OK
                 };
+
                 var btnCancel = new Button
                 {
                     Text = "Cancel", Left = 200, Top = 55, Width = 75,
@@ -560,6 +567,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     Left = 120, Top = 15, Width = 210,
                     DropDownStyle = ComboBoxStyle.DropDownList
                 };
+
                 foreach (var s in stations)
                     cmb.Items.Add(s);
                 cmb.DisplayMember = "Name";
@@ -570,6 +578,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     Text = "OK", Left = 170, Top = 65, Width = 75,
                     DialogResult = DialogResult.OK
                 };
+
                 var btnCancel = new Button
                 {
                     Text = "Cancel", Left = 255, Top = 65, Width = 75,
@@ -604,11 +613,13 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     Left = 15, Top = 15, Width = 360,
                     Checked = true
                 };
+
                 var rbExisting = new RadioButton
                 {
                     Text = "Add to existing plan",
                     Left = 15, Top = 40, Width = 360
                 };
+
                 var cmbPlans = new ComboBox
                 {
                     Left = 35, Top = 65, Width = 340,
@@ -633,6 +644,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     Text = "OK", Left = 210, Top = 110, Width = 75,
                     DialogResult = DialogResult.OK
                 };
+
                 var btnCancel = new Button
                 {
                     Text = "Cancel", Left = 295, Top = 110, Width = 75,
@@ -709,6 +721,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     });
                 }
             }
+
             return defs;
         }
 

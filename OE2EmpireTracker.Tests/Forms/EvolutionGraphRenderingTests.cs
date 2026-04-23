@@ -30,12 +30,12 @@ namespace OE2EmpireTracker.Tests.Forms
             var pointsGen = Gen.Choose(2, 16).SelectMany(count =>
                 Gen.Shuffle(Enumerable.Range(0, 16).ToArray())
                     .Select(shuffled => shuffled.Take(count).OrderBy(x => x).ToArray())
-            ).SelectMany(evLevels =>
+           ).SelectMany(evLevels =>
             {
                 // For each evolution level, generate a random percent value (1.0--500.0)
                 var percentsGen = Gen.Sequence(
                     evLevels.Select(_ => Gen.Choose(1, 500).Select(v => (decimal)v))
-                );
+               );
 
                 return percentsGen.Select(percents =>
                 {
@@ -60,7 +60,7 @@ namespace OE2EmpireTracker.Tests.Forms
 
                 // Verify each segment's IsGap matches the evolution level difference
                 bool allClassificationsCorrect = true;
-                string classificationError = "";
+                string classificationError = string.Empty;
 
                 for (int i = 0; i < segments.Count; i++)
                 {

@@ -121,6 +121,7 @@ namespace OE2EmpireTracker.Controls
                 int idx = cmbItems.Items.IndexOf(currentValue);
                 if (idx >= 0) cmbItems.SelectedIndex = idx;
             }
+
             _suppressSelectionEvent = false;
         }
 
@@ -143,6 +144,7 @@ namespace OE2EmpireTracker.Controls
                     indexMap.Add(i);
                 }
             }
+
             return (filtered, indexMap);
         }
 
@@ -194,6 +196,7 @@ namespace OE2EmpireTracker.Controls
                 int idx = cmbItems.Items.IndexOf(currentValue);
                 if (idx >= 0) cmbItems.SelectedIndex = idx;
             }
+
             _suppressSelectionEvent = false;
         }
 

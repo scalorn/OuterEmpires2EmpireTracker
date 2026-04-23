@@ -1,6 +1,3 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,6 +7,9 @@ using System.Linq;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Models
 {
@@ -39,6 +39,7 @@ namespace OE2EmpireTracker.Models
                         extendedName += $" ({ResourcePurity})";
                     }
                 }
+
                 if (ItemType == Models.ItemType.ItemTypeEnum.Commodity)
                 {
                     Commodity.ResourceMapByEnum.TryGetValue(BaseItemTypeID, out Commodity commodity);
@@ -47,6 +48,7 @@ namespace OE2EmpireTracker.Models
                         extendedName = commodity.ExtendedName;
                     }
                 }
+
                 if (ItemType == Models.ItemType.ItemTypeEnum.Survey)
                 {
                     Survey survey = EmpireContext.PlayerContext?.FindSurvey(BaseItemTypeID);
@@ -59,32 +61,38 @@ namespace OE2EmpireTracker.Models
                         }
                     }
                 }
+
                 if (ItemType == Models.ItemType.ItemTypeEnum.Blueprint)
                 {
                     Blueprint blueprint = EmpireContext.PlayerContext?.FindBlueprint(BaseItemTypeID);
                     if (blueprint != null)
                     {
-                        extendedName = "";
+                        extendedName = string.Empty;
                         if (blueprint.Class > 0)
                         {
                             extendedName += $"C{blueprint.Class} ";
                         }
+
                         if (blueprint.Evolution > 0)
                         {
                             extendedName += $"(Ev{blueprint.Evolution}) ";
                         }
+
                         extendedName += blueprint.Name + " ";
                         if (!string.IsNullOrEmpty(blueprint.TechLevel))
                         {
                             extendedName += $"({blueprint.TechLevel}) ";
                         }
+
                         if (!string.IsNullOrEmpty(blueprint.NickName))
                         {
                             extendedName += $"[{blueprint.NickName}] ";
                         }
+
                         extendedName = extendedName.Trim();
                     }
                 }
+
                 return extendedName;
             }
         }
@@ -95,7 +103,7 @@ namespace OE2EmpireTracker.Models
         [Required]
         [DefaultValue("")]
         public virtual string Description { get; set; } = string.Empty;
-        //[Required]
+        // [Required]
         public int Quantity { get; set; } = 0;
         [DefaultValue("")]
         public string ResourcePurity { get; set; } = string.Empty;

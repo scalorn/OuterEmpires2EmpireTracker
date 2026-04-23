@@ -1,9 +1,9 @@
-using NLog;
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
 {

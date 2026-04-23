@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace OE2EmpireTracker.Models
 {
@@ -26,35 +26,40 @@ namespace OE2EmpireTracker.Models
                 return Properties.ContainsKey(name);
             }
         }
+
         public bool getDecimal(string name, decimal defaultValue, out decimal value)
         {
             lock (_syncRoot)
             {
                 value = defaultValue;
-                string valueStr = "";
+                string valueStr = string.Empty;
                 bool ret = Properties.TryGetValue(name, out valueStr);
                 if (ret)
                 {
                     ret = Decimal.TryParse(valueStr, out value);
                 }
+
                 if (!ret)
                 {
                     value = defaultValue;
                 }
+
                 return ret;
             }
         }
+
         public bool getLong(string name, long defaultValue, out long value)
         {
             lock (_syncRoot)
             {
                 value = defaultValue;
-                string valueStr = "";
+                string valueStr = string.Empty;
                 bool ret = Properties.TryGetValue(name, out valueStr);
                 if (ret)
                 {
                     ret = long.TryParse(valueStr, out value);
                 }
+
                 return ret;
             }
         }
@@ -64,15 +69,17 @@ namespace OE2EmpireTracker.Models
             lock (_syncRoot)
             {
                 value = defaultValue;
-                string valueStr = "";
+                string valueStr = string.Empty;
                 bool ret = Properties.TryGetValue(name, out valueStr);
                 if (ret)
                 {
-                    ret = Boolean.TryParse(valueStr, out value);
+                    ret = bool.TryParse(valueStr, out value);
                 }
+
                 return ret;
             }
         }
+
         public bool getString(string name, string defaultValue, out string value)
         {
             lock (_syncRoot)
@@ -83,6 +90,7 @@ namespace OE2EmpireTracker.Models
                 {
                     value = defaultValue;
                 }
+
                 return ret;
             }
         }
@@ -91,16 +99,18 @@ namespace OE2EmpireTracker.Models
         {
             lock (_syncRoot)
             {
-                return setProperty_Internal(name, "" + value);
+                return setProperty_Internal(name, string.Empty + value);
             }
         }
+
         public bool setProperty(string name, bool value)
         {
             lock (_syncRoot)
             {
-                return setProperty_Internal(name, "" + value);
+                return setProperty_Internal(name, string.Empty + value);
             }
         }
+
         public bool setProperty(string name, string value)
         {
             lock (_syncRoot)
@@ -142,6 +152,7 @@ namespace OE2EmpireTracker.Models
                 }
             }
         }
+
         public void Clear()
         {
             lock (_syncRoot)
@@ -156,11 +167,12 @@ namespace OE2EmpireTracker.Models
         public override void WriteJson(JsonWriter writer, PropertyBag value, JsonSerializer serializer)
         {
             writer.WriteStartObject();
-            foreach(var item in value.Properties)
+            foreach (var item in value.Properties)
             {
                 writer.WritePropertyName(item.Key);
                 writer.WriteValue(item.Value);
             }
+
             writer.WriteEndObject();
         }
 
@@ -172,9 +184,10 @@ namespace OE2EmpireTracker.Models
             {
                 bag = new PropertyBag();
             }
-            string name = "";
-            string value = "";
-            //reader.Read();
+
+            string name = string.Empty;
+            string value = string.Empty;
+            // reader.Read();
             JsonToken token = JsonToken.None;
             do
             {
@@ -184,15 +197,16 @@ namespace OE2EmpireTracker.Models
                 {
                     name = reader.Value as string;
                 }
+
                 if (token == JsonToken.String)
                 {
                     value = reader.Value as string;
                     bag.Properties.Add(name, value);
                 }
+
             } while (token != JsonToken.EndObject);
 
             return bag;
         }
     }
-
 }

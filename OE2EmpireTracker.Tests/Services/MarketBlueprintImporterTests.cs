@@ -1,12 +1,12 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Parsers;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using NUnit.Framework;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
+using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Tests;
 
 namespace OE2EmpireTracker.Tests.Services
@@ -389,7 +389,7 @@ namespace OE2EmpireTracker.Tests.Services
             var props = new Dictionary<string, string>();
             int propCount = rng.Next(1, 5);
             for (int i = 0; i < propCount; i++)
-                props["Prop" + i] = "" + rng.Next(1, 1000);
+                props["Prop" + i] = string.Empty + rng.Next(1, 1000);
 
             return MakeMarketBlueprint(name, seller, bpType, evolution, cls, techLevel, props);
         }

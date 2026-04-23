@@ -1,10 +1,10 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Tests;
 
 namespace OE2EmpireTracker.Tests.Models
@@ -254,7 +254,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void ProcessCommodityFactory_EmptyCommodityName_DoesNothing()
         {
             var colony = MakeCommodityFactoryColony(
-                "",
+                string.Empty,
                 manufacturingQuantity: 5,
                 manufacturingCompleted: 0,
                 intervalsPassed: 1,
@@ -404,7 +404,7 @@ namespace OE2EmpireTracker.Tests.Models
             var structure = new ColonyStructure();
             structure.UUID = Guid.NewGuid().ToString();
             structure.FlatpackBlueprintUUID = bp.UUID;
-            structure.ManufacturingCommodityName = "";
+            structure.ManufacturingCommodityName = string.Empty;
             structure.ManufacturingQuantity = 5;
             structure.ManufacturingCompleted = 0;
             structure.Properties.setProperty("Built", true);
@@ -496,6 +496,7 @@ namespace OE2EmpireTracker.Tests.Models
             {
                 { "TestOre", new SurveyResource { Resource = "TestOre", Purity = "Low", Amount = "100" } }
             };
+
             PlayerContext.GetInstance().AddSurvey(survey);
 
             // Create a MiningRig blueprint
@@ -639,7 +640,7 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var colony = new Colony();
             colony.UUID = Guid.NewGuid().ToString();
-            colony.OwnerUUID = ""; // No owner
+            colony.OwnerUUID = string.Empty; // No owner
 
             var bp = new OE2EmpireTracker.Models.Blueprint("TestRefineryNoOwner");
             bp.UUID = Guid.NewGuid().ToString();

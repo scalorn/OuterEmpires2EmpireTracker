@@ -1,9 +1,9 @@
+using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System;
-using System.Collections.Generic;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -27,7 +27,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ValidatePlanName_Empty_ReturnsFalse()
         {
-            Assert.That(BuildPlanService.ValidatePlanName(""), Is.False);
+            Assert.That(BuildPlanService.ValidatePlanName(string.Empty), Is.False);
         }
 
         [Test]
@@ -68,6 +68,7 @@ namespace OE2EmpireTracker.Tests.Services
                 BlueprintUUID = "bp-1",
                 Quantity = 0
             };
+
             Assert.That(BuildPlanService.ValidateBuildItem(item), Is.False);
         }
 
@@ -81,6 +82,7 @@ namespace OE2EmpireTracker.Tests.Services
                 BlueprintUUID = "bp-1",
                 Quantity = -5
             };
+
             Assert.That(BuildPlanService.ValidateBuildItem(item), Is.False);
         }
 
@@ -94,6 +96,7 @@ namespace OE2EmpireTracker.Tests.Services
                 BlueprintUUID = "bp-1",
                 Quantity = 3
             };
+
             Assert.That(BuildPlanService.ValidateBuildItem(item), Is.True);
         }
 
@@ -106,6 +109,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ItemType = BuildItemType.Manufactory,
                 Quantity = 1
             };
+
             Assert.That(BuildPlanService.ValidateBuildItem(item), Is.False);
         }
 
@@ -119,6 +123,7 @@ namespace OE2EmpireTracker.Tests.Services
                 CommodityName = "Electronics",
                 Quantity = 10
             };
+
             Assert.That(BuildPlanService.ValidateBuildItem(item), Is.True);
         }
 
@@ -131,6 +136,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ItemType = BuildItemType.Commodity,
                 Quantity = 1
             };
+
             Assert.That(BuildPlanService.ValidateBuildItem(item), Is.False);
         }
 
@@ -144,6 +150,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ShipTemplateUUID = "st-1",
                 Quantity = 2
             };
+
             Assert.That(BuildPlanService.ValidateBuildItem(item), Is.True);
         }
 
@@ -156,6 +163,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ItemType = BuildItemType.ShipTemplate,
                 Quantity = 1
             };
+
             Assert.That(BuildPlanService.ValidateBuildItem(item), Is.False);
         }
 
@@ -169,6 +177,7 @@ namespace OE2EmpireTracker.Tests.Services
                 MiningResource = "Iron",
                 Quantity = 1
             };
+
             Assert.That(BuildPlanService.ValidateBuildItem(item), Is.True);
         }
 
@@ -181,6 +190,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ItemType = BuildItemType.Mining,
                 Quantity = 1
             };
+
             Assert.That(BuildPlanService.ValidateBuildItem(item), Is.False);
         }
 
@@ -194,6 +204,7 @@ namespace OE2EmpireTracker.Tests.Services
                 RefiningResource = "Iron",
                 Quantity = 1
             };
+
             Assert.That(BuildPlanService.ValidateBuildItem(item), Is.True);
         }
 
@@ -206,6 +217,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ItemType = BuildItemType.Refining,
                 Quantity = 1
             };
+
             Assert.That(BuildPlanService.ValidateBuildItem(item), Is.False);
         }
 
@@ -219,6 +231,7 @@ namespace OE2EmpireTracker.Tests.Services
                 BlueprintUUID = "bp-research",
                 Quantity = 1
             };
+
             Assert.That(BuildPlanService.ValidateBuildItem(item), Is.True);
         }
 
@@ -231,6 +244,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ItemType = BuildItemType.Research,
                 Quantity = 1
             };
+
             Assert.That(BuildPlanService.ValidateBuildItem(item), Is.False);
         }
 
@@ -245,6 +259,7 @@ namespace OE2EmpireTracker.Tests.Services
                 UUID = Guid.NewGuid().ToString(),
                 ColonyName = name
             };
+
             colony.Structures.AddRange(structures);
             return colony;
         }
@@ -256,6 +271,7 @@ namespace OE2EmpireTracker.Tests.Services
                 UUID = Guid.NewGuid().ToString(),
                 FlatpackBlueprintUUID = flatpackUUID
             };
+
             if (staged) s.Properties.setProperty(GameConstants.PropStaged, true);
             if (built) s.Properties.setProperty(GameConstants.PropBuilt, true);
             return s;
@@ -377,6 +393,7 @@ namespace OE2EmpireTracker.Tests.Services
                 UUID = Guid.NewGuid().ToString(),
                 FlatpackBlueprintUUID = null
             };
+
             var colony = CreateTestColony("Epsilon", structure);
             var plan = new BuildPlan { UUID = Guid.NewGuid().ToString() };
 

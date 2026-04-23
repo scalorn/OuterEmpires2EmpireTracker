@@ -1,7 +1,7 @@
-using OE2EmpireTracker.Models;
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services.Migration
 {

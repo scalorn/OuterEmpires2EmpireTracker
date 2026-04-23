@@ -80,7 +80,7 @@ namespace OE2EmpireTracker.Tests.Services
                             from minute in Gen.Choose(0, 59)
                             from suffix in Gen.Elements('x', 'A', 'P', 'z')
                             select $"{day:D2}{Months[monthIdx]}{year:D2}-{hour}:{minute:D2}{suffix}";
-            var emptyString = Gen.Constant("");
+            var emptyString = Gen.Constant(string.Empty);
             var isoString = ValidIsoStringGen();
 
             return Gen.OneOf(randomString, wrongCaseMonth, missingDash, badSuffix, emptyString, isoString);

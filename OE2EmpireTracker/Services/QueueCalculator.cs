@@ -49,7 +49,7 @@ namespace OE2EmpireTracker.Services
 
             string mfgTimeStr;
             if (blueprint.Properties == null ||
-                !blueprint.Properties.getString(BlueprintPropertyKeys.ManufactureRunTime, "", out mfgTimeStr) ||
+                !blueprint.Properties.getString(BlueprintPropertyKeys.ManufactureRunTime, string.Empty, out mfgTimeStr) ||
                 string.IsNullOrWhiteSpace(mfgTimeStr))
             {
                 Log.Info("ComputeManufactoryRuns: blueprint '{0}' has no Manufacture Run Time",

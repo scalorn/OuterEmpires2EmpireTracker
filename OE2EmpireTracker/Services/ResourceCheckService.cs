@@ -156,6 +156,7 @@ namespace OE2EmpireTracker.Services
                             item.BuildLocationUUID);
                         return null;
                     }
+
                     return colony.Items;
 
                 case DestinationType.Ship:
@@ -336,6 +337,7 @@ namespace OE2EmpireTracker.Services
             {
                 total += item.Quantity;
             }
+
             return total;
         }
     }

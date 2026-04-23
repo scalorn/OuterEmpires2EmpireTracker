@@ -1,8 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -82,7 +82,7 @@ namespace OE2EmpireTracker.Tests.Services
             var counter = new DeliveryRouteReferenceCounter(
                 Enumerable.Empty<DeliveryPlan>());
 
-            var report = counter.CountReferences("");
+            var report = counter.CountReferences(string.Empty);
 
             Assert.That(report, Is.SameAs(DeliveryRouteReferenceReport.Empty));
         }

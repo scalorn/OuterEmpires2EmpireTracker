@@ -52,12 +52,14 @@ namespace OE2EmpireTracker.Forms.Market
                     this.DialogResult = DialogResult.None;
                     return;
                 }
+
                 if (!decimal.TryParse(txtPricePerUnit.Text, out decimal ppu))
                 {
                     MessageBox.Show("Enter a valid price.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     this.DialogResult = DialogResult.None;
                     return;
                 }
+
                 SaleQuantity = qty;
                 SalePricePerUnit = ppu;
                 Counterparty = txtCounterparty.Text.Trim();
@@ -70,6 +72,7 @@ namespace OE2EmpireTracker.Forms.Market
             var lbl = new Label { Text = text, Left = x, Top = y + 3, AutoSize = true };
             this.Controls.Add(lbl); return lbl;
         }
+
         private TextBox AddTextBox(int x, int y, int w)
         {
             var txt = new TextBox { Left = x, Top = y, Width = w };

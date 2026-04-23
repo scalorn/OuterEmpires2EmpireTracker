@@ -89,6 +89,7 @@ namespace OE2EmpireTracker.Services
                     Name = survey.PlanetName,
                     SystemName = survey.SystemName
                 };
+
                 playerContext.AddAsteroid(targetAsteroid);
                 Log.Info("Auto-created asteroid '{0}' in system '{1}' UUID={2}",
                     targetAsteroid.Name, targetAsteroid.SystemName, targetAsteroid.UUID);
@@ -111,6 +112,7 @@ namespace OE2EmpireTracker.Services
                     {
                         purity = res.Purity;
                     }
+
                     reserves.Add(new AsteroidReserve
                     {
                         ResourceName = kvp.Key,
@@ -118,6 +120,7 @@ namespace OE2EmpireTracker.Services
                         MaxReserve = kvp.Value
                     });
                 }
+
                 targetAsteroid.Reserves = reserves;
                 Log.Info("Populated {0} reserves on asteroid '{1}'", reserves.Count, targetAsteroid.Name);
             }

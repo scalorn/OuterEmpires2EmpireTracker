@@ -44,7 +44,7 @@ namespace OE2EmpireTracker.Tests.Services
             var inputGen = Gen.Frequency(
                 Tuple.Create(3, Arb.Generate<NonNull<string>>().Select(s => s.Get)),
                 Tuple.Create(2, Gen.Elements(knownKeys))
-            );
+           );
 
             return Prop.ForAll(inputGen.ToArbitrary(), input =>
             {
@@ -60,6 +60,7 @@ namespace OE2EmpireTracker.Tests.Services
                     return (result == "README.md")
                         .Label($"Unmapped type '{input}' should return 'README.md' but got '{result}'");
                 }
+
             });
         }
     }

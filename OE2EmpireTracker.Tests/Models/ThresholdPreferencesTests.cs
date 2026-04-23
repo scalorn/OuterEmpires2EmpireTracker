@@ -103,6 +103,7 @@ namespace OE2EmpireTracker.Tests.Models
                 StructureCountYellow = 60,
                 StructureCountRed = 60
             };
+
             var result = ThresholdPreferences.Validate(prefs, out string error);
             Assert.That(result, Is.False);
             Assert.That(error, Is.Not.Null);
@@ -116,6 +117,7 @@ namespace OE2EmpireTracker.Tests.Models
                 WorkerRequestYellowSeconds = 86400,
                 WorkerRequestRedSeconds = 86400
             };
+
             var result = ThresholdPreferences.Validate(prefs, out string error);
             Assert.That(result, Is.False);
             Assert.That(error, Is.Not.Null);

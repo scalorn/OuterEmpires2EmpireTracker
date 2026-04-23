@@ -35,17 +35,17 @@ namespace OE2EmpireTracker.Forms
 
         private void lnkGame_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://outerempires.net/");
+            Process.Start("https:// outerempires.net/");
         }
 
         private void lnkKiro_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://kiro.dev/");
+            Process.Start("https:// kiro.dev/");
         }
 
         private void lnkGitHub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://github.com/scalorn/OuterEmpires2EmpireTracker");
+            Process.Start("https:// github.com/scalorn/OuterEmpires2EmpireTracker");
         }
     }
 }

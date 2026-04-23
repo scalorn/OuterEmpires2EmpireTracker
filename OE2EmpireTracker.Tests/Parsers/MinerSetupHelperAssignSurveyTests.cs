@@ -1,10 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Services.Migration;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {
@@ -69,6 +69,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                     [resourceName] = new SurveyResource(resourceName, purity, amount)
                 }
             };
+
             return survey;
         }
 

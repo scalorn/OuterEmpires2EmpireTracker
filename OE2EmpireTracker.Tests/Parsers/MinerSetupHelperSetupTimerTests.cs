@@ -1,8 +1,8 @@
+using System;
 using NUnit.Framework;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
-using System;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {

@@ -160,8 +160,8 @@ namespace OE2EmpireTracker.Tests.Services
                     var chainGen = Gen.Sequence(
                         Enumerable.Range(0, chainLen).Select(idx =>
                             Gen.Choose(1, 1000).Select(val => new { Index = idx, Value = val })
-                        )
-                    );
+                       )
+                   );
 
                     return chainGen.Select(chainValues =>
                     {
@@ -210,7 +210,7 @@ namespace OE2EmpireTracker.Tests.Services
                         return new { Chain = chain, SelectedProps = selectedProps };
                     });
                 })
-            );
+           );
 
             return Prop.ForAll(testDataGen.ToArbitrary(), testData =>
             {
@@ -328,12 +328,13 @@ namespace OE2EmpireTracker.Tests.Services
                                         UnchangedProps = unchangedProps,
                                         ChangedProps = changedProps
                                     };
+
                                 })
-                            );
+                           );
                         });
                     });
                 })
-            );
+           );
 
             return Prop.ForAll(testDataGen.ToArbitrary(), testData =>
             {
@@ -359,11 +360,11 @@ namespace OE2EmpireTracker.Tests.Services
                 bool changedPropsPresent = testData.ChangedProps.All(p => result.Series.ContainsKey(p));
 
                 return noUnchangedInSeries
-                    .Label($"Unchanged properties excluded from Series (unchanged={string.Join(",", testData.UnchangedProps)})")
+                    .Label($"Unchanged properties excluded from Series (unchanged={string.Join(", ", testData.UnchangedProps)})")
                     .And(noChangesCorrect)
                     .Label($"NoChanges flag correct: ChangedProps.Length={testData.ChangedProps.Length}, NoChanges={result.NoChanges}, Series.Count={result.Series.Count}")
                     .And(changedPropsPresent)
-                    .Label($"Changed properties present in Series (changed={string.Join(",", testData.ChangedProps)})");
+                    .Label($"Changed properties present in Series (changed={string.Join(", ", testData.ChangedProps)})");
             });
         }
 
@@ -426,8 +427,9 @@ namespace OE2EmpireTracker.Tests.Services
                             RawValues = rawValues,
                             ChainLen = chainLen
                         };
+
                     })
-                );
+               );
             });
 
             return Prop.ForAll(testDataGen.ToArbitrary(), testData =>
@@ -439,7 +441,7 @@ namespace OE2EmpireTracker.Tests.Services
 
                 // Verify percentage formula for every data point
                 bool formulaCorrect = true;
-                string formulaError = "";
+                string formulaError = string.Empty;
 
                 foreach (var propName in testData.Props)
                 {
@@ -476,7 +478,7 @@ namespace OE2EmpireTracker.Tests.Services
 
                 // Verify Ev0 is always 100% for all graphed properties
                 bool ev0Is100 = true;
-                string ev0Error = "";
+                string ev0Error = string.Empty;
 
                 foreach (var propName in testData.Props)
                 {
@@ -541,6 +543,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { "bp-1", ev1 },
                 { "bp-2", ev2 }
             };
+
             Bp resolver(string uuid) =>
                 lookup.TryGetValue(uuid, out var bp) ? bp : null;
 
@@ -568,6 +571,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { "bp-A", bpA },
                 { "bp-B", bpB }
             };
+
             Bp resolver(string uuid) =>
                 lookup.TryGetValue(uuid, out var bp) ? bp : null;
 

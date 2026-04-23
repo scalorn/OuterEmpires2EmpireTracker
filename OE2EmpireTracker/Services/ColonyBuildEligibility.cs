@@ -1,7 +1,7 @@
+using System.Linq;
 using NLog;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.ViewModels;
-using System.Linq;
 
 namespace OE2EmpireTracker.Services
 {

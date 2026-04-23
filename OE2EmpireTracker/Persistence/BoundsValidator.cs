@@ -110,6 +110,7 @@ namespace OE2EmpireTracker.Persistence
             {
                 union = Rectangle.Union(union, screens[i].WorkingArea);
             }
+
             return union;
         }
     }

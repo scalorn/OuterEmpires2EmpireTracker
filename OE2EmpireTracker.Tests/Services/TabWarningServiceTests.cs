@@ -63,7 +63,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Gen.Choose(-72, -1).Select(h => (double)h),   // past (overdue)
                 Gen.Choose(0, 72).Select(h => (double)h),     // near-future (0-3 days)
                 Gen.Choose(73, 240).Select(h => (double)h)    // far-future (3-10 days)
-            );
+           );
 
             var genFulfilled = Arb.Generate<bool>();
 
@@ -83,6 +83,7 @@ namespace OE2EmpireTracker.Tests.Services
                         NeedBy = needBy,
                         Fulfilled = t.fulfilled
                     };
+
                 });
 
             // We fix 'now' to a known value so offsets are meaningful
@@ -143,7 +144,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Gen.Choose(0, 24).Select(h => now.AddHours(h)),                           // due within 1 day (red zone)
                 Gen.Choose(25, 48).Select(h => now.AddHours(h)),                          // due within 2 days (yellow zone)
                 Gen.Choose(49, 240).Select(h => now.AddHours(h))                          // far future
-            );
+           );
 
             var genFulfilledRequest = genNeedBy.Select(needBy => new CommodityRequested
             {
@@ -292,6 +293,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new CommodityRequested { Name = "B", Requested = 1, Delivered = 0, NeedBy = Now.AddHours(6), Fulfilled = true },
                 new CommodityRequested { Name = "C", Requested = 1, Delivered = 0, NeedBy = Now.AddHours(30), Fulfilled = true }
             };
+
             var result = TabWarningService.EvaluateWorkerWarning(commodities, Now);
             Assert.That(result, Is.EqualTo(TabWarningLevel.None));
         }
@@ -303,6 +305,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 new CommodityRequested { Name = "A", Requested = 1, Delivered = 0, NeedBy = Now.AddDays(3), Fulfilled = false }
             };
+
             var result = TabWarningService.EvaluateWorkerWarning(commodities, Now);
             Assert.That(result, Is.EqualTo(TabWarningLevel.None));
         }
@@ -314,6 +317,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 new CommodityRequested { Name = "A", Requested = 1, Delivered = 0, NeedBy = Now.AddDays(1.5), Fulfilled = false }
             };
+
             var result = TabWarningService.EvaluateWorkerWarning(commodities, Now);
             Assert.That(result, Is.EqualTo(TabWarningLevel.Yellow));
         }
@@ -325,6 +329,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 new CommodityRequested { Name = "A", Requested = 1, Delivered = 0, NeedBy = Now.AddHours(12), Fulfilled = false }
             };
+
             var result = TabWarningService.EvaluateWorkerWarning(commodities, Now);
             Assert.That(result, Is.EqualTo(TabWarningLevel.Red));
         }
@@ -336,6 +341,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 new CommodityRequested { Name = "A", Requested = 1, Delivered = 0, NeedBy = Now.AddDays(-1), Fulfilled = false }
             };
+
             var result = TabWarningService.EvaluateWorkerWarning(commodities, Now);
             Assert.That(result, Is.EqualTo(TabWarningLevel.Red));
         }
@@ -347,6 +353,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 new CommodityRequested { Name = "A", Requested = 1, Delivered = 0, NeedBy = DateTime.MinValue, Fulfilled = false }
             };
+
             var result = TabWarningService.EvaluateWorkerWarning(commodities, Now);
             Assert.That(result, Is.EqualTo(TabWarningLevel.None));
         }
@@ -359,6 +366,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new CommodityRequested { Name = "A", Requested = 1, Delivered = 0, NeedBy = Now.AddDays(1.5), Fulfilled = false },
                 new CommodityRequested { Name = "B", Requested = 1, Delivered = 0, NeedBy = Now.AddHours(12), Fulfilled = false }
             };
+
             var result = TabWarningService.EvaluateWorkerWarning(commodities, Now);
             Assert.That(result, Is.EqualTo(TabWarningLevel.Red));
         }

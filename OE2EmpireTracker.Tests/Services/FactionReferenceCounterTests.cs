@@ -1,7 +1,7 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System.Collections.Generic;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -27,7 +27,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new List<PlayerProfile>(),
                 new List<MarketTransaction>());
 
-            Assert.That(counter.CountReferences(""), Is.EqualTo(0));
+            Assert.That(counter.CountReferences(string.Empty), Is.EqualTo(0));
         }
 
         [Test]
@@ -110,15 +110,15 @@ namespace OE2EmpireTracker.Tests.Services
             var counter = new FactionReferenceCounter(
                 new List<ExternalCharacter>
                 {
-                    new ExternalCharacter { UUID = "ec1", FactionUUID = "" }
+                    new ExternalCharacter { UUID = "ec1", FactionUUID = string.Empty }
                 },
                 new List<PlayerProfile>
                 {
-                    new PlayerProfile { UUID = "pp1", FactionUUID = "" }
+                    new PlayerProfile { UUID = "pp1", FactionUUID = string.Empty }
                 },
                 new List<MarketTransaction>());
 
-            Assert.That(counter.CountReferences(""), Is.EqualTo(0));
+            Assert.That(counter.CountReferences(string.Empty), Is.EqualTo(0));
         }
     }
 }

@@ -1,5 +1,5 @@
-using OE2EmpireTracker.Constants;
 using System;
+using OE2EmpireTracker.Constants;
 
 namespace OE2EmpireTracker.Models
 {

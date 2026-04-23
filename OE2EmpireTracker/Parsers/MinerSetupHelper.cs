@@ -1,11 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Services.Migration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OE2EmpireTracker.Parsers
 {
@@ -117,6 +117,7 @@ namespace OE2EmpireTracker.Parsers
                     colony.PlanetName,
                     string.Join(", ", defaultSurveysAfter.Select(s => $"{s.UUID} (OwnerUUID={s.OwnerUUID})")));
             }
+
             Log.Info("SetupMiners: total survey count after={0}", playerContext.SurveyList.Count);
         }
 
@@ -226,7 +227,7 @@ namespace OE2EmpireTracker.Parsers
             }
 
             string resource = structure.MiningSurveyResource;
-            string purity = structure.RefiningResourcePurity ?? "";
+            string purity = structure.RefiningResourcePurity ?? string.Empty;
 
             // Step 2: check existing survey assignment
             if (!string.IsNullOrEmpty(structure.MiningSurvey))
@@ -479,11 +480,12 @@ namespace OE2EmpireTracker.Parsers
                 {
                     UUID = uuid,
                     SurveyID = "DEFAULT",
-                    NickName = "",
+                    NickName = string.Empty,
                     PlanetName = colony.PlanetName,
                     SystemName = colony.SystemName,
                     OwnerUUID = colony.OwnerUUID
                 };
+
                 defaultSurvey.Resources[resourceName] =
                     new SurveyResource(resourceName, purity, amount);
                 playerContext.AddSurvey(defaultSurvey);

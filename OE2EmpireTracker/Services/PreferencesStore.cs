@@ -1,9 +1,9 @@
-using Newtonsoft.Json;
-using NLog;
-using OE2EmpireTracker.Persistence;
-using OE2EmpireTracker.Models;
 using System;
 using System.IO;
+using Newtonsoft.Json;
+using NLog;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Persistence;
 
 namespace OE2EmpireTracker.Services
 {
@@ -21,6 +21,7 @@ namespace OE2EmpireTracker.Services
             {
                 Instance = new PreferencesStore();
             }
+
             return Instance;
         }
 
@@ -55,10 +56,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _preferences = new UIPreferences();
                 }
+
                 if (_preferences.Thresholds == null)
                 {
                     _preferences.Thresholds = new ThresholdPreferences();
                 }
+
                 Log.Info("Loaded UI preferences from {0}", _filePath);
             }
             catch (JsonException ex)

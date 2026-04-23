@@ -1,5 +1,5 @@
-using NLog;
 using System.IO;
+using NLog;
 
 namespace OE2EmpireTracker.Persistence
 {

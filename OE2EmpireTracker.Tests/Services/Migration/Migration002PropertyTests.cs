@@ -128,7 +128,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
                 // Assert: all FlatpackBlueprintUUIDs should now be current UUIDs
                 bool allRemapped = true;
-                string failMsg = "";
+                string failMsg = string.Empty;
                 for (int c = 0; c < pc.ColonyList.Count; c++)
                 {
                     for (int s = 0; s < pc.ColonyList[c].Structures.Count; s++)
@@ -205,7 +205,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
                 // Assert after first run
                 bool firstRunOk = true;
-                string failMsg = "";
+                string failMsg = string.Empty;
                 for (int i = 0; i < colonyCount; i++)
                 {
                     var colony = pc.ColonyList[i];

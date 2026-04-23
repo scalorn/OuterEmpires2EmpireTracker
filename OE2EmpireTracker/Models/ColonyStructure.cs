@@ -1,7 +1,7 @@
-using Newtonsoft.Json;
-using OE2EmpireTracker.Constants;
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using OE2EmpireTracker.Constants;
 
 namespace OE2EmpireTracker.Models
 {

@@ -109,7 +109,7 @@ namespace OE2EmpireTracker.Parsers
             }
 
             // Tooltip format is like "#11,982,019.28" -- strip # and commas, parse as decimal
-            string cleaned = tooltip.Replace("#", "").Replace(",", "").Trim();
+            string cleaned = tooltip.Replace("#", string.Empty).Replace(",", string.Empty).Trim();
             if (decimal.TryParse(cleaned, System.Globalization.NumberStyles.Any,
                 System.Globalization.CultureInfo.InvariantCulture, out decimal credits))
             {
@@ -218,7 +218,7 @@ namespace OE2EmpireTracker.Parsers
                 {
                     string levelText = NormalizeWhitespace(levelNode.InnerText);
                     // Strip "Rank " prefix and parse the number
-                    string numPart = levelText.Replace("Rank", "").Trim();
+                    string numPart = levelText.Replace("Rank", string.Empty).Trim();
                     if (int.TryParse(numPart, out int level))
                         rank.Rank = level;
                 }

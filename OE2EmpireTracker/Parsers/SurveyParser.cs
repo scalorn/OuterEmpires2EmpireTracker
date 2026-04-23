@@ -40,6 +40,7 @@ namespace OE2EmpireTracker.Parsers
                     PreserveWhitespace = true,
                     XmlResolver = null
                 };
+
                 doc.Load(sgmlReader);
 
                 // Extract the description line
@@ -96,7 +97,7 @@ namespace OE2EmpireTracker.Parsers
 
                         string rawReserve = maxReserveNodes[i].InnerText.Trim();
                         // Strip "Max Reserve:" label prefix, commas, and whitespace, then parse to int
-                        string cleaned = Regex.Replace(rawReserve, @"^[^0-9]*", "").Replace(",", "").Trim();
+                        string cleaned = Regex.Replace(rawReserve, @"^[^0-9]*", string.Empty).Replace(",", string.Empty).Trim();
                         if (int.TryParse(cleaned, out int maxReserve))
                         {
                             survey.ParsedMaxReserves[resName] = maxReserve;
@@ -177,7 +178,7 @@ namespace OE2EmpireTracker.Parsers
 
             // Extract resource name and purity from "ResourceName (Purity)"
             string resourceName = rawName;
-            string purity = "";
+            string purity = string.Empty;
             var m = Regex.Match(rawName, @"^(.+?)\s*\((.+?)\)\s*$");
             if (m.Success)
             {
@@ -188,6 +189,7 @@ namespace OE2EmpireTracker.Parsers
                 {
                     purity = purity.Substring(0, purity.Length - " Purity".Length).Trim();
                 }
+
                 // Normalize abbreviations
                 purity = NormalizePurity(purity);
             }

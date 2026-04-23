@@ -71,6 +71,7 @@ namespace OE2EmpireTracker.Forms.Contacts
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
         }
+
         // -----------------------------------------------------------------------
         // Layout
         // -----------------------------------------------------------------------
@@ -126,6 +127,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             {
                 factions = factions.Where(f => f.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
+
             factions = factions.OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase).ToList();
 
             var refCounter = new FactionReferenceCounter(
@@ -143,6 +145,7 @@ namespace OE2EmpireTracker.Forms.Contacts
                 if (faction.UUID == selectedUUID)
                     item.Selected = true;
             }
+
             sw.Stop();
             Log.Info("PopulateFactionList PERF: total={0}ms items={1}",
                 sw.ElapsedMilliseconds, factions.Count);
@@ -168,6 +171,7 @@ namespace OE2EmpireTracker.Forms.Contacts
                 ClearFactionForm();
             }
         }
+
         // -----------------------------------------------------------------------
         // Faction Form Population
         // -----------------------------------------------------------------------
@@ -189,8 +193,8 @@ namespace OE2EmpireTracker.Forms.Contacts
         private void ClearFactionForm()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
-            txtFactionName.Text = "";
-            txtFactionDescription.Text = "";
+            txtFactionName.Text = string.Empty;
+            txtFactionDescription.Text = string.Empty;
             SetFactionDetailEnabled(false);
         }
 
@@ -211,8 +215,9 @@ namespace OE2EmpireTracker.Forms.Contacts
             {
                 UUID = Guid.NewGuid().ToString(),
                 Name = "New Faction",
-                Description = ""
+                Description = string.Empty
             };
+
             playerContext.AddFaction(faction);
             playerContext.WriteContext();
             _selectedFaction = faction;
@@ -291,6 +296,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             if (_isProgrammaticUpdate > 0 || _selectedFaction == null) return;
             _selectedFaction.Description = txtFactionDescription.Text;
         }
+
         // -----------------------------------------------------------------------
         // Character List
         // -----------------------------------------------------------------------
@@ -308,22 +314,25 @@ namespace OE2EmpireTracker.Forms.Contacts
             {
                 characters = characters.Where(c => c.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
+
             characters = characters.OrderBy(c => c.Name, StringComparer.OrdinalIgnoreCase).ToList();
 
             foreach (var character in characters)
             {
-                string factionName = "";
+                string factionName = string.Empty;
                 if (!string.IsNullOrEmpty(character.FactionUUID))
                 {
                     var faction = playerContext.FactionList.FirstOrDefault(f => f.UUID == character.FactionUUID);
                     if (faction != null) factionName = faction.Name;
                 }
+
                 var item = new ListViewItem(character.Name) { Tag = character };
                 item.SubItems.Add(factionName);
                 lvwCharacters.Items.Add(item);
                 if (character.UUID == selectedUUID)
                     item.Selected = true;
             }
+
             sw.Stop();
             Log.Info("PopulateCharacterList PERF: total={0}ms items={1}",
                 sw.ElapsedMilliseconds, characters.Count);
@@ -389,7 +398,7 @@ namespace OE2EmpireTracker.Forms.Contacts
         private void ClearCharacterForm()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
-            txtCharName.Text = "";
+            txtCharName.Text = string.Empty;
             PopulateCharFactionCombo();
             cmbCharFaction.SelectedIndex = -1;
             SetCharDetailEnabled(false);
@@ -411,7 +420,7 @@ namespace OE2EmpireTracker.Forms.Contacts
                 selectedUUID = selected.UUID;
 
             cmbCharFaction.Items.Clear();
-            cmbCharFaction.Items.Add(new FactionComboItem("(none)", ""));
+            cmbCharFaction.Items.Add(new FactionComboItem("(none)", string.Empty));
 
             foreach (var faction in playerContext.FactionList.OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase))
             {
@@ -430,8 +439,10 @@ namespace OE2EmpireTracker.Forms.Contacts
                     }
                 }
             }
+
             sw.Stop(); Log.Info("PERF PopulateCharFactionCombo: {0}ms", sw.ElapsedMilliseconds);
         }
+
         // -----------------------------------------------------------------------
         // Character CRUD
         // -----------------------------------------------------------------------
@@ -442,8 +453,9 @@ namespace OE2EmpireTracker.Forms.Contacts
             {
                 UUID = Guid.NewGuid().ToString(),
                 Name = "New Character",
-                FactionUUID = ""
+                FactionUUID = string.Empty
             };
+
             playerContext.AddExternalCharacter(character);
             playerContext.WriteContext();
             _selectedCharacter = character;
@@ -487,7 +499,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             if (cmbCharFaction.SelectedItem is FactionComboItem fci)
                 _selectedCharacter.FactionUUID = fci.UUID;
             else
-                _selectedCharacter.FactionUUID = "";
+                _selectedCharacter.FactionUUID = string.Empty;
 
             playerContext.WriteContext();
             PopulateCharacterList();

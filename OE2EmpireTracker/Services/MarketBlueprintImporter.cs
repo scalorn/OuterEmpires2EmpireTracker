@@ -1,11 +1,11 @@
-using NLog;
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Parsers;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Services.Migration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
+using OE2EmpireTracker.Services.Migration;
 
 namespace OE2EmpireTracker.Services
 {
@@ -120,6 +120,7 @@ namespace OE2EmpireTracker.Services
                     {
                         bp.OwnerUUID = playerContext.CurrentPlayerUUID;
                     }
+
                     if (isGlobal)
                         empireContext.AddGlobalBlueprint(bp);
                     else
@@ -142,6 +143,7 @@ namespace OE2EmpireTracker.Services
                 empireContext.WriteContext();
                 Log.Info("Persisted global blueprint changes");
             }
+
             if (playerChanged)
             {
                 playerContext.WriteContext();
@@ -219,6 +221,7 @@ namespace OE2EmpireTracker.Services
                 {
                     target.Properties = new PropertyBag();
                 }
+
                 foreach (var kvp in incoming.Properties.Properties)
                 {
                     if (!ProtectedProperties.Contains(kvp.Key)

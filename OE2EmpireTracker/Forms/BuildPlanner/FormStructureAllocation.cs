@@ -80,7 +80,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     if (bp == null) continue;
 
                     bool eligible = false;
-                    string typeLabel = "";
+                    string typeLabel = string.Empty;
 
                     if (_buildItem.ItemType == BuildItemType.Manufactory)
                     {

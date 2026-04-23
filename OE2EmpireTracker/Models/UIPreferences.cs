@@ -44,41 +44,49 @@ namespace OE2EmpireTracker.Models
                 error = "Structure Count Yellow threshold must be a positive number.";
                 return false;
             }
+
             if (prefs.StructureCountRed <= 0)
             {
                 error = "Structure Count Red threshold must be a positive number.";
                 return false;
             }
+
             if (prefs.WorkerRequestYellowSeconds <= 0)
             {
                 error = "Worker Request Yellow threshold must be a positive number of seconds.";
                 return false;
             }
+
             if (prefs.WorkerRequestRedSeconds <= 0)
             {
                 error = "Worker Request Red threshold must be a positive number of seconds.";
                 return false;
             }
+
             if (prefs.ColonyImportStalenessYellowSeconds <= 0)
             {
                 error = "Colony Import Staleness Yellow threshold must be a positive number of seconds.";
                 return false;
             }
+
             if (prefs.ColonyImportStalenessRedSeconds <= 0)
             {
                 error = "Colony Import Staleness Red threshold must be a positive number of seconds.";
                 return false;
             }
+
             if (prefs.BackgroundProcessingIntervalSeconds <= 0)
             {
                 error = "Background Processing Interval must be a positive number of seconds.";
                 return false;
             }
+
             if (prefs.AdminRefreshIntervalSeconds <= 0)
             {
                 error = "Admin Refresh Interval must be a positive number of seconds.";
                 return false;
             }
+
             if (prefs.CountdownRefreshRateSeconds <= 0)
             {
                 error = "Countdown Refresh Rate must be a positive number of seconds.";

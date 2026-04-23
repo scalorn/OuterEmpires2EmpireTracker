@@ -1,8 +1,3 @@
-using Newtonsoft.Json;
-using NLog;
-using OE2EmpireTracker.Persistence;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Services.Migration;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
+using NLog;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Persistence;
+using OE2EmpireTracker.Services.Migration;
 
 namespace OE2EmpireTracker.Services
 {
@@ -366,6 +366,7 @@ namespace OE2EmpireTracker.Services
             {
                 Instance = new PlayerContext();
             }
+
             return Instance;
         }
 
@@ -393,6 +394,7 @@ namespace OE2EmpireTracker.Services
                 Log.Warn("Player data file not found at {0}, starting with empty data", FilePath);
                 playerRoot = new PlayerRoot();
             }
+
             initPlayerProfiles(playerRoot);
             InitBlueprints(playerRoot);
             InitSurveys(playerRoot);
@@ -428,6 +430,7 @@ namespace OE2EmpireTracker.Services
                 Log.Warn("WriteContext blocked -- migration failed, saving disabled");
                 return;
             }
+
             if (string.IsNullOrEmpty(FilePath))
             {
                 Log.Debug("WriteContext skipped -- no file path set (not yet saved)");
@@ -466,6 +469,7 @@ namespace OE2EmpireTracker.Services
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
             Log.Info("Player data saved to {0}", FilePath);
         }
+
         public void initPlayerProfiles(PlayerRoot playerRoot)
         {
             List<PlayerProfile> list = new List<PlayerProfile>(playerRoot.PlayerProfile);
@@ -476,6 +480,7 @@ namespace OE2EmpireTracker.Services
             // Set the in-memory list as the DataSource for the BindingSource
             BindingSourcePlayerProfile.DataSource = _playerProfileList;
         }
+
         public void InitBlueprints(PlayerRoot playerRoot)
         {
             List<Blueprint> list = new List<Blueprint>(playerRoot.Blueprint);
@@ -487,6 +492,7 @@ namespace OE2EmpireTracker.Services
             BindingSourceBlueprint.DataSource = _blueprintList;
             InvalidateBlueprintCache();
         }
+
         public Blueprint FindBlueprint(string id)
         {
             if (string.IsNullOrEmpty(id)) return null;
@@ -527,6 +533,7 @@ namespace OE2EmpireTracker.Services
                 _allBlueprintsCache = null;
                 _blueprintTypeCountCache = null;
             }
+
             BindingSourceBlueprint?.ResetBindings(false);
         }
 
@@ -540,6 +547,7 @@ namespace OE2EmpireTracker.Services
                 _allBlueprintsCache = null;
                 _blueprintTypeCountCache = null;
             }
+
             BindingSourceBlueprint?.ResetBindings(false);
         }
 
@@ -555,6 +563,7 @@ namespace OE2EmpireTracker.Services
             BindingSourceSurvey.DataSource = _surveyList;
             InvalidateSurveyCache();
         }
+
         public Survey FindSurvey(string id)
         {
             if (string.IsNullOrEmpty(id)) return null;
@@ -589,6 +598,7 @@ namespace OE2EmpireTracker.Services
                 if (_surveyCache != null && item.UUID != null)
                     _surveyCache[item.UUID] = item;
             }
+
             BindingSourceSurvey?.ResetBindings(false);
         }
 
@@ -600,6 +610,7 @@ namespace OE2EmpireTracker.Services
                 if (_surveyCache != null && item.UUID != null)
                     _surveyCache.Remove(item.UUID);
             }
+
             BindingSourceSurvey?.ResetBindings(false);
         }
 
@@ -736,6 +747,7 @@ namespace OE2EmpireTracker.Services
                 if (_colonyCache != null && item.UUID != null)
                     _colonyCache[item.UUID] = item;
             }
+
             BindingSourceColony?.ResetBindings(false);
         }
 
@@ -747,6 +759,7 @@ namespace OE2EmpireTracker.Services
                 if (_colonyCache != null && item.UUID != null)
                     _colonyCache.Remove(item.UUID);
             }
+
             BindingSourceColony?.ResetBindings(false);
         }
 
@@ -760,6 +773,7 @@ namespace OE2EmpireTracker.Services
                 if (_playerProfileCache != null && item.UUID != null)
                     _playerProfileCache[item.UUID] = item;
             }
+
             BindingSourcePlayerProfile?.ResetBindings(false);
         }
 
@@ -771,6 +785,7 @@ namespace OE2EmpireTracker.Services
                 if (_playerProfileCache != null && item.UUID != null)
                     _playerProfileCache.Remove(item.UUID);
             }
+
             BindingSourcePlayerProfile?.ResetBindings(false);
         }
 
@@ -1119,6 +1134,7 @@ namespace OE2EmpireTracker.Services
                         if (s.UUID != null && !_stationCache.ContainsKey(s.UUID))
                             _stationCache[s.UUID] = s;
                 }
+
                 _stationCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1141,6 +1157,7 @@ namespace OE2EmpireTracker.Services
                         if (st.UUID != null && !_shipTemplateCache.ContainsKey(st.UUID))
                             _shipTemplateCache[st.UUID] = st;
                 }
+
                 _shipTemplateCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1163,6 +1180,7 @@ namespace OE2EmpireTracker.Services
                         if (s.UUID != null && !_shipCache.ContainsKey(s.UUID))
                             _shipCache[s.UUID] = s;
                 }
+
                 _shipCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1185,6 +1203,7 @@ namespace OE2EmpireTracker.Services
                         if (bp.UUID != null && !_buildPlanCache.ContainsKey(bp.UUID))
                             _buildPlanCache[bp.UUID] = bp;
                 }
+
                 _buildPlanCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1207,6 +1226,7 @@ namespace OE2EmpireTracker.Services
                         if (a.UUID != null && !_asteroidCache.ContainsKey(a.UUID))
                             _asteroidCache[a.UUID] = a;
                 }
+
                 _asteroidCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1229,6 +1249,7 @@ namespace OE2EmpireTracker.Services
                         if (f.UUID != null && !_factionCache.ContainsKey(f.UUID))
                             _factionCache[f.UUID] = f;
                 }
+
                 _factionCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1251,6 +1272,7 @@ namespace OE2EmpireTracker.Services
                         if (ml.UUID != null && !_marketListingCache.ContainsKey(ml.UUID))
                             _marketListingCache[ml.UUID] = ml;
                 }
+
                 _marketListingCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1270,6 +1292,7 @@ namespace OE2EmpireTracker.Services
                         if (r.UUID != null && !_playerProfileCache.ContainsKey(r.UUID))
                             _playerProfileCache[r.UUID] = r;
                 }
+
                 _playerProfileCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1289,6 +1312,7 @@ namespace OE2EmpireTracker.Services
                         if (r.UUID != null && !_deliveryRouteCache.ContainsKey(r.UUID))
                             _deliveryRouteCache[r.UUID] = r;
                 }
+
                 _deliveryRouteCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1308,6 +1332,7 @@ namespace OE2EmpireTracker.Services
                         if (r.UUID != null && !_deliveryPlanCache.ContainsKey(r.UUID))
                             _deliveryPlanCache[r.UUID] = r;
                 }
+
                 _deliveryPlanCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1327,6 +1352,7 @@ namespace OE2EmpireTracker.Services
                         if (r.UUID != null && !_pricingPlanCache.ContainsKey(r.UUID))
                             _pricingPlanCache[r.UUID] = r;
                 }
+
                 _pricingPlanCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1346,6 +1372,7 @@ namespace OE2EmpireTracker.Services
                         if (r.UUID != null && !_marketTransactionCache.ContainsKey(r.UUID))
                             _marketTransactionCache[r.UUID] = r;
                 }
+
                 _marketTransactionCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1365,6 +1392,7 @@ namespace OE2EmpireTracker.Services
                         if (r.UUID != null && !_stockPlanCache.ContainsKey(r.UUID))
                             _stockPlanCache[r.UUID] = r;
                 }
+
                 _stockPlanCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1384,6 +1412,7 @@ namespace OE2EmpireTracker.Services
                         if (r.UUID != null && !_stockProfileCache.ContainsKey(r.UUID))
                             _stockProfileCache[r.UUID] = r;
                 }
+
                 _stockProfileCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1403,6 +1432,7 @@ namespace OE2EmpireTracker.Services
                         if (r.UUID != null && !_supplyChainCache.ContainsKey(r.UUID))
                             _supplyChainCache[r.UUID] = r;
                 }
+
                 _supplyChainCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1422,6 +1452,7 @@ namespace OE2EmpireTracker.Services
                         if (r.UUID != null && !_warehouseOverflowRuleCache.ContainsKey(r.UUID))
                             _warehouseOverflowRuleCache[r.UUID] = r;
                 }
+
                 _warehouseOverflowRuleCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1441,6 +1472,7 @@ namespace OE2EmpireTracker.Services
                         if (r.UUID != null && !_externalCharacterCache.ContainsKey(r.UUID))
                             _externalCharacterCache[r.UUID] = r;
                 }
+
                 _externalCharacterCache.TryGetValue(id, out var match);
                 return match;
             }
@@ -1461,14 +1493,15 @@ namespace OE2EmpireTracker.Services
                     _blueprintTypeCountCache = new Dictionary<string, int>();
                     foreach (var bp in GetCurrentPlayerBlueprints())
                     {
-                        var key = bp.BluePrintType ?? "";
+                        var key = bp.BluePrintType ?? string.Empty;
                         if (_blueprintTypeCountCache.ContainsKey(key))
                             _blueprintTypeCountCache[key]++;
                         else
                             _blueprintTypeCountCache[key] = 1;
                     }
                 }
-                return _blueprintTypeCountCache.TryGetValue(blueprintType ?? "", out var count) ? count : 0;
+
+                return _blueprintTypeCountCache.TryGetValue(blueprintType ?? string.Empty, out var count) ? count : 0;
             }
         }
 
@@ -1521,6 +1554,7 @@ namespace OE2EmpireTracker.Services
                             _blueprintBuildItemIndex[item.BlueprintUUID] = new List<BuildItem>();
                         _blueprintBuildItemIndex[item.BlueprintUUID].Add(item);
                     }
+
                     if (!string.IsNullOrEmpty(item.BuildLocationUUID))
                     {
                         if (!_buildLocationBuildItemIndex.ContainsKey(item.BuildLocationUUID))
@@ -1671,6 +1705,7 @@ namespace OE2EmpireTracker.Services
                     migrated++;
                 }
             }
+
             foreach (var blueprint in _blueprintList)
             {
                 if (string.IsNullOrEmpty(blueprint.OwnerUUID))
@@ -1679,6 +1714,7 @@ namespace OE2EmpireTracker.Services
                     migrated++;
                 }
             }
+
             foreach (var survey in _surveyList)
             {
                 if (string.IsNullOrEmpty(survey.OwnerUUID))
@@ -1810,6 +1846,7 @@ namespace OE2EmpireTracker.Services
             {
                 _currentPlayerUUID = _playerProfileList[0].UUID ?? string.Empty;
             }
+
             Log.Info("Current player restored: {0}", _currentPlayerUUID);
         }
 
@@ -1843,6 +1880,7 @@ namespace OE2EmpireTracker.Services
                 if (ec?.GlobalBlueprintList != null)
                     _allBlueprintsCache.AddRange(ec.GlobalBlueprintList);
             }
+
             return _allBlueprintsCache;
         }
 
@@ -1994,6 +2032,7 @@ namespace OE2EmpireTracker.Services
                     }
                 }
             }
+
             foreach (var colony in _colonyList)
             {
                 if (colony.Structures != null)
@@ -2012,6 +2051,7 @@ namespace OE2EmpireTracker.Services
                     }
                 }
             }
+
             return countdowns;
         }
     }
@@ -2147,5 +2187,4 @@ namespace OE2EmpireTracker.Services
         public string CharacterUUID { get; }
         public ContactDataChangedEventArgs(string uuid) { CharacterUUID = uuid; }
     }
-
 }

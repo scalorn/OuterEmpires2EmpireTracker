@@ -38,8 +38,10 @@ namespace OE2EmpireTracker.Models
             {
                 Skills[skillName] = new PlayerSkill();
             }
+
             return Skills[skillName];
         }
+
         public PlayerSkill GetSkill(SkillName skill) => GetSkill(skill.ToDisplayName());
 
         public bool GetSkillGroup(string skillGroup)
@@ -48,14 +50,17 @@ namespace OE2EmpireTracker.Models
             {
                 SkillGroups[skillGroup] = false;
             }
+
             return SkillGroups[skillGroup];
         }
+
         public bool GetSkillGroup(SkillGroupName group) => GetSkillGroup(group.ToDisplayName());
 
         public void SetSkillGroup(string skillGroup, bool value)
         {
             SkillGroups[skillGroup] = value;
         }
+
         public void SetSkillGroup(SkillGroupName group, bool value) => SetSkillGroup(group.ToDisplayName(), value);
     }
 }

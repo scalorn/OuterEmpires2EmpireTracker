@@ -1,8 +1,8 @@
+using System;
+using System.Linq;
 using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
-using System;
-using System.Linq;
 
 namespace OE2EmpireTracker.Services
 {
@@ -40,6 +40,7 @@ namespace OE2EmpireTracker.Services
                 cr.Delivered = 0;
                 cr.Fulfilled = false;
             }
+
             return true;
         }
 
@@ -98,6 +99,7 @@ namespace OE2EmpireTracker.Services
                     existing[0].Quantity = Math.Max(0, existing[0].Quantity - quantity);
                 }
             }
+
             return true;
         }
     }

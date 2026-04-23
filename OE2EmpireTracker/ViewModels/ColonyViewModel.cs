@@ -1,8 +1,8 @@
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.ViewModels
 {
@@ -60,6 +60,7 @@ namespace OE2EmpireTracker.ViewModels
                         .Select(s => new ColonyStructureViewModel(s, _playerContext))
                         .ToList();
                 }
+
                 return _cachedStructureVMs.AsReadOnly();
             }
         }
@@ -84,6 +85,7 @@ namespace OE2EmpireTracker.ViewModels
                 FlatpackBlueprintUUID = flatpackBlueprintUUID,
                 displaySequence = existingCount + 1
             };
+
             _colony.Structures.Add(structure);
             InvalidateStructureViewModels();
             return new ColonyStructureViewModel(structure, _playerContext);
@@ -124,6 +126,7 @@ namespace OE2EmpireTracker.ViewModels
                 Delivered = 0,
                 NeedBy = needBy ?? DateTime.MinValue
             };
+
             _colony.Commodities.Add(request);
             return request;
         }

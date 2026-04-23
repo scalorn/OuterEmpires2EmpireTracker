@@ -1,9 +1,3 @@
-using NLog;
-using OE2EmpireTracker.Persistence;
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.ViewModels;
-using OE2EmpireTracker.Parsers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +8,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
+using OE2EmpireTracker.Persistence;
+using OE2EmpireTracker.Services;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Forms.PlayerProfile
 {
@@ -115,10 +115,12 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 catch (ObjectDisposedException) { }
                 return;
             }
+
             if (viewModel.Data.UUID == e.PlayerUUID)
             {
                 PopulateForm();
             }
+
             PopulateListView();
         }
 
@@ -131,6 +133,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 catch (ObjectDisposedException) { }
                 return;
             }
+
             lvwPlayerProfiles.Items.Clear();
             viewModel.Reset();
             PopulateListView();
@@ -214,6 +217,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             {
                 skillBlockEntry.Value.CanStartTraining = !isTraining;
             }
+
             sw.Stop();
             Log.Info("PopulateForm PERF: total={0}ms", sw.ElapsedMilliseconds);
             sw.Stop(); Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
@@ -311,6 +315,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                     item.EnsureVisible();
                 }
             }
+
             sw.Stop();
             Log.Info("PopulateListView PERF: total={0}ms items={1}",
                 sw.ElapsedMilliseconds, profiles.Count);
@@ -353,7 +358,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             }
 
             if (_isProgrammaticUpdate > 0) return;
-            viewModel.Name = txtPlayerName.Text?.Trim() ?? "";
+            viewModel.Name = txtPlayerName.Text?.Trim() ?? string.Empty;
         }
 
         private void txtTotalCredits_TextChanged(object sender, EventArgs e)
@@ -556,6 +561,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             {
                 existing.SetSkillGroup(group, parsed.GetSkillGroup(group));
             }
+
             foreach (var skillEntry in parsed.Skills)
             {
                 var existingSkill = existing.GetSkill(skillEntry.Key);

@@ -1,7 +1,7 @@
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using NLog;
 
 namespace OE2EmpireTracker.Services.Migration
 {

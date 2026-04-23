@@ -1,7 +1,7 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System.Collections.Generic;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -22,6 +22,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 new StockPlan { UUID = "sp-1", ReplenishmentBuildPlanUUID = "plan-1" }
             };
+
             var counter = new BuildPlanReferenceCounter(stockPlans);
             Assert.That(counter.CountReferences(null), Is.EqualTo(0));
         }
@@ -33,8 +34,9 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 new StockPlan { UUID = "sp-1", ReplenishmentBuildPlanUUID = "plan-1" }
             };
+
             var counter = new BuildPlanReferenceCounter(stockPlans);
-            Assert.That(counter.CountReferences(""), Is.EqualTo(0));
+            Assert.That(counter.CountReferences(string.Empty), Is.EqualTo(0));
         }
 
         [Test]
@@ -45,6 +47,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new StockPlan { UUID = "sp-1", ReplenishmentBuildPlanUUID = "plan-1" },
                 new StockPlan { UUID = "sp-2", ReplenishmentBuildPlanUUID = "plan-2" }
             };
+
             var counter = new BuildPlanReferenceCounter(stockPlans);
             Assert.That(counter.CountReferences("plan-1"), Is.EqualTo(1));
         }
@@ -58,6 +61,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new StockPlan { UUID = "sp-2", ReplenishmentBuildPlanUUID = "plan-1" },
                 new StockPlan { UUID = "sp-3", ReplenishmentBuildPlanUUID = "plan-2" }
             };
+
             var counter = new BuildPlanReferenceCounter(stockPlans);
             Assert.That(counter.CountReferences("plan-1"), Is.EqualTo(2));
         }
@@ -69,6 +73,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 new StockPlan { UUID = "sp-1", ReplenishmentBuildPlanUUID = "plan-1" }
             };
+
             var counter = new BuildPlanReferenceCounter(stockPlans);
             Assert.That(counter.CountReferences("plan-999"), Is.EqualTo(0));
         }
@@ -85,9 +90,10 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var stockPlans = new List<StockPlan>
             {
-                new StockPlan { UUID = "sp-1", ReplenishmentBuildPlanUUID = "" },
+                new StockPlan { UUID = "sp-1", ReplenishmentBuildPlanUUID = string.Empty },
                 new StockPlan { UUID = "sp-2", ReplenishmentBuildPlanUUID = "plan-1" }
             };
+
             var counter = new BuildPlanReferenceCounter(stockPlans);
             Assert.That(counter.CountReferences("plan-1"), Is.EqualTo(1));
         }

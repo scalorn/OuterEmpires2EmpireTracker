@@ -93,6 +93,7 @@ namespace OE2EmpireTracker.Parsers
                     PreserveWhitespace = true,
                     XmlResolver = null
                 };
+
                 doc.Load(sgmlReader);
                 return doc;
             }
@@ -198,7 +199,6 @@ namespace OE2EmpireTracker.Parsers
         /// </summary>
         internal static void ParseColonyBuildingsFromJson(Colony colony, string jsonEncoded, EmpireContext empireContext)
         {
-
             try
             {
                 var root = JObject.Parse(jsonEncoded);
@@ -238,6 +238,7 @@ namespace OE2EmpireTracker.Parsers
                         parsedMaxRates[parsedBuildings.Count] = maxRate;
                         parsedBuildings.Add(parsed);
                     }
+
                     parsedIndex++;
                 }
 
@@ -246,7 +247,7 @@ namespace OE2EmpireTracker.Parsers
                 var typeCounters = new Dictionary<string, int>(StringComparer.Ordinal);
                 foreach (var parsed in parsedBuildings)
                 {
-                    string key = parsed.FlatpackBlueprintUUID ?? "";
+                    string key = parsed.FlatpackBlueprintUUID ?? string.Empty;
                     if (!typeCounters.ContainsKey(key))
                         typeCounters[key] = 0;
                     typeCounters[key]++;
@@ -265,6 +266,7 @@ namespace OE2EmpireTracker.Parsers
                     if (bp != null && bp.BluePrintType.IsCommodityFactory())
                         commodityFactoryUUIDs.Add(s.FlatpackBlueprintUUID);
                 }
+
                 // Also check parsed buildings for commodity factory types
                 foreach (var p in parsedBuildings)
                 {
@@ -281,7 +283,7 @@ namespace OE2EmpireTracker.Parsers
                 var existingTypeCounters = new Dictionary<string, int>(StringComparer.Ordinal);
                 foreach (var s in colony.Structures)
                 {
-                    string bpUUID = s.FlatpackBlueprintUUID ?? "";
+                    string bpUUID = s.FlatpackBlueprintUUID ?? string.Empty;
                     if (!existingTypeCounters.ContainsKey(bpUUID))
                         existingTypeCounters[bpUUID] = 0;
                     existingTypeCounters[bpUUID]++;
@@ -345,7 +347,7 @@ namespace OE2EmpireTracker.Parsers
                     else
                     {
                         // Non-commodity: compound key lookup
-                        string compoundKey = (parsed.FlatpackBlueprintUUID ?? "") + ":" + parsed.displaySequence;
+                        string compoundKey = (parsed.FlatpackBlueprintUUID ?? string.Empty) + ":" + parsed.displaySequence;
                         existingByCompoundKey.TryGetValue(compoundKey, out existing);
                     }
 
@@ -365,6 +367,7 @@ namespace OE2EmpireTracker.Parsers
                             maxRates[parsed.UUID] = mr;
                         added++;
                     }
+
                     mergeIndex++;
                 }
 
@@ -406,6 +409,7 @@ namespace OE2EmpireTracker.Parsers
                 parsed.Properties.getBoolean(GameConstants.PropBuilt, false, out bool built);
                 existing.Properties.setProperty(GameConstants.PropBuilt, built);
             }
+
             if (parsed.Properties.ContainsKey(GameConstants.PropOnline))
             {
                 parsed.Properties.getBoolean(GameConstants.PropOnline, false, out bool online);

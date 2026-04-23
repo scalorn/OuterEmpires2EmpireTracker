@@ -1,10 +1,10 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Tests;
 
 namespace OE2EmpireTracker.Tests.Services
@@ -54,6 +54,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 { resource, new SurveyResource(resource, purity, amount) }
             };
+
             PlayerContext.GetInstance().AddSurvey(survey);
             return survey;
         }
@@ -480,6 +481,7 @@ namespace OE2EmpireTracker.Tests.Services
                 SystemName = "Sys",
                 ColonyName = "Col"
             };
+
             // Add a structure with no timers
             var bp = CreateBlueprint(BlueprintTypes.MiningRig, "IdleMiner");
             colony.Structures.Add(new ColonyStructure
@@ -503,6 +505,7 @@ namespace OE2EmpireTracker.Tests.Services
                 SystemName = "MineSys",
                 ColonyName = "MineCol"
             };
+
             var bp = CreateBlueprint(BlueprintTypes.MiningRig, "ActiveMiner");
             var survey = CreateSurvey("Iron", "High", "250");
             var structure = new ColonyStructure
@@ -514,6 +517,7 @@ namespace OE2EmpireTracker.Tests.Services
                 MiningSurvey = survey.UUID,
                 MiningSurveyResource = "Iron"
             };
+
             colony.Structures.Add(structure);
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
@@ -535,6 +539,7 @@ namespace OE2EmpireTracker.Tests.Services
                 SystemName = "BuildSys",
                 ColonyName = "BuildCol"
             };
+
             var bp = CreateBlueprint(BlueprintTypes.Manufactory, "BuildingFactory");
             var structure = new ColonyStructure
             {
@@ -543,6 +548,7 @@ namespace OE2EmpireTracker.Tests.Services
                 displaySequence = 1,
                 BuildCompletionTime = MakeActiveTimer(7200)
             };
+
             colony.Structures.Add(structure);
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
@@ -561,6 +567,7 @@ namespace OE2EmpireTracker.Tests.Services
                 SystemName = "CRSys",
                 ColonyName = "CRCol"
             };
+
             colony.Commodities.Add(new CommodityRequested
             {
                 Name = "Electronics",
@@ -586,6 +593,7 @@ namespace OE2EmpireTracker.Tests.Services
                 SystemName = "FulSys",
                 ColonyName = "FulCol"
             };
+
             colony.Commodities.Add(new CommodityRequested
             {
                 Name = "Steel",
@@ -607,6 +615,7 @@ namespace OE2EmpireTracker.Tests.Services
                 CountDown = null,
                 NeedBy = DateTime.UtcNow.AddDays(-2)
             };
+
             Assert.That(row.GetSecondsRemaining(), Is.EqualTo(0));
             Assert.That(row.GetTimeRemainingString(), Is.EqualTo("0s"));
         }
@@ -621,6 +630,7 @@ namespace OE2EmpireTracker.Tests.Services
                 SystemName = "PriSys",
                 ColonyName = "PriCol"
             };
+
             var bp = CreateBlueprint(BlueprintTypes.MiningRig, "DualTimerMiner");
             var structure = new ColonyStructure
             {
@@ -630,6 +640,7 @@ namespace OE2EmpireTracker.Tests.Services
                 BuildCompletionTime = MakeActiveTimer(3600),
                 ProcessCompletionTime = MakeActiveRepeatingTimer(7200)
             };
+
             colony.Structures.Add(structure);
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
@@ -649,6 +660,7 @@ namespace OE2EmpireTracker.Tests.Services
                 SystemName = "SynSys",
                 ColonyName = "SynCol"
             };
+
             var bp = CreateBlueprint(BlueprintTypes.Refinery, "SyntheticRefinery");
             var structure = new ColonyStructure
             {
@@ -659,6 +671,7 @@ namespace OE2EmpireTracker.Tests.Services
                 RefiningResource = "Lanthanides",
                 RefiningResourcePurity = GameConstants.PurityRefined
             };
+
             colony.Structures.Add(structure);
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
@@ -677,6 +690,7 @@ namespace OE2EmpireTracker.Tests.Services
                 SystemName = "NormSys",
                 ColonyName = "NormCol"
             };
+
             var bp = CreateBlueprint(BlueprintTypes.Refinery, "NormalRefinery");
             var structure = new ColonyStructure
             {
@@ -687,6 +701,7 @@ namespace OE2EmpireTracker.Tests.Services
                 RefiningResource = "Copper",
                 RefiningResourcePurity = "Medium"
             };
+
             colony.Structures.Add(structure);
 
             var rows = ColonyActivityCollector.CollectActivities(new[] { colony }, pc);
@@ -724,6 +739,7 @@ namespace OE2EmpireTracker.Tests.Services
                         ProcessDetails = "Proc" + Rng.Next(100),
                         CountDown = MakeActiveTimer(Rng.Next(60, 86400))
                     };
+
                     rows.Add(row);
                 }
 
@@ -740,7 +756,7 @@ namespace OE2EmpireTracker.Tests.Services
                 int filterChoice = Rng.Next(3);
                 if (filterChoice == 0)
                 {
-                    textFilter = "";
+                    textFilter = string.Empty;
                 }
                 else if (filterChoice == 1)
                 {
@@ -761,18 +777,18 @@ namespace OE2EmpireTracker.Tests.Services
                 // Snapshot countdown strings to avoid race condition with live timers
                 var timeStrings = new Dictionary<ActivityRow, string>();
                 foreach (var row in rows)
-                    timeStrings[row] = row.GetTimeRemainingString() ?? "";
+                    timeStrings[row] = row.GetTimeRemainingString() ?? string.Empty;
 
                 // Reference implementation of PassesTextFilter (replicating FormColonyActivity logic)
                 bool PassesTextFilter(ActivityRow row, string filter)
                 {
                     if (string.IsNullOrEmpty(filter)) return true;
                     return timeStrings[row].IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
-                        || (row.SystemName ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
-                        || (row.ColonyName ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
+                        || (row.SystemName ?? string.Empty).IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
+                        || (row.ColonyName ?? string.Empty).IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
                         || row.Type.ToString().IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
-                        || (row.SourceName ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
-                        || (row.ProcessDetails ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0;
+                        || (row.SourceName ?? string.Empty).IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0
+                        || (row.ProcessDetails ?? string.Empty).IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0;
                 }
 
                 // Compute expected filtered set
@@ -788,7 +804,7 @@ namespace OE2EmpireTracker.Tests.Services
                     .ToList();
 
                 Assert.That(actual.Count, Is.EqualTo(expected.Count),
-                    $"Iteration {iteration}: filtered count mismatch (types={string.Join(",", selectedTypes)}, text='{textFilter}')");
+                    $"Iteration {iteration}: filtered count mismatch (types={string.Join(", ", selectedTypes)}, text='{textFilter}')");
 
                 for (int i = 0; i < expected.Count; i++)
                 {

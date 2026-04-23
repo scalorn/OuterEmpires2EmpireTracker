@@ -1,8 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -44,6 +44,7 @@ namespace OE2EmpireTracker.Tests.Services
                     new RouteStop { DestinationType = DestinationType.Station, DestinationUUID = TargetUUID }
                 }
             };
+
             var counter = new StationReferenceCounter(
                 new[] { route },
                 Enumerable.Empty<DeliveryPlan>(),
@@ -63,6 +64,7 @@ namespace OE2EmpireTracker.Tests.Services
                     new RouteStop { DestinationType = DestinationType.Colony, DestinationUUID = TargetUUID }
                 }
             };
+
             var counter = new StationReferenceCounter(
                 new[] { route },
                 Enumerable.Empty<DeliveryPlan>(),
@@ -82,6 +84,7 @@ namespace OE2EmpireTracker.Tests.Services
                     new DeliveryPlanStop { DestinationType = DestinationType.Station, DestinationUUID = TargetUUID }
                 }
             };
+
             var counter = new StationReferenceCounter(
                 Enumerable.Empty<DeliveryRoute>(),
                 new[] { plan },
@@ -106,6 +109,7 @@ namespace OE2EmpireTracker.Tests.Services
                     }
                 }
             };
+
             var counter = new StationReferenceCounter(
                 Enumerable.Empty<DeliveryRoute>(),
                 Enumerable.Empty<DeliveryPlan>(),
@@ -130,6 +134,7 @@ namespace OE2EmpireTracker.Tests.Services
                     }
                 }
             };
+
             var counter = new StationReferenceCounter(
                 Enumerable.Empty<DeliveryRoute>(),
                 Enumerable.Empty<DeliveryPlan>(),
@@ -149,6 +154,7 @@ namespace OE2EmpireTracker.Tests.Services
                     new RouteStop { DestinationType = DestinationType.Station, DestinationUUID = TargetUUID }
                 }
             };
+
             var plan = new DeliveryPlan
             {
                 UUID = "plan-1",
@@ -157,6 +163,7 @@ namespace OE2EmpireTracker.Tests.Services
                     new DeliveryPlanStop { DestinationType = DestinationType.Station, DestinationUUID = TargetUUID }
                 }
             };
+
             var buildPlan = new BuildPlan
             {
                 UUID = "bp-1",
@@ -166,6 +173,7 @@ namespace OE2EmpireTracker.Tests.Services
                     new BuildItem { UUID = "bi-2", BuildLocationType = DestinationType.Station, BuildLocationUUID = TargetUUID }
                 }
             };
+
             var counter = new StationReferenceCounter(
                 new[] { route },
                 new[] { plan },

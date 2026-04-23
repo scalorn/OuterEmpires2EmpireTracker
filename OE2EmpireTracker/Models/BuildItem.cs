@@ -1,6 +1,6 @@
+using System.ComponentModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.ComponentModel;
 
 namespace OE2EmpireTracker.Models
 {

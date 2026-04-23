@@ -122,6 +122,7 @@ namespace OE2EmpireTracker.Tests.Controls
                         return (emptyWhenNone && matchesSelected)
                             .Label($"Empty when none: {emptyWhenNone}, matches selected[{idx}]: {matchesSelected} (got '{selected}', expected '{items[idx]}')");
                     }
+
                 });
         }
 
@@ -179,6 +180,7 @@ namespace OE2EmpireTracker.Tests.Controls
                 Keys.Left, Keys.Right, Keys.Up, Keys.Down,
                 Keys.Enter, Keys.Escape, Keys.Tab, Keys.Delete, Keys.Back
             };
+
             var keyGen = Gen.Elements(expectedKeys).ToArbitrary();
 
             return Prop.ForAll(keyGen, key =>
@@ -188,6 +190,7 @@ namespace OE2EmpireTracker.Tests.Controls
                     bool wants = editor.EditingControlWantsInputKey(key, true);
                     return wants.Label($"Key {key}: wants={wants}");
                 }
+
             });
         }
 
@@ -223,6 +226,7 @@ namespace OE2EmpireTracker.Tests.Controls
                     return (fontMatch && colorMatch)
                         .Label($"Font match: {fontMatch}, color match: {colorMatch}");
                 }
+
             });
         }
     }

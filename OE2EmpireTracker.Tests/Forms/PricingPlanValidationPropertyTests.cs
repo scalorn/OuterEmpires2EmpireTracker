@@ -24,7 +24,7 @@ namespace OE2EmpireTracker.Tests.Forms
         private static Gen<string> WhitespaceStringGen()
         {
             return Gen.OneOf(
-                Gen.Constant(""),
+                Gen.Constant(string.Empty),
                 Gen.Constant(" "),
                 Gen.Constant("  "),
                 Gen.Constant("\t"),
@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Tests.Forms
                 Gen.Choose(1, 10).SelectMany(len =>
                     Gen.ListOf(len, Gen.Elements(' ', '\t', '\n', '\r'))
                        .Select(chars => new string(chars.ToArray())))
-            );
+           );
         }
 
         #endregion

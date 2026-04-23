@@ -1,7 +1,7 @@
+using System.IO;
 using NUnit.Framework;
 using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Tests;
-using System.IO;
 
 namespace OE2EmpireTracker.Tests.Blueprint
 {

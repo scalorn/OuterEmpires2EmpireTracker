@@ -20,7 +20,7 @@ namespace OE2EmpireTracker.Tests.Services
         // Primitive helpers
         // ---------------------------------------------------------------
 
-        private static readonly string[] ShortStrings = { "a", "bb", "ccc", "d1", "e2f", "" };
+        private static readonly string[] ShortStrings = { "a", "bb", "ccc", "d1", "e2f", string.Empty };
         private static readonly string[] NonEmptyStrings = { "a", "bb", "ccc", "d1", "e2f" };
 
         private static Gen<string> GenShortString() =>
@@ -94,7 +94,7 @@ namespace OE2EmpireTracker.Tests.Services
             from nick in GenShortString()
             from desc in GenShortString()
             from qty in Gen.Choose(0, 100)
-            from purity in Gen.Elements("", "Low", "Medium", "High")
+            from purity in Gen.Elements(string.Empty, "Low", "Medium", "High")
             from vol in Gen.Elements(0.0m, 1.0m, 5.5m)
             from baseId in GenShortString()
             select new Item(itemType, name)
@@ -284,6 +284,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Description = desc,
                 Properties = props
             };
+
             var kArr = resKeys.Distinct().ToArray();
             var vArr = resVals.ToArray();
             for (int i = 0; i < Math.Min(kArr.Length, vArr.Length); i++)
@@ -345,6 +346,7 @@ namespace OE2EmpireTracker.Tests.Services
                 NickName = nick,
                 Description = desc
             };
+
             var kArr = propKeys.Distinct().ToArray();
             var vArr = propVals.ToArray();
             for (int i = 0; i < Math.Min(kArr.Length, vArr.Length); i++)
@@ -364,7 +366,7 @@ namespace OE2EmpireTracker.Tests.Services
             from itemType in GenItemTypeEnum()
             from baseId in GenShortString()
             from name in GenNonEmptyString()
-            from purity in Gen.Elements("", "Low", "Medium", "High")
+            from purity in Gen.Elements(string.Empty, "Low", "Medium", "High")
             from qty in Gen.Choose(0, 50)
             from delivered in Arb.Generate<bool>()
             select new DeliveryItem
@@ -502,6 +504,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Military = mil,
                 SkillPoints = sp
             };
+
             var kArr = skillNames.Distinct().ToArray();
             var vArr = skillVals.ToArray();
             for (int i = 0; i < Math.Min(kArr.Length, vArr.Length); i++)
@@ -968,11 +971,12 @@ namespace OE2EmpireTracker.Tests.Services
                 UUID = "test-uuid-1234",
                 Quantity = 0,
                 Volume = 0.0m,
-                NickName = "",
-                Description = "",
-                ResourcePurity = "",
-                BaseItemTypeID = ""
+                NickName = string.Empty,
+                Description = string.Empty,
+                ResourcePurity = string.Empty,
+                BaseItemTypeID = string.Empty
             };
+
             bag.Items[item.UUID] = item;
 
             var json = JsonConvert.SerializeObject(bag, JsonSettings.SerializerSettings);

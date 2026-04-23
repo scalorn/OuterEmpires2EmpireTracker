@@ -58,6 +58,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.AsteroidDataChanged += OnAsteroidDataChanged;
         }
+
         // Layout
         private void flpBase_Layout(object sender, LayoutEventArgs e)
         {
@@ -115,6 +116,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
                 lvwAsteroids.Items.Add(item);
                 if (asteroid.UUID == selectedUUID) item.Selected = true;
             }
+
             sw.Stop();
             Log.Info("PERF PopulateAsteroidList: {0}ms items={1}", sw.ElapsedMilliseconds, asteroids.Count);
         }
@@ -148,8 +150,8 @@ namespace OE2EmpireTracker.Forms.Asteroid
         private void ClearForm()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
-            txtAsteroidName.Text = "";
-            txtSystemName.Text = "";
+            txtAsteroidName.Text = string.Empty;
+            txtSystemName.Text = string.Empty;
             dgvReserves.Rows.Clear();
             dgvLinkedSurveys.Rows.Clear();
             SetDetailEnabled(false);
@@ -164,6 +166,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             cmdAddReserve.Enabled = enabled;
             cmdRemoveReserve.Enabled = enabled;
         }
+
         // Combo helpers
         private void PopulateResourceCombo()
         {
@@ -179,6 +182,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
                 foreach (var r in filtered)
                     cmbReserveResource.Items.Add(r.Name);
             }
+
             if (cmbReserveResource.Items.Count > 0) cmbReserveResource.SelectedIndex = 0;
             sw.Stop(); Log.Info("PERF PopulateResourceCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -192,6 +196,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
                 if (p.ID != ResourcePurity.PurityEnum.None)
                     cmbReservePurity.Items.Add(p.Name);
             }
+
             if (cmbReservePurity.Items.Count > 0) cmbReservePurity.SelectedIndex = 0;
             sw.Stop(); Log.Info("PERF PopulatePurityCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -217,6 +222,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
                 dgvReserves.Rows[rowIdx].Cells[colPurity.Index].ReadOnly = true;
                 dgvReserves.Rows[rowIdx].Cells[colMaxReserve.Index].ReadOnly = true;
             }
+
             sw.Stop(); Log.Info("PERF PopulateReservesGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -225,7 +231,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             if (_isProgrammaticUpdate > 0 || _selectedAsteroid == null || e.RowIndex < 0) return;
             var row = dgvReserves.Rows[e.RowIndex];
             if (!(row.Tag is AsteroidReserve reserve)) return;
-            string valStr = row.Cells[e.ColumnIndex].Value?.ToString() ?? "";
+            string valStr = row.Cells[e.ColumnIndex].Value?.ToString() ?? string.Empty;
 
             if (e.ColumnIndex == colCurrentReserve.Index)
             {
@@ -240,15 +246,16 @@ namespace OE2EmpireTracker.Forms.Asteroid
         private void cmdAddReserve_Click(object sender, EventArgs e)
         {
             if (_selectedAsteroid == null) return;
-            string resourceName = cmbReserveResource.SelectedItem?.ToString() ?? "";
+            string resourceName = cmbReserveResource.SelectedItem?.ToString() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(resourceName)) return;
-            string purity = cmbReservePurity.SelectedItem?.ToString() ?? "";
+            string purity = cmbReservePurity.SelectedItem?.ToString() ?? string.Empty;
             if (!int.TryParse(txtMaxReserve.Text.Trim(), out int maxReserve) || maxReserve <= 0)
             {
                 MessageBox.Show("Enter a valid max reserve.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
             int.TryParse(txtCurrentReserve.Text.Trim(), out int currentReserve);
 
             var reserve = new AsteroidReserve
@@ -258,6 +265,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
                 MaxReserve = maxReserve,
                 CurrentReserve = currentReserve
             };
+
             _selectedAsteroid.Reserves.Add(reserve);
             PopulateReservesGrid();
             Log.Info("Added reserve: {0} ({1}) max={2}", resourceName, purity, maxReserve);
@@ -272,6 +280,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             PopulateReservesGrid();
             Log.Info("Removed reserve: {0} ({1})", reserve.ResourceName, reserve.Purity);
         }
+
         // Linked Surveys grid
         private void PopulateLinkedSurveys()
         {
@@ -288,7 +297,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             {
                 var owner = playerContext.PlayerProfileList
                     .FirstOrDefault(p => p.UUID == survey.OwnerUUID);
-                string playerName = owner?.Name ?? survey.ScannedBy ?? "";
+                string playerName = owner?.Name ?? survey.ScannedBy ?? string.Empty;
 
                 if (survey.Resources != null)
                 {
@@ -299,6 +308,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
                     }
                 }
             }
+
             sw.Stop(); Log.Info("PERF PopulateLinkedSurveys: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -310,6 +320,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
                 UUID = Guid.NewGuid().ToString(),
                 Name = "New Asteroid"
             };
+
             playerContext.AddAsteroid(asteroid);
             playerContext.WriteContext();
             _selectedAsteroid = asteroid;

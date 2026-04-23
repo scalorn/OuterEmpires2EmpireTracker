@@ -1,9 +1,9 @@
-using NLog;
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
 {
@@ -118,16 +118,19 @@ namespace OE2EmpireTracker.Services
                 {
                     PlaceSupportSafe(result, supportPool, GameConstants.PropHabitationProvision, idealWorkers);
                 }
+
                 currentEnd = SimulateAll(result, idealWorkers);
                 if (afterFutureSupport.FoodRequired > currentEnd.FoodProvision)
                 {
                     PlaceSupportSafe(result, supportPool, GameConstants.PropFoodProvision, idealWorkers);
                 }
+
                 currentEnd = SimulateAll(result, idealWorkers);
                 if (afterFutureSupport.EntertainmentRequired > currentEnd.EntertainmentProvided)
                 {
                     PlaceSupportSafe(result, supportPool, GameConstants.PropEntertainmentProvided, idealWorkers);
                 }
+
                 // Final check: after all look-ahead placements, verify the primary
                 // won't cause a deficit. This catches power deficits from support
                 // structures placed by the look-ahead or Step B.
@@ -156,6 +159,7 @@ namespace OE2EmpireTracker.Services
                     var tempPool = new List<ColonyStructure>(); // empty pool, force creation
                     FixDeficits(result, tempPool, afterLeftover, idealWorkers);
                 }
+
                 result.Add(leftover);
             }
 
@@ -237,6 +241,7 @@ namespace OE2EmpireTracker.Services
             {
                 PlaceSupportSafe(result, pool, GameConstants.PropPowerProvided, workers);
             }
+
             // Entertainment: Hydro/Ent workers need entertainment
             if (afterStatus.EntertainmentRequired > afterStatus.EntertainmentProvided &&
                 !(beforeStatus.EntertainmentRequired > beforeStatus.EntertainmentProvided) &&
@@ -244,6 +249,7 @@ namespace OE2EmpireTracker.Services
             {
                 PlaceSupportSafe(result, pool, GameConstants.PropEntertainmentProvided, workers);
             }
+
             // Hab: workers need habitation
             if (afterStatus.HabitationRequired > afterStatus.HabitationProvision &&
                 !(beforeStatus.HabitationRequired > beforeStatus.HabitationProvision) &&
@@ -251,6 +257,7 @@ namespace OE2EmpireTracker.Services
             {
                 PlaceSupportSafe(result, pool, GameConstants.PropHabitationProvision, workers);
             }
+
             // Food: workers need food
             if (afterStatus.FoodRequired > afterStatus.FoodProvision &&
                 !(beforeStatus.FoodRequired > beforeStatus.FoodProvision) &&
@@ -289,6 +296,7 @@ namespace OE2EmpireTracker.Services
                     return candidate;
                 }
             }
+
             return null;
         }
 
@@ -337,6 +345,7 @@ namespace OE2EmpireTracker.Services
                     };
                 }
             }
+
             Log.Warn("  CreateStructure: no blueprint found for '{0}'", provisionProperty);
             return null;
         }
@@ -374,6 +383,7 @@ namespace OE2EmpireTracker.Services
                 calculator.CalculateBuilt(s, prev, current, workers, bp);
                 prev = current;
             }
+
             return prev;
         }
 

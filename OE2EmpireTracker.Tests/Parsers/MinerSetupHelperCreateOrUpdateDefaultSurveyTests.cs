@@ -1,10 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Services.Migration;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {
@@ -59,7 +59,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(result, Is.Not.Null);
             Assert.That(_playerContext.SurveyList, Has.Count.EqualTo(1));
             Assert.That(result.SurveyID, Is.EqualTo("DEFAULT"));
-            Assert.That(result.NickName, Is.EqualTo(""));
+            Assert.That(result.NickName, Is.EqualTo(string.Empty));
             Assert.That(result.PlanetName, Is.EqualTo("Alpha Prime"));
             Assert.That(result.SystemName, Is.EqualTo("Sol"));
             Assert.That(result.OwnerUUID, Is.EqualTo("owner-1"));

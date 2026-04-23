@@ -1,12 +1,12 @@
-using Newtonsoft.Json;
-using OE2EmpireTracker.Services;
-using Sgml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Newtonsoft.Json;
+using OE2EmpireTracker.Services;
+using Sgml;
 
 namespace OE2EmpireTracker.Models
 {
@@ -60,12 +60,13 @@ namespace OE2EmpireTracker.Models
             _typeIndex = new Dictionary<(ItemType.ItemTypeEnum, string), List<Item>>();
             foreach (var kvp in Items)
             {
-                var key = (kvp.Value.ItemType, kvp.Value.BaseItemTypeID ?? "");
+                var key = (kvp.Value.ItemType, kvp.Value.BaseItemTypeID ?? string.Empty);
                 if (!_typeIndex.TryGetValue(key, out var list))
                 {
                     list = new List<Item>();
                     _typeIndex[key] = list;
                 }
+
                 list.Add(kvp.Value);
             }
         }
@@ -77,12 +78,13 @@ namespace OE2EmpireTracker.Models
             foreach (var kvp in Items)
             {
                 if (kvp.Value.ItemType != ItemType.ItemTypeEnum.Resource) continue;
-                var key = (kvp.Value.ItemType, kvp.Value.BaseItemTypeID ?? "", kvp.Value.ResourcePurity ?? "");
+                var key = (kvp.Value.ItemType, kvp.Value.BaseItemTypeID ?? string.Empty, kvp.Value.ResourcePurity ?? string.Empty);
                 if (!_resourceIndex.TryGetValue(key, out var list))
                 {
                     list = new List<Item>();
                     _resourceIndex[key] = list;
                 }
+
                 list.Add(kvp.Value);
             }
         }
@@ -96,7 +98,7 @@ namespace OE2EmpireTracker.Models
             lock (_syncRoot)
             {
                 EnsureTypeIndex();
-                var key = (itemType, baseItemTypeID ?? "");
+                var key = (itemType, baseItemTypeID ?? string.Empty);
                 return _typeIndex.TryGetValue(key, out var list) ? list.Sum(i => i.Quantity) : 0;
             }
         }
@@ -106,7 +108,7 @@ namespace OE2EmpireTracker.Models
             lock (_syncRoot)
             {
                 EnsureTypeIndex();
-                var key = (itemType, baseItemTypeID ?? "");
+                var key = (itemType, baseItemTypeID ?? string.Empty);
                 return _typeIndex.TryGetValue(key, out var list) ? new List<Item>(list) : new List<Item>();
             }
         }
@@ -116,7 +118,7 @@ namespace OE2EmpireTracker.Models
             lock (_syncRoot)
             {
                 EnsureResourceIndex();
-                var key = (ItemType.ItemTypeEnum.Resource, resource ?? "", purity ?? "");
+                var key = (ItemType.ItemTypeEnum.Resource, resource ?? string.Empty, purity ?? string.Empty);
                 return _resourceIndex.TryGetValue(key, out var list) ? new List<Item>(list) : new List<Item>();
             }
         }
@@ -149,6 +151,7 @@ namespace OE2EmpireTracker.Models
             }
         }
     }
+
     public class ItemBagJSONConverter : JsonConverter<ItemBag>
     {
         public override void WriteJson(JsonWriter writer, ItemBag value, JsonSerializer serializer)
@@ -160,6 +163,7 @@ namespace OE2EmpireTracker.Models
                 String text = JsonConvert.SerializeObject(entry.Value, JsonSettings.SerializerSettings);
                 writer.WriteRawValue(text);
             }
+
             writer.WriteEndObject();
         }
 
@@ -172,7 +176,7 @@ namespace OE2EmpireTracker.Models
                 bag = new ItemBag();
             }
 
-            string name = "";
+            string name = string.Empty;
             JsonToken token = JsonToken.None;
             do
             {
@@ -182,6 +186,7 @@ namespace OE2EmpireTracker.Models
                 {
                     name = reader.Value as string;
                 }
+
                     if (token == JsonToken.StartObject)
                     {
                         // Deserialize the Item object using the provided serializer. This will consume
@@ -193,6 +198,7 @@ namespace OE2EmpireTracker.Models
                             bag.Items[item.UUID] = item;
                         }
                     }
+
             } while (token != JsonToken.EndObject);
 
             return bag;

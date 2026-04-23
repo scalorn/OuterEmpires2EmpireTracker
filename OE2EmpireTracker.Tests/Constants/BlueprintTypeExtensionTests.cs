@@ -20,7 +20,7 @@ namespace OE2EmpireTracker.Tests.Constants
         [Test]
         public void IsCommodityFactory_Empty_ReturnsFalse()
         {
-            Assert.That("".IsCommodityFactory(), Is.False);
+            Assert.That(string.Empty.IsCommodityFactory(), Is.False);
         }
 
         // -----------------------------------------------------------------------

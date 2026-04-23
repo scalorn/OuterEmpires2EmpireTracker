@@ -1,6 +1,6 @@
+using System.IO;
 using NUnit.Framework;
 using OE2EmpireTracker.Services;
-using System.IO;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -42,7 +42,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void PlayerContext_FilePathCanBeOverriddenForTestSetup()
         {
             string tempPath = Path.GetTempFileName();
-            File.WriteAllText(tempPath, "{\"PlayerProfile\":[],\"Blueprint\":[],\"Survey\":[],\"Colony\":[]}");
+            File.WriteAllText(tempPath, "{\"PlayerProfile\":[], \"Blueprint\":[], \"Survey\":[], \"Colony\":[]}");
 
             PlayerContext.FilePath = tempPath;
             PlayerContext.Reset();
@@ -57,7 +57,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void EmpireContext_FilePathCanBeOverriddenForTestSetup()
         {
             string tempPath = Path.GetTempFileName();
-            File.WriteAllText(tempPath, "{\"ShipClass\":[],\"BlueprintType\":[],\"TechLevel\":[]}");
+            File.WriteAllText(tempPath, "{\"ShipClass\":[], \"BlueprintType\":[], \"TechLevel\":[]}");
 
             EmpireContext.FilePath = tempPath;
             EmpireContext.Reset();

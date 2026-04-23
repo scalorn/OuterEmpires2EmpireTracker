@@ -1,7 +1,7 @@
-using NLog;
-using OE2EmpireTracker.Models;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
 {
@@ -96,6 +96,7 @@ namespace OE2EmpireTracker.Services
                     }
                 }
             }
+
             foreach (var ship in shipList)
             {
                 if (!string.IsNullOrEmpty(ship.HullBlueprintUUID))
@@ -109,6 +110,7 @@ namespace OE2EmpireTracker.Services
                     }
                 }
             }
+
             foreach (var station in stationList)
             {
                 if (!string.IsNullOrEmpty(station.StationBlueprintUUID))

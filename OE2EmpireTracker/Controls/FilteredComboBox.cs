@@ -1,11 +1,11 @@
-﻿using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace OE2EmpireTracker.Controls
@@ -21,6 +21,7 @@ namespace OE2EmpireTracker.Controls
             {
                 return;
             }
+
             string searchText = this.Text;
             BindingSource filteredSource = unfilteredList;
 
@@ -39,19 +40,20 @@ namespace OE2EmpireTracker.Controls
                 filteredSource.DataSource = filteredList;
             }
 
-            //this.SelectedIndex = -1;
+            // this.SelectedIndex = -1;
             this.DataSource = filteredSource;
-            //this.SelectedIndex = -1;
+            // this.SelectedIndex = -1;
 
             changingText = true;
             this.Text = searchText;
             this.SelectionStart = searchText.Length;
-            //this.DroppedDown = true;
+            // this.DroppedDown = true;
 
             if (string.IsNullOrEmpty(searchText))
             {
-                this.Text = "";
+                this.Text = string.Empty;
             }
+
             changingText = false;
 
             base.OnTextChanged(e);

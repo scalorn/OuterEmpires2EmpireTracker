@@ -1,9 +1,9 @@
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Services.Migration;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
+using OE2EmpireTracker.Services.Migration;
 
 namespace OE2EmpireTracker.ViewModels
 {
@@ -165,14 +165,17 @@ namespace OE2EmpireTracker.ViewModels
                 {
                     list = list.Where(b => b.BluePrintType == criteria.BlueprintTypeId).ToList();
                 }
+
                 if (criteria.ShipClassId.HasValue)
                 {
                     list = list.Where(b => b.Class == criteria.ShipClassId.Value).ToList();
                 }
+
                 if (criteria.TechLevelName != null)
                 {
                     list = list.Where(b => b.TechLevel == criteria.TechLevelName).ToList();
                 }
+
                 if (criteria.Evolution.HasValue)
                 {
                     if (criteria.EvolutionAndAbove)
@@ -226,6 +229,7 @@ namespace OE2EmpireTracker.ViewModels
                 {
                     _blueprint.OwnerUUID = _playerContext.CurrentPlayerUUID;
                 }
+
                 if (wasGlobal) ec.RemoveGlobalBlueprint(_blueprint);
                 if (!wasPlayer) _playerContext.AddBlueprint(_blueprint);
                 _playerContext.WriteContext();
@@ -253,6 +257,7 @@ namespace OE2EmpireTracker.ViewModels
                     ec.WriteContext();
                 }
             }
+
             _playerContext.OnBlueprintDataChanged(deletedUUID);
         }
 

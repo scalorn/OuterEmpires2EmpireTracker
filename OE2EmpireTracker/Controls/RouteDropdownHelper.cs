@@ -42,19 +42,20 @@ namespace OE2EmpireTracker.Controls
             cmbRoute.SelectedIndexChanged -= selectedIndexChanged;
 
             var items = new List<DropdownItem>();
-            items.Add(new DropdownItem { UUID = "", Display = "" });
+            items.Add(new DropdownItem { UUID = string.Empty, Display = string.Empty });
             foreach (var route in routes.OrderBy(r => r.Name))
             {
                 if (!string.IsNullOrEmpty(filter) && route.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0)
                     continue;
                 items.Add(new DropdownItem { UUID = route.UUID, Display = route.Name });
             }
+
             cmbRoute.DataSource = null;
             cmbRoute.DisplayMember = "Display";
             cmbRoute.ValueMember = "UUID";
             cmbRoute.DataSource = items;
 
-            string resultUUID = "";
+            string resultUUID = string.Empty;
             if (!string.IsNullOrEmpty(previousUUID) && items.Any(i => i.UUID == previousUUID))
             {
                 cmbRoute.SelectedValue = previousUUID;

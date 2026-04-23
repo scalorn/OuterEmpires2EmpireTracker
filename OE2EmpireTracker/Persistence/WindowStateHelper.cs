@@ -1,12 +1,12 @@
-using NLog;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using NLog;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Persistence
 {
@@ -96,6 +96,7 @@ namespace OE2EmpireTracker.Persistence
                 Width = mainWindow.Width,
                 Height = mainWindow.Height
             };
+
             store.Save();
         }
 

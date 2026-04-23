@@ -1,7 +1,7 @@
-using OE2EmpireTracker.Services;
+using System;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
-using System;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.ViewModels
 {

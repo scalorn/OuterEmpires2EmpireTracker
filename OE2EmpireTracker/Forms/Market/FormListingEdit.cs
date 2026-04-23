@@ -38,7 +38,7 @@ namespace OE2EmpireTracker.Forms.Market
             this.Controls.Add(cmbItemType); y += 30;
             AddLabel("Station:", 10, y);
             cmbStation = new ComboBox { Left = 120, Top = y, Width = 230, DropDownStyle = ComboBoxStyle.DropDownList };
-            cmbStation.Items.Add(new StationItem { Display = "(None)", UUID = "" });
+            cmbStation.Items.Add(new StationItem { Display = "(None)", UUID = string.Empty });
             foreach (var s in playerContext.GetCurrentPlayerStations().OrderBy(s => s.Name))
                 cmbStation.Items.Add(new StationItem { Display = s.Name, UUID = s.UUID });
             this.Controls.Add(cmbStation); y += 30;
@@ -81,6 +81,7 @@ namespace OE2EmpireTracker.Forms.Market
             var lbl = new Label { Text = text, Left = x, Top = y + 3, AutoSize = true };
             this.Controls.Add(lbl); return lbl;
         }
+
         private TextBox AddTextBox(int x, int y, int w)
         {
             var txt = new TextBox { Left = x, Top = y, Width = w };

@@ -1,9 +1,9 @@
+using System;
+using System.Collections.Generic;
 using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System;
-using System.Collections.Generic;
 
 namespace OE2EmpireTracker.Parsers
 {
@@ -50,6 +50,7 @@ namespace OE2EmpireTracker.Parsers
                             structure.RefiningResourcePurity ?? "(null)",
                             structure.MiningSurveyResource ?? "(null)");
                     }
+
                     continue;
                 }
 

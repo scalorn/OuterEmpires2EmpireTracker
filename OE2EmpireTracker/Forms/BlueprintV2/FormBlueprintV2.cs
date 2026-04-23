@@ -1,12 +1,3 @@
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Controls;
-using OE2EmpireTracker.Parsers;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Persistence;
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Services.Migration;
-using OE2EmpireTracker.ViewModels;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +8,15 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using NLog;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
+using OE2EmpireTracker.Persistence;
+using OE2EmpireTracker.Services;
+using OE2EmpireTracker.Services.Migration;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker
 {
@@ -126,8 +126,8 @@ namespace OE2EmpireTracker
             colResource.ValueMember = "Name";
             colResource.DataSource = empireContext.BindingSourceResource;
 
-            dgvResources.DataError += (s, ev) => { Log.Warn("dgvResources DataError at [{0},{1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message); ev.ThrowException = false; };
-            dgvStatistics.DataError += (s, ev) => { Log.Warn("dgvStatistics DataError at [{0},{1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message); ev.ThrowException = false; };
+            dgvResources.DataError += (s, ev) => { Log.Warn("dgvResources DataError at [{0}, {1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message); ev.ThrowException = false; };
+            dgvStatistics.DataError += (s, ev) => { Log.Warn("dgvStatistics DataError at [{0}, {1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message); ev.ThrowException = false; };
 
             // Wire resources grid events
             dgvResources.CellValueChanged += dgvResources_CellValueChanged;
@@ -169,25 +169,25 @@ namespace OE2EmpireTracker
             using var guard = new ProgrammaticUpdateGuard(this);
 
             // Type filter
-            cmbFilterType.Items.Add("");
+            cmbFilterType.Items.Add(string.Empty);
             foreach (BlueprintType bt in empireContext.BlueprintTypeList)
                 cmbFilterType.Items.Add(bt.Name);
             cmbFilterType.SelectedIndex = 0;
 
             // Class filter
-            cmbFilterClass.Items.Add("");
+            cmbFilterClass.Items.Add(string.Empty);
             foreach (ShipClass sc in empireContext.ShipClassList)
                 cmbFilterClass.Items.Add(sc.Name);
             cmbFilterClass.SelectedIndex = 0;
 
             // TechLevel filter
-            cmbFilterTechLevel.Items.Add("");
+            cmbFilterTechLevel.Items.Add(string.Empty);
             foreach (TechLevel tl in empireContext.TechLevelList)
                 cmbFilterTechLevel.Items.Add(tl.Name);
             cmbFilterTechLevel.SelectedIndex = 0;
 
             // Evolution filter
-            cmbFilterEvolution.Items.Add("");
+            cmbFilterEvolution.Items.Add(string.Empty);
             foreach (string evo in empireContext.EvolutionList)
                 cmbFilterEvolution.Items.Add(evo);
             cmbFilterEvolution.SelectedIndex = 0;
@@ -315,12 +315,12 @@ namespace OE2EmpireTracker
 
             foreach (Blueprint bp in blueprints)
             {
-                var item = new ListViewItem(bp.BluePrintType ?? "");
+                var item = new ListViewItem(bp.BluePrintType ?? string.Empty);
                 item.Tag = bp;
-                item.SubItems.Add(bp.Name ?? "");
-                item.SubItems.Add(bp.TechLevel ?? "");
+                item.SubItems.Add(bp.Name ?? string.Empty);
+                item.SubItems.Add(bp.TechLevel ?? string.Empty);
                 item.SubItems.Add(bp.Evolution.ToString());
-                item.SubItems.Add(bp.NickName ?? "");
+                item.SubItems.Add(bp.NickName ?? string.Empty);
                 item.SubItems.Add(counter.CountReferences(bp.UUID).TotalCount.ToString());
                 lvwBlueprints.Items.Add(item);
             }
@@ -357,6 +357,7 @@ namespace OE2EmpireTracker
                 _sortColumn = e.Column;
                 _sortOrder = SortOrder.Ascending;
             }
+
             lvwBlueprints.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
         }
 
@@ -370,6 +371,7 @@ namespace OE2EmpireTracker
                 cmbFilterEvolution.SelectedIndex = 0;
                 chkFilterEvoAndAbove.Checked = false;
             }
+
             RefreshBlueprintList();
         }
 
@@ -533,6 +535,7 @@ namespace OE2EmpireTracker
                             ? DeterministicUUID.Generate(viewModel.Data)
                             : Guid.NewGuid().ToString();
                     }
+
                     PopulateForm();
                     Log.Info("Blueprint imported from clipboard (fallback, no name parsed)");
                     return;
@@ -558,7 +561,7 @@ namespace OE2EmpireTracker
                     {
                         cmbBaseBlueprint.SelectedIndex = 1;
                         var bp = cmbBaseBlueprint.SelectedItem as Models.Blueprint;
-                        viewModel.BaseBlueprintUUID = bp?.UUID ?? "";
+                        viewModel.BaseBlueprintUUID = bp?.UUID ?? string.Empty;
                     }
                 }
             }
@@ -657,6 +660,7 @@ namespace OE2EmpireTracker
                     sb.AppendLine($"  ... and {result.Entries.Count - 15} more");
                     break;
                 }
+
                 string key = $"{entry.Name} Ev{entry.Evolution} {entry.BluePrintType} C{entry.Class}";
                 if (entry.Action == ImportAction.Skipped)
                     sb.AppendLine($"  [{entry.Storage ?? "?"}] SKIP  {key} -- {entry.SkipReason}");
@@ -754,7 +758,7 @@ namespace OE2EmpireTracker
         {
             if (_isProgrammaticUpdate > 0) return;
             var bp = cmbBaseBlueprint.SelectedItem as Blueprint;
-            viewModel.BaseBlueprintUUID = bp?.UUID ?? "";
+            viewModel.BaseBlueprintUUID = bp?.UUID ?? string.Empty;
         }
 
         private void txtFilterBaseBlueprint_TextChanged(object sender, EventArgs e)
@@ -847,6 +851,7 @@ namespace OE2EmpireTracker
             {
                 playerCount = playerContext.GetCurrentPlayerBlueprints().Count;
             }
+
             this.Text = FormatTitleBar(globalCount, playerCount);
         }
 
@@ -879,7 +884,7 @@ namespace OE2EmpireTracker
             if (extraProps.Length > 0)
                 Log.Info("RefreshStatisticsGrid: extraProps=[{0}]", string.Join(", ", extraProps));
 
-            string gridKey = (bt?.Id ?? "") + "|" + string.Join(",", extraProps);
+            string gridKey = (bt?.Id ?? string.Empty) + "|" + string.Join(", ", extraProps);
 
             Log.Info("RefreshStatisticsGrid: gridKey='{0}' cachedKey='{1}' rebuild={2}",
                 gridKey, _cachedGridKey ?? "(null)", gridKey != _cachedGridKey);
@@ -916,6 +921,7 @@ namespace OE2EmpireTracker
                 ReadOnly = true,
                 Width = 180
             };
+
             dgvStatistics.Columns.Add(colProp);
 
             // CurrentValue column — placeholder, cells are swapped per-row below
@@ -925,6 +931,7 @@ namespace OE2EmpireTracker
                 HeaderText = "Value",
                 Width = 150
             };
+
             dgvStatistics.Columns.Add(colVal);
 
             // Add rows for defined properties
@@ -991,7 +998,7 @@ namespace OE2EmpireTracker
                 foreach (var kvp in viewModel.Data.Properties.Properties)
                     Log.Info("  BAG KEY: [{0}] = '{1}' (len={2}, chars={3})",
                         kvp.Key, kvp.Value, kvp.Key.Length,
-                        string.Join(",", kvp.Key.Select(c => ((int)c).ToString("X4"))));
+                        string.Join(", ", kvp.Key.Select(c => ((int)c).ToString("X4"))));
             }
 
             foreach (DataGridViewRow row in dgvStatistics.Rows)
@@ -999,8 +1006,8 @@ namespace OE2EmpireTracker
                 string property = row.Cells["Property"].Tag as string;
                 if (string.IsNullOrEmpty(property)) continue;
 
-                viewModel.GetProperty(property, "", out string value);
-                if (value == null) value = "";
+                viewModel.GetProperty(property, string.Empty, out string value);
+                if (value == null) value = string.Empty;
 
                 Log.Info("PopulateStatisticsValues: '{0}' = '{1}' (from bag: {2})",
                     property, value, viewModel.Data.Properties.ContainsKey(property));
@@ -1016,6 +1023,7 @@ namespace OE2EmpireTracker
                     row.Cells["CurrentValue"].Value = value;
                 }
             }
+
             sw.Stop(); Log.Info("PERF PopulateStatisticsValues: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -1072,7 +1080,7 @@ namespace OE2EmpireTracker
             else
             {
                 dgvStatistics.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
-                dgvStatistics.Rows[e.RowIndex].ErrorText = "";
+                dgvStatistics.Rows[e.RowIndex].ErrorText = string.Empty;
             }
         }
 
@@ -1109,6 +1117,7 @@ namespace OE2EmpireTracker
                 row.Cells["Resource"].Value = resource.Key;
                 row.Cells["Amount"].Value = resource.Value;
             }
+
             sw.Stop(); Log.Info("PERF PopulateResourcesGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -1142,7 +1151,7 @@ namespace OE2EmpireTracker
             {
                 dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = "0";
                 dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
-                dgvResources.Rows[e.RowIndex].ErrorText = "";
+                dgvResources.Rows[e.RowIndex].ErrorText = string.Empty;
                 return;
             }
 
@@ -1155,7 +1164,7 @@ namespace OE2EmpireTracker
             else
             {
                 dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
-                dgvResources.Rows[e.RowIndex].ErrorText = "";
+                dgvResources.Rows[e.RowIndex].ErrorText = string.Empty;
             }
         }
 
@@ -1273,6 +1282,7 @@ namespace OE2EmpireTracker
                             MarkerStyle = MarkerStyle.Circle,
                             MarkerSize = 6
                         };
+
                         singleSeries.Points.AddXY(points[i].Evolution, points[i].Percent);
                         chartEvolution.Series.Add(singleSeries);
                         segmentIndex++;
@@ -1309,6 +1319,7 @@ namespace OE2EmpireTracker
                             MarkerStyle = MarkerStyle.Circle,
                             MarkerSize = 6
                         };
+
                         segmentSeries.Points.AddXY(points[i - 1].Evolution, points[i - 1].Percent);
                         segmentSeries.Points.AddXY(points[i].Evolution, points[i].Percent);
                         chartEvolution.Series.Add(segmentSeries);
@@ -1325,6 +1336,7 @@ namespace OE2EmpireTracker
                     AutoSize = true,
                     Tag = propertyName
                 };
+
                 checkbox.CheckedChanged += (s, ev) =>
                 {
                     string propTag = (string)((CheckBox)s).Tag;
@@ -1337,10 +1349,12 @@ namespace OE2EmpireTracker
                         }
                     }
                 };
+
                 pnlPropertyCheckboxes.Controls.Add(checkbox);
 
                 colorIndex++;
             }
+
             sw.Stop(); Log.Info("PERF RefreshEvolutionGraph: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -1371,7 +1385,7 @@ namespace OE2EmpireTracker
 
             var plans = playerContext.GetCurrentPlayerPricingPlans();
             var items = new List<object>();
-            items.Add(new { Name = "(none)", UUID = "" });
+            items.Add(new { Name = "(none)", UUID = string.Empty });
             foreach (var p in plans.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase))
                 items.Add(new { Name = p.Name, UUID = p.UUID });
 
@@ -1403,21 +1417,21 @@ namespace OE2EmpireTracker
         {
             if (viewModel.Data.UUID == null || viewModel.Data.Resources == null || viewModel.Data.Resources.Count == 0)
             {
-                lblComputedPrice.Text = "";
+                lblComputedPrice.Text = string.Empty;
                 return;
             }
 
             string planUUID = cmbPricingPlan.SelectedValue as string;
             if (string.IsNullOrEmpty(planUUID))
             {
-                lblComputedPrice.Text = "";
+                lblComputedPrice.Text = string.Empty;
                 return;
             }
 
             var plan = playerContext.PricingPlanList.FirstOrDefault(p => p.UUID == planUUID);
             if (plan == null)
             {
-                lblComputedPrice.Text = "";
+                lblComputedPrice.Text = string.Empty;
                 return;
             }
 
@@ -1465,9 +1479,9 @@ namespace OE2EmpireTracker
             using var guard = new ProgrammaticUpdateGuard(this);
 
             // Identity fields
-            txtName.Text = viewModel.Data.Name ?? "";
-            txtNickName.Text = viewModel.Data.NickName ?? "";
-            txtDescription.Text = viewModel.Data.Description ?? "";
+            txtName.Text = viewModel.Data.Name ?? string.Empty;
+            txtNickName.Text = viewModel.Data.NickName ?? string.Empty;
+            txtDescription.Text = viewModel.Data.Description ?? string.Empty;
             txtCopyCost.Text = viewModel.Data.CopyCost.ToString();
 
             // Blueprint type
@@ -1481,7 +1495,7 @@ namespace OE2EmpireTracker
             cmbEvolution.SelectedItem = empireContext.FindEvolution(viewModel.Data.Evolution);
 
             // Base blueprint
-            txtFilterBaseBlueprint.Text = "";
+            txtFilterBaseBlueprint.Text = string.Empty;
             UpdateBaseBlueprintList();
             if (!string.IsNullOrEmpty(viewModel.Data.BaseBlueprintUUID))
                 cmbBaseBlueprint.SelectedValue = viewModel.Data.BaseBlueprintUUID;
@@ -1517,17 +1531,17 @@ namespace OE2EmpireTracker
             using var guard = new ProgrammaticUpdateGuard(this);
             viewModel.Reset();
 
-            txtName.Text = "";
-            txtNickName.Text = "";
-            txtDescription.Text = "";
-            txtCopyCost.Text = "";
+            txtName.Text = string.Empty;
+            txtNickName.Text = string.Empty;
+            txtDescription.Text = string.Empty;
+            txtCopyCost.Text = string.Empty;
 
             cmbBlueprintType.SelectedIndex = -1;
             cmbShipClass.SelectedIndex = -1;
             cmbTechLevel.SelectedIndex = -1;
             cmbEvolution.SelectedIndex = 0;
 
-            txtFilterBaseBlueprint.Text = "";
+            txtFilterBaseBlueprint.Text = string.Empty;
             UpdateBaseBlueprintList();
             cmbBaseBlueprint.SelectedIndex = -1;
 
@@ -1561,10 +1575,12 @@ namespace OE2EmpireTracker
                 catch (ObjectDisposedException) { }
                 return;
             }
+
             if (viewModel.Data.UUID == e.BlueprintUUID)
             {
                 PopulateForm();
             }
+
             RefreshEvolutionGraph();
             RefreshBlueprintList();
         }
@@ -1578,6 +1594,7 @@ namespace OE2EmpireTracker
                 catch (ObjectDisposedException) { }
                 return;
             }
+
             lvwBlueprints.Items.Clear();
             viewModel.Reset();
             ClearForm();
@@ -1594,6 +1611,7 @@ namespace OE2EmpireTracker
                 catch (ObjectDisposedException) { }
                 return;
             }
+
             RefreshPricing();
         }
 

@@ -66,7 +66,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void ComputeManufactoryRuns_EmptyMfgTimeString_ReturnsMinusOne()
         {
             var bp = new Blueprint("Test") { Properties = new PropertyBag() };
-            bp.Properties.setProperty("Manufacture Run Time", "");
+            bp.Properties.setProperty("Manufacture Run Time", string.Empty);
             Assert.That(QueueCalculator.ComputeManufactoryRuns(bp, 3600), Is.EqualTo(-1));
         }
 

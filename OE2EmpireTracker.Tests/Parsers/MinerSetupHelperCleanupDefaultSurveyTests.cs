@@ -1,10 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Services.Migration;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {
@@ -54,11 +54,12 @@ namespace OE2EmpireTracker.Tests.Parsers
             {
                 UUID = uuid,
                 SurveyID = "DEFAULT",
-                NickName = "",
+                NickName = string.Empty,
                 PlanetName = colony.PlanetName,
                 SystemName = colony.SystemName,
                 OwnerUUID = colony.OwnerUUID
             };
+
             foreach (var kvp in resources)
             {
                 survey.Resources[kvp.Key] = kvp.Value;

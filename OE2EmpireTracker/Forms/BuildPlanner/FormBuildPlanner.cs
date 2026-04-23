@@ -171,16 +171,18 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             {
                 int refs = refCounter.CountReferences(plan.UUID);
                 var item = new ListViewItem(plan.Name) { Tag = plan };
-                item.SubItems.Add(refs > 0 ? refs.ToString() : "");
+                item.SubItems.Add(refs > 0 ? refs.ToString() : string.Empty);
                 if (!plan.IsActive)
                 {
                     item.ForeColor = System.Drawing.SystemColors.GrayText;
                     item.Font = new System.Drawing.Font(lvwPlans.Font, System.Drawing.FontStyle.Italic);
                 }
+
                 lvwPlans.Items.Add(item);
                 if (plan.UUID == selectedUUID)
                     item.Selected = true;
             }
+
             sw.Stop();
             Log.Info("PERF PopulatePlanList: total={0}ms items={1}",
                 sw.ElapsedMilliseconds, plans.Count);
@@ -229,8 +231,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private void ClearForm()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
-            txtPlanName.Text = "";
-            txtDescription.Text = "";
+            txtPlanName.Text = string.Empty;
+            txtDescription.Text = string.Empty;
             chkIsActive.Checked = true;
             dgvBuildItems.Rows.Clear();
             dgvShortfalls.Rows.Clear();
@@ -289,7 +291,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 }
 
                 // Resolve dependency name
-                string dependsOnName = "";
+                string dependsOnName = string.Empty;
                 if (!string.IsNullOrEmpty(item.DependsOnUUID))
                 {
                     var depItem = _selectedPlan.Items.FirstOrDefault(
@@ -304,7 +306,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     item.Status.ToString(),
                     location,
                     item.Notes,
-                    item.SequenceInStructure > 0 ? item.SequenceInStructure.ToString() : "",
+                    item.SequenceInStructure > 0 ? item.SequenceInStructure.ToString() : string.Empty,
                     dependsOnName);
                 dgvBuildItems.Rows[rowIdx].Tag = item;
 
@@ -327,6 +329,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     // Staged: default styling, no special color
                 }
             }
+
             sw.Stop(); Log.Info("PERF PopulateBuildItemsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -428,6 +431,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 lblShortfallStatus.Text = "Error checking resources.";
                 lblShortfallStatus.ForeColor = System.Drawing.Color.Red;
             }
+
             sw.Stop(); Log.Info("PERF PopulateShortfallGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -513,6 +517,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 OwnerUUID = playerContext.CurrentPlayerUUID,
                 IsActive = true
             };
+
             playerContext.AddBuildPlan(plan);
             playerContext.WriteContext();
             playerContext.OnBuildPlanDataChanged(plan.UUID);
@@ -618,7 +623,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             cmbItem.Items.Clear();
 
             string filter = txtItemFilter.Text.Trim();
-            string itemType = cmbItemType.SelectedItem as string ?? "";
+            string itemType = cmbItemType.SelectedItem as string ?? string.Empty;
 
             if (itemType == "Manufactory")
             {
@@ -706,7 +711,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 return;
             }
 
-            string itemType = cmbItemType.SelectedItem as string ?? "";
+            string itemType = cmbItemType.SelectedItem as string ?? string.Empty;
             var selectedEntry = cmbItem.SelectedItem as ItemEntry;
             if (selectedEntry == null)
             {
@@ -792,7 +797,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void cmdQueueCalc_Click(object sender, EventArgs e)
         {
-            string itemType = cmbItemType.SelectedItem as string ?? "";
+            string itemType = cmbItemType.SelectedItem as string ?? string.Empty;
             var selectedEntry = cmbItem.SelectedItem as ItemEntry;
             if (selectedEntry == null)
             {
@@ -1017,6 +1022,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     Text = "Cancel", Width = 75,
                     DialogResult = DialogResult.Cancel
                 };
+
                 var btnApply = new Button
                 {
                     Text = "Apply", Width = 75,
@@ -1099,6 +1105,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     Left = 65, Top = 10, Width = 270,
                     DropDownStyle = ComboBoxStyle.DropDownList
                 };
+
                 foreach (var r in routes.OrderBy(r => r.Name))
                     cmb.Items.Add(r);
                 cmb.DisplayMember = "Name";
@@ -1109,6 +1116,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     Text = "OK", Left = 180, Top = 70, Width = 75,
                     DialogResult = DialogResult.OK
                 };
+
                 var btnCancel = new Button
                 {
                     Text = "Cancel", Left = 265, Top = 70, Width = 75,
@@ -1153,6 +1161,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     Left = 10, Top = 28, Width = 330, Height = 220,
                     CheckOnClick = true
                 };
+
                 foreach (var p in allPlans.OrderBy(p => p.Name))
                     clb.Items.Add(p.Name, false);
 
@@ -1161,6 +1170,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     Text = "OK", Left = 180, Top = 260, Width = 75,
                     DialogResult = DialogResult.OK
                 };
+
                 var btnCancel = new Button
                 {
                     Text = "Cancel", Left = 265, Top = 260, Width = 75,
@@ -1360,7 +1370,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void UpdateMiningRefiningFieldVisibility()
         {
-            string itemType = cmbItemType.SelectedItem as string ?? "";
+            string itemType = cmbItemType.SelectedItem as string ?? string.Empty;
 
             bool isMining = itemType == "Mining";
             bool isRefining = itemType == "Refining";
@@ -1386,7 +1396,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbSurvey.Items.Clear();
-            cmbSurvey.Items.Add(new ItemEntry { Display = "(none)", ID = "" });
+            cmbSurvey.Items.Add(new ItemEntry { Display = "(none)", ID = string.Empty });
 
             var surveys = playerContext.GetCurrentPlayerSurveys();
             foreach (var s in surveys.OrderBy(s => s.Name))
@@ -1447,6 +1457,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     Left = 85, Top = 10, Width = 250,
                     DropDownStyle = ComboBoxStyle.DropDownList
                 };
+
                 foreach (var item in otherItems)
                     cmb.Items.Add(new ItemEntry { Display = item.ItemName, ID = item.UUID });
                 if (cmb.Items.Count > 0) cmb.SelectedIndex = 0;
@@ -1456,6 +1467,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     Text = "OK", Left = 180, Top = 70, Width = 75,
                     DialogResult = DialogResult.OK
                 };
+
                 var btnCancel = new Button
                 {
                     Text = "Cancel", Left = 265, Top = 70, Width = 75,

@@ -412,7 +412,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         [Test]
         public void ParseFormattedNumber_EmptyString_ReturnsZero()
         {
-            Assert.That(PlayerProfileParser.ParseFormattedNumber(""), Is.EqualTo(0));
+            Assert.That(PlayerProfileParser.ParseFormattedNumber(string.Empty), Is.EqualTo(0));
         }
 
         [Test]
@@ -430,7 +430,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         [Test]
         public void ParseFormattedNumber_ValidCommaFormatted_ParsesCorrectly()
         {
-            Assert.That(PlayerProfileParser.ParseFormattedNumber("1,234,567"), Is.EqualTo(1234567L));
+            Assert.That(PlayerProfileParser.ParseFormattedNumber("1, 234, 567"), Is.EqualTo(1234567L));
         }
 
         // Requirement 6.5: Unknown skill names -- logged and skipped, no crash
@@ -466,7 +466,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         [Test]
         public void ParseTrainingTime_EmptyString_ReturnsZero()
         {
-            Assert.That(PlayerProfileParser.ParseTrainingTime(""), Is.EqualTo(0));
+            Assert.That(PlayerProfileParser.ParseTrainingTime(string.Empty), Is.EqualTo(0));
         }
 
         [Test]

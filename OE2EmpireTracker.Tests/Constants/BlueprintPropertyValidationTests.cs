@@ -1,7 +1,7 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Constants;
 using System.Collections;
 using System.Collections.Generic;
+using NUnit.Framework;
+using OE2EmpireTracker.Constants;
 
 namespace OE2EmpireTracker.Tests.Constants
 {

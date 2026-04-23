@@ -70,6 +70,7 @@ namespace OE2EmpireTracker.Services
                 activePlans.Count, shortfalls.Count);
             return shortfalls;
         }
+
         /// <summary>
         /// Generates build items to cover shortfalls, avoiding duplicates
         /// with existing build items in the replenishment plan.
@@ -114,6 +115,7 @@ namespace OE2EmpireTracker.Services
                     Quantity = shortfall.ShortfallQuantity,
                     Status = BuildItemStatus.Staged
                 };
+
                 items.Add(buildItem);
                 existingKeys.Add(key);
             }
@@ -146,6 +148,7 @@ namespace OE2EmpireTracker.Services
             return CountItemStock(target, currentPlayerUUID,
                 colonyFinder, stationFinder, allColonies, allStations);
         }
+
         private static int CountItemStock(
             StockTarget target,
             string currentPlayerUUID,
@@ -164,12 +167,14 @@ namespace OE2EmpireTracker.Services
                         if (colony.Items == null) continue;
                         total += colony.Items.CountByType(target.ItemType, target.ItemReferenceID);
                     }
+
                     foreach (var station in allStations)
                     {
                         ItemBag hold;
                         if (station.Holds.TryGetValue(currentPlayerUUID, out hold) && hold != null)
                             total += hold.CountByType(target.ItemType, target.ItemReferenceID);
                     }
+
                     break;
 
                 case StockTargetScope.Colony:
@@ -186,6 +191,7 @@ namespace OE2EmpireTracker.Services
                         if (station2.Holds.TryGetValue(currentPlayerUUID, out hold2) && hold2 != null)
                             total = hold2.CountByType(target.ItemType, target.ItemReferenceID);
                     }
+
                     break;
             }
 
@@ -219,6 +225,7 @@ namespace OE2EmpireTracker.Services
                     Scope = target.Scope,
                     LocationUUID = target.LocationUUID
                 };
+
                 int hullCount = CountItemStock(hullTarget, currentPlayerUUID,
                     colonyFinder, stationFinder, allColonies, allStations);
                 if (hullCount < minAvailable) minAvailable = hullCount;
@@ -235,6 +242,7 @@ namespace OE2EmpireTracker.Services
                     Scope = target.Scope,
                     LocationUUID = target.LocationUUID
                 };
+
                 int compCount = CountItemStock(compTarget, currentPlayerUUID,
                     colonyFinder, stationFinder, allColonies, allStations);
                 if (compCount < minAvailable) minAvailable = compCount;

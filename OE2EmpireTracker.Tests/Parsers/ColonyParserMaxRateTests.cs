@@ -1,7 +1,7 @@
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Parsers;
-using System.Collections.Generic;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {
@@ -75,7 +75,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             var building = new JObject
             {
-                ["blueprintDesignName"] = "",
+                ["blueprintDesignName"] = string.Empty,
                 ["maxRate"] = 50.0m
             };
 

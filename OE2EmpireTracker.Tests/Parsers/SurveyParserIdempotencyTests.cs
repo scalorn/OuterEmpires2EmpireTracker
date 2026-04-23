@@ -1,9 +1,9 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Parsers;
-using OE2EmpireTracker.Models;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
+using NUnit.Framework;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {

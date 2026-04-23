@@ -65,7 +65,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         [Test]
         public void Detect_EmptyHtml_ReturnsUnknown()
         {
-            Assert.That(ClipboardContentDetector.Detect(""),
+            Assert.That(ClipboardContentDetector.Detect(string.Empty),
                 Is.EqualTo(ClipboardContentDetector.ContentType.Unknown));
         }
 

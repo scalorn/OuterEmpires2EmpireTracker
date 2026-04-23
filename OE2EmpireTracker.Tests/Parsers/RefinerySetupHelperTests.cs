@@ -1,11 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {
@@ -43,6 +43,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                 RefiningResource = resource,
                 RefiningResourcePurity = purity
             };
+
             structure.Properties.setProperty(GameConstants.PropBuilt, built);
             structure.Properties.setProperty(GameConstants.PropOnline, online);
             return structure;
@@ -64,6 +65,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                 SystemName = "TestSystem",
                 OwnerUUID = "owner-1"
             };
+
             colony.Structures.Add(CreateRefinery("ref-1", "Iron", "Medium", true, true));
 
             // Act
@@ -92,6 +94,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                 SystemName = "TestSystem",
                 OwnerUUID = "owner-1"
             };
+
             var existingItem = new Item(ItemType.ItemTypeEnum.Resource, "Iron")
             {
                 UUID = Guid.NewGuid().ToString(),
@@ -99,6 +102,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                 ResourcePurity = "Medium",
                 Quantity = 50
             };
+
             colony.Items.AddItem(existingItem);
             colony.Structures.Add(CreateRefinery("ref-1", "Iron", "Medium", true, true));
 
@@ -127,6 +131,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                 SystemName = "TestSystem",
                 OwnerUUID = "owner-1"
             };
+
             colony.Structures.Add(CreateRefinery("ref-1", "Iron", "Medium", true, true));
 
             // Act
@@ -160,6 +165,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                 SystemName = "TestSystem",
                 OwnerUUID = "owner-1"
             };
+
             var structure = CreateRefinery("ref-1", "Iron", "Medium", true, true);
             var existingTimer = new CountDownTime();
             existingTimer.StartRepeating(GameConstants.SecondsPerHour, 1800);
@@ -190,6 +196,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                 SystemName = "TestSystem",
                 OwnerUUID = "owner-1"
             };
+
             colony.Structures.Add(CreateRefinery("ref-1", "Iron", "Medium", false, true));
 
             // Act
@@ -217,6 +224,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                 SystemName = "TestSystem",
                 OwnerUUID = "owner-1"
             };
+
             colony.Structures.Add(CreateRefinery("ref-1", "Iron", "Medium", true, false));
 
             // Act
@@ -244,12 +252,14 @@ namespace OE2EmpireTracker.Tests.Parsers
                 SystemName = "TestSystem",
                 OwnerUUID = "owner-1"
             };
+
             var structure = new ColonyStructure
             {
                 UUID = "non-refinery-1",
                 RefiningResource = null,
                 RefiningResourcePurity = null
             };
+
             structure.Properties.setProperty(GameConstants.PropBuilt, true);
             structure.Properties.setProperty(GameConstants.PropOnline, true);
             colony.Structures.Add(structure);
@@ -277,6 +287,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                 SystemName = "TestSystem",
                 OwnerUUID = "owner-1"
             };
+
             colony.Structures.Add(CreateRefinery("ref-1", "Iron", "Medium", true, true));
             colony.Structures.Add(CreateRefinery("ref-2", "Copper", "High", true, true));
             colony.Structures.Add(CreateRefinery("ref-3", "Gold", "Low", false, false)); // not built/online

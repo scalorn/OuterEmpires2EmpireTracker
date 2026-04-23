@@ -1,6 +1,6 @@
 using NUnit.Framework;
-using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Tests.Services
 {

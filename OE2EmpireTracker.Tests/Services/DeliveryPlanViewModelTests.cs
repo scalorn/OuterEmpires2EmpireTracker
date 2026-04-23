@@ -1,12 +1,12 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.ViewModels;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NUnit.Framework;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Tests;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -597,6 +597,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ManufacturingQuantity = qty,
                 StagingResources = true
             };
+
             s.Properties.setProperty("Built", true);
             s.Properties.setProperty("Online", true);
             return s;
@@ -612,6 +613,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ManufacturingQuantity = qty,
                 StagingResources = true
             };
+
             s.Properties.setProperty("Built", true);
             s.Properties.setProperty("Online", true);
             return s;
@@ -652,6 +654,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ResourcePurity = "Refined",
                 Quantity = 4
             };
+
             colony.Items.AddItem(ironItem);
 
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
@@ -723,6 +726,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ResourcePurity = "Refined",
                 Quantity = 10
             };
+
             colony.Items.AddItem(item);
 
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
@@ -755,6 +759,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ResourcePurity = "Refined",
                 Quantity = 4
             };
+
             colony.Items.AddItem(ironItem);
 
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
@@ -898,6 +903,7 @@ namespace OE2EmpireTracker.Tests.Services
                 UUID = System.Guid.NewGuid().ToString(),
                 FlatpackBlueprintUUID = bpUUID
             };
+
             s.Properties.setProperty("Built", true);
             s.Properties.setProperty("Online", true);
             for (int i = 1; i <= blueAssigned; i++)

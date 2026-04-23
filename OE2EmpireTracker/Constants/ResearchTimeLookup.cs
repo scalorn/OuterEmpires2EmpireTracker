@@ -1,5 +1,5 @@
-using OE2EmpireTracker.Models;
 using System.Collections.Generic;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Constants
 {
@@ -82,6 +82,7 @@ namespace OE2EmpireTracker.Constants
             {
                 dict[entry.Evolution] = entry.ResearchTimeSeconds;
             }
+
             return dict;
         }
     }

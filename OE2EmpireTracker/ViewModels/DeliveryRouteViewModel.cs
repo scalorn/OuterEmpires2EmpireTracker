@@ -1,8 +1,8 @@
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.ViewModels
 {
@@ -29,12 +29,13 @@ namespace OE2EmpireTracker.ViewModels
         {
             var stop = new RouteStop
             {
-                ColonyUUID = destType == DestinationType.Colony ? destinationUUID : "",
+                ColonyUUID = destType == DestinationType.Colony ? destinationUUID : string.Empty,
                 DestinationType = destType,
                 DestinationUUID = destinationUUID,
                 Purpose = purpose,
                 Sequence = _route.Stops.Count
             };
+
             _route.Stops.Add(stop);
             RenumberStops();
         }
@@ -58,6 +59,7 @@ namespace OE2EmpireTracker.ViewModels
                 if (i >= 0 && i < _route.Stops.Count)
                     _route.Stops.RemoveAt(i);
             }
+
             RenumberStops();
         }
 
@@ -95,6 +97,7 @@ namespace OE2EmpireTracker.ViewModels
                     newIndices.Add(i); // can't move, stays in place
                 }
             }
+
             RenumberStops();
             return newIndices;
         }
@@ -133,6 +136,7 @@ namespace OE2EmpireTracker.ViewModels
                     newIndices.Add(i);
                 }
             }
+
             RenumberStops();
             return newIndices;
         }
@@ -152,6 +156,7 @@ namespace OE2EmpireTracker.ViewModels
                     .Where(r => r.Name.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
             }
+
             return list.AsReadOnly();
         }
 
@@ -162,10 +167,12 @@ namespace OE2EmpireTracker.ViewModels
                 _route.UUID = Guid.NewGuid().ToString();
                 _playerContext.AddDeliveryRoute(_route);
             }
+
             if (string.IsNullOrEmpty(_route.OwnerUUID))
             {
                 _route.OwnerUUID = _playerContext.CurrentPlayerUUID;
             }
+
             _playerContext.WriteContext();
             _playerContext.OnDeliveryDataChanged();
         }

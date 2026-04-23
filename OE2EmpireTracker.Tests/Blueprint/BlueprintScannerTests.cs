@@ -1,10 +1,10 @@
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using OE2EmpireTracker.Tests;
 
 namespace OE2EmpireTracker.Tests.Blueprint
@@ -168,7 +168,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void ProcessHtml_ResourceQuantityWithCommas_StripsNonDigits()
         {
             var bp = new OE2EmpireTracker.Models.Blueprint();
-            _scanner.ProcessHtml(bp, Html(ResourceRow("Iron", "1,500")));
+            _scanner.ProcessHtml(bp, Html(ResourceRow("Iron", "1, 500")));
 
             Assert.That(bp.Resources["Iron"], Is.EqualTo("1500"));
         }
@@ -236,7 +236,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void ProcessHtml_EmptyHtml_DoesNotThrow()
         {
             var bp = new OE2EmpireTracker.Models.Blueprint();
-            Assert.DoesNotThrow(() => _scanner.ProcessHtml(bp, Html("")));
+            Assert.DoesNotThrow(() => _scanner.ProcessHtml(bp, Html(string.Empty)));
         }
 
         [Test]
@@ -882,11 +882,11 @@ namespace OE2EmpireTracker.Tests.Blueprint
         [Test]
         public void ProcessMarketHtml_NoSellerSpan_SellerNameIsEmpty()
         {
-            string html = MarketHtml("Basic Thruster", "");
+            string html = MarketHtml("Basic Thruster", string.Empty);
             var results = _scanner.ProcessMarketHtml(html);
 
             Assert.That(results.Count, Is.EqualTo(1));
-            Assert.That(results[0].SellerName, Is.EqualTo(""));
+            Assert.That(results[0].SellerName, Is.EqualTo(string.Empty));
         }
     }
 }

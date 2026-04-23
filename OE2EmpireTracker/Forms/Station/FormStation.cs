@@ -122,6 +122,7 @@ namespace OE2EmpireTracker.Forms.Station
                 lvwStations.Items.Add(item);
                 if (station.UUID == selectedUUID) item.Selected = true;
             }
+
             sw.Stop();
             Log.Info("PERF PopulateStationList: {0}ms items={1}", sw.ElapsedMilliseconds, stations.Count);
         }
@@ -162,12 +163,12 @@ namespace OE2EmpireTracker.Forms.Station
         private void ClearForm()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
-            txtName.Text = "";
+            txtName.Text = string.Empty;
             cmbStationType.SelectedIndex = -1;
             cmbOwnership.SelectedIndex = -1;
             dgvHold.Rows.Clear();
             dgvComponents.Rows.Clear();
-            rtbStationStats.Text = "";
+            rtbStationStats.Text = string.Empty;
             cmbStationBlueprint.DataSource = null;
             cmbStationBlueprint.Items.Clear();
             dgvMunitions.Rows.Clear();
@@ -211,6 +212,7 @@ namespace OE2EmpireTracker.Forms.Station
                 if (cmb.Items[i] is T v && v.Equals(value))
                 { cmb.SelectedIndex = i; return; }
             }
+
             cmb.SelectedIndex = -1;
         }
 
@@ -244,6 +246,7 @@ namespace OE2EmpireTracker.Forms.Station
                 bag = new ItemBag();
                 _selectedStation.Holds[playerUUID] = bag;
             }
+
             return bag;
         }
 
@@ -253,7 +256,7 @@ namespace OE2EmpireTracker.Forms.Station
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvHold.Rows.Clear();
             dgvHoldCrateContents.Rows.Clear();
-            lblHoldCrateContents.Text = "";
+            lblHoldCrateContents.Text = string.Empty;
             dgvHoldCrateContents.Visible = false;
             lblHoldCrateContents.Visible = false;
             var bag = GetStationHold();
@@ -270,6 +273,7 @@ namespace OE2EmpireTracker.Forms.Station
                     int count = item.Contents?.Count() ?? 0;
                     displayName = string.Format("{0} ({1} items)", item.Name, count);
                 }
+
                 int rowIdx = dgvHold.Rows.Add(
                     typeName, displayName,
                     item.ResourcePurity,
@@ -282,6 +286,7 @@ namespace OE2EmpireTracker.Forms.Station
                 dgvHold.Rows[rowIdx].Cells[colHoldPurity.Index].ReadOnly = true;
                 dgvHold.Rows[rowIdx].Cells[colHoldQty.Index].ReadOnly = true;
             }
+
             sw.Stop(); Log.Info("PERF PopulateHoldGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -309,6 +314,7 @@ namespace OE2EmpireTracker.Forms.Station
                 var item = kvp.Value;
                 dgvHoldCrateContents.Rows.Add(item.ItemType.ToString(), item.ExtendedName, item.ResourcePurity, item.Quantity.ToString());
             }
+
             sw.Stop(); Log.Info("PERF PopulateHoldCrateContents: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -316,7 +322,7 @@ namespace OE2EmpireTracker.Forms.Station
         {
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvHoldCrateContents.Rows.Clear();
-            lblHoldCrateContents.Text = "";
+            lblHoldCrateContents.Text = string.Empty;
             lblHoldCrateContents.Visible = false;
             dgvHoldCrateContents.Visible = false;
         }
@@ -378,6 +384,7 @@ namespace OE2EmpireTracker.Forms.Station
                 foreach (var c in Commodity.ResourceMapByEnum.Values.OrderBy(c => c.ExtendedName))
                     cmbHoldItem.Items.Add(c.ExtendedName);
             }
+
             if (cmbHoldItem.Items.Count > 0) cmbHoldItem.SelectedIndex = 0;
             sw.Stop(); Log.Info("PERF PopulateHoldItemCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -394,6 +401,7 @@ namespace OE2EmpireTracker.Forms.Station
                     if (p.ID != ResourcePurity.PurityEnum.None)
                         cmbHoldPurity.Items.Add(p.Name);
                 }
+
                 if (cmbHoldPurity.Items.Count > 0) cmbHoldPurity.SelectedIndex = 0;
                 cmbHoldPurity.Enabled = true;
             }
@@ -408,7 +416,7 @@ namespace OE2EmpireTracker.Forms.Station
             var bag = GetStationHold();
             if (bag == null || _selectedStation == null) return;
             if (!(cmbHoldType.SelectedItem is ItemType.ItemTypeEnum itemType)) return;
-            string itemName = cmbHoldItem.SelectedItem?.ToString() ?? "";
+            string itemName = cmbHoldItem.SelectedItem?.ToString() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(itemName)) return;
             if (!int.TryParse(txtHoldQty.Text.Trim(), out int qty) || qty <= 0)
             {
@@ -416,7 +424,8 @@ namespace OE2EmpireTracker.Forms.Station
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            string purity = cmbHoldPurity.Enabled ? (cmbHoldPurity.SelectedItem?.ToString() ?? "") : "";
+
+            string purity = cmbHoldPurity.Enabled ? (cmbHoldPurity.SelectedItem?.ToString() ?? string.Empty) : string.Empty;
             var newItem = new Item(itemType, itemName)
             {
                 UUID = Guid.NewGuid().ToString(),
@@ -424,6 +433,7 @@ namespace OE2EmpireTracker.Forms.Station
                 ResourcePurity = purity,
                 BaseItemTypeID = itemName
             };
+
             bag.AddItem(newItem);
             PopulateHoldGrid();
             Log.Info("Added hold item: {0} x{1}", itemName, qty);
@@ -471,6 +481,7 @@ namespace OE2EmpireTracker.Forms.Station
                 dgvComponents.Rows[rowIdx].Cells[colSlotType.Index].ReadOnly = true;
                 dgvComponents.Rows[rowIdx].Cells[colComponentName.Index].ReadOnly = true;
             }
+
             sw.Stop(); Log.Info("PERF PopulateComponentsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -488,7 +499,7 @@ namespace OE2EmpireTracker.Forms.Station
                 .ToList();
 
             var items = new List<KeyValuePair<string, string>>();
-            items.Add(new KeyValuePair<string, string>("", "(none)"));
+            items.Add(new KeyValuePair<string, string>(string.Empty, "(none)"));
             foreach (var bp in blueprints)
                 items.Add(new KeyValuePair<string, string>(bp.UUID, bp.ExtendedName));
 
@@ -504,7 +515,7 @@ namespace OE2EmpireTracker.Forms.Station
         private void cmbStationBlueprint_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedStation == null) return;
-            string uuid = cmbStationBlueprint.SelectedValue?.ToString() ?? "";
+            string uuid = cmbStationBlueprint.SelectedValue?.ToString() ?? string.Empty;
             _selectedStation.StationBlueprintUUID = uuid;
             PopulateComponentsGrid();
             RefreshStationStats();
@@ -513,7 +524,7 @@ namespace OE2EmpireTracker.Forms.Station
         private void RefreshStationStats()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            if (_selectedStation == null) { rtbStationStats.Text = ""; sw.Stop(); return; }
+            if (_selectedStation == null) { rtbStationStats.Text = string.Empty; sw.Stop(); return; }
             var hullBp = playerContext.FindBlueprint(_selectedStation.StationBlueprintUUID);
             if (hullBp == null) { rtbStationStats.Text = "No station blueprint selected."; sw.Stop(); return; }
 
@@ -588,13 +599,14 @@ namespace OE2EmpireTracker.Forms.Station
                 int rowIdx = dgvMunitions.Rows.Add(item.ExtendedName, item.Quantity.ToString());
                 dgvMunitions.Rows[rowIdx].Tag = item;
             }
+
             sw.Stop(); Log.Info("PERF PopulateMunitionsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void cmdMunAdd_Click(object sender, EventArgs e)
         {
             if (_selectedStation == null) return;
-            string itemName = cmbMunItem.SelectedItem?.ToString() ?? "";
+            string itemName = cmbMunItem.SelectedItem?.ToString() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(itemName)) return;
             if (!int.TryParse(txtMunQty.Text.Trim(), out int qty) || qty <= 0)
             {
@@ -602,12 +614,14 @@ namespace OE2EmpireTracker.Forms.Station
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
             var newItem = new Item(ItemType.ItemTypeEnum.Munition, itemName)
             {
                 UUID = Guid.NewGuid().ToString(),
                 Quantity = qty,
                 BaseItemTypeID = itemName
             };
+
             _selectedStation.MunitionsHold.AddItem(newItem);
             PopulateMunitionsGrid();
             Log.Info("Added munition: {0} x{1}", itemName, qty);
@@ -632,6 +646,7 @@ namespace OE2EmpireTracker.Forms.Station
                 Name = "New Station",
                 OwnerUUID = playerContext.CurrentPlayerUUID
             };
+
             playerContext.AddStation(station);
             playerContext.WriteContext();
             _selectedStation = station;

@@ -1,11 +1,11 @@
-using NLog;
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Controls;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using NLog;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
 {
@@ -44,7 +44,7 @@ namespace OE2EmpireTracker.Services
         /// Collection of workers assigned to structures within this colony.
         /// Populated during <see cref="CalculateBuilt"/>.
         /// </summary>
-        //public List<ColonyWorker> ColonyWorkers { get; set; }
+        // public List<ColonyWorker> ColonyWorkers { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ColonyStatusCalculator"/> class for a specific colony.
@@ -57,8 +57,9 @@ namespace OE2EmpireTracker.Services
             // Uses Singleton pattern access to retrieve contexts from the global state.
             empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
-            //ColonyWorkers = new List<ColonyWorker>();
+            // ColonyWorkers = new List<ColonyWorker>();
         }
+
         /// <summary>
         /// Calculates the resource status and worker assignments for the tracked colony.
         /// </summary>
@@ -125,6 +126,7 @@ namespace OE2EmpireTracker.Services
 
                 previousStatus = currentStatus;
             }
+
             finalActualStatus = previousStatus;
             finalActualStatus.WarehouseRequired = CalculateWarehouseRequired();
 
@@ -157,6 +159,7 @@ namespace OE2EmpireTracker.Services
                 structure.Statuses[GameConstants.StatusIdeal] = currentStatus;
                 previousStatus = currentStatus;
             }
+
             finalIdealStatus = previousStatus;
             finalIdealStatus.WarehouseRequired = CalculateWarehouseRequired();
 
@@ -177,6 +180,7 @@ namespace OE2EmpireTracker.Services
             {
                 total += item.Quantity * item.Volume;
             }
+
             return total;
         }
 
@@ -253,6 +257,7 @@ namespace OE2EmpireTracker.Services
                 }
             }
             }
+
             delta.WorkerCount = assignedCount;
 
             // Count unallocated workers for this structure — only for built structures.
@@ -380,6 +385,7 @@ namespace OE2EmpireTracker.Services
                 if (!string.IsNullOrEmpty(structure.UUID))
                     colony.Locks.ClearLocksForProcess(structure.UUID);
             }
+
             // Clear unallocated worker locks for the colony
             if (!string.IsNullOrEmpty(colony.UUID))
                 colony.Locks.ClearLocksForProcess(colony.UUID);
@@ -427,12 +433,14 @@ namespace OE2EmpireTracker.Services
                 colony.Locks.LockItem(colony.UUID,
                     Models.ItemType.ItemTypeEnum.WorkDetail, GameConstants.WorkerIdBlueCollar, 1);
             }
+
             if (finalStatus.UnallocatedWhiteCollarPresent)
             {
                 EnsureWorkerItemExists(GameConstants.WorkerIdWhiteCollar);
                 colony.Locks.LockItem(colony.UUID,
                     Models.ItemType.ItemTypeEnum.WorkDetail, GameConstants.WorkerIdWhiteCollar, 1);
             }
+
             if (finalStatus.UnallocatedSpecialistPresent)
             {
                 EnsureWorkerItemExists(GameConstants.WorkerIdSpecialist);
@@ -603,6 +611,7 @@ namespace OE2EmpireTracker.Services
                     builtEntertainmentProvided += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropEntertainmentProvided);
                     builtWarehouseCapacity += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropWarehouseCapacity);
                 }
+
                 // Food accumulates regardless of online state
                 builtFoodProvision += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropFoodProvision);
 
@@ -628,6 +637,7 @@ namespace OE2EmpireTracker.Services
                             }
                         }
                     }
+
                     long unassignedCount = 0;
                     flatpackBlueprint.Properties.getLong(wt.UnassignedPropertyKey, 0, out unassignedCount);
                     if (unassignedCount > 0)
@@ -635,6 +645,7 @@ namespace OE2EmpireTracker.Services
                         needUnallocated[wt.DetailKey] = true;
                     }
                 }
+
                 } // end if (built)
             }
 
@@ -717,9 +728,9 @@ namespace OE2EmpireTracker.Services
         private static void AppendStatus(RtfBuilder builder, string name, Color color, decimal required, decimal provided)
         {
             builder.Append(name, Color.Black);
-            builder.Append("" + required, required > provided ? Color.Red : Color.Green);
+            builder.Append(string.Empty + required, required > provided ? Color.Red : Color.Green);
             builder.Append("/", Color.Black);
-            builder.Append("" + provided, Color.Black);
+            builder.Append(string.Empty + provided, Color.Black);
         }
     }
 }

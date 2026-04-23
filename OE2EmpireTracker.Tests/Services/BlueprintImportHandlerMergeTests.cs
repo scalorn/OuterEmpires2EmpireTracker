@@ -280,6 +280,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { "Copper", "200" },
                 { "Gold", "50" }
             };
+
             empireContext.AddGlobalBlueprint(existing);
 
             var incoming = new BpModel("AMX-SS Reactor Core");
@@ -290,6 +291,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { "Iron", "600" },     // overwrite
                 { "Titanium", "100" }  // new key
             };
+
             // "Copper" and "Gold" not in incoming Ã¢â‚¬â€ should be preserved
 
             var findResult = new BlueprintImportHandler.FindTargetResult
@@ -320,6 +322,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { "Iron", "300" },
                 { "Silicon", "150" }
             };
+
             empireContext.AddGlobalBlueprint(existing);
 
             var incoming = new BpModel("Mining Laser");

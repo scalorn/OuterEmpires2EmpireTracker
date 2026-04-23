@@ -1,9 +1,9 @@
+using System;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
-using System;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {
@@ -131,7 +131,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             var colony = new Colony { PlanetName = "TestPlanet" };
 
-            MinerSetupHelper.EnsureWarehouseResource(colony, "", "Medium");
+            MinerSetupHelper.EnsureWarehouseResource(colony, string.Empty, "Medium");
 
             Assert.That(colony.Items.Count(), Is.EqualTo(0));
         }
@@ -157,7 +157,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             var colony = new Colony { PlanetName = "TestPlanet" };
 
-            MinerSetupHelper.EnsureWarehouseResource(colony, "Iron", "");
+            MinerSetupHelper.EnsureWarehouseResource(colony, "Iron", string.Empty);
 
             Assert.That(colony.Items.Count(), Is.EqualTo(0));
         }

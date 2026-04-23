@@ -104,6 +104,7 @@ namespace OE2EmpireTracker.Services
                     return null;
                 return string.Format("Class {0} ships require a Station or Starbase for assembly.", shipClass);
             }
+
             // Class 7-8
             if (stationType == StationType.Starbase) return null;
             return string.Format("Class {0} ships require a Starbase for assembly.", shipClass);
@@ -128,9 +129,9 @@ namespace OE2EmpireTracker.Services
             AddBlueprintStats(stats, hullBlueprint);
 
             // Read hull identity
-            string career = "";
-            hullBlueprint.Properties?.getString(BlueprintPropertyKeys.LicenseCareer, "", out career);
-            stats.LicenseCareer = career ?? "";
+            string career = string.Empty;
+            hullBlueprint.Properties?.getString(BlueprintPropertyKeys.LicenseCareer, string.Empty, out career);
+            stats.LicenseCareer = career ?? string.Empty;
             decimal licLevel = 0m;
             hullBlueprint.Properties?.getDecimal(BlueprintPropertyKeys.LicenseLevel, 0m, out licLevel);
             stats.LicenseLevel = (int)licLevel;

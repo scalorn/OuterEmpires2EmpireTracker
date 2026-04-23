@@ -1,9 +1,9 @@
+using System;
+using System.Linq;
 using FsCheck;
 using FsCheck.NUnit;
 using NUnit.Framework;
 using OE2EmpireTracker.Constants;
-using System;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Constants
 {
@@ -30,7 +30,7 @@ namespace OE2EmpireTracker.Tests.Constants
         {
             return Gen.OneOf(
                 Gen.Constant((string)null),
-                Gen.Constant(""),
+                Gen.Constant(string.Empty),
                 Gen.Constant("   "),
                 Gen.Elements(
                     "Flatpacks/MiningRig",
@@ -47,7 +47,7 @@ namespace OE2EmpireTracker.Tests.Constants
                     .Select(s => s.Get)
                     .Where(s => !s.StartsWith(Prefix, StringComparison.OrdinalIgnoreCase)
                              || s.Length <= Prefix.Length)
-            );
+           );
         }
 
         #endregion

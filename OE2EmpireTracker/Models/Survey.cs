@@ -1,11 +1,11 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace OE2EmpireTracker.Models
 {
@@ -35,19 +35,22 @@ namespace OE2EmpireTracker.Models
         {
             get
             {
-                string extendedName = "";
+                string extendedName = string.Empty;
                 if (!string.IsNullOrEmpty(PlanetName))
                 {
                     extendedName += $"{PlanetName}";
                 }
+
                 if (!string.IsNullOrEmpty(SurveyID))
                 {
                     extendedName += $" ({SurveyID})";
                 }
+
                 if (!string.IsNullOrEmpty(NickName))
                 {
                     extendedName += $" [{NickName}]";
                 }
+
                 return extendedName.Trim();
             }
         }
@@ -66,6 +69,7 @@ namespace OE2EmpireTracker.Models
             Resources = new Dictionary<string, SurveyResource>();
         }
     }
+
     public class SurveyResource
     {
         public string Resource { get; set; } = string.Empty;
@@ -81,9 +85,9 @@ namespace OE2EmpireTracker.Models
                 return extendedName;
             }
         }
+
         public SurveyResource()
         {
-
         }
 
         public SurveyResource(string resource, string purity, string amount)

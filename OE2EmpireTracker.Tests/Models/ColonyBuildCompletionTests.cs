@@ -1,13 +1,13 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NUnit.Framework;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Tests;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Tests.Models
 {
@@ -187,6 +187,7 @@ namespace OE2EmpireTracker.Tests.Models
             {
                 { "TestOre", new SurveyResource { Resource = "TestOre", Purity = "Low", Amount = "50" } }
             };
+
             playerContext.AddSurvey(survey);
 
             var structure = new ColonyStructure();

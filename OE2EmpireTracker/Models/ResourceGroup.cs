@@ -51,7 +51,7 @@ namespace OE2EmpireTracker.Models
             instance.Sort((x, y) => x.Name.CompareTo(y.Name));
 
             // Make sure the blank none entry is first.
-            instance.Insert(0, new ResourceGroup() { ID = ResourceGroupEnum.None, Name = "" });
+            instance.Insert(0, new ResourceGroup() { ID = ResourceGroupEnum.None, Name = string.Empty });
 
             _groupMapByEnum = new Dictionary<ResourceGroupEnum, ResourceGroup>();
             _groupMapByString = new Dictionary<string, ResourceGroup>();

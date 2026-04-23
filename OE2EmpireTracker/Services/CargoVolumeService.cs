@@ -83,6 +83,7 @@ namespace OE2EmpireTracker.Services
                             return vol;
                         }
                     }
+
                     return 0.0m;
             }
         }
@@ -110,6 +111,7 @@ namespace OE2EmpireTracker.Services
                             return mass;
                         }
                     }
+
                     return 0.0m;
             }
         }
@@ -191,6 +193,7 @@ namespace OE2EmpireTracker.Services
                                 currentTrip = new List<DeliveryItem>();
                                 currentVolume = 0m;
                             }
+
                             // Recalculate with fresh trip
                             spaceLeft = cargoCapacity;
                             canFit = (int)(spaceLeft / unitVolume);

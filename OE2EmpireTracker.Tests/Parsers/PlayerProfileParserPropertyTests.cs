@@ -4,9 +4,9 @@ using System.Linq;
 using FsCheck;
 using FsCheck.NUnit;
 using NUnit.Framework;
+using OE2EmpireTracker.Forms.PlayerProfile;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
-using OE2EmpireTracker.Forms.PlayerProfile;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {
@@ -172,6 +172,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                         RegistrationDate = "2223-01-06",
                         ActiveTime = "1D 2H"
                     };
+
                     parsed.Public.Rank = newPublicRank;
 
                     // Verify case-insensitive match

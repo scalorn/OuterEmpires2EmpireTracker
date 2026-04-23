@@ -1,9 +1,9 @@
+using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System;
-using System.Collections.Generic;
 
 namespace OE2EmpireTracker.Tests.Services
 {

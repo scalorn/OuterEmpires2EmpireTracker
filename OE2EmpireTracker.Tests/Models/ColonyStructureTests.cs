@@ -1,11 +1,11 @@
-using Newtonsoft.Json;
-using NUnit.Framework;
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.ViewModels;
 using System;
 using System.IO;
+using Newtonsoft.Json;
+using NUnit.Framework;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Tests;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Tests.Models
 {
@@ -173,7 +173,7 @@ namespace OE2EmpireTracker.Tests.Models
             var structure = new ColonyStructure();
             structure.Properties.setProperty("Name", "MyValue");
 
-            bool success = structure.Properties.getString("Name", "", out string result);
+            bool success = structure.Properties.getString("Name", string.Empty, out string result);
             Assert.That(success, Is.True);
             Assert.That(result, Is.EqualTo("MyValue"));
         }
@@ -182,9 +182,9 @@ namespace OE2EmpireTracker.Tests.Models
         public void Properties_gstringMethod_ReturnsDefaultValueOnMissingKey()
         {
             var structure = new ColonyStructure();
-            bool success = structure.Properties.getString("Missing", "", out string result);
+            bool success = structure.Properties.getString("Missing", string.Empty, out string result);
             Assert.That(success, Is.False);
-            Assert.That(result, Is.EqualTo(""));
+            Assert.That(result, Is.EqualTo(string.Empty));
         }
 
         // -----------------------------------------------------------------------
@@ -385,7 +385,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void NewStructure_HasEmptyStringForAttitude()
         {
             var structure = new ColonyStructure();
-            Assert.That(structure.CurrentAttitude, Is.EqualTo(""));
+            Assert.That(structure.CurrentAttitude, Is.EqualTo(string.Empty));
         }
 
         [Test]

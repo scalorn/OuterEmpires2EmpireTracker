@@ -1,8 +1,8 @@
+using System;
+using System.Collections.Generic;
 using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
-using System;
-using System.Collections.Generic;
 
 namespace OE2EmpireTracker.Services
 {
@@ -50,6 +50,7 @@ namespace OE2EmpireTracker.Services
                     return 0;
                 return Math.Max(0, CountDown.TimeRemaining);
             }
+
             long seconds = (long)(NeedBy - SystemClock.UtcNow).TotalSeconds;
             return Math.Max(0, seconds);
         }
@@ -66,6 +67,7 @@ namespace OE2EmpireTracker.Services
                     return "0s";
                 return CountDown.TimeRemainingString;
             }
+
             long seconds = GetSecondsRemaining();
             if (seconds <= 0) return "0s";
             return FormatSeconds(seconds);

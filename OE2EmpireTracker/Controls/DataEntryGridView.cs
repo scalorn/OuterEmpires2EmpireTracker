@@ -1,6 +1,6 @@
-using NLog;
 using System;
 using System.Windows.Forms;
+using NLog;
 
 public class DataEntryGridView : System.Windows.Forms.DataGridView
 {
@@ -24,6 +24,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
                 return true;
             }
         }
+
         if (key == (Keys.Tab | Keys.Shift))
         {
             bool handled = handleBackwards(this.Focused);
@@ -35,6 +36,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
 
         return base.ProcessDialogKey(keyData);
     }
+
     protected override bool ProcessDataGridViewKey(KeyEventArgs e)
     {
         Log.Debug("ProcessDataGridViewKey Key = " + e);
@@ -46,6 +48,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
                 return true;
             }
         }
+
         if (e.KeyData == (Keys.Tab | Keys.Shift))
         {
             bool handled = handleBackwards(this.Focused);
@@ -54,8 +57,10 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
                 return true;
             }
         }
+
         return base.ProcessDataGridViewKey(e);
     }
+
     protected override void OnSelectionChanged(EventArgs e)
     {
         Log.Debug("OnSelectionChanged Event Args " + e + " " + e.ToString());
@@ -99,11 +104,12 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
                 {
                     this.previousControl.Focus();
                     // This does not work.
-                    //this.SelectNextControl(this, false, true, true, true);
+                    // this.SelectNextControl(this, false, true, true, true);
                     return true;
                 }
             }
         }
+
         return false;
     }
 
@@ -126,13 +132,15 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
                     handleEditCell(this.CurrentCell.RowIndex + 1, col, enableEdit);
                     return true;
                 }
+
             } else
             {
                 // This doesn't work.
-                //this.SelectNextControl(this, true, true, true, true);
-                //return true;
+                // this.SelectNextControl(this, true, true, true, true);
+                // return true;
             }
         }
+
         return false;
     }
 
@@ -146,6 +154,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
                 break;
             }
         }
+
         return col;
     }
 
@@ -159,6 +168,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
                 break;
             }
         }
+
         return col;
     }
 
@@ -167,10 +177,11 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
         changingSelection = true;
         this.CurrentCell =
         this.Rows[rowIndex].Cells[col];
-        if ( enableEdit)
+        if (enableEdit)
         {
             this.BeginEdit(true);
         }
+
         changingSelection = false;
     }
 }

@@ -1,7 +1,7 @@
-using NLog;
-using OE2EmpireTracker.Models;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
 {
@@ -83,6 +83,7 @@ namespace OE2EmpireTracker.Services
                         _buildItemAssemblyMap.TryGetValue(item.AssemblyLocationUUID, out int c);
                         _buildItemAssemblyMap[item.AssemblyLocationUUID] = c + 1;
                     }
+
                     if (item.BuildLocationType == DestinationType.Station
                         && !string.IsNullOrEmpty(item.BuildLocationUUID))
                     {

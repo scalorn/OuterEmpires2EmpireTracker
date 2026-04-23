@@ -25,10 +25,10 @@ namespace OE2EmpireTracker.Tests.Services
             Directory.CreateDirectory(_tempDir);
 
             var playerJson = Path.Combine(_tempDir, "PlayerData.json");
-            File.WriteAllText(playerJson, "{\"DataVersion\":7,\"CurrentPlayerUUID\":\"\",\"PlayerProfile\":[],\"Blueprint\":[],\"Survey\":[],\"Colony\":[],\"DeliveryRoute\":[],\"DeliveryPlan\":[],\"PricingPlan\":[],\"BuildPlan\":[],\"ShipTemplate\":[],\"Ship\":[],\"Station\":[],\"MarketListing\":[],\"MarketTransaction\":[],\"StockPlan\":[],\"StockProfile\":[],\"SupplyChain\":[],\"WarehouseOverflowRule\":[],\"Faction\":[],\"ExternalCharacter\":[],\"Asteroid\":[]}");
+            File.WriteAllText(playerJson, "{\"DataVersion\":7, \"CurrentPlayerUUID\":\"\", \"PlayerProfile\":[], \"Blueprint\":[], \"Survey\":[], \"Colony\":[], \"DeliveryRoute\":[], \"DeliveryPlan\":[], \"PricingPlan\":[], \"BuildPlan\":[], \"ShipTemplate\":[], \"Ship\":[], \"Station\":[], \"MarketListing\":[], \"MarketTransaction\":[], \"StockPlan\":[], \"StockProfile\":[], \"SupplyChain\":[], \"WarehouseOverflowRule\":[], \"Faction\":[], \"ExternalCharacter\":[], \"Asteroid\":[]}");
 
             var baselineJson = Path.Combine(_tempDir, "BaselineData.json");
-            File.WriteAllText(baselineJson, "{\"BlueprintType\":[],\"ShipClass\":[],\"TechLevel\":[],\"Evolution\":[],\"Resource\":[],\"ResourceGroup\":[],\"Commodity\":[],\"GlobalBlueprint\":[]}");
+            File.WriteAllText(baselineJson, "{\"BlueprintType\":[], \"ShipClass\":[], \"TechLevel\":[], \"Evolution\":[], \"Resource\":[], \"ResourceGroup\":[], \"Commodity\":[], \"GlobalBlueprint\":[]}");
 
             MigrationRunner.SuppressUI = true;
             EmpireContext.Reset();

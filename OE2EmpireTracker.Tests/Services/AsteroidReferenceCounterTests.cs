@@ -1,8 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -181,6 +181,7 @@ namespace OE2EmpireTracker.Tests.Services
                     }
                 }
             };
+
             var route = new DeliveryRoute
             {
                 UUID = "route-1",

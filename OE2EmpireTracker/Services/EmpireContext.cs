@@ -1,11 +1,3 @@
-using Amazon;
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Services.Migration;
-using Newtonsoft.Json;
-using NLog;
-using OE2EmpireTracker.Persistence;
-using OE2EmpireTracker.Models;
-using Sgml;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -19,6 +11,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using Amazon;
+using Newtonsoft.Json;
+using NLog;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Persistence;
+using OE2EmpireTracker.Services.Migration;
+using Sgml;
 
 namespace OE2EmpireTracker.Services
 {
@@ -77,6 +77,7 @@ namespace OE2EmpireTracker.Services
             {
                 Instance = new EmpireContext();
             }
+
             return Instance;
         }
 
@@ -130,11 +131,13 @@ namespace OE2EmpireTracker.Services
             {
                 WriteContext();
             }
+
             if (PlayerContext.DataVersion != prevPlayerVersion)
             {
                 PlayerContext.WriteContext();
             }
         }
+
         public void WriteContext()
         {
             if (MigrationRunner.MigrationFailed)
@@ -142,6 +145,7 @@ namespace OE2EmpireTracker.Services
                 Log.Warn("WriteContext blocked -- migration failed, saving disabled");
                 return;
             }
+
             BaselineRoot baselineRoot = new BaselineRoot();
             baselineRoot.DataVersion = DataVersion;
             baselineRoot.GameConstants = GameConstants;
@@ -156,6 +160,7 @@ namespace OE2EmpireTracker.Services
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
             Log.Info("Baseline data saved to {0}", FilePath);
         }
+
         public void InitBlueprintTypes(BaselineRoot baselineRoot)
         {
             List<BlueprintType> list = new List<BlueprintType>(baselineRoot.BlueprintType);
@@ -176,6 +181,7 @@ namespace OE2EmpireTracker.Services
             {
                 return filteredList[0];
             }
+
             return null;
         }
 
@@ -209,6 +215,7 @@ namespace OE2EmpireTracker.Services
             {
                 return filteredList[0];
             }
+
             return null;
         }
 
@@ -222,6 +229,7 @@ namespace OE2EmpireTracker.Services
             // Set the in-memory list as the DataSource for the BindingSource
             BindingSourceTechLevel.DataSource = _techLevelList;
         }
+
         public TechLevel FindTechLevel(string id)
         {
             var filteredList = TechLevelList
@@ -231,25 +239,28 @@ namespace OE2EmpireTracker.Services
             {
                 return filteredList[0];
             }
+
             return null;
         }
 
         public void InitEvolutions(BaselineRoot baselineRoot)
         {
             List<string> list = new List<string>();
-            for(int evo = 0; evo <= 15; evo++)
+            for (int evo = 0; evo <= 15; evo++)
             {
                 list.Add(evo.ToString());
             }
+
             _evolutionList = new List<string>(list);
             // Initialize the BindingSource component
             BindingSourceEvolution = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
             BindingSourceEvolution.DataSource = _evolutionList;
         }
+
         public string FindEvolution(int id)
         {
-            string key = "" + id;
+            string key = string.Empty + id;
             var filteredList = EvolutionList
                 .Where(item => item == key)
                 .ToList();
@@ -257,8 +268,10 @@ namespace OE2EmpireTracker.Services
             {
                 return filteredList[0];
             }
+
             return null;
         }
+
         public void InitResources(BaselineRoot baselineRoot)
         {
             List<Resource> list = new List<Resource>(Resource.Resources);
@@ -269,6 +282,7 @@ namespace OE2EmpireTracker.Services
             // Set the in-memory list as the DataSource for the BindingSource
             BindingSourceResource.DataSource = _resourceList;
         }
+
         public void InitResourceGroups(BaselineRoot baselineRoot)
         {
             List<ResourceGroup> list = new List<ResourceGroup>(ResourceGroup.Groups);
@@ -279,6 +293,7 @@ namespace OE2EmpireTracker.Services
             // Set the in-memory list as the DataSource for the BindingSource
             BindingSourceResourceGroup.DataSource = _resourceGroupList;
         }
+
         public void InitResourcePurities(BaselineRoot baselineRoot)
         {
             List<ResourcePurity> list = new List<ResourcePurity>(ResourcePurity.Purities);
@@ -387,6 +402,7 @@ namespace OE2EmpireTracker.Services
                                 _commodityNameCache[c.Name] = c;
                     }
                 }
+
                 _commodityNameCache.TryGetValue(name, out var match);
                 return match;
             }
@@ -520,8 +536,8 @@ namespace OE2EmpireTracker.Services
             _resourcePurityList.Remove(item);
             BindingSourceResourcePurity?.ResetBindings(false);
         }
-
     }
+
     public class BaselineRoot
     {
         public int DataVersion { get; set; }

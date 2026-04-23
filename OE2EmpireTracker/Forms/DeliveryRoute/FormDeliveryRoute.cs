@@ -1,9 +1,3 @@
-using NLog;
-using OE2EmpireTracker.Persistence;
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Controls;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +5,12 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using NLog;
+using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Persistence;
+using OE2EmpireTracker.Services;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Forms.DeliveryRoute
 {
@@ -177,6 +177,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 item.Tag = route;
                 lvwRoutes.Items.Add(item);
             }
+
             sw.Stop();
             Log.Info("PopulateRouteList PERF: total={0}ms filter={1}ms listBuild={2}ms items={3}",
                 sw.ElapsedMilliseconds, t1, sw.ElapsedMilliseconds - t1, routes.Count);
@@ -270,7 +271,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             var sw = System.Diagnostics.Stopwatch.StartNew();
             var destType = GetSelectedDestType();
             var items = new List<ColonyPickerItem>();
-            items.Add(new ColonyPickerItem { UUID = "", Display = "" });
+            items.Add(new ColonyPickerItem { UUID = string.Empty, Display = string.Empty });
 
             if (destType == DestinationType.Colony)
             {
@@ -359,11 +360,13 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 var station = playerContext.FindStation(stop.DestinationUUID);
                 return station != null ? station.Name : "(unknown station)";
             }
+
             if (stop.DestinationType == DestinationType.Asteroid)
             {
                 var asteroid = playerContext.FindAsteroid(stop.DestinationUUID);
                 return asteroid != null ? asteroid.Name : "(unknown asteroid)";
             }
+
             string colUUID = !string.IsNullOrEmpty(stop.DestinationUUID) ? stop.DestinationUUID : stop.ColonyUUID;
             var colony = playerContext.FindColony(colUUID);
             return colony != null ? $"{colony.PlanetName} - {colony.ColonyName}" : "(unknown colony)";
@@ -375,7 +378,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void PopulateForm()
         {
-            txtRouteName.Text = viewModel.Name ?? "";
+            txtRouteName.Text = viewModel.Name ?? string.Empty;
             PopulateStopsGrid();
         }
 
@@ -387,8 +390,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             foreach (var stop in viewModel.Stops)
             {
                 string destName = "(unknown)";
-                string planetName = "";
-                string systemName = "";
+                string planetName = string.Empty;
+                string systemName = string.Empty;
                 string destTypeStr = stop.DestinationType.ToString();
 
                 if (stop.DestinationType == DestinationType.Station)
@@ -400,18 +403,18 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 {
                     var asteroid = playerContext.FindAsteroid(stop.DestinationUUID);
                     destName = asteroid?.Name ?? "(unknown asteroid)";
-                    systemName = asteroid?.SystemName ?? "";
+                    systemName = asteroid?.SystemName ?? string.Empty;
                 }
                 else
                 {
                     string colUUID = !string.IsNullOrEmpty(stop.DestinationUUID) ? stop.DestinationUUID : stop.ColonyUUID;
                     var colony = playerContext.FindColony(colUUID);
                     destName = colony?.ColonyName ?? "(unknown)";
-                    planetName = colony?.PlanetName ?? "";
-                    systemName = colony?.SystemName ?? "";
+                    planetName = colony?.PlanetName ?? string.Empty;
+                    systemName = colony?.SystemName ?? string.Empty;
                 }
 
-                string fuelStr = stop.FuelEstimate > 0 ? stop.FuelEstimate.ToString("N1") : "";
+                string fuelStr = stop.FuelEstimate > 0 ? stop.FuelEstimate.ToString("N1") : string.Empty;
                 int rowIndex = dgvStops.Rows.Add(
                     stop.Sequence + 1,
                     destTypeStr,
@@ -422,6 +425,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                     fuelStr);
                 dgvStops.Rows[rowIndex].Tag = stop;
             }
+
             sw.Stop();
             Log.Info("PopulateStopsGrid PERF: total={0}ms stops={1}",
                 sw.ElapsedMilliseconds, viewModel.Stops.Count);
@@ -431,13 +435,13 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         private void ClearForm()
         {
             viewModel.Reset();
-            txtRouteName.Text = "";
+            txtRouteName.Text = string.Empty;
             dgvStops.Rows.Clear();
             PopulateColonyPicker();
             planViewModel = null;
             selectedPlanStop = null;
-            txtPlanFilter.Text = "";
-            txtPlanName.Text = "";
+            txtPlanFilter.Text = string.Empty;
+            txtPlanName.Text = string.Empty;
             txtPlanName.SetError("Plan name is required");
             cmbPlan.SelectedIndexChanged -= cmbPlan_SelectedIndexChanged;
             cmbPlan.DataSource = null;
@@ -467,6 +471,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 dgvStops.Rows[lastIndex].Selected = true;
                 dgvStops.FirstDisplayedScrollingRowIndex = lastIndex;
             }
+
             if (chkPreventDuplicates.Checked) PopulateColonyPicker();
         }
 
@@ -518,6 +523,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 dgvStops.Rows[selectIndex].Selected = true;
                 dgvStops.FirstDisplayedScrollingRowIndex = selectIndex;
             }
+
             if (chkPreventDuplicates.Checked) PopulateColonyPicker();
         }
 
@@ -632,18 +638,18 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             // Preserve current selection
             string previousUUID = cmbPlan.SelectedValue as string;
 
-            string filter = txtPlanFilter.Text ?? "";
+            string filter = txtPlanFilter.Text ?? string.Empty;
             bool showCompleted = chkShowCompleted.Checked;
 
             var plans = playerContext.GetCurrentPlayerPlans()
                 .Where(p => p.RouteUUID == routeUUID)
                 .Where(p => showCompleted || !p.Completed)
-                .Where(p => string.IsNullOrEmpty(filter) || (p.Name ?? "").IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                .Where(p => string.IsNullOrEmpty(filter) || (p.Name ?? string.Empty).IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
                 .OrderBy(p => p.Name)
                 .ToList();
 
             var items = new List<PlanDropdownItem>();
-            items.Add(new PlanDropdownItem { UUID = "", Display = "" });
+            items.Add(new PlanDropdownItem { UUID = string.Empty, Display = string.Empty });
             foreach (var plan in plans)
             {
                 string display = plan.Name;
@@ -661,6 +667,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             {
                 cmbPlan.SelectedValue = previousUUID;
             }
+
             sw.Stop(); Log.Info("PERF PopulatePlanDropdown: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -671,7 +678,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             {
                 planViewModel = null;
                 selectedPlanStop = null;
-                txtPlanName.Text = "";
+                txtPlanName.Text = string.Empty;
                 txtPlanName.SetError("Plan name is required");
                 cmdAutoFill.Visible = false;
                 ClearPlanGrids();
@@ -682,7 +689,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             if (plan != null)
             {
                 planViewModel = new DeliveryPlanViewModel(plan, playerContext);
-                txtPlanName.Text = plan.Name ?? "";
+                txtPlanName.Text = plan.Name ?? string.Empty;
                 cmdAutoFill.Visible = true;
                 // Load plan items for the currently selected stop
                 if (dgvStops.SelectedRows.Count == 1)
@@ -794,6 +801,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 OwnerUUID = playerContext.CurrentPlayerUUID,
                 RouteUUID = viewModel.UUID
             };
+
             playerContext.AddDeliveryPlan(plan);
             playerContext.WriteContext();
 
@@ -816,7 +824,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             playerContext.WriteContext();
             planViewModel = null;
             selectedPlanStop = null;
-            txtPlanName.Text = "";
+            txtPlanName.Text = string.Empty;
             ClearPlanGrids();
             PopulatePlanDropdown();
 
@@ -927,7 +935,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             var itemType = typeCombo.SelectedItem as ItemType;
             if (itemType == null) return;
 
-            string filter = filterBox.Text ?? "";
+            string filter = filterBox.Text ?? string.Empty;
             itemCombo.DataSource = null;
             var items = GetItemsForType(itemType.ID);
             if (!string.IsNullOrEmpty(filter))
@@ -936,6 +944,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                     string.IsNullOrEmpty(i.Display) ||
                     i.Display.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
+
             itemCombo.DisplayMember = "Display";
             itemCombo.ValueMember = "ID";
             itemCombo.DataSource = items;
@@ -945,7 +954,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         private List<ItemPickerEntry> GetItemsForType(ItemType.ItemTypeEnum typeEnum)
         {
             var result = new List<ItemPickerEntry>();
-            result.Add(new ItemPickerEntry { ID = "", Display = "" });
+            result.Add(new ItemPickerEntry { ID = string.Empty, Display = string.Empty });
 
             switch (typeEnum)
             {
@@ -971,6 +980,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                             result.Add(new ItemPickerEntry { ID = bp.UUID, Display = bp.ExtendedName });
                     break;
             }
+
             return result;
         }
 
@@ -993,11 +1003,13 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 int idx = dgvDropOff.Rows.Add(item.ItemType.ToString(), item.ExtendedName, item.Quantity);
                 dgvDropOff.Rows[idx].Tag = item;
             }
+
             foreach (var item in selectedPlanStop.PickUp)
             {
                 int idx = dgvPickUp.Rows.Add(item.ItemType.ToString(), item.ExtendedName, item.Quantity);
                 dgvPickUp.Rows[idx].Tag = item;
             }
+
             sw.Stop();
             Log.Info("PopulatePlanGrids PERF: total={0}ms dropOff={1} pickUp={2}",
                 sw.ElapsedMilliseconds, selectedPlanStop.DropOff.Count, selectedPlanStop.PickUp.Count);
@@ -1013,6 +1025,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 dgvStops_SelectionChanged(sender, e);
                 if (selectedPlanStop == null) return;
             }
+
             var entry = cmbDropItem.SelectedItem as ItemPickerEntry;
             if (entry == null || string.IsNullOrEmpty(entry.ID)) return;
             var itemType = cmbDropItemType.SelectedItem as ItemType;
@@ -1021,7 +1034,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             if (qty <= 0) qty = 1;
 
             planViewModel.AddDropOffItem(selectedPlanStop, itemType.ID, entry.ID, entry.Display, qty,
-                itemType.ID == ItemType.ItemTypeEnum.Resource ? (cmbDropPurity.SelectedItem as Models.ResourcePurity)?.Name ?? "" : "");
+                itemType.ID == ItemType.ItemTypeEnum.Resource ? (cmbDropPurity.SelectedItem as Models.ResourcePurity)?.Name ?? string.Empty : string.Empty);
             PopulatePlanGrids();
         }
 
@@ -1033,6 +1046,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 dgvStops_SelectionChanged(sender, e);
                 if (selectedPlanStop == null) return;
             }
+
             var entry = cmbPickItem.SelectedItem as ItemPickerEntry;
             if (entry == null || string.IsNullOrEmpty(entry.ID)) return;
             var itemType = cmbPickItemType.SelectedItem as ItemType;
@@ -1041,7 +1055,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             if (qty <= 0) qty = 1;
 
             planViewModel.AddPickUpItem(selectedPlanStop, itemType.ID, entry.ID, entry.Display, qty,
-                itemType.ID == ItemType.ItemTypeEnum.Resource ? (cmbPickPurity.SelectedItem as Models.ResourcePurity)?.Name ?? "" : "");
+                itemType.ID == ItemType.ItemTypeEnum.Resource ? (cmbPickPurity.SelectedItem as Models.ResourcePurity)?.Name ?? string.Empty : string.Empty);
             PopulatePlanGrids();
         }
 
@@ -1078,6 +1092,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 catch (ObjectDisposedException) { }
                 return;
             }
+
             ClearForm();
             PopulateRouteList();
             PopulateColonyPicker();
@@ -1092,6 +1107,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 catch (ObjectDisposedException) { }
                 return;
             }
+
             PopulateRouteList();
             PopulatePlanDropdown();
         }

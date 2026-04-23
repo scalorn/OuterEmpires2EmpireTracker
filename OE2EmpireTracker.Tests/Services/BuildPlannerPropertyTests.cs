@@ -27,6 +27,7 @@ namespace OE2EmpireTracker.Tests.Services
                     BlueprintUUID = "bp-test",
                     Quantity = qty
                 };
+
                 bool expected = qty >= 1;
                 bool actual = BuildPlanService.ValidateBuildItem(item);
                 Assert.That(actual, Is.EqualTo(expected),
@@ -83,6 +84,7 @@ namespace OE2EmpireTracker.Tests.Services
                     OwnerUUID = Guid.NewGuid().ToString(),
                     IsActive = rng.Next(2) == 1
                 };
+
                 int itemCount = rng.Next(0, 5);
                 for (int j = 0; j < itemCount; j++)
                 {
@@ -95,6 +97,7 @@ namespace OE2EmpireTracker.Tests.Services
                         Status = (BuildItemStatus)rng.Next(5)
                     });
                 }
+
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(plan);
                 var d = Newtonsoft.Json.JsonConvert.DeserializeObject<BuildPlan>(json);
                 Assert.That(d.UUID, Is.EqualTo(plan.UUID));
@@ -185,6 +188,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Quantity = listingQty,
                     PricePerUnit = rng.Next(1, 1000)
                 };
+
                 int expectedAfter = listingQty - saleQty;
                 var tx = MarketService.RecordSale(listing, saleQty, listing.PricePerUnit, "Buyer", "Fac", "s1");
                 Assert.That(tx, Is.Not.Null);

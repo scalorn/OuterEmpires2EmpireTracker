@@ -1,8 +1,8 @@
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.ViewModels
 {
@@ -79,6 +79,7 @@ namespace OE2EmpireTracker.ViewModels
             {
                 if (entry.Value.TrainingStarted) return true;
             }
+
             return false;
         }
 
@@ -106,6 +107,7 @@ namespace OE2EmpireTracker.ViewModels
                 _profile.UUID = Guid.NewGuid().ToString();
                 _playerContext.AddPlayerProfile(_profile);
             }
+
             _playerContext.WriteContext();
             _playerContext.OnPlayerProfilesChanged();
             _playerContext.OnPlayerProfileDataChanged(_profile.UUID);

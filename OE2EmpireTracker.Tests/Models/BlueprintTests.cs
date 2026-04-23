@@ -165,6 +165,7 @@ namespace OE2EmpireTracker.Tests.Models
                 TechLevel = "MilSpec",
                 NickName = "Big Gun"
             };
+
             string name = bp.ExtendedName;
             // Order: C{Class} Ev({Evolution}) Name (TechLevel) [NickName]
             Assert.That(name.IndexOf("C2") < name.IndexOf("Ev(3)"), Is.True,
@@ -209,6 +210,7 @@ namespace OE2EmpireTracker.Tests.Models
                 NickName = "Big Gun",
                 CopyCost = 500
             };
+
             string json = JsonConvert.SerializeObject(bp);
             var restored = JsonConvert.DeserializeObject<OE2EmpireTracker.Models.Blueprint>(json);
 

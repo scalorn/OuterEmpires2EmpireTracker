@@ -1,9 +1,9 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace OE2EmpireTracker.Models
 {
@@ -62,6 +62,7 @@ namespace OE2EmpireTracker.Models
                                 Quantity = shortfall
                             };
                         }
+
                         if (available > 0)
                             pickedUp[key] = 0;
                     }

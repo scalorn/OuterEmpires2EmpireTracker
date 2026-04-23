@@ -113,6 +113,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { "NewSteel", "400" },
                 { "NewTitanium", "500" }
             };
+
             incoming.Properties = new PropertyBag();
 
             MarketBlueprintImporter.MergeResourcesOnly(target, incoming);

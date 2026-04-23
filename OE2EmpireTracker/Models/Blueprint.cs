@@ -1,6 +1,3 @@
-using Newtonsoft.Json;
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,6 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Newtonsoft.Json;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Models
 {
@@ -60,23 +60,28 @@ namespace OE2EmpireTracker.Models
                 {
                     return string.Empty;
                 }
-                string extendedName = "";
+
+                string extendedName = string.Empty;
                 if (Class > 0)
                 {
                     extendedName += $"C{Class} ";
                 }
+
                 if (Evolution > 0) {
                     extendedName += "Ev(" + Evolution + ") ";
                 }
+
                 extendedName += Name + " ";
                 if (TechLevel != null)
                 {
                     extendedName += "(" + TechLevel + ") ";
                 }
-                if (!String.IsNullOrEmpty(NickName))
+
+                if (!string.IsNullOrEmpty(NickName))
                 {
                     extendedName += "[" + NickName + "] ";
                 }
+
                 extendedName = extendedName.Trim();
                 return extendedName;
             }
@@ -89,11 +94,10 @@ namespace OE2EmpireTracker.Models
             Resources = new Dictionary<string, string>();
         }
 
-        public Blueprint() : base(Models.ItemType.ItemTypeEnum.Blueprint, "")
+        public Blueprint() : base(Models.ItemType.ItemTypeEnum.Blueprint, string.Empty)
         {
             Properties = new PropertyBag();
             Resources = new Dictionary<string, string>();
         }
-
     }
 }

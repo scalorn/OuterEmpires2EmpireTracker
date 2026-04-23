@@ -1,9 +1,9 @@
+using System;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.ViewModels;
-using System;
-using System.Linq;
 using Bp = OE2EmpireTracker.Models.Blueprint;
 
 namespace OE2EmpireTracker.Tests.Services
@@ -43,6 +43,7 @@ namespace OE2EmpireTracker.Tests.Services
                 PlanetName = "TestPlanet",
                 ColonyName = "TestColony"
             };
+
             var bp = new Bp("Power Plant") { UUID = "bp-pp-1", OwnerUUID = "player1" };
             _playerContext.AddBlueprint(bp);
             _playerContext.InvalidateBlueprintCache();
@@ -77,6 +78,7 @@ namespace OE2EmpireTracker.Tests.Services
                 PlanetName = "TestPlanet",
                 ColonyName = "TestColony"
             };
+
             colony.Structures.Add(new ColonyStructure { UUID = "str-a", displaySequence = 1 });
 
             var vm = new ColonyViewModel(colony, _playerContext);
@@ -96,6 +98,7 @@ namespace OE2EmpireTracker.Tests.Services
                 PlanetName = "TestPlanet",
                 ColonyName = "TestColony"
             };
+
             var bp = new Bp("Mining Rig") { UUID = "bp-mr-1", OwnerUUID = "player1" };
             _playerContext.AddBlueprint(bp);
             _playerContext.InvalidateBlueprintCache();
@@ -121,6 +124,7 @@ namespace OE2EmpireTracker.Tests.Services
                 PlanetName = "TestPlanet",
                 ColonyName = "TestColony"
             };
+
             colony.Structures.Add(new ColonyStructure { UUID = "str-x", displaySequence = 1 });
 
             var vm = new ColonyViewModel(colony, _playerContext);

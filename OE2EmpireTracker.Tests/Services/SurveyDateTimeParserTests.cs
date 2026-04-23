@@ -105,7 +105,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void TryParseGameFormat_Empty_ReturnsFalse()
         {
-            bool ok = SurveyDateTimeParser.TryParseGameFormat("", out _);
+            bool ok = SurveyDateTimeParser.TryParseGameFormat(string.Empty, out _);
             Assert.That(ok, Is.False);
         }
 

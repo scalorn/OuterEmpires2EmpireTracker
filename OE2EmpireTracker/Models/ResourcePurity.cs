@@ -42,7 +42,7 @@ namespace OE2EmpireTracker.Models
             instance.Sort((x, y) => x.Name.CompareTo(y.Name));
 
             // Make sure the blank none entry is first.
-            instance.Insert(0, new ResourcePurity() { ID = PurityEnum.None, Name = "" });
+            instance.Insert(0, new ResourcePurity() { ID = PurityEnum.None, Name = string.Empty });
 
             _purityMapByEnum = new Dictionary<PurityEnum, ResourcePurity>();
             _purityMapByString = new Dictionary<string, ResourcePurity>();

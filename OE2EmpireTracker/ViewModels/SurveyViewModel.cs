@@ -1,8 +1,8 @@
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.ViewModels
 {
@@ -46,19 +46,19 @@ namespace OE2EmpireTracker.ViewModels
 
         public string SensorAbundance
         {
-            get => _survey.Properties.ContainsKey("SensorAbundance") ? _survey.Properties["SensorAbundance"] : "";
+            get => _survey.Properties.ContainsKey("SensorAbundance") ? _survey.Properties["SensorAbundance"] : string.Empty;
             set => _survey.Properties["SensorAbundance"] = value;
         }
 
         public string PurityModifier
         {
-            get => _survey.Properties.ContainsKey("PurityModifier") ? _survey.Properties["PurityModifier"] : "";
+            get => _survey.Properties.ContainsKey("PurityModifier") ? _survey.Properties["PurityModifier"] : string.Empty;
             set => _survey.Properties["PurityModifier"] = value;
         }
 
         public string ScanLevel
         {
-            get => _survey.Properties.ContainsKey("ScanLevel") ? _survey.Properties["ScanLevel"] : "";
+            get => _survey.Properties.ContainsKey("ScanLevel") ? _survey.Properties["ScanLevel"] : string.Empty;
             set => _survey.Properties["ScanLevel"] = value;
         }
 
@@ -128,6 +128,7 @@ namespace OE2EmpireTracker.ViewModels
                              || (s.SystemName != null && s.SystemName.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0))
                     .ToList();
             }
+
             if (!string.IsNullOrEmpty(resourceFilter))
             {
                 list = list
@@ -135,10 +136,12 @@ namespace OE2EmpireTracker.ViewModels
                         string.Equals(r.Resource, resourceFilter, StringComparison.OrdinalIgnoreCase)))
                     .ToList();
             }
+
             if (typeFilter.HasValue)
             {
                 list = list.Where(s => s.SurveyType == typeFilter.Value).ToList();
             }
+
             if (!string.IsNullOrEmpty(purityFilter))
             {
                 list = list
@@ -146,6 +149,7 @@ namespace OE2EmpireTracker.ViewModels
                         string.Equals(r.Purity, purityFilter, StringComparison.OrdinalIgnoreCase)))
                     .ToList();
             }
+
             if (minAmount > 0)
             {
                 list = list
@@ -157,6 +161,7 @@ namespace OE2EmpireTracker.ViewModels
                     }))
                     .ToList();
             }
+
             return list.AsReadOnly();
         }
 
@@ -171,10 +176,12 @@ namespace OE2EmpireTracker.ViewModels
                 _survey.UUID = Guid.NewGuid().ToString();
                 _playerContext.AddSurvey(_survey);
             }
+
             if (string.IsNullOrEmpty(_survey.OwnerUUID))
             {
                 _survey.OwnerUUID = _playerContext.CurrentPlayerUUID;
             }
+
             _playerContext.WriteContext();
             _playerContext.OnSurveyDataChanged(_survey.UUID);
         }

@@ -1,7 +1,7 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Models;
 using System;
 using System.Linq;
+using NUnit.Framework;
+using OE2EmpireTracker.Models;
 using PE = OE2EmpireTracker.Models.ResourcePurity.PurityEnum;
 
 namespace OE2EmpireTracker.Tests.Models

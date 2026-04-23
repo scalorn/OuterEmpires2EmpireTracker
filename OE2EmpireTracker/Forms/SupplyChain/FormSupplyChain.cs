@@ -63,6 +63,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
         }
+
         // Layout
         private void flpBase_Layout(object sender, LayoutEventArgs e)
         {
@@ -111,9 +112,11 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                     item.ForeColor = Color.Gray;
                     item.Font = new Font(lvwChains.Font, FontStyle.Italic);
                 }
+
                 lvwChains.Items.Add(item);
                 if (chain.UUID == selectedUUID) item.Selected = true;
             }
+
             sw.Stop();
             Log.Info("PERF PopulateChainList: {0}ms items={1}", sw.ElapsedMilliseconds, chains.Count);
         }
@@ -128,6 +131,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             else if (!e.IsSelected && lvwChains.SelectedItems.Count == 0)
             { _selectedChain = null; ClearForm(); }
         }
+
         // Form Population
         private void PopulateForm()
         {
@@ -147,11 +151,11 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         private void ClearForm()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
-            txtChainName.Text = "";
+            txtChainName.Text = string.Empty;
             chkActive.Checked = true;
             dgvStages.Rows.Clear();
             ClearStageEditPanel();
-            txtFlowSummary.Text = "";
+            txtFlowSummary.Text = string.Empty;
             SetDetailEnabled(false);
         }
 
@@ -180,18 +184,19 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         private void ClearStageEditPanel()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
-            txtSequence.Text = "";
+            txtSequence.Text = string.Empty;
             if (cmbStageType.Items.Count > 0) cmbStageType.SelectedIndex = 0;
             if (cmbLocationType.Items.Count > 0) cmbLocationType.SelectedIndex = 0;
             cmbLocation.DataSource = null;
             cmbLocation.Items.Clear();
             if (cmbResource.Items.Count > 0) cmbResource.SelectedIndex = 0;
             if (cmbPurity.Items.Count > 0) cmbPurity.SelectedIndex = 0;
-            txtThreshold.Text = "";
-            txtRate.Text = "";
+            txtThreshold.Text = string.Empty;
+            txtRate.Text = string.Empty;
             cmbRoute.DataSource = null;
             cmbRoute.Items.Clear();
         }
+
         // Combo helpers
         private void PopulateStageTypeCombos()
         {
@@ -220,6 +225,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                 foreach (var r in resources.OrderBy(r => r.Name))
                     cmbResource.Items.Add(r.Name);
             }
+
             if (cmbResource.Items.Count > 0) cmbResource.SelectedIndex = 0;
             sw.Stop(); Log.Info("PERF PopulateResourceCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -233,6 +239,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                 if (p.ID != ResourcePurity.PurityEnum.None)
                     cmbPurity.Items.Add(p.Name);
             }
+
             if (cmbPurity.Items.Count > 0) cmbPurity.SelectedIndex = 0;
             sw.Stop(); Log.Info("PERF PopulatePurityCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -274,6 +281,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                 cmbLocation.DisplayMember = "Value";
                 cmbLocation.ValueMember = "Key";
             }
+
             sw.Stop(); Log.Info("PERF PopulateLocationCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -286,7 +294,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
 
             var routes = playerContext.DeliveryRouteList.OrderBy(r => r.Name).ToList();
             var items = new List<KeyValuePair<string, string>>();
-            items.Add(new KeyValuePair<string, string>("", "(none)"));
+            items.Add(new KeyValuePair<string, string>(string.Empty, "(none)"));
             foreach (var r in routes)
                 items.Add(new KeyValuePair<string, string>(r.UUID, r.Name));
 
@@ -301,6 +309,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             if (_isProgrammaticUpdate > 0) return;
             PopulateLocationCombo();
         }
+
         // Stages grid
         private void PopulateStagesGrid()
         {
@@ -316,8 +325,8 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                 if (!string.IsNullOrEmpty(stage.ResourcePurity))
                     resourceDisplay += " (" + stage.ResourcePurity + ")";
                 string routeName = ResolveRouteName(stage.DeliveryRouteUUID);
-                string thresholdStr = stage.AccumulationThreshold > 0 ? stage.AccumulationThreshold.ToString() : "";
-                string rateStr = stage.ProductionRatePerHour > 0 ? stage.ProductionRatePerHour.ToString("F1") : "";
+                string thresholdStr = stage.AccumulationThreshold > 0 ? stage.AccumulationThreshold.ToString() : string.Empty;
+                string rateStr = stage.ProductionRatePerHour > 0 ? stage.ProductionRatePerHour.ToString("F1") : string.Empty;
 
                 int rowIdx = dgvStages.Rows.Add(
                     stage.Sequence.ToString(),
@@ -329,12 +338,13 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                     routeName);
                 dgvStages.Rows[rowIdx].Tag = stage;
             }
+
             sw.Stop(); Log.Info("PERF PopulateStagesGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private string ResolveLocationName(DestinationType locType, string uuid)
         {
-            if (string.IsNullOrEmpty(uuid)) return "";
+            if (string.IsNullOrEmpty(uuid)) return string.Empty;
             switch (locType)
             {
                 case DestinationType.Colony:
@@ -356,7 +366,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
 
         private string ResolveRouteName(string routeUUID)
         {
-            if (string.IsNullOrEmpty(routeUUID)) return "";
+            if (string.IsNullOrEmpty(routeUUID)) return string.Empty;
             var route = playerContext.DeliveryRouteList.FirstOrDefault(r => r.UUID == routeUUID);
             return route?.Name ?? routeUUID;
         }
@@ -389,32 +399,34 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                 if (cmbResource.Items[i].ToString() == stage.ResourceName)
                 { cmbResource.SelectedIndex = i; break; }
             }
+
             for (int i = 0; i < cmbPurity.Items.Count; i++)
             {
                 if (cmbPurity.Items[i].ToString() == stage.ResourcePurity)
                 { cmbPurity.SelectedIndex = i; break; }
             }
 
-            txtThreshold.Text = stage.AccumulationThreshold > 0 ? stage.AccumulationThreshold.ToString() : "";
-            txtRate.Text = stage.ProductionRatePerHour > 0 ? stage.ProductionRatePerHour.ToString("F1") : "";
+            txtThreshold.Text = stage.AccumulationThreshold > 0 ? stage.AccumulationThreshold.ToString() : string.Empty;
+            txtRate.Text = stage.ProductionRatePerHour > 0 ? stage.ProductionRatePerHour.ToString("F1") : string.Empty;
 
             PopulateRouteCombo();
             if (!string.IsNullOrEmpty(stage.DeliveryRouteUUID))
                 cmbRoute.SelectedValue = stage.DeliveryRouteUUID;
             sw.Stop(); Log.Info("PERF PopulateStageEditFromStage: {0}ms", sw.ElapsedMilliseconds);
         }
+
         // Stage CRUD
         private SupplyChainStage BuildStageFromPanel()
         {
             int.TryParse(txtSequence.Text.Trim(), out int seq);
             var stageType = cmbStageType.SelectedItem is SupplyChainStageType st ? st : SupplyChainStageType.Mine;
             var locType = cmbLocationType.SelectedItem is DestinationType dt ? dt : DestinationType.Colony;
-            string locUUID = cmbLocation.SelectedValue?.ToString() ?? "";
-            string resource = cmbResource.SelectedItem?.ToString() ?? "";
-            string purity = cmbPurity.SelectedItem?.ToString() ?? "";
+            string locUUID = cmbLocation.SelectedValue?.ToString() ?? string.Empty;
+            string resource = cmbResource.SelectedItem?.ToString() ?? string.Empty;
+            string purity = cmbPurity.SelectedItem?.ToString() ?? string.Empty;
             int.TryParse(txtThreshold.Text.Trim(), out int threshold);
             decimal.TryParse(txtRate.Text.Trim(), out decimal rate);
-            string routeUUID = cmbRoute.SelectedValue?.ToString() ?? "";
+            string routeUUID = cmbRoute.SelectedValue?.ToString() ?? string.Empty;
 
             return new SupplyChainStage
             {
@@ -507,11 +519,12 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             PopulateStagesGrid();
             UpdateFlowSummary();
         }
+
         // Flow Summary
         private void UpdateFlowSummary()
         {
             if (_selectedChain == null || _selectedChain.Stages.Count == 0)
-            { txtFlowSummary.Text = ""; return; }
+            { txtFlowSummary.Text = string.Empty; return; }
 
             var sorted = _selectedChain.Stages.OrderBy(s => s.Sequence).ToList();
             var parts = new List<string>();
@@ -525,6 +538,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                     desc += "(" + stage.AccumulationThreshold + ")";
                 parts.Add(desc);
             }
+
             txtFlowSummary.Text = string.Join(" \u2192 ", parts);
         }
 
@@ -535,9 +549,10 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             {
                 UUID = Guid.NewGuid().ToString(),
                 Name = "New Supply Chain",
-                OwnerUUID = playerContext.CurrentPlayerUUID ?? "",
+                OwnerUUID = playerContext.CurrentPlayerUUID ?? string.Empty,
                 IsActive = true
             };
+
             playerContext.AddSupplyChain(chain);
             playerContext.WriteContext();
             _selectedChain = chain;

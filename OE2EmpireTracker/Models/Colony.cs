@@ -1,12 +1,12 @@
-using Newtonsoft.Json;
-using NLog;
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Constants;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using Newtonsoft.Json;
+using NLog;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Models
 {
@@ -113,6 +113,7 @@ namespace OE2EmpireTracker.Models
                     structure.ManufacturingCompleted = 0;
                     structure.StagingResources = false;
                 }
+
                 // Also clear if the referenced manufacturing blueprint doesn't exist
                 if (isManufactory && !string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID)
                     && pc.FindBlueprint(structure.ManufacturingBlueprintUUID) == null)
@@ -126,6 +127,7 @@ namespace OE2EmpireTracker.Models
                     if (structure.ProcessCompletionTime != null)
                         structure.ProcessCompletionTime = null;
                 }
+
                 if (!isCommodityFactory && !string.IsNullOrEmpty(structure.ManufacturingCommodityName))
                 {
                     Log.Warn("Clearing orphaned ManufacturingCommodityName on {0} (type={1})",
@@ -135,12 +137,14 @@ namespace OE2EmpireTracker.Models
                     structure.ManufacturingCompleted = 0;
                     structure.StagingResources = false;
                 }
+
                 if (!isResearchLab && !string.IsNullOrEmpty(structure.ResearchingBlueprintUUID))
                 {
                     Log.Warn("Clearing orphaned ResearchingBlueprintUUID on {0} (type={1})",
                         structure.UUID, bp.BluePrintType);
                     structure.ResearchingBlueprintUUID = null;
                 }
+
                 if (isResearchLab && !string.IsNullOrEmpty(structure.ResearchingBlueprintUUID)
                     && pc.FindBlueprint(structure.ResearchingBlueprintUUID) == null)
                 {
@@ -150,6 +154,7 @@ namespace OE2EmpireTracker.Models
                     if (structure.ProcessCompletionTime != null)
                         structure.ProcessCompletionTime = null;
                 }
+
                 // Clear ProcessCompletionTime on manufactories/commodity factories/research labs
                 // that have a timer but no active job
                 if (isManufactory && string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID)
@@ -158,12 +163,14 @@ namespace OE2EmpireTracker.Models
                     Log.Warn("Clearing orphaned ProcessCompletionTime on manufactory {0}", structure.UUID);
                     structure.ProcessCompletionTime = null;
                 }
+
                 if (isCommodityFactory && string.IsNullOrEmpty(structure.ManufacturingCommodityName)
                     && structure.ProcessCompletionTime != null)
                 {
                     Log.Warn("Clearing orphaned ProcessCompletionTime on commodity factory {0}", structure.UUID);
                     structure.ProcessCompletionTime = null;
                 }
+
                 if (isResearchLab && string.IsNullOrEmpty(structure.ResearchingBlueprintUUID)
                     && structure.ProcessCompletionTime != null)
                 {
@@ -199,6 +206,7 @@ namespace OE2EmpireTracker.Models
                             structure.UUID, structure.FlatpackBlueprintUUID ?? "(null)");
                         continue;
                     }
+
                     ready.Add((structure, bp));
                 }
             }
@@ -246,6 +254,7 @@ namespace OE2EmpireTracker.Models
                     structure.MiningSurveyResource ?? "(null)", structure.MiningSurvey, structure.UUID);
                 return;
             }
+
             List<Item> items = Items.FindResource(surveyResource.Resource, surveyResource.Purity);
             int quantityInt = 0;
             Decimal leftOver = structure.MiningLeftOvers;
@@ -278,6 +287,7 @@ namespace OE2EmpireTracker.Models
                 leftOver += (quantity - quantityInt);
                 structure.ProcessCompletionTime.ConsumeIntervals(1);
             }
+
             item.Quantity += quantityInt;
             structure.MiningLeftOvers = leftOver;
         }
@@ -360,6 +370,7 @@ namespace OE2EmpireTracker.Models
                     refinedItem.Quantity = 0;
                     Items.AddItem(refinedItem);
                 }
+
                 refinedItem.Quantity += produced;
 
                 structure.ProcessCompletionTime.ConsumeIntervals(1);
@@ -424,6 +435,7 @@ namespace OE2EmpireTracker.Models
                         outputItem.Quantity = 0;
                         Items.AddItem(outputItem);
                     }
+
                     outputItem.Quantity += produced;
                 }
 
@@ -461,6 +473,7 @@ namespace OE2EmpireTracker.Models
             {
                 newBp.Properties.setProperty(prop.Key, prop.Value);
             }
+
             // Resources intentionally empty / user imports via Blueprint Form
 
             // Add to player's blueprint list

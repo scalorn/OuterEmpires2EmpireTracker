@@ -1,10 +1,10 @@
-using NLog;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using NLog;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
 {
@@ -25,6 +25,7 @@ namespace OE2EmpireTracker.Services
             var intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.BackgroundProcessingIntervalSeconds * 1000);
             return Math.Max(intervalMs, 1000);
         }
+
         private Timer _timer;
         private readonly ManualResetEventSlim _stopping = new ManualResetEventSlim(false);
         private readonly object _cycleLock = new object();
@@ -169,6 +170,7 @@ namespace OE2EmpireTracker.Services
                             Log.Warn("BackgroundProcessor: write lock timeout on colony {0}, skipping", colony.UUID);
                             continue;
                         }
+
                         try
                         {
                             colony.ProcessColony();
@@ -376,7 +378,7 @@ namespace OE2EmpireTracker.Services
                     var stockPlans = _playerContext.StockPlanList;
                     if (stockPlans != null && stockPlans.Count > 0)
                     {
-                        string playerUUID = _playerContext.CurrentPlayerUUID ?? "";
+                        string playerUUID = _playerContext.CurrentPlayerUUID ?? string.Empty;
                         var colonies = _playerContext.SnapshotColonyList();
                         var stations = _playerContext.StationList.ToList();
 
@@ -497,7 +499,7 @@ namespace OE2EmpireTracker.Services
             var chains = _playerContext.SupplyChainList;
             if (chains == null || chains.Count == 0) return 0;
 
-            string currentPlayerUUID = _playerContext.CurrentPlayerUUID ?? "";
+            string currentPlayerUUID = _playerContext.CurrentPlayerUUID ?? string.Empty;
 
             var requests = SupplyChainService.CheckThresholds(
                 chains,

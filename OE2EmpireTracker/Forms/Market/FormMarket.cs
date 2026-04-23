@@ -74,9 +74,11 @@ namespace OE2EmpireTracker.Forms.Market
                     condition, refs.ToString());
                 dgvListings.Rows[rowIdx].Tag = listing;
             }
+
             sw.Stop();
             Log.Info("PERF PopulateListingsGrid: {0}ms items={1}", sw.ElapsedMilliseconds, listings.Count);
         }
+
         private void cmdListingAdd_Click(object sender, EventArgs e)
         {
             var listing = new MarketListing
@@ -87,6 +89,7 @@ namespace OE2EmpireTracker.Forms.Market
                 Quantity = 1,
                 PricePerUnit = 0m
             };
+
             playerContext.AddMarketListing(listing);
             playerContext.InvalidateMarketListingCache();
             playerContext.WriteContext();
@@ -172,6 +175,7 @@ namespace OE2EmpireTracker.Forms.Market
                 }
             }
         }
+
         // -----------------------------------------------------------------------
         // Transactions Tab (30.3)
         // -----------------------------------------------------------------------
@@ -216,8 +220,8 @@ namespace OE2EmpireTracker.Forms.Market
                 string stationName = ResolveStationName(tx.StationUUID);
                 string condition = tx.MaxHP > 0
                     ? string.Format("{0:F0}%", (tx.CurrentHP * 100.0 / tx.MaxHP))
-                    : "";
-                string dateStr = "";
+                    : string.Empty;
+                string dateStr = string.Empty;
                 if (DateTime.TryParse(tx.Timestamp, out DateTime parsed))
                     dateStr = parsed.ToLocalTime().ToString("yyyy-MM-dd HH:mm");
 
@@ -227,6 +231,7 @@ namespace OE2EmpireTracker.Forms.Market
                     tx.TotalPrice.ToString("N2"), tx.Counterparty,
                     tx.CounterpartyFaction, stationName, condition);
             }
+
             sw.Stop();
             Log.Info("PERF PopulateTransactionsGrid: {0}ms rows={1}", sw.ElapsedMilliseconds, dgvTransactions.Rows.Count);
         }
@@ -266,8 +271,8 @@ namespace OE2EmpireTracker.Forms.Market
             foreach (var kvp in summary.ItemBreakdown.OrderBy(k => k.Key))
             {
                 var b = kvp.Value;
-                string planValueStr = "";
-                string marginStr = "";
+                string planValueStr = string.Empty;
+                string marginStr = string.Empty;
                 if (plan != null && b.QuantitySold > 0)
                 {
                     // Try to compute plan value for this item
@@ -286,6 +291,7 @@ namespace OE2EmpireTracker.Forms.Market
                         if (PriceCalculator.TryGetResourcePrice(plan, b.ItemName, purity, out decimal rp))
                             unitPrice = rp;
                     }
+
                     if (unitPrice > 0)
                     {
                         decimal itemPlanValue = unitPrice * b.QuantitySold;
@@ -295,6 +301,7 @@ namespace OE2EmpireTracker.Forms.Market
                         marginStr = margin.ToString("N2");
                     }
                 }
+
                 dgvSummary.Rows.Add(b.ItemName, b.QuantitySold.ToString(),
                     b.SalesRevenue.ToString("N2"), b.QuantityBought.ToString(),
                     b.PurchaseCost.ToString("N2"), b.NetProfitLoss.ToString("N2"),
@@ -306,6 +313,7 @@ namespace OE2EmpireTracker.Forms.Market
                 lblNetPL.Text += string.Format("  |  Plan Value: {0:N2}  |  Margin: {1:N2}",
                     totalPlanValue, summary.TotalSalesRevenue - totalPlanValue);
             }
+
             sw.Stop();
             Log.Info("PERF cmdCompute_Click: {0}ms items={1}", sw.ElapsedMilliseconds, summary.ItemBreakdown.Count);
         }
@@ -322,7 +330,7 @@ namespace OE2EmpireTracker.Forms.Market
                 .OrderBy(p => p.Name).ToList();
 
             var items = new List<KeyValuePair<string, string>>();
-            items.Add(new KeyValuePair<string, string>("", "(none)"));
+            items.Add(new KeyValuePair<string, string>(string.Empty, "(none)"));
             foreach (var plan in plans)
                 items.Add(new KeyValuePair<string, string>(plan.UUID, plan.Name));
 
@@ -334,7 +342,7 @@ namespace OE2EmpireTracker.Forms.Market
 
         private Models.PricingPlan GetSelectedPricingPlan()
         {
-            string uuid = cmbPricingPlan.SelectedValue?.ToString() ?? "";
+            string uuid = cmbPricingPlan.SelectedValue?.ToString() ?? string.Empty;
             if (string.IsNullOrEmpty(uuid)) return null;
             return playerContext.PricingPlanList.FirstOrDefault(p => p.UUID == uuid);
         }
@@ -344,7 +352,7 @@ namespace OE2EmpireTracker.Forms.Market
         // -----------------------------------------------------------------------
         private string ResolveStationName(string stationUUID)
         {
-            if (string.IsNullOrEmpty(stationUUID)) return "";
+            if (string.IsNullOrEmpty(stationUUID)) return string.Empty;
             var station = playerContext.FindStation(stationUUID);
             return station?.Name ?? stationUUID;
         }
@@ -357,9 +365,9 @@ namespace OE2EmpireTracker.Forms.Market
                 .OrderBy(s => s.Name).ToList();
 
             cmbTxStation.Items.Clear();
-            cmbTxStation.Items.Add(new StationEntry { Display = "(All)", UUID = "" });
+            cmbTxStation.Items.Add(new StationEntry { Display = "(All)", UUID = string.Empty });
             cmbSumStation.Items.Clear();
-            cmbSumStation.Items.Add(new StationEntry { Display = "(All)", UUID = "" });
+            cmbSumStation.Items.Add(new StationEntry { Display = "(All)", UUID = string.Empty });
 
             foreach (var s in stations)
             {
@@ -367,6 +375,7 @@ namespace OE2EmpireTracker.Forms.Market
                 cmbTxStation.Items.Add(entry);
                 cmbSumStation.Items.Add(entry);
             }
+
             cmbTxStation.SelectedIndex = 0;
             cmbSumStation.SelectedIndex = 0;
             sw.Stop(); Log.Info("PERF PopulateStationCombos: {0}ms", sw.ElapsedMilliseconds);

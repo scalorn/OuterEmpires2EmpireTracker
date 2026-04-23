@@ -1,8 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -38,7 +38,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Enumerable.Empty<Ship>(),
                 Enumerable.Empty<BuildPlan>());
 
-            Assert.That(counter.CountReferences(""), Is.EqualTo(0));
+            Assert.That(counter.CountReferences(string.Empty), Is.EqualTo(0));
         }
 
         [Test]
@@ -77,6 +77,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new Ship { UUID = "s1", TemplateUUID = TargetUUID },
                 new Ship { UUID = "s2", TemplateUUID = TargetUUID }
             };
+
             var plan = new BuildPlan
             {
                 UUID = "plan-1",

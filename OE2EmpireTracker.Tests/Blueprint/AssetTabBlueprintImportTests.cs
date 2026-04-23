@@ -1,7 +1,7 @@
+using System.IO;
 using NUnit.Framework;
 using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Tests;
-using System.IO;
 
 namespace OE2EmpireTracker.Tests.Blueprint
 {
@@ -9,7 +9,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
     /// Tests for individual blueprint import from the asset-tab view.
     /// The asset tab HTML contains a list of blueprints with evolution numbers
     /// in addition to the detail panel, which caused the parser to pick the
-    /// wrong (empty) EvolutionNumber div and crash on string.Replace("","").
+    /// wrong (empty) EvolutionNumber div and crash on string.Replace(string.Empty,string.Empty).
     /// </summary>
     [TestFixture]
     public class AssetTabBlueprintImportTests

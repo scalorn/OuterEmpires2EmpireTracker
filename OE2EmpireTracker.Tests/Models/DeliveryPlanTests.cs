@@ -1,8 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Models
 {
@@ -81,7 +81,7 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void DeliveryItem_ExtendedName_EmptyPurity_ReturnsName()
         {
-            var item = new DeliveryItem { Name = "Iron", ResourcePurity = "" };
+            var item = new DeliveryItem { Name = "Iron", ResourcePurity = string.Empty };
             Assert.That(item.ExtendedName, Is.EqualTo("Iron"));
         }
 
@@ -100,6 +100,7 @@ namespace OE2EmpireTracker.Tests.Models
                 ItemType = ItemType.ItemTypeEnum.Commodity,
                 Name = "Steel Plates"
             };
+
             Assert.That(item.ExtendedName, Is.EqualTo("Steel Plates"));
         }
 
@@ -118,6 +119,7 @@ namespace OE2EmpireTracker.Tests.Models
                 RouteUUID = "r1",
                 Completed = false
             };
+
             string json = JsonConvert.SerializeObject(plan);
             var restored = JsonConvert.DeserializeObject<DeliveryPlan>(json);
             Assert.That(restored.UUID, Is.EqualTo("plan-1"));
@@ -174,6 +176,7 @@ namespace OE2EmpireTracker.Tests.Models
                     }
                 }
             };
+
             string json = JsonConvert.SerializeObject(plan);
             var restored = JsonConvert.DeserializeObject<DeliveryPlan>(json);
             Assert.That(restored.Stops.Count, Is.EqualTo(1));
@@ -239,6 +242,7 @@ namespace OE2EmpireTracker.Tests.Models
                 {
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Commodity, BaseItemTypeID = "Steel", Name = "Steel", Quantity = 50 }
                 }
+
             });
             var result = plan.CalculateLoadList();
             Assert.That(result.Count, Is.EqualTo(1));
@@ -258,6 +262,7 @@ namespace OE2EmpireTracker.Tests.Models
                 {
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Commodity, BaseItemTypeID = "Steel", Name = "Steel", Quantity = 100 }
                 }
+
             });
             plan.Stops.Add(new DeliveryPlanStop
             {
@@ -267,6 +272,7 @@ namespace OE2EmpireTracker.Tests.Models
                 {
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Commodity, BaseItemTypeID = "Steel", Name = "Steel", Quantity = 50 }
                 }
+
             });
             var result = plan.CalculateLoadList();
             Assert.That(result.Count, Is.EqualTo(0));
@@ -284,6 +290,7 @@ namespace OE2EmpireTracker.Tests.Models
                 {
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Commodity, BaseItemTypeID = "Steel", Name = "Steel", Quantity = 30 }
                 }
+
             });
             plan.Stops.Add(new DeliveryPlanStop
             {
@@ -293,6 +300,7 @@ namespace OE2EmpireTracker.Tests.Models
                 {
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Commodity, BaseItemTypeID = "Steel", Name = "Steel", Quantity = 50 }
                 }
+
             });
             var result = plan.CalculateLoadList();
             Assert.That(result.Count, Is.EqualTo(1));
@@ -311,6 +319,7 @@ namespace OE2EmpireTracker.Tests.Models
                 {
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Commodity, BaseItemTypeID = "Steel", Name = "Steel", Quantity = 30 }
                 }
+
             });
             plan.Stops.Add(new DeliveryPlanStop
             {
@@ -320,6 +329,7 @@ namespace OE2EmpireTracker.Tests.Models
                 {
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Commodity, BaseItemTypeID = "Steel", Name = "Steel", Quantity = 20 }
                 }
+
             });
             var result = plan.CalculateLoadList();
             Assert.That(result.Count, Is.EqualTo(1));
@@ -339,6 +349,7 @@ namespace OE2EmpireTracker.Tests.Models
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Resource, BaseItemTypeID = "Iron", Name = "Iron", ResourcePurity = "High", Quantity = 10 },
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Resource, BaseItemTypeID = "Iron", Name = "Iron", ResourcePurity = "Low", Quantity = 5 }
                 }
+
             });
             var result = plan.CalculateLoadList();
             Assert.That(result.Count, Is.EqualTo(2));
@@ -362,6 +373,7 @@ namespace OE2EmpireTracker.Tests.Models
                 {
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Resource, BaseItemTypeID = "Iron", Name = "Iron", ResourcePurity = "Medium", Quantity = 25 }
                 }
+
             });
             var result = plan.CalculateLoadList();
             Assert.That(result.Count, Is.EqualTo(1));
@@ -381,6 +393,7 @@ namespace OE2EmpireTracker.Tests.Models
                 {
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Resource, BaseItemTypeID = "Iron", Name = "Iron", Quantity = 100 }
                 }
+
             });
             var result = plan.CalculateLoadList();
             Assert.That(result.Count, Is.EqualTo(0));
@@ -398,6 +411,7 @@ namespace OE2EmpireTracker.Tests.Models
                 {
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Commodity, BaseItemTypeID = "Steel", Name = "Steel", Quantity = 50 }
                 }
+
             });
             plan.Stops.Add(new DeliveryPlanStop
             {
@@ -407,6 +421,7 @@ namespace OE2EmpireTracker.Tests.Models
                 {
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Commodity, BaseItemTypeID = "Steel", Name = "Steel", Quantity = 100 }
                 }
+
             });
             var result = plan.CalculateLoadList();
             Assert.That(result.Count, Is.EqualTo(1));
@@ -426,6 +441,7 @@ namespace OE2EmpireTracker.Tests.Models
                 {
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Commodity, BaseItemTypeID = "Steel", Name = "Steel", Quantity = 50 }
                 }
+
             });
             plan.Stops.Add(new DeliveryPlanStop
             {
@@ -435,6 +451,7 @@ namespace OE2EmpireTracker.Tests.Models
                 {
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Commodity, BaseItemTypeID = "Steel", Name = "Steel", Quantity = 100 }
                 }
+
             });
             // Even though stops are added out of order, sequence 0 (pick-up) should be processed first
             var result = plan.CalculateLoadList();
@@ -455,6 +472,7 @@ namespace OE2EmpireTracker.Tests.Models
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Commodity, BaseItemTypeID = "Steel", Name = "Steel", Quantity = 20 },
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Flatpack, BaseItemTypeID = "fp-1", Name = "Reactor", Quantity = 1 }
                 }
+
             });
             var result = plan.CalculateLoadList();
             Assert.That(result.Count, Is.EqualTo(3));
@@ -474,6 +492,7 @@ namespace OE2EmpireTracker.Tests.Models
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Commodity, BaseItemTypeID = "Alpha", Name = "Alpha", Quantity = 10 },
                     new DeliveryItem { ItemType = ItemType.ItemTypeEnum.Commodity, BaseItemTypeID = "Mid", Name = "Mid", Quantity = 3 }
                 }
+
             });
             var result = plan.CalculateLoadList();
             Assert.That(result[0].Name, Is.EqualTo("Alpha"));

@@ -1,11 +1,11 @@
-using NLog;
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Controls;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using NLog;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
 {
@@ -85,6 +85,7 @@ namespace OE2EmpireTracker.Services
                     string localTime = row.CountDown.EndTime.ToLocalTime().ToString("HH:mm ddd");
                     builder.Append(" (" + localTime + ")", CompletionTimeColor);
                 }
+
                 builder.Append("\n", TextColor);
             }
 
@@ -107,6 +108,7 @@ namespace OE2EmpireTracker.Services
                 {
                     builder.Append(" -- due " + row.NeedBy.ToLocalTime().ToString("ddMMMyy-h:mmtt").ToLower(), DetailColor);
                 }
+
                 builder.Append("\n", TextColor);
             }
 
@@ -124,7 +126,7 @@ namespace OE2EmpireTracker.Services
             (ActivityType.Mining,                "Idle Mining"),
             (ActivityType.Refining,              "Idle Refining"),
             (ActivityType.Manufacturing,         "Idle Manufacturing"),
-            (ActivityType.CommodityManufacturing,"Idle Commodity Manufacturing"),
+            (ActivityType.CommodityManufacturing, "Idle Commodity Manufacturing"),
             (ActivityType.Research,              "Idle Research"),
         };
 
@@ -151,6 +153,7 @@ namespace OE2EmpireTracker.Services
                 {
                     builder.Append("  " + row.SourceName + " -- " + row.ProcessDetails + "\n", TextColor);
                 }
+
                 anyRendered = true;
             }
 
@@ -164,6 +167,7 @@ namespace OE2EmpireTracker.Services
                 {
                     builder.Append("  " + row.SourceName + " -- " + row.ProcessDetails + "\n", TextColor);
                 }
+
                 anyRendered = true;
             }
 
@@ -234,6 +238,7 @@ namespace OE2EmpireTracker.Services
                         string localTime = row.CountDown.EndTime.ToLocalTime().ToString("HH:mm ddd");
                         builder.Append(" (" + localTime + ")", CompletionTimeColor);
                     }
+
                     builder.Append("\n", TextColor);
                 }
             }
@@ -253,6 +258,7 @@ namespace OE2EmpireTracker.Services
                 string localTime = row.CountDown.EndTime.ToLocalTime().ToString("HH:mm ddd");
                 builder.Append(" (" + localTime + ")", CompletionTimeColor);
             }
+
             builder.Append("\n", TextColor);
 
             // Batch completion -- find the matching structure
@@ -291,6 +297,7 @@ namespace OE2EmpireTracker.Services
                 if (structure.ProcessCompletionTime == row.CountDown)
                     return structure;
             }
+
             return null;
         }
 

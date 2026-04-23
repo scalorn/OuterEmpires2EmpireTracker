@@ -69,6 +69,7 @@ namespace OE2EmpireTracker.Tests.Models
                 Name = "Iron",
                 ResourcePurity = "Refined"
             };
+
             Assert.That(item.ExtendedName, Is.EqualTo("Iron (Refined)"));
         }
 
@@ -81,6 +82,7 @@ namespace OE2EmpireTracker.Tests.Models
                 Name = "Iron",
                 ResourcePurity = string.Empty
             };
+
             Assert.That(item.ExtendedName, Is.EqualTo("Iron"));
         }
 
@@ -93,6 +95,7 @@ namespace OE2EmpireTracker.Tests.Models
                 Name = "Iron",
                 ResourcePurity = null
             };
+
             Assert.That(item.ExtendedName, Is.EqualTo("Iron"));
         }
 
@@ -111,6 +114,7 @@ namespace OE2EmpireTracker.Tests.Models
                 Name = commodity.Name,
                 BaseItemTypeID = commodity.ID
             };
+
             Assert.That(item.ExtendedName, Is.EqualTo(commodity.ExtendedName));
         }
 
@@ -123,6 +127,7 @@ namespace OE2EmpireTracker.Tests.Models
                 Name = "Unknown Commodity",
                 BaseItemTypeID = "no-such-id"
             };
+
             Assert.That(item.ExtendedName, Is.EqualTo("Unknown Commodity"));
         }
 
@@ -140,6 +145,7 @@ namespace OE2EmpireTracker.Tests.Models
                 Name = "Survey Fallback",
                 BaseItemTypeID = "some-uuid"
             };
+
             Assert.That(item.ExtendedName, Is.EqualTo("Survey Fallback"));
         }
 
@@ -152,6 +158,7 @@ namespace OE2EmpireTracker.Tests.Models
                 Name = "Blueprint Fallback",
                 BaseItemTypeID = "some-uuid"
             };
+
             Assert.That(item.ExtendedName, Is.EqualTo("Blueprint Fallback"));
         }
 

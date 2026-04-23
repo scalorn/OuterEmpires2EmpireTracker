@@ -131,6 +131,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     }).ToList()
                 }).ToList()
             };
+
             return JsonConvert.SerializeObject(state);
         }
     }

@@ -7,8 +7,8 @@ using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.ViewModels;
-using FormBP = OE2EmpireTracker.FormBlueprintV2;
 using BP = OE2EmpireTracker.Models.Blueprint;
+using FormBP = OE2EmpireTracker.FormBlueprintV2;
 
 namespace OE2EmpireTracker.Tests.ViewModels
 {

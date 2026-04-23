@@ -1,5 +1,3 @@
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,6 +8,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Forms.PlayerProfile
 {
@@ -31,6 +31,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             {
                 return _playerSkill;
             }
+
             set
             {
                 _playerSkill = value;
@@ -45,6 +46,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             {
                 return _canStartTraining;
             }
+
             set
             {
                 _canStartTraining = value;
@@ -72,6 +74,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             {
                 return;
             }
+
             this.txtSkillLevel.Text = PlayerSkill.Level.ToString();
 
             bool canStart = CanStartTraining && (SkillGroupCheckbox != null && SkillGroupCheckbox.Checked);
@@ -110,6 +113,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 }
             }
         }
+
         private void cmdStart_Click(object sender, EventArgs e)
         {
             PlayerSkill.TrainingStarted = true;

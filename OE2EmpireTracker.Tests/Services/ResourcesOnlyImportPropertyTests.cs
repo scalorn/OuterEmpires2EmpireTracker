@@ -20,7 +20,7 @@ namespace OE2EmpireTracker.Tests.Services
             return Gen.Elements(
                 "Alpha", "Beta", "Gamma", "Delta", "Hull", "Shield", "Reactor",
                 "Drive", "Weapon", "Cargo", "Nav", "Fuel", "Thruster", "Laser"
-            );
+           );
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Gen.Constant((string)null),
                 Gen.Constant(string.Empty),
                 NonEmptyAlphaStringGen()
-            );
+           );
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace OE2EmpireTracker.Tests.Services
             return Gen.OneOf(
                 Gen.Constant(0),
                 Gen.Choose(1, 10)
-            );
+           );
         }
 
         /// <summary>

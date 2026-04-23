@@ -1,8 +1,8 @@
+using System;
+using System.Linq;
 using NLog;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services.Migration;
-using System;
-using System.Linq;
 
 namespace OE2EmpireTracker.Services
 {

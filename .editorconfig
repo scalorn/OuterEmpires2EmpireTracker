@@ -112,49 +112,5 @@ dotnet_diagnostic.SA1400.severity = none
 dotnet_diagnostic.SA1306.severity = none
 generated_code = true
 
-# --- Test project: relax rules that conflict with test patterns ---
+# --- Test project: no additional suppressions — fix warnings in code ---
 [OE2EmpireTracker.Tests/**/*.cs]
-# SA1124: Regions are used for test organization (Arrange/Act/Assert, test categories)
-dotnet_diagnostic.SA1124.severity = none
-# SA1117/SA1116/SA1118: Multi-line parameter calls are common in test setup with many params
-dotnet_diagnostic.SA1117.severity = none
-dotnet_diagnostic.SA1116.severity = none
-dotnet_diagnostic.SA1118.severity = none
-# SA1009: FsCheck LINQ query style uses trailing closing parens
-dotnet_diagnostic.SA1009.severity = none
-# SA1122: "" is clearer than string.Empty in test assertions
-dotnet_diagnostic.SA1122.severity = none
-# SA1111: Closing paren placement in multi-line FsCheck queries
-dotnet_diagnostic.SA1111.severity = none
-# SA1500: Compact brace style in test lambda expressions
-dotnet_diagnostic.SA1500.severity = none
-# SA1119: Extra parentheses for clarity in test assertions
-dotnet_diagnostic.SA1119.severity = none
-# SA1407: Arithmetic precedence — explicit in test calculations
-dotnet_diagnostic.SA1407.severity = none
-# SA1208/SA1210/SA1211: Using directive ordering — System before project namespaces, alphabetical
-dotnet_diagnostic.SA1208.severity = none
-dotnet_diagnostic.SA1210.severity = none
-dotnet_diagnostic.SA1211.severity = none
-# SA1201/SA1202/SA1203/SA1204: Member ordering — test helpers mixed with tests
-dotnet_diagnostic.SA1201.severity = none
-dotnet_diagnostic.SA1202.severity = none
-dotnet_diagnostic.SA1203.severity = none
-dotnet_diagnostic.SA1204.severity = none
-# SA1501: Single-line statements — compact test setup lambdas
-dotnet_diagnostic.SA1501.severity = none
-# SA1114/SA1115: Parameter list placement — multi-line test case data
-dotnet_diagnostic.SA1114.severity = none
-dotnet_diagnostic.SA1115.severity = none
-# SA1400: Access modifier — test helper methods
-dotnet_diagnostic.SA1400.severity = none
-# SA1300: Element naming — local function naming in tests
-dotnet_diagnostic.SA1300.severity = none
-# SA1312: Variable naming — discard variables
-dotnet_diagnostic.SA1312.severity = none
-# SA1121: Use built-in type alias
-dotnet_diagnostic.SA1121.severity = none
-# SA1108: Block statements embedded comments
-dotnet_diagnostic.SA1108.severity = none
-# SA1519: Multi-line foreach/if with Assert.That — braces omitted for readability in tests
-dotnet_diagnostic.SA1519.severity = none

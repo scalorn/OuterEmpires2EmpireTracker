@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace OE2EmpireTracker.Models
 {
@@ -58,12 +58,12 @@ namespace OE2EmpireTracker.Models
             instance.Sort((x, y) => x.Name.CompareTo(y.Name));
 
             // Make sure the blank none entry is first.
-            instance.Insert(0, new ItemType() { ID = ItemTypeEnum.None, Name = "" });
+            instance.Insert(0, new ItemType() { ID = ItemTypeEnum.None, Name = string.Empty });
 
             _itemTypeMapByEnum = new Dictionary<ItemTypeEnum, ItemType>();
             _itemTypeMapByString = new Dictionary<string, ItemType>();
 
-            foreach(ItemType itemType in instance)
+            foreach (ItemType itemType in instance)
             {
                 _itemTypeMapByEnum[itemType.ID] = itemType;
                 _itemTypeMapByString[itemType.Name] = itemType;

@@ -1,9 +1,9 @@
+using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System;
-using System.Collections.Generic;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -38,6 +38,7 @@ namespace OE2EmpireTracker.Tests.Services
                     ResourcePurity = purity,
                     Quantity = qty
                 };
+
                 bag.AddItem(item);
             }
 
@@ -340,7 +341,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Name = "Test Plan",
                 Items = new List<BuildItem>
                 {
-                    CreateManufactoryItem("bp-1", 1, "") // no location
+                    CreateManufactoryItem("bp-1", 1, string.Empty) // no location
                 }
             };
 
@@ -467,6 +468,7 @@ namespace OE2EmpireTracker.Tests.Services
                 BuildLocationType = DestinationType.Ship,
                 BuildLocationUUID = "ship-1"
             };
+
             var plan = new BuildPlan
             {
                 UUID = "plan-1",

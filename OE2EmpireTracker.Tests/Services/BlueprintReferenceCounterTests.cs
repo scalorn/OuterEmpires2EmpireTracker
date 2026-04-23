@@ -1,8 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System.Collections.Generic;
-using System.Linq;
 using Bp = OE2EmpireTracker.Models.Blueprint;
 
 namespace OE2EmpireTracker.Tests.Services
@@ -212,7 +212,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Enumerable.Empty<Bp>(),
                 Enumerable.Empty<Survey>());
 
-            var report = counter.CountReferences("");
+            var report = counter.CountReferences(string.Empty);
 
             Assert.That(report, Is.SameAs(ReferenceReport.Empty));
         }

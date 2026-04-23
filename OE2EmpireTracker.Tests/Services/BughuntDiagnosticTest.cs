@@ -1,8 +1,8 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Parsers;
 using System.IO;
 using System.Linq;
 using System.Text;
+using NUnit.Framework;
+using OE2EmpireTracker.Parsers;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -64,13 +64,14 @@ namespace OE2EmpireTracker.Tests.Services
                 CaseFolding = Sgml.CaseFolding.ToLower,
                 InputStream = reader
             };
+
             var doc = new System.Xml.XmlDocument() { PreserveWhitespace = true, XmlResolver = null };
             doc.Load(sgmlReader);
 
-            var allNodes = doc.SelectNodes("//*");
+            var allNodes = doc.SelectNodes("// *");
             TestContext.WriteLine($"Total DOM nodes: {allNodes?.Count}");
 
-            var allTr = doc.SelectNodes("//tr");
+            var allTr = doc.SelectNodes("// tr");
             TestContext.WriteLine($"Total TR elements: {allTr?.Count}");
 
             if (allTr != null)
@@ -83,11 +84,11 @@ namespace OE2EmpireTracker.Tests.Services
             }
 
             // Check for table elements
-            var allTables = doc.SelectNodes("//table");
+            var allTables = doc.SelectNodes("// table");
             TestContext.WriteLine($"Total TABLE elements: {allTables?.Count}");
 
             // Check for divs with MarketListingRow in class
-            var marketDivs = doc.SelectNodes("//*[contains(@class,'MarketListingRow')]");
+            var marketDivs = doc.SelectNodes("// *[contains(@class, 'MarketListingRow')]");
             TestContext.WriteLine($"Any element with MarketListingRow class: {marketDivs?.Count}");
 
             TestContext.WriteLine($"Direct parse found {results.Count} blueprints");

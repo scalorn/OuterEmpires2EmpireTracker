@@ -1,6 +1,6 @@
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Models
 {

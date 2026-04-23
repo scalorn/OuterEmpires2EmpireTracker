@@ -28,10 +28,10 @@ namespace OE2EmpireTracker.Tests.Services
             Directory.CreateDirectory(_tempDir);
 
             var playerJson = Path.Combine(_tempDir, "PlayerData.json");
-            File.WriteAllText(playerJson, "{\"DataVersion\":7,\"CurrentPlayerUUID\":\"\",\"PlayerProfile\":[],\"Blueprint\":[],\"Survey\":[],\"Colony\":[],\"DeliveryRoute\":[],\"DeliveryPlan\":[],\"PricingPlan\":[],\"BuildPlan\":[],\"ShipTemplate\":[],\"Ship\":[],\"Station\":[],\"MarketListing\":[],\"MarketTransaction\":[],\"StockPlan\":[],\"StockProfile\":[],\"SupplyChain\":[],\"WarehouseOverflowRule\":[],\"Faction\":[],\"ExternalCharacter\":[],\"Asteroid\":[]}");
+            File.WriteAllText(playerJson, "{\"DataVersion\":7, \"CurrentPlayerUUID\":\"\", \"PlayerProfile\":[], \"Blueprint\":[], \"Survey\":[], \"Colony\":[], \"DeliveryRoute\":[], \"DeliveryPlan\":[], \"PricingPlan\":[], \"BuildPlan\":[], \"ShipTemplate\":[], \"Ship\":[], \"Station\":[], \"MarketListing\":[], \"MarketTransaction\":[], \"StockPlan\":[], \"StockProfile\":[], \"SupplyChain\":[], \"WarehouseOverflowRule\":[], \"Faction\":[], \"ExternalCharacter\":[], \"Asteroid\":[]}");
 
             var baselineJson = Path.Combine(_tempDir, "BaselineData.json");
-            File.WriteAllText(baselineJson, "{\"BlueprintType\":[],\"ShipClass\":[],\"TechLevel\":[],\"Evolution\":[],\"Resource\":[],\"ResourceGroup\":[],\"Commodity\":[],\"GlobalBlueprint\":[]}");
+            File.WriteAllText(baselineJson, "{\"BlueprintType\":[], \"ShipClass\":[], \"TechLevel\":[], \"Evolution\":[], \"Resource\":[], \"ResourceGroup\":[], \"Commodity\":[], \"GlobalBlueprint\":[]}");
 
             MigrationRunner.SuppressUI = true;
             EmpireContext.Reset();
@@ -328,6 +328,7 @@ namespace OE2EmpireTracker.Tests.Services
                     BluePrintType = bpType,
                     OwnerUUID = ownerUUID
                 };
+
                 ctx.AddBlueprint(bp);
 
                 int countAfter = ctx.CountBlueprintsByType(bpType);
@@ -355,6 +356,7 @@ namespace OE2EmpireTracker.Tests.Services
                     BluePrintType = bpType,
                     OwnerUUID = ownerUUID
                 };
+
                 ctx.AddBlueprint(bp);
                 int countAfterAdd = ctx.CountBlueprintsByType(bpType);
 
@@ -389,6 +391,7 @@ namespace OE2EmpireTracker.Tests.Services
                     ItemName = "TestItem",
                     Quantity = 1
                 };
+
                 var plan = new BuildPlan
                 {
                     UUID = Guid.NewGuid().ToString(),
@@ -418,6 +421,7 @@ namespace OE2EmpireTracker.Tests.Services
                     ItemName = "TestItem",
                     Quantity = 1
                 };
+
                 var plan = new BuildPlan
                 {
                     UUID = Guid.NewGuid().ToString(),

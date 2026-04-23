@@ -40,6 +40,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Name = "Test Route",
                 OwnerUUID = ownerUUID
             };
+
             for (int i = 0; i < colonyUUIDs.Length; i++)
             {
                 route.Stops.Add(new RouteStop
@@ -50,6 +51,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Sequence = i + 1
                 });
             }
+
             return route;
         }
 
@@ -61,6 +63,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Name = name,
                 OwnerUUID = "player-1"
             };
+
             plan.Items.AddRange(items);
             return plan;
         }
@@ -267,11 +270,13 @@ namespace OE2EmpireTracker.Tests.Services
                     {
                         { item1.UUID, new Dictionary<string, int> { { "Trans-Metals", 500 } } }
                     };
+
                 if (p == plan2)
                     return new Dictionary<string, Dictionary<string, int>>
                     {
                         { item2.UUID, new Dictionary<string, int> { { "Trans-Metals", 300 } } }
                     };
+
                 return new Dictionary<string, Dictionary<string, int>>();
             };
 

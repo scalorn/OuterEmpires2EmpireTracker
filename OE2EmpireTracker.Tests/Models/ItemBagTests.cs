@@ -1,6 +1,6 @@
+using System;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
-using System;
 using IT = OE2EmpireTracker.Models.ItemType.ItemTypeEnum;
 
 namespace OE2EmpireTracker.Tests.Models

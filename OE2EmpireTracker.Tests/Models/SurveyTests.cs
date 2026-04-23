@@ -127,6 +127,7 @@ namespace OE2EmpireTracker.Tests.Models
                 SurveyID = "S-001",
                 NickName = "Good One"
             };
+
             Assert.That(survey.ExtendedName, Is.EqualTo("Alpha Prime (S-001) [Good One]"));
         }
 
@@ -139,6 +140,7 @@ namespace OE2EmpireTracker.Tests.Models
                 SurveyID = "S-001",
                 NickName = "Good One"
             };
+
             string name = survey.ExtendedName;
             Assert.That(name.IndexOf("Alpha Prime") < name.IndexOf("(S-001)"), Is.True,
                     "PlanetName before SurveyID");
@@ -174,6 +176,7 @@ namespace OE2EmpireTracker.Tests.Models
                 ScannedBy = "Player1",
                 NickName = "Good One"
             };
+
             string json = JsonConvert.SerializeObject(survey);
             var restored = JsonConvert.DeserializeObject<Survey>(json);
 

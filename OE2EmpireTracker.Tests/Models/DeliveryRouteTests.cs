@@ -1,7 +1,7 @@
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
-using System.Collections.Generic;
 
 namespace OE2EmpireTracker.Tests.Models
 {
@@ -53,6 +53,7 @@ namespace OE2EmpireTracker.Tests.Models
                 Name = "Main Route",
                 OwnerUUID = "player-1"
             };
+
             Assert.That(route.UUID, Is.EqualTo("route-1"));
             Assert.That(route.Name, Is.EqualTo("Main Route"));
             Assert.That(route.OwnerUUID, Is.EqualTo("player-1"));
@@ -100,6 +101,7 @@ namespace OE2EmpireTracker.Tests.Models
                     new RouteStop { ColonyUUID = "c2", Sequence = 1 }
                 }
             };
+
             string json = JsonConvert.SerializeObject(route);
             var restored = JsonConvert.DeserializeObject<DeliveryRoute>(json);
             Assert.That(restored.Stops.Count, Is.EqualTo(2));

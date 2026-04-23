@@ -1,20 +1,20 @@
-using OE2EmpireTracker.Persistence;
-using OE2EmpireTracker.Parsers;
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using NLog;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
+using OE2EmpireTracker.Persistence;
+using OE2EmpireTracker.Services;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Forms.Survey
 {
@@ -84,6 +84,7 @@ namespace OE2EmpireTracker.Forms.Survey
                 if (p.ID != Models.ResourcePurity.PurityEnum.None)
                     cmbPurityFilter.Items.Add(p.Name);
             }
+
             cmbPurityFilter.SelectedIndex = 0;
             cmbPurityFilter.SelectedIndexChanged += cmbPurityFilter_SelectedIndexChanged;
 
@@ -100,7 +101,7 @@ namespace OE2EmpireTracker.Forms.Survey
             cmbPurity.ValueMember = "Name";
             cmbPurity.DataSource = empireContext.BindingSourceResourcePurity;
 
-            dgvResources.DataError += (s, ev) => { Log.Warn("dgvResources DataError at [{0},{1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message); ev.ThrowException = false; };
+            dgvResources.DataError += (s, ev) => { Log.Warn("dgvResources DataError at [{0}, {1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message); ev.ThrowException = false; };
 
             // Add read-only Max Reserve column (programmatic — not in Designer)
             var colMaxReserve = new DataGridViewTextBoxColumn();
@@ -167,6 +168,7 @@ namespace OE2EmpireTracker.Forms.Survey
                     usedHeight += c.Size.Height + c.Margin.Top + c.Margin.Bottom;
                 }
             }
+
             int gridHeight = flpSurveyDetails.Size.Height - usedHeight - dgvResources.Margin.Top - dgvResources.Margin.Bottom;
             if (gridHeight < 50) gridHeight = 50;
             dgvResources.Size = new System.Drawing.Size(
@@ -183,6 +185,7 @@ namespace OE2EmpireTracker.Forms.Survey
                 catch (ObjectDisposedException) { }
                 return;
             }
+
             lvwSurveys.Items.Clear();
             viewModel.Reset();
             ClearForm();
@@ -199,10 +202,12 @@ namespace OE2EmpireTracker.Forms.Survey
                 catch (ObjectDisposedException) { }
                 return;
             }
+
             if (viewModel.UUID == e.SurveyUUID)
             {
                 PopulateFormFromViewModel();
             }
+
             RefreshSurveyList();
         }
 
@@ -215,6 +220,7 @@ namespace OE2EmpireTracker.Forms.Survey
                 catch (ObjectDisposedException) { }
                 return;
             }
+
             // Refresh list to update Refs column (miner survey assignments may have changed)
             RefreshSurveyList();
             UpdateDeleteButtonState();
@@ -273,6 +279,7 @@ namespace OE2EmpireTracker.Forms.Survey
                     else
                         item.SubItems.Add(refCount);
                 }
+
                 item.Tag = survey;
                 item.SubItems[0].Tag = survey;
 
@@ -290,6 +297,7 @@ namespace OE2EmpireTracker.Forms.Survey
             {
                 lvwSurveys.Items.Remove(viewableSurvey.Value);
             }
+
             sw.Stop();
             Log.Info("PopulateListView PERF: total={0}ms items={1}",
                 sw.ElapsedMilliseconds, surveys.Count);
@@ -312,7 +320,7 @@ namespace OE2EmpireTracker.Forms.Survey
         private string GetSelectedResourceName()
         {
             var selected = cmbResource.SelectedItem as Models.Resource;
-            if (selected == null || selected.Name == "(all)") return "";
+            if (selected == null || selected.Name == "(all)") return string.Empty;
             return selected.Name;
         }
 
@@ -330,7 +338,7 @@ namespace OE2EmpireTracker.Forms.Survey
         private string GetSelectedPurityFilter()
         {
             string sel = cmbPurityFilter.SelectedItem?.ToString() ?? "(any)";
-            return sel == "(any)" ? "" : sel;
+            return sel == "(any)" ? string.Empty : sel;
         }
 
         private int GetMinAmount()
@@ -441,7 +449,7 @@ namespace OE2EmpireTracker.Forms.Survey
         {
             if (_isProgrammaticUpdate > 0) return;
             var bp = cmbScannerBlueprint.SelectedItem as Models.Blueprint;
-            viewModel.ScannerBlueprintUUID = bp?.UUID ?? "";
+            viewModel.ScannerBlueprintUUID = bp?.UUID ?? string.Empty;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -475,18 +483,18 @@ namespace OE2EmpireTracker.Forms.Survey
             using var guard = new ProgrammaticUpdateGuard(this);
             viewModel.Reset();
 
-            txtPlanetName.Text = "";
-            txtSystemName.Text = "";
+            txtPlanetName.Text = string.Empty;
+            txtSystemName.Text = string.Empty;
             cmbSurveyTypeEdit.SelectedIndex = 0;
             UpdateNameLabel(SurveyType.Planet);
-            txtSurveyID.Text = "";
-            txtNickName.Text = "";
-            txtScannedBy.Text = "";
+            txtSurveyID.Text = string.Empty;
+            txtNickName.Text = string.Empty;
+            txtScannedBy.Text = string.Empty;
             dtpScanDateTime.Value = DateTime.Now;
             txtScanDateTime.Text = SurveyDateTimeParser.ToGameFormat(DateTime.Now);
-            txtSensorAbundance.Text = "";
-            txtPurityModifier.Text = "";
-            txtScanLevel.Text = "";
+            txtSensorAbundance.Text = string.Empty;
+            txtPurityModifier.Text = string.Empty;
+            txtScanLevel.Text = string.Empty;
 
             cmbScannerBlueprint.SelectedItem = null;
             dgvResources.CellValidating -= dgvResources_CellValidating;
@@ -566,7 +574,7 @@ namespace OE2EmpireTracker.Forms.Survey
             {
                 dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = "0";
                 dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
-                dgvResources.Rows[e.RowIndex].ErrorText = "";
+                dgvResources.Rows[e.RowIndex].ErrorText = string.Empty;
                 return;
             }
 
@@ -580,7 +588,7 @@ namespace OE2EmpireTracker.Forms.Survey
             else
             {
                 dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.White;
-                dgvResources.Rows[e.RowIndex].ErrorText = "";
+                dgvResources.Rows[e.RowIndex].ErrorText = string.Empty;
             }
         }
 
@@ -696,29 +704,30 @@ namespace OE2EmpireTracker.Forms.Survey
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            txtPlanetName.Text = viewModel.PlanetName ?? "";
-            txtSystemName.Text = viewModel.SystemName ?? "";
+            txtPlanetName.Text = viewModel.PlanetName ?? string.Empty;
+            txtSystemName.Text = viewModel.SystemName ?? string.Empty;
             for (int i = 0; i < cmbSurveyTypeEdit.Items.Count; i++)
             {
                 if ((SurveyType)cmbSurveyTypeEdit.Items[i] == viewModel.SurveyTypeValue)
                 { cmbSurveyTypeEdit.SelectedIndex = i; break; }
             }
+
             UpdateNameLabel(viewModel.SurveyTypeValue);
-            txtSurveyID.Text = viewModel.SurveyID ?? "";
-            txtNickName.Text = viewModel.NickName ?? "";
-            txtScannedBy.Text = viewModel.ScannedBy ?? "";
-            txtScanDateTime.Text = viewModel.DisplayDateTime ?? "";
+            txtSurveyID.Text = viewModel.SurveyID ?? string.Empty;
+            txtNickName.Text = viewModel.NickName ?? string.Empty;
+            txtScannedBy.Text = viewModel.ScannedBy ?? string.Empty;
+            txtScanDateTime.Text = viewModel.DisplayDateTime ?? string.Empty;
             if (SurveyDateTimeParser.TryParseIso(viewModel.DateTime, out DateTime parsedDt))
                 dtpScanDateTime.Value = parsedDt.ToLocalTime();
             else
                 dtpScanDateTime.Value = DateTime.Now;
-            txtSensorAbundance.Text = viewModel.SensorAbundance ?? "";
-            txtPurityModifier.Text = viewModel.PurityModifier ?? "";
-            txtScanLevel.Text = viewModel.ScanLevel ?? "";
+            txtSensorAbundance.Text = viewModel.SensorAbundance ?? string.Empty;
+            txtPurityModifier.Text = viewModel.PurityModifier ?? string.Empty;
+            txtScanLevel.Text = viewModel.ScanLevel ?? string.Empty;
 
             long t1 = sw.ElapsedMilliseconds;
 
-            txtFilterScannerBlueprint.Text = "";
+            txtFilterScannerBlueprint.Text = string.Empty;
             cmbScannerBlueprint.SelectedItem = viewModel.FindScannerBlueprint();
 
             dgvResources.CellValidating -= dgvResources_CellValidating;
@@ -754,6 +763,7 @@ namespace OE2EmpireTracker.Forms.Survey
                     }
                 }
             }
+
             sw.Stop();
             Log.Info("PopulateFormFromViewModel PERF: total={0}ms fields={1}ms grid={2}ms",
                 sw.ElapsedMilliseconds, t1, sw.ElapsedMilliseconds - t1);
@@ -765,7 +775,7 @@ namespace OE2EmpireTracker.Forms.Survey
             var player = playerContext.CurrentPlayer;
             string playerName = player != null ? player.Name : "No Player";
             int surveyCount = playerContext.GetCurrentPlayerSurveys()?.Count ?? 0;
-            string prefix = Tag != null ? "#" + Tag + " - " : "";
+            string prefix = Tag != null ? "#" + Tag + " - " : string.Empty;
             Text = $"{prefix}Manage Surveys - {playerName} : {surveyCount}";
         }
 
@@ -801,6 +811,7 @@ namespace OE2EmpireTracker.Forms.Survey
                 _sortColumn = e.Column;
                 _sortOrder = SortOrder.Ascending;
             }
+
             lvwSurveys.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
             lvwSurveys.Sort();
         }

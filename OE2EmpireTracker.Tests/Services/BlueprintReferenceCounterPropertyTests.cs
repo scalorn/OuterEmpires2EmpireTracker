@@ -1,11 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using FsCheck;
 using FsCheck.NUnit;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System.Collections.Generic;
-using System.Linq;
 using Bp = OE2EmpireTracker.Models.Blueprint;
 
 namespace OE2EmpireTracker.Tests.Services
@@ -88,6 +88,7 @@ namespace OE2EmpireTracker.Tests.Services
                            Blueprints = bps.ToList(),
                            Surveys = surveys.ToList()
                        };
+
             });
 
             return Prop.ForAll(uuidPoolGen.ToArbitrary(), data =>
@@ -178,6 +179,7 @@ namespace OE2EmpireTracker.Tests.Services
                            TargetUUID = uuids[0],
                            OtherBlueprints = bps.ToList()
                        };
+
             });
 
             return Prop.ForAll(uuidPoolGen.ToArbitrary(), data =>

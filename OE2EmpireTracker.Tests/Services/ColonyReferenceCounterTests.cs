@@ -1,8 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -105,6 +105,7 @@ namespace OE2EmpireTracker.Tests.Services
                     new BuildItem { UUID = "bi-2", BuildLocationType = DestinationType.Colony, BuildLocationUUID = TargetUUID }
                 }
             };
+
             var plan2 = new BuildPlan
             {
                 UUID = "plan-2",
@@ -149,6 +150,7 @@ namespace OE2EmpireTracker.Tests.Services
                     new RouteStop { ColonyUUID = TargetUUID }
                 }
             };
+
             var buildPlan = new BuildPlan
             {
                 UUID = "plan-1",

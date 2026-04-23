@@ -1,9 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.ViewModels;
-using System.Collections.Generic;
-using System.Linq;
-
 using BP = OE2EmpireTracker.Models.Blueprint;
 
 namespace OE2EmpireTracker.Tests.ViewModels

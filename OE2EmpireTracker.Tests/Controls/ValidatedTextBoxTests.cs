@@ -1,6 +1,6 @@
+using System.Drawing;
 using NUnit.Framework;
 using OE2EmpireTracker.Controls;
-using System.Drawing;
 
 namespace OE2EmpireTracker.Tests.Controls
 {
@@ -19,7 +19,7 @@ namespace OE2EmpireTracker.Tests.Controls
             Assert.That(textBox.AutoFormat, Is.EqualTo(true));
             Assert.That(textBox.ValidColor, Is.EqualTo(Color.White));
             Assert.That(textBox.InvalidColor, Is.EqualTo(Color.LightCoral));
-            Assert.That(textBox.ErrorMessage, Is.EqualTo(""));
+            Assert.That(textBox.ErrorMessage, Is.EqualTo(string.Empty));
             Assert.That(textBox.IsValid, Is.EqualTo(true));
         }
 
@@ -109,7 +109,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void ErrorMessage_EmptyByDefault()
         {
             var textBox = new ValidatedTextBox();
-            Assert.That(textBox.ErrorMessage, Is.EqualTo(""));
+            Assert.That(textBox.ErrorMessage, Is.EqualTo(string.Empty));
         }
 
         [Test]
@@ -153,10 +153,10 @@ namespace OE2EmpireTracker.Tests.Controls
 
             textBox.Clear();
 
-            Assert.That(textBox.Text, Is.EqualTo(""));
+            Assert.That(textBox.Text, Is.EqualTo(string.Empty));
             Assert.That(textBox.IsValid, Is.EqualTo(true));
             Assert.That(textBox.BackColor, Is.EqualTo(Color.White));
-            Assert.That(textBox.ErrorMessage, Is.EqualTo(""));
+            Assert.That(textBox.ErrorMessage, Is.EqualTo(string.Empty));
         }
 
         [Test]
@@ -206,7 +206,7 @@ namespace OE2EmpireTracker.Tests.Controls
 
             textBox.ClearError();
 
-            Assert.That(textBox.ErrorMessage, Is.EqualTo(""));
+            Assert.That(textBox.ErrorMessage, Is.EqualTo(string.Empty));
             Assert.That(textBox.ValidColor, Is.EqualTo(Color.White));
         }
 
@@ -233,7 +233,7 @@ namespace OE2EmpireTracker.Tests.Controls
             bool result = textBox.ValidateInput();
             Assert.That(result, Is.True);
             Assert.That(textBox.BackColor, Is.EqualTo(Color.White));
-            Assert.That(textBox.ErrorMessage, Is.EqualTo(""));
+            Assert.That(textBox.ErrorMessage, Is.EqualTo(string.Empty));
         }
 
         [Test]
@@ -385,9 +385,9 @@ namespace OE2EmpireTracker.Tests.Controls
 
             textBox.Reset();
 
-            Assert.That(textBox.Text, Is.EqualTo(""));
+            Assert.That(textBox.Text, Is.EqualTo(string.Empty));
             Assert.That(textBox.IsValid, Is.EqualTo(true));
-            Assert.That(textBox.ErrorMessage, Is.EqualTo(""));
+            Assert.That(textBox.ErrorMessage, Is.EqualTo(string.Empty));
             Assert.That(textBox.ValidColor, Is.EqualTo(Color.White));
         }
 
@@ -486,7 +486,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void ValidateInput_WithVeryLongText_ValidatesCorrectly()
         {
             var textBox = new ValidatedTextBox();
-            textBox.ValidationPattern = "";
+            textBox.ValidationPattern = string.Empty;
             textBox.Text = new string('a', 1000); // Very long text
             bool result = textBox.ValidateInput();
             // Should validate without issues
@@ -497,8 +497,8 @@ namespace OE2EmpireTracker.Tests.Controls
         public void SetError_WithNullMessage_ClearsError()
         {
             var textBox = new ValidatedTextBox();
-            textBox.SetError(""); // Empty string is treated as null effectively
-            Assert.That(textBox.ErrorMessage, Is.EqualTo(""));
+            textBox.SetError(string.Empty); // Empty string is treated as null effectively
+            Assert.That(textBox.ErrorMessage, Is.EqualTo(string.Empty));
         }
 
         [Test]

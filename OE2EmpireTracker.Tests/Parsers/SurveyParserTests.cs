@@ -1,8 +1,8 @@
-using NUnit.Framework;
-using OE2EmpireTracker.Parsers;
-using OE2EmpireTracker.Models;
 using System.IO;
 using System.Linq;
+using NUnit.Framework;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {
@@ -71,7 +71,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void ParseDescription_EmptyString_DoesNotCrash()
         {
             var survey = new Survey();
-            SurveyParser.ParseDescription(survey, "");
+            SurveyParser.ParseDescription(survey, string.Empty);
             Assert.That(survey.DateTime, Is.Null);
         }
 
@@ -101,7 +101,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void ParseTitle_Empty_DoesNotCrash()
         {
             var survey = new Survey();
-            SurveyParser.ParseTitle(survey, "");
+            SurveyParser.ParseTitle(survey, string.Empty);
             Assert.That(survey.PlanetName, Is.Null);
         }
 
@@ -128,7 +128,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             SurveyParser.ParseResource(survey, "Iron Ore", "100/hour");
 
             var r = survey.Resources["Iron Ore"];
-            Assert.That(r.Purity, Is.EqualTo(""));
+            Assert.That(r.Purity, Is.EqualTo(string.Empty));
             Assert.That(r.Amount, Is.EqualTo("100"));
         }
 
@@ -184,7 +184,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         [Test]
         public void NormalizePurity_Empty_ReturnsEmpty()
         {
-            Assert.That(SurveyParser.NormalizePurity(""), Is.EqualTo(""));
+            Assert.That(SurveyParser.NormalizePurity(string.Empty), Is.EqualTo(string.Empty));
         }
 
         // -----------------------------------------------------------------------
@@ -263,7 +263,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void ProcessHtml_EmptyHtml_DoesNotCrash()
         {
             var survey = new Survey();
-            _parser.ProcessHtml(survey, "");
+            _parser.ProcessHtml(survey, string.Empty);
             Assert.That(survey.Resources.Count, Is.EqualTo(0));
         }
 

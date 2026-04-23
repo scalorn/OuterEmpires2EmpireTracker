@@ -1,8 +1,8 @@
+using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System;
-using System.Collections.Generic;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -18,6 +18,7 @@ namespace OE2EmpireTracker.Tests.Services
                 UUID = uuid,
                 BluePrintType = bpType
             };
+
             if (cargoVolumeSize > 0)
                 bp.Properties.setProperty("Cargo Volume Size", cargoVolumeSize);
             if (mass > 0)
@@ -68,6 +69,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Quantity = 100
                 }
             };
+
             var result = CargoVolumeService.ComputeLoadVolume(items, _ => null);
             Assert.That(result.TotalVolume, Is.EqualTo(100m));
             Assert.That(result.TotalMass, Is.EqualTo(100m));
@@ -86,6 +88,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Quantity = 50
                 }
             };
+
             var result = CargoVolumeService.ComputeLoadVolume(items, _ => null);
             Assert.That(result.TotalVolume, Is.EqualTo(500m));
             Assert.That(result.TotalMass, Is.EqualTo(250m));
@@ -104,6 +107,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Quantity = 10
                 }
             };
+
             var result = CargoVolumeService.ComputeLoadVolume(items, _ => null);
             Assert.That(result.TotalVolume, Is.EqualTo(500m));
             Assert.That(result.TotalMass, Is.EqualTo(100m));
@@ -122,6 +126,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Quantity = 5
                 }
             };
+
             var result = CargoVolumeService.ComputeLoadVolume(items, _ => null);
             Assert.That(result.TotalVolume, Is.EqualTo(0m));
             Assert.That(result.TotalMass, Is.EqualTo(0m));
@@ -144,6 +149,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Quantity = 4
                 }
             };
+
             var result = CargoVolumeService.ComputeLoadVolume(items, finder);
             Assert.That(result.TotalVolume, Is.EqualTo(100m));
             Assert.That(result.TotalMass, Is.EqualTo(400m));
@@ -180,6 +186,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Quantity = 2
                 }
             };
+
             var result = CargoVolumeService.ComputeLoadVolume(items, finder);
             // 100*1 + 20*10 + 2*200 = 100 + 200 + 400 = 700
             Assert.That(result.TotalVolume, Is.EqualTo(700m));
@@ -202,6 +209,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Quantity = 50
                 }
             };
+
             var trips = CargoVolumeService.SplitIntoTrips(
                 items, 100m, _ => null);
             Assert.That(trips.Count, Is.EqualTo(1));
@@ -222,6 +230,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Quantity = 250
                 }
             };
+
             // Capacity 100, each resource = 1 vol, so 100 per trip
             var trips = CargoVolumeService.SplitIntoTrips(
                 items, 100m, _ => null);
@@ -252,6 +261,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Quantity = 50
                 }
             };
+
             var trips = CargoVolumeService.SplitIntoTrips(
                 items, 0m, _ => null);
             Assert.That(trips.Count, Is.EqualTo(1));
@@ -270,6 +280,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Quantity = 1000
                 }
             };
+
             var trips = CargoVolumeService.SplitIntoTrips(
                 items, 10m, _ => null);
             Assert.That(trips.Count, Is.EqualTo(1));
@@ -296,6 +307,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Quantity = 5
                 }
             };
+
             // Capacity 100: Iron=80vol, Steel=5*10=50vol, total=130
             // Trip 1: 80 Iron (80vol) + 2 Steel (20vol) = 100
             // Trip 2: 3 Steel (30vol)
@@ -335,6 +347,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Quantity = 3
                 }
             };
+
             // Capacity 150, each item is 200 vol (oversized), so each gets its own trip
             var trips = CargoVolumeService.SplitIntoTrips(
                 items, 150m, finder);
@@ -357,6 +370,7 @@ namespace OE2EmpireTracker.Tests.Services
                     Quantity = 3
                 }
             };
+
             var result = CargoVolumeService.ComputeLoadVolume(items, _ => null);
             Assert.That(result.TotalVolume, Is.EqualTo(0m));
         }
@@ -375,6 +389,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Name = "Storage Crate",
                 Quantity = 1
             };
+
             decimal vol = CargoVolumeService.GetItemVolume(item, finder);
             Assert.That(vol, Is.EqualTo(500m));
         }

@@ -1,10 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -179,14 +179,14 @@ namespace OE2EmpireTracker.Tests.Services
                     calc.CalculateBuilt(s, prev, current, iw, bp);
 
                     TestContext.WriteLine(
-                        $"  [{i}] {bp?.ExtendedName,-40} Pwr={current.PowerRequired}/{current.PowerProvided} " +
+                        $"  [{i}] {bp?.ExtendedName, -40} Pwr={current.PowerRequired}/{current.PowerProvided} " +
                         $"Hab={current.HabitationRequired}/{current.HabitationProvision} " +
                         $"Food={current.FoodRequired}/{current.FoodProvision} " +
                         $"Ent={current.EntertainmentRequired}/{current.EntertainmentProvided}" +
                         (i >= firstPrimaryPos && (current.PowerRequired > current.PowerProvided ||
                             current.HabitationRequired > current.HabitationProvision ||
                             current.FoodRequired > current.FoodProvision ||
-                            current.EntertainmentRequired > current.EntertainmentProvided) ? " *** DEFICIT ***" : ""));
+                            current.EntertainmentRequired > current.EntertainmentProvided) ? " *** DEFICIT ***" : string.Empty));
 
                     if (i >= firstPrimaryPos)
                     {

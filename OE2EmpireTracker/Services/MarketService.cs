@@ -153,6 +153,7 @@ namespace OE2EmpireTracker.Services
                             BaseItemTypeID = itemReferenceID ?? string.Empty,
                             Quantity = 1
                         };
+
                         hold.AddItem(item);
                     }
 

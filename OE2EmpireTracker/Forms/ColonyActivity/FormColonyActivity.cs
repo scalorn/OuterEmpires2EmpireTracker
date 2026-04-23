@@ -1,14 +1,14 @@
-using NLog;
-using OE2EmpireTracker.Persistence;
-using OE2EmpireTracker.Services;
-using OE2EmpireTracker.Controls;
-using OE2EmpireTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using NLog;
+using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Persistence;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Forms.ColonyActivity
 {
@@ -91,7 +91,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
                 allRows = ColonyActivityCollector.CollectActivities(colonies, playerContext);
 
             // Update form title to reflect current mode
-            string prefix = Tag != null ? "#" + Tag + " - " : "";
+            string prefix = Tag != null ? "#" + Tag + " - " : string.Empty;
             Text = prefix + (chkShowInactive.Checked ? "Colony Inactivity" : "Colony Activity");
 
             long t1 = sw.ElapsedMilliseconds;
@@ -135,7 +135,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             colCountDown.Visible = !inactivityMode;
 
             var selectedTypes = GetSelectedActivityTypes();
-            string textFilter = txtFilter.Text ?? "";
+            string textFilter = txtFilter.Text ?? string.Empty;
 
             var filtered = allRows
                 .Where(r => selectedTypes.Contains(r.Type))
@@ -162,12 +162,12 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
         {
             if (string.IsNullOrEmpty(textFilter)) return true;
 
-            return (row.GetTimeRemainingString() ?? "").IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
-                || (row.SystemName ?? "").IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
-                || (row.ColonyName ?? "").IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
+            return (row.GetTimeRemainingString() ?? string.Empty).IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
+                || (row.SystemName ?? string.Empty).IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
+                || (row.ColonyName ?? string.Empty).IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
                 || row.Type.ToString().IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
-                || (row.SourceName ?? "").IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
-                || (row.ProcessDetails ?? "").IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0;
+                || (row.SourceName ?? string.Empty).IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
+                || (row.ProcessDetails ?? string.Empty).IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         // -----------------------------------------------------------------------
@@ -228,6 +228,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
                 catch (ObjectDisposedException) { }
                 return;
             }
+
             RefreshData();
         }
 
@@ -240,6 +241,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
                 catch (ObjectDisposedException) { }
                 return;
             }
+
             try
             {
                 Log.Info("FormColonyActivity.OnColonyDataChanged: RefreshData starting for colony {0}", args.ColonyUUID);

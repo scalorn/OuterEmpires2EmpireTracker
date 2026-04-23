@@ -122,6 +122,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 lvwShips.Items.Add(item);
                 if (ship.UUID == selectedUUID) item.Selected = true;
             }
+
             sw.Stop();
             Log.Info("PERF PopulateShipList: {0}ms items={1}", sw.ElapsedMilliseconds, ships.Count);
         }
@@ -159,12 +160,12 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         private void ClearForm()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
-            txtName.Text = "";
+            txtName.Text = string.Empty;
             cmbHull.SetItems(cmbHull.Items, null);
             cmbLocationType.SelectedIndex = -1;
             cmbLocationUUID.Items.Clear();
             dgvComponents.Rows.Clear();
-            rtbStats.Text = "";
+            rtbStats.Text = string.Empty;
             dgvCargo.Rows.Clear();
             SetDetailEnabled(false);
         }
@@ -197,6 +198,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 if ((DestinationType)cmbLocationType.Items[i] == dt)
                 { cmbLocationType.SelectedIndex = i; return; }
             }
+
             cmbLocationType.SelectedIndex = -1;
         }
 
@@ -226,6 +228,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                         cmbLocationUUID.Items.Add(new LocationEntry { Display = s.Name, UUID = s.UUID });
                     break;
             }
+
             sw.Stop(); Log.Info("PERF PopulateLocationUUIDCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -237,6 +240,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 if (cmbLocationUUID.Items[i] is LocationEntry le && le.UUID == uuid)
                 { cmbLocationUUID.SelectedIndex = i; return; }
             }
+
             cmbLocationUUID.SelectedIndex = -1;
         }
 
@@ -255,6 +259,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 names.Add(bp.ExtendedName);
                 _hullUUIDs.Add(bp.UUID);
             }
+
             cmbHull.SetItems(names, null);
             sw.Stop(); Log.Info("PERF PopulateHullCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -273,7 +278,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         {
             if (_isProgrammaticUpdate > 0 || _selectedShip == null) return;
             int idx = cmbHull.SelectedFullIndex;
-            string uuid = (idx >= 0 && idx < _hullUUIDs.Count) ? _hullUUIDs[idx] : "";
+            string uuid = (idx >= 0 && idx < _hullUUIDs.Count) ? _hullUUIDs[idx] : string.Empty;
             _selectedShip.HullBlueprintUUID = uuid;
             _selectedShip.Components.Clear();
             PopulateOverviewGrid();
@@ -306,6 +311,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                     });
                 }
             }
+
             return defs;
         }
 
@@ -321,7 +327,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             string hullName = hullBp?.ExtendedName ?? "(no hull)";
 
             // Hull row (first row, component cell read-only)
-            int hullRow = dgvComponents.Rows.Add("Hull", "", hullName,
+            int hullRow = dgvComponents.Rows.Add("Hull", string.Empty, hullName,
                 _selectedShip.HullCurrentHP.ToString(),
                 _selectedShip.HullMaxRepairPercent.ToString());
             dgvComponents.Rows[hullRow].Tag = "hull";
@@ -349,7 +355,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                     var uuidByIndex = new List<string>();
                     var itemList = new List<string>();
                     itemList.Add("(empty)");
-                    uuidByIndex.Add("");
+                    uuidByIndex.Add(string.Empty);
                     var eligibleBps = playerContext.GetAllBlueprints()
                         .Where(bp => def.BlueprintTypes.Contains(bp.BluePrintType) && bp.Class == hullClass)
                         .OrderBy(bp => bp.ExtendedName);
@@ -376,6 +382,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                             comboCell.Items = itemList;
                             comboCell.Value = fallback;
                         }
+
                         row.Cells[colCondition.Index].Value = existing.CurrentHP.ToString();
                         row.Cells[colMaxRepair.Index].Value = existing.MaxRepairPercent.ToString();
                     }
@@ -388,6 +395,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                     row.Tag = new SlotInfo { SlotType = def.SlotType, SlotIndex = idx, UUIDByIndex = uuidByIndex };
                 }
             }
+
             sw.Stop(); Log.Info("PERF PopulateOverviewGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -436,7 +444,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             var info = row.Tag as SlotInfo;
             if (info == null) return;
 
-            string bpUUID = "";
+            string bpUUID = string.Empty;
             var comboCell = (DataGridViewFilteredComboBoxCell)row.Cells[colComponent.Index];
             int selectedIdx = comboCell.Items != null ? comboCell.Items.IndexOf(comboCell.Value?.ToString()) : -1;
             if (selectedIdx > 0 && info.UUIDByIndex != null && selectedIdx < info.UUIDByIndex.Count)
@@ -456,10 +464,12 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                     existing = new ShipComponentSlot { SlotType = info.SlotType, SlotIndex = info.SlotIndex, CurrentHP = 100, MaxRepairPercent = 100m };
                     _selectedShip.Components.Add(existing);
                 }
+
                 existing.BlueprintUUID = bpUUID;
                 row.Cells[colCondition.Index].Value = existing.CurrentHP.ToString();
                 row.Cells[colMaxRepair.Index].Value = existing.MaxRepairPercent.ToString();
             }
+
             RefreshStats();
         }
 
@@ -471,7 +481,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
         private void dgvComponents_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
-            Log.Error("dgvComponents DataError at [{0},{1}]: {2}", e.RowIndex, e.ColumnIndex, e.Exception?.Message);
+            Log.Error("dgvComponents DataError at [{0}, {1}]: {2}", e.RowIndex, e.ColumnIndex, e.Exception?.Message);
             e.ThrowException = false;
         }
 
@@ -484,7 +494,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         private void RefreshStats()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            if (_selectedShip == null) { rtbStats.Text = ""; sw.Stop(); return; }
+            if (_selectedShip == null) { rtbStats.Text = string.Empty; sw.Stop(); return; }
             var hullBp = playerContext.FindBlueprint(_selectedShip.HullBlueprintUUID);
             if (hullBp == null) { rtbStats.Text = "No hull blueprint."; sw.Stop(); return; }
 
@@ -527,7 +537,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvCargo.Rows.Clear();
             dgvCrateContents.Rows.Clear();
-            lblCrateContents.Text = "";
+            lblCrateContents.Text = string.Empty;
             dgvCrateContents.Visible = false;
             lblCrateContents.Visible = false;
             var bag = GetSelectedBag();
@@ -544,9 +554,11 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                     int count = item.Contents?.Count() ?? 0;
                     displayName = string.Format("{0} ({1} items)", item.Name, count);
                 }
+
                 dgvCargo.Rows.Add(typeName, displayName, item.ResourcePurity, item.Quantity.ToString());
                 dgvCargo.Rows[dgvCargo.Rows.Count - 1].Tag = item;
             }
+
             sw.Stop(); Log.Info("PERF PopulateCargoGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -574,6 +586,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 var item = kvp.Value;
                 dgvCrateContents.Rows.Add(item.ItemType.ToString(), item.ExtendedName, item.ResourcePurity, item.Quantity.ToString());
             }
+
             sw.Stop(); Log.Info("PERF PopulateCrateContents: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -581,7 +594,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         {
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvCrateContents.Rows.Clear();
-            lblCrateContents.Text = "";
+            lblCrateContents.Text = string.Empty;
             lblCrateContents.Visible = false;
             dgvCrateContents.Visible = false;
         }
@@ -626,6 +639,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 foreach (var c in Commodity.ResourceMapByEnum.Values.OrderBy(c => c.ExtendedName))
                     cmbAddItem.Items.Add(c.ExtendedName);
             }
+
             if (cmbAddItem.Items.Count > 0) cmbAddItem.SelectedIndex = 0;
             sw.Stop(); Log.Info("PERF PopulateAddItemCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -654,6 +668,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                             cmbAddPurity.Items.Add(p.Name);
                     }
                 }
+
                 if (cmbAddPurity.Items.Count > 0) cmbAddPurity.SelectedIndex = 0;
                 cmbAddPurity.Enabled = true;
             }
@@ -669,7 +684,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             if (bag == null || _selectedShip == null) return;
 
             if (!(cmbAddType.SelectedItem is ItemType.ItemTypeEnum itemType)) return;
-            string itemName = cmbAddItem.SelectedItem?.ToString() ?? "";
+            string itemName = cmbAddItem.SelectedItem?.ToString() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(itemName)) return;
             if (!int.TryParse(txtAddQty.Text.Trim(), out int qty) || qty <= 0)
             {
@@ -678,7 +693,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 return;
             }
 
-            string purity = cmbAddPurity.Enabled ? (cmbAddPurity.SelectedItem?.ToString() ?? "") : "";
+            string purity = cmbAddPurity.Enabled ? (cmbAddPurity.SelectedItem?.ToString() ?? string.Empty) : string.Empty;
 
             var newItem = new Item(itemType, itemName)
             {
@@ -687,6 +702,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 ResourcePurity = purity,
                 BaseItemTypeID = itemName
             };
+
             bag.AddItem(newItem);
             PopulateCargoGrid();
             Log.Info("Added cargo item: {0} x{1} to {2}",
@@ -730,6 +746,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                     Left = 80, Top = 15, Width = 250,
                     DropDownStyle = ComboBoxStyle.DropDownList
                 };
+
                 foreach (var t in templates.OrderBy(t => t.Name))
                     cmb.Items.Add(t);
                 cmb.DisplayMember = "Name";
@@ -762,6 +779,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                         MaxRepairPercent = c.MaxRepairPercent
                     }).ToList()
                 };
+
                 playerContext.AddShip(ship);
                 playerContext.WriteContext();
                 _selectedShip = ship;
@@ -780,6 +798,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 Name = "New Ship",
                 OwnerUUID = playerContext.CurrentPlayerUUID
             };
+
             playerContext.AddShip(ship);
             playerContext.WriteContext();
             _selectedShip = ship;

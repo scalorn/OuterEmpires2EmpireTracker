@@ -1,7 +1,3 @@
-using Amazon.Runtime.Internal.Transform;
-using NLog;
-using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,6 +10,10 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using Amazon.Runtime.Internal.Transform;
+using NLog;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Services;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace OE2EmpireTracker.Parsers
@@ -30,6 +30,7 @@ namespace OE2EmpireTracker.Parsers
         {
             "Hi-Tech", "Junker", "MilSpec", "Rugged", "Service", "Standard"
         };
+
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private static Dictionary<string, string> PropertyRemap = new Dictionary<string, string>()
@@ -117,6 +118,7 @@ namespace OE2EmpireTracker.Parsers
                     PreserveWhitespace = true,
                     XmlResolver = null
                 };
+
                 doc.Load(sgmlReader);
 
                 // Extract title / evolution / tech level / description
@@ -151,7 +153,7 @@ namespace OE2EmpireTracker.Parsers
                         string titleFull = titleNode.InnerText.Trim();
                         if (evoNode != null && !string.IsNullOrEmpty(evoNode.InnerText))
                         {
-                            titleFull = titleFull.Replace(evoNode.InnerText, "").Trim();
+                            titleFull = titleFull.Replace(evoNode.InnerText, string.Empty).Trim();
                         }
 
                         var m = Regex.Match(titleFull, "^(.*)\\((.*)\\)$");
@@ -179,14 +181,14 @@ namespace OE2EmpireTracker.Parsers
 
                     if (iconBaseNode != null)
                     {
-                        string style = iconBaseNode.Attributes?["style"]?.Value ?? "";
+                        string style = iconBaseNode.Attributes?["style"]?.Value ?? string.Empty;
                         Log.Info($"  iconBaseNode style: {style}");
                     }
 
                     // --- Resolve blueprint type from icon sprite position ---
                     if (iconBaseNode != null)
                     {
-                        string style = iconBaseNode.Attributes?["style"]?.Value ?? "";
+                        string style = iconBaseNode.Attributes?["style"]?.Value ?? string.Empty;
                         var bgMatch = Regex.Match(style, @"background:\s*url\([""']?([^""')]+)[""']?\)\s*(-?\d+px)\s*(-?\d+px)");
                         if (bgMatch.Success)
                         {
@@ -285,7 +287,7 @@ namespace OE2EmpireTracker.Parsers
                                 // Normalize whitespace and remove any embedded arrows or parentheses content used for delta indicators
                                 rawValue = Regex.Replace(rawValue, "\\s+", " ").Trim();
                                 // Remove inline delta text like "(? 435)" or "(? -9)"
-                                rawValue = Regex.Replace(rawValue, "\\(.*?\\)", "").Trim();
+                                rawValue = Regex.Replace(rawValue, "\\(.*?\\)", string.Empty).Trim();
 
                                 string remapKey = key;
                                 if (!PropertyRemap.TryGetValue(key, out remapKey)) {
@@ -307,7 +309,6 @@ namespace OE2EmpireTracker.Parsers
                             blueprint.Class = int.Parse(equipClass);
                             blueprint.Properties.Remove("Class");
                         }
-
                     }
                 }
                 catch (Exception ex)
@@ -368,6 +369,7 @@ namespace OE2EmpireTracker.Parsers
                     CaseFolding = Sgml.CaseFolding.ToLower,
                     InputStream = reader
                 };
+
                 XmlDocument doc = new XmlDocument() { PreserveWhitespace = true, XmlResolver = null };
                 doc.Load(sgmlReader);
 
@@ -382,7 +384,7 @@ namespace OE2EmpireTracker.Parsers
                 for (int i = 0; i < allRows.Count; i++)
                 {
                     XmlNode row = allRows[i];
-                    string rowClass = row.Attributes?["class"]?.Value ?? "";
+                    string rowClass = row.Attributes?["class"]?.Value ?? string.Empty;
                     if (!rowClass.Contains("MarketListingRow") || rowClass.Contains("MarketListingRowDetail"))
                         continue;
 
@@ -391,7 +393,7 @@ namespace OE2EmpireTracker.Parsers
                     if (nameNode == null) continue;
 
                     // Name is the direct text of the div, not including nested spans (which contain seller info like "Government")
-                    string name = "";
+                    string name = string.Empty;
                     foreach (XmlNode child in nameNode.ChildNodes)
                     {
                         if (child.NodeType == XmlNodeType.Text)
@@ -400,12 +402,13 @@ namespace OE2EmpireTracker.Parsers
                             break;
                         }
                     }
+
                     if (string.IsNullOrEmpty(name))
                         name = nameNode.InnerText.Trim(); // fallback
                     if (string.IsNullOrEmpty(name)) continue;
 
                     // Extract seller name from <span class="ui_text_light_grey"> inside the name div
-                    string sellerName = "";
+                    string sellerName = string.Empty;
                     XmlNode sellerSpan = nameNode.SelectSingleNode(".//span[contains(@class,'ui_text_light_grey')]");
                     if (sellerSpan != null)
                     {
@@ -437,7 +440,7 @@ namespace OE2EmpireTracker.Parsers
 
                     // Look for the next sibling row which should be MarketListingRowDetail
                     XmlNode detailRow = (i + 1 < allRows.Count) ? allRows[i + 1] : null;
-                    string detailClass = detailRow?.Attributes?["class"]?.Value ?? "";
+                    string detailClass = detailRow?.Attributes?["class"]?.Value ?? string.Empty;
                     if (detailRow != null && detailClass.Contains("MarketListingRowDetail"))
                     {
                         // Extract properties from Market_ShipComponentProperty divs
@@ -453,7 +456,7 @@ namespace OE2EmpireTracker.Parsers
                                 string key = labelNode.InnerText.Trim();
                                 string rawValue = valueNode.InnerText.Trim();
                                 rawValue = Regex.Replace(rawValue, "\\s+", " ").Trim();
-                                rawValue = Regex.Replace(rawValue, "\\(.*?\\)", "").Trim();
+                                rawValue = Regex.Replace(rawValue, "\\(.*?\\)", string.Empty).Trim();
 
                                 string remapKey;
                                 if (!PropertyRemap.TryGetValue(key, out remapKey))
@@ -490,7 +493,7 @@ namespace OE2EmpireTracker.Parsers
                         XmlNode iconNode = detailRow.SelectSingleNode(".//div[contains(@class,'MarketListingRowDetailIcon')]//div[contains(@class,'ui_icon_base')]");
                         if (iconNode != null)
                         {
-                            string style = iconNode.Attributes?["style"]?.Value ?? "";
+                            string style = iconNode.Attributes?["style"]?.Value ?? string.Empty;
                             var bgMatch = Regex.Match(style, @"background:\s*url\([""']?([^""')]+)[""']?\)\s*(-?\d+px)\s*(-?\d+px)");
                             if (bgMatch.Success)
                             {
@@ -657,6 +660,7 @@ namespace OE2EmpireTracker.Parsers
                 PreserveWhitespace = true,
                 XmlResolver = null
             };
+
             doc.Load(sgmlReader);
 
             // Debug: Print inner text of each node

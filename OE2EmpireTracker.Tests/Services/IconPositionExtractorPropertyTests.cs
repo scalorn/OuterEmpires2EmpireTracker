@@ -1,11 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using FsCheck;
 using FsCheck.NUnit;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -94,7 +94,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var ctx = EmpireContext.GetInstance();
             Assert.That(ctx.FindBlueprintTypeByIcon(null), Is.Null, "null input should return null");
-            Assert.That(ctx.FindBlueprintTypeByIcon(""), Is.Null, "empty input should return null");
+            Assert.That(ctx.FindBlueprintTypeByIcon(string.Empty), Is.Null, "empty input should return null");
         }
 
         #endregion
